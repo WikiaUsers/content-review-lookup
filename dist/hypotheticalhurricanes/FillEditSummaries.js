@@ -18,7 +18,7 @@ function fillEditSummariesVisualEditor() {
             $summaryOptionsList = $('<select />').attr('id', 'stdEditSummaries').change(function () {
                 var editSummary = $(this).val();
                 if (editSummary !== '') {
-                    $summaryInput.val(editSummary);
+                    $summaryInput.val(editSummary).trigger('change');
                 }
             });
 

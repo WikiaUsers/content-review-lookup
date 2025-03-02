@@ -1,2 +1,0 @@
-
-importScriptPage('MediaWiki:WordFilter.js');

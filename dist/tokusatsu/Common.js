@@ -187,13 +187,7 @@ window.MessageWallUserTags = {
     glowSize: '15px',
     glowColor: '#f77',
     users: {
-        'Digifiend': 'ADMIN',
-        'Nbajammer': 'ADMIN',
-        'Dchallofjustice': 'ADMIN',
         'Digi': 'ADMIN',
-        'MrThermomanPreacher': 'ADMIN',
-        'Gaeaman788': 'ADMIN',
-        'Aldo_The_Fox': 'ADMIN'
     }
 };
  
@@ -209,3 +203,5 @@ importArticles({
         'w:c:dev:DupImageList/code.js'
     ]
 });
+
+mw.config.set('UMFBypassLicenseCheck', true);

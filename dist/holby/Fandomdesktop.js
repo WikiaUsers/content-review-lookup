@@ -24,7 +24,7 @@ mw.hook('wikipage.collapsibleContent').add(autocollapseSetup);
 
 /* MAIN PAGE 2025 */
 
-(function mainPageSeriesCarousel() {
+function mainPageSeriesCarousel() {
 	var wrapper, tabs, numTabs, tabSpacing, tabsToJump;
 	
 	var currentStartTab = 0;
@@ -130,4 +130,39 @@ mw.hook('wikipage.collapsibleContent').add(autocollapseSetup);
 	initCarouselValues();
 	findModules();
 	
-})($);
+}
+
+// change OTD purge button to null edit when available
+function convertPurgeToNull() {
+	function tryClick() {
+		if ($('#ca-null-edit').length > 0) {
+			$('.on-this-day .button .wds-button:last-child a').on('click', function(event) {
+				event.preventDefault();
+				$('#ca-null-edit').trigger('click');
+				event.stopImmediatePropagation();
+			});
+		}
+	}
+	
+	function callback(mutationList, observer) {
+		mutationList.forEach(function (mutation) {
+			if (mutation.type === 'childList') {
+				tryClick();
+			}
+		});
+	}
+	
+	if ($('body').hasClass('mainpage')) {
+		var editButtonList = $('#ca-edit + .wds-dropdown .wds-list');
+		var config = { childList: true };
+		
+		var observer = new MutationObserver(callback);
+		
+		observer.observe(editButtonList[0], config);
+		
+		// In case we've already purged...
+		tryClick();
+	}
+}
+
+mw.hook('wikipage.content').add(mainPageSeriesCarousel).add(convertPurgeToNull);

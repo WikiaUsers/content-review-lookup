@@ -1,3 +1,4 @@
+/*
 ;
 (function($, mw) {
 	if (!window.mw || !mw.config) return;
@@ -430,3 +431,4 @@
 		window.addEventListener('load', initPlugin);
 	}
 })(jQuery, mediaWiki);
+*/

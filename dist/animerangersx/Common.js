@@ -1,30 +1,50 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-// JavaScript: Filtering Logic
-document.addEventListener("DOMContentLoaded", () => {
-  const filterOptions = document.querySelectorAll(".filter-option");
-  const rangerCards = document.querySelectorAll(".ranger-card");
+switch (mw.config.get('wgPageName')) {
+    case 'Story':
+document.addEventListener("DOMContentLoaded", function () {
+    // Stage data for each map
+    const mapStages = {
+        "map1": ["Stage 1-1", "Stage 1-2", "Stage 1-3"],
+        "map2": ["Stage 2-1", "Stage 2-2", "Stage 2-3"],
+        "map3": ["Stage 3-1", "Stage 3-2", "Stage 3-3"]
+    };
 
-  filterOptions.forEach(option => {
-    option.addEventListener("click", function () {
-      // Remove 'active' class from all options
-      filterOptions.forEach(opt => opt.classList.remove("active"));
+    // Select all map boxes
+    const mapBoxes = document.querySelectorAll(".map-box");
+    const chapterSelection = document.querySelector(".chapter-selection");
 
-      // Add 'active' class to the clicked option
-      this.classList.add("active");
+    // Function to update stages based on selected map
+    function updateStages(mapKey) {
+        chapterSelection.innerHTML = "<h3>Chapter Selection</h3>"; // Reset
 
-      // Get the selected rarity
-      const selectedRarity = this.getAttribute("data-rarity");
-
-      // Show or hide ranger cards based on rarity
-      rangerCards.forEach(card => {
-        const cardRarity = card.getAttribute("data-rarity");
-
-        if (selectedRarity === "all" || cardRarity === selectedRarity) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
+        if (mapStages[mapKey]) {
+            mapStages[mapKey].forEach(stage => {
+                let stageDiv = document.createElement("div");
+                stageDiv.classList.add("stage");
+                stageDiv.textContent = stage;
+                chapterSelection.appendChild(stageDiv);
+            });
         }
-      });
+    }
+
+    // Add click event to all map boxes
+    mapBoxes.forEach(box => {
+        box.addEventListener("click", function () {
+            // Get map ID from data attribute
+            let selectedMap = this.getAttribute("data-map");
+            
+            // Update stages
+            updateStages(selectedMap);
+
+            // Highlight the selected map
+            mapBoxes.forEach(box => box.classList.remove("selected"));
+            this.classList.add("selected");
+        });
     });
-  });
 });
+
+        break;
+    case 'some other page':
+        // JS here will be applied to "some other page"
+        break;
+}

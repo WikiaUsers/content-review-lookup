@@ -5,11 +5,17 @@
         "OTT",
         "LTL",
         "CMP",
+        "MOR",
+        "UTR",
+        "INV",
     ];
     const cell_colors = [
         "rgb(74, 134, 232)",
         "rgb(60, 120, 21)",
         "rgb(255, 217, 102)",
+        "rgb(255, 229, 153)",
+        "rgb(255, 242, 204)",
+        "rgb(153, 153, 153)",
     ];
 
     // Function that applies color to cells within the target table 

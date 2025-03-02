@@ -36,3 +36,6 @@
     // makes errors break the script rather than infinitely recurse
     timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
 }
+
+
+});

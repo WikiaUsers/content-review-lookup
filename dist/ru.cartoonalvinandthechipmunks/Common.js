@@ -100,3 +100,12 @@ window.questions = [
     "Хоув-Бич",
     "Пост-экзистенциализм"],
     ];
+
+/* Ëфикация */
+function replaceE(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent = node.textContent.replace(/е/g, 'ё').replace(/Е/g, 'Ё');
+    } else {
+        node.childNodes.forEach(replaceE);
+    }
+}

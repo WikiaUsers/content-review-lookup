@@ -1,3 +1,5 @@
+// jshint jquery:true, browser:true, devel:true, camelcase:true, curly:false, eqeqeq:true, esversion: 5, forin:true, freeze:true, immed:true, latedef:true, leanswitch:true, newcap:true, noarg:true, regexp:true, strict:true, trailing:false, undef:true, unused:true
+/* global URLSearchParams */
 /**
  * FileTools.js
  * SOAP script to add quick action buttons on file pages
@@ -8,10 +10,10 @@
  * @author magiczocker
  */
 
-(function(mw) {
+(function($, mw) {
 	'use strict';
 
-	const token = mw.user.tokens.get('csrfToken'),
+	var token = mw.user.tokens.get('csrfToken'),
 		config = mw.config.get([
 			'wgCanonicalNamespace',
 			'wgArticlePath',
@@ -30,26 +32,22 @@
 	window.FileToolsLoaded = true;
 
 	var i18n,
-		events = {},
-		summaries = {};
+		summaries = {},
+		preloads = 2,
+		OO,
+		protectBtn,
+		addButtons,
+		buttongroup;
 
-	/**
-	 * Summary promt.
-	 * @param {string} type - Button type for default summary.
-	 */
 	function summary(type) {
-		const summary = prompt(i18n.msg('summary_title', i18n.inContentLang().msg('summary_' + type).plain() ).plain(), summaries[type] || '');
+		var summary = prompt(i18n.msg('summary_title', i18n.inContentLang().msg('summary_' + type).plain() ).plain(), summaries[type] || '');
 		summaries[type] = summary;
 		if (summary === null) return false;
 		return !summary.length ? i18n.msg('summary_' + type).plain() : summary;
 	}
 
-	/**
-	 * Protect button.
-	 * @param {object} element - Button data.
-	 */
-	events.protect = function(element) {
-		const sum = summary('protect');
+	function protect() {
+		var sum = summary('protect');
 		if (!sum) return;
 		fetch(config.wgScriptPath + '/api.php?', {
 			body: new URLSearchParams({
@@ -65,36 +63,28 @@
 			method: 'POST',
 			credentials: 'include'
 		}).then(function() {
-			element.target.textContent = i18n.msg('protected').plain();
+			protectBtn.setLabel(i18n.msg('protected').plain());
 		});
-	};
+	}
 
-	/**
-	 * Refresh button.
-	 * @param {object} element - Button data.
-	 */
-	events.refresh = function(element) {
-		if (element) element.target.textContent = '...';
-		const pathname = config.wgArticlePath.replace('$1', config.wgPageName) + '?safemode=1&useskin=apioutput';
+	function refresh() {
+		var pathname = config.wgArticlePath.replace('$1', config.wgPageName) + '?safemode=1&useskin=apioutput';
 		fetch(pathname).then(function(response) {
 			return response.text();
 		}).then(function(data) {
-			const parser = new DOMParser();
+			var parser = new DOMParser();
 			return parser.parseFromString(data, 'text/html');
 		}).then(function(data) {
-			const section = 'mw-imagepage-section-filehistory';
+			var section = 'mw-imagepage-section-filehistory';
 			document.getElementById(section).innerHTML = data.getElementById(section).innerHTML;
 			addButtons();
 		});
-	};
+	}
 
-	/**
-	 * Delete all button.
-	 */
-	events.deleteAll = function() {
-		const sum = summary('deleteAll');
+	function deleteAll() {
+		var sum = summary('deleteAll');
 		if (!sum) return;
-		const images = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a');
+		var images = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a');
 		images.forEach(function(ele) {
 			fetch(config.wgScriptPath + '/api.php?', {
 				body: new URLSearchParams({
@@ -110,17 +100,13 @@
 				credentials: 'include'
 			}).then(function() {
 				ele.parentElement.parentElement.style.opacity = 0.2;
+				ele.parentElement.parentElement.style.pointerEvents = 'none';
 			});
 		});
-	};
+	}
 
-	/**
-	 * Delete button.
-	 * @param {object} element - Button data.
-	 */
-	events.delete = function(element) {
-		const sum = summary('delete'),
-			ele = element.target;
+	function deleteFile(ele) {
+		var sum = summary('delete');
 		if (!sum) return;
 		fetch(config.wgScriptPath + '/api.php?', {
 			body: new URLSearchParams({
@@ -128,23 +114,19 @@
 				format: 'json',
 				title: config.wgPageName,
 				reason: sum,
-				oldimage: ele.getAttribute('data-filepath'),
+				oldimage: ele.attr('data-filepath'),
 				bot: true,
 				token: token
 			}),
 			method: 'POST',
 			credentials: 'include'
 		}).then(function() {
-			ele.parentElement.parentElement.style.opacity = 0.2;
+			ele.parent().parent().css({'opacity': '0.2', 'pointer-events': 'none'});
 		});
-	};
+	}
 
-	/**
-	 * Revert button.
-	 * @param {object} element - Button data.
-	 */
-	events.revert = function(element) {
-		const sum = summary('revert');
+	function revert(ele) {
+		var sum = summary('revert');
 		if (!sum) return;
 		fetch(config.wgScriptPath + '/api.php?', {
 			body: new URLSearchParams({
@@ -152,72 +134,96 @@
 				format: 'json',
 				filename: config.wgTitle,
 				comment: sum,
-				archivename: element.target.getAttribute('data-filepath'),
+				archivename: ele.attr('data-filepath'),
 				bot: true,
 				token: token
 			}),
 			method: 'POST',
 			credentials: 'include'
 		}).then(function() {
-			events.refresh();
+			refresh();
+		});
+	}
+
+	addButtons = function() {
+		$('#mw-imagepage-section-filehistory').prepend(buttongroup.$element);
+
+		var firstColumn = $('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a'),
+			secondColumn = $('.filehistory tr:nth-of-type(n + 3) > td:nth-child(2) > a');
+
+		firstColumn.each(function(i, ele) {
+			var btn = new OO.ui.ButtonWidget( {
+				icon: 'trash',
+				label: i18n.msg('delete').plain(),
+				flags: ['primary', 'destructive']
+			} );
+			btn.$element.attr('data-filepath', new URL(ele.href).searchParams.get('oldimage'));
+			btn.$element.css({'display': 'block'});
+			btn.on('click', function() {
+				deleteFile(btn.$element);
+			});
+			$(ele).before(btn.$element);
+		});
+
+		secondColumn.each(function(i, ele) {
+			var btn = new OO.ui.ButtonWidget( {
+				icon: 'undo',
+				label: i18n.msg('revert').plain(),
+				flags: ['primary', 'progressive']
+			} );
+			btn.$element.attr('data-filepath', new URL(ele.href).searchParams.get('oldimage'));
+			btn.$element.css({'display': 'block'});
+			btn.on('click', function() {
+				revert(btn.$element);
+			});
+			$(ele).before(btn.$element);
 		});
 	};
 
-	/**
-	 * Create button.
-	 * @param {string} label - Button label.
-	 * @param {string} data - Image value for revert/delete.
-	 * @returns {object} Button
-	 */
-	function createButton(label, data) {
-		const btn = document.createElement('button');
-		btn.classList = 'wds-button';
-		btn.textContent = i18n.msg(label).plain();
-		if (data) {
-			btn.style.display = 'block';
-			btn.dataset.filepath = data;
-		}
-		btn.addEventListener('click', events[label], false);
-		return btn;
-	}
+	function init() {
+		if (--preloads>0) return;
 
-	/**
-	 * Add buttons.
-	 */
-	function addButtons() {
-		// Above table
-		document.getElementById('mw-imagepage-section-filehistory').prepend(
-			createButton('protect'),
-			document.createTextNode(' '),
-			createButton('refresh'),
-			document.createTextNode(' '),
-			createButton('deleteAll')
-		);
+		protectBtn = new OO.ui.ButtonWidget( {
+			icon: 'lock',
+			label: i18n.msg('protect').plain(),
+			flags: ['primary', 'progressive']
+		} );
+		var refreshBtn = new OO.ui.ButtonWidget( {
+			icon: 'reload',
+			label: i18n.msg('refresh').plain(),
+			flags: ['primary', 'progressive']
+		} ),
+		deleteAllBtn = new OO.ui.ButtonWidget( {
+			icon: 'trash',
+			label: i18n.msg('deleteAll').plain(),
+			flags: ['primary', 'destructive']
+		} );
+		buttongroup = new OO.ui.ButtonGroupWidget( {
+			items: [protectBtn, refreshBtn, deleteAllBtn]
+		} );
+		protectBtn.on('click', protect);
+		refreshBtn.on('click', refresh);
+		deleteAllBtn.on('click', deleteAll);
 
-		// Inside table
-		const firstColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a'),
-			secondColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(2) > a');
-
-		firstColumn.forEach(function(ele) {
-			const btn = createButton('delete', new URL(ele.href).searchParams.get('oldimage'));
-			ele.before(btn);
-		});
-
-		secondColumn.forEach(function(ele) {
-			const btn = createButton('revert', new URL(ele.href).searchParams.get('oldimage'));
-			ele.before(btn);
-		});
+		addButtons();
 	}
 
 	mw.hook('dev.i18n').add(function(i18no) {
 		i18no.loadMessages('FileTools').done(function(msg) {
 			i18n = msg;
-			addButtons();
+			init();
 		});
 	});
 
-	window.importArticle({
-		type: 'script',
-		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	mw.loader.using([
+		'oojs-ui-widgets',
+		'oojs-ui.styles.icons-moderation', // lock, trash
+		'oojs-ui.styles.icons-interactions', // reload
+		'oojs-ui.styles.icons-editing-core' // undo
+	]).then(function(require) {
+		OO = require('oojs');
+		init();
 	});
-})(window.mediaWiki);
+
+	mw.loader.load('https://dev.fandom.com/load.php?articles=MediaWiki:I18n-js/code.js&only=scripts&mode=articles');
+})(window.jQuery, window.mediaWiki);

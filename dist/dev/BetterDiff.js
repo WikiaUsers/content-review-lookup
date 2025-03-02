@@ -962,7 +962,7 @@ $(function() {
 		},
 		
 		// Get locations where to add custom link for quickDiff
-		quickDiffLoad: function(els) {
+		quickDiffLoad: function(els, amt) {
 			var addLink = function(diff) {
 				if (diff && (
 					diff.getAttribute('href') ||
@@ -1047,6 +1047,8 @@ $(function() {
 			if (els) {
 				els.filter(cond).each(function(_, el){ addLink(el); }); // run on elements that are the target
 				els.find(cond).each(function(_, el){ addLink(el); }); // run on wrappers that contain the target
+			} else if (amt) {
+				$(cond).slice(0, amt).each(function(_, el){ addLink(el); }); // run on the next X targets, for betterDiff.openNext
 			} else {
 				betterDiff.whenInView(cond, addLink);
 			}
@@ -1162,79 +1164,33 @@ $(function() {
 		
 		// Open next diff in RC or user contribs list
 		openNext: function() {
-			var curr = $(':is(table, li):has(.quickDiff.link-focused)');
-			if (curr.length==0 || config.wgDiffNewId){return;}
-			var next = null;
-			function getNext(ref) {
-				next = ref.next('table, li');
-				// Get last of next group
-				if (next.length==0) {
-					next = (
-					ref.is('table') ?
-						ref.closest('.mw-changeslist > div').next('.mw-changeslist > h4').next('.mw-changeslist > div').has('table').children(':first-child') :
-						(ref.closest('ul.mw-contributions-list').length>0 ?
-							ref.closest('ul.mw-contributions-list').next('h4').next('ul.mw-contributions-list').has('li').children(':first-child') :
-							ref.next()
-						)
-					);
-					
-					// No next group
-					if (next.length==0) { next = null; }
-					
-				// Upload logs, Delete logs, Protect logs, etc...
-				} else if (next.is('[class*="mw-changeslist-log-"]')) {
-					getNext(next);
-				}
-			}
-			getNext(curr);
-			if (next && next.has('.quickDiff')) {
-				// Attempt to load quickDiff just in case
-				betterDiff.quickDiffLoad(next);
-				
+			var all = $('.quickDiff');
+			var curr = $('.quickDiff.link-focused');
+			if (all.length===0 || curr.length===0 || config.wgDiffNewId){alert('There was an error, re-open the modal and try again!'); return;}
+			var next = all.index(curr)+1;
+			// Attempt to load 1 more just in case next entry is unloaded
+			betterDiff.quickDiffLoad(null, 1);
+			if (next>(all.length-1) || !all[next]) {
+				alert('There is no next diff, good job!');
+			} else if (all[next]) {
 				// Load next diff
 				curr.removeClass('link-focused');
-				next.find('.quickDiff')[0].click();
-			} else {
-				alert('There is no next diff, good job!');
+				all[next].click();
 			}
 		},
 		
 		// Open next diff in RC or user contribs list
 		openPrev: function() {
-			var curr = $(':is(table, li):has(.quickDiff.link-focused)');
-			if (curr.length==0 || config.wgDiffNewId){return;}
-			var prev = null;
-			function getPrev(ref) {
-				prev = ref.prev('table, li');
-				// Get last of prev group
-				if (prev.length==0) {
-					prev = (
-					ref.is('table') ?
-						ref.closest('.mw-changeslist > div').prev('.mw-changeslist > h4').prev('.mw-changeslist > div').has('table').children(':last-child') :
-						(ref.closest('ul.mw-contributions-list').length>0 ?
-							ref.closest('ul.mw-contributions-list').prev('h4').prev('ul.mw-contributions-list').has('li').children(':last-child') :
-							ref.prev()
-						)
-					);
-					
-					// No prev group
-					if (prev.length==0) { prev = null; }
-					
-				// Upload logs, Delete logs, Protect logs, etc...
-				} else if (prev.is('[class*="mw-changeslist-log-"]')) {
-					getPrev(prev);
-				}
-			}
-			getPrev(curr);
-			if (prev && prev.has('.quickDiff')) {
-				// Attempt to load quickDiff just in case
-				betterDiff.quickDiffLoad(prev);
-				
+			var all = $('.quickDiff');
+			var curr = $('.quickDiff.link-focused');
+			if (all.length===0 || curr.length===0 || config.wgDiffNewId){alert('There was an error, re-open the modal and try again!'); return;}
+			var prev = all.index(curr)-1;
+			if (prev<0 || !all[prev]) {
+				alert('There is no prev diff, good job!');
+			} else if (all[prev]) {
 				// Load prev diff
 				curr.removeClass('link-focused');
-				prev.find('.quickDiff')[0].click();
-			} else {
-				alert('There is no prev diff, good job!');
+				all[prev].click();
 			}
 		},
 		

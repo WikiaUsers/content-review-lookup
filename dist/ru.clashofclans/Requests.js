@@ -1,12 +1,19 @@
 /*
  * Original idea and code can be found here: http://communaute.wikia.com/wiki/MediaWiki:Common.js/Requests.js
- * by Flotiliya: JS файл был адаптирован под текущую Wiki от 20.02.2025г.
+ *
+ * by Flotiliya:
+ * - the JS page has been adapted to the current Wiki 20.02.2025
+ * - last update 01.03.2025
+ * - desc: 
+ * -    added warning when PageTitle already exists (see: "duplicate-warning")
+ * -    the approach to hiding the "duplicate-warning" & "unfilled-warning" warnings has been changed; warnings are deleted when the user enters the data, and not after clicking on the send request button (see: var warning)
+ * -    the "addMore" function was completely cut out of the script (not relevant for our Wiki)
+ * -    and other minor fixs
+ *
  */
 /*******************************************************/
 !function() {
 	requests = {};
-	
-	requests.count = 0;
 	requests.onPending = false;
 
     function getEditToken(callback) {
@@ -25,7 +32,6 @@
                     var token = response.query.tokens.csrftoken;
                     callback(token);
                 } else {
-                    //$('.request-status').text('Ошибка: Не удалось получить CSRF-токен. Попробуйте позже.');
                     $('.request-status')
                     .text('Ошибка: Не удалось получить CSRF-токен. Попробуйте позже.')
                     .removeClass('text-success text-error')
@@ -43,7 +49,7 @@
         });
     }
 
-	requests.callDiag = function( title, form, type ) {
+	requests.callDiag = function( title, form ) {
 		if ( !requests.windowManager ) {
 			function createDiag( cfg ) {
                 createDiag.super.call( this, cfg );
@@ -57,14 +63,22 @@
                 { label: 'Закрыть', flags: [ 'safe', 'close' ], action: 'onClose' }
             ];
 
-			if ( type ) createDiag.static.actions.push( { label: 'Добавить секцию', flags: [ 'secondary' ], action: 'addMore', classes: [ 'addMore' ] } );
-
             createDiag.prototype.initialize = function () {
                 createDiag.super.prototype.initialize.apply(this, arguments);
                 this.content = new OO.ui.PanelLayout({ padded: true });
                 this.content.$element.html(form);
                 this.$content.addClass('requestForm');
                 this.$body.append(this.content.$element);
+                
+                // Добавляем обработчик для скрытия предупреждений при вводе
+                this.$body.on('input', '.must-be-filled', function() {
+                    ['duplicate-warning', 'unfilled-warning'].forEach(function(cls) {
+                        var warning = $(this).siblings('.' + cls);
+                        if (warning.length > 0) {
+                            warning.addClass('hidden');
+                        }
+                    }.bind(this)); // Привязываем контекст this
+                });
             };
 
             createDiag.prototype.getActionProcess = function(action) {
@@ -73,15 +87,8 @@
                         return new OO.ui.Process(function() {
                             requests.checkAndSubmit();
                         });
-                    case 'addMore':
-                        return new OO.ui.Process(function() {
-                            requests.addMore();
-                        });
                     case 'onClose':
                         return new OO.ui.Process(function() {
-                            requests.count = 0;
-                            $('.request-limit').hide();
-                            $('.request-additional-section').html('');
                             $('.request-status')
                             .text('Ожидает отправки формы')
                             .removeClass('text-success text-error')
@@ -104,57 +111,33 @@
             requests.windowManager.openWindow( requests.diag );
         }
 	}
-	
-	requests.addMore = function() {
-		if ( requests.count === 9 ) {
-			$( '.request-limit' ).show();
-			$( '#addMore' ).attr( 'disabled', true );
-
-			return;
-		}
-
-		if ( $( '.request-additional-field' ).css( 'display' ) === 'none' ) {
-			$( '.request-additional-field' ).fadeIn(500);
-		}
-    
-		$( '.request-additional-section' ).append(
-			'<div class="request-additional" style="margin: 0 5px; border-bottom: 1px solid grey; padding: 5px; 0">' +
-				'<p class="request-field"><b>URL вики №1 :</b> https://<input type="text" style="align:center;height:20px; width:300px" class="request-first" placeholder="Например : harrypotter.fandom.com/ru"/></p>' +
-				'<p class="request-field"><b>URL вики №2 :</b> https://<input type="text" style="align:center;height:20px; width:300px" class="request-second" placeholder="Например : harrypotter.fandom.com/pl"/></p>' +
-			'</div>'
-		);
-
-		requests.count++;
-	}
 
     requests.checkAndSubmit = function() {
 
         if (!mw.config.get('wgUserGroups').includes('user')) {
             $('.request-status')
-            .text('Ошибка: У вас нет прав для создания страниц')
+            .text('Ошибка: У вас нет прав для создания страниц!')
             .removeClass('text-success text-error')
             .addClass('text-error');
             return;
         }
 
         if (requests.onPending) return;
-    
+
         var errors = [];
         $('.must-be-filled').each(function() {
             if ($(this).is('select') && ($(this).val() === '' || $(this).val() === null)) {
                 // Для select проверяем, что выбрано значение
-                $(this).next('.unfilled-warning').fadeIn(500);
+                $(this).next('.unfilled-warning').removeClass('hidden').fadeIn(500);
                 errors.push($(this).prev('label').text() + ' не может быть пустым.');
             } else if ($(this).is('input[type="number"]') && isNaN($(this).val())) {
                 // Для числовых полей проверяем, что введено число
-                $(this).next('.unfilled-warning').fadeIn(500);
+                $(this).next('.unfilled-warning').removeClass('hidden').fadeIn(500);
                 errors.push($(this).prev('label').text() + ' должно быть числом.');
             } else if ($(this).val().trim() === '') {
                 // Для остальных полей проверяем на пустоту
-                $(this).next('.unfilled-warning').fadeIn(500);
+                $(this).next('.unfilled-warning').removeClass('hidden').fadeIn(500);
                 errors.push($(this).prev('label').text() + ' не может быть пустым.');
-            } else {
-                $(this).next('.unfilled-warning').hide();
             }
         });
         
@@ -244,6 +227,22 @@
                 },
                 dataType: 'json',
                 success: function(response) {
+        	        if (response && response.error && response.error.code === 'articleexists') {
+        				// Если страница с таким названием уже существует
+                        $('.request-status')
+                        .text('Ошибка: Страница с таким названием уже существует!')
+                        .removeClass('text-success text-error')
+                        .addClass('text-error');        				
+        				
+            			// Показываем предупреждение о дубликате под полем ввода
+	                    var duplicateWarning = $('#TopicName').siblings('.duplicate-warning');
+	                    if (duplicateWarning.length > 0) {
+	                        duplicateWarning.removeClass('hidden').fadeIn(500);
+	                    }
+            			requests.onPending = false;
+            			return;
+        			}
+                	
                     if (response && response.edit && response.edit.result === 'Success') {
                         // Если страница успешно создана
                         $('.request-status')
@@ -287,6 +286,7 @@
                     '       <label for="TopicName" class="form-label"><span class="required-indicator">*</span> Название темы:</label>' +
                     '       <input type="text" id="TopicName" class="form-input must-be-filled">' +
                     '       <span class="unfilled-warning">Это поле обязательно для заполнения!</span>' +
+                    '		<span class="duplicate-warning" style="display: none;">Страница с таким названием уже существует! Пожалуйста, укажите другое.<br />Пример: Ваше имя - Название статуса</span>' +
                     '   </div>' +
                     '   <div class="form-section">' +
                     '       <label for="NickName" class="form-label"><span class="required-indicator">*</span> Ваш NickName:</label>' +
@@ -297,7 +297,7 @@
                     '       <label for="RequestedStatus" class="form-label"><span class="required-indicator">*</span> Запрашиваемый статус:</label>' +
                     '       <select id="RequestedStatus" class="form-input must-be-filled">' +
                     '           <option value="" disabled selected>Выберите статус</option>' +
-                    '           <option value="Откатчик">Откатчик</option>' +
+                    '           <option value="Хелпер">Хелпер</option>' +
                     '           <option value="Младший модератор">Младший модератор</option>' +
                     '           <option value="Модератор">Модератор</option>' +
                     '           <option value="Младший администратор">Младший администратор</option>' +
@@ -311,23 +311,23 @@
                     '       <span class="unfilled-warning">Это поле обязательно для заполнения!</span>' +
                     '   </div>' +
                     '   <div class="form-section">' +
-                    '       <label for="NumberOfArticles" class="form-label"><span class="required-indicator">*</span> Количество созданных вами статей/страниц:</label>' +
+                    '       <label for="NumberOfArticles" class="form-label"><span class="required-indicator">*</span> Количество созданных вами страниц-статей:</label>' +
                     '       <input type="number" id="NumberOfArticles" class="form-input must-be-filled">' +
                     '       <span class="unfilled-warning">Это поле обязательно для заполнения!</span>' +
                     '   </div>' +
                     '   <div class="form-section">' +
-                    '       <label for="Comments" class="form-label">Дополнительная информация (опционально):</label>' +
+                    '       <label for="Comments" class="form-label">Наименования созданных вами страниц-статей:</label>' +
+                    '       <label for="Comments" class="form-label-info"><font style="color: #dd360a;">[Опционально]</font> Для получения статуса выше Хелпера поле обязательное для заполнения</label>' +
                     '       <textarea id="Comments" class="form-input"></textarea>' +
                     '   </div>' +
                     '   <div class="request-status">Ожидает отправки формы</div>' +
                     '</form>';
                 var title = "Форма запроса на получение статуса";
-                var f = false;
                 break;
         }
     
         if (requestForm) {
-            requests.callDiag(title, requestForm, f);
+            requests.callDiag(title, requestForm);
         }
     };
 

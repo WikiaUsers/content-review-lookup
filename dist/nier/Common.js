@@ -1,17 +1,3 @@
-/** Username replace function ([[template:USERNAME]]) *******************************
-  * Inserts user name into <span class="insertusername"></span>
-  * Originally by [[wikia:User:Splarka|Splarka]]
-  * New version by [[User:Spang|Spang]]
-  */
- 
- function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $('span.insertusername').each(function() {
-        $(this).text(wgUserName);
-    });
- }
- addOnloadHook(UserNameReplace);
- 
 function ts_makeSortable(table){
 	var firstRow;
 	if(table.rows&&table.rows.length>0){
@@ -42,3 +28,10 @@ function ts_makeSortable(table){
 }
 
 importScriptPage('AjaxRC/code.js', 'dev');
+
+/* Modifying redirect button from WikiEditor's source mode to automatically include the category */
+$('#wpTextbox1').on('wikiEditor-toolbar-buildSection-advanced', function(event, section) {
+    // The exact paths are available in jquery.wikiEditor.toolbar.config.js file of the extension
+    section.groups.insert.tools.redirect.action.options.pre = '#REDIRECT [[';
+    section.groups.insert.tools.redirect.action.options.post = ']]\n\n[[Category:Redirect Pages]]';
+});

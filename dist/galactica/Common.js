@@ -10,10 +10,12 @@ window.ajaxPages = [
     "Special:Contributions",
 ];
 
-///The following makes MediaWiki:Common.js/uploadform.js work
+/* The following makes MediaWiki:Common.js/uploadform.js work */
+
 if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
         importScript('MediaWiki:Common.js/uploadform.js');
     }
 
-// prevents existing tags from being hidden
+/* prevents existing tags from being hidden */
+
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };

@@ -667,7 +667,7 @@ UserTagsJS.modules.explode = {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
-mw.loader.using('mediawiki.util', function() {
+/*mw.loader.using('mediawiki.util', function() {
     var word = 'hello';
     var replacement = '<span class="theword">' + word + '</span>';
     
@@ -676,7 +676,7 @@ mw.loader.using('mediawiki.util', function() {
     
     // Replace the word in the page content
     document.body.innerHTML = document.body.innerHTML.replace(re, replacement);
-});
+});*/
 
 
 

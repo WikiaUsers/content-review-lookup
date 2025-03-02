@@ -17,7 +17,8 @@
 		var bv = data.bv;
 		var page = data.page || data.param || 1; // data-param is typo made by the author in the old version
 		var size = data.size || data.width || '80%';
-        var autoplay = data.autoplay == false ? 0 : 1;
+		var height = data.height;
+		var autoplay = data.autoplay == false ? 0 : 1;
 
 		// Verify data
 		// Video ID must be set
@@ -53,10 +54,16 @@
 			allowfullscreen: true
 		}).css('width', size);
 
+		if (height) {
+			$iframe.css('height', height);
+		}
+
 		// Resize
 		function resizeBilibili() {
 			$iframe.height(function () {
-				return $(this).width() / 4 * 3;
+				if (!height && $(this).width() !== 0) {
+					return $(this).width() / 4 * 3;
+				}
 			});
 		}
 
@@ -64,6 +71,9 @@
 		$iframe.ready(resizeBilibili);
 		$(window).resize(resizeBilibili);
 		$('.mw-collapsible-toggle').click(resizeBilibili);
+		$('.content-size-toggle, .right-rail-toggle, .wds-tabs__tab-label a').click(function() {
+			setTimeout(resizeBilibili, 300);
+		});
 
 		// Return element
 		$(ele).append($iframe);

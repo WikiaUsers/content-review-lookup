@@ -2,9 +2,11 @@
 //а також виводить час до завершення
 
 $(function() {
+	const PAGE = mw.config.get("wgPageName");
 	const IMG_URL = 'https://static.wikia.nocookie.net/warframe/images/';
 	const IMG_PREFIX = '/revision/latest?path-prefix=uk';
 	const WIKI_URL = 'https://warframe.fandom.com/uk/wiki/';
+	const WHITELIST_PAGES = [ "Контракти", "Контракт" ];
 	const ICONS = {
 		'reputation': 'b/b1/Репутація_іконка_uk.png',
 		'motherToken': '3/3d/Медальйон_Матері_uk.png',
@@ -34,6 +36,7 @@ $(function() {
 		['У', 'ускладнений'],
 		['ШС', '«Шлях сталі»']
 	];
+	if (WHITELIST_PAGES.includes(PAGE)) {
 	$.get('https://api.tenno.tools/worldstate/pc', function (data) {
 		$.each(data.bounties.data, function(_, syndicateData) {
 			if (BOUNTY_IDS[syndicateData.syndicate] && data.bounties.time >= syndicateData.start) {
@@ -101,6 +104,7 @@ $(function() {
 		});
 	});
 	setInterval(countdown, 1000);
+	}
 
 	function countdown() {
 		var now = new Date().getTime();

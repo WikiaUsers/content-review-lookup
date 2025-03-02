@@ -1,1 +1,0 @@
-console.log('js subpage test : 8');

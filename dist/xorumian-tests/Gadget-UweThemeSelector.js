@@ -5,52 +5,25 @@
 	window.hsbwiki.themeSelectorLoaded = true;
 	
 	var SELECTED_CACHE_KEY = 'hsw-themeselector-selected';
-	var stylesheetPrefix = "https://hypixel-skyblock.fandom.com/index.php?action=raw&ctype=text/css&title=";
+	var stylesheetPrefix = "https://xorumian-tests.fandom.com/index.php?action=raw&ctype=text/css&title=";
 	var themes = [
 		{
 			id: 'default',
-			name: 'Default',
+			name: 'Standard',
 			note: 'Light & Dark',
+			image: "https://static.wikia.nocookie.net/xorumian-things/images/5/5c/BackgroundLight.png/revision/latest/scale-to-width-down/480?cb=20240902162337&path-prefix=de"
 		},
 		{
-			id: 'crimson-isle',
-			name: "The Crimson Isle",
-			note: 'Light & Dark',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ThemeSelector.js/TheCrimsonIsle.css",
-			image: "https://static.wikia.nocookie.net/hypixel-skyblock/images/5/59/Sitebanner-02-0.png/revision/latest?cb=20221226174049"
-		},
-		{
-			id: 'village',
-			name: 'Village',
-			note: 'Light & Dark',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ThemeSelector.js/Village.css",
-			image: "https://static.wikia.nocookie.net/hypixel-skyblock/images/a/a4/Sitebanner-01-0.png/revision/latest?cb=20221226172132&format=orginal"
-		},
-		{
-			id: 'winter',
-			name: "Winter",
-			note: 'Light & Dark',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/Winter.css",
-			image: "https://static.wikia.nocookie.net/hypixel-skyblock/images/1/1e/Sitebanner-03-0.png/revision/latest?cb=20221226173630"
-		},
-		{
-			id: 'garden',
-			name: "Garden",
-			note: 'Light & Dark',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ThemeSelector.js/Garden.css",
-			image: "https://static.wikia.nocookie.net/hypixel-skyblock/images/7/7f/Sitebanner-04-0.jpg/revision/latest?cb=20230422175519"
-		},
-		{
-			id: 'easter',
-			name: "Easter",
-			note: 'Light mode banner image only',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ThemeSelector.js/Easter.css",
-			image: "https://static.wikia.nocookie.net/hypixel-skyblock/images/b/be/Sitebanner-05-0.png/revision/latest?cb=20230429194454"
+			id: 'developer',
+			name: "Developer mode",
+			note: 'Expand to chage color',
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/Developer.css",
+			image: "https://static.wikia.nocookie.net/xorumian-things-pt/images/b/b1/BackgroundDeveloper.png/revision/latest/scale-to-width-down/480?cb=20250227200059"
 		},
 	];
 	
 	// <a href="https://www.flaticon.com/free-icons/color-palette" title="color palette icons">Color palette icons created by Pixel perfect - Flaticon</a>
-	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" width="682.7" height="682.7" version="1.0" viewBox="0 0 512 512"><path d="M203 15.2c-2.8.7-21.4 18.8-89.6 87.1l-86.2 86.2-4.1 8.5a61.4 61.4 0 0 0 0 57c4.1 8.5 4.4 8.8 67.8 72.3 67.1 67.3 70.7 70.6 84.4 75.6 6.4 2.3 8.7 2.6 20.2 2.6 10.2 0 14.2-.4 18.5-1.9a66.8 66.8 0 0 0 21.5-11.7c3.3-2.6 42.5-41.4 87.2-86.1 56.8-56.8 81.7-82.4 82.8-85a25.4 25.4 0 0 0-.5-18.2c-1.3-2.8-31.4-33.5-92.7-94.8C233.9 28.5 221 16 217.5 15.1a26.5 26.5 0 0 0-14.5.1zm80.8 123.1c57 57 72 72.5 71 73.5-.9.9-33.2 1.2-146 1.2-79.6 0-144.8-.3-144.8-.7C64 211.1 209.4 66 210.5 66c.6 0 33.5 32.5 73.3 72.3zM412.1 257c-5.5 1.3-8.2 4.1-16.3 17.1-15.6 24.8-28.1 50.6-31.4 64.4a53.3 53.3 0 0 0 15 51.1A48.7 48.7 0 0 0 416 405c14.6 0 25.9-4.8 36.6-15.4 16.2-16.1 20.3-36.2 12.3-59.6a356.9 356.9 0 0 0-34.1-64.5c-4.9-7.3-11.2-10.1-18.7-8.5zM53.9 429.3a27.3 27.3 0 0 0-7.4 6.6c-2.7 3.9-3 5-3 12 0 6.8.3 8.2 2.7 11.7 1.5 2.1 4.4 5 6.5 6.4l3.7 2.5h399.2l3.7-2.5c2.1-1.4 5-4.3 6.5-6.4 2.4-3.5 2.7-4.9 2.7-11.6 0-6.7-.3-8.1-2.7-11.6-1.5-2.1-4.4-5-6.5-6.4l-3.7-2.5-198.6-.3-198.7-.2-4.4 2.3z"/></svg>';
+	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" width="682.7" height="682.7" version="1.0" viewBox="0 0 512 512"><svg viewBox="2.5 2.5 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M15.25,2 C15.6296958,2 15.943491,2.28215388 15.9931534,2.64822944 L16,2.75 L16.0005323,5.07512168 C17.4696877,5.37356725 18.6268557,6.53092479 18.9250232,8.00018117 L21.25,8 C21.6642136,8 22,8.33578644 22,8.75 C22,9.12969577 21.7178461,9.44349096 21.3517706,9.49315338 L21.25,9.5 L19,9.5 L19,11.25 L21.25,11.25 C21.6296958,11.25 21.943491,11.5321539 21.9931534,11.8982294 L22,12 C22,12.3796958 21.7178461,12.693491 21.3517706,12.7431534 L21.25,12.75 L19,12.75 L19,14.5 L21.25,14.5 C21.6296958,14.5 21.943491,14.7821539 21.9931534,15.1482294 L22,15.25 C22,15.6296958 21.7178461,15.943491 21.3517706,15.9931534 L21.25,16 L18.924821,16.0008144 C18.6263329,17.469598 17.4693558,18.6265002 16.0005323,18.9248783 L16,21.25 C16,21.6642136 15.6642136,22 15.25,22 C14.8703042,22 14.556509,21.7178461 14.5068466,21.3517706 L14.5,21.25 L14.5,18.999 L12.749,18.999 L12.75,21.25 C12.75,21.6296958 12.4678461,21.943491 12.1017706,21.9931534 L12,22 C11.6203042,22 11.306509,21.7178461 11.2568466,21.3517706 L11.25,21.25 L11.249,18.999 L9.5,18.999 L9.5,21.25 C9.5,21.6296958 9.21784612,21.943491 8.85177056,21.9931534 L8.75,22 C8.37030423,22 8.05650904,21.7178461 8.00684662,21.3517706 L8,21.25 L8.00046294,18.9250804 C6.53088189,18.6269649 5.37328561,17.4694809 5.07500541,15.9999597 L2.75,16 C2.33578644,16 2,15.6642136 2,15.25 C2,14.8703042 2.28215388,14.556509 2.64822944,14.5068466 L2.75,14.5 L5,14.499 L5,12.749 L2.75,12.75 C2.37030423,12.75 2.05650904,12.4678461 2.00684662,12.1017706 L2,12 C2,11.6203042 2.28215388,11.306509 2.64822944,11.2568466 L2.75,11.25 L5,11.249 L5,9.499 L2.75,9.5 C2.37030423,9.5 2.05650904,9.21784612 2.00684662,8.85177056 L2,8.75 C2,8.37030423 2.28215388,8.05650904 2.64822944,8.00684662 L2.75,8 L5.07520767,7.9990445 C5.3738086,6.52999618 6.53121385,5.37296774 8.00046294,5.07491964 L8,2.75 C8,2.33578644 8.33578644,2 8.75,2 C9.12969577,2 9.44349096,2.28215388 9.49315338,2.64822944 L9.5,2.75 L9.5,4.999 L11.249,4.999 L11.25,2.75 C11.25,2.37030423 11.5321539,2.05650904 11.8982294,2.00684662 L12,2 C12.3796958,2 12.693491,2.28215388 12.7431534,2.64822944 L12.75,2.75 L12.749,4.999 L14.5,4.999 L14.5,2.75 C14.5,2.40482203 14.733185,2.11410734 15.0506203,2.02679072 L15.1482294,2.00684662 L15.25,2 Z M15.25,6.5 L8.75,6.5 C7.50735931,6.5 6.5,7.50735931 6.5,8.75 L6.5,15.25 C6.5,16.4926407 7.50735931,17.5 8.75,17.5 L15.25,17.5 C16.4926407,17.5 17.5,16.4926407 17.5,15.25 L17.5,8.75 C17.5,7.50735931 16.4926407,6.5 15.25,6.5 Z M12.0049285,9.0049285 C13.6617828,9.0049285 15.0049285,10.3480743 15.0049285,12.0049285 C15.0049285,13.6617828 13.6617828,15.0049285 12.0049285,15.0049285 C10.3480743,15.0049285 9.0049285,13.6617828 9.0049285,12.0049285 C9.0049285,10.3480743 10.3480743,9.0049285 12.0049285,9.0049285 Z M12.0049285,10.5049285 C11.1765014,10.5049285 10.5049285,11.1765014 10.5049285,12.0049285 C10.5049285,12.8333556 11.1765014,13.5049285 12.0049285,13.5049285 C12.8333556,13.5049285 13.5049285,12.8333556 13.5049285,12.0049285 C13.5049285,11.1765014 12.8333556,10.5049285 12.0049285,10.5049285 Z"></path></svg></svg>';
 	
 	var CONTENT_ID = 'hsw-themeselector-dropdown';
 	
@@ -65,7 +38,7 @@
 	function initDropdownHtml() {
 		$('.'+CONTENT_ID).remove();
 		var $dropdown = $("<div>").addClass("wds-button wds-is-secondary wds-dropdown "+CONTENT_ID);
-		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Wiki Theme Selector").html(TOOLBAR_ICON).appendTo($dropdown);
+		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Wiki Mode Selector").html(TOOLBAR_ICON).appendTo($dropdown);
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
 		
 		// Insert dropdown to nav
@@ -95,7 +68,7 @@
 		
 		$content.html("");
 		// Add header
-		$('<div class="hsw-theme-header"><strong>Wiki Theme Selector</strong></div>').appendTo($content);
+		$('<div class="hsw-theme-header"><strong>Wiki Mode Selector</strong></div>').appendTo($content);
 		
 		// Add list
 		var $list = $("<ul>").addClass("hsw-theme-list").appendTo($content);

@@ -76,7 +76,7 @@ $(document).ready(function() {
 		'<div class="preview-title">Preview image:</div>' +
 		'<img id="image-preview" src="" alt="Preview">' +
 		'</div>' +
-		'<input type="text" class="mutation-input" id="mutation-names" placeholder="Enter mutations (comma-separated)" required>' +
+		'<input type="text" class="mutation-input" id="mutation-names" placeholder="> Enter only mutations (comma-separated)" required>' +
 		'<button type="submit" class="mutation-submit">Upload</button>' +
 		'</form>' +
 		'<div id="upload-status"></div>' +
@@ -278,7 +278,7 @@ $(document).ready(function() {
         var fileExtension = file.name.split('.').pop().toLowerCase();
         
         // Validate file extension
-        var allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        var allowedExtensions = ['png', 'gif', 'jpg', 'jpeg'];
         if (!allowedExtensions.includes(fileExtension)) {
             $('#upload-status').html('Error: Invalid file type. Allowed types: ' + allowedExtensions.join(', ')).show();
             return;
@@ -334,6 +334,10 @@ $(document).ready(function() {
             formData.append('token', mw.user.tokens.get('csrfToken'));
             formData.append('filename', newFileName);
             formData.append('file', file);
+            
+            if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
+                formData.append('filetype', 'image/jpeg');
+            }
     
             $.ajax({
                 url: mw.util.wikiScript('api'),
@@ -401,7 +405,19 @@ $(document).ready(function() {
                     } else {
                         isUploading = false;
                         processQueue();
-                        $('#upload-status').html('Error uploading file: Upload failed').show();
+                        // Более подробное сообщение об ошибке
+                        var errorMsg = 'Error uploading file: ';
+                        if (response.error) {
+                            errorMsg += response.error.code + ' - ' + response.error.info;
+                        } else if (response.upload && response.upload.result) {
+                            errorMsg += response.upload.result;
+                        } else if (response.upload && response.upload.warnings) {
+                            errorMsg += JSON.stringify(response.upload.warnings);
+                        } else {
+                            errorMsg += 'Unknown error';
+                        }
+                        console.log('Full response:', response); // Для отладки
+                        $('#upload-status').html(errorMsg).show();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -517,7 +533,7 @@ $(document).ready(function() {
 			}
 
 			// Создаем новый файл с измененным именем
-			var extension = file.name.split('.').pop();
+			var extension = file.name.split('.').pop().toLowerCase();
 			var newFileName = $('#mutation-filename').val() + '.' + extension;
 
 			// Создаем новый File объект с новым именем

@@ -46,13 +46,13 @@ Date.prototype.toDateInputValue = (function() {
         return false;
     } 
     window.SkySeasonalCandleCalculator = {
-    	version: '0.1.7',
+    	version: '0.1.7', // Might need updating, above as well
     	// TRANSLATION SECTION 0
-    	language: 'pt', // Use the correct subtag from https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags
+    	language: 'de', // Use the correct subtag from https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags
         init: importArticles({
 				type: 'script',
 				articles: [
-					'u:dev:MediaWiki:Moment.js',
+					'MediaWiki:Moment.js',
 					'MediaWiki:Moment-Timezone.js'
 				]
 			}).then(function () {
@@ -85,32 +85,32 @@ Date.prototype.toDateInputValue = (function() {
                 }
 
                 // TRANSLATION SECTION 1
-                var translation_the_season = "A"; // Referring to "Season"
-                var translation_lasts = "dura";
-                var translation_days_long = "dias";
-                var translation_from = "de";
-                var translation_to = "a";
-                var translation_the_dsce = "O"; // Referring to "Double Seasonal Candle Event"
-                var translation_a_second = "Um segundo"; // Referring to "Double Seasonal Candle Event"
-                var translation_a = "Um"; // Referring to "Double Seasonal Candle Event"
-                var translation_double_sce = "Evento de Velas Sazonais em Dobro";
-                var translation_not_announced = "não foi anunciado";
-                var translation_to_buy_everything_youll_need = "Para comprar todos os cosméticos da Temporada, você precisará de";
-                var translation_sc_wo_pass = "Velas Sazonais SEM o Passe da Temporada";
-                var translation_sc_w_pass = "Velas Sazonais COM o Passe da Temporada";
-                var translation_takes_approximately = "Demora aproximadamente";
-                var translation_standard_days = "dias padrão"; // This means 5 SC per day
-                var translation_note = "Observação: Tenha em mente que você nunca deve se sentir pressionado(a) a comprar o Passe da Temporada.";
-                var translation_choose_date = "Selecionar data";
-                var translation_today = "Hoje";
-                var translation_season_start = "Início da Temporada";
-                var translation_choose_time = "Selecionar horário";
-                var translation_now = "Agora";
-                var translation_reset = "Redefinição";
-                var translation_your_current_sc = "Número de Velas Sazonais que você tem atualmente";
-                var translation_do_you_have_a_pass = "Você tem o Passe da Temporada?";
-                var translation_calculate = "Calcular";
-                var translation_clear = "Limpar";
+                var translation_the_season = "Die"; // Referring to "Season"
+                var translation_lasts = "dauert noch";
+                var translation_days_long = "Tage";
+                var translation_from = "von";
+                var translation_to = "bis";
+                var translation_the_dsce = "Das"; // Referring to "Double Seasonal Candle Event"
+                var translation_a_second = "Ein zweites"; // Referring to "Double Seasonal Candle Event"
+                var translation_a = "Ein"; // Referring to "Double Seasonal Candle Event"
+                var translation_double_sce = "Doppel-Saisonkerzen-Event";
+                var translation_not_announced = "wurde noch nicht angekündigt";
+                var translation_to_buy_everything_youll_need = "Um alle Items der Saison zu kaufen, brauchst du";
+                var translation_sc_wo_pass = "Saisonkerzen OHNE den Saisonpass";
+                var translation_sc_w_pass = "Saisonkerzen MIT dem Saisonpass";
+                var translation_takes_approximately = "Dauert standardmäßig etwa";
+                var translation_standard_days = "Tage"; // This means 5 SC per day
+                var translation_note = "Achtung: Du solltest dich niemals dazu gedrängt fühlen, einen Saisonpass kaufen zu müssen.";
+                var translation_choose_date = "Wähle ein Datum";
+                var translation_today = "Heute";
+                var translation_season_start = "Saisonbeginn";
+                var translation_choose_time = "Wähle eine Zeit";
+                var translation_now = "Jetzt";
+                var translation_reset = "Zurücksetzen";
+                var translation_your_current_sc = "Anzahl Saisonkerzen, die du aktuell besitzt";
+                var translation_do_you_have_a_pass = "Hast du einen Saisonpass?";
+                var translation_calculate = "Berechnen";
+                var translation_clear = "Alles löschen";
 
                 // Sets up the HTML initially
                 document.getElementById('sky-seasonal-candle-calculator-output').innerHTML = /*

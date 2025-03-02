@@ -1,4 +1,5 @@
-var storage = window.localStorage;
+//начало
+let storage = window.localStorage;
 
 //svg картинки
 var gearSvg, sunSvg, snowSvg, cloudSvg, moonSvg, closeSvg;
@@ -24,42 +25,10 @@ if (true){
 	closeSvg = '<svg class="wds-icon wds-icon-tiny"><use href="#wds-icons-close-tiny"></use></svg>';
 }
 
-//date
-var now = new Date();
-var month = now.getMonth();
-var date = now.getDate();
-
-//данные из localstorage
-var storageSett = {};
-
-storageSett.usrLevel = storage.getItem('haydayLevel');
-//снег
-storageSett.snowDisabled = storage.getItem('noSnow');
-storageSett.snowDensity = +storage.getItem('snowDensity')||20;
-storageSett.snowSpeedMax = +storage.getItem('snowSpeedMax')||150; //скорость снежинок измеряется в пикселях в секунду
-storageSett.snowSpeedMin = +storage.getItem('snowSpeedMin')||50;
-storageSett.snowRSpeedMax = +storage.getItem('snowRotateSpeedMax')||250; //максимальная скорость вращения, градусов в секунду
-storageSett.snowFlow1Min = +storage.getItem('snowKachKach1Min')||70;
-storageSett.snowFlow2Min = +storage.getItem('snowKachKach2Min')||30;
-storageSett.snowFlow1Max = +storage.getItem('snowKachKach1Max')||70;
-storageSett.snowFlow2Max = +storage.getItem('snowKachKach2Max')||30;
-//отношение круглого снега к снежинкам, по умолчанию 1:1
-storageSett.snowRateType1 = +storage.getItem('snowRateType1')||1; // частей круглых хлопьев
-storageSett.snowRateType2 = +storage.getItem('snowRateType2')||1; // частей снежинок
-storageSett.snowSizeMin = +storage.getItem('snowSizeMin')||10; //размер в пикселях (ширина и высота), фактический размер круглых хлопьев на 40% меньше, у снежинок такой же;
-storageSett.snowSizeMax =+storage.getItem('snowSizeMax')||20;
-storageSett.snowFps = +storage.getItem('snowFrames')||25; //частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
-
-//облака
-storageSett.cloudDisabled = storage.getItem('noClouds');
-storageSett.cloudDensity = storage.getItem('cloudDensity')||20; // у облаков частота появления от ширины экрана не зависит
-storageSett.cloudSpeedMax = +storage.getItem('cloudSpeedMax')||150; //скорость измеряется в пикселях в секунду
-storageSett.cloudSpeedMin = +storage.getItem('cloudSpeedMin')||50;
-storageSett.cloudSizeMin = +storage.getItem('cloudSizeMin')||150; //ширина в пикселях
-storageSett.cloudSizeMax =+storage.getItem('cloudSizeMax')||400;
-storageSett.cloudPositionMin = +storage.getItem('cloudSizeMax')||10; //свид в пикселях относительно верха экрана, минимальный и максимальный
-storageSett.cloudPositionMax = +storage.getItem('cloudSizeMax')||70;
-storageSett.cloudFps = +storage.getItem('snowFrames')||25; //частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+//nтекущее время
+let now = new Date();
+let month = now.getMonth();
+let date = now.getDate();
 
 
 
@@ -69,99 +38,8 @@ console.log(document.body);
 var intervaleditCount = setInterval(editcountcalc, 500);
 
 function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
-//меню настроек (снег, облака, уровень)
-var side = document.querySelector('.page-side-tools');
-if (true) {
-	var settBtn = document.createElement('button');
-	settBtn.className = 'page-side-tool';
-	settBtn.innerHTML = gearSvg;
-	settBtn.title = 'Настройки';
-	var settOpen = false;
-	
-	var settProps = Object.assign({}, storageSett);
-	console.log(settProps);
-	var settDiv = document.createElement('div');
-	settDiv.id = 'hayday-settings-box';
-	settDiv.style.display = 'none';
-	var settHtml = '<button id="close-sett">'+closeSvg+'</button><div id="hayday-settings-level">Введите ваш уровень: <input data-param="" value="'+(settProps.usrLevel||'')+'" max="1000" type="number"/></div>'+
-	'<div id="hayday-settings-snow">Настройки снега в светлой теме'+
-	'<div>Снег включен: <input type="checkbox" id="snow-enabled"/></div>'+
-	'<div class="simple">Интенсивность снега: <small>Меньше снега</small><input type="range" min="1" max="50" step="1" id="snow-range"/><small>Больше снега</small><br/><button id="setmode"></button><div></div></div>'+
-	'<div class="advanced">Интенсивность: <input type="number" min="1"/><br/>'+
-	'Скорость падения (пкс/сек): от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
-	'Максимальная скорость вращения (град./сек): <input type="number" min="1" data-param=""/><br/>'+
-	'Раскачивание снежинок:<br/>'+
-	'расстояние между витками (по вертикали): от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
-	'интенсивность раскачки (по горизонтали): от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
-	'Размер: от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
-	'Отношение: <small>хлопья</small> <input type="number" min="1" data-param=""/> : <input type="number" min="1" data-param=""/> <small>снежинки</small><br/>'+
-	'</div></div>'+
-	'<div id="hayday-settings-cloud">Настройки облаков в тёмной теме</div>'+
-	'<div id="hayday-settings-end"><a data-mode="simple" href="javascript:void(0);" id="setmode">Расширенный режим</a><button id="submit">Сохранить</button><button id="clear">Сбросить</button></div>';
-	console.log(settHtml);
-	settDiv.innerHTML = settHtml;
-	
-	var settLvlBox = settDiv.querySelector('#hayday-settings-level');
-	var settSnowBox = settDiv.querySelector('#hayday-settings-snow');
-	var settCloudBox = settDiv.querySelector('#hayday-settings-cloud');
-	var settEndBox = settDiv.querySelector('#hayday-settings-end');
-	if (!((month == 11||month==0||month==1)||(month==3&&date==1))){settSnowBox.style.display = 'none';}
-	
-	var settSimple = settDiv.querySelectorAll('.simple');
-	var settAdv = settDiv.querySelectorAll('.advanced');
-	settAdv.forEach(function(e){
-		e.style.display = 'none';
-	});
-	
-	var settSimpleMode = true;
-	var settModeChanger = settDiv.querySelector('a#setmode');
-	settModeChanger.addEventListener('click',function(event){
-		settSimpleMode = !settSimpleMode;
-		if (settSimpleMode){//включить простой
-			settSimple.forEach(function(e){e.style.display = 'block';});
-			settAdv.forEach(function(e){e.style.display = 'none';});
-		} else {
-			settSimple.forEach(function(e){e.style.display = 'none';});
-			settAdv.forEach(function(e){e.style.display = 'block';});
-		}
-	});
-	
-	var settClose = settDiv.querySelector('#close-sett');
-	settClose.addEventListener('click',function(ev){
-		ev.preventDefault();
-		settDiv.style.display = 'none';
-		settOpen = false;
-	});
-	
-	
-	
-	settBtn.addEventListener('click',function(event){
-		if (!settOpen) {
-			settOpen = true;
-			settDiv.style.display = 'block';
-		}
-	});
-	document.body.append(settDiv);
-	side.append(settBtn);
-}
 
-
-//отображение данных в зависимости от уровня
-
-var lvlSpans = document.querySelectorAll('span.hayday-level-text');
-if(lvlSpans.length){
-	lvlSpans.forEach(function(span){
-		var nullText = span.dataset.text || 'зависит от вашего уровня ';
-		var lvlText = span.dataset.lvlText || 'на вашем уровне ';
-		if (usrLevel){
-			span.innerHTML = lvlText+'('+usrLevel+')';
-		} else {
-			span.innerHTML = nullText+'(<img src="" style="height: 30px; width: auto;" alt="уровень неизвестен" title="вы не указали совй уровень"/>)';
-		}
-	});
-}
-
-//видео из вконтакте
+//vk video
 var vkVideos = document.querySelectorAll('.vk-video');
 if(vkVideos.length){
 	vkVideos.forEach(function(vid){
@@ -175,31 +53,19 @@ if(vkVideos.length){
 
 //снег в светлой теме
 if (document.body.className.includes('theme-fandomdesktop-light')) {
+
 	if ((month == 11||month==0||month==1)||(month==3&&date==1)){
-		//чтобы интенсивность снега была одинакова на экранах любой ширины задержка между появлением зависит от неё. Интенсивность снега это коэффициент, на который умножается ширина экрана для получения нужной задержки. Формула для получения частоты появления снежинок: 16 000 000/(ш*к)
-		var snowDisabled = storageSett.snowDisabled;
-		var density = storageSett.snowDensity;
-		var speedMax = storageSett.snowSpeedMax; //скорость снежинок измеряется в пикселях в секунду
-		var speedMin = storageSett.snowSpeedMin;
-		var rSpeedMax = storageSett.snowRSpeedMax; //максимальная скорость вращения, градусов в секунду
-		var flow1Min = storageSett.snowFlow1Min;
-		var flow2Min = storageSett.snowFlow2Min;
-		var flow1Max = storageSett.snowFlow1Max;
-		var flow2Max = storageSett.snowFlow2Max;
-		//отношение круглого снега к снежинкам, по умолчанию 1:1
-		var rateType1 = storageSett.snowRateType1; // частей круглых хлопьев
-		var rateType2 = storageSett.snowRateType2; // частей снежинок
-		var sizeMin = storageSett.snowSizeMin;//размер в пикселях (ширина и высота), фактический размер круглых хлопьев на 40% меньше, у снежинок такой же;
-		var sizeMax = storageSett.snowSizeMax;
-		var fps = storageSett.snowFps;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+		var snowDisabled = storage.getItem('noSnow');
+		
+
 		
 		var summonID;
 		var allClouds = [];
 		function moveClouds() {
-			//allClouds.forEach(function(cloud, i)
-			//for в теории должен быть быстрее, чем forEach
-			for (var i = 0; i < allClouds.length;i++){
-				var cloud = allClouds[i];
+			//allClouds.forEach(function(cloud, i){
+			//for должен быть быстрее forEach
+			for(let i = 0; i < allClouds.length; i++){
+				let cloud = allClouds[i];
 				if (cloud.offsetTop > window.innerHeight){
 					allClouds.splice(i, 1);
 					cloud.remove();
@@ -207,18 +73,17 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 					cloud.style.top = (cloud.offsetTop+cloud.speed) + 'px';
 					cloud.degree += cloud.rSpeed;
 					cloud.style.transform ='rotate('+cloud.degree+'deg)';
-					cloud.style.left = (cloud.left+Math.sin((cloud.offsetTop+cloud.sdvig)/cloud.kach1)*cloud.kach2)+'px';
+					cloud.style.left = (cloud.left+Math.sin(cloud.offsetTop/70)*30)+'px';
 				}
 			}
 		}
 		function summonCloud(){
 			var cloud = document.createElement('div');
-			var size = randint(sizeMin, sizeMax+1);
+			var size = randint(10, 21);
 			//var color = Math.random()*0.3+0.5;
-			cloud.speed = randint(speedMin,speedMax+1)/fps;
-			cloud.rSpeed = randint(-rSpeedMax,rSpeedMax+1)/fps;
+			cloud.speed = randint(2,7);
+			cloud.rSpeed = randint(-10,10);
 			cloud.degree = 0;
-			cloud.sdvig = randint(1,1000);
 			var bottom = randint(0, window.innerWidth);
 			cloud.left = bottom;
 			cloud.className = 'snow';
@@ -226,41 +91,38 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			cloud.style.left = bottom + 'px';
 			cloud.style.width = size+'px';
 			cloud.style.height = size+'px';
-			cloud.kach1 = randint(flow1Min,flow1Max+1);
-			cloud.kach2 = randint(flow2Min,flow2Max+1);
 			
-			if (randint(0, rateType1+rateType2)>=rateType1){
-				cloud.innerHTML = '<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
-				'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
-				'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
-				'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path></g></svg>';
-			} else {
-				cloud.innerHTML = '<div style="width:60%;height:60%;border-radius:50%;background-color: white;"></div>';
-			}
+			cloud.innerHTML = randint(0,2)?'<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
+			'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
+			'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
+			'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path></g></svg>':
+			'<div style="width:60%;height:60%;border-radius:50%;background-color: white;"></div>';
 			document.body.append(cloud);
 			allClouds.push(cloud);
 			//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
-			
+			summonID = setTimeout(summonCloud, randint(200, 601));
 		}
 		
+		var side = document.querySelector('.page-side-tools');
 		var button = document.createElement('button');
 		button.className = 'page-side-tool';
-		console.log('Snow spawn delay '+Math.ceil(16000000/(window.innerWidth*density)));
 		if (snowDisabled !== 'true'){
-			summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
+			summonID = setTimeout(summonCloud, 1000);
 			button.title = 'Ясная погода';
 			button.innerHTML = sunSvg;
+			
 		} else {
 			button.title = 'Устроить снегопад';
 			button.innerHTML = snowSvg;
+			
 		}
 		
 		
-		var moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
+		setInterval(moveClouds, 40);
 		document.addEventListener('keydown', function(event) {
 			if (event.code == 'KeyC' && event.altKey && !event.repeat) {
 				if (snowDisabled == 'true'){
-					summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
+					summonID = setTimeout(summonCloud, 1000);
 					storage.setItem('noSnow', 'false');
 					snowDisabled = 'false';
 					button.title = 'Ясная погода';button.innerHTML = sunSvg;
@@ -277,10 +139,10 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		});
 		button.addEventListener('click', function(){
 			if (snowDisabled == 'true'){
-				summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
+				summonID = setTimeout(summonCloud, 1000);
 				storage.setItem('noSnow', 'false');
 				snowDisabled = 'false';
-				button.title = 'Ясная погода';button.innerHTML = sunSvg;
+				 button.title = 'Ясная погода';button.innerHTML = sunSvg;
 			} else {
 				clearInterval(summonID);
 				storage.setItem('noSnow', 'true');
@@ -291,41 +153,20 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 				});
 			}
 		});
-		document.addEventListener("visibilitychange", function(){
-			if (document.hidden){
-				console.log('Вкладка не активна');
-				clearInterval(moveInterval);
-				clearInterval(summonID);
-			} else {
-				console.log('Вкладка активна');
-				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
-				if (snowDisabled !== 'true'){
-					summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
-				}
-			}
-		});
 		side.append(button);
 	}
 }
 
 //облака в тёмной теме
 if (document.body.className.includes('theme-fandomdesktop-dark')) {
-	var density = storageSett.cloudDensity; // у облаков частота появления от ширины экрана не зависит
-	var speedMax = storageSett.cloudSpeedMax; //скорость измеряется в пикселях в секунду
-	var speedMin = storageSett.cloudSpeedMin;
-	var sizeMin = storageSett.cloudSizeMin;//ширина в пикселях
-	var sizeMax =storageSett.cloudSizeMax;
-	var positionMin = storageSett.cloudPositionMin; //свид в пикселях относительно верха экрана, минимальный и максимальный
-	var positionMax = storageSett.cloudPositionMax;
-	var fps = storageSett.cloudFps;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
-	var cloudDisabled = storageSett.cloudDisabled;
-	var summonID;
+	var cloudDisabled = storage.getItem('noClouds');
+	let summonID;
 	
 	var allClouds = [];
 	function moveClouds() {
 		//allClouds.forEach(function(cloud, i){
 		for (var i=0; i<allClouds.length;i++){
-			var cloud = allClouds[i];
+			let cloud = allClouds[i];
 			if (cloud.offsetLeft > document.documentElement.clientWidth){
 				allClouds.splice(i, 1);
 				cloud.remove();
@@ -336,10 +177,10 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 	}
 	function summonCloud(){
 		var cloud = document.createElement('div');
-		var size = randint(sizeMin, sizeMax+1);
+		var size = randint(150, 401);
 		var color = Math.random()*0.3+0.5;
-		cloud.speed = randint(speedMin,speedMax+1)/fps;
-		var bottom = randint(positionMin, positionMax+1);
+		cloud.speed = randint(2,7);
+		var bottom = randint(10, 71);
 		cloud.className = 'dark-cloud';
 		cloud.style.left = -size + 'px';
 		cloud.style.top = bottom + 'px';
@@ -350,7 +191,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 		document.body.prepend(cloud);
 		allClouds.push(cloud);
 		//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
-		summonID = setTimeout(summonCloud, randint(100, 301)*density);
+		summonID = setTimeout(summonCloud, randint(2000, 6001));
 	}
 	
 	var side = document.querySelector('.page-side-tools');
@@ -358,7 +199,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 	button.className = 'page-side-tool';
 	if (cloudDisabled !== 'true'){summonID = setTimeout(summonCloud, 1000); button.title = 'Ясная погода';button.innerHTML = moonSvg;} else { button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;}
 	
-	var moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
+	setInterval(moveClouds, 40);
 	document.addEventListener('keydown', function(event) {
 		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
 			if (cloudDisabled == 'true'){
@@ -383,7 +224,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 			summonID = setTimeout(summonCloud, 1000);
 			storage.setItem('noClouds', 'false');
 			cloudDisabled = 'false';
-			 button.title = 'Ясная погода';button.innerHTML = moonSvg;
+			button.title = 'Ясная погода';button.innerHTML = moonSvg;
 		} else {
 			clearInterval(summonID);
 			storage.setItem('noClouds', 'true');
@@ -394,26 +235,12 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 			});
 		}
 	});
-	
-	document.addEventListener("visibilitychange", function(){
-		if (document.hidden){
-			console.log('Вкладка не активна');
-			clearInterval(moveInterval);
-			clearInterval(summonID);
-		} else {
-			console.log('Вкладка активна');
-			moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
-			if (cloudDisabled !== 'true'){
-				summonID = setTimeout(summonCloud, 1000);
-			}
-		}
-	});
 	side.append(button);
 }
 
 // добавление кнопок
 //события с заданиями
-if (document.body.className.includes('page-События_с_заданиями')) {
+if (document.body.className.includes('page-События_с_заданиями_Список_заданий')) {
 	var taskTable = document.querySelector("#hidelevels");
 	var btnCon = document.createElement("span");
 	btnCon.style = "float: right;";
@@ -1677,7 +1504,7 @@ if (facts.length>0) {
 	var factError = document.querySelector(".mainpage-fact-error");
 	factError.style.display = "none";
 	var randIndx=randint(0,facts.length);
-	console.log("Факт номер "+randIndx);
+	console.log('Факт номер '+randIndx);
 	facts[randIndx].style.display="block";
 	setTimeout(updateFact, 15000, facts, randIndx);
 	
@@ -1691,9 +1518,9 @@ if (facts.length>0) {
 		facts[oldIndx].style.left="300px";
 		facts[oldIndx].style.zIndex="100";
 		randIndx = randint(0,facts.length);
-		console.log("Факт номер "+randIndx+1);
+		console.log('Факт номер'+randIndx);
 		while (randIndx === oldIndx) {
-			randIndx = Math.floor(Math.random()*facts.length);
+			randIndx = randint(0,facts.length);
 			console.log(randIndx);
 		}
 		facts[randIndx].style.display="block";
@@ -1769,7 +1596,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 
 //добавление кнопки перемотки к окну редактирования
 if (new URL(window.location.href).searchParams.get('action')==='edit'){
-	side.insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
+	document.querySelector('.page-side-tools').insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
 }
 
 //код за этими фигурными скобками не должен вызывать элементы страницы, так как может не сработать

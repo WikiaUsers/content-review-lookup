@@ -23,20 +23,20 @@ $(function() {
             'bottom': '50px',
             'left': '70px',
             'width': '300px', // Adjust width if needed
-            'background-color': '#FFFFFF', // Background color
+            'background-color': '#060e1c', // Updated background color
             'border': '2px solid #571C8B', // Border color
             'padding': '10px',
             'z-index': '1000',
             'box-shadow': '0 4px 8px rgba(0,0,0,0.1)',
             'border-radius': '8px',
             'font-size': '14px', // Make text a little smaller
-            'color': '#000000' // Text color
+            'color': '#FFFFFF' // Updated text color to white
         }
     });
 
     // Add content to the side notice
-    sideNotice.append('<h2 style="font-size: 16px; margin: 0; color: #000000;">Wonderland Wiki</h2>'); // Title color
-    sideNotice.append('<p>Check out <a href="/wiki/Level_Up_The_Wiki" style="color: #0076E1; text-decoration: underline;">Level Up The Wiki</a> and dive into editing! For ideas on what to do, visit <a href="/wiki/Wonder_Activities" style="color: #0076E1; text-decoration: underline;">Wonder Activities</a>.</p>'); // Link color
+    sideNotice.append('<h2 style="font-size: 16px; margin: 0; color: #FFFFFF;">Wonderland Wiki</h2>'); // Updated title color to white
+    sideNotice.append('<p>Hi there, Visit <a href="/wiki/Wonder_Activities" style="color: #FFD700; text-decoration: underline;">Wonder Actives</a> to find out what to do on the wiki.</p>'); // Updated text color to white and link color to yellow
 
     // Add a close button
     var closeButton = $('<span>', {
@@ -48,7 +48,7 @@ $(function() {
             'cursor': 'pointer',
             'font-weight': 'bold',
             'font-size': '16px',
-            'color': '#000000' // Close button color
+            'color': '#FFFFFF' // Updated close button color to white
         }
     });
 
@@ -68,10 +68,10 @@ $(function() {
     // Add hover effect for the links
     $('#sideNotice a').hover(
         function() {
-            $(this).css('color', '#0056b3'); // Change to darker blue on hover
+            $(this).css('color', '#FFC107'); // Change to a lighter yellow on hover
         },
         function() {
-            $(this).css('color', '#0076E1'); // Change back to original color when not hovered
+            $(this).css('color', '#FFD700'); // Change back to original yellow when not hovered
         }
     );
 });

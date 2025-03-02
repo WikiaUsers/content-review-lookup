@@ -6,6 +6,7 @@
     var TranslateWidth = window.TranslateWidth || 0;
     var TimerPause = window.TimerPause || !1;
     var ele;
+    var isVertical = false;
     
     mw.hook('wikipage.content').add(function($content) {
         ele = {
@@ -21,42 +22,75 @@
       var Slides = 0;
       var HeightSize = 'auto';
       var Data = (ele.sliderData.attr('class') || '').split('|');
-      if (Data.length === 3) {
-        Slides = Data[0];
-        SlideInterval = Data[1];
+      if (Data.length >= 4) {
+        Slides = parseInt(Data[0], 10);
+        SlideInterval = parseInt(Data[1], 10);
+        HeightSize = Data[2];
+        isVertical = Data[3].toLowerCase() === 'down';
+      } else if (Data.length === 3) {
+        Slides = parseInt(Data[0], 10);
+        SlideInterval = parseInt(Data[1], 10);
         HeightSize = Data[2];
       }
       if (SlideInterval < 1000 || SlideInterval === undefined) {
         SlideInterval = 3000;
       }
       
+      SlideCount = Slides;
+      
       ele.sld.each(function (index) {
-        if (index + 1 > Slides) {
+        if (index + 1 > SlideCount) {
           $(this).remove();
         }
       });
       ele.navBtn.each(function (index) {
-        if (index + 1 > Slides) {
+        if (index + 1 > SlideCount) {
           $(this).remove();
         }
       });
       
-      // Setting the initial height and basic styles
-      SlideCount = ele.sliderWrapper.children().length;
-      ele.sliderWrapper.css('width', 100 * SlideCount + '%');
-      ele.sld.css('width', 100 / SlideCount + '%');
-      
-      // Function for setting the height of SliderView to the height of the current image
-      function setSliderHeight() {
-        var currentSlide = ele.sld.eq(SlideNow - 1);
-        var imgHeight = currentSlide.find('img').outerHeight(true); // Take margins and paddings into account 
-        ele.sliderView.css('height', imgHeight + 'px');
+      if (isVertical) {
+        ele.sliderWrapper.css({
+          'height': 100 * SlideCount + '%',
+          'width': '100%'
+        });
+        ele.sld.css({
+          'height': 100 / SlideCount + '%',
+          'width': '100%'
+        });
+        ele.navBtns.css({
+          'position': 'absolute',
+          'right': '10px',
+          'top': '50%',
+          'transform': 'translateY(-50%)',
+          'list-style': 'none',
+          'margin': '0',
+          'padding': '0',
+          'z-index': '10'
+        });
+        ele.navBtnsLi.css({
+          'margin': '5px 0'
+        });
+      } else {
+        ele.sliderWrapper.css('width', 100 * SlideCount + '%');
+        ele.sld.css('width', 100 / SlideCount + '%');
       }
       
-      // Setting the initial height
       if (HeightSize === 'auto') {
-        $(window).on('load', setSliderHeight);
-        setTimeout(setSliderHeight, 100); // Checking after loading the page
+        $(window).on('load', function() {
+          var currentSlide = ele.sld.eq(SlideNow - 1);
+          var imgHeight = currentSlide.find('img').outerHeight(true);
+          if (imgHeight > 0) {
+            ele.sliderView.css('height', imgHeight + 'px');
+          }
+        });
+        setTimeout(function() {
+          var currentSlide = ele.sld.eq(SlideNow - 1);
+          var imgHeight = currentSlide.find('img').outerHeight(true);
+          if (imgHeight > 0) {
+            ele.sliderView.css('height', imgHeight + 'px');
+          }
+        }, 100);
       } else {
         ele.sliderView.css('height', HeightSize);
       }
@@ -76,22 +110,33 @@
       });
       
       ele.navBtn.click(function () {
-        SelectSlide($(this));
         var navBtnId = $(this).index();
-        if (navBtnId + 1 !== SlideNow) {
-          TranslateWidth = - ele.sliderView.width() * (navBtnId);
+        SlideNow = navBtnId + 1;
+        if (isVertical) {
+          TranslateWidth = -ele.sliderView.height() * navBtnId;
+          ele.sliderWrapper.css({
+            'transform': 'translate(0, ' + TranslateWidth + 'px)',
+            '-webkit-transform': 'translate(0, ' + TranslateWidth + 'px)',
+            '-ms-transform': 'translate(0, ' + TranslateWidth + 'px)',
+          });
+        } else {
+          TranslateWidth = -ele.sliderView.width() * navBtnId;
           ele.sliderWrapper.css({
             'transform': 'translate(' + TranslateWidth + 'px, 0)',
             '-webkit-transform': 'translate(' + TranslateWidth + 'px, 0)',
             '-ms-transform': 'translate(' + TranslateWidth + 'px, 0)',
           });
-          SlideNow = navBtnId + 1;
-          setSliderHeight(); // Update the height when moving to a different slide
+        }
+        SelectSlide($(this));
+        var currentSlide = ele.sld.eq(SlideNow - 1);
+        var imgHeight = currentSlide.find('img').outerHeight(true);
+        if (imgHeight > 0) {
+          ele.sliderView.css('height', imgHeight + 'px');
         }
       });
       
       var SSlider = 0;
-      $(window).trigger('scroll'); // trigger image lazy loader
+      $(window).trigger('scroll');
       
       if (HeightSize !== 'auto') {
         SSlider = ele.sliderView.outerHeight(true);
@@ -140,24 +185,37 @@
     });
     
     function NextSlide() {
-      if (SlideNow === SlideCount || SlideNow <= 0 || SlideNow > SlideCount) {
+      if (SlideNow === SlideCount) {
         ele.sliderWrapper.css('transform', 'translate(0, 0)');
         SlideNow = 1;
       } else {
-        TranslateWidth = - ele.sliderView.width() * (SlideNow);
-        ele.sliderWrapper.css({
-          'transform': 'translate(' + TranslateWidth + 'px, 0)',
-          '-webkit-transform': 'translate(' + TranslateWidth + 'px, 0)',
-          '-ms-transform': 'translate(' + TranslateWidth + 'px, 0)',
-        });
+        if (isVertical) {
+          TranslateWidth = -ele.sliderView.height() * (SlideNow);
+          ele.sliderWrapper.css({
+            'transform': 'translate(0, ' + TranslateWidth + 'px)',
+            '-webkit-transform': 'translate(0, ' + TranslateWidth + 'px)',
+            '-ms-transform': 'translate(0, ' + TranslateWidth + 'px)',
+          });
+        } else {
+          TranslateWidth = -ele.sliderView.width() * (SlideNow);
+          ele.sliderWrapper.css({
+            'transform': 'translate(' + TranslateWidth + 'px, 0)',
+            '-webkit-transform': 'translate(' + TranslateWidth + 'px, 0)',
+            '-ms-transform': 'translate(' + TranslateWidth + 'px, 0)',
+          });
+        }
         SlideNow++;
       }
       SelectSlide(ele.navBtns.children().eq(SlideNow - 1));
-      setSliderHeight(); // Update the height when automatically moving to a different slide
+      var currentSlide = ele.sld.eq(SlideNow - 1);
+      var imgHeight = currentSlide.find('img').outerHeight(true);
+      if (imgHeight > 0) {
+        ele.sliderView.css('height', imgHeight + 'px');
+      }
     }
     
     function SelectSlide(ActiveBtn) {
-      $(window).trigger('scroll'); // trigger image lazy loader
+      $(window).trigger('scroll');
       ele.navBtn.removeClass('nbActiveLeft');
       ele.navBtn.removeClass('nbActiveRight');
       ele.navBtn.removeClass('nbActiveTop');

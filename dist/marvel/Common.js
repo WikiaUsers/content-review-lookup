@@ -1,5 +1,8 @@
 /* CAUTION: Any JavaScript here will be loaded for all users on every page load. */
 
+/* controls the placement of the Template:RailModule in right rail module https://dev.fandom.com/wiki/AddRailModule */
+window.AddRailModule = [{prepend: true}];
+
 /*
 ////////////////////////////////////////////////////////////////////
 // Release date sortkey display script by User:Bobogoobo (from https://community.wikia.com/wiki/Thread:918005)

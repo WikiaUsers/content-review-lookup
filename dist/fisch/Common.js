@@ -4,6 +4,9 @@ window.lockOldComments.limit = 21;
 window.lockOldComments.addNoteAbove = true;
 window.BackToTopModern = true;
 
+/* modblock  */
+importScript('MediaWiki:ModBlock.js');
+
 /* By: user:gronox CUSTOM Gallery uploading fish mutations button */
 importScript('MediaWiki:UploadMutationsImage.js');
 
@@ -36,6 +39,9 @@ importScript('MediaWiki:Seasons.js');
 
   /* Load HourChange code*/
 importScript('MediaWiki:HourChange.js');
+
+  /* WDS Icons https://fandomdesignsystem.com */
+importScript('MediaWiki:WDSIcon.js');
 
 /* custom statistic - dont work 
 importScript('MediaWiki:ViewStats.js'); 

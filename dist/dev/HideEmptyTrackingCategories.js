@@ -1,3 +1,4 @@
+// jshint jquery:true, browser:true, devel:true, camelcase:true, curly:false, eqeqeq:true, esversion: 5, forin:true, freeze:true, immed:true, latedef:true, leanswitch:true, newcap:true, noarg:true, regexp:true, strict:true, trailing:false, undef:true, unused:true
 /**
  * HideEmptyTrackingCategories.js
  * Adds a toggle to hide tracking categories if they are empty.
@@ -7,41 +8,37 @@
  * @author Magiczocker
  */
 
-(function (mw) {
+(function ($, mw) {
 	'use strict';
 
 	if (window.HideEmptyTrackingCategoriesLoaded ||
 		mw.config.get('wgCanonicalSpecialPageName') !== 'TrackingCategories') return;
 	window.HideEmptyTrackingCategoriesLoaded = true;
 
-	const table = document.getElementById('mw-trackingcategories-table');
+	var table = $('#mw-trackingcategories-table'),
+		msg,
+		button,
+		OO,
+		preloads = 2;
+
 	if (!table) return;
 
-	var msg;
-	var preloads = 2;
-
-	/**
-	 * Update button text and category visibility.
-	 */
-	function update(ele) {
-		const hidden = table.classList.contains('categories-hidden'),
-		btn = ele.srcElement;
-		btn.textContent = msg(hidden ? 'labelHide' : 'labelShow').plain();
-		btn.title = msg(hidden ? 'titleHide' : 'titleShow').plain();
-		table.classList.toggle('categories-hidden');
+	function update() {
+		var hidden = table.hasClass('categories-hidden');
+		button.setLabel(msg(hidden ? 'labelHide' : 'labelShow').plain());
+		button.setTitle(msg(hidden ? 'titleHide' : 'titleShow').plain());
+		button.setIcon(hidden ? 'eye' : 'eyeClosed');
+		table.toggleClass('categories-hidden');
 	}
 
-	/**
-	 * Initializes the script.
-	 */
 	function init() {
 		if (--preloads > 0) return;
-		const emptyText = mw.msg('categorytree-member-num', 0, 0, 0, 0, mw.msg('categorytree-num-empty')), // "(empty)"
+		var emptyText = mw.msg('categorytree-member-num', 0, 0, 0, 0, mw.msg('categorytree-num-empty')), // "(empty)"
 		disabledText = mw.msg('trackingcategories-disabled'), // "Category is disabled"
-		rows = table.querySelectorAll('.mw-trackingcategories-name');
+		rows = table.find('.mw-trackingcategories-name');
 
 		for (var i = 0; i < rows.length; i++) {
-			const td = rows[i],
+			var td = rows[i],
 			span = td.querySelector('span');
 			if (td.textContent === disabledText ||
 				span && span.textContent === emptyText) {
@@ -49,18 +46,26 @@
 			}
 		}
 
-		const button = document.createElement('button');
-		button.className = 'wds-button';
-		button.textContent = msg('labelHide').plain();
-		button.title = msg('titleHide').plain();
-		button.addEventListener('click', update);
+		button = new OO.ui.ButtonWidget( {
+			icon: 'eye',
+			label: msg('labelHide').plain(),
+			title: msg('titleHide').plain(),
+			flags: ['primary', 'progressive']
+		} );
+		button.on('click', update);
 
-		table.before(button);
+		table.before(button.$element);
 
 		mw.util.addCSS('.categories-hidden .empty-category{display:none;}');
 	}
 
-	mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
+	mw.loader.using([
+		'mediawiki.api',
+		'mediawiki.util',
+		'oojs-ui-widgets',
+		'oojs-ui.styles.icons-accessibility' // eye, eyeClosed
+	]).then(function(require) {
+		OO = require('oojs');
 		new mw.Api().loadMessagesIfMissing([
 			'categorytree-member-num',
 			'categorytree-num-empty',
@@ -73,8 +78,5 @@
 			init();
 		});
 	});
-	window.importArticle({
-		type: 'script',
-		article: 'u:dev:MediaWiki:I18n-js/code.js'
-	});
-})(window.mediaWiki);
+	mw.loader.load('https://dev.fandom.com/load.php?articles=MediaWiki:I18n-js/code.js&only=scripts&mode=articles');
+})(window.jQuery, window.mediaWiki);

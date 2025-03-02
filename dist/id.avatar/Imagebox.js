@@ -1,8 +1,6 @@
-function UploadTemplate() {
-	var editbox = document.getElementById('wpUploadDescription');
-	if (!editbox)			return;
-	if (editbox.value != '')	return;
-	editbox.value = "{"+"{Imagebox\n"
+$(function() {
+    if ( mw.config.get('wgCanonicalSpecialPageName') == "Upload" || mw.config.get('wgCanonicalSpecialPageName') == "MultipleUpload") {
+	    var value = "{"+"{Imagebox\n"
 		+ "| description = \n"
 		+ "| film        = \n"
 		+ "| series      = \n"
@@ -13,5 +11,6 @@ function UploadTemplate() {
 		+ "| cats        = \n"
 		+ "| license     = \n"
 		+ "}"+"}";
-}
-addOnloadHook(UploadTemplate);
+		$('#wpUploadDescription').val(value);
+    }
+});

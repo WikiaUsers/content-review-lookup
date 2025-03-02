@@ -58,8 +58,7 @@
                         width: $element.width() + 'px',
                         height: $element.height() + 'px',
                         top: pos.top + 'px',
-                        left: pos.left + 'px',
-                        'background-color': 'var(--theme-page-background-color)'
+                        left: pos.left + 'px'
                     },
                     children: [
                         {

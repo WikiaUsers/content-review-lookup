@@ -27,5 +27,7 @@
         var $content = $('#WikiaRail .railModule');
         $content.insertBefore('.DiscordIntegratorModule');
     });
+    // In case DiscordIntegrator fails to load
+    window.DiscordIntegratorConfig = {siderail: {id: '210825754190151680'}};
     importArticle({article: 'u:dev:MediaWiki:DiscordIntegrator/code.js'});
 })();
