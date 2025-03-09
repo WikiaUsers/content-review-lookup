@@ -888,3 +888,6 @@ $(document).ready(function() {
 
     $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
 });
+
+// Rail module
+window.AddRailModule = [{prepend: true}];

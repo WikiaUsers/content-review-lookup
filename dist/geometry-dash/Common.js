@@ -42,17 +42,12 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		moderator: {u:'Moderator'},
-		newuser: {u:'Non-Editor'},
 		sysop: {u:'Administrator'}
 	}
 };
 UserTagsJS.modules.implode = {'moderator': ['content-moderator', 'threadmoderator']};
 UserTagsJS.modules.inactive = 60;
 UserTagsJS.modules.metafilter = {'sysop': ['bureaucrat']};
-UserTagsJS.modules.newuser = {
-	edits: 10,
-	namespace: 0
-};
 
 /***************************/
 /* Interface Modification **/

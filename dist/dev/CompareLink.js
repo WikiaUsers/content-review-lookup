@@ -52,6 +52,17 @@
             .after($compareLink)
             .remove();
 
+        var $compareLinkCdx = $('<a></a>', {
+            'accesskey': $buttons.attr('accesskey'),
+            'class': 'compare-link cdx-button',
+            'text': $buttons.val(),
+            'title': $buttons.attr('title')
+        });
+
+        $buttons
+            .after($compareLinkCdx)
+            .remove();
+
         var updateCompare = function () {
             var $radio = $histForm.find('input[type=radio]:checked');
             var genLink = '?' + $.param({

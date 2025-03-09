@@ -84,7 +84,7 @@ $(function() {
 				betterDiff.waitFor('.mw-changeslist div', function(){
 					betterDiff.newDiffLink();
 					betterDiff.quickDiff();
-					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targettedPatrol);
+					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targetedPatrol);
 					
 					// start observing
 					betterDiff.recentChangesReload(function() {
@@ -356,15 +356,15 @@ $(function() {
 		},
 		
 		// Mass patrol recent edits from specific user and/or namespace
-		targettedPatrol: function() {
+		targetedPatrol: function() {
 			if (!document.querySelector('#tp') && can.patrol) {
-				var entry = $('<span class="wds-button" id="tpOpen">Targetted Patrolling</span>');
+				var entry = $('<span class="wds-button" id="tpOpen">Targeted Patrolling</span>');
 				$('.mw-rcfilters-ui-table-placeholder').append(entry);
 				// Build modal and start up listeners
 				mw.hook('dev.modal').add(function(Modal) {
 					settings = 
 						new Modal.Modal({
-							title: 'Targetted Patrolling',
+							title: 'Targeted Patrolling',
 							id: 'tPatrol-patrol',
 							size: 'medium',
 							content: 
@@ -514,7 +514,7 @@ $(function() {
 					settings.create();
 					entry.on('click', function(){settings.show();});
 					$('#tPatrol-patrol').on('change', 'input', function(ch) {
-						if (['targettedPatrolTimeEnd', 'targettedPatrolTimeStart'].includes(ch.target.id)) {
+						if (['targetedPatrolTimeEnd', 'targetedPatrolTimeStart'].includes(ch.target.id)) {
 							var date = new Date(ch.target.value);
 							var lbl = ch.target.nextElementSibling;
 							lbl.classList.toggle('bad-data', false);

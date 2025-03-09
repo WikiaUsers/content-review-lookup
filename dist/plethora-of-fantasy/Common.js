@@ -8,7 +8,7 @@ window.UserTagsJS = {
 		tilantidewaters1: 'Reaper of Tides',
 		tilantidewaters2: 'Hoarder of Children',
 		gingerale1: 'merely dreaming',
-		mintflower1: 'An Existence',
+		mintflower1: 'A Mere Existence',
 		firewind1: 'Official Wolf',
 		moonshadow1: 'Verified Dragon',
         alostwonderer1: 'Stalker Flower',
@@ -25,7 +25,7 @@ window.UserTagsJS = {
 		onyxclaw2: 'braincells? none',
 		nyferineraidenwandersinger1: 'Songwriter',
 		arangagangagang1: 'Working, hardly',
-
+		songofchickadee1: 'Selectively Stupid'
 	}
 };
 UserTagsJS.modules.custom = {
@@ -45,6 +45,7 @@ UserTagsJS.modules.custom = {
 	'Onyxclaw00':['onyxclaw1', 'onyxclaw2'],
 	'Nyferine-RaidenWandersinger':['nyferineraidenwandersinger1'],
 	"Arangagangagang":['arangagangagang1'],
+	"Song.of.Chickadee.13":['songofchickadee1'],
 };
 //trying to activate the "inactive" user tag
 UserTagsJS.modules.inactive = {

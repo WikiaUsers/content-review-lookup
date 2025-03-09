@@ -115,8 +115,10 @@
 
         $('#mw-content-text ul li').each(function() {
             const $links = $(this).find('a'),
-                title = $links.first().attr('title');
-            const url = new URL($links.eq(1).prop('href'));
+                title = $links.first().attr('title'),
+                href = $links.eq(1).prop('href');
+            if (href === '') return;
+            const url = new URL(href);
             if (
                 // If it's not a thread...
                 !title.match(/\/@comment-/) ||

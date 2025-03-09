@@ -238,11 +238,12 @@ $.when.apply($, [
         },
 
         getTitle: function (href) {
-            var uri = new mw.Uri(href);
-            var target = uri.query.pagetitle;
+            var uri = new URL(href),
+            	params = uri.searchParams,
+            	target = params.get('pagetitle');
 
-            var pageName = uri.path.replace(this.wg.wgArticlePath, "");
-            var indexedSpecialPage = uri.query.title && new mw.Title(uri.query.title).title;
+            var pageName = uri.pathname.replace(this.wg.wgArticlePath, "");
+            var indexedSpecialPage = params.get('title') && new mw.Title(params.get('title')).title;
             pageName = pageName.slice(0, !~pageName.indexOf("?") ? pageName.length : pageName.indexOf("?") + 1);
 
             var split = new mw.Title(indexedSpecialPage || pageName).title.split("/");
@@ -254,7 +255,7 @@ $.when.apply($, [
             return {
                 title: title,
                 target: target,
-                query: uri.query,
+                query: Object.fromEntries(params),
             };
         },
 

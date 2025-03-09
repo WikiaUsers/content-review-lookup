@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var previousClick = null;
-    var toggleSelectors = '.mw-customtoggle-test1, .mw-customtoggle-test2, .mw-customtoggle-test3, .mw-customtoggle-test4, .mw-customtoggle-test10';
+    var toggleSelectors = '.mw-customtoggle-test1, .mw-customtoggle-test2, .mw-customtoggle-test3, .mw-customtoggle-test4, .mw-customtoggle-test5, .mw-customtoggle-test6, .mw-customtoggle-test7, .mw-customtoggle-test8, .mw-customtoggle-test10';
     
     $(toggleSelectors).on('click', function(e) {
         e.preventDefault();

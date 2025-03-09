@@ -210,12 +210,13 @@
             }
             var url;
             try {
-                url = new mw.Uri($target.attr('href'));
-            } catch(e) {
+                url = new URL($target.attr('href'));
+            } catch(err) {
                 return;
             }
+            var params = url.searchParams;
             if (!$target.is('.ignoreAjDel')) {
-                if (url.query.action === 'delete') {
+                if (params.get('action') === 'delete') {
                     e.preventDefault();
                     this.doDelete(url, $target);
                 } else if (this.isUndelete(url)) {
@@ -228,22 +229,22 @@
             var special = config.wgFormattedNamespaces[-1];
             return this.undelete.some(function(alias) {
                 return (
-                    url.path.indexOf(mw.util.getUrl('Special:' + alias + '/')) === 0 ||
-                    url.path.indexOf(mw.util.getUrl(special + ':' + alias + '/')) === 0 ||
-                    url.path === mw.util.getUrl('Special:' + alias) ||
-                    url.path === mw.util.getUrl(special + ':' + alias)
+                    url.pathname.indexOf(mw.util.getUrl('Special:' + alias + '/')) === 0 ||
+                    url.pathname.indexOf(mw.util.getUrl(special + ':' + alias + '/')) === 0 ||
+                    url.pathname === mw.util.getUrl('Special:' + alias) ||
+                    url.pathname === mw.util.getUrl(special + ':' + alias)
                 ) &&
-                    url.query.target;
+                    params.get('target');
             }) &&
                 !this.config.noUndelete &&
                 // URLs on undeletion history should not open the modal
-                !url.query.timestamp;
+                !params.get('timestamp');
         },
         doDelete: function(url, $target) {
             this.action = 'delete';
             var isImg = $target.is('a[href*="/wiki/File:"]'),
-                isRevImg = url.query.oldimage ? url.query.oldimage : false,
-                page = decodeURIComponent(url.path).replace(config.wgArticlePath.replace('$1', ''), '').replace(/_/g, ' '),
+                isRevImg = params.get('oldimage') ? params.get('oldimage') : false,
+                page = decodeURIComponent(url.pathname).replace(config.wgArticlePath.replace('$1', ''), '').replace(/_/g, ' '),
                 text = isImg ?
                     isRevImg ?
                         this.i18n.msg('deleteimgrev', isRevImg.split('!')[0], page) :
@@ -387,11 +388,12 @@
         },
         doUndelete: function(url) {
             this.action = 'undelete';
-            if (url.query.target) {
-                this.page = url.query.target
+            var params = url.searchParams;
+            if (params.get('target')) {
+                this.page = params.get('target')
                     .replace(/_/g, ' ');
             } else {
-                this.page = decodeURIComponent(url.path)
+                this.page = decodeURIComponent(url.pathname)
                     .replace(/_/g, ' ');
                 this.undelete.forEach(function(alias) {
                     this.page = this.page

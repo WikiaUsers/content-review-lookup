@@ -1,28 +1,13 @@
 /*
 * CircleAvatar Template Handler
 * Displays user avatars in a modern, circular style with customizable parameters
-* Inspired by Fandom's avatar styling system
-* 
-* This script creates customizable circular avatars for wiki users
-* It uses the Fandom API to fetch user avatars dynamically
-* while providing a modern interface with hover effects
-*
-* Key features:
-* - Circular avatars with size customization (16-150px)
-* - Optional username display
-* - Modern hover effects and transitions
-* - Built-in caching system for API calls
-* - Automatic error handling with fallbacks
-*
-* Uses only official MediaWiki API and follows Fandom's best practices
-* No external resources or dependencies except for built-in MediaWiki modules
-*
-* TEMPLATE: https://fisch.fandom.com/wiki/Template:CircleAvatar
+* Optimized for mobile devices
 */
 mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
    'use strict';
 
    var cache = {};
+   var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
    // Avatar creation and styling function
     function addAvatar(element) {
@@ -31,7 +16,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
         var params = $element.data('params') ? $element.data('params').split('|') : [];
         
         // Parse parameters
-        var size = 24;
+        var size = isMobile ? 32 : 24;
         var showName = true;
         
         if (params.length > 0) {
@@ -51,34 +36,42 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
             }
         }
 
+        // Apply mobile adjustments
+        if (isMobile) {
+            size = Math.max(size, 28);
+        }
+
         // Limit size
         size = Math.min(Math.max(size, 16), 150);
 
         var avatar = cache[username];
         if (!avatar) {
-            console.error('[CircleAvatar] Cannot find avatar for', username);
-            return;
+            avatar = 'https://static.wikia.nocookie.net/central/images/0/0d/Default_avatar.png';
         }
 
         // Adjust avatar size
-        avatar = avatar.replace(
-            /\/thumbnail\/width\/\d+\/height\/\d+/,
-            '/thumbnail/width/' + size + '/height/' + size
-        );
+        if (avatar.includes('/thumbnail/width/')) {
+            avatar = avatar.replace(
+                /\/thumbnail\/width\/\d+\/height\/\d+/,
+                '/thumbnail/width/' + size + '/height/' + size
+            );
+        }
 
         // Create container
         var $container = $('<span>').css({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '4px',
-            transition: 'opacity 0.2s'
+            transition: 'opacity 0.2s',
+            flexWrap: 'nowrap'
         });
 
         // Create avatar image
         var $avatar = $('<img>').attr({
             src: avatar,
             alt: username + "'s avatar",
-            title: '@' + username
+            title: '@' + username,
+            loading: 'lazy'
         }).css({
             borderRadius: '50%',
             width: size + 'px',
@@ -92,7 +85,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
         if (showName) {
             var $name = $('<span>').text('@' + username).css({
                 fontSize: Math.max(size * 0.7, 12) + 'px',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                whiteSpace: 'nowrap'
             });
             $container.append($avatar, $name);
         } else {
@@ -101,7 +95,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 
         // Create link wrapper
         var $link = $('<a>').attr({
-            href: mw.util.getUrl('User:' + username)
+            href: mw.util.getUrl('User:' + username),
+            'data-username': username
         }).css({
             textDecoration: 'none',
             color: 'inherit',
@@ -111,6 +106,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
             function() { $(this).css('opacity', '1'); }
         );
 
+        $link.addClass('circle-avatar-link');
         $link.append($container);
         $element.replaceWith($link);
     }
@@ -126,47 +122,95 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
             return data.query.users.map(function(user) {
                 return user.userid;
             });
+        }).catch(function() {
+            return [];
         });
     }
 
    // Fetch user avatars using Fandom API
     function getUserAvatars(userIds) {
+        if (!userIds || userIds.length === 0) {
+            return $.Deferred().resolve([]).promise();
+        }
+        
         var scriptPath = mw.config.get('wgScriptPath');
         return $.getJSON(scriptPath + '/api/v1/User/Details', {
             ids: userIds.join(',')
         }).then(function(data) {
-            return data.items;
+            return data.items || [];
+        }).catch(function() {
+            return [];
         });
     }
 
    // Main processing function
     function processAvatars($content) {
-        if (!$content) return;
+        if (!$content || $content.length === 0) return;
 
-        var users = $content
-            .find('.circle-avatar-template')
-            .map(function() {
-                return $(this).data('username').replace('@', '');
-            })
-            .toArray()
-            .filter(function(username) {
-                return !cache[username];
+        var avatarElements = $content.find('.circle-avatar-template');
+        if (avatarElements.length === 0) return;
+        
+        // Extract unique usernames that aren't in cache
+        var usersToFetch = [];
+        avatarElements.each(function() {
+            var username = $(this).data('username').replace('@', '');
+            if (!cache[username] && usersToFetch.indexOf(username) === -1) {
+                usersToFetch.push(username);
+            }
+        });
+
+        // If all avatars are cached, render them immediately
+        if (usersToFetch.length === 0) {
+            avatarElements.each(function() {
+                addAvatar(this);
             });
-
-        if (users.length > 0) {
-            getUserIds(users)
-                .then(getUserAvatars)
-                .then(function(users) {
-                    users.forEach(function(user) {
-                        cache[user.name] = user.avatar;
-                    });
-                    
-                    $content.find('.circle-avatar-template').each(function() {
-                        addAvatar(this);
-                    });
-                });
+            return;
         }
+
+        // Fetch only needed avatars
+        getUserIds(usersToFetch)
+            .then(function(ids) {
+                if (ids.length === 0) {
+                    usersToFetch.forEach(function(username) {
+                        cache[username] = 'https://static.wikia.nocookie.net/central/images/0/0d/Default_avatar.png';
+                    });
+                    return [];
+                }
+                return getUserAvatars(ids);
+            })
+            .then(function(users) {
+                users.forEach(function(user) {
+                    if (user && user.name) {
+                        cache[user.name] = user.avatar;
+                    }
+                });
+                
+                // Process any remaining users with default avatar
+                usersToFetch.forEach(function(username) {
+                    if (!cache[username]) {
+                        cache[username] = 'https://static.wikia.nocookie.net/central/images/0/0d/Default_avatar.png';
+                    }
+                });
+                
+                // Now render all avatars
+                avatarElements.each(function() {
+                    addAvatar(this);
+                });
+            });
     }
+
+   // Add CSS for hover effects
+   var styleTag = document.createElement('style');
+   styleTag.textContent = '.circle-avatar-link:hover { opacity: 0.8; }';
+   document.head.appendChild(styleTag);
+
+   // Mobile optimization
+   if (isMobile) {
+       var mobileStyles = document.createElement('style');
+       mobileStyles.textContent = '.circle-avatar-link { padding: 2px; }\n' +
+           '.circle-avatar-link img { min-width: 28px; min-height: 28px; }';
+       document.head.appendChild(mobileStyles);
+   }
 
    // Initialize on page load
    mw.hook('wikipage.content').add(processAvatars);

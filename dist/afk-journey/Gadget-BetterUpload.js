@@ -7,7 +7,7 @@ $(function() {
 	if (window.dev.BetterUpload._LOADED) { return; }
 	window.dev.BetterUpload._LOADED = true;
 	
-    // Load dependencies and cache
+	// Load dependencies and cache
 	var api = new mw.Api();
 	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName', 'wgUserName']);
 	var urlParams = new URLSearchParams(window.location.search);
@@ -19,9 +19,9 @@ $(function() {
 			// Add custom form submitapi
 			document.querySelector('.mw-htmlform-submit').value = 'Upload file with preload';
 			document.querySelector('form#mw-upload-form').addEventListener("submit", function (event) {
-			  event.preventDefault();
-			  BU.saveEdit();
-			  BU.attemptUpload();
+				event.preventDefault();
+				BU.saveEdit();
+				BU.attemptUpload();
 			});
 			if (!document.querySelector('.mw-htmlform-field-HTMLTextAreaField')) { // Special render for reupload
 				document.querySelector('label[for="wpUploadDescription"]').innerHTML = 'Upload summary:';
@@ -66,7 +66,8 @@ $(function() {
 				'.cm-editor {border: 1px solid var(--theme-border-color); color: var(--theme-page-text-color);} '+
 				'.cm-content {text-wrap: wrap !important; width: 90%;} '+
 				'.cm-cursor {border-left: 1.2px solid var(--theme-page-text-color) !important;} '+
-				'.cm-scroller {max-height: 700px; min-height: 300px; width: 100%;}'
+				'.cm-scroller {max-height: 700px; width: 100%;}'+
+				'#mw-htmlform-description {width: 100%;}'
 			);
 			cm = new CodeMirror( $('textarea#wpUploadDescription') );
 			cm.initialize( [ cm.defaultExtensions, mediawikiLang() ] );
@@ -157,7 +158,7 @@ $(function() {
 					var num = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
 					var settings = window.dev.BetterUpload.preloads[num];
 					if (settings && settings.preload) {
-						var preload =  settings.preload;
+						var preload = settings.preload;
 						if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow')) {
 							document.querySelector('#mw-htmlform-description tbody .wpFillinRow').remove();
 						}
@@ -214,7 +215,7 @@ $(function() {
 									document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview').remove();
 								}
 								if (valsettings.reference) {
-									var refPreview =  document.createElement('div');
+									var refPreview = document.createElement('div');
 									refPreview.classList.add('refPreview');
 									api.get({
 										action: 'parse',
@@ -254,17 +255,15 @@ $(function() {
 			if (filename.length>0) {
 				params.title = 'File:' + filename;
 			}
-			if (text.length>0) {
-				api.get(params).then(function(data){
-					if (data && data.parse && data.parse.text && data.parse.text['*']) {
-						if (document.querySelector('#pagePreview')) {document.querySelector('#pagePreview').remove();}
-						var preview = document.createElement('tr');
-						document.querySelector('#mw-htmlform-description tbody').append(preview);
-						preview.id = 'pagePreview';
-						preview.innerHTML = '<td colspan="2"><h1>Page Preview</h1><hr /><div>'+data.parse.text['*']+'</div></td>';
-					}
-				}).fail(console.log);
-			}
+			api.get(params).then(function(data){
+				if (data && data.parse && data.parse.text && data.parse.text['*']) {
+					if (document.querySelector('#pagePreview')) {document.querySelector('#pagePreview').remove();}
+					var preview = document.createElement('tr');
+					document.querySelector('#mw-htmlform-description tbody').append(preview);
+					preview.id = 'pagePreview';
+					preview.innerHTML = '<td colspan="2"><h1>Page Preview</h1><hr /><div>'+data.parse.text['*']+'</div></td>';
+				}
+			}).fail(console.log);
 		},
 		saveEdit: function() {
 			if (document.querySelector('input#wpUploadSummary')) {
@@ -292,15 +291,15 @@ $(function() {
 			var file = document.querySelector('#wpUploadFile').files[0];
 			var comment = document.querySelector('input#wpUploadSummary');
 			var params = {
-                token: mw.user.tokens.get('csrfToken'),
-                filename: filename,
-                ignorewarnings: '1',
-                format: 'json',
-                text: BU.getCM()
-            };
-            if (comment && comment.value.length>0) {
-            	params.comment = comment.value;
-            }
+				token: mw.user.tokens.get('csrfToken'),
+				filename: filename,
+				ignorewarnings: '1',
+				format: 'json',
+				text: BU.getCM()
+			};
+			if (comment && comment.value.length>0) {
+				params.comment = comment.value;
+			}
 			if (file && filename && filename.length>0) {
 				var handleResponse = function(a, b) {
 					var data = (typeof b === 'object' && !Array.isArray(b) && b !== null && (b.error || b.upload)) ? b : a;
@@ -389,8 +388,8 @@ $(function() {
 					});
 					// start observing
 					observer.observe(document, {
-					  childList: true,
-					  subtree: true
+						childList: true,
+						subtree: true
 					});
 				}
 			});

@@ -529,6 +529,7 @@
             });// apid.fail
             return;
         }
+        console.log(nuri.interwiki);
         apipage = new mw.Uri({path: nuri.interwiki + '/api.php'});
         apipage.extend({
             action: 'parse',

@@ -155,3 +155,25 @@ $(document).ready(function() {
 		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
 	}
 });
+/*degradados*/
+document.querySelectorAll('.multiacc-alt').forEach(element => {
+    const colors = element.getAttribute('data-colors').split(',');
+
+    const gradientColors = colors.map(color => {
+        const className = `color-${color.trim().toLowerCase()}`;
+
+        // Crea un elemento temporal para obtener el valor de --color
+        const tempElement = document.createElement('div');
+        tempElement.classList.add(className);
+        document.body.appendChild(tempElement); // Añade temporalmente al DOM
+        const colorValue = getComputedStyle(tempElement).getPropertyValue('--color');
+        document.body.removeChild(tempElement); // Elimina el elemento temporal
+
+        console.log(`Clase: ${className}, Valor de color: ${colorValue}`); // Depuración
+        return colorValue || 'transparent';
+    }).join(', ');
+
+    // Aplica el gradiente al elemento
+    element.style.background = `linear-gradient(to bottom, ${gradientColors})`;
+    console.log('Gradiente generado:', gradientColors); // Depuración
+});

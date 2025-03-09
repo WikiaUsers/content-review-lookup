@@ -21,9 +21,10 @@
     //   Configuration
     // =================
     var config = {
+    	messageList: 'MediaWiki:Custom-PreloadMessages',
         infoboxList: 'MediaWiki:Custom-PreloadInfoboxes',
         generalList: 'MediaWiki:Custom-PreloadPieces'
-    }, i18n, $infoboxes, $general, $help;
+    }, i18n, $messages, $infoboxes, $general, $help;
 
     // =============
     //   Functions  
@@ -138,17 +139,17 @@
         });
     }
 
-    function appendModule() {
+    function appendModule(mx) {
         var $moduleNew = $('.ve-ui-summaryPanel-summaryInputField');
         // Appending HTML to editor
         if ( $module.length ) { 
-            $module.after($infoboxes);          // UCP source editors
+            $module.after(mx);          // UCP source editors
             $module.after($general);
         } else if ( $moduleOld.length ) { 
-            $moduleOld.append($infoboxes);       // Old Non-UCP Source Editor
+            $moduleOld.append(mx);       // Old Non-UCP Source Editor
             $moduleOld.append($general);
         } else if ( $moduleNew.length ) {
-            $moduleNew.append($infoboxes);
+            $moduleNew.append(mx);
             $moduleNew.append($general);
         }
     }
@@ -160,11 +161,19 @@
         $general.append($('<span>', {
             text: 'Common page components:'
         }));
-        $infoboxes = $('<div>', { id: 'preload-infoboxes' });
-        $infoboxes.append($('<span>', {
-            text: 'Preload an infobox:'
-        }));
-        appendModule();
+    	if (window.location.href.indexOf('User_talk:') !== -1) {
+	        $messages = $('<div>', { id: 'preload-messages' });
+	        $messages.append($('<span>', {
+	            text: 'Preload a message:'
+	        }));
+        	appendModule($messages);
+    	} else{
+	        $infoboxes = $('<div>', { id: 'preload-infoboxes' });
+	        $infoboxes.append($('<span>', {
+	            text: 'Preload an infobox:'
+	        }));
+    		appendModule($infoboxes);
+    	}
     }
 
     function listHTML(parsed) {
@@ -216,6 +225,10 @@
             $help
         );
     }
+    
+    function initMessages(listData) {
+		initPiece($messages, listData, 'case-by-case');
+    }
 
     function initInfoboxes(listData) {
 		initPiece($infoboxes, listData, 'preload');
@@ -232,6 +245,8 @@
         if (parsed === '') {
             initFail();
             return;
+        } else if (node === undefined) {
+        	return
         }
 		
         // Append template list and messages
@@ -276,6 +291,11 @@
                 action: 'raw',
                 ctype: 'text/plain'
             }).done(initInfoboxes).fail(initFail);
+            $.get(mw.util.wikiScript(), {
+                title: config.messageList,
+                action: 'raw',
+                ctype: 'text/plain'
+            }).done(initMessages).fail(initFail);
             $.get(mw.util.wikiScript(), {
                 title: config.generalList,
                 action: 'raw',

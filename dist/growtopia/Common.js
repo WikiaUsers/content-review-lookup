@@ -132,3 +132,10 @@ $(function() {
 		}
 	});
 });
+
+//----- [ Pagination ] -----//
+$(function() {
+    $("span.no-blank-target").each(function() {
+    	$(this).closest("a").removeAttr("target");
+    });
+});

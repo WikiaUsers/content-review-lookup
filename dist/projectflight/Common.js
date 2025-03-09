@@ -6,3 +6,16 @@ mw.hook("wikipage.content").add(function () {
         mw.util.addCSS($(this).attr("data-css"));
     });
 });
+
+window.lastEdited = {
+	avatar: false,
+	size: false,
+	diff: false,
+	comment: false,
+	newpage: false,
+	mainpage: false,
+	namespaces: {
+		exclude: [-1,2]
+	},
+	pages: [Project_Flight_Wiki]
+};

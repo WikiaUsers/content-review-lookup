@@ -1,4 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+/* Import auto profiles */
+importArticles({
+	type: 'script',    
+	articles: [        
+		'u:dev:MediaWiki:AutoCreateUserPages.js',    
+		]
+});
 
 /* Categories (for custom background) */
 mw.loader.using('mediawiki.util').then(function() {

@@ -11,7 +11,6 @@ importArticles({
         "u:dev:MediaWiki:Medals/code.js"
     ]
 });
-
 /** Запись рейтинга WAM **/
 window.railWAM = {
     logPage:"Project:WAM Log"

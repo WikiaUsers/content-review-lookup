@@ -105,7 +105,9 @@ $(function () {
       //230
       'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang', 'Pegasus',
       //235
-      'Bumblebee'
+      'Bumblebee', 'Primal_Demonosaur', 'Pallbearer', 'Night_Locust', 'Leaf_Locust',
+      //240
+      'Pearl_Locust'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -184,7 +186,7 @@ $(function () {
       //170
       'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist', 'Weretiger',
       //180
-      'Werecrocodile', 'Werepanther'
+      'Werecrocodile', 'Werepanther', 'Merudri'
       //185
       
       //190
@@ -204,7 +206,7 @@ $(function () {
       //215
       'Draccoon_Herald', 'Doom_Knight', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
       //220
-      'Beekeeper', 'Fiend_Slayer'
+      'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid'
       //225
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
@@ -241,7 +243,9 @@ $(function () {
       Flamefury_Mage: 8,
       Celestial_Avenger: 8,
       Blade_Dancer: 8,
-      Beekeeper: 8
+      Beekeeper: 8,
+      Winged_Druid: 8,
+	  Merudri: 8
     },
     outfiter_sprites_walking = {
       //None: 2,
@@ -345,7 +349,10 @@ $(function () {
       Dawnbringer_Pegasus: 8,
       Wrathfire_Pegasus: 8,
       Skybreaker_Pegasus: 8,
-      Pegasus: 8
+      Pegasus: 8,
+      Night_Locust: 8,
+      Leaf_Locust: 8,
+      Pearl_Locust: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -354,7 +361,8 @@ $(function () {
       Krakoloss: true,
       Shellodon: true,
       Mutated_Abomination: true,
-      Gorgon_Hydra: true
+      Gorgon_Hydra: true,
+	  Primal_Demonosaur: true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {
@@ -364,7 +372,8 @@ $(function () {
       Hireling_Cook: true,
       Hireling_Steward: true,
       Hireling_Servant: true,
-      Issavi_Villager: true
+      Issavi_Villager: true,
+      Merudri: true
     },
     //no female
     outfiter_u_names = {
@@ -505,7 +514,8 @@ $(function () {
       Scientist: true,
       Weretiger: true,
       Werecrocodile: true,
-      Werepanther: true
+      Werepanther: true,
+      Merudri: true
     },
     //no addon
     outfiter_a_names = {
@@ -626,7 +636,8 @@ $(function () {
       Scientist: true,
       Weretiger: true,
       Werecrocodile: true,
-      Werepanther: true
+      Werepanther: true,
+      Merudri: true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

@@ -47,6 +47,7 @@ window.UserTagsJS = {
 		'retired-staff': {u:'Former Wiki Staff', order:9e9},
 		'ron-hos': {u:'RON Head of Staff', order:9e9},
 		'ron-senior-administrator': {u:'RON Senior Administrator', order:9e9},
+		'Guide-Maker': {u:'Guide Maker', order:9e9}
 	}
 };
 
@@ -80,13 +81,14 @@ UserTagsJS.modules.custom = {
 	// Wiki Contributors
 	'Dxrknrg': ['Wiki-Contributor'],
 	'PanzerundLancer': ['Wiki-Contributor'],
-	'RyeThePies': ['Wiki-Contributor'],
 	'Sdvwevfregv': ['Wiki-Contributor'],
 	'Eddy0725': ['Wiki-Contributor'],
 	'SuperGlitchyTheo': ['Wiki-Contributor'],
-	// Guide Makers
+	'Quinncm': ['Wiki-Contributor'],
+	'Spaniard123': ['Wiki-Contributor'],
+	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
-}
+};
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;
 //* END of UserTags *//

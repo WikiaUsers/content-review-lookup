@@ -35,7 +35,7 @@ function loadFunc() {
 	}
 
 	fillEditSummaries();
-	fillPreloads();
+	adjustPageCount();
 
 	substUsername();
 	substUsernameTOC();
@@ -97,62 +97,6 @@ function fillEditSummaries() {
 		$summaryLabel.prepend( $wrapper.append( $summaryOptionsList ) );
 	} );
 
-}
-
-/**
- * jQuery version of Sikon's fillPreloads
- * @author Grunny
- */
-function fillPreloads() {
-
-	if( !$( '#lf-preload' ).length ) {
-		return;
-	}
-
-	$( '#lf-preload' ).attr( 'style', 'display: block' );
-
-	$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
-		var	$preloadOptionsList,
-			lines = data.split( '\n' );
-
-		$preloadOptionsList = $( '<select />' ).attr( 'id', 'stdSummaries' ).change( function() {
-			var templateName = $( this ).val();
-			if ( templateName !== '' ) {
-				templateName = 'Template:' + templateName + '/preload';
-				templateName = templateName.replace( ' ', '_' );
-				$.get( mw.config.get( 'wgScript' ), { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
-					if ($('.CodeMirror').length > 0) {
-						WikiEditorCodeMirror.doc.replaceSelection(data);
-						return;
-					}
-					insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
-				} );
-			}
-		} );
-
-		for ( var i = 0; i < lines.length; i++ ) {
-			var templateText = ( lines[i].indexOf( '-- ' ) === 0 ) ? lines[i].substring(3) : '';
-			$preloadOptionsList.append( $( '<option>' ).val( templateText ).text( lines[i] ) );
-		}
-
-		$( '#lf-preload-cbox' ).html( $preloadOptionsList );
-	} );
-
-	$( '#lf-preload-pagename' ).html( '<input type="text" class="textbox" />' );
-	$( '#lf-preload-button' ).html( '<input type="button" class="button" value="Insert" onclick="doCustomPreload()" />' );
-
-}
-
-function doCustomPreload() {
-	var value = $( '#lf-preload-pagename > input' ).val();
-	value = value.replace( ' ', '_' );
-	$.get( mw.config.get( 'wgScript' ), { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
-		if ($('.CodeMirror').length > 0) {
-			WikiEditorCodeMirror.doc.replaceSelection(data);
-			return;
-		}
-		insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
-	} );
 }
 
 function initVisibility() {
@@ -236,6 +180,9 @@ function toggleHidable(bypassStorage) {
 			this.firstChild.nodeValue = '[Show]';
 			nowShown = false;
 		}
+		if (this.childNodes.length > 1) {
+			this.lastChild.nodeValue = "";
+		}
 
 		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
 			var page = window.pageName.replace(/\W/g, '_');
@@ -256,6 +203,51 @@ function toggleHidable(bypassStorage) {
 			localStorage.setItem('hidableshow-' + item + '_' + page, nowShown);
 		}
 	}
+}
+
+/* Function to adjust page count */
+function adjustPageCount() {
+	var countFields = getElementsByClass('page-counter__value')
+	if (!countFields) {
+		return
+	}
+	var countField = countFields[0];
+	
+	var currentCount = 0;
+	var x = Number(countField.textContent.replace(",", ""));
+	if (!isNaN(x) && x > 0) {
+		currentCount = x;
+	} else {
+		return
+	}
+	
+	$.ajax({
+		type: 'GET',
+		url: 'https://starwars.fandom.com/api.php',
+		data: {
+			action: 'query',
+			format: 'json',
+			prop: 'categoryinfo',
+			titles: 'Category:Disambiguation_pages|Category:Canon_index_pages|Category:Legends_index_pages|Category:Non-canon_index_pages|Category:Real-world_index_pages',
+		},
+		dataType: 'jsonp',
+		jsonp: 'callback',
+		success: function(data) {
+			var pages = data.query.pages;
+			if (!pages) {
+				return;
+			}
+			
+			for (var k in pages) {
+				var info = pages[k].categoryinfo
+				if (!info) {
+					continue;
+				}
+				currentCount -= info.pages; 
+				countField.textContent = currentCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
+		}
+	})
 }
 
 /*
@@ -629,18 +621,27 @@ function disableOldForumEdit() {
 		return;
 	}
 
-	if ( $( '.page-header #ca-addsection' ).length ) {
-		$( '.page-header #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '.page-header #ca-edit' ).remove();
-		$( '.page-side-tools #ca-addsection' ).remove();
+	if ( $( '#ca-addsection' ).length ) {
+		$( '#ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '#ca-edit' ).remove();
+		$( '#ca-addsection-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
 	} else {
-		$( '.page-header #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '.page-side-tools #ca-edit' ).remove();
+		$( '#ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '#ca-edit-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
 	}
 }
 $( disableOldForumEdit );
+
+$( function() {
+	if( !$( '#mw-pages a' ).length ) {
+		return;
+	}
+	$('#mw-pages > a').each( function () {
+		$(this).attr('href', $(this).attr('href').replace('#mw-pages', ''));
+	} );
+})
 
 /**
  * Show/hide for media timeline -- Grunny
@@ -694,19 +695,10 @@ $( function lazyLoadTorApp() {
  * Hides the link to parent pages from subpages if {{HideContentSub}} is included
  **/
 function hideContentSub() {
-	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {	
-		if ($( '.page-header__page-subtitle' ).text().substring(0, 1) === "<") {
-            var	$wikiaHeader = $( '.page-header__page-subtitle' ),
-                $backToPageLink;
-            if ( mw.config.get( 'wgNamespaceNumber' ) % 2 === 1 ) {
-                // ugly hack to only leave back to page link on talk pages
-                $backToPageLink = $wikiaHeader.find( 'a[accesskey="c"]' );
-                $wikiaHeader.html( '' ).append( $backToPageLink );
-            } else {
-                $wikiaHeader.hide();
-            }
-        }
-	}
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {
+		$( '.page-header__page-subtitle .subpages' ).remove();
+		$( '.page-header__page-subtitle' ).text( function(a,b) { return b.replace(' |', ''); });
+    }
 }
 
 /**
@@ -723,7 +715,7 @@ function addTalkheaderPreload() {
 // Related Categories
 $(document).ready( function () {
 	if( document.getElementById("related-catlinks") ) {
-		document.getElementById("catlinks").appendChild(document.getElementById("related-catlinks"));
+		document.getElementById("articleCategories").appendChild(document.getElementById("related-catlinks"));
 	}
 } );
 
@@ -832,3 +824,20 @@ $( function eraIconsOasis() {
     	$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
     }
 } );
+
+// Allowing easier downloading of files in their original format, to avoid webp files
+if ( mw.config.get( 'wgCanonicalNamespace' ) == 'File' ) {
+	$( '#file a' ).attr( 'href', function( a, b ) {
+		return b + '&format=original';
+	} );
+}
+
+// Adding 'Random Page' for logged-out users in 'Explore' top navigation to make consistent with logged-in experience
+$(document).ready(function() {
+	if(mw.config.get("wgUserName")) return;
+
+    $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
+});
+
+// Rail module
+window.AddRailModule = [{prepend: true}];

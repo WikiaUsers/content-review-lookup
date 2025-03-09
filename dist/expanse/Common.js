@@ -1,4 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+/******************************/
+/* Not sure what this does... */
+/******************************/
 $('body.page-The_Expanse_Wiki .mw-spcontent').each(function() {
     var html = '';
     $(this).children('a').each(function() {
@@ -9,9 +13,21 @@ $('body.page-The_Expanse_Wiki .mw-spcontent').each(function() {
     $(this).html('<ul>' + html + '</ul>');
 });
 
+
+/***********************/
+/* Is this still used? */
+/***********************/
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+
+/*******************************************************************/
+/* Used to configure dev:LinkPreview/code.js in MediaWiki:ImportJS */
+/* Does not seem to work...                                        */
+/*******************************************************************/
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/expanse/images/3/3f/Placeholder_other.png';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/expanse/images/3/3f/Placeholder_other.png';
 
 /****************************************/
 /* sliders using jquery by User:Tierrie on France's Star Citizen Wiki*/

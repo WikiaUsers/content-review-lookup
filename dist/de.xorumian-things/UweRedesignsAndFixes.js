@@ -39,6 +39,3 @@ links.forEach(url => {
         });
     });
 })(mediaWiki, this);
-
-// Rail module
-window.AddRailModule = ['Vorlage:RailModule', 'Vorlage:RailModule2'];

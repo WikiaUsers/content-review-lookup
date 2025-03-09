@@ -1539,18 +1539,18 @@ function loadReplyLink( $, mw, isOnSectionWatchlistPage ) {
                 // Create panel
                 var panelEl = document.createElement( "div" );
                 panelEl.id = "reply-link-panel";
-                panelEl.innerHTML = "<textarea id='reply-dialog-field' class='mw-ui-input'" +
+                panelEl.innerHTML = "<textarea id='reply-dialog-field' class='mw-ui-input cdx-input'" +
                     " placeholder='" + mw.msg( "rl-placeholder" ) + "'></textarea>" +
                     ( window.replyLinkCustomSummary ? "<label for='reply-link-summary'>Summary: </label>" +
-                        "<input id='reply-link-summary' class='mw-ui-input' placeholder='Edit summary' " +
+                        "<input id='reply-link-summary' class='mw-ui-input cdx-input' placeholder='Edit summary' " +
                         "value='Replying to " + cmtAuthor.replace( /'/g, "&#39;" ) + "'/><br />" : "" ) +
                     "<table style='border-collapse:collapse'><tr><td id='reply-link-buttons' style='width: " +
                     ( window.replyLinkPreloadPing === "button" ? "325" : "255" ) + "px'>" +
-                    "<button id='reply-dialog-button' class='mw-ui-button mw-ui-progressive'>" + mw.msg( "rl-reply" ) + "</button> " +
-                    "<button id='reply-link-preview-button' class='mw-ui-button'>" + mw.msg( "rl-preview" ) + "</button>" +
+                    "<button id='reply-dialog-button' class='mw-ui-button mw-ui-progressive cdx-button cdx-progressive'>" + mw.msg( "rl-reply" ) + "</button> " +
+                    "<button id='reply-link-preview-button' class='mw-ui-button cdx-button'>" + mw.msg( "rl-preview" ) + "</button>" +
                     ( window.replyLinkPreloadPing === "button" ?
-                        " <button id='reply-link-ping-button' class='mw-ui-button'>Ping</button>" : "" ) +
-                    "<button id='reply-link-cancel-button' class='mw-ui-button mw-ui-quiet mw-ui-destructive'>" + mw.msg( "rl-cancel-button" ) + "</button></td>" +
+                        " <button id='reply-link-ping-button' class='mw-ui-button cdx-button'>Ping</button>" : "" ) +
+                    "<button id='reply-link-cancel-button' class='mw-ui-button mw-ui-quiet mw-ui-destructive cdx-button cdx-quiet cdx-destructive'>" + mw.msg( "rl-cancel-button" ) + "</button></td>" +
                     "<td id='reply-dialog-status'></span><div style='clear:left'></td></tr></table>" +
                     "<div id='reply-link-options' class='gone-on-empty' style='margin-top: 0.5em'></div>" +
                     "<div id='reply-link-preview' class='gone-on-empty' style='border: thin dashed gray; padding: 0.5em; margin-top: 0.5em'></div>";
@@ -2056,6 +2056,8 @@ function loadReplyLink( $, mw, isOnSectionWatchlistPage ) {
               "max-width: 1200px; width: 66%; margin-top: 0.5em; }"+
             ".gone-on-empty:empty { display: none; }"
         );
+        // It will not work correctly on MW1.43 as 'mw-ui-*' styles are replaced by 'cdx-*' - See Wikimedia Codex design system.
+        // We would need to find the replacement for the loaded styles
         mw.loader.load( "https://en.wikipedia.org/w/index.php?title=User:Enterprisey/mw-ui-button.css&action=raw&ctype=text/css", "text/css" );
 
         // Pre-load interface messages; we will check again when a (reply)

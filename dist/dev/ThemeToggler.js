@@ -33,8 +33,8 @@ $(function() {
 				.attr('data-theme', newTheme)
 				.removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
 				.addClass('theme-fandomdesktop-' + newTheme);
-			var logoTextColor = (newTheme === 'light') ? '#520044' : '#f9edd8';
-			mw.util.addCSS('svg .cls-1{fill:' + logoTextColor + ';}svg .cls-4{fill:#ffc500;}');
+			var fandomLogo = (newTheme === 'light') ? '#wds-brand-fandom-logo' : '#wds-brand-fandom-logo-light';
+			$('.global-top-navigation__fandom-logo use').attr('xlink:href', fandomLogo);
 			mw.config.set('isDarkTheme', !mw.config.get('isDarkTheme'));
 			mw.hook('dev.themeToggler.toggled').fire(newTheme);
 		});

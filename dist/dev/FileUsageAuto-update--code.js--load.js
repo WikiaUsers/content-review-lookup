@@ -482,7 +482,7 @@
                 LIR.log(LIR.i18n.msg('contentsRetrieved').escape());
                 console.log('Begin processing page content.');
                 // Replacing image name on each page
-                var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
+                var escapeRegExp = mw.util.escapeRegExp;
                 LIR.queueData.forEach(function(data) {
                     var pageKey = LIR.pageKey.indexOf(data.title);
                     var pageData = LIR.pageData[pageKey];
@@ -679,7 +679,7 @@
         },
         removeFromQueue: function(queueOldName) {
             LIR.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + '_LIRQueueData']);
-            var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
+            var escapeRegExp = mw.util.escapeRegExp;
             var index = LIR.queueData.findIndex(function(data) {
                 return queueOldName.match(new RegExp(escapeRegExp(data.oldImage), 'gi'));
             });
@@ -1238,7 +1238,7 @@
                 );
                 if (typeof localStorage[LIR.wg.wgUserName + '_LIRQueueData'] !== 'undefined') {
                     LIR.queueData = JSON.parse(localStorage[LIR.wg.wgUserName + '_LIRQueueData']);
-                    var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
+                    var escapeRegExp = mw.util.escapeRegExp;
                     var matchedData = LIR.queueData.find(function(data) {
                         return LIR.wg.wgTitle.match(new RegExp(escapeRegExp(data.oldImage), 'gi'));
                     });

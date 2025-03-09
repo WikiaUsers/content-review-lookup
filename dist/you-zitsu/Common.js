@@ -262,11 +262,11 @@ $(function(){
   $(this).css({'height':'auto','width':'150px'});
  });
  $('#langdiv img').hover(function(){
-  $(this).animate({width:'180px'},'fast');
-  $('#langdiv span').text($(this).attr('alt'));
- },function(){
-  $('#langdiv span').text('You-Zitsu Wiki Interlanguage');
-  $(this).animate({width:'150px'},'fast');
+  $(this).animate({width:'180px'}, 'fast');
+  $(this).closest('#langdiv').find('span').first().text($(this).attr('alt'));
+ }, function(){
+  $(this).closest('#langdiv').find('span').first().text('You-Zitsu Wiki Interlanguage');
+  $(this).animate({width:'150px'}, 'fast');
  });
 });
 

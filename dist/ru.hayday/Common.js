@@ -39,6 +39,8 @@ var intervaleditCount = setInterval(editcountcalc, 500);
 
 function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
 
+let side = document.querySelector('.page-side-tools');
+
 //vk video
 var vkVideos = document.querySelectorAll('.vk-video');
 if(vkVideos.length){
@@ -55,61 +57,85 @@ if(vkVideos.length){
 if (document.body.className.includes('theme-fandomdesktop-light')) {
 
 	if ((month == 11||month==0||month==1)||(month==3&&date==1)){
-		var snowDisabled = storage.getItem('noSnow');
+		//var snowDisabled = storage.getItem('noSnow');
+		let summonID;
+		let snowBoxes = [];
+		for (let i=0; i < 6; i++) {
+			let div = document.createElement('div');
+			div .className = 'snow-box';
+			div.style.height = '100px';
+			snowBoxes.push(div);
+			document.body.prepend(div);
+		}
+		
+		function checkSnow() {
+			let winHeight = window.innerHeight;
+			snowBoxes.forEach(function(box){
+				let height = parseInt(box.style.height);
+				//console.log(box.children);
+				for(let i=0; i<box.children.length;i++){
+					let snow = box.children[i];
+					let bottom = parseInt(snow.style.bottom);
+					if (height-bottom > winHeight+1000) {
+						snow.remove();
+					}
+				}
+			});
+		}
 		
 
 		
-		var summonID;
-		var allClouds = [];
-		function moveClouds() {
-			//allClouds.forEach(function(cloud, i){
-			//for должен быть быстрее forEach
-			for(let i = 0; i < allClouds.length; i++){
-				let cloud = allClouds[i];
-				if (cloud.offsetTop > window.innerHeight){
-					allClouds.splice(i, 1);
-					cloud.remove();
-				} else {
-					cloud.style.top = (cloud.offsetTop+cloud.speed) + 'px';
-					cloud.degree += cloud.rSpeed;
-					cloud.style.transform ='rotate('+cloud.degree+'deg)';
-					cloud.style.left = (cloud.left+Math.sin(cloud.offsetTop/70)*30)+'px';
-				}
+		//let allClouds = [];
+		function moveSnow(fps) {
+		//allClouds.forEach(function(snowflake, i){
+			for (let i=0; i<snowBoxes.length;i++){
+				let box = snowBoxes[i];
+				let height = parseInt(box.style.height);
+				box.style.height = (height+(i+1)*(25/fps)) + 'px';
+				box.style.left = (-30+Math.sin(height/70)*30)+'px';
 			}
 		}
-		function summonCloud(){
-			var cloud = document.createElement('div');
-			var size = randint(10, 21);
-			//var color = Math.random()*0.3+0.5;
-			cloud.speed = randint(2,7);
-			cloud.rSpeed = randint(-10,10);
-			cloud.degree = 0;
-			var bottom = randint(0, window.innerWidth);
-			cloud.left = bottom;
-			cloud.className = 'snow';
-			cloud.style.top = -size + 'px';
-			cloud.style.left = bottom + 'px';
-			cloud.style.width = size+'px';
-			cloud.style.height = size+'px';
+		function summonSnow(){
+			let boxN = randint(0,6);
 			
-			cloud.innerHTML = randint(0,2)?'<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
+			let snowflake = document.createElement('div');
+			let size = randint(10, 21);
+			//var color = Math.random()*0.3+0.5;
+			//snowflake.speed = randint(2,7);
+			//snowflake.rSpeed = randint(-10,10);
+			//snowflake.degree = 0;
+			let bottom = randint(0, window.innerWidth+60);
+			snowflake.className = 'snow';
+			//console.log((parseInt(snowBoxes[boxN].style.height)-100) + 'px');
+			snowflake.style.bottom = (parseInt(snowBoxes[boxN].style.height)-100) + 'px';
+			snowflake.style.left = bottom + 'px';
+			snowflake.style.width = size+'px';
+			snowflake.style.height = size+'px';
+			
+			snowflake.innerHTML = randint(0,2)?'<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
 			'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
 			'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
 			'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path></g></svg>':
 			'<div style="width:60%;height:60%;border-radius:50%;background-color: white;"></div>';
-			document.body.append(cloud);
-			allClouds.push(cloud);
-			//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
-			summonID = setTimeout(summonCloud, randint(200, 601));
+			snowBoxes[boxN].prepend(snowflake);
+			//allClouds.push(snowflake);
+			//var moveId = setInterval(moveCloud, 40, snowflake, speed, moveId);
+			let dens = +(storage.getItem('snowDensity') || 10);
+			summonID = setTimeout(summonSnow, Math.ceil(randint(200, 601)*(17450/(dens*window.innerWidth))));
 		}
+		let moveInterval;// = setInterval(moveSnow, 50);
+		let checkInterval;
 		
-		var side = document.querySelector('.page-side-tools');
+		//var side = document.querySelector('.page-side-tools');
 		var button = document.createElement('button');
 		button.className = 'page-side-tool';
-		if (snowDisabled !== 'true'){
-			summonID = setTimeout(summonCloud, 1000);
+		if (storage.getItem('noSnow') !== 'true'){
+			summonID = setTimeout(summonSnow, 1000);
 			button.title = 'Ясная погода';
 			button.innerHTML = sunSvg;
+			let fps = +(storage.getItem('fps')||20);
+			moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
+			checkInterval = setInterval(checkSnow, 5000);
 			
 		} else {
 			button.title = 'Устроить снегопад';
@@ -118,39 +144,63 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		}
 		
 		
-		setInterval(moveClouds, 40);
 		document.addEventListener('keydown', function(event) {
 			if (event.code == 'KeyC' && event.altKey && !event.repeat) {
-				if (snowDisabled == 'true'){
-					summonID = setTimeout(summonCloud, 1000);
+				if (storage.getItem('noSnow') == 'true'){
+					summonID = setTimeout(summonSnow, 1000);
 					storage.setItem('noSnow', 'false');
-					snowDisabled = 'false';
 					button.title = 'Ясная погода';button.innerHTML = sunSvg;
+					let fps = +(storage.getItem('fps')||20);
+					moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
+					checkInterval = setInterval(checkSnow, 5000);
+					
 				} else {
-					clearInterval(summonID);
+					clearTimeout(summonID);
+					clearInterval(moveInterval);
+					clearInterval(checkInterval);
 					storage.setItem('noSnow', 'true');
-					snowDisabled = 'true';
 					button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
-					allClouds.forEach(function(cloud, i){
-						cloud.remove();
+					snowBoxes.forEach(function(box){
+						box.innerHTML = '';
 					});
 				}
 			}
 		});
 		button.addEventListener('click', function(){
-			if (snowDisabled == 'true'){
-				summonID = setTimeout(summonCloud, 1000);
+			if (storage.getItem('noSnow') == 'true'){
+				summonID = setTimeout(summonSnow, 1000);
 				storage.setItem('noSnow', 'false');
-				snowDisabled = 'false';
-				 button.title = 'Ясная погода';button.innerHTML = sunSvg;
+				button.title = 'Ясная погода';button.innerHTML = sunSvg;
+				let fps = +(storage.getItem('fps')||20);
+				moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
+				checkInterval = setInterval(checkSnow, 5000);
 			} else {
-				clearInterval(summonID);
+				clearTimeout(summonID);
+				clearInterval(moveInterval);
+				clearInterval(checkInterval);
 				storage.setItem('noSnow', 'true');
-				snowDisabled = 'true';
 				button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
-				allClouds.forEach(function(cloud, i){
-					cloud.remove();
+				
+				snowBoxes.forEach(function(box){
+					box.innerHTML = '';
 				});
+				
+			}
+		});
+		document.addEventListener("visibilitychange", function(){
+			if (storage.getItem('noSnow') !== 'true'){
+				if (document.hidden){
+					console.log('Вкладка не активна');
+					clearInterval(moveInterval);
+					clearTimeout(summonID);
+					clearInterval(checkInterval);
+				} else {
+					console.log('Вкладка активна');
+					let fps = +(storage.getItem('fps')||20);
+					moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
+					summonID = setTimeout(summonSnow, randint(200, 601));
+					checkInterval = setInterval(checkSnow, 5000);
+				}
 			}
 		});
 		side.append(button);
@@ -159,80 +209,137 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 
 //облака в тёмной теме
 if (document.body.className.includes('theme-fandomdesktop-dark')) {
-	var cloudDisabled = storage.getItem('noClouds');
+	//let cloudDisabled = storage.getItem('noClouds');
 	let summonID;
 	
-	var allClouds = [];
-	function moveClouds() {
-		//allClouds.forEach(function(cloud, i){
-		for (var i=0; i<allClouds.length;i++){
-			let cloud = allClouds[i];
-			if (cloud.offsetLeft > document.documentElement.clientWidth){
-				allClouds.splice(i, 1);
-				cloud.remove();
-			} else {
-				cloud.style.left = (cloud.offsetLeft+cloud.speed) + 'px';
+	let cloudBoxes = [];
+	for (let i=0; i < 4; i++) {
+		let div = document.createElement('div');
+		div .className = 'dark-cloud-box';
+		div.style.width = '500px';
+		cloudBoxes.push(div);
+		document.body.prepend(div);
+	}
+	
+	function checkClouds() {
+		let winWidth = window.innerWidth;
+		cloudBoxes.forEach(function(box){
+			let width = parseInt(box.style.width);
+			console.log(box.children);
+			for(let i=0; i<box.children.length;i++){
+				let cloud = box.children[i];
+				let right = parseInt(cloud.style.right);
+				if (width-right > winWidth+1000) {
+					cloud.remove();
+				}
 			}
+		});
+	}
+	
+	//let allClouds = [];
+	function moveClouds(fps) {
+		//allClouds.forEach(function(cloud, i){
+		for (let i=0; i<cloudBoxes.length;i++){
+			let box = cloudBoxes[i];
+			box.style.width = (parseInt(box.style.width)+(i+2)*(20/fps)) + 'px';
 		}
 	}
 	function summonCloud(){
+		let boxN = randint(0,4);
+		
+		
 		var cloud = document.createElement('div');
 		var size = randint(150, 401);
 		var color = Math.random()*0.3+0.5;
-		cloud.speed = randint(2,7);
+		//cloud.speed = randint(2,7);
 		var bottom = randint(10, 71);
 		cloud.className = 'dark-cloud';
-		cloud.style.left = -size + 'px';
+		cloud.style.right = (parseInt(cloudBoxes[boxN].style.width)-500) + 'px';
 		cloud.style.top = bottom + 'px';
 		cloud.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="616" height="300" viewBox="0 0 163 79" style="width: '+size+'px; height: auto;">'+
 		'<g id="layer1" transform="translate(-371,-102)">'+
 		'<path style="fill: #000000;fill-opacity: 0.6;stroke-width: 0.264583px;filter: contrast('+color+');" d="m 389.58682,154.9836 c 1.96987,-14.28425 13.22385,-22.55888 33.11549,-19.04026 3.75596,-11.90853 18.3944,-17.67658 28.27486,-8.33745 13.97612,-19.15901 39.46489,-24.209 52.92473,-0.725 17.37094,3.59296 15.9784,14.66685 13.41244,24.64988 11.59322,2.4844 6.08985,18.86819 -0.3625,18.8499 l -127.59936,0.725 c -10.87315,-0.0503 -5.54274,-17.90322 0.23434,-16.12207 z"/>'+
 		'</g></svg>';
-		document.body.prepend(cloud);
-		allClouds.push(cloud);
+		cloudBoxes[boxN].prepend(cloud);
+		//allClouds.push(cloud);
 		//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
 		summonID = setTimeout(summonCloud, randint(2000, 6001));
 	}
 	
-	var side = document.querySelector('.page-side-tools');
-	var button = document.createElement('button');
-	button.className = 'page-side-tool';
-	if (cloudDisabled !== 'true'){summonID = setTimeout(summonCloud, 1000); button.title = 'Ясная погода';button.innerHTML = moonSvg;} else { button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;}
+	let moveInterval;
+	let checkInterval;
 	
-	setInterval(moveClouds, 40);
+	//let side = document.querySelector('.page-side-tools');
+	let button = document.createElement('button');
+	button.className = 'page-side-tool';
+	if (storage.getItem('noClouds') !== 'true'){
+		summonID = setTimeout(summonCloud, 1000);
+		checkInterval = setInterval(checkClouds, 5000);
+		let fps = +(storage.getItem('fps') || 20);
+		moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
+		button.title = 'Ясная погода';
+		button.innerHTML = moonSvg;
+	} else {
+		button.title = 'Пасмурная погода';
+		button.innerHTML = cloudSvg;
+	}
+	
 	document.addEventListener('keydown', function(event) {
 		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
-			if (cloudDisabled == 'true'){
+			if (storage.getItem('noClouds') == 'true'){
 				summonID = setTimeout(summonCloud, 1000);
 				storage.setItem('noClouds', 'false');
-				cloudDisabled = 'false';
 				button.title = 'Ясная погода';button.innerHTML = moonSvg;
+				let fps = +(storage.getItem('fps') || 20);
+				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
+				checkInterval = setInterval(checkClouds, 5000);
 			} else {
-				clearInterval(summonID);
+				clearInterval(moveInterval);
+				clearTimeout(summonID);
+				clearInterval(checkInterval);
 				storage.setItem('noClouds', 'true');
-				cloudDisabled = 'true';
 				button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;
-				allClouds.forEach(function(cloud, i){
-					cloud.remove();
+				cloudBoxes.forEach(function(box){
+					box.innerHTML = '';
 				});
 			}
 		}
 	});
 	
 	button.addEventListener('click', function(){
-		if (cloudDisabled == 'true'){
+		if (storage.getItem('noClouds') == 'true'){
 			summonID = setTimeout(summonCloud, 1000);
 			storage.setItem('noClouds', 'false');
-			cloudDisabled = 'false';
 			button.title = 'Ясная погода';button.innerHTML = moonSvg;
+			let fps = +(storage.getItem('fps') || 20);
+			moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
+			checkInterval = setInterval(checkClouds, 5000);
 		} else {
-			clearInterval(summonID);
+			clearInterval(moveInterval);
+			clearTimeout(summonID);
+			clearInterval(moveInterval);
 			storage.setItem('noClouds', 'true');
-			cloudDisabled = 'true';
 			button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;
-			allClouds.forEach(function(cloud, i){
-				cloud.remove();
+			cloudBoxes.forEach(function(box){
+				box.innerHTML = '';
 			});
+		}
+	});
+	
+	document.addEventListener("visibilitychange", function(){
+		if (storage.getItem('noClouds') !== 'true') {
+			if (document.hidden){
+				console.log('Вкладка не активна');
+				clearInterval(moveInterval);
+				clearTimeout(summonID);
+				clearInterval(moveInterval);
+			} else {
+				console.log('Вкладка активна');
+				let fps = +(storage.getItem('fps') || 20);
+				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
+				summonID = setTimeout(summonCloud, 1000);
+				checkInterval = setInterval(checkClouds, 5000);
+			}
 		}
 	});
 	side.append(button);
@@ -1596,7 +1703,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 
 //добавление кнопки перемотки к окну редактирования
 if (new URL(window.location.href).searchParams.get('action')==='edit'){
-	document.querySelector('.page-side-tools').insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
+	side.insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
 }
 
 //код за этими фигурными скобками не должен вызывать элементы страницы, так как может не сработать

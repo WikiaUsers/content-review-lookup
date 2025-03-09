@@ -129,12 +129,12 @@ $(function() {
 	
 	$('#digmode').attr('onclick', 'removePlantAll()');
 	
-	$('#planted > p > a').each(function() {
+	$('#planted > p a').each(function() {
 		var id = $(this).attr('title');
 		$(this).children('img').attr('id', (id + '_planted'));
 	});
 	
-	$('#plant > p > img').each(function() {
+	$('#plant > p > span > span').each(function() {
 		var title = mw.html.escape($(this).attr('title'));
 		$(this).attr('id', title);
 		$(this).attr('onclick', 'addPlant("' + title + '")');

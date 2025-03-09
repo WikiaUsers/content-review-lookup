@@ -20,21 +20,23 @@
         articles: [
         'u:dev:UserTags/code.js',
 		"u:dev:MediaWiki:BackToTopButton/code.js",
-        'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
-        'MediaWiki:Usernames.js',
-        'MediaWiki:GemCalculators.js',
-        'MediaWiki:Experience.js',
-        'MediaWiki:ModeToggle.js',
-        'MediaWiki:BadgeGenerator.js',
-        'MediaWiki:Protection.js',
+		'MediaWiki:AttackStrategies.js',
         'MediaWiki:AvailableBuildings.js',
-        'MediaWiki:GoldPass.js',
-        'MediaWiki:HeroSkins.js',
-        'MediaWiki:Toggle.js',
-        'MediaWiki:WikiNotification.js',
-        'MediaWiki:ClanHouseGenerator.js',
+        'MediaWiki:BadgeGenerator.js',
         'MediaWiki:ChestLootTable.js',
-		'MediaWiki:Requests.js'
+        'MediaWiki:ClanHouseGenerator.js',
+        'MediaWiki:Experience.js',
+        'MediaWiki:GemCalculators.js',
+        'MediaWiki:GoldPass.js',
+        'MediaWiki:Group-sysop.js',
+        'MediaWiki:HeroSkins.js',
+        'MediaWiki:ModeToggle.js',
+        'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
+        'MediaWiki:Protection.js',
+		'MediaWiki:Requests.js',
+        'MediaWiki:Toggle.js',
+        'MediaWiki:Usernames.js',
+        'MediaWiki:WikiNotification.js'
     	]
     });
 	

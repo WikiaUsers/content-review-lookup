@@ -43,6 +43,14 @@ $(document).ready(function() {
     $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
 });
 
+/* Interactive maps: Collectible markers button text  */
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+var mxoverrides = window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
+
+mxoverrides["collect-mark-button"] = "Отметить выполненным";
+mxoverrides["collect-unmark-button"] = "Выполнено";
 
 /* MapsExtended global config */
 window.mapsExtendedConfig = {
@@ -66,37 +74,32 @@ window.mapsExtendedConfig = {
                     ],
                     []
                 ],
+    "hiddenControls": ["edit"],
+    "collectibleCategories": ["quest"],
+    "collectibleCheckboxStyle": "fandom",
     "sortMarkers": "category",
-    "disabledCategories": [
-        "settings"
-    ],
     "categoryGroups": [
         {
-            "label": "Exfils",
+            "label": "Выходы",
             "children": [
                 "exfil_pmc",
                 "exfil_scav",
-                "exfil_shared"
+                "exfil_transit"
             ]
         },
         {
-            "label": "Spawns",
+            "label": "Спавны",
             "children": [
                 "spawn_pmc",
-                {
-                    "label": "AI",
-                    "children": [
-                        "spawn_scav",
-                        "spawn_sniper",
-                        "spawn_boss",
-                        "spawn_rogueraider",
-                        "spawn_cultist"
-                    ]
-                }
+                "spawn_scav",
+                "spawn_sniper",
+                "spawn_boss",
+                "spawn_rogueraider",
+                "spawn_cultist"
             ]
         },
         {
-            "label": "Misc",
+            "label": "Разное",
             "children": [
                 "lever",
                 "stationarygun",
@@ -105,13 +108,13 @@ window.mapsExtendedConfig = {
             ]
         },
         {
-            "label": "Loot",
+            "label": "Лут",
             "children": [
                 "loot_keycard",
                 "loot_key",
                 "loot_loose",
                 {
-                    "label": "Containers",
+                    "label": "Контейнеры",
                     "children": [
                         "container_ammo",
                         "container_stash",

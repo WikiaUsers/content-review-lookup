@@ -1,21 +1,20 @@
-mw.hook('userjs.loadSectionTags.done').add(function(){
-	if ($('.ns-talk').length !== 0){
+mw.hook('userjs.loadSectionTags.done').add(() => {
+	if ($('.ns-talk').length){
 		return;
 	}
 	
-	var seen;
+	let seen;
+	let href;
+	const redLinkString = ' (page does not exist)';
 	
-	$('.section-level-2, .opening-section').each(function(){
+	$('.section-level-2, .opening-section').each(() => {
 		seen = {};
 		$(this).find('p a, p span.new').each(findDuplicateLinks);
 	});
 	
 	function findDuplicateLinks(){
-		var href;
-		
 		if ($(this).attr('class') === 'new'){
-			var redLinkString = ' (page does not exist)';
-			href = mw.util.getUrl($(this).attr('title').slice('0', '-' + redLinkString.length));
+			href = mw.util.getUrl($(this).attr('title').slice('0', `-${redLinkString.length}`));
 		} else {
 			href = $(this).attr('href');
 		}

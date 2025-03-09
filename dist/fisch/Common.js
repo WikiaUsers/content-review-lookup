@@ -4,9 +4,6 @@ window.lockOldComments.limit = 21;
 window.lockOldComments.addNoteAbove = true;
 window.BackToTopModern = true;
 
-/* modblock  */
-importScript('MediaWiki:ModBlock.js');
-
 /* By: user:gronox CUSTOM Gallery uploading fish mutations button */
 importScript('MediaWiki:UploadMutationsImage.js');
 

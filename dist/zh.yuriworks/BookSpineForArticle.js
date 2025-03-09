@@ -1,6 +1,6 @@
 $(function(){
     var idx = 0;
-    $(".volume-table td > a.image img").each(function(){
+    $(".volume-table td > span > .image img").each(function(){
         var a_url = $(this).parent().parent().html();
         idx = idx + 10;
         var book_name = $(this).attr("alt");

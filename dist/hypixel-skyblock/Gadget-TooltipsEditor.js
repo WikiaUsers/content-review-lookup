@@ -292,12 +292,12 @@ $.when(
 
         // Lua Helpers
         luaTableToJson: function (s) {
-            return api.post({
+            return api.postWithToken('csrf', api.assertCurrentUser({
                 action: "scribunto-console",
                 title: mw.config.get("wgPageName"),
                 question: "=mw.text.jsonEncode(p)",
                 content: s,
-            });
+            }));
         },
         refreshLuaCache: function () {
             var api = new mw.Api();

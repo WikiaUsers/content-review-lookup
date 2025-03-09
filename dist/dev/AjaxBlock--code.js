@@ -280,8 +280,8 @@
             var anchor = e.target.closest('a[href]');
             if (anchor === null) return;
 
-            var uri = new mw.Uri(anchor.href);
-            var target = this.getPageName(uri.path);
+            var uri = new URL(anchor.href);
+            var target = this.getPageName(uri.pathname);
             if (target === '') return;
 
             var specialNamespace = this.specialNamespaceAliases.find(function(alias) {
@@ -327,8 +327,9 @@
         },
         getBlockTarget: function(uri, title) {
             // wpTarget query parameter takes priority
-            if (uri.query.wpTarget) {
-                return uri.query.wpTarget;
+            var params = uri.searchParams;
+            if (params.get('wpTarget')) {
+                return params.get('wpTarget');
             }
 
             var parts = title.split('/');

@@ -1,39 +1,50 @@
-$(function(){
-	var root;
-	var action = mw.config.get('wgAction');
+$(() => {
+	let root;
+	const action = mw.config.get('wgAction');
+	const sectionClass = 'page-section';
 	
-	mw.hook('wikipage.content').add(function(){
-		root = (action === 'submit') ? $('#wikiPreview > div > .mw-parser-output') : $('#mw-content-text > .mw-parser-output');
-		
+	if (mw.config.get('skin') === 'fandommobile'){
+		return;
+	}
+	
+	mw.loader.load('/load.php?only=styles&mode=articles&articles=MediaWiki:Sections.css', 'text/css');
+	mw.hook('wikipage.content').add(() => {
 		if (action !== 'submit' && action !== 'view'){
 			return;
+		}
+		
+		if (action === 'submit'){
+			root = $('#wikiPreview > div > .mw-parser-output');
+		} else {
+			root = $('#mw-content-text > .mw-parser-output');
 		}
 		
 		createSections(root);
 	});
 	
-	mw.hook('ve.activationComplete').add(function(){
+	mw.hook('ve.activationComplete').add(() => {
 		root = $('#content > div > div > div > div > .ve-ce-rootNode');
 		root.addClass('mw-parser-output');
 		createSections(root);
 	});
 	
 	function createSections(content){
-		createSection('1');
-		createSection('2');
-		createSection('3');
-		createSection('4');
-		createSection('5');
-		createSection('6');
+		createSection('1', content);
+		createSection('2', content);
+		createSection('3', content);
+		createSection('4', content);
+		createSection('5', content);
+		createSection('6', content);
 		
-		content.children(':not(.page-section)').wrapAll($('<section class="page-section opening-section">'));
+		content.children(`:not(.${sectionClass})`).wrapAll($('<section>').addClass([sectionClass, 'opening-section']));
 		mw.hook('userjs.loadSectionTags.done').fire(content);
 		console.log('Section tags added');
-		
-		function createSection(level){
-			content.find('h' + level + ':has(.mw-headline), h' + level + '.ve-ce-headingNode').each(function(){
-				$(this).nextUntil($('h' + level)).add($(this)).wrapAll($('<section class="page-section">').addClass('section-level-' + level));
-			});
-		}
+	}
+	
+	function createSection(level, content){
+		content.find(`h${level}:has(.mw-headline), h${level}.ve-ce-headingNode`).each((index, heading) => {
+			const sectionWrapper = $('<section>').addClass([sectionClass, `section-level-${level}`]);
+			$(heading).nextUntil($('h' + level)).add($(heading)).wrapAll(sectionWrapper);
+		});
 	}
 });

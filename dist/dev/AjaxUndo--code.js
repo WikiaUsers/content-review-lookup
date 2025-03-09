@@ -97,18 +97,17 @@
     }
 
     function createUndoLink(url) {
-        var uri = new mw.Uri(url);
+        var uri = new URL(url),
+        	title = uri.searchParams.get('title');
         return $('<a>', {
             href: '#ajaxundo', // For integration
             'data-url': url,
-            'data-page': decodeURIComponent(
-                uri.query &&
-                    uri.query.title ||
-                    uri.path.substring(
-                        conf.wgArticlePath
-                            .replace('$1', '')
-                            .length
-                    )
+            'data-page': decodeURIComponent(title ||
+                uri.pathname.substring(
+                    conf.wgArticlePath
+                        .replace('$1', '')
+                        .length
+                )
             ),
             text: msg('buttontext'),
             click: undoEdit,
@@ -150,7 +149,6 @@
                 'mediawiki.api',
                 'mediawiki.user',
                 'mediawiki.util',
-                'mediawiki.Uri',
                 'oojs-ui-windows'
             ])
         ).then(init);

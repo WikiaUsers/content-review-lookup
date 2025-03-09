@@ -26,3 +26,8 @@ randomWelcomeImg();
 
 /**BackToTop Button Modernization**/
 window.BackToTopModern = true;
+
+window.importArticles({
+    type: 'script',
+    articles: ['u:dev:MediaWiki:Countdown/code.js']
+});

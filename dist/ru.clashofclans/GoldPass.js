@@ -1,15 +1,23 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-// Adapted from King Dragonhoff's StatueStats javascript
+
+/*
+   * Authors: EN Wiki COC: https://clashofclans.fandom.com/wiki/Clash_of_Clans_Wiki
+   * Adapted from King Dragonhoff's StatueStats javascript
+   * MagmaHound is one of the latest developers
+   * 
+   * Translated to RU by Flotiliya
+*/
+
 $(document).ready(function() {
     /* Create inputs */
-	$("span#builderBoostHarness").html('<div id="builderBoostInput">Builder Boost: <select name="builderBoost" id="builderBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> </select> %</div>');
-	$("span#hammerJamHarness").html('<div id="hammerJamInput">Toggle Hammer Jam? <input type="checkbox" name="hammerJamBoost" id="hammerJamBoost"></input></div>');
-	$("span#autoForgeHarness").html('<div id="autoForgeInput">Toggle Auto Forge Prices? <input type="checkbox" name="autoForgeBoost" id="autoForgeBoost"></input></div>');
-	$("span#trainingBoostHarness").html('<div id="trainingBoostInput">Training Boost: <select name="trainingBoost" id="trainingBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
-	$("span#researchBoostHarness").html('<div id="researchBoostInput">Research Boost: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
-	$("span#armyBoostHarness").html('<div id="armyBoostInput">Toggle Army Boost? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
-	$("span#freezeHarness").html('<div id="freezeInput">Toggle Frost? <input type="checkbox" name="freezeBoost" id="freezeBoost"></input></div>');
-	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Frost Potency: '+
+	$("span#builderBoostHarness").html('<div id="builderBoostInput">Ускорение строительства: <select name="builderBoost" id="builderBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> </select> %</div>');
+	$("span#hammerJamHarness").html('<div id="hammerJamInput">Включить Hammer Jam? <input type="checkbox" name="hammerJamBoost" id="hammerJamBoost"></input></div>');
+	$("span#autoForgeHarness").html('<div id="autoForgeInput">Обновить стоимость доп.ячейки кузницы? <input type="checkbox" name="autoForgeBoost" id="autoForgeBoost"></input></div>');
+	$("span#trainingBoostHarness").html('<div id="trainingBoostInput">Ускорение тренировки: <select name="trainingBoost" id="trainingBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
+	$("span#researchBoostHarness").html('<div id="researchBoostInput">Ускорение исследований: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
+	$("span#armyBoostHarness").html('<div id="armyBoostInput">Вкл. ускор. тренировки? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
+	$("span#freezeHarness").html('<div id="freezeInput">Включить замедление? <input type="checkbox" name="freezeBoost" id="freezeBoost"></input></div>');
+	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Замедление: '+
 		'<select name="frostPotencyLevel" id="frostPotencyLevel">'+
 			'<option value="0">0</option>'+
 			'<option value="20">20</option>'+
@@ -26,52 +34,52 @@ $(document).ready(function() {
 			//'<option value="70">70</option>'+ No longer used as of Sep 2024 balance changes
 			//'<option value="75">75</option>'+
 		'</select> %</div>');
-	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
-	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
-	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
-	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
-	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
-	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
-	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option></select></div>');
-	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option></select></div>');
-	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Включить способность? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
+	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Вкл. способность героя? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
+	$("span#rageSpellHarness").html('<div id="rageSpellInput">Ур. заклинания ярости: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
+	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Ур. заклинания ярости: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#rageTowerHarness").html('<div id="rageTowerInput">Включить ярость от Башни? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
+	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Включить яд от Башни? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
+	$("span#valkRageHarness").html('<div id="valkRageInput">Вкл. ярость супервалькирии? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
+	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Ур. спешного заклинания: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option></select></div>');
+	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Ур. спешного заклинания: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Уровень яда: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option></select></div>');
+	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">Ур. яда от Ратуши: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Ур. яда Охотницы: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
-	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Gem Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
-	$("span#rageAuraHarness").html('<div id="rageAuraInput">Rage Gem Level: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
-	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
-	$("span#hardModeHarness").html('<div id="hardModeInput">Toggle Hard Mode? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
-	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
-	$("span#resourceBoostHarness").html('<div id="resourceBoostInput">Toggle Gem Boost? <input type="checkbox" name="resourceBoost" id="resourceBoost"></input></div>');
-	$("span#clockTowerBoostHarness").html('<div id="clockBoostInput">Toggle Clock Tower Boost? <input type="checkbox" name="clockBoost" id="clockBoost"></input></div>');
+	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Ур. кристалла жизни: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
+	$("span#rageAuraHarness").html('<div id="rageAuraInput">Ур. кристалла ярости: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
+	$("span#targetHPHarness").html('<div id="targetHPInput">Максимальное ХП цели: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
+	$("span#hardModeHarness").html('<div id="hardModeInput">Включить сложный режим? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
+	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Ур. Ауры жизни ученика: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
+	$("span#resourceBoostHarness").html('<div id="resourceBoostInput">Вкл. ускор. за Кристаллы? <input type="checkbox" name="resourceBoost" id="resourceBoost"></input></div>');
+	$("span#clockTowerBoostHarness").html('<div id="clockBoostInput">Вкл. ускор. Часовой башни? <input type="checkbox" name="clockBoost" id="clockBoost"></input></div>');
 	/* Event boosts: change the options as appropriate for the event
 	Last event: Anime Clash */
-	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost">' +
+	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Ускорение строительства: <select name="eventBuilderBoost" id="eventBuilderBoost">' +
 		'<option value="0">0</option>' +
 		'<option value="5">5</option>' +
 		'<option value="10">10</option>' +
 		'</select> %</div>');
-	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput" style="display:none;">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost">' +
+	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput" style="display:none;">Ускорение исследований: <select name="eventResearchBoost" id="eventResearchBoost">' +
 		'<option value="0">0</option>' +
 		'<option value="5">5</option>' +
 		'<option value="10">10</option>' +
 		'</select> %</div>');
-	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
+	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Ускорение тренировки: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
 		'<option value="0">0</option>' + 
 		'<option value="15">15</option>' +
 		'<option value="30">30</option>' +
 		// '<option value="50">50</option>' +
 		'</select> %</div>');
-	$("span#starBonusHarness").html('<div id="starBonusInput"">Star Bonus Multiplier: <select name="starBonusBoost" id="starBonusBoost">' +
+	$("span#starBonusHarness").html('<div id="starBonusInput"">Множ. звездного бонуса: <select name="starBonusBoost" id="starBonusBoost">' +
 		'<option value="1">1</option>' +
 		'<option value="2">2</option>' +
 		'<option value="3">3</option>' +
 		'<option value="4">4</option>' +
 		'<option value="5">5</option>' +
 		'</select> x</div>');
-	$("span#leagueBonusHarness").html('<div id="leagueBonusInput"">League Bonus Boost: <select name="leagueBonusBoost" id="leagueBonusBoost">' +
+	$("span#leagueBonusHarness").html('<div id="leagueBonusInput"">Повышение бонуса лиги: <select name="leagueBonusBoost" id="leagueBonusBoost">' +
 		'<option value="0">0</option>' +
 		'<option value="10">10</option>' +
 		'<option value="20">20</option>' +
@@ -80,33 +88,33 @@ $(document).ready(function() {
 		'<option value="70">70</option>' +
 		'<option value="100">100</option>' +
 		'</select> %</div>');
-	$("span#eventShowcaseBoostHarness").html('<div id="eventShowcaseInput">Toggle Showcase Boost? <input type="checkbox" name="eventShowcaseBoost" id="eventShowcaseBoost"></input></div>');
-	$("span#modifierModeHarness").html('<div id="modifierModeToggle">Modifier Mode: '+
+	$("span#eventShowcaseBoostHarness").html('<div id="eventShowcaseInput">Вкл. витрину ускорений? <input type="checkbox" name="eventShowcaseBoost" id="eventShowcaseBoost"></input></div>');
+	$("span#modifierModeHarness").html('<div id="modifierModeToggle">Режим модификаторов: '+
 		'<select name="modifierMode" id="modifierMode">'+
-   			'<option value="Attack">Attack</option>'+
-    		'<option value="Defense">Defense</option>'+
+   			'<option value="Attack">Атака</option>'+
+    		'<option value="Defense">Защита</option>'+
 		'</select></div>');
 	// Hero gear boosts
-	$("span#heroGearToggleHarness").html('<div id="heroGearEnableToggle">Enable Hero Equipment? <input type="checkbox" name="heroGearToggle" id="heroGearToggle"></input></div>');
+	$("span#heroGearToggleHarness").html('<div id="heroGearEnableToggle">Вкл. снаряжение героя? <input type="checkbox" name="heroGearToggle" id="heroGearToggle"></input></div>');
 	$("span#heroGearHarness").html('<div id="heroGearInput">' +
 		'<table><tr>' +
 		'<td><div id="firstHeroGear">' +
-    		'<div id="firstHeroGearOption"> Equipment 1: ' +
+    		'<div id="firstHeroGearOption"> Снаряжение 1: ' +
         	'<select name="firstHeroGearChoice" id="firstHeroGearChoice">' +
         	'</select></div>' +
     	'</div></td>' +
 		'<td><div id="firstHeroGearLevel">' +
-    		'<div id="firstHeroGearLvl"> Level: ' +
+    		'<div id="firstHeroGearLvl"> Уровень: ' +
         	'<select name="firstHeroGearLevel" id="firstHeroGearLevel">' +
         	'</select></div>' +
     	'</div></td></tr>' +
     	'<tr><td><div id="secondHeroGear">' +
-    		'<div id="secondHeroGearOption"> Equipment 2: ' +
+    		'<div id="secondHeroGearOption"> Снаряжение 2: ' +
         	'<select name="secondHeroGearChoice" id="secondHeroGearChoice">' +
         	'</select></div>' +
     	'</div></td>' +
 		'<td><div id="secondHeroGearLevel">' +
-    		'<div id="secondHeroGearLvl"> Level: ' +
+    		'<div id="secondHeroGearLvl"> Уровень: ' +
         	'<select name="secondHeroGearLevel" id="secondHeroGearLevel">' +
     	    '</select></div>' +
     	'</div></td></tr>' +
@@ -227,56 +235,56 @@ $(document).ready(function() {
    Since the Sep balance changes, each level cap is written as a size-2 array.
    Entry 0 is for the normal cap, whereas Entry 1 is for the hard mode cap */
     var dictLevelCaps = {
-    	"Barbarian Puppet": [18,15],
-        "Rage Vial": [18,15],
-        "Earthquake Boots": [18,15],
-        "Vampstache": [18,15],
-        "Giant Gauntlet": [27,21],
-        "Spiky Ball": [27,21],
-        "Snake Bracelet": [27,21],
-    	"Archer Puppet": [18,15],
-    	"Invisibility Vial": [18,15],
-    	"Giant Arrow": [18,15],
-    	"Healer Puppet": [18,15],
-    	"Frozen Arrow": [27,21],
-    	"Magic Mirror": [27,21],
-    	"Henchmen Puppet": [18,15],
-    	"Dark Orb": [18,15],
-    	"Metal Pants": [18,15],
-    	"Eternal Tome": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
-    	"Life Gem": [18,15],
-    	"Rage Gem": [18,15],
-    	"Healing Tome": [18,15],
-    	"Fireball": [27,21],
-    	"Lavaloon Puppet": [27,21],
-    	"Royal Gem": [18,15],
-    	"Seeking Shield": [18,15],
-    	"Hog Rider Puppet": [18,15],
-    	"Haste Vial": [18,15],
-    	"Rocket Spear": [27,21],
-    	"Electro Boots": [27,21]
+    	"Кукла-варвар": [18,15],
+        "Фиал ярости": [18,15],
+        "Землетрясущие ботинки": [18,15],
+        "Вампирские усы": [18,15],
+        "Перчатка гиганта": [27,21],
+        "Мяч с шипами": [27,21],
+        "Змеиный браслет": [27,21],
+    	"Кукла-лучница": [18,15],
+    	"Фиал невидимости": [18,15],
+    	"Гигантская стрела": [18,15],
+    	"Кукла-целительница": [18,15],
+    	"Ледяная стрела": [27,21],
+    	"Волшебное зеркало": [27,21],
+    	"Кукольные приспешники": [18,15],
+    	"Сфера тьмы": [18,15],
+    	"Железные штаны": [18,15],
+    	"Книга вечности": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
+    	"Кристалл жизни": [18,15],
+    	"Кристалл ярости": [18,15],
+    	"Книга исцеления": [18,15],
+    	"Огненный шар": [27,21],
+    	"Кукла-лавашар": [27,21],
+    	"Королевский кристалл": [18,15],
+    	"Щит-искатель": [18,15],
+    	"Кукла-всадник на кабане": [18,15],
+    	"Фиал спешки": [18,15],
+    	"Копье-ракета": [27,21],
+    	"Электросапоги": [27,21]
     };
     // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
     var heroGearOptions = [];
     switch (pageName) {
-    	case ("Barbarian King"):
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet"];
+    	case ("Король варваров"):
+    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет"];
     		break;
-    	case ("Archer Queen"):
-    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror"];
+    	case ("Королева лучниц"):
+    		heroGearOptions = ["Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало"];
     		break;
-    	case ("Minion Prince"):
-    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants"];
+    	case ("Принц миньонов"):
+    		heroGearOptions = ["Кукольные приспешники", "Сфера тьмы", "Железные штаны"];
     		break;
-     	case ("Grand Warden"):
-    		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet"];
+     	case ("Хранитель"):
+    		heroGearOptions = ["Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар"];
     		break;
-    	case ("Royal Champion"):
-    		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots"];
+    	case ("Королевский чемпион"):
+    		heroGearOptions = ["Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -344,7 +352,7 @@ $(document).ready(function() {
 	  $(this).attr("title", initialStr);
    });
    $(".AttackSpeed").each(function() {
-      var initialSpeed = $(this).text().replace(/s/g,"") * 1;
+      var initialSpeed = $(this).text().replace(/с/g,"") * 1;
       $(this).attr("title", initialSpeed);
    });
 	// I could reuse the GoldPass class for this one, but the modifier should deal entirely in numbers
@@ -405,8 +413,8 @@ $(document).ready(function() {
    function readTime(str) {
    		/* Check if the string contains "d" for days. If so,
        	set the days parameter equal to the number preceding it. */
-		if (str.includes("d") === true) {
-  			var daysIndex = str.indexOf("d");
+		if (str.includes("д") === true) {
+  			var daysIndex = str.indexOf("д");
   			var days = str.slice(0,daysIndex) * 1;
 		// Discard the string corresponding to days
   			var strHours = str.slice(daysIndex+1).trim();
@@ -417,24 +425,24 @@ $(document).ready(function() {
   		}
 		/* Check similarly if the string contains "h" for hours.
        	Similarly also for "m" (for minutes), "s" (for seconds). */
-  		if (strHours.includes("h") === true) {
-  			var hoursIndex = strHours.indexOf("h");
+  		if (strHours.includes("ч") === true) {
+  			var hoursIndex = strHours.indexOf("ч");
   			var hours = strHours.slice(0,hoursIndex) * 1;
   			var strMinutes = strHours.slice(hoursIndex+1).trim();
   		} else {
   			var hours = 0;
   			var strMinutes = strHours;
   		}
-  		if (strMinutes.includes("m") === true) {
-  			var minutesIndex = strMinutes.indexOf("m");
+  		if (strMinutes.includes("м") === true) {
+  			var minutesIndex = strMinutes.indexOf("м");
   			var minutes = strMinutes.slice(0,minutesIndex) * 1;
   			var strSeconds = strMinutes.slice(minutesIndex+1).trim();
   		} else {
   			var minutes = 0;
   			var strSeconds = strMinutes;
   		}
-  		if (strSeconds.includes("s") === true) {
-  			var secondsIndex = strSeconds.indexOf("s");
+  		if (strSeconds.includes("с") === true) {
+  			var secondsIndex = strSeconds.indexOf("с");
   			var seconds = strSeconds.slice(0,secondsIndex) * 1;
 		// no need to cut the string any more
   		} else {
@@ -463,22 +471,22 @@ $(document).ready(function() {
   		var seconds = time - 86400*days - 3600*hours - 60*minutes;
  
   		if (days != 0) {
-  			var outputDay = days + "d ";
+  			var outputDay = days + "д ";
   		} else {
   			var outputDay = "";
   		}
   		if (hours != 0) {
-  			var outputHour = hours + "h ";
+  			var outputHour = hours + "ч ";
   		} else {
   			var outputHour = "";
   		}
   		if (minutes != 0) {
-  			var outputMinute = minutes + "m ";
+  			var outputMinute = minutes + "м ";
   		} else {
   			var outputMinute = "";
   		}
   		if (seconds != 0) {
-  			var outputSecond = seconds + "s ";
+  			var outputSecond = seconds + "с ";
   		} else {
   			var outputSecond = "";
   		}
@@ -551,7 +559,7 @@ $(document).ready(function() {
    // When Submit button is pressed...
    $(".changeBonusButton").click(function() {
        // Change its text to "Update"
-      $(".changeBonusButton").text("Update");
+      $(".changeBonusButton").text("Обновить");
 	  // Create arrays for EXP gains to unload later if required
 	  var xpArray = [];
 	  // Catch-up times (for collectors) are based on the ratio of new build time to old build time.
@@ -1008,79 +1016,79 @@ $(document).ready(function() {
 			2. Other ability aspects e.g. duration, projectile damage, etc.
 	  */
 		var dictDPSBonus = {
-			"Rage Vial": [17,22,27,32,37,42,48,54,60,66,72,79,86,94,104,112,120,128],
-			"Earthquake Boots": [13,15,17,19,21,23,26,28,32,40,48,55,63,71,79,86,94,102],
-			"Vampstache": [10,15,20,25,30,40,45,50,60,65,70,80,85,90,100,105,110,120],
-			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,137,140,142,145,147,150,152,155,160],
-			"Spiky Ball": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
-			"Snake Bracelet": [10,11,12,14,16,18,20,22,24,26,28,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75],
-			"Archer Puppet": [28,37,46,54,61,68,78,88,99,110,120,127,134,140,145,150,154,159],
-			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
-			"Henchmen Puppet": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
-			"Dark Orb": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
-			"Life Gem": [11,13,16,18,20,22,24,26,31,35,42,46,51,55,59,64,68,73],
-			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
-			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
-			"Lavaloon Puppet": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
-			"Royal Gem": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
-			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
-			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
-			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
+			"Фиал ярости": [17,22,27,32,37,42,48,54,60,66,72,79,86,94,104,112,120,128],
+			"Землетрясущие ботинки": [13,15,17,19,21,23,26,28,32,40,48,55,63,71,79,86,94,102],
+			"Вампирские усы": [10,15,20,25,30,40,45,50,60,65,70,80,85,90,100,105,110,120],
+			"Перчатка гиганта": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,137,140,142,145,147,150,152,155,160],
+			"Мяч с шипами": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
+			"Змеиный браслет": [10,11,12,14,16,18,20,22,24,26,28,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75],
+			"Кукла-лучница": [28,37,46,54,61,68,78,88,99,110,120,127,134,140,145,150,154,159],
+			"Гигантская стрела": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
+			"Кукольные приспешники": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
+			"Сфера тьмы": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
+			"Кристалл жизни": [11,13,16,18,20,22,24,26,31,35,42,46,51,55,59,64,68,73],
+			"Кристалл ярости": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
+			"Огненный шар": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
+			"Кукла-лавашар": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
+			"Королевский кристалл": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
+			"Ледяная стрела": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
+			"Фиал спешки": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
+			"Копье-ракета": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
 		};
 		var dictHPBonus = {
-			"Barbarian Puppet": [309,385,467,564,649,734,836,940,1045,1155,1265,1445,1755,2087,2444,2703,3093,3366],
-			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1200,1500,1800,2100,2300,2500],
-			"Spiky Ball": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
-			"Snake Bracelet": [150,300,450,600,750,900,1050,1200,1350,1500,1650,1800,1950,2100,2250,2400,2550,2700,2850,3000,3150,3300,3450,3600,3750,3900,4050],
-			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
-			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
-			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
-			"Magic Mirror": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
-			"Dark Orb": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
-			"Metal Pants": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
-			"Life Gem": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
-			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
-			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
-			"Royal Gem": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
-			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
-			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
-			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
-			"Electro Boots": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
+			"Кукла-варвар": [309,385,467,564,649,734,836,940,1045,1155,1265,1445,1755,2087,2444,2703,3093,3366],
+			"Землетрясущие ботинки": [209,244,278,313,348,383,418,452,522,677,831,986,1200,1500,1800,2100,2300,2500],
+			"Мяч с шипами": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
+			"Змеиный браслет": [150,300,450,600,750,900,1050,1200,1350,1500,1650,1800,1950,2100,2250,2400,2550,2700,2850,3000,3150,3300,3450,3600,3750,3900,4050],
+			"Фиал невидимости": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
+			"Гигантская стрела": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
+			"Кукла-целительница": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
+			"Волшебное зеркало": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
+			"Сфера тьмы": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
+			"Железные штаны": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
+			"Кристалл жизни": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
+			"Книга исцеления": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
+			"Кукла-лавашар": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
+			"Королевский кристалл": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
+			"Щит-искатель": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
+			"Кукла-всадник на кабане": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
+			"Копье-ракета": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
+			"Электросапоги": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
 		};
 		var dictHPRecoveryBonus = {
-			"Barbarian Puppet": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
-			"Rage Vial": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
-			"Archer Puppet": [176,193,209,226,242,259,275,292,308,323,341,358,374,396,418,440,462,484],
-			"Magic Mirror": [198,229,250,271,294,317,344,372,397,423,448,474,498,529,560,591,622,652,679,706,732,759,784,811,838,864,891],
-			"Henchmen Puppet": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
-			"Metal Pants": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
-			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
-			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
-			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
+			"Кукла-варвар": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
+			"Фиал ярости": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
+			"Кукла-лучница": [176,193,209,226,242,259,275,292,308,323,341,358,374,396,418,440,462,484],
+			"Волшебное зеркало": [198,229,250,271,294,317,344,372,397,423,448,474,498,529,560,591,622,652,679,706,732,759,784,811,838,864,891],
+			"Кукольные приспешники": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
+			"Железные штаны": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
+			"Книга исцеления": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
+			"Королевский кристалл": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
+			"Кукла-всадник на кабане": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
 		};
 		var dictASBonus = {
-			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
-			"Snake Bracelet": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
-			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
-			"Haste Vial": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
+			"Вампирские усы": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+			"Змеиный браслет": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
+			"Кристалл ярости": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+			"Фиал спешки": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
 		};
 		var dictAbilityDIBonus = { //Written in percent
-			"Rage Vial": [120,120,130,130,130,135,135,135,140,140,140,145,145,145,150,150,150,155]
+			"Фиал ярости": [120,120,130,130,130,135,135,135,140,140,140,145,145,145,150,150,150,155]
 		};
 		var dictAbilityDPHBonus = {
-			"Invisibility Vial": [340,440,540,640,730,820,920,1020,1120,1220,1310,1370,1430,1490,1560,1620,1680,1740],
-			"Rocket Spear": [350,350,420,420,420,490,490,490,560,560,560,630,630,630,700,700,700,770,770,770,840,840,840,910,910,910,980]
+			"Фиал невидимости": [340,440,540,640,730,820,920,1020,1120,1220,1310,1370,1430,1490,1560,1620,1680,1740],
+			"Копье-ракета": [350,350,420,420,420,490,490,490,560,560,560,630,630,630,700,700,700,770,770,770,840,840,840,910,910,910,980]
 		};
 		var dictAbilitySpeedBonus = { //Written in number of tenths
-			"Rage Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
-			"Haste Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383]
+			"Фиал ярости": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
+			"Фиал спешки": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383]
 		};
 		var dictAbilityASBonus = { //Written in percent
-			"Haste Vial": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
+			"Фиал спешки": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
 		};
 		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)
-			"Giant Gauntlet": Array(27).fill("Area Splash (2.5 tile Radius)"),
-			"Rocket Spear": Array(27).fill("Area Splash (0.8 tile Radius)")
+			"Перчатка гиганта": Array(27).fill("По площади (радиус 2.5 клетки)"),
+			"Копье-ракета": Array(27).fill("По площади (клетки 0.8 клетки)")
 		};
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
@@ -1236,7 +1244,7 @@ $(document).ready(function() {
 				i++;
 				displaySpeed = newSpeed.toFixed(i) * 1;
 			}
-			$(this).text(displaySpeed + "s");
+			$(this).text(displaySpeed + "с");
 			if (initialSpeed == displaySpeed) {
 				$(this).removeClass("StatModified");
 				$(this).removeClass("StatPoisoned");
@@ -2564,7 +2572,7 @@ $(document).ready(function() {
     });
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
-        $(".changeBonusButton").text("Apply");
+        $(".changeBonusButton").text("Применить");
 		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
 		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost, #resourceBoost, #clockBoost").prop("checked",false);
@@ -2587,7 +2595,7 @@ $(document).ready(function() {
 		});
 		$(".AttackSpeed").each(function() {
 			var returnInitial = $(this).attr("title");
-			$(this).text(returnInitial + "s");
+			$(this).text(returnInitial + "с");
 			$(this).removeClass("StatModified");
 			$(this).removeClass("StatFrozen");
             $(this).removeClass("StatPoisoned");
