@@ -1,4 +1,7 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* ----------------------------------------------------------------- */
+/* ---------- JAVASCRIPT FILE FOR THE FABLED LEGACY WIKI ----------- */
+/* --------------------- APPLIED TO ALL SKINS ---------------------- */
+/* ----------------------------------------------------------------- */
 
 // Add a modern button to the Back To Top Button script
 window.BackToTopModern = true;
@@ -29,7 +32,7 @@ UserTagsJS.modules.custom = {
     'VoidDrin': ['impactful'],
     '4KFrost01': ['impactful'],
     'Mubinazo': ['impactful'],
-    'ChemBond': ['impactful'],
+    'ChemBond': ['former_staff', 'impactful'],
     'Agrusix': ['former_staff', 'impactful'],
     'TheTreasureHunter': ['former_staff', 'impactful'],
 };

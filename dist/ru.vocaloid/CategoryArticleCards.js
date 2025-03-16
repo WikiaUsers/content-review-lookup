@@ -8,8 +8,8 @@
     'use strict';
     console.log('DynamicNavigation loaded');
 
-    var EMPTY_MESSAGE = '<div class="vcw-card empty-category">В этой категории не найдено страниц.</div>';
-    var ERROR_MESSAGE = '<div class="vcw-card error">Ошибка загрузки участников категории: {error}</div>';
+    var EMPTY_MESSAGE = '<div class="empty-category">В этой категории не найдено страниц.</div>';
+    var ERROR_MESSAGE = '<div class="error">Ошибка загрузки участников категории: {error}</div>';
     var LOADING_MESSAGE = '<div class="loading">Загрузка...</div>';
     var LOADING_MORE_MESSAGE = '<div class="loading-more">Загрузка дополнительных статей...</div>';
 
@@ -23,6 +23,14 @@
 
     function init() {
         $('.dynamic-navigation').each(function() {
+            $(this).find('.wds-tabs').append(
+                $('<li>').append(
+                    $('<a>', { href: '/ru/wiki/Категория:Другое', 'class': 'wds-button' }).append(
+                        $('<i>', { 'class': 'fa-solid fa-arrow-up-right-from-square' }),
+                        $('<span>', { text: 'Другое' })
+                    )
+                )
+            );
             initializeContainer($(this));
         });
     }
@@ -54,9 +62,13 @@
     }
 
     function setupTabSwitching($container) {
-        $container.find('.wds-tabs__tab').on('click', function() {
+        $container.find('.wds-tabs__tab').on('click', function(e) {
             var tabHash = $(this).attr('data-hash');
-            updateTabUI($container, $(this), tabHash);
+            // Only prevent default and handle tab switching if it's an internal tab
+            if (tabHash) {
+                e.preventDefault();
+                updateTabUI($container, $(this), tabHash);
+            }
         });
     }
 

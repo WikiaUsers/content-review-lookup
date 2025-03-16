@@ -8,10 +8,10 @@ $(function () {
 
 	if (mw.config.get('wgAction') === 'view') {
 		const title = 'Intersection de catégorie';
-		const intersectionPage = 'fr/wiki/Spécial:Page_blanche/Intersection_de_catégorie';
+		const intersectionPage = 'Spécial:Page_blanche/Intersection_de_catégorie';
 		const searchParams = new URLSearchParams(location.search);
 		const pageName = mw.config.get('wgPageName');
-		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^(?:Légendes|Canon) articles$');
+		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^Articles (?:Légendes|Canon)$');
 		const isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
 			return param === 'category1' || param === 'category2';
 		}).length === 2;
@@ -20,7 +20,7 @@ $(function () {
 		// Add links to category pages
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
+			const baseUrl = '/fr/wiki/' + intersectionPage + '?category1=' + category;
 			const canonUrl = baseUrl + '&category2=Articles_Canon';
 			const legendsUrl = baseUrl + '&category2=Articles_Légendes';
 			var filters = '<div class="dpl-filter-container">';
@@ -28,12 +28,12 @@ $(function () {
 			filters += '<ul>';
 			filters += '<li>';
 			filters += '<a href="' + canonUrl + '" title="Voir seulement les articles Canon">';
-			filters += '<img alt="Voir seulement les articles Canon" src="/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
+			filters += '<img alt="Voir seulement les articles Canon" src="/fr/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '<li>';
 			filters += '<a href="' + legendsUrl + '" title="Voir seulement les articles Légendes">';
-			filters += '<img alt="Voir seulement les articles Légendes" src="/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
+			filters += '<img alt="Voir seulement les articles Légendes" src="/fr/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '</ul>';

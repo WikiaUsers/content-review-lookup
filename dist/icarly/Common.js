@@ -1,3 +1,11 @@
+/* Import auto profiles */
+importArticles({
+	type: 'script',    
+	articles: [        
+		'u:dev:MediaWiki:AutoCreateUserPages.js',    
+		]
+});
+
 /* To replace the now dead "welcome bot" */
 
 window.AutoCreateUserPagesConfig = {

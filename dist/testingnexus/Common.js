@@ -5,33 +5,55 @@ const coloredTables = new Set(); // Track colored tables
 
 function applyColorsToTableCells() {
 	
+	const row1 = ["#FF0000", "#0000FF", "#FFFF00"];
+	const row2 = ["#00FFFF", "#008080", "#FFD700"];
+	const row3 = ["#800080", "#FFA500", "#FFC0CB"];
+	
 	const colorMap = {
-	    "RED": "#FF0000",
-	    "BLU": "#0000FF",
-	    "GRN": "#008000",
-	    "YLW": "#FFFF00",
-	    "ORG": "#FFA500",
-	    "PNK": "#FFC0CB",
-	    "PUR": "#800080",
-	    "BRN": "#A52A2A",
-	    "GRY": "#808080",
-	    "CYN": "#00FFFF",
-	    "TEA": "#008080",
-	    "GLD": "#FFD700"
+		row1,
+		row2,
+		row3,
 	};
-
+	
+	const cols = ["RED", "BLUE", "YLW"];
+	const rows = ["101", "202", "303"];
+	
     $("table").each(function() {
+    	
+    	console.log(coloredTables)
+    	
         if (coloredTables.has($(this))) return; // Skip already colored table
-
-        $(this).find("td").each(function() {
+     
+        $(this).find("tbody tr td").each(function() {
             var text = $(this).text().trim();
-            if (isNaN(text)) return; // Skip empty cells
+            
+            console.log($(this) + "text: " + text)
+            
+            if (typeof text !== 'string' && isNaN(text)) {
+            	return;
+            } // Skip empty cells
 			
-			var code = text.split("-")[0]
-            if (colorMap.hasOwnProperty(code)) {
+			var code = text.split("-");
+			var col = code[0];
+			var row_index = -1;
+			if (code.length == 2) {
+				row_index = rows.indexOf(code[1])
+			}
+			col_index = cols.indexOf(col)
+			var background_color = -1;
+			
+			if (col_index != -1 && row_index != -1) {
+				background_color = colorMap[row_index][col_index];
+			}
+			else if (col_index != -1) {
+				background_color = colorMap[0][col_index];
+			}
+            if (background_color != -1) {
                 $(this).css({
-                	"background-color": colorMap[code],
-                	"color": ["YLW", "CYN", "GLD", "PNK", "ORG"].includes(code) ? "black" : "white", // for contrast
+                	"background-color": background_color,
+                	"color": [
+                		"#FFFF00", "#00FFFF", "#FFC0CB", "#FFA500"
+            		].includes(background_color) ? "black" : "white", // for contrast
                 });
             }
         });
@@ -39,26 +61,6 @@ function applyColorsToTableCells() {
         coloredTables.add($(this)); // Mark table as colored
     });
 }
-
-// // Observer to watch for dynamically added tables anywhere in the document
-// const observer = new MutationObserver(mutations => {
-//     let newTableAdded = false;
-    
-//     mutations.forEach(mutation => {
-//         if (mutation.addedNodes.length > 0) {
-//             mutation.addedNodes.forEach(node => {
-//                 if (node.tagName === "TABLE" || node.querySelector?.("table")) {
-//                     newTableAdded = true;
-//                 }
-//             });
-//         }
-//     });
-
-//     if (newTableAdded) {
-//         applyColorsToTableCells();
-//     }
-// });
-// observer.observe(document.body, { childList: true, subtree: true });
 
 mw.hook("wikipage.content").add(function($content) {
 	

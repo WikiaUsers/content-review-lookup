@@ -339,11 +339,16 @@
 		// Customization of sticky nav tools
 		customizeTools: function() {
 			var sett = window.dev.betterTopNav.tools;
+			mw.util.addCSS(
+				'@media only screen and (min-width: 1023px) {'+
+					':is(#global-top-navigation, #community-navigation) > .wds-dropdown {display:none;}'+
+					':is(#global-top-navigation, #community-navigation) > .wds-dropdown:has(li:not(.wiki-tool-in-dropdown)) {display:block;}'+
+				'}'+
+				'@media only screen and (max-width: 1023px) {'+
+					':is(#global-top-navigation, #community-navigation) .wiki-tools > .wds-button.is-hidden-on-smaller-breakpoints {display: none;}'+
+				'}'
+			);
 			if (!Array.isArray(sett)||sett.length==0) {
-				mw.util.addCSS('@media only screen and (min-width: 1023px) {'+
-					'#community-navigation .wiki-tools > .wds-dropdown {display:none;}'+
-					'#community-navigation .wiki-tools > .wds-dropdown:has(li:not(.wiki-tool-in-dropdown)) {display:block;}'+
-				'}');
 				sett = [];
 				$('#community-navigation #wiki-tools-menu li > a').each(function(_, el){
 					var item = {

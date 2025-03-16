@@ -1,5 +1,8 @@
 // Please use https://www.mediawiki.org/wiki/Manual:Coding_conventions/JavaScript for development.
 
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
+
 /** <nowiki>
  * Flexible form script for SOAP Wiki reports
  *

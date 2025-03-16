@@ -2,7 +2,7 @@
  * Convert the "Compare selected versions" button to a link
  * (Based on [[wikipedia:User:Mattflaschen/Compare_link.js]])
  * @source: https://www.mediawiki.org/wiki/Snippets/Compare_link
- * @rev: 2-wikia4
+ * @rev: 2-wikia5
  * @see: [[mw:bugzilla:16165]]
  *
  * Copyright 2006-2013 Matthew Flaschen ([[mw:User:Mattflaschen]]), [[mw:User:He7d3r]]
@@ -43,24 +43,26 @@
 
         var $compareLink = $('<a></a>', {
             'accesskey': $buttons.attr('accesskey'),
-            'class': 'compare-link mw-ui-button',
+            'class': 'compare-link cdx-button cdx-button--fake-button cdx-button--fake-button--enabled',
+            'role': 'button',
             'text': $buttons.val(),
             'title': $buttons.attr('title')
         });
+
+        // button styles for MW earlier than v1.41-ish
+        if ($buttons.hasClass('mw-ui-button')) {
+            $compareLink.attr('class', 'compare-link mw-ui-button');
+        }
+
+        // hack/fix: fandom is setting its theme colours on the wrong class
+        // upstream MW set these on :enabled, …fake-enabled, but fandom set these on the base class
+        // this causes disabled+hover quirks, and is inconsistent with upstream who require enabled/disabled class
+        if (mw.config.get('wgWikiaEnvironment') !== null) {
+            $compareLink.removeClass('cdx-button--fake-button--enabled');
+        }
 
         $buttons
             .after($compareLink)
-            .remove();
-
-        var $compareLinkCdx = $('<a></a>', {
-            'accesskey': $buttons.attr('accesskey'),
-            'class': 'compare-link cdx-button',
-            'text': $buttons.val(),
-            'title': $buttons.attr('title')
-        });
-
-        $buttons
-            .after($compareLinkCdx)
             .remove();
 
         var updateCompare = function () {

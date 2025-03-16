@@ -78,10 +78,14 @@ $(function () {
 					"mediawiki.action.view.categoryPage.styles"
 				]
 			}).then(function () {
-				$('#mw-content-text').append($.createSpinner({
-					size: 'large',
-					type: 'block'
-				}));
+				try {
+					$('#mw-content-text').append($.createSpinner({
+						size: 'large',
+						type: 'block'
+					}));
+				} catch (error) {
+					console.warn("Caught error while creating spinner");
+				}
 				return Promise.resolve();
 			});
 

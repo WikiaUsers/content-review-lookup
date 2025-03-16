@@ -275,8 +275,13 @@
         var css = "#quickdiff-modal { height: 100%; width: 100% }";
         // always show modal footer for UI consistency
         css += "#quickdiff-modal > footer { display: flex }";
-        // hide square brackets around rollback link in footer
-        css += "#quickdiff-modal > footer .mw-rollback-link::before, #quickdiff-modal > footer .mw-rollback-link::after { content: none }";
+        // hide square brackets/parentheses around action buttons in footer
+        css += "#quickdiff-modal > footer { ";
+        css += ".mw-rollback-link::before, .mw-rollback-link::after,";
+        css += ".mw-diff-edit::before, .mw-diff-edit::after,";
+        css += ".mw-diff-undo::before, .mw-diff-undo::after,";
+        css += ".mw-diff-tool::before, .mw-diff-tool::after";
+        css += "{ content: none; } }";
         mw.util.addCSS(css);
 
         // attach to body for compatibility with ajax-loaded content

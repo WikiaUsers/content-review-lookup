@@ -1,4 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SandboxTab/code.js',
+    ]
+});
 // Countdown for daily shop, taken from Entry Point wiki
 $(function() {
 	var countdown = document.getElementsByClassName("daily-countdown");
@@ -11,7 +17,7 @@ $(function() {
 			if (time != prev) {
 				prev = time;
 				// Check daylight saving time in EST (correct until 2026)
-				var DST = true;
+				var DST = false;
 				var year = now.getUTCFullYear();
 				var dstStart = new Date("March 1, "+year+" 02:00:00 EST");
 				var dstEnd = new Date("November 1, "+year+" 02:00:00 EST");

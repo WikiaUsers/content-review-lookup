@@ -61,8 +61,11 @@ $(function() {
 						var link = $('<a>', {id:'betterDiff-FullPatrol', href:'#betterDiff-FullPatrol', title:'File:'+config.wgTitle, text: 'Mark this file version as patrolled'});
 						link.on('click', betterDiff.massPatrol);
 						$('#mw-imagepage-content').append(
-							$('<div class="patrollink" data-mw="interface">', {'class': 'patrollink', 'data-mw': 'interface'}).append(
-								'[', link, ']'
+							$('<div>', {'class': 'patrollink', 'data-mw': 'interface'}).append(
+								$('<button>', { 
+									'class': 'cdx-button cdx-button--action-progressive',
+									text: 'Mark this file version as patrolled'}
+								)
 							)
 						);
 					}
@@ -223,7 +226,7 @@ $(function() {
 						if (target.nodeType == 3) {
 							var split = /^([^\d\w]*)([\d\w\s]+)([^\d\w]*)$/.exec(target.textContent);
 							var paren = target.parentNode;
-							link.innerHTML = split[2] || 'diff';
+							link.innerHTML = !!split[2] ? split[2] : 'diff';
 							target.remove();
 							
 							if (paren.querySelector('.mw-changeslist-diff-cur + .mw-changeslist-separator')) {

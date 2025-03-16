@@ -1,77 +1,28 @@
 /* JavaScript yang ada di sini akan diterapkan untuk semua kulit. */
-/* Makes username template work */
-$(function userNameReplace() {
-    "use strict";
-    var disableUsernameReplace;
-    if (typeof (disableUsernameReplace) !== 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') === null) {
-        return;
+//Add border color to infoboxes
+$('.portable-infobox').each(function () {
+    var cls = $(this).attr('class').match(/pi-theme-_(\S+)/);
+    if (cls) {
+        $(this).css('border-color', '#' + cls[1]);
     }
-    $("span.insertusername").html(mw.config.get('wgUserName'));
 });
 
-/* User Tags */
-window.UserTagsJS = {
-    tags: {
-        bureaucrat: {
-            link: 'Special:ListUsers/bureaucrat'
-        },
-        bot: {
-            link: 'Special:Listusers/bot'
-        },
-        chatmoderator: {
-            link: 'Special:ListUsers/chatmoderator'
-        },
-        patroller: {
-            link: 'Special:ListUsers/patroller'
-        },
-        imagecontrol: {
-            link: 'Special:ListUsers/imagecontrol'
-        },
-        rollback: {
-            link: 'Special:ListUsers/rollback'
-        },
-        sysop: {
-            link: 'Special:ListUsers/sysop'
-        }
-    },
-    modules: {
-        autoconfirmed: true,
-        inactive: {
-            days: 60,
-            namespaces: [0],
-            zeroIsInactive: true
-        },
-        mwGroups: [
-            'bannedfromchat',
-            'bureaucrat',
-            'chatmoderator',
-            'sysop',
-            'rollback',
-            'patroller',
-            'bot',
-            'imagecontrol'
-        ],
-        newuser: true
+//Add username alt attribute to masthead profile so highlight css works there
+$(function () {
+    if (!mw.config.get('profileUserName')) {
+        return;
     }
-};
 
-/* Ajax Refresh */
-window.AjaxRCRefreshText = 'Perbarui otomatis';
-window.AjaxRCRefreshHoverText = 'Halaman ini akan menyegarkan secara otomatis';
-window.ajaxPages = [
-    "Istimewa:Perubahan_terbaru",
-    "Istimewa:WikiActivity",
-    "Istimewa:Daftar_pantauan",
-    "Istimewa:Catatan",
-    "Istimewa:Kontribusi_pengguna"
-];
+    if ($('#userProfileApp .user-identity-avatar__image').length) {
+    	$('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    	return;
+    }
 
-/* LockForums */
-window.LockForums = {
-    expiryDays: 30,
-    expiryMessage: "Untaian ini dianggap diarsipkan karena belum dikomentari dalam lebih dari <expiryDays> hari, mohon jangan goyangkan utas ini!",
-    forumName: "Forum",
-};
-
-/* MassProtect */
-massProtectDelay = 1000;
+    var interval = setInterval(function () {
+        if (!$('#userProfileApp .user-identity-avatar__image').length) {
+            return;
+        }
+        clearInterval(interval);
+        $('#userProfileApp .user-identity-avatar__image').attr('alt', mw.config.get('profileUserName'));
+    }, 100);
+});

@@ -1235,7 +1235,7 @@ hotcat.submit = function() {
 		}
 	} ).done( function( d ) {
 		var oldwikitext = d.parse.wikitext['*'];
-		var interlangTemplateRegex = /{{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i
+		var interlangTemplateRegex = /\{\{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i
 		var defaultSortRegex = /\{\{(DEFAULTSORT|ORDENAR)\:.*?\}\}/i;
 		var categoryRegex = /\[\[(Category|Categoría|Catégorie|Categorie|Kategori|Categoria|Kategorija|分類|Категория|Kategória|Kategorie|Kategory|カテゴリ)\:.+?\]\]/i;
 		var insert = '<INSERT_INTERWIKI_HERE>';
@@ -1368,7 +1368,7 @@ hotcat.submitForeign = function( wiki ) {
 			}
 		} ).done( function( d ) {
 			var oldwikitext = d.parse.wikitext['*'];
-			var interlangTemplateRegex = /{{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i
+			var interlangTemplateRegex = /\{\{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i
 			var defaultSortRegex = /\{\{(DEFAULTSORT|ORDENAR)\:.*?\}\}/i;
 			var categoryRegex = /\[\[(Category|Categoría|Catégorie|Categorie|Kategori|Categoria|Kategorija|分類|Категория|Kategória|Kategorie|Kategory|カテゴリ)\:.+?\]\]/i;
 			var insert = '<INSERT_INTERWIKI_HERE>';
@@ -1487,9 +1487,9 @@ hotcat.submitForeign = function( wiki ) {
 hotcat.extractInterWikiData = function( wikitext, title, wiki ) {
 	var extract = '';
 	var redirect = /^\#[\s\S]+?\[\[[\s\S]+?\]\]/g
-	var interlangTemplate = /{{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i;
+	var interlangTemplate = /\{\{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i;
 	var regularInterwiki = /\[\[([a-z]{2}:[\s\S\|]+?)\]\]/gm;
-	var erasTemplate = /{{(Top|Eras|Univers|Ere|Üst)[\s\S]+?}}/i;
+	var erasTemplate = /\{\{(Top|Eras|Univers|Ere|Üst)[\s\S]+?}}/i;
  
 	if ( wikitext !== null ) {
 		//check redirection
@@ -1502,7 +1502,7 @@ hotcat.extractInterWikiData = function( wikitext, title, wiki ) {
 		} else {
 			var interwiki = wikitext.match( interlangTemplate );
 			if ( interwiki !== null ) {
-				extract = interwiki.toString().replace( / = /gm, '=' ).replace( /\n/gm, '' ).replace( /\|/gm, '\n|' ).replace( /({{Interlang)|\||}},/gm, '' ).trim();
+				extract = interwiki.toString().replace( / = /gm, '=' ).replace( /\n/gm, '' ).replace( /\|/gm, '\n|' ).replace( /(\{\{Interlang)|\||}},/gm, '' ).trim();
  
 			} else {
 				// no interlang template => we search regular interwiki
@@ -1538,7 +1538,7 @@ hotcat.extractInterWikiData = function( wikitext, title, wiki ) {
  
 /** Format the Interlang template */
 hotcat.formatInterlang = function( /*array*/ links, /*string*/ wiki ) {
-	var interlang = '{{Interlang\n';
+	var interlang = '{{' + 'Interlang\n';
 	var falist = '';
 	var galist = '';
 	var calist = '';

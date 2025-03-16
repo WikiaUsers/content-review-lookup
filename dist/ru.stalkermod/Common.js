@@ -17,6 +17,10 @@ nkch_gst_gadgets = [{
 	title: "Старая серая тема",
 	description: "Воссоздание старого стиля тёмной темы (серо-голубой)"
     }, {
+	name: "BrownTheme",
+	title: "Тема 2015 года",
+	description: "Воссоздание старого стиля тёмной темы (коричнево-жёлтый)"
+    }, {
 	name: "TransparentBackground",
 	title: "Прозрачный фон",
 	description: "Прозрачный фон статей"

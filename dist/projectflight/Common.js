@@ -7,6 +7,14 @@ mw.hook("wikipage.content").add(function () {
     });
 });
 
+// Import LastEdited
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});
+
 window.lastEdited = {
 	avatar: false,
 	size: false,

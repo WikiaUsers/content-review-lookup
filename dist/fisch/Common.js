@@ -37,6 +37,9 @@ importScript('MediaWiki:Seasons.js');
   /* Load HourChange code*/
 importScript('MediaWiki:HourChange.js');
 
+  /* Search Zone */
+importScript('MediaWiki:MiniSearchZone.js');
+
   /* WDS Icons https://fandomdesignsystem.com */
 importScript('MediaWiki:WDSIcon.js');
 

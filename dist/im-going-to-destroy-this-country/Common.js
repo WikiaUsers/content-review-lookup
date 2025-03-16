@@ -1,30 +1,45 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
- mw.hook('wikipage.content').add(function($content) {
+ document.addEventListener("DOMContentLoaded", function () {
+    let mouseDown = false;
+    let startX, scrollLeft;
+    const slider = document.querySelector(".fandom-gallery-container");
 
-        const initCarousel = function() {
+    const startDragging = (e) => {
+        mouseDown = true;
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    };
 
-            let gallery = $content.find('.fandom-gallery-container');
-            
-            if (gallery.length) {
-                let scrollAmount = 350;
+    const stopDragging = () => {
+        mouseDown = false;
+    };
 
-                $content.find('.carousel-next').on('click', function() {
-                    gallery.animate({
-                        scrollLeft: gallery.scrollLeft() + scrollAmount
-                    }, 500);
-                });
+    const move = (e) => {
+        e.preventDefault();
+        if (!mouseDown) return;
+        const x = e.pageX - slider.offsetLeft;
+        const scroll = x - startX;
+        slider.scrollLeft = scrollLeft - scroll;
+    };
 
-                $content.find('.carousel-prev').on('click', function() {
-                    gallery.animate({
-                        scrollLeft: gallery.scrollLeft() - scrollAmount
-                    }, 500);
-                });
-            }
+    // Add the event listeners
+    slider.addEventListener("mousemove", move, false);
+    slider.addEventListener("mousedown", startDragging, false);
+    slider.addEventListener("mouseup", stopDragging, false);
+    slider.addEventListener("mouseleave", stopDragging, false);
 
-        };
+    // Optional: Add touch support for mobile users
+    let touchStartX, touchScrollLeft;
 
-        initCarousel();
-
-        $content.on('DOMNodeInserted', '.fandom-gallery-container', initCarousel);
-
+    slider.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].pageX - slider.offsetLeft;
+        touchScrollLeft = slider.scrollLeft;
     });
+
+    slider.addEventListener("touchmove", (e) => {
+        if (!touchStartX) return;
+        const x = e.touches[0].pageX - slider.offsetLeft;
+        const walk = (x - touchStartX) * 2;
+        slider.scrollLeft = touchScrollLeft - walk;
+    });
+});

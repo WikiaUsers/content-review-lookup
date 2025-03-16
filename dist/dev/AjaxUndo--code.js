@@ -121,21 +121,21 @@
         if (conf.wgAction === 'history' && $('.mw-history-undo > a').length) {
             $('.mw-history-undo > a').each(function () {
                 var $this = $(this),
-                    url = $(this).attr( 'href' ),
+                    url = $(this).prop( 'href' ),
                     $link = createUndoLink(url);
 
                 $this.parent().after(' | ', $link);
             });
         } else if ($('table.diff').length && mw.util.getParamValue('diff') !== undefined) {
             var $undoLink = $('table.diff').find('.diff-ntitle .mw-diff-undo a:first'),
-                url = $undoLink.attr('href'),
+                url = $undoLink.prop('href'),
                 $link = createUndoLink(url);
 
             $undoLink.parent().append('(', $link, ')');
         }
         mw.hook('quickdiff.ready').add(function() {
             var $undoLink = $('#quickdiff-modal table.diff').find('.diff-ntitle .mw-diff-undo a:first'),
-                url = $undoLink.attr('href'),
+                url = $undoLink.prop('href'),
                 $link = createUndoLink(url);
 
             $undoLink.parent().append('(', $link, ')');

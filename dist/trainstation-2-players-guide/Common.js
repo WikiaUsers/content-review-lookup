@@ -619,3 +619,21 @@ mw.hook('wikipage.content').add(function($content){
         $this.attr('title', $this.attr('title') + '.');
     });
 });
+
+mw.hook('wikipage.content').add(function($content) {
+    $content.find(".portal-link").on("click", function(event) {
+        event.preventDefault();
+        
+        var galaxy = $(".galaxy-overlay");
+        galaxy.css({
+            left: event.clientX + "px",
+            top: event.clientY + "px"
+        });
+
+        galaxy.addClass("expand-galaxy");
+
+        setTimeout(function() {
+            galaxy.removeClass("expand-galaxy");
+        }, 1500);
+    });
+});

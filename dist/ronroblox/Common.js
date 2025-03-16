@@ -86,8 +86,12 @@ UserTagsJS.modules.custom = {
 	'SuperGlitchyTheo': ['Wiki-Contributor'],
 	'Quinncm': ['Wiki-Contributor'],
 	'Spaniard123': ['Wiki-Contributor'],
+	'Zarc.0724': ['Wiki-Contributor'],
+	'Mysþıc': ['Wiki-Contributor'],
+	'Antiverta': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
+	'PorlaiWasTaken': ['Guide-Maker'],
 };
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

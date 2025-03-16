@@ -4,7 +4,9 @@
 $(function(){
 function changingBackground() {
 var body = document.getElementsByTagName("body")[0]
-	if ($('.theme-vegas').length > 0) { // RS Vegas
+	if ($('.theme-patriot').length > 0) { // RS Patriots
+		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/rainbowsix/images/b/b3/Patriots_Art.jpg/revision/latest?cb=20250312160035&format=original)')}
+	else if ($('.theme-vegas').length > 0) { // RS Vegas
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/rainbowsix/images/a/a3/Vegas_Cover_Art.jpg/revision/latest?cb=20250220221113&format=original)')}
     else if ($('.theme-vegas2').length > 0) { // RS Vegas 2
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/rainbowsix/images/0/05/Vegas_2_Cover_Art.jpg/revision/latest?cb=20250220220843&format=original)')}

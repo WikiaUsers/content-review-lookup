@@ -3285,19 +3285,32 @@
                 'oojs-ui-windows'
             ]).then(this.onload.bind(this, 'api'));
             this.loadSettings().then(this.onload.bind(this, 'settings'));
-            importArticles({
-                type: 'script',
-                articles: [
-                    'u:dev:MediaWiki:BannerNotification.js',
-                    'u:dev:MediaWiki:I18n-js/code.js',
-                    'u:dev:MediaWiki:Dorui.js',
-                    'u:dev:MediaWiki:WDSIcons/code.js'
-                ]
-            });
-            importArticle({
-                type: 'style',
-                article: 'u:dev:MediaWiki:I18nEdit.css'
-            }).then(this.onload.bind(this, 'styles'));
+            // if used on Fandom then use Fandom `importArticles`, otherwise
+            // use mw.loader.load
+            var splithost = location.host.split(".");
+            if (splithost[splithost.length - 2] == "fandom" && splithost[splithost.length - 1] == "com") {
+	            importArticles({
+	                type: 'script',
+	                articles: [
+	                    'u:dev:MediaWiki:BannerNotification.js',
+	                    'u:dev:MediaWiki:I18n-js/code.js',
+	                    'u:dev:MediaWiki:Dorui.js',
+	                    'u:dev:MediaWiki:WDSIcons/code.js'
+	                ]
+	            });
+	            importArticle({
+	                type: 'style',
+	                article: 'u:dev:MediaWiki:I18nEdit.css'
+	            }).then(this.onload.bind(this, 'styles'));
+            } else {
+				mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:BannerNotification.js?action=raw&ctype=text/javascript");
+				mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:I18n-js/code.js?action=raw&ctype=text/javascript");
+				mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:Dorui.js?action=raw&ctype=text/javascript");
+				mw.loader.load("https://dev.fandom.com/wiki/WDSIcons/code.js?action=raw&ctype=text/javascript");
+
+				mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:I18nEdit.css?action=raw&ctype=text/css", "text/css");
+				this.onload.bind(this, 'styles');
+            }
         },
         /**
          * Generic MediaWiki API error handler that reports the error to the user.

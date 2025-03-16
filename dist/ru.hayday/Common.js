@@ -1,9 +1,12 @@
 //начало
 let storage = window.localStorage;
 
+// перевод английских клавиш на клавиатуре в русские (всё в нижнем регистре)
+let engToRusKeys = {'q':'й','w':'ц','e':'у','r':'к','t':'е','y':'н','u':'г','i':'ш','o':'щ','p':'з','[':'х',']':'ъ','a':'ф','s':'ы','d':'в','f':'а','g':'п','h':'р','j':'о','k':'л','l':'д',';':'ж','\'':'э','z':'я','x':'ч','c':'с','v':'м','b':'и','n':'т','m':'ь',',':'б','.':'ю','`':'ё','~':'ё','{':'х','}':'ъ',':':'ж','"':'э','<':'б','>':'ю'};
+
 //svg картинки
-var gearSvg, sunSvg, snowSvg, cloudSvg, moonSvg, closeSvg;
-if (true){
+let gearSvg, sunSvg, snowSvg, cloudSvg, moonSvg, closeSvg;
+{
 	// Источник: https://www.svgrepo.com
 	gearSvg = '<svg fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="currentcolor" class="wds-icon" stroke-width="0.48"><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" d="M16 12a4 4 0 11-8 0 4 4 0 018 0zm-1.5 0a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path><path fill-rule="evenodd" d="M12 1c-.268 0-.534.01-.797.028-.763.055-1.345.617-1.512 1.304l-.352 1.45c-.02.078-.09.172-.225.22a8.45 8.45 0 00-.728.303c-.13.06-.246.044-.315.002l-1.274-.776c-.604-.368-1.412-.354-1.99.147-.403.348-.78.726-1.129 1.128-.5.579-.515 1.387-.147 1.99l.776 1.275c.042.069.059.185-.002.315-.112.237-.213.48-.302.728-.05.135-.143.206-.221.225l-1.45.352c-.687.167-1.249.749-1.304 1.512a11.149 11.149 0 000 1.594c.055.763.617 1.345 1.304 1.512l1.45.352c.078.02.172.09.22.225.09.248.191.491.303.729.06.129.044.245.002.314l-.776 1.274c-.368.604-.354 1.412.147 1.99.348.403.726.78 1.128 1.129.579.5 1.387.515 1.99.147l1.275-.776c.069-.042.185-.059.315.002.237.112.48.213.728.302.135.05.206.143.225.221l.352 1.45c.167.687.749 1.249 1.512 1.303a11.125 11.125 0 001.594 0c.763-.054 1.345-.616 1.512-1.303l.352-1.45c.02-.078.09-.172.225-.22.248-.09.491-.191.729-.303.129-.06.245-.044.314-.002l1.274.776c.604.368 1.412.354 1.99-.147.403-.348.78-.726 1.129-1.128.5-.579.515-1.387.147-1.99l-.776-1.275c-.042-.069-.059-.185.002-.315.112-.237.213-.48.302-.728.05-.135.143-.206.221-.225l1.45-.352c.687-.167 1.249-.749 1.303-1.512a11.125 11.125 0 000-1.594c-.054-.763-.616-1.345-1.303-1.512l-1.45-.352c-.078-.02-.172-.09-.22-.225a8.469 8.469 0 00-.303-.728c-.06-.13-.044-.246-.002-.315l.776-1.274c.368-.604.354-1.412-.147-1.99-.348-.403-.726-.78-1.128-1.129-.579-.5-1.387-.515-1.99-.147l-1.275.776c-.069.042-.185.059-.315-.002a8.465 8.465 0 00-.728-.302c-.135-.05-.206-.143-.225-.221l-.352-1.45c-.167-.687-.749-1.249-1.512-1.304A11.149 11.149 0 0012 1zm-.69 1.525a9.648 9.648 0 011.38 0c.055.004.135.05.162.16l.351 1.45c.153.628.626 1.08 1.173 1.278.205.074.405.157.6.249a1.832 1.832 0 001.733-.074l1.275-.776c.097-.06.186-.036.228 0 .348.302.674.628.976.976.036.042.06.13 0 .228l-.776 1.274a1.832 1.832 0 00-.074 1.734c.092.195.175.395.248.6.198.547.652 1.02 1.278 1.172l1.45.353c.111.026.157.106.161.161a9.653 9.653 0 010 1.38c-.004.055-.05.135-.16.162l-1.45.351a1.833 1.833 0 00-1.278 1.173 6.926 6.926 0 01-.25.6 1.832 1.832 0 00.075 1.733l.776 1.275c.06.097.036.186 0 .228a9.555 9.555 0 01-.976.976c-.042.036-.13.06-.228 0l-1.275-.776a1.832 1.832 0 00-1.733-.074 6.926 6.926 0 01-.6.248 1.833 1.833 0 00-1.172 1.278l-.353 1.45c-.026.111-.106.157-.161.161a9.653 9.653 0 01-1.38 0c-.055-.004-.135-.05-.162-.16l-.351-1.45a1.833 1.833 0 00-1.173-1.278 6.928 6.928 0 01-.6-.25 1.832 1.832 0 00-1.734.075l-1.274.776c-.097.06-.186.036-.228 0a9.56 9.56 0 01-.976-.976c-.036-.042-.06-.13 0-.228l.776-1.275a1.832 1.832 0 00.074-1.733 6.948 6.948 0 01-.249-.6 1.833 1.833 0 00-1.277-1.172l-1.45-.353c-.111-.026-.157-.106-.161-.161a9.648 9.648 0 010-1.38c.004-.055.05-.135.16-.162l1.45-.351a1.833 1.833 0 001.278-1.173 6.95 6.95 0 01.249-.6 1.832 1.832 0 00-.074-1.734l-.776-1.274c-.06-.097-.036-.186 0-.228.302-.348.628-.674.976-.976.042-.036.13-.06.228 0l1.274.776a1.832 1.832 0 001.734.074 6.95 6.95 0 01.6-.249 1.833 1.833 0 001.172-1.277l.353-1.45c.026-.111.106-.157.161-.161z"></path></g></svg>';
 	
@@ -41,14 +44,669 @@ function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
 
 let side = document.querySelector('.page-side-tools');
 
+//окно настроек 
+{
+	let openSett = function(){
+		if (!settOpen) {
+			settOpen = true;
+			div.style.display = 'block';
+			backdrop.style.display = 'block';
+			let oldW = document.body.clientWidth;
+			document.body.style.overflowY = 'hidden';
+			let newW = document.body.clientWidth;
+			
+			//console.log(oldW, newW);
+			if (oldW != newW) {
+				document.body.style.paddingRight = (newW-oldW)+'px';
+			}
+		}
+	};
+	let closeSett = function(){
+		if (settOpen){
+			settOpen = false;
+			div.style.display = 'none';
+			backdrop.style.display = 'none';
+			document.body.style.overflowY = 'auto';
+			document.body.style.paddingRight = 0;
+		}
+	};
+	
+	let button = document.createElement('button');
+	button.className = 'page-side-tool';
+	button.innerHTML = gearSvg;
+	button.title = 'Настройки';
+	let settOpen = false;
+	
+	//let settProps = Object.assign({}, storageSett);
+	//console.log(settProps);
+	let backdrop = document.createElement('backdrop');
+	backdrop.id = 'hayday-settings-backdrop';
+	backdrop.style.display = 'none';
+	
+	let div = document.createElement('div');
+	div.id = 'hayday-settings-box';
+	div.style.display = 'none';
+	console.log(storage.getItem('fps'));
+	
+	let snowOn;
+	if (storage.getItem('noSnow') == 'true') {
+		snowOn = '';
+	} else {
+		snowOn = 'checked="true"';
+	}
+	let cloudOn;
+	if (storage.getItem('noClouds') == 'true') {
+		cloudOn = '';
+	} else {
+		cloudOn = 'checked="true"';
+	}
+	
+	let settHtml = '<button id="close-sett">'+closeSvg+'</button><div id="hayday-settings-level">Ваш уровень (минимум 1, максимум 1000): <input id="level" value="'+(storage.getItem('haydayLevel')||'')+'" min="1" max="1000" type="number"/></div>'+
+	'<div id="hayday-settings-snow"><b>Настройки снега (в светлой теме)</b>'+
+	'<div>Снег включен: <input type="checkbox" id="snow-enabled" '+snowOn+'/></div>'+
+	'<div>Интенсивность снега: <small>Меньше</small><input type="range" min="10" max="50" step="10" id="snow-range" value="'+(storage.getItem('snowDensity')||'10')+'"/><small>Больше</small></div>'+
+	'</div>'+
+	'<div id="hayday-settings-cloud"><b>Настройки облаков (в тёмной теме)</b>'+
+	'<div>Облака включены: <input type="checkbox" id="cloud-enabled" '+cloudOn+'/></div>'+
+	'</div><div id="hayday-settings-all"><b>Общие настройки</b>'+
+	'<div>Частота кадров в секунду/FPS (минимум 1, максимум 60): <input id="fps" type="number" min="1" max="60" value="'+(storage.getItem('fps')||'20')+'"/></div>'+
+	'</div><button id="submit">Сохранить</button>';
+	console.log(settHtml);
+	div.innerHTML = settHtml;
+	
+	let settLvlBox = div.querySelector('#hayday-settings-level');
+	let settSnowBox = div.querySelector('#hayday-settings-snow');
+	let settCloudBox = div.querySelector('#hayday-settings-cloud');
+	let settAllBox = div.querySelector('#hayday-settings-all');
+	//let settEndBox = div.querySelector('#hayday-settings-end');
+	//if (!((month == 11||month==0||month==1)||(month==3&&date==1))){settSnowBox.style.display = 'none';}
+	
+	/*let settSimple = div.querySelectorAll('.simple');
+	let settAdv = div.querySelectorAll('.advanced');
+	settAdv.forEach(function(e){
+		e.style.display = 'none';
+	});
+	
+	let settSimpleMode = true;
+	let settModeChanger = div.querySelector('a#setmode');
+	settModeChanger.addEventListener('click',function(event){
+		settSimpleMode = !settSimpleMode;
+		if (settSimpleMode){//включить простой
+			settSimple.forEach(function(e){e.style.display = 'block';});
+			settAdv.forEach(function(e){e.style.display = 'none';});
+		} else {
+			settSimple.forEach(function(e){e.style.display = 'none';});
+			settAdv.forEach(function(e){e.style.display = 'block';});
+		}
+	});*/
+	
+	let saveBtn = div.querySelector('#submit');
+	saveBtn.addEventListener('click',function(ev){
+		let goodData = true;
+		
+		let level = +div.querySelector('input#level').value;
+		let fps = +div.querySelector('input#fps').value;
+		let snowDensity = +div.querySelector('input#snow-range').value;
+		let snowOn = div.querySelector('input#snow-enabled').checked;
+		let cloudOn = div.querySelector('input#cloud-enabled').checked;
+		
+		if (level > 1000 || level < 1){goodData = false;}
+		if (fps > 60 || fps < 1){goodData = false;}
+		if (snowDensity < 10 || snowDensity > 50 || snowDensity % 10 != 0){goodData = false;}
+		
+		if (goodData){
+			storage.setItem('haydayLevel',level);
+			storage.setItem('fps',fps);
+			storage.setItem('noSnow',!snowOn);
+			storage.setItem('noClouds',!cloudOn);
+			storage.setItem('snowDensity',snowDensity);
+			
+			closeSett();
+			
+			if (confirm('Для применения изменений требуется перезагрузка страницы. Перезагрузить сейчас?')) location.reload();
+		} else {
+			alert('Где-то в введённых данных ошибка.\nЯ это узнал, так как goodData = false');
+		}
+	});
+	
+	let closeBtn = div.querySelector('#close-sett');
+	closeBtn.addEventListener('click',function(ev){
+		ev.preventDefault();
+		closeSett();
+	});
+	
+	
+	
+	button.addEventListener('click',function(event){
+		openSett();
+	});
+	
+	backdrop.addEventListener('click',function(){
+		closeSett();
+	});
+	
+	document.addEventListener('keydown', function(event) {
+		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
+			openSett();
+		}
+	});
+	
+	document.body.append(backdrop);
+	document.body.append(div);
+	side.append(button);
+	
+	
+}
+
+//отображение данных в зависимости от уровня
+
+let levelPars = document.querySelectorAll('.parohod-level-box');
+if(levelPars.length){
+	levelPars.forEach(function(div){
+		let usrLevel = storage.getItem('haydayLevel');
+		
+		
+		
+		let lvlBlock = div.querySelector('.parohod-level');
+		let unknownBlock = div.querySelector('.parohod-unknown');
+		let blockedBlock = div.querySelector('.parohod-blocked');
+		div.querySelector('.parohod-default-text').style.display = 'none';
+		let errBlock = div.querySelector('.parohod-error');
+		let loadBlock = div.querySelector('.parohod-load');
+		
+		if (usrLevel){
+			usrLevel = +usrLevel;
+			if(usrLevel >= 17){
+				loadBlock.style.display = 'block';
+				getJsonPage('Data:Levels.json').then(function(res){
+					loadBlock.style.display = 'none';
+					
+					//console.log(res);
+					lvlBlock.style.display='block';
+					let prodBoatValue = +lvlBlock.dataset.boatValue;
+					lvlBlock.querySelector('span.usr-level').innerText = usrLevel;
+					
+					let boatValue = res[usrLevel-1].boat_value;
+					
+					let values = [];
+					let valuesMax = [];
+					if (usrLevel < 20) {
+						values.push(Math.ceil(boatValue[0]/(prodBoatValue*9)));
+						values.push(Math.ceil(boatValue[0]/(prodBoatValue*6)));
+						values.push(Math.ceil(boatValue[1]/(prodBoatValue*9)));
+						values.push(Math.ceil(boatValue[1]/(prodBoatValue*6)));
+						
+						valuesMax.push(Math.ceil(boatValue[1]/(prodBoatValue*6))*2);
+						valuesMax.push(Math.ceil(boatValue[1]/(prodBoatValue*9))*3);
+					} else if (usrLevel < 25) {
+						values.push(Math.ceil(boatValue[0]/(prodBoatValue*9)));
+						values.push(Math.ceil(boatValue[1]/(prodBoatValue*9)));
+						
+						valuesMax.push(Math.ceil(boatValue[1]/(prodBoatValue*9))*3);
+					} else {
+						values.push(Math.ceil(boatValue[0]/(prodBoatValue*9)));
+						values.push(Math.ceil(boatValue[0]/(prodBoatValue*12)));
+						values.push(Math.ceil(boatValue[1]/(prodBoatValue*9)));
+						values.push(Math.ceil(boatValue[1]/(prodBoatValue*12)));
+						
+						valuesMax.push(Math.ceil(boatValue[1]/(prodBoatValue*9))*3);
+						valuesMax.push(Math.ceil(boatValue[1]/(prodBoatValue*12))*4);
+					}
+					let min = values[0];
+					let max = values[0];
+					for (let i = 1; i < values.length; i++){
+						let v = values[i];
+						if (v>max){max=v;}
+						if (v<min){min=v;}
+					}
+					let maxAll = valuesMax[0];
+					for (let i = 1; i < valuesMax.length; i++){
+						let v = valuesMax[i];
+						if(v>maxAll){maxAll=v;}
+					}
+					
+					let plSp;
+					let colBox = lvlBlock.querySelector('span.product-col');
+					if (min == max){
+						colBox.innerText = min;
+						plSp = 'span.plural';
+					} else {
+						colBox.innerText = 'от '+min+' до '+max;
+						plSp = 'span.dplural';
+					}
+					
+					let sMax = String(max);
+					if (sMax.at(-1)=='1'&& sMax.at(-2)!='1'){
+						lvlBlock.querySelector(plSp+'1').style.display = 'inline';
+					} else if (['2','3','4'].includes(sMax.at(-1)) && !['2','3','4'].includes(sMax.at(-2))) {
+						lvlBlock.querySelector(plSp+'2').style.display = 'inline';
+					} else {
+						lvlBlock.querySelector(plSp+'3').style.display = 'inline';
+					}
+					
+					lvlBlock.querySelector('span.product-col-max').innerText = maxAll;
+					//lvlBlock.querySelector('span.product-col').innerText = lvlBoatValue[0] + '|'+lvlBoatValue[1]+'|'+boatValue;
+				},
+				function(err){
+					loadBlock.style.display = 'none';
+					console.error(err);
+					
+					errBlock.style.display = 'block';
+				});
+			} else {
+				blockedBlock.style.display = 'block';
+				blockedBlock.querySelector('span.usr-level').innerText = usrLevel;
+			}
+		} else {
+			unknownBlock.style.display = 'block';
+		}
+	});
+}
+
+// пароход в списках товаров
+let goodsListBoats = document.querySelectorAll('.goods-list-boat');
+if(goodsListBoats.length){
+	let level = storage.getItem('haydayLevel');
+	if (level) {
+		level = +level;
+		if (level >= 17){
+			getJsonPage('Data:Levels.json').then(function(res){
+				goodsListBoats.forEach(function(div){
+					div.querySelector('.goods-list-boat-default').style.display = 'none';
+					let block = div.querySelector('.goods-list-boat-disp');
+					
+					let lValues = res[level-1].boat_value;
+					let pValue = +div.dataset.boatValue;
+					
+					block.style.display = 'inline';
+					block.querySelector('span.usr-lvl').innerText = level;
+					
+					let min, max, maxAll;
+					if (level < 20){
+						max = Math.max(Math.ceil(lValues[1]/(pValue*6)), Math.ceil(lValues[1]/(pValue*9)));
+						min = Math.min(Math.ceil(lValues[0]/(pValue*6)), Math.ceil(lValues[0]/(pValue*9)));
+						maxAll = Math.max(Math.ceil(lValues[1]/(pValue*6))*2, Math.ceil(lValues[1]/(pValue*9))*3);
+					} else if (level < 25) {
+						max = Math.ceil(lValues[1]/(pValue*9));
+						min = Math.ceil(lValues[0]/(pValue*9));
+						maxAll = Math.ceil(lValues[1]/(pValue*9))*3;
+					} else {
+						max = Math.max(Math.ceil(lValues[1]/(pValue*12)), Math.ceil(lValues[1]/(pValue*9)));
+						min = Math.min(Math.ceil(lValues[0]/(pValue*12)), Math.ceil(lValues[0]/(pValue*9)));
+						maxAll = Math.max(Math.ceil(lValues[1]/(pValue*12))*4, Math.ceil(lValues[1]/(pValue*9))*3);
+					}
+					
+					let insCol;
+					if (max == min) {insCol = min} else {insCol = min+'-'+max}
+					
+					block.querySelector('span.col').innerText = insCol;
+					block.querySelector('span.max-col').innerText = maxAll;
+					
+				});
+			});
+		}
+	}
+}
+
+
+//кол-во монет в событиях с заданиями
+let taskRoadItems = document.querySelectorAll('.sobytie .it-con');
+if(taskRoadItems.length){
+	let level = storage.getItem('haydayLevel');
+	if(level){
+		level = +level;
+		getJsonPage('Data:Levels.json').then(function(res){
+			let rate = res[level-1].dia_rate;
+			
+			taskRoadItems.forEach(function(div){
+				if(div.querySelector('.wind').innerText.trim() == 'Монеты'){
+					let colBox = div.querySelector('.item .col');
+					console.log(colBox);
+					let col = +colBox.innerText.trim().slice(1);
+					console.log(col);
+					//console.warn(col);
+					col *= rate;
+					
+					let ret;
+					if (col >= 100000){
+						ret = Math.floor(col/10000)*10000;
+					} else if (col >= 10000){
+						ret = Math.floor(col/1000)*1000;
+					} else if (col >= 1000){
+						ret = Math.floor(col/100)*100;
+					} else if (col >= 100){
+						ret = Math.floor(col/10)*10;
+					} else {
+						ret = Math.floor(col/1)*1;
+					}
+					
+					colBox.innerText = 'x'+ret;
+				}
+				
+			});
+		});
+	}
+}
+
+// калькулятор заказов парохода
+if (document.querySelector('.boat-orders-calc')) {
+	let updateData = function(goods, levels, good, level, div, langName) {
+		let imgBox = div.querySelector('.good-icon');
+		div.querySelector('.no-boat').style.display = 'none';
+		div.querySelector('.result').style.display = 'none';
+		div.querySelector('.small-level').style.display = 'none';
+		imgBox.innerHTML = '';
+		if (good) {
+			getImgPath('Файл:'+good+'.png').then((res) => imgBox.innerHTML = '<a href="/ru/wiki/'+good+'" title="'+(langName||good)+'" target="_blank"><img alt="'+(langName||good)+'" src="'+res+'" /></a>', (err) => console.error(err));
+			
+			if (!goods[good].no_boat && level){
+				if(goods[good].level > level){
+					div.querySelector('.small-level').style.display = 'block';
+					div.querySelector('span.good-level').innerText = goods[good].level;
+					div.querySelector('span.input-level').innerText = div.querySelector('span.level input').value;
+				}
+				let lValues = levels[level-1].boat_value;
+				let pValue = goods[good].boat_value;
+				
+				let boxes = div.querySelectorAll('.boxes');
+				
+				div.querySelector('.result').style.display = 'block';
+				
+				let min1, max1, min2, max2, maxAll;
+				if (level < 20){
+					max1 = Math.ceil(lValues[1]/(pValue*6)); max2 = Math.ceil(lValues[1]/(pValue*9));
+					min1 = Math.ceil(lValues[0]/(pValue*6)); min2 = Math.ceil(lValues[0]/(pValue*9));
+					maxAll = Math.max(Math.ceil(lValues[1]/(pValue*6))*2, Math.ceil(lValues[1]/(pValue*9))*3);
+					
+					let insCol1, insCol2;
+					if (max1 == min1) {insCol1 = min1} else {insCol1 = min1+'-'+max1}
+					if (max2 == min2) {insCol2 = min2} else {insCol2 = min2+'-'+max2}
+					
+					boxes[0].style.display = 'block';
+					boxes[0].querySelector('.col').innerText = insCol1;
+					boxes[1].style.display = 'block';
+					boxes[1].querySelector('.col').innerText = insCol2;
+				} else if (level < 25) {
+					max2 = Math.ceil(lValues[1]/(pValue*9));
+					min2 = Math.ceil(lValues[0]/(pValue*9));
+					maxAll = Math.ceil(lValues[1]/(pValue*9))*3;
+					
+					let insCol2;
+					if (max2 == min2) {insCol2 = min2} else {insCol2 = min2+'-'+max2}
+					
+					boxes[1].style.display = 'block';
+					boxes[1].querySelector('.col').innerText = insCol2;
+				} else {
+					max1 = Math.ceil(lValues[1]/(pValue*12)); max2 = Math.ceil(lValues[1]/(pValue*9));
+					min1 = Math.ceil(lValues[0]/(pValue*12)); min2 = Math.ceil(lValues[0]/(pValue*9));
+					maxAll = Math.max(Math.ceil(lValues[1]/(pValue*12))*4, Math.ceil(lValues[1]/(pValue*9))*3);
+					
+					let insCol1, insCol2;
+					if (max1 == min1) {insCol1 = min1} else {insCol1 = min1+'-'+max1}
+					if (max2 == min2) {insCol2 = min2} else {insCol2 = min2+'-'+max2}
+					
+					boxes[2].style.display = 'block';
+					boxes[2].querySelector('.col').innerText = insCol1;
+					boxes[1].style.display = 'block';
+					boxes[1].querySelector('.col').innerText = insCol2;
+				}
+				
+				div.querySelector('.col-max').innerHTML = maxAll;
+				
+			} else if (goods[good].no_boat) {
+				div.querySelector('.no-boat').style.display = 'block';
+			}
+		}
+	};
+	
+	let url = new URL(window.location.href);
+	//let urlS = url.searcParams;
+	let allowedLangs = [];
+	
+	let div = document.querySelector('.boat-orders-calc');
+	
+	let lang = url.searchParams.get('uselang');
+	let langInp = document.createElement('select');
+	langInp.innerHTML = '<option selected value="ru">Русский</option>';
+	langInp.addEventListener('change', (ev)=>{
+		url.searchParams.delete('uselang');
+		//console.log(ev.target.value);
+		url.searchParams.set('uselang', ev.target.value);
+		//console.log(window.location.href, url.searchParams.get('uselang'));
+		history.replaceState({},'',url);
+		location.reload();
+	});
+	
+	
+	let langDataSpans = div.querySelectorAll('#lang-data span');
+	langDataSpans.forEach((span)=>{
+		allowedLangs.push(span.dataset.lang);
+		if(span.dataset.lang == lang) document.querySelector('#firstHeading').innerText = span.dataset.title;
+		langInp.innerHTML = langInp.innerHTML + '<option value="'+span.dataset.lang+'">'+span.innerText+'</option>';
+	});
+	
+	// промис для синхронной загрузки 2-х страниц с данными — уровни и товары
+	getJsonPage(['Data:Levels.json','Data:Goods.json','Data:Langs.json'], true).then((res)=>{
+		//console.log(res);
+		let goods = res['Data:Goods.json'], levels = res['Data:Levels.json'], langNames = res['Data:Langs.json'];
+		let goodsList = Object.keys(goods).map((x) => x.trim());
+		
+		div.querySelector('span.lang').append(langInp);
+		
+		let langGoods = {};
+		if(allowedLangs.includes(lang)){
+			let langGoodsNames = [];
+			langInp.value = lang;
+			
+			let langSpans = div.querySelectorAll('span.text-trans');
+			langSpans.forEach((span)=>span.innerText = span.dataset[(lang == 'pt-br')?'ptBr':lang]);
+			
+			for(let key in langNames) {
+				if(goodsList.includes(key)){
+					langGoods[langNames[key][lang]] = key;
+					langGoodsNames.push(langNames[key][lang]);
+				}
+			}
+			goodsList = langGoodsNames;
+		} else {
+			lang = null;
+		}
+		
+		div.querySelector('.default-text').style.display = 'none';
+		let resBox = div.querySelector('div.result');
+		
+		let level = 0, good = '';
+		
+		// поле ввода уровня
+		let levelInp = document.createElement('input');
+		let storLvl = storage.getItem('haydayLevel');
+		if(storLvl){
+			storLvl = +storLvl;
+			if (storLvl >= 17) { levelInp.value = storLvl; level = storLvl}
+		}
+		levelInp.type = 'number'; levelInp.min = 17; levelInp.max = 1000;
+		div.querySelector('span.level').append(levelInp);
+		
+		levelInp.addEventListener('input',(ev)=>{
+			let lvl = +levelInp.value;
+			if (lvl >= 17 && lvl <= 1000) {
+				level = lvl;
+				updateData(goods, levels, langGoods[good]||good, level, div, good);
+			}
+		});
+		
+		//поле ввода продукта
+		let goodInp = document.createElement('input');
+		goodInp.type = 'text';
+		div.querySelector('span.good').append(goodInp);
+		
+		let hintBox = document.createElement('div');
+		hintBox.className = 'hint-box';
+		let hintCover = false;
+		let hintN = -1;
+		hintBox.addEventListener('mouseover', (ev) => hintCover = true);
+		hintBox.addEventListener('mouseout', (ev) => hintCover = false);
+		
+		goodInp.addEventListener('input', (ev)=>{
+			let g = goodInp.value;
+			
+			
+			//console.log('goodInp edited!');
+			
+			if(g){
+				g = g.toLowerCase().trim();
+				//console.log(g);
+				if(!lang){
+					let newG = '';
+					for (let i = 0; i < g.length; i++){
+						let bk = g[i];
+						//console.log(bk);
+						newG = newG+ (engToRusKeys[bk]||bk);
+						//onsole.log(newG);
+					}
+					g = newG;
+				}
+				//console.log(g);
+				// блок подсказок
+				let hintList = [];
+				
+				div.querySelector('span.good').append(hintBox);
+				hintBox.innerHTML = '';
+				
+				good = '';
+				goodsList.forEach((x)=>{
+					if(x.toLowerCase().includes(g)){
+						hintList.push(x);
+					}
+					if(x.toLowerCase() == g) {
+						good = x;
+						//setTimeout(()=>goodInp.blur(), 20);
+					}
+				});
+				
+				hintList.forEach((hint, i)=>{
+					// 5 подсказок
+					if (i < 5) {
+						let x = document.createElement('div');
+						x.className = 'hint';
+						x.innerText = hint;
+						hintBox.append(x);
+						x.addEventListener('mousedown',(eve) => {
+							good = hint;
+							goodInp.value = hint;
+							hintBox.remove();
+							updateData(goods, levels, langGoods[good]||good, level, div, good);
+						});
+					}
+				});
+				
+				updateData(goods, levels, langGoods[good]||good, level, div, good);
+			} else {
+				hintBox.remove();
+			}
+		});
+		goodInp.addEventListener('focus', (ev)=>{
+			let g = goodInp.value;
+			if (g){
+				g = g.toLowerCase().trim();
+				//console.log(g);
+				if(!lang){
+					let newG = '';
+					for (let i = 0; i < g.length; i++){
+						let bk = g[i];
+						//console.log(bk);
+						newG = newG+ (engToRusKeys[bk]||bk);
+						//onsole.log(newG);
+					}
+					g = newG;
+				}
+				
+				div.querySelector('span.good').append(hintBox);
+				let hintList = [];
+				
+				hintBox.innerHTML = '';
+				
+				goodsList.forEach((x) => {
+					if(x.toLowerCase().includes(g)){
+						hintList.push(x);
+					}
+				});
+				
+				hintList.forEach((hint, i)=>{
+					// 5 подсказок
+					if (i < 5) {
+						let x = document.createElement('div');
+						x.className = 'hint';
+						x.innerText = hint;
+						hintBox.append(x);
+						x.addEventListener('mousedown',(eve) => {
+							good = hint;
+							goodInp.value = hint;
+							hintBox.remove();
+							updateData(goods, levels, langGoods[good]||good, level, div, good);
+						});
+					}
+				});
+			}
+		});
+		
+		goodInp.addEventListener('keydown', (ev)=>{
+			let hints = hintBox.querySelectorAll('.hint');
+			if(ev.key == 'Enter') {
+				if (hintN > -1 && hintN < hints.length) {
+					let hint = hints[hintN];
+					goodInp.value = hint.innerText;
+					good = hint.innerText;
+				}
+				goodInp.blur();
+				hintBox.remove();
+				hintCover = false;
+				
+				updateData(goods, levels, langGoods[good]||good, level, div, good);
+			}
+			if(ev.key == 'ArrowUp'){
+				ev.preventDefault();
+				hintN += 1;
+				if (hintN >= hints.length) hintN = 0;
+				hints.forEach((h, i)=>{
+					if (i == hintN) {
+						h.classList.add('checked');
+					} else {
+						h.classList.remove('checked');
+					}
+				});
+			} else if(ev.key == 'ArrowDown'){
+				ev.preventDefault();
+				hintN -= 1;
+				if (hintN < 0) hintN = hints.length-1;
+				hints.forEach((h, i)=>{
+					if (i == hintN) {
+						h.classList.add('checked');
+					} else {
+						h.classList.remove('checked');
+					}
+				});
+			}
+		});
+		
+		//удаление блока подсказок по завершению ввода
+		goodInp.addEventListener('blur', (ev) => {if(!hintCover) hintBox.remove()});
+		
+		
+	},(err)=> console.error(err));
+	
+	
+}
+
+
 //vk video
-var vkVideos = document.querySelectorAll('.vk-video');
+let vkVideos = document.querySelectorAll('.vk-video');
 if(vkVideos.length){
-	vkVideos.forEach(function(vid){
-		var id = vid.dataset.id;
-		var oid = vid.dataset.oid;
-		var width = vid.dataset.width || '853';
-		var height = vid.dataset.height || '480';
+	vkVideos.forEach((vid)=>{
+		let id = vid.dataset.id;
+		let oid = vid.dataset.oid;
+		let width = vid.dataset.width || '853';
+		let height = vid.dataset.height || '480';
 		vid.innerHTML = '<iframe src="https://vk.com/video_ext.php?oid='+oid+'&id='+id+'&hd=2" width="'+width+'" height="'+height+'" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>';
 	});
 }
@@ -57,7 +715,7 @@ if(vkVideos.length){
 if (document.body.className.includes('theme-fandomdesktop-light')) {
 
 	if ((month == 11||month==0||month==1)||(month==3&&date==1)){
-		//var snowDisabled = storage.getItem('noSnow');
+		//let snowDisabled = storage.getItem('noSnow');
 		let summonID;
 		let snowBoxes = [];
 		for (let i=0; i < 6; i++) {
@@ -68,7 +726,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			document.body.prepend(div);
 		}
 		
-		function checkSnow() {
+		let checkSnow = function () {
 			let winHeight = window.innerHeight;
 			snowBoxes.forEach(function(box){
 				let height = parseInt(box.style.height);
@@ -81,12 +739,11 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 					}
 				}
 			});
-		}
+		};
 		
-
 		
 		//let allClouds = [];
-		function moveSnow(fps) {
+		let moveSnow = function (fps) {
 		//allClouds.forEach(function(snowflake, i){
 			for (let i=0; i<snowBoxes.length;i++){
 				let box = snowBoxes[i];
@@ -94,13 +751,13 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 				box.style.height = (height+(i+1)*(25/fps)) + 'px';
 				box.style.left = (-30+Math.sin(height/70)*30)+'px';
 			}
-		}
-		function summonSnow(){
+		};
+		let summonSnow = function(){
 			let boxN = randint(0,6);
 			
 			let snowflake = document.createElement('div');
 			let size = randint(10, 21);
-			//var color = Math.random()*0.3+0.5;
+			//let color = Math.random()*0.3+0.5;
 			//snowflake.speed = randint(2,7);
 			//snowflake.rSpeed = randint(-10,10);
 			//snowflake.degree = 0;
@@ -119,15 +776,15 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			'<div style="width:60%;height:60%;border-radius:50%;background-color: white;"></div>';
 			snowBoxes[boxN].prepend(snowflake);
 			//allClouds.push(snowflake);
-			//var moveId = setInterval(moveCloud, 40, snowflake, speed, moveId);
+			//let moveId = setInterval(moveCloud, 40, snowflake, speed, moveId);
 			let dens = +(storage.getItem('snowDensity') || 10);
 			summonID = setTimeout(summonSnow, Math.ceil(randint(200, 601)*(17450/(dens*window.innerWidth))));
-		}
+		};
 		let moveInterval;// = setInterval(moveSnow, 50);
 		let checkInterval;
 		
-		//var side = document.querySelector('.page-side-tools');
-		var button = document.createElement('button');
+		//let side = document.querySelector('.page-side-tools');
+		let button = document.createElement('button');
 		button.className = 'page-side-tool';
 		if (storage.getItem('noSnow') !== 'true'){
 			summonID = setTimeout(summonSnow, 1000);
@@ -144,7 +801,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		}
 		
 		
-		document.addEventListener('keydown', function(event) {
+		/*document.addEventListener('keydown', function(event) {
 			if (event.code == 'KeyC' && event.altKey && !event.repeat) {
 				if (storage.getItem('noSnow') == 'true'){
 					summonID = setTimeout(summonSnow, 1000);
@@ -186,8 +843,8 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 				});
 				
 			}
-		});
-		document.addEventListener("visibilitychange", function(){
+		});*/
+		document.addEventListener("visibilitychange", ()=>{
 			if (storage.getItem('noSnow') !== 'true'){
 				if (document.hidden){
 					console.log('Вкладка не активна');
@@ -203,7 +860,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 				}
 			}
 		});
-		side.append(button);
+		//side.append(button);
 	}
 }
 
@@ -221,11 +878,11 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 		document.body.prepend(div);
 	}
 	
-	function checkClouds() {
+	let checkClouds = function() {
 		let winWidth = window.innerWidth;
 		cloudBoxes.forEach(function(box){
 			let width = parseInt(box.style.width);
-			console.log(box.children);
+			//console.log(box.children);
 			for(let i=0; i<box.children.length;i++){
 				let cloud = box.children[i];
 				let right = parseInt(cloud.style.right);
@@ -234,25 +891,25 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 				}
 			}
 		});
-	}
+	};
 	
 	//let allClouds = [];
-	function moveClouds(fps) {
+	let moveClouds = function(fps) {
 		//allClouds.forEach(function(cloud, i){
 		for (let i=0; i<cloudBoxes.length;i++){
 			let box = cloudBoxes[i];
 			box.style.width = (parseInt(box.style.width)+(i+2)*(20/fps)) + 'px';
 		}
-	}
-	function summonCloud(){
+	};
+	let summonCloud = function(){
 		let boxN = randint(0,4);
 		
 		
-		var cloud = document.createElement('div');
-		var size = randint(150, 401);
-		var color = Math.random()*0.3+0.5;
+		let cloud = document.createElement('div');
+		let size = randint(150, 401);
+		let color = Math.random()*0.3+0.5;
 		//cloud.speed = randint(2,7);
-		var bottom = randint(10, 71);
+		let bottom = randint(10, 71);
 		cloud.className = 'dark-cloud';
 		cloud.style.right = (parseInt(cloudBoxes[boxN].style.width)-500) + 'px';
 		cloud.style.top = bottom + 'px';
@@ -262,9 +919,9 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 		'</g></svg>';
 		cloudBoxes[boxN].prepend(cloud);
 		//allClouds.push(cloud);
-		//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
+		//let moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
 		summonID = setTimeout(summonCloud, randint(2000, 6001));
-	}
+	};
 	
 	let moveInterval;
 	let checkInterval;
@@ -284,7 +941,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 		button.innerHTML = cloudSvg;
 	}
 	
-	document.addEventListener('keydown', function(event) {
+	/*document.addEventListener('keydown', function(event) {
 		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
 			if (storage.getItem('noClouds') == 'true'){
 				summonID = setTimeout(summonCloud, 1000);
@@ -324,9 +981,9 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 				box.innerHTML = '';
 			});
 		}
-	});
+	});*/
 	
-	document.addEventListener("visibilitychange", function(){
+	document.addEventListener("visibilitychange", (ev)=>{
 		if (storage.getItem('noClouds') !== 'true') {
 			if (document.hidden){
 				console.log('Вкладка не активна');
@@ -342,37 +999,31 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 			}
 		}
 	});
-	side.append(button);
+	//side.append(button);
 }
 
 // добавление кнопок
 //события с заданиями
 if (document.body.className.includes('page-События_с_заданиями_Список_заданий')) {
-	var taskTable = document.querySelector("#hidelevels");
-	var btnCon = document.createElement("span");
-	btnCon.style = "float: right;";
-	btnCon.innerHTML = 'Введите ваш текущий уровень: <input type="number" min="1" max="1000" style="width: 50px;"><button class="game-button">Показать</button>';
-	taskTable.before(btnCon);
-	addClickTaskEvent(btnCon);
 	
 	/* функции */
-	function addClickTaskEvent(elem) {
-		var btn = elem.querySelector('button');
-		btn.addEventListener("click", function() {
-			var level = Number(elem.querySelector("input").value);
+	let addClickTaskEvent = function(elem) {
+		let btn = elem.querySelector('button');
+		btn.addEventListener("click", ()=> {
+			let level = Number(elem.querySelector("input").value);
 			if (level > 0) {
-				var rows = document.querySelectorAll('#hidelevels tbody tr');
-				for (var i = 0; i < rows.length; i++) {
-					var minTxt = rows[i].querySelector("td:nth-child(3)").textContent.trim();
+				let rows = document.querySelectorAll('#hidelevels tbody tr');
+				for (let i = 0; i < rows.length; i++) {
+					let minTxt = rows[i].querySelector("td:nth-child(3)").textContent.trim();
 					//console.log(minTxt)
-					var min;
+					let min;
 					if (minTxt.includes('(')) {
 						min = 36;
 					} else {
 						min = Number(minTxt);
 					}
-					var maxTxt = rows[i].querySelector("td:nth-child(4)").textContent.trim();
-					var max = Number(maxTxt);
+					let maxTxt = rows[i].querySelector("td:nth-child(4)").textContent.trim();
+					let max = Number(maxTxt);
 					if (max == 0) {
 						max = 1000;
 					}
@@ -386,55 +1037,61 @@ if (document.body.className.includes('page-События_с_заданиями_
 				}
 			}
 		});
-	}
+	};
 
+	let taskTable = document.querySelector("#hidelevels");
+	let btnCon = document.createElement("span");
+	btnCon.style = "float: right;";
+	btnCon.innerHTML = 'Введите ваш текущий уровень: <input type="number" min="1" max="1000" style="width: 50px;"><button class="game-button">Показать</button>';
+	taskTable.before(btnCon);
+	addClickTaskEvent(btnCon);
 }
 
 //украшения
 if (document.body.className.includes('page-Список_украшений')) {
-	setTimeout(main, 5000);
-	var url = new URL(window.location.href);
-	var settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[],size:[],gif:false,save:false,mode:[1, 0],level:0};
-	var filtersBox;
-	function main(){
+	let url = new URL(window.location.href);
+	let settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[],size:[],gif:false,save:false,mode:[1, 0],level:0};
+	let filtersBox;
+	
+	let main = function(){
 		
 		
-		var decoTable = document.querySelector("#deco-changed");
-		var tbody = document.querySelector('#deco-changed>tbody');
-		var rows = tbody.querySelectorAll('tr');
-		var sorter = document.querySelector('#deco-sorter');
+		let decoTable = document.querySelector("#deco-changed");
+		let tbody = document.querySelector('#deco-changed>tbody');
+		let rows = tbody.querySelectorAll('tr');
+		let sorter = document.querySelector('#deco-sorter');
 		
-		var saverUrl = sorter.querySelector('#save');
-		saverUrl.addEventListener('click',function(){
-			var checked = saverUrl.dataset.checked;
+		let saverUrl = sorter.querySelector('#save');
+		saverUrl.addEventListener('click',()=>{
+			let checked = saverUrl.dataset.checked;
 			if(checked=='false'){checked=false}else{checked=true}
 			saverUrl.dataset.checked=!checked;
 			settings.save=!checked;
 			saveFilters();
 		});
 	
-		var decoList = getDecoList(rows);
+		let decoList = getDecoList(rows);
 		console.log(decoList);
 		
 		sorter.querySelector('#level-input').innerHTML = '<input type="number" width="30"/>';
-		var level = sorter.querySelector('#level-input').querySelector('input');
-		var switchGif = sorter.querySelector('#gif');
-		var modeChanger = sorter.querySelector('#mode');
+		let level = sorter.querySelector('#level-input').querySelector('input');
+		let switchGif = sorter.querySelector('#gif');
+		let modeChanger = sorter.querySelector('#mode');
 		filtersBox = sorter.querySelectorAll('.filters');
-		var allFilters = sorter.querySelectorAll('.filter');
-		var typesFilters = sorter.querySelectorAll('.type-filter');
-		var filterNames = Array.from(typesFilters).map(function(z){return z.dataset.type;});
+		let allFilters = sorter.querySelectorAll('.filter');
+		let typesFilters = sorter.querySelectorAll('.type-filter');
+		let filterNames = Array.from(typesFilters).map(function(z){return z.dataset.type;});
 		
 		if (url.searchParams.get('save')=='1'){
 			settings.save=true;
 			saverUrl.dataset.checked = true;
-			var x = url.searchParams;
-			filterNames.forEach(function(a, i){
+			let x = url.searchParams;
+			filterNames.forEach((a, i)=>{
 				if(x.has(a)){
-					var l = x.get(a).trim().split('|');
+					let l = x.get(a).trim().split('|');
 					//console.log(a, i, l);
 					settings[a]=l;
-					allFilters.forEach(function(f){
+					allFilters.forEach((f)=>{
 						if(l.includes(f.dataset.value)){f.dataset.checked = true;}
 						//console.log(f, f.dataset.value, l.includes(f.dataset.value), f.dataset.checked);
 					});
@@ -442,7 +1099,7 @@ if (document.body.className.includes('page-Список_украшений')) {
 			});
 			
 			if (x.has('mode')){
-				var a = x.get('mode').trim();
+				let a = x.get('mode').trim();
 				settings.mode=[+a[0],+a[1]];
 				if (a == '01'){
 					modeChanger.innerText = modeChanger.dataset.bMode;
@@ -452,7 +1109,7 @@ if (document.body.className.includes('page-Список_украшений')) {
 			
 			if (x.has('filters')){
 				f = x.get('filters').trim().split('');
-				f.forEach(function(a, i){
+				f.forEach((a, i)=>{
 					if (a == '1'){settings.filters.push(filterNames[i]);typesFilters[i].dataset.checked = true;filtersBox[i].style.display="block";}
 				});
 				sortDecoTable(rows, decoList, true);
@@ -467,23 +1124,23 @@ if (document.body.className.includes('page-Список_украшений')) {
 			}
 			
 			if (x.has('level')){
-				var l = x.get('level');
+				let l = x.get('level');
 				settings.level = +l;
 				level.value = l;
 				decoLevel(rows, decoList, +l, true);
 			}
 			console.log(settings);
 		} else {
-			allFilters.forEach(function(filter){
+			allFilters.forEach((filter)=>{
 				filter.dataset.checked="false";
 			});
 		}
 		
-		allFilters.forEach(function(filter){
-			filter.addEventListener('click',function(event){
-				var type = filter.parentNode.dataset.type;
-				var target = filter.dataset.value;
-				var checked = filter.dataset.checked;
+		allFilters.forEach((filter)=>{
+			filter.addEventListener('click',(event)=>{
+				let type = filter.parentNode.dataset.type;
+				let target = filter.dataset.value;
+				let checked = filter.dataset.checked;
 				if(checked==='false'){checked=false; settings[type].push(target);}else{checked=true;settings[type].splice(settings[type].indexOf(target),1);}
 				filter.dataset.checked = !checked;
 				//console.log(type, target, settings);
@@ -491,16 +1148,14 @@ if (document.body.className.includes('page-Список_украшений')) {
 			});
 		});
 		
-		typesFilters.forEach(function(span){
-			span.addEventListener('click',function(event){
-				changeFilters(event, rows, decoList, settings.mode);
-			});
+		typesFilters.forEach((span)=>{
+			span.addEventListener('click',(event)=> changeFilters(event, rows, decoList, settings.mode));
 		});
 		
-		modeChanger.addEventListener('click', function(){
-			var nameA = modeChanger.dataset.aMode;
-			var nameB = modeChanger.dataset.bMode;
-			var currentMode = modeChanger.dataset.mode;
+		modeChanger.addEventListener('click', ()=>{
+			let nameA = modeChanger.dataset.aMode;
+			let nameB = modeChanger.dataset.bMode;
+			let currentMode = modeChanger.dataset.mode;
 			
 			if (currentMode == '1'){
 				settings.mode = [1, 0];
@@ -516,75 +1171,69 @@ if (document.body.className.includes('page-Список_украшений')) {
 		
 		
 		sorter.querySelector('#search-input').innerHTML = '<input type="text" />';
-		var search = sorter.querySelector('#search-input').querySelector('input');
-		var switchRegExp = sorter.querySelector('#reg-exp');
-		var switchRegister = sorter.querySelector('#register');
+		let search = sorter.querySelector('#search-input').querySelector('input');
+		let switchRegExp = sorter.querySelector('#reg-exp');
+		let switchRegister = sorter.querySelector('#register');
 		regExp = false;
 		register = false;
-		search.addEventListener('input',function(){
-			decoSearch(rows, decoList, search.value, regExp, register);
-		});
-		switchRegExp.addEventListener('click', function(){
-			var checked = switchRegExp.dataset.checked;
+		search.addEventListener('input',()=>decoSearch(rows, decoList, search.value, regExp, register));
+		switchRegExp.addEventListener('click', ()=>{
+			let checked = switchRegExp.dataset.checked;
 			if (checked == 'false'){checked=true}else{checked=false}
 			switchRegExp.dataset.checked = checked;
 			regExp = checked;
 		});
-		switchRegister.addEventListener('click', function(){
-			var checked = switchRegister.dataset.checked;
+		switchRegister.addEventListener('click', ()=>{
+			let checked = switchRegister.dataset.checked;
 			if (checked == 'false'){checked=true}else{checked=false}
 			switchRegister.dataset.checked = checked;
 			register = checked;
 		});
 		
-		switchGif.addEventListener('click',function(){
-			var checked = switchGif.dataset.checked;
+		switchGif.addEventListener('click',()=>{
+			let checked = switchGif.dataset.checked;
 			if(checked==='false'){checked=false;}else{checked=true;}
 			switchGif.dataset.checked = !checked;
 			settings.gif=!checked;
 			decoGif(rows, decoList, settings.gif);
 		});
 		
-		level.addEventListener('input', function(event){
+		level.addEventListener('input', (event)=>{
 			settings.level=+event.target.value;
 			decoLevel(rows, decoList, +event.target.value);
 		});
 		
 		sorter.querySelector('#reset').innerHTML = '<button class="game-button">Сбросить</button>';
-		sorter.querySelector('#reset').querySelector('button').addEventListener('click',function(event){
-			resetAll(rows,sorter);
-		});
+		sorter.querySelector('#reset').querySelector('button').addEventListener('click',(event)=>resetAll(rows,sorter));
 		
 		sorter.querySelector('#mix').innerHTML = '<button class="game-button">Перемешать украшения</button>';
-		sorter.querySelector('#mix').querySelector('button').addEventListener('click',function(event){
-			mixDeco(rows, tbody);
-		});
-	}
-	function getDecoList(decos){
+		sorter.querySelector('#mix').querySelector('button').addEventListener('click',(event)=>mixDeco(rows, tbody));
+	};
+	let getDecoList = function(decos){
 		decoSet=[];
 
-		decos.forEach(function(row, i){
+		decos.forEach((row, i)=>{
 			deco = {};
 			
-			var tags = row.dataset.tags;
+			let tags = row.dataset.tags;
 			deco.tags=tags;
 			
-			var tds = row.querySelectorAll('td');
+			let tds = row.querySelectorAll('td');
 			
 			deco.name = tds[1].querySelector('b').innerText.trim();
 			
 			deco.sources = [];
-			var sources = tds[2].querySelectorAll('li');
-			sources.forEach(function(source){
-				var a = source.querySelector('a');
-				var text = a ? a.innerText.trim() : source.innerText.trim();
+			let sources = tds[2].querySelectorAll('li');
+			sources.forEach((source)=>{
+				let a = source.querySelector('a');
+				let text = a ? a.innerText.trim() : source.innerText.trim();
 				deco.sources.push(text);
 			});
 			
 			deco.collections = [];
-			var collections = tds[5].querySelectorAll('li');
-			collections.forEach(function(collection){
-				var text = collection.innerText.trim();
+			let collections = tds[5].querySelectorAll('li');
+			collections.forEach((collection)=>{
+				let text = collection.innerText.trim();
 				deco.collections.push(text);
 			});
 			
@@ -601,32 +1250,30 @@ if (document.body.className.includes('page-Список_украшений')) {
 		//console.log(decos, decoTags);
 		
 		return decoSet;
-	}
-	function changeFilters(event, rows, decoList, mode){
+	};
+	let changeFilters = function(event, rows, decoList, mode){
 		console.log(event, filtersBox, settings.filters);
-		var span = event.target;
-		var target = span.dataset.type;
-		var checked = span.dataset.checked;
+		let span = event.target;
+		let target = span.dataset.type;
+		let checked = span.dataset.checked;
 		if(checked==='false'){checked=false; settings.filters.push(target);}else{checked=true;settings.filters.splice(settings.filters.indexOf(target),1);}
 		span.dataset.checked = !checked;
-		filtersBox.forEach(function(filter){
+		filtersBox.forEach((filter)=>{
 			if (filter.dataset.type == target){
 				filter.style.display = checked ? 'none' : 'block';
 			}
 		});
 		sortDecoTable(rows, decoList);
-	}
-	function sortDecoTable(decos, decoParams, fromURL){ //mode[0] - пересечение, mode[1] - объединениe
-		var mode = settings.mode;
-		decos.forEach(function(deco, i){
-			var result = 1;
-			var x;
+	};
+	let sortDecoTable = function(decos, decoParams, fromURL){
+		let mode = settings.mode; //mode[0] - пересечение, mode[1] - объединениe
+		decos.forEach((deco, i)=>{
+			let result = 1;
+			let x;
 			if (settings.filters.includes('sources')){
 				x = 1;
-				settings.sources.forEach(function(source){
-					if (decoParams[i].sources.includes(source)){
-						x *= 0;
-					}
+				settings.sources.forEach((source)=>{
+					if (decoParams[i].sources.includes(source)) x *= 0;
 				});
 				result *= x ? mode[1] : mode[0];
 			}
@@ -641,46 +1288,36 @@ if (document.body.className.includes('page-Список_украшений')) {
 			}
 			if (settings.filters.includes('collections')){
 				x = 1;
-				settings.collections.forEach(function(collection){
-					if (decoParams[i].collections.includes(collection)){
-						x *= 0;
-					}
+				settings.collections.forEach((collection)=>{
+					if (decoParams[i].collections.includes(collection)) x *= 0;
 				});
 				result *= x ? mode[1] : mode[0];
 			}
 			if (settings.filters.includes('types')){
 				x = 1;
-				settings.types.forEach(function(type){
-					if (decoParams[i].type == type){
-						x *= 0;
-					}
+				settings.types.forEach((type)=>{
+					if (decoParams[i].type == type) x *= 0;
 				});
 				result *= x ? mode[1] : mode[0];
 			}
 			if (settings.filters.includes('themes')){
 				x = 1;
-				settings.themes.forEach(function(theme){
-					if (decoParams[i].theme == theme){
-						x *= 0;
-					}
+				settings.themes.forEach((theme)=>{
+					if (decoParams[i].theme == theme) x *= 0;
 				});
 				result *= x ? mode[1] : mode[0];
 			}
 			if (settings.filters.includes('size')){
 				x = 1;
-				settings.size.forEach(function(siz){
-					if (decoParams[i].size == siz){
-						x *= 0;
-					}
+				settings.size.forEach((siz)=>{
+					if (decoParams[i].size == siz) x *= 0;
 				});
 				result *= x ? mode[1] : mode[0];
 			}
 			if (settings.filters.includes('animals')){
 				x = 1;
-				settings.animals.forEach(function(animal){
-					if (decoParams[i].animal.includes(animal)){
-						x *= 0;
-					}
+				settings.animals.forEach((animal)=>{
+					if (decoParams[i].animal.includes(animal)) x *= 0;
 				});
 				result *= x ? mode[1] : mode[0];
 			}
@@ -690,64 +1327,56 @@ if (document.body.className.includes('page-Список_украшений')) {
 				deco.dataset.filterHide = 'true';
 			}
 		});
-		if (!fromURL){saveFilters();}
-	}
-	function decoSearch(decos, decoParams, text, regExp, register){
-		decos.forEach(function(deco, i){
+		if (!fromURL) saveFilters();
+	};
+	let decoSearch = function(decos, decoParams, text, regExp, register){
+		decos.forEach((deco, i)=>{
 			text = register ? text : text.toLowerCase();
-			var name = register ? decoParams[i].name : decoParams[i].name.toLowerCase();
+			let name = register ? decoParams[i].name : decoParams[i].name.toLowerCase();
 			if (regExp){
 				deco.dataset.searchHide=new RegExp(text).test(name)?'false':'true';
 			} else {
 				deco.dataset.searchHide=name.includes(text)?"false":'true';
 			}
 		});
-	}
-	function decoGif(decos, decoParams, gif, fromURL){
-		decos.forEach(function(deco, i){
-			deco.dataset.gifHide = (decoParams[i].tags.includes('gif')||!gif)?'false':'true';
-		});
-		if(!fromURL){saveFilters();}
-	}
-	function decoLevel(decos, decoParams, level, fromURL){
-		decos.forEach(function(deco, i){
-			var decoLvl = decoParams[i].level;
+	};
+	let decoGif = function(decos, decoParams, gif, fromURL){
+		decos.forEach((deco, i)=>deco.dataset.gifHide = (decoParams[i].tags.includes('gif')||!gif)?'false':'true');
+		if(!fromURL) saveFilters();
+	};
+	let decoLevel = function(decos, decoParams, level, fromURL){
+		decos.forEach((deco, i)=>{
+			let decoLvl = decoParams[i].level;
 			deco.dataset.levelHide = (decoLvl>level)?'true':'false';
 		});
-		if(!fromURL){saveFilters();}
-	}
-	function resetAll(decos, filters){
-		decos.forEach(function(deco){
+		if(!fromURL) saveFilters();
+	};
+	let resetAll = function(decos, filters){
+		decos.forEach((deco)=>{
 			deco.dataset.filterHide = 'false';
 			deco.dataset.gifHide = 'false';
 			deco.dataset.levelHide = 'false';
 		});
-		var typesFilters = filters.querySelectorAll('.type-filter');
-		var filtersBox = filters.querySelectorAll('.filters');
-		var allFilters = filters.querySelectorAll('.filter');
-		typesFilters.forEach(function(filter){
-			filter.dataset.checked=false;
-		});
-		allFilters.forEach(function(filter){
-			filter.dataset.checked=false;
-		});
-		filtersBox.forEach(function(filter){
-			filter.style.display='none';
-		});
+		let typesFilters = filters.querySelectorAll('.type-filter');
+		let filtersBox = filters.querySelectorAll('.filters');
+		let allFilters = filters.querySelectorAll('.filter');
+		typesFilters.forEach((filter)=> filter.dataset.checked=false);
+		allFilters.forEach((filter)=>filter.dataset.checked=false);
+		filtersBox.forEach((filter) =>filter.style.display='none');
 		filters.querySelector('#gif').dataset.checked=false;
 		filters.querySelector('#save').dataset.checked=false;
 		filters.querySelector('#level-input').querySelector('input').value='';
 		
 		settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[],size:[],mode:[1,0],save:false};
 		saveFilters();
-	}
-	function saveFilters(){
+	};
+	let saveFilters = function(){
 		if (settings.save){
 			console.log(settings);
 			//if(params.build){URL.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
 			//if(params.star){URL.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
 			//if(params.level){URL.searchParams.set('level', params.level);}
-			var filters = '';
+			let filters = '';
 			filters += settings.filters.includes('sources')?'1':'0';
 			filters += settings.filters.includes('tags')?'1':'0';
 			filters += settings.filters.includes("collections")?'1':'0';
@@ -757,16 +1386,16 @@ if (document.body.className.includes('page-Список_украшений')) {
 			filters += settings.filters.includes("size")?'1':'0';
 			url.searchParams.set('filters', filters);
 			
-			if(settings.sources.length){url.searchParams.set('sources', settings.sources.join('|'));}
-			if(settings.tags.length){url.searchParams.set('tags', settings.tags.join('|'));}
-			if(settings.collections.length){url.searchParams.set('collections', settings.collections.join('|'));}
-			if(settings.types.length){url.searchParams.set('types', settings.types.join('|'));}
-			if(settings.themes.length){url.searchParams.set('themes', settings.themes.join('|'));}
-			if(settings.animals.length){url.searchParams.set('animals', settings.animals.join('|'));}
-			if(settings.size.length){url.searchParams.set('size', settings.size.join('|'));}
+			if(settings.sources.length)url.searchParams.set('sources', settings.sources.join('|'));
+			if(settings.tags.length)url.searchParams.set('tags', settings.tags.join('|'));
+			if(settings.collections.length)url.searchParams.set('collections', settings.collections.join('|'));
+			if(settings.types.length)url.searchParams.set('types', settings.types.join('|'));
+			if(settings.themes.length)url.searchParams.set('themes', settings.themes.join('|'));
+			if(settings.animals.length)url.searchParams.set('animals', settings.animals.join('|'));
+			if(settings.size.length)url.searchParams.set('size', settings.size.join('|'));
 			
 			url.searchParams.set('gif', settings.gif?'1':'0');
-			if(settings.level){url.searchParams.set('level', settings.level);}
+			if(settings.level)url.searchParams.set('level', settings.level);
 			
 			url.searchParams.set('mode', settings.mode.join(''));
 			
@@ -787,53 +1416,54 @@ if (document.body.className.includes('page-Список_украшений')) {
 			url.searchParams.delete('mode');
 			history.replaceState({},'',url);
 		}
-	}
-	function mixDeco(decos, table){
-		var copyDeco = Array.from(decos);
+	};
+	let mixDeco = function(decos, table){
+		let copyDeco = Array.from(decos);
 		while(copyDeco.length){
-			var indx = Math.floor(Math.random()*copyDeco.length);
-			var delDeco = copyDeco.splice(indx,1);
+			let indx = Math.floor(Math.random()*copyDeco.length);
+			let delDeco = copyDeco.splice(indx,1);
 			console.log(delDeco, indx);
 			table.prepend(delDeco[0]);
 		}
-	}
+	};
+	
+	setTimeout(main, 5000);
 }
 
 //скачки 320
 if (document.body.className.includes('page-Скачки')) {
-	var derbySortSpan = document.createElement("span");
+	let derbySortSpan = document.createElement("span");
 	derbySortSpan.id = "derby-sort";
 	derbySortSpan.style = "float: right;";
-	var derbySortTxt = document.createTextNode("Введите ваш уровень: ");
-	var derbyInput = document.createElement("input");
+	let derbySortTxt = document.createTextNode("Введите ваш уровень: ");
+	let derbyInput = document.createElement("input");
 	derbyInput.type = "number";
 	derbyInput.min = 1;
 	derbyInput.max = 1000;
 	derbyInput.style.width = "50px";
 	derbySortSpan.append(derbySortTxt, derbyInput);
 	
-	var derbyPlace = document.querySelectorAll(".derby-grid")[0];
+	let derbyPlace = document.querySelectorAll(".derby-grid")[0];
 	derbyPlace.before(derbySortSpan);
 	derbyPlace.style.clear = "right";
 	
 	//console.log(derbyPlace, derbySortSpan);
 	
-	derbyAutoSort(derbyInput);
 	
 	/* функции */
-	function derbyAutoSort(input) {
+	let derbyAutoSort = function(input) {
 		//console.log(input);
-		input.addEventListener("input", function(){
+		input.addEventListener("input", ()=>{
 			//console.log("input");
-			var level = +(input.value);
+			let level = +input.value;
 			if (level) {
-				var tables = document.querySelectorAll(".derby-grid");
+				let tables = document.querySelectorAll(".derby-grid");
 				//console.log(level);
-				tables.forEach(function(table){
-					var tasks = table.querySelectorAll('.derby-task');
-					tasks.forEach(function(task){
+				tables.forEach((table)=>{
+					let tasks = table.querySelectorAll('.derby-task');
+					tasks.forEach((task)=>{
 						//console.log(task);
-						var localLevel = +task.lastChild.lastChild.firstChild.textContent;
+						let localLevel = +task.lastChild.lastChild.firstChild.textContent;
 						if (localLevel > level) {
 							task.style.display = "none";
 						} else {
@@ -844,34 +1474,35 @@ if (document.body.className.includes('page-Скачки')) {
 			}
 			
 		});
-	}
-
+	};
+	
+	derbyAutoSort(derbyInput);
 }
 
 // список продуктов
 if (document.body.className.includes('page-Список_продуктов')) {
-	var plURL = new URL(window.location.href);
-	var plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
-	var plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
-	var plURLLevel = parseInt(plURL.searchParams.get('level')) ? parseInt(plURL.searchParams.get('level')) : 0;
-	var plURLSave = plURL.searchParams.get('save') ? 1 : 0;
+	let plURL = new URL(window.location.href);
+	let plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
+	let plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
+	let plURLLevel = parseInt(plURL.searchParams.get('level')) ? parseInt(plURL.searchParams.get('level')) : 0;
+	let plURLSave = plURL.searchParams.get('save') ? 1 : 0;
 	//console.log(plURLBuild);
 	//setTimeout(productListAddScroll, 2000);
 	//pl — productsList, список продуктов
 	//элементы
-	var plTable = document.querySelector("#products-list");
-	var plRows = plTable.querySelectorAll('tr');
-	var plParams = document.querySelector('#products-list-settings');
-	var plLevel = plParams.querySelector('#products-list-level');
-	var plBuild = plParams.querySelector('#products-list-buildings');
-	var plBuildSelect = plBuild.querySelector('.select-all');
-	var plStar = plParams.querySelector('#products-list-star');
-	var plStarSelect = plStar.querySelector('.select-all');
-	var plClear = plParams.querySelector('#products-list-clear');
-	var plSave = plParams.querySelector('#products-list-save');
+	let plTable = document.querySelector("#products-list");
+	let plRows = plTable.querySelectorAll('tr');
+	let plParams = document.querySelector('#products-list-settings');
+	let plLevel = plParams.querySelector('#products-list-level');
+	let plBuild = plParams.querySelector('#products-list-buildings');
+	let plBuildSelect = plBuild.querySelector('.select-all');
+	let plStar = plParams.querySelector('#products-list-star');
+	let plStarSelect = plStar.querySelector('.select-all');
+	let plClear = plParams.querySelector('#products-list-clear');
+	let plSave = plParams.querySelector('#products-list-save');
 	plSave.innerHTML = '<input type="checkbox"/>';
-	var plSaveInp = plSave.querySelector('input');
-	var plIsSave;
+	let plSaveInp = plSave.querySelector('input');
+	let plIsSave;
 	if (plURLSave){
 		plIsSave = true;
 		plSaveInp.checked = true;
@@ -882,13 +1513,13 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	
 	//кнопки/ввод
 	plLevel.innerHTML = '<input type="number" min="1" max="1000" style="width: 50px;" />';
-	var plLevelInp = plLevel.querySelector('input');
+	let plLevelInp = plLevel.querySelector('input');
 	if(plURLLevel){
 		plLevelInp.value = plURLLevel;
-		plRows.forEach(function(row, i){
+		plRows.forEach((row, i)=>{
 			if(i){
-				var tds = row.querySelectorAll('td');
-				var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+				let tds = row.querySelectorAll('td');
+				let rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
 				//console.log(level, rowLvl);
 				if (rowLvl>plURLLevel&&plURLLevel){
 					row.style.display='none';
@@ -901,35 +1532,35 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	
 	
 	plClear.innerHTML = '<button class="game-button">Сбросить</button>';
-	var plClearBtn = plClear.querySelector('button');
+	let plClearBtn = plClear.querySelector('button');
 	
 	plBuildSelect.innerHTML = '<button class="game-button">Снять выбор</button>';
-	var plBuildBtn = plBuildSelect.querySelector('button');
+	let plBuildBtn = plBuildSelect.querySelector('button');
 	plStarSelect.innerHTML = '<button class="game-button">Выбрать всё</button>';
-	var plStarBtn = plStarSelect.querySelector('button');
-	var plBuildIsAll = true;
-	var plStarIsAll = false;
+	let plStarBtn = plStarSelect.querySelector('button');
+	let plBuildIsAll = true;
+	let plStarIsAll = false;
 	
 	//выбор зданий
-	var plBuildNames = [];
-	var plBuildList = [];
-	var plBuildAll = plBuild.querySelectorAll('.click-box');
+	let plBuildNames = [];
+	let plBuildList = [];
+	let plBuildAll = plBuild.querySelectorAll('.click-box');
 	
-	var plStarList = [];
-	var plStarAll = plStar.querySelectorAll('.click-box');
+	let plStarList = [];
+	let plStarAll = plStar.querySelectorAll('.click-box');
 	
-	var plURLUseBuild;
+	let plURLUseBuild;
 	if(plURLBuild){
 		while(plURLBuild.length<plBuildAll.length){plURLBuild='0'+plURLBuild}
 		plURLBuild=plURLBuild.split('');
 		plURLUseBuild=true;
 	}else{plURLBuild=[];plURLUseBuild=false;}
 	
-	plBuildAll.forEach(function(span, i) {
+	plBuildAll.forEach((span, i)=> {
 		img = span.querySelector('img');
 		img.ondragstart = function() { return false; };
-		build = img.title;
-		plBuildNames.push(img.title);
+		build = img.alt;
+		plBuildNames.push(build);
 		
 		if(plURLUseBuild){
 			if(+plURLBuild[i]){
@@ -946,9 +1577,9 @@ if (document.body.className.includes('page-Список_продуктов')) {
 			plURLBuild.push(1);
 			span.style.background = '#88888830';
 		}
-		span.addEventListener('click', function() {
-			var x;
-			var level = +plLevelInp.value;
+		span.addEventListener('click', () =>{
+			let x;
+			let level = +plLevelInp.value;
 			if(!level){level=1000;}
 			if (plBuildList[i]) {
 				plURLBuild[i]=0;
@@ -971,19 +1602,19 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				if(x){plBuildIsAll=true;plBuildBtn.textContent = 'Снять выбор';}
 			}
 			plCheckBuilds(plBuildList[i], plBuildNames[i], plRows, level);
-			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
+			if (plIsSave) plSaveSet({url: plURL, build: plURLBuild});
 		});
 	});
 	
 	//время с мастерством
-	var plURLUseStar;
+	let plURLUseStar;
 	if(plURLStar){
 		while(plURLStar.length<plStarAll.length){plURLStar='0'+plURLStar}
 		plURLStar=plURLStar.split('');
 		plURLUseStar=true;
 	}else{plURLStar=[];plURLUseStar=false;}
 	
-	plStarAll.forEach(function(span, i) {
+	plStarAll.forEach((span, i) =>{
 		img = span.querySelector('img');
 		img.ondragstart = function() { return false; };
 		//plStarList.push(false);
@@ -1003,7 +1634,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 			span.style.background = 'transparent';
 		}
 		//span.style.display='none';
-		span.addEventListener('click', function() {
+		span.addEventListener('click', ()=>{
 			if (plStarList[i]) {
 				plStarList[i] = false;
 				span.style.background = 'transparent';
@@ -1014,12 +1645,12 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				plURLStar[i] = 1;
 			}
 			plCheckStar(plStarList[i], plBuildNames[i], plRows);
-			if (plIsSave){plSaveSet({url: plURL, star: plURLStar});}
+			if (plIsSave) plSaveSet({url: plURL, star: plURLStar});
 		});
 	});
 	
 	//сохранение настроек
-	plSaveInp.addEventListener('change', function(e){
+	plSaveInp.addEventListener('change', (e)=>{
 		plIsSave = e.target.checked;
 		if (plIsSave){
 			plSaveSet({url: plURL, build: plURLBuild, star: plURLStar, level: plURLLevel});
@@ -1033,56 +1664,54 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	});
 	
 	//кнопки
-	plBuildBtn.addEventListener('click', function(){
-		var level = +plLevelInp.value;
+	plBuildBtn.addEventListener('click', ()=>{
+		let level = +plLevelInp.value;
 		if (!level){level=1000;}
 		if(plBuildIsAll){
 			plBuildIsAll = false;
 			plBuildBtn.textContent = 'Выбрать всё';
-			plBuildAll.forEach(function(span, i){span.style.background = 'transparent';});
-			plStarAll.forEach(function(span, i){span.style.display='none';});
-			plRows.forEach(function(row, i){
-				if (i) {
-					row.style.display = 'none';
-				}
+			plBuildAll.forEach((span, i)=>span.style.background = 'transparent');
+			plStarAll.forEach((span, i)=>span.style.display='none');
+			plRows.forEach((row, i)=>{
+				if (i) row.style.display = 'none';
 			});
-			plBuildList = plBuildList.map(function(){return false;});
-			plURLBuild = plURLBuild.map(function(){return 0;});
+			plBuildList = plBuildList.map(()=> false);
+			plURLBuild = plURLBuild.map(() => 0);
 			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
 		} else {
 			plBuildIsAll = true;
 			plBuildBtn.textContent = 'Снять выбор';
-			plBuildAll.forEach(function(span, i){span.style.background = '#88888830';});
-			plStarAll.forEach(function(span, i){span.style.display='inline-block';});
-			plRows.forEach(function(row, i){
+			plBuildAll.forEach((span, i)=>span.style.background = '#88888830');
+			plStarAll.forEach((span, i)=>span.style.display='inline-block');
+			plRows.forEach((row, i)=>{
 				if(i){
-					var tds = row.querySelectorAll('td');
-					var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+					let tds = row.querySelectorAll('td');
+					let rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
 					if(rowLvl<=level||!level){row.style.display='table-row';}
 				}
 			});
-			plBuildList = plBuildList.map(function(){return true;});
-			plURLBuild = plURLBuild.map(function(){return 1;});
-			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
+			plBuildList = plBuildList.map(()=> true);
+			plURLBuild = plURLBuild.map(()=> 1);
+			if (plIsSave) plSaveSet({url: plURL, build: plURLBuild});
 		}
 		//console.log(plBuildList);
 	});
-	plStarBtn.addEventListener('click', function(){
+	plStarBtn.addEventListener('click', ()=>{
 		if(plStarIsAll){
 			plStarIsAll = false;
 			plStarBtn.textContent = 'Выбрать всё';
-			plStarAll.forEach(function(span, i){span.style.background='transparent';});
-			plRows.forEach(function(row, i){
+			plStarAll.forEach((span, i)=>span.style.background='transparent');
+			plRows.forEach((row, i)=>{
 				if (i) {
-					var tds = row.querySelectorAll('td');
-					var build = tds[2].firstChild.title;
+					let tds = row.querySelectorAll('td');
+					let build = tds[2].dataset.build;
 					//console.log('inner:'+tds[2].innerText, 'content:'+tds[2].textContent);
-					var j = plBuildNames.indexOf(build);
+					let j = plBuildNames.indexOf(build);
 					//console.log('build '+build, 'index '+j, 'value '+plStarList[j]);
-					var standardTime = row.querySelector('.standard-time');
-					var starTime = row.querySelector('.star-time');
-					var standardVigoda = row.querySelector('.standard-vigoda');
-					var starVigoda = row.querySelector('.star-vigoda');
+					let standardTime = row.querySelector('.standard-time');
+					let starTime = row.querySelector('.star-time');
+					let standardVigoda = row.querySelector('.standard-vigoda');
+					let starVigoda = row.querySelector('.star-vigoda');
 					if (plStarList[j]){
 						starTime.style.display = 'none';
 						standardTime.style.display = 'table-cell';
@@ -1095,24 +1724,24 @@ if (document.body.className.includes('page-Список_продуктов')) {
 					}
 				}
 			});
-			plStarList = plStarList.map(function(){return false;});
-			plURLStar = plURLStar.map(function(){return 0;});
-			if (plIsSave){plSaveSet({url: plURL, star: plURLStar});}
+			plStarList = plStarList.map(()=> false);
+			plURLStar = plURLStar.map(()=> 0);
+			if (plIsSave) plSaveSet({url: plURL, star: plURLStar});
 		} else {
 			plStarIsAll = true;
 			plStarBtn.textContent = 'Снять выбор';
-			plStarAll.forEach(function(span, i){span.style.background='#88888830';});
-			plRows.forEach(function(row, i){
+			plStarAll.forEach((span, i)=>span.style.background='#88888830');
+			plRows.forEach((row, i)=>{
 				if (i) {
-					var tds = row.querySelectorAll('td');
-					var build = tds[2].firstChild.title;
+					let tds = row.querySelectorAll('td');
+					let build = tds[2].dataset.build;
 					//console.log('inner:'+tds[2].innerText, 'content:'+tds[2].textContent);
-					var j = plBuildNames.indexOf(build);
+					let j = plBuildNames.indexOf(build);
 					//console.log('build '+build, 'index '+j, 'value '+plStarList[j]);
-					var standardTime = row.querySelector('.standard-time');
-					var starTime = row.querySelector('.star-time');
-					var standardVigoda = row.querySelector('.standard-vigoda');
-					var starVigoda = row.querySelector('.star-vigoda');
+					let standardTime = row.querySelector('.standard-time');
+					let starTime = row.querySelector('.star-time');
+					let standardVigoda = row.querySelector('.standard-vigoda');
+					let starVigoda = row.querySelector('.star-vigoda');
 					if (!plStarList[j]){
 						starTime.style.display = 'table-cell';
 						standardTime.style.display = 'none';
@@ -1125,33 +1754,33 @@ if (document.body.className.includes('page-Список_продуктов')) {
 					}
 				}
 			});
-			plStarList = plStarList.map(function(){return true;});
-			plURLStar = plURLStar.map(function(){return 1;});
-			if (plIsSave){plSaveSet({url: plURL, star: plURLStar});}
+			plStarList = plStarList.map(()=> true);
+			plURLStar = plURLStar.map(()=> 1);
+			if (plIsSave) plSaveSet({url: plURL, star: plURLStar});
 		}
 	});
 	
 	//сброс
-	plClearBtn.addEventListener('click', function(){
-		plBuildAll.forEach(function(span, i){span.style.background = '#88888830';});
-		plStarAll.forEach(function(span, i){span.style.background = 'transparent';span.style.display='inline-block';});
+	plClearBtn.addEventListener('click', ()=>{
+		plBuildAll.forEach((span, i)=>span.style.background = '#88888830');
+		plStarAll.forEach((span, i)=>{span.style.background = 'transparent';span.style.display='inline-block'});
 		plLevelInp.value='';
-		var plBuildIsAll = true;
-		var plStarIsAll = false;
+		let plBuildIsAll = true;
+		let plStarIsAll = false;
 		plStarBtn.textContent = 'Выбрать всё';
 		plBuildBtn.textContent = 'Снять выбор';
-		plRows.forEach(function(row, i){
+		plRows.forEach((row, i)=>{
 			if (i){
 				row.style.display='table-row';
-				var tds = row.querySelectorAll('td');
-				var build = tds[2].firstChild.title;
+				let tds = row.querySelectorAll('td');
+				let build = tds[2].dataset.build;
 				//console.log('inner:'+tds[2].innerText, 'content:'+tds[2].textContent);
-				var j = plBuildNames.indexOf(build);
+				let j = plBuildNames.indexOf(build);
 				//console.log('build '+build, 'index '+j, 'value '+plStarList[j]);
-				var standardTime = row.querySelector('.standard-time');
-				var starTime = row.querySelector('.star-time');
-				var standardVigoda = row.querySelector('.standard-vigoda');
-				var starVigoda = row.querySelector('.star-vigoda');
+				let standardTime = row.querySelector('.standard-time');
+				let starTime = row.querySelector('.star-time');
+				let standardVigoda = row.querySelector('.standard-vigoda');
+				let starVigoda = row.querySelector('.star-vigoda');
 				if (plStarList[j]){
 					starTime.style.display = 'none';
 					standardTime.style.display = 'table-cell';
@@ -1164,25 +1793,25 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			}
 		});
-		plStarList = plStarList.map(function(){return false;});
-		plBuildList = plBuildList.map(function(){return true;});
-		plURLStar = plURLStar.map(function(){return 0;});
-		plURLBuild = plURLBuild.map(function(){return 1;});
+		plStarList = plStarList.map(()=> false);
+		plBuildList = plBuildList.map(()=> true);
+		plURLStar = plURLStar.map(()=> 0);
+		plURLBuild = plURLBuild.map(()=> 1);
 		plURLLevel = 0;
-		if (plIsSave){plSaveSet({url: plURL, star: plURLStar, build: plURLBuild, level: 0});}
+		if (plIsSave) plSaveSet({url: plURL, star: plURLStar, build: plURLBuild, level: 0});
 	});
 	
 	//уровень
-	plLevelInp.addEventListener('input', function(){
-		var level = +plLevelInp.value;
+	plLevelInp.addEventListener('input', ()=>{
+		let level = +plLevelInp.value;
 		if(level){
 			plURLLevel = level;
-			plRows.forEach(function(row, i){
+			plRows.forEach((row, i)=>{
 				if(i){
-					var tds = row.querySelectorAll('td');
-					var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
-					var build = tds[2].firstChild.title;
-					var j = plBuildNames.indexOf(build);
+					let tds = row.querySelectorAll('td');
+					let rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+					let build = tds[2].dataset.build;
+					let j = plBuildNames.indexOf(build);
 					//console.log(level, rowLvl);
 					if ((rowLvl>level&&level)||!plBuildList[j]){
 						row.style.display='none';
@@ -1192,18 +1821,18 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			});
 		}
-		if (plIsSave){plSaveSet({url: plURL, level: plURLLevel});}
+		if (plIsSave) plSaveSet({url: plURL, level: plURLLevel});
 	});
 	
 	console.log(plBuildList, plStarList, plBuildNames);
 	
 	/* функции */
 	function plCheckBuilds(value, zd, rows, lvl) {
-		rows.forEach(function(row, i) {
+		rows.forEach((row, i) =>{
 			if (i) {
-				var tds = row.querySelectorAll('td');
-				var build = tds[2].firstChild.title;//.innerText.trim().replace(/\n/g, ' ');
-				var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+				let tds = row.querySelectorAll('td');
+				let build = tds[2].dataset.build;//.innerText.trim().replace(/\n/g, ' ');
+				let rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
 				//console.log(value, tds[2], tds[2].firstChild, build, zd);
 				if (build == zd) {
 					if (value) {
@@ -1216,15 +1845,15 @@ if (document.body.className.includes('page-Список_продуктов')) {
 		});
 	}
 	function plCheckStar(value, zd, rows) {
-		rows.forEach(function(row, i) {
+		rows.forEach((row, i) =>{
 			if (i) {
-				var tds = row.querySelectorAll('td');
-				var build = tds[2].firstChild.title;
+				let tds = row.querySelectorAll('td');
+				let build = tds[2].dataset.build;
 				if (build == zd) {
-					var standardTime = row.querySelector('.standard-time');
-					var starTime = row.querySelector('.star-time');
-					var standardVigoda = row.querySelector('.standard-vigoda');
-					var starVigoda = row.querySelector('.star-vigoda');
+					let standardTime = row.querySelector('.standard-time');
+					let starTime = row.querySelector('.star-time');
+					let standardVigoda = row.querySelector('.standard-vigoda');
+					let starVigoda = row.querySelector('.star-vigoda');
 					if (value) {
 						starTime.style.display = 'table-cell';
 						standardTime.style.display = 'none';
@@ -1249,9 +1878,9 @@ if (document.body.className.includes('page-Список_продуктов')) {
 		});
 	}
 	function plSaveSet(params){
-		if(params.build){params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
-		if(params.star){params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
-		if(params.level){params.url.searchParams.set('level', params.level);}
+		if(params.build) params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));
+		if(params.star) params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));
+		if(params.level) params.url.searchParams.set('level', params.level);
 		params.url.searchParams.set('save', 1);
 		history.replaceState({},'',params.url);
 	}
@@ -1259,37 +1888,37 @@ if (document.body.className.includes('page-Список_продуктов')) {
 }
 
 //перелистывание
-var rotateds = document.querySelectorAll('.rotated-box');
+let rotateds = document.querySelectorAll('.rotated-box');
 if (rotateds.length) {
 	rotateds.forEach(function(rotatedBox, index){
-		var pageWidth = (+getComputedStyle(rotatedBox).width.slice(0, -2)) / 2;
+		let pageWidth = (+getComputedStyle(rotatedBox).width.slice(0, -2)) / 2;
 		console.log(index, pageWidth);
 		
-		var rotatesRight = 0;
-		var rotatesLeft = 0;
-		var movesRight = 0;
-		var movesLeft = 0;
-		var isMoved = false;
-		var isPicked = false;
+		let rotatesRight = 0;
+		let rotatesLeft = 0;
+		let movesRight = 0;
+		let movesLeft = 0;
+		let isMoved = false;
+		let isPicked = false;
 		
-		var rotated = rotatedBox.firstElementChild;
+		let rotated = rotatedBox.firstElementChild;
 		
-		var allPages = rotated.children;
-		var activeSide = rotated.lastElementChild;
+		let allPages = rotated.children;
+		let activeSide = rotated.lastElementChild;
 		
-		var strlLeft = rotatedBox.querySelector('.to-left');
+		let strlLeft = rotatedBox.querySelector('.to-left');
 		strlLeft.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/9/97/Стрелка_влево.png/revision/latest/scale-to-width-down/40?cb=20240815141934&path-prefix=ru"/>';
 		strlLeft.querySelector('img').ondragstart = function() { return false; };
 		
-		var strlRight = rotatedBox.querySelector('.to-right');
+		let strlRight = rotatedBox.querySelector('.to-right');
 		strlRight.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/b/b7/Стрелка_вправо.png/revision/latest/scale-to-width-down/40?cb=20240815141954&path-prefix=ru"/>';
 		strlRight.querySelector('img').ondragstart = function() { return false; };
 		
 		allPages = Array.from(allPages);
 		allPages.splice(-1, 1);
-		var page = 1;
-		var maxPage = Math.floor(allPages.length / 2) - 1;
-		var isMouse = false;
+		let page = 1;
+		let maxPage = Math.floor(allPages.length / 2) - 1;
+		let isMouse = false;
 		
 		allPages.forEach(function(elem,i){
 			elem.style.visibility = 'hidden';
@@ -1305,9 +1934,9 @@ if (rotateds.length) {
 			if(event.target.localName != 'img'){
 				isPicked = true;
 				rotated.setPointerCapture(event.pointerId);
-				var rect = rotated.getBoundingClientRect();
+				let rect = rotated.getBoundingClientRect();
 				
-				var clickX = event.pageX-rect.left;
+				let clickX = event.pageX-rect.left;
 				console.log(clickX, event);
 				if (clickX < pageWidth && !rotatesRight&&!rotatesLeft && page > 0 && !movesRight && event.isPrimary && event.button === 0) {
 					// схвачена левая страница
@@ -1347,7 +1976,7 @@ if (rotateds.length) {
 								setTimeout(endLeftMove, 1);
 							};
 							rotated.onpointerup = function(event) {
-								var ms = Math.floor(((event.pageX-rect.left)-clickX)*(500/pageWidth));
+								let ms = Math.floor(((event.pageX-rect.left)-clickX)*(500/pageWidth));
 								rotated.onpointermove = null;
 								rotated.onpointerup = null;
 								rotated.onpointercancel = null;
@@ -1363,8 +1992,8 @@ if (rotateds.length) {
 							};
 						}
 						
-						var mouseX = event.pageX-rect.left;
-						var deg = (mouseX-clickX)*(90/pageWidth);
+						let mouseX = event.pageX-rect.left;
+						let deg = (mouseX-clickX)*(90/pageWidth);
 						if (deg < 0) {deg = 0;}
 						console.log('move',mouseX, deg);
 						
@@ -1426,7 +2055,7 @@ if (rotateds.length) {
 							};
 							
 							rotated.onpointerup = function(event) {
-								var ms = Math.floor((clickX-(event.pageX-rect.left))*(500/pageWidth));
+								let ms = Math.floor((clickX-(event.pageX-rect.left))*(500/pageWidth));
 								rotated.onpointermove = null;
 								rotated.onpointerup = null;
 								rotated.onpointercancel = null;
@@ -1442,8 +2071,8 @@ if (rotateds.length) {
 							};
 						}
 						
-						var mouseX = event.pageX-rect.left;
-						var deg = -((clickX-mouseX)*(90/pageWidth));
+						let mouseX = event.pageX-rect.left;
+						let deg = -((clickX-mouseX)*(90/pageWidth));
 						if (deg > 0) {deg = 0;}
 						//console.log(mouseX, deg);
 						
@@ -1606,11 +2235,11 @@ if (rotateds.length) {
 }
 
 //интересные факты заглавная
-var facts = document.querySelectorAll(".mainpage-fact");
+let facts = document.querySelectorAll(".mainpage-fact");
 if (facts.length>0) {
-	var factError = document.querySelector(".mainpage-fact-error");
+	let factError = document.querySelector(".mainpage-fact-error");
 	factError.style.display = "none";
-	var randIndx=randint(0,facts.length);
+	let randIndx=randint(0,facts.length);
 	console.log('Факт номер '+randIndx);
 	facts[randIndx].style.display="block";
 	setTimeout(updateFact, 15000, facts, randIndx);
@@ -1639,17 +2268,17 @@ if (facts.length>0) {
 
 
 //noimage
-var linksToNewImg = document.querySelectorAll('.mw-parser-output a');
+let linksToNewImg = document.querySelectorAll('.mw-parser-output a');
 //console.log(linksToNewImg);
 if (linksToNewImg.length>0) {
-for (var i = 0; i < linksToNewImg.length; i++) {
-	//var title = linksToNewImg[i].title;
-	var href = linksToNewImg[i].href;
+for (let i = 0; i < linksToNewImg.length; i++) {
+	//let title = linksToNewImg[i].title;
+	let href = linksToNewImg[i].href;
 	//console.log(title);
 	if (href.includes('wpDestFile=')){
 		//console.log(true);
 		linksToNewImg[i].innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/7/7d/Нет_картинки.gif/revision/latest?cb=20231204095429&format=original&path-prefix=ru" style="width:150px; height:auto;" alt="Нет картинки" />';
-		//var ret = document.createElement('img');
+		//let ret = document.createElement('img');
 		//ret.src = 'https://static.wikia.nocookie.net/hayday/images/7/7d/Нет_картинки.gif/revision/latest?cb=20231204091935&format=original&path-prefix=ru';
 		//ret.width = 150;
 		//linksToNewImg[i].replaceWith();
@@ -1658,24 +2287,24 @@ for (var i = 0; i < linksToNewImg.length; i++) {
 
 // События с заданиями: эффект мыши
 if (document.body.className.includes('page-События_с_заданиями')) {
-	var sobytieRoads = document.querySelectorAll(".sobytie .road");
+	let sobytieRoads = document.querySelectorAll(".sobytie .road");
 	sobytieRoads.forEach(function(road){
-		var roadPolosa = road.querySelector(".polosa");
-		var roadPolosaBorder = road.querySelector(".polosa-border");
-		var points = road.querySelectorAll(".points");
+		let roadPolosa = road.querySelector(".polosa");
+		let roadPolosaBorder = road.querySelector(".polosa-border");
+		let points = road.querySelectorAll(".points");
 		
-		var nowPoint = document.createElement("div");
+		let nowPoint = document.createElement("div");
 		nowPoint.className = "now-point hayday";
 		nowPoint.style.left="-50px";
 		nowPoint.innerHTML = '<svg width="20px" height="13px"><polygon points="0,13 10,0 20,13" fill="white"/></svg>';
-		var nowPointText = document.createTextNode("0");
+		let nowPointText = document.createTextNode("0");
 		nowPoint.append(nowPointText);
 		road.append(nowPoint);
 		
-		var numPoint = 0;
+		let numPoint = 0;
 		road.addEventListener("pointermove", function(){
-			var rect = road.getBoundingClientRect();
-			var mouseX = event.pageX-rect.left+road.scrollLeft;
+			let rect = road.getBoundingClientRect();
+			let mouseX = event.pageX-rect.left+road.scrollLeft;
 			roadPolosa.style.width=mouseX+"px";
 			roadPolosaBorder.style.width=(mouseX-3)+"px";
 			nowPoint.style.left = (Math.floor(mouseX)-25)+"px";
@@ -1685,7 +2314,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 			} else if (mouseX > (points.length-1)*300+150) {
 				numPoint = points[points.length-1].textContent;
 			} else {
-				var i = Math.floor((mouseX-150)/300);
+				let i = Math.floor((mouseX-150)/300);
 				numPoint = Math.floor(((+points[i+1].textContent-Number(points[i].textContent))/300)*(mouseX-i*300-150)+Number(points[i].textContent));
 			}
 			//console.log(numPoint, points[0].textContent, mouseX);
@@ -1719,17 +2348,134 @@ function randint(min, max) {
 // возвращает куки с указанным name,
 // или undefined, если ничего не найдено
 function getCookie(name) {
-  var matches = document.cookie.match(new RegExp(
+  let matches = document.cookie.match(new RegExp(
     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
   ));
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-
+// сохраняет параметр в cookie
 function setCookie(name, value) {
-  var updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
   document.cookie = updatedCookie;
 }
+
+// получение json данных со страниц пространства имён Data в формате json
+// принимает 2 аргумента. 2 аргумент — булевый.
+//При истинном значении загружает все страницы из массива page и возвращает объект объектов-результатов после загрузки всех. Ключ — страница, переданная в pages
+// если 2 аргумент — ложный, то загружает одну страницу из первого аргумента и возвращает объект из неё
+function getJsonPage(pages, multi){
+	//let mwc = mw.config.get(['wgScriptPath', 'wgSassParams', 'wgArticlePath']);
+	//let apiPage = new mw.Uri({path:'/ru/api.php'});
+	
+	
+	if (multi) {// несколько страниц
+		let l = pages.length;
+		
+		let promise = new Promise(function(resolve, reject){
+			let res = {};
+			
+			for (let i = 0; i < l; i++){
+				let page = pages[i];
+				// вызывается эта же функция для одной страницы
+				getJsonPage(page, false).then(function(r){
+					res[page] = r;
+					if (Object.keys(res).length == l){
+						resolve(res);
+					}
+				},function(err){
+					reject(err);
+				});
+			}
+		});
+		
+		return promise;
+	} else { //одна страница
+		let page = pages;
+		let url = '/ru/api.php?page='+page+'&action=parse&format=json&formatversion=2';
+		//console.log(apiPage);
+		return new Promise(function(resolve, reject){
+			fetch(url).then(function(response){
+				//console.log(response.json());
+				response.json().then(function(res){
+					try {
+						let text = res.parse.text;
+						let firstPos = text.indexOf('$');
+						let secondPos = text.indexOf('$', firstPos+1);
+						
+						let ret = JSON.parse(text.slice(firstPos+1,secondPos));
+						
+						resolve(ret);
+					} catch (err){
+						reject('Data Parsing Error: '+err);
+					}
+				},function(err){
+					reject(err);
+				});
+			});
+		});
+	}
+}
+
+// получает прямую ссылку на файл по его названию (с префиксом Файл: и расширением с помощью api
+// img — строка, результат — строка
+function getImgPath(img){
+	let url = '/ru/api.php?action=query&titles='+img+'&iiprop=url&prop=imageinfo&format=json';
+	return new Promise(function(resolve, reject){
+		fetch(url).then(function(response){
+			//console.log(response.json());
+			response.json().then(function(data){
+				try {
+					let im = getVal(getObj(data.query, 'imageinfo'), 'url');
+					if (im.length){
+						im = im[0];
+					} else {
+						reject('Img Not Found');
+					}
+					
+					resolve(im);
+				} catch (err){
+					reject('Data Error: '+err);
+				}
+			}, function(err){
+				reject(err);
+			});
+		});
+	});
+}
+
+function getObj (data, key) {
+    // traverse through object tree
+    let ret = [], r;
+    for (let k in data) {
+        if (data[k] instanceof Object) {
+            if (k === key) {
+                ret.push(data[k]);
+            }
+            r=getObj(data[k], key);
+            if (r) ret=ret.concat(r);
+        } // if obj
+    } // for k in data
+    return ret;
+} // getObj
+
+function getVal (data, key) {
+    // travers through object tree
+    let ret = [], r;
+    for (let k in data) {
+        if (data[k] instanceof Object) {
+            r=getVal(data[k], key);
+            if (r) {
+                ret=ret.concat(r);
+            }
+        } else {
+            if (k === key) {
+                ret.push(data[k]);
+            }
+        } // if obj
+    } // for k in data
+    return ret;
+} // getVal
 
 
 

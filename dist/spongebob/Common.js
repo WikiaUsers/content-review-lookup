@@ -351,6 +351,8 @@ window.MessageWallUserTags = {
         'Thelxinoe': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
+        'AndromedaMapping1': 'Discussion Moderator',
+        
         'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
         'LarryBoy_fan': 'Discussion Moderator • Rollback',

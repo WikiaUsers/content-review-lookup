@@ -86,7 +86,7 @@ Date.prototype.toDateInputValue = (function() {
 
                 // TRANSLATION SECTION 1
                 var translation_the_season = "Die"; // Referring to "Season"
-                var translation_lasts = "dauert noch";
+                var translation_lasts = "läuft noch";
                 var translation_days_long = "Tage";
                 var translation_from = "von";
                 var translation_to = "bis";
@@ -98,19 +98,19 @@ Date.prototype.toDateInputValue = (function() {
                 var translation_to_buy_everything_youll_need = "Um alle Items der Saison zu kaufen, brauchst du";
                 var translation_sc_wo_pass = "Saisonkerzen OHNE den Saisonpass";
                 var translation_sc_w_pass = "Saisonkerzen MIT dem Saisonpass";
-                var translation_takes_approximately = "Dauert standardmäßig etwa";
-                var translation_standard_days = "Tage"; // This means 5 SC per day
+                var translation_takes_approximately = "Dauert etwa";
+                var translation_standard_days = "voll ausgenutzte Tage"; // This means 5 SC per day
                 var translation_note = "Achtung: Du solltest dich niemals dazu gedrängt fühlen, einen Saisonpass kaufen zu müssen.";
                 var translation_choose_date = "Wähle ein Datum";
                 var translation_today = "Heute";
                 var translation_season_start = "Saisonbeginn";
                 var translation_choose_time = "Wähle eine Zeit";
                 var translation_now = "Jetzt";
-                var translation_reset = "Zurücksetzen";
+                var translation_reset = "Reset";
                 var translation_your_current_sc = "Anzahl Saisonkerzen, die du aktuell besitzt";
                 var translation_do_you_have_a_pass = "Hast du einen Saisonpass?";
                 var translation_calculate = "Berechnen";
-                var translation_clear = "Alles löschen";
+                var translation_clear = "Löschen";
 
                 // Sets up the HTML initially
                 document.getElementById('sky-seasonal-candle-calculator-output').innerHTML = /*
@@ -351,12 +351,12 @@ Date.prototype.toDateInputValue = (function() {
         insert_table: function () {
 
             // TRANSLATION SECTION 2
-            var translation_A1 = "Dia(s) de Temporada";
-            var translation_B1 = "Dia(s) restante(s) de Temporada";
-            var translation_C2 = "Sem o Passe da Temporada";
-            var translation_C3 = "Com o Passe da Temporada";
-            var translation_A2 = "Total atual de Velas Sazonais coletáveis";
-            var translation_B2 = "Velas Sazonais coletáveis restantes";
+            var translation_A1 = "Tag(e) in der Saison bisher";
+            var translation_B1 = "verbleibende(r) Tag(e) in der Saison";
+            var translation_C2 = "Ohne den Saisonpass";
+            var translation_C3 = "Mit dem Saisonpass";
+            var translation_A2 = "bisher insgesamt sammelbare Saisonkerzen";
+            var translation_B2 = "verbleibende sammelbare Saisonkerzen";
             
 
             document.getElementById("sscc_general_table").innerHTML = '<div class="article-table-wrapper">' + /*
@@ -520,23 +520,23 @@ Date.prototype.toDateInputValue = (function() {
 
             
             // TRANSLATION SECTION 3
-            var translation_commentary = "Comentário sobre seu status em";
-            var translation_at = "às";
-            var translation_you_have_collected = "Você coletou";
-            var translation_you_missed = "Você perdeu um potencial de";
-            var translation_sc = "Vela(s) Sazonal(is)";
-            var translation_w_pass = "com o Passe da Temporada";
-            var translation_wo_pass = "sem o Passe da Temporada";
-            var translation_all_the_sc = "<b>todas</b> as Velas Sazonais até o momento";
-            var translation_and_more = "<b>...E MAIS?</b>";
-            var translation_you_would_need = "Você precisará de";
-            var translation_to_buy_everything = "para comprar todos os cosméticos desta Temporada"
-            var translation_if_you_dont_miss = "Você deve conseguir comprar todos os cosméticos se não perder"
-            var translation_out_of = "do(s)"
-            var translation_days_remaining = "dia(s) restante(s)"
-            var translation_you_can_buy_everything = "Você pode comprar todos os cosméticos desta Temporada!";
-            var translation_you_cannot_buy_everything = "Infelizmente, com o tempo restante, <b>você não conseguirá comprar todos os cosméticos</b>."
-            var translation_conditional = "Infelizmente, com o tempo restante, <b>você não conseguirá comprar todos os cosméticos</b> A MENOS que compre o Passe da Temporada para obter o bônus de 30 Velas Sazonais e 1 Vela Sazonal extra por dia. No entanto, você só poderá comprar os cosméticos não-Supremos e não pode perder";
+            var translation_commentary = "Erläuterung zu deinem Kerzenstand am";
+            var translation_at = "um";
+            var translation_you_have_collected = "Du hast";
+            var translation_you_missed = "Verpasst hast du potentielle";
+            var translation_sc = "Saisonkerze(n)";
+            var translation_w_pass = "mit einem Saisonpass eingesammelt"; // grammar "collected"
+            var translation_wo_pass = "ohne einen Saisonpass eingesammelt"; // grammar "collected"
+            var translation_all_the_sc = "<b>alle</b> Saisonkerzen bisher";
+            var translation_and_more = "<b>...UND MEHR?</b>";
+            var translation_you_would_need = "Du bräuchtest";
+            var translation_to_buy_everything = "um alle Kosmetika aus der Saison zu kaufen"
+            var translation_if_you_dont_miss = "Du solltest alle Kosmetika kaufen können, aber du darfst"
+            var translation_out_of = "von"
+            var translation_days_remaining = "verbleibenden/m Tag(en) nicht verpassen" // grammar "dont miss"
+            var translation_you_can_buy_everything = "Du kannst alle Kosmetika in dieser Saison kaufen!";
+            var translation_you_cannot_buy_everything = "Leider bist du mit der verbleibenden Zeit <b>nicht in der Lage, alle Kosmetika zu kaufen</b>."
+            var translation_conditional = "Leider bist du mit der verbleibenden Zeit <b>nicht in der Lage, alle Kosmetika zu kaufen</b>, ES SEI DENN du kaufst den Saisonpass, um die 30 Bonus-Saisonkerzen und die 1 Extra-Saisonkerze pro Tag zu erhalten. Jedoch wirst du nur die nicht-ultimativen Kosmetika kaufen können und darfst";
 
 
             // Responses for people with Season Pass

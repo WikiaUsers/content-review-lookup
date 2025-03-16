@@ -1,5 +1,55 @@
 /* <pre><nowiki> */
 
+if ((mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough') ||
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') ||
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/FactionsBox')) {
+        importArticles({
+            type: 'style',
+            article: 'MediaWiki:SWUWalkthrough.css'
+        });
+}
+
+if ((mw.config.get('wgPageName').substring(0,mw.config.get('wgPageName').indexOf('/')) == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough') ||
+    (mw.config.get('wgPageName').substring(0,61) == 'Legacy Wiki:Star Wars: Uprising Super Walkthrough/Abilities/') ||
+    (mw.config.get('wgPageName').substring(0,17) == 'Template:Uprising') ||
+    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
+    (mw.config.get('wgPageName') == 'Template:CurrencyIcon') ||
+    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
+    (mw.config.get('wgPageName') == 'Template:TrainerCard') ||
+    (mw.config.get('wgPageName') == 'Template:TrainerCard/Main')) {
+        importArticles({
+            type: 'style',
+            article: 'MediaWiki:SWU_Super_Walkthrough_Fonts.css'
+        });
+}
+
+if ((mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Burnin_Konn') || 
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Components') || 
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Components/Materials') || 
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Anoat_sector') || 
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Components/Crystals') || 
+    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Components') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Main') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Abilities') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/doc') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/Main') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox/main') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/General') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingComponentBox') || 
+    (mw.config.get('wgPageName') == 'Template:EquipmentProgressionTable') || 
+    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
+    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
+    (mw.config.get('wgPageName') == 'Template:UprisingAbilityBox/Main')) {
+        importArticles({
+            type: 'style',
+            article: 'MediaWiki:SWU_Super_Walkthrough_Equipment.css'
+        });
+}
+
 // onload stuff
 var firstRun = true;
 
@@ -601,37 +651,7 @@ $( function () {
 		addEditIntro( 'Template:DYK_editintro' );
 	}
 } );
- 
-/** Archive edit tab disabling *************************************
- * Disables the edit tab on old forum topic pages to stop noobs bumping old topics.
- * Page can still be edited by going via the edit tab on the history etc, or by 
- * typing the edit address manually.
- * By [[User:Spang|Spang]]
- * Monaco and Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
- * Removal of section edit buttons and new section tab on talk pages added by [[User:Grunny|Grunny]]
- * User:/User talk: support and styling in new skin by [[User:Grunny|Grunny]]
- * UCP and FandomDesktop support by [[User:01miki10|01miki10]]
- */
-function disableOldForumEdit() {
-	if ( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
-		return;
-	}
-	$( '#old-forum-warning-section .mw-editsection' ).remove();
-	if ( !document.getElementById( 'old-forum-warning' ) ) {
-		return;
-	}
 
-	if ( $( '#ca-addsection' ).length ) {
-		$( '#ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '#ca-edit' ).remove();
-		$( '#ca-addsection-side-tool' ).remove();
-		$( 'span.mw-editsection' ).remove();
-	} else {
-		$( '#ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '#ca-edit-side-tool' ).remove();
-		$( 'span.mw-editsection' ).remove();
-	}
-}
 $( disableOldForumEdit );
 
 $( function() {
