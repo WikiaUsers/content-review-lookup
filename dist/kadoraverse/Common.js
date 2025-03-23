@@ -35,3 +35,12 @@ importArticles({
         'u:dev:MediaWiki:CategoryQuickRemove.js',
     ]
 });
+
+// NSFW Image Censor
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('img.nsfw').forEach(function(img) {
+        img.addEventListener('click', function() {
+            img.classList.add('revealed');
+        });
+    });
+});

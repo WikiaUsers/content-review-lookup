@@ -1,56 +1,55 @@
 // <pre>
 
-$(function(){
-	var api = new mw.Api();
-	var removeLinksButton = $('<li><a href="#">Link cleanup</a></li>');
-
+mw.loader.using(['mediawiki.api'], () => {
+	const api = new mw.Api();
+	const removeLinksButton = $('<li><a href="#">Link cleanup</a></li>');
 	$('#my-tools-menu').prepend(removeLinksButton);
 	
-	removeLinksButton.click(function(){
+	removeLinksButton.on('click', () => {
 		var linkCleanup = {
-			pages:[],
-			content:[],
+			pages: [],
+			content: [],
 		};
 		var lag = '5';
 		var iValue = 0;
-		var myModal = $('<div id="myModal"><label for="myModalResults">Edit log:</label><textarea id="myModalResults" rows="4" disabled></textarea><div class="wds-button wds-is-secondary" id="myModalClose">Close</div></div>');
+		var myModal = $('<div id="myModal">')
+			.append($('<label for="myModalResults">').text('Edit log:'))
+			.append($('<textarea id="myModalResults" rows="4" disabled>'))
+			.append($('<div class="wds-button wds-is-secondary" id="myModalClose">').text('Close'));
 		
 		$('body').append(myModal);
-		
-		$('#myModalClose').click(function(){
-			myModal.remove();
-		});
+		$('#myModalClose').on('click', () => myModal.remove());
 		
 		function log(value, type){
-			$('#myModalResults').prepend(value+'\n');
+			$('#myModalResults').prepend(value + '\n');
 			console[type](value);
 		}
 		
 		api.get({
-			generator:'allpages',
-			gapnamespace:'4',
-			gapprefix:'List of unwritten',
-			gaplimit:'500',
-			prop:'revisions',
-			rvprop:'content',
-			rvslots:'main',
-			formatversion:'2',
-		}).done(function(result){
+			generator: 'allpages',
+			gapnamespace: '4',
+			gapprefix: 'List of unwritten',
+			gaplimit: '500',
+			prop: 'revisions',
+			rvprop: 'content',
+			rvslots: 'main',
+			formatversion: '2',
+		}).done((result) => {
 			if (result.warnings){
-				log('Warning: '+result.warnings.main['*'], 'warn');
+				log('Warning: ' + result.warnings.main['*'], 'warn');
 			}
 			
-			result.query.pages.forEach(function(entry){
+			result.query.pages.forEach((entry) => {
 				linkCleanup.pages.push(entry.title);
 				linkCleanup.content.push(entry.revisions[0].slots.main.content);
 			});
-
+			
 			removeLinks(iValue++);
-		}).fail(function(code, data){
+		}).fail((code, data) => {
 			if (code === 'http'){
-				log('Error: '+code+': '+JSON.stringify(data), 'error');
+				log('Error: ' + code + ': ' + JSON.stringify(data), 'error');
 			} else {
-				log('Error: '+code+': '+typeof data, 'error');
+				log('Error: ' + code + ': ' + typeof data, 'error');
 			}
 		});
 		
@@ -70,18 +69,13 @@ $(function(){
 				format:'json',
 			};
 			
-			api.postWithToken('csrf', params).done(function(data){
+			api.postWithToken('csrf', params).done((data) => {
 				if (data.edit.newtimestamp){
 					logEdit(data);
-					
-					setTimeout(function(){
-						formatFix(i);
-					}, 150);
+					setTimeout(() => formatFix(i), 150);
 				} else {
 					if (iValue < linkCleanup.pages.length){
-						setTimeout(function(){
-							removeLinks(iValue++);
-						}, 150);
+						setTimeout(() => removeLinks(iValue++), 150);
 					} else {
 						log('Done.', 'log');
 					}
@@ -90,7 +84,7 @@ $(function(){
 		}
 		
 		function formatFix(i){
-			$.get(mw.util.getUrl(linkCleanup.pages[i], {action:'raw'}), function(data){
+			$.get(mw.util.getUrl(linkCleanup.pages[i], {action: 'raw'}), (data) => {
 				var newText = data
 					.replace(/[/; ]+\n/g, '\n')
 					.replace(/\n\*[/; ]+/g, '\n* ')
@@ -106,15 +100,13 @@ $(function(){
 					format:'json',
 				};
 				
-				api.postWithToken('csrf', params).done(function(data){
+				api.postWithToken('csrf', params).done((data) => {
 					if (data.edit.newtimestamp){
 						logEdit(data);
 					}
 					
 					if (iValue < linkCleanup.pages.length){
-						setTimeout(function(){
-							removeLinks(iValue++);
-						}, 150);
+						setTimeout(() => removeLinks(iValue++), 150);
 					} else {
 						log('Done.', 'log');
 					}

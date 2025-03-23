@@ -26,7 +26,7 @@
 	          navboxSelfUrl = document.querySelector('#charms-nav td > center > strong'),
 	          shrinkFactor = 5,
 	          atlasWidth = 1260,
-	          atlasUrl = 'https://hk.fandom.com/Special:Filepath/Charms-atlas.webp?width=' + (atlasWidth / shrinkFactor),
+	          atlasUrl = 'https://static.wikia.nocookie.net/hollowknight/images/8/80/Charms-atlas.webp/revision/latest/scale-to-width-down/' + (atlasWidth / shrinkFactor) + '?cb=20230225215802',
 	          floor = Math.floor,
 	          imageCellWidth = 180 / shrinkFactor,
 	          imageCellHeight = 162 / shrinkFactor,

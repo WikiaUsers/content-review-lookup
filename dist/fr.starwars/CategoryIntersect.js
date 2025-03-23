@@ -77,7 +77,7 @@ $(function () {
 			var currentPage = Number.parseInt(searchParams.get('page')) || 1;
 			if (!Number.isInteger(currentPage) || currentPage < 1) currentPage = 1;
 			const offset = (currentPage - 1) * count;
-			const headerTitle = '==Pages dans les catégories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" et "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
+			const headerTitle = '==Pages dans les catégories "[[:Catégorie:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" et "[[:Catégorie:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
 			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2;
 			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' page précédente]' : 'page précédente';
 			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' page suivante]';
@@ -139,7 +139,7 @@ $(function () {
 					}
 					const pageSeparator = ' <b>·</b> ';
 					var pagination = '<div class="dpl-pagination">';
-					pagination += '<b>Go to page:</b> ';
+					pagination += '<b>Aller sur la page :</b> ';
 					if (currentPage > 2 && startPage > 1) {
 						pagination += '<a href="' + basePaginationLink + '" aria-label="Page 1">1</a>';
 						pagination += startPage > 2 ? pageSeparator : ' ';
@@ -189,7 +189,7 @@ $(function () {
 							value: searchParams.has('category' + index) ? searchParams.get('category' + index).replaceAll('_', ' ') : undefined,
 							$overlay: true
 						}), {
-							label: 'Category:',
+							label: 'Catégorie :',
 							align: 'top'
 						}),
 					]);
@@ -197,7 +197,7 @@ $(function () {
 				form.addItems([
 					new OO.ui.FieldLayout(new OO.ui.ButtonInputWidget({
 						type: 'submit',
-						label: 'Go',
+						label: 'Rechercher',
 						value: 'Go',
 						flags: [
 							'primary',

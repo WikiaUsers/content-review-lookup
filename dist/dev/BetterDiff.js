@@ -216,6 +216,7 @@ $(function() {
 						
 						if (from == to) {
 							link.classList.add('mw-changeslist-diff');
+							options.label = 'diff';
 						} else {
 							href = href + '&oldid=' + from;
 							options.label = options.revid.length + ' changes';
@@ -225,8 +226,8 @@ $(function() {
 						link.title = page;
 						if (target.nodeType == 3) {
 							var split = /^([^\d\w]*)([\d\w\s]+)([^\d\w]*)$/.exec(target.textContent);
-							var paren = target.parentNode;
-							link.innerHTML = !!split[2] ? split[2] : 'diff';
+							var paren = target.parentNode.parentNode; // actual paren is a plain span wrapper
+							link.innerHTML = split[2]!==undefined ? split[2] : 'diff';
 							target.remove();
 							
 							if (paren.querySelector('.mw-changeslist-diff-cur + .mw-changeslist-separator')) {
@@ -569,9 +570,9 @@ $(function() {
 										(new Intl.DateTimeFormat('en-US', {month: 'long'}).format(fromdate))+' '+
 										fromdate.getFullYear()+
 									'</a> '+
-									(data.log=='upload' ? '' : ('<span class="mw-diff-edit">('+
+									(data.log=='upload' ? '' : ('<span class="mw-diff-edit">'+
 										'<a href="'+getURL(data.fromtitle, {action: 'edit', oldid: data.fromrevid})+'" title="'+data.fromtitle.replace(/"/g, '&quot;')+'">edit</a>'+
-									')</span>'))+
+									'</span>'))+
 								'</strong>'+
 							'</div>'+
 							'<div id="mw-diff-otitle2">'+
@@ -602,12 +603,12 @@ $(function() {
 									(new Intl.DateTimeFormat('en-US', {month: 'long'}).format(todate))+' '+
 									todate.getFullYear()+
 								'</a> '+
-								(data.log=='upload' ? '' : ('<span class="mw-diff-edit">('+
+								(data.log=='upload' ? '' : ('<span class="mw-diff-edit">'+
 									'<a href="'+getURL(data.totitle, {action: 'edit', oldid: data.torevid})+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">edit</a>'+
-								')</span> '+
-								'<span class="mw-diff-undo">('+
+								'</span> '+
+								'<span class="mw-diff-undo">'+
 									'<a href="'+getURL(data.totitle, {action: 'edit', undoafter: data.fromrevid, undo: data.torevid})+'" title="&quot;Undo&quot; reverts this edit and opens the edit form in preview mode. It allows adding a reason in the summary.">undo</a>'+
-								')</span>'))+
+								'</span>'))+
 							'</strong>'+
 						'</div>'+
 						'<div id="mw-diff-ntitle2">'+

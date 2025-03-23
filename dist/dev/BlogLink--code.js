@@ -41,7 +41,7 @@
       configurable: false,
       value: Object.freeze({
         NAMES: Object.freeze({
-          CLASS_DROPDOWN_LI: "UserTab-module_listItem__cM-2J",
+          CLASS_DROPDOWN_LI: "user-tab__list-item",
           DIR_DROPDOWN_LI: "auto",
           ID_DROPDOWN: "bl-"
         }),

@@ -1,16 +1,15 @@
-$(function(){
-	if ($('.number-of-users').length === 0){
+mw.loader.using(['mediawiki.api'], () => {
+	if (!$('.number-of-users').length){
 		return;
 	}
 	
-	new mw.Api().get({
-		action:'listuserssearchuser',
-		contributed:'1',
-		limit:'0',
-		order:'ts_edit',
-		sort:'desc',
-		offset:'0',
-	}).done(function(result){
-		$('.number-of-users').text(result.listuserssearchuser.result_count);
-	});
+	const api = new mw.Api();
+	api.get({
+		action: 'listuserssearchuser',
+		contributed: '1',
+		limit: '0',
+		order: 'ts_edit',
+		sort: 'desc',
+		offset: '0',
+	}).done(result => $('.number-of-users').text(result.listuserssearchuser.result_count));
 });

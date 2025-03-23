@@ -1,49 +1,68 @@
-// IIFE (Immediately Invoked Function Expression)
-(function() {
-    // define cell color-coding
-    const cell_codes = [
-        "OTT",
-        "LTL",
-        "CMP",
-        "MOR",
-        "UTR",
-        "INV",
-    ];
-    const cell_colors = [
-        "rgb(74, 134, 232)",
-        "rgb(60, 120, 21)",
-        "rgb(255, 217, 102)",
-        "rgb(255, 229, 153)",
-        "rgb(255, 242, 204)",
-        "rgb(153, 153, 153)",
-    ];
+/* Any JavaScript here will be loaded for all users on every page load. */
 
-    // Function that applies color to cells within the target table 
-    function applyColorCoding(table) {
-    	table.querySelectorAll("td").forEach(cell => {
-    		let content = cell.innerHTML.trim();
-			for (const code of cell_codes) {
-				if (content.includes(code)) {
-					let index = cell_codes.indexOf(code);
-					if (index != -1) {
-            			cell.style.backgroundColor = cell_colors[index];
-    		 			break; 
-					}
-				}
+const coloredTables = new Set(); // Track colored tables
+
+
+function applyColorsToTableCells() {
+	
+	const row1 = ["#FF0000", "#0000FF", "#FFFF00"];
+	const row2 = ["#00FFFF", "#008080", "#FFD700"];
+	const row3 = ["#800080", "#FFA500", "#FFC0CB"];
+	
+	const colorMap = [
+		row1,
+		row2,
+		row3,
+	];
+	
+	const cols = ["RED", "BLU", "YLW"];
+	const rows = ["101", "202", "303"];
+	
+    $("table").each(function() {
+    	
+        if (coloredTables.has($(this))) return; // Skip already colored table
+     
+        $(this).find("tbody tr td").each(function() {
+            var text = $(this).text().trim();
+            
+            if (typeof text !== 'string') {
+            	return;
+            } // Skip invalid cells
+			
+			var code = text.split("-");
+			
+			var col = code[0];
+			
+			var row_index = -1;
+			if (code.length == 2) {
+				row_index = rows.indexOf(code[1])
 			}
-	    });
-	}
+			col_index = cols.indexOf(col)
+			
+			var background_color = -1;
+			
+			if (col_index != -1 && row_index != -1) {
+				background_color = colorMap[row_index][col_index];
+			}
+			else if (col_index != -1) {
+				background_color = colorMap[0][col_index];
+			}
+            if (background_color != -1) {
+                $(this).css({
+                	"background-color": background_color,
+                	"color": [
+                		"#FFFF00", "#00FFFF", "#FFC0CB", "#FFA500"
+            		].includes(background_color) ? "black" : "white", // for contrast
+                });
+            }
+        });
 
-    // Function that applies color-coding to any table with the given class 
-    function processTables() {
-        document.querySelectorAll(".color-coded").forEach(applyColorCoding);
-    }
+        coloredTables.add($(this)); // Mark table as colored
+    });
+}
 
-    // Add a listener to target tables after page is loaded
-    document.addEventListener("DOMContentLoaded", processTables);
-
-    // Add an observer to target dynammically added tables
-    const observer = new MutationObserver(processTables);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-})();
+mw.hook("wikipage.content").add(function($content) {
+	
+    // Apply colors to existing tables
+	applyColorsToTableCells();
+});

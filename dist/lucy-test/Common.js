@@ -1,39 +1,69 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-const todoList = document.getElementById('todoList');
+setTimeout(() => {
+            // Example data: level -> coins
+            const coinsPerLevel = {
+                1: 2,
+                2: 3,
+                3: 5,
+                4: 7,
+                5: 10,
+                // Add up to level 50...
+            };
 
-    function createTask(taskName) {
-        const taskDiv = document.createElement('div');
-        taskDiv.className = 'task';
-        taskDiv.style.display = 'flex';
-        taskDiv.style.alignItems = 'center';
-        taskDiv.style.marginBottom = '10px';
+            // Get the main div
+            const calculatorDiv = document.getElementById("calculator");
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'checkbox';
-        checkbox.style.marginRight = '10px';
-        checkbox.style.cursor = 'pointer';
+            // Create elements dynamically
+            const title = document.createElement("h2");
+            title.innerText = "Level Coin Calculator";
 
-        const taskSpan = document.createElement('span');
-        taskSpan.textContent = taskName;
+            const fromLabel = document.createElement("label");
+            fromLabel.innerText = "From Level:";
 
-        taskDiv.appendChild(checkbox);
-        taskDiv.appendChild(taskSpan);
+            const fromInput = document.createElement("input");
+            fromInput.type = "number";
+            fromInput.id = "fromLevel";
+            fromInput.min = 1;
+            fromInput.max = 50;
 
-        todoList.appendChild(taskDiv);
+            const toLabel = document.createElement("label");
+            toLabel.innerText = "To Level:";
 
-        checkbox.addEventListener('change', function() {
-            if (this.checked) {
-                taskSpan.style.textDecoration = 'line-through';
-                taskSpan.style.color = 'green';
-            } else {
-                taskSpan.style.textDecoration = 'none';
-                taskSpan.style.color = 'black';
+            const toInput = document.createElement("input");
+            toInput.type = "number";
+            toInput.id = "toLevel";
+            toInput.min = 1;
+            toInput.max = 50;
+
+            const button = document.createElement("button");
+            button.innerText = "Calculate";
+            button.onclick = calculateCoins;
+
+            const resultText = document.createElement("h3");
+            resultText.innerHTML = 'Result: <span id="result">0</span> coins';
+
+            // Append elements to the div
+            calculatorDiv.appendChild(title);
+            calculatorDiv.appendChild(fromLabel);
+            calculatorDiv.appendChild(fromInput);
+            calculatorDiv.appendChild(toLabel);
+            calculatorDiv.appendChild(toInput);
+            calculatorDiv.appendChild(button);
+            calculatorDiv.appendChild(resultText);
+
+            function calculateCoins() {
+                let fromLevel = parseInt(fromInput.value);
+                let toLevel = parseInt(toInput.value);
+
+                if (isNaN(fromLevel) || isNaN(toLevel) || fromLevel < 1 || toLevel > 50 || fromLevel > toLevel) {
+                    document.getElementById("result").innerText = "Invalid input";
+                    return;
+                }
+
+                let totalCoins = 0;
+                for (let i = fromLevel; i <= toLevel; i++) {
+                    totalCoins += coinsPerLevel[i] || 0; // Default to 0 if level is missing
+                }
+
+                document.getElementById("result").innerText = totalCoins;
             }
-        });
-    }
-
-    // Add initial tasks
-    createTask('Task 1');
-    createTask('Task 2');
-    createTask('Task 3');
+        }, 1000); // 1-second delay

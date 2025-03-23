@@ -89,9 +89,11 @@ UserTagsJS.modules.custom = {
 	'Zarc.0724': ['Wiki-Contributor'],
 	'Mysþıc': ['Wiki-Contributor'],
 	'Antiverta': ['Wiki-Contributor'],
+	'StrikerFRFX': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'PorlaiWasTaken': ['Guide-Maker'],
+	'Piteous': ['Guide-Maker'],
 };
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

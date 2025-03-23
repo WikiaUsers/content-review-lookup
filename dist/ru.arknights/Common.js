@@ -33,3 +33,45 @@ window.tooltips_list = [
     }
 ];
 var oggPlayerButtonOnly = false;
+// Данные для примера (замените на свои)
+const operators = [
+  { name: "Экзусiai", tags: ["Медуй", "ДПС", "Выносливость"] },
+  { name: "SilverAsh", tags: ["Лидер", "ДПС", "Выживание"] }
+];
+
+const tags = ["Медуй", "ДПС", "Лидер", "Выносливость", "Выживание"];
+
+// Инициализация тегов
+function initTags() {
+  const container = document.getElementById("tag-buttons");
+  tags.forEach(tag => {
+    const btn = document.createElement("div");
+    btn.className = "tag-button";
+    btn.textContent = tag;
+    btn.onclick = () => btn.classList.toggle("selected");
+    container.appendChild(btn);
+  });
+}
+
+// Расчет результатов
+function calculate() {
+  const selectedTags = Array.from(document.querySelectorAll(".tag-button.selected"))
+    .map(btn => btn.textContent);
+
+  const filtered = operators.filter(op => 
+    selectedTags.every(tag => op.tags.includes(tag))
+  );
+
+  displayResults(filtered);
+}
+
+// Отображение результатов
+function displayResults(data) {
+  const results = document.getElementById("results");
+  results.innerHTML = data.map(op => 
+    `<div class="result-item">${op.name} (${op.tags.join(", ")})</div>`
+  ).join("");
+}
+
+// Запуск при загрузке
+window.onload = initTags;

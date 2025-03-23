@@ -1,1 +1,0 @@
-importScriptPage('MediaWiki:ChatToolbox/code.js','dev');

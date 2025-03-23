@@ -1,3 +1,4 @@
+
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -58,9 +59,370 @@ $.getJSON(mw.util.wikiScript("index"), {
         importArticles({ type: "script", articles: scripts });
     }
 });
+
+(function (mw, $) {
+	"use strict";
+	if (mw.config.get('wgPageName').toLowerCase().endsWith('.css')) {
+		$.ajax({
+			url: mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName')) + '?action=raw&text/css',
+			dataType: 'text',
+			success: function (cssContent) {
+				var styleElement = document.createElement('style');
+				styleElement.type = 'text/css';
+				styleElement.textContent = cssContent;
+				document.head.appendChild(styleElement);
+				console.log('CSS已成功加载。');
+			},
+			error: function () {
+				console.error('CSS加载失败，请尝试刷新或检查CSS页面。');
+			}
+		});
+	}
+})(mediaWiki, jQuery);
+
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:WallGreeting.js',
     ]
+});
+
+
+//New JS 4 Wordrain
+/* Word Rain System v2.1 - Fandom Optimized */
+window.wordRainSystem = (function() {
+  'use strict';
+
+  const instances = new Map();
+  let styleAdded = false;
+
+  function addCoreStyles() {
+    if (styleAdded) return;
+    
+    mw.util.addCSS(`
+      .word-drop {
+        position: fixed;
+        top: -50px;
+        opacity: 0.9;
+        animation: wordFall linear infinite;
+        pointer-events: none;
+        z-index: 9998;
+        white-space: nowrap;
+        text-shadow: 0 0 5px currentColor;
+        will-change: transform, opacity;
+        font-weight: bold;
+      }
+      
+      @keyframes wordFall {
+        0% { transform: translateY(-100vh) translateX(-5px); }
+        100% { transform: translateY(100vh) translateX(5px); }
+      }
+      
+      .word-rain-toggle[data-state="on"] {
+        background: rgba(0,255,0,0.2) !important;
+        border-color: #0f0 !important;
+        color: #0f0 !important;
+        text-shadow: 0 0 8px #0f0;
+        box-shadow: 0 0 12px #0f0;
+      }
+    `);
+    styleAdded = true;
+  }
+
+  function createDrop(instance) {
+    const drop = document.createElement('div');
+    drop.className = 'word-drop';
+    
+    // 随机位置
+    const leftPos = 5 + Math.random() * 90;
+    drop.style.left = `${leftPos}vw`;
+    
+    // 随机颜色
+    const colors = instance.config.colors;
+    drop.style.color = colors[Math.floor(Math.random() * colors.length)];
+    
+    // 字体设置
+    drop.style.fontSize = `${instance.config.size + Math.floor(Math.random() * 6)}px`;
+    drop.style.fontFamily = instance.config.font;
+    
+    // 随机词语
+    const words = instance.config.words;
+    drop.textContent = words[Math.floor(Math.random() * words.length)];
+    
+    // 动画参数
+    const baseSpeed = 10000 - (instance.config.speed * 800);
+    const duration = (baseSpeed + Math.random() * 3000) / 1000;
+    drop.style.animation = `wordFall ${duration}s linear infinite`;
+    
+    document.body.appendChild(drop);
+    
+    // 自动清理
+    setTimeout(() => {
+      drop.remove();
+    }, duration * 1000);
+  }
+
+  return {
+    init: function() {
+      mw.hook('wikipage.content').add(function($content) {
+        $content.find('.word-rain-widget').each(function() {
+          const $widget = $(this);
+          if ($widget.data('initialized')) return;
+          
+          // 初始化配置
+          const config = {
+            words: $widget.data('words').split(','),
+            colors: $widget.data('colors').split(','),
+            font: $widget.data('font'),
+            size: parseInt($widget.data('size')) || 18,
+            speed: Math.min(10, Math.max(1, parseInt($widget.data('speed')) || 5)),
+            density: Math.min(50, Math.max(1, parseInt($widget.data('density')) || 30))
+          };
+          
+          // 生成实例ID
+          const instanceId = `wordrain-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+          
+          instances.set(instanceId, {
+            config: config,
+            interval: null,
+            active: false
+          });
+          
+          // 标记初始化
+          $widget.data('initialized', true)
+                .data('instance-id', instanceId);
+          
+          // 初始化按钮状态
+          const $btn = $widget.find('.word-rain-toggle');
+          $btn.data('instance-id', instanceId)
+              .attr('data-state', 'off')
+              .text($widget.data('button-off'));
+        });
+      });
+      
+      // 全局点击处理
+      $(document).on('click', '.word-rain-toggle', function() {
+        const instanceId = $(this).data('instance-id');
+        const instance = instances.get(instanceId);
+        
+        if (!instance) return;
+        
+        if (!instance.active) {
+          // 启动特效
+          instance.active = true;
+          instance.interval = setInterval(
+            () => createDrop(instance),
+            Math.max(50, 1000 / instance.config.density)
+          );
+          
+          $(this).attr('data-state', 'on')
+                 .text($(this).closest('.word-rain-widget').data('button-on'));
+        } else {
+          // 停止特效
+          instance.active = false;
+          clearInterval(instance.interval);
+          instance.interval = null;
+          document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
+          
+          $(this).attr('data-state', 'off')
+                 .text($(this).closest('.word-rain-widget').data('button-off'));
+        }
+      });
+      
+      // 页面卸载时清理
+      window.addEventListener('beforeunload', () => {
+        instances.forEach(instance => {
+          clearInterval(instance.interval);
+          document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
+        });
+      });
+      
+      // 添加核心样式
+      addCoreStyles();
+    },
+    
+    // 公共方法
+    getInstances: () => instances,
+    stopAll: () => {
+      instances.forEach(instance => {
+        clearInterval(instance.interval);
+        instance.active = false;
+      });
+      document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
+    }
+  };
+})();
+
+// 初始化
+mw.loader.using(['mediawiki.util', 'jquery']).then(function() {
+  wordRainSystem.init();
+});
+
+/* Image Slider System */
+window.imageSlider = (function() {
+'use strict';
+
+const sliders = new Map();
+
+function initSlider(container) {
+const images = container.dataset.images.split(',');
+const captions = container.dataset.captions.split(',');
+const track = container.querySelector('.slider-track');
+let currentIndex = 0;
+let autoPlayInterval = null;
+
+// 动态生成幻灯片
+images.forEach((image, index) => {
+const slide = document.createElement('div');
+slide.className = 'slide-item';
+slide.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
+
+const overlay = document.createElement('div');
+overlay.className = 'image-overlay';
+slide.appendChild(overlay);
+
+const caption = document.createElement('div');
+caption.className = 'slide-caption';
+caption.textContent = (captions[index] || '').replace(/[{}]/g, ''); // 移除描述中的{}
+slide.appendChild(caption);
+
+// 确保每张图片的描述都能显示
+slide.addEventListener('mouseenter', () => {
+overlay.style.opacity = '0.7';
+caption.style.bottom = '0';
+});
+
+slide.addEventListener('mouseleave', () => {
+overlay.style.opacity = '0';
+caption.style.bottom = '-50px';
+});
+
+track.appendChild(slide);
+});
+
+function goToSlide(index) {
+currentIndex = (index + images.length) % images.length;
+track.style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+function startAutoPlay() {
+if (container.dataset.autoplay === '1') {
+autoPlayInterval = setInterval(() => {
+goToSlide(currentIndex + 1);
+}, parseInt(container.dataset.speed));
+}
+}
+
+function stopAutoPlay() {
+clearInterval(autoPlayInterval);
+}
+
+// 事件绑定
+container.querySelector('.prev-slide').addEventListener('click', () => goToSlide(currentIndex - 1));
+container.querySelector('.next-slide').addEventListener('click', () => goToSlide(currentIndex + 1));
+
+// 悬停暂停
+if (container.dataset.autoplay === '1') {
+container.addEventListener('mouseenter', stopAutoPlay);
+container.addEventListener('mouseleave', startAutoPlay);
+}
+
+startAutoPlay();
+sliders.set(container, { goToSlide, stopAutoPlay });
+}
+
+return {
+init: function() {
+mw.hook('wikipage.content').add(function($content) {
+$content.find('.js-slider-container').each(function() {
+if (!this.dataset.initialized) {
+this.dataset.initialized = true;
+initSlider(this);
+}
+});
+});
+}
+};
+})();
+
+// 初始化
+mw.loader.using('mediawiki.util').then(function() {
+imageSlider.init();
+});
+
+
+//Flat3D
+/* 3D Image Hover System */
+window.image3DSystem = (function() {
+'use strict';
+
+function initImageCards(container) {
+const images = container.dataset.images.split(',');
+const captions = container.dataset.captions.split(',');
+const grid = container.querySelector('.image-grid');
+
+images.forEach((image, index) => {
+const card = document.createElement('div');
+card.className = 'image-card';
+
+const content = document.createElement('div');
+content.className = 'image-content';
+content.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
+
+const caption = document.createElement('div');
+caption.className = 'caption';
+
+// 解析Fandom内链
+const captionText = (captions[index] || '').replace(/[{}]/g, '');
+const linkMatch = captionText.match(/\[\[(.*?)\]\]/);
+if (linkMatch) {
+const linkParts = linkMatch[1].split('|');
+const linkText = linkParts[1] || linkParts[0];
+const linkHref = mw.util.getUrl(linkParts[0]);
+
+const link = document.createElement('a');
+link.href = linkHref;
+link.textContent = linkText;
+link.style.color = '#fff';
+link.style.textDecoration = 'none';
+caption.appendChild(link);
+} else {
+caption.textContent = captionText;
+}
+
+card.appendChild(content);
+card.appendChild(caption);
+grid.appendChild(card);
+
+// 性能优化
+card.style.willChange = 'transform';
+});
+
+// 移动端优化
+if ('ontouchstart' in window) {
+grid.querySelectorAll('.image-card').forEach(card => {
+card.addEventListener('click', function() {
+this.classList.toggle('hover-active');
+});
+});
+}
+}
+
+return {
+init: function() {
+mw.hook('wikipage.content').add(function($content) {
+$content.find('.flat-3d-container').each(function() {
+if (!this.dataset.initialized) {
+this.dataset.initialized = true;
+initImageCards(this);
+}
+});
+});
+}
+};
+})();
+
+// 初始化
+mw.loader.using('mediawiki.util').then(function() {
+image3DSystem.init();
 });

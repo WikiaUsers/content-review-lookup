@@ -107,10 +107,3 @@ document.querySelectorAll('[link-id]').forEach(element => {
   });
 });
 // Hello Review, I'm sorry, it took a long time to find out that this code has many bugs……
-// 自动拆分字符
-document.querySelectorAll('.glitch-text').forEach(el => {
-  const text = el.dataset.text;
-  el.innerHTML = [...text].map(c => 
-    `<span data-char="${c}">${c}</span>`
-  ).join('');
-});

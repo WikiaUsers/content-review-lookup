@@ -14,3 +14,16 @@ document.querySelectorAll(".mw-body-content > .mw-parser-output > h3").forEach(f
 		}
 	});
 });
+
+// ensure the page is fully loaded before running the script
+$(document).ready(function() {
+    // select the collapsible section
+    var collapsibleSection = document.querySelector('.collapsible-section');
+
+    if (collapsibleSection) {
+        // opens the content by default
+        collapsibleSection.classList.add('open-section');
+        collapsibleSection.setAttribute('aria-expanded', 'true');
+        collapsibleSection.setAttribute('aria-pressed', 'true');
+    }
+});

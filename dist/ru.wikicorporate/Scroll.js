@@ -1,10 +1,10 @@
-function handleScrollTo(e) {
+const handleScrollTo = (e) => {
     const breakY = ($(document).height() - $(window).height()) * 50 / 100;
 
     e.preventDefault();
     const reachHalf = $(window).scrollTop() > breakY;
-    $('html').animate({scrollTop: reachHalf ? 0 : $(document).height()}, '10');
-}
+    $('html').animate({ scrollTop: reachHalf ? 0 : $(document).height() }, '10');
+};
 
 const scrollButton = $('<a>', {
     class: 'scroll-button scroll-button--bottom',
@@ -12,9 +12,9 @@ const scrollButton = $('<a>', {
     .appendTo('#WikiaBar')
     .on('click', handleScrollTo);
 
-$(window).scroll(function () {
+$(window).on('scroll', () => {
     const breakY = ($(document).height() - $(window).height()) * 50 / 100;
 
     const reachHalf = $(window).scrollTop() > breakY;
-    scrollButton.attr('class', 'scroll-button scroll-button--' + (reachHalf ? 'top' : 'bottom'));
+    scrollButton.attr('class', `scroll-button scroll-button--${reachHalf ? 'top' : 'bottom'}`);
 });

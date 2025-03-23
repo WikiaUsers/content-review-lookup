@@ -94,6 +94,17 @@
     });
 })();
 
+
+/* ==========================================================================
+
+============================================================================= */
+
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/nicodougasingers/images/d/d8/404simple.png/revision/latest?cb=20241007164241';
+window.pPreview.tlen = 1000;
+window.pPreview.RegExp.noinclude = ['.blacklist-pPreview'];
+
+
 /* ==========================================================================
    End of Common.js
    ========================================================================== */

@@ -64,17 +64,19 @@ $(function () {
 
         $elem.html(m <= 0 && s <= 0 ? "Завершилось" : counter);
     }
+
     const formatDrops = dropString => {
         let drops = dropString
         .replace(/Drop(s)?:\s?/, "")
         .split(" - ")
-        .map(function(drop) {
-            let [name, time] = drop.split(/\s\(/);
-            if (time) {
-            	time = (time.indexOf("min") !== -1) ? time.trim().replace(/\s?min(s)?/g, " хв") : false;
-            	time && (time = `(${time.replace(")", "")})`);
-            }
-            return `${dict[name] || name} ${time || ""}`;
+        .map(drop => {
+        	let translatedTime;
+            const time = drop.match(/\(?\d+min(s)?\)?$/g);
+            time && (translatedTime = time[0].replace(/[()]/g, "").replace(/\s?min(s)?/g, " хв"));
+            time && (translatedTime = `(${translatedTime})`);
+
+            const translatedName = drop.replace(time, "").trim().split(" and ").reduce((acc, item) => acc += `, ${dict[item] || item}`);
+            return `${translatedName} ${translatedTime || ""}`;
         });
         return drops;
     };

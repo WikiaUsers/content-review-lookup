@@ -52,7 +52,8 @@ importArticles({
 		'u:dev:MediaWiki::InactiveUsers/code.js',
 		'u:dev:MediaWiki::WdsTooltips.js',
 		'u:dev:MediaWiki::BlockSummary.js',
-		'u:dev:MediaWiki:UserBlockNotification.js'
+		'u:dev:MediaWiki:UserBlockNotification.js',
+		'MediaWiki:ImportCSS.js',//页面引入css
     ]
 });
 

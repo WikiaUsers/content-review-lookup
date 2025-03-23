@@ -8,3 +8,11 @@ $('.fandom-community-header__image').append(
         )
         .attr('href', 'https://arcane.fandom.com/wiki/Arcane_Wiki:Manual_of_Style')
 );
+
+//Add border color to infoboxes (from the Steven Universe Wiki)
+$('.portable-infobox').each(function () {
+    var cls = $(this).attr('class').match(/pi-theme-_(\S+)/);
+    if (cls) {
+        $(this).css('border-color', '#' + cls[1]);
+    }
+});

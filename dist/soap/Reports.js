@@ -1,9 +1,6 @@
 // Please use https://www.mediawiki.org/wiki/Manual:Coding_conventions/JavaScript for development.
 
-/* eslint-disable no-console */
-/* eslint-disable no-alert */
-
-/** <nowiki>
+/**
  * Flexible form script for SOAP Wiki reports
  *
  * @author Lil' Miss Rarity - original author
@@ -15,79 +12,30 @@
  * @author Noreplyz         - i18n fixes, template, design
  * @author Magiczocker      - update UI design
  *
- * TODO check if this script is needed before loading i18n
  * @license: CC-BY-NC-SA
  */
 
-( function ( $, mw ) {
+// <nowiki>
+( ( mw ) => {
 	'use strict';
 
-	if ( window.SOAPReportsLoaded ) {
-		return;
-	}
-	window.SOAPReportsLoaded = true;
-
-	const csrfToken = mw.user.tokens.get( 'csrfToken' ),
-		config = mw.config.get( [
+	const config = mw.config.get( [
 			'wgArticlePath',
 			'wgScriptPath',
-			'wgUserName',
-			'wgSiteName',
 			'wgPageName',
+			'wgSiteName',
+			'wgUserName',
 			'wgServer'
 		] ),
 		params = new URLSearchParams( window.location.search ),
 		options = {},
-		modal = {};
-	let reportDropdown,
-		msg,
-		opts;
+		csrfToken = mw.user.tokens.get( 'csrfToken' );
+	let msg,
+		opts,
+		dialogExist = false;
 
-	/**
-	 * Return header html code for UI generation
-	 * @param {Object} name - Name for the header
-	 * @return {string} Generated html code
-	 */
-	function addHeader( name ) {
-		return '<div class="sectionHeaderWrapper">' +
-			'<h3 class="sectionHeader">' + name + '</h3>' +
-		'</div>';
-	}
-
-	/**
-	 * Return label html code for UI generation
-	 * @param {Object} data - Label, placeholder and id for the label
-	 * @return {string} Generated html code
-	 */
-	function addLabel( data ) {
-		return '<div class="sectionContent">' +
-			( data.label ? '<label for="' + data.id + '">' + data.label + '</label>' : '' ) +
-			'<input value="' + ( typeof ( data.content ) === 'string' ? mw.html.escape( data.content ) : '' ) + '" id="' + data.id + '" name="' + data.id + '" type="text" placeholder="' + data.placeholder + '" class="formInput" ' + ( data.disabled ? 'disabled' : '' ) + '>' +
-		'</div>';
-	}
-
-	/**
-	 * Return textarea html code for UI generation
-	 * @param {Object} data - Label, placeholder and id for the textarea
-	 * @return {string} Generated html code
-	 */
-	function addTextarea( data ) {
-		return '<div class="sectionContent">' +
-			( data.label ? '<label for="' + data.id + '">' + data.label + '</label>' : '' ) +
-			'<textarea id="' + data.id + '" name="' + data.id + '" placeholder="' + data.placeholder + '" class="formInput ' + ( data.optional ? 'optional' : '' ) + '">' + ( typeof ( data.content ) === 'string' ? mw.html.escape( data.content ) : '' ) + '</textarea>' +
-		'</div>';
-	}
-
-	/**
-	 * Return checkbox html code for UI generation
-	 * @param {Object} data - Label and id for the checkbox
-	 * @return {string} Generated html code
-	 */
-	function addCheckbox( data ) {
-		return '<div class="sectionContent">' +
-			'<input id="' + data.id + '" type="checkbox" class="wds-toggle__input ' + ( data.optional ? 'optional' : '' ) + '">' +
-			'<label for="' + data.id + '" class="wds-toggle__label">' + data.label + '</label>' +
-		'</div>';
+	if ( !config.wgUserName || !config.wgPageName.match( /^Report:/ ) ) {
+		return;
 	}
 
 	/**
@@ -96,8 +44,8 @@
 	 * @return {string} Filtered domain
 	 */
 	function filterFandomDomain( input ) {
-		const fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(fandom\.com)(\/[^/]*?)?(?:\/.*)?$/;
-		let filteredDomain = input.match( fandomDomainRE );
+		const fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(fandom\.com)(\/[^/]*?)?(?:\/.*)?$/,
+			filteredDomain = input.match( fandomDomainRE );
 
 		if ( !filteredDomain ) {
 			return null;
@@ -105,168 +53,450 @@
 
 		filteredDomain.splice( 0, 1 );
 
-		if ( filteredDomain[ 2 ] === '/wiki' || filteredDomain[ 2 ] === '/f' || filteredDomain[ 2 ] === '/' ) {
+		if ( Array.prototype.includes.call( [ '/wiki', '/f', '/ ' ], filteredDomain[ 2 ] ) ) {
 			filteredDomain.pop();
 		}
 
 		return filteredDomain.join( '' );
 	}
 
-	/**
-	 * Set up options for use in forms, buttons
-	 */
-	function setOptions() {
-		/*
-		//BEGIN EXAMPLE
-		example: {
-			page: 'Page name the form is for',
-			buttonText: 'Text for button to open form',
-			form: 'HTML form for reporting users. Each input/textarea should have an id. any optional inputs should be marked with the `optional` class. If any attributes need URI encoding, the relevant inputs should have the `data-encode` attribute set to `true`.',
-			// this is where the input ids in the form are matched to numbers
-			// for use in the summary/submitted text
-			formParams: {
-				'$1': 'foo',
-				'$2': 'bar'
-			},
-			submitText: 'Text to submit to the page. Any form parameters can be inserted via the key names in `formParams`',
-			summary: 'Text used for the edit summary. Any form parameters can be inserted via the key names in `formParams`',
-			sectionTitle: 'Text used as the section title. Any form parameters can be inserted via the key names in `formParams`'
-		},
-		// END EXAMPLE
-		*/
+	function addDialog( label ) {
+		return '<cdx-dialog' +
+			' v-model:open="showDialog"' +
+			` title="${ label }"` +
+			' :use-close-button="true"' +
+		'>';
+	}
 
-		options.profile = {
-			page: 'Report:User_profile_headers',
-			buttonText: msg( 'button-profile' ).escape(),
-			form: '<form class="fandomSOAPForm" method="" name="" id="profile">' +
-				'<div style="color:#F00; font-size:16px; display:none;" id="formAnon"><b>' + msg( 'form-anon' ).escape() + '</b></div>' +
-					'<div style="color:#F00;font-size:16px;"><b>' + msg( 'form-profile' ).escape() + '</b></div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiurl-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiurl',
-							label: msg( 'wikiurl-label' ).escape(),
-							placeholder: config.wgServer
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiname-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiname',
-							placeholder: config.wgSiteName,
-							disabled: true
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'user-header' ).escape() ) +
-						addTextarea( {
-							id: 'user',
-							label: msg( 'user-label' ).escape(),
-							placeholder: msg( 'user-placeholder' ).escape()
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'comment-header' ).escape() ) +
-						addTextarea( {
-							id: 'comment',
-							label: msg( 'comment-label' ).escape(),
-							placeholder: msg( 'comment-placeholder' ).escape(),
-							optional: true
-						} ) +
-					'</div>' +
-					addCheckbox( {
-						id: 'socks',
-						label: msg( 'socks-label' ).escape(),
-						optional: true
-					} ) +
-					'<div class="formSection" style="display:none" id="formSocksBox">' +
-						addHeader( msg( 'sockusers-header' ).escape() ) +
-						addTextarea( {
-							id: 'sockusers',
-							label: msg( 'sockusers-label' ).escape(),
-							placeholder: 'Rappy 4187\nDucksoup',
-							optional: true
-						} ) +
-					'</div>' +
-				'</form>',
+	function addToggleSwitch( value, data ) {
+		return '<cdx-field>' +
+			'<cdx-toggle-switch' +
+				' :align-switch="true"' +
+				` v-model="${ value }"` +
+				`>${ data.label }</cdx-toggle-switch>` +
+		'</cdx-field>';
+	}
+
+	function addTextInput( value, data ) {
+		return '<cdx-field' +
+			( data.status ? ` :status=${ data.status }` : '' ) +
+			( data.message ? ` :messages=${ data.message }` : '' ) +
+		'>' +
+			`<template #label>${ data.label }</template>` +
+			( data.description ? `<template #description>${ data.description }</template>` : '' ) +
+			'<cdx-text-input' +
+				( data.blur ? ` @blur=${ data.blur }` : '' ) +
+				( data.disabled ? ' disabled' : '' ) +
+				` v-model="${ value }"` +
+				` placeholder="${ data.placeholder }"` +
+			'></cdx-text-input>' +
+		'</cdx-field>';
+	}
+
+	function addTextArea( value, data ) {
+		return `<cdx-field ${data.show ? `v-show="${ data.show }"` : ''}>` +
+			`<template #label>${ data.label }</template>` +
+			`<template #description>${ data.description }</template>` +
+			'<cdx-text-area' +
+				` v-model="${ value }"` +
+				` placeholder="${ data.placeholder }"` +
+			'></cdx-text-area>' +
+		'</cdx-field>';
+	}
+
+	function addFooter() {
+		return '<template #footer>' +
+			'<div style="text-align: center;">' +
+				'<cdx-button' +
+					' weight="primary"' +
+					' @click="submit"' +
+					' action="progressive"' +
+				'>Submit</cdx-button>' +
+			'</div>' +
+		'</template></cdx-dialog>';
+	}
+
+	function addWikiInput() {
+		return [
+			addTextInput( 'wikiurl', {
+				label: msg( 'wikiurl-header' ).escape(),
+				description: msg( 'wikiurl-label' ).escape(),
+				placeholder: config.wgServer,
+				blur: 'validateLink',
+				status: 'linkStatus',
+				message: 'linkMessage'
+			} ),
+			addTextInput( 'wikiname', {
+				label: msg( 'wikiname-header' ).escape(),
+				placeholder: config.wgSiteName,
+				disabled: true
+			} )
+		].join( '' );
+	}
+
+	function createWindow( button ) {
+		mw.loader.using( [
+			'@wikimedia/codex'
+		] ).then( ( require ) => {
+			const Vue = require( 'vue' ),
+				Codex = require( '@wikimedia/codex' ),
+				mountPoint = document.body.appendChild( document.createElement( 'div' ) );
+
+			Vue.createMwApp( {
+				compatConfig: {
+					MODE: 3
+				},
+				compilerOptions: {
+					whitespace: 'condense'
+				},
+				data: function () {
+					return {
+						showDialog: true,
+						linkStatus: 'default',
+						linkMessage: null,
+						// Text input
+						blockid: '', // phalanx
+						comment: '', // all
+						sockusers: '', // vandalism
+						user: '', // spam, vandalism
+						wikiname: '', // all
+						wikipage: '', // phalanx
+						wikiurl: '', // all
+						// Toggle switch
+						crosswiki: false, // spam, vandalism
+						socks: false // vandalism
+					};
+				},
+				template: opts.form,
+				methods: {
+					openDialog() {
+						this.showDialog = true;
+					},
+					submit() { // Need a rewrite. Is currently a copy of the old script.
+						const self = this,
+							params = {},
+							urlparams = {
+								action: 'edit',
+								format: 'json',
+								tags: 'report-form',
+								token: csrfToken
+							};
+						let canSave = true,
+							keyedValueCount = 0,
+							sockCount = 0,
+							submitText = `${ opts.submitText }`,
+							summary = `${ opts.summary }`,
+							sectionTitle = `${ opts.sectionTitle }`;
+
+						opts.required.forEach( ( i ) => {
+							if ( self[ i ].length === 0 ) {
+								canSave = false;
+							}
+						} );
+
+						if ( self.linkStatus === 'error' ) {
+							canSave = false;
+						}
+
+						if ( !canSave ) {
+							// eslint-disable-next-line no-alert
+							alert( 'One or more required fields are missing or contain invalid data. Please check your submission and try again.' );
+							return;
+						}
+
+						for ( const x in opts.formParams ) {
+							if ( !Object.prototype.hasOwnProperty.call( opts.formParams, x ) ) {
+								continue;
+							}
+
+							const field = opts.formParams[ x ];
+							let text = self[ field ],
+								re,
+								domain;
+
+							if ( typeof ( text ) === 'boolean' && text ) {
+								text = toString( text );
+							}
+							if ( text.length > 0 ) {
+								text = text.trim();
+							}
+
+							/* Specific customisations for each form output */
+							// default wikiname
+							if ( field === 'wikiurl' ) {
+								re = /\/\/(.*)\.fandom\.com\/?(.*)\/?/;
+								domain = re.exec( text );
+								if ( domain !== null ) {
+									// for non-EN wikis, add the lang code (es.community)
+									params[ x ] = ( domain[ 3 ] ? ( domain[ 3 ] + '.' ) : '' ) + domain[ 1 ];
+									continue;
+								}
+							}
+
+							// handle multiple users
+							if ( field === 'user' && text.indexOf( '\n' ) !== -1 ) {
+								if ( x === '$5' ) {
+									text = ( text.match( /(?:\r\n|\r|\n)/g ) || [] ).length + 1 + ' users';
+								} else {
+									text = text.replace( /\n$/g, '' ); // fix blank last user
+									text = text.replace( /(?:\r\n|\r|\n)/g, '\n|' );
+								}
+							}
+
+							// handle checkboxes
+							if ( field === 'crosswiki' ) {
+								if ( text ) {
+									text = '\\crosswiki=yes\n';
+									keyedValueCount++;
+								} else {
+									text = '';
+								}
+							}
+							if ( field === 'socks' ) {
+								if ( text ) {
+									sockCount = 1;
+									keyedValueCount++;
+								}
+								text = '';
+							}
+
+							// handle socks
+							if ( field === 'sockusers' ) {
+								if ( text === '' && sockCount ) {
+									// eslint-disable-next-line no-alert
+									alert( 'One or more required fields are missing. Please check your submission and try again.' );
+									return;
+								} else if ( sockCount ) {
+									text = '\\socks=' + text + '\n';
+								} else {
+									text = '';
+								}
+							}
+
+							// patch | in reason
+							if ( field === 'comment' ) {
+								text = text.replace( /\|/g, '\\\\' );
+							}
+
+							params[ x ] = text;
+						}
+						for ( const x in params ) {
+							if ( !Object.prototype.hasOwnProperty.call( params, x ) ) {
+								continue;
+							}
+							// convert to regex to use the same parameter multiple times
+							const y = new RegExp( x.replace( /\$/, '\\$' ), 'g' );
+							submitText = submitText.replace( y, params[ x ] );
+							summary = summary.replace( y, params[ x ] );
+							sectionTitle = sectionTitle.replace( y, params[ x ] );
+						}
+
+						// Fix when template thinks = is a key
+						if ( submitText.match( /=/g ) !== null && submitText.match( /=/g ).length > keyedValueCount ) {
+							let templateParam = 0;
+							submitText = submitText.replace( /\|/g, () => { // match, i, original
+								templateParam++;
+								return '|' + templateParam + '=';
+							} );
+						}
+						if ( keyedValueCount ) {
+							submitText = submitText.replace( /\\crosswiki/g, '|crosswiki' );
+							submitText = submitText.replace( /\\socks/g, '|socks' );
+						}
+
+						// eslint-disable-next-line no-console
+						console.log( '[SOAP Report]', submitText, summary );
+
+						urlparams.title = opts.page;
+						urlparams.summary = summary;
+
+						if ( opts.page === 'Report:Wiki' ) {
+							urlparams.appendtext = '\n' + submitText;
+						} else {
+							urlparams.section = 'new';
+							urlparams.sectiontitle = sectionTitle;
+							urlparams.text = submitText;
+						}
+
+						fetch( config.wgScriptPath + '/api.php', {
+							body: new URLSearchParams( urlparams ),
+							method: 'POST',
+							credentials: 'include'
+						} ).then( ( response ) => {
+							return response.json();
+						} ).then( () => {
+							window.location.href = config.wgArticlePath.replace( '$1', opts.page );
+						} );
+					},
+					validateLink() {
+						this.linkStatus = 'default';
+						this.linkMessage = null;
+						const url = filterFandomDomain( this.wikiurl );
+
+						if ( !url ) {
+							this.linkStatus = 'error';
+							this.linkMessage = { error: 'Invalid URL!' };
+							return;
+						}
+
+						this.wikiurl = `https://${ url }`;
+
+						fetch( `https://${ url }/api.php?` + new URLSearchParams( {
+							action: 'query',
+							meta: 'siteinfo',
+							siprop: 'general',
+							formatversion: 2,
+							format: 'json',
+							origin: '*'
+						} ), {
+							method: 'GET'
+						} ).then( ( response ) => {
+							return response.json();
+						} ).then( ( data ) => {
+							if ( data.query && data.query.general ) {
+								this.wikiname = data.query.general.sitename;
+							}
+						} );
+					}
+				},
+				mounted() {
+					button.addEventListener( 'click', this.openDialog );
+				},
+				unMounted() {
+					button.removeEventListener( this.openDialog );
+				}
+			} )
+				.component( 'cdx-button', Codex.CdxButton )
+				.component( 'cdx-field', Codex.CdxField )
+				.component( 'cdx-text-input', Codex.CdxTextInput )
+				.component( 'cdx-text-area', Codex.CdxTextArea )
+				.component( 'cdx-toggle-switch', Codex.CdxToggleSwitch )
+				.component( 'cdx-dialog', Codex.CdxDialog )
+				.mount( mountPoint );
+		} );
+	}
+
+	function setOptions() {
+		options.phalanx = {
+			page: 'Report:Spam_filter_problems',
+			buttonText: msg( 'button-false-positive' ).escape(),
+			form: [
+				addDialog( msg( 'button-false-positive' ).escape() ),
+				addWikiInput(),
+				addTextInput( 'wikipage', {
+					label: msg( 'wikipage-header' ).escape(),
+					description: msg( 'wikipage-label' ).escape(),
+					placeholder: config.wgPageName
+				} ),
+				addTextInput( 'blockid', {
+					label: msg( 'blockid-header' ).escape(),
+					description: msg( 'blockid-label' ).escape(),
+					placeholder: msg( 'blockid-placeholder' ).escape()
+				} ),
+				addTextArea( 'comment', {
+					label: msg( 'phalanx-header' ).escape(),
+					description: msg( 'comment-label' ).escape(),
+					placeholder: msg( 'comment-placeholder' ).escape()
+				} ),
+				addFooter()
+			].join( '' ),
+			required: [
+				'wikiurl',
+				'wikipage',
+				'blockid'
+			],
+			formParams: {
+				$1: 'wikiurl',
+				$2: 'wikiname',
+				$5: 'wikipage',
+				$3: 'blockid',
+				$4: 'comment'
+			},
+			submitText: '{{Report filter|$1\n' +
+				'|$5\n' +
+				'|$3\n' +
+				'|$4\n' +
+				'|' + config.wgUserName + '|~~~~~}}',
+			summary: 'New filter report ($2, #$3)',
+			sectionTitle: 'Block #$3 on $2'
+		};
+
+		options.spam = {
+			page: 'Report:Spam',
+			buttonText: msg( 'button-spam' ).escape(),
+			form: [
+				addDialog( msg( 'button-spam' ).escape() ),
+				addWikiInput(),
+				addTextArea( 'user', {
+					label: msg( 'user-header' ).escape(),
+					description: msg( 'user-label' ).escape(),
+					placeholder: msg( 'user-placeholder' ).escape()
+				} ),
+				addTextArea( 'comment', {
+					label: msg( 'phalanx-header' ).escape(),
+					description: msg( 'comment-label' ).escape(),
+					placeholder: msg( 'comment-placeholder' ).escape()
+				} ),
+				addToggleSwitch( 'crosswiki', {
+					label: msg( 'crosswiki-label' ).escape()
+				} ),
+				addFooter()
+			].join( '' ),
+			required: [
+				'wikiurl',
+				'user'
+			],
 			formParams: {
 				$1: 'wikiurl',
 				$2: 'wikiname',
 				$3: 'user',
 				$4: 'comment',
 				$5: 'user', // for different styling
-				$7: 'socks',
-				$8: 'sockusers'
+				$6: 'crosswiki'
 			},
-			submitText: '{{Report profile|$1\n' +
+			submitText: '{{Report spam|$1\n' +
 				'|$4\n' +
 				'|$3\n' +
-				'$7$8' +
+				'$6' +
 				'|' + config.wgUserName + '|~~~~~}}',
-			summary: 'New profile report ($2, $5)',
-			sectionTitle: '$2'
+			summary: 'New spam report ($1, $5)',
+			sectionTitle: '$5 at $2'
 		};
+
 		options.vandalism = {
 			page: 'Report:Vandalism',
 			buttonText: msg( 'button-vandalism' ).escape(),
-			form: '<form class="fandomSOAPForm" method="" name="" id="vandalism">' +
-				'<div style="color:#F00; font-size:16px; display:none;" id="formAnon"><b>' + msg( 'form-anon' ).escape() + '</b></div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiurl-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiurl',
-							label: msg( 'wikiurl-label' ).escape(),
-							placeholder: config.wgServer,
-							content: params.get( 'url' )
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiname-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiname',
-							placeholder: config.wgSiteName,
-							disabled: true,
-							content: params.get( 'name' )
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'user-header' ).escape() ) +
-						addTextarea( {
-							id: 'user',
-							label: msg( 'user-label' ).escape(),
-							placeholder: msg( 'user-placeholder' ).escape(),
-							content: params.get( 'user' )
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'comment-header' ).escape() ) +
-						addTextarea( {
-							id: 'comment',
-							label: msg( 'comment-label' ).escape(),
-							placeholder: msg( 'comment-placeholder' ).escape(),
-							optional: true
-						} ) +
-					'</div>' +
-					addCheckbox( {
-						id: 'crosswiki',
-						label: msg( 'crosswiki-label' ).escape(),
-						optional: true
-					} ) +
-					addCheckbox( {
-						id: 'socks',
-						label: msg( 'socks-label' ).escape(),
-						optional: true
-					} ) +
-					'<div class="formSection" style="display:none" id="formSocksBox">' +
-						addHeader( msg( 'sockusers-header' ).escape() ) +
-						addTextarea( {
-							id: 'sockusers',
-							label: msg( 'sockusers-label' ).escape(),
-							placeholder: msg( 'sockusers-placeholder' ).escape(),
-							optional: true
-						} ) +
-					'</div>' +
-				'</form>',
+			form: [
+				addDialog( msg( 'button-vandalism' ).escape() ),
+				addWikiInput(),
+				addTextArea( 'user', {
+					label: msg( 'user-header' ).escape(),
+					description: msg( 'user-label' ).escape(),
+					placeholder: msg( 'user-placeholder' ).escape()
+				} ),
+				addTextArea( 'comment', {
+					label: msg( 'comment-header' ).escape(),
+					description: msg( 'comment-label' ).escape(),
+					placeholder: msg( 'comment-placeholder' ).escape()
+				} ),
+				addToggleSwitch( 'crosswiki', {
+					label: msg( 'crosswiki-label' ).escape()
+				} ),
+				addToggleSwitch( 'socks', {
+					label: msg( 'socks-label' ).escape()
+				} ),
+				addTextArea( 'sockusers', {
+					label: msg( 'sockusers-header' ).escape(),
+					description: msg( 'sockusers-label' ).escape(),
+					placeholder: msg( 'sockusers-placeholder' ).escape(),
+					show: 'socks'
+				} ),
+				addFooter()
+			].join( '' ),
+			required: [
+				'wikiurl',
+				'user'
+			],
 			formParams: {
 				$1: 'wikiurl',
 				$2: 'wikiname',
@@ -285,165 +515,25 @@
 			summary: 'New vandalism report ($1, $5)',
 			sectionTitle: '$5 at $2'
 		};
-		options.spam = {
-			page: 'Report:Spam',
-			buttonText: msg( 'button-spam' ).escape(),
-			form: '<form class="fandomSOAPForm" method="" name="" id="spam">' +
-				'<div style="color:#F00; font-size:16px; display:none;" id="formAnon"><b>' + msg( 'form-anon' ).escape() + '</b></div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiurl-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiurl',
-							label: msg( 'wikiurl-label' ).escape(),
-							placeholder: config.wgServer,
-							content: params.get( 'url' )
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiname-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiname',
-							placeholder: config.wgSiteName,
-							disabled: true,
-							content: params.get( 'name' )
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'user-header' ).escape() ) +
-						addTextarea( {
-							id: 'user',
-							label: msg( 'user-label' ).escape(),
-							placeholder: msg( 'user-placeholder' ).escape(),
-							content: params.get( 'user' )
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-					addHeader( msg( 'comment-header' ).escape() ) +
-						addTextarea( {
-							id: 'comment',
-							label: msg( 'comment-label' ).escape(),
-							placeholder: msg( 'comment-placeholder' ).escape(),
-							optional: true
-						} ) +
-					'</div>' +
-					addCheckbox( {
-						id: 'crosswiki',
-						label: msg( 'crosswiki-label' ).escape(),
-						optional: true
-					} ) +
-				'</form>',
-			formParams: {
-				$1: 'wikiurl',
-				$2: 'wikiname',
-				$3: 'user',
-				$4: 'comment',
-				$5: 'user', // for different styling
-				$6: 'crosswiki'
-			},
-			submitText: '{{Report spam|$1\n' +
-				'|$4\n' +
-				'|$3\n' +
-				'$6' +
-				'|' + config.wgUserName + '|~~~~~}}',
-			summary: 'New spam report ($1, $5)',
-			sectionTitle: '$5 at $2'
-		};
-		options.phalanx = {
-			page: 'Report:Spam_filter_problems',
-			buttonText: msg( 'button-false-positive' ).escape(),
-			form: '<form class="fandomSOAPForm" method="" name="" id="phalanx">' +
-				'<div style="color:#F00; font-size:16px; display:none;" id="formAnon"><b>' + msg( 'form-anon' ).escape() + '</b></div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiurl-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiurl',
-							label: msg( 'wikiurl-label' ).escape(),
-							placeholder: config.wgServer
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiname-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiname',
-							placeholder: config.wgSiteName,
-							disabled: true
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikipage-header' ).escape() ) +
-						addLabel( {
-							id: 'wikipage',
-							label: msg( 'wikipage-label' ).escape(),
-							placeholder: config.wgPageName
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'blockid-header' ).escape() ) +
-						addLabel( {
-							id: 'blockid',
-							label: msg( 'blockid-label' ).escape(),
-							placeholder: msg( 'blockid-placeholder' ).escape()
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'phalanx-header' ).escape() ) +
-						addTextarea( {
-							id: 'comment',
-							label: msg( 'comment-label' ).escape(),
-							placeholder: msg( 'comment-placeholder' ).escape(),
-							optional: true
-						} ) +
-					'</div>' +
-				'</form>',
-			formParams: {
-				$1: 'wikiurl',
-				$2: 'wikiname',
-				$5: 'wikipage',
-				$3: 'blockid',
-				$4: 'comment'
-			},
-			submitText: '{{Report filter|$1\n' +
-				'|$5\n' +
-				'|$3\n' +
-				'|$4\n' +
-				'|' + config.wgUserName + '|~~~~~}}',
-			summary: 'New filter report ($2, #$3)',
-			sectionTitle: 'Block #$3 on $2'
-		};
+
 		options.wiki = {
 			page: 'Report:Wiki',
 			buttonText: msg( 'button-wiki' ).escape(),
-			form: '<form class="fandomSOAPForm" method="" name="" id="wiki">' +
-				'<div style="color:#F00; font-size:16px; display:none;" id="formAnon"><b>' + msg( 'form-anon' ).escape() + '</b></div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiurl-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiurl',
-							label: msg( 'wikiurl-label' ).escape(),
-							placeholder: config.wgServer
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'wikiname-header' ).escape() ) +
-						addLabel( {
-							id: 'wikiname',
-							placeholder: config.wgSiteName,
-							disabled: true
-						} ) +
-					'</div>' +
-					'<div class="formSection">' +
-						addHeader( msg( 'comment-header' ).escape() ) +
-						addTextarea( {
-							id: 'comment',
-							label: msg( 'comment-label' ).escape(),
-							placeholder: msg( 'comment-placeholder' ).escape(),
-							optional: true
-						} ) +
-					'</div>' +
-					'<div><b>' + msg( 'guidelines-title' ).escape() + '</b></div>' +
-						msg( 'guidelines-text' ).plain() +
-					'</div>' +
-				'</form>',
+			form: [
+				addDialog( msg( 'button-wiki' ).escape() ),
+				addWikiInput(),
+				addTextArea( 'comment', {
+					label: msg( 'comment-header' ).escape(),
+					description: msg( 'comment-label' ).escape(),
+					placeholder: msg( 'comment-placeholder' ).escape()
+				} ),
+				`<div><b>${ msg( 'guidelines-title' ).escape() }</b></div>`,
+				`<div>${ msg( 'guidelines-text' ).plain() }</div>`,
+				addFooter()
+			].join( '' ),
+			required: [
+				'wikiurl'
+			],
 			formParams: {
 				$1: 'wikiname',
 				$2: 'wikiurl',
@@ -453,396 +543,58 @@
 			summary: 'New bad wiki report ([[w:c:$2|$1]], comment: $3)',
 			sectionTitle: ''
 		};
-		reportDropdown = '<div class="wds-dropdown">' +
-			'<div class="wds-dropdown__toggle wds-button">' +
-				'<span>' + msg( 'button-report' ).escape() + '</span>' +
-				'<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><path d="M1 3h10L6 9z"></path></svg>' +
-			'</div>' +
-			'<div class="wds-dropdown__content">' +
-				'<ul class="wds-list wds-is-linked" id="rf-dropdown-list">' +
-				'</ul>' +
-			'</div>' +
-		'</div>';
-	}
-
-	/**
-	 * Report form submission handler
-	 * @param {Object} opts
-	 * @return {null}
-	 */
-	function submitForm( opts ) {
-		const $form = $( '.soap-reports form' ),
-			$inputs = $form.find( 'input, textarea' ),
-			$button = $( '.soap-reports #submit' ),
-			params = {},
-			urlparams = {
-				action: 'edit',
-				format: 'json',
-				tags: 'report-form',
-				token: csrfToken
-			};
-		let x, y, $input, text,
-			keyedValueCount = 0,
-			sockCount = 0;
-
-		if ( ( $button ).attr( 'disabled' ) === 'disabled' ) {
-			return;
-		}
-
-		$button.attr( 'disabled', true );
-
-		for ( x in opts.formParams ) {
-			if ( !Object.prototype.hasOwnProperty.call( opts.formParams, x ) ) {
-				continue;
-			}
-			$input = $inputs.filter( '#' + opts.formParams[ x ] );
-
-			if ( !$input.length ) {
-				console.log( '[SOAP Report]', 'An error has been found in the form config. Please check the formParams and input ids.' );
-				$button.attr( 'disabled', false );
-				return $.Deferred().resolve();
-			}
-
-			text = $input.val();
-			if ( $input.is( ':checkbox' ) ) {
-				text = $input.prop( 'checked' );
-			}
-			if ( text.length > 0 ) {
-				text = text.trim();
-			}
-
-			if ( !text && !$input.hasClass( 'optional' ) ) {
-				console.log( '[SOAP Report]', $input );
-				alert( 'One or more required fields are missing. Please check your submission and try again.' );
-				$button.attr( 'disabled', false );
-				return $.Deferred().resolve();
-			}
-
-			/* Specific customisations for each form output */
-
-			if ( $input.attr( 'data-encode' ) === 'true' ) {
-				text = encodeURIComponent( text );
-			}
-			let re, domain;
-			// default wikiname
-			if ( $input.attr( 'id' ) === 'wikiurl' ) {
-				re = /\/\/(.*)\.(wikia|fandom|gamepedia)\.com\/?(.*)\/?/;
-				domain = re.exec( text );
-				if ( domain !== null ) {
-					// for non-EN wikis, add the lang code (es.community)
-					params[ x ] = domain[ 3 ] + ( domain[ 3 ] ? '.' : '' ) + domain[ 1 ];
-					continue;
-				}
-			} else if ( $input.attr( 'id' ) === 'wikiname' ) {
-				if ( !text ) {
-					text = $inputs.filter( '#wikiurl' ).val();
-				}
-				re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
-				domain = re.exec( text );
-				if ( domain !== null ) {
-					params[ x ] = domain[ 1 ].charAt( 0 ).toUpperCase() + domain[ 1 ].slice( 1 ) + ' Wiki';
-
-					continue;
-				}
-			}
-
-			// handle multiple users
-			if ( $input.attr( 'id' ) === 'user' && text.indexOf( '\n' ) !== -1 ) {
-				if ( x === '$5' ) {
-					text = ( text.match( /(?:\r\n|\r|\n)/g ) || [] ).length + 1 + ' users';
-				} else {
-					text = text.replace( /\n$/g, '' ); // fix blank last user
-					text = text.replace( /(?:\r\n|\r|\n)/g, '\n|' );
-				}
-			}
-
-			// handle checkboxes
-			if ( $input.attr( 'id' ) === 'crosswiki' ) {
-				if ( text ) {
-					text = '\\crosswiki=yes\n';
-					keyedValueCount++;
-				} else {
-					text = '';
-				}
-			}
-			if ( $input.attr( 'id' ) === 'socks' ) {
-				if ( text ) {
-					sockCount = 1;
-					keyedValueCount++;
-				}
-				text = '';
-			}
-
-			// handle socks
-			if ( $input.attr( 'id' ) === 'sockusers' ) {
-				if ( text === '' && sockCount ) {
-					alert( 'One or more required fields are missing. Please check your submission and try again.' );
-					$button.attr( 'disabled', false );
-					return $.Deferred().resolve();
-				} else if ( sockCount ) {
-					text = '\\socks=' + text + '\n';
-				} else {
-					text = '';
-				}
-			}
-
-			// patch | in reason
-			if ( $input.attr( 'id' ) === 'comment' ) {
-				text = text.replace( /\|/g, '\\\\' );
-			}
-
-			params[ x ] = text;
-		}
-
-		for ( x in params ) {
-			if ( !Object.prototype.hasOwnProperty.call( params, x ) ) {
-				continue;
-			}
-			// convert to regex so the same parameter can be used multiple times in each string
-			y = new RegExp( x.replace( /\$/, '\\$' ), 'g' );
-			opts.submitText = opts.submitText.replace( y, params[ x ] );
-			opts.summary = opts.summary.replace( y, params[ x ] );
-			opts.sectionTitle = opts.sectionTitle.replace( y, params[ x ] );
-		}
-
-		// Fix when template thinks = is a key
-		if ( opts.submitText.match( /=/g ) !== null && opts.submitText.match( /=/g ).length > keyedValueCount ) {
-			let templateParam = 0;
-			opts.submitText = opts.submitText.replace( /\|/g, function () { // match, i, original
-				templateParam++;
-				return '|' + templateParam + '=';
-			} );
-		}
-		if ( keyedValueCount ) {
-			opts.submitText = opts.submitText.replace( /\\crosswiki/g, '|crosswiki' );
-			opts.submitText = opts.submitText.replace( /\\socks/g, '|socks' );
-		}
-
-		console.log( '[SOAP Report]', opts.submitText, opts.summary );
-
-		urlparams.title = opts.page;
-		urlparams.summary = opts.summary;
-
-		if ( opts.page === 'Report:Wiki' ) {
-			urlparams.appendtext = '\n' + opts.submitText;
-		} else {
-			urlparams.section = 'new';
-			urlparams.sectiontitle = opts.sectionTitle;
-			urlparams.text = opts.submitText;
-		}
-		return fetch( config.wgScriptPath + '/api.php', {
-			body: new URLSearchParams( urlparams ),
-			method: 'POST',
-			credentials: 'include'
-		} ).then( function () {
-			window.location.href = config.wgArticlePath.replace( '$1', opts.page );
-		} );
-	}
-
-	/**
-	 * Create modal.
-	 */
-	function createWindow() {
-		mw.loader.using( [
-			'mediawiki.notification',
-			'oojs-ui-windows'
-		] ).then( function ( require ) {
-			const OO = require( 'oojs' );
-
-			function ReportDialog( config ) {
-				ReportDialog.super.call( this, config );
-			}
-			OO.inheritClass( ReportDialog, OO.ui.ProcessDialog );
-
-			ReportDialog.static.name = 'report-dialog';
-			ReportDialog.static.title = opts.buttonText;
-			ReportDialog.static.actions = [
-				{ label: 'Cancel', flags: [ 'safe', 'close' ] },
-				{ label: 'Submit', action: 'submit', flags: [ 'secondary' ] }
-			];
-
-			// initialise dialog, append content
-			ReportDialog.prototype.initialize = function () {
-				ReportDialog.super.prototype.initialize.apply( this, arguments );
-				this.content = new OO.ui.PanelLayout( {
-					padded: true,
-					expanded: true
-				} );
-				this.content.$element.append( opts.form );
-				this.$body.append( this.content.$element );
-				this.$content.addClass( 'vstf-ui-Dialog' );
-				this.$content.addClass( 'soap-reports' );
-			};
-
-			// Handle actions
-			ReportDialog.prototype.getActionProcess = function ( action ) {
-				if ( action === 'submit' ) {
-					const dialog = this;
-					dialog.pushPending();
-					dialog.actions.others[ 0 ].pushPending();
-					submitForm( opts ).then( function () {
-						dialog.popPending();
-						dialog.actions.others[ 0 ].popPending();
-					} ); // disable the Submit button
-				}
-				return ReportDialog.super.prototype.getActionProcess.call( this, action );
-			};
-
-			// Create the Dialog and add the window manager.
-			modal.windowManager = new OO.ui.WindowManager( {
-				classes: [ 'vstf-windowManager' ]
-			} );
-			$( document.body ).append( modal.windowManager.$element );
-			// Create a new dialog window.
-			modal.reportDialog = new ReportDialog( {
-				size: 'larger'
-			} );
-			// Add window and open
-			modal.windowManager.addWindows( [ modal.reportDialog ] );
-			modal.windowManager.openWindow( modal.reportDialog );
-
-			// Close dialog when clicked outside the dialog
-			modal.reportDialog.$frame.parent().on( 'click', function ( e ) {
-				if ( !$( e.target ).closest( '.vstf-ui-Dialog' ).length ) {
-					modal.reportDialog.close();
-				}
-			} );
-
-			// Expand dialog when socks is clicked
-			$( '#socks, label[for=socks]' ).on( 'click', function () {
-				setTimeout( function () {
-					modal.reportDialog.updateSize();
-				}, 600 );
-			} );
-
-			mw.hook( 'soap.reportsform' ).fire();
-
-			if ( !config.wgUserName ) {
-				document.getElementById( 'formAnon' ).style.display = '';
-			}
-			let socks = document.getElementById( 'socks' );
-			if ( socks ) {
-				document.getElementById( 'socks' ).addEventListener( 'click', function () {
-					const formSocksBox = document.getElementById( 'formSocksBox' );
-					if ( socks.checked ) {
-						formSocksBox.style.display = '';
-					} else {
-						formSocksBox.style.display = 'none';
-					}
-				} );
-			}
-			document.getElementById( 'wikiurl' ).addEventListener( 'blur', function () {
-				const url = filterFandomDomain( $( '#wikiurl' ).val() );
-
-				if ( !url ) {
-					mw.notify( 'Invalid URL!', {
-						tag: 'adoption',
-						type: 'error'
-					} );
-
-					return;
-				}
-
-				// remove stuff like .../wiki/User:Vandal, so the subsequent regex expressions that use the wikiurl field can safely ignore them
-				document.getElementById( 'wikiurl' ).value = 'https://' + url;
-
-				fetch( 'https://' + url + '/api.php?' + new URLSearchParams( {
-					action: 'query',
-					meta: 'siteinfo',
-					siprop: 'general',
-					formatversion: 2,
-					format: 'json',
-					origin: '*'
-				} ), {
-					method: 'GET'
-				} ).then( function ( response ) {
-					return response.json();
-				} ).then( function ( data ) {
-					if ( data.query && data.query.general ) {
-						document.getElementById( 'wikiname' ).value = data.query.general.sitename;
-					}
-				} );
-			} );
-		} );
 	}
 
 	/**
 	 * Loads the report form button
-	 * @param {string} type
+	 * @param {Object} ele
 	 */
-	function loadButton( type ) {
-		opts = options[ type ];
-		const newButton = document.createElement( 'button' );
-		newButton.className = 'cdx-button';
-		newButton.style.cursor = 'pointer';
-		newButton.textContent = opts.buttonText;
-		newButton.addEventListener( 'click', function () {
-			if ( modal.windowManager ) {
-				type = this.id.split( '-' )[ 2 ];
-				modal.windowManager.openWindow( modal.reportDialog );
-			} else {
-				createWindow();
+	function loadButton( ele ) {
+		const button = document.createElement( 'button' );
+		button.className = 'cdx-button';
+		button.style.cursor = 'pointer';
+		button.textContent = opts.buttonText;
+		button.addEventListener( 'click', () => {
+			if ( !dialogExist ) {
+				dialogExist = true;
+				createWindow( button );
 			}
 		} );
 
-		$( '.rb-' + type )
-			.empty()
-			.append( newButton );
+		ele.innerHTML = '';
+		ele.appendChild( button );
+
 		// Fire hook for scripts that use the button
-		mw.hook( 'soap.reports' ).fire( newButton );
-		if ( params.get( 'openmodal' ) === '1' ) {
-			newButton.click();
+		mw.hook( 'soap.reports' ).fire( button );
+		if ( params.get( 'openmodal' ) ) {
+			createWindow( button );
 		}
 	}
 
-	/**
-	 * Loads dropdown of all report possibilities
-	 */
-	function loadDropdown() {
-		$( '.rf-dropdown' )
-			.empty()
-			.append( reportDropdown );
-
-		Object.keys( options ).forEach( function ( option ) {
-			$( '#rf-dropdown-list' ).append(
-				$( '<li>' )
-					.attr( 'id', 'soap-report-' + option )
-					.attr( 'class', 'wds-global-navigation__dropdown-link' )
-					.on( 'click', createWindow )
-					.text( options[ option ].buttonText )
-			);
-		} );
-	}
-
-	/**
-	 * Initializes the script.
-	 */
 	function init() {
 		setOptions();
-		Object.keys( options ).forEach( function ( option ) {
-			if ( document.getElementsByClassName( 'rb-' + option ).length > 0 ) {
-				loadButton( option );
+		for ( const key in options ) {
+			const option = options[ key ],
+				ele = document.getElementsByClassName( `rb-${ key }` );
+			if ( ele.length > 0 ) {
+				opts = option;
+				loadButton( ele[ 0 ] );
 			}
-
-		} );
-		if ( document.getElementsByClassName( 'rf-dropdown' ).length > 0 ) {
-			loadDropdown();
 		}
 	}
 
-	mw.hook( 'dev.i18n' ).add( function ( i18n ) {
-		i18n.loadMessages( 'u:soap:MediaWiki:Custom-Reports/i18n.json' ).done( function ( i18no ) {
+	mw.hook( 'dev.i18n' ).add( ( i18n ) => {
+		i18n.loadMessages( 'u:soap:MediaWiki:Custom-Reports/i18n.json' ).done( ( i18no ) => {
 			msg = i18no.msg;
 			init();
 		} );
 	} );
 
-	window.importArticles( {
-		type: 'script',
-		article: 'u:dev:MediaWiki:I18n-js/code.js'
-	}, {
-		type: 'style',
-		article: 'u:soap:MediaWiki:Reports.css'
+	mw.loader.using( 'ext.fandom.ContentReview.legacyLoaders.js' ).then( () => {
+		window.importArticle( {
+			type: 'script',
+			article: 'u:dev:MediaWiki:I18n-js/code.js'
+		} );
 	} );
-}( window.jQuery, window.mediaWiki ) );
+} )( window.mediaWiki );
 // </nowiki>

@@ -346,6 +346,7 @@
 				'}'+
 				'@media only screen and (max-width: 1023px) {'+
 					':is(#global-top-navigation, #community-navigation) .wiki-tools > .wds-button.is-hidden-on-smaller-breakpoints {display: none;}'+
+					':is(#global-top-navigation, #community-navigation) .wiki-tools .wiki-tool-in-dropdown {display: revert;}'+
 				'}'
 			);
 			if (!Array.isArray(sett)||sett.length==0) {

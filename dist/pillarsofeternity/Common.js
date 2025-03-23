@@ -310,16 +310,17 @@ if (document.querySelector(".loot-container-table") != null)
 	/*
 		Make the old search button (in wiki-tools) focus on the new search bar
 	*/
-	var searchInput = document.querySelector(".search-app__input");
 	var wikiToolsSearch = document.querySelector(".wiki-tools__search");
 	
-	if (wikiToolsSearch && searchInput)
+	if (wikiToolsSearch)
 	{
 	    wikiToolsSearch.addEventListener("click", function(e)
 	    {
 	        e.stopPropagation();
 	        e.preventDefault();
-	        searchInput.focus();
+			
+		    var searchInput = document.querySelector(".search-app__input");
+	        if (searchInput) searchInput.focus();
 	    })
 	}
 	

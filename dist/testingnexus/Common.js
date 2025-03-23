@@ -9,37 +9,36 @@ function applyColorsToTableCells() {
 	const row2 = ["#00FFFF", "#008080", "#FFD700"];
 	const row3 = ["#800080", "#FFA500", "#FFC0CB"];
 	
-	const colorMap = {
+	const colorMap = [
 		row1,
 		row2,
 		row3,
-	};
+	];
 	
-	const cols = ["RED", "BLUE", "YLW"];
+	const cols = ["RED", "BLU", "YLW"];
 	const rows = ["101", "202", "303"];
 	
     $("table").each(function() {
-    	
-    	console.log(coloredTables)
     	
         if (coloredTables.has($(this))) return; // Skip already colored table
      
         $(this).find("tbody tr td").each(function() {
             var text = $(this).text().trim();
             
-            console.log($(this) + "text: " + text)
-            
-            if (typeof text !== 'string' && isNaN(text)) {
+            if (typeof text !== 'string') {
             	return;
-            } // Skip empty cells
+            } // Skip invalid cells
 			
 			var code = text.split("-");
+			
 			var col = code[0];
+			
 			var row_index = -1;
 			if (code.length == 2) {
 				row_index = rows.indexOf(code[1])
 			}
 			col_index = cols.indexOf(col)
+			
 			var background_color = -1;
 			
 			if (col_index != -1 && row_index != -1) {

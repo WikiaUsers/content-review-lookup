@@ -348,7 +348,6 @@ window.MessageWallUserTags = {
         'FireMatch': 'Bureaucrat • Administrator',
         
         'Koolkitty108': 'Administrator',
-        'Thelxinoe': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
         'AndromedaMapping1': 'Discussion Moderator',

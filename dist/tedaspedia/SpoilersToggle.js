@@ -3,11 +3,11 @@
  * Works with Template:Spoiler to create a section of the article that
  * can be toggled to show/hide
  * Uses cookies to store the state of the spoilers
- * t
+ * 
  * @version 2.1.2
  * @author Tierrie
  */
-mw.loader.using(['jquery.cookie']).then(function() { 
+mw.loader.using(['jquery']).then(function() { 
     if (window.SpoilersToggleLoaded) {
         return;
     }

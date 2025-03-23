@@ -1,21 +1,21 @@
 /* Фикс фона изображений */
-var classNames = ["category-page__member-thumbnail"];
-var processImages = function processImages() {
-    classNames.forEach(function (className) {
-        var elements = document.getElementsByClassName(className);
-        Array.prototype.forEach.call(elements, function (image) {
+const classNames = ["category-page__member-thumbnail"];
+const processImages = () => {
+    classNames.forEach(className => {
+        const elements = document.getElementsByClassName(className);
+        Array.from(elements).forEach(image => {
             image.src = image.src.replace(/(\/smart\/width\/[\d]*\/height\/[\d]*)/g, "");
         });
     });
 };
-var observer = new MutationObserver(function (mutations) {
-    mutations.forEach(function (mutation) {
+const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
         if (mutation.type === "childList" || mutation.type === "subtree") {
             processImages();
         }
     });
 });
-var config = {
+const config = {
     childList: true,
     subtree: true,
 };

@@ -5,5 +5,5 @@ window.AddRailModule = [{prepend: true}];
 /* dev:LockOldComments.js */
 window.lockOldComments = (window.lockOldComments || {});
 
-window.lockOldComments.limit = 366;
+window.lockOldComments.limit = 62;
 window.lockOldComments.addNoteAbove = true;

@@ -1,55 +1,5 @@
 /* <pre><nowiki> */
 
-if ((mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough') ||
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') ||
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/FactionsBox')) {
-        importArticles({
-            type: 'style',
-            article: 'MediaWiki:SWUWalkthrough.css'
-        });
-}
-
-if ((mw.config.get('wgPageName').substring(0,mw.config.get('wgPageName').indexOf('/')) == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough') ||
-    (mw.config.get('wgPageName').substring(0,61) == 'Legacy Wiki:Star Wars: Uprising Super Walkthrough/Abilities/') ||
-    (mw.config.get('wgPageName').substring(0,17) == 'Template:Uprising') ||
-    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
-    (mw.config.get('wgPageName') == 'Template:CurrencyIcon') ||
-    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
-    (mw.config.get('wgPageName') == 'Template:TrainerCard') ||
-    (mw.config.get('wgPageName') == 'Template:TrainerCard/Main')) {
-        importArticles({
-            type: 'style',
-            article: 'MediaWiki:SWU_Super_Walkthrough_Fonts.css'
-        });
-}
-
-if ((mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Burnin_Konn') || 
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Components') || 
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Components/Materials') || 
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Anoat_sector') || 
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/Components/Crystals') || 
-    (mw.config.get('wgPageName') == 'Legacy Wiki:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Components') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Main') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Abilities') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/doc') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/Main') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox/main') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/General') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingComponentBox') || 
-    (mw.config.get('wgPageName') == 'Template:EquipmentProgressionTable') || 
-    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
-    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingAbilityBox/Main')) {
-        importArticles({
-            type: 'style',
-            article: 'MediaWiki:SWU_Super_Walkthrough_Equipment.css'
-        });
-}
-
 // onload stuff
 var firstRun = true;
 
@@ -253,51 +203,6 @@ function toggleHidable(bypassStorage) {
 			localStorage.setItem('hidableshow-' + item + '_' + page, nowShown);
 		}
 	}
-}
-
-/* Function to adjust page count */
-function adjustPageCount() {
-	var countFields = getElementsByClass('page-counter__value')
-	if (!countFields) {
-		return
-	}
-	var countField = countFields[0];
-	
-	var currentCount = 0;
-	var x = Number(countField.textContent.replace(",", ""));
-	if (!isNaN(x) && x > 0) {
-		currentCount = x;
-	} else {
-		return
-	}
-	
-	$.ajax({
-		type: 'GET',
-		url: 'https://starwars.fandom.com/api.php',
-		data: {
-			action: 'query',
-			format: 'json',
-			prop: 'categoryinfo',
-			titles: 'Category:Disambiguation_pages|Category:Canon_index_pages|Category:Legends_index_pages|Category:Non-canon_index_pages|Category:Real-world_index_pages',
-		},
-		dataType: 'jsonp',
-		jsonp: 'callback',
-		success: function(data) {
-			var pages = data.query.pages;
-			if (!pages) {
-				return;
-			}
-			
-			for (var k in pages) {
-				var info = pages[k].categoryinfo
-				if (!info) {
-					continue;
-				}
-				currentCount -= info.pages; 
-				countField.textContent = currentCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-			}
-		}
-	})
 }
 
 /*

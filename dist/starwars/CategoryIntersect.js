@@ -75,7 +75,8 @@ $(function () {
 				type: "style",
 				articles: [
 					"ext.fandom.CategoryPage.category-page-mediawiki.css",
-					"mediawiki.action.view.categoryPage.styles"
+					"mediawiki.action.view.categoryPage.styles",
+					"mediawiki.action.styles",
 				]
 			}).then(function () {
 				try {

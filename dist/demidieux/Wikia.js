@@ -2,24 +2,12 @@
 //  Tout ajout de code ou de fonctionnalité doit être recensé ici, dans l'ordre 
 //  d'apparition
 //
-//      ¤ SpoilerAlert : Configuration du script (l'appel a lieu dans 
-//          Mediawiki:ImportJS)
 //      ¤ Univers Riordan : 
 //      ¤ Spécial:Communauté : création des modules Pages sans liens interwiki, 
 //          Pages sans images 
 //      ¤ AddRailModule : Ajout d'un module dans la barre latérale (en bas).
 //          Repris du Wiki Dev pour voir le module intégrer le bas de la barre
 //      ¤ Imports de scripts (à migrer vers Mediawiki:ImportJS)
-
-/* Spoiler alert */
-SpoilerAlert = {
-    question: 'Cette page contient des spoilers. La lire est à vos risques et périls. Souhaitez-vous vraiment la faire apparaître ?',
-    yes: 'Oui',
-    no: 'Non, pas maintenant',
-    isSpoiler: function () {
-        return -1 !== wgCategories.indexOf('Héros de l\'Olympe : Le Sang de l\'Olympe');
-    }
-};
 
 //???????????????????????????????????????????????
 $('#primetabberboiteaccueilslider').mouseenter(cleantabbertitle)
@@ -61,13 +49,3 @@ $('#SCWithoutImages #SectionCommunauteModele_stock').load(
 		$('#SCWithoutImages #SectionCommunauteModele_stock').remove();
 	}
 )
-
-
-/* Scripts importés */
-importArticles({
-    type: 'script',
-    articles: [
-        //'u:c:MediaWiki:Snow.js',  Fait tomber des flocons sur la page
-        "Mediawiki:Wikia.js/Demi-dieu.js",
-    ]
-});

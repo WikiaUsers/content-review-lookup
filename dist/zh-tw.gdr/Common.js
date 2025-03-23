@@ -10,20 +10,14 @@ switch (mw.config.get('wgPageName')){
 	    });
 	    importArticles(
 	    {
-	       	type: 'script',
-	       	article: 'MediaWiki:SkillSimulator.js'
+	        type: 'style',
+	        article: 'MediaWiki:SkillSimulator-image.css'
 	    });
 	    importArticles(
 	    {
 	       	type: 'script',
-	       	article: 'MediaWiki:SkillSimulator-data.js'
+	       	article: 'MediaWiki:SkillSimulator.js'
 	    });
-	    /*importArticles(
-	    {
-	       	type: 'script',
-	       	article: ['MediaWiki:SkillSimulator.js',
-	       		'MediaWiki:SkillSimulator-data.js']
-	    });*/
 		break;
 	
 }

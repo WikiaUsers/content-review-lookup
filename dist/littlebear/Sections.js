@@ -7,7 +7,7 @@ $(() => {
 		return;
 	}
 	
-	mw.loader.load('/load.php?only=styles&mode=articles&articles=MediaWiki:Sections.css', 'text/css');
+	mw.loader.load('/load.php?only=styles&mode=articles&articles=u:littlebear:MediaWiki:Sections.css', 'text/css');
 	mw.hook('wikipage.content').add(() => {
 		if (action !== 'submit' && action !== 'view'){
 			return;
