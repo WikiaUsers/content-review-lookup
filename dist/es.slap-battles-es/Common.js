@@ -27,3 +27,6 @@ window.mbIndefStyle = 'opacity: 0.4; font-style: italic; text-decoration: line-t
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.limit = 30;
+
+// Cargar el script de cuenta regresiva en la wiki
+mw.loader.load('//dev.fandom.com/load.php?mode=articles&articles=MediaWiki:Countdown.js&only=scripts');

@@ -1,5 +1,5 @@
 //начало
-let storage = window.localStorage;
+//let storage = window.localStorage;
 
 // перевод английских клавиш на клавиатуре в русские (всё в нижнем регистре)
 let engToRusKeys = {'q':'й','w':'ц','e':'у','r':'к','t':'е','y':'н','u':'г','i':'ш','o':'щ','p':'з','[':'х',']':'ъ','a':'ф','s':'ы','d':'в','f':'а','g':'п','h':'р','j':'о','k':'л','l':'д',';':'ж','\'':'э','z':'я','x':'ч','c':'с','v':'м','b':'и','n':'т','m':'ь',',':'б','.':'ю','`':'ё','~':'ё','{':'х','}':'ъ',':':'ж','"':'э','<':'б','>':'ю'};
@@ -40,7 +40,8 @@ console.log(document.body);
 //проверка body
 var intervaleditCount = setInterval(editcountcalc, 500);
 
-function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
+function editcountcalc(){
+if (document.body) {clearInterval(intervaleditCount);
 
 let side = document.querySelector('.page-side-tools');
 
@@ -86,30 +87,21 @@ let side = document.querySelector('.page-side-tools');
 	let div = document.createElement('div');
 	div.id = 'hayday-settings-box';
 	div.style.display = 'none';
-	console.log(storage.getItem('fps'));
+	console.log(storageGet('fps'));
 	
-	let snowOn;
-	if (storage.getItem('noSnow') == 'true') {
-		snowOn = '';
-	} else {
-		snowOn = 'checked="true"';
-	}
-	let cloudOn;
-	if (storage.getItem('noClouds') == 'true') {
-		cloudOn = '';
-	} else {
-		cloudOn = 'checked="true"';
-	}
+	let snowOn = storageGet('noSnow') == 'true' ? '' : 'checked="true"';
+
+	let cloudOn = storageGet('noClouds') == 'true' ? '' : 'checked="true"';
 	
-	let settHtml = '<button id="close-sett">'+closeSvg+'</button><div id="hayday-settings-level">Ваш уровень (минимум 1, максимум 1000): <input id="level" value="'+(storage.getItem('haydayLevel')||'')+'" min="1" max="1000" type="number"/></div>'+
+	let settHtml = '<button id="close-sett">'+closeSvg+'</button><div id="hayday-settings-level">Ваш уровень (минимум 1, максимум 1000): <input id="level" value="'+(storageGet('level')||'')+'" min="1" max="1000" type="number"/></div>'+
 	'<div id="hayday-settings-snow"><b>Настройки снега (в светлой теме)</b>'+
 	'<div>Снег включен: <input type="checkbox" id="snow-enabled" '+snowOn+'/></div>'+
-	'<div>Интенсивность снега: <small>Меньше</small><input type="range" min="10" max="50" step="10" id="snow-range" value="'+(storage.getItem('snowDensity')||'10')+'"/><small>Больше</small></div>'+
+	'<div>Интенсивность снега: <small>Меньше</small><input type="range" min="10" max="50" step="10" id="snow-range" value="'+(storageGet('snowDensity')||'10')+'"/><small>Больше</small></div>'+
 	'</div>'+
 	'<div id="hayday-settings-cloud"><b>Настройки облаков (в тёмной теме)</b>'+
 	'<div>Облака включены: <input type="checkbox" id="cloud-enabled" '+cloudOn+'/></div>'+
 	'</div><div id="hayday-settings-all"><b>Общие настройки</b>'+
-	'<div>Частота кадров в секунду/FPS (минимум 1, максимум 60): <input id="fps" type="number" min="1" max="60" value="'+(storage.getItem('fps')||'20')+'"/></div>'+
+	'<div>Частота кадров в секунду/FPS (минимум 1, максимум 60): <input id="fps" type="number" min="1" max="60" value="'+(storageGet('fps')||'20')+'"/></div>'+
 	'</div><button id="submit">Сохранить</button>';
 	console.log(settHtml);
 	div.innerHTML = settHtml;
@@ -141,7 +133,7 @@ let side = document.querySelector('.page-side-tools');
 	});*/
 	
 	let saveBtn = div.querySelector('#submit');
-	saveBtn.addEventListener('click',function(ev){
+	saveBtn.addEventListener('click',(ev)=>{
 		let goodData = true;
 		
 		let level = +div.querySelector('input#level').value;
@@ -150,16 +142,16 @@ let side = document.querySelector('.page-side-tools');
 		let snowOn = div.querySelector('input#snow-enabled').checked;
 		let cloudOn = div.querySelector('input#cloud-enabled').checked;
 		
-		if (level > 1000 || level < 1){goodData = false;}
-		if (fps > 60 || fps < 1){goodData = false;}
-		if (snowDensity < 10 || snowDensity > 50 || snowDensity % 10 != 0){goodData = false;}
+		if (level > 1000 || level < 1) goodData = false;
+		if (fps > 60 || fps < 1) goodData = false;
+		if (snowDensity < 10 || snowDensity > 50 || snowDensity % 10 != 0) goodData = false;
 		
 		if (goodData){
-			storage.setItem('haydayLevel',level);
-			storage.setItem('fps',fps);
-			storage.setItem('noSnow',!snowOn);
-			storage.setItem('noClouds',!cloudOn);
-			storage.setItem('snowDensity',snowDensity);
+			storageSet('level',level);
+			storageSet('fps',fps);
+			storageSet('noSnow',!snowOn);
+			storageSet('noClouds',!cloudOn);
+			storageSet('snowDensity',snowDensity);
 			
 			closeSett();
 			
@@ -170,31 +162,24 @@ let side = document.querySelector('.page-side-tools');
 	});
 	
 	let closeBtn = div.querySelector('#close-sett');
-	closeBtn.addEventListener('click',function(ev){
+	closeBtn.addEventListener('click',(ev)=>{
 		ev.preventDefault();
 		closeSett();
 	});
 	
 	
 	
-	button.addEventListener('click',function(event){
-		openSett();
-	});
+	button.addEventListener('click', ()=> openSett() );
 	
-	backdrop.addEventListener('click',function(){
-		closeSett();
-	});
+	backdrop.addEventListener('click', ()=> closeSett() );
 	
-	document.addEventListener('keydown', function(event) {
-		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
-			openSett();
-		}
+	document.addEventListener('keydown', (event)=>{
+		if (event.code == 'KeyC' && event.altKey && !event.repeat) openSett();
 	});
 	
 	document.body.append(backdrop);
 	document.body.append(div);
 	side.append(button);
-	
 	
 }
 
@@ -202,11 +187,9 @@ let side = document.querySelector('.page-side-tools');
 
 let levelPars = document.querySelectorAll('.parohod-level-box');
 if(levelPars.length){
-	levelPars.forEach(function(div){
-		let usrLevel = storage.getItem('haydayLevel');
-		
-		
-		
+	levelPars.forEach((div)=>{
+		let usrLevel = storageGet('level');
+
 		let lvlBlock = div.querySelector('.parohod-level');
 		let unknownBlock = div.querySelector('.parohod-unknown');
 		let blockedBlock = div.querySelector('.parohod-blocked');
@@ -218,7 +201,7 @@ if(levelPars.length){
 			usrLevel = +usrLevel;
 			if(usrLevel >= 17){
 				loadBlock.style.display = 'block';
-				getJsonPage('Data:Levels.json').then(function(res){
+				getJsonPage('Data:Levels.json').then((res)=>{
 					loadBlock.style.display = 'none';
 					
 					//console.log(res);
@@ -287,7 +270,7 @@ if(levelPars.length){
 					lvlBlock.querySelector('span.product-col-max').innerText = maxAll;
 					//lvlBlock.querySelector('span.product-col').innerText = lvlBoatValue[0] + '|'+lvlBoatValue[1]+'|'+boatValue;
 				},
-				function(err){
+				(err) =>{
 					loadBlock.style.display = 'none';
 					console.error(err);
 					
@@ -306,12 +289,12 @@ if(levelPars.length){
 // пароход в списках товаров
 let goodsListBoats = document.querySelectorAll('.goods-list-boat');
 if(goodsListBoats.length){
-	let level = storage.getItem('haydayLevel');
+	let level = storageGet('level');
 	if (level) {
 		level = +level;
 		if (level >= 17){
-			getJsonPage('Data:Levels.json').then(function(res){
-				goodsListBoats.forEach(function(div){
+			getJsonPage('Data:Levels.json').then((res)=>{
+				goodsListBoats.forEach((div)=>{
 					div.querySelector('.goods-list-boat-default').style.display = 'none';
 					let block = div.querySelector('.goods-list-boat-disp');
 					
@@ -336,8 +319,7 @@ if(goodsListBoats.length){
 						maxAll = Math.max(Math.ceil(lValues[1]/(pValue*12))*4, Math.ceil(lValues[1]/(pValue*9))*3);
 					}
 					
-					let insCol;
-					if (max == min) {insCol = min} else {insCol = min+'-'+max}
+					let insCol = max == min ? min : min+'-'+max;
 					
 					block.querySelector('span.col').innerText = insCol;
 					block.querySelector('span.max-col').innerText = maxAll;
@@ -352,14 +334,14 @@ if(goodsListBoats.length){
 //кол-во монет в событиях с заданиями
 let taskRoadItems = document.querySelectorAll('.sobytie .it-con');
 if(taskRoadItems.length){
-	let level = storage.getItem('haydayLevel');
+	let level = storageGet('level');
 	if(level){
 		level = +level;
-		getJsonPage('Data:Levels.json').then(function(res){
+		getJsonPage('Data:Levels.json').then((res)=>{
 			let rate = res[level-1].dia_rate;
 			
-			taskRoadItems.forEach(function(div){
-				if(div.querySelector('.wind').innerText.trim() == 'Монеты'){
+			taskRoadItems.forEach((div)=>{
+				if(div.querySelector('.wind').innerText.trim() == 'Монеты') {
 					let colBox = div.querySelector('.item .col');
 					console.log(colBox);
 					let col = +colBox.innerText.trim().slice(1);
@@ -377,7 +359,7 @@ if(taskRoadItems.length){
 					} else if (col >= 100){
 						ret = Math.floor(col/10)*10;
 					} else {
-						ret = Math.floor(col/1)*1;
+						ret = col;
 					}
 					
 					colBox.innerText = 'x'+ret;
@@ -397,7 +379,10 @@ if (document.querySelector('.boat-orders-calc')) {
 		div.querySelector('.small-level').style.display = 'none';
 		imgBox.innerHTML = '';
 		if (good) {
-			getImgPath('Файл:'+good+'.png').then((res) => imgBox.innerHTML = '<a href="/ru/wiki/'+good+'" title="'+(langName||good)+'" target="_blank"><img alt="'+(langName||good)+'" src="'+res+'" /></a>', (err) => console.error(err));
+			getImgPath('Файл:'+good+'.png').then(
+				(res) => imgBox.innerHTML = '<a href="/ru/wiki/'+good+'" title="'+(langName||good)+'" target="_blank"><img alt="'+(langName||good)+'" src="'+res+'" /></a>',
+				(err) => console.error(err)
+			);
 			
 			if (!goods[good].no_boat && level){
 				if(goods[good].level > level){
@@ -418,9 +403,8 @@ if (document.querySelector('.boat-orders-calc')) {
 					min1 = Math.ceil(lValues[0]/(pValue*6)); min2 = Math.ceil(lValues[0]/(pValue*9));
 					maxAll = Math.max(Math.ceil(lValues[1]/(pValue*6))*2, Math.ceil(lValues[1]/(pValue*9))*3);
 					
-					let insCol1, insCol2;
-					if (max1 == min1) {insCol1 = min1} else {insCol1 = min1+'-'+max1}
-					if (max2 == min2) {insCol2 = min2} else {insCol2 = min2+'-'+max2}
+					let insCol1 = max1 == min1 ? min1 : min1+'-'+max1;
+					let insCol2 = max2 == min2 ? min2 : min2+'-'+max2;
 					
 					boxes[0].style.display = 'block';
 					boxes[0].querySelector('.col').innerText = insCol1;
@@ -431,8 +415,7 @@ if (document.querySelector('.boat-orders-calc')) {
 					min2 = Math.ceil(lValues[0]/(pValue*9));
 					maxAll = Math.ceil(lValues[1]/(pValue*9))*3;
 					
-					let insCol2;
-					if (max2 == min2) {insCol2 = min2} else {insCol2 = min2+'-'+max2}
+					let insCol2 = max2 == min2 ? min2 : min2+'-'+max2;
 					
 					boxes[1].style.display = 'block';
 					boxes[1].querySelector('.col').innerText = insCol2;
@@ -441,9 +424,8 @@ if (document.querySelector('.boat-orders-calc')) {
 					min1 = Math.ceil(lValues[0]/(pValue*12)); min2 = Math.ceil(lValues[0]/(pValue*9));
 					maxAll = Math.max(Math.ceil(lValues[1]/(pValue*12))*4, Math.ceil(lValues[1]/(pValue*9))*3);
 					
-					let insCol1, insCol2;
-					if (max1 == min1) {insCol1 = min1} else {insCol1 = min1+'-'+max1}
-					if (max2 == min2) {insCol2 = min2} else {insCol2 = min2+'-'+max2}
+					let insCol1 = max1 == min1 ? min1 : min1+'-'+max1;
+					let insCol2 = max2 == min2 ? min2 : min2+'-'+max2;
 					
 					boxes[2].style.display = 'block';
 					boxes[2].querySelector('.col').innerText = insCol1;
@@ -519,7 +501,7 @@ if (document.querySelector('.boat-orders-calc')) {
 		
 		// поле ввода уровня
 		let levelInp = document.createElement('input');
-		let storLvl = storage.getItem('haydayLevel');
+		let storLvl = storageGet('level');
 		if(storLvl){
 			storLvl = +storLvl;
 			if (storLvl >= 17) { levelInp.value = storLvl; level = storLvl}
@@ -715,7 +697,7 @@ if(vkVideos.length){
 if (document.body.className.includes('theme-fandomdesktop-light')) {
 
 	if ((month == 11||month==0||month==1)||(month==3&&date==1)){
-		//let snowDisabled = storage.getItem('noSnow');
+		//let snowDisabled = storageGet('noSnow');
 		let summonID;
 		let snowBoxes = [];
 		for (let i=0; i < 6; i++) {
@@ -777,7 +759,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			snowBoxes[boxN].prepend(snowflake);
 			//allClouds.push(snowflake);
 			//let moveId = setInterval(moveCloud, 40, snowflake, speed, moveId);
-			let dens = +(storage.getItem('snowDensity') || 10);
+			let dens = +(storageGet('snowDensity') || 10);
 			summonID = setTimeout(summonSnow, Math.ceil(randint(200, 601)*(17450/(dens*window.innerWidth))));
 		};
 		let moveInterval;// = setInterval(moveSnow, 50);
@@ -786,11 +768,11 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		//let side = document.querySelector('.page-side-tools');
 		let button = document.createElement('button');
 		button.className = 'page-side-tool';
-		if (storage.getItem('noSnow') !== 'true'){
+		if (storageGet('noSnow') !== 'true'){
 			summonID = setTimeout(summonSnow, 1000);
 			button.title = 'Ясная погода';
 			button.innerHTML = sunSvg;
-			let fps = +(storage.getItem('fps')||20);
+			let fps = +(storageGet('fps')||20);
 			moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
 			checkInterval = setInterval(checkSnow, 5000);
 			
@@ -803,11 +785,11 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		
 		/*document.addEventListener('keydown', function(event) {
 			if (event.code == 'KeyC' && event.altKey && !event.repeat) {
-				if (storage.getItem('noSnow') == 'true'){
+				if (storageGet('noSnow') == 'true'){
 					summonID = setTimeout(summonSnow, 1000);
-					storage.setItem('noSnow', 'false');
+					storageSet('noSnow', 'false');
 					button.title = 'Ясная погода';button.innerHTML = sunSvg;
-					let fps = +(storage.getItem('fps')||20);
+					let fps = +(storageGet('fps')||20);
 					moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
 					checkInterval = setInterval(checkSnow, 5000);
 					
@@ -815,7 +797,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 					clearTimeout(summonID);
 					clearInterval(moveInterval);
 					clearInterval(checkInterval);
-					storage.setItem('noSnow', 'true');
+					storageSet('noSnow', 'true');
 					button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
 					snowBoxes.forEach(function(box){
 						box.innerHTML = '';
@@ -824,18 +806,18 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			}
 		});
 		button.addEventListener('click', function(){
-			if (storage.getItem('noSnow') == 'true'){
+			if (storageGet('noSnow') == 'true'){
 				summonID = setTimeout(summonSnow, 1000);
-				storage.setItem('noSnow', 'false');
+				storageSet('noSnow', 'false');
 				button.title = 'Ясная погода';button.innerHTML = sunSvg;
-				let fps = +(storage.getItem('fps')||20);
+				let fps = +(storageGet('fps')||20);
 				moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
 				checkInterval = setInterval(checkSnow, 5000);
 			} else {
 				clearTimeout(summonID);
 				clearInterval(moveInterval);
 				clearInterval(checkInterval);
-				storage.setItem('noSnow', 'true');
+				storageSet('noSnow', 'true');
 				button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
 				
 				snowBoxes.forEach(function(box){
@@ -845,7 +827,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			}
 		});*/
 		document.addEventListener("visibilitychange", ()=>{
-			if (storage.getItem('noSnow') !== 'true'){
+			if (storageGet('noSnow') !== 'true'){
 				if (document.hidden){
 					console.log('Вкладка не активна');
 					clearInterval(moveInterval);
@@ -853,7 +835,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 					clearInterval(checkInterval);
 				} else {
 					console.log('Вкладка активна');
-					let fps = +(storage.getItem('fps')||20);
+					let fps = +(storageGet('fps')||20);
 					moveInterval = setInterval(moveSnow, Math.ceil(1000/fps), fps);
 					summonID = setTimeout(summonSnow, randint(200, 601));
 					checkInterval = setInterval(checkSnow, 5000);
@@ -866,7 +848,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 
 //облака в тёмной теме
 if (document.body.className.includes('theme-fandomdesktop-dark')) {
-	//let cloudDisabled = storage.getItem('noClouds');
+	//let cloudDisabled = storageGet('noClouds');
 	let summonID;
 	
 	let cloudBoxes = [];
@@ -929,10 +911,10 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 	//let side = document.querySelector('.page-side-tools');
 	let button = document.createElement('button');
 	button.className = 'page-side-tool';
-	if (storage.getItem('noClouds') !== 'true'){
+	if (storageGet('noClouds') !== 'true'){
 		summonID = setTimeout(summonCloud, 1000);
 		checkInterval = setInterval(checkClouds, 5000);
-		let fps = +(storage.getItem('fps') || 20);
+		let fps = +(storageGet('fps') || 20);
 		moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
 		button.title = 'Ясная погода';
 		button.innerHTML = moonSvg;
@@ -943,18 +925,18 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 	
 	/*document.addEventListener('keydown', function(event) {
 		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
-			if (storage.getItem('noClouds') == 'true'){
+			if (storageGet('noClouds') == 'true'){
 				summonID = setTimeout(summonCloud, 1000);
-				storage.setItem('noClouds', 'false');
+				storageSet('noClouds', 'false');
 				button.title = 'Ясная погода';button.innerHTML = moonSvg;
-				let fps = +(storage.getItem('fps') || 20);
+				let fps = +(storageGet('fps') || 20);
 				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
 				checkInterval = setInterval(checkClouds, 5000);
 			} else {
 				clearInterval(moveInterval);
 				clearTimeout(summonID);
 				clearInterval(checkInterval);
-				storage.setItem('noClouds', 'true');
+				storageSet('noClouds', 'true');
 				button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;
 				cloudBoxes.forEach(function(box){
 					box.innerHTML = '';
@@ -964,18 +946,18 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 	});
 	
 	button.addEventListener('click', function(){
-		if (storage.getItem('noClouds') == 'true'){
+		if (storageGet('noClouds') == 'true'){
 			summonID = setTimeout(summonCloud, 1000);
-			storage.setItem('noClouds', 'false');
+			storageSet('noClouds', 'false');
 			button.title = 'Ясная погода';button.innerHTML = moonSvg;
-			let fps = +(storage.getItem('fps') || 20);
+			let fps = +(storageGet('fps') || 20);
 			moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
 			checkInterval = setInterval(checkClouds, 5000);
 		} else {
 			clearInterval(moveInterval);
 			clearTimeout(summonID);
 			clearInterval(moveInterval);
-			storage.setItem('noClouds', 'true');
+			storageSet('noClouds', 'true');
 			button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;
 			cloudBoxes.forEach(function(box){
 				box.innerHTML = '';
@@ -984,7 +966,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 	});*/
 	
 	document.addEventListener("visibilitychange", (ev)=>{
-		if (storage.getItem('noClouds') !== 'true') {
+		if (storageGet('noClouds') !== 'true') {
 			if (document.hidden){
 				console.log('Вкладка не активна');
 				clearInterval(moveInterval);
@@ -992,7 +974,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 				clearInterval(moveInterval);
 			} else {
 				console.log('Вкладка активна');
-				let fps = +(storage.getItem('fps') || 20);
+				let fps = +(storageGet('fps') || 20);
 				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps), fps);
 				summonID = setTimeout(summonCloud, 1000);
 				checkInterval = setInterval(checkClouds, 5000);
@@ -1511,6 +1493,66 @@ if (document.body.className.includes('page-Список_продуктов')) {
 		plSaveInp.checked = false;
 	}
 	
+	
+	/* функции */
+	let plCheckBuilds = function (value, zd, rows, lvl) {
+		rows.forEach((row, i) =>{
+			if (i) {
+				let tds = row.querySelectorAll('td');
+				let build = tds[2].dataset.build;//.innerText.trim().replace(/\n/g, ' ');
+				let rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+				//console.log(value, tds[2], tds[2].firstChild, build, zd);
+				if (build == zd) {
+					if (value) {
+						if(rowLvl<=lvl||!level){row.style.display='table-row';}
+					} else {
+						row.style.display='none';
+					}
+				}
+			}
+		});
+	};
+	let plCheckStar = function (value, zd, rows) {
+		rows.forEach((row, i) =>{
+			if (i) {
+				let tds = row.querySelectorAll('td');
+				let build = tds[2].dataset.build;
+				if (build == zd) {
+					let standardTime = row.querySelector('.standard-time');
+					let starTime = row.querySelector('.star-time');
+					let standardVigoda = row.querySelector('.standard-vigoda');
+					let starVigoda = row.querySelector('.star-vigoda');
+					if (value) {
+						starTime.style.display = 'table-cell';
+						standardTime.style.display = 'none';
+						row.insertBefore(starTime, standardTime);
+						row.append(standardTime);
+						starVigoda.style.display = 'table-cell';
+						standardVigoda.style.display = 'none';
+						row.insertBefore(starVigoda, standardVigoda);
+						row.append(standardVigoda);
+					} else {
+						starTime.style.display = 'none';
+						standardTime.style.display = 'table-cell';
+						row.insertBefore(standardTime, starTime);
+						row.append(starTime);
+						starVigoda.style.display = 'none';
+						standardVigoda.style.display = 'table-cell';
+						row.insertBefore(standardVigoda, starVigoda);
+						row.append(starVigoda);
+					}
+				}
+			}
+		});
+	};
+	let plSaveSet = function (params){
+		if(params.build) params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));
+		if(params.star) params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));
+		if(params.level) params.url.searchParams.set('level', params.level);
+		params.url.searchParams.set('save', 1);
+		history.replaceState({},'',params.url);
+	};
+	
 	//кнопки/ввод
 	plLevel.innerHTML = '<input type="number" min="1" max="1000" style="width: 50px;" />';
 	let plLevelInp = plLevel.querySelector('input');
@@ -1550,19 +1592,22 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	let plStarAll = plStar.querySelectorAll('.click-box');
 	
 	let plURLUseBuild;
-	if(plURLBuild){
+	if(plURLBuild) {
 		while(plURLBuild.length<plBuildAll.length){plURLBuild='0'+plURLBuild}
 		plURLBuild=plURLBuild.split('');
 		plURLUseBuild=true;
-	}else{plURLBuild=[];plURLUseBuild=false;}
+	} else {
+		plURLBuild=[];
+		plURLUseBuild=false;
+	}
 	
 	plBuildAll.forEach((span, i)=> {
 		img = span.querySelector('img');
-		img.ondragstart = function() { return false; };
+		img.ondragstart = () => false;
 		build = img.alt;
 		plBuildNames.push(build);
 		
-		if(plURLUseBuild){
+		if(plURLUseBuild) {
 			if(+plURLBuild[i]){
 				plBuildList.push(true);
 				span.style.background = '#88888830';
@@ -1577,29 +1622,29 @@ if (document.body.className.includes('page-Список_продуктов')) {
 			plURLBuild.push(1);
 			span.style.background = '#88888830';
 		}
+		
 		span.addEventListener('click', () =>{
 			let x;
 			let level = +plLevelInp.value;
-			if(!level){level=1000;}
+			if(!level) level=1000;
 			if (plBuildList[i]) {
 				plURLBuild[i]=0;
 				plBuildList[i] = false;
 				span.style.background = 'transparent';
 				plStarAll[i].style.display='none';
 				x = 1;
-				plBuildList.forEach(function(is, i){if(is){x*=0}else{x*=1}});
-				if(x){plBuildIsAll=false;plBuildBtn.textContent = 'Выбрать всё';}
+				plBuildList.forEach( (is, i) => x *= +!is);
+				if(x) plBuildIsAll=false;
+				plBuildBtn.textContent = 'Выбрать всё';
 			} else {
 				plURLBuild[i]=1;
 				plBuildList[i] = true;
 				span.style.background = '#88888830';
 				plStarAll[i].style.display='inline-block';
 				x = 1;
-				plBuildList.forEach(function(is, i){
-					if(!is){x*=0}else{x*=1}
-					//console.log(plBuildNames[i], x, is);
-				});
-				if(x){plBuildIsAll=true;plBuildBtn.textContent = 'Снять выбор';}
+				plBuildList.forEach((is, i)=> x *= +is );
+				if(x) plBuildIsAll=true;
+				plBuildBtn.textContent = 'Снять выбор';
 			}
 			plCheckBuilds(plBuildList[i], plBuildNames[i], plRows, level);
 			if (plIsSave) plSaveSet({url: plURL, build: plURLBuild});
@@ -1609,14 +1654,17 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	//время с мастерством
 	let plURLUseStar;
 	if(plURLStar){
-		while(plURLStar.length<plStarAll.length){plURLStar='0'+plURLStar}
-		plURLStar=plURLStar.split('');
-		plURLUseStar=true;
-	}else{plURLStar=[];plURLUseStar=false;}
+		while(plURLStar.length<plStarAll.length) plURLStar='0'+plURLStar;
+		plURLStar = plURLStar.split('');
+		plURLUseStar = true;
+	} else {
+		plURLStar=[];
+		plURLUseStar=false;
+	}
 	
 	plStarAll.forEach((span, i) =>{
 		img = span.querySelector('img');
-		img.ondragstart = function() { return false; };
+		img.ondragstart = () => false;
 		//plStarList.push(false);
 		
 		if(plURLUseStar){
@@ -1666,18 +1714,16 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	//кнопки
 	plBuildBtn.addEventListener('click', ()=>{
 		let level = +plLevelInp.value;
-		if (!level){level=1000;}
+		if (!level) level=1000;
 		if(plBuildIsAll){
 			plBuildIsAll = false;
 			plBuildBtn.textContent = 'Выбрать всё';
 			plBuildAll.forEach((span, i)=>span.style.background = 'transparent');
 			plStarAll.forEach((span, i)=>span.style.display='none');
-			plRows.forEach((row, i)=>{
-				if (i) row.style.display = 'none';
-			});
+			plRows.forEach((row, i)=> i && row.style.display = 'none' );
 			plBuildList = plBuildList.map(()=> false);
 			plURLBuild = plURLBuild.map(() => 0);
-			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
+			if (plIsSave) plSaveSet({url: plURL, build: plURLBuild});
 		} else {
 			plBuildIsAll = true;
 			plBuildBtn.textContent = 'Снять выбор';
@@ -1697,7 +1743,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 		//console.log(plBuildList);
 	});
 	plStarBtn.addEventListener('click', ()=>{
-		if(plStarIsAll){
+		if(plStarIsAll) {
 			plStarIsAll = false;
 			plStarBtn.textContent = 'Выбрать всё';
 			plStarAll.forEach((span, i)=>span.style.background='transparent');
@@ -1712,7 +1758,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 					let starTime = row.querySelector('.star-time');
 					let standardVigoda = row.querySelector('.standard-vigoda');
 					let starVigoda = row.querySelector('.star-vigoda');
-					if (plStarList[j]){
+					if (plStarList[j]) {
 						starTime.style.display = 'none';
 						standardTime.style.display = 'table-cell';
 						row.insertBefore(standardTime, starTime);
@@ -1781,7 +1827,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				let starTime = row.querySelector('.star-time');
 				let standardVigoda = row.querySelector('.standard-vigoda');
 				let starVigoda = row.querySelector('.star-vigoda');
-				if (plStarList[j]){
+				if (plStarList[j]) {
 					starTime.style.display = 'none';
 					standardTime.style.display = 'table-cell';
 					row.insertBefore(standardTime, starTime);
@@ -1813,11 +1859,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 					let build = tds[2].dataset.build;
 					let j = plBuildNames.indexOf(build);
 					//console.log(level, rowLvl);
-					if ((rowLvl>level&&level)||!plBuildList[j]){
-						row.style.display='none';
-					} else {
-						row.style.display='table-row';
-					}
+					row.style.display = (rowLvl > level && level) || !plBuildList[j] ? 'none' : 'table-row';
 				}
 			});
 		}
@@ -1826,71 +1868,13 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	
 	console.log(plBuildList, plStarList, plBuildNames);
 	
-	/* функции */
-	function plCheckBuilds(value, zd, rows, lvl) {
-		rows.forEach((row, i) =>{
-			if (i) {
-				let tds = row.querySelectorAll('td');
-				let build = tds[2].dataset.build;//.innerText.trim().replace(/\n/g, ' ');
-				let rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
-				//console.log(value, tds[2], tds[2].firstChild, build, zd);
-				if (build == zd) {
-					if (value) {
-						if(rowLvl<=lvl||!level){row.style.display='table-row';}
-					} else {
-						row.style.display='none';
-					}
-				}
-			}
-		});
-	}
-	function plCheckStar(value, zd, rows) {
-		rows.forEach((row, i) =>{
-			if (i) {
-				let tds = row.querySelectorAll('td');
-				let build = tds[2].dataset.build;
-				if (build == zd) {
-					let standardTime = row.querySelector('.standard-time');
-					let starTime = row.querySelector('.star-time');
-					let standardVigoda = row.querySelector('.standard-vigoda');
-					let starVigoda = row.querySelector('.star-vigoda');
-					if (value) {
-						starTime.style.display = 'table-cell';
-						standardTime.style.display = 'none';
-						row.insertBefore(starTime, standardTime);
-						row.append(standardTime);
-						starVigoda.style.display = 'table-cell';
-						standardVigoda.style.display = 'none';
-						row.insertBefore(starVigoda, standardVigoda);
-						row.append(standardVigoda);
-					} else {
-						starTime.style.display = 'none';
-						standardTime.style.display = 'table-cell';
-						row.insertBefore(standardTime, starTime);
-						row.append(starTime);
-						starVigoda.style.display = 'none';
-						standardVigoda.style.display = 'table-cell';
-						row.insertBefore(standardVigoda, starVigoda);
-						row.append(starVigoda);
-					}
-				}
-			}
-		});
-	}
-	function plSaveSet(params){
-		if(params.build) params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));
-		if(params.star) params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));
-		if(params.level) params.url.searchParams.set('level', params.level);
-		params.url.searchParams.set('save', 1);
-		history.replaceState({},'',params.url);
-	}
 
 }
 
 //перелистывание
 let rotateds = document.querySelectorAll('.rotated-box');
 if (rotateds.length) {
-	rotateds.forEach(function(rotatedBox, index){
+	rotateds.forEach((rotatedBox, index) => {
 		let pageWidth = (+getComputedStyle(rotatedBox).width.slice(0, -2)) / 2;
 		console.log(index, pageWidth);
 		
@@ -1908,11 +1892,11 @@ if (rotateds.length) {
 		
 		let strlLeft = rotatedBox.querySelector('.to-left');
 		strlLeft.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/9/97/Стрелка_влево.png/revision/latest/scale-to-width-down/40?cb=20240815141934&path-prefix=ru"/>';
-		strlLeft.querySelector('img').ondragstart = function() { return false; };
+		strlLeft.querySelector('img').ondragstart = () => false;
 		
 		let strlRight = rotatedBox.querySelector('.to-right');
 		strlRight.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/b/b7/Стрелка_вправо.png/revision/latest/scale-to-width-down/40?cb=20240815141954&path-prefix=ru"/>';
-		strlRight.querySelector('img').ondragstart = function() { return false; };
+		strlRight.querySelector('img').ondragstart = () => false;
 		
 		allPages = Array.from(allPages);
 		allPages.splice(-1, 1);
@@ -1920,17 +1904,108 @@ if (rotateds.length) {
 		let maxPage = Math.floor(allPages.length / 2) - 1;
 		let isMouse = false;
 		
-		allPages.forEach(function(elem,i){
-			elem.style.visibility = 'hidden';
-		});
+		allPages.forEach((elem,i) => elem.style.visibility = 'hidden');
 		
 		activeSide.append(allPages[2].firstElementChild);
 		activeSide.append(allPages[3].firstElementChild);
 	
-		rotatedBox.addEventListener('mouseenter', function(){isMouse = true;});
-		rotatedBox.addEventListener('mouseleave', function(){isMouse = false;});
+		rotatedBox.addEventListener('mouseenter', ()=> isMouse = true);
+		rotatedBox.addEventListener('mouseleave', ()=> isMouse = false);
+		
+				
+		// функции
+		let startRightPage = function (){
+			allPages[page*2+1].style.visibility = 'visible';
+			
+			allPages[page*2+1].append(activeSide.lastElementChild);
+			activeSide.append(allPages[(page+1)*2+1].firstElementChild);
+			
+			allPages[page*2+1].style.transform='rotateY(-90deg)';
+			allPages[page*2+1].style.zIndex=100-page;
+			allPages[(page+1)*2].style.transform='rotateY(90deg)';
+			page++;
+			rotatesRight++;
+			
+			strlLeft.style.filter = 'grayscale(0)';
+			if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
+			
+			
+			setTimeout(closeRightPage, 500, allPages, page, activeSide, false);
+		};
+		let startLeftPage = function (){
+			allPages[page*2].style.visibility = 'visible';
+			
+			allPages[page*2].append(activeSide.firstElementChild);
+			activeSide.prepend(allPages[(page-1)*2].firstElementChild);
+			
+			allPages[page*2].style.transform='rotateY(90deg)';
+			allPages[page*2].style.zIndex=2+page;
+			allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
+			page--;
+			rotatesLeft++;
+			
+			if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
+			strlRight.style.filter = 'grayscale(0)';
+			
+			setTimeout(closeLeftPage, 500, allPages, page, activeSide, false);
+		};
+		let closeRightPage = function (pages, page, activeSide, moved){
+			pages[(page-1)*2+1].style.zIndex=0;
+			pages[(page-1)*2+1].style.transform='rotateY(0deg)';
+			pages[(page-1)*2+1].style.visibility='hidden';
+			pages[page*2].style.visibility='visible';
+			pages[page*2].style.transform='rotateY(0deg)';
+			pages[page*2].style.zIndex=1+page;
+			setTimeout(endRightPage, 500, pages, page, activeSide, moved);
+		};
+		let closeLeftPage = function (pages, page, activeSide, moved){
+			pages[(page+1)*2].style.zIndex=0;
+			pages[(page+1)*2].style.transform='rotateY(0deg)';
+			pages[(page+1)*2].style.visibility='hidden';
+			pages[page*2+1].style.visibility='visible';
+			pages[page*2+1].style.transform='rotateY(0deg)';
+			pages[page*2+1].style.zIndex=100-page;
+			setTimeout(endLeftPage, 500, pages, page, activeSide, moved);
+		};
+		let endRightPage = function (pages, page, activeSide, moved){
+			pages[page*2].style.zIndex=0;
+			
+			pages[(page-1)*2].append(activeSide.firstElementChild);
+			activeSide.prepend(pages[page*2].firstElementChild);
+			
+			pages[page*2].style.visibility='hidden';
+			if (!moved) {rotatesRight--;} else {movesRight--;allPages[(page-1)*2+1].style.transition = 'transform .5s linear';}
+		};
+		let endLeftPage = function (pages, page, activeSide, moved){
+			pages[page*2+1].style.zIndex=0;
+			
+			pages[(page+1)*2+1].append(activeSide.lastElementChild);
+			activeSide.append(pages[page*2+1].firstElementChild);
+			
+			pages[page*2+1].style.visibility='hidden';
+			if (!moved) {rotatesLeft--;} else {movesLeft--;allPages[(page+1)*2].style.transition = 'transform .5s linear';}};
+		let endRightMove = function (){
+			isMoved = false;
+			rotatesRight--;
+			allPages[page*2+1].style.visibility = 'hidden';
+			allPages[(page+1)*2].style.transition = 'transform .5s linear';
+			allPages[page*2+1].style.transition = 'transform .5s linear';
+			allPages[(page+1)*2+1].append(activeSide.lastElementChild);
+			activeSide.append(allPages[page*2+1].firstElementChild);
+			allPages[page*2+1].style.zIndex=0;
+		};
+		let endLeftMove = function (){
+			isMoved = false;
+			rotatesLeft--;
+			allPages[page*2].style.visibility = 'hidden';
+			allPages[(page-1)*2+1].style.transition = 'transform .5s linear';
+			allPages[page*2].style.transition = 'transform .5s linear';
+			allPages[(page-1)*2].append(activeSide.firstElementChild);
+			activeSide.prepend(allPages[page*2].firstElementChild);
+			allPages[page*2].style.zIndex=0;
+		};
 	
-		rotated.onpointerdown = function(event){
+		rotated.onpointerdown = (event)=>{
 			if(event.target.localName != 'img'){
 				isPicked = true;
 				rotated.setPointerCapture(event.pointerId);
@@ -1942,7 +2017,7 @@ if (rotateds.length) {
 					// схвачена левая страница
 					console.log('pick up left', isMoved, isPicked);	
 					
-					rotated.onpointermove = function(event) {
+					rotated.onpointermove = (event) =>{
 						if (!isMoved){
 							isMoved = true;
 							isPicked = false;
@@ -1958,7 +2033,7 @@ if (rotateds.length) {
 							activeSide.prepend(allPages[(page-1)*2].firstElementChild);
 							allPages[page*2].style.zIndex=2;
 							
-							rotated.onpointercancel = function(event) {
+							rotated.onpointercancel = (event) =>{
 								//console.log(event);
 								rotated.onpointermove = null;
 								rotated.onpointerup = null;
@@ -1975,7 +2050,7 @@ if (rotateds.length) {
 								
 								setTimeout(endLeftMove, 1);
 							};
-							rotated.onpointerup = function(event) {
+							rotated.onpointerup = (event)=> {
 								let ms = Math.floor(((event.pageX-rect.left)-clickX)*(500/pageWidth));
 								rotated.onpointermove = null;
 								rotated.onpointerup = null;
@@ -2008,12 +2083,11 @@ if (rotateds.length) {
 							movesLeft++;
 							page--;
 							
-							if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
+							if (page == 0) strlLeft.style.filter = 'grayscale(1)';
 							strlRight.style.filter = 'grayscale(0)';
 							
 							closeLeftPage(allPages, page, activeSide, true);
 						} else {
-						
 							allPages[page*2].style.transform='rotateY('+deg+'deg)';
 						}
 					};
@@ -2022,7 +2096,7 @@ if (rotateds.length) {
 				} else if (!rotatesRight&&!rotatesLeft && page < maxPage && !movesLeft && event.isPrimary && event.button === 0) {
 					// схвачена правая страница
 					console.log('pick up right', isMoved, isPicked);
-					rotated.onpointermove = function(event) {
+					rotated.onpointermove = (event) =>{
 						if (!isMoved) {
 							isMoved = true;
 							isPicked = false;
@@ -2037,7 +2111,7 @@ if (rotateds.length) {
 							activeSide.append(allPages[(page+1)*2+1].firstElementChild);
 							allPages[page*2+1].style.zIndex=2;
 							
-							rotated.onpointercancel = function(event) {
+							rotated.onpointercancel = (event)=> {
 								//console.log(event);
 								rotated.onpointermove = null;
 								rotated.onpointerup = null;
@@ -2054,7 +2128,7 @@ if (rotateds.length) {
 								setTimeout(endRightMove, 1);
 							};
 							
-							rotated.onpointerup = function(event) {
+							rotated.onpointerup = (event) =>{
 								let ms = Math.floor((clickX-(event.pageX-rect.left))*(500/pageWidth));
 								rotated.onpointermove = null;
 								rotated.onpointerup = null;
@@ -2073,7 +2147,7 @@ if (rotateds.length) {
 						
 						let mouseX = event.pageX-rect.left;
 						let deg = -((clickX-mouseX)*(90/pageWidth));
-						if (deg > 0) {deg = 0;}
+						if (deg > 0) deg = 0;
 						//console.log(mouseX, deg);
 						
 						if (deg < -90) {
@@ -2088,7 +2162,7 @@ if (rotateds.length) {
 							page++;
 							
 							strlLeft.style.filter = 'grayscale(0)';
-							if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
+							if (page == maxPage) strlRight.style.filter = 'grayscale(1)';
 								
 							closeRightPage(allPages, page, activeSide, true);
 						} else {
@@ -2097,7 +2171,7 @@ if (rotateds.length) {
 						}
 					};
 				}
-				rotated.onpointerup = function(event){
+				rotated.onpointerup = (event)=>{
 					rotated.onpointermove = null;
 					rotated.onpointerup = null;
 					rotated.onpointercancel = null;
@@ -2106,7 +2180,7 @@ if (rotateds.length) {
 					
 					console.log('mouse up', isMoved, isPicked);
 				};
-				rotated.onpointercancel = function(event){
+				rotated.onpointercancel = (event)=>{
 					rotated.onpointermove = null;
 					rotated.onpointerup = null;
 					rotated.onpointercancel = null;
@@ -2118,7 +2192,7 @@ if (rotateds.length) {
 			}
 		};
 	
-		document.addEventListener('keydown', function(event){
+		document.addEventListener('keydown', (event)=>{
 			//console.log('pressed', event.key, page, allPages.length, isMouse);
 			if (event.key=='ArrowRight' && page < maxPage && isMouse && !rotatesLeft && !isMoved && !movesLeft && !isPicked) {
 				startRightPage();
@@ -2128,108 +2202,17 @@ if (rotateds.length) {
 			}
 		});
 		
-		strlLeft.addEventListener("click", function(){
+		strlLeft.addEventListener("click", ()=>{
 			if (page > 0 && !rotatesRight && !isMoved && !movesRight && !isPicked) {
 				startLeftPage();
 			}
 		});
-		strlRight.addEventListener("click", function(){
+		strlRight.addEventListener("click", ()=>{
 			if (page < maxPage && !rotatesLeft && !isMoved && !movesLeft && !isPicked) {
 				startRightPage();
 			}
 		});
-		
-		/* функции */
-		function startRightPage(){
-			allPages[page*2+1].style.visibility = 'visible';
-			
-			allPages[page*2+1].append(activeSide.lastElementChild);
-			activeSide.append(allPages[(page+1)*2+1].firstElementChild);
-			
-			allPages[page*2+1].style.transform='rotateY(-90deg)';
-			allPages[page*2+1].style.zIndex=100-page;
-			allPages[(page+1)*2].style.transform='rotateY(90deg)';
-			page++;
-			rotatesRight++;
-			
-			strlLeft.style.filter = 'grayscale(0)';
-			if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
-			
-			
-			setTimeout(closeRightPage, 500, allPages, page, activeSide, false);
-		}
-		function startLeftPage(){
-			allPages[page*2].style.visibility = 'visible';
-			
-			allPages[page*2].append(activeSide.firstElementChild);
-			activeSide.prepend(allPages[(page-1)*2].firstElementChild);
-			
-			allPages[page*2].style.transform='rotateY(90deg)';
-			allPages[page*2].style.zIndex=2+page;
-			allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
-			page--;
-			rotatesLeft++;
-			
-			if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
-			strlRight.style.filter = 'grayscale(0)';
-			
-			setTimeout(closeLeftPage, 500, allPages, page, activeSide, false);
-		}
-		function closeRightPage(pages, page, activeSide, moved){
-			pages[(page-1)*2+1].style.zIndex=0;
-			pages[(page-1)*2+1].style.transform='rotateY(0deg)';
-			pages[(page-1)*2+1].style.visibility='hidden';
-			pages[page*2].style.visibility='visible';
-			pages[page*2].style.transform='rotateY(0deg)';
-			pages[page*2].style.zIndex=1+page;
-			setTimeout(endRightPage, 500, pages, page, activeSide, moved);
-		}
-		function closeLeftPage(pages, page, activeSide, moved){
-			pages[(page+1)*2].style.zIndex=0;
-			pages[(page+1)*2].style.transform='rotateY(0deg)';
-			pages[(page+1)*2].style.visibility='hidden';
-			pages[page*2+1].style.visibility='visible';
-			pages[page*2+1].style.transform='rotateY(0deg)';
-			pages[page*2+1].style.zIndex=100-page;
-			setTimeout(endLeftPage, 500, pages, page, activeSide, moved);
-		}
-		function endRightPage(pages, page, activeSide, moved){
-			pages[page*2].style.zIndex=0;
-			
-			pages[(page-1)*2].append(activeSide.firstElementChild);
-			activeSide.prepend(pages[page*2].firstElementChild);
-			
-			pages[page*2].style.visibility='hidden';
-			if (!moved) {rotatesRight--;} else {movesRight--;allPages[(page-1)*2+1].style.transition = 'transform .5s linear';}
-		}
-		function endLeftPage(pages, page, activeSide, moved){
-			pages[page*2+1].style.zIndex=0;
-			
-			pages[(page+1)*2+1].append(activeSide.lastElementChild);
-			activeSide.append(pages[page*2+1].firstElementChild);
-			
-			pages[page*2+1].style.visibility='hidden';
-			if (!moved) {rotatesLeft--;} else {movesLeft--;allPages[(page+1)*2].style.transition = 'transform .5s linear';}}
-		function endRightMove(){
-			isMoved = false;
-			rotatesRight--;
-			allPages[page*2+1].style.visibility = 'hidden';
-			allPages[(page+1)*2].style.transition = 'transform .5s linear';
-			allPages[page*2+1].style.transition = 'transform .5s linear';
-			allPages[(page+1)*2+1].append(activeSide.lastElementChild);
-			activeSide.append(allPages[page*2+1].firstElementChild);
-			allPages[page*2+1].style.zIndex=0;
-		}
-		function endLeftMove(){
-			isMoved = false;
-			rotatesLeft--;
-			allPages[page*2].style.visibility = 'hidden';
-			allPages[(page-1)*2+1].style.transition = 'transform .5s linear';
-			allPages[page*2].style.transition = 'transform .5s linear';
-			allPages[(page-1)*2].append(activeSide.firstElementChild);
-			activeSide.prepend(allPages[page*2].firstElementChild);
-			allPages[page*2].style.zIndex=0;
-		}
+
 	});
 
 }
@@ -2242,15 +2225,14 @@ if (facts.length>0) {
 	let randIndx=randint(0,facts.length);
 	console.log('Факт номер '+randIndx);
 	facts[randIndx].style.display="block";
-	setTimeout(updateFact, 15000, facts, randIndx);
 	
-	/* функции */
-	function hideFact(fact) {
+	// функции 
+	let hideFact = function (fact) {
 		fact.style.display="none";
 		fact.style.left="0";
 		fact.style.zIndex="1";
-	}
-	function updateFact(facts, oldIndx){
+	};
+	let updateFact = function (facts, oldIndx){
 		facts[oldIndx].style.left="300px";
 		facts[oldIndx].style.zIndex="100";
 		randIndx = randint(0,facts.length);
@@ -2262,33 +2244,25 @@ if (facts.length>0) {
 		facts[randIndx].style.display="block";
 		setTimeout(hideFact, 1000, facts[oldIndx]);
 		setTimeout(updateFact, 15000, facts, randIndx);
-	}
-
+	};
+	
+	setTimeout(updateFact, 15000, facts, randIndx);
 }
 
 
 //noimage
 let linksToNewImg = document.querySelectorAll('.mw-parser-output a');
 //console.log(linksToNewImg);
-if (linksToNewImg.length>0) {
-for (let i = 0; i < linksToNewImg.length; i++) {
-	//let title = linksToNewImg[i].title;
-	let href = linksToNewImg[i].href;
-	//console.log(title);
-	if (href.includes('wpDestFile=')){
-		//console.log(true);
-		linksToNewImg[i].innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/7/7d/Нет_картинки.gif/revision/latest?cb=20231204095429&format=original&path-prefix=ru" style="width:150px; height:auto;" alt="Нет картинки" />';
-		//let ret = document.createElement('img');
-		//ret.src = 'https://static.wikia.nocookie.net/hayday/images/7/7d/Нет_картинки.gif/revision/latest?cb=20231204091935&format=original&path-prefix=ru';
-		//ret.width = 150;
-		//linksToNewImg[i].replaceWith();
-	}
-}}
+if (linksToNewImg.length) {
+	linksToNewImg.forEach((link)=> {
+		if (link.href.includes('wpDestFile=')) link.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/7/7d/Нет_картинки.gif/revision/latest?cb=20231204095429&format=original&path-prefix=ru" style="width:150px; height:auto;" alt="Нет картинки" />';
+	});
+}
 
 // События с заданиями: эффект мыши
 if (document.body.className.includes('page-События_с_заданиями')) {
 	let sobytieRoads = document.querySelectorAll(".sobytie .road");
-	sobytieRoads.forEach(function(road){
+	sobytieRoads.forEach((road)=>{
 		let roadPolosa = road.querySelector(".polosa");
 		let roadPolosaBorder = road.querySelector(".polosa-border");
 		let points = road.querySelectorAll(".points");
@@ -2302,7 +2276,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 		road.append(nowPoint);
 		
 		let numPoint = 0;
-		road.addEventListener("pointermove", function(){
+		road.addEventListener("pointermove", ()=>{
 			let rect = road.getBoundingClientRect();
 			let mouseX = event.pageX-rect.left+road.scrollLeft;
 			roadPolosa.style.width=mouseX+"px";
@@ -2321,7 +2295,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 			nowPointText.textContent = String(numPoint);
 		});
 		
-		road.addEventListener("pointerout", function(){
+		road.addEventListener("pointerout", ()=>{
 			roadPolosa.style.width="100%";
 			roadPolosaBorder.style.width="calc(100% - 3px)";
 			nowPointText.textContent = "0";
@@ -2331,9 +2305,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 }
 
 //добавление кнопки перемотки к окну редактирования
-if (new URL(window.location.href).searchParams.get('action')==='edit'){
-	side.insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
-}
+if (new URL(window.location.href).searchParams.get('action')==='edit') side.insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
 
 //код за этими фигурными скобками не должен вызывать элементы страницы, так как может не сработать
 }}
@@ -2361,6 +2333,7 @@ function setCookie(name, value) {
 }
 
 // получение json данных со страниц пространства имён Data в формате json
+// данные json должны быть обёрнуты в символы $. Использование символов $ внутри json не запрещается
 // принимает 2 аргумента. 2 аргумент — булевый.
 //При истинном значении загружает все страницы из массива page и возвращает объект объектов-результатов после загрузки всех. Ключ — страница, переданная в pages
 // если 2 аргумент — ложный, то загружает одну страницу из первого аргумента и возвращает объект из неё
@@ -2401,7 +2374,7 @@ function getJsonPage(pages, multi){
 					try {
 						let text = res.parse.text;
 						let firstPos = text.indexOf('$');
-						let secondPos = text.indexOf('$', firstPos+1);
+						let secondPos = text.lastIndexOf('$');
 						
 						let ret = JSON.parse(text.slice(firstPos+1,secondPos));
 						
@@ -2417,7 +2390,7 @@ function getJsonPage(pages, multi){
 	}
 }
 
-// получает прямую ссылку на файл по его названию (с префиксом Файл: и расширением с помощью api
+// получает прямую ссылку на файл по его названию (с префиксом "Файл:" и расширением) с помощью api
 // img — строка, результат — строка
 function getImgPath(img){
 	let url = '/ru/api.php?action=query&titles='+img+'&iiprop=url&prop=imageinfo&format=json';
@@ -2444,6 +2417,7 @@ function getImgPath(img){
 	});
 }
 
+//получение объекта по ключу с рекурсивным проваливанием в объект
 function getObj (data, key) {
     // traverse through object tree
     let ret = [], r;
@@ -2459,6 +2433,7 @@ function getObj (data, key) {
     return ret;
 } // getObj
 
+//получение значения по ключу с рекурсивным проваливанием в объект
 function getVal (data, key) {
     // travers through object tree
     let ret = [], r;
@@ -2477,7 +2452,13 @@ function getVal (data, key) {
     return ret;
 } // getVal
 
-
+// запись и получение данных в window.localStorage с префиксом haydayWiki_ во избежание конфликтов с другими данными
+function storageSet(key, val) {
+	window.localStorage.setItem('haydayWiki_'+key, val);
+}
+function storageGet(val) {
+	return window.localStorage.getItem('haydayWiki_'+key);
+}
 
 // linkJs 
 importArticles({

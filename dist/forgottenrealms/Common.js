@@ -140,7 +140,7 @@ $(document).ready(function() {
 					'.rtl li.' + myClassName + '{margin-left: 3em;}\n' +
 					'.ltr li.' + myClassName + '{margin-right: 3em;}');
 		$(hilightDivMarker+ ' img').each(function() {
-			var img = $(this), map = img.siblings('map:first');
+			var img = $(this), map = img.parent().siblings('map:first');
 			if (!('area', map).length)
 				return;	//not an imagemap. inside "each" anonymous function, 'return' means "continue".
 			var w = img.width(), h = img.height();

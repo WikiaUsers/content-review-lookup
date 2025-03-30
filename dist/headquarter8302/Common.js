@@ -13,10 +13,6 @@ importArticles({
       styleBgTypes: ["animatedLinearGradient", "staticRadialGradient"]
     }
   };
+  
   window.user = window.user || {};
 })(this);
-
-// Set to alternate background
-if (window.user.config.styleBgType === "staticRadialGradient") {
-  document.getElementsByTagName("body")[0].style.setProperty("background-image", "radial-gradient(ellipse at top, transparent, rgba(0 0 0 / 0.25))");
-}

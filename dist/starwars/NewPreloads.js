@@ -9,6 +9,7 @@
     ]),
     $module = $('div#wpSummaryLabel'), // UCP source editors
     $moduleOld = $('div.module_content:first'); // Old Non-UCP Source Editor
+    
 
     // Run conditions
     if (mwc.wgNamespaceNumber === 8) {
@@ -30,11 +31,6 @@
     //   Functions  
     // =============
 
-    // Get plain message from i18n
-    function msg(message) {
-        return i18n.msg(message).plain();
-    }
-
     // Parse MediaWiki code to allow the use of includeonly and noninclude tags in the preload page
     function parseMW(source){
         return source.replace(/<includeonly>(\n)?|(\n)?<\/includeonly>|\s*<noinclude>[^]*?<\/noinclude>/g, '');
@@ -42,7 +38,7 @@
 
     // Error alert
     function notFound(page){
-        alert(i18n.msg('error', '"' + page + '"').plain());
+        alert('Error: "' + page + '" not found');
     }
 
     // Inserts text at the cursor's current position - originally from Wookieepedia
@@ -155,11 +151,17 @@
     }
 
     // Add selector to editor
-    function preInit(i18nData) {
-        i18n = i18nData;
+    function preInit() {
         $general = $('<div>', { id: 'preload-templates' });
         $general.append($('<span>', {
             text: 'Common page components:'
+        }));
+        $help = $('<div>', {
+            id: 'pt-help'
+        }).append($('<a>', {
+            target: '_blank',
+            href: 'https://starwars.fandom.com/wiki/MediaWiki:NewPreloads.js',
+            text: '?'
         }));
     	if (window.location.href.indexOf('User_talk:') !== -1) {
 	        $messages = $('<div>', { id: 'preload-messages' });
@@ -180,7 +182,7 @@
         return mw.html.element('option', {
             selected: true,
             disabled: true
-        }, msg('choose')) + parsed.split('\n').map(function(line) {
+        }, '(click to browse)') + parsed.split('\n').map(function(line) {
             // Ignore empty lines
             if (line.trim() === '') {
                 return '';
@@ -216,12 +218,9 @@
     // If the initialization failed
     function initFail() {
         $general.append(
-            i18n.msg(
-                'error',
-                mw.html.element('a', {
-                    href: mw.util.getUrl(config.infoboxList)
-                }, config.infoboxList)
-            ).plain(),
+            'Error: ' + mw.html.element('a', {
+                href: mw.util.getUrl(config.infoboxList)
+            }, config.infoboxList),
             $help
         );
     }
@@ -253,7 +252,6 @@
         node.append(
             $('<select>', {
                 id: 'pt-list',
-                title: msg('help'),
                 html: listHTML(parsed)
             }).change(function() {
                 var $this = $(this),
@@ -264,8 +262,7 @@
 
                 // Preload the template on click
                 getPreloadPage(subpage, val);
-            }),
-            $help
+            })
         );
     }
 
@@ -283,8 +280,8 @@
         $.when(
             i18no.loadMessages('PreloadTemplates'),
             mw.loader.using('mediawiki.util')
-        ).then(function(i18nData) {
-            preInit(i18nData);
+        ).then(function() {
+            preInit();
             mw.hook('ve.activationComplete').add(appendModule);
             $.get(mw.util.wikiScript(), {
                 title: config.infoboxList,

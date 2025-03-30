@@ -5,6 +5,10 @@ const coloredTables = new Set(); // Track colored tables
 
 function applyColorsToTableCells() {
 	
+	const cols = ["RED", "BLU", "YLW"];
+	const rows = ["101", "202", "303"];
+	const default_row = rows.indexOf("202");
+	
 	const row1 = ["#FF0000", "#0000FF", "#FFFF00"];
 	const row2 = ["#00FFFF", "#008080", "#FFD700"];
 	const row3 = ["#800080", "#FFA500", "#FFC0CB"];
@@ -14,9 +18,6 @@ function applyColorsToTableCells() {
 		row2,
 		row3,
 	];
-	
-	const cols = ["RED", "BLU", "YLW"];
-	const rows = ["101", "202", "303"];
 	
     $("table").each(function() {
     	
@@ -45,7 +46,7 @@ function applyColorsToTableCells() {
 				background_color = colorMap[row_index][col_index];
 			}
 			else if (col_index != -1) {
-				background_color = colorMap[0][col_index];
+				background_color = colorMap[default_row][col_index];
 			}
             if (background_color != -1) {
                 $(this).css({

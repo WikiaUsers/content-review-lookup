@@ -9,25 +9,46 @@
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
+    function awaitElement() {
+        return new Promise(function(resolve) {
+            const container = document.getElementById('user-tab__content');
+            function callback() {
+                const match = container.querySelector('ul.user-tab__list');
+                if (match !== null) {
+                    observer.disconnect();
+                    resolve(match);
+                }
+            }
+            const observer = new MutationObserver(callback);
+            observer.observe(container, {
+                childList: true,
+                subtree: true
+            });
+            callback();
+        });
+    }
     mw.hook('dev.i18n').add(function(i18no) {
         $.when(
             i18no.loadMessages('SandboxLink'),
+            awaitElement(),
             mw.loader.using('mediawiki.util')
-        ).then(function(i18n) {
+        ).then(function(i18n, element) {
             var conf = mw.config.get([
                 'wgFormattedNamespaces',
                 'wgUserName'
             ]);
-            $('.wds-global-navigation__user-menu .wds-list, .global-navigation__bottom .wds-list').append(
+            $(element).append(
                 $('<li>', {
-                    id: 'MySandbox'
-                }).append(
-                    $('<a>', {
+                    class: 'user-tab__list-item',
+                    dir: 'auto',
+                    html: $('<a>', {
                         'class': 'wds-global-navigation__dropdown-link',
+                        'data-label': 'account.sandbox',
                         href: mw.util.getUrl(conf.wgFormattedNamespaces[2] + ':' + conf.wgUserName + '/' + i18n.inContentLang().msg('sandbox-subpage').plain()),
                         text: i18n.msg('sandbox').plain()
-                    })
-                )
+                    }),
+                    id: 'MySandbox'
+                })
             );
         });
     });

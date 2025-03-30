@@ -1,6 +1,6 @@
-(function($, mw) {
+(($, mw) => {
 	'use strict';
-	var namespaces = [4, 110],
+	const namespaces = [4, 110],
 		ns = mw.config.get('wgNamespaceNumber');
 	
 	if (
@@ -13,9 +13,9 @@
 	
 	window.DisableArchivedPagesLoaded = true;
 	
-	mw.hook('dev.i18n').add(function(i18n) {
-		i18n.loadMessages('DisableArchivedPages').done(function(i18n) {
-			var archived = i18n.msg('archived').escape();
+	mw.hook('dev.i18n').add((i18n) => {
+		i18n.loadMessages('DisableArchivedPages').done((i18n) => {
+			const archived = i18n.msg('archived').escape();
 			
 			$('#ca-edit').html(archived).removeAttr('href');
 			$('#ca-addsection').html(archived).removeAttr('href');
@@ -23,7 +23,10 @@
 		});
 	});
 	
-	importArticle({type:'script', article:'u:dev:MediaWiki:I18n-js/code.js'});
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 	
 	$('#ca-edit-side-tool').remove();
 	$('#ca-addsection-side-tool').remove();
@@ -36,4 +39,4 @@
 	if ($('.page-header__page-subtitle .new').length === 1){
 		$('.page-header__page-subtitle').html($('.subpages'));
 	}
-}(jQuery, mediaWiki));
+})(jQuery, mediaWiki);

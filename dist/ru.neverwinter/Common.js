@@ -111,80 +111,131 @@ $('.artifact-weapon-table tr').each(function(){
   }
 });
 
-// default setting to turn tooltips on
-var tooltipsOn = true;
+// TOOLTIP
+// Default setting to enable tooltips
+const tooltipsOn = true;
 
-var $tfb;
-var activeHoverLink = null;
-var tipCache = new Object();
+// Global variables:
+// $tfb - tooltip container element
+// activeHoverLink - currently active link with a tooltip
+// tipCache - cache for storing already loaded tooltips
+let $tfb, activeHoverLink, tipCache = {};
 
-// hides the tooltip
-function hideTip() {
-  $tfb.html("").removeClass("tooltip-ready").addClass("hidden").css("visibility","hidden"); 
-  activeHoverLink = null;
-}
+// Function to hide the tooltip
+const hideTip = () => {
+  $tfb.html("")               // Clear the content
+    .addClass("hidden")       // Add the hidden class
+    .removeClass("tooltip-ready") // Remove the readiness class
+    .css("visibility", "hidden"); // Hide the element
+  activeHoverLink = null;     // Reset the active link
+};
 
-// displays the tooltip
-function displayTip(e) {
-  $tfb.not(":empty").removeClass("hidden").addClass("tooltip-ready");
-  moveTip(e);
-  $tfb.not(":empty").css("visibility","visible");
-  moveTip(e);
-}
+// Function to move the tooltip based on link position
+// Function to move the tooltip based on link position
+const moveTip = e => {
+  const $ct = $tfb;
+  if ($ct.is(":empty") || $ct.hasClass("hidden")) return;
 
-// moves the tooltip
-function moveTip(e) {
-	var $ct = $tfb.not(":empty");
-	var eh = $ct.innerHeight() + 20, wh = $(window).height();
-	var newTop = e.clientY + ((e.clientY > (wh/2)) ? -eh : 20);
-	var newLeft = e.clientX + ((e.clientX > ($(window).width()/2)) ? -($ct.innerWidth()+20):20);
-	newTop = Math.max(105, Math.min(wh - eh, newTop));
-	$ct.css({"position":"fixed","font-size":"0.90em","top":newTop + "px","left":newLeft + "px"});
-}
+  const $link = $(activeHoverLink); // Current link
+  const linkOffset = $link.offset(); // Link position relative to the document
+  const linkHeight = $link.outerHeight(); // Link height
+  const linkWidth = $link.outerWidth(); // Link width
+  const tooltipHeight = $ct.outerHeight(); // Tooltip height
+  const tooltipWidth = $ct.outerWidth(); // Tooltip width
+  const windowHeight = $(window).height(); // Window height
+  const windowWidth = $(window).width(); // Window width
+  const scrollTop = $(window).scrollTop(); // Page scroll position
+  const fixedHeaderHeight = 46; // Height of the fixed community-navigation
+  const paddingTop = 10; // 10px padding top
+  const paddingBottom = 45; // 45px padding bottom
 
-// AJAX tooltips
-function showTip(e) {
-  var $t=$(this);
-  activeHoverLink = $t;
-  $p=$t.parent();
-  if ($p.hasClass("selflink")==false) {
-    $t.removeAttr("title");
-    $p.removeAttr("title");
-   /*var url = "/ru/index.php?title="+$t.data("tt").replace(/ /g,"_").replace(/\?/g,"%3F").replace(/\+/g,"%2B")+"&action=render .tooltip-content";*/
-   var url = "/ru/index.php?title=" + encodeURIComponent(decodeURIComponent($t.data("tt"))) + "&action=render " + 'div[class*="tooltip"]';
-    if (tipCache[url] != null) {
-      $tfb.html(tipCache[url]);
-      displayTip(e);
-      return;
-    }
-    $tfb.load(url,function () {
-      if ($t != activeHoverLink) return;
-      if ($tfb.html() == "") $tfb.html('<div class="tooltip"><b>Error</b><br />This target either has no tooltip<br />or was not intended to have one.</div>');
-      $tfb.find(".tooltip").css("display","");
-      tipCache[url] = $tfb.html();
-      displayTip(e);
+  // Calculate position to the right of the link
+  let left = linkOffset.left + linkWidth + 10; // 10px offset to the right of the link
+  // Center vertically relative to the link, accounting for scroll
+  let top = linkOffset.top + (linkHeight / 2) - (tooltipHeight / 2) - scrollTop;
+
+  // Check if the tooltip exceeds the right window boundary
+  if (left + tooltipWidth > windowWidth) {
+    // If it doesn't fit on the right, place it to the left of the link
+    left = linkOffset.left - tooltipWidth - 10;
+  }
+
+  // Adjust vertical position to keep the tooltip within window boundaries with padding
+  const minTop = fixedHeaderHeight + paddingTop; // Minimum top (below header + top padding)
+  const maxTop = windowHeight - tooltipHeight - paddingBottom; // Maximum top (above bottom + bottom padding)
+
+  // Ensure the tooltip stays within the vertical boundaries while trying to center on the link
+  if (top < minTop) {
+    top = minTop; // Adjust to minimum if it would overlap the header
+  } else if (top > maxTop) {
+    top = maxTop; // Adjust to maximum if it would go below the bottom boundary
+  }
+
+  $ct.css({ 
+    position: "fixed",
+    "font-size": "0.90em",
+    top: `${top}px`,
+    left: `${left}px`,
+    "z-index": 100 // Ensure tooltip appears above other elements
+  });
+};
+
+// Function to show the tooltip
+const showTip = (e, $t) => {
+  if ($t.parent().hasClass("selflink")) return; // Exit if the link is a self-link
+
+  // Get the title from data-tt or the title attribute
+  const title = $t.data("tt") || $t.attr("title");
+  if (!title) return; // Exit if there’s no title
+
+  $t.removeAttr("title"); // Remove the title attribute from the link
+  // Form the URL to load the tooltip content
+  const url = `/ru/index.php?title=${encodeURIComponent(decodeURIComponent(title))}&action=render div[class*="tooltip"]`;
+
+  hideTip(); // Hide the previous tooltip
+  activeHoverLink = $t; // Set the current active link
+
+  if (tipCache[url]) { // If the content is in the cache
+    $tfb.html(tipCache[url]); // Use the cached content
+    $tfb.find(".tooltipright").removeClass("tooltipright"); // Remove tooltipright class
+    $tfb.removeClass("hidden").addClass("tooltip-ready").css("visibility", "visible");
+    moveTip(e); // Position the tooltip
+  } else { // If not in cache, load it
+    $tfb.load(url, () => { // Asynchronous content loading
+      if ($t !== activeHoverLink) return; // Check if the link is still active
+      $tfb.find(".tooltip").show();
+      $tfb.find(".tooltipright").removeClass("tooltipright"); // Remove tooltipright class after loading
+      tipCache[url] = $tfb.html(); // Cache the loaded content
+      $tfb.removeClass("hidden").addClass("tooltip-ready").css("visibility", "visible");
+      moveTip(e); // Position the tooltip
     });
   }
-}
+};
 
-function bindTT() {
-  $t=$(this);
-  $p=$t.parent();
-  if ($p.hasClass("selflink") == false) {
-    $t.data("tt", $p.attr("title").replace(" (page does not exist)","").replace("?","%3F")).hover(showTip,hideTip).mousemove(moveTip);
+// Function to bind events to elements
+const bindTT = $t => {
+  const title = $t.attr("title"); // Get the title from the element
+  if (title && !$t.parent().hasClass("selflink")) { // If there’s a title and it’s not a self-link
+    // Save the cleaned title in data-tt
+    $t.data("tt", title.replace(" (page does not exist)", "").replace("?", "%3F"));
+    // Bind event handlers
+    $t.hover(e => showTip(e, $t), hideTip) // Mouse hover and leave
+      .mousemove(moveTip); // Mouse movement
   }
-}
+};
 
-// check to see if it is active then do it
-function ttMouseOver() {
-  if (tooltipsOn) {
-    $("#content").append('<div id="tfb" class="htt"></div>');
-    $tfb = $("#tfb");
-    $("#content .ajaxttlink").each(bindTT);
-  }
-}
-
-$(ttMouseOver);
+// Initialization on page load
+$(() => {
+  if (!tooltipsOn) return; // Exit if tooltips are disabled
+  
+  // Add the tooltip container to #content
+  $("#content").append('<div id="tfb" class="htt hidden"></div>');
+  $tfb = $("#tfb"); // Store the container reference
+  
+  // Bind handlers to all links within #content
+  $("#content a").each((_, el) => bindTT($(el)));
+});
+// END TOOLTIP
 
 /**
  * demarcateDialogue
@@ -200,7 +251,6 @@ $(ttMouseOver);
         });
     }
 }) (window, document);
-
 
 /**
  * Simple craft calculator

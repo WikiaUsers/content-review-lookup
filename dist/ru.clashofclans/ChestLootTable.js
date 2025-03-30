@@ -30,6 +30,12 @@ $(document).ready(function(){
 		'<button id="enableSkinsAQ" class="enableSkins">Select All</button>'+
 		'<button id="disableSkinsAQ" class="disableSkins">Unselect All</button><br>'+
 		'</div></td>'+
+        /* Reserved for future appearance of Minion Prince skins
+		'<td><div id="heroSkinListMP" style="border: 1px solid;">'+
+		'<b>Minion Prince Skins:</b><br>'+
+		'<button id="enableSkinsMP" class="enableSkins">Select All</button>'+
+		'<button id="disableSkinsMP" class="disableSkins">Unselect All</button><br>'+
+		'</div></td>'+ */
 		'<td><div id="heroSkinListGW" style="border: 1px solid;">'+
 		'<b>Grand Warden Skins:</b><br>'+
 		'<button id="enableSkinsGW" class="enableSkins">Select All</button>'+
@@ -40,6 +46,20 @@ $(document).ready(function(){
 		'<button id="enableSkinsRC" class="enableSkins">Select All</button>'+
 		'<button id="disableSkinsRC" class="disableSkins">Unselect All</button><br>'+
 		'</div></td>'+
+		'</tr>'+
+		'<tr style="vertical-align:top;">'+
+		'<td><div id="heroSkinListBM" style="border: 1px solid;">'+
+		'<b>Battle Machine Skins:</b><br>'+
+		'<button id="enableSkinsBM" class="enableSkins">Select All</button>'+
+		'<button id="disableSkinsBM" class="disableSkins">Unselect All</button><br>'+
+		'</div></td>'+
+        /* Reserved for future appearance of Battle Copter skins
+		'<td><div id="heroSkinListBC" style="border: 1px solid;">'+
+		'<b>Battle Copter Skins:</b><br>'+
+		'<button id="enableSkinsBC" class="enableSkins">Select All</button>'+
+		'<button id="disableSkinsBC" class="disableSkins">Unselect All</button><br>'+
+		'</div></td>'+ */
+		'</tr>'+
 		'</table>'+
 		'</div></div>'+
 		'<div id="equipHolder" style="display:none;"><span id="equipToggle"><u>Show Hero Equipment Checklist</u></span><div id="equipList" style="border: 1px solid; width: 40%; display:none;">'+
@@ -52,30 +72,31 @@ $(document).ready(function(){
 		'<table class="lootTable wikitable" id="lootTableRare"></table>'+
 		'<table class="lootTable wikitable" id="lootTableEpic"></table>'+
 		'<table class="lootTable wikitable" id="lootTableLegendary"></table>');
-	var maxTHLevel = 16;
+	var maxTHLevel = 17;
     var maxBHLevel = 10;
     // Create a list of available decorations
-    var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue"];
+    var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue","Goblin Dragon Statue","Sour Elixir Cauldron","World Finals 23 Statue","Cozy Clam","Hog Pen","Duck Bath","Gingerbread Bakery","Jingle Bell"];
     // Similar for houses
     var housesList = ["Brown Tent Roof", "Red Tent Roof", "Yellow Tent Roof", "Blue Tent Roof", "Blue Cross Roof", "Green Cross Roof", "Red Cross Roof", "Orange Castle Roof", "Blue Castle Roof", "Black Castle Roof", "Red Castle Roof", "Yellow Castle Roof", "Red Pagoda Roof", "Blue Pagoda Roof", "Black Pagoda Roof", "Green Pagoda Roof", "White Pagoda Roof", "Stone Roof", "Grass Roof (Type 1)", "Grass Roof (Type 2)", "White Windmill Roof", "Blue Windmill Roof", "Orange Windmill Roof", "Red Windmill Roof", "Green Windmill Roof", "Winter Roof", "Igloo Roof", "Gingerbread Roof",
     "Dark Stone Walls", "Stilt Walls", "Grass Walls", "Winter Walls", "Igloo Walls", "Gingerbread Walls",
     "Checkered Floor", "Grass Floor", "White Fence Floor", "Gold Floor", "Snow Floor", "Gingerbread Floor",
     "Tree Decoration", "Flamingo Decoration", "Stone Decoration", "Snowman Decoration", "Candy Cane Decoration", "Gingerbread Decoration"];
     // Create a list of available equipment
-    // This is split into four different pools for each Hero,
+    // This is split into different pools for each Hero,
     // which is needed to individually show/hide options
     var equipmentList = {
     	"BK": ["Giant Gauntlet", "Spiky Ball"],
-        "AQ": ["Frozen Arrow"],
-        "GW": ["Fireball"],
-        "RC": ["Rocket Spear"],
+        "AQ": ["Frozen Arrow", "Magic Mirror"],
+        "GW": ["Fireball", "Lavaloon Puppet"],
+        "RC": ["Rocket Spear", "Electro Boots"],
     };
     // Do the same for hero skins
     var heroSkinList = {
-    	"BK": ["Gladiator King", "P.E.K.K.A King", "Skeleton King", "Jolly King", "Primal King", "Clockwork King", "Party King", "Pirate King", "Rogue King", "Jungle King", "Golem King", "Shadow King", "Clash Fest King", "Beast King", "Dark Ages King"],
-        "AQ": ["Gladiator Queen", "Valkyrie Queen", "Autumn Queen", "Ice Queen", "Primal Queen", "Clockwork Queen", "Pirate Queen", "Rogue Queen", "Jungle Queen", "Party Queen", "Shadow Queen", "Miner Queen", "Summer Queen", "Spooky Queen", "Jolly Queen", "Goblin Queen"],
-        "GW": ["Party Warden", "Primal Warden", "Clockwork Warden", "Gladiator Warden", "Pirate Warden", "Warden of the North", "Jungle Warden", "Warden Master", "Jolly Warden", "Warrior Warden", "Summer Warden", "Dark Ages Warden", "Future Warden"],
-        "RC": ["Winter Champion", "Rogue Champion", "Gladiator Champion", "Shadow Champion", "Party Champion", "Pirate Champion", "Warrior Champion"]
+    	"BK": ["Gladiator King", "P.E.K.K.A King", "Skeleton King", "Jolly King", "Primal King", "Clockwork King", "Party King", "Pirate King", "Rogue King", "Jungle King", "Golem King", "Shadow King", "Clash Fest King", "Beast King", "Dark Ages King", "Goblin King", "King of the North"],
+        "AQ": ["Gladiator Queen", "Valkyrie Queen", "Autumn Queen", "Ice Queen", "Primal Queen", "Clockwork Queen", "Pirate Queen", "Rogue Queen", "Jungle Queen", "Party Queen", "Shadow Queen", "Miner Queen", "Summer Queen", "Spooky Queen", "Jolly Queen", "Goblin Queen", "Chess Queen"],
+        "GW": ["Party Warden", "Primal Warden", "Clockwork Warden", "Gladiator Warden", "Pirate Warden", "Warden of the North", "Jungle Warden", "Warden Master", "Jolly Warden", "Warrior Warden", "Summer Warden", "Dark Ages Warden", "Future Warden", "Gingerbread Warden"],
+        "RC": ["Winter Champion", "Rogue Champion", "Gladiator Champion", "Shadow Champion", "Party Champion", "Pirate Champion", "Warrior Champion", "Ghost Champion", "Champions' Champion"],
+        "BM": ["Armored Machine"]
     };
     // Add booleans for the status of checklist toggles (used for flavor text)
     var decoToggled = false;
@@ -102,7 +123,7 @@ $(document).ready(function(){
         "Study Soup": 0,
         "Power Pancakes": 0,
         "Mighty Morsel": 7,
-        "Training Treat": 0,
+    //    "Training Treat": 0, Will be removed soon
         "Clan Castle Cake": 4,
     };
    	// A dictionary of possible loot ranges. Each is an object containing two arrays
@@ -119,11 +140,12 @@ $(document).ready(function(){
             "325,000-650,000", 		// TH9
             "400,000-800,000", 		// TH10
             "450,000-900,000", 		// TH11
-            "475,000-950,000", 		// TH12
-            "500,000-1,000,000", 	// TH13
-            "500,000-1,000,000", 	// TH14
-            "500,000-1,000,000", 	// TH15
-            "500,000-1,000,000"], 	// TH16
+            "500,000-950,000", 		// TH12
+            "550,000-1,000,000", 	// TH13
+            "600,000-1,050,000", 	// TH14
+            "650,000-1,100,000", 	// TH15
+            "700,000-1,150,000",    // TH16
+            "750,000-1,200,000"],   // TH17
         		"Rare": [0,
             "4,000-8,000",			// TH1
             "6,000-12,000",			// TH2
@@ -136,11 +158,12 @@ $(document).ready(function(){
             "650,000-1,300,000",	// TH9
             "800,000-1,600,000",	// TH10
             "900,000-1,800,000",	// TH11
-            "950,000-1,900,000",	// TH12
-            "1,000,000-2,000,000",	// TH13
-            "1,000,000-2,000,000",	// TH14
-            "1,000,000-2,000,000",	// TH15
-            "1,000,000-2,000,000"]},// TH16
+            "1,000,000-1,900,000",	// TH12
+            "1,100,000-2,000,000",	// TH13
+            "1,200,000-2,100,000",	// TH14
+            "1,300,000-2,200,000",	// TH15
+            "1,400,000-2,300,000",  // TH16
+            "1,500,000-2,400,000"]},// TH17
     	"Elixir": {"Common": [0,
         	"2,000-4,000", 			// TH1
         	"3,000-6,000", 			// TH2
@@ -153,11 +176,12 @@ $(document).ready(function(){
             "325,000-650,000", 		// TH9
             "400,000-800,000", 		// TH10
             "450,000-900,000", 		// TH11
-            "475,000-950,000", 		// TH12
-            "500,000-1,000,000", 	// TH13
-            "500,000-1,000,000", 	// TH14
-            "500,000-1,000,000", 	// TH15
-            "500,000-1,000,000"], 	// TH16
+            "500,000-950,000", 		// TH12
+            "550,000-1,000,000", 	// TH13
+            "600,000-1,050,000", 	// TH14
+            "650,000-1,100,000", 	// TH15
+            "700,000-1,150,000",    // TH16
+            "750,000-1,200,000"],   // TH17
         		"Rare": [0,
             "4,000-8,000",			// TH1
             "6,000-12,000",			// TH2
@@ -170,33 +194,36 @@ $(document).ready(function(){
             "650,000-1,300,000",	// TH9
             "800,000-1,600,000",	// TH10
             "900,000-1,800,000",	// TH11
-            "950,000-1,900,000",	// TH12
-            "1,000,000-2,000,000",	// TH13
-            "1,000,000-2,000,000",	// TH14
-            "1,000,000-2,000,000",	// TH15
-            "1,000,000-2,000,000"]},// TH16
+            "1,000,000-1,900,000",	// TH12
+            "1,100,000-2,000,000",	// TH13
+            "1,200,000-2,100,000",	// TH14
+            "1,300,000-2,200,000",	// TH15
+            "1,400,000-2,300,000",  // TH16
+            "1,500,000-2,400,000"]},// TH17
          "Dark Elixir": {"Common": [0,0,0,0,0,0,0,
          	"1,200-2,000", 		// TH7
             "2,400-4,000",		// TH8
             "4,200-7,000",		// TH9
             "6,000-10,000",		// TH10
             "6,750-11,250",		// TH11
-            "7,125-11,875",		// TH12
-            "7,500-12,500",		// TH13
-            "7,500-12,500",		// TH14
-            "7,500-12,500",		// TH15
-            "7,500-12,500"], 	// TH16
+            "7,250-11,875",		// TH12
+            "7,750-12,500",		// TH13
+            "8,250-13,000",		// TH14
+            "8,750-13,500",		// TH15
+            "9,000-13,750",		// TH16
+            "9,250-14,000"], 	// TH17
             	"Rare": [0,0,0,0,0,0,0,
             "2,400-4,000",		// TH7
             "4,800-8,000",		// TH8
             "8,400-14,000",		// TH9
             "12,000-20,000",	// TH10
             "13,500-22,500",	// TH11
-            "14,250-23,750",	// TH12
-            "15,000-25,000",	// TH13
-            "15,000-25,000",	// TH14
-            "15,000-25,000",	// TH15
-            "15,000-25,000"]},	// TH16
+            "14,500-23,750",	// TH12
+            "15,500-25,000",	// TH13
+            "16,500-26,000",	// TH14
+            "17,500-27,000",	// TH15
+            "18,000-27,500",	// TH16
+            "18,500-28,000"]},	// TH17
        	"Builder Gold": {"Common": [0,
          	"17,500-25,000",		// BH1
             "17,500-25,000",		// BH2
@@ -243,64 +270,70 @@ $(document).ready(function(){
             "750,000-1,250,000"]},	// BH10
        	"Shiny Ore": {"Rare": [0,0,0,0,0,0,0,0,
         	"300-400", 		// TH8
-            "350-500",		// TH9
+        	"300-400", 		// TH9
             "350-500",		// TH10
-            "400-600",		// TH11
+            "350-500",		// TH11
             "400-600",		// TH12
-            "450-700",		// TH13
+            "400-600",		// TH13
             "450-700",		// TH14
-            "500-750",		// TH15
-            "500-750"],		// TH16
+            "450-700",		// TH15
+            "500-750",		// TH16
+			"500-750"],		// TH17
             	"Epic": [0,0,0,0,0,0,0,0,
             "900-1,300",	// TH8
-            "1,050-1,600",	// TH9
+            "900-1,300",	// TH9
             "1,050-1,600",	// TH10
-            "1,200-1,900",	// TH11
+            "1,050-1,600",	// TH11
             "1,200-1,900",	// TH12
-            "1,350-2,200",	// TH13
+            "1,200-1,900",	// TH13
             "1,350-2,200",	// TH14
-            "1,500-2,500",	// TH15
-            "1,500-2,500"]},// TH16
+            "1,350-2,200",	// TH15
+            "1,500-2,500",	// TH16
+            "1,500-2,500"]},// TH17
         "Glowy Ore": {"Rare": [0,0,0,0,0,0,0,0,
         	"30-40",		// TH8
-            "35-50",		// TH9
+        	"30-40",		// TH9
             "35-50",		// TH10
-            "40-60",		// TH11
+            "35-50",		// TH11
             "40-60",		// TH12
-            "45-70",		// TH13
+            "40-60",		// TH13
             "45-70",		// TH14
-            "50-75",		// TH15
-            "50-75"],		// TH16
+            "45-70",		// TH15
+            "50-75",		// TH16
+            "50-75"],		// TH17
             	"Epic": [0,0,0,0,0,0,0,0,
             "90-130",		// TH8
-            "105-160",		// TH9
+            "90-130",		// TH9
             "105-160",		// TH10
-            "120-190",		// TH11
+            "105-160",		// TH11
             "120-190",		// TH12
-            "135-220",		// TH13
+            "120-190",		// TH13
             "135-220",		// TH14
-            "150-250",		// TH15
-            "150-250"]},	// TH16
+            "135-220",		// TH15
+            "150-250",		// TH16
+            "150-250"]},	// TH17
         "Starry Ore": {"Rare": [0,0,0,0,0,0,0,0,
         	"2-3",			// TH8
-            "3-4",			// TH9
+        	"2-3",			// TH9
             "3-4",			// TH10
-            "4-5",			// TH11
+            "3-4",			// TH11
             "4-5",			// TH12
-            "5-6",			// TH13
+            "4-5",			// TH13
             "5-6",			// TH14
-            "6-7",			// TH15
-            "6-7"],			// TH16
+            "5-6",			// TH15
+            "6-7",			// TH16
+            "6-7"],			// TH17
             	"Epic": [0,0,0,0,0,0,0,0,
             "17-27",		// TH8
-            "19-29",		// TH9
+            "17-27",		// TH9
             "19-29",		// TH10
-            "21-31",		// TH11
+            "19-29",		// TH11
             "21-31",		// TH12
-            "23-33",		// TH13
+            "21-31",		// TH13
             "23-33",		// TH14
-            "25-35",		// TH15
-            "25-35"]},		// TH16
+            "23-33",		// TH15
+            "25-35",		// TH16
+            "25-35"]},		// TH17
     };
     function resetDictionary(){
     	// Each dictionary contains sub-dictionaries.
@@ -322,7 +355,7 @@ $(document).ready(function(){
             "Shiny Ore": {weight: 6, TH: 8, BH: 0, isResource: true},
             "Glowy Ore": {weight: 6, TH: 8, BH: 0, isResource: true},
             "Starry Ore": {weight: 6, TH: 8, BH: 0, isResource: true},
-            "Training Potion": {weight: 6, TH: 1, BH: 0, isResource: false},
+        //    "Training Potion": {weight: 6, TH: 1, BH: 0, isResource: false}, Will be removed soon
             "Resource Potion": {weight: 6, TH: 1, BH: 0, isResource: false},
             "Power Potion": {weight: 6, TH: 3, BH: 0, isResource: false},
             "Research Potion": {weight: 6, TH: 3, BH: 0, isResource: false},
@@ -642,14 +675,20 @@ $(document).ready(function(){
     	return {
         	"BK": countHeroSkins("BK"),
             "AQ": countHeroSkins("AQ"),
+            // "MP": countHeroSkins("MP"), Reserved
             "GW": countHeroSkins("GW"),
             "RC": countHeroSkins("RC"),
+            "BM": countHeroSkins("BM"),
+           	// "BC": countHeroSkins("BC"), Reserved
             countHeroes: function() {
             	var heroCount = 0;
             	heroCount += (this.BK > 0);
                 heroCount += (this.AQ > 0);
+                // heroCount += (this.MP > 0); Reserved
                 heroCount += (this.GW > 0);
                 heroCount += (this.RC > 0);
+                heroCount += (this.BM > 0);
+                // heroCount += (this.BC > 0); Reserved
                 return heroCount;
             }
         };
@@ -658,7 +697,7 @@ $(document).ready(function(){
     	var condProb = (weight * 10000) / ttlWeight / 100; // Avoid potential rounding errors and write as a percentage
         var totalProb = condProb * chestChances[table] / 100;
         var objHeroSkin = objHeroSkins();
-        var heroesList = ["BK","AQ","GW","RC"];
+        var heroesList = ["BK","AQ","GW","RC","BM"];
         $("table#lootTable" + table).append("<tr id=\"heroSkinParent\">"+
         "<td><u>" + itemName + "</u></td>"+
         "<td>" + writeNumber(condProb) + "%</td>" +
@@ -683,11 +722,20 @@ $(document).ready(function(){
             case "AQ":
             	heroFullName = "Archer Queen";
                 break;
+            case "MP":	// Should be unused for now, but reserved
+            	heroFullName = "Minion Prince";
+                break;
             case "GW":
             	heroFullName = "Grand Warden";
                 break;
             case "RC":
             	heroFullName = "Royal Champion";
+                break;
+            case "BM":
+            	heroFullName = "Battle Machine";
+                break;
+            case "BC":	// Should be unused for now, but reserved
+            	heroFullName = "Battle Copter";
                 break;
             default:
             	heroFullName = "???";
@@ -774,6 +822,7 @@ $(document).ready(function(){
     $("span#chestLootTableInput").on("change","select#THLevel",function(){
     	// Hide the BH toggle if less than 4 (and init its value to 0)
        	var THL = $("select#THLevel").val();
+        var BHL = $("select#BHLevel").val();
         var BHSel = $("div#BHSel");
         if (THL < 4) {
             BHSel.hide();
@@ -781,34 +830,48 @@ $(document).ready(function(){
         } else {
         	BHSel.show();
         }
-        // Hide the house toggle if less than 6
+        // Clan House toggle: hidden if TH is less than 6
         if (THL < 6) {
         	$("div#houseHolder").hide();
         } else {
         	$("div#houseHolder").show();
         }
-        // Hide Hero Skin toggle if less than 7
-        if (THL < 7) {
+        // Hero Skin toggle: hidden if TH is less than 7 and BH is less than 5
+        // Also hide if TH is less than 4, as BB cannot be unlocked at this point
+        if ((THL < 7 && BHL < 5) || THL < 4) {
         	$("div#heroSkinHolder").hide();
-            $("span.itemBK").each(disableCheckBox);
         } else {
         	$("div#heroSkinHolder").show();
-            $("span.itemBK").each(enableCheckBox);
         }
-        // Hide the equipment toggle if less than 8
+        // Hero Equipment toggle: hidden if TH is less than 8
         if (THL < 8) {
         	$("div#equipHolder").hide();
         } else {
         	$("div#equipHolder").show();
         }
         // Show and hide hero checkboxes as appropriate
-        if (THL < 9) {
+        if (THL < 7) {
+        	$("span.itemBK").each(disableCheckBox);
+            $("div#heroSkinListBK").hide();
+        } else {
+        	$("span.itemBK").each(enableCheckBox);
+            $("div#heroSkinListBK").show();
+        }
+        if (THL < 8) {
         	$("span.itemAQ").each(disableCheckBox);
             $("div#heroSkinListAQ").hide();
         } else {
         	$("span.itemAQ").each(enableCheckBox);
             $("div#heroSkinListAQ").show();
         }
+        /* Reserved for Minion Prince
+        if (THL < 9) {
+        	$("span.itemMP").each(disableCheckBox);
+            $("div#heroSkinListMP").hide();
+        } else {
+        	$("span.itemMP").each(enableCheckBox);
+            $("div#heroSkinListMP").show();
+        } */
         if (THL < 11) {
         	$("span.itemGW").each(disableCheckBox);
             $("div#heroSkinListGW").hide();
@@ -823,6 +886,49 @@ $(document).ready(function(){
         	$("span.itemRC").each(enableCheckBox);
             $("div#heroSkinListRC").show();
         }
+        // We need to duplicate these checks to disable Builder Base skins on the first use
+        if (BHL < 5) {
+        	$("span.itemBM").each(disableCheckBox);
+            $("div#heroSkinListBM").hide();
+        } else {
+        	$("span.itemBM").each(enableCheckBox);
+            $("div#heroSkinListBM").show();
+        }
+        /* Reserved for Battle Copter
+        if (BHL < 8) {
+        	$("span.itemBC").each(disableCheckBox);
+            $("div#heroSkinListBC").hide();
+        } else {
+        	$("span.itemBC").each(enableCheckBox);
+            $("div#heroSkinListBC").show();
+        } */
+    });
+    $("span#chestLootTableInput").on("change","select#BHLevel",function(){
+    	// Hide the BH toggle if less than 4 (and init its value to 0)
+       	var THL = $("select#THLevel").val();
+        var BHL = $("select#BHLevel").val();
+        // Hero Skin toggle: hidden if TH is less than 7 and BH is less than 5
+        // Also hide if TH is less than 4, as BB cannot be unlocked at this point
+        if ((THL < 7 && BHL < 5) || THL < 4) {
+        	$("div#heroSkinHolder").hide();
+        } else {
+        	$("div#heroSkinHolder").show();
+        }
+        if (BHL < 5) {
+        	$("span.itemBM").each(disableCheckBox);
+            $("div#heroSkinListBM").hide();
+        } else {
+        	$("span.itemBM").each(enableCheckBox);
+            $("div#heroSkinListBM").show();
+        }
+        /* Reserved for Battle Copter
+        if (BHL < 8) {
+        	$("span.itemBC").each(disableCheckBox);
+            $("div#heroSkinListBC").hide();
+        } else {
+        	$("span.itemBC").each(enableCheckBox);
+            $("div#heroSkinListBC").show();
+        } */
     });
     $("span#chestLootTableInput").on("click","button#makeOutput",function(){
     	// $("span.lootTableHeader").show();				Deprecated
@@ -857,6 +963,13 @@ $(document).ready(function(){
             	dictKey.weight = 0;
             }
         });
+        // Handle the Hero Skins weight specially by checking them against TH and BH level
+        if (THL >= 7 || BHL >= 5) {
+        	dictWeightsLegendary["Hero Skins"].weight = 40;
+        } else {
+        	dictWeightsLegendary["Hero Skins"].weight = 0;
+        }
+        // Set weights to zero if there are no available items
         if (countDecos() == 0) {
         	dictWeightsEpic["Decorations"].weight = 0;
         }

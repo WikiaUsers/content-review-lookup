@@ -36,10 +36,22 @@ $(function () {
 !function( $, mw ) {
     var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );
  
-    if ( a.indexOf( 'Rain World: Downpour' ) !== -1 || p.indexOf('Klen\'s flame') != -1) {
+    if ( a.indexOf( 'Rain World: Downpour' ) !== -1) {
         importArticle({
             type: 'style',
             article: 'MediaWiki:Downpour.css'
+        });
+    }
+}( jQuery, mediaWiki );
+
+//Добавление стилей для категории "Watcher"
+!function( $, mw ) {
+    var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );
+ 
+    if ( a.indexOf( 'Rain World: The Watcher' ) !== -1 || p.indexOf('Klen\'s flame') != -1) {
+        importArticle({
+            type: 'style',
+            article: 'MediaWiki:Watcher.css'
         });
     }
 }( jQuery, mediaWiki );
@@ -56,16 +68,6 @@ $(function () {
         });
     }
 }( jQuery, mediaWiki );
-
-//Починка ссылок
-$(function() {
-	const elems = document.querySelectorAll("a[href^='http://rainworld.fandom.com/wiki/']");
-	if (elems.length > 0) {
-		elems.forEach(function(elem) {
-			elem.href = elem.href.replace(/rainworld\.fandom\.com/, 'rainworld.miraheze.org');
-		});
-	}
-});
 
 //Отображение/скрытие элементов
 $(".button-toggle").click(function () {

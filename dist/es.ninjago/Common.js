@@ -1,3 +1,4 @@
+
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
 importArticles({

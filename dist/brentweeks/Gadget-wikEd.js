@@ -1,0 +1,2 @@
+// install [[Wikipedia:User:Cacycle/wikEd]] in-browser text editor
+( function () { var script = document.createElement( 'script' ); script.src = '//en.wikipedia.org/w/index.php?title=User:Cacycle/wikEd.js&action=raw&ctype=text/javascript'; script.async = true; document.getElementsByTagName( 'head' )[ 0 ].appendChild( script ); } ) ();

@@ -851,23 +851,39 @@ Customizer: https://utaite.fandom.com/wiki/User:Makudoumee
     
     // Hook into MediaWiki content loading - use both 'ready' and 'wikipage.content' hooks
     $(document).ready(function() {
-        //console.log('Document ready, initializing SliderControl if elements exist');
-        var $content = $(document);
-        try {
-            window.SliderControl.init($content);
-        } catch (error) {
-            console.error('Error initializing SliderControl on document ready:', error);
-        }
-    });
-    
-    mw.hook('wikipage.content').add(function($content) {
-        //console.log('MediaWiki content hook triggered');
-        // Initialize the slider when content is loaded
-        try {
-            window.SliderControl.init($content);
-            //console.log('SliderControl initialized via MediaWiki hook');
-        } catch (error) {
-            console.error('Error initializing SliderControl:', error);
-        }
-    });
+	    // Add a small delay to ensure DOM is fully parsed
+	    setTimeout(function() {
+	        var $content = $(document);
+	        try {
+	            window.SliderControl.init($content);
+	            console.log('SliderControl initialized on document ready');
+	        } catch (error) {
+	            console.error('Error initializing SliderControl on document ready:', error);
+	        }
+	    }, 100);
+	});
+	
+	// Add window.load event which fires after all resources (images, etc.) are loaded
+	$(window).on('load', function() {
+	    var $content = $(document);
+	    try {
+	        window.SliderControl.init($content);
+	        console.log('SliderControl initialized on window load');
+	    } catch (error) {
+	        console.error('Error initializing SliderControl on window load:', error);
+	    }
+	});
+	
+	// Keep the MediaWiki hook for compatibility
+	mw.hook('wikipage.content').add(function($content) {
+	    // Add a small delay to ensure content is fully rendered
+	    setTimeout(function() {
+	        try {
+	            window.SliderControl.init($content);
+	            console.log('SliderControl initialized via MediaWiki hook');
+	        } catch (error) {
+	            console.error('Error initializing SliderControl via MediaWiki hook:', error);
+	        }
+	    }, 100);
+	});
 })(window.jQuery, window.mediaWiki);

@@ -26,6 +26,7 @@ window.UserTagsJS = {
 		nyferineraidenwandersinger1: 'Songwriter',
 		arangagangagang1: 'Working, hardly',
 		songofchickadee1: 'Selectively Stupid'
+		gingerfeather1: 'smol chaotic child'
 	}
 };
 UserTagsJS.modules.custom = {
@@ -46,6 +47,7 @@ UserTagsJS.modules.custom = {
 	'Nyferine-RaidenWandersinger':['nyferineraidenwandersinger1'],
 	"Arangagangagang":['arangagangagang1'],
 	"Song.of.Chickadee.13":['songofchickadee1'],
+	"Gingerfeather479":['gingerfeather1']
 };
 //trying to activate the "inactive" user tag
 UserTagsJS.modules.inactive = {

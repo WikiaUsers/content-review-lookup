@@ -94,6 +94,7 @@ UserTagsJS.modules.custom = {
 	'CookieDogAJ': ['Guide-Maker'],
 	'PorlaiWasTaken': ['Guide-Maker'],
 	'Piteous': ['Guide-Maker'],
+	'BungoJungo': ['Guide-Maker'],
 };
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

@@ -21,51 +21,49 @@
 					break;
 				case 'number' || 'string':
 					sett = [(sett=='max' ? 50 : sett), {u:2, f:6, p:4, mw:8, t:10, c:14, m:828}];
-					break;re
+					break;
 				case 'object':
 					if (!Array.isArray(sett)) {
 						sett = [50, sett];
 					}
 					break;
 			}
-			mw.util.addCSS(
-				'.search-app__suggestions-box {'+
-					'resize: vertical;'+
-					'overflow: hidden auto;'+
-					'margin-top: 6px;'+
-					'border-top-width: 1px;'+
-					'max-height: 80vh}'+
-				'textarea.search-app__input {'+
-					'resize: none;'+
-					'padding-top: 7px;'+
-					'white-space: nowrap;'+
-					'scrollbar-width: thin;'+
-					'overflow: auto hidden;'+
-				'}'+
-				'#community-navigation textarea {'+
-					'border: 1px solid var(--fandom-communitybar-search-color);'+
-				'}'+
-				'.search-app__suggestions-list > li > a {'+
-					'white-space: preserve;'+
-					'display: block !important;'+
-				'}'+
-				'.search-app__button-clear {'+
-					'position: absolute;'+
-					'right: 0;'+
-					'top: 2px;'+
-					'font-size: 20px;'+
-					'width: 10px;'+
-					'height: 10px;'+
-				'}'+
-				'.search-app__suggestions-box:not(:has(>:is(li, p))),'+
-				'#global-top-navigation:has(+#community-navigation.is-visible) .search-container,'+
-				'#community-navigation:not(.is-visible) .search-container'+
-					'{display: none;}'+
-				'#community-navigation .search-clear-button {'+
-					'color: var(--fandom-communitybar-search-color);'+
-					'padding: 8px; '+
-				'}'
-			);
+			mw.util.addCSS(`
+				.search-app__suggestions-box {
+					resize: vertical;
+					overflow: hidden auto;
+					margin-top: 6px;
+					border-top-width: 1px;
+					max-height: 80vh}
+				textarea.search-app__input {
+					resize: none;
+					padding-top: 7px;
+					white-space: nowrap;
+					scrollbar-width: thin;
+					overflow: auto hidden;
+				}
+				#community-navigation textarea { border: 1px solid var(--fandom-communitybar-search-color); }
+				.search-app__suggestions-list > li > a {
+					white-space: preserve;
+					display: block !important;
+				}
+				.search-app__button-clear {
+					position: absolute;
+					right: 0;
+					top: 2px;
+					font-size: 20px;
+					width: 10px;
+					height: 10px;
+				}
+				.search-app__suggestions-box:not(:has(>:is(li, p))),
+				#global-top-navigation:has(+#community-navigation.is-visible) .search-container,
+				#community-navigation:not(.is-visible) .search-container
+					{display: none;}
+				#community-navigation .search-clear-button {
+					color: var(--fandom-communitybar-search-color);
+					padding: 8px; 
+				}
+			`);
 			
 			// Disable default search
 			$('.search-app__wrapper input').replaceWith(document.querySelector('.search-app__wrapper input').outerHTML.replace(/^<input/, '<textarea')+'</textarea>');
@@ -275,33 +273,33 @@
 		
 		// Allow resizing the search bar to the left
 		resizeSearch: function() {
-			mw.util.addCSS(
-				'.fandom-community-header__local-navigation .wds-tabs { display: flex; }'+
-				'.search-container .search-app__icon-search { left: 12px; top: 10px; }'+
-				'.search-container { width: unset; max-width: unset !important; min-width: 0 !important; > .search-app__wrapper {margin-left: 26px; padding: 0; transition-duration: 0s !important;} }'+
-				'@media only screen and (max-width: 1023px) {'+
-					'.fandom-sticky-header .search-container .search-app__wrapper:not(.search-app--expanded) {width:0 !important; overflow: hidden;}'+
-					'.fandom-sticky-header .search-container .search-app__wrapper.search-app--expanded {position: fixed; top: 100%; textarea {border-radius: 0; border-top: 0; margin: 0;} }'+
-				'}'+
-				'.search-resizer {'+
-					'width: 20px;'+
-					'height: 24px;'+
-					'background: transparent;'+
-					'position: absolute;'+
-					'left: -20px;'+
-					'bottom: calc(50% - 12.5px);'+
-					'cursor: e-resize;'+
-					'user-select: none;'+
-					'border: 1px solid;'+
-					'border-right: 0;'+
-					'border-radius: 30% 0 0 30%;'+
-					'padding-left: 1px;'+
-					'text-align: center;'+
-					'> svg {transform: rotate(90deg);}'+
-				'}'+
-				'.global-top-navigation .search-resizer { color: var(--fandom-search-color); border-color:var(--fandom-search-color); }'+
-				'.fandom-sticky-header .search-resizer { color: var(--theme-sticky-nav-text-color); border-color: var(--fandom-communitybar-search-color); background: var(--theme-sticky-nav-background-color); }'
-			);
+			mw.util.addCSS(`
+				.fandom-community-header__local-navigation .wds-tabs { display: flex; }
+				.search-container .search-app__icon-search { left: 12px; top: 10px; }
+				.search-container { width: unset; max-width: unset !important; min-width: 0 !important; > .search-app__wrapper {margin-left: 26px; padding: 0; transition-duration: 0s !important;} }
+				@media only screen and (max-width: 1023px) {
+					.fandom-sticky-header .search-container .search-app__wrapper:not(.search-app--expanded) {width:0 !important; overflow: hidden;}
+					.fandom-sticky-header .search-container .search-app__wrapper.search-app--expanded {position: fixed; top: 100%; textarea {border-radius: 0; border-top: 0; margin: 0;} }
+				}
+				.search-resizer {
+					width: 20px;
+					height: 24px;
+					background: transparent;
+					position: absolute;
+					left: -20px;
+					bottom: calc(50% - 12.5px);
+					cursor: e-resize;
+					user-select: none;
+					border: 1px solid;
+					border-right: 0;
+					border-radius: 30% 0 0 30%;
+					padding-left: 1px;
+					text-align: center;
+					> svg {transform: rotate(90deg);}
+				}
+				.global-top-navigation .search-resizer { color: var(--fandom-search-color); border-color:var(--fandom-search-color); }
+				.fandom-sticky-header .search-resizer { color: var(--theme-sticky-nav-text-color); border-color: var(--fandom-communitybar-search-color); background: var(--theme-sticky-nav-background-color); }
+			`);
 			$('.search-app__wrapper').append('<div class="search-resizer"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></div>');
 			var resizer = $('.search-container .search-resizer'),
 				resizable, startX, startWidth;
@@ -339,16 +337,16 @@
 		// Customization of sticky nav tools
 		customizeTools: function() {
 			var sett = window.dev.betterTopNav.tools;
-			mw.util.addCSS(
-				'@media only screen and (min-width: 1023px) {'+
-					':is(#global-top-navigation, #community-navigation) > .wds-dropdown {display:none;}'+
-					':is(#global-top-navigation, #community-navigation) > .wds-dropdown:has(li:not(.wiki-tool-in-dropdown)) {display:block;}'+
-				'}'+
-				'@media only screen and (max-width: 1023px) {'+
-					':is(#global-top-navigation, #community-navigation) .wiki-tools > .wds-button.is-hidden-on-smaller-breakpoints {display: none;}'+
-					':is(#global-top-navigation, #community-navigation) .wiki-tools .wiki-tool-in-dropdown {display: revert;}'+
-				'}'
-			);
+			mw.util.addCSS(`
+				@media only screen and (min-width: 1023px) {
+					:is(#global-top-navigation, #community-navigation) > .wds-dropdown {display:none;}
+					:is(#global-top-navigation, #community-navigation) > .wds-dropdown:has(li:not(.wiki-tool-in-dropdown)) {display:block;}
+				}
+				@media only screen and (max-width: 1023px) {
+					:is(#global-top-navigation, #community-navigation) .wiki-tools > .wds-button.is-hidden-on-smaller-breakpoints {display: none;}
+					:is(#global-top-navigation, #community-navigation) .wiki-tools .wiki-tool-in-dropdown {display: revert;}
+				}
+			`);
 			if (!Array.isArray(sett)||sett.length==0) {
 				sett = [];
 				$('#community-navigation #wiki-tools-menu li > a').each(function(_, el){
@@ -412,26 +410,31 @@
 		},
 		
 		hoverUserMenu: function () {
-			mw.util.addCSS(
-				'.global-action__user > button { margin: 15px 0; }'+
-				'.global-action__user .navigation-tab {'+
-					'animation: none !important;'+
-					'border-radius: 15px 0 15px 15px;'+
-					'height: auto;'+
-					'padding: 15px 5px;'+
-					'right: 100%;'+
-					'z-index: 2;'+
-					'pointer-events: all !important;'+
-					'border: 1px solid var(--theme-border-color);'+
-					'> div > :not(ul) { display: none; }'+
-				'}'+
-				'body:has('+
-					'.global-action__user:is(:hover, .wds-is-active),'+
-					'.global-action__user #user-tab__content:hover'+
-				') .global-action__user .navigation-tab {'+
-					'right: 0 !important;'+
-				'}'
-			);
+			mw.util.addCSS(`
+				.global-action__user > button { margin: 15px 0; }
+				.global-action__user .navigation-tab {
+					animation: none !important;
+					border-radius: 15px 0 15px 15px;
+					height: auto;
+					padding: 15px 5px;
+					right: 100%;
+					z-index: 2;
+					pointer-events: all !important;
+					border: 1px solid var(--theme-border-color);
+					> div > :not(ul) { display: none; }
+				}
+				body:has(
+					.global-action__user:is(:hover, .wds-is-active),
+					.global-action__user #user-tab__content:hover
+				) .global-action__user .navigation-tab {
+					right: 0 !important;
+				}
+				.btn-noflash #global-top-navigation .global-action__user {
+					.global-action__user__tab-container {display: none !important;}
+					.global-action__button {background: transparent !important;}
+					.wds-avatar__image {border-color: var(--fandom-top-nav-icon-color) !important;}
+				}
+			`);
 			// Inert attr makes the popup uninteractable, thx fandom, very cool
 			var observer = new MutationObserver(function(){ $('#global-top-navigation .global-action__user .navigation-tab').removeAttr('inert'); });
 			observer.observe(document.querySelector('#global-top-navigation .global-action__user'), { attributes: true, subtree: true });
@@ -442,7 +445,7 @@
 				// Avoid initalization defaults
 				$('#global-top-navigation .global-action__user > button').click();
 				$('#global-top-navigation .global-action__user .navigation-tab ul').empty();
-				$('#global-top-navigation .global-action__user > .global-action__user__tab-container').css('display', '');
+				document.body.classList.remove('btn-noflash');
 				
 				// Render new list
 				var links = [
@@ -463,7 +466,7 @@
 					);
 				});
 			});
-			$('#global-top-navigation .global-action__user > .global-action__user__tab-container').css('display', 'none');
+			document.body.classList.add('btn-noflash');
 			$('#global-top-navigation .global-action__user > button').click();
 		},
 		

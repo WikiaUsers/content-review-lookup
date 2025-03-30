@@ -76,6 +76,7 @@ $(function() {
                 'Knight': [15, 5, 25],
                 'Paladin': [10, 15, 20],
                 'Sorcerer': [5, 30, 10],
+                'Monk': [10, 10, 25],
                 'Rookstayer': [5, 5, 10]
             }, //[hp, mana, cap]
 

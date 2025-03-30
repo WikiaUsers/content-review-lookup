@@ -194,7 +194,68 @@ function initVisibility() {
 function isMatch(regex, className, element) {
 	return regex.test(element.className);
 }
- 
+
+/* This is a script to allow the numbers of articles on [[Liste des Star Wars Wikis dans d'autres langues]] loading automatically (current number) */
+(function() {
+    var stats = ['articles', 'activeusers', 'admins', 'edits', 'images'],
+        wikis = [],
+        regex = /^[0-9a-z\.-]+$/,
+        prefix = 'outwikistats-';
+    $(stats.map(function(name) {
+        return '.outwikistats-' + name;
+    }).join(', ')).each(function() {
+        var $this = $(this),
+            wiki = $this.text();
+        $this.attr({
+            'data-attr': $this.attr('class').substring(prefix.length),
+            'data-wiki': wiki
+        }).html($('<img>', {
+            src: 'https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif'
+        }));
+        if (wikis.indexOf(wiki) === -1) {
+            wikis.push(wiki);
+        }
+    });
+    wikis.forEach(function(wiki) {
+        if (!wiki.match(regex)) {
+            return;
+        }
+        var url;
+        if (wiki.indexOf('.') === -1) {
+            url = 'https://' + wiki + '.fandom.com';
+        } else {
+            var wikiParts = wiki.split('.'),
+                wikiLang = wikiParts[0],
+                wikiDomain = wikiParts[1];
+            url = 'https://' + wikiDomain + '.fandom.com/' + wikiLang;
+        }
+        $.ajax({
+            type: 'GET',
+            url: url + '/api.php',
+            data: {
+                action: 'query',
+                meta: 'siteinfo',
+                siprop: 'statistics',
+                format: 'json'
+            },
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function(data) {
+                var stats = data.query.statistics;
+                if (!stats) {
+                    return;
+                }
+                $('[data-wiki="' + wiki + '"]').each(function() {
+                    var $this = $(this),
+                        prop = $this.attr('data-attr'),
+                        result = stats[prop];
+                    $this.text(result);
+                });
+            }
+        });
+    });
+})();
 
 /* Actualisation automatique - [[w:c:dev:AjaxRC]] */
 /*window.AjaxRCRefreshText = 'Actualisation automatique';

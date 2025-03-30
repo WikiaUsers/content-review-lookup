@@ -87,23 +87,3 @@ importArticles({
         'u:dev:MediaWiki:WallGreeting.js',
     ]
 });
-/* UserTags */
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-ExtremelyInactive: {u: '不活跃'}
-}
-};
-UserTagsJS.modules.custom = {
-	'Lovsnow_Ry': ['ExtremelyInactive'],
-	'Lomoon': ['ExtremelyInactive']
-};
-// ---- //
-// 给所有带 link-id 属性的 div 标签 添加点击事件
-document.querySelectorAll('[link-id]').forEach(element => {
-  element.addEventListener('click', function() {
-    const link = this.dataset.link;
-    if (link) window.open(link, '_blank');
-  });
-});
-// Hello Review, I'm sorry, it took a long time to find out that this code has many bugs……

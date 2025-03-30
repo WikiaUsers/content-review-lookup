@@ -1,1 +1,0 @@
-$('.WikiaRail').append('<section class="module"><h1>Anonymous Chat</h1>Anonymous Users; we have a chat for you now!<br><b><a href="http://dragonstorytm.wikia.com/wiki/Anonymous Chat">Join in now and chat away!</a></b></section>');

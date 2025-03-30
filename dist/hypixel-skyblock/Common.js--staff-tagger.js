@@ -90,7 +90,7 @@
 
             // Begin (Taken from HypixelItemDataFetcher (by Fewfre) and modified)
             luaTableDataModuleToJson: function (moduleName) {
-                return that.api.post({
+                return that.api.postWithEditToken({
                         action: "scribunto-console",
                         title: mw.config.get("wgPageName"),
                         question: "=mw.text.jsonEncode(require('" + moduleName + "'))"

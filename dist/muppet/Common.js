@@ -71,3 +71,15 @@ $('#WikiaRail').on('afterLoad.rail', function() {
 });
 
 /* LINK ON RAIL ACTIVITY BOX END */
+
+
+/* ARTICLE TITLE COPY PASTE BEGIN */
+
+mw.hook('wikipage.content').add(()=>{
+    document.querySelector('.page-header__title').innerHTML = document.querySelector('.page-header__title > .mw-page-title-main').outerHTML;
+})
+
+var sels = ['.page-header', '.page-header__categories', '.page-header__meta', '.page-header__categories', '.page-header__categories-dropdown', '.page-header__categories-dropdown-content', '.page-header__top', '.page-header__bottom', '.page-header__title-wrapper', '.page-header__title']
+sels.forEach((sel)=>{$(sel).html((_, c)=>c.replace(/^[\s\n\r\t]+/, '').replace(/[\s\n\r\t]+$/, ''))});
+
+/* ARTICLE TITLE COPY PASTE END */

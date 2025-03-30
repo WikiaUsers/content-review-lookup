@@ -488,7 +488,7 @@ function MainPage() {
 } ( jQuery, mediaWiki ) );
 
 $(function() {
-    $(".license-description").append("<div style='font-weight:bold; font-size:12pt; background: rgba(0,0,0,0.5); border-radius: 5px; padding: 5px; text-shadow: 1px 1px 0px rgba(155,155,155,0.5);'><img style='vertical-align:middle' src='https://images.wikia.nocookie.net/__cb20131122002606/tos/zh/images/thumb/c/c7/Attention.png/45px-Attention.png'> 嚴禁發佈<span style='color: yellow'>徵友</span>及<span style='color: yellow'>招生</span>訊息。違反<a href='javascript:void(0)' onclick=window.open().location.href='https://tos.fandom.com/zh/wiki/Tower_of_Saviors_%E7%BB%B4%E5%9F%BA:%E7%94%A8%E6%88%B6%E5%AE%88%E5%89%87#.E8.A8.8E.E8.AB.96.E5.AE.88.E5.89.87'>用戶守則</a>將會封禁帳號處分。</div>");
+    $(".license-description").append("<div style='font-weight:bold; font-size:12pt; background: rgba(0,0,0,0.5); border-radius: 5px; padding: 5px; text-shadow: 1px 1px 0px rgba(155,155,155,0.5);'><img style='vertical-align:middle' src='https://images.wikia.nocookie.net/__cb20250324052719/tos/zh/images/thumb/c/c7/Attention.png/45px-Attention.png'> 嚴禁發佈<span style='color: yellow'>徵友</span>及<span style='color: yellow'>招生</span>訊息。違反<a href='javascript:void(0)' onclick=window.open().location.href='https://tos.fandom.com/zh/wiki/Tower_of_Saviors_%E7%BB%B4%E5%9F%BA:%E7%94%A8%E6%88%B6%E5%AE%88%E5%89%87#.E8.A8.8E.E8.AB.96.E5.AE.88.E5.89.87'>用戶守則</a>將會封禁帳號處分。</div>");
     $('.skill_toggle').add($('.toggleBtn')).click(function(){
       tmp1 = $(this).parent().parent().parent().parent().find('.note').not(':hidden');
       tmp2 = $(this).parent().parent().parent().parent().find('.note:hidden');

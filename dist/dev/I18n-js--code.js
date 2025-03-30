@@ -13,7 +13,7 @@
  *   JS console. To get around this, add ?usesitejs=0&useuserjs=0 to your URL.
  */
 
-/*global mediaWiki */
+/*global mediaWiki*/
 
 /*jshint bitwise:true, camelcase:true, curly:true, eqeqeq:true, es3:false,
     forin:true, immed:true, indent:4, latedef:true, newcap:true,

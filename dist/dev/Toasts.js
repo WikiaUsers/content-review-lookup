@@ -1,9 +1,9 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
- * Last modified: 1691250473268
+ * Last modified: 1743065538564
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.1.0
+ * @version 1.2.1
  */
  
 /*
@@ -11,28 +11,34 @@
 	undef: true,
 	noarg: true,
 	devel: true,
+	typed: true,
 	jquery: true,
 	strict: true,
 	eqeqeq: true,
 	freeze: true,
 	newcap: true,
-	esnext: true,
 	browser: true,
 	latedef: true,
 	shadow: outer,
-	varstmt: false,
-	laxbreak: true,
+	varstmt: true,
 	quotmark: single,
+	laxbreak: true,
+	esversion: 11,
 	singleGroups: true,
 	futurehostile: true
 */
- 
-;(function (mw) {
-    'use strict';
+
+/*
+	globals
+	mw
+*/
+
+;(() => {
+	'use strict';
+	
+	if (window.dev && window.dev.toasts) return;
     
-    var toString = Object.prototype.toString;
-    
-    if (window.dev && window.dev.toasts) return;
+    const toString = Function.call.bind(Object.prototype.toString);
     
     window.importArticles({
         type: 'style',
@@ -41,114 +47,116 @@
         ]
     });
 	
-    function log (level) {
-		var parts = [
+    const log = (level) => {
+		const getParts = () => [
 			'%c[Toasts] %o',
 			'color: #C9F',
 			new Date().toUTCString()
 		];
-		var method = level in console
+		const method = level in console
 			? level
 			: 'log';
-		return function () {
-			console.groupCollapsed.apply(null, parts);
-			console[method].apply(null, arguments);
+		return (...args) => {
+			console.groupCollapsed(...getParts());
+			console[method](...args);
 			console.groupEnd();
 		};
-    }
+    };
     
-    function isObject (item) {
-        return toString.call(item) === '[object Object]';
-    }
+    const isObject = (item) => toString(item) === '[object Object]';
     
-    function deepFreeze (object, exclude) {
+    const deepFreeze = (object, exclude) => {
         if (exclude && exclude(object)) return;
         if (typeof object === 'object' && object !== null) {
-            var props = Object.getOwnPropertyNames(object);
-            var len = props.length;
-            for (var i = 0; i < len; i++) {
-                var key = props[i];
+            const props = Object.getOwnPropertyNames(object);
+            for (const key of props) {
                 deepFreeze(object[key], exclude);
             }
         }
         Object.freeze(object);
         return object;
-    }
+    };
     
-    function create (tag, props, children) {
-		var el = document.createElement(tag);
+    const create = (tag, props, children = []) => {
+		const el = document.createElement(tag);
 		Object.assign(el, props);
-		if (Array.isArray(children)) el.append.apply(el, children);
+		if (Array.isArray(children)) el.append(...children);
 		return el;
-    }
+    };
     
-    function createNS (tag, props, children) {
-		var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-		for (var key in props) {
+    const createNS = (tag, props, children = []) => {
+		const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+		for (const key in props) {
 			el.setAttribute(key, props[key]);
 		}
-		if (Array.isArray(children)) el.append.apply(el, children);
+		if (Array.isArray(children)) el.append(...children);
 		return el;
-    }
+    };
     
-    function createIcon (d) {
-		return createNS('svg', {
-			width: 20,
-			height: 20,
-			viewBox: '0 0 24 24'
-		}, [
-			createNS('path', { d: 'M0 0h24v24H0z', fill: 'none' }),
-			createNS('path', {
-				d: d
-			})
-		]);
-    }
+    const createIcon = (d) => createNS('svg', {
+		width: 20,
+		height: 20,
+		viewBox: '0 0 24 24'
+	}, [
+		createNS('path', { d: 'M0 0h24v24H0z', fill: 'none' }),
+		createNS('path', {
+			d: d
+		})
+	]);
     
-    var onError = log('error');
+    const onError = log('error');
+    const toasts = create('div', { className: 'toasts' });
     
-    var helpers = {
-        ensureContainer: function () {
-            if (document.querySelector('.toasts')) return;
-            var wrapper = create('div', { className: 'toasts' });
-            wrapper.style.setProperty('width', document.documentElement.offsetWidth + 'px');
-            wrapper.style.setProperty('bottom', '80px');
-            document.body.appendChild(wrapper);
+    const helpers = {
+        ensureContainer () {
+            if (toasts.isConnected) return;
+            toasts.style.setProperty('width', document.documentElement.offsetWidth + 'px');
+            toasts.style.setProperty('bottom', '80px');
+            document.body.append(toasts);
         },
-        buildToast: function (message, type, icon) {
-            var name = ['toast'];
+        buildToast (message, type, icon) {
+            const name = ['toast'];
             if (type || icon) name.push('toast-has-icon');
-			if (type !== '') name.push('toast-' + type);
+            if (type !== '') name.push('toast-' + type);
             if (!icon && type) icon = type;
-            var html = create('div', { className: name.join(' ') }, [
-				this.icons[icon] && create('div', { className: 'toast-icon' }, [
-					this.icons[icon].cloneNode(true)
+            const html = create('div', { className: name.join(' ') }, [
+				Object.hasOwn(this.icons, icon) && create('div', { className: 'toast-icon' }, [
+					this.icons[icon]
 				]),
 				create('div', { className: 'toast-text', textContent: message })
-			].filter(Boolean));
+            ].filter(Boolean));
             return html;
         },
-        parseType: function (type, types) {
+        parseType (type, types) {
             return types[type] || types['default'];
         },
         icons: {
-            warning: createIcon('M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'),
-            success: createIcon(
-				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
-					+ '10-10S17.52 2 12 2zm-2 '
-					+ '15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
-			),
-            info: createIcon(
-				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
-					+ '10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'
-			),
-            error: createIcon(
-				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
-					+ '10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'
-			)
+            get warning () {
+				return createIcon('M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z');
+			},
+            get success () {
+				return createIcon(
+					'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
+						+ '10-10S17.52 2 12 2zm-2 '
+						+ '15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+				);
+			},
+            get info () {
+				return createIcon(
+					'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
+						+ '10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'
+				);
+			},
+            get error () {
+				return createIcon(
+					'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
+						+ '10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'
+				);
+			}
         }
     };
     
-    function defaultToast (content, options) {
+    const defaultToast = function (content, options = {}) {
         content = typeof content === 'string'
 			? content
 			: '';
@@ -156,46 +164,46 @@
 			? options
 			: {};
         helpers.ensureContainer();
-        var toast = helpers.buildToast(
+        const toast = helpers.buildToast(
             content,
             helpers.parseType(arguments[2], defaultToast.types),
             helpers.parseType(options.icon, defaultToast.types)
         );
-        document.querySelector('.toasts').appendChild(toast);
-        new Promise(function (resolve) {
-			var timeout = options.timeout
+        toasts.append(toast);
+        new Promise((resolve) => {
+			const timeout = options.timeout
 				? options.timeout
 				: 3000;
             setTimeout(resolve, timeout);
         })
-        .then(function () {
+        .then(() => {
             toast.classList.add('closing');
-            return new Promise(function (resolve) {
+            return new Promise((resolve) => {
                 setTimeout(resolve, 300);
             });
         }, onError)
-        .then(function () {
-            toast.parentElement.removeChild(toast);
-            if (document.querySelectorAll('.toasts .toast').length) return;
-            var toasts = document.querySelector('.toasts');
-            toasts.parentElement.removeChild(toasts);
+        .then(() => {
+            toast.remove();
+            if (toasts.children.length) return;
+            toasts.remove();
         }, onError);
-    }
+    };
     
     Object.assign(defaultToast, {
-        show: function (content, options) {
-			return defaultToast(content, options, options.type);
+        show (content, options = {}) {
+        	const { type = 'default' } = options;
+			return defaultToast(content, options, type);
         },
-        info: function (content, options) {
+        info (content, options = {}) {
             return defaultToast(content, options, 'info');
         },
-        error: function (content, options) {
+        error (content, options = {}) {
             return defaultToast(content, options, 'error');
         },
-        success: function (content, options) {
+        success (content, options = {}) {
             return defaultToast(content, options, 'success');
         },
-        warning: function (content, options) {
+        warning (content, options = {}) {
             return defaultToast(content, options, 'warning');
         },
         types: {
@@ -220,6 +228,6 @@
     window.dev.toasts = defaultToast;
     
     mw.hook('dev.toasts').fire(window.dev.toasts);
-})(window.mediaWiki);
+})();
 
 /*@end@*/

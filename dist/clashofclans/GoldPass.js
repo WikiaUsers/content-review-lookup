@@ -243,6 +243,7 @@ $(document).ready(function() {
     	"Henchmen Puppet": [18,15],
     	"Dark Orb": [18,15],
     	"Metal Pants": [18,15],
+    	"Noble Iron": [18,15],
     	"Eternal Tome": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Life Gem": [18,15],
     	"Rage Gem": [18,15],
@@ -267,7 +268,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror"];
     		break;
     	case ("Minion Prince"):
-    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants"];
+    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron"];
     		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet"];
@@ -276,7 +277,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1061,6 +1062,7 @@ $(document).ready(function() {
 		var dictASBonus = {
 			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Snake Bracelet": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
+			"Noble Iron": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,17],
 			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Haste Vial": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
 		};

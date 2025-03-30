@@ -70,10 +70,8 @@ $(document).ready(function () {
             const selectId = e.target.id
             $('#sandboxConfig').css('filter', 'blur(2px)');
 
-            $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (
-                key,
-                value,
-            ) {
+            $(".select2-search__field[aria-controls='select2-" + selectId + "-results']")
+            .each(function (key, value) {
                 value.focus();
             }).attr('placeholder', 'Search...');
         });

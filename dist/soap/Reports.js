@@ -27,7 +27,7 @@
 			'wgUserName',
 			'wgServer'
 		] ),
-		params = new URLSearchParams( window.location.search ),
+		urlparams = new URLSearchParams( window.location.search ),
 		options = {},
 		csrfToken = mw.user.tokens.get( 'csrfToken' );
 	let msg,
@@ -85,7 +85,8 @@
 			`<template #label>${ data.label }</template>` +
 			( data.description ? `<template #description>${ data.description }</template>` : '' ) +
 			'<cdx-text-input' +
-				( data.blur ? ` @blur=${ data.blur }` : '' ) +
+				( data.blur ? ` @blur="${ data.blur }"` : '' ) +
+				( data.type ? ` input-type="${ data.type }"` : '' ) +
 				( data.disabled ? ' disabled' : '' ) +
 				` v-model="${ value }"` +
 				` placeholder="${ data.placeholder }"` +
@@ -94,10 +95,15 @@
 	}
 
 	function addTextArea( value, data ) {
-		return `<cdx-field ${data.show ? `v-show="${ data.show }"` : ''}>` +
+		return '<cdx-field' +
+			( data.show ? ` v-show="${ data.show }"` : '' ) +
+			( data.status ? ` :status="${ data.status }"` : '' ) +
+			( data.message ? ` :messages="${ data.message }"` : '' ) +
+		'>' +
 			`<template #label>${ data.label }</template>` +
 			`<template #description>${ data.description }</template>` +
 			'<cdx-text-area' +
+				( data.blur ? ` @blur=${ data.blur }` : '' ) +
 				` v-model="${ value }"` +
 				` placeholder="${ data.placeholder }"` +
 			'></cdx-text-area>' +
@@ -136,7 +142,8 @@
 
 	function createWindow( button ) {
 		mw.loader.using( [
-			'@wikimedia/codex'
+			'@wikimedia/codex',
+			'mediawiki.util'
 		] ).then( ( require ) => {
 			const Vue = require( 'vue' ),
 				Codex = require( '@wikimedia/codex' ),
@@ -153,15 +160,23 @@
 					return {
 						showDialog: true,
 						linkStatus: 'default',
-						linkMessage: null,
+						linkMessage: {
+							error: 'Invalid URL!',
+							warning: 'This field is required.'
+						},
+						userStatus: 'default',
+						userMessage: {
+							error: '',
+							warning: 'This field is required.'
+						},
 						// Text input
 						blockid: '', // phalanx
 						comment: '', // all
 						sockusers: '', // vandalism
-						user: '', // spam, vandalism
+						user: urlparams.get( 'user' ) || '', // spam, vandalism
 						wikiname: '', // all
 						wikipage: '', // phalanx
-						wikiurl: '', // all
+						wikiurl: urlparams.get( 'url' ) || '', // all
 						// Toggle switch
 						crosswiki: false, // spam, vandalism
 						socks: false // vandalism
@@ -194,7 +209,7 @@
 							}
 						} );
 
-						if ( self.linkStatus === 'error' ) {
+						if ( self.linkStatus !== 'default' || self.userStatus !== 'default' ) {
 							canSave = false;
 						}
 
@@ -325,17 +340,57 @@
 						} ).then( ( response ) => {
 							return response.json();
 						} ).then( () => {
-							window.location.href = config.wgArticlePath.replace( '$1', opts.page );
+							setTimeout( function () {
+								window.location.reload();
+							}, 3000 );
+						} );
+					},
+					validateUsers() {
+						this.userStatus = 'default';
+						const self = this,
+							users = self.user.split( '\n' ).map( function ( a ) {
+								return a.trim();
+							} ).filter( function ( b ) {
+								return b.length > 0;
+							} ),
+							missingUsers = [];
+						self.user = users.join( '\n' );
+						if ( users.length === 0 ) {
+							self.userStatus = 'warning';
+							return;
+						}
+						fetch( config.wgScriptPath + '/api.php?' + new URLSearchParams( {
+							action: 'query',
+							format: 'json',
+							list: 'users',
+							formatversion: 2,
+							usprop: '',
+							ususers: users.join( '|' )
+						} ) ).then( function ( response ) {
+							return response.json();
+						} ).then( function ( data ) {
+							data.query.users.forEach( function ( user ) {
+								if ( user.missing || ( user.invalid && !mw.util.isIPAddress( user.name ) ) ) {
+									missingUsers.push( user.name );
+								}
+							} );
+							if ( missingUsers.length > 0 ) {
+								self.userStatus = 'error';
+								if ( missingUsers.length === 1 ) {
+									self.userMessage.error = `User "${ missingUsers[ 0 ] }" not found.`;
+								} else {
+									self.userMessage.error = `Users "${ missingUsers.join( '", "' ) }" not found.`;
+								}
+							}
 						} );
 					},
 					validateLink() {
 						this.linkStatus = 'default';
-						this.linkMessage = null;
+						this.wikiname = '';
 						const url = filterFandomDomain( this.wikiurl );
 
 						if ( !url ) {
-							this.linkStatus = 'error';
-							this.linkMessage = { error: 'Invalid URL!' };
+							this.linkStatus = this.wikiurl.length > 0 ? 'error' : 'warning';
 							return;
 						}
 
@@ -353,14 +408,20 @@
 						} ).then( ( response ) => {
 							return response.json();
 						} ).then( ( data ) => {
-							if ( data.query && data.query.general ) {
-								this.wikiname = data.query.general.sitename;
-							}
+							this.wikiname = data.query.general.sitename;
+						} ).catch( () => {
+							this.linkStatus = 'error';
 						} );
 					}
 				},
 				mounted() {
 					button.addEventListener( 'click', this.openDialog );
+					if ( urlparams.get( 'url' ) ) {
+						this.validateLink();
+					}
+					if ( urlparams.get( 'user' ) ) {
+						this.validateUsers();
+					}
 				},
 				unMounted() {
 					button.removeEventListener( this.openDialog );
@@ -391,7 +452,8 @@
 				addTextInput( 'blockid', {
 					label: msg( 'blockid-header' ).escape(),
 					description: msg( 'blockid-label' ).escape(),
-					placeholder: msg( 'blockid-placeholder' ).escape()
+					placeholder: msg( 'blockid-placeholder' ).escape(),
+					type: 'number'
 				} ),
 				addTextArea( 'comment', {
 					label: msg( 'phalanx-header' ).escape(),
@@ -430,7 +492,10 @@
 				addTextArea( 'user', {
 					label: msg( 'user-header' ).escape(),
 					description: msg( 'user-label' ).escape(),
-					placeholder: msg( 'user-placeholder' ).escape()
+					placeholder: msg( 'user-placeholder' ).escape(),
+					blur: 'validateUsers',
+					status: 'userStatus',
+					message: 'userMessage'
 				} ),
 				addTextArea( 'comment', {
 					label: msg( 'phalanx-header' ).escape(),
@@ -472,7 +537,10 @@
 				addTextArea( 'user', {
 					label: msg( 'user-header' ).escape(),
 					description: msg( 'user-label' ).escape(),
-					placeholder: msg( 'user-placeholder' ).escape()
+					placeholder: msg( 'user-placeholder' ).escape(),
+					blur: 'validateUsers',
+					status: 'userStatus',
+					message: 'userMessage'
 				} ),
 				addTextArea( 'comment', {
 					label: msg( 'comment-header' ).escape(),
@@ -566,7 +634,7 @@
 
 		// Fire hook for scripts that use the button
 		mw.hook( 'soap.reports' ).fire( button );
-		if ( params.get( 'openmodal' ) ) {
+		if ( urlparams.get( 'openmodal' ) ) {
 			createWindow( button );
 		}
 	}

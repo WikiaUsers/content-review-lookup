@@ -91,6 +91,7 @@ function loadFunc() {
 	substUsernameTOC();
 	hideContentSub();
 	addTalkheaderPreload();
+	rearrangeCategories();
 
 	if( typeof(onPageLoad) != "undefined" ) {
 		onPageLoad();
@@ -829,7 +830,118 @@ $(document).ready( function () {
             }
         });
     });
-})();
+})();function isCanonOrLegendsCategory(t) {
+	return t == 'canon articles' || t == 'legends articles' || t == 'non-canon articles' || t == 'non-canon legends articles';
+}
+
+function isOutOfUniverseCategory(t) {
+	if (t.includes('unlicensed')) {
+		return true;
+	}
+	var start = ["articles that are known", "articles known", "future"];
+	if (start.some((v) => t.startsWith(v + ' '))) {
+		return true;
+	}
+	
+	var middle = ["with conjectural", "with spoilers", "conflicting sources", "unconfirmed canonicity", "cut content", "cut elements", "gameplay alternatives", "unknown development status"];
+	if (middle.some((v) => t.includes(' ' + v + ' ') || t.endsWith(' ' + v))) {
+		return true;
+	}
+	return false;
+}
+
+function isMaintenanceCategory(t) {
+	if (t == "articles and academic papers") {
+		return false;
+	} else if (t.includes('protected pages') || t.includes(' parameter')) {
+		return true;
+	}
+	
+	var match = ["accuracy disputes", "possible-fanon", "self-contradictory articles", "stay on target", "we're doomed!"];
+	if (match.some((v) => v == t)) {
+		return true;
+	}
+	
+	var start = ["articles", "pages", "infoboxes", "stub", "usages", "unrecognized", "invalid", "media without", "Imagecat", "wookieepedia", "incomplete"];
+	if (start.some((v) => t.startsWith(v + ' '))) {
+		return true;
+	}
+	
+	var middle = ["infoboxes", "missing permanent", "usages", "listed in", "stubs", "needing images", "category links", "of verification", "citations"];
+	if (middle.some((v) => t.includes(' ' + v + ' ') || t.endsWith(' ' + v))) {
+		return true;
+	}
+	return false;
+}
+
+function buildNewCategoryLine(node, cats, prefix) {
+	if (cats.length == 0) {
+		return;
+	}
+	node.append('<span class="page-header__categories-in">' + prefix + ' </span>');
+	var i = 0;
+	if (cats.length <= 4) {
+		for (i = 0; i < cats.length - 1; i++) {
+			node.append(cats[i]);
+			node.append(', ');
+		}
+		node.append(cats[cats.length - 1]);
+	} else {
+		for (i = 0; i < 3; i++) {
+			node.append(cats[i]);
+			node.append(', ');
+		}
+		var x = (cats.length - 3) + ' more';
+		node.append('<div class="wds-dropdown page-header__categories-dropdown"><span>and </span><a class="wds-dropdown__toggle" data-tracking="categories-more">' + x +'</a><div class="wds-dropdown__content page-header__categories-dropdown-content wds-is-left-aligned"><ul class="wds-list wds-is-linked"></ul></div></div>');
+		var $ul = node.find('ul');
+		for (i = 3; i < cats.length; i++) {
+			$ul.append('<li></li>');
+			$ul.find('li').last().append(cats[i]);
+		}
+	}
+}
+
+function rearrangeCategories() {
+	var headers = document.getElementsByClassName('page-header__categories');
+	if (headers != null && headers.length > 0) {
+		var links = headers[0].querySelectorAll('[data-tracking-label^="categories-top-more"]');
+		var iuCats = [];
+		var canonCats = [];
+		var newCats = [];
+		var oouCats = [];
+		var maintenance = [];
+		for (var i = 0; i < links.length; i++) {
+			if (links[i].text != null && links[i].text.length > 0) {
+				if (links[i].classList.contains("newcategory")) {
+					newCats.push(links[i]);
+				} else if (isCanonOrLegendsCategory(links[i].text.toLowerCase())) {
+					canonCats.push(links[i]);
+				} else if (isOutOfUniverseCategory(links[i].text.toLowerCase())) {
+					oouCats.push(links[i]);
+				} else if (isMaintenanceCategory(links[i].text.toLowerCase())) {
+					maintenance.push(links[i]);
+				} else {
+					iuCats.push(links[i]);
+				}
+			}
+		}
+		
+		if (iuCats.length != links.length) {
+			headers[0].textContent = '';
+			
+			var $header = $( '.page-header__categories' );
+			$header.append('<div id="iu-category-header"></div>');
+			buildNewCategoryLine($header.find('#iu-category-header'), iuCats, 'in:');
+			
+			$header.append('<div id="oou-category-header"></div>');
+			buildNewCategoryLine($header.find('#oou-category-header'), newCats.concat(canonCats, oouCats, maintenance), 'also in:');
+		} else {
+			// sort?
+			return;
+		}
+	}
+}
+
 
 /* Disable rollback script */
 window.RollbackWikiDisable = true;

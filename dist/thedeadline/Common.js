@@ -5,18 +5,30 @@ const coloredTables = new Set(); // Track colored tables
 
 function applyColorsToTableCells() {
 	
-	const row1 = ["#FF0000", "#0000FF", "#FFFF00"];
-	const row2 = ["#00FFFF", "#008080", "#FFD700"];
-	const row3 = ["#800080", "#FFA500", "#FFC0CB"];
+	const cols = ["UTR", "MOR", "CMP", "LTL", "OTT"];
+	const rows = ["PP", "P", "SP", "", "M", "SN", "N", "NN"];
+	const default_row = rows.indexOf("")
 	
+	const row1 = ["#c9daf8", "#a4c2f4", "#6d9eeb", "#3c78d8", "#4a86e8"];
+	const row2 = ["#d0e0e3", "#a2c4c9", "#76a5af", "#45818e", "#00ffff"];
+	const row3 = ["#d9ead3", "#b6d7a8", "#93c47d", "#6aa84f", "#00ff00"];
+	const row4 = ["#fff2cc", "#ffe599", "#ffd966", "#f1c232", "#ffff00"];
+	const row5 = ["#fce5cd", "#f9cb9c", "#f6b26b", "#e69138", "#ff9900"];
+	const row6 = ["#f4cccc", "#ea9999", "#e06666", "#cc0000", "#ff0000"];
+	const row7 = ["#ead1dc", "#d5a6bd", "#c27ba0", "#a64d79", "#ff00ff"];
+	const row8 = ["#d9d2e9", "#b4a7d6", "#8e7cc3", "#674ea7", "#9900ff"];
+		
 	const colorMap = [
 		row1,
 		row2,
 		row3,
+		row4,
+		row5,
+		row6,
+		row7,
+		row8,
 	];
 	
-	const cols = ["RED", "BLU", "YLW"];
-	const rows = ["101", "202", "303"];
 	
     $("table").each(function() {
     	
@@ -45,7 +57,7 @@ function applyColorsToTableCells() {
 				background_color = colorMap[row_index][col_index];
 			}
 			else if (col_index != -1) {
-				background_color = colorMap[0][col_index];
+				background_color = colorMap[default_row][col_index];
 			}
             if (background_color != -1) {
                 $(this).css({
