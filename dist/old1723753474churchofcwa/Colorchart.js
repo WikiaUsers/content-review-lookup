@@ -1,1 +1,0 @@
-<pre><iframe width="600px" height="410px" src="http://www.dynamicdrive.com/dynamicindex11/yuicolorpicker/demo.htm"></iframe></pre><verbatim>test</verbatim>

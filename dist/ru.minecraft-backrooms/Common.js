@@ -144,6 +144,10 @@ mw.hook("wikipage.content").add(function () {
             post_article(PageRatingStoringPage,to_save,'Поставлена оценка (-) для ' + mw.config.get('wgPageName'));
         });
         $('#remove_rate').click(function () { // удаление оценки
+        if (mw.config.get("wgUserEditCount") < minEdits) {
+				alert("Меньше " + minEdits + " правок");
+				return;
+			}
         	resetVote(myRate[0],userName);
            	resetVote(myRate[1],userName);
             	

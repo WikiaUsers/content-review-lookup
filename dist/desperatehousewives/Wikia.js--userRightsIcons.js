@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://desperatehousewives.fandom.com/wiki/MediaWiki:Common.js/userRightsIcons.js?action=raw\u0026ctype=text/javascript");

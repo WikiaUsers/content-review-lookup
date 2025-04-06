@@ -61,6 +61,7 @@ importArticles({
         'MediaWiki:CombatCardFilter.js',//战斗书页检索
         'MediaWiki:Lyric.js',//歌词
         'MediaWiki:KeyPage.js',//核心书页
+        'MediaWiki:Appearance.js',//外貌调整
         'MediaWiki:ImportCSS.js',//页面引入css
         'MediaWiki:AdminDashboardImportJS.js',//在管理员面板添加一个importjs的快捷入口
         'u:dev:MediaWiki:ReferencePopups/code.js',//注释提示框

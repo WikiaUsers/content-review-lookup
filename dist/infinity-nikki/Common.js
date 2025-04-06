@@ -4,3 +4,15 @@
    original author: Macklin  -  forked version by Celeranis */
    
 @import "https://honkai-star-rail.fandom.com/wiki/MediaWiki:MapsExtended-Fork.js?ctype=text/css&action=raw";
+
+// April's fool stuff
+function replaceText(node) {
+    if (node.nodeType === 3) { // Text node
+        node.nodeValue = node.nodeValue.replace(/Wikki/g, "Wikki");
+        node.nodeValue = node.nodeValue.replace(//g, "");
+    } else {
+        node.childNodes.forEach(replaceText);
+    }
+}
+
+replaceText(document.body);

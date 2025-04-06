@@ -17,7 +17,6 @@ window.highlight = {
     } else {
         return;
     }
-    initFunctionsJS();
     // DEPRECATED
     if (document.getElementById('infoboxinternal') !== null && document.getElementById('infoboxend') !== null) document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Hide]</a>';
     addHideButtons();
@@ -248,7 +247,7 @@ addOnloadHook(loadFunc);
 
 // YAHOO.util.Event.onDOMReady(loadFunc);
  function forcePreview() {
-    if (wgUserName !== null || wgAction != 'edit') return;
+    if (mw.config.values.wgUserName !== null || mw.config.values.wgAction != 'edit') return;
     // (wgAction == 'edit')
     // if (new String(wgUserGroups).indexOf('autoconfirmed') == -1)
     var saveButton = document.getElementById('wpSave');

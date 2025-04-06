@@ -1,4 +1,3 @@
-
 var i18n = {
 	en: {
 		linkTitle: 'Click to purge the server cache for the current wiki page'

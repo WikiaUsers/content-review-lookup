@@ -29,7 +29,6 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 	    zhurnal: { u:'Журналист'},
-		newbie: { u:'Новичок'},
 		hacker: { u:'Технический администратор'},
 		otpusk: { u:'В вики отпуске'},
 		oldie: { u:'Ветеран'},
@@ -51,18 +50,12 @@ UserTagsJS.modules.custom = {
 	'Magnum': ['founder'],
 	
 };
-UserTagsJS.modules.newuser = {
-	days: 90, // Must have been on the Wiki for 90 days
-	edits: 200, // And have at least 200 edits to remove the tag
-	namespace: 0
-};
 UserTagsJS.modules.inactive = 30;
-
+};
 
 
 UserTagsJS.modules.implode = {
-	newbie: ['newuser'], // Remove new user replace with новичок
-	otpusk: ['inactive'] // Remove new user replace with новичок
+	otpusk: ['inactive'] // Remove inactive replace with в вики-отпуске
 };
 
 UserTagsJS.modules.mwGroups = ['bureaucrat']; // Add bureaucrat group to bureaucrats

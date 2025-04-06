@@ -1,30 +1,24 @@
-/*
-  jshint
-  undef: true,
-  noarg: true,
-  devel: true,
-  typed: true,
-  jquery: true,
-  strict: true,
-  eqeqeq: true,
-  freeze: true,
-  newcap: true,
-  browser: true,
-  latedef: true,
-  shadow: outer,
-  varstmt: true,
-  quotmark: single,
-  laxbreak: true,
-  esversion: 11,
-  futurehostile: true
+/* jshint
+undef: true,
+devel: true,
+typed: true,
+jquery: true,
+strict: true,
+eqeqeq: true,
+freeze: true,
+latedef: true,
+shadow: outer,
+varstmt: true,
+quotmark: single,
+esversion: 6,
+futurehostile: true
 */
-/*
-  global
-  importArticles,
-  structuredClone
+/* global
+importArticles,
+structuredClone
 */
-'use strict';
 $(function() {
+	'use strict';
 	
 	// Double load protection
 	if (window.dev && window.dev.BetterDiff) {return;}
@@ -242,7 +236,7 @@ $(function() {
 						
 						if (from === to) {
 							link.classList.add('mw-changeslist-diff');
-							options.label = 'diff';
+							options.label = config.wgAction === 'history' ? 'prev' : 'diff';
 						} else {
 							href = href + '&oldid=' + from;
 							options.label = options.revid.length + ' changes';
@@ -253,7 +247,13 @@ $(function() {
 						if (target.nodeType === 3) {
 							let paren = target.parentNode.parentNode; // actual paren is a plain span wrapper
 							link.innerHTML = target.textContent.length>0 ? target.textContent : 'view';
-							target.replaceWith(link);
+							if (link.innerHTML.search(/\| prev\)/)!==-1) {
+								link.innerHTML = 'prev';
+								target.replaceWith(' | ', link, ')');
+							} else {
+								target.replaceWith(link);
+							}
+							
 						} else {
 							link.innerHTML = options.label;
 							target.replaceChildren(link);
@@ -1041,7 +1041,7 @@ $(function() {
 					if (diff.parentElement.nodeName === 'SPAN') {
 						let span = document.createElement('span');
 						span.appendChild(link);
-						diff.parentElement.after(span);
+						diff.closest('span:not([class])').after(span);
 					} else if (diff.closest('.quickDiff-custom') || diff.closest('.diff-ntitle')) {
 						diff.before('(', link, ') ');
 					} else if (diff.closest('.diff-otitle, [data-mw-logaction^="upload"]')) {

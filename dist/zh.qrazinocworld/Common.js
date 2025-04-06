@@ -87,3 +87,10 @@ importArticles({
         'u:dev:MediaWiki:WallGreeting.js',
     ]
 });
+// [[Template:连接点]]非管理员设置type=0时弹出警告
+$(document).on('click', '#wpSave', function() {
+    var text = $('#wpTextbox1').val();
+    if (text.includes('|type=0') && !mw.config.get('wgUserGroups').includes('sysop')) {
+        return confirm('注意：非管理员强制跳过分类需经管理员审核，滥用将导致封禁！');
+    }
+});

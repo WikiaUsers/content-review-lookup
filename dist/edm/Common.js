@@ -54,4 +54,8 @@ function checktimers() {
     }
 }
 
+mw.loader.load('/index.php?title=MediaWiki:Countdown.js&action=raw&ctype=text/javascript');
+
 document.addEventListener('DOMContentLoaded', checktimers);
+
+importScript('MediaWiki:Countdown.js');

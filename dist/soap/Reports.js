@@ -117,6 +117,7 @@
 					' weight="primary"' +
 					' @click="submit"' +
 					' action="progressive"' +
+					' :disabled="submitDisabled"' +
 				'>Submit</cdx-button>' +
 			'</div>' +
 		'</template></cdx-dialog>';
@@ -159,6 +160,7 @@
 				data: function () {
 					return {
 						showDialog: true,
+						submitDisabled: false,
 						linkStatus: 'default',
 						linkMessage: {
 							error: 'Invalid URL!',
@@ -202,7 +204,7 @@
 							submitText = `${ opts.submitText }`,
 							summary = `${ opts.summary }`,
 							sectionTitle = `${ opts.sectionTitle }`;
-
+						self.submitDisabled = true;
 						opts.required.forEach( ( i ) => {
 							if ( self[ i ].length === 0 ) {
 								canSave = false;
@@ -214,6 +216,7 @@
 						}
 
 						if ( !canSave ) {
+							self.submitDisabled = false;
 							// eslint-disable-next-line no-alert
 							alert( 'One or more required fields are missing or contain invalid data. Please check your submission and try again.' );
 							return;
@@ -278,6 +281,7 @@
 							// handle socks
 							if ( field === 'sockusers' ) {
 								if ( text === '' && sockCount ) {
+									self.submitDisabled = false;
 									// eslint-disable-next-line no-alert
 									alert( 'One or more required fields are missing. Please check your submission and try again.' );
 									return;
@@ -366,7 +370,10 @@
 							formatversion: 2,
 							usprop: '',
 							ususers: users.join( '|' )
-						} ) ).then( function ( response ) {
+						} ), {
+							method: 'GET',
+							credentials: 'include'
+						} ).then( function ( response ) {
 							return response.json();
 						} ).then( function ( data ) {
 							data.query.users.forEach( function ( user ) {
@@ -404,7 +411,8 @@
 							format: 'json',
 							origin: '*'
 						} ), {
-							method: 'GET'
+							method: 'GET',
+							credentials: 'omit'
 						} ).then( ( response ) => {
 							return response.json();
 						} ).then( ( data ) => {

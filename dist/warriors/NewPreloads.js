@@ -1,4 +1,3 @@
-
 // Adapted from https://dev.fandom.com/wiki/MediaWiki:PreloadTemplates.js and modified to support multiple dropdowns.
 (function() {
     'use strict';
@@ -9,6 +8,7 @@
     ]),
     $module = $('div#wpSummaryLabel'), // UCP source editors
     $moduleOld = $('div.module_content:first'); // Old Non-UCP Source Editor
+    
 
     // Run conditions
     if (mwc.wgNamespaceNumber === 8) {
@@ -21,18 +21,14 @@
     //   Configuration
     // =================
     var config = {
+    	messageList: 'MediaWiki:Custom-PreloadMessages',
         infoboxList: 'MediaWiki:Custom-PreloadInfoboxes',
         generalList: 'MediaWiki:Custom-PreloadPieces'
-    }, i18n, $infoboxes, $general, $help;
+    }, i18n, $messages, $infoboxes, $general, $help;
 
     // =============
     //   Functions  
     // =============
-
-    // Get plain message from i18n
-    function msg(message) {
-        return i18n.msg(message).plain();
-    }
 
     // Parse MediaWiki code to allow the use of includeonly and noninclude tags in the preload page
     function parseMW(source){
@@ -41,7 +37,7 @@
 
     // Error alert
     function notFound(page){
-        alert(i18n.msg('error', '"' + page + '"').plain());
+        alert('Error: "' + page + '" not found');
     }
 
     // Inserts text at the cursor's current position - originally from Wookieepedia
@@ -138,40 +134,54 @@
         });
     }
 
-    function appendModule() {
+    function appendModule(mx) {
         var $moduleNew = $('.ve-ui-summaryPanel-summaryInputField');
         // Appending HTML to editor
         if ( $module.length ) { 
-            $module.after($infoboxes);          // UCP source editors
+            $module.after(mx);          // UCP source editors
             $module.after($general);
         } else if ( $moduleOld.length ) { 
-            $moduleOld.append($infoboxes);       // Old Non-UCP Source Editor
+            $moduleOld.append(mx);       // Old Non-UCP Source Editor
             $moduleOld.append($general);
         } else if ( $moduleNew.length ) {
-            $moduleNew.append($infoboxes);
+            $moduleNew.append(mx);
             $moduleNew.append($general);
         }
     }
 
     // Add selector to editor
-    function preInit(i18nData) {
-        i18n = i18nData;
+    function preInit() {
         $general = $('<div>', { id: 'preload-templates' });
         $general.append($('<span>', {
             text: 'Common page components:'
         }));
-        $infoboxes = $('<div>', { id: 'preload-infoboxes' });
-        $infoboxes.append($('<span>', {
-            text: 'Preload an infobox:'
+        $help = $('<div>', {
+            id: 'pt-help'
+        }).append($('<a>', {
+            target: '_blank',
+            href: 'https://warriors.fandom.com/wiki/MediaWiki:NewPreloads.js',
+            text: '?'
         }));
-        appendModule();
+    	if (window.location.href.indexOf('User_talk:') !== -1) {
+	        $messages = $('<div>', { id: 'preload-messages' });
+	        $messages.append($('<span>', {
+	            text: 'Preload a message:'
+	        }));
+        	appendModule($messages);
+    	} else{
+	        $infoboxes = $('<div>', { id: 'preload-infoboxes' });
+	        $infoboxes.append($('<span>', {
+	            text: 'Preload an infobox:'
+	        }));
+    		appendModule($infoboxes);
+    	}
     }
 
     function listHTML(parsed) {
         return mw.html.element('option', {
             selected: true,
             disabled: true
-        }, msg('choose')) + parsed.split('\n').map(function(line) {
+        }, '(click to browse)') + parsed.split('\n').map(function(line) {
             // Ignore empty lines
             if (line.trim() === '') {
                 return '';
@@ -207,14 +217,15 @@
     // If the initialization failed
     function initFail() {
         $general.append(
-            i18n.msg(
-                'error',
-                mw.html.element('a', {
-                    href: mw.util.getUrl(config.infoboxList)
-                }, config.infoboxList)
-            ).plain(),
+            'Error: ' + mw.html.element('a', {
+                href: mw.util.getUrl(config.infoboxList)
+            }, config.infoboxList),
             $help
         );
+    }
+    
+    function initMessages(listData) {
+		initPiece($messages, listData, 'case-by-case');
     }
 
     function initInfoboxes(listData) {
@@ -232,13 +243,14 @@
         if (parsed === '') {
             initFail();
             return;
+        } else if (node === undefined) {
+        	return
         }
 		
         // Append template list and messages
         node.append(
             $('<select>', {
                 id: 'pt-list',
-                title: msg('help'),
                 html: listHTML(parsed)
             }).change(function() {
                 var $this = $(this),
@@ -249,8 +261,7 @@
 
                 // Preload the template on click
                 getPreloadPage(subpage, val);
-            }),
-            $help
+            })
         );
     }
 
@@ -268,14 +279,19 @@
         $.when(
             i18no.loadMessages('PreloadTemplates'),
             mw.loader.using('mediawiki.util')
-        ).then(function(i18nData) {
-            preInit(i18nData);
+        ).then(function() {
+            preInit();
             mw.hook('ve.activationComplete').add(appendModule);
             $.get(mw.util.wikiScript(), {
                 title: config.infoboxList,
                 action: 'raw',
                 ctype: 'text/plain'
             }).done(initInfoboxes).fail(initFail);
+            $.get(mw.util.wikiScript(), {
+                title: config.messageList,
+                action: 'raw',
+                ctype: 'text/plain'
+            }).done(initMessages).fail(initFail);
             $.get(mw.util.wikiScript(), {
                 title: config.generalList,
                 action: 'raw',

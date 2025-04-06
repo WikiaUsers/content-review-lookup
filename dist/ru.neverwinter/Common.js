@@ -112,128 +112,128 @@ $('.artifact-weapon-table tr').each(function(){
 });
 
 // TOOLTIP
-// Default setting to enable tooltips
+// This script enhances wiki pages by adding interactive tooltips to links with class "ajaxttlink".
+// It fetches the TooltipItem template from the wiki, renders it dynamically, 
+// and positions the tooltip near the hovered link without caching the content.
+
 const tooltipsOn = true;
+let $tfb, activeHoverLink;
 
-// Global variables:
-// $tfb - tooltip container element
-// activeHoverLink - currently active link with a tooltip
-// tipCache - cache for storing already loaded tooltips
-let $tfb, activeHoverLink, tipCache = {};
-
-// Function to hide the tooltip
+// Hides the tooltip by clearing its content and resetting its state
 const hideTip = () => {
-  $tfb.html("")               // Clear the content
-    .addClass("hidden")       // Add the hidden class
-    .removeClass("tooltip-ready") // Remove the readiness class
-    .css("visibility", "hidden"); // Hide the element
-  activeHoverLink = null;     // Reset the active link
+  if (!$tfb) return;
+  $tfb.html('').addClass('hidden').removeClass('tooltip-ready').css('visibility', 'hidden');
+  activeHoverLink = null;
 };
 
-// Function to move the tooltip based on link position
-// Function to move the tooltip based on link position
+// Adjusts the tooltip's position based on the link's location and window boundaries
 const moveTip = e => {
-  const $ct = $tfb;
-  if ($ct.is(":empty") || $ct.hasClass("hidden")) return;
+  if (!$tfb || !$tfb.length || !$tfb.hasClass('tooltip-ready') || !activeHoverLink) return;
 
-  const $link = $(activeHoverLink); // Current link
-  const linkOffset = $link.offset(); // Link position relative to the document
-  const linkHeight = $link.outerHeight(); // Link height
-  const linkWidth = $link.outerWidth(); // Link width
-  const tooltipHeight = $ct.outerHeight(); // Tooltip height
-  const tooltipWidth = $ct.outerWidth(); // Tooltip width
-  const windowHeight = $(window).height(); // Window height
-  const windowWidth = $(window).width(); // Window width
-  const scrollTop = $(window).scrollTop(); // Page scroll position
-  const fixedHeaderHeight = 46; // Height of the fixed community-navigation
-  const paddingTop = 10; // 10px padding top
-  const paddingBottom = 45; // 45px padding bottom
+  const $link = $(activeHoverLink),
+        linkOffset = $link.offset();
+  if (!linkOffset) return;
 
-  // Calculate position to the right of the link
-  let left = linkOffset.left + linkWidth + 10; // 10px offset to the right of the link
-  // Center vertically relative to the link, accounting for scroll
+  const linkHeight = $link.outerHeight(),
+        linkWidth = $link.outerWidth(),
+        tooltipHeight = $tfb.outerHeight(),
+        tooltipWidth = $tfb.outerWidth(),
+        windowHeight = $(window).height(),
+        windowWidth = $(window).width(),
+        scrollTop = $(window).scrollTop(),
+        fixedHeaderHeight = 46,
+        paddingTop = 10,
+        paddingBottom = 45;
+
+  let left = linkOffset.left + linkWidth + 10;
   let top = linkOffset.top + (linkHeight / 2) - (tooltipHeight / 2) - scrollTop;
 
-  // Check if the tooltip exceeds the right window boundary
   if (left + tooltipWidth > windowWidth) {
-    // If it doesn't fit on the right, place it to the left of the link
     left = linkOffset.left - tooltipWidth - 10;
   }
+  top = Math.max(fixedHeaderHeight + paddingTop, Math.min(top, windowHeight - tooltipHeight - paddingBottom));
 
-  // Adjust vertical position to keep the tooltip within window boundaries with padding
-  const minTop = fixedHeaderHeight + paddingTop; // Minimum top (below header + top padding)
-  const maxTop = windowHeight - tooltipHeight - paddingBottom; // Maximum top (above bottom + bottom padding)
-
-  // Ensure the tooltip stays within the vertical boundaries while trying to center on the link
-  if (top < minTop) {
-    top = minTop; // Adjust to minimum if it would overlap the header
-  } else if (top > maxTop) {
-    top = maxTop; // Adjust to maximum if it would go below the bottom boundary
-  }
-
-  $ct.css({ 
-    position: "fixed",
-    "font-size": "0.90em",
-    top: `${top}px`,
-    left: `${left}px`,
-    "z-index": 100 // Ensure tooltip appears above other elements
+  requestAnimationFrame(() => {
+    $tfb.css({ position: 'fixed', fontSize: '0.90em', top: `${top}px`, left: `${left}px`, zIndex: 100 });
   });
 };
 
-// Function to show the tooltip
+// Displays the tooltip by fetching and rendering wiki content
 const showTip = (e, $t) => {
-  if ($t.parent().hasClass("selflink")) return; // Exit if the link is a self-link
+  if (!$t || !$t.length || $t.parent().hasClass('selflink')) return;
 
-  // Get the title from data-tt or the title attribute
-  const title = $t.data("tt") || $t.attr("title");
-  if (!title) return; // Exit if there’s no title
+  const title = $t.data('tt') || $t.attr('title');
+  if (!title) return;
+  
+  $t.removeAttr('title');
 
-  $t.removeAttr("title"); // Remove the title attribute from the link
-  // Form the URL to load the tooltip content
-  const url = `/ru/index.php?title=${encodeURIComponent(decodeURIComponent(title))}&action=render div[class*="tooltip"]`;
+  const url = `/ru/index.php?title=${encodeURIComponent(decodeURIComponent(title))}&action=raw`,
+        newQuality = $t.closest('.ajaxttlink').attr('data-quality'); // Берем data-quality из родителя
 
-  hideTip(); // Hide the previous tooltip
-  activeHoverLink = $t; // Set the current active link
+  hideTip();
+  activeHoverLink = $t;
 
-  if (tipCache[url]) { // If the content is in the cache
-    $tfb.html(tipCache[url]); // Use the cached content
-    $tfb.find(".tooltipright").removeClass("tooltipright"); // Remove tooltipright class
-    $tfb.removeClass("hidden").addClass("tooltip-ready").css("visibility", "visible");
-    moveTip(e); // Position the tooltip
-  } else { // If not in cache, load it
-    $tfb.load(url, () => { // Asynchronous content loading
-      if ($t !== activeHoverLink) return; // Check if the link is still active
-      $tfb.find(".tooltip").show();
-      $tfb.find(".tooltipright").removeClass("tooltipright"); // Remove tooltipright class after loading
-      tipCache[url] = $tfb.html(); // Cache the loaded content
-      $tfb.removeClass("hidden").addClass("tooltip-ready").css("visibility", "visible");
-      moveTip(e); // Position the tooltip
+  $.get(url, wikitext => {
+    if ($t !== activeHoverLink) return;
+
+    const enTitle = (wikitext.match(/\[\[en:([^\]]+)\]\]/) || [])[1] || '';
+    let tooltipText = (wikitext.match(/\{\{TooltipItem[\s\S]*?\}\}/) || [])[0];
+
+    if (!tooltipText) {
+      return;
+    }
+
+    if (newQuality) {
+      tooltipText = tooltipText.replace(/\|качество\s*=\s*[^\n|]+/, `|качество=${newQuality}`);
+    }
+    tooltipText = tooltipText.replace(/\}\}/, `|temp_en_title=${enTitle}\n}}`);
+
+    $.ajax({
+      url: '/ru/api.php',
+      data: { action: 'parse', format: 'json', text: tooltipText, title, prop: 'text', contentmodel: 'wikitext' },
+      dataType: 'json',
+      success: data => {
+        if ($t !== activeHoverLink) return;
+        if (data.error) {
+          $tfb.html('API Error: ' + data.error.info);
+        } else {
+          const html = data.parse.text['*'],
+                $tooltip = $(html).find('.tooltip-content');
+
+          if ($tooltip.length) {
+            $tfb.html($tooltip);
+          } else {
+            $tfb.html('Error: could not extract tooltip.');
+          }
+        }
+        $tfb.removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
+        moveTip(e);
+      },
+      error: () => {
+        $tfb.html('API request error').removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
+        moveTip(e);
+      }
     });
-  }
+  }).fail(() => {
+    $tfb.html('Error loading page').removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
+    moveTip(e);
+  });
 };
 
-// Function to bind events to elements
+// Binds hover and mousemove events to links for tooltip interaction
 const bindTT = $t => {
-  const title = $t.attr("title"); // Get the title from the element
-  if (title && !$t.parent().hasClass("selflink")) { // If there’s a title and it’s not a self-link
-    // Save the cleaned title in data-tt
-    $t.data("tt", title.replace(" (page does not exist)", "").replace("?", "%3F"));
-    // Bind event handlers
-    $t.hover(e => showTip(e, $t), hideTip) // Mouse hover and leave
-      .mousemove(moveTip); // Mouse movement
+  if ($t.attr('title') && !$t.parent().hasClass('selflink')) {
+    $t.data('tt', $t.attr('title').replace(' (page does not exist)', '').replace('?', '%3F'));
+    $t.hover(e => showTip(e, $t), hideTip).mousemove(moveTip);
   }
 };
 
-// Initialization on page load
+// Initializes the tooltip system on page load
 $(() => {
-  if (!tooltipsOn) return; // Exit if tooltips are disabled
-  
-  // Add the tooltip container to #content
-  $("#content").append('<div id="tfb" class="htt hidden"></div>');
-  $tfb = $("#tfb"); // Store the container reference
-  
-  // Bind handlers to all links within #content
-  $("#content a").each((_, el) => bindTT($(el)));
+  if (!tooltipsOn) return;
+  $('#content').append('<div id="tfb" class="htt hidden"></div>');
+  $tfb = $('#tfb');
+  $('.ajaxttlink a').each((_, el) => bindTT($(el))); // Привязываем только к ссылкам внутри .ajaxttlink
 });
 // END TOOLTIP
 
@@ -336,7 +336,6 @@ $(function() {
         
             // Hides already selected options from other <select></select>
             var $chosen = $selHideOption.map(function(i, el){
-                console.log();
                 return $(':selected',el);
             });
             var $teamId = null;

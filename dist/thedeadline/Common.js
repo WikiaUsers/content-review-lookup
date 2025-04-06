@@ -47,9 +47,19 @@ function applyColorsToTableCells() {
 			
 			var row_index = -1;
 			if (code.length == 2) {
-				row_index = rows.indexOf(code[1])
+				let matchingRows = rows.filter(row => code[1].includes(row));
+
+	            if (matchingRows.length > 0) {
+	                let longestRow = matchingRows.reduce((a, b) => a.length >= b.length ? a : b);
+	                row_index = rows.indexOf(longestRow);
+	            }
 			}
-			col_index = cols.indexOf(col)
+			
+			let matchingCols = cols.filter(row => col.includes(cols));
+            if (matchingCols.length > 1) {
+                let longestCol = matchingCols.reduce((a, b) => a.length >= b.length ? a : b);
+                col_index = cols.indexOf(longestCol);
+            }
 			
 			var background_color = -1;
 			
