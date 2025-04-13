@@ -1,55 +1,105 @@
   //  Скрипт автоматического переключение описаний артефактов.
 
-$(document).ready(function() {
+;(function($, mw) {
+  'use strict';
+
+  if (window.tabbedInfoBoxInitialized) {
+      return;
+  }
+  window.tabbedInfoBoxInitialized = true;
+
+  var HASH_STANDARD = 'standard';
+  var HASH_EXCEPTIONAL = 'exceptional';
+  var HASH_LEGENDARY = 'legendary';
+  var STANDARD_TABS = ['обычный', 'необычный', 'редкий', 'эпический'];
+  var EXCEPTIONAL_TAB = 'исключительный';
+  var LEGENDARY_TAB = 'легендарный';
+
+  var DESC_CONTAINER_SELECTOR = '.descriptions';
+  var DESC_ITEM_SELECTOR = '.description';
+  var TABS_SELECTOR = '.portable-infobox .wds-tabs__tab';
+  var TAB_LABEL_SELECTOR = '.wds-tabs__tab-label';
+
+  var EVENT_NAMESPACE = '.tabbedInfoBox';
+
   function showDescription(hash) {
-    $('.descriptions .description').hide(); 
-    if (hash === 'standard') {
-      $('#standard').show();
-    } else if (hash === 'exceptional') {
-      $('#exceptional').show();
-    } else if (hash === 'legendary') {
-      $('#legendary').show();
-    } else {
-      $('#standard').show(); 
-    }
+      var $descriptionContainer = $(DESC_CONTAINER_SELECTOR);
+      if (!$descriptionContainer.length) {
+          return;
+      }
+      var $descriptions = $descriptionContainer.find(DESC_ITEM_SELECTOR);
+      if (!$descriptions.length) {
+          return;
+      }
+
+      $descriptions.hide();
+
+      var targetId;
+      switch (hash) {
+          case HASH_EXCEPTIONAL:
+              targetId = '#' + HASH_EXCEPTIONAL;
+              break;
+          case HASH_LEGENDARY:
+              targetId = '#' + HASH_LEGENDARY;
+              break;
+          case HASH_STANDARD:
+              targetId = '#' + HASH_STANDARD;
+              break;
+          default:
+              targetId = '#' + HASH_STANDARD;
+              break;
+      }
+
+      $(targetId).show();
   }
 
-  $('.portable-infobox .wds-tabs__tab').on('click', function() {
-    var tabName = $(this).find('.wds-tabs__tab-label').text().trim().toLowerCase();
-    var hash;
+  function initializeTabClickHandlers() {
+      $(TABS_SELECTOR)
+          .off('click' + EVENT_NAMESPACE)
+          .on('click' + EVENT_NAMESPACE, function() {
+              var $tab = $(this);
+              var tabName = $tab.find(TAB_LABEL_SELECTOR).text().trim().toLowerCase();
+              var hash = null;
 
-    if (['обычный', 'необычный', 'редкий', 'эпический'].includes(tabName)) {
-      hash = 'standard';
-    } else if (tabName === 'исключительный') {
-      hash = 'exceptional';
-    } else if (tabName === 'легендарный') {
-      hash = 'legendary';
-    }
+              if (STANDARD_TABS.includes(tabName)) {
+                  hash = HASH_STANDARD;
+              } else if (tabName === EXCEPTIONAL_TAB) {
+                  hash = HASH_EXCEPTIONAL;
+              } else if (tabName === LEGENDARY_TAB) {
+                  hash = HASH_LEGENDARY;
+              }
 
-    if (hash) {
-      history.replaceState(null, null, '#' + hash);
-      showDescription(hash);
-    }
-  });
-
-  var initialHash = window.location.hash.substring(1);
-  if (initialHash) {
-    showDescription(initialHash);
-  } else {
-    showDescription('standard');
+              if (hash) {
+                  var currentHash = window.location.hash.substring(1);
+                  if (window.history && window.history.replaceState && currentHash !== hash) {
+                      window.history.replaceState(null, null, '#' + hash);
+                  }
+                  
+                  showDescription(hash);
+              }
+          });
   }
 
-  $(window).on('hashchange', function() {
-    var hash = window.location.hash.substring(1);
-    showDescription(hash);
+  $(window).off('hashchange' + EVENT_NAMESPACE).on('hashchange' + EVENT_NAMESPACE, function() {
+      var hash = window.location.hash.substring(1);
+      showDescription(hash || HASH_STANDARD);
   });
 
   if (window.location.hash) {
-    setTimeout(function() {
-      window.scrollTo(0, 0);
-    }, 1);
+      setTimeout(function() {
+          window.scrollTo(0, 0);
+      }, 1);
   }
-});
+
+  var initialHash = window.location.hash.substring(1);
+  showDescription(initialHash || HASH_STANDARD);
+
+  mw.loader.using('jquery').then(function() {
+      initializeTabClickHandlers();
+      mw.hook('wikipage.content').add(initializeTabClickHandlers);
+  });
+
+}(jQuery, mediaWiki));
 
   //  Скрипт кнопок развернуть/свернуть.
   

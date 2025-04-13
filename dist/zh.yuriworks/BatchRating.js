@@ -3,6 +3,7 @@
     if (mw.user.isAnon()) {
       return;
     }
+
     var api = new mw.Api();
     // 全局评分数据，格式：{ pageId: { userId: { rating: 数字, timestamp: "ISO时间" }, ... } }
     var globalRatings = {};
@@ -110,61 +111,74 @@
     });
 
     // 加载所有主名字空间的内容页面（排除重定向页面）
-    fetchGlobalRatings(function() {
-      api.get({
+    function loadAllPages(continueParams, allPages, callback) {
+      allPages = allPages || [];
+      var params = {
         action: "query",
         list: "allpages",
         apnamespace: 0,
         aplimit: "max",
-        apfilterredir: "nonredirects"
-      }).done(function(data) {
-        var pages = data.query.allpages;
-        pages.forEach(function(page) {
-          var $row = $("<tr>").data("pageid", page.pageid);
-          // 第一列：页面链接
-          var $pageCell = $("<td>").css({ padding: "8px" });
-          var pageUrl = mw.util.getUrl(page.title);
-          var $link = $("<a>").attr("href", pageUrl).text(page.title);
-          $pageCell.append($link);
-          // 第二列：评分组件
-          var $ratingCell = $("<td>").css({ padding: "8px", textAlign: "center" });
-          var ratingData = globalRatings[page.pageid] || {};
-          var widget = createRatingWidget(page.pageid, page.title, ratingData);
-          $ratingCell.append(widget);
-          // 第三列：我的评分
-          var $myCell = $("<td>").css({ padding: "8px", textAlign: "center" });
-          var myRating = (ratingData[mw.user.getId()] && ratingData[mw.user.getId()].rating) || "";
-          $myCell.text(myRating ? myRating : "未评分");
-          $row.append($pageCell, $ratingCell, $myCell);
-          // 保存排序数据：平均分与我的评分
-          var avg = getAverage(ratingData);
-          $row.data("avg", avg).data("my", myRating || 0);
-          $tbody.append($row);
-        });
+        apfilterredir: "nonredirects",
+        format: "json"
+      };
+
+      if (continueParams && continueParams.apcontinue) {
+        params.apcontinue = continueParams.apcontinue;
+      }
+
+      api.get(params).done(function(data) {
+        var pages = data.query.allpages || [];
+        allPages = allPages.concat(pages);
+
+        if (data.continue && data.continue.apcontinue) {
+          loadAllPages(data.continue, allPages, callback);
+        } else {
+          // 过滤掉不需要的页面
+          if (window.ArticleRatesExcludePages && Array.isArray(window.ArticleRatesExcludePages)) {
+            allPages = allPages.filter(function(page) {
+              return window.ArticleRatesExcludePages.indexOf(page.title) === -1;
+            });
+          }
+          callback(allPages);
+        }
       }).fail(function(error) {
         mw.notify("加载页面列表时出错: " + error, { type: "error" });
-      });
-    });
-
-    // 排序功能
-    $("#sort-avg").on("click", function() {
-      sortTable("avg");
-    });
-    $("#sort-my").on("click", function() {
-      sortTable("my");
-    });
-    function sortTable(criteria) {
-      var $rows = $tbody.find("tr");
-      var rowsArray = $rows.toArray();
-      rowsArray.sort(function(a, b) {
-        var aVal = $(a).data(criteria) || 0;
-        var bVal = $(b).data(criteria) || 0;
-        return bVal - aVal;
-      });
-      $.each(rowsArray, function(index, row) {
-        $tbody.append(row);
+        callback(allPages);
       });
     }
+
+    // 渲染页面表格
+    function renderPagesTable(pages) {
+      pages.forEach(function(page) {
+        var $row = $("<tr>").data("pageid", page.pageid);
+        // 第一列：页面链接
+        var $pageCell = $("<td>").css({ padding: "8px" });
+        var pageUrl = mw.util.getUrl(page.title);
+        var $link = $("<a>").attr("href", pageUrl).attr("title", page.title).text(page.title);
+        $pageCell.append($link);
+        // 第二列：评分组件
+        var $ratingCell = $("<td>").css({ padding: "8px", textAlign: "center" });
+        var ratingData = globalRatings[page.pageid] || {};
+        var widget = createRatingWidget(page.pageid, page.title, ratingData);
+        $ratingCell.append(widget);
+        // 第三列：我的评分
+        var $myCell = $("<td>").css({ padding: "8px", textAlign: "center" });
+        var myRating = (ratingData[mw.user.getId()] && ratingData[mw.user.getId()].rating) || "";
+        $myCell.text(myRating ? myRating : "未评分");
+        $row.append($pageCell, $ratingCell, $myCell);
+        // 保存排序数据：平均分与我的评分
+        var avg = getAverage(ratingData);
+        $row.data("avg", avg).data("my", myRating || 0);
+        $tbody.append($row);
+      });
+    }
+
+    // 初始化加载
+    fetchGlobalRatings(function() {
+      loadAllPages(null, [], function(allPages) {
+        renderPagesTable(allPages);
+      });
+    });
 
     // 计算平均分
     function getAverage(ratingData) {
@@ -179,7 +193,7 @@
       return sum / arr.length;
     }
 
-    // 创建评分组件（包含星级、平均分显示和“查看详情”按钮）
+    // 创建评分组件（包含星级、平均分显示和"查看详情"按钮）
     function createRatingWidget(pageId, pageTitle, ratingData) {
       var $container = $("<div>").addClass("article-rating-container");
       var $starsContainer = $("<div>").addClass("rating-stars-container").css({ display: "inline-block" });
@@ -393,6 +407,5 @@
         $tbody.append(row);
       });
     }
-    
   });
 })(jQuery);

@@ -102,7 +102,7 @@ let side = document.querySelector('.page-side-tools');
 	'<div>Облака включены: <input type="checkbox" id="cloud-enabled" '+cloudOn+'/></div>'+
 	'</div><div id="hayday-settings-all"><b>Общие настройки</b>'+
 	'<div>Частота кадров в секунду/FPS (минимум 1, максимум 60): <input id="fps" type="number" min="1" max="60" value="'+(storageGet('fps')||'20')+'"/></div>'+
-	'</div><button id="submit">Сохранить</button>';
+	'</div><button id="submit" class="game-button game-text hayday">Сохранить</button>';
 	console.log(settHtml);
 	div.innerHTML = settHtml;
 	
@@ -1024,7 +1024,7 @@ if (document.body.className.includes('page-События_с_заданиями_
 	let taskTable = document.querySelector("#hidelevels");
 	let btnCon = document.createElement("span");
 	btnCon.style = "float: right;";
-	btnCon.innerHTML = 'Введите ваш текущий уровень: <input type="number" min="1" max="1000" style="width: 50px;"><button class="game-button">Показать</button>';
+	btnCon.innerHTML = 'Введите ваш текущий уровень: <input type="number" min="1" max="1000" style="width: 50px;"><button class="game-button game-text hayday">Показать</button>';
 	taskTable.before(btnCon);
 	addClickTaskEvent(btnCon);
 }
@@ -1185,10 +1185,10 @@ if (document.body.className.includes('page-Список_украшений')) {
 			decoLevel(rows, decoList, +event.target.value);
 		});
 		
-		sorter.querySelector('#reset').innerHTML = '<button class="game-button">Сбросить</button>';
+		sorter.querySelector('#reset').innerHTML = '<button class="game-button game-text hayday">Сбросить</button>';
 		sorter.querySelector('#reset').querySelector('button').addEventListener('click',(event)=>resetAll(rows,sorter));
 		
-		sorter.querySelector('#mix').innerHTML = '<button class="game-button">Перемешать украшения</button>';
+		sorter.querySelector('#mix').innerHTML = '<button class="game-button game-text hayday">Перемешать украшения</button>';
 		sorter.querySelector('#mix').querySelector('button').addEventListener('click',(event)=>mixDeco(rows, tbody));
 	};
 	let getDecoList = function(decos){
@@ -1573,12 +1573,12 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	}
 	
 	
-	plClear.innerHTML = '<button class="game-button">Сбросить</button>';
+	plClear.innerHTML = '<button class="game-button game-text hayday">Сбросить</button>';
 	let plClearBtn = plClear.querySelector('button');
 	
-	plBuildSelect.innerHTML = '<button class="game-button">Снять выбор</button>';
+	plBuildSelect.innerHTML = '<button class="game-button game-text hayday">Снять выбор</button>';
 	let plBuildBtn = plBuildSelect.querySelector('button');
-	plStarSelect.innerHTML = '<button class="game-button">Выбрать всё</button>';
+	plStarSelect.innerHTML = '<button class="game-button game-text hayday">Выбрать всё</button>';
 	let plStarBtn = plStarSelect.querySelector('button');
 	let plBuildIsAll = true;
 	let plStarIsAll = false;
@@ -1720,7 +1720,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 			plBuildBtn.textContent = 'Выбрать всё';
 			plBuildAll.forEach((span, i)=>span.style.background = 'transparent');
 			plStarAll.forEach((span, i)=>span.style.display='none');
-			plRows.forEach((row, i)=> i && row.style.display = 'none' );
+			plRows.forEach((row, i)=> i && (row.style.display = 'none') );
 			plBuildList = plBuildList.map(()=> false);
 			plURLBuild = plURLBuild.map(() => 0);
 			if (plIsSave) plSaveSet({url: plURL, build: plURLBuild});
@@ -2456,7 +2456,7 @@ function getVal (data, key) {
 function storageSet(key, val) {
 	window.localStorage.setItem('haydayWiki_'+key, val);
 }
-function storageGet(val) {
+function storageGet(key) {
 	return window.localStorage.getItem('haydayWiki_'+key);
 }
 

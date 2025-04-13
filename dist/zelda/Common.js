@@ -119,30 +119,4 @@ $(function() {
 			reload_imgs(this);
 		}
 	});
-	
-	/*20 Anneversary countdown timer*/
-	  const dateToCheck = new Date();
-const april24 = new Date(2025, 3, 24); // Note: month is 0-based in JavaScript Date
-
-if (dateToCheck < april24 && !["Gematarix", "Pearl Lunar"].includes(mw.config.get("wgUserName")) ) {
-  $(".page__main").prepend('<div style="background-color:green; padding: 15px;"><img src="https://static.wikia.nocookie.net/zelda_gamepedia_en/images/e/e6/Site-logo.png/revision/latest?cb=20240423180919" height="40px" stylr="vertical-align: middle;"><style> @font-face {font-family: Triforcettf; src: url("https://yeetyourfiles.lol/file/41bb5778/Triforce.ttf") format("ttf");}</style>We only have <span id="20yas" style="color: yellow; font-family: Triforcettf; font-size: 40px;"></span> seconds, <span id="20yam" style="color: yellow; font-family: Triforcettf; font-size: 40px;"></span> minutes, <span id="20yah" style="color: yellow; font-family: Triforcettf; font-size: 40px;"></span> hours, and <span id="20yad" style="color: yellow; font-family: Triforcettf; font-size: 40px;"></span> days until we&#39;ve hit <b style="color: yellow; font-family: Triforcettf; font-size: 40px;">20</b> years of Zelda Wiki!</div>');
-setInterval(function() {
-  const now = new Date();
-  ya20s = document.getElementById("20yas");
-  ya20m = document.getElementById("20yam");
-  ya20h = document.getElementById("20yah");
-  ya20d = document.getElementById("20yad");
-  ya20s.innerHTML = 60 - now.getSeconds();
-  ya20m.innerHTML = 60 - now.getMinutes();
-  
-  const endOfDay = new Date(now);
-  endOfDay.setHours(24, 0, 0, 0); // Set to midnight of the next day
-  const diff = endOfDay.getTime() - now.getTime();
-  ya20h.innerHTML = Math.round(diff / (1000 * 60 * 60));
-
-  const targetDate = new Date('2025-04-24');
-  const differenceInTime = targetDate.getTime() - now.getTime();  
-  const daysRemaining = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-  ya20d.innerHTML = daysRemaining;
-}, 1000);}
 })(this, jQuery);

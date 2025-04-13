@@ -6,6 +6,14 @@ window.tooltips_config = {
 window.tooltips_list = [
     {
         classname: 'spell-tooltip',
-        parse: '{'+'{Заклинание|<#spell-name#>}}',
+        parse: '{'+'{Заклинание|<#spell-name#>|<#spell-level#>}}',
+    },
+    {
+        classname: 'wand-tooltip',
+        parse: '{'+'{Жезл|<#wand-name#>}}',
+    },
+    {
+        classname: 'relic-tooltip',
+        parse: '{'+'{Реликвия|<#relic-name#>}}',
     }
 ];

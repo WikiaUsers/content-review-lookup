@@ -1,16 +1,17 @@
 (function($) {
   mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.jqueryMsg"], function() {
-    if (mw.config.get("wgNamespaceNumber") !== 0 || mw.user.isAnon()) {
-      return;
-    }
-    
     var pageId = mw.config.get("wgArticleId");
     var pageTitle = mw.config.get("wgPageName");
     var userId = mw.user.getId();
     var currentAverage = 0;
     var currentVoteCount = 0;
     var currentPageRatings = {};
-    
+    if (mw.config.get("wgNamespaceNumber") !== 0 || mw.user.isAnon() || pageId === 0) {
+      return;
+    }
+    if (window.ArticleRatesExcludePages && window.ArticleRatesExcludePages.indexOf(pageTitle) !== -1) {
+      return;
+    }
     // 创建评分组件
     var $ratingContainer = $("<div>").addClass("article-rating-container");
     var $starsContainer = $("<div>").addClass("rating-stars-container");
@@ -313,6 +314,209 @@
       }).fail(function(error) {
         $popupContent.html("<div style='color: #d33; padding: 20px;'>加载评分详情失败: " + error + "</div>");
       });
+    }
+  });
+})(jQuery);
+
+(function($) {
+  // 只在 ArticleRates 页面执行（检查命名空间ID和页面名称）
+  var pageName = mw.config.get('wgPageName');
+  var namespaceId = mw.config.get('wgNamespaceNumber');
+  var canonicalPageName = mw.config.get('wgCanonicalNamespace') + ':' + mw.config.get('wgTitle');
+  
+  // 检查是否是ArticleRates页面（命名空间ID为4或Project，页面名称为ArticleRates）
+  if ((namespaceId !== 4 && !/^Project(:|$)/.test(canonicalPageName)) || 
+      !/ArticleRates$/.test(pageName)) {
+    return;
+  }
+
+  // 保存原始表格HTML
+  var originalTableHtml = null;
+  var isVisualized = false;
+
+  // 等待页面加载完成
+  $(function() {
+    // 创建控制按钮容器
+    var $controlPanel = $('<div>').addClass('json-visual-controls');
+
+    // 添加批量评分按钮
+    var $batchRateBtn = $('<button>')
+      .text('批量评分')
+      .addClass('cdx-button mw-ui-progressive')
+      .css('margin-right', '10px')
+      .click(function() {
+        window.location.href = mw.util.getUrl('Project:BatchRate');
+      });
+
+    // 添加可视化/取消可视化按钮
+    var $visualizeBtn = $('<button>')
+      .text('可视化本页')
+      .addClass('cdx-button mw-ui-progressive')
+      .click(toggleVisualization);
+
+    // 将按钮添加到控制面板
+    $controlPanel.append($batchRateBtn, $visualizeBtn);
+
+    // 将控制面板插入到内容顶部
+    $('#mw-content-text').prepend($controlPanel);
+
+    // 切换可视化状态
+    function toggleVisualization() {
+      if (isVisualized) {
+        restoreOriginalTable();
+        $visualizeBtn.text('可视化本页');
+        isVisualized = false;
+      } else {
+        visualizeJsonTable();
+        $visualizeBtn.text('取消可视化');
+        isVisualized = true;
+      }
+    }
+
+    // 恢复原始表格
+    function restoreOriginalTable() {
+      if (originalTableHtml) {
+        $('.mw-json').replaceWith(originalTableHtml);
+        mw.notify('已恢复原始表格显示');
+      }
+    }
+
+    // 可视化JSON表格函数
+    function visualizeJsonTable() {
+      var $jsonTable = $('.mw-json:has(.mw-json .mw-json)');
+      if (!$jsonTable.length) return;
+
+      // 保存原始HTML
+      originalTableHtml = $jsonTable.clone();
+
+      // 设置第一层th宽度为25%
+      $jsonTable.find('> tbody > tr:has(.mw-json .mw-json) > th').css('width', '25%');
+
+      // 设置第二层th宽度为33%
+      $jsonTable.find('.mw-json > tbody > tr:has(.mw-json) > th').css('width', '33%');
+
+      // 处理第一层表格 - 页面ID
+      $jsonTable.find('> tbody > tr:has(.mw-json .mw-json) > th > span').each(function() {
+        var pageId = $(this).text();
+        var $span = $(this);
+        
+        // 获取页面标题
+        var api = new mw.Api();
+        api.get({
+          action: 'query',
+          pageids: pageId,
+          format: 'json'
+        }).done(function(data) {
+          var pages = data.query.pages;
+          var page = pages[pageId];
+          if (page && !page.missing) {
+            $span.html(
+              $('<a>')
+                .attr('href', mw.util.getUrl(page.title))
+                .text(page.title)
+            );
+          } else {
+            $span.text('页面ID: ' + pageId);
+          }
+        }).fail(function() {
+          $span.text('页面ID: ' + pageId);
+        });
+      });
+
+      // 处理第二层表格 - 用户ID
+      $jsonTable.find('.mw-json > tbody > tr:has(.mw-json) > th > span').each(function() {
+        var userId = $(this).text();
+        if (/^\d+$/.test(userId)) { // 检查是否是数字ID
+          var $span = $(this);
+          
+          // 获取用户名
+          var api = new mw.Api();
+          api.get({
+            action: 'query',
+            list: 'users',
+            ususerids: userId,
+            format: 'json'
+          }).done(function(data) {
+            var user = data.query.users[0];
+            if (user && !user.missing) {
+              $span.html(
+                $('<a>')
+                  .attr('href', mw.util.getUrl('User:' + user.name))
+                  .text(user.name)
+              );
+            } else {
+              $span.text('用户ID: ' + userId);
+            }
+          }).fail(function() {
+            $span.text('用户ID: ' + userId);
+          });
+        }
+      });
+
+      // 处理第三层表格 - 评分和时间
+      $jsonTable.find('.mw-json .mw-json > tbody > tr > th > span').each(function() {
+        var text = $(this).text();
+        if (text === 'rating') {
+          $(this).text('评分');
+        } else if (text === 'timestamp') {
+          $(this).text('时间');
+        }
+      });
+
+      // 格式化时间戳
+      function formatTimestamp(timestamp) {
+        try {
+          // 移除可能的引号
+          var dateStr = timestamp.replace(/^"|"$/g, '');
+          
+          // 创建Date对象
+          var date = new Date(dateStr);
+          if (isNaN(date.getTime())) {
+            return timestamp; // 返回原始值如果日期无效
+          }
+          
+          // 使用MediaWiki的时间格式化方法
+          var options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false
+          };
+          
+          // 获取用户语言
+          var userLang = mw.config.get('wgUserLanguage') || 'zh';
+          
+          // 创建格式化对象
+          var formatter = new Intl.DateTimeFormat(userLang, options);
+          
+          // 格式化日期
+          return formatter.format(date);
+        } catch (e) {
+          console.error('格式化时间戳出错:', e);
+          return timestamp; // 返回原始值如果出错
+        }
+      }
+
+      // 格式化时间戳
+      $jsonTable.find('td.mw-json-value').each(function() {
+        var $cell = $(this);
+        var text = $cell.text();
+        
+        // 检查是否是ISO时间格式
+        if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(text) || 
+            /^"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(text)) {
+          var formatted = formatTimestamp(text);
+          $cell.text(formatted);
+        }
+      });
+
+      // 添加表格样式
+      $jsonTable.addClass('article-rates-table');
+      
+      mw.notify('可视化完成！点击"取消可视化"可恢复原始表格');
     }
   });
 })(jQuery);

@@ -51,14 +51,20 @@ function applyColorsToTableCells() {
 
 	            if (matchingRows.length > 0) {
 	                let longestRow = matchingRows.reduce((a, b) => a.length >= b.length ? a : b);
+	                console.log("row " + longestRow)
 	                row_index = rows.indexOf(longestRow);
+	                console.log("row_index " + row_index)
 	            }
 			}
-			
-			let matchingCols = cols.filter(row => col.includes(cols));
-            if (matchingCols.length > 1) {
+
+			var col_index = -1;
+			let matchingCols = cols.filter(column => col.includes(column));
+			console.log("matchingCols, " + matchingCols)
+            if (matchingCols.length > 0) {
                 let longestCol = matchingCols.reduce((a, b) => a.length >= b.length ? a : b);
+                 console.log("col " + longestCol)
                 col_index = cols.indexOf(longestCol);
+                console.log("col_index " + col_index)
             }
 			
 			var background_color = -1;
@@ -69,6 +75,7 @@ function applyColorsToTableCells() {
 			else if (col_index != -1) {
 				background_color = colorMap[default_row][col_index];
 			}
+			console.log("color " + background_color)
             if (background_color != -1) {
                 $(this).css({
                 	"background-color": background_color,

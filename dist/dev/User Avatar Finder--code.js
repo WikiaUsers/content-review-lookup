@@ -36,9 +36,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
             } else if (size < 16) {
                 size = 16;
             }
+            var size_2 = size * 2;
             avatar = avatar.replace(
                 /\/thumbnail\/width\/\d+\/height\/\d+/,
-                '/thumbnail/width/' + size + '/height/' + size
+                '/thumbnail/width/' + size_2 + '/height/' + size_2
             );
         }
 

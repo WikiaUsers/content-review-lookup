@@ -2,3 +2,7 @@
 window.ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions","Special:WikiActivity"];
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+
+/* LockOldComments */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;

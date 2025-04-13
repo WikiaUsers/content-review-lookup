@@ -6,6 +6,13 @@
 * <nowiki>
 */
 
+//Remove code and images on Project:Medals that are not needed to operate the script and confuse users — cleans the UI to just the edit modal.
+mw.loader.using('mediawiki.util').then(function() {
+    if (mw.config.get('wgNamespaceNumber') === 4 && mw.config.get('wgTitle') === "Medals") {
+        mw.util.addCSS('.mw-content-ltr.mw-parser-output { display: none; }');
+    }
+});
+
 ;(function($,mw) {
 	importArticle({
     	type: 'script',

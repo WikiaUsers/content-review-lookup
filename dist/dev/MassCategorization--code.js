@@ -880,9 +880,9 @@
         setDefaultDelay: function() {
             if (!this.delay) {
                 if (this.wg.wgUserGroups.includes('bot')) {
-                    this.delay = 1000;
-                } else {
                     this.delay = 2000;
+                } else {
+                    this.delay = 4000;
                 }
             }
         },

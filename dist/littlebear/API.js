@@ -42,16 +42,6 @@ mw.loader.using(['mediawiki.api'], function(){
 			$('.administration').append(row);
 		}
 	});
-	
-	// Signature
-	api.get({meta: 'userinfo'}).done(currentUser => {
-		const username = currentUser.query.userinfo.name;
-		const anonSig = link(`Special:Contributions/${username}`, username);
-		const userLink = link(`User:${username}`, username);
-		const talkLink = link(`User talk:${username}`, 'talk');
-		const signature = (currentUser.query.userinfo.id === 0) ? anonSig : `${userLink} (${talkLink})`;
-		$('.signature').html(signature);
-	});
 });
 
 function link(page, text = page){

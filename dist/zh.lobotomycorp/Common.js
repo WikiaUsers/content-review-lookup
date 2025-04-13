@@ -42,6 +42,7 @@ importArticles({
         'u:dev:MediaWiki:AjaxBatchDelete.js',//添加批量删除工具
         'u:dev:MediaWiki:AddRailModule/code.js',//为右侧轨添加一个内容公告
         'u:dev:MediaWiki:ThemeToggler.js',//添加一个临时切换主题的按钮在左上角
+        'u:dev:MediaWiki:Bang.js',//命名空间缩写
         'u:dev:MediaWiki:NullEditButton/code.js',//在页面选项中添加一个空编辑选项，用于刷新
         'u:dev:MediaWiki:MassCategorization/code.js',//添加一个批量分类管理工具
         'u:dev:MediaWiki:CommunityPageRailModule.js',//为右侧轨添加社区模块

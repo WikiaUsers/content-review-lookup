@@ -72,7 +72,7 @@ $( function () {
 				'Tooltip:' + thistitle,
 			];
 			texts = [
-				"{{PlayerTabsHeader}}\n{{PlayerResults|show=everything}}",
+				"{{PlayerTabsHeader}}\n{{PlayerResults|show=everything}}\n{{PlayerShowmatchResults|show=everything}}\n{{PlayerResults1v1|show=everything}}",
 				"{{PlayerTooltip}}",
 			];
 			if (makeStats) {
@@ -106,7 +106,7 @@ $( function () {
 				'Tooltip:' + thistitle
 			];
 			texts = [
-				"{{TeamTabsHeader}}\n{{TeamResults|show=everything}}",
+				"{{TeamTabsHeader}}\n{{TeamResults|show=everything}}\n{{TeamShowmatchResults|show=everything}}",
 				"{{TeamTabsHeader}}\n{{PBHistoryTeam}}",
 				"{{TeamTabsHeader}}\n{{TeamScheduleHistory}}",
 				"{{RosterTooltip}}"

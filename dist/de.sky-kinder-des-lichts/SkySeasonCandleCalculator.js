@@ -86,10 +86,10 @@ Date.prototype.toDateInputValue = (function() {
 
                 // TRANSLATION SECTION 1
                 var translation_the_season = "Die"; // Referring to "Season"
-                var translation_lasts = "läuft noch";
+                var translation_lasts = "läuft";
                 var translation_days_long = "Tage";
-                var translation_from = "von";
-                var translation_to = "bis";
+                var translation_from = "vom";
+                var translation_to = "bis zum";
                 var translation_the_dsce = "Das"; // Referring to "Double Seasonal Candle Event"
                 var translation_a_second = "Ein zweites"; // Referring to "Double Seasonal Candle Event"
                 var translation_a = "Ein"; // Referring to "Double Seasonal Candle Event"
@@ -107,7 +107,7 @@ Date.prototype.toDateInputValue = (function() {
                 var translation_choose_time = "Wähle eine Zeit";
                 var translation_now = "Jetzt";
                 var translation_reset = "Reset";
-                var translation_your_current_sc = "Anzahl Saisonkerzen, die du aktuell besitzt";
+                var translation_your_current_sc = "Wie viele Saisonkerzen hast du aktuell?";
                 var translation_do_you_have_a_pass = "Hast du einen Saisonpass?";
                 var translation_calculate = "Berechnen";
                 var translation_clear = "Löschen";
@@ -136,7 +136,7 @@ Date.prototype.toDateInputValue = (function() {
                 */'<input type="submit" class="wds-button wds-is-secondary" value="' + translation_now + '" onclick="return SkySeasonalCandleCalculator.now_time();">&nbsp;' + /*
                 */'<input type="submit" class="wds-button wds-is-secondary" value="' + translation_reset + '" onclick="return SkySeasonalCandleCalculator.reset_time();"><br>' + /*
 
-                */'<label for="sscc_current_count">' + translation_your_current_sc + ':</label>&nbsp;' + /*
+                */'<label for="sscc_current_count">' + translation_your_current_sc + '</label>&nbsp;' + /*
                 */'<input type="number" id="sscc_current_count" name="sscc_current_count" value="0" min="0" max="550" onchange="return SkySeasonalCandleCalculator.calculate();"><br>' + /*
 
                 */'<label for="sscc_has_pass">' + translation_do_you_have_a_pass + '</label>&nbsp;' + /*
@@ -527,8 +527,8 @@ Date.prototype.toDateInputValue = (function() {
             var translation_sc = "Saisonkerze(n)";
             var translation_w_pass = "mit einem Saisonpass eingesammelt"; // grammar "collected"
             var translation_wo_pass = "ohne einen Saisonpass eingesammelt"; // grammar "collected"
-            var translation_all_the_sc = "<b>alle</b> Saisonkerzen bisher";
-            var translation_and_more = "<b>...UND MEHR?</b>";
+            var translation_all_the_sc = "<b>alle</b> Saisonkerzen bisher eingesammelt"; // grammar "collected"
+            var translation_and_more = " <b>...UND SOGAR MEHR?</b>";
             var translation_you_would_need = "Du bräuchtest";
             var translation_to_buy_everything = "um alle Kosmetika aus der Saison zu kaufen"
             var translation_if_you_dont_miss = "Du solltest alle Kosmetika kaufen können, aber du darfst"

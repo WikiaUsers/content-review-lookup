@@ -1178,8 +1178,11 @@ $(function() {
 		
 		// Open next diff in RC or user contribs list
 		openNext: function() {
-			let all = $('.quickDiff');
+			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff');
 			let curr = $('.quickDiff.link-focused');
+			if (curr.is('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff')) {
+				curr = $('table:has(.quickDiff.link-focused) .mw-rcfilters-ui-highlights-enhanced-toplevel .quickDiff');
+			}
 			if (all.length===0 || curr.length===0){alert('There was an error, re-open the modal and try again!'); return;}
 			let next = all.index(curr)+1;
 			// Attempt to load 1 more just in case next entry is unloaded
@@ -1195,8 +1198,11 @@ $(function() {
 		
 		// Open next diff in RC or user contribs list
 		openPrev: function() {
-			let all = $('.quickDiff');
+			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff');
 			let curr = $('.quickDiff.link-focused');
+			if (curr.is('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff')) {
+				curr = $('table:has(.quickDiff.link-focused) .mw-rcfilters-ui-highlights-enhanced-toplevel .quickDiff');
+			}
 			if (all.length===0 || curr.length===0){alert('There was an error, re-open the modal and try again!'); return;}
 			let prev = all.index(curr)-1;
 			if (prev<0 || !all[prev]) {

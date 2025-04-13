@@ -1,88 +1,32 @@
-// The css used for this feature can be found in MediaWiki:UweInactivityWindow.css
+// Function to remove target="_blank" from anchor tags
+function removeBlankTargets() {
+  let anchorTags = document.querySelectorAll('a');
+  anchorTags.forEach(anchor => {
+    if (anchor.getAttribute('target') === '_blank') {
+      anchor.removeAttribute('target');
+    }
+  });
+}
 
-let timeout;
+// Initial run to handle already existing links
+removeBlankTargets();
 
-function createPrompt() {
-    let modal = document.createElement('div');
-    modal.id = 'inactivityModal';
-    modal.style.display = 'flex';
-
-    let prompt = document.createElement('div');
-    prompt.id = 'inactivityPrompt';
-
-    let img = document.createElement('img');
-    img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest/scale-to-width-down/1000?cb=20241007193623&path-prefix=de';
-
-    let text1 = document.createElement('span');
-    text1.className = 'text-line1';
-    text1.innerText = 'You haven\'t moved your mouse for at least five minutes. That got us wondering:';
-
-    let text2 = document.createElement('span');
-    text2.className = 'text-line2';
-    text2.innerText = 'Are you still alive?';
-
-    let buttonContainer = document.createElement('div');
-    buttonContainer.id = 'buttonContainer';
-
-    let yesButton = document.createElement('button');
-    yesButton.innerText = 'Yes';
-    yesButton.onclick = hidePrompt;
-
-    let noButton = document.createElement('button');
-    noButton.innerText = 'No';
-
-    buttonContainer.appendChild(yesButton);
-    buttonContainer.appendChild(noButton);
-
-    prompt.appendChild(img);
-    prompt.appendChild(text1);
-    prompt.appendChild(document.createElement('br')); // Line break
-    prompt.appendChild(text2);
-    prompt.appendChild(document.createElement('br')); // Line break
-    prompt.appendChild(buttonContainer);
-    modal.appendChild(prompt);
-    document.body.appendChild(modal);
-    
-    // Add ::before pseudo-element 
-    let style = document.createElement('style');
-    style.innerHTML = `
-        #inactivityModal::before {
-        content: "";
+// Create a MutationObserver to watch for changes in the DOM
+let observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      // Check if the added node is an anchor tag
+      if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'A') {
+        if (node.getAttribute('target') === '_blank') {
+          node.removeAttribute('target');
         }
-    `;
-    document.head.appendChild(style);
-}
+      }
+    });
+  });
+});
 
-function showPrompt() {
-    let modal = document.getElementById('inactivityModal');
-    if (!modal) {
-        createPrompt();
-    } else {
-        modal.style.display = 'flex';
-    }
-}
+// Start observing the DOM for added nodes
+observer.observe(document.body, { childList: true, subtree: true });
 
-function hidePrompt() {
-    let modal = document.getElementById('inactivityModal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-    resetTimer();
-}
-
-function resetTimer() {
-    clearTimeout(timeout);
-    timeout = setTimeout(showPrompt, 300000); // 5 minutes till summoning of Heinrych
-}
-
-document.onmousemove = resetTimer; // Reset timer on mouse movement
-
-document.onkeydown = function(event) {
-    keysPressed[event.key] = true;
-
-    if (keysPressed['!'] && keysPressed['ø']) {
-        showPrompt();
-    }
-};
-
-resetTimer(); // Start timer when site loads
+console.log('All target="_blank" attributes have been removed.');
+console.log('Observer is now watching for new links to remove target="_blank".');

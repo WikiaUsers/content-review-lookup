@@ -67,9 +67,61 @@ var MutationsGallery = (function() {
 		failed: 0,
 		lastUpload: null
 	};
-	
-	// DOM elements cache
-	var domCache = {};
+
+    var checkCompatibility = function() {
+        // Проверка поддержки Promise
+        if (typeof Promise === 'undefined') {
+            console.warn('Promise API is not supported in this browser. Some features may not work correctly.');
+        }
+        
+        // Проверка поддержки crypto API
+        if (typeof crypto === 'undefined' || !crypto.subtle) {
+            console.warn('Web Crypto API is not supported in this browser. SHA1 verification will be disabled.');
+        }
+        
+        // Проверка поддержки DataTransfer
+        if (typeof DataTransfer === 'undefined') {
+            console.warn('DataTransfer API is not supported in this browser. Some file operations may be limited.');
+        }
+        
+        // Проверка и инициализация MediaWiki API
+        if (typeof mw === 'undefined' || typeof mw.Api === 'undefined') {
+            console.warn('MediaWiki API is not available. Some functionality will be limited.');
+        }
+    };
+
+    var safeFileOperations = {
+        // Безопасное создание DataTransfer объекта
+        createDataTransfer: function() {
+            try {
+                return new DataTransfer();
+            } catch (e) {
+                console.warn('DataTransfer not supported, using fallback');
+                return {
+                    items: {
+                        add: function() { /* noop */ },
+                        clear: function() { /* noop */ }
+                    },
+                    files: []
+                };
+            }
+        },
+        
+        // Безопасное обновление файлов в input элементе
+        updateInputFiles: function(inputElement, files) {
+            try {
+                var dt = new DataTransfer();
+                for (var i = 0; i < files.length; i++) {
+                    dt.items.add(files[i]);
+                }
+                inputElement.files = dt.files;
+                return true;
+            } catch (e) {
+                console.warn('Could not update input files:', e);
+                return false;
+            }
+        }
+    };
 	
 	// Module configuration
 	var config = {
@@ -116,6 +168,14 @@ var MutationsGallery = (function() {
 		$notification: null,
 		
 		init: function() {
+
+            if (typeof jQuery === 'undefined') {
+                console.error('UMI: jQuery is required but not available');
+                return;
+            }
+
+            checkCompatibility();
+
 			this.createModal();
 			this.bindEvents();
 			this.detectTheme();
@@ -235,7 +295,11 @@ var MutationsGallery = (function() {
 				'</div>' +
 				'</div>';
 
-			$('body').append(modalHTML);
+			// Safely append modal to body
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = modalHTML;
+			var modalNode = tempDiv.firstChild;
+			document.body.appendChild(modalNode);
 			
 			// Cache DOM elements for quick access
 			this.modal = document.getElementById('mutation-modal');
@@ -392,38 +456,41 @@ var MutationsGallery = (function() {
 		},
 		
 		// Clipboard paste for images
-		setupClipboardPaste: function() {
-			$('#mutation-modal').on('paste', function(e) {
-				var items = (e.clipboardData || e.originalEvent.clipboardData).items;
-				
-				if (items) {
-					for (var i = 0; i < items.length; i++) {
-						if (items[i].type.indexOf('image') !== -1) {
-							var blob = items[i].getAsFile();
-							// Handle the file only if it's valid
-							if (blob) {
-								var fileExt = blob.type.split('/')[1] || 'png';
-								var file = new File([blob], 'pasted_image_' + new Date().getTime() + '.' + fileExt, {
-									type: blob.type
-								});
-								
-								try {
-									// Use DataTransfer for modern browsers
-									var dataTransfer = new DataTransfer();
-									dataTransfer.items.add(file);
-									$('#mutation-image')[0].files = dataTransfer.files;
-									$('#mutation-image').trigger('change');
-								} catch (error) {
-									// Fallback method for older browsers
-									UI.showStatus('Your browser doesn\'t support pasting images directly. Please save and upload the image manually.', 'warning');
-								}
-								break;
-							}
-						}
-					}
-				}
-			});
-		},
+        setupClipboardPaste: function() {
+            var self = this;
+            
+            $('#mutation-modal').on('paste', function(e) {
+                var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                
+                if (items) {
+                    for (var i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            var blob = items[i].getAsFile();
+                            // Handle the file only if it's valid
+                            if (blob) {
+                                var fileExt = blob.type.split('/')[1] || 'png';
+                                var file = new File([blob], 'pasted_image_' + new Date().getTime() + '.' + fileExt, {
+                                    type: blob.type
+                                });
+                                
+                                try {
+                                    var updateSuccess = safeFileOperations.updateInputFiles($('#mutation-image')[0], [file]);
+                                    if (updateSuccess) {
+                                        $('#mutation-image').trigger('change');
+                                    } else {
+                                        throw new Error("Failed to update input files");
+                                    }
+                                } catch (error) {
+                                    // Fallback method for older browsers
+                                    UI.showStatus('Your browser doesn\'t support pasting images directly. Please save and upload the image manually.', 'warning');
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        },
 		
 		// Handle file selection
 		handleFileSelect: function(e) {
@@ -494,16 +561,29 @@ var MutationsGallery = (function() {
 			// Hide single image preview
 			$('#image-preview-container').hide();
 			
+			// Create selected files container if it doesn't exist
+			if ($('#selected-files-container').length === 0) {
+				var selectedFilesHTML = '<div id="selected-files-container" class="selected-files-container" style="display:none;">' +
+					'<div class="selected-files-header">' +
+						'<div class="selected-files-title">Selected Files</div>' +
+						'<div class="selected-files-count">(<span id="selected-count">0</span>)</div>' +
+					'</div>' +
+					'<div id="selected-files-list" class="selected-files-list"></div>' +
+				'</div>';
+				
+				$('#image-preview-container').after(selectedFilesHTML);
+			}
+			
 			// Show files list
 			$('#selected-count').text(validFiles.length);
 			var $filesList = $('#selected-files-list').empty();
 			
 			// Process each file
-			validFiles.forEach(function(file, index) {
-				var fileReader = new FileReader();
-				
-				fileReader.onload = function(e) {
-					var $fileItem = $('<div class="selected-file-item" data-index="' + index + '">' +
+            validFiles.forEach(function(file, index) {
+                var fileReader = new FileReader();
+                
+                fileReader.onload = function(e) {
+                    var $fileItem = $('<div class="selected-file-item" data-index="' + index + '">' +
 						'<img src="' + e.target.result + '" class="selected-file-thumb" alt="Thumbnail">' +
 						'<div class="selected-file-info">' +
 							'<div class="selected-file-name">' + file.name + '</div>' +
@@ -512,22 +592,22 @@ var MutationsGallery = (function() {
 						'<div class="selected-file-remove" title="Remove file"></div>' +
 					'</div>');
 					
-					// Add click handler to preview image
-					$fileItem.find('.selected-file-thumb').on('click', function() {
-						self.previewFileFromList(file, index);
-					});
-					
-					// Add click handler to remove button
-					$fileItem.find('.selected-file-remove').on('click', function(e) {
-						e.stopPropagation();
-						self.removeFileFromList(index);
-					});
-					
-					$filesList.append($fileItem);
-				};
-				
-				fileReader.readAsDataURL(file);
-			});
+                    (function(currentFile, currentIndex) {
+                        $fileItem.find('.selected-file-thumb').on('click', function() {
+                            self.previewFileFromList(currentFile, currentIndex);
+                        });
+                        
+                        $fileItem.find('.selected-file-remove').on('click', function(e) {
+                            e.stopPropagation();
+                            self.removeFileFromList(currentIndex);
+                        });
+                    })(file, index);
+                    
+                    $filesList.append($fileItem);
+                };
+                
+                fileReader.readAsDataURL(file);
+            });
 			
 			$('#selected-files-container').fadeIn();
 			
@@ -562,35 +642,32 @@ var MutationsGallery = (function() {
 		},
 		
 		// Remove file from multiple files list
-		removeFileFromList: function(index) {
-			// Get current file list
-			var files = Array.from(this.$imageInput[0].files);
-			
-			// Remove file at index
-			files.splice(index, 1);
-			
-			if (files.length === 0) {
-				// If no files left, reset file input
-				this.resetFileSelection();
-				return;
-			}
-			
-			// Update file input with new file list
-			try {
-				var dataTransfer = new DataTransfer();
-				files.forEach(function(file) {
-					dataTransfer.items.add(file);
-				});
-				this.$imageInput[0].files = dataTransfer.files;
-				
-				// Refresh file list
-				this.handleFileSelect({ target: { files: dataTransfer.files } });
-			} catch (error) {
-				// Fallback: reset completely if DataTransfer is not supported
-				ErrorLogger.logError(error, 'removeFileFromList');
-				this.resetFileSelection();
-			}
-		},
+        removeFileFromList: function(index) {
+            // Get current file list
+            var files = Array.from(this.$imageInput[0].files);
+            
+            // Remove file at index
+            files.splice(index, 1);
+            
+            if (files.length === 0) {
+                // If no files left, reset file input
+                this.resetFileSelection();
+                return;
+            }
+            
+            // Update file input with new file list
+            var updateSuccess = safeFileOperations.updateInputFiles(this.$imageInput[0], files);
+            
+            if (!updateSuccess) {
+                // Fallback: reset completely if DataTransfer is not supported
+                ErrorLogger.logError("Could not update files using DataTransfer", 'removeFileFromList');
+                this.resetFileSelection();
+                return;
+            }
+            
+            // Refresh file list
+            this.handleFileSelect({ target: { files: this.$imageInput[0].files } });
+        },
 		
 		// Remove selected file
 		handleFileRemove: function() {
@@ -622,8 +699,40 @@ var MutationsGallery = (function() {
 		handleFormSubmit: function(e) {
 			e.preventDefault();
 
-			var file = $('#mutation-image')[0].files[0];
 			var mutations = $('#mutation-names').val().trim();
+			var file;
+
+			// Check if image has been edited
+			if (ImageProcessor.editState.rotation !== 0 || ImageProcessor.editState.crop !== null) {
+				// Use the edited image instead of the original file
+				var dataUrl = ImageProcessor.applyEdits();
+				if (dataUrl) {
+					// Convert data URL to Blob
+					var arr = dataUrl.split(',');
+					var mime = arr[0].match(/:(.*?);/)[1];
+					var bstr = atob(arr[1]);
+					var n = bstr.length;
+					var u8arr = new Uint8Array(n);
+					
+					while (n--) {
+						u8arr[n] = bstr.charCodeAt(n);
+					}
+					
+					// Create a new File from the edited image
+					var originalFile = $('#mutation-image')[0].files[0];
+					var fileExt = mime.split('/')[1] === 'jpeg' ? 'jpg' : mime.split('/')[1];
+					file = new File([u8arr], originalFile.name.replace(/\.[^/.]+$/, '') + '_edited.' + fileExt, {
+						type: mime,
+						lastModified: new Date().getTime()
+					});
+				} else {
+					// Fallback to original file if editing fails
+					file = $('#mutation-image')[0].files[0];
+				}
+			} else {
+				// No edits, use original file
+				file = $('#mutation-image')[0].files[0];
+			}
 
 			if (!file) {
 				UI.showStatus('Error: No file selected', 'error');
@@ -681,11 +790,21 @@ var MutationsGallery = (function() {
 			$('#upload-status').html('').hide();
 			$('#mutation-names').val('');
 			$('#char-count').text('0').removeClass('char-count-warning char-count-limit');
-			$('#selected-files-container').hide();
-			$('#selected-files-list').empty();
+			
+			// Hide selected files container if it exists
+			if ($('#selected-files-container').length) {
+				$('#selected-files-container').hide();
+				$('#selected-files-list').empty();
+			}
+			
 			$('#edit-controls').hide();
 			$('#crop-overlay').hide();
-			$('#batch-progress-container').hide();
+			
+			// Hide batch progress container if it exists
+			if ($('#batch-progress-container').length) {
+				$('#batch-progress-container').hide();
+			}
+			
 			UI.$progressContainer.hide();
 			UI.$progressBar.css('width', '0%');
 			
@@ -700,8 +819,13 @@ var MutationsGallery = (function() {
 			$('.file-remove').hide();
 			$('#image-preview-container').hide();
 			$('#image-preview').attr('src', '');
-			$('#selected-files-container').hide();
-			$('#selected-files-list').empty();
+			
+			// Hide selected files container if it exists
+			if ($('#selected-files-container').length) {
+				$('#selected-files-container').hide();
+				$('#selected-files-list').empty();
+			}
+			
 			$('#edit-controls').hide();
 			$('#crop-overlay').hide();
 			
@@ -776,7 +900,6 @@ var MutationsGallery = (function() {
 		setupCropDrag: function() {
 			var $overlay = $('#crop-overlay');
 			var $image = $('#image-preview');
-			var $container = $('.preview-body');
 			
 			var isDragging = false;
 			var isResizing = false;
@@ -986,8 +1109,27 @@ var MutationsGallery = (function() {
 		// Show batch UI
 		showBatchUI: function(batchItems) {
 			// Hide file lists and preview
-			$('#selected-files-container').hide();
+			if ($('#selected-files-container').length) {
+				$('#selected-files-container').hide();
+			}
 			$('#image-preview-container').hide();
+			
+			// Create batch progress container if it doesn't exist
+			if ($('#batch-progress-container').length === 0) {
+				var batchHTML = '<div id="batch-progress-container" class="batch-progress-container" style="display:none;">' +
+					'<div class="batch-progress-header">' +
+						'<div class="batch-progress-title">Batch Upload Progress</div>' +
+						'<div class="batch-progress-status"><span id="batch-progress-text">0/0</span></div>' +
+					'</div>' +
+					'<div class="batch-progress-bar-container">' +
+						'<div id="batch-progress-bar" class="batch-progress-bar"></div>' +
+					'</div>' +
+					'<div id="batch-items-container" class="batch-items-container"></div>' +
+					'<button id="cancel-batch-btn" class="cancel-batch-btn">Cancel</button>' +
+				'</div>';
+				
+				$('#progress-container').after(batchHTML);
+			}
 			
 			// Setup batch progress UI
 			var $batchItemsContainer = $('#batch-items-container').empty();
@@ -1118,42 +1260,42 @@ var MutationsGallery = (function() {
 		createWorker: function() {
 			try {
 				// Create inline worker
-				var workerBlob = new Blob([`
-					self.onmessage = function(e) {
-						var data = e.data;
-						var id = data.id;
-						var fileBuffer = data.buffer;
-						
-						// Function to convert string to ArrayBuffer
-						function str2ab(str) {
-							var buf = new ArrayBuffer(str.length);
-							var bufView = new Uint8Array(buf);
-							for (var i=0, strLen=str.length; i < strLen; i++) {
-								bufView[i] = str.charCodeAt(i);
-							}
-							return buf;
-						}
-						
-						// Function to calculate SHA1
-						function sha1(buffer) {
-							return crypto.subtle.digest('SHA-1', buffer)
-								.then(function(hash) {
-									var hashArray = Array.from(new Uint8Array(hash));
-									var hashHex = hashArray.map(function(b) {
-										return ('00' + b.toString(16)).slice(-2);
-									}).join('');
-									return hashHex;
-								});
-						}
-						
-						// Start SHA1 calculation
-						sha1(fileBuffer).then(function(result) {
-							self.postMessage({ id: id, result: result });
-						}).catch(function(error) {
-							self.postMessage({ id: id, error: error.message || 'SHA1 calculation failed' });
-						});
-					};
-				`], { type: 'application/javascript' });
+                var workerBlob = new Blob([
+                    'self.onmessage = function(e) {' +
+                    '    var data = e.data;' +
+                    '    var id = data.id;' +
+                    '    var fileBuffer = data.buffer;' +
+                    '    ' +
+                    '    // Function to convert string to ArrayBuffer' +
+                    '    function str2ab(str) {' +
+                    '        var buf = new ArrayBuffer(str.length);' +
+                    '        var bufView = new Uint8Array(buf);' +
+                    '        for (var i=0, strLen=str.length; i < strLen; i++) {' +
+                    '            bufView[i] = str.charCodeAt(i);' +
+                    '        }' +
+                    '        return buf;' +
+                    '    }' +
+                    '    ' +
+                    '    // Function to calculate SHA1' +
+                    '    function sha1(buffer) {' +
+                    '        return crypto.subtle.digest(\'SHA-1\', buffer)' +
+                    '            .then(function(hash) {' +
+                    '                var hashArray = Array.from(new Uint8Array(hash));' +
+                    '                var hashHex = hashArray.map(function(b) {' +
+                    '                    return (\'00\' + b.toString(16)).slice(-2);' +
+                    '                }).join(\'\');' +
+                    '                return hashHex;' +
+                    '            });' +
+                    '    }' +
+                    '    ' +
+                    '    // Start SHA1 calculation' +
+                    '    sha1(fileBuffer).then(function(result) {' +
+                    '        self.postMessage({ id: id, result: result });' +
+                    '    }).catch(function(error) {' +
+                    '        self.postMessage({ id: id, error: error.message || \'SHA1 calculation failed\' });' +
+                    '    });' +
+                    '};'
+                ], { type: 'application/javascript' });
 				
 				var workerUrl = URL.createObjectURL(workerBlob);
 				sha1Worker = new Worker(workerUrl);
@@ -1240,6 +1382,13 @@ var MutationsGallery = (function() {
 		checkUserPermissions: function() {
 			return new Promise(function(resolve, reject) {
 				try {
+					// Check if mw.Api is available
+					if (typeof mw === 'undefined' || typeof mw.Api === 'undefined') {
+						console.warn('MediaWiki API not available, skipping permission check');
+						resolve(true); // Assume permissions are granted
+						return;
+					}
+					
 					// Get user rights via MediaWiki API
 					new mw.Api().get({
 						action: 'query',
@@ -1264,7 +1413,8 @@ var MutationsGallery = (function() {
 						reject('Error checking permissions: ' + (error.info || error));
 					});
 				} catch (error) {
-					reject('Unexpected error checking permissions: ' + error.message);
+					console.warn('Error in checkUserPermissions:', error);
+					resolve(true); // Assume permissions are granted in case of error
 				}
 			});
 		},
@@ -1272,6 +1422,12 @@ var MutationsGallery = (function() {
 		// Check for duplicate by SHA1
 		checkDuplicateImage: function(sha1) {
 			if (!sha1) return Promise.resolve(null);
+			
+			// Check if mw.Api is available
+			if (typeof mw === 'undefined' || typeof mw.Api === 'undefined') {
+				console.warn('MediaWiki API not available, skipping duplicate check');
+				return Promise.resolve(null);
+			}
 			
 			return new mw.Api().get({
 				action: 'query',
@@ -1293,6 +1449,13 @@ var MutationsGallery = (function() {
 		checkImageExistsInGallery: function(fileNameToCheck) {
 			return new Promise(function(resolve, reject) {
 				try {
+					// Check if mw.Api is available
+					if (typeof mw === 'undefined' || typeof mw.Api === 'undefined' || !mw.config) {
+						console.warn('MediaWiki API not available, skipping gallery check');
+						resolve(false);
+						return;
+					}
+					
 					new mw.Api().get({
 						action: 'query',
 						prop: 'revisions',
@@ -1326,7 +1489,8 @@ var MutationsGallery = (function() {
 						reject('Error retrieving page content: ' + (error.info || error));
 					});
 				} catch (error) {
-					reject('Unexpected error checking gallery: ' + error.message);
+					console.warn('Error in checkImageExistsInGallery:', error);
+					resolve(false); // Assume file is not in gallery in case of error
 				}
 			});
 		},
@@ -1334,6 +1498,12 @@ var MutationsGallery = (function() {
 		// Get gallery content
 		getGalleryContent: function() {
 			return new Promise(function(resolve, reject) {
+				// Check if mw.Api is available
+				if (typeof mw === 'undefined' || typeof mw.Api === 'undefined' || !mw.config) {
+					reject('MediaWiki API not available, cannot get gallery content');
+					return;
+				}
+				
 				new mw.Api().get({
 					action: 'query',
 					prop: 'revisions',
@@ -1375,6 +1545,12 @@ var MutationsGallery = (function() {
 		// Update gallery via AJAX
 		updateGallery: function(originalContent, updatedContent, galleryItem) {
 			return new Promise(function(resolve, reject) {
+				// Check if mw.Api is available
+				if (typeof mw === 'undefined' || typeof mw.Api === 'undefined' || !mw.config) {
+					reject('MediaWiki API not available, cannot update gallery');
+					return;
+				}
+				
 				new mw.Api().get({
 					action: 'query',
 					prop: 'revisions',
@@ -1441,9 +1617,18 @@ var MutationsGallery = (function() {
 					var fileName = galleryItem.split('|')[0];
 					var mutationText = galleryItem.split('|')[1];
 					
-					// Get thumbnail URL (for wiki)
-					var wikiUrl = mw.config.get('wgServer') + mw.config.get('wgScriptPath');
-					var thumbUrl = wikiUrl + '/Special:FilePath/' + encodeURIComponent(fileName.replace('File:', '')) + '?width=120';
+					// Check if mw.config is available
+					var wikiUrl = '';
+					var thumbUrl = '';
+					
+					if (typeof mw !== 'undefined' && mw.config) {
+						wikiUrl = mw.config.get('wgServer') + mw.config.get('wgScriptPath');
+						thumbUrl = wikiUrl + '/Special:FilePath/' + encodeURIComponent(fileName.replace('File:', '')) + '?width=120';
+					} else {
+						// Fallback for when mw.config is not available
+						wikiUrl = window.location.origin;
+						thumbUrl = wikiUrl + '/Special:FilePath/' + encodeURIComponent(fileName.replace('File:', '')) + '?width=120';
+					}
 					
 					// Create element
 					var $newItem = $('<li class="gallerybox">' +
@@ -1502,6 +1687,16 @@ var MutationsGallery = (function() {
 				}
 				return;
 			}
+			
+			// Check if mw.config is available
+			if (typeof mw === 'undefined' || !mw.config) {
+				UI.showStatus('Error: MediaWiki configuration not available', 'error');
+				isUploading = false;
+				if (typeof processQueue === 'function') {
+					processQueue();
+				}
+				return;
+			}
 		
 			// Clean and format page name
 			var pageName = mw.config.get('wgPageName')
@@ -1536,8 +1731,6 @@ var MutationsGallery = (function() {
 				.then(function(existingFileName) {
 					if (existingFileName) {
 						UI.showStatus('Found existing image with same content: ' + existingFileName, 'info');
-						
-						// Check if file exists in current gallery
 						return WikiAPI.checkImageExistsInGallery(existingFileName).then(function(existsInGallery) {
 							if (existsInGallery) {
 								UI.showStatus('This image is already in the gallery. Upload canceled.', 'error');
@@ -1553,34 +1746,32 @@ var MutationsGallery = (function() {
 							}
 						});
 					} else {
-						// Check file existence
-						function checkFileExists(counter) {
-							var suffix = counter > 0 ? '_(' + counter + ')' : '';
-							var testFileName = baseFileName + suffix + '.' + fileExtension;
-							
-							return new mw.Api().get({
-								action: 'query',
-								titles: 'File:' + testFileName,
-								prop: 'info'
-							}).then(function(data) {
-								var pages = data.query.pages;
-								return !pages[-1]; // If there's a page with id -1, file doesn't exist
-							}).catch(function(error) {
-								console.warn('Error checking file existence:', error);
-								return false; // Assume file doesn't exist in case of error
-							});
-						}
-					
-						// Recursive search for available file name
-						function findAvailableFileName(counter) {
-							return checkFileExists(counter).then(function(exists) {
-								if (!exists) {
-									var suffix = counter > 0 ? '_(' + counter + ')' : '';
-									return baseFileName + suffix + '.' + fileExtension;
-								}
-								return findAvailableFileName(counter + 1);
-							});
-						}
+                        var checkFileExists = function(counter) {
+                            var suffix = counter > 0 ? '_(' + counter + ')' : '';
+                            var testFileName = baseFileName + suffix + '.' + fileExtension;
+                            
+                            return new mw.Api().get({
+                                action: 'query',
+                                titles: 'File:' + testFileName,
+                                prop: 'info'
+                            }).then(function(data) {
+                                var pages = data.query.pages;
+                                return !pages[-1]; // If there's a page with id -1, file doesn't exist
+                            }).catch(function(error) {
+                                console.warn('Error checking file existence:', error);
+                                return false; // Assume file doesn't exist in case of error
+                            });
+                        };                        
+						
+                        var findAvailableFileName = function(counter) {
+                            return checkFileExists(counter).then(function(exists) {
+                                if (!exists) {
+                                    var suffix = counter > 0 ? '_(' + counter + ')' : '';
+                                    return baseFileName + suffix + '.' + fileExtension;
+                                }
+                                return findAvailableFileName(counter + 1);
+                            });
+                        };
 					
 						// Start with checking base file name
 						return findAvailableFileName(0).then(function(newFileName) {
@@ -1604,6 +1795,12 @@ var MutationsGallery = (function() {
 				var xhr = new XMLHttpRequest();
 				var formData = new FormData();
 				
+				// Check if mw.user is available
+				if (typeof mw === 'undefined' || !mw.user || !mw.user.tokens) {
+					reject('MediaWiki user tokens not available');
+					return;
+				}
+				
 				// Prepare data for upload
 				formData.append('action', 'upload');
 				formData.append('format', 'json');
@@ -1611,11 +1808,16 @@ var MutationsGallery = (function() {
 				formData.append('filename', fileName);
 				formData.append('file', file);
 				formData.append('comment', 'Uploaded via UMI: User:' + mw.config.get('wgUserName'));
+				formData.append('ignorewarnings', '1'); // Ignore warnings like MIME type mismatch
 				
-				// Add type for JPEG files
+				// Set MIME type correctly based on file extension
 				var fileExtension = fileName.split('.').pop().toLowerCase();
 				if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
 					formData.append('filetype', 'image/jpeg');
+				} else if (fileExtension === 'png') {
+					formData.append('filetype', 'image/png');
+				} else if (fileExtension === 'gif') {
+					formData.append('filetype', 'image/gif');
 				}
 				
 				// Setup progress tracking
@@ -1680,13 +1882,15 @@ var MutationsGallery = (function() {
 				return UploadHandler.addImageToGallery(galleryItem);
 			}).catch(function(error) {
 				isUploading = false;
-				processQueue();
+				if (typeof processQueue === 'function') {
+					processQueue();
+				}
 				UI.showStatus(error, 'error');
 				return null;
 			});
 		},
 		
-                		// Add image to gallery
+		// Add image to gallery
 		addImageToGallery: function(galleryItem) {
 			UI.showStatus('Updating gallery...', 'info');
 
@@ -1741,10 +1945,15 @@ var MutationsGallery = (function() {
 		
 		// Add upload buttons to section headers
 		addUploadButtons: function() {
-			$('th').each(function() {
-				if (!this || !$(this).is('th')) return;
-
-				var $header = $(this);
+			// Use native DOM API to avoid querySelectorAll errors on macOS
+			var headers = document.getElementsByTagName('th');
+			if (!headers || headers.length === 0) return;
+			
+			for (var i = 0; i < headers.length; i++) {
+				var header = headers[i];
+				if (!header) continue;
+				
+				var $header = $(header);
 				var $div = $header.children('div:first');
 
 				if ($div.length && !$div.find('.mutation-upload-btn').length) {
@@ -1758,8 +1967,6 @@ var MutationsGallery = (function() {
 							$('#mutation-modal').show();
 							window.currentGallery = $(this).closest('table').find('.mw-customcollapsible-rodsContent');
 						});
-
-						// Drag & drop
 						uploadBtn.on('dragover', function(e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -1785,7 +1992,6 @@ var MutationsGallery = (function() {
 						var expandButton = $div.find('.mw-customtoggle-rodsContent');
 
 						if (titleSpan.length && expandButton.length) {
-							// Use display flex for better layout control
 							$div.empty()
 								.css({
 									'display': 'flex',
@@ -1800,7 +2006,7 @@ var MutationsGallery = (function() {
 						console.warn('Error adding upload button:', error);
 					}
 				}
-			});
+			}
 		}
 	};
 
@@ -1903,7 +2109,11 @@ var MutationsGallery = (function() {
 			
 			// Listen for network changes if supported
 			if (navigator.connection) {
-				navigator.connection.addEventListener('change', this.handleNetworkChange.bind(this));
+				try {
+					navigator.connection.addEventListener('change', this.handleNetworkChange.bind(this));
+				} catch (e) {
+					console.warn('Could not add network change listener:', e);
+				}
 			}
 		},
 		
@@ -2008,8 +2218,15 @@ var MutationsGallery = (function() {
 		
 		// Initialize canvas for image processing
 		init: function() {
-			this.canvas = document.createElement('canvas');
-			this.ctx = this.canvas.getContext('2d');
+			try {
+				this.canvas = document.createElement('canvas');
+				this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+			} catch (e) {
+				console.warn('Canvas initialization failed:', e);
+				// Create fallback canvas without willReadFrequently
+				this.canvas = document.createElement('canvas');
+				this.ctx = this.canvas.getContext('2d');
+			}
 		},
 		
 		// Load image into canvas
@@ -2100,7 +2317,14 @@ var MutationsGallery = (function() {
 			// Apply crop if specified
 			if (this.editState.crop) {
 				var crop = this.editState.crop;
-				var imageData = this.ctx.getImageData(crop.x, crop.y, crop.width, crop.height);
+				var imageData;
+				
+				try {
+					imageData = this.ctx.getImageData(crop.x, crop.y, crop.width, crop.height);
+				} catch (e) {
+					console.warn('Error getting image data:', e);
+					return null;
+				}
 				
 				// Resize canvas to cropped dimensions
 				this.canvas.width = crop.width;
@@ -2111,7 +2335,14 @@ var MutationsGallery = (function() {
 			}
 			
 			// Create result image
-			var resultDataUrl = this.canvas.toDataURL('image/png');
+			var resultDataUrl;
+			try {
+				resultDataUrl = this.canvas.toDataURL('image/png');
+			} catch (e) {
+				console.warn('Error creating data URL:', e);
+				return null;
+			}
+			
 			var resultImage = new Image();
 			resultImage.src = resultDataUrl;
 			
@@ -2157,25 +2388,30 @@ var MutationsGallery = (function() {
 					self.ctx.drawImage(img, 0, 0, width, height);
 					
 					// Convert to Blob with compression
-					self.canvas.toBlob(function(blob) {
-						if (blob) {
-							// Create new File object
-							var compressedFile = new File([blob], imageFile.name, {
-								type: 'image/jpeg',
-								lastModified: new Date().getTime()
-							});
-							
-							console.log('Image compressed from ' + 
-								(imageFile.size / 1024).toFixed(2) + 'KB to ' + 
-								(compressedFile.size / 1024).toFixed(2) + 'KB');
+					try {
+						self.canvas.toBlob(function(blob) {
+							if (blob) {
+								// Create new File object
+								var compressedFile = new File([blob], imageFile.name, {
+									type: 'image/jpeg',
+									lastModified: new Date().getTime()
+								});
 								
-							if (callback) callback(compressedFile);
-						} else {
-							// Fallback to original file on error
-							console.warn('Image compression failed, using original file');
-							if (callback) callback(imageFile);
-						}
-					}, 'image/jpeg', config.compressionQuality);
+								console.log('Image compressed from ' + 
+									(imageFile.size / 1024).toFixed(2) + 'KB to ' + 
+									(compressedFile.size / 1024).toFixed(2) + 'KB');
+									
+								if (callback) callback(compressedFile);
+							} else {
+								// Fallback to original file on error
+								console.warn('Image compression failed, using original file');
+								if (callback) callback(imageFile);
+							}
+						}, 'image/jpeg', config.compressionQuality);
+					} catch (e) {
+						console.warn('Canvas toBlob error:', e);
+						if (callback) callback(imageFile);
+					}
 				};
 				
 				img.onerror = function() {
@@ -2201,35 +2437,29 @@ var MutationsGallery = (function() {
 		currentBatchIndex: 0,
 		batchSize: 0,
 		
-		// Process batch of uploads
 		processBatch: function(files, mutationsText) {
 			if (!files || files.length === 0) {
 				UI.showStatus('No files selected for batch upload', 'error');
 				return;
 			}
 			
-			// Limit number of files
 			var filesToProcess = Array.from(files).slice(0, config.maxMultipleUploads);
 			
 			if (filesToProcess.length < files.length) {
-				UI.showStatus('Maximum ' + config.maxMultipleUploads + ' files allowed. Processing first ' + 
-							  config.maxMultipleUploads + ' files.', 'warning');
+				UI.showStatus('Maximum ' + config.maxMultipleUploads + ' files allowed. Processing first ' + config.maxMultipleUploads + ' files.', 'warning');
 			}
 			
-			// Validate file types
 			var validFiles = filesToProcess.filter(function(file) {
 				var extension = file.name.split('.').pop().toLowerCase();
 				return config.allowedExtensions.indexOf(extension) !== -1;
 			});
 			
 			if (validFiles.length < filesToProcess.length) {
-				UI.showStatus((filesToProcess.length - validFiles.length) + 
-							  ' invalid file(s) skipped. Only processing valid image files.', 'warning');
+				UI.showStatus((filesToProcess.length - validFiles.length) + ' invalid file(s) skipped. Only processing valid image files.', 'warning');
 			}
 			
 			if (validFiles.length === 0) {
-				UI.showStatus('No valid files to upload. Allowed types: ' + 
-							 config.allowedExtensions.join(', '), 'error');
+				UI.showStatus('No valid files to upload. Allowed types: ' + config.allowedExtensions.join(', '), 'error');
 				return;
 			}
 			
@@ -2282,14 +2512,12 @@ var MutationsGallery = (function() {
 			// Process with low bandwidth optimization if needed
 			if (isLowBandwidth && config.enableCompression) {
 				ImageProcessor.compressImage(batchItem.file, function(compressedFile) {
-					UploadHandler.processUpload(compressedFile, batchItem.mutations, function(success, error) {
-						BatchProcessor.handleBatchItemComplete(success, error);
-					});
+					UploadHandler.processUpload(compressedFile, batchItem.mutations);
+					BatchProcessor.handleBatchItemComplete(true);
 				});
 			} else {
-				UploadHandler.processUpload(batchItem.file, batchItem.mutations, function(success, error) {
-					BatchProcessor.handleBatchItemComplete(success, error);
-				});
+				UploadHandler.processUpload(batchItem.file, batchItem.mutations);
+				this.handleBatchItemComplete(true);
 			}
 		},
 		
@@ -2320,7 +2548,7 @@ var MutationsGallery = (function() {
 			}, 500);
 		},
 		
-		// Complete batch processing
+        // Complete batch processing
 		completeBatch: function() {
 			this.isProcessing = false;
 			uploadStats.lastUpload = new Date();
@@ -2482,6 +2710,12 @@ var MutationsGallery = (function() {
 			ErrorLogger.init();
 			
 			try {
+				// Check if jQuery is available
+				if (typeof $ === 'undefined' || !$) {
+					console.error('jQuery is required but not available');
+					return;
+				}
+				
 				// Initialize core components
 				UI.init();
 				WorkerHandler.init();
@@ -2515,11 +2749,26 @@ var MutationsGallery = (function() {
 		},
 		
 		// Public method to access the version
-		version: '2.0.0'
+		version: '2.1.0'
 	};
 })();
 
 // Run after page load
 $(document).ready(function() {
-	MutationsGallery.init();
+	// Wrap initialization in try/catch to prevent critical failures
+	try {
+		MutationsGallery.init();
+	} catch (error) {
+		console.error('Critical initialization error:', error);
+		// Attempt to show error on page
+		if (document.body) {
+			var errorDiv = document.createElement('div');
+			errorDiv.style.color = 'red';
+			errorDiv.style.padding = '10px';
+			errorDiv.style.margin = '10px 0';
+			errorDiv.style.border = '1px solid red';
+			errorDiv.innerHTML = 'Mutations Gallery initialization failed: ' + (error.message || 'Unknown error');
+			document.body.appendChild(errorDiv);
+		}
+	}
 });

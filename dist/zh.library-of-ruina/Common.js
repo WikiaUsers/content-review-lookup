@@ -54,6 +54,7 @@ importArticles({
         'u:dev:MediaWiki:MassCategorization/code.js',//添加一个批量分类管理工具
         'u:dev:MediaWiki:CommunityPageRailModule.js',//为右侧轨添加社区模块
         'u:dev:MediaWiki:OggPlayer.js',//ogg播放器，可自定义播放按钮
+        'u:dev:MediaWiki:Bang.js',//缩写命名空间
         'MediaWiki:CombatCard.js',//战斗书页js
         'MediaWiki:AbnormalityPage.js',//异想体书页js
         'MediaWiki:Story.js',//配音切换js

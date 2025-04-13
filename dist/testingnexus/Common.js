@@ -43,13 +43,14 @@ function applyColorsToTableCells() {
 	                row_index = rows.indexOf(longestRow);
 	            }
 			}
-			
-			let matchingCols = cols.filter(row => col.includes(cols));
-            if (matchingCols.length > 1) {
+
+			var col_index = -1;
+			let matchingCols = cols.filter(column => col.includes(column));
+            if (matchingCols.length > 0) {
                 let longestCol = matchingCols.reduce((a, b) => a.length >= b.length ? a : b);
                 col_index = cols.indexOf(longestCol);
             }
-			
+
 			var background_color = -1;
 			
 			if (col_index != -1 && row_index != -1) {
@@ -58,6 +59,7 @@ function applyColorsToTableCells() {
 			else if (col_index != -1) {
 				background_color = colorMap[default_row][col_index];
 			}
+			
             if (background_color != -1) {
                 $(this).css({
                 	"background-color": background_color,

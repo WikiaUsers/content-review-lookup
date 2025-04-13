@@ -96,7 +96,7 @@
             var cke = document.getElementsByClassName('cke_source'),
                 textbox = document.getElementById('wpTextbox1'),
                 cm5 = $(".CodeMirror").get(0),
-                cm6 = (window && window.WikiEditorCodeMirror && window.WikiEditorCodeMirror.view) || null;
+                cm6 = $('.cm-editor').get(0);
             if (window.ve && ve.init && ve.init.target && ve.init.target.active) {
                 // UCP Visual Editor (Source mode)
                 ve.init.target
@@ -108,22 +108,26 @@
                 // Visual editor
                 insertAtCursor(cke[0], preloadDataParsed);
             } else if (cm5){
-                // CodeMirrorV5 [legacy]: text editor with syntex heighting
+                // CodeMirrorV5 [legacy]: text editor with syntax highlight
                 var cmEditor = cm5.CodeMirror;
                 var cmdDoc = cmEditor.getDoc();
                 cmdDoc.replaceRange(preloadDataParsed, cmdDoc.getCursor());
             } else if (cm6){
-                // CodeMirrorV6: text editor with syntex heighting
-                var cmcursor = (cm6.state && cm6.state.selection && cm6.state.selection.ranges && cm6.state.selection.ranges[0]) || {from:0, to:0};
-                cm6.dispatch({
-                    changes: {
-                        from: cmcursor.from,
-                        to: cmcursor.to,
-                        insert: preloadDataParsed
-                    },
-                    selection: {anchor: cmcursor.from}
-                });
-                cm6.focus();
+                // CodeMirrorV6: text editor with syntax highlight (only way to interact with editor is through a hook return)
+                var cm6Edit = function(_, cmEditor) {
+                    var cmCursor = (cmEditor.view.state && cmEditor.view.state.selection && cmEditor.view.state.selection.ranges && cmEditor.view.state.selection.ranges[0]) || {from:0, to:0};
+                    cmEditor.view.dispatch({
+                        changes: {
+                            from: cmCursor.from,
+                            to: cmCursor.to,
+                            insert: preloadDataParsed
+                        },
+                        selection: {anchor: cmCursor.from}
+                    });
+                    cmEditor.view.focus();
+                    mw.hook('').remove(cm6Edit);
+                };
+                mw.hook('ext.CodeMirror.ready').add(cm6Edit);
             }
             else if(textbox) {
                 insertAtCursor(textbox, preloadDataParsed);

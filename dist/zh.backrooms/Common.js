@@ -425,3 +425,9 @@ initImageCards(this);
 mw.loader.using('mediawiki.util').then(function() {
 image3DSystem.init();
 });
+
+$('.fandom-community-header__community-name-wrapper').append(
+	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
+		$('<img/>').css('height', '70px').css('position', 'relative').css('top', '20px')
+		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/c/ca/Fandom_Compass_dark.png/revision/latest?cb=20250412193710&format=original&path-prefix=zh').attr('title', '本站点已是Fandom Compass计划的成员之一。')
+));

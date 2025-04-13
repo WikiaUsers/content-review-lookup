@@ -1,4 +1,8 @@
 // -- [ IMPORTS ] --
+// [ Basic Functions ]
+// Adds some common functions.
+mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:BasicFunctions.js&action=raw&ctype=text/javascript');
+
 // [ User Page Notice ]
 // Script for adding a notice to user sub-pages that the current page is not a main wiki article.
 mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:UserPageNotice.js&action=raw&ctype=text/javascript');

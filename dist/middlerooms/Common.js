@@ -114,6 +114,5 @@ UserTagsJS.modules.custom = {
 	'Dan7935': ['gf'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 	'Underscrach': ['ra'],
-	'KeelerWeeler': ['ra'],
 	'Strawberry Bot': ['bot']
 };

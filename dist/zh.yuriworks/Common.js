@@ -1,3 +1,4 @@
+window.ArticleRatesExcludePages = ["首页", "百合作品 Wiki", "百合作品_Wiki"];
 $(function(){
     $(".release-table-caption-mid a").click(function(){
         var release_date = $(this).attr("href");

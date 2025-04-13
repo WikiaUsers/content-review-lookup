@@ -36,3 +36,14 @@ $( '#wpTextbox1' ).on( 'wikiEditor-toolbar-buildSection-advanced', function( eve
 	section.groups.insert.tools.redirect.action.options.pre = '#REDIRECT [[';
 	section.groups.insert.tools.redirect.action.options.post = ']]\n[[Category:Redirected Pages]]';
 } );
+
+
+// For [[Template:Spoiler]]
+document.addEventListener("DOMContentLoaded", function () {
+  var spoilers = document.querySelectorAll(".spoiler-container");
+  spoilers.forEach(function (spoiler) {
+    spoiler.addEventListener("click", function () {
+      spoiler.classList.toggle("revealed");
+    });
+  });
+});

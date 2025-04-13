@@ -17,6 +17,10 @@ nkch_gst_gadgets = [{
 	title: "Старая серая тема",
 	description: "Воссоздание старого стиля тёмной темы (серо-голубой)"
     }, {
+	name: "DeadAir",
+	title: "Тема Dead Air",
+	description: "Тёмная тема в стиле Dead Air"
+    }, {
 	name: "BrownTheme",
 	title: "Тема 2015 года",
 	description: "Воссоздание старого стиля тёмной темы (коричнево-жёлтый)"

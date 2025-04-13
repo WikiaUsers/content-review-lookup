@@ -44,14 +44,13 @@ UserTagsJS.modules.custom = {
 	'ShiftNeru': ['oldie'],
 	'Drako Jankovic': ['oldie'],
 	'Ottocar': ['oldie'],
-	'Stalin 2': ['rollbask','oldie'],
+	'Stalin 2': ['oldie'],
 	'GamesDiscussion': ['oldie'],
 	'Белозерг': ['oldie'],
 	'Magnum': ['founder'],
 	
 };
 UserTagsJS.modules.inactive = 30;
-};
 
 
 UserTagsJS.modules.implode = {
