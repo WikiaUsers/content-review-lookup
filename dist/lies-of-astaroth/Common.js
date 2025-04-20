@@ -476,4 +476,6 @@ if ( document.location && document.location.protocol === 'https:' ) {
  
 /* End of mw.loader.using callback */
 } );
+
+mw.config.set('UMFBypassLicenseCheck', true);
 /* DO NOT ADD CODE BELOW THIS LINE */

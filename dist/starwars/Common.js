@@ -381,7 +381,7 @@ function setupUploadForm(){
 			// Add link to guided form
 			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.wikia.com/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Switch to guided upload form</a></div>');
 			
-			$('#mw-upload-form').bind('submit', verifyName);
+			// $('#mw-upload-form').bind('submit', verifyName);
 		}
 	}
 }

@@ -220,6 +220,94 @@ $(document).ready(function () {
         }
     }
 
+    function initializeHintSearch(config) {
+        var $hintSearchDiv = $('#hintSearch');
+        if ($hintSearchDiv.length === 0) return;
+
+        var $configContainer = $('<div id="hintSearchConfig"></div>');
+        $hintSearchDiv.append($configContainer);
+
+        var $dragonSelect;
+
+        // --- Configuration for the single dropdown ---
+        // define it here, it's simple enough
+        var dropdownConfig = {
+            id: 'hintDragonDropdown',
+            label: 'Select Dragon for Hint:',
+            data: 'Data:Dragons.json',
+            dataKey: 'dragons',
+            config: {
+                idKey: 'Name',
+                textKey: 'Name',
+                sortKey: 'Name',
+                placeholder: 'Select a Dragon',
+                allowClear: true,
+                width: '300px',
+                minimumResultsForSearch: 10,
+                startBlank: true
+            }
+        };
+
+        var $container = addDropdown(dropdownConfig.id, dropdownConfig.label, $configContainer);
+        $dragonSelect = $container.find('select');
+
+        var data = dropdownConfig.data;
+        if (typeof data === 'string') {
+            var api = new mw.Api();
+            loadJsonData(api, data).then(function (result) {
+                var sortedData = dropdownConfig.dataKey ? result[dropdownConfig.dataKey] : result;
+                if (dropdownConfig.config.sortKey) {
+                    sortedData = sortedData.sort(function (a, b) {
+                        var textA = a[dropdownConfig.config.sortKey] || '';
+                        var textB = b[dropdownConfig.config.sortKey] || '';
+                        return textA.localeCompare(textB);
+                    });
+                }
+
+                var formattedData = sortedData.map(function (item) {
+                    var id = item[dropdownConfig.config.idKey] || '';
+                    var text = item[dropdownConfig.config.textKey] || id;
+                    return { id: id, text: text };
+                });
+
+                formattedData = formattedData.filter(function (item) { return item.id; });
+
+                initializeDropdown($dragonSelect, formattedData, dropdownConfig.config, handleHintChange);
+
+            }, function (error) {
+                console.error("HintSearch Error loading dropdown data:", error);
+                $container.append('<p style="color: red;">Error loading dragon list.</p>');
+            });
+        } else {
+            initializeDropdown($dragonSelect, data, dropdownConfig.config, handleHintChange);
+        }
+
+
+        // --- Results Area ---
+        var $resultsContainer = $('<div id="hintSearchResults"></div>');
+        $hintSearchDiv.append($resultsContainer);
+        $resultsContainer.html('<p><i>Select a dragon to view its breeding hint.</i></p>');
+
+        // --- Change Handler ---
+        function handleHintChange() {
+            var selectedDragon = $dragonSelect.val();
+
+            if (!selectedDragon) {
+                $resultsContainer.html('<p><i>Select a dragon to view its breeding hint.</i></p>');
+                return;
+            }
+
+            var unnamedArgs = [selectedDragon];
+            var namedArgs = {};
+
+            $resultsContainer.html('<p><i>Loading hint...</i></p>');
+
+            updateModuleInvocation('BreedingSandbox', 'VisualHint', unnamedArgs, namedArgs, function (data) {
+                $resultsContainer.html(data);
+            });
+        }
+    }
+
     function generateModuleInvocation(moduleName, functionName, unnamedArgs, namedArgs) {
         unnamedArgs = unnamedArgs || [];
         namedArgs = namedArgs || {};
@@ -296,6 +384,10 @@ $(document).ready(function () {
 
                     initializeWhenDivIsReady('dragonSandbox', function ($el) {
                         initializeSandbox(sandboxConfig);
+                    });
+
+                    initializeWhenDivIsReady('hintSearch', function ($el) {
+                        initializeHintSearch(); 
                     });
                 })
                 .catch(function (error) {

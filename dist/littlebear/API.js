@@ -1,4 +1,4 @@
-mw.loader.using(['mediawiki.api'], function(){
+mw.loader.using(['mediawiki.api'], () => {
 	const api = new mw.Api();
 	
 	// For [[Template:Administration]]

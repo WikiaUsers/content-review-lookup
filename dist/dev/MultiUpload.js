@@ -204,11 +204,13 @@ mw.loader.using([
         progressBarWidget.setProgress(progress);
         var filename = $("#wpDestFile" + curFile).val() || files[curFile].name;
         var license = $("#wpLicense" + curFile + " option:selected").prop("title") !== "{{}}" ? "== " + mw.message('license-header').plain() + " ==\n" + $("#wpLicense" + curFile + " option:selected").prop("title") : "";
-        var description = $("#wpUploadDescription" + curFile).val() ? "== " + mw.message('filedesc').plain() + " ==\n" + $("#wpUploadDescription" + curFile).val() : "";
+        var comment = $("#wpUploadDescription" + curFile).val() || "";
+        var description = !!comment ? ("== " + mw.message('filedesc').plain() + " ==\n" + comment) : "";
         var watch = $("#wpWatchthis" + curFile).is(":checked") ? 'watch' : 'nochange';
         var ignoreWarnings = $("#wpIgnoreWarning" + curFile).is(":checked");
         var params = {
             action: 'upload',
+            comment: comment,
             file: files[curFile],
             filename: filename,
             filesize: files[curFile].size,

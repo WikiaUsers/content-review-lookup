@@ -83,13 +83,9 @@
 			}
 			
 			// Detect DOM changes for when to load what
-			let reopen = [null, $()],
-				search_observer = new MutationObserver((ml)=>{
+			let search_observer = new MutationObserver(mw.util.throttle((ml)=>{
 					const nav = $(ml[0].target);
-					if (
-						ml[0] && ml[0].removedNodes.length>0
-						&& ml[0].removedNodes[0].querySelector('.search-app__suggestion-skeleton')
-					) {
+					if ( nav.find('input').val().length>0 ) {
 						let searchquery = nav.find('input').val();
 						if (searchquery.length>0 && nav.is(':has(.search-app__suggestion, .search-app__no-suggestions)') && !nav.is(':has(.search-app__custom-suggestion, .search-app__heading)')) {
 							// Load search results
@@ -125,6 +121,7 @@
 											a.redirect ? relevance(searchquery, a.title, a.redirect, true) : a.title,
 											b.redirect ? relevance(searchquery, b.title, b.redirect, true) : b.title
 										));
+										if ($('.search-app__heading').length!==0){return;}
 										list.empty(); // Make sure no default results exist
 										nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
 										pages.forEach((page)=>{
@@ -184,7 +181,6 @@
 											}
 										});
 										listResults();
-										reopen = [searchquery, nav.find('.search-app__suggestions-list')];
 									});
 								} else {
 									const noRes = $('<p>', {
@@ -194,20 +190,11 @@
 									});
 									nav.find('.search-app__suggestions-box').empty().append(noRes);
 									nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
-									reopen = [searchquery, noRes];
 								}
 							}).catch(console.log);
 						}
 					}
-					if (
-						ml[0] && ml[0].addedNodes.length>0 
-						&& ml[0].addedNodes[0].querySelector('.search-app__suggestion, .search-app__no-suggestions') 
-						&& reopen[0]===nav.find('input').val() && reopen[1].length>0
-					) {
-						nav.find('.search-app__suggestions-box').empty().append(reopen[1]);
-						nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
-					}
-				});
+				}, 150));
 			search_observer.observe(document.querySelector('#global-top-navigation .search-app__wrapper'), {childList: true, subtree: true});
 			search_observer.observe(document.querySelector('#community-navigation .search-app__wrapper'), {childList: true, subtree: true});
 			
@@ -236,7 +223,7 @@
 						.toggleClass('search-app__suggestion--active');
 					opts.filter('.search-app__suggestion--active').focus();
 					document.querySelector('.search-app__suggestion--active').scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
-					let selPage = opts.filter('.search-app__suggestion--active.search-app__suggestion-all').length>0 ? (reopen[0] || $('.search-app__input').val()) : 
+					let selPage = opts.filter('.search-app__suggestion--active.search-app__suggestion-all').length>0 ? $('.search-app__input').val() : 
 						(()=>{
 							let p = $('.search-app__suggestion--active .search-app__suggestion-link').clone();
 							p.children('.search-app__suggestion-redirect').remove();

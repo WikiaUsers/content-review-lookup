@@ -63,9 +63,7 @@ function applyColorsToTableCells() {
             if (background_color != -1) {
                 $(this).css({
                 	"background-color": background_color,
-                	"color": [
-                		"#FFFF00", "#00FFFF", "#FFC0CB", "#FFA500"
-            		].includes(background_color) ? "black" : "white", // for contrast
+                	"color": "black", // for contrast
                 });
             }
         });

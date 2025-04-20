@@ -16,11 +16,12 @@ function delete_table_m(){
 
 //Calculates how many fragments are still needed to complete a mosaic, plus some other useful information.
 function mosaic_calculator_f(){
-	var mosaic_sizes = [368, 640, 640, 640, 1280, 2560, 2560, 2560, 2560, 2560, 2040, 2040, 2040];
+	//var mosaic_sizes = [368, 640, 640, 640, 1280, 2560, 2560, 2560, 2560, 2560, 2040, 2040, 2040, 2040];
+	var mosaic_sizes = document.getElementById('mosaic_sizes').innerHTML.split(',');
 	var mosaics_f = [0];
 	var fragment_counter = 0;
 	for (i = 0; i < mosaic_sizes.length; i++){
-		fragment_counter = fragment_counter + mosaic_sizes[i];
+		fragment_counter = fragment_counter + parseInt(mosaic_sizes[i]);
 		mosaics_f.push(fragment_counter);
 	}
 	//var mosaics_f = [0, 368, 1008, 1648, 2288, 3568, 6128, 8688, 11248, 13808, 16368, 18408, 20448, 22488];

@@ -80,7 +80,7 @@ function calculate() {
 		[12,"Garden lvl. 1","Class: Monk"],
 		[13,"Rock Garden lvl. 1","Skill: Logistician lvl. 3","Skill: Weapon Collector lvl. 2","Skill: Treasure Hunter lvl. 2"],
 		[14,"Pagoda lvl. 4"],
-		[15,"Chicken Coop lvl. 1","Class: Geologist","Skill: Athlete lvl. 2"],
+		[15,"Dairy Farm lvl. 1","Chicken Coop lvl. 1","Class: Geologist","Skill: Athlete lvl. 2"],
 		[16,"Skill: Logistician lvl. 4","Skill: Antiquarian lvl. 2"],
 		[17,"Skill: Intellectual lvl. 2"],
 		[18,"Pagoda lvl. 5","Class: Archeologist"],

@@ -22,7 +22,7 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Clodaghelm': ['founder', 'bureaucrat', 'administrator']
+	'Dralcyon': ['founder', 'bureaucrat', 'administrator']
 };
 UserTagsJS.modules.metafilter = {
 	'sysop': ['bureaucrat'] // remove "admin" tag from bureaucrats

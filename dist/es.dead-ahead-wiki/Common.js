@@ -1,30 +1,42 @@
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var imageContainer = document.querySelector('.image-container');
-    var images = document.querySelectorAll('.book-image');
-    var nextPageButton = document.querySelector('.next-page');
-    var prevPageButton = document.querySelector('.prev-page');
-    var currentPage = 0;
+// Wait for the page to load
+$(document).ready(function() {
+  // Initialize book gallery
+  function initBookGallery() {
+    var $bookContainer = $('.book-gallery');
+    if (!$bookContainer.length) return; // Exit if no gallery exists
 
-    function updateGallery() {
-      var offset = -(currentPage * 2 * 300); // 2 images per page, each 300px wide
-      imageContainer.style.transform = 'translateX(' + offset + 'px)';
+    var currentPage = 0;
+    var totalPages = $bookContainer.find('.page').length;
+    var $pages = $bookContainer.find('.book-pages');
+    var $prevBtn = $bookContainer.find('.prev-btn');
+    var $nextBtn = $bookContainer.find('.next-btn');
+    var $currentPage = $bookContainer.find('.current-page');
+
+    function updateButtons() {
+      $prevBtn.prop('disabled', currentPage === 0);
+      $nextBtn.prop('disabled', currentPage === totalPages - 1);
+      $currentPage.text(currentPage + 1);
     }
 
-    nextPageButton.addEventListener('click', function() {
-      if (currentPage < (images.length / 2) - 1) {
+    $nextBtn.on('click', function() {
+      if (currentPage < totalPages - 1) {
         currentPage++;
-        updateGallery();
+        $pages.css('transform', 'translateX(-' + (currentPage * 100) + '%)');
+        updateButtons();
       }
     });
 
-    prevPageButton.addEventListener('click', function() {
+    $prevBtn.on('click', function() {
       if (currentPage > 0) {
         currentPage--;
-        updateGallery();
+        $pages.css('transform', 'translateX(-' + (currentPage * 100) + '%)');
+        updateButtons();
       }
     });
 
-    updateGallery(); // Initialize position
-  });
-</script>
+    updateButtons();
+  }
+
+  // Initialize all book galleries on the page
+  initBookGallery();
+});

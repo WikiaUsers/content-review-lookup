@@ -61,11 +61,11 @@ mw.loader.using('mediawiki.api').then(function () {
 			if (customSheet != '') {
 				var sheets = customSheet.split(',');
 				for (var i = 1; i < sheets.length; i++) {
-					viewer.append('<img class="preload-images" src="/Special:Redirect/file/' + sheets[i] + '" style="opacity: 0;">');
+					viewer.append('<img class="preload-images" src="./Special:Redirect/file/' + sheets[i] + '" style="opacity: 0;">');
 				}
 			} else {
 				for (var k = 1; k <= maxForms; k++) {
-					viewer.append('<img class="preload-images" src="/Special:Redirect/file/' + leadingZeroes(unit, 3) + '_' + (['f', 'c', 's', 'u'])[k] + '.png" style="opacity: 0;">');
+					viewer.append('<img class="preload-images" src="./Special:Redirect/file/' + leadingZeroes(unit, 3) + '_' + (['f', 'c', 's', 'u'])[k] + '.png" style="opacity: 0;">');
 				}
 			}
 		} else {
@@ -195,7 +195,7 @@ mw.loader.using('mediawiki.api').then(function () {
 	});
 	atkButton.click(function () { renderModel(1, false, false); });
 	kbButton.click(function () { renderModel(2, false, false); });
-	
+
 	function zoomIn() {
 		interval.in = setInterval(function () {
 			var old = Number(canvas.css('scale'));
@@ -209,7 +209,7 @@ mw.loader.using('mediawiki.api').then(function () {
 			}
 		}, 20);
 	}
-	
+
 	function zoomOut() {
 		interval.out = setInterval(function () {
 			var old = Number(canvas.css('scale'));
@@ -250,7 +250,7 @@ function renderModel(type, reset, inputDefault) {
 	var file = imgcut[2][0];
 	if (!file.includes('m')) file = leadingZeroes(unit, 3) + '_' + form + '.png';
 	if (customImg != '') file = unitType == 'cat' ? customImg.split(',')[(['f', 'c', 's', 'u']).indexOf(form)] : customImg;
-	url = '/Special:Redirect/file/' + file;
+	url = './Special:Redirect/file/' + file;
 	// take only necessary parts of imgcut and mamodel
 	var imgcutData = [];
 	var length = imgcut.length;
@@ -614,11 +614,11 @@ function updateSprites() {
 		}
 		spriteNodes[i].outer.css({'z-index': spritesNow[i].z, 'left': pos[0][0], 'top': -pos[1][0], 'scale': (getScaleX(i) * getFlipX(i)) + ' ' + (getScaleY(i) * getFlipY(i)), 'rotate': getAngle(i) + 'deg', 'opacity': getOpacity(i)});
 	}
-	
+
 	function addVectors(v, u) {
 		return [[v[0][0] + u[0][0]], [v[1][0] + u[1][0]]];
 	}
-	
+
 	function applyMatrix(m, v) {
 		return [[m[0][0] * v[0][0] + m[0][1] * v[1][0]], [m[1][0] * v[0][0] + m[1][1] * v[1][0]]];
 	}
@@ -629,7 +629,7 @@ function updateSprites() {
  * @return void
  */
 function setBackground() {
-	var imgURL = '/Special:Redirect/file/' + $('#input-bg').val();
+	var imgURL = './Special:Redirect/file/' + $('#input-bg').val();
 	$(".animation-background").css('background', 'url("' + imgURL + '")');
 	$(".animation-background-color").html('<img src="' + imgURL + '" height="10000px" width="10000000px">');
 	var img = new Image();

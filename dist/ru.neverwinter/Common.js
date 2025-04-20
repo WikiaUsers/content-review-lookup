@@ -173,11 +173,33 @@ const showTip = (e, $t) => {
   hideTip();
   activeHoverLink = $t;
 
+	function extractTemplate(wikitext, templateName) {
+	  const startIndex = wikitext.indexOf(`{{${templateName}`);
+	  if (startIndex === -1) return '';
+	
+	  let index = startIndex + 2; // после {{
+	  let braces = 2;
+	  while (index < wikitext.length && braces > 0) {
+	    const char = wikitext[index];
+	    const nextChar = wikitext[index + 1];
+	    if (char === '{' && nextChar === '{') {
+	      braces += 2;
+	      index++;
+	    } else if (char === '}' && nextChar === '}') {
+	      braces -= 2;
+	      index++;
+	    }
+	    index++;
+	  }
+	
+	  return wikitext.substring(startIndex, index);
+	}
+
   $.get(url, wikitext => {
     if ($t !== activeHoverLink) return;
 
     const enTitle = (wikitext.match(/\[\[en:([^\]]+)\]\]/) || [])[1] || '';
-    let tooltipText = (wikitext.match(/\{\{TooltipItem[\s\S]*?\}\}/) || [])[0];
+    let tooltipText = extractTemplate(wikitext, 'TooltipItem');
 
     if (!tooltipText) {
       return;

@@ -70,19 +70,6 @@ window.massCategorizationDelay = 2500; // 2.5 second interval
 mw.config.set('UMFBypassLicenseCheck', true); // Prevent license check for multi-upload
 window.YoutubePlayerDisableAutoplay = true; // Disable autoplay for YouTube player
 
-//=================================================================
-// Adds a button to clear Deletion reasons
-// By OneTwoThreeFall
-//=================================================================
-(function() {
-	if (mw.config.get('wgAction') === 'delete') {
-	    $('#wpReason').after(' <span id="wpClearReason" class="button" id="clearDeleteReason">\u232b</span>');
-	    $('#wpClearReason').click(function() {
-	        $('#wpReason').val('').focus();
-	    });
-	}
-})();
-
 //========================================================================
 // Allows text to be hidden in other text and revealed with a click
 //========================================================================
@@ -90,14 +77,6 @@ $(".container").click(function() {
   $div = $(this).find("div");
   $($div).toggleClass("active");
 });
-
-//========================================
-// Wiki activity link in activity module
-//========================================
-(function() {
-    var rwaLink = "<a class='wds-button RWA_Link' href='/wiki/Special:MultipleActivity'>More activity</a>";
-    $(".WikiaRail .activity-module").append(rwaLink);
-})();
 
 //=======================================================
 // Sort content on Special:WhatLinksHere alphabetically
@@ -118,17 +97,6 @@ $(".container").click(function() {
     list.children('li').remove();
     list.append(sortedList);
 })($);
-
-//========================================== 
-// Adds a "Logs" tab to User Mastheads
-//==========================================
-(function() {
-    var olds = $("ul.user-profile-navigation").html();
-    var address = "/wiki/Special:Log/" + mw.config.get("wgTitle");
-    var adds = "<li class='user-profile-navigation__link' data-id='userLogs'><a href='" + address + "'>Logs</a></li>";
-    var news = olds + adds;
-    $("ul.user-profile-navigation").html(news);
-})();
 
 //================================================
 // Makes ProfileTags not override InactiveUsers

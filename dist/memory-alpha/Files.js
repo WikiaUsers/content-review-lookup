@@ -1,13 +1,15 @@
-$(function(){
-	var infoIcon = mw.util.getUrl('Special:FilePath/Information icon simple.svg');
+'use strict';
+mw.loader.using(['mediawiki.api'], () => {
+	const api = new mw.Api();
+	const infoIcon = mw.util.getUrl('Special:FilePath/Information icon simple.svg');
 	
 	// Display Ogg files in galleries
-	var audio = $('.wikia-gallery-item [data-image-key$=".ogg"]');
+	const audio = $('.wikia-gallery-item [data-image-key$=".ogg"]');
 	galleryAudio(0);
 	
 	function galleryAudio(i){
-		var galleryItem = $(audio.get(i));
-		var fileURL = mw.util.getUrl('Special:FilePath/' + galleryItem.data('image-key'));
+		const galleryItem = $(audio.get(i));
+		const fileURL = mw.util.getUrl('Special:FilePath/' + galleryItem.data('image-key'));
 		galleryItem.after($('<audio controls>').attr('src', fileURL));
 		galleryItem.parent().addClass('gallery-item--audio');
 		galleryItem.remove();
@@ -18,21 +20,21 @@ $(function(){
 	}
 	
 	// Display PDF files in galleries
-	var galleryPDFs = $('.wikia-gallery-item [data-image-key$=".pdf"]');
+	const galleryPDFs = $('.wikia-gallery-item [data-image-key$=".pdf"]');
 	galleryPDF(0);
 	
 	function galleryPDF(i){
-		var galleryItem = $(galleryPDFs.get(i));
-		var fileName = galleryItem.data('image-key');
-		var iframe = $('<iframe>');
-		var figcaption = $('<figcaption class="thumbcaption">');
-		var iconLink = $('<a href="' + mw.util.getUrl('File:' + fileName) + '" class="info-icon">');
-		var iconSVG = $('<img src="' + infoIcon + '" width="18" alt="View file page">');
-		var linkAttributes = {
+		const galleryItem = $(galleryPDFs.get(i));
+		const fileName = galleryItem.data('image-key');
+		const iframe = $('<iframe>');
+		const figcaption = $('<figcaption class="thumbcaption">');
+		const iconLink = $('<a href="' + mw.util.getUrl('File:' + fileName) + '" class="info-icon">');
+		const iconSVG = $('<img src="' + infoIcon + '" width="18" alt="View file page">');
+		const linkAttributes = {
 			'target': '_blank',
 			'href': mw.util.getUrl('Special:FilePath/' + fileName),
 		};
-		var attributes = {
+		const attributes = {
 			'src': mw.util.getUrl('Special:FilePath/' + fileName),
 			'loading': 'lazy',
 			'width': '185',
@@ -56,18 +58,18 @@ $(function(){
 	}
 	
 	// Embed PDF file widgets into pages
-	var widgets = $('.pdf-widget');
+	const widgets = $('.pdf-widget');
 	pagePDF(0);
 	
 	function pagePDF(i){
-		var widget = $(widgets.get(i));
-		var specifiedFile = widget.data('file');
-		var floatDir = widget.data('float') ? widget.data('float') : 'right';
-		var captionUnparsed = widget.data('caption');
-		var filePath = mw.util.getUrl('Special:FilePath/' + specifiedFile);
+		const widget = $(widgets.get(i));
+		const specifiedFile = widget.data('file');
+		const floatDir = widget.data('float') ? widget.data('float') : 'right';
+		const captionUnparsed = widget.data('caption');
+		const filePath = mw.util.getUrl('Special:FilePath/' + specifiedFile);
 		
 		if (captionUnparsed){
-			new mw.Api().get({
+			api.get({
 				action: 'parse',
 				title: mw.config.get('wgPageName'),
 				text: captionUnparsed,
@@ -78,13 +80,13 @@ $(function(){
 		}
 		
 		function createThumbnail(parserOutput){
-			var fig = $('<figure class="thumb t' + floatDir + ' show-info-icon document-embed">');
-			var pdfLink = $('<a href="' + filePath + '" class="image" target="_blank">');
-			var iframe = $('<iframe>');
-			var figcaption = $('<figcaption class="thumbcaption">');
-			var iconLink = $('<a href="' + mw.util.getUrl('File:' + specifiedFile) + '" class="info-icon">');
-			var iconSVG = $('<img src="' + infoIcon + '" width="18" alt="View file page">');
-			var attributes = {
+			const fig = $('<figure class="thumb mw-halign-' + floatDir + ' show-info-icon document-embed" typeof="mw:File/Thumb">');
+			const pdfLink = $('<a href="' + filePath + '" class="mw-file-description image" target="_blank">');
+			const iframe = $('<iframe>');
+			const figcaption = $('<figcaption class="thumbcaption">');
+			const iconLink = $('<a href="' + mw.util.getUrl('File:' + specifiedFile) + '" class="info-icon">');
+			const iconSVG = $('<img src="' + infoIcon + '" width="18" alt="View file page">');
+			const attributes = {
 				'src': filePath,
 				'loading': 'lazy',
 				'width': '180',
@@ -103,8 +105,8 @@ $(function(){
 			widget.remove();
 			
 			if (parserOutput){
-				var captionParsed = $(parserOutput.parse.text['*']).text().trim();
-				var caption = $('<p class="caption">' + captionParsed + '</p>');
+				const captionParsed = $(parserOutput.parse.text['*']).text().trim();
+				const caption = $('<p class="caption">' + captionParsed + '</p>');
 				figcaption.append(caption);
 			}
 			
@@ -115,9 +117,9 @@ $(function(){
 	}
 	
 	// Display PDF files on PDF file pages
-	var adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
-	var filePageIframe = $('<iframe>');
-	var iframeAttributes = {
+	const adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
+	const filePageIframe = $('<iframe>');
+	const iframeAttributes = {
 		'src': mw.util.getUrl('Special:FilePath/' + mw.config.get('wgTitle')),
 		'loading': 'lazy',
 		'width': '250',

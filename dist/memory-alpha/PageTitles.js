@@ -1,39 +1,52 @@
-$(function(){
+mw.loader.using(['mediawiki.api'], () => {
 	if (mw.config.get('wgNamespaceNumber') === -1){
 		return;
 	}
 	
-	var api = new mw.Api();
-	var action = mw.config.get('wgAction');
-	var id = (mw.config.get('wgArticleId') === 0) ? '-1' : mw.config.get('wgArticleId');
-	var messages = [
-		'page-header-title-prefix-changes',
+	const api = new mw.Api();
+	const action = mw.config.get('wgAction');
+	const articleId = mw.config.get('wgArticleId');
+	const id = !articleId ? -1 : articleId;
+	const messages = [
+		'creating',
+		'editing',
 		'page-header-title-prefix-history',
-		'page-header-title-prefix-preview',
+		'page-header-title-prefix-changes',
 		'page-header-home',
 	];
 	
-	api.loadMessagesIfMissing(messages).done(function(){
+	api.loadMessagesIfMissing(messages).done(() => {
 		api.get({
 			action: 'query',
 			prop: 'info',
 			titles: mw.config.get('wgPageName'),
 			inprop: 'displaytitle',
 			format: 'json',
-		}).done(function(data){
-			var title = data.query.pages[id].displaytitle;
+		}).done((data) => {
+			const title = data.query.pages[id].displaytitle;
+			const activeEdit = ['edit', 'submit'].indexOf(action) !== -1;
 			
-			if (action === 'history'){
-				$('#firstHeading').html(mw.message('page-header-title-prefix-history', title).text());
-			} else if (action === 'submit'){
-				$('#firstHeading').html(mw.message('page-header-title-prefix-preview', title).text());
+			if (activeEdit && id === -1){
+				setPageHeading('creating', title);
+			} else if (activeEdit){
+				setPageHeading('editing', title);
+			} else if (action === 'history'){
+				setPageHeading('page-header-title-prefix-history', title);
 			} else if (new URLSearchParams(location.search).has('diff')){
-				$('#firstHeading').html(mw.message('page-header-title-prefix-changes', title).text());
+				setPageHeading('page-header-title-prefix-changes', title);
 			} else if (mw.config.get('wgIsMainPage')){
-				$('.mainpage #firstHeading').html(mw.message('page-header-home').text());
+				setPageHeading('page-header-home');
 			} else {
 				$('#firstHeading').html(title);
 			}
 		});
 	});
 });
+
+function setPageHeading(msg, param){
+	if (msg === 'page-header-home'){
+		$('.mainpage #firstHeading').html(mw.message(msg).text());
+	} else {
+		$('#firstHeading').html(mw.message(msg, param).text());
+	}
+}

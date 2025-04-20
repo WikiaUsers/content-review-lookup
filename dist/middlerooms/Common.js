@@ -94,6 +94,7 @@ window.UserTagsJS = {
 		bureaucrat: { order:0 }, // <- lower order number = before other order tags (ex: tag with 1 will be placed before tag with 2)
 		sysop: { order:1 },
 		manager: { u:'Wiki System Manager', order:2 },
+		inactivenotable: { u:'Legacy User', order:-2 }, 
 		cw: { u:'Contest Winner', order:7 },
 		ra: { u:'Regional Admin', order:3 },
 		gf: { u:'Good Effort', order:8 },
@@ -114,5 +115,6 @@ UserTagsJS.modules.custom = {
 	'Dan7935': ['gf'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 	'Underscrach': ['ra'],
-	'Strawberry Bot': ['bot']
+	'Strawberry Bot': ['bot'],
+	'PlutoniumOnInternet': ['inactivenotable']
 };

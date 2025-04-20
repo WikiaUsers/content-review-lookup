@@ -44,7 +44,6 @@ UserTagsJS.modules.custom = {
 	'Jtohisgoodimo': ['bureaureal'],
 	'Touchgrass210779': ['montheditor'],
 	'MapleIsNotAMapleLeaf': ['montheditor'],
-	'Astrominal': ['wikimanager']
 };
 window.quizName = "The Hard Quiz";
 window.quizLang = "en";

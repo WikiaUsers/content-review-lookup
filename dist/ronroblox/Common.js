@@ -90,6 +90,7 @@ UserTagsJS.modules.custom = {
 	'Mysþıc': ['Wiki-Contributor'],
 	'Antiverta': ['Wiki-Contributor'],
 	'StrikerFRFX': ['Wiki-Contributor'],
+	'DankM3m3l0rd2': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'PorlaiWasTaken': ['Guide-Maker'],

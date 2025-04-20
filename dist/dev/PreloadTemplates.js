@@ -139,7 +139,7 @@
                         selection: {anchor: cmCursor.from}
                     });
                     cmEditor.view.focus();
-                    mw.hook('').remove(cm6Edit);
+                    mw.hook('ext.CodeMirror.ready').remove(cm6Edit);
                 };
                 mw.hook('ext.CodeMirror.ready').add(cm6Edit);
             }

@@ -64,10 +64,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </a>
                             </div>
                             <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Faydror" class=" mcf-card mcf-card-article" data-tracking="footer-card-2-2,wiki-article,footer" data-li-type="wiki" data-item-id="2575_457319" title="Faydror">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/b/b5/FaydrorHelmet.png/revision/latest/scale-to-width-down/1000?cb=20241103170521&amp;path-prefix=de" loading="lazy" alt="">
+                                <a href="https://xorumian-things.fandom.com/de/wiki/Qara" class=" mcf-card mcf-card-article" data-tracking="footer-card-2-2,wiki-article,footer" data-li-type="wiki" data-item-id="2575_457319" title="Qara">
+                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/0/04/Qara.png/revision/latest/scale-to-width-down/1000?cb=20241227182332&amp;path-prefix=de" loading="lazy" alt="">
                                     <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Faydror</span>
+                                        <span class="mcf-card-article__title">Qara</span>
                                         <span class="mcf-card-article__subtitle">Xorum Wiki</span>
                                     </span>
                                 </a>

@@ -14,6 +14,7 @@
     }
     
     // The library will live here... eventually.
+    window.dev = window.dev || {};
     window.dev.preact = {};
 
     function importScript(args) {
@@ -144,31 +145,36 @@
                 children: children
             });
         };
+        
+        function nenumerable(object, key, value) {
+	        Object.defineProperty(object, key, {
+	            value: value,
+	            writable: true,
+	            enumerable: false
+	        });
+        }
 
         // useState and useReducer versions that don't require destructuring
         exports.useState = function(initialState) {
             var state = hooks.useState(initialState);
+            nenumerable(state, 'value', state[0]);
+            nenumerable(state, 'set', state[1]);
 
-            return {
-                value: state[0],
-                set: state[1]
-            };
+            return state;
         };
         exports.useReducer = function(reducer, initialArg, init) {
             var handle = hooks.useReducer(reducer, initialArg, init);
+            nenumerable(handle, 'state', handle[0]);
+            nenumerable(handle, 'dispatch', handle[1]);
 
-            return {
-                state: handle[0],
-                dispatch: handle[1]
-            };
+            return handle;
         };
         exports.useErrorBoundary = function(report) {
             var boundary = hooks.useErrorBoundary(report);
+            nenumerable(boundary, 'error', boundary[0]);
+            nenumerable(boundary, 'reset', boundary[1]);
 
-            return {
-                error: boundary[0],
-                reset: boundary[1]
-            };
+            return boundary;
         };
 
         // Just copy these, no destructuring
@@ -189,7 +195,6 @@
         exports.toChildArray = preact.toChildArray;
 
         // Expose as a dev global and mw.hook
-        window.dev = window.dev || {};
         window.dev.preact = exports;
 
         if (typeof mw === 'object' && typeof mw.hook === 'function') {
