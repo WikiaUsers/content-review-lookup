@@ -117,7 +117,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	}
 	
 	// Display PDF files on PDF file pages
-	const adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
+	const adobeIcon = $('.ns-6 [src="/resources-ucp/mw143/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
 	const filePageIframe = $('<iframe>');
 	const iframeAttributes = {
 		'src': mw.util.getUrl('Special:FilePath/' + mw.config.get('wgTitle')),

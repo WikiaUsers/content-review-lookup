@@ -211,12 +211,11 @@
             var url;
             try {
                 url = new URL($target.attr('href'));
-            } catch(err) {
+            } catch(e) {
                 return;
             }
-            var params = url.searchParams;
             if (!$target.is('.ignoreAjDel')) {
-                if (params.get('action') === 'delete') {
+                if (Object.fromEntries(new URLSearchParams(url.search)).action === 'delete') {
                     e.preventDefault();
                     this.doDelete(url, $target);
                 } else if (this.isUndelete(url)) {
@@ -234,16 +233,16 @@
                     url.pathname === mw.util.getUrl('Special:' + alias) ||
                     url.pathname === mw.util.getUrl(special + ':' + alias)
                 ) &&
-                    params.get('target');
+                    Object.fromEntries(new URLSearchParams(url.search)).target;
             }) &&
                 !this.config.noUndelete &&
                 // URLs on undeletion history should not open the modal
-                !params.get('timestamp');
+                !Object.fromEntries(new URLSearchParams(url.search)).timestamp;
         },
         doDelete: function(url, $target) {
             this.action = 'delete';
             var isImg = $target.is('a[href*="/wiki/File:"]'),
-                isRevImg = params.get('oldimage') ? params.get('oldimage') : false,
+                isRevImg = Object.fromEntries(new URLSearchParams(url.search)).oldimage ? Object.fromEntries(new URLSearchParams(url.search)).oldimage : false,
                 page = decodeURIComponent(url.pathname).replace(config.wgArticlePath.replace('$1', ''), '').replace(/_/g, ' '),
                 text = isImg ?
                     isRevImg ?
@@ -388,9 +387,8 @@
         },
         doUndelete: function(url) {
             this.action = 'undelete';
-            var params = url.searchParams;
-            if (params.get('target')) {
-                this.page = params.get('target')
+            if (Object.fromEntries(new URLSearchParams(url.search)).target) {
+                this.page = Object.fromEntries(new URLSearchParams(url.search)).target
                     .replace(/_/g, ' ');
             } else {
                 this.page = decodeURIComponent(url.pathname)

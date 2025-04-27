@@ -7,3 +7,10 @@ mw.hook("wikipage.content").add(function () {
 		$(css.ownerNode).addClass("import-css").attr("data-css-hash", $("span.import-css").attr("data-css-hash")).attr("data-from", $("span.import-css").attr("data-from"));
 	});
 })
+
+// モバイル限定、PC限定
+if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    document.documentElement.classList.add("is-mobile");
+  } else {
+    document.documentElement.classList.add("is-desktop");
+  }

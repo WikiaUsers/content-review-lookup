@@ -12,8 +12,14 @@ varstmt: true,
 quotmark: single,
 esversion: 6,
 futurehostile: true
+*//* global
+importArticles
 */
-mw.loader.using([ 'ext.CodeMirror.v6', 'ext.CodeMirror.v6.mode.mediawiki', 'mediawiki.api']).then((require) => {
+importArticles({
+	type: 'script',
+	articles: [ 'u:dev:MediaWiki:CustomCodeMirror.js' ]
+});
+mw.hook('dev.CCM.load').add((cmLoader) => {
 	'use strict';
 	(window.dev = window.dev || {}).BetterUpload = window.dev.BetterUpload || {
 		'default': '==Licensing==\n{{Fairuse}}'
@@ -134,150 +140,29 @@ mw.loader.using([ 'ext.CodeMirror.v6', 'ext.CodeMirror.v6.mode.mediawiki', 'medi
 				.mw-upload-editlicenses
 			`).remove();
 			
-			BU.initCM();
-			BU.renderPreview();
-			BU.genPreloads();
+			cmLoader($('#wpUploadDescription'));
+			mw.hook('dev.CCM.ready').add((ccm)=>{
+				cm = ccm;
+				BU.renderPreview();
+				BU.genPreloads();
+			});
 			
 			// Update "default values" so that the base upload check for leaving the page doesnt have a stroke when nothing actually changed
 			form.data('origtext', form.serialize());
 		},
 		
-		initCM: () => {
-			let CodeMirror = require( 'ext.CodeMirror.v6' );
-			let mediawikiLang = require( 'ext.CodeMirror.v6.mode.mediawiki' );
-			mw.util.addCSS(`
-				.ext-codemirror-wrapper {position: relative;}
-				.skin-fandomdesktop .cm-gutters {background-color:var(--theme-page-background-color--secondary);border-right-color:var(--theme-border-color);color:var(--theme-page-text-color); margin-right:1px;}
-				.cm-editor {border: 1px solid var(--theme-border-color); color: var(--theme-page-text-color); height: unset !important;}
-				.cm-content {text-wrap: wrap !important; width: 90%;}
-				.cm-cursor {border-left: 1.2px solid var(--theme-page-text-color) !important;}
-				.cm-scroller {max-height: 70vh; width: 100%; min-height: 300px; resize: vertical;}
-				#mw-htmlform-description {width: 100%;}
-				.cm-layer {animation: none !important;}
-				.cm-focused .cm-cursor {animation: steps(1) cm-blink 1.2s infinite;}
-				.cm-linksuggest {font-size: 14px; padding: 0; z-index: 500; margin-top: 21px; position: absolute;}
-				.cm-linksuggest:not(:has(> .oo-ui-popupWidget-popup > div)) {display: none; pointer-events: none;}
-				.cm-linksuggest > .oo-ui-popupWidget-popup {padding: 0; width: 320px; height: auto;}
-				.cm-linksuggest-suggest { box-sizing: border-box; display: flex; margin: 0 9px; padding: 8px 6px; cursor: pointer; }
-				.cm-linksuggest-suggest:hover, .cm-linksuggest-selected { background-color: rgba(var(--theme-link-color--rgb), .15); color: var(--theme-link-color); }
-			`);
-			cm = new CodeMirror( $('textarea#wpUploadDescription') );
-			cm.initialize( [ cm.defaultExtensions, mediawikiLang() ] );
-			window.dev.BetterUpload.CodeMirror = cm;
-			
-			// try to preview every couple seconds
-			let last;
-			setInterval(() => {
-				let curr = BU.getCM();
-				if (curr !== last) {BU.renderPreview();}
-				last = curr;
-			}, 1000);
-			
-			// Link suggest custom implementation
-			let suggList = $('<div>', {
-				'class':'cm-layer cm-linksuggest oo-ui-popupWidget-anchored oo-ui-popupWidget-anchored-top',
-				html: [
-					$('<div>', {'class': 'oo-ui-popupWidget-popup' }),
-					$('<div>', {'class': 'oo-ui-popupWidget-anchor', style: 'left: 12px;'})
-				]
-			});
-			$('.ext-codemirror-wrapper').append(suggList);
-			let matchCaret = mw.util.throttle(()=>{
-				const	carTop = $('.cm-cursor').css('top').replace(/px/, ''),
-						carLeft = $('.cm-cursor').css('left').replace(/px/, ''),
-						scroll = $('.cm-scroller').scrollTop();
-				suggList.css('display', carTop<scroll ? 'none' : '');
-				suggList.css('top', Number($('.cm-cursor').css('top').replace(/px/, ''))-$('.cm-scroller').scrollTop()+10+'px');
-				suggList.css('left', (Number($('.cm-cursor').css('left').replace(/px/, ''))-10)+'px');
-			}, 150);
-			BU.waitFor('.cm-cursor', ()=>{
-				let caretObserver = new MutationObserver(matchCaret);
-				caretObserver.observe($('.cm-cursor').get(0), {attributes: true});
-				$('.cm-scroller').on('scroll', matchCaret);
-			});
-			let genSugg = mw.util.throttle(()=>{
-				suggList.children('.oo-ui-popupWidget-popup').empty();
-				let range = cm.view.state.selection.ranges[0];
-				if (range.from!==range.to) {return;}
-				let uptoCaret = BU.getCM().substring(0, range.from),
-					rgxCheck = /(\[\[:?|\{\{:?)([^\n\{\|\}\[\]]+)$/;
-				if (uptoCaret && rgxCheck.test(uptoCaret)) {
-					let matches = rgxCheck.exec(uptoCaret),
-						selWidget = new OO.ui.SelectWidget();
-					api.get({
-						action: 'linksuggest',
-						'get': 'suggestions',
-						query: (matches[1].startsWith('{{') ? 'Template:' : '') + matches[2]
-					}).then((d)=>{
-						let data = d.linksuggest.result.suggestions,
-							list = suggList.children('.oo-ui-popupWidget-popup'),
-							opts = [];
-							list.empty();
-						data.forEach((sugg)=>{
-							let opt = $('<div>', { tabindex: '0', text: sugg, 'class': 'cm-linksuggest-suggest' });
-							opt.on('click', (e)=>{
-								suggList.children('.oo-ui-popupWidget-popup').empty();
-								let repl = matches[1]+sugg+(matches[1].startsWith('{{') ? '}}' : ']]'),
-									from = Math.max(0, uptoCaret.length - matches[0].length);
-								repl = repl.replace(/^([\{:]+)Template:/i, '$1');
-								// Apply link suggestion
-								cm.view.dispatch({
-									changes: { from: from, to: uptoCaret.length, insert: repl },
-									selection: { anchor: from+repl.length }
-								});
-								cm.view.focus();
-							});
-							opts.push(opt);
-						});
-						list.append(opts);
-					});
-				}
-			}, 150);
-			
-			/// Suggestion generation
-			suggList.on('mouseenter', ()=>{$('.cm-linksuggest-selected').toggleClass('cm-linksuggest-selected', false);});
-			let handleInput = (event) => {
-				if (event.type==='keydown' && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
-					event.preventDefault();
-					event.stopPropagation();
-					matchCaret();
-					let opts = $('.cm-linksuggest-suggest'),
-						target = opts.index($('.cm-linksuggest-selected'))+{ArrowUp: -1, ArrowDown: +1}[event.key];
-					if (target <= -1) {target = opts.length-1;}
-					else if (target >= opts.length) {target = 0;}
-					opts
-						.filter('.cm-linksuggest-selected')
-						.add(opts.get(target))
-						.toggleClass('cm-linksuggest-selected');
-				} else if (event.type==='keydown' && event.key==='Enter') {
-					let sel = $('.cm-linksuggest-selected');
-					if (sel.length>0) {
-						event.preventDefault();event.stopPropagation();
-						sel.click();
-					}
-				} else {
-					matchCaret();
-					genSugg();
-				}
-			};
-			document.querySelector('.cm-content').addEventListener('keydown', handleInput, { capture: true });
-			document.querySelector('.cm-content').addEventListener('click', handleInput, { capture: true });
-		},
-		
 		pushCM: (txt, pos)=>{
 			cm.view.dispatch({
 				changes: {
-					from: pos===null ? 0 : cm.view.state.selection.ranges[0].from,
-					to: pos===null ? cm.view.state.doc.length : cm.view.state.selection.ranges[0].to,
+					from: pos===null ? 0 : cm.view.state.selection.main.from,
+					to: pos===null ? cm.view.state.doc.length : cm.view.state.selection.main.to,
 					insert: txt
 				},
-				selection: {anchor: cm.view.state.selection.ranges[0].from + (pos||0)}
+				selection: {anchor: cm.view.state.selection.main.from + (pos||0)}
 			});
 			cm.view.focus();
 
 		},
-		
-		getCM: () => {return cm.view.state.doc.toString();},
 		
 		// if this file is being uploaded to a specific destination specified in the URL,
 		// iterate through preloads with a specified "pattern" field to attempt to detect one
@@ -427,7 +312,7 @@ mw.loader.using([ 'ext.CodeMirror.v6', 'ext.CodeMirror.v6.mode.mediawiki', 'medi
 		
 		renderPreview: () => {
 			let filename = document.querySelector('#wpDestFile').value;
-			let text = BU.getCM();
+			let text = cm.view.state.sliceDoc();
 			let params = {
 				action: 'parse',
 				text: text,
@@ -455,7 +340,7 @@ mw.loader.using([ 'ext.CodeMirror.v6', 'ext.CodeMirror.v6.mode.mediawiki', 'medi
 					title: 'File:'+filename,
 					ignorewarnings: '1',
 					format: 'json',
-					text: BU.getCM(),
+					text: cm.view.state.sliceDoc(),
 					recreate: 1,
 					token: mw.user.tokens.get('csrfToken')
 				};
@@ -477,7 +362,7 @@ mw.loader.using([ 'ext.CodeMirror.v6', 'ext.CodeMirror.v6.mode.mediawiki', 'medi
 				filename: filename,
 				ignorewarnings: '1',
 				format: 'json',
-				text: BU.getCM()
+				text: cm.view.state.sliceDoc()
 			};
 			if (comment && comment.value.length>0) {
 				params.comment = comment.value;

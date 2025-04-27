@@ -1,8 +1,7 @@
+'use strict';
 (function(module, mw, $){
-	'use strict';
-	
-	var translations = $.extend(true, {
-		en: {
+	const translations = $.extend(true, {
+		'en': {
 			and: 'and',
 			second: 'second',
 			seconds: 'seconds',
@@ -13,7 +12,7 @@
 			day: 'day',
 			days: 'days',
 		},
-		fr: {
+		'fr': {
 			and: 'et',
 			second: 'seconde',
 			seconds: 'secondes',
@@ -24,7 +23,7 @@
 			day: 'jour',
 			days: 'jours',
 		},
-		es: {
+		'es': {
 			and: 'y',
 			second: 'segundo',
 			seconds: 'segundos',
@@ -35,7 +34,7 @@
 			day: 'día',
 			days: 'días',
 		},
-		ca: {
+		'ca': {
 			and: 'i',
 			second: 'segon',
 			seconds: 'segons',
@@ -57,7 +56,7 @@
 			day: 'dia',
 			days: 'dias',
 		},
-		de: {
+		'de': {
 			and: 'und',
 			second: 'Sekunde',
 			seconds: 'Sekunden',
@@ -68,7 +67,7 @@
 			day: 'Tag',
 			days: 'Tage',
 		},
-		it: {
+		'it': {
 			and: 'e',
 			second: 'secondo',
 			seconds: 'secondi',
@@ -79,7 +78,7 @@
 			day: 'giorno',
 			days: 'giorni',
 		},
-		nl: {
+		'nl': {
 			and: 'en',
 			second: 'seconde',
 			seconds: 'seconden',
@@ -90,7 +89,7 @@
 			day: 'dag',
 			days: 'dagen',
 		},
-		pl: {
+		'pl': {
 			and: 'i',
 			second: 'sekund(y)',
 			seconds: 'sekund(y)',
@@ -101,7 +100,7 @@
 			day: 'dni',
 			days: 'dni',
 		},
-		sr: {
+		'sr': {
 			and: 'i',
 			second: 'sekundu',
 			seconds: 'sekunde/-i',
@@ -112,7 +111,7 @@
 			day: 'dan',
 			days: 'dana',
 		},
-		zh: {
+		'zh': {
 			and: ' ',
 			second: '秒',
 			seconds: '秒',
@@ -123,7 +122,7 @@
 			day: '天',
 			days: '天',
 		},
-		hu: {
+		'hu': {
 			and: 'és',
 			second: 'másodperc',
 			seconds: 'másodperc',
@@ -136,14 +135,14 @@
 		},
 	}, module.translations || {});
 	
-	var i18n = translations[mw.config.get('wgContentLanguage')] || translations.en;
-	var countdowns = [];
-	var NO_LEADING_ZEROS = 1;
+	const i18n = translations[mw.config.get('wgContentLanguage')] || translations.en;
+	const countdowns = [];
+	const NO_LEADING_ZEROS = 1;
 	
 	function output(i, diff){
 		/*jshint bitwise:false*/
-		var delta, result, parts = [];
-		delta = diff % 60;
+		const parts = [];
+		let delta = diff % 60;
 		parts.unshift(delta + ' ' + i18n[delta === 1 ? 'second' : 'seconds']);
 		diff = Math.floor(diff / 60);
 		delta = diff % 60;
@@ -153,7 +152,7 @@
 		parts.unshift(delta + ' ' + i18n[delta === 1 ? 'hour' : 'hours']);
 		diff = Math.floor(diff / 24);
 		parts.unshift(diff + ' ' + i18n[diff === 1 ? 'day' : 'days']);
-		result = parts.pop();
+		let result = parts.pop();
 		if (countdowns[i].opts & NO_LEADING_ZEROS){
 			while (parts.length && parts[0][0] === '0') {
 				parts.shift();
@@ -166,7 +165,7 @@
 	}
 	
 	function end(i){
-		var c = countdowns[i].node.parent();
+		const c = countdowns[i].node.parent();
 		switch (c.attr('data-end')) {
 			case 'remove':
 				c.remove();
@@ -177,7 +176,7 @@
 				countdowns.splice(i, 1);
 				return;
 			case 'toggle':
-				var toggle = c.attr('data-toggle');
+				const toggle = c.attr('data-toggle');
 				if (toggle && $(toggle).length) {
 					$(toggle).css('display', 'inline');
 					c.css('display', 'none');
@@ -186,7 +185,7 @@
 				}
 				break;
 			case 'callback':
-				var callback = c.attr('data-callback');
+				const callback = c.attr('data-callback');
 				if (callback && $.isFunction(module[callback])) {
 					output(i, 0);
 					countdowns.splice(i, 1);
@@ -200,9 +199,9 @@
 	}
 	
 	function update(){
-		var now = Date.now();
-		$.each(countdowns.slice(0), function(i, countdown){
-			var diff = Math.floor((countdown.date - now) / 1000);
+		const now = Date.now();
+		$.each(countdowns.slice(0), (i, countdown) => {
+			const diff = Math.floor((countdown.date - now) / 1000);
 			if (diff <= 0 && !countdown.countup){
 				end(i);
 			} else {
@@ -210,16 +209,14 @@
 			}
 		});
 		if (countdowns.length){
-			window.setTimeout(function(){
-				update();
-			}, 1000);
+			window.setTimeout(() => update(), 1000);
 		}
 	}
 	
 	function getOptions(node){
 		/*jshint bitwise:false*/
-		var text = node.parent().attr('data-options'),
-			opts = 0;
+		const text = node.parent().attr('data-options');
+		let opts = 0;
 		if (text){
 			if (/no-leading-zeros/.test(text)){
 				opts |= NO_LEADING_ZEROS;
@@ -228,20 +225,19 @@
 		return opts;
 	}
 	
-	$(function(){
-		var countdown = $('.countdown');
+	$(() => {
+		const countdown = $('.countdown');
 		if (!countdown.length) return;
 		$('.nocountdown').css('display', 'none');
-		countdown.css('display', 'inline').find('.countdowndate').each(function(){
-			var $this = $(this),
-				date = (new Date($this.text())).valueOf();
+		countdown.css('display', 'inline').find('.countdowndate').each((index, element) => {
+			const date = (new Date($(element).text())).valueOf();
 			if (isNaN(date)){
-				$this.text('BAD DATE');
+				$(element).text('BAD DATE');
 				return;
 			}
 			countdowns.push({
-				node: $this,
-				opts: getOptions($this),
+				node: $(element),
+				opts: getOptions($(element)),
 				date: date,
 			});
 		});

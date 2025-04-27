@@ -29,22 +29,22 @@ function resetSelectedTab() {
 
 /* function should work only after DOM is initialized */
 $(function () {
-	$(document.getElementById("th1")).click(function() { // Actions after tab 1 is clicked
+	$(document.querySelectorAll("#th1")).click(function() { // Actions after tab 1 is clicked
 		resetSelectedTab();
 		$th1.addClass('selectedTab');
 		$tb1.addClass('selectedTab');
 	});
-	$(document.getElementById("th2")).click(function() { // Actions after tab 2 is clicked
+	$(document.querySelectorAll("#th2")).click(function() { // Actions after tab 2 is clicked
 		resetSelectedTab();
 		$th2.addClass('selectedTab');
 		$tb2.addClass('selectedTab');
 	});
-	$(document.getElementById("th3")).click(function() { // Actions after tab 3 is clicked
+	$(document.querySelectorAll("#th3")).click(function() { // Actions after tab 3 is clicked
 		resetSelectedTab();
 		$th3.addClass('selectedTab');
 		$tb3.addClass('selectedTab');
 	});
-	$(document.getElementById("th4")).click(function() { // Actions after tab 4 is clicked
+	$(document.querySelectorAll("#th4")).click(function() { // Actions after tab 4 is clicked
 		resetSelectedTab();
 		$th4.addClass('selectedTab');
 		$tb4.addClass('selectedTab');

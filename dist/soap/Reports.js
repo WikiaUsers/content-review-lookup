@@ -404,7 +404,7 @@
 					credentials: 'include'
 				} ).then( ( response ) => response.json() ).then( () => {
 					setTimeout( () => {
-						window.location.reload();
+						document.location.href = self.config.wgArticlePath.replace( '$1', self.config.wgPageName );
 					}, 3000 );
 				} );
 			},
@@ -602,7 +602,6 @@
 			button = document.createElement( 'button' ),
 			msg = i18no.msg,
 			opts = setOptions( id, msg, config );
-		let dialogExist = false;
 
 		if ( !ele.length || !id.length ) {
 			return;
@@ -619,30 +618,28 @@
 		button.className = 'cdx-button cdx-button--action-progressive cdx-button--weight-primary';
 		button.style.cursor = 'pointer';
 		button.textContent = opts.buttonText;
-		button.addEventListener( 'click', () => {
-			if ( !dialogExist ) {
-				dialogExist = true;
-				mw.loader.using( [
-					'@wikimedia/codex',
-					'mediawiki.util'
-				] ).then( ( require ) => {
-					const Vue = require( 'vue' ),
-						Codex = require( '@wikimedia/codex' ),
-						mountPoint = document.body.appendChild( document.createElement( 'div' ) );
+		button.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+			mw.loader.using( [
+				'@wikimedia/codex',
+				'mediawiki.util'
+			] ).then( ( require ) => {
+				const Vue = require( 'vue' ),
+					Codex = require( '@wikimedia/codex' ),
+					mountPoint = document.body.appendChild( document.createElement( 'div' ) );
 
-					Vue.createMwApp( rootComponent, {
-						button, config, field, id, msg, opts, urlparams
-					} )
-						.component( 'cdx-button', Codex.CdxButton )
-						.component( 'cdx-dialog', Codex.CdxDialog )
-						.component( 'cdx-field', Codex.CdxField )
-						.component( 'cdx-text-area', Codex.CdxTextArea )
-						.component( 'cdx-text-input', Codex.CdxTextInput )
-						.component( 'cdx-toggle-switch', Codex.CdxToggleSwitch )
-						.mount( mountPoint );
-				} );
-			}
-		} );
+				Vue.createMwApp( rootComponent, {
+					button, config, field, id, msg, opts, urlparams
+				} )
+					.component( 'cdx-button', Codex.CdxButton )
+					.component( 'cdx-dialog', Codex.CdxDialog )
+					.component( 'cdx-field', Codex.CdxField )
+					.component( 'cdx-text-area', Codex.CdxTextArea )
+					.component( 'cdx-text-input', Codex.CdxTextInput )
+					.component( 'cdx-toggle-switch', Codex.CdxToggleSwitch )
+					.mount( mountPoint );
+			} );
+		}, { once: true } );
 
 		ele.addClass( 'loaded' );
 		ele.empty();

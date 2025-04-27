@@ -1,8 +1,22 @@
-mw.hook('wikiEditor.toolbarReady').add(function(){
-	$('head').prepend('<link rel="stylesheet" href="/load.php?modules=ext.fandom.wikiEditorFandomDesktop.css&only=styles">');
+'use strict';
+mw.hook('wikiEditor.toolbarReady').add(() => {
+	const queryString = {
+		modules: 'ext.fandom.wikiEditorFandomDesktop.css',
+		only: 'styles',
+	};
+	const attributes = {
+		rel: 'stylesheet',
+		href: `/load.php?${new URLSearchParams(queryString).toString()}`,
+	};
+	$('head').prepend($('<link>').attr(attributes));
 });
 
-mw.hook('ve.activationComplete').add(function(){
-	var docNode = $('.ve-ce-documentNode');
-	docNode.addClass('mw-content-' + docNode.attr('dir') + ' mw-parser-output mw-show-empty-elt');
+mw.hook('ve.activationComplete').add(() => {
+	const docNode = $('.ve-ce-documentNode');
+	const classes = [
+		`mw-content-${docNode.attr('dir')}`,
+		'mw-parser-output',
+		'mw-show-empty-elt',
+	];
+	docNode.addClass(classes);
 });

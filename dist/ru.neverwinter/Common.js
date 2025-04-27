@@ -559,3 +559,109 @@ $(function() {
                 
     })
 });
+
+/**
+ * This script dynamically updates HTML tables with class 'timer-table' to display event schedules.
+ * It highlights the active event at the top, sorts upcoming events by start time, and adjusts times
+ * to the user's local timezone. The table is refreshed every second for real-time countdowns.
+ *
+ * Functionality:
+ * - Targets tables with class 'timer-table' and processes each independently.
+ * - Expects three columns: Time (data-time-cell), Event name, Status (data-start-time, optional data-duration).
+ * - Formats event times in 24-hour format (e.g., 13:30–13:45) in the user's local timezone.
+ * - Identifies the active event (if current time is within its duration) and marks it with 'active-event' class.
+ * - Sorts non-active events by time until start, marking the nearest as 'Nearest'.
+ * - Updates statuses with countdowns (e.g., 'Active (remains X min Y sec)', 'in X hr Y min Z sec').
+ * - Rebuilds the table each second to reflect the current order and times.
+ *
+ * Requirements:
+ * - Tables must have class 'timer-table' and the specified column structure.
+ * - Rows must include data-start-time (Unix timestamp) and optionally data-duration (seconds).
+ * - Default event duration is 15 minutes if data-duration is absent.
+ *
+ * Usage: Add to MediaWiki:Common.js to enable real-time event tables on wiki pages.
+ */
+$(document).ready(function() {
+    const tables = document.querySelectorAll('.event-timer-table');
+    if (!tables.length) return;
+
+    tables.forEach(table => {
+        const eventDurationDefault = 15 * 60; // Default duration in seconds
+        const headerRow = table.querySelector('tr');
+        let rows = Array.from(table.querySelectorAll('tr')).slice(1);
+
+        function formatTimeRange(startTime, duration) {
+            const startDate = new Date(startTime * 1000);
+            const endDate = new Date((startTime + duration) * 1000);
+            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+            const startStr = startDate.toLocaleTimeString('en-US', options);
+            const endStr = endDate.toLocaleTimeString('en-US', options);
+            return `${startStr}–${endStr}`;
+        }
+
+        function updateTimers() {
+            const now = Math.floor(Date.now() / 1000);
+
+            let events = rows.map(row => {
+                const statusCell = row.cells[2];
+                const startTime = parseInt(statusCell.getAttribute('data-start-time'), 10);
+                const duration = parseInt(statusCell.getAttribute('data-duration'), 10) || eventDurationDefault;
+                let timeUntil = startTime - now;
+                if (timeUntil < 0) timeUntil += 24 * 60 * 60;
+                return { row, startTime, duration, timeUntil };
+            });
+
+            let activeEvent = null;
+            events = events.map(event => {
+                const endTime = event.startTime + event.duration;
+                if (now >= event.startTime && now <= endTime) {
+                    activeEvent = event;
+                    const timeLeft = endTime - now;
+                    const minutesLeft = Math.floor(timeLeft / 60);
+                    const secondsLeft = timeLeft % 60;
+                    event.status = `<b>Активно</b> (осталось ${minutesLeft} мин ${secondsLeft} сек)`;
+                    event.isActive = true;
+                } else {
+                    const hoursUntil = Math.floor(event.timeUntil / 3600);
+                    const minutesUntil = Math.floor((event.timeUntil % 3600) / 60);
+                    const secondsUntil = event.timeUntil % 60;
+                    event.status = hoursUntil > 0 
+                        ? `через ${hoursUntil} ч ${minutesUntil} мин ${secondsUntil} сек`
+                        : `через ${minutesUntil} мин ${secondsUntil} сек`;
+                    event.isActive = false;
+                }
+                return event;
+            });
+
+            const sortedEvents = events
+                .filter(event => !event.isActive)
+                .sort((a, b) => a.timeUntil - b.timeUntil);
+
+            if (activeEvent) {
+                sortedEvents.unshift(activeEvent);
+            } else {
+                sortedEvents[0].status = `<b>Ближайшее</b> (${sortedEvents[0].status.replace('через ', '')})`;
+            }
+
+            // Clear table except header
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            sortedEvents.forEach(event => {
+                const row = event.row;
+                const timeCell = row.cells[0];
+                const statusCell = row.cells[2];
+
+                timeCell.innerHTML = formatTimeRange(event.startTime, event.duration);
+                statusCell.innerHTML = event.status;
+                row.classList.toggle('active-event', event.isActive);
+
+                table.appendChild(row);
+            });
+        }
+
+        updateTimers();
+        setInterval(updateTimers, 1000);
+    });
+});

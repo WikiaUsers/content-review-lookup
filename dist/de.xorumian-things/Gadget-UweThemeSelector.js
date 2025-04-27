@@ -1,10 +1,10 @@
 (function($){
 	// prevent double load
-	window.hsbwiki = window.hsbwiki || {};
-	if (window.hsbwiki.themeSelectorLoaded) return;
-	window.hsbwiki.themeSelectorLoaded = true;
+	window.xorumwiki = window.xorumwiki || {};
+	if (window.xorumwiki.themeSelectorLoaded) return;
+	window.xorumwiki.themeSelectorLoaded = true;
 	
-	var SELECTED_CACHE_KEY = 'hsw-themeselector-selected';
+	var SELECTED_CACHE_KEY = 'uwe-themeselector-selected';
 	var stylesheetPrefix = "https://xorumian-things.fandom.com/de/index.php?action=raw&ctype=text/css&title=";
 	var themes = [
 		{
@@ -25,7 +25,7 @@
 	// "https://www.svgrepo.com/svg/334028/landscape" By boxicons - CC Attribution License - slightly changed
 	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" width="682.7" height="682.7" version="1.0" viewBox="2 1 20 20"><path d="M3 20h18a1 1 0 0 0 .864-1.504l-7-12c-.359-.615-1.369-.613-1.729 0L9.866 12.1l-1.02-1.632A.998.998 0 0 0 8 10h-.001a1 1 0 0 0-.847.47l-5 8A1 1 0 0 0 3 20zM14 8.985 19.259 18h-5.704l-2.486-3.987L14 8.985zm-5.999 3.9L11.197 18H4.805l3.196-5.115zM6 8c1.654 0 3-1.346 3-3S7.654 2 6 2 3 3.346 3 5s1.346 3 3 3zm0-4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path></svg>';
 	
-	var CONTENT_ID = 'hsw-themeselector-dropdown';
+	var CONTENT_ID = 'uwe-themeselector-dropdown';
 	
 	function main() {
 		// Not sure why this sometimes doesn't show up on page load; attempting to delay add a bit to try and make it more consitent
@@ -42,7 +42,7 @@
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
 		
 		// Insert dropdown to nav
-		$(".wiki-tools > .wds-button:not([class*='hsw-']):last-of-type").after($dropdown);
+		$(".wiki-tools > .wds-button:not([class*='uwe-']):last-of-type").after($dropdown);
 		
 		update();
 	}
@@ -68,10 +68,10 @@
 		
 		$content.html("");
 		// Add header
-		$('<div class="hsw-theme-header"><strong>Wiki Theme Selector</strong></div>').appendTo($content);
+		$('<div class="uwe-theme-header"><strong>Wiki Theme Selector</strong></div>').appendTo($content);
 		
 		// Add list
-		var $list = $("<ul>").addClass("hsw-theme-list").appendTo($content);
+		var $list = $("<ul>").addClass("uwe-theme-list").appendTo($content);
 		
 		themes.forEach(function(theme, i){
 			var $li = $("<li>").html(renderThemeBox(theme)).addClass(theme.id+(theme.id == selectedId ? ' selected' : '')).appendTo($list).on('click', function(){
@@ -83,7 +83,7 @@
 	
 	function renderThemeBox(theme) {
 		return [
-			"<div class='hsw-theme-box' "+(theme.image ? "style='background-image:url("+theme.image+");'" : "")+">",
+			"<div class='uwe-theme-box' "+(theme.image ? "style='background-image:url("+theme.image+");'" : "")+">",
 				"<div class='theme-title'>"+theme.name+"</div>",
 				(theme.note ? "<div class='theme-note'>"+theme.note+"</div>" : ""),
 			"</div>"
@@ -108,7 +108,7 @@
 		}
 	}
 	
-	var STYLESHEET_CLASS = "hsw-themeselector-stylesheet";
+	var STYLESHEET_CLASS = "uwe-themeselector-stylesheet";
 	function addStylesheetToHead(href) {
 		$("head").append("<link rel='stylesheet' href='"+href+"' type='text/css' class='"+STYLESHEET_CLASS+"'>");
 	}

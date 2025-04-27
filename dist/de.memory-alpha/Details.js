@@ -1,14 +1,19 @@
-$('.details > .summary').each(function() {
-    var $summary = $(this);
-    var $details = $summary.parent();
-    var $button = $('<a />').html('anzeigen');
-    $summary.append(" [").append($button).append(']');
-    $summary.bind('click', function() {
-        $details.toggleClass('open');
-        if ($details.hasClass('open')) {
-            $button.html('verbergen');
-        } else {
-            $button.html('anzeigen');
-        }
-    });
+$(function () {
+  console.log("✅ Details.js geladen");
+
+  $('.details .toggle-text').on('click', function () {
+    var $details = $(this).closest('.details');
+    var $content = $details.find('.details-content');
+    var $text = $(this);
+
+    $details.toggleClass('open');
+
+    if ($details.hasClass('open')) {
+      $content.slideDown(200);
+      $text.text('[Einklappen]');
+    } else {
+      $content.slideUp(200);
+      $text.text('[Ausklappen]');
+    }
+  });
 });

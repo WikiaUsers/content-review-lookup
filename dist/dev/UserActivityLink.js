@@ -13,15 +13,17 @@
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
-	mw.hook('dev.i18n').add(function (i18n) {
-		i18n.loadMessages('UserActivityLink').then(init);
-	});
+	mw.hook('dev.i18n').add((i18n) => i18n.loadMessages('UserActivityLink').then(init));
 	function init (i18n) {
-		$('.global-action__user .global-action__button').click(i18n, checkForList);
+		$('.global-action__user .global-action__button').on('click', i18n, checkForList);
 	}
 	function checkForList (i18n) {
-		var prefItem = $('.user-tab__list .user-tab__list-item:nth-child(1)');
+		if (window.UserActivityLinkAdded) {
+			return;
+		}
+		const prefItem = $('.user-tab__list .user-tab__list-item:nth-child(1)');
 		if (prefItem.length) {
+			window.UserActivityLinkAdded = true;
 			addActivityLink(prefItem, i18n.data);
 		} else {
 			setTimeout(checkForList, 100, i18n);

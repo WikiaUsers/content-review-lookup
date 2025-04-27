@@ -1,581 +1,572 @@
-$(document).ready(function () {
-  // 隐藏无JS提示
-  $('.huarong-no-js').hide();
+// 全局华容道游戏对象
+var HuarongGame = {
+    // 初始化游戏实例
+    init: function($container) {
+        // 获取配置
+        var rows = parseInt($container.attr("data-row")) || 3;
+        var cols = parseInt($container.attr("data-col")) || 3;
+        var gameId = $container.attr("data-id") || "huarong-" + Math.random().toString(36).substr(2, 9);
+        var $imgElement = $container.find(".huarong-img img");
 
-  // 初始化所有华容道游戏实例
-  $(".huarong").each(function () {
-    initHuarongGame($(this));
-  });
+        // 创建游戏元素
+        $container.append(
+            '<div class="huarong-controls">' +
+            '<div class="huarong-moves" id="' + gameId + '-moves">步数: 0</div>' +
+            '<button class="huarong-solve-btn cdx-button has-ripple">自动求解</button>' +
+            '<button class="huarong-reset-btn cdx-button has-ripple">重置游戏</button>' +
+            '</div>' +
+            '<div class="huarong-game" id="' + gameId + '-game"></div>'
+        );
 
-  function initHuarongGame($container) {
-    // 获取配置
-    var rows = parseInt($container.attr("data-row")) || 3;
-    var cols = parseInt($container.attr("data-col")) || 3;
-    var gameId = $container.attr("data-id") || "huarong-" + Math.random().toString(36).substr(2, 9);
-    var $imgElement = $container.find(".huarong-img img");
+        var $gameContainer = $container.find(".huarong-game");
+        var $movesDisplay = $container.find(".huarong-moves");
+        var $solveBtn = $container.find(".huarong-solve-btn");
+        var $resetBtn = $container.find(".huarong-reset-btn");
 
-    // 创建游戏元素
-    $container.append(
-      '<div class="huarong-controls">' +
-      '<div class="huarong-moves" id="' + gameId + '-moves">步数: 0</div>' +
-      '<button class="huarong-solve-btn cdx-button has-ripple">自动求解</button>' +
-      '<button class="huarong-reset-btn cdx-button has-ripple">重置游戏</button>' +
-      '</div>' +
-      '<div class="huarong-game" id="' + gameId + '-game"></div>'
-    );
+        // 游戏状态对象
+        var gameState = {
+            blocks: [],
+            emptyPos: { x: cols - 1, y: rows - 1 },
+            moves: 0,
+            isPlaying: true,
+            originalImage: null,
+            canvas: document.createElement("canvas"),
+            ctx: null,
+            blockWidth: 0,
+            blockHeight: 0,
+            isAnimating: false,
+            rows: rows,
+            cols: cols,
+            moveHistory: [],
+            autoSolved: false,
+            currentPage: mw.config.get('wgPageName'),
+            imageSize: { width: $imgElement.width(), height: $imgElement.height() },
+            initialShuffledState: null
+        };
 
-    var $gameContainer = $container.find(".huarong-game");
-    var $movesDisplay = $container.find(".huarong-moves");
-    var $solveBtn = $container.find(".huarong-solve-btn");
-    var $resetBtn = $container.find(".huarong-reset-btn");
+        gameState.ctx = gameState.canvas.getContext("2d");
 
-    // 游戏状态对象
-    var gameState = {
-      blocks: [],
-      emptyPos: { x: cols - 1, y: rows - 1 },
-      moves: 0,
-      isPlaying: true,
-      originalImage: null,
-      canvas: document.createElement("canvas"),
-      ctx: null,
-      blockWidth: 0,
-      blockHeight: 0,
-      isAnimating: false,
-      rows: rows,
-      cols: cols,
-      moveHistory: [],
-      autoSolved: false, // 标记是否自动求解完成
-      currentPage: mw.config.get('wgPageName'), // 当前页面标题
-      imageSize: { width: $imgElement.width(), height: $imgElement.height() } // 图片尺寸
-    };
+        // 初始化游戏
+        function initGame() {
+            $gameContainer.empty();
+            gameState.moves = 0;
+            gameState.moveHistory = [];
+            gameState.autoSolved = false;
+            updateMovesDisplay();
+            gameState.isPlaying = true;
+            gameState.isAnimating = false;
 
-    gameState.ctx = gameState.canvas.getContext("2d");
+            if (!gameState.originalImage) {
+                console.error("图片未加载");
+                return;
+            }
 
-    // 初始化游戏
-    function initGame() {
-      $gameContainer.empty();
-      gameState.moves = 0;
-      gameState.moveHistory = [];
-      gameState.autoSolved = false;
-      updateMovesDisplay();
-      gameState.isPlaying = true;
-      gameState.isAnimating = false;
+            $gameContainer.css({
+                width: gameState.originalImage.width + "px",
+                height: gameState.originalImage.height + "px"
+            });
 
-      if (!gameState.originalImage) {
-        console.error("图片未加载");
-        return;
-      }
+            gameState.blockWidth = Math.floor(gameState.originalImage.width / cols);
+            gameState.blockHeight = Math.floor(gameState.originalImage.height / rows);
 
-      $gameContainer.css({
-        width: gameState.originalImage.width + "px",
-        height: gameState.originalImage.height + "px"
-      });
+            var numbers = Array.from({ length: rows * cols - 1 }, function (_, i) { return i; });
+            var solvedState = createBlocksFromNumbers(numbers, true);
+            gameState.blocks = solvedState.blocks;
+            gameState.emptyPos = solvedState.emptyPos;
 
-      gameState.blockWidth = Math.floor(gameState.originalImage.width / cols);
-      gameState.blockHeight = Math.floor(gameState.originalImage.height / rows);
+            // 打乱拼图前先保存原始正确状态
+            var originalState = getCurrentState();
+            
+            // 打乱拼图
+            var shuffleSteps = 20 + Math.floor(Math.random() * 21);
+            shufflePuzzle(shuffleSteps);
+            
+            // 保存打乱后的初始状态
+            gameState.initialShuffledState = getCurrentState();
 
-      var numbers = Array.from({ length: rows * cols - 1 }, function (_, i) { return i; });
-      var solvedState = createBlocksFromNumbers(numbers, true);
-      gameState.blocks = solvedState.blocks;
-      gameState.emptyPos = solvedState.emptyPos;
-
-  // 打乱拼图前先保存原始正确状态（仅用于后续验证）
-  var originalState = getCurrentState();
-  
-  // 打乱拼图
-  var shuffleSteps = 20 + Math.floor(Math.random() * 21);
-  shufflePuzzle(shuffleSteps);
-  
-  // 保存打乱后的初始状态
-  gameState.initialShuffledState = getCurrentState();
-
-      $solveBtn.show().prop("disabled", false).off("click").on("click", startAutoSolve);
-    }
-
-    // 获取当前棋盘状态
-function getCurrentState() {
-  var totalBlocks = gameState.rows * gameState.cols;
-  var state = new Array(totalBlocks).fill(0);
-  
-  // 记录所有方块位置
-  gameState.blocks.forEach(function(block) {
-    var pos = block.y * gameState.cols + block.x;
-    state[pos] = block.number + 1; // 使用1-based编号
-  });
-  
-  // 记录空位位置
-  var emptyPos = gameState.emptyPos.y * gameState.cols + gameState.emptyPos.x;
-  state[emptyPos] = 0;
-  
-  return state;
-}
-
-    // 创建拼图块
-    function createBlocksFromNumbers(numbers, isSolved) {
-      var blocks = [];
-      var index = 0;
-      var emptyPos = { x: cols - 1, y: rows - 1 };
-
-      for (var y = 0; y < rows; y++) {
-        for (var x = 0; x < cols; x++) {
-          if (x === emptyPos.x && y === emptyPos.y) continue;
-          var number = numbers[index++];
-          var originalX = number % cols;
-          var originalY = Math.floor(number / cols);
-
-          var croppedImageUrl = cropImage(
-            gameState.originalImage,
-            originalX * gameState.blockWidth,
-            originalY * gameState.blockHeight,
-            gameState.blockWidth,
-            gameState.blockHeight
-          );
-
-          var $block = $(
-            '<div class="huarong-block" data-x="' + x + '" data-y="' + y + 
-            '" data-original-x="' + originalX + '" data-original-y="' + originalY + 
-            '" data-number="' + number + '" style="width:' + (gameState.blockWidth - 2) + 
-            'px; height:' + (gameState.blockHeight - 2) + 'px; left:' + 
-            x * gameState.blockWidth + 'px; top:' + y * gameState.blockHeight + 'px;">' +
-            '<img src="' + croppedImageUrl + '">' +
-            '</div>'
-          );
-
-          $block.on("click", function () {
-            if (!gameState.isPlaying || gameState.isAnimating) return;
-            var $this = $(this);
-            tryMoveBlock(parseInt($this.attr("data-x")), parseInt($this.attr("data-y")));
-          });
-
-          $gameContainer.append($block);
-          blocks.push({
-            element: $block,
-            x: x,
-            y: y,
-            originalX: originalX,
-            originalY: originalY,
-            number: number
-          });
-        }
-      }
-
-      var $emptySpace = $(
-        '<div class="huarong-empty" style="width:' + (gameState.blockWidth - 2) + 
-        'px; height:' + (gameState.blockHeight - 2) + 'px; left:' + 
-        emptyPos.x * gameState.blockWidth + 'px; top:' + emptyPos.y * gameState.blockHeight + 'px;">' +
-        '</div>'
-      );
-      $gameContainer.append($emptySpace);
-
-      return { blocks: blocks, emptyPos: emptyPos };
-    }
-
-    // 打乱拼图
-    function shufflePuzzle(steps) {
-      var lastDirection = null;
-      for (var i = 0; i < steps; i++) {
-        var directions = [];
-        var x = gameState.emptyPos.x;
-        var y = gameState.emptyPos.y;
-
-        if (x > 0 && lastDirection !== "right") directions.push(["left", x - 1, y]);
-        if (x < cols - 1 && lastDirection !== "left") directions.push(["right", x + 1, y]);
-        if (y > 0 && lastDirection !== "down") directions.push(["up", x, y - 1]);
-        if (y < rows - 1 && lastDirection !== "up") directions.push(["down", x, y + 1]);
-
-        if (directions.length === 0) continue;
-
-        var direction = directions[Math.floor(Math.random() * directions.length)];
-        lastDirection = direction[0];
-
-        var blockIndex = gameState.blocks.findIndex(function (b) {
-          return b.x === direction[1] && b.y === direction[2];
-        });
-        if (blockIndex === -1) continue;
-
-        var block = gameState.blocks[blockIndex];
-        gameState.moveHistory.push({
-          number: block.number,
-          fromX: block.x,
-          fromY: block.y,
-          toX: gameState.emptyPos.x,
-          toY: gameState.emptyPos.y
-        });
-
-        block.element.attr({ "data-x": gameState.emptyPos.x, "data-y": gameState.emptyPos.y })
-          .css({
-            left: gameState.emptyPos.x * gameState.blockWidth + "px",
-            top: gameState.emptyPos.y * gameState.blockHeight + "px"
-          });
-
-        var oldX = block.x, oldY = block.y;
-        block.x = gameState.emptyPos.x;
-        block.y = gameState.emptyPos.y;
-        gameState.emptyPos.x = direction[1];
-        gameState.emptyPos.y = direction[2];
-
-        $gameContainer.find(".huarong-empty").css({
-          left: gameState.emptyPos.x * gameState.blockWidth + "px",
-          top: gameState.emptyPos.y * gameState.blockHeight + "px"
-        });
-      }
-    }
-
-    // 剪切图片
-    function cropImage(img, x, y, width, height) {
-      gameState.canvas.width = width;
-      gameState.canvas.height = height;
-      gameState.ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
-      return gameState.canvas.toDataURL();
-    }
-
-    // 尝试移动方块
-    function tryMoveBlock(x, y, isAuto) {
-      if (!isAuto && (!gameState.isPlaying || gameState.isAnimating)) return;
-
-      if ((Math.abs(x - gameState.emptyPos.x) === 1 && y === gameState.emptyPos.y) ||
-          (Math.abs(y - gameState.emptyPos.y) === 1 && x === gameState.emptyPos.x)) {
-        var blockIndex = gameState.blocks.findIndex(function (b) {
-          return b.x === x && b.y === y;
-        });
-        if (blockIndex === -1) return;
-
-        gameState.isAnimating = true;
-        var block = gameState.blocks[blockIndex];
-        var $block = block.element;
-        var oldX = block.x, oldY = block.y;
-        var emptyX = gameState.emptyPos.x, emptyY = gameState.emptyPos.y;
-
-        gameState.moveHistory.push({
-          number: block.number,
-          fromX: oldX,
-          fromY: oldY,
-          toX: emptyX,
-          toY: emptyY
-        });
-
-        $block.attr({ "data-x": emptyX, "data-y": emptyY })
-          .css({
-            left: emptyX * gameState.blockWidth + "px",
-            top: emptyY * gameState.blockHeight + "px"
-          });
-
-        block.x = emptyX;
-        block.y = emptyY;
-        gameState.emptyPos.x = oldX;
-        gameState.emptyPos.y = oldY;
-
-        $gameContainer.find(".huarong-empty").css({
-          left: gameState.emptyPos.x * gameState.blockWidth + "px",
-          top: gameState.emptyPos.y * gameState.blockHeight + "px"
-        });
-
-        gameState.moves++;
-        updateMovesDisplay();
-        if (!isAuto) {
-          checkWin();
+            $solveBtn.show().prop("disabled", false).off("click").on("click", startAutoSolve);
         }
 
-        setTimeout(function () {
-          gameState.isAnimating = false;
-        }, 300);
-      }
-    }
+        // 获取当前棋盘状态
+        function getCurrentState() {
+            var totalBlocks = gameState.rows * gameState.cols;
+            var state = new Array(totalBlocks).fill(0);
+            
+            gameState.blocks.forEach(function(block) {
+                var pos = block.y * gameState.cols + block.x;
+                state[pos] = block.number + 1;
+            });
+            
+            var emptyPos = gameState.emptyPos.y * gameState.cols + gameState.emptyPos.x;
+            state[emptyPos] = 0;
+            
+            return state;
+        }
 
-    // 检查是否获胜
-    function checkWin() {
-      var isWin = gameState.blocks.every(function (b) {
-        return b.x === b.originalX && b.y === b.originalY;
-      });
-      if (isWin) {
-        gameState.isPlaying = false;
-        showWinPopup();
-      }
-    }
+        // 创建拼图块
+        function createBlocksFromNumbers(numbers, isSolved) {
+            var blocks = [];
+            var index = 0;
+            var emptyPos = { x: cols - 1, y: rows - 1 };
 
-    // 更新步数显示
-    function updateMovesDisplay() {
-      $movesDisplay.text("步数: " + gameState.moves);
-    }
+            for (var y = 0; y < rows; y++) {
+                for (var x = 0; x < cols; x++) {
+                    if (x === emptyPos.x && y === emptyPos.y) continue;
+                    var number = numbers[index++];
+                    var originalX = number % cols;
+                    var originalY = Math.floor(number / cols);
 
-    // 显示游戏结束弹窗
-    function showWinPopup() {
-      var $popup = $('<div class="win-popup"></div>');
-      var $message = $('<div class="win-message"></div>').text("游戏完成！步数: " + gameState.moves);
-      var $restart = $('<button class="restart-btn">再玩一次</button>');
-      var $saveGame = $('<button class="save-game-btn blue-gradient-btn">保存记录</button>');
-      var $showOriginal = $('<button class="show-original-btn">返回游戏</button>');
+                    var croppedImageUrl = cropImage(
+                        gameState.originalImage,
+                        originalX * gameState.blockWidth,
+                        originalY * gameState.blockHeight,
+                        gameState.blockWidth,
+                        gameState.blockHeight
+                    );
 
-      // 如果是自动求解完成的，禁用保存按钮
-      if (gameState.autoSolved) {
-        $saveGame.prop('disabled', true)
-          .attr('title', '自动求解模式下不可保存')
-          .css('cursor', 'not-allowed');
-      }
+                    var $block = $(
+                        '<div class="huarong-block" data-x="' + x + '" data-y="' + y + 
+                        '" data-original-x="' + originalX + '" data-original-y="' + originalY + 
+                        '" data-number="' + number + '" style="width:' + (gameState.blockWidth - 2) + 
+                        'px; height:' + (gameState.blockHeight - 2) + 'px; left:' + 
+                        x * gameState.blockWidth + 'px; top:' + y * gameState.blockHeight + 'px;">' +
+                        '<img src="' + croppedImageUrl + '">' +
+                        '</div>'
+                    );
 
-      $popup.append($message).append($restart).append($saveGame).append($showOriginal);
-      $container.append($popup);
+                    $block.on("click", function () {
+                        if (!gameState.isPlaying || gameState.isAnimating) return;
+                        var $this = $(this);
+                        tryMoveBlock(parseInt($this.attr("data-x")), parseInt($this.attr("data-y")));
+                    });
 
-      $restart.on("click", function () {
-        resetGame();
-        $popup.remove();
-      });
+                    $gameContainer.append($block);
+                    blocks.push({
+                        element: $block,
+                        x: x,
+                        y: y,
+                        originalX: originalX,
+                        originalY: originalY,
+                        number: number
+                    });
+                }
+            }
 
-      $saveGame.on("click", function () {
-        saveGameData();
-      });
+            var $emptySpace = $(
+                '<div class="huarong-empty" style="width:' + (gameState.blockWidth - 2) + 
+                'px; height:' + (gameState.blockHeight - 2) + 'px; left:' + 
+                emptyPos.x * gameState.blockWidth + 'px; top:' + emptyPos.y * gameState.blockHeight + 'px;">' +
+                '</div>'
+            );
+            $gameContainer.append($emptySpace);
 
-      $showOriginal.on("click", function () {
-        $popup.remove();
-      });
-    }
+            return { blocks: blocks, emptyPos: emptyPos };
+        }
 
-    // 保存游戏数据
-    function saveGameData() {
-      var username = mw.config.get('wgUserName');
-      if (!username) {
-        mw.notify('请先登录以保存游戏记录', {type: 'warn'});
-        return;
-      }
+        // 打乱拼图
+        function shufflePuzzle(steps) {
+            var lastDirection = null;
+            for (var i = 0; i < steps; i++) {
+                var directions = [];
+                var x = gameState.emptyPos.x;
+                var y = gameState.emptyPos.y;
 
-      // 准备保存的数据
-      var saveData = {
-        timestamp: new Date().toISOString(),
-        page: gameState.currentPage,
-        imageName: $imgElement.attr('data-image-name') || '',
-        imageSize: gameState.imageSize,
-        rows: gameState.rows,
-        cols: gameState.cols,
-        moves: gameState.moves,
-        initialShuffledState: getInitialShuffledState(),
-        solution: getSolutionSteps()
-      };
+                if (x > 0 && lastDirection !== "right") directions.push(["left", x - 1, y]);
+                if (x < cols - 1 && lastDirection !== "left") directions.push(["right", x + 1, y]);
+                if (y > 0 && lastDirection !== "down") directions.push(["up", x, y - 1]);
+                if (y < rows - 1 && lastDirection !== "up") directions.push(["down", x, y + 1]);
 
-      var pageTitle = 'User:' + username + '/HuarongDao/Data';
-      var api = new mw.Api();
+                if (directions.length === 0) continue;
 
-      // 先检查是否已有相同数据
-      api.get({
-        action: 'query',
-        prop: 'revisions',
-        rvprop: 'content',
-        titles: pageTitle,
-        format: 'json'
-      }).done(function(data) {
-        var pages = data.query.pages;
-        var pageId = Object.keys(pages)[0];
-        var existingContent = {};
+                var direction = directions[Math.floor(Math.random() * directions.length)];
+                lastDirection = direction[0];
+
+                var blockIndex = gameState.blocks.findIndex(function (b) {
+                    return b.x === direction[1] && b.y === direction[2];
+                });
+                if (blockIndex === -1) continue;
+
+                var block = gameState.blocks[blockIndex];
+                gameState.moveHistory.push({
+                    number: block.number,
+                    fromX: block.x,
+                    fromY: block.y,
+                    toX: gameState.emptyPos.x,
+                    toY: gameState.emptyPos.y
+                });
+
+                block.element.attr({ "data-x": gameState.emptyPos.x, "data-y": gameState.emptyPos.y })
+                    .css({
+                        left: gameState.emptyPos.x * gameState.blockWidth + "px",
+                        top: gameState.emptyPos.y * gameState.blockHeight + "px"
+                    });
+
+                var oldX = block.x, oldY = block.y;
+                block.x = gameState.emptyPos.x;
+                block.y = gameState.emptyPos.y;
+                gameState.emptyPos.x = direction[1];
+                gameState.emptyPos.y = direction[2];
+
+                $gameContainer.find(".huarong-empty").css({
+                    left: gameState.emptyPos.x * gameState.blockWidth + "px",
+                    top: gameState.emptyPos.y * gameState.blockHeight + "px"
+                });
+            }
+        }
+
+        // 剪切图片
+        function cropImage(img, x, y, width, height) {
+            gameState.canvas.width = width;
+            gameState.canvas.height = height;
+            gameState.ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+            return gameState.canvas.toDataURL();
+        }
+
+        // 尝试移动方块
+        function tryMoveBlock(x, y, isAuto) {
+            if (!isAuto && (!gameState.isPlaying || gameState.isAnimating)) return;
+
+            if ((Math.abs(x - gameState.emptyPos.x) === 1 && y === gameState.emptyPos.y) ||
+                (Math.abs(y - gameState.emptyPos.y) === 1 && x === gameState.emptyPos.x)) {
+                var blockIndex = gameState.blocks.findIndex(function (b) {
+                    return b.x === x && b.y === y;
+                });
+                if (blockIndex === -1) return;
+
+                gameState.isAnimating = true;
+                var block = gameState.blocks[blockIndex];
+                var $block = block.element;
+                var oldX = block.x, oldY = block.y;
+                var emptyX = gameState.emptyPos.x, emptyY = gameState.emptyPos.y;
+
+                gameState.moveHistory.push({
+                    number: block.number,
+                    fromX: oldX,
+                    fromY: oldY,
+                    toX: emptyX,
+                    toY: emptyY
+                });
+
+                $block.attr({ "data-x": emptyX, "data-y": emptyY })
+                    .css({
+                        left: emptyX * gameState.blockWidth + "px",
+                        top: emptyY * gameState.blockHeight + "px"
+                    });
+
+                block.x = emptyX;
+                block.y = emptyY;
+                gameState.emptyPos.x = oldX;
+                gameState.emptyPos.y = oldY;
+
+                $gameContainer.find(".huarong-empty").css({
+                    left: gameState.emptyPos.x * gameState.blockWidth + "px",
+                    top: gameState.emptyPos.y * gameState.blockHeight + "px"
+                });
+
+                gameState.moves++;
+                updateMovesDisplay();
+                if (!isAuto) {
+                    checkWin();
+                }
+
+                setTimeout(function () {
+                    gameState.isAnimating = false;
+                }, 300);
+            }
+        }
+
+        // 检查是否获胜
+        function checkWin() {
+            var isWin = gameState.blocks.every(function (b) {
+                return b.x === b.originalX && b.y === b.originalY;
+            });
+            if (isWin) {
+                gameState.isPlaying = false;
+                showWinPopup();
+            }
+        }
+
+        // 更新步数显示
+        function updateMovesDisplay() {
+            $movesDisplay.text("步数: " + gameState.moves);
+        }
+
+        // 显示游戏结束弹窗
+        function showWinPopup() {
+            var $popup = $('<div class="win-popup"></div>');
+            var $message = $('<div class="win-message"></div>').text("游戏完成！步数: " + gameState.moves);
+            var $restart = $('<button class="restart-btn">再玩一次</button>');
+            var $saveGame = $('<button class="save-game-btn blue-gradient-btn">保存记录</button>');
+            var $showOriginal = $('<button class="show-original-btn">返回游戏</button>');
+
+            if (gameState.autoSolved) {
+                $saveGame.prop('disabled', true)
+                    .attr('title', '自动求解模式下不可保存')
+                    .css('cursor', 'not-allowed');
+            }
+
+            $popup.append($message).append($restart).append($saveGame).append($showOriginal);
+            $container.append($popup);
+
+            $restart.on("click", function () {
+                resetGame();
+                $popup.remove();
+            });
+
+            $saveGame.on("click", function () {
+                saveGameData();
+            });
+
+            $showOriginal.on("click", function () {
+                $popup.remove();
+            });
+        }
+
+        // 保存游戏数据
+        function saveGameData() {
+            var username = mw.config.get('wgUserName');
+            if (!username) {
+                mw.notify('请先登录以保存游戏记录', {type: 'warn'});
+                return;
+            }
+
+            var saveData = {
+                timestamp: new Date().toISOString(),
+                page: gameState.currentPage,
+                imageName: $imgElement.attr('data-image-name') || '',
+                imageSize: gameState.imageSize,
+                rows: gameState.rows,
+                cols: gameState.cols,
+                moves: gameState.moves,
+                initialShuffledState: getInitialShuffledState(),
+                solution: getSolutionSteps()
+            };
+
+            var pageTitle = 'User:' + username + '/HuarongDao/Data';
+            var api = new mw.Api();
+
+            api.get({
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                titles: pageTitle,
+                format: 'json'
+            }).done(function(data) {
+                var pages = data.query.pages;
+                var pageId = Object.keys(pages)[0];
+                var existingContent = {};
+                
+                if (pages[pageId].revisions) {
+                    try {
+                        existingContent = JSON.parse(pages[pageId].revisions[0]['*']);
+                    } catch (e) {
+                        existingContent = {};
+                    }
+                }
+
+                var isDuplicate = Object.keys(existingContent).some(function(key) {
+                    var record = existingContent[key];
+                    var recordWithoutTimestamp = {
+                        page: record.page,
+                        moves: record.moves,
+                        imageName: record.imageName,
+                        rows: record.rows,
+                        cols: record.cols,
+                        imageSize: record.imageSize,
+                        initialShuffledState: record.initialShuffledState,
+                        solution: record.solution
+                    };
+                    
+                    var saveDataWithoutTimestamp = {
+                        page: saveData.page,
+                        moves: saveData.moves,
+                        imageName: saveData.imageName,
+                        rows: saveData.rows,
+                        cols: saveData.cols,
+                        imageSize: saveData.imageSize,
+                        initialShuffledState: saveData.initialShuffledState,
+                        solution: saveData.solution
+                    };
+                    
+                    return JSON.stringify(recordWithoutTimestamp) === JSON.stringify(saveDataWithoutTimestamp);
+                });
+
+                if (isDuplicate) {
+                    mw.notify('已有相同数据，不重复保存', {type: 'warn'});
+                    return;
+                }
+
+                var recordId = 'record_' + Date.now();
+                existingContent[recordId] = saveData;
+                
+                api.postWithEditToken({
+                    action: 'edit',
+                    title: pageTitle,
+                    text: JSON.stringify(existingContent, null, 2),
+                    summary: '在页面[[' + saveData.page + ']]上以' + saveData.moves + '步的成绩完成了图为[[File:' + saveData.imageName + ']]的 ' + saveData.cols * saveData.rows + '格华容道。',
+                    format: 'json',
+                    contentmodel: 'json'
+                }).done(function() {
+                    ensureUserPageExists(username);
+                    mw.notify('游戏记录已保存！', {type: 'success'});
+                }).fail(function(error) {
+                    console.error('保存失败:', error);
+                    mw.notify('保存失败: ' + error, {type: 'error'});
+                });
+            }).fail(function(error) {
+                console.error('获取现有数据失败:', error);
+                var recordId = 'record_' + Date.now();
+                api.postWithEditToken({
+                    action: 'edit',
+                    title: pageTitle,
+                    text: JSON.stringify({ [recordId]: saveData }, null, 2),
+                    summary: '在页面[[' + saveData.page + ']]上以' + saveData.moves + '步的成绩完成了图为[[File:' + saveData.imageName + ']]的 ' + saveData.cols * saveData.rows + '格华容道。',
+                    format: 'json',
+                    contentmodel: 'json',
+                    createonly: true
+                }).done(function() {
+                    ensureUserPageExists(username);
+                    mw.notify('游戏记录已保存！', {type: 'success'});
+                }).fail(function(error) {
+                    console.error('创建页面失败:', error);
+                    mw.notify('保存失败: ' + error, {type: 'error'});
+                });
+            });
+        }
+
+        // 确保用户主页存在
+        function ensureUserPageExists(username) {
+            var userPageTitle = 'User:' + username + '/HuarongDao';
+            var api = new mw.Api();
+            
+            api.get({
+                action: 'query',
+                prop: 'info',
+                titles: userPageTitle,
+                format: 'json'
+            }).done(function(data) {
+                var pages = data.query.pages;
+                var pageId = Object.keys(pages)[0];
+                
+                if (pageId === "-1") {
+                    api.postWithEditToken({
+                        action: 'edit',
+                        title: userPageTitle,
+                        text: '<div class="huarong-demo-container"></div>',
+                        summary: '创建华容道游戏展示页',
+                        format: 'json',
+                        createonly: true
+                    }).fail(function(error) {
+                        console.error('创建用户页面失败:', error);
+                    });
+                }
+            });
+        }
+
+        // 获取初始打乱状态
+        function getInitialShuffledState() {
+            return gameState.initialShuffledState;
+        }
         
-        if (pages[pageId].revisions) {
-          try {
-            existingContent = JSON.parse(pages[pageId].revisions[0]['*']);
-          } catch (e) {
-            existingContent = {};
-          }
+        // 获取解决方案步骤
+        function getSolutionSteps() {
+            var userMoveCount = gameState.moves;
+            var allMoves = gameState.moveHistory;
+            var solutionMoves = allMoves.slice(allMoves.length - userMoveCount);
+            
+            var solution = [];
+            solutionMoves.forEach(function(move) {
+                solution.push(move.number + 1);
+            });
+            
+            return solution;
         }
 
-        // 检查是否有相同数据（忽略时间戳）
-		var isDuplicate = Object.keys(existingContent).some(function(key) {
-		  var record = existingContent[key];
-		  
-		  // 创建不带 timestamp 的 record 副本
-		  var recordWithoutTimestamp = {
-		    page: record.page,
-		    moves: record.moves,
-		    imageName: record.imageName,
-		    rows: record.rows,
-		    cols: record.cols,
-		    imageSize: record.imageSize,
-		    initialShuffledState: record.initialShuffledState,
-		    solution: record.solution
-		  };
-		  
-		  // 创建不带 timestamp 的 saveData 副本
-		  var saveDataWithoutTimestamp = {
-		    page: saveData.page,
-		    moves: saveData.moves,
-		    imageName: saveData.imageName,
-		    rows: saveData.rows,
-		    cols: saveData.cols,
-		    imageSize: saveData.imageSize,
-		    initialShuffledState: saveData.initialShuffledState,
-		    solution: saveData.solution
-		  };
-		  
-		  return JSON.stringify(recordWithoutTimestamp) === JSON.stringify(saveDataWithoutTimestamp);
-		});
-
-        if (isDuplicate) {
-          mw.notify('已有相同数据，不重复保存', {type: 'warn'});
-          return;
+        // 自动求解功能
+        function startAutoSolve() {
+            $solveBtn.prop("disabled", true);
+            gameState.autoSolved = true;
+            var solution = gameState.moveHistory.slice().reverse();
+            animateSolution(solution);
         }
 
-        // 保存数据
-        var recordId = 'record_' + Date.now();
-        existingContent[recordId] = saveData;
-        
-        api.postWithEditToken({
-          action: 'edit',
-          title: pageTitle,
-          text: JSON.stringify(existingContent, null, 2),
-          summary: '在页面[[' + saveData.page + ']]上以' + saveData.moves + '步的成绩完成了图为[[File:' + saveData.imageName + ']]的 ' + saveData.cols * saveData.rows + '格华容道。',
-          format: 'json',
-          contentmodel: 'json'
-        }).done(function() {
-          // 确保用户主页存在
-          ensureUserPageExists(username);
-          mw.notify('游戏记录已保存！', {type: 'success'});
-        }).fail(function(error) {
-          console.error('保存失败:', error);
-          mw.notify('保存失败: ' + error, {type: 'error'});
+        // 动画演示求解步骤
+        function animateSolution(solution) {
+            var step = 0;
+            
+            function nextStep() {
+                if (step >= solution.length || !gameState.isPlaying) {
+                    gameState.isPlaying = true;
+                    checkWin();
+                    return;
+                }
+                var move = solution[step];
+                var block = gameState.blocks.find(function (b) {
+                    return b.x === move.toX && b.y === move.toY;
+                });
+                if (block) {
+                    tryMoveBlock(block.x, block.y, true);
+                    step++;
+                    gameState.autoSolveTimer = setTimeout(nextStep, 300);
+                }
+            }
+            
+            nextStep();
+        }
+
+        // 重置游戏
+        function resetGame() {
+            if (gameState.autoSolveTimer) {
+                clearTimeout(gameState.autoSolveTimer);
+                gameState.autoSolveTimer = null;
+            }
+            gameState.blocks = [];
+            gameState.emptyPos = { x: cols - 1, y: rows - 1 };
+            gameState.moves = 0;
+            gameState.moveHistory = [];
+            gameState.autoSolved = false;
+            updateMovesDisplay();
+            gameState.isPlaying = true;
+            gameState.isAnimating = false;
+            $gameContainer.empty();
+            initGame();
+            $solveBtn.prop("disabled", false);
+        }
+
+        // 为重置按钮绑定事件
+        $resetBtn.on("click", function () {
+            resetGame();
         });
-      }).fail(function(error) {
-        console.error('获取现有数据失败:', error);
-        // 如果页面不存在，创建新页面
-        var recordId = 'record_' + Date.now();
-        api.postWithEditToken({
-          action: 'edit',
-          title: pageTitle,
-          text: JSON.stringify({ [recordId]: saveData }, null, 2),
-          summary: '在页面[[' + saveData.page + ']]上以' + saveData.moves + '步的成绩完成了图为[[File:' + saveData.imageName + ']]的 ' + saveData.cols * saveData.rows + '格华容道。',
-          format: 'json',
-          contentmodel: 'json',
-          createonly: true
-        }).done(function() {
-          ensureUserPageExists(username);
-          mw.notify('游戏记录已保存！', {type: 'success'});
-        }).fail(function(error) {
-          console.error('创建页面失败:', error);
-          mw.notify('保存失败: ' + error, {type: 'error'});
-        });
-      });
-    }
 
-    // 确保用户主页存在
-    function ensureUserPageExists(username) {
-      var userPageTitle = 'User:' + username + '/HuarongDao';
-      var api = new mw.Api();
-      
-      api.get({
-        action: 'query',
-        prop: 'info',
-        titles: userPageTitle,
-        format: 'json'
-      }).done(function(data) {
-        var pages = data.query.pages;
-        var pageId = Object.keys(pages)[0];
-        
-        if (pageId === "-1") {
-          // 页面不存在，创建它
-          api.postWithEditToken({
-            action: 'edit',
-            title: userPageTitle,
-            text: '<div class="huarong-demo-container"></div>',
-            summary: '创建华容道游戏展示页',
-            format: 'json',
-            createonly: true
-          }).fail(function(error) {
-            console.error('创建用户页面失败:', error);
-          });
+        // 预加载图片
+        function preloadImage($imgElement, callback) {
+            var img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = function () {
+                gameState.originalImage = img;
+                callback();
+            };
+            img.onerror = function () {
+                console.error("图片加载失败");
+            };
+            img.src = $imgElement.attr("src");
         }
-      });
-    }
 
-    // 获取初始打乱状态
-    function getInitialShuffledState() {
-      // 直接返回之前保存的打乱状态
-      return gameState.initialShuffledState;
+        // 初始加载图片并开始游戏
+        preloadImage($imgElement, initGame);
     }
-    
-    // 获取解决方案步骤
-    function getSolutionSteps() {
-      var userMoveCount = gameState.moves;
-      var allMoves = gameState.moveHistory;
-      var solutionMoves = allMoves.slice(allMoves.length - userMoveCount);
-      
-      var solution = [];
-      solutionMoves.forEach(function(move) {
-        solution.push(move.number + 1); // 记录移动的方块编号（1-based）
-      });
-      
-      return solution;
-    }
+};
+window.HuarongGame = HuarongGame;
+// 使用接口添加3×3华容道游戏
+$(document).ready(function() {
+    // 隐藏无JS提示
+    $('.huarong-no-js').hide();
 
-    // 自动求解功能
-    function startAutoSolve() {
-      $solveBtn.prop("disabled", true);
-      gameState.autoSolved = true;
-      var solution = gameState.moveHistory.slice().reverse();
-      animateSolution(solution);
-    }
-
-    // 动画演示求解步骤
-    function animateSolution(solution) {
-      var step = 0;
-      
-      function nextStep() {
-        if (step >= solution.length || !gameState.isPlaying) {
-          gameState.isPlaying = true;
-          checkWin();
-          return;
-        }
-        var move = solution[step];
-        var block = gameState.blocks.find(function (b) {
-          return b.x === move.toX && b.y === move.toY;
-        });
-        if (block) {
-          tryMoveBlock(block.x, block.y, true);
-          step++;
-          gameState.autoSolveTimer = setTimeout(nextStep, 300);
-        }
-      }
-      
-      nextStep();
-    }
-
-    // 重置游戏
-    function resetGame() {
-      if (gameState.autoSolveTimer) {
-        clearTimeout(gameState.autoSolveTimer);
-        gameState.autoSolveTimer = null;
-      }
-      gameState.blocks = [];
-      gameState.emptyPos = { x: cols - 1, y: rows - 1 };
-      gameState.moves = 0;
-      gameState.moveHistory = [];
-      gameState.autoSolved = false;
-      updateMovesDisplay();
-      gameState.isPlaying = true;
-      gameState.isAnimating = false;
-      $gameContainer.empty();
-      initGame();
-      $solveBtn.prop("disabled", false);
-    }
-
-    // 为重置按钮绑定事件
-    $resetBtn.on("click", function () {
-      resetGame();
+    // 初始化所有华容道游戏实例
+    $(".huarong").each(function() {
+        HuarongGame.init($(this));
     });
-
-    // 预加载图片
-    function preloadImage($imgElement, callback) {
-      var img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.onload = function () {
-        gameState.originalImage = img;
-        callback();
-      };
-      img.onerror = function () {
-        console.error("图片加载失败");
-      };
-      img.src = $imgElement.attr("src");
-    }
-
-    // 初始加载图片并开始游戏
-    preloadImage($imgElement, initGame);
-  }
 });
-
 
 $(document).ready(function() {
   // 从URL中解析目标用户名

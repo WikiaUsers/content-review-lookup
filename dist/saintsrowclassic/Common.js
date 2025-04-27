@@ -2,7 +2,7 @@ var debugcolour = 'red';  //Change the colour to confirm cache updates
 var debugversion = '1652238537870';
 
 window.test452 = { ready:false, complete:false};
-window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } }
+window.debug452 = function(out, alert) { if (mw.config.get("wgUserName") == "452") { if ( ["object", "null", "function"].indexOf(typeof out) == -1) console.log(new Date().toJSON()+" "+out); else { console.log(new Date().toJSON()+" object:"); console.log(out); } if (typeof alert != "undefined") window.alert(out); } };
 
 $(function() { /* Run when page has loaded */
   debug452("SRW ready - start "+debugversion);
@@ -29,8 +29,8 @@ $(function() { /* Run when page has loaded */
   $(".mw-special-Images .wikia-gallery-item-posted").parent().parent().css("border","");
   /* UCP doesn't list filenames or where an image is used, wtf. */
 
-  $("img[src='/resources-ucp/resources/assets/file-type-icons/fileicon-ogg.png']").attr("src", "https://static.wikia.nocookie.net/"+mw.config.get("wgDBname")+"/images/c/c9/Audio_log_visual.png/revision/latest/scale-to-width-down/150");
-  $("img[data-src='/resources-ucp/resources/assets/file-type-icons/fileicon-ogg.png']").attr("data-src", "https://static.wikia.nocookie.net/"+mw.config.get("wgDBname")+"/images/c/c9/Audio_log_visual.png/revision/latest/scale-to-width-down/150");
+  $("img[src='/resources-ucp/mw143/resources/assets/file-type-icons/fileicon-ogg.png']").attr("src", "https://static.wikia.nocookie.net/"+mw.config.get("wgDBname")+"/images/c/c9/Audio_log_visual.png/revision/latest/scale-to-width-down/150");
+  $("img[data-src='/resources-ucp/mw143/resources/assets/file-type-icons/fileicon-ogg.png']").attr("data-src", "https://static.wikia.nocookie.net/"+mw.config.get("wgDBname")+"/images/c/c9/Audio_log_visual.png/revision/latest/scale-to-width-down/150");
 
   $(".mw-logline-renameuser .comment").each(function(){ /* this issue was never fixed */
 	if ($("a", this).length) return;
@@ -95,7 +95,7 @@ $(function() { /* Run when page has loaded */
     if (!$(this).parents(".reference-text").length) $(this).attr("href", "./Help:Refs"); // link broken References
   });
 
-  $(".mw-collapsible .ogg_player").on("click", function() { return false; } )
+  $(".mw-collapsible .ogg_player").on("click", function() { return false; } );
 
   window.randomiser = function(randomclass, randomtemplate, successfunction) {
 	  $(randomclass+" .mainboxheading").append(' - <a>Refresh</a>').off("click").on("click", function() { 
@@ -108,7 +108,7 @@ $(function() { /* Run when page has loaded */
 	    if($('video, audio').length) $('video, audio').embedPlayer();
 	    if (typeof successfunction == 'function') successfunction(data);
 	  } }); });
-  }
+  };
 
   randomiser(".randompages", "{"+"{mainbox|class=randompages|Random Pages|{"+"{randompages}}}}");
   randomiser(".randomimage", "{"+"{Random/Image|size=555}}");
@@ -187,7 +187,7 @@ $(function() { /* Run when page has loaded */
       if($(this).html() == $(this).text() && $(this).text().indexOf($(".fixLinks").attr("data-old")) != -1) {
          $(this).html($(this).html().replace($(".fixLinks").attr("data-old"), $(".fixLinks").attr("data-new")));
       }
-    })
+    });
   }
 
   if (mw.config.get("wgCanonicalNamespace") == "Category") { /* Default category images for pages without images, previously handled by CSS */
@@ -200,12 +200,12 @@ $(function() { /* Run when page has loaded */
 	.on("click", function() {
 	  $('.gallerytext a').each(function() {
 	    $(this).text($(this).attr('title').replace('File:', ''));
-	  })
+	  });
 	})
   );
 
   $(".diff-addedline, .diff-deletedline").each(function(){ 
-    $(this).html($(this).html().replace(/&/g, "&amp;").replace(/&amp;lt/g, "&lt").replace(/&amp;gt/g, "&gt").replace(/&amp;amp;/g, "&amp;").replace(/​/g, "&amp;ZeroWidthSpace;") ) 
+    $(this).html($(this).html().replace(/&/g, "&amp;").replace(/&amp;lt/g, "&lt").replace(/&amp;gt/g, "&gt").replace(/&amp;amp;/g, "&amp;").replace(/​/g, "&amp;ZeroWidthSpace;") );
   });
 
   if (!mw.config.get("wgUserId")) $("body").addClass("user-anon");
@@ -328,7 +328,7 @@ $(document).on('readystatechange', function() {
 	if ($(".CategoryTreeTag").length) {
 		if (mw.loader.getState("ext.categoryTree") == "registered") mw.loader.load("ext.categoryTree");
 		else if (mw.loader.getState("ext.categoryTree") == "loading") {
-			mw.loader.implement("ext.categoryTree",function($){(function($,mw){var categoryTree={showToggles:function(){$('span.CategoryTreeToggle').css('display','inline');},handleNode:function(e){var $link=$(this);if($link.data('ct-state')==='collapsed'){categoryTree.expandNode($link);}else{categoryTree.collapseNode($link);}},expandNode:function($link){var $children=$link.parents('.CategoryTreeItem').siblings('.CategoryTreeChildren');$children.show();$link.html(mw.msg('categorytree-collapse-bullet')).attr('title',mw.msg('categorytree-collapse')).data('ct-state','expanded');if(!$link.data('ct-loaded')){categoryTree.loadChildren($link,$children);}},collapseNode:function($link){$link.parents('.CategoryTreeItem').siblings('.CategoryTreeChildren').hide();$link.html(mw.msg('categorytree-expand-bullet')).attr('title',mw.msg('categorytree-expand')).data('ct-state','collapsed');},loadChildren:function($link,$children){var $linkParentCTTag,ctTitle,ctMode,ctOptions;function error(){var $retryLink;$retryLink=$('<a>').text(mw.msg('categorytree-retry')).attr('href','#').click(function(e){e.preventDefault();categoryTree.loadChildren($link,$children);});$children.text(mw.msg('categorytree-error')+' ').append($retryLink);}$link.data('ct-loaded',true);$children.html($('<i class="CategoryTreeNotice"></i>').text(mw.msg('categorytree-loading')));$linkParentCTTag=$link.parents('.CategoryTreeTag');ctTitle=$link.data('ct-title');ctMode=$linkParentCTTag.data('ct-mode');ctMode=typeof ctMode==='number'?ctMode:undefined;ctOptions=$linkParentCTTag.data('ct-options')||mw.config.get('wgCategoryTreePageCategoryOptions');if(typeof ctTitle!=='string'){error();return;}$.get(mw.util.wikiScript(),{action:'ajax',rs:'efCategoryTreeAjaxWrapper',rsargs:[ctTitle,ctOptions,'json']}).success(function(data){data=data.replace(/^\s+|\s+$/,'');data=data.replace(/##LOAD##/g,mw.msg('categorytree-expand'));if(data===''){switch(ctMode){case 0:data=mw.msg('categorytree-no-subcategories');break;case 10:data=mw.msg('categorytree-no-pages');break;case 100:data=mw.msg('categorytree-no-parent-categories');break;default:data=mw.msg('categorytree-nothing-found');}data=$('<i class="CategoryTreeNotice"></i>').text(data);}$children.html(data).find('.CategoryTreeToggle').click(categoryTree.handleNode);categoryTree.showToggles();}).error(error);}};$(function($){$('.CategoryTreeToggle').click(categoryTree.handleNode);categoryTree.showToggles();});})(jQuery,mediaWiki);;},{},{"categorytree-collapse":"collapse","categorytree-expand":"expand","categorytree-collapse-bullet":"[<b>\u2212<\/b>]","categorytree-expand-bullet":"[<b>+<\/b>]","categorytree-load":"load","categorytree-loading":"loading\u2026","categorytree-nothing-found":"nothing found","categorytree-no-subcategories":"no subcategories","categorytree-no-parent-categories":"no parent categories","categorytree-no-pages":"no pages or subcategories","categorytree-error":"Problem loading data.","categorytree-retry":"Please wait a moment and try again."});
+			mw.loader.implement("ext.categoryTree",function($){(function($,mw){var categoryTree={showToggles:function(){$('span.CategoryTreeToggle').css('display','inline');},handleNode:function(e){var $link=$(this);if($link.data('ct-state')==='collapsed'){categoryTree.expandNode($link);}else{categoryTree.collapseNode($link);}},expandNode:function($link){var $children=$link.parents('.CategoryTreeItem').siblings('.CategoryTreeChildren');$children.show();$link.html(mw.msg('categorytree-collapse-bullet')).attr('title',mw.msg('categorytree-collapse')).data('ct-state','expanded');if(!$link.data('ct-loaded')){categoryTree.loadChildren($link,$children);}},collapseNode:function($link){$link.parents('.CategoryTreeItem').siblings('.CategoryTreeChildren').hide();$link.html(mw.msg('categorytree-expand-bullet')).attr('title',mw.msg('categorytree-expand')).data('ct-state','collapsed');},loadChildren:function($link,$children){var $linkParentCTTag,ctTitle,ctMode,ctOptions;function error(){var $retryLink;$retryLink=$('<a>').text(mw.msg('categorytree-retry')).attr('href','#').click(function(e){e.preventDefault();categoryTree.loadChildren($link,$children);});$children.text(mw.msg('categorytree-error')+' ').append($retryLink);}$link.data('ct-loaded',true);$children.html($('<i class="CategoryTreeNotice"></i>').text(mw.msg('categorytree-loading')));$linkParentCTTag=$link.parents('.CategoryTreeTag');ctTitle=$link.data('ct-title');ctMode=$linkParentCTTag.data('ct-mode');ctMode=typeof ctMode==='number'?ctMode:undefined;ctOptions=$linkParentCTTag.data('ct-options')||mw.config.get('wgCategoryTreePageCategoryOptions');if(typeof ctTitle!=='string'){error();return;}$.get(mw.util.wikiScript(),{action:'ajax',rs:'efCategoryTreeAjaxWrapper',rsargs:[ctTitle,ctOptions,'json']}).success(function(data){data=data.replace(/^\s+|\s+$/,'');data=data.replace(/##LOAD##/g,mw.msg('categorytree-expand'));if(data===''){switch(ctMode){case 0:data=mw.msg('categorytree-no-subcategories');break;case 10:data=mw.msg('categorytree-no-pages');break;case 100:data=mw.msg('categorytree-no-parent-categories');break;default:data=mw.msg('categorytree-nothing-found');}data=$('<i class="CategoryTreeNotice"></i>').text(data);}$children.html(data).find('.CategoryTreeToggle').click(categoryTree.handleNode);categoryTree.showToggles();}).error(error);}};$(function($){$('.CategoryTreeToggle').click(categoryTree.handleNode);categoryTree.showToggles();});})(jQuery,mediaWiki);},{},{"categorytree-collapse":"collapse","categorytree-expand":"expand","categorytree-collapse-bullet":"[<b>\u2212<\/b>]","categorytree-expand-bullet":"[<b>+<\/b>]","categorytree-load":"load","categorytree-loading":"loading\u2026","categorytree-nothing-found":"nothing found","categorytree-no-subcategories":"no subcategories","categorytree-no-parent-categories":"no parent categories","categorytree-no-pages":"no pages or subcategories","categorytree-error":"Problem loading data.","categorytree-retry":"Please wait a moment and try again."});
 		}
 	}
 	$(window).trigger('resize');
@@ -355,12 +355,12 @@ window.SRWpopup = function(popupid, title, message, type) {
       var calctop = $("#"+popupid).data("scrollTop") + (($(window).height() - $("#"+popupid).outerHeight()) / 2);
       $("#"+popupid).css("top", calctop>0?calctop:0);
       $("#"+popupid+" .popupWrapper").css("margin-top", Math.max((($(window).height() - $("#"+popupid+" .popupWrapper").outerHeight()) *0.50), 50));
-    }
+    };
     $("#"+popupid)[0].adjustTop();
     $("#"+popupid).prepend('<div class="popupBackground"></div>');
     $("#"+popupid+" .popupBackground").on("click", function(){ $("#"+popupid).remove() });
     $("#"+popupid+" .close").on("click", function(){ $("#"+popupid).remove() });
-}
+};
 
 $(".wds-button-group").addClass("buttons"); /* buttons are buttons */
 
@@ -386,7 +386,7 @@ debug452("image: "+$(failedimage).prop("complete")+" "+$(failedimage).prop("natu
 		$(failedimage).attr("src", $(failedimage).attr("src"));
 	}
   }
-}
+};
 
 window.initReferences = function() { 
   //move backlinks into separate span so they are only shown on hover - by 452 for The Saints Row Wiki.
@@ -401,7 +401,7 @@ window.initReferences = function() {
   $(".scroller.noshadow").each(function() { 
 	if ($(this).height()+"px" == $(".scroller").css("max-height")) $(this).removeClass("noshadow");
   });
-}
+};
 window.initScripts = function() { 
   var loadScripts = new Array(); //cut down on unnecessary scripts being loaded.
 
@@ -456,9 +456,9 @@ window.initScripts = function() {
 
     });
   }
-}
+};
 //These functions are not used anywhere, but exist so anyone can use them for testing.
-window.toggleCSS = function() { $("link[rel='stylesheet'][href*='modules=site']").attr( "disabled",function(idx, oldAttr){return !oldAttr;});  $(window).trigger('resize'); }
-window.toggleUserCSS = function() {  $("link[rel='stylesheet'][href*='modules=user']").attr("disabled",function(idx,oldAttr){return!oldAttr;}); $(window).trigger('resize'); }
+window.toggleCSS = function() { $("link[rel='stylesheet'][href*='modules=site']").attr( "disabled",function(idx, oldAttr){return !oldAttr;});  $(window).trigger('resize'); };
+window.toggleUserCSS = function() {  $("link[rel='stylesheet'][href*='modules=user']").attr("disabled",function(idx,oldAttr){return!oldAttr;}); $(window).trigger('resize'); };
 
   debug452("mediawiki:common.js loaded");

@@ -1,7 +1,16 @@
-$(function(){
-	var userlang = mw.config.get('wgUserLanguage');
-	var sitelang = mw.config.get('wgContentLanguage');
-	var langs = [
+'use strict';
+$(() => {
+	const userlang = mw.config.get('wgUserLanguage');
+	const sitelang = mw.config.get('wgContentLanguage');
+	const validRoles = [
+		'bot',
+		'bureaucrat',
+		'sysop',
+		'content-moderator',
+		'rollback',
+		'quick-answers-editor',
+	];
+	const langs = [
 		'en',
 		'bg',
 		'ca',
@@ -25,7 +34,7 @@ $(function(){
 	];
 	
 	function language(code, inLang){
-		return new Intl.DisplayNames([inLang], {type:'language'}).of(code);
+		return new Intl.DisplayNames([inLang], {type: 'language'}).of(code);
 	}
 	
 	function url(code){
@@ -39,28 +48,22 @@ $(function(){
 	}
 	
 	function link(page, text, lang){
-		return '<a href="' + url(lang) + mw.util.getUrl(page) + '" title="' + lang + ':' + page + '">' + text + '</a>';
+		const attributes = {
+			href: url(lang) + mw.util.getUrl(page),
+			title: lang + ':' + page,
+		};
+		return $('<a>').attr(attributes).html(text).prop('outerHTML');
 	}
-	
+
 	// Administration table
 	populateAdministrationTable(langs[0]);
 	function populateAdministrationTable(lang){
-		if ($('.administration').length === 0){
+		if (!$('.administration').length){
 			return;
 		}
 		
-		var apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
-		var langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
-		var validRoles = [
-			'bot',
-			'bureaucrat',
-			'sysop',
-			'content-moderator',
-			'rollback',
-			'quick-answers-editor',
-		];
-		
-		var params = {
+		const apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
+		const params = {
 			action: 'listuserssearchuser',
 			groups: validRoles.join(','),
 			contributed: '0',
@@ -71,76 +74,79 @@ $(function(){
 			format: 'json',
 		};
 		
-		$.getJSON(apiURL, params).done(function(result){
-			var now = new Date().getTime();
+		$.getJSON(apiURL, params).done((result) => {
+			const now = Date.now();
 			
-			for (var i = 0; i < result.listuserssearchuser.result_count; i++){
+			for (let i = 0; i < result.listuserssearchuser.result_count; i++){
 				if (result.listuserssearchuser[i]){
-					var username = result.listuserssearchuser[i].username;
-					var numberOfEdits = result.listuserssearchuser[i].edit_count;
-					var id = lang + '__' + username.replace(/\s/g, '_');
-					var rClass = 'administration_table__' + lang;
-					var lastEdit = result.listuserssearchuser[i].last_edit_date;
-					var lastEditComp = lastEdit.split(/,* /);
-					var lastEditDate =
-						lastEdit ?
-						new Date(lastEditComp[1]+' '+lastEditComp[2]+' '+lastEditComp[3]+' '+lastEditComp[0]+' UTC').getTime()
-						: 0;
-					
-					var roles = validRoles.filter(function(role){
-						return result.listuserssearchuser[i].groups.split(', ').indexOf(role) !== -1;
-					});
-					
-					if (roles.length > 0){
-						var row = $('<tr id="' + id + '" class="' + rClass + '">');
-						$('.administration .placeholder').before(row);
-						row
-							.append('<td>' + link('User:' + username, username, lang) + '</td>')
-							.append('<td>' + roles.join(', ') + '</td>')
-							.append('<td>' + numberOfEdits + '</td>')
-							.append('<td data-sort-value="' + lastEditDate + '">' + link('Special:Contributions/' + username, lastEdit, lang) + '</td>')
-							.append('<td>' + langLabel + '</td>')
-							.append('<td data-last-edit="' + lastEditDate + '" class="status"></td>');
-					}
+					processUser(result, i, lang);
 				}
 			}
 			
-			if ((langs.indexOf(lang)+1) < langs.length){
-				populateAdministrationTable(langs[langs.indexOf(lang)+1]);
+			if (langs.indexOf(lang) < langs.length - 1){
+				populateAdministrationTable(langs[langs.indexOf(lang) + 1]);
 			} else {
 				$('.administration .placeholder').remove();
-				$('.administration .status').each(function(){
-					if (now - $(this).data('last-edit') > 157680000000){
-						$(this).addClass('inactive').html('Inactive');
-					} else if (now - $(this).data('last-edit') > 2592000000){
-						$(this).addClass('semi-active').html('Semi-active');
+				$('.administration .status').each((index, cell) => {
+					if (now - $(cell).data('last-edit') > 157680000000){
+						$(cell).addClass('inactive').html('Inactive');
+					} else if (now - $(cell).data('last-edit') > 2592000000){
+						$(cell).addClass('semi-active').html('Semi-active');
 					} else {
-						$(this).addClass('active').html('Active');
+						$(cell).addClass('active').html('Active');
 					}
 				});
 			}
 		});
 	}
 	
+	function processUser(result, i, lang){
+		const username = result.listuserssearchuser[i].username;
+		const numberOfEdits = result.listuserssearchuser[i].edit_count;
+		const id = lang + '__' + username.replace(/\s/g, '_');
+		const rClass = 'administration_table__' + lang;
+		const roles = validRoles.filter((role) => result.listuserssearchuser[i].groups.split(', ').indexOf(role) !== -1);
+		const lastEdit = result.listuserssearchuser[i].last_edit_date;
+		const lastEditComp = lastEdit.split(/,* /);
+		const lastEditDate =
+			lastEdit ?
+			new Date(`${lastEditComp[1]} ${lastEditComp[2]} ${lastEditComp[3]} ${lastEditComp[0]} UTC`).getTime()
+			: 0;
+		
+		if (roles.length > 0){
+			const attributes = {'id': id, 'class': rClass};
+			const row = $('<tr>').attr(attributes);
+			const langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
+			$('.administration .placeholder').before(row);
+			row
+				.append('<td>' + link('User:' + username, username, lang) + '</td>')
+				.append('<td>' + roles.join(', ') + '</td>')
+				.append('<td>' + numberOfEdits + '</td>')
+				.append('<td data-sort-value="' + lastEditDate + '">' + link('Special:Contributions/' + username, lastEdit, lang) + '</td>')
+				.append('<td>' + langLabel + '</td>')
+				.append('<td data-last-edit="' + lastEditDate + '" class="status"></td>');
+		}
+	}
+	
 	// International stats table
 	stats(langs[0]);
 	function stats(lang){
-		if ($('.international-stats').length === 0){
+		if (!$('.international-stats').length){
 			return;
 		}
 		
-		var id = 'international-stats__' + lang;
-		var langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
-		var langCode = (lang === 'mu') ? 'mu' : link('Category:User ' + lang, lang, lang);
-		var apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
-		var params = {
+		const id = 'international-stats__' + lang;
+		const langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
+		const langCode = (lang === 'mu') ? 'mu' : link('Category:User ' + lang, lang, lang);
+		const apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
+		const params = {
 			action: 'query',
 			meta: 'siteinfo',
 			siprop: 'statistics',
 			format: 'json',
 		};
 		
-		$.getJSON(apiURL, params).done(function(result){
+		$.getJSON(apiURL, params).done((result) => {
 			$('.international-stats .placeholder').before($('<tr id="' + id + '">')
 				.append('<td>' + link('', langLabel, lang) + '</td>')
 				.append('<td>' + langCode + '</td>')
@@ -150,8 +156,8 @@ $(function(){
 				.append('<td>' + link('Special:ListUsers/sysop', result.query.statistics.admins, lang) + '</td>')
 			);
 			
-			if ((langs.indexOf(lang)+1) < langs.length){
-				stats(langs[langs.indexOf(lang)+1]);
+			if (langs.indexOf(lang) < langs.length - 1){
+				stats(langs[langs.indexOf(lang) + 1]);
 			} else {
 				$('.international-stats .placeholder').remove();
 			}

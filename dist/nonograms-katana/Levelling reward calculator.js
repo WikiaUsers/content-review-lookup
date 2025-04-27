@@ -65,49 +65,8 @@ function calculate() {
 		];
 	
 	//Here are listed when buildings, classes (character), skills (character) and ship mission types unlock.
-	// level, then everything else
-	var unlocks = [
-		[2, "Workshop lvl. 1"],
-		[3,"Shop lvl. 1","Class: Warrior"],
-		[4,"Pagoda lvl. 1"],
-		[5,"Warehouse lvl. 1"],
-		[6,"Alchemist's Hut lvl. 1","Class: Wizard"],
-		[7,"Field lvl. 1","Pagoda lvl. 2","Skill: Logistician lvl. 1","Skill: Weapon Collector lvl. 1","Skill: Treasure Hunter lvl. 1"],
-		[8,"Furnace lvl. 1","Food Stall lvl. 1"],
-		[9,"Smithy lvl. 1","Windmill lvl. 1","Class: Rogue"],
-		[10,"Dungeon lvl. 1","Gong lvl. 1","Pagoda lvl. 3","Skill: Logistician lvl. 2","Skill: Athlete lvl. 1","Skill: Antiquarian lvl. 1"],
-		[11,"Lumber Mill lvl. 1","Skill: Intellectual lvl. 1"],
-		[12,"Garden lvl. 1","Class: Monk"],
-		[13,"Rock Garden lvl. 1","Skill: Logistician lvl. 3","Skill: Weapon Collector lvl. 2","Skill: Treasure Hunter lvl. 2"],
-		[14,"Pagoda lvl. 4"],
-		[15,"Dairy Farm lvl. 1","Chicken Coop lvl. 1","Class: Geologist","Skill: Athlete lvl. 2"],
-		[16,"Skill: Logistician lvl. 4","Skill: Antiquarian lvl. 2"],
-		[17,"Skill: Intellectual lvl. 2"],
-		[18,"Pagoda lvl. 5","Class: Archeologist"],
-		[19,"Skill: Logistician lvl. 5","Skill: Weapon Collector lvl. 3","Skill: Treasure Hunter lvl. 3"],
-		[20,"Onsen lvl. 1","Dungeon lvl. 2","Skill: Athlete lvl. 3"],
-		[21,"Coffee Bonsai lvl. 1","Class: Samurai","Skill: Gardener lvl. 1","Skill: Rock Garden Contemplator lvl. 1"],
-		[22,"Pier lvl. 1","Ship lvl. 1","Skill: Carpenter lvl. 1","Skill: Metallurgist lvl. 1"],
-		[23,"Pagoda lvl. 6","Skill: Mechanic lvl. 1","Skill: Blacksmith lvl. 1","Ship: Exploring"],
-		[24,"Food Stall lvl. 2","Class: Ninja","Skill: Alchemist lvl. 1","Ship: Fishing"],
-		[25,"Skill: Athlete lvl. 4","Ship: Prospecting"],
-		[26,"Skill: Gardener lvl. 2","Skill: Rock Garden Contemplator lvl. 2","Skill: Boatswain lvl. 1","Ship: Patrolling"],
-		[27,"Class: Adventurer","Skill: Carpenter lvl. 2","Skill: Metallurgist lvl. 2"],
-		[28,"Pagoda lvl. 7","Skill: Mechanic lvl. 2","Skill: Blacksmith lvl. 2"],
-		[29,"Skill: Alchemist lvl. 2"],
-		[30,"Bridge lvl. 1","Dungeon lvl. 3","Caravan lvl. 1","Class: Scientist","Skill: Athlete lvl. 5"],
-		[31,"Outpost lvl. 1","Skill: Boatswain lvl. 2"],
-		[32,"Alchemist's Hut lvl. 6","Tailor lvl. 1","Skill: Carpenter lvl. 3","Skill: Metallurgist lvl. 3"],
-		[33,"Skill: Mechanic lvl. 3","Skill: Blacksmith lvl. 3"],
-		[34,"Skill: Alchemist lvl. 3","Skill: Cameleer lvl. 1"],
-		[35,"Skill: Athlete lvl. 6","Skill: Intellectual lvl. 3"],
-		[39,"Skill: Cameleer lvl. 2"],
-		[40,"Dungeon lvl. 4","Airship lvl. 1"],
-		[44,"Skill: Aeronaut lvl. 1"],
-		[49,"Skill: Aeronaut lvl. 2"],
-		[50,"Dungeon lvl. 5", "Train Station lvl. 1", "Train lvl. 1"],
-		[80,"Class: Zen Master"]
-		];
+	// These are listed from Module:Data/levelling.
+	var unlocks = document.getElementById('levelling_data').innerHTML.split(',');
 
 	//Calculates experience.
 	for (i = 2; i < level; i++) {
@@ -189,10 +148,8 @@ function calculate() {
 	
 	//Writes unlockables into the table.
 	for (u = 0; u < unlocks.length; u++) {
-		if (unlocks[u][0] == level) {
-			for (i = 1; i < unlocks[u].length; i++) {
-				unlock_string += unlocks[u][i] + "<br />";
-			}
+		if (parseInt(unlocks[u*2]) == level) {
+			unlock_string += unlocks[u*2+1] + "<br />";
 		}
 	}
 

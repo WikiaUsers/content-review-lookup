@@ -1,15 +1,12 @@
-mw.hook('wikipage.collapsibleContent').add(function($collapsibleContent){
-	var $element;
-	var $toggle;
-	var autoCollapseThreshold = 2;
-	$.each($collapsibleContent, function(index, element){
-		$element = $(element);
-		if ($collapsibleContent.length >= autoCollapseThreshold && $element.hasClass('autocollapse')){
-			$element.data('mw-collapsible').collapse();
-		} else if ($element.hasClass('innercollapse')){
-			if ($element.parents('.outercollapse').length > 0){
-				$element.data('mw-collapsible').collapse();
-			}
+'use strict';
+mw.hook('wikipage.collapsibleContent').add((collapsibleContent) => {
+	const autoCollapseThreshold = 2;
+	$.each(collapsibleContent, (index, element) => {
+		const autoCollapse = collapsibleContent.length >= autoCollapseThreshold && $(element).hasClass('autocollapse');
+		const innerCollapse = $(element).hasClass('innercollapse') && $(element).parents('.outercollapse').length;
+		
+		if (autoCollapse || innerCollapse){
+			$(element).data('mw-collapsible').collapse();
 		}
 	});
 });

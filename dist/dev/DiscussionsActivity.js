@@ -716,7 +716,7 @@
       symbol.setAttribute("viewBox", "0 0 " + size + " " + size);
       symbol.id = symbolId;
       const use = createSvgElement("use");
-      const rootedHref = "/resources-ucp/v2/dist/svg/" + href;
+      const rootedHref = "/resources-ucp/mw143/dist/svg/" + href;
       use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", rootedHref);
       symbol.appendChild(use);
       return symbol;

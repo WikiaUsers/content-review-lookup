@@ -1,6 +1,10 @@
-$(function(){
-	new mw.Api().loadMessagesIfMissing(['license-description-with-link']).done(function(){
-		var licenseLink = '<a href="https://www.fandom.com/licensing">CC BY-NC</a>';
-		$('.license-description').html(mw.message('license-description-with-link', licenseLink).text());
+'use strict';
+mw.loader.using(['mediawiki.api'], () => {
+	const api = new mw.Api();
+	const msg = 'license-description-with-link';
+	const url = 'https://www.fandom.com/licensing';
+	const link = $('<a>').attr('href', url).text('CC BY-NC').prop('outerHTML');
+	api.loadMessagesIfMissing(msg).done(() => {
+		$('.license-description').html(mw.message(msg, link).text());
 	});
 });

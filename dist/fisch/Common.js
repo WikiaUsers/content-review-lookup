@@ -4,16 +4,16 @@ window.lockOldComments.limit = 21;
 window.lockOldComments.addNoteAbove = true;
 window.BackToTopModern = true;
 
-/* By: user:gronox CUSTOM Gallery uploading fish mutations button */
+  /* By: user:gronox CUSTOM Gallery uploading fish mutations button */
 importScript('MediaWiki:UploadMutationsImage.js');
 
-/* RailModule and custom button  */
+  /* RailModule and custom button  */
 importScript('MediaWiki:RailModuleMoreLink.js');
 
-/* Load  Custom Collapse and Expand content | Wiki discuss page  */
+  /* Load  Custom Collapse and Expand content | Wiki discuss page  */
 importScript('MediaWiki:CustomCollapseExpand.js');
 
- /* Fishing Rods and all Fish page mutatiin galery */
+  /* Fishing Rods and all Fish page mutatiin galery */
 importScript('MediaWiki:Collapsible.js');
 
   /* Rod Skins Page Custom collapse */
@@ -28,7 +28,7 @@ importScript('MediaWiki:CircleAvatar.js');
   /* Custom Navigation Icons */
 importScript('MediaWiki:CustomNavigationIcons.js');
 
- /* Custom Comments block admindashboard */
+  /* Custom Comments block admindashboard */
 importScript('MediaWiki:CommentsBlock.js');
 
   /* Enhanced Seasons Countdown Timer */
@@ -37,8 +37,6 @@ importScript('MediaWiki:Seasons.js');
   /* Load HourChange code*/
 importScript('MediaWiki:HourChange.js');
 
-  /* Search Zone */
-importScript('MediaWiki:MiniSearchZone.js');
 
   /* WDS Icons https://fandomdesignsystem.com */
 importScript('MediaWiki:WDSIcon.js');

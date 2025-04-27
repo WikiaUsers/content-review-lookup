@@ -1,4 +1,6 @@
-$(function(){
-	var server = mw.config.get('wgServer');
-	$('.internal-external-link [href^="' + server + '/"]').removeAttr('target rel class');
+'use strict';
+$(() => {
+	const server = mw.config.get('wgServer');
+	const links = $(`.internal-external-link [href^="${server}/"]`);
+	links.removeAttr('target rel class');
 });

@@ -4,11 +4,11 @@ let timeout;
 
 function createPrompt() {
     let modal = document.createElement('div');
-    modal.id = 'inactivityModal';
+    modal.className = 'inactivity-modal'; 
     modal.style.display = 'flex';
 
     let prompt = document.createElement('div');
-    prompt.id = 'inactivityPrompt';
+    prompt.className = 'inactivity-prompt';
 
     let img = document.createElement('img');
     img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest/scale-to-width-down/1000?cb=20241007193623&path-prefix=de';
@@ -22,7 +22,7 @@ function createPrompt() {
     text2.innerText = 'Are you still alive?';
 
     let buttonContainer = document.createElement('div');
-    buttonContainer.id = 'buttonContainer';
+    buttonContainer.className = 'button-container';
 
     let yesButton = document.createElement('button');
     yesButton.innerText = 'Yes';
@@ -46,7 +46,7 @@ function createPrompt() {
     // Add ::before pseudo-element 
     let style = document.createElement('style');
     style.innerHTML = `
-        #inactivityModal::before {
+        .inactivity-modal::before {
         content: "";
         }
     `;
@@ -54,7 +54,7 @@ function createPrompt() {
 }
 
 function showPrompt() {
-    let modal = document.getElementById('inactivityModal');
+    let modal = document.querySelector('.inactivity-modal');
     if (!modal) {
         createPrompt();
     } else {
@@ -63,7 +63,7 @@ function showPrompt() {
 }
 
 function hidePrompt() {
-    let modal = document.getElementById('inactivityModal');
+    let modal = document.querySelector('.inactivity-modal');
     if (modal) {
         modal.style.display = 'none';
     }
@@ -78,7 +78,7 @@ function resetTimer() {
 document.onmousemove = resetTimer; // Reset timer on mouse movement
 
 document.onkeydown = function(event) {
-    if (event.key === 'ø') { // Window also appears if key 'ø' is pushed
+    if (event.key === 'ø') { // Window also appears if key 'ø' is pressed
         showPrompt();
     }
 };

@@ -35,3 +35,22 @@ window.tooltips_list = [
         }
     }
 ];
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".move-box").forEach(function (box) {
+      box.addEventListener("mouseover", function () {
+        this.classList.add("stay-open");
+      });
+    });
+  });
+</script>
+
+<style>
+  .move-box .desc-on-hover {
+    display: none;
+  }
+  .move-box.stay-open .desc-on-hover {
+    display: block !important;
+  }
+</style>

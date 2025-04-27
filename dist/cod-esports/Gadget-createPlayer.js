@@ -69,11 +69,13 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 					thistitle + '/Tournament Results/Online', 
 					thistitle + '/Tournament Results/Offline',
 					thistitle + '/Statistics',
+					thistitle + '/Match History',
 					'Tooltip:' + thistitle ];
 				texts = [ "{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything}}",
 					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=online}}",
 					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=offline}}",
 					"{{PlayerTabsHeader}}\n{{PlayerEventHistoryPage}}",
+					"{{PlayerTabsHeader}}\n{{PlayerMatchHistoryPage}}",
 					"{{PlayerTooltip}}"
 				];
 				makePage();

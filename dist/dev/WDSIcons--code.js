@@ -87,7 +87,7 @@
      * @type        {String}
      * @private
      */
-    var spriteUri = mw.config.get('wgScriptPath') + '/resources-ucp/mw139/dist/svg/sprite.svg?t=' +
+    var spriteUri = mw.config.get('wgScriptPath') + '/resources-ucp/mw143/dist/svg/sprite.svg?t=' +
                     new Date().toISOString().slice(0,10);
 
     /**
