@@ -39,13 +39,13 @@ importArticles({
 // THE BELOW CODE randomly changes text above top navigation from "Jicky Universe Wiki" to one from the list
 //////////////////////////////////////////////////////////////////// */
 
-var number_of_wiki_names = 6;
+var number_of_wiki_names = 10;
 var wiki_name_number = 0;
 
 while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
   wiki_name_number = Math.random().toFixed(2) * 100;
 };
-var wiki_name_text=["Tất cả đã nằm trong kế hoạch của tao 👽", "tôi thật là tà ma khi mà stream xuyên đêm 10 tiếng đồng hồ 🐧", "I love blast people head with my revolver.", "Thk Simp lỏ Hanako :) Wiki", "Jick Universe - Ngân hà hạnh phúc", "Vanitas Vanitatum Et Omnia Vanitas"][wiki_name_number];
+var wiki_name_text=["Tất cả đã nằm trong kế hoạch của tao 👽", "tôi thật là tà ma khi mà stream xuyên đêm 10 tiếng đồng hồ 🐧", "I love blast people head with my revolver.", "Thk Simp lỏ Hanako :) Wiki", "Jicky Universe - Ngân hà hạnh phúc", "Vanitas Vanitatum Et Omnia Vanitas", "Tập Đoàn Quân Sự Tinh Tú Wiki 🐧", "BA là game rác 🗿", "The Great Trial Await...","Johnson mới là chủ server 👽"][wiki_name_number];
 var elements=document.getElementsByClassName('fandom-community-header__community-name');
 var wiki_name=elements[0];
 wiki_name.textContent=wiki_name_text;

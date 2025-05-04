@@ -451,7 +451,7 @@
 	// it's more of a small related feature that is hard to justify being a standalone script)
 	if (/\.css$/.test(config.wgPageName) && config.wgNamespaceNumber % 2 === 0) {
 		$(function () {
-			var stylesheetURL = config.wgServer + config.wgScriptPath + '?title=' + config.wgPageName + '&action=raw&ctype=text/css&maxage=0&smaxage=0';
+			var stylesheetURL = config.wgServer + config.wgScriptPath + '/load.php?mode=articles&articles=' + config.wgPageName + '&only=styles&maxage=0&smaxage=0';
 			var validatorURL = 'https://jigsaw.w3.org/css-validator/validator?uri=' + window.encodeURIComponent(stylesheetURL) + '&profile=css3&usermedium=all&warning=1&vextwarning=&lang=' + config.wgUserLanguage;
 			var $button = $('<li>').append(
 				$('<a>').text('Validate CSS').attr({
@@ -462,7 +462,7 @@
 				})
 			);
 
-			$('.page-header__contribution-buttons .wds-list').append($button);
+			$('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list').append($button);
 		});
 	}
 }(jQuery, mediaWiki, window, window.console));

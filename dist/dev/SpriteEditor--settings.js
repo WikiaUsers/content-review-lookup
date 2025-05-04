@@ -167,7 +167,7 @@
 
 		// Create the Dialog and add the window manager.
 		modal.windowManager = new OO.ui.WindowManager();
-		$( 'body' ).append( modal.windowManager.$element );
+		$( OO.ui.getTeleportTarget() ).append( modal.windowManager.$element );
 
 		// Create a new dialog window.
 		modal.seDialog = new SpriteEditorDialog( {

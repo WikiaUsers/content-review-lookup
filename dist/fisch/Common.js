@@ -7,6 +7,9 @@ window.BackToTopModern = true;
   /* By: user:gronox CUSTOM Gallery uploading fish mutations button */
 importScript('MediaWiki:UploadMutationsImage.js');
 
+  /* By: user:gronox ICONS staff or custom in special panel (Fisch_Wiki:Staff) */
+importScript('MediaWiki:Staff.js');
+
   /* RailModule and custom button  */
 importScript('MediaWiki:RailModuleMoreLink.js');
 

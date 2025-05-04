@@ -50,7 +50,7 @@
             // 处理容器参数
             var $container = typeof options.appendTo === 'string' 
                 ? $(options.appendTo) 
-                : (options.appendTo || $('body'));
+                : (options.appendTo || $('.main-container'));
             
             // 创建触发器元素
             var $triggerElement;

@@ -1,7 +1,7 @@
 window.UserTagsJS = {
     modules: {},
     tags: {
-        apprentice: { u: 'DQ Wiki Apprentice', order: 100 },
+        helper: { u: 'DQ Wiki Helper', order: 100 },
         former_staff: { u: 'Former DQ Wiki Staff', order: 101 },
         contributor: { u: 'Contributor', order: 102 },
         impactful: { u: 'Impactful User', order: 103 },
@@ -23,14 +23,15 @@ UserTagsJS.modules.custom = {
     'NinjaDogDB': ['former_staff'],
     'Trashh': ['former_staff'],
     'EQUENOS': ['former_staff'],
+    'Its Gear47': ['former_staff'],
     'Hellogillyface': ['impactful'],
     'Iceslasher123': ['impactful'],
     '010010000110100I': ['impactful'],
     'SaltyNoobz': ['impactful'],
     'Airpodes': ['impactful'],
     'Jack1o7': ['impactful'],
-    'EscaperFloods': ['apprentice'],
-    'VoidDrin': ['apprentice', 'impactful'],
+    'EscaperFloods': ['helper'],
+    'VoidDrin': ['impactful'],
 };
 
 UserTagsJS.modules.autoconfirmed = false;

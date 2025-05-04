@@ -15,10 +15,6 @@ futurehostile: true
 *//* global
 importArticles
 */
-importArticles({
-	type: 'script',
-	articles: [ 'u:dev:MediaWiki:CustomCodeMirror.js' ]
-});
 mw.hook('dev.CCM.load').add((cmLoader) => {
 	'use strict';
 	(window.dev = window.dev || {}).BetterUpload = window.dev.BetterUpload || {
@@ -26,7 +22,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 	};
 	
 	// Double load protection and check we're in Special:Upload
-	if (window.dev.BetterUpload._LOADED || mw.config.values.wgCanonicalSpecialPageName !== 'Upload') { return; }
+	if (window.dev.BetterUpload._LOADED) { return; }
 	else { window.dev.BetterUpload._LOADED = true; }
 	
 	// Load dependencies and cache
@@ -145,6 +141,14 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 				cm = ccm;
 				BU.renderPreview();
 				BU.genPreloads();
+				
+				// try to preview every couple seconds
+				let last;
+				setInterval(() => {
+					let newtext = cm.view.state.sliceDoc();
+					if (newtext !== last) {BU.renderPreview();}
+					last = newtext;
+				}, 1000);
 			});
 			
 			// Update "default values" so that the base upload check for leaving the page doesnt have a stroke when nothing actually changed
@@ -315,7 +319,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 			let text = cm.view.state.sliceDoc();
 			let params = {
 				action: 'parse',
-				text: text,
+				text: text+'__noeditsection__',
 				prop: 'text',
 				disablelimitreport: true,
 				contentmodel: 'wikitext',
@@ -426,13 +430,12 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 
 	};
 	
-	// 
 	let titles = [
 		'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
 		'User:'+config.wgUserName+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
 	];
 	if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
-		titles.push('File:'+document.querySelector('#wpDestFile').value);
+		titles.push('File:'+document.querySelector('#wpDestFile').value); // File to check if doing a reupload
 	}
 	api.get({
 		action: 'query',
@@ -482,3 +485,13 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 		}
 	});
 });
+
+// Start the process if in the right page
+if (mw.config.values.wgCanonicalSpecialPageName === 'Upload') {
+	mw.loader.using('mediawiki.api').then(()=>{
+		importArticles({
+			type: 'script',
+			articles: [ 'u:dev:MediaWiki:CustomCodeMirror.js' ]
+		});
+	});
+}

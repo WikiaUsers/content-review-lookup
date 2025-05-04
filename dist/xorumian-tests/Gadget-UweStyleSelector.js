@@ -1,5 +1,5 @@
 (function($){
-	var SELECTED_CACHE_KEY = 'uwe-resourcepacks-selected';
+	var SELECTED_CACHE_KEY = 'uwe-styles-selected';
 	var stylesheetPrefix = mw.config.get('wgServer')+mw.config.get('wgScript')+"?action=raw&ctype=text/css&title=";
 	var packDefault = { id:'default', name:"Minecraft (Default)", author:"Xorum Team" };
 	var packs = [
@@ -17,8 +17,8 @@
 		},
 	];
 
-	// Source: https://www.svgrepo.com/svg/310023/style-guide
-	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="3 2.5 18 18"><path d="M14.0358344,2.77749671 C15.5028662,2.38440673 17.0107928,3.25500857 17.4038828,4.72204036 L20.1214828,14.8642615 C20.5145728,16.3312933 19.6439709,17.8392199 18.1769391,18.2323099 L11.8984213,19.9146337 C10.4313895,20.3077237 8.92346284,19.4371219 8.53037286,17.9700901 L5.81277289,7.8278689 C5.41968291,6.36083711 6.29028475,4.85291048 7.75731654,4.4598205 L14.0358344,2.77749671 Z M5.80276379,11.6579669 L7.56444704,18.2289091 C7.74541549,18.9042926 8.09965838,19.4869754 8.56653105,19.9419445 L8.12368161,19.9181345 C6.60697998,19.8386475 5.4418873,18.544681 5.52137427,17.0279794 L5.80276379,11.6579669 Z M14.424063,4.22638545 L8.1455451,5.90870924 C7.47871248,6.08738651 7.08298436,6.7728077 7.26166163,7.43964033 L9.9792616,17.5818615 C10.1579389,18.2486941 10.8433601,18.6444222 11.5101927,18.465745 L17.7887106,16.7834212 C18.4555432,16.6047439 18.8512713,15.9193227 18.672594,15.2524901 L15.9549941,5.11026892 C15.7763168,4.44343629 15.0908956,4.04770818 14.424063,4.22638545 Z M4.87817105,10.1797973 L4.52274473,16.9756434 C4.4861276,17.6743399 4.64319766,18.3383733 4.94700819,18.915604 L4.53260907,18.7550052 C3.11470293,18.210722 2.40649159,16.6200533 2.95077476,15.2021471 L4.87817105,10.1797973 Z M9.74118095,7.03407417 C10.2746471,6.89113236 10.822984,7.20771485 10.9659258,7.74118095 C11.1088676,8.27464706 10.7922851,8.82298401 10.258819,8.96592583 C9.72535294,9.10886764 9.17701599,8.79228515 9.03407417,8.25881905 C8.89113236,7.72535294 9.20771485,7.17701599 9.74118095,7.03407417 Z" id="🎨-Color"> </path></svg>';
+	// Source: https://www.svgrepo.com/svg/333396/style
+	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="3 3 18 18"> <path fill-rule="evenodd" d="M13 21V13H21V21H13ZM15 15H19L19 19H15V15Z"></path> <path fill-rule="evenodd" d="M3 11L3 3L11 3V11H3ZM5 5L9 5V9L5 9L5 5Z"></path> <path d="M18 6V12H16V8L12 8V6L18 6Z"></path> <path d="M12 18H6L6 12H8L8 16H12V18Z"></path> </svg>';
 
 	// Internal wiki icon
 	var TINY_ARROW_ICON = '<svg><use xlink:href="#wds-icons-dropdown-tiny" /></svg>';
@@ -34,7 +34,7 @@
 	// Before Safari 17 filter didn't work and showed nothing; now with Safari 17 it just makes the image vanish. So this is a custom filter that does nothing other than prevent css from breaking. Image with no enchant = better than no image
 	var SVG_FILTER_SAFARI = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"></filter></svg>';
 
-	var CONTENT_ID = 'uwe-resourcepack-dropdown';
+	var CONTENT_ID = 'uwe-style-dropdown';
 
 	function main() {
 		// Not sure why this sometimes doesn't show up on page load; attempting to delay add a bit to try and make it more consitent
@@ -46,7 +46,7 @@
 		// Firefox has a weird bug where the css will be overwritten by lazy-loaded images
 		// So this code forces firefox to re-trigger the css for them
 		if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-			// Only trigger this workaround when resource packs are being used
+			// Only trigger this workaround when styles are being used
 			var selectedIds = getSelectedIds();
 			if(selectedIds.length > 0) {
 				$('.lazyload, .lazyloaded').each(function(){
@@ -72,7 +72,7 @@
 	function initDropdownHtml() {
 		$('.'+CONTENT_ID).remove();
 		var $dropdown = $("<div>").addClass("wds-button wds-is-secondary wds-dropdown "+CONTENT_ID);
-		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Resource Packs").html(TOOLBAR_ICON).appendTo($dropdown);
+		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Styles").html(TOOLBAR_ICON).appendTo($dropdown);
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
 
 		// Safari 3.0+ "[object HTMLElementConstructor]" - https://stackoverflow.com/a/9851769
@@ -197,7 +197,7 @@
 		localStorage.setItem(SELECTED_CACHE_KEY, JSON.stringify(list || []));
 	}
 
-	var STYLESHEET_CLASS = "uwe-resourcepack-stylesheet";
+	var STYLESHEET_CLASS = "uwe-style-stylesheet";
 	function addStylesheetToHead(href) {
 		$("head").append("<link rel='stylesheet' href='"+href+"' type='text/css' class='"+STYLESHEET_CLASS+"'>");
 	}

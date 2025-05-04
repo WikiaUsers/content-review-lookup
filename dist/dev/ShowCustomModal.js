@@ -317,23 +317,7 @@
         mw.hook('dev.showCustomModal').fire(showCustomModal);
     };
 
-    function patchStyles() {
-        // Thank u sophie
-        var textColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-article-text-color');
-        var isDark = textColor === '#e6e6e6';
-
-        if (isDark) {
-            mw.util.addCSS('\
-.modalWrapper {\
-    box-shadow: 0 10px 60px 0 black;\
-}');
-        }
-    }
-
-    imported.then(function() {
-        patchStyles();
-        fire();
-    });
+    imported.then(fire);
 
     window.dev = window.dev || {};
     dev.showCustomModal = showCustomModal;

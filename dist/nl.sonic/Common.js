@@ -52,26 +52,26 @@ document.querySelectorAll('.form .quotemark').forEach(function(element) {
 });
 
 /* Galerij-klapbaar */
-$(function() {
+$(function () {
+    // Check if the disable flag is present (set via template)
+    if (document.getElementById('disable-js-flag')) return;
+
     // Add collapse buttons to all <gallery> elements
-    $('gallery').each(function() {
+    $('gallery').each(function () {
         var $gallery = $(this);
         var $button = $('<button class="collapsible-gallery-button">+/-</button>');
-        $button.click(function() {
+        $button.click(function () {
             $gallery.toggleClass('collapsed');
         });
         $gallery.before($button);
     });
-});
 
-
-$(function() {
     // Add collapse buttons to all galleries with IDs starting with 'gallery-'
-    $('div[id^="gallery-"]').each(function() {
+    $('div[id^="gallery-"]').each(function () {
         var $gallery = $(this);
         var $button = $('<button class="collapsible-gallery-button">+/-</button>');
-        
-        $button.on('click', function() {
+
+        $button.on('click', function () {
             $gallery.toggleClass('collapsed');
         });
 

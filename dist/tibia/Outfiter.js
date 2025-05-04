@@ -206,8 +206,9 @@ $(function () {
       //215
       'Draccoon_Herald', 'Doom_Knight', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
       //220
-      'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid'
+      'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid',
       //225
+      'Martial Artist'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {

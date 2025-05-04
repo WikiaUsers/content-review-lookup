@@ -36,14 +36,16 @@
             }).bind(this));
             $el.html(
                 $('<iframe>', {
-                    src: url
+                    src: url,
+                    style: 'display: none'
                 }).on('load', function() {
+                	$(this).css({'display': ''});
                     $el.find('img').remove();
                 })
             );
             $el.append(
-                $('<img>', {
-                    src: '/resources-ucp/mw139/resources/src/mediawiki.skinning/images/ajax-loader.gif'
+                $('<img>', { /* [[File:Circle throbber.gif]] */
+                    src: 'https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif'
                 })
             );
             $el.addClass('loaded');

@@ -20,6 +20,9 @@ window.pagifyAndRunAll = function(f, pagelist, size) {
 }
 
 window.processParserOutput = function(text) {
+	if (typeof $(text).find(".mw-parser-output")[0] === 'undefined') {
+	  return $(text).find(".mw-parser-output").prevObject[0].outerHTML;
+	}
 	return $(text).find(".mw-parser-output")[0].outerHTML;
 }
 

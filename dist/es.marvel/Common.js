@@ -178,3 +178,9 @@ articles: [
 'MediaWiki:Common.js/Switch.js' 
 ] 
 });
+
+$(function() {
+    $('.affiliation-toggle').click(function() {
+        $(this).next('.affiliation-content').toggleClass('affiliation-content-show');
+    });
+});

@@ -757,9 +757,10 @@ $(function() {
 						'</div></div>'
 					);
 					quickview.setTitle('Changes: '+diff.totitle);
-					if (!diff.log) {
-						betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', function() {
-							quickview.setTitle('Changes: '+diff.totitle);
+					
+					betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', function() {
+						quickview.setTitle('Changes: '+diff.totitle);
+						if (!diff.log) {
 							$('#quickDiff-quickview .quickDiff-preview').on('click', function() {
 								$('#quickDiff-quickview .quickDiff-preview').replaceWith('<strong class="quickDiff-preview">Loading the preview!</strong>');
 								betterDiff.api({
@@ -779,117 +780,133 @@ $(function() {
 									.find('.mw-collapsible').makeCollapsible();
 								});
 							});
-						});
-						if (
-							can.patrol &&
-							(betterDiff.getLoad(turl) === (config.wgServerName+config.wgScriptPath)) &&
-							tokens.patrol.length>2
-						) {
-							lApi.get({
-								action: 'query',
-								list: 'recentchanges',
-								rcprop: 'ids|patrolled',
-								format: 'json',
-								rctitle: diff.totitle,
-								formatversion: '2',
-								rclimit: 'max'
-							}).then(function(check) {
-								let num = 0,
-									patrol = false;
-								while (
-									document.querySelector('#quickDiff-quickview #mw-diff-ntitle4') &&
-									!document.querySelector('#quickDiff-quickview #mw-diff-ntitle4 > .patrollink') &&
-									check.query.recentchanges[num] &&
-									can.patrol && patrol === false
-								) {
-									// Add patrol button if any revision to patrol
-									if (check.query.recentchanges[num].unpatrolled && (
-										(diff.torevid && diff.fromrevid &&
-										check.query.recentchanges[num].revid <= diff.torevid && check.query.recentchanges[num].revid >= 	diff.fromrevid) || 
-										(diff.torevid && !diff.fromrevid &&
-										check.query.recentchanges[num].revid === diff.torevid)
-									)) {
-										document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML +=
-										'<span class="patrollink" data-mw="interface">['+
-											'<a tabindex="0" '+
-												'torevid="'+diff.torevid+'" '+
-												'fromrevid="'+(diff.fromrevid ? diff.fromrevid : '0')+'" '+
-												'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
-												(diff.fromtimestamp ? ('fromts="'+diff.fromtimestamp+'" ') : '')+
-											'>'+
-												'Mass Patrol'+
-											'</a>'+
-										']</span>';
-										break;
-									}
-									num++;
-								}
-							});
 						}
-						betterDiff.api({
+					});
+					if (
+						(!diff.log || diff.log==='upload')
+						&& can.patrol
+						&& (betterDiff.getLoad(turl) === (config.wgServerName+config.wgScriptPath))
+						&& tokens.patrol.length>2
+					) {
+						let params = {
 							action: 'query',
-							prop: 'revisions',
-							rvprop: 'ids',
+							list: 'recentchanges',
+							rcprop: 'ids|patrolled',
 							format: 'json',
-							titles: diff.totitle,
+							rctitle: diff.totitle,
 							formatversion: '2',
-							rvlimit: 'max'
-						}, turl).then(function(check) {
-							const revs = check.query.pages[0].revisions;
-							let	num = 0,
-								prev = false,
-								next = false;
-							while ( revs[num] && ( prev === false || next === false ) ) {
-								// Store revision after the displayed ones
-								if (diff.torevid && revs[num].revid > diff.torevid) {
-									next = revs[num].revid;
-								}
-								// Store revision before the displayed ones, even if new page creation
-								if (prev === false && diff.fromrevid && revs[num].revid < diff.fromrevid	) {
-									prev = revs[num].revid;
+							rclimit: 'max'
+						};
+						if (diff.log==='upload') {
+							params.rcend =  diff.totimestamp.replace(/[T\-:Z]/ig, '');
+							params.rcstart = diff.totimestamp.replace(/[T\-:Z]/ig, '');
+							params.rcprop += '|loginfo';
+						}
+						lApi.get(params).then(function(check) {
+							let num = 0,
+								patrol = false;
+							while (
+								document.querySelector('#quickDiff-quickview #mw-diff-ntitle4') &&
+								!document.querySelector('#quickDiff-quickview #mw-diff-ntitle4 > .patrollink') &&
+								check.query.recentchanges[num] &&
+								can.patrol && patrol === false
+							) {
+								// Add patrol button if any revision to patrol
+								if (
+									check.query.recentchanges[num].unpatrolled
+									&& (
+										(
+											diff.torevid && diff.fromrevid
+											&& check.query.recentchanges[num].revid <= diff.torevid
+											&& check.query.recentchanges[num].revid >= diff.fromrevid
+										)
+										|| (
+											diff.torevid && !diff.fromrevid
+											&& check.query.recentchanges[num].revid === diff.torevid
+										)
+										|| diff.log === 'upload'
+									)
+								) {
+									document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML +=
+									'<span class="patrollink" data-mw="interface">['+
+										'<a tabindex="0" '+
+											'torevid="'+diff.torevid+'" '+
+											'fromrevid="'+(diff.fromrevid ? diff.fromrevid : '0')+'" '+
+											'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
+											(diff.fromtimestamp ? ('fromts="'+diff.fromtimestamp+'" ') : '')+
+										'>'+
+											'Mass Patrol'+
+										'</a>'+
+									']</span>';
+									break;
 								}
 								num++;
 							}
-							if (prev === false && num === revs.length && diff.torevid > revs[num-1].revid) {
-								prev = revs[num-1].parentid;
-							}
-							if (next === false && num === revs.length && revs[num-1].parentid === 0 && diff.torevid === undefined) {
-								next = revs[num-1].revid;
-							}
-							
-							// Build left side
-							if (prev !== false && !isNaN(prev) && document.querySelector('#quickDiff-quickview #mw-diff-otitle4')) {
-								document.querySelector('#quickDiff-quickview #mw-diff-otitle4').innerHTML = 
-								'<a '+
-									'revid="'+(prev === 0 ? revs[num-1].revid : prev)+'" '+
-									'currid="'+diff.torevid+'" '+
-									'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
-									'id="differences-prevlink" '+
-									(prev === 0 ? 'newdiff="yes" ' : '')+
-									'data-url="'+turl+'" '+
-								'>'+
-									'← Older edit'+
-								'</a>'+
-								document.querySelector('#quickDiff-quickview #mw-diff-otitle4').innerHTML; //prepend to existing content
-							}
-							
-							// Build right side
-							if (next !== false && !isNaN(next) && document.querySelector('#quickDiff-quickview #mw-diff-ntitle4')) {
-								document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML = 
-								'<a '+
-									'revid="'+next+'" '+
-									'currid="'+(diff.torevid ? diff.fromrevid : next)+'" '+
-									'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
-									'id="differences-nextlink" '+
-									'data-url="'+turl+'" '+
-								'>'+
-									'Newer edit →'+
-								'</a> '+
-								document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML; // prepend to any existing content
-								$('#quickDiff-quickview .diff-ntitle .mw-diff-edit > a').after(' | <a href="'+getURL(diff.totitle)+'?action=edit" title="'+diff.totitle.replace(/"/g, '&quot;')+'">curr</a>');
-							}
 						});
 					}
+					betterDiff.api({
+						action: 'query',
+						prop: 'revisions',
+						rvprop: 'ids',
+						format: 'json',
+						titles: diff.totitle,
+						formatversion: '2',
+						rvlimit: 'max'
+					}, turl).then(function(check) {
+						const revs = check.query.pages[0].revisions;
+						let	num = 0,
+							prev = false,
+							next = false;
+						while ( revs[num] && ( prev === false || next === false ) ) {
+							// Store revision after the displayed ones
+							if (diff.torevid && revs[num].revid > diff.torevid) {
+								next = revs[num].revid;
+							}
+							// Store revision before the displayed ones, even if new page creation
+							if (prev === false && diff.fromrevid && revs[num].revid < diff.fromrevid	) {
+								prev = revs[num].revid;
+							}
+							num++;
+						}
+						if (prev === false && num === revs.length && diff.torevid > revs[num-1].revid) {
+							prev = revs[num-1].parentid;
+						}
+						if (next === false && num === revs.length && revs[num-1].parentid === 0 && diff.torevid === undefined) {
+							next = revs[num-1].revid;
+						}
+						
+						// Build left side
+						if (prev !== false && !isNaN(prev) && document.querySelector('#quickDiff-quickview #mw-diff-otitle4')) {
+							document.querySelector('#quickDiff-quickview #mw-diff-otitle4').innerHTML = 
+							'<a '+
+								'revid="'+(prev === 0 ? revs[num-1].revid : prev)+'" '+
+								'currid="'+diff.torevid+'" '+
+								'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
+								'id="differences-prevlink" '+
+								(prev === 0 ? 'newdiff="yes" ' : '')+
+								'data-url="'+turl+'" '+
+							'>'+
+								'← Older edit'+
+							'</a>'+
+							document.querySelector('#quickDiff-quickview #mw-diff-otitle4').innerHTML; //prepend to existing content
+						}
+						
+						// Build right side
+						if (next !== false && !isNaN(next) && document.querySelector('#quickDiff-quickview #mw-diff-ntitle4')) {
+							document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML = 
+							'<a '+
+								'revid="'+next+'" '+
+								'currid="'+(diff.torevid ? diff.fromrevid : next)+'" '+
+								'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
+								'id="differences-nextlink" '+
+								'data-url="'+turl+'" '+
+							'>'+
+								'Newer edit →'+
+							'</a> '+
+							document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML; // prepend to any existing content
+							$('#quickDiff-quickview .diff-ntitle .mw-diff-edit > a').after(' | <a href="'+getURL(diff.totitle)+'?action=edit" title="'+diff.totitle.replace(/"/g, '&quot;')+'">curr</a>');
+						}
+					});
 				});
 			};
 			
@@ -1138,7 +1155,7 @@ $(function() {
 				action: 'query',
 				list: 'recentchanges',
 				rcshow: '!patrolled',
-				rcprop: 'ids',
+				rcprop: 'ids|loginfo',
 				format: 'json',
 				rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
 				formatversion: '2',
@@ -1147,16 +1164,20 @@ $(function() {
 				let num = 0;
 				let revids = [];
 				while (data.query.recentchanges[num]) {
+					let curr = data.query.recentchanges[num];
 					if (
-						(fP) ||
-						(
-							torevid && fromrevid &&
-							data.query.recentchanges[num].revid >= fromrevid &&
-							data.query.recentchanges[num].revid <= torevid
-						) ||
-						(
-							torevid && !fromrevid &&
-							data.query.recentchanges[num].revid === torevid
+						(fP)
+						|| (
+							torevid && fromrevid
+							&& curr.revid >= fromrevid && curr.revid <= torevid
+						)
+						|| (
+							torevid && !fromrevid
+							&& curr.revid === torevid
+						)
+						|| (
+							curr.type === 'log'
+							&& curr.logtype === 'upload'
 						)
 					) {revids.push(data.query.recentchanges[num]);}
 					num++;

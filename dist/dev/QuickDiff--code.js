@@ -1,8 +1,5 @@
 /* [[QuickDiff]] - quickly view any diff link */
 
-/*jslint browser, long */
-/*global jQuery, mediaWiki, dev */
-
 (function ($, mw) {
     "use strict";
 
@@ -15,6 +12,8 @@
     var i18n;
     var modal;
     var special = {};
+    var diffTableSelector = "table.diff[data-mw='interface']";
+    var diffContentSelectors = diffTableSelector + ", .mw-diff-table-prefix, #mw-rev-deleted-no-diff";
 
     function isElementOrChildFrontmost(element) {
         var pos = element.getBoundingClientRect();
@@ -130,9 +129,11 @@
             return element.nodeType === 3;
         }).remove();
 
-        $actions.find("a")
-            .addClass("qdmodal-button")
-            .attr("target", "_blank");
+        $actions
+            .addClass("quickdiff-mw-action")
+            .find("a")
+                .addClass("qdmodal-button")
+                .attr("target", "_blank");
 
         // if diff is for one page, add a page history action
         if (prevTitle === currTitle) {
@@ -155,43 +156,41 @@
         });
 
         // add 'action=render' and 'diffonly' params to save some bytes on each request
-        url.extend({
-            action: "render",
-            diffonly: "1"
-        });
+        url.searchParams.set("action", "render");
+        url.searchParams.set("diffonly", "1");
 
         // pass through 'bot' param for rollback links if it's in use on the current page
         if (mw.util.getParamValue("bot")) {
-            url.extend({bot: "1"});
+            url.searchParams.set("bot", "1");
         }
 
         $.when(
-            $.get(url.getRelativePath()),
+            $.get(url.href),
             mw.loader.using(["mediawiki.diff.styles", "mediawiki.interface.helpers.styles"])
         ).always(function (response) {
-            delete url.query.action;
-            delete url.query.diffonly;
-            delete url.query.bot;
+            url.searchParams.delete("action");
+            url.searchParams.delete("diffonly");
+            url.searchParams.delete("bot");
 
             var data = {
                 url: url,
                 buttons: [{
                     text: i18n("link").plain(),
-                    href: url.toString(),
+                    href: url.href,
                     attr: {"data-disable-quickdiff": ""}
                 }],
-                content: i18n("error", url.toString()).escape()
+                content: i18n("error", url.href).escape()
             };
             var $diff;
 
             if (typeof response[0] === "string") {
                 var $content = $(response[0]);
-                $diff = $content.filter("table.diff, #mw-rev-deleted-no-diff");
+                $diff = $content.filter(diffContentSelectors);
 
                 if (!$diff.length) {
                     // $content is a complete page - see if a diff can be found
                     // needed for diffs from special pages as they ignore action=render URL parameter
-                    $diff = $content.find("table.diff");
+                    $diff = $content.find(diffContentSelectors);
                 }
             }
 
@@ -200,14 +199,15 @@
                 return modal.show(data);
             }
 
+            var $diffTable = $diff.filter(diffTableSelector);
             data.content = $diff;
             data.hook = "quickdiff.ready";
             data.onBeforeShow = addDiffActions;
-            data.title = getDiffTitle($diff);
+            data.title = getDiffTitle($diffTable);
 
             // if a diff, fire the standard MW hook
-            if ($diff.is("table.diff[data-mw='interface']")) {
-                mw.hook("wikipage.diff").fire($diff);
+            if ($diffTable.length) {
+                mw.hook("wikipage.diff").fire($diffTable);
             }
 
             modal.show(data);
@@ -241,7 +241,7 @@
         var url = event.currentTarget.href;
 
         try {
-            url = new mw.Uri(url);
+            url = new URL(url, event.currentTarget.baseURI);
         } catch (ignore) {
             // quit if url couldn't be parsed
             // it wouldn't be a link QuickDiff could handle anyway
@@ -249,17 +249,17 @@
         }
 
         // cross-domain requests not supported
-        if (url.host !== location.hostname) {
+        if (url.hostname !== location.hostname) {
             return;
         }
 
         // no fragment check is to ensure section links/collapsible trigger links on diff pages are ignored
-        var hasDiffParam = url.query.diff !== undefined
-                && url.fragment === undefined;
-        var isSpecialDiffLink = url.path.indexOf(special.diff) === 0
-                || url.path.indexOf(special.diffDefault) === 0;
-        var isSpecialCompareLink = url.path.indexOf(special.compare) === 0
-                || url.path.indexOf(special.compareDefault) === 0;
+        var hasDiffParam = url.searchParams.has("diff")
+                && url.hash === "";
+        var isSpecialDiffLink = url.pathname.startsWith(special.diff)
+                || url.pathname.startsWith(special.diffDefault);
+        var isSpecialCompareLink = url.pathname.startsWith(special.compare)
+                || url.pathname.startsWith(special.compareDefault);
 
         if (hasDiffParam || isSpecialDiffLink || isSpecialCompareLink) {
             event.preventDefault();
@@ -276,13 +276,8 @@
         // always show modal footer for UI consistency
         css += "#quickdiff-modal > footer { display: flex }";
         // hide square brackets/parentheses around action buttons in footer
-        css += "#quickdiff-modal > footer { ";
-        css += ".mw-rollback-link::before, .mw-rollback-link::after,";
-        css += ".mw-diff-edit::before, .mw-diff-edit::after,";
-        css += ".mw-diff-undo::before, .mw-diff-undo::after,";
-        css += ".mw-diff-tool::before, .mw-diff-tool::after";
-        css += "{ content: none; } }";
-        mw.util.addCSS(css);
+        css += ".quickdiff-mw-action::before, .quickdiff-mw-action::after { content: none; }";
+        mw.loader.addStyleTag(css);
 
         // attach to body for compatibility with ajax-loaded content
         // also, one attached event handler is better than hundreds!
@@ -300,19 +295,15 @@
         var i18nMsgs = new $.Deferred();
         var waitFor = [
             i18nMsgs,
-            mw.loader.using(["mediawiki.Uri", "mediawiki.util"])
+            mw.loader.using(["mediawiki.util"])
         ];
 
-        if (!(mw.libs.QDmodal && mw.libs.QDmodal.version >= 20201108)) {
-            waitFor.push($.ajax({
-                cache: true,
-                dataType: "script",
-                url: devLoadUrl + "QDmodal.js&cb=20201108"
-            }));
+        if (!(mw.libs.QDmodal)) {
+            waitFor.push(mw.loader.getScript(devLoadUrl + "QDmodal.js"));
         }
 
         if (!(window.dev && dev.i18n && dev.i18n.loadMessages)) {
-            mw.loader.load(devLoadUrl + "I18n-js/code.js&*");
+            mw.loader.getScript(devLoadUrl + "I18n-js/code.js");
         }
 
         mw.hook("dev.i18n").add(function (i18njs) {

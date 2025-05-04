@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
 /** <nowiki>
  * Taken from https://runescape.fandom.com/wiki/MediaWiki:Common.js/calc.js
  * Calc script for RuneScape Wiki

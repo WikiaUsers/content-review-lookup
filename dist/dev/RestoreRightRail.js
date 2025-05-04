@@ -213,7 +213,7 @@ $(function () {
 		init();
 		addLazyRail(); // 'skin.fandomdesktop.rail.lazyRail.js'
 		addToggle(); // 'skin.fandomdesktop.rail.toggle.js'
-		tooltips.handleAllElementsWithTooltip();
+		document.querySelectorAll("[data-wds-tooltip]").forEach(tooltips.handleElementWithTooltip_1);
 	});
 });
 // </pre>

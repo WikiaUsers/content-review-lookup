@@ -14,7 +14,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Uri', 'mediawiki.Title', 'ext.fando
         	"wgAction",
         	"wgContentLanguage",
         ]),
-        enLessConfig = "https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Custom-Less.json",
+        enLessConfig = "https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Custom-Less.json",
         localLessConfig = mw.util.getUrl("MediaWiki:Custom-Less.json");
     if (!/bureaucrat|sysop|codeeditor|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n")))
         return;
@@ -115,7 +115,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Uri', 'mediawiki.Title', 'ext.fando
     //###########################################
     /* ===Less Source Обновление=== (Y02) */
     function updateLessSource() {
-        return $.get("https://hypixel-skyblock.fandom.com/ru/api.php", {
+        return $.get("https://hypixel-skyblock.fandom.com/api.php", {
             action: "query",
             format: "json",
             prop: "revisions",

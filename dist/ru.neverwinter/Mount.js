@@ -1,4 +1,12 @@
-/*$(document).ready(function() {
+/**
+ * 
+ * This file serves as a centralized collection of JavaScript code related to mount functionality.
+ * 
+ * Dependencies: jQuery library
+ * 
+ */
+
+$(document).ready(function() {
     // Глобальные переменные для качества и Bolster
     var globalQuality = 'mythic';
     var globalBolster = 0;
@@ -25,16 +33,12 @@
         }
         var matches = text.match(/\{[\d,.]+\}/g) || [];
         var values = matches.map(function(match) {
-            var value = match.replace(/[\{\},]/g, '');
-            return parseFloat(value);
+            var original = match.replace(/[\{\}]/g, ''); // Оригинальная строка, например "1,125" или "3.0"
+            var hasComma = original.includes(',');       // Была ли запятая
+            var value = parseFloat(original.replace(',', '.')); // Преобразуем в число
+            return { value: value, hasComma: hasComma, original: original };
         });
         return values;
-    };
-
-    // Проверяем, есть ли десятичная часть в значении
-    var hasDecimal = function(text) {
-        if (!text) return false;
-        return text.match(/\{[\d]+\.[\d]+\}/) !== null;
     };
 
     // Создаем элементы управления только для первого calculate-mount-power
@@ -136,13 +140,26 @@
             var valueIndex = 0;
 
             updatedHtml = updatedHtml.replace(/\{[\d,.]+\}/g, function(match) {
-                var maxValue = values[valueIndex];
-                var baseValue = maxValue * qualityLevels[globalQuality];
-                var finalValue = baseValue * (1 + globalBolster / 100);
-                var isDecimal = match.match(/\{[\d]+\.[\d]+\}/) !== null;
-                var formattedValue = isDecimal ? finalValue.toFixed(1) : Math.floor(finalValue);
+                var item = values[valueIndex];
+                var maxValue = item.value; // Числовое значение (1.125 или 3.0)
+                var hasComma = item.hasComma; // Была ли запятая
+                var original = item.original; // Оригинальная строка ("1,125" или "3.0")
+
+                var finalValue, formattedValue;
+
+                if (hasComma) {
+                    // Для чисел с запятой: убираем запятую, считаем, возвращаем запятую
+                    var tempValue = parseFloat(original.replace(',', '')); // 1125
+                    finalValue = tempValue * qualityLevels[globalQuality] * (1 + globalBolster / 100);
+                    var roundedResult = Math.round(finalValue); // Округляем
+                    formattedValue = roundedResult.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,'); // Возвращаем запятую
+                } else {
+                    // Для чисел с точкой или без разделителя: считаем без округления
+                    finalValue = maxValue * qualityLevels[globalQuality] * (1 + globalBolster / 100);
+                    formattedValue = finalValue.toFixed(1); // Оставляем 1 знак после точки
+                }
+
                 formattedValue = formatNumber(formattedValue);
-                // Оборачиваем значение в <b>
                 var boldValue = '<b>' + formattedValue + '</b>';
                 valueIndex++;
                 return boldValue;
@@ -158,4 +175,4 @@
 
     // Инициализация
     updateAllTargets();
-});*/
+});

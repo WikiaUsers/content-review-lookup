@@ -97,6 +97,30 @@ mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util']).then(function() {
             }
         }
     }
+$(function() {
+  if ($('#p-wiki-navigation-adjacent').length === 0) { // 檢查是否已存在
+    var $newNav = $('<div id="p-wiki-navigation-adjacent" class="portlet"><h3>Wiki 導航</h3><div class="pBody"><ul></ul></div></div>');
+    var $fandomSidebar = $('#WikiaRail'); // **請務必檢查 Fandom 左側欄的實際 ID，並在此處更正**
+
+    if ($fandomSidebar.length) {
+      $newNav.insertAfter($fandomSidebar); // 將新的導航容器插入到 Fandom 左側欄之後
+
+      // 獲取 MediaWiki:Wiki-navigation 的內容
+      $.get('/api.php?action=parse&page=MediaWiki:Wiki-navigation&format=json&prop=text', function(data) {
+        if (data && data.parse && data.parse.text && data.parse.text['*']) {
+          var content = data.parse.text['*'];
+          $newNav.find('.pBody ul').html(content);
+          // **您可能需要進一步處理 content 中的 Wiki 連結，使其成為可點擊的連結。
+          // 這可能需要使用 jQuery 遍歷連結並進行調整。**
+        } else {
+          console.log('無法獲取 MediaWiki:Wiki-navigation 的內容');
+        }
+      });
+    } else {
+      console.log('找不到 Fandom 的左側欄元素，請檢查 #WikiaRail 是否正確');
+    }
+  }
+});
 
     function MetaCaixaMostraPestanya() {
         // S'executa al clicar una pestanya,
@@ -231,3 +255,31 @@ $(function collapseButtonColor() {
 if (mw.config.get('wgUserName') === null) {
 	mw.loader.load('ext.gadget.preserve-variant');
 }
+// 將所有時間轉換為 CST（台灣時間）
+function convertToCST() {
+  const times = document.querySelectorAll('span[class*="timestamp"], .mw-changeslist-date, .mw-logevent-date');
+
+  times.forEach(el => {
+    // 嘗試將內容當作 UTC 時間處理
+    const utcTime = new Date(el.textContent + ' UTC');
+    if (!isNaN(utcTime)) {
+      const options = {
+        timeZone: 'Asia/Taipei',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+      // 格式化為台灣時間顯示
+      el.textContent = new Intl.DateTimeFormat('zh-TW', options).format(utcTime) + '（台北時間）';
+    }
+  });
+}
+
+// 等待頁面載入完成後執行
+mw.loader.using('mediawiki.util', function () {
+  $(convertToCST);
+});

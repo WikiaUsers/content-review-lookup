@@ -24,16 +24,21 @@
 	}
 
 	const rootComponent = {
-		compatConfig: {
-			MODE: 3
+		name: 'Reports',
+		props: {
+			button: { type: Object, required: true },
+			config: { type: Object, required: true },
+			field: { type: Object, required: true },
+			id: { type: String, required: true },
+			msg: { type: Function, required: true },
+			opts: { type: Object, required: true },
+			urlparams: { type: Object, required: true }
 		},
-		compilerOptions: {
-			whitespace: 'condense'
-		},
-		data: function () {
+		data() {
 			return {
 				showDialog: true,
 				disableUI: false,
+				errors: [],
 				linkStatus: 'warning',
 				linkMessage: {
 					error: 'Invalid URL!',
@@ -77,148 +82,6 @@
 				socks: false // vandalism
 			};
 		},
-		props: {
-			button: { type: Object, required: true },
-			config: { type: Object, required: true },
-			field: { type: Object, required: true },
-			id: { type: String, required: true },
-			msg: { type: Function, required: true },
-			opts: { type: Object, required: true },
-			urlparams: { type: Object, required: true }
-		},
-		template:
-			`<cdx-dialog
-				v-model:open="showDialog"
-				:title="msg( header[ id ] ).plain()"
-				:use-close-button="true"
-			>
-				<cdx-field
-					v-if="field.wikiurl"
-					:status="linkStatus"
-					:messages="linkMessage"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( 'wikiurl-header' ).plain() }}</template>
-					<template #description>{{ msg( 'wikiurl-label' ).plain() }}</template>
-					<cdx-text-input
-						@blur="validateLink"
-						min="1"
-						v-model="wikiurl"
-						:placeholder="config.wgServer"
-					></cdx-text-input>
-				</cdx-field>
-				<cdx-field
-					v-if="field.wikiname"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( 'wikiname-header' ).plain() }}</template>
-					<cdx-text-input
-						disabled
-						min="1"
-						v-model="wikiname"
-						:placeholder="config.wgSiteName"
-					></cdx-text-input>
-				</cdx-field>
-				<cdx-field
-					v-if="field.user"
-					:status="userStatus"
-					:messages="userMessage"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( 'user-header' ).plain() }}</template>
-					<template #description>{{ msg( 'user-label' ).plain() }}</template>
-					<cdx-text-area
-						@blur="validateUser"
-						v-model="user"
-						:placeholder="msg( 'user-placeholder' ).plain()"
-					></cdx-text-area>
-				</cdx-field>
-				<cdx-field
-					v-if="field.wikipage"
-					:status="wikipageStatus"
-					:messages="wikipageMessage"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( 'wikipage-header' ).plain() }}</template>
-					<template #description>{{ msg( 'wikipage-label' ).plain() }}</template>
-					<cdx-text-input
-						min="1"
-						v-model="wikipage"
-						:placeholder="config.wgPageName"
-					></cdx-text-input>
-				</cdx-field>
-				<cdx-field
-					v-if="field.blockid"
-					:status="blockidStatus"
-					:messages="blockidMessage"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( 'blockid-header' ).plain() }}</template>
-					<template #description>{{ msg( 'blockid-label' ).plain() }}</template>
-					<cdx-text-input
-						input-type="number"
-						min="1"
-						v-model="blockid"
-						:placeholder="msg( 'blockid-placeholder' ).plain()"
-					></cdx-text-input>
-				</cdx-field>
-				<cdx-field
-					v-if="field.comment"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( [ 'phalanx', 'spam' ].includes( id ) ? 'phalanx-header' : 'comment-header' ).plain() }}</template>
-					<template #description>{{ msg( 'comment-label' ).plain() }}</template>
-					<cdx-text-area
-						v-model="comment"
-						:placeholder="msg( 'comment-placeholder' ).plain()"
-					></cdx-text-area>
-				</cdx-field>
-				<cdx-field
-					v-if="field.crosswiki"
-				>
-					<cdx-toggle-switch
-						:disabled="disableUI"
-						:align-switch="true"
-						v-model="crosswiki"
-					>{{ msg( 'crosswiki-label' ).plain() }}</cdx-toggle-switch>
-				</cdx-field>
-				<cdx-field
-					v-if="field.socks"
-				>
-					<cdx-toggle-switch
-						:disabled="disableUI"
-						:align-switch="true"
-						v-model="socks"
-					>{{ msg( 'socks-label' ).plain() }}</cdx-toggle-switch>
-				</cdx-field>
-				<cdx-field
-					v-if="field.sockusers"
-					v-show="socks"
-					:status="sockStatus"
-					:messages="sockMessage"
-					:disabled="disableUI"
-				>
-					<template #label>{{ msg( 'sockusers-header' ).plain() }}</template>
-					<template #description>{{ msg( 'sockusers-label' ).plain() }}</template>
-					<cdx-text-area
-						@blur="validateSocks"
-						v-model="sockusers"
-						:placeholder="msg( 'sockusers-placeholder' ).plain()"
-					></cdx-text-area>
-				</cdx-field>
-				<div v-if="field.guidelines"><b>{{ msg( 'guidelines-title' ).plain() }}</b></div>
-				<div v-if="field.guidelines" v-html="guidelinesText"></div>
-				<template #footer>
-					<div style="display: flex; gap: 12px; flex-direction: row-reverse;">
-						<cdx-button
-							weight="primary"
-							@click="submit"
-							action="progressive"
-							:disabled="submitDisabled"
-						>Submit</cdx-button>
-					</div>
-				</template>
-			</cdx-dialog>`,
 		computed: {
 			submitDisabled() {
 				return this.disableUI || (
@@ -254,6 +117,18 @@
 					return 'default';
 				}
 			}
+		},
+		mounted() {
+			this.button.addEventListener( 'click', this.openDialog );
+			if ( this.urlparams.get( 'url' ) ) {
+				this.validateLink();
+			}
+			if ( this.urlparams.get( 'user' ) ) {
+				this.validateUser();
+			}
+		},
+		unMounted() {
+			this.button.removeEventListener( this.openDialog );
 		},
 		methods: {
 			openDialog() {
@@ -406,6 +281,11 @@
 					setTimeout( () => {
 						document.location.href = self.config.wgArticlePath.replace( '$1', self.config.wgPageName );
 					}, 3000 );
+				} ).catch( ( error ) => {
+					self.errors.push( {
+						code: 'submit',
+						info: error
+					} );
 				} );
 			},
 			validateUsers( sock ) {
@@ -445,6 +325,8 @@
 							self[ message ].error = `Users "${ missingUsers.join( '", "' ) }" not found.`;
 						}
 					}
+				} ).catch( ( error ) => {
+					self[ message ].error = `User check failed: "${ error }".`;
 				} );
 			},
 			validateSocks() {
@@ -482,18 +364,143 @@
 				} );
 			}
 		},
-		mounted() {
-			this.button.addEventListener( 'click', this.openDialog );
-			if ( this.urlparams.get( 'url' ) ) {
-				this.validateLink();
-			}
-			if ( this.urlparams.get( 'user' ) ) {
-				this.validateUser();
-			}
-		},
-		unMounted() {
-			this.button.removeEventListener( this.openDialog );
-		}
+		template:
+			`<cdx-dialog
+				v-model:open="showDialog"
+				:title="msg( header[ id ] ).plain()"
+				:use-close-button="true"
+			>
+				<cdx-message v-for="error of errors" type="error">
+					<strong>{{ error.code }}</strong><br>
+					<template v-if="error.info !== ''">{{ error.info }}</template>
+				</cdx-message>
+				<cdx-field
+					v-if="field.wikiurl"
+					:status="linkStatus"
+					:messages="linkMessage"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( 'wikiurl-header' ).plain() }}</template>
+					<template #description>{{ msg( 'wikiurl-label' ).plain() }}</template>
+					<cdx-text-input
+						@blur="validateLink"
+						min="1"
+						v-model="wikiurl"
+						:placeholder="config.wgServer"
+					></cdx-text-input>
+				</cdx-field>
+				<cdx-field
+					v-if="field.wikiname"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( 'wikiname-header' ).plain() }}</template>
+					<cdx-text-input
+						disabled
+						min="1"
+						v-model="wikiname"
+						:placeholder="config.wgSiteName"
+					></cdx-text-input>
+				</cdx-field>
+				<cdx-field
+					v-if="field.user"
+					:status="userStatus"
+					:messages="userMessage"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( 'user-header' ).plain() }}</template>
+					<template #description>{{ msg( 'user-label' ).plain() }}</template>
+					<cdx-text-area
+						@blur="validateUser"
+						v-model="user"
+						:placeholder="msg( 'user-placeholder' ).plain()"
+					></cdx-text-area>
+				</cdx-field>
+				<cdx-field
+					v-if="field.wikipage"
+					:status="wikipageStatus"
+					:messages="wikipageMessage"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( 'wikipage-header' ).plain() }}</template>
+					<template #description>{{ msg( 'wikipage-label' ).plain() }}</template>
+					<cdx-text-input
+						min="1"
+						v-model="wikipage"
+						:placeholder="config.wgPageName"
+					></cdx-text-input>
+				</cdx-field>
+				<cdx-field
+					v-if="field.blockid"
+					:status="blockidStatus"
+					:messages="blockidMessage"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( 'blockid-header' ).plain() }}</template>
+					<template #description>{{ msg( 'blockid-label' ).plain() }}</template>
+					<cdx-text-input
+						input-type="number"
+						min="1"
+						v-model="blockid"
+						:placeholder="msg( 'blockid-placeholder' ).plain()"
+					></cdx-text-input>
+				</cdx-field>
+				<cdx-field
+					v-if="field.comment"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( [ 'phalanx', 'spam' ].includes( id ) ? 'phalanx-header' : 'comment-header' ).plain() }}</template>
+					<template #description>{{ msg( 'comment-label' ).plain() }}</template>
+					<cdx-text-area
+						v-model="comment"
+						:placeholder="msg( 'comment-placeholder' ).plain()"
+					></cdx-text-area>
+				</cdx-field>
+				<cdx-field
+					v-if="field.crosswiki"
+				>
+					<cdx-toggle-switch
+						:disabled="disableUI"
+						:align-switch="true"
+						v-model="crosswiki"
+					>{{ msg( 'crosswiki-label' ).plain() }}</cdx-toggle-switch>
+				</cdx-field>
+				<cdx-field
+					v-if="field.socks"
+				>
+					<cdx-toggle-switch
+						:disabled="disableUI"
+						:align-switch="true"
+						v-model="socks"
+					>{{ msg( 'socks-label' ).plain() }}</cdx-toggle-switch>
+				</cdx-field>
+				<cdx-field
+					v-if="field.sockusers"
+					v-show="socks"
+					:status="sockStatus"
+					:messages="sockMessage"
+					:disabled="disableUI"
+				>
+					<template #label>{{ msg( 'sockusers-header' ).plain() }}</template>
+					<template #description>{{ msg( 'sockusers-label' ).plain() }}</template>
+					<cdx-text-area
+						@blur="validateSocks"
+						v-model="sockusers"
+						:placeholder="msg( 'sockusers-placeholder' ).plain()"
+					></cdx-text-area>
+				</cdx-field>
+				<div v-if="field.guidelines"><b>{{ msg( 'guidelines-title' ).plain() }}</b></div>
+				<div v-if="field.guidelines" v-html="guidelinesText"></div>
+				<template #footer>
+					<div style="display: flex; gap: 12px; flex-direction: row-reverse;">
+						<cdx-button
+							weight="primary"
+							@click="submit"
+							action="progressive"
+							:disabled="submitDisabled"
+						>Submit</cdx-button>
+					</div>
+				</template>
+			</cdx-dialog>`
 	};
 
 	function setOptions( id, msg, config ) {
@@ -634,6 +641,7 @@
 					.component( 'cdx-button', Codex.CdxButton )
 					.component( 'cdx-dialog', Codex.CdxDialog )
 					.component( 'cdx-field', Codex.CdxField )
+					.component( 'cdx-message', Codex.CdxMessage )
 					.component( 'cdx-text-area', Codex.CdxTextArea )
 					.component( 'cdx-text-input', Codex.CdxTextInput )
 					.component( 'cdx-toggle-switch', Codex.CdxToggleSwitch )

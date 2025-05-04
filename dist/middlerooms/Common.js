@@ -116,5 +116,6 @@ UserTagsJS.modules.custom = {
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 	'Underscrach': ['ra'],
 	'Strawberry Bot': ['bot'],
-	'PlutoniumOnInternet': ['inactivenotable']
+	'PlutoniumOnInternet': ['inactivenotable'],
+	'KeelerWeeler': ['ra']
 };

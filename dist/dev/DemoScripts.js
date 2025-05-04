@@ -566,6 +566,11 @@
             styles: 'MediaWiki:ReferencePopups/demo.css',
             subpages: false
         },
+        
+        RelevantPrint: {
+        	page: 'RelevantPrint',
+        	styles: 'MediaWiki:RelevantPrint.css'
+        },
 
         ResponsiveMobile: {
             page: 'ResponsiveMobile',

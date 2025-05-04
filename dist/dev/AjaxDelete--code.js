@@ -210,7 +210,7 @@
             }
             var url;
             try {
-                url = new URL($target.attr('href'));
+                url = new URL($target.prop('href'));
             } catch(e) {
                 return;
             }

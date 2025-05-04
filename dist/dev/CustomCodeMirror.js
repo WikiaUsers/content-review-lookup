@@ -13,7 +13,7 @@ quotmark: single,
 esversion: 6,
 futurehostile: true
 *//* global
-importStylesheetURI
+importArticle
 */
 mw.loader.using( [
 	'ext.wikiEditor',
@@ -27,7 +27,7 @@ mw.loader.using( [
 	else {window.dev.CCM = true;}
 	
 	// Necessary CSS + fixes
-	importStylesheetURI('/load.php?lang=en&only=styles&skin=fandomdesktop&modules=ext.fandom.wikiEditor.codeMirrorTheming.css|ext.fandom.wikiEditorFandomDesktop.css');
+	importArticle({ type: 'style', article: 'u:dev:MediaWiki:CustomCodeMirror.css' });
 	mw.util.addCSS(`
 		.wikiEditor-ui-bottom { position: relative; }
 		.wikiEditor-ui-top {min-height: 58px !important;}
@@ -82,9 +82,6 @@ mw.loader.using( [
 				color: var(--theme-link-color);
 			}
 		}
-		
-		/* Remove unwanted overrides from the deafult stylesheet as they assume edit page instead of using ".action-edit" like the rest */
-		body:not(.action-edit, .action-submit) :is(.page-footer, .page-header) { display: block !important; }
 	`);
 	const
 	CodeMirrorWikiEditor = require( 'ext.CodeMirror.v6.WikiEditor' ),
@@ -105,7 +102,6 @@ mw.loader.using( [
 		cmWE.addCodeMirrorToWikiEditor();
 		
 		// Post-init fixes
-		cmWE.$searchBtn = $( '.wikiEditor-ui .group-search .tool' ); // for some reason doesnt get defined properly
 		$('.group-codemirror').remove(); // some internal setting is impossible to fix, so disable the disabling of syntaxhighlight
 		txt.attr('id', txtID); // Return to original ID
 		

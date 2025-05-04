@@ -47,6 +47,9 @@
 						href: source,
 		                target: '_BLANK',
 		                title: msg('copy-source-tooltip').plain()
+		            }).css({
+		            	fontSize: '65%',
+		                verticalAlign: 'middle',
 		            })
 		            .text(msg('copy-source-link').plain())
 		            .click(copy)
