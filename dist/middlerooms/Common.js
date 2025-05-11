@@ -114,7 +114,6 @@ UserTagsJS.modules.custom = {
 	'Ntdll32': ['cw'],
 	'Dan7935': ['gf'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
-	'Underscrach': ['ra'],
 	'Strawberry Bot': ['bot'],
 	'PlutoniumOnInternet': ['inactivenotable'],
 	'KeelerWeeler': ['ra']

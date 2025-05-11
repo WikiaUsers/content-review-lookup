@@ -283,3 +283,41 @@ function convertToCST() {
 mw.loader.using('mediawiki.util', function () {
   $(convertToCST);
 });
+$(function () {
+    // 確保網頁載入後才執行
+    if (mw.config.get('wgNamespaceNumber') < 0) return; // 排除特殊頁面
+
+    // 從 MediaWiki:Wiki-navigation 載入內容
+    $.get(mw.util.wikiScript('api'), {
+        action: 'parse',
+        page: 'MediaWiki:Wiki-navigation',
+        format: 'json'
+    }, function (data) {
+        if (data.parse && data.parse.text) {
+            var html = data.parse.text['*'];
+
+            // 創建新側欄區塊並插入內容
+            var $newBox = $('<section>')
+                .addClass('portal portlet') // Fandom 有可能使用不同 class，可依照實際調整
+                .attr('id', 'p-custom-navigation')
+                .append($('<h2>').text('自訂導航'))
+                .append($('<div>').addClass('body').html(html));
+
+            // 插入到右側欄（視 Fandom 結構而定）
+            $('#WikiaRail, #mw-panel').append($newBox);
+        }
+    });
+});
+// 僅保留「簡體中文」與「繁體中文」語言選項
+$(function () {
+    // 確保語言選單存在
+    var $langDropdown = $('.wds-dropdown__content');
+    if ($langDropdown.length) {
+        $langDropdown.find('a').each(function () {
+            var text = $(this).text().trim();
+            if (text !== '簡體' && text !== '繁體') {
+                $(this).remove(); // 移除非簡中或繁中的語言
+            }
+        });
+    }
+});

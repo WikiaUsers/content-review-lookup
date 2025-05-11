@@ -1,3 +1,4 @@
+
 "use strict";
 /**
  * @name UserFunctions.js
@@ -9,7 +10,7 @@
  * @license MIT
  */
 var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
+    __assign = Object.assign || function (t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
             for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -25,6 +26,7 @@ var UserFunctions = /** @class */ (function () {
         this.userGroups = mw.config.get('wgUserGroups');
         this.isLoggedIn = true;
         this._elements = $(selector);
+        this.selector = selector; // Сохраняем селектор
     }
     Object.defineProperty(UserFunctions.prototype, "elements", {
         get: function () {
@@ -38,6 +40,7 @@ var UserFunctions = /** @class */ (function () {
     });
     UserFunctions.prototype.init = function () {
         var _this = this;
+        this._elements = $(this.selector); // Обновляем элементы перед обработкой
         this._elements.each(function (_, element) {
             var $el = $(element);
             var username = $el.data('username') !== undefined;
@@ -147,5 +150,7 @@ var UserFunctions = /** @class */ (function () {
 window.dev = __assign(__assign({}, window.dev), { UserFunctions: UserFunctions });
 // Run
 var app = new UserFunctions('.user-functions, .UserFunctions');
-app.init();
-//# sourceMappingURL=index.js.map
+// Вызываем init() повторно с интервалом
+setInterval(function () {
+    app.init();
+}, 1000); // Вызываем каждую секунду (1000 миллисекунд)

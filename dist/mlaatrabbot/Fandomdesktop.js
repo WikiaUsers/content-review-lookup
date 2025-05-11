@@ -1,5 +1,5 @@
+/***[[Category:Internal pages]]***/
 // Image slider
-
 $(function() {
   var slideTotal = $(".cslider ul li").length;
   var slideWidth = $(".cslider ul li").width();

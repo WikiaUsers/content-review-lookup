@@ -39,10 +39,16 @@
 				showDialog: true,
 				disableUI: false,
 				errors: [],
-				linkStatus: 'warning',
+				curwikiurl: '',
 				linkMessage: {
 					error: 'Invalid URL!',
 					warning: 'This field is required.'
+				},
+				wikinameStatus: 'default',
+				wikinameMessage: {
+					error: 'Wiki not found!',
+					warning: 'Loading...',
+					success: 'Wiki found!'
 				},
 				userStatus: 'warning',
 				userMessage: {
@@ -86,6 +92,7 @@
 			submitDisabled() {
 				return this.disableUI || (
 					( this.field.wikiurl && this.linkStatus !== 'default' ) ||
+					( this.field.wikiname && this.wikinameStatus !== 'success' ) ||
 					( this.field.user && this.userStatus !== 'default' ) ||
 					( this.field.blockid && this.blockidStatus !== 'default' ) ||
 					( this.field.wikipage && this.wikipageStatus !== 'default' ) ||
@@ -116,6 +123,17 @@
 				} else {
 					return 'default';
 				}
+			},
+			linkStatus() {
+				const fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(fandom\.com)(\/[^/]*?)?(?:\/.*)?$/,
+					filteredDomain = this.wikiurl.trim().match( fandomDomainRE );
+				if ( this.wikiurl.length === 0 ) {
+					return 'warning';
+				} else if ( !filteredDomain ) {
+					return 'error';
+				} else {
+					return 'default';
+				}
 			}
 		},
 		mounted() {
@@ -136,7 +154,7 @@
 			},
 			filterFandomDomain( input ) {
 				const fandomDomainRE = /(?:https?:\/\/)?(.*?\.)(fandom\.com)(\/[^/]*?)?(?:\/.*)?$/,
-					filteredDomain = input.match( fandomDomainRE );
+					filteredDomain = input.trim().match( fandomDomainRE );
 
 				if ( !filteredDomain ) {
 					return null;
@@ -144,7 +162,7 @@
 
 				filteredDomain.splice( 0, 1 );
 
-				if ( [ '/wiki', '/f', '/ ' ].includes( filteredDomain[ 2 ] ) ) {
+				if ( [ '/wiki', '/f', '/' ].includes( filteredDomain[ 2 ] ) ) {
 					filteredDomain.pop();
 				}
 
@@ -336,32 +354,40 @@
 				this.validateUsers( false );
 			},
 			validateLink() {
-				this.linkStatus = 'default';
-				this.wikiname = '';
-				const url = this.filterFandomDomain( this.wikiurl );
-
-				if ( !url ) {
-					this.linkStatus = this.wikiurl.length > 0 ? 'error' : 'warning';
-					return;
+				const self = this,
+					url = self.filterFandomDomain( self.wikiurl );
+				if ( url ) {
+					self.wikiurl = `https://${ url }`;
 				}
+				if ( self.curwikiurl === this.wikiurl ) {
+					// do nothing
+				} else if ( self.curwikiurl !== this.wikiurl && this.linkStatus === 'default' ) {
+					self.wikiname = '';
+					self.wikinameStatus = 'warning';
 
-				this.wikiurl = `https://${ url }`;
+					self.curwikiurl = this.wikiurl;
 
-				fetch( `https://${ url }/api.php?` + new URLSearchParams( {
-					action: 'query',
-					meta: 'siteinfo',
-					siprop: 'general',
-					formatversion: 2,
-					format: 'json',
-					origin: '*'
-				} ), {
-					method: 'GET',
-					credentials: 'omit'
-				} ).then( ( response ) => response.json() ).then( ( data ) => {
-					this.wikiname = data.query.general.sitename;
-				} ).catch( () => {
-					this.linkStatus = 'error';
-				} );
+					fetch( `${ self.wikiurl }/api.php?` + new URLSearchParams( {
+						action: 'query',
+						meta: 'siteinfo',
+						siprop: 'general',
+						formatversion: 2,
+						format: 'json',
+						origin: '*'
+					} ), {
+						method: 'GET',
+						credentials: 'omit'
+					} ).then( ( response ) => response.json() ).then( ( data ) => {
+						self.wikiname = data.query.general.sitename;
+						self.wikinameStatus = 'success';
+					} ).catch( () => {
+						self.wikinameStatus = 'error';
+					} );
+				} else {
+					self.curwikiurl = this.wikiurl;
+					self.wikiname = '';
+					self.wikinameStatus = 'default';
+				}
 			}
 		},
 		template:
@@ -391,6 +417,8 @@
 				</cdx-field>
 				<cdx-field
 					v-if="field.wikiname"
+					:status="wikinameStatus"
+					:messages="wikinameMessage"
 					:disabled="disableUI"
 				>
 					<template #label>{{ msg( 'wikiname-header' ).plain() }}</template>

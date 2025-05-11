@@ -228,27 +228,5 @@ function owwsitesearch(f){
  
 addOnloadHook(toggleInit);
 
-/* Wiki Quiz */
-window.quizName = "Test Quiz";
-window.quizLang = "en";
-window.resultsTextArray = [ 
-    "Too bad! You scored the lowest.",
-    "Somewhere in the middle.",
-    "Wow! You are an expert!" 
-];
-window.questions = [
-    ["What Year is it?",
-    "2023",
-    "3032",
-    "2023 B.C.",
-    "1942"], 
-
-    ["Is this the second question?",
-    "Yes",
-    "No",
-    "I don't know"],
-
-    ["Is it over now?",
-    "No",
-    "Yes"]
-];
+/* BackToTop */
+window.BackToTopModern = true;

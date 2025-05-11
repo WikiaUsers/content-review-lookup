@@ -12,10 +12,9 @@
     if (window.dev.modal) {
         return;
     }
-
+    
     importArticle({
-        type: 'style',
-        article: 'u:dev:MediaWiki:Modal.css'
+    	article: 'u:dev:MediaWiki:Modal.css'
     });
 
     /**
@@ -59,7 +58,7 @@
         module._windowManager = new OO.ui.WindowManager({
             classes: ['modal-js-window']
         });
-        $( OO.ui.getTeleportTarget() ).append(module._windowManager.$element);
+        $(document.body).append(module._windowManager.$element);
         mw.hook('dev.modal').fire(module);
     }
 

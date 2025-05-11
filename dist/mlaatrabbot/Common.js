@@ -1,23 +1,31 @@
-/*** Rail Module customization ***/
+/***[[Category:Internal pages]]***/
+/***Rail Module customization***/
 window.AddRailModule = [{prepend: true}];
 window.AddRailModule = ['Template:RailModule'];
 
-/*** Back to top button customization ***/
+/***Block messages***/
+var MessageBlock = {
+  title : 'Blocked',
+  message : '{'+'{subst:#invoke:BlockMessages|main|reason=$1|expiry=$2}'+'}',
+  autocheck : true  // set to false, if automatic block messages are not desired
+};
+
+/***Back to top button customization***/
 window.BackToTopArrow = true;
 
-/*** Discord widget customization ***/
+/***Discord widget customization***/
 window.DiscordBannerSettings = {
     bannerStyle: '2',
     inviteLink: 'vnTk6ZthHP', // My Life as a Teenage Rabbot Wiki Discord server link (does not expire)
     prependToRail: true
 };
 
-/*** Preload templates ***/
+/***Preload templates***/
 preloadTemplates_list = "MediaWiki:Custom-PreloadTemplates";
 preloadTemplates_subpage = "case-by-case";
 preloadTemplates_namespace = "Template";
 
-/*** Standard Edit Summary ***/
+/***Standard Edit Summary***/
 // Create the "dev" namespace if it doesn't exist already:
 window.dev = window.dev || {};
 
@@ -32,7 +40,7 @@ importArticles({ type: 'script', articles: [
 	'u:dev:MediaWiki:Standard Edit Summary/code.js'
 ]});
 
-/*** Configuration for ImprovedProseMirror (customized to fit the wiki) ***/
+/***Configuration for ImprovedProseMirror (customized to fit the wiki)***/
 window.dev = window.dev || {};                               // Create Window.dev if it doesn't exist already
 window.dev.IPM = {                                           // Create configuration
 	insert: [

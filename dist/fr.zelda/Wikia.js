@@ -90,3 +90,26 @@ $(function() {
         });
     }
 });
+
+// Bannière
+$(function () {
+  if (!document.getElementById('moved-banner')) {
+    var banner = document.createElement('div');
+    banner.id = 'moved-banner';
+    banner.style.cssText = 'background:#003344; color:white; padding:12px 20px; text-align:center; font-size:16px; font-weight:bold; z-index:9999;';
+    banner.innerHTML = '⚠️ Ce wiki a <strong>déménagé</strong> ! Retrouvez-nous ici 👉 <a href="https://fr.zeldawiki.wiki/wiki/Zelda_Wiki" style="color:#ffd76f; text-decoration:underline;">Zelda Wiki</a>';
+    $('body').prepend(banner);
+  }
+});
+
+// Injecte automatiquement le modèle "MobileNotice" sur mobile uniquement
+$(function () {
+  // Si largeur écran < 800px (mobile) ET skin = oasis
+  if (window.innerWidth < 800 && mw.config.get('skin') === 'oasis') {
+    // Récupère le modèle MobileNotice
+    $.get(mw.util.getUrl('Modèle:MobileNotice', { action: 'render' }), function (data) {
+      // Injecte le bandeau en haut du contenu principal
+      $('<div>').html(data).prependTo('#WikiaPage');
+    });
+  }
+});

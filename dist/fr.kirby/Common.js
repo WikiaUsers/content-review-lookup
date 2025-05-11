@@ -58,12 +58,6 @@ window.questions = [
      "Kirby's Adventure Wii",
      "Kirby: Planet Robobot",
      "Team Kirby Clash Deluxe"],
-        
-    ["Quel est le dernier jeu Kirby où Masahiro Sakurai est crédité ?",
-    "Kirby et le Labyrinthe des Miroirs",
-    "Kirby Air Ride",
-    "Kirby : Le Pinceau du Pouvoir",
-    "Kirby : Cauchemar au Pays des Rêves"],
     
     ["Parmi ces propositions, lequel de ces ennemis ne possède aucun pouvoir à copier ?",
     "Waddle Dee Lance",
@@ -77,6 +71,12 @@ window.questions = [
     "Feuille",
     "Fouet",
     "Cirque"],
+
+    ["Parmi ces jeux, quel est le jeu où Shinya Kumazaki ne fut pas impliqué dans le développement ?",
+    "Kirby et le Labyrinthe des Miroirs",
+    "Kirby Air Ride",
+    "Kirby : Le Pinceau du Pouvoir",
+    "Kirby : Cauchemar au Pays des Rêves"],
     
     ["En commandant un Hamburger Kirby plus une Maxi-Tomate au Café Waddle Dee, quel est le prix à payer ?",
     "120",

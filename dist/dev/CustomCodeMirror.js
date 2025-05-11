@@ -87,7 +87,7 @@ mw.loader.using( [
 	CodeMirrorWikiEditor = require( 'ext.CodeMirror.v6.WikiEditor' ),
 	mediawikiLang = require( 'ext.CodeMirror.v6.mode.mediawiki' ),
 	api = new mw.Api(),
-	loader = (txt)=>{
+	loader = (txt) => {
 		if (txt && txt instanceof Element) {txt = $(txt);}
 		if (!(txt && txt instanceof jQuery && txt.get(0).nodeName === 'TEXTAREA')) { console.log('CCM.load: the input is neither an element, nor a jquery object, nor a textarea!'); return; }
 
@@ -173,7 +173,7 @@ mw.loader.using( [
 		
 		/// Suggestion generation
 		handleInput = (event) => {
-			if (event.type==='keydown' && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+			if (event.type==='keydown' && ['ArrowDown', 'ArrowUp'].includes(event.key) && $('.cm-linksuggest-suggest').length>0) {
 				event.preventDefault();
 				event.stopPropagation();
 				let opts = $('.cm-linksuggest-suggest'),
@@ -184,19 +184,14 @@ mw.loader.using( [
 					.filter('.cm-linksuggest-selected')
 					.add(opts.get(target))
 					.toggleClass('cm-linksuggest-selected');
-			} else if (event.type==='keydown' && event.key==='Enter') {
-				let sel = $('.cm-linksuggest-selected');
-				if (sel.length>0) {
-					event.preventDefault();event.stopPropagation();
-					sel.click();
-				}
+			} else if (event.type==='keydown' && event.key==='Enter' && $('.cm-linksuggest-selected').length>0) {
+				event.preventDefault();event.stopPropagation();
+				$('.cm-linksuggest-selected').click();
 			} else if (event.type==='keydown' && event.key.toLowerCase()==='f' && event.ctrlKey) {
-				const	sel = cmWE.view.state.sliceDoc(cmWE.view.state.selection.main.from, cmWE.view.state.selection.main.to),
-						sch = inst.find('.cdx-text-input__input[name="search"]');
-				if (sel.length>0 && sch.length>0) {
-					sch.val(sel);
-				}
-				
+				const
+				sel = cmWE.view.state.sliceDoc(cmWE.view.state.selection.main.from, cmWE.view.state.selection.main.to),
+				sch = inst.find('.cdx-text-input__input[name="search"]');
+				if (sel.length>0 && sch.length>0) { sch.val(sel); }
 			} else {
 				genSugg();
 			}

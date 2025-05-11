@@ -780,25 +780,25 @@
 		            if (results.source == "Wikitext") {
 		                sourceStr += "Wikitext (on ";
 		                var path = "";
-		                sourceLink.href = "/wiki/" + path;
+		                sourceLink.href = "/vi/wiki/" + path;
 		                sourceLink.textContent = path;
 		            }
 		            if (results.source == "JavaScript") {
 		                sourceStr += "JavaScript (in ";
 		                var path = "MediaWiki:Common.js";
-		                sourceLink.href = "/wiki/" + path;
+		                sourceLink.href = "/vi/wiki/" + path;
 		                sourceLink.textContent = path;
 		            }
 		            else if (results.source == "JSON (in map definition)") {
 		                sourceStr += "JSON (in ";
 		                var path = "Map:" + results.name;
-		                sourceLink.href = "/wiki/" + path;
+		                sourceLink.href = "/vi/wiki/" + path;
 		                sourceLink.textContent = path;
 		            }
 		            else if (results.source == "JSON (in system message)") {
 		                sourceStr += "JSON (in ";
 		                var path = "MediaWiki:Custom-MapsExtended/" + results.name + ".json";
-		                sourceLink.href = "/wiki/" + path;
+		                sourceLink.href = "/vi/wiki/" + path;
 		                sourceLink.textContent = path;
 		            }
 		            
@@ -3530,7 +3530,7 @@
 		        
 		        if (linkType == 'element') {
 		            var a = document.createElement(a);
-		            a.href = "/wiki/" + encodeURIComponent(name);
+		            a.href = "/vi/wiki/" + encodeURIComponent(name);
 		            a.textContent = "Map:" + name;
 		            return a;
 		        }
@@ -3538,7 +3538,7 @@
 		            return '[[Map:' + name + ']]';
 		        }
 		        else {
-		            return "<a href=\"/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
+		            return "<a href=\"/vi/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
 		        }
 		    };
 		    

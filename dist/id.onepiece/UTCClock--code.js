@@ -1,19 +1,19 @@
 /* Copyright (C) 2012 Lunarity
  *
- * Izin dengan ini diberikan, gratis, kepada siapa pun yang memperoleh salinan perangkat lunak ini
-  * dan file dokumentasi terkait ("Perangkat Lunak"), untuk menangani Perangkat Lunak tanpa
-  * pembatasan, termasuk namun tidak terbatas pada hak untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan,
-  * mendistribusikan, mensublisensikan, dan/atau menjual salinan Perangkat Lunak, dan untuk mengizinkan orang yang kepadanya
-  * Perangkat lunak dilengkapi untuk melakukannya, tunduk pada ketentuan berikut:
-  *
-  * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam semua salinan atau
-  * sebagian besar dari Perangkat Lunak.
-  *
-  * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, TERSURAT MAUPUN TERSIRAT, TERMASUK
-  * NAMUN TIDAK TERBATAS PADA JAMINAN DAPAT DIPERDAGANGKAN, KESESUAIAN UNTUK TUJUAN TERTENTU DAN
-  * TANPA PELANGGARAN. DALAM HAL APAPUN PENULIS ATAU PEMEGANG HAK CIPTA TIDAK BERTANGGUNG JAWAB ATAS KLAIM,
-  * KERUSAKAN ATAU TANGGUNG JAWAB LAINNYA, BAIK DALAM TINDAKAN KONTRAK, KERUGIAN ATAU LAINNYA, YANG TIMBUL DARI,
-  * KELUAR DARI ATAU SEHUBUNGAN DENGAN PERANGKAT LUNAK ATAU PENGGUNAAN ATAU HUBUNGAN LAIN DALAM PERANGKAT LUNAK.
+ * Dengan ini diberikan izin, tanpa biaya, kepada siapa pun yang memperoleh salinan perangkat lunak ini
+ * dan berkas dokumentasi terkait ("Perangkat Lunak"), untuk menggunakan Perangkat Lunak tanpa
+ * pembatasan, termasuk namun tidak terbatas pada hak untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan,
+ * mendistribusikan, memberikan sublisensi, dan/atau menjual salinan Perangkat Lunak, dan untuk mengizinkan orang yang menerima
+ * Perangkat Lunak untuk melakukannya, dengan ketentuan sebagai berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam semua salinan atau
+ * bagian penting dari Perangkat Lunak.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /*jshint curly:false, laxbreak:true, smarttabs:true, jquery:true*/
 /*global mediaWiki */
@@ -34,16 +34,6 @@
 		window.UTCClockConfig
 	);
 	
-	var msg = {
-        purge: 'Menghapus cache server untuk halaman…',
-        purgefail: 'Menghapus cache server gagal',
-        purgesuccess: 'Membersihkan cache server berhasil',
-        nulledit: 'Mengedit halaman…',
-        nulleditfail: 'Pengeditan gagal',
-        nulleditsuccess: 'Pengeditan berhasil',
-        tooltip: 'Bersihkan cache server untuk halaman ini \nShift + Klik: Edit halaman ini tanpa membuat perubahan apa pun'
-    };
-	
 	config.kill = $.noop;
 	
 	// Creating the UTCClock object
@@ -55,7 +45,7 @@
 			interval: 500,
 			fontFamily: "Rubik, Helvetica, Arial, sans-serif",
 			offset: 420,
-			hoverText: "Clock",
+			hoverText: "UTC Clock",
 			render: null
 		} ),
 		interval: null,
@@ -71,8 +61,8 @@
 		init: function( ) { 
 			this.config = $.extend( 
 				{ },
-				config,
-				this.defaults
+				this.defaults,
+				config
 			);
 			
 			if ( typeof this.config.hoverText === "string" ) 
@@ -98,7 +88,7 @@
 		load: function( ) { 
 			const $el = $( "<a>" ).prop( { 
 				href: "?action=purge",
-				title: msg.tooltip
+				title: this.config.hoverText
 			} ).data( "UTCClock", this.config );
 			
 			this.create( $el );
@@ -130,7 +120,7 @@
 				$el;
 			
 			if ( $parent.is( ".tools" ) ) $result.css( { 
-				"netbar-box": "right" ,
+				"float": "right" ,
 				"border-right": "0"
 			} );
 			

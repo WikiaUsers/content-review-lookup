@@ -3,12 +3,13 @@
  *
  * by Flotiliya:
  * - the JS page has been adapted to the current Wiki 20.02.2025
- * - last update 01.03.2025
+ * - last update 06.05.2025
  * - desc: 
  * -    added warning when PageTitle already exists (see: "duplicate-warning")
  * -    the approach to hiding the "duplicate-warning" & "unfilled-warning" warnings has been changed; warnings are deleted when the user enters the data, and not after clicking on the send request button (see: var warning)
  * -    the "addMore" function was completely cut out of the script (not relevant for our Wiki)
  * -    and other minor fixs
+ * -    edited name junior administrator to senior moderator
  *
  */
 /*******************************************************/
@@ -300,7 +301,7 @@
                     '           <option value="Хелпер">Хелпер</option>' +
                     '           <option value="Младший модератор">Младший модератор</option>' +
                     '           <option value="Модератор">Модератор</option>' +
-                    '           <option value="Младший администратор">Младший администратор</option>' +
+                    '           <option value="Старший модератор">Старший модератор</option>' +
                     '           <option value="Администратор">Администратор</option>' +
                     '       </select>' +
                     '       <span class="unfilled-warning">Это поле обязательно для заполнения!</span>' +

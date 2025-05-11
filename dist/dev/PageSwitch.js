@@ -1,20 +1,5 @@
-/* jshint
-undef: true,
-devel: true,
-typed: true,
-jquery: true,
-strict: true,
-eqeqeq: true,
-freeze: true,
-latedef: true,
-shadow: outer,
-varstmt: true,
-quotmark: single,
-esversion: 6,
-futurehostile: true
-*//* global
-importArticles
-*/
+/* jshint undef: true, devel: true, typed: true, jquery: true, strict: true, eqeqeq: true, freeze: true, latedef: true, shadow: outer, varstmt: true, quotmark: single, esversion: 6, futurehostile: true */
+/* global importArticles */
 mw.loader.using('mediawiki.api', ()=>{
 	'use strict';
 	window.dev = window.dev || {};

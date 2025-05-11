@@ -1,4 +1,4 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/***[[Category:Internal pages]]***//* Any JavaScript here will be loaded for all users on every page load. */
 /* Archive edit tab disabling
  * Disables the edit tab on old forum topic pages to stop new people bumping old topics.
  * Page can still be edited by going via the edit tab on the history etc, or by 

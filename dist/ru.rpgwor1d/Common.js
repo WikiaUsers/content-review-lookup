@@ -1,5 +1,7 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 window.tooltips_list = [
+    {   classname: 'skill-infobox',
+        parse: '{'+'{ПодсказкаНавыка|<#name#>|Временный=<#temp#>|Заслуженный=<#earn#>|Утрачен=<#wast#>|Колесо=<#wheel#>}}'},
     {   classname: 'item-infobox',
         parse: '{'+'{ПодсказкаПредмета|<#item#>|Предмет не готов=<#unready#>|Качество=<#quality#>|NAME=<#name#>|SIGN=<#sign#>|IOU=<#iou#>|Счётчик=<#st#>|Левый текст счётчика=<#stl#>|Правый текст счётчика=<#str#>|Улучшение=<#up#>|Текстура=<#txt#>|Качество текстуры=<#qtxt#>}}'},
     {   classname: 'armor-set-infobox',

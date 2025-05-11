@@ -11,7 +11,7 @@
     window.SeeMoreActivityButtonLoaded = true;
 
     // Funktion zum Hinzufügen des Stylesheets
-    var STYLESHEET_CLASS = "hsw-moreactivitybutton-stylesheet";
+    var STYLESHEET_CLASS = "uwe-moreactivitybutton-stylesheet";
     function addStylesheetToHead(href) {
         $("head").append("<link rel='stylesheet' href='"+href+"' type='text/css' class='"+STYLESHEET_CLASS+"'>");
     }

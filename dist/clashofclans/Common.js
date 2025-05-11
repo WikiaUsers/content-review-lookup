@@ -72,10 +72,10 @@
     ];
     
     UserTagsJS.modules.metafilter = {
-        sysop:           ['bureaucrat'],
-        'content-moderator': ['bureaucrat', 'sysop'],
-        threadmoderator: ['bureaucrat', 'sysop'],
-        rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
+        sysop:           ['bureaucrat', 'imageeditor'],
+        'content-moderator': ['bureaucrat', 'sysop', 'imageeditor'],
+        threadmoderator: ['bureaucrat', 'sysop', 'imageeditor'],
+        rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'imageeditor'],
         inactive:        ['retiredstaff']
     };
     
@@ -86,6 +86,7 @@
     
     UserTagsJS.modules.custom = {
         'FaceBound': ['imageeditor', 'retiredstaff'],
+        'GearCoolDude': ['imageeditor'],
         
         'Tonkaty': ['retiredstaff'],
         'GorillaMan': ['retiredstaff'],

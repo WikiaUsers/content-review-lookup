@@ -63,6 +63,5 @@ function setPageHeading(msg, param) {
 }
 
 function setFirstHeading(newTitle) {
-	const pageTitleElement = document.querySelector('#firstHeading');
-	pageTitleElement.replaceChildren(document.createTextNode(newTitle));
+	$('#firstHeading').html(newTitle);
 }

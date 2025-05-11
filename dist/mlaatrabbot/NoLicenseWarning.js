@@ -1,4 +1,4 @@
-/**
+/***[[Category:Internal pages]]***//**
  * NoLicenseWarning
  * Shows banner notification and rejects uploading is user didn't select license
  *

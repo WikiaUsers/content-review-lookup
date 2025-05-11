@@ -9,3 +9,14 @@ window.MassEditConfig = {
     type: "append"
   }
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    const icon = document.querySelector('.community-navigation .search-toggle');
+    const searchBox = document.querySelector('.community-navigation .fandom-sticky-header__search');
+
+    if (icon && searchBox) {
+        icon.addEventListener('click', function () {
+            searchBox.style.display = (searchBox.style.display === 'none' || searchBox.style.display === '') ? 'block' : 'none';
+        });
+    }
+});

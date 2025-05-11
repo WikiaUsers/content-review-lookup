@@ -95,8 +95,8 @@ $(function ($) {
     var jqRefSpec = $('.ref-spec');
     jqRefSpec.each(function (_i, el) {
         var jqBase = $(el).prev();
-        var sBase = jqBase.find('a').html();
+        var sBase = jqBase.find('a').text();
         jqBase.find('a').html(sBase.slice(0, -1) + ', ' + el.innerHTML + ']');
-        el.remove();
+        el.remove()
     });
 });

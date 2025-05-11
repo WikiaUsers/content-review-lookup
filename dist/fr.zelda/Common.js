@@ -127,8 +127,25 @@ mw.hook( 'wikipage.content' ).add( sousTitreH1 );
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:Countdown/code.js',   /* compte à rebours */
-        'u:dev:UserTags/code.js',    /* permet l'ajout de rôles / modification de noms de rôles pour les membres */
-        'u:dev:PurgeButton/code.js', /* ajout de l'option "rafraîchir" à une page */
+        'u:dev:Countdown/code.js',
+        'u:dev:UserTags/code.js',
+        'u:dev:PurgeButton/code.js'
     ]
+});
+
+/* BANNIERE */
+mw.loader.using('mediawiki.util').then(function () {
+  if (
+    true && // All content pages
+    !document.getElementById('moved-banner')   // Prevent duplicate
+  ) {
+    var banner = document.createElement('div');
+    banner.id = 'moved-banner';
+    banner.style.cssText = 'background: #003344; color: white; padding: 12px 20px; text-align: center; font-size: 16px; font-weight: bold; z-index: 9999;';
+    banner.innerHTML = '⚠️ Ce wiki a <strong>déménagé</strong> ! Retrouvez-nous ici 👉 <a href="https://fr.zeldawiki.wiki/wiki/Zelda_Wiki" style="color:#ffd76f; text-decoration:underline;">Zelda Wiki</a>';
+
+    // Insert the banner above the page content
+    var insertPoint = document.getElementById('WikiaBar') || document.querySelector('#mw-content-text') || document.body;
+    insertPoint.parentNode.insertBefore(banner, insertPoint);
+  }
 });
