@@ -4,7 +4,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data }
-		usermonth: 'User of the Month',
+		usermonth: { u:'User of the Month', order: -1/0 },
 		discord: 'Discord Moderator',
 		assistant: 'Assistant'
 	}
@@ -12,8 +12,8 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'PinkPugPrincess': ['assistant'],
+    'SpongeTron_D': ['discord']
     'WoofWoofGam3r': ['discord']
-    'ItzSpongeBob_1999': ['usermonth']
 };
 
 UserTagsJS.modules.inactive = 30;

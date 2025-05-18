@@ -1,20 +1,30 @@
+/*
+ *	→ Adds a level input box to Pokémon stat tables (via #stat-controls-container).
+ *	→ Recalculates stat ranges (min/max values) based on the chosen level input box.
+ *	→ Works on both:
+ *	↳	→ Pages with <tabber>.
+ *	↳	→ Pages without <tabbers>.
+ *	→ Re-initializes when a tab is clicked.
+ *	→ Automatically skips if the container isn't found in the current context.
+ *	→ Applies a visual flash to stat values when level changes (green/red).
+ */
+
 $(function () {
-  function getVisibleContext() {
-    return $(".tabber__panel:visible, .wds-tab__content:visible").first();
+  function insertControls($container) {
+    const controls = `
+      <div id="stat-controls" style="margin-top:1em;">
+        <label for="pokemon-level">Level: </label>
+        <input type="number" id="pokemon-level" class="pokemon-level-input" placeholder="100" value="100" min="1" max="100">
+      </div>
+    `;
+    $container.html(controls);
   }
 
-  function init() {
-    var $context = getVisibleContext();
-    if (!$context.length) return;
+  function setupStatLogic($context) {
+    const $level = $context.find("#pokemon-level");
+    if (!$level.length) return;
 
-    var controls = '<div id="stat-controls" style="margin-top:1em;">' +
-      '<label for="pokemon-level">Level: </label>' +
-      '<input type="number" id="pokemon-level" class="pokemon-level-input" placeholder="100" value="100" min="1" max="100">' +
-      '</div>';
-    $context.find("#stat-controls-container").html(controls);
-
-    var $level = $context.find("#pokemon-level"),
-        prevLevel = parseInt($level.val(), 10) || 100;
+    let prevLevel = parseInt($level.val(), 10) || 100;
 
     function calcHP(base, level, iv, ev) {
       return Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
@@ -33,52 +43,61 @@ $(function () {
     }
 
     function recalcStats() {
-      var lvl = parseInt($level.val(), 10) || 100;
+      let lvl = parseInt($level.val(), 10) || 100;
       if (lvl > 100) { $level.val(100); lvl = 100; }
       lvl = Math.max(1, lvl);
       $context.find("#stat_range_level").text(lvl);
 
-      if (lvl > prevLevel) {
-        flashStats("flash-green");
-      } else if (lvl < prevLevel) {
-        flashStats("flash-red");
-      }
-
+      if (lvl > prevLevel) flashStats("flash-green");
+      else if (lvl < prevLevel) flashStats("flash-red");
       prevLevel = lvl;
 
-      var minIV = 0, minEV = 0, minNature = 0.9;
-      var maxIV = 31, maxEV = 252, maxNature = 1.1;
+      const minIV = 0, minEV = 0, minNature = 0.9;
+      const maxIV = 31, maxEV = 252, maxNature = 1.1;
 
-      var baseHP = parseInt($context.find("#hp_base").text(), 10),
-          baseAtk = parseInt($context.find("#atk_base").text(), 10),
-          baseDef = parseInt($context.find("#def_base").text(), 10),
-          baseSpa = parseInt($context.find("#spa_base").text(), 10),
-          baseSpd = parseInt($context.find("#spd_base").text(), 10),
-          baseSpe = parseInt($context.find("#spe_base").text(), 10);
+      function get(stat) {
+        return parseInt($context.find(`#${stat}_base`).text(), 10);
+      }
 
-      $context.find("#hp_min").text(calcHP(baseHP, lvl, minIV, minEV));
-      $context.find("#hp_max").text(calcHP(baseHP, lvl, maxIV, maxEV));
-      $context.find("#atk_min").text(calcStat(baseAtk, lvl, minIV, minEV, minNature));
-      $context.find("#atk_max").text(calcStat(baseAtk, lvl, maxIV, maxEV, maxNature));
-      $context.find("#def_min").text(calcStat(baseDef, lvl, minIV, minEV, minNature));
-      $context.find("#def_max").text(calcStat(baseDef, lvl, maxIV, maxEV, maxNature));
-      $context.find("#spa_min").text(calcStat(baseSpa, lvl, minIV, minEV, minNature));
-      $context.find("#spa_max").text(calcStat(baseSpa, lvl, maxIV, maxEV, maxNature));
-      $context.find("#spd_min").text(calcStat(baseSpd, lvl, minIV, minEV, minNature));
-      $context.find("#spd_max").text(calcStat(baseSpd, lvl, maxIV, maxEV, maxNature));
-      $context.find("#spe_min").text(calcStat(baseSpe, lvl, minIV, minEV, minNature));
-      $context.find("#spe_max").text(calcStat(baseSpe, lvl, maxIV, maxEV, maxNature));
+      $context.find("#hp_min").text(calcHP(get("hp"), lvl, minIV, minEV));
+      $context.find("#hp_max").text(calcHP(get("hp"), lvl, maxIV, maxEV));
+      $context.find("#atk_min").text(calcStat(get("atk"), lvl, minIV, minEV, minNature));
+      $context.find("#atk_max").text(calcStat(get("atk"), lvl, maxIV, maxEV, maxNature));
+      $context.find("#def_min").text(calcStat(get("def"), lvl, minIV, minEV, minNature));
+      $context.find("#def_max").text(calcStat(get("def"), lvl, maxIV, maxEV, maxNature));
+      $context.find("#spa_min").text(calcStat(get("spa"), lvl, minIV, minEV, minNature));
+      $context.find("#spa_max").text(calcStat(get("spa"), lvl, maxIV, maxEV, maxNature));
+      $context.find("#spd_min").text(calcStat(get("spd"), lvl, minIV, minEV, minNature));
+      $context.find("#spd_max").text(calcStat(get("spd"), lvl, maxIV, maxEV, maxNature));
+      $context.find("#spe_min").text(calcStat(get("spe"), lvl, minIV, minEV, minNature));
+      $context.find("#spe_max").text(calcStat(get("spe"), lvl, maxIV, maxEV, maxNature));
     }
 
     $level.on("input", recalcStats);
     recalcStats();
   }
 
-  // Initial run
-  init();
+  function initIn($context) {
+    const $container = $context.find("#stat-controls-container");
+    if (!$container.length) return;
+    insertControls($container);
+    setupStatLogic($context);
+  }
 
-  // Detect tab change
+  // Run once for the regular page
+  initIn($(document));
+
+  // And once for every visible tab panel
+  $(".tabber__panel:visible, .wds-tab__content:visible").each(function () {
+    initIn($(this));
+  });
+
+  // Re-init on tab click
   $(document).on("click", ".wds-tabs__tab", function () {
-    setTimeout(init, 50);
+    setTimeout(() => {
+      $(".tabber__panel:visible, .wds-tab__content:visible").each(function () {
+        initIn($(this));
+      });
+    }, 50);
   });
 });

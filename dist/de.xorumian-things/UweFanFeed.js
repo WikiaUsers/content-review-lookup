@@ -1,120 +1,131 @@
 document.addEventListener("DOMContentLoaded", function() {
     var container = document.querySelector(".resizable-container");
 
-    var newDiv = document.createElement("div");
-    newDiv.innerHTML = `
-        <div id="mixed-content-footer" class="mcf-en" data-number-of-wiki-articles="8" data-number-of-ns-articles="0">
-            <div class="mcf-wrapper">
-                <div class="mcf-content" style="display: block;">
-                    <h2 class="mcf-header">Fan Feed</h2>
-                    <div class="mcf-mosaic">
-                        <div class="mcf-column">
-                            <div class="mcf-card mcf-card-wiki-articles">
-                                <header class="mcf-card-wiki-articles__header">
-                                    <span class="mcf-card-wiki-articles__header-text">More Xorum Wiki</span>
-                                </header>
-                                <ul class="mcf-card-wiki-articles__list">
-                                    <li class="mcf-card-wiki-articles__item">
-                                        <a href="https://xorumian-things.fandom.com/de/wiki/Kategorie:Hauptcharaktere" class="mcf-card-wiki-articles__item-link" data-tracking="more-wiki-0" title="Hauptcharaktere">
-                                            <span class="mcf-card-wiki-articles__circle">1</span>
-                                            <span class="mcf-card-wiki-articles__title">Hauptcharaktere</span>
-                                        </a>
-                                    </li>
-                                    <li class="mcf-card-wiki-articles__item">
-                                        <a href="https://xorumian-things.fandom.com/de/wiki/Kategorie:Nebencharaktere" class="mcf-card-wiki-articles__item-link" data-tracking="more-wiki-1" title="Nebencharaktere">
-                                            <span class="mcf-card-wiki-articles__circle">2</span>
-                                            <span class="mcf-card-wiki-articles__title">Nebencharaktere</span>
-                                        </a>
-                                    </li>
-                                    <li class="mcf-card-wiki-articles__item">
-                                        <a href="https://xorumian-things.fandom.com/de/wiki/Kategorie:Hintergrundcharaktere" class="mcf-card-wiki-articles__item-link" data-tracking="more-wiki-2" title="Hintergrundcharaktere">
-                                            <span class="mcf-card-wiki-articles__circle">3</span>
-                                            <span class="mcf-card-wiki-articles__title">Hintergrundcharaktere</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Zovin" class=" mcf-card mcf-card-article" data-tracking="footer-card-1-2,wiki-article,footer" data-li-type="wiki" data-item-id="509_84" title="Zovin">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/0/0b/Zovin.png/revision/latest?cb=20240714130000&amp;path-prefix=de" loading="lazy" alt="">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Zovin</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Heinrych" class=" mcf-card mcf-card-article" data-tracking="footer-card-1-3,wiki-article,footer" data-li-type="wiki" data-item-id="2233_18186" title="Heinrych">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest?cb=20241007193623&amp;path-prefix=de" loading="lazy" alt="">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Heinrych</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="mcf-column">
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Luq" class=" mcf-card mcf-card-article" data-tracking="footer-card-2-1,wiki-article,footer" data-li-type="wiki" data-item-id="2575_81949" title="Luq">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/3/38/Itslgd.png/revision/latest/scale-to-width-down/1000?cb=20241207175816&amp;path-prefix=de" loading="lazy" alt="">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Luq</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Qara" class=" mcf-card mcf-card-article" data-tracking="footer-card-2-2,wiki-article,footer" data-li-type="wiki" data-item-id="2575_457319" title="Qara">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/0/04/Qara.png/revision/latest/scale-to-width-down/1000?cb=20241227182332&amp;path-prefix=de" loading="lazy" alt="">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Qara</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Atrae" class=" mcf-card mcf-card-article" data-tracking="footer-card-2-3,wiki-article,footer" data-li-type="wiki" data-item-id="2233_64786" title="Atrae">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/1/11/Atrae.png/revision/latest/scale-to-width-down/1000?cb=20241207204943&amp;path-prefix=de" loading="lazy" alt="">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Atrae</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="mcf-column">
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-things.fandom.com/de/wiki/Luna" class=" mcf-card mcf-card-article" data-tracking="footer-card-3-1,wiki-article,footer" data-li-type="wiki" data-item-id="2575_524345" title="Luna">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/1/13/Luna.png/revision/latest/scale-to-width-down/1000?cb=20241208195552&amp;path-prefix=de" loading="lazy" alt="">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Luna</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                	    </span>
-                                    </a>
-                                </div>
-                                <div class="mcf-card-article__link">
-                                    <a href="https://xorumian-things.fandom.com/de/wiki/Rolfin" class=" mcf-card mcf-card-article" data-tracking="footer-card-3-2,wiki-article,footer" data-li-type="wiki" data-item-id="2233_5903" title="Rolfin">
-                                        <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/6/63/Rolfin.png/revision/latest?cb=20241215162139&amp;path-prefix=de" loading="lazy" alt="">
-                                        <span class="mcf-card-article__wrapper has-thumbnail">
-                                            <span class="mcf-card-article__title">Rolfin</span>
-                                            <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="mcf-card-article__link">
-                                    <a href="https://xorumian-things.fandom.com/de/wiki/Gorior" class=" mcf-card mcf-card-article" data-tracking="footer-card-3-3,wiki-article,footer" data-li-type="wiki" data-item-id="2233_922444" title="Gorior">
-                                        <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-things/images/b/b5/Gorior.png/revision/latest/scale-to-width-down/1000?cb=20241103184643&amp;path-prefix=de" loading="lazy" alt="">
-                                        <span class="mcf-card-article__wrapper has-thumbnail">
-                                            <span class="mcf-card-article__title">Gorior</span>
-                                            <span class="mcf-card-article__subtitle">Xorum Wiki</span>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    `;
-    container.appendChild(newDiv);
+    var footerDiv = document.createElement("div");
+    footerDiv.id = "mixed-content-footer";
+    footerDiv.className = "mcf-en";
+    footerDiv.dataset.numberOfWikiArticles = "8";
+    footerDiv.dataset.numberOfNsArticles = "0";
+
+    var wrapperDiv = document.createElement("div");
+    wrapperDiv.className = "mcf-wrapper";
+
+    var contentDiv = document.createElement("div");
+    contentDiv.className = "mcf-content";
+    contentDiv.style.display = "block";
+
+    var header = document.createElement("h2");
+    header.className = "mcf-header";
+    header.textContent = "Xorum Feed";
+
+    var mosaicDiv = document.createElement("div");
+    mosaicDiv.className = "mcf-mosaic";
+    
+    var categories = [
+        { href: "https://xorumian-things.fandom.com/de/wiki/Category:Hauptcharaktere", title: "Hauptcharaktere" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Category:Nebencharaktere", title: "Nebencharaktere" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Category:Hintergrundcharaktere", title: "Hintergrundcharaktere" }
+    ];
+
+    var columnDiv1 = document.createElement("div");
+    columnDiv1.className = "mcf-column";
+
+    var wikiCardDiv = document.createElement("div");
+    wikiCardDiv.className = "mcf-card mcf-card-wiki-articles";
+
+    var wikiHeader = document.createElement("header");
+    wikiHeader.className = "mcf-card-wiki-articles__header";
+
+    var headerText = document.createElement("span");
+    headerText.className = "mcf-card-wiki-articles__header-text";
+    headerText.textContent = "More Xorum Wiki";
+
+    wikiHeader.appendChild(headerText);
+    wikiCardDiv.appendChild(wikiHeader);
+
+    var wikiList = document.createElement("ul");
+    wikiList.className = "mcf-card-wiki-articles__list";
+
+    categories.forEach((category, index) => {
+        var listItem = document.createElement("li");
+        listItem.className = "mcf-card-wiki-articles__item";
+
+        var link = document.createElement("a");
+        link.href = category.href;
+        link.className = "mcf-card-wiki-articles__item-link";
+        link.dataset.tracking = `more-wiki-${index}`;
+        link.title = category.title;
+
+        var circleSpan = document.createElement("span");
+        circleSpan.className = "mcf-card-wiki-articles__circle";
+        circleSpan.textContent = index + 1;
+
+        var titleSpan = document.createElement("span");
+        titleSpan.className = "mcf-card-wiki-articles__title";
+        titleSpan.textContent = category.title;
+
+        link.appendChild(circleSpan);
+        link.appendChild(titleSpan);
+        listItem.appendChild(link);
+        wikiList.appendChild(listItem);
+    });
+
+    wikiCardDiv.appendChild(wikiList);
+    columnDiv1.appendChild(wikiCardDiv);
+    mosaicDiv.appendChild(columnDiv1);
+
+    var articleCards = [
+        { href: "https://xorumian-things.fandom.com/de/wiki/Zovin", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/0/0b/Zovin.png/revision/latest?cb=20240714130000&path-prefix=de", title: "Zovin" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Heinrych", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest?cb=20241007193623&path-prefix=de", title: "Heinrych" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Luq", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/3/38/Itslgd.png/revision/latest/scale-to-width-down/1000?cb=20241207175816&path-prefix=de", title: "Luq" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Qara", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/0/04/Qara.png/revision/latest/scale-to-width-down/1000?cb=20250504181934&path-prefix=de", title: "Qara" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Atrae", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/1/11/Atrae.png/revision/latest/scale-to-width-down/1000?cb=20241207204943&path-prefix=de", title: "Atrae" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Luna", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/1/13/Luna.png/revision/latest/scale-to-width-down/1000?cb=20241208195552&path-prefix=de", title: "Luna" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Rolfin", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/6/63/Rolfin.png/revision/latest/scale-to-width-down/1000?cb=20241215162139&path-prefix=de", title: "Rolfin" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Gorior", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/b/b5/Gorior.png/revision/latest/scale-to-width-down/1000?cb=20241103184643&path-prefix=de", title: "Gorior" }
+    ];
+    
+    var columnDiv2 = document.createElement("div");
+    columnDiv2.className = "mcf-column";
+
+    articleCards.forEach(card => {
+        var cardDiv = document.createElement("div");
+        cardDiv.className = "mcf-card-article__link";
+
+        var link = document.createElement("a");
+        link.href = card.href;
+        link.className = "mcf-card mcf-card-article";
+        link.title = card.title;
+
+        var img = document.createElement("img");
+        img.className = "mcf-card-article__thumbnail";
+        img.src = card.imgSrc;
+        img.loading = "lazy";
+        img.alt = card.title;
+
+        var wrapperSpan = document.createElement("span");
+        wrapperSpan.className = "mcf-card-article__wrapper has-thumbnail";
+
+        var titleSpan = document.createElement("span");
+        titleSpan.className = "mcf-card-article__title";
+        titleSpan.textContent = card.title;
+
+        var subtitleSpan = document.createElement("span");
+        subtitleSpan.className = "mcf-card-article__subtitle";
+        subtitleSpan.textContent = "Xorum Wiki";
+
+        wrapperSpan.appendChild(titleSpan);
+        wrapperSpan.appendChild(subtitleSpan);
+        link.appendChild(img);
+        link.appendChild(wrapperSpan);
+        cardDiv.appendChild(link);
+        columnDiv2.appendChild(cardDiv);
+    });
+
+    mosaicDiv.appendChild(columnDiv2);
+    contentDiv.appendChild(header);
+    contentDiv.appendChild(mosaicDiv);
+    wrapperDiv.appendChild(contentDiv);
+    footerDiv.appendChild(wrapperDiv);
+    container.appendChild(footerDiv);
 });

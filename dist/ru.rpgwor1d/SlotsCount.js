@@ -1,3 +1,4 @@
+
 ;(function () {
   // Функция для выполнения запроса к шаблону и получения результата
   function getTemplateResult(templateString) {
@@ -46,11 +47,13 @@
   // Глобальная переменная для хранения заполненных слотов
   let filledSlots = '';
 
+
   // Основная функция
    function processItemInfoboxes() {
     let totalSquares = 0;
     let slotCounts = {};
-    let hasSlotConflict = false;
+    let maxSlotConflicts = 0;
+    let currentSlotConflicts = 0; // Счетчик текущих конфликтов
     let occupiedSlots = [];
 
     const interchangeableSlots = {
@@ -82,6 +85,14 @@
       40: [35],
     };
 
+      // Определяем максимальное количество конфликтов
+      if (document.getElementById('Закутывание')) {
+          maxSlotConflicts = 4;
+      } else {
+          maxSlotConflicts = 0;
+      }
+
+
     const itemInfoboxes = document.querySelectorAll('span.item-infobox');
 
     // Итерируемся по всем инфобоксам
@@ -98,11 +109,72 @@
 
         return getTemplateResult(templateString)
           .then(templateResult => {
+
+            // Проверка на соответствие критериям для игнорирования слотов
+            const hasActive = templateResult.includes('id_Активные_артефакты');
+            const hasWeight = templateResult.includes('id_Вес');
+            const hasWeight2 = templateResult.includes('id_Вес2');
+            const hasNoPassive = !templateResult.includes('id_Пассивные_артефакты');
+            const hasNoArmor = !templateResult.includes('id_Броня');
+            const passiveActivationPresent = document.getElementById('Пассивная__активация');
+
+            if (passiveActivationPresent && hasActive && hasWeight && hasNoPassive && hasNoArmor) {
+              // Увеличиваем количество квадратиков на 1 (или 2 если есть "Вес2")
+              totalSquares += hasWeight2 ? 2 : 1;
+              return; // Прекращаем обработку слотов для этого инфобокса
+            }
+
             const squaresCount = countSquares(templateResult);
             totalSquares += squaresCount;
 
+            //Проверка на щиты и привязка к слотам
+            const hasShields = templateResult.includes('id_Щиты');
+            const hasArmorSlots = /(armorslot-\d+-end)/.test(templateResult);
+            const bastionPresent = document.getElementById('Бастион');
+            const fillAllSlots = templateResult.includes('Полностью дозанимают все незанятые слоты брони владельца') || templateResult.includes('Полностью дозанимает все незанятые слоты брони владельца');
+
+            if (hasShields && !hasArmorSlots && bastionPresent) {
+
+			for (let i = 12; i <= 13; i++) {
+              const slotText = 'armorslot-' + i + '-end';
+                slotCounts[slotText] = (slotCounts[slotText] || 0) + 1;
+
+                if (slotCounts[slotText] > 1) {
+                  if (interchangeableSlots[i]) {
+                    const altSlots = interchangeableSlots[i];
+                    let conflictResolved = false;
+
+                    for (const altSlotNumber of altSlots) {
+                      const altSlotText = 'armorslot-' + altSlotNumber + '-end';
+
+                      if (!templateResult.includes(altSlotText) && !filledSlots.includes(altSlotText)) {
+                        setSlotOpacity(altSlotNumber, 1);
+                        filledSlots += altSlotText;
+                        conflictResolved = true;
+                        break;
+                      }
+                    }
+
+                    if (!conflictResolved) {
+                      currentSlotConflicts++; // Увеличиваем счетчик конфликтов
+
+                      if (currentSlotConflicts > maxSlotConflicts) {
+                      }
+                    }
+                  } else {
+                    currentSlotConflicts++; // Увеличиваем счетчик конфликтов
+                    if (currentSlotConflicts > maxSlotConflicts) {
+                    }
+                  }
+                }
+                occupiedSlots.push(slotText);
+            }
+			return;
+			}
+
             for (let i = 1; i <= 40; i++) {
               const slotText = 'armorslot-' + i + '-end';
+            if(fillAllSlots) setSlotOpacity(i, 1);
               if (templateResult.includes(slotText)) {
                 slotCounts[slotText] = (slotCounts[slotText] || 0) + 1;
 
@@ -115,21 +187,23 @@
                       const altSlotText = 'armorslot-' + altSlotNumber + '-end';
 
                       if (!templateResult.includes(altSlotText) && !filledSlots.includes(altSlotText)) {
-                        console.log(altSlotText);
-                        console.log(filledSlots);
                         setSlotOpacity(altSlotNumber, 1);
                         filledSlots += altSlotText;
-                        console.log(filledSlots);
                         conflictResolved = true;
                         break;
                       }
                     }
 
                     if (!conflictResolved) {
-                      hasSlotConflict = true;
+                      currentSlotConflicts++; // Увеличиваем счетчик конфликтов
+
+                      if (currentSlotConflicts > maxSlotConflicts) {
+                      }
                     }
                   } else {
-                    hasSlotConflict = true;
+                    currentSlotConflicts++; // Увеличиваем счетчик конфликтов
+                    if (currentSlotConflicts > maxSlotConflicts) {
+                    }
                   }
                 }
                 occupiedSlots.push(slotText);
@@ -144,14 +218,19 @@
       }
     });
 
+	let maxPassive = 3;
+          const PassiveArtsPresent = document.querySelector('div#Демонстративность');
+          if (PassiveArtsPresent) {
+            maxPassive += 2;
+          }
     // После обработки всех инфобоксов
     Promise.all(infoboxPromises)
       .then(() => {
         let squaresString = '';
         for (let i = 0; i < totalSquares; i++) {
-        	if (i < 3) squaresString += '■';
+        	if (i < maxPassive) squaresString += '■';
         }
-        for (let i = totalSquares; i < 3; i++) {
+        for (let i = totalSquares; i < maxPassive; i++) {
           squaresString += '□';
         }
 
@@ -162,7 +241,7 @@
           console.warn('Не найден div с классом passive-arts.');
         }
 
-        if (totalSquares > 3) {
+        if (totalSquares > maxPassive) {
           const slotsErrorDiv = document.querySelector('div.slots-error');
           if (slotsErrorDiv) {
             slotsErrorDiv.textContent = 'Недостаточно слотов пассивных артефактов';
@@ -178,7 +257,7 @@
           }
         }
 
-        if (hasSlotConflict) {
+        if (currentSlotConflicts > maxSlotConflicts) { // Проверяем количество конфликтов
           const armorslotsErrorDiv = document.querySelector('div.armorslots-error');
           if (armorslotsErrorDiv) {
             armorslotsErrorDiv.textContent = 'Конфликт слотов брони';
@@ -187,7 +266,6 @@
           }
         }
 
-        console.log('Занятые слоты:', occupiedSlots);
       });
   }
 
@@ -197,6 +275,5 @@
     // Запускаем основную функцию
     processItemInfoboxes();
   } else {
-    console.log("Скрипт не запущен: на странице нет слов 'Снаряжение' и 'Набор'.");
   }
 }());

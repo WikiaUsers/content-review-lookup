@@ -15,7 +15,7 @@
 	const s_alt = str => `img[alt="${str}"]`;
 	const s_minetipTitle = str => `.invslot-item-image[data-minetip-title="${str}"] img`;
 	const s_invslot_alt = str => `.invslot-item img[alt="${str}"]`;
-	const s_iboxThumbnail_alt = str => `img.pi-image-thumbnail[alt="${str}"]`;
+	const s_iboxThumbnail_alt = str => `.pi-image-thumbnail img[alt^="${str}."]`;//`img.pi-image-thumbnail[alt="${str}"]`;
 	const s_minetipTitleAndText = (title,text,textAttrType='') => `.invslot-item-image[data-minetip-title="${title}"][data-minetip-text${textAttrType}="${text}"] img`;
 	const s_potion_alt = str => `img[alt^="${str} "][alt$=" Potion"]`; // Check if an alt start with potion name and ends in " Potion" - this works like a wilkcard for thier potion's tier (and also lets it work if no tier in the name at all)
 	

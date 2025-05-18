@@ -169,7 +169,7 @@ $(function() {
             '  <b>Damage type:</b><br /><select id="calculator_armor_damage_type" size="1"><option value="physical" selected="selected">Physical</option><option value="fire">Fire</option><option value="earth">Earth</option><option value="energy">Energy</option><option value="ice">Ice</option><option value="holy">Holy</option><option value="death">Death</option><option value="manadrain">Mana Drain</option><option value="lifedrain">Life Drain</option></select>' +
             '  <br /><br />' +
             '  <b>Show items for:</b><br />' +
-            '  <select id="calculator_armor_voc" size="1"><option value="0">All</option><option value="1" selected="selected">Druid</option><option value="2">Knight</option>  <option value="4">Paladin</option><option value="8">Sorcerer</option></select>' +
+            '  <select id="calculator_armor_voc" size="1"><option value="0">All</option><option value="1" selected="selected">Druid</option><option value="2">Knight</option>  <option value="4">Paladin<option value="16">Monk</option></option><option value="8">Sorcerer</option></select>' +
             '  <br /><br />' +
             '  <input type="checkbox" value="1" id="calculator_armor_np" /><label for="calculator_armor_np">Show non <br />protective items</label> ' +
 
@@ -246,7 +246,7 @@ $(function() {
                     x, p, h = $('#calculator_armor_list_' + name).html().replace(/<p>/gi, '').replace(/<\/p>/gi, ''),
                     get_vocation_number = function(t) {
                         t = t.toLowerCase();
-                        return (t.match(/druid/i) ? 1 : 0) + (t.match(/knight/i) ? 2 : 0) + (t.match(/paladin/i) ? 4 : 0) + (t.match(/sorcerer/i) ? 8 : 0);
+                        return (t.match(/druid/i) ? 1 : 0) + (t.match(/knight/i) ? 2 : 0) + (t.match(/paladin/i) ? 4 : 0) + (t.match(/monk/i) ? 16 : 0) + (t.match(/sorcerer/i) ? 8 : 0) ;
                     };
                 while (h.search(/\s\s/) !== -1) {
                     h = h.replace(/\s\s/g, ' ');
@@ -529,6 +529,9 @@ $(function() {
                 }
                 if (d.voc & 4) {
                     voc_lvl.push('paladins');
+                }
+                if (d.voc & 16) {
+                    voc_lvl.push('monks');
                 }
                 if (d.voc & 8) {
                     voc_lvl.push('sorcerers');

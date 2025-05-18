@@ -657,7 +657,8 @@
 			e.preventDefault();
 			mw.loader.using( [
 				'@wikimedia/codex',
-				'mediawiki.util'
+				'mediawiki.util',
+				'mediawiki.user'
 			] ).then( ( require ) => {
 				const Vue = require( 'vue' ),
 					Codex = require( '@wikimedia/codex' ),

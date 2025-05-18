@@ -1,5 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Configuration for dev:Tooltips.js */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+    ]
+});
 
 window.tooltips_config = {
     events: ['CustomEvent'],

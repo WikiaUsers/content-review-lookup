@@ -476,8 +476,8 @@
         buildElementInfos();        // Scan DOM, create info objects and class map
         buildCommandsAndState();    // Parse commands, set initial state, run checks, add links
     }
-
     // --- Global Access ---
+    window.initializeToggler = toggleInit;
 
     /**
      * Global function called by toggler links.

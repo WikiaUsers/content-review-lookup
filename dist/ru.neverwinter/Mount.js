@@ -96,7 +96,7 @@ $(document).ready(function() {
                 marginRight: '5px',
             }),
             $qualitySelect,
-            $('<label>').text('Общий уровень предметов (%): ').css({
+            $('<label>').text('Общее укрепление для скакуна (%): ').css({
                 marginRight: '5px',
             }),
             $bolsterInput

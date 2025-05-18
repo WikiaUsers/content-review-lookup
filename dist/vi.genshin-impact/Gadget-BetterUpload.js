@@ -1,88 +1,219 @@
-$(function() {
+/* jshint
+undef: true,
+devel: true,
+typed: true,
+jquery: true,
+strict: true,
+eqeqeq: true,
+freeze: true,
+latedef: true,
+shadow: outer,
+varstmt: true,
+quotmark: single,
+esversion: 6,
+futurehostile: true
+*//* global
+importArticles
+*/
+mw.hook('dev.CCM.load').add((cmLoader) => {
+	'use strict';
 	(window.dev = window.dev || {}).BetterUpload = window.dev.BetterUpload || {
-		'default': '==Giấy phép==\n{{Fairuse}}'
+		'default': '==Giấy Phép==\n{{Fairuse}}'
 	};
 	
-	// Double load protection
+	// Double load protection and check we're in Special:Upload
 	if (window.dev.BetterUpload._LOADED) { return; }
 	else { window.dev.BetterUpload._LOADED = true; }
 	
-    // Load dependencies and cache
-	var api = new mw.Api();
-	var PRELOAD_BY_NAME = { None: '' };
-	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName']);
-	
+	// Load dependencies and cache
+	let api = new mw.Api(),
+		config = mw.config.values,
+		urlParams = new URLSearchParams(window.location.search),
+		cm,
 	// Main class
-	var betterUpload = {
-		init: function(curr) {
-			// Add custom form submit
-			document.querySelector('.mw-htmlform-submit').value = 'Upload file with preload';
-			document.querySelector('form#mw-upload-form').addEventListener("submit", function (event) {
-			  event.preventDefault();
-			  betterUpload.saveEdit();
-			  betterUpload.attemptUpload();
+	BU = {
+		init: (curr) => {
+			let form = $('#mw-upload-form');
+			// Override form submit
+			form.on('submit', (event)=>{
+				event.preventDefault();
+				let rd = $('#wpRedirectFile'),
+					fn = $('#wpDestFile');
+				if ( rd.length>0 && rd.val().length>0 && fn.val().length>0 ) {
+					let openRD = ()=>{window.open( mw.config.get('wgServer')+mw.util.getUrl('File:'+fn.val())+'?redirect=no', '_self');},
+						rdContent = (window.dev.BetterUpload.redirectFormat||'#redirect [[File:%TARGET%]]').replace(/%TARGET%/, rd.val());
+					api.create('File:'+fn.val(), {recreate: true}, rdContent).then(openRD);
+					api.edit('File:'+fn.val(), ()=>({ text: rdContent, comment: 'Create redirect' })).then(openRD);
+				} else {
+					BU.saveEdit();
+					BU.attemptUpload();
+				}
 			});
-			if (!document.querySelector('.mw-htmlform-field-HTMLTextAreaField')) { // Special render for reupload
+			if (document.querySelector('input#wpUploadDescription') && document.querySelector('label[for="wpUploadDescription"]')) {
+				// Change reupload format
 				document.querySelector('label[for="wpUploadDescription"]').innerHTML = 'Upload summary:';
 				document.querySelector('label[for="wpUploadDescription"]').setAttribute('for', 'wpUploadSummary');
 				document.querySelector('input#wpUploadDescription').setAttribute('name', 'wpUploadSummary');
 				document.querySelector('input#wpUploadDescription').setAttribute('id', 'wpUploadSummary');
-				var tar = document.querySelector('.mw-htmlform-field-HTMLTextField + .mw-htmlform-field-HTMLTextField');
-				var ren = document.createElement('tr');
-				ren.classList.add('mw-htmlform-field-HTMLTextAreaField');
-				ren.innerHTML =
-				'<td class="mw-label">'+
-					'<label for="wpUploadDescription">Nội dung trang:</label>'+
-				'</td>'+
-				'<td class="mw-input">'+
-					'<textarea id="wpUploadDescription" cols="80" rows="8" name="wpUploadDescription" style="font-family: Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace;"></textarea>'+
-				'</td>';
-				tar.parentNode.insertBefore(
-					ren,
-					tar.nextSibling
-				);
+			} else {
+				// Add upload comment field for new uploads
+				let u_comm = $('<tr>', {
+					'class': 'mw-htmlform-field-HTMLTextField',
+					html: [
+						$('<td>', {
+							'class': 'mw-label',
+							html: $('<label>', { 'for': 'wpUploadSummary', text: 'Tóm lược tải lên:' })
+						}),
+						$('<td>', {
+							'class': 'mw-input',
+							html: $('<input>', { 'id': 'wpUploadSummary', name: 'wpUploadSummary', size: '60' })
+						})
+					]
+				});
+				$('.mw-htmlform-field-HTMLTextField:has(#wpDestFile)').after(u_comm);
+			}
+			let def_Val = (curr!==null && curr!==undefined) ? curr : (BU.detectFromDest() || window.dev.BetterUpload.default || '');
+			if (!document.querySelector('.mw-htmlform-field-HTMLTextAreaField')) {
+				// Add page content field for reuploads
+				let p_cont = $('<tr>', {
+					'class': 'mw-htmlform-field-HTMLTextAreaField',
+					html: [
+						$('<td>', {
+							'class': 'mw-label',
+							html: $('<label>', { 'for': 'wpUploadDescription', text: 'Nội dung trang:' })
+						}),
+						$('<td>', {
+							'class': 'mw-input',
+							html: $('<textarea>', {
+								'id': 'wpUploadDescription',
+								name: 'wpUploadDescription',
+								cols: '80',
+								rows: '8',
+								style: 'font-family: Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace;',
+								val: def_Val
+							})
+						})
+					]
+				});
+				$('.mw-htmlform-field-HTMLTextField:has(#wpUploadSummary)').after(p_cont);
+			} else {
+				// Change from summary to page content in new uploads
+				document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Nội dung trang:';
+				document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', BU.renderPreview);
+				document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
+				document.querySelector('textarea#wpUploadDescription').value = def_Val;
 			}
 			
-			// Page default changes
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Nội dung trang:';
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', betterUpload.renderPreview);
-			document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
-			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (window.dev.BetterUpload.default || '');
-			if (document.querySelector('tr.mw-htmlform-field-Licenses')) { document.querySelector('tr.mw-htmlform-field-Licenses').remove(); }
-			if (document.querySelector('p.mw-upload-editlicenses')) { document.querySelector('p.mw-upload-editlicenses').remove(); }
+			// Add quick redirecting option
+			let rdField = $('<tr>', {
+				'class': 'mw-htmlform-field-RedirectSourceField',
+				html: [
+					$('<td>', {
+						'class': 'mw-label',
+						html: $('<label>', { 'for': 'wpRedirectFile', text: 'Đổi hướng đến:' })
+					}),
+					$('<td>', {
+						'class': 'mw-input',
+						html: $('<input>', { 'id': 'wpRedirectFile', name: 'wpRedirectFile', size: '60' })
+					})
+				]
+			});
+			$('#mw-htmlform-source').append(rdField);
 			
-			betterUpload.renderPreview();
-			betterUpload.genPreloads();
+			// Add preview container
+			let pvField = $('<fieldset>', {
+				html: [
+					$('<legend>', { text: 'Xem trước trang' }),
+					$('<div>', { 'id': 'wpPagePreview' })
+				]
+			});
+			$('fieldset:has(>#mw-htmlform-description)').after(pvField);
+			
+			// Remove useless things #wpLicense
+			$(`
+				fieldset:has(>#mw-htmlform-options),
+				tr.mw-htmlform-field-Licenses,
+				.mw-upload-editlicenses
+			`).remove();
+			
+			cmLoader($('#wpUploadDescription'));
+			mw.hook('dev.CCM.ready').add((ccm)=>{
+				cm = ccm;
+				BU.renderPreview();
+				BU.genPreloads();
+				
+				// try to preview every couple seconds
+				let last;
+				setInterval(() => {
+					let newtext = cm.view.state.sliceDoc();
+					if (newtext !== last) {BU.renderPreview();}
+					last = newtext;
+				}, 1000);
+			});
+			
+			// Update "default values" so that the base upload check for leaving the page doesnt have a stroke when nothing actually changed
+			form.data('origtext', form.serialize());
 		},
-		genPreloads: function() {
-			console.log(window.dev.BetterUpload);
-			if (Array.isArray(window.dev.BetterUpload.preloads) && window.dev.BetterUpload.preloads.length>0) {
-				if (document.querySelector('#mw-htmlform-description tbody tr.mw-htmlform-field-HTMLTextAreaField + .wpPreloadRow')) {
-					document.querySelector('#mw-htmlform-description tbody tr.mw-htmlform-field-HTMLTextAreaField + .wpPreloadRow').remove();
+		
+		pushCM: (txt, pos)=>{
+			cm.view.dispatch({
+				changes: {
+					from: pos===null ? 0 : cm.view.state.selection.main.from,
+					to: pos===null ? cm.view.state.doc.length : cm.view.state.selection.main.to,
+					insert: txt
+				},
+				selection: {anchor: cm.view.state.selection.main.from + (pos||0)}
+			});
+			cm.view.focus();
+
+		},
+		
+		// if this file is being uploaded to a specific destination specified in the URL,
+		// iterate through preloads with a specified "pattern" field to attempt to detect one
+		detectFromDest: () => {
+			if (!Array.isArray(window.dev.BetterUpload.preloads) || !urlParams.has('wpDestFile')) return;
+			let matched = window.dev.BetterUpload.preloads.find((preload) => {
+				if (preload.pattern !== null && new RegExp(preload.pattern).test(urlParams.get('wpDestFile').replace(/_/g, ' '))) {
+					return true;
 				}
-				var preloads_row = document.createElement('tr');
-				preloads_row.classList.add('wpPreloadRow');
-				preloads_row.innerHTML = 
-					'<td class="mw-label">'+
-						'<label for="wpPreload">Preload:</label>'+
-					'</td>'+
-					'<td class="mw-input">'+
-						'<select name="wpPreload" id="wpPreload">'+
-							'<option value="None" title="None">Chưa chọn</option>'+
-						'</select>'+
-					'</td>';
-				document.querySelector('#mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField').after(preloads_row);
-				var preloads_list = document.querySelector('#mw-htmlform-description tbody select#wpPreload');
-				var preloadOpts = preloads_list;
-				window.dev.BetterUpload.preloads.forEach(function(setting, num){
+			});
+			if (matched !== null) {
+				return matched.preload;
+			}
+		},
+		
+		genPreloads: () => {
+			if (Array.isArray(window.dev.BetterUpload.preloads) && window.dev.BetterUpload.preloads.length>0) {
+				$('.mw-htmlform-field-Preloads').remove(); // remove any to avoid double-loading
+				let pl_row = $('<tr>', {
+					'class': 'mw-htmlform-field-Preloads',
+					html: [
+						$('<td>', {
+							'class': 'mw-label',
+							html: $('<label>', { 'for': 'wpPreload', text: 'Preload:' })
+						}),
+						$('<td>', {
+							'class': 'mw-input',
+							html: $('<select>', {
+								'id': 'wpPreload',
+								name: 'wpPreload',
+								html: $('<option>', { value: 'None', title: 'None', selected: '', text: 'Chưa chọn' })
+							})
+						})
+					]
+				});
+				$('.mw-htmlform-field-HTMLTextAreaField').after(pl_row);
+				let pl_list = pl_row.find('select').get(0);
+				let pl_opts = pl_list;
+				window.dev.BetterUpload.preloads.forEach((setting, num) => {
 					if (setting._group==='0') {
-						preloadOpts = preloads_list;
+						pl_opts = pl_list;
 					} else if (setting._group) {
-						preloadOpts = document.createElement('optgroup');
-						preloadOpts.setAttribute('label', setting._group);
-						preloads_list.append(preloadOpts);
+						pl_opts = document.createElement('optgroup');
+						pl_opts.setAttribute('label', setting._group);
+						pl_list.append(pl_opts);
 					} else if (setting.name && (setting.preload || setting.header)) {
-						var option = document.createElement('option');
+						let option = document.createElement('option');
 						if (setting.header) {
 							option.setAttribute('disabled', 'disabled');
 							option.style.color = 'GrayText';
@@ -92,131 +223,128 @@ $(function() {
 						}
 						option.innerHTML = setting.description || setting.name;
 						option.setAttribute('numref', num);
-						preloadOpts.append(option);
+						pl_opts.append(option);
 					}
 				});
-				document.querySelector('#mw-htmlform-description tbody select#wpPreload').addEventListener('change', function(event){
-					var num = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
-					var settings = window.dev.BetterUpload.preloads[num];
+				pl_list.addEventListener('change', (event) => {
+					let num = pl_list.selectedOptions[0].getAttribute('numref');
+					let settings = window.dev.BetterUpload.preloads[num];
 					if (settings && settings.preload) {
-						var preload =  settings.preload;
-						document.querySelector('textarea#wpUploadDescription').value=preload;
-						if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow')) {
-							document.querySelector('#mw-htmlform-description tbody .wpFillinRow').remove();
-						}
-						if (settings.fillin && /\$\(1\)\$/.test(preload)) {
-							var fillin_row = document.createElement('tr');
-							fillin_row.classList.add('wpFillinRow');
-							fillin_row.innerHTML = 
-								'<td class="mw-label" style="vertical-align:top">'+
-									'<label for="wpFillin">Values:</label>'+
-								'</td>'+
-								'<td class="mw-input">'+
-									'<select name="wpFillin" id="wpFillin">'+
-										'<option value="None" title="None">Chưa chọn</option>'+
-									'</select>'+
-								'</td>';
-							document.querySelector('#mw-htmlform-description tbody .wpPreloadRow').after(fillin_row);
-							var fillin_list = document.querySelector('#mw-htmlform-description tbody select#wpFillin');
-							var options = fillin_list;
-							settings.fillin.forEach(function(fillin, index){
-								if (fillin._group==='0') {
-									options = fillin_list;
-								} else if (fillin._group) {
-									options = document.createElement('optgroup');
-									options.setAttribute('label', fillin._group);
-									fillin_list.append(options);
+						$('.mw-htmlform-field-PreloadValues').remove();
+						if (settings.fillin && /\$\(1\)\$/.test(settings.preload)) {
+							let plv_row = $('<tr>', {
+								'class': 'mw-htmlform-field-PreloadValues',
+								html: [
+									$('<td>', {
+										'class': 'mw-label',
+										html: $('<label>', { 'for': 'wpPreloadValues', text: 'Values:', style: 'vertical-align: top;' })
+									}),
+									$('<td>', {
+										'class': 'mw-input',
+										html: $('<select>', {
+											'id': 'wpPreloadValues',
+											name: 'wpPreloadValues',
+											html: $('<option>', { value: 'None', title: 'None', selected: '', text: 'Chưa chọn' })
+										})
+									})
+								]
+							});
+							pl_row.after(plv_row);
+							let plv_list = plv_row.find('select').get(0);
+							let plv_opts = plv_list;
+							settings.fillin.forEach((value, index) => {
+								if (value._group==='0') {
+									plv_opts = plv_list;
+								} else if (value._group) {
+									plv_opts = document.createElement('optgroup');
+									plv_opts.setAttribute('label', value._group);
+									plv_list.append(plv_opts);
 								} else {
-									var option = document.createElement('option');
-									var name = fillin.name || fillin.values.join(', ');
-									if (fillin.header) {
+									let option = document.createElement('option');
+									let name = value.name || value.values.join(', ');
+									if (value.header) {
 											option.setAttribute('disabled', 'disabled');
 											option.style.color = 'GrayText';
-									} else if (fillin.preload) {
+									} else if (value.preload) {
 										option.setAttribute('value', name);
 										option.setAttribute('title', name);
 									}
 									option.innerHTML = name;
 									option.setAttribute('numref', index);
-									options.append(option);
+									plv_opts.append(option);
 								}
 							});
-							document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
-								var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
-								var preloadSettings = window.dev.BetterUpload.preloads[preloadNum];
-								var valnum = document.querySelector('#mw-htmlform-description tbody select#wpFillin').selectedOptions[0].getAttribute('numref');
-								var valsettings = preloadSettings.fillin[valnum];
-								var newpreload = preloadSettings.preload;
-								valsettings.values.forEach(function(rep, ind){
-									var regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
+							plv_list.addEventListener('change', (event2) => {
+								let preloadNum = pl_list.selectedOptions[0].getAttribute('numref');
+								let preloadSettings = window.dev.BetterUpload.preloads[preloadNum];
+								let valnum = plv_list.selectedOptions[0].getAttribute('numref');
+								let valsettings = preloadSettings.fillin[valnum];
+								let newpreload = preloadSettings.preload;
+								valsettings.values.forEach((rep, ind) => {
+									let regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
 									if (regex.test(newpreload)) {
 										newpreload = newpreload.replace(regex, rep);
 									}
 								});
-								if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview')) {
-									document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview').remove();
-								}
+								$('#wpPreloadValuePreview').remove();
 								if (valsettings.reference) {
-									var refPreview =  document.createElement('div');
-									refPreview.classList.add('refPreview');
+									let refPreview = $('<div>', { 'id': 'wpPreloadValueRef', name: 'wpPreloadValueRef' });
 									api.get({
 										action: 'parse',
 										text: valsettings.reference,
 										prop: 'text',
 										disablelimitreport: true,
-										contentmodel: 'wikitext'
-									}).then(function(data){
+										contentmodel: 'wikitext',
+										pst: true
+									}).then((data) => {
 										if (data && data.parse && data.parse.text && data.parse.text['*']) {
-											refPreview.innerHTML = data.parse.text['*'];
-											document.querySelector('tr.wpFillinRow .mw-input').append(refPreview);
+											refPreview.html(data.parse.text['*']);
+											$(plv_list).after(refPreview);
 										}
 									});
 								}
-								document.querySelector('textarea#wpUploadDescription').value = newpreload;
-								betterUpload.renderPreview();
+								BU.pushCM(newpreload, null);
+								BU.renderPreview();
 							});
 						}
-						document.querySelector('textarea#wpUploadDescription').value = preload;
-						betterUpload.renderPreview();
+						BU.pushCM(settings.preload, null);
+						BU.renderPreview();
 					} else { alert('Lựa chọn không hợp lệ.'); }
 				});
 			}
 		},
-		renderPreview: function() {
-			var filename = document.querySelector('#wpDestFile').value;
-			var text = document.querySelector('textarea#wpUploadDescription').value;
-			var params = {
+		
+		renderPreview: () => {
+			let filename = document.querySelector('#wpDestFile').value;
+			let text = cm.view.state.sliceDoc();
+			let params = {
 				action: 'parse',
-				text: text,
+				text: text+'__noeditsection__',
 				prop: 'text',
 				disablelimitreport: true,
-				contentmodel: 'wikitext'
+				contentmodel: 'wikitext',
+				pst: true
 			};
 			if (filename.length>0) {
 				params.title = 'File:' + filename;
 			}
-			if (text.length>0) {
-				api.get(params).then(function(data){
-					if (data && data.parse && data.parse.text && data.parse.text['*']) {
-						if (document.querySelector('#pagePreview')) {document.querySelector('#pagePreview').remove();}
-						var preview = document.createElement('tr');
-						document.querySelector('#mw-htmlform-description tbody').append(preview);
-						preview.id = 'pagePreview';
-						preview.innerHTML = '<td colspan="2"><h1>Xem Trước Trang</h1><hr /><div>'+data.parse.text['*']+'</div></td>';
-					}
-				}).fail(console.log);
-			}
+			api.get(params).then((data) => {
+				if (data && data.parse && data.parse.text && data.parse.text['*']) {
+					$('#wpPagePreview').html(data.parse.text['*']);
+				}
+			}).fail(console.log);
 		},
-		saveEdit: function() {
+		
+		saveEdit: () => {
 			if (document.querySelector('input#wpUploadSummary')) {
-				var filename = document.querySelector('#wpDestFile').value;
-				var summary = document.querySelector('input#wpUploadSummary');
-				var params = {
+				let filename = document.querySelector('#wpDestFile').value;
+				let summary = document.querySelector('input#wpUploadSummary');
+				let params = {
 					action: 'edit',
 					title: 'File:'+filename,
 					ignorewarnings: '1',
 					format: 'json',
-					text: document.querySelector('#wpUploadDescription').value,
+					text: cm.view.state.sliceDoc(),
 					recreate: 1,
 					token: mw.user.tokens.get('csrfToken')
 				};
@@ -225,95 +353,145 @@ $(function() {
 				}
 				if (filename && filename.length>0) {
 					api.post(params);
-				} else { alert('Thiếu tập tin hoặc tên tập tin. Không thể lưu nội dung trang.'); }
+				} else { alert('Thiếu tập tin hoặc tên tập tin. Không thể tải lên.'); }
 			} else {return;}
 		},
-		attemptUpload: function() {
-			var filename = document.querySelector('#wpDestFile').value;
-			var file = document.querySelector('#wpUploadFile').files[0];
-			var comment = document.querySelector('input#wpUploadSummary');
-			var params = {
-                token: mw.user.tokens.get('csrfToken'),
-                filename: filename,
-                ignorewarnings: '1',
-                format: 'json',
-                text: document.querySelector('#wpUploadDescription').value
-            };
-            if (comment && comment.value.length>0) {
-            	params.comment = comment.value;
-            }
-			if (file && filename && filename.length>0) {
-				var loadFilePage = function() {
-					window.open(
-						mw.config.get('wgServer')+'/wiki/File:'+encodeURIComponent(filename), // URI encoding required
-						'_self' // load in current tab
-					);
-				};
-				api.upload(file, params).then(loadFilePage, loadFilePage);
-			} else { alert('Thiếu tập tin hoặc tên tập tin. Không thể lưu nội dung trang.'); }
-		},
-	};
-	
-	// Start when API and LIB are loaded
-	mw.loader.using('mediawiki.api').then(function(){
-		// Check we're in Special:Upload
-		if (config.wgCanonicalSpecialPageName == 'Upload') {
-			var titles = [
-				'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
-				'User:'+mw.user.getName()+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
-			];
-			if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
-				titles.push('File:'+document.querySelector('#wpDestFile').value);
+		
+		attemptUpload: () => {
+			let filename = document.querySelector('#wpDestFile').value;
+			let file = document.querySelector('#wpUploadFile').files[0];
+			let comment = document.querySelector('input#wpUploadSummary');
+			let params = {
+				token: mw.user.tokens.get('csrfToken'),
+				filename: filename,
+				ignorewarnings: '1',
+				format: 'json',
+				text: cm.view.state.sliceDoc()
+			};
+			if (comment && comment.value.length>0) {
+				params.comment = comment.value;
 			}
-			api.get({
-				action: 'query',
-				prop: 'revisions',
-				titles: titles,
-				rvprop: 'content',
-				rvslots: '*'
-			}).then(function(data){
-				var page = {user: -1, site: -1, curr: null};
-				Object.keys(data.query.pages).forEach(function(id){
-					if (data.query.pages[id].ns == 8) {
-						page.site = id;
-					} else if (data.query.pages[id].ns == 2 && data.query.pages[id].missing!=="") {
-						page.user = id;
-					} else if (data.query.pages[id].ns == 6 && data.query.pages[id].missing!=="") {
-						page.curr = data.query.pages[id].revisions[0].slots.main['*'];
+			if (file && filename && filename.length>0) {
+				let handleResponse = (a, b) => {
+					let data = (typeof b === 'object' && !Array.isArray(b) && b !== null && (b.error || b.upload)) ? b : a;
+					if (!data) {
+						console.log('a', a);
+						console.log('b', b);
 					}
-				});
-				if (page.user == -1) {
-					window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
-				} else {
-					window.dev.BetterUpload = JSON.parse(data.query.pages[page.user].revisions[0].slots.main['*']);
-				}
-				var setInit = function() {
-					if (/wpForReUpload/.test(window.location.href)) { // Special:Upload?wpForReUpload=1
-						betterUpload.init(page.curr);
-					} else { // Special:Upload
-						betterUpload.init();
+					if (data.error) {
+						console.log('data', data);
+						let cont = document.querySelector('.mw-message-box-error');
+						if (!cont) {
+							let _temp = $('<h2 class="mw-message-box-error-header">Upload Warning</h2><div class="mw-message-box-error mw-message-box"></div>');
+							$('#uploadtext').after(_temp);
+							cont = _temp[1];
+						}
+						cont.innerHTML = (data.error.info && data.error.info.length>0) ? data.error.info : 'Lỗi không xác định.';
+					} else if (data.upload && data.upload.result === 'Success') {
+						let form = $('#mw-upload-form');
+						form.data('origtext', form.serialize()); // So the form isnt annoying when leaving
+						window.open(
+							config.wgServer+mw.util.getUrl('File:'+filename), // URI encoding required
+							'_self' // load in current tab
+						);
+					} else {
+						console.log('data', data);
+						alert('Lỗi không xác định!');
 					}
 				};
-				if (document.querySelector('#wpUploadDescription')) {
-					setInit();
+				api.upload(file, params).then(handleResponse, handleResponse);
+			} else { alert('Thiếu tập tin hoặc tên tập tin. Không thể tải lên.'); }
+		},
+		
+		// Delay until element exists to run function
+		waitFor: function(query, callback, extraDelay) {
+			if ('function' === typeof callback && 'string' === typeof query) {
+				extraDelay = extraDelay || 0;
+				if (document.querySelector(query)) {
+					setTimeout(callback, extraDelay);
 				} else {
 					// set up the mutation observer
-					var observer = new MutationObserver(function (mutations, me) {
-						// mutations is an array of mutations that occurred
-						// me is the MutationObserver instance
-						var targetNode = document.querySelector('#wpUploadDescription');
-						if (targetNode) {
+					let observer = new MutationObserver(function (mutations, me) {
+						if (document.querySelector(query)) {
+							setTimeout(callback, extraDelay);
 							me.disconnect(); // stop observing
-							betterUpload.init();
+							return;
 						}
 					});
+					
 					// start observing
 					observer.observe(document, {
-					  childList: true,
-					  subtree: true
+						childList: true,
+						subtree: true
 					});
 				}
+			}
+		},
+
+	};
+	
+	let titles = [
+		'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
+		'User:'+config.wgUserName+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
+	];
+	if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
+		titles.push('File:'+document.querySelector('#wpDestFile').value); // File to check if doing a reupload
+	}
+	api.get({
+		action: 'query',
+		prop: 'revisions',
+		titles: titles,
+		rvprop: 'content',
+		rvslots: '*'
+	}).then((data) => {
+		let page = {user: -1, site: -1, curr: null};
+		Object.keys(data.query.pages).forEach((id) => {
+			if (data.query.pages[id].ns === 8 && data.query.pages[id].missing!=='') {
+				page.site = id;
+			} else if (data.query.pages[id].ns === 2 && data.query.pages[id].missing!=='') {
+				page.user = id;
+			} else if (data.query.pages[id].ns === 6 && data.query.pages[id].missing!=='') {
+				page.curr = data.query.pages[id].revisions[0].slots.main['*'];
+			}
+		});
+		if (page.user !== -1) {
+			window.dev.BetterUpload = JSON.parse(data.query.pages[page.user].revisions[0].slots.main['*']);
+		} else if (page.site !== -1) {
+			window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
+		}
+		
+		let setInit = () => {
+			if (new URL(location.href).searchParams.has('wpForReUpload')) { // Special:Upload?wpForReUpload=1
+				BU.init(page.curr);
+			} else { // Special:Upload
+				BU.init();
+			}
+		};
+		if (document.querySelector('#wpUploadDescription')) {
+			setInit();
+		} else {
+			// set up the mutation observer
+			let observer = new MutationObserver((_, me) => {
+				if (document.querySelector('#wpUploadDescription')) {
+					me.disconnect(); // stop observing
+					BU.init();
+				}
+			});
+			// start observing
+			observer.observe(document, {
+				childList: true,
+				subtree: true
 			});
 		}
 	});
 });
+
+// Start the process if in the right page
+if (mw.config.values.wgCanonicalSpecialPageName === 'Upload') {
+	mw.loader.using('mediawiki.api').then(()=>{
+		importArticles({
+			type: 'script',
+			articles: [ 'u:dev:MediaWiki:CustomCodeMirror.js' ]
+		});
+	});
+}

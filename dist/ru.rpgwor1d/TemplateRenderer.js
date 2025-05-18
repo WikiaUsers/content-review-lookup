@@ -14,7 +14,8 @@
           text: wikiText,
           contentmodel: 'wikitext',
           format: 'json',
-          uselang: mw.config.get('wgUserLanguage')
+          uselang: mw.config.get('wgUserLanguage'),
+          title: mw.config.get('wgPageName'), // **КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Указываем текущее название страницы**
         },
         dataType: 'json',
         success: function(data) {

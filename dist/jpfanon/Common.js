@@ -206,5 +206,12 @@ function createDivCollapseButtons()
         }
     }
 }
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});
  
 addOnloadHook( createDivCollapseButtons );

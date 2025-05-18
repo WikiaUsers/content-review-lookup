@@ -325,7 +325,58 @@ var possibleTexts = [
 			"What are you saying “Oh” to?",
 			"Hi I'm Wall-nut!",
 			"My subreddit is gonna love this!",
-			"Join Port-a-Card"
+			"Join Port-a-Card!",
+			"Congrats! You got the common splash. If you see this, do nothing!",
+			"Sponsored by Melodie!",
+			"I vant to suck your chlorophyll!",
+			"Sponsored by Melodie!",
+			"JuanCarlos011 is my favorite user!",
+			"I've got a secret you should know!",
+			"Let's come together!",
+			"I'm the giant rat that makes all of the rules!",
+			"Conduct yourself!",
+			"The fog is coming!",
+			"I'm YouTube famous!",
+			"I too consume country!",
+			"What are we? Some kind of Plants vs. Zombies Character Creator Wiki?",
+			"Stand ready for my arrival, user!",
+			"Happy birthday!",
+			"This is true!",
+			"Evaluate the integral: [ \int \frac{x^2}{\sqrt{1 - x^2}} , dx ]",
+			"This wiki can smell you! Take a shower!",
+			"There was supposed to be a splash here but I ate it all!",
+			"I'm leaving you for {{USERNAME}}!",
+			"Chicken Wrangler!",
+			"This makes my pores tingle!",
+			"Literally 1984!",
+			"Tactical Cuke! Incoming!",
+			"When my eyes turn run, RED!",
+			"Feed me pages, father.",
+			"Machine washable!",
+			"Gosh!",
+			"Meow!",
+			"I've lost my magic!",
+			"😏",
+			"My chimera age is 31!",
+			"Yet another horrible creation has appeared before us!",
+			"We have birthed another marvelous creation!",
+			"Ctrl C + Ctrl V!",
+			"Guess that's another month of keeping your loved ones hostage!",
+			"Gooood morning, Neighborville!",
+			"PvZCC is very fun! (Note: Opinion)",
+			"[insert concerning splash text here]",
+			"[insert hilarious splash text here]",
+			"Join the Mole Uprising!",
+			"Boooooooring!",
+			"What if it was Zombies vs. Plants instead?",
+			"Join the Dummy Cult!",
+			"I can see your house from here!",
+			"Your house can see me from here!",
+			"Your comment will soon be deleted.",
+			"Wanted: {{USERNAME}}",
+			"If symptoms persist, insult your doctor!",
+			"The Gluttonous Beast is waiting for you!",
+			"Dude."
         ],
         weight: 50000000
     },
@@ -424,7 +475,6 @@ var possibleTexts = [
     {
         texts: [
             "💚 DsFanboy!",
-            "💜 Dartichoke Enjoyer!",
             "🩵 Fun Animator!",
             "🩵 Miss Pembroke!",
             "🩵 AsterWasTaken!",
@@ -437,7 +487,6 @@ var possibleTexts = [
     {
         texts: [
             "💚💚 DsFanboy!",
-            "💜💜 Dartichoke Enjoyer!",
             "🩵🩵 Fun Animator!",
             "🩵🩵 Miss Pembroke!",
             "🩵🩵 AsterWasTaken!",
@@ -450,7 +499,6 @@ var possibleTexts = [
     {
         texts: [
             "💚💚💚 DsFanboy!",
-            "💜💜💜 Dartichoke Enjoyer!",
             "🩵🩵🩵 Fun Animator!",
             "🩵🩵🩵 Miss Pembroke!",
             "🩵🩵🩵 AsterWasTaken!",
@@ -509,7 +557,12 @@ var possibleTexts = [
             "🏆 Shiitake!",  
             "🏆 Present Presenter Zombie!",       
             "🏆 Celerestial!",
-            "🏆 Zombotanist!"
+            "🏆 Zombotanist!",
+            "🏆 Elemental Ivyry!",
+            "🏆 Buckwheat!",
+            "🏆 Roman Empire!",
+            "🏆 Treasure Pirate Zombie!",
+            "🏆 Spider Queen Imp!"
         ],
         weight: 350000
     },
@@ -563,7 +616,12 @@ var possibleTexts = [
             "🏆🏆 Shiitake!",  
             "🏆🏆 Present Presenter Zombie!",       
             "🏆🏆 Celerestial!",
-            "🏆🏆 Zombotanist!"
+            "🏆🏆 Zombotanist!",
+            "🏆🏆 Elemental Ivyry!",
+            "🏆🏆 Buckwheat!",
+            "🏆🏆 Roman Empire!",
+            "🏆🏆 Treasure Pirate Zombie!",
+            "🏆🏆 Spider Queen Imp!"
         ],
         weight: 200000
     },
@@ -617,7 +675,12 @@ var possibleTexts = [
             "🏆🏆🏆 Shiitake!",  
             "🏆🏆🏆 Present Presenter Zombie!",       
             "🏆🏆🏆 Celerestial!",
-            "🏆🏆🏆 Zombotanist!"
+            "🏆🏆🏆 Zombotanist!",
+            "🏆🏆🏆 Elemental Ivyry!",
+            "🏆🏆🏆 Buckwheat!",
+            "🏆🏆🏆 Roman Empire!",
+            "🏆🏆🏆 Treasure Pirate Zombie!",
+            "🏆🏆🏆 Spider Queen Imp!"
         ],
         weight: 5000
     },
@@ -627,7 +690,8 @@ var possibleTexts = [
             "👻💚 PunjiChocoBerry!",
             "👻💚 WiLdCaRd2048!",
             "👻🩵 Nuttin' to see here!",
-            "👻💜 Creepes."
+            "👻💜 Creepes.",
+            "👻💜 Dartichoke Enjoyer!"
         ],
         weight: 45000
     },
@@ -637,7 +701,8 @@ var possibleTexts = [
             "👻💚💚 PunjiChocoBerry!",
             "👻💚💚 WiLdCaRd2048!",
             "👻🩵🩵 Nuttin' to see here!",
-            "👻💜💜 Creepes."
+            "👻💜💜 Creepes.",
+            "👻💜💜 Dartichoke Enjoyer!"
         ],
         weight: 30000
     },
@@ -647,7 +712,8 @@ var possibleTexts = [
             "👻💚💚💚 PunjiChocoBerry!",
             "👻💚💚💚 WiLdCaRd2048!",
             "👻🩵🩵🩵 Nuttin' to see here!",
-            "👻💜💜💜 Creepes."
+            "👻💜💜💜 Creepes.",
+            "👻💜💜💜 Dartichoke Enjoyer!"
         ],
         weight: 1500
     },

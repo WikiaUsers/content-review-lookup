@@ -1,33 +1,32 @@
-/*The Middlerooms Wiki Custom Javascripts*/
-/* To administrators, please ask permission from Khai before adding/changing javascripts. */
+/*==== The Middlerooms Wiki Custom Javascripts ====*/
+/*==== For use on the Middlerooms Wiki ====*/
+/*=== Organized by Khai ===*/
+/*== To administrators, please ask permission from Khai before adding/changing javascripts. == */
 
-// Template CSS core javascript [with permission: https://backrooms.fandom.com/wiki/Message_Wall:Pexy0?threadId=4400000000000149433#4400000000000732499] 
-
-// credits goes to Pexy, original Javascript can be found here: https://backrooms.fandom.com/wiki/MediaWiki:Common.js
-
-// this javascript was borrowed with permission from pexy
-
+// T:CSS dependency, borrowed with permission
 mw.hook("wikipage.content").add(function () {
 	$("span.import-css").each(function () {
-		mw.util.addCSS($(this).attr("data-css"));
+		var css = mw.util.addCSS($(this).attr("data-css"));
+		$(css.ownerNode).addClass("import-css").attr("data-css-hash", $("span.import-css").attr("data-css-hash")).attr("data-from", $("span.import-css").attr("data-from"));
 	});
 });
 
-/*MessageBlock Configuration*/
+// == Configurations ==
+// MessageBlock Configuration 
 window.MessageBlock = {
 	title : 'You have been blocked',
 	message : 'You have received a $2 block. The reason is $1. This is an automated message to the administrator that blocked you.',
 	autocheck : false
 };
-/*LockOldComments Configuration*/
+// LockOldComments Configuration
 window.lockOldComments = (window.lockOldComments || {}); // Configuration Core
 
 window.lockOldComments.limit = 120; // Amount of time to lock comment
 
 
-/*EditRootPageText Configuration*/
+// EditRootPageText Configuration 
 window.EditRootPageText = "Edit main page";
-/* Imports (configurations should stay above this)*/
+// == Imports (configurations should stay above this) ==
 importArticles({
 	type: 'script',
 	articles: [
@@ -36,7 +35,8 @@ importArticles({
 	]
 });
 
-
+// == BlockNotifs Configs ==
+// UserBlockNotification Confirguration
 /*************
  * credit to Vastmine1029 go check out his userpage on dev.fandom.com
  * (modified the text)
@@ -84,7 +84,7 @@ mw.loader.using('mediawiki.api', function() {
 });
 // </nowiki>
 
-// UserTags
+// == UserTags Configuration ==
 window.UserTagsJS = {
 	modules: {},
 	tags: {

@@ -1,21 +1,8 @@
-/*
-	jshint
-	undef: true,
-	devel: true,
-	typed: true,
-	jquery: true,
-	strict: true,
-	eqeqeq: true,
-	freeze: true,
-	latedef: true,
-	shadow: outer,
-	varstmt: true,
-	quotmark: single,
-	esversion: 6,
-	futurehostile: true
-*/
-(function(){
+/* jshint undef: true, devel: true, typed: true, jquery: true, strict: true, eqeqeq: true, freeze: true, latedef: true, shadow: outer, varstmt: true, quotmark: single, esversion: 6, futurehostile: true */
+/* global importArticle */
+mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 	'use strict';
+	
 	// Double load protection and default settings loadout
 	(window.dev = window.dev || {}).betterTopNav = window.dev.betterTopNav || {
 		resize: true,
@@ -25,12 +12,16 @@
 	if (window.dev.betterTopNav._LOADED) {return;}
 	else {window.dev.betterTopNav._LOADED=true;}
 	
-	let config = mw.config.values;
-	let api;
+	// Load styles
+	importArticle({ type:'style', article: 'u:dev:MediaWiki:BetterTopNav.css' });
 	
-	// Improvementse
-	let bTN = {
-		expandSearch: function() {
+	let
+	api = new mw.Api(),
+	config = mw.config.values,
+	
+	// Main class
+	bTN = {
+		expandSearch: () => {
 			let sett = isNaN(window.dev.betterTopNav.results) ? 25 : window.dev.betterTopNav.results;
 			switch (typeof sett) {
 				case 'boolean':
@@ -45,16 +36,7 @@
 					}
 					break;
 			}
-			mw.util.addCSS(`
-				.search-app__suggestions-box:has(>ul:only-child>.search-app__suggestion, >.search-app__no-suggestions:only-child):not(.search-app__custom-suggestions) {
-					display: none;
-				}
-				.search-app__suggestions-box {
-					resize: vertical;
-					overflow: hidden auto;
-					max-height: 80vh
-				}
-			`);
+			document.body.classList.add('dev-betterTopNav-expandSearch');
 			
 			// Check what string is more relevant to `s` between `s1` and `s2`
 			// `false` means `s1` is more relevant
@@ -114,7 +96,7 @@
 							api.get(opts).then((_d)=>{
 								if (_d.query && _d.query.search && _d.query.search.length>0) {
 									let pages = _d.query.search.map((e)=>e); // make a copy of search results as we may need to add redirect data
-									let listResults = function() {
+									let listResults = () => {
 										let list = nav.is(':has(.search-app__suggestions-list)') ? nav.find('.search-app__suggestions-list') :
 												nav.find('.search-app__suggestions-box').append($('<ul>', {'class':'search-app__suggestions-list'}));
 										pages.sort((a, b)=>relevance(searchquery,
@@ -236,64 +218,8 @@
 		},
 		
 		// Allow resizing the search bar to the left
-		resizeSearch: function() {
-			mw.util.addCSS(`
-				.fandom-community-header__local-navigation .wds-tabs {
-					display: flex;
-				}
-				.search-container {
-					width: unset;
-					max-width: unset !important;
-					min-width: 0 !important;
-					> .search-app__wrapper {
-						margin-left: 26px;
-						padding: 0;
-						transition-duration: 0s !important;
-					}
-				}
-				@media only screen and (max-width: 1023px) {
-					.fandom-sticky-header .search-container .search-app__wrapper:not(.search-app--expanded) {
-						width: 0 !important;
-						overflow: hidden;
-					}
-					.fandom-sticky-header .search-container .search-app__wrapper.search-app--expanded {
-						position: fixed;
-						top: 100%;
-						textarea {
-							border-radius: 0;
-							border-top: 0;
-							margin: 0;
-						}
-					}
-				}
-				.search-resizer {
-					width: 20px;
-					height: 24px;
-					background: transparent;
-					position: absolute;
-					left: -20px;
-					bottom: calc(50% - 12.5px);
-					cursor: e-resize;
-					user-select: none;
-					border: 1px solid;
-					border-right: 0;
-					border-radius: 30% 0 0 30%;
-					padding-left: 1px;
-					text-align: center;
-					> svg {
-						transform: rotate(90deg);
-					}
-				}
-				.global-top-navigation .search-resizer {
-					color: var(--fandom-search-color);
-					border-color: var(--fandom-search-color);
-				}
-				.fandom-sticky-header .search-resizer {
-					color: var(--theme-sticky-nav-text-color);
-					border-color: var(--fandom-communitybar-search-color);
-					background: var(--theme-sticky-nav-background-color);
-				}
-			`);
+		resizeSearch: () => {
+			document.body.classList.add('dev-betterTopNav-resizeSearch');
 			$('.search-app__wrapper').append('<div class="search-resizer"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></div>');
 			let resizer = $('.search-container .search-resizer'),
 				resizable, startX, startWidth;
@@ -331,29 +257,12 @@
 		},
 		
 		// Customization of sticky nav tools
-		customizeTools: function() {
+		customizeTools: () => {
 			let sett = window.dev.betterTopNav.tools;
-			mw.util.addCSS(`
-				@media only screen and (min-width: 1023px) {
-					:is(#global-top-navigation, #community-navigation) > .wds-dropdown {
-						display: none;
-					}
-					:is(#global-top-navigation, #community-navigation) > .wds-dropdown:has(li:not(.wiki-tool-in-dropdown)) {
-						display: block;
-					}
-				}
-				@media only screen and (max-width: 1023px) {
-					:is(#global-top-navigation, #community-navigation) .wiki-tools > .wds-button.is-hidden-on-smaller-breakpoints {
-						display: none;
-					}
-					:is(#global-top-navigation, #community-navigation) .wiki-tools .wiki-tool-in-dropdown {
-						display: revert;
-					}
-				}
-			`);
+			document.body.classList.add('dev-betterTopNav-customizeTools');
 			if (!Array.isArray(sett)||sett.length===0) {
 				sett = [];
-				$('#community-navigation #wiki-tools-menu li > a').each(function(_, el){
+				$('#community-navigation #wiki-tools-menu li > a').each((_, el) => {
 					let item = {
 						'track': el.getAttribute('data-tracking-label'),
 						'class': el.getAttribute('class'),
@@ -375,7 +284,7 @@
 			if (Array.isArray(sett) && sett.length>0) {
 				$('#community-navigation .wiki-tools > a').remove();
 				$('#community-navigation .wiki-tools #wiki-tools-menu li').remove();
-				sett.forEach(function(item){
+				sett.forEach((item) => {
 					if (item.link && item.text) {
 						$('#community-navigation .wiki-tools > .wds-dropdown ul').append(
 							$('<li>', {'class':(item.icon ? 'wiki-tool-in-dropdown' : '')}).append(
@@ -412,46 +321,14 @@
 			}
 		},
 		
-		hoverUserMenu: function () {
-			mw.util.addCSS(`
-				.global-action__user > button {
-					margin: 15px 0;
-				}
-				.global-action__user .navigation-tab {
-					animation: none !important;
-					border-radius: 15px 0 15px 15px;
-					height: auto;
-					padding: 15px 5px;
-					right: 100%;
-					z-index: 2;
-					pointer-events: all !important;
-					border: 1px solid var(--theme-border-color);
-					> div > :not(ul) {
-						display: none;
-					}
-				}
-				body:has( .global-action__user:is(:hover, .wds-is-active),
-				.global-action__user #user-tab__content:hover) .global-action__user .navigation-tab {
-					right: 0 !important;
-				}
-				.btn-noflash #global-top-navigation .global-action__user {
-					.global-action__user__tab-container {
-						display: none !important;
-					}
-					.global-action__button {
-						background: transparent !important;
-					}
-					.wds-avatar__image {
-						border-color: var(--fandom-top-nav-icon-color) !important;
-					}
-				}
-			`);
+		hoverUserMenu: () => {
+			document.body.classList.add('dev-betterTopNav-hoverUserMenu');
 			// Inert attr makes the popup uninteractable, thx fandom, very cool
-			let observer = new MutationObserver(function(){ $('#global-top-navigation .global-action__user .navigation-tab').removeAttr('inert'); });
+			let observer = new MutationObserver(() => { $('#global-top-navigation .global-action__user .navigation-tab').removeAttr('inert'); });
 			observer.observe(document.querySelector('#global-top-navigation .global-action__user'), { attributes: true, subtree: true });
 			
 			// Render custom list once the init process is done
-			bTN.waitFor('#global-top-navigation .global-action__user .navigation-tab ul>li>a', function() {
+			bTN.waitFor('#global-top-navigation .global-action__user .navigation-tab ul>li>a', () => {
 				
 				// Avoid initalization defaults
 				$('#global-top-navigation .global-action__user > button').click();
@@ -467,7 +344,7 @@
 					{href: 'https://auth.fandom.com/logout?source=mw&redirect='+encodeURIComponent(window.location.href), text: mw.msg('fd-global-navigation-user-sign-out')}
 				];
 				if (Array.isArray(window.dev.betterTopNav.hovermenu) && window.dev.betterTopNav.hovermenu.length>0) { links = links.concat(window.dev.betterTopNav.hovermenu); }
-				links.forEach(function(link){
+				links.forEach((link) => {
 					$('#global-top-navigation .global-action__user .navigation-tab ul').append(
 						$('<li>', {'class':'user-tab__list-item'}).append(
 							$('<a>', link)
@@ -480,14 +357,14 @@
 		},
 		
 		// Delay until element exists to run function
-		waitFor: function(query, callback, extraDelay) {
+		waitFor: (query, callback, extraDelay) => {
 			if ('function' === typeof callback && 'string' === typeof query) {
 				extraDelay = extraDelay || 0;
 				if (document.querySelector(query)) {
 					setTimeout(callback, extraDelay);
 				} else {
 					// set up the mutation observer
-					let observer = new MutationObserver(function (mutations, me) {
+					let observer = new MutationObserver((mutations, me) => {
 						// mutations is an array of mutations that occurred
 						// me is the MutationObserver instance
 						let targetNode = document.querySelector(query);
@@ -509,23 +386,20 @@
 	};
 	
 	// Load conditions
-	mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], function(){
-		api = new mw.Api();
-		let msgs = [
-			'redirectedfrom',
-			'search-modal-see-all-results',
-			'fd-global-top-navigation-no-search-results',
-			'fd-global-navigation-user-view-profile',
-			'fd-global-navigation-user-message-wall',
-			'mycontributions',
-			'fd-global-navigation-user-my-preferences',
-			'fd-global-navigation-user-sign-out'
-		];
-		api.loadMessagesIfMissing(msgs).then(function() {
-			if (window.dev.betterTopNav.results) { bTN.waitFor('#global-top-navigation .search-app__wrapper input', bTN.expandSearch); }
-			if (window.dev.betterTopNav.resize) { bTN.waitFor('.search-app__wrapper', bTN.resizeSearch); }
-			if (window.dev.betterTopNav.tools) { bTN.waitFor('.search-app__wrapper', bTN.customizeTools); }
-			if (window.dev.betterTopNav.hovermenu) { bTN.waitFor('#global-top-navigation .global-action__user > button', bTN.hoverUserMenu); }
-		});
+	const msgs = [
+		'redirectedfrom',
+		'search-modal-see-all-results',
+		'fd-global-top-navigation-no-search-results',
+		'fd-global-navigation-user-view-profile',
+		'fd-global-navigation-user-message-wall',
+		'mycontributions',
+		'fd-global-navigation-user-my-preferences',
+		'fd-global-navigation-user-sign-out'
+	];
+	api.loadMessagesIfMissing(msgs).then(() => {
+		if (window.dev.betterTopNav.results) { bTN.waitFor('#global-top-navigation .search-app__wrapper input', bTN.expandSearch); }
+		if (window.dev.betterTopNav.resize) { bTN.waitFor('.search-app__wrapper', bTN.resizeSearch); }
+		if (window.dev.betterTopNav.tools) { bTN.waitFor('.search-app__wrapper', bTN.customizeTools); }
+		if (window.dev.betterTopNav.hovermenu) { bTN.waitFor('#global-top-navigation .global-action__user > button', bTN.hoverUserMenu); }
 	});
-})();
+});

@@ -67,6 +67,9 @@ importArticles({
         'MediaWiki:AdminDashboardImportJS.js',//在管理员面板添加一个importjs的快捷入口
         'u:dev:MediaWiki:ReferencePopups/code.js',//注释提示框
         'u:dev:MediaWiki:DivEditor/code.js',//div编辑器
+        'u:dev:MediaWiki:CopyCodeButton.js',//便于复制代码
+        'u:dev:MediaWiki:View_Source/code.js',//直接查看源代码而不需要点击编辑
+        'u:dev:MediaWiki:EditConflictAlert/code.js',//冲突警告，不需要点击保存更改就会提示存在同时编辑冲突
        // 'u:dev:MediaWiki:GadgetsStateToggler.js'//启用小工具快速切换，但是不小心被fandom毙了
     ]
 });

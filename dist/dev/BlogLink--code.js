@@ -46,8 +46,10 @@
           ID_DROPDOWN: "bl-"
         }),
         TARGETS: Object.freeze({
-          NAVIGATION_TAB: "#user-tab__content .navigation-tab",
-          NAVIGATION_UL: "#user-tab__content .UserTab-module_linksList__wFmbu",
+          NAVIGATION_TAB: ":is(#user-tab__content, #user-panel__content) " +
+            ".navigation-tab",
+          NAVIGATION_UL: ":is(#user-tab__content, #user-panel__content) " +
+            ".UserTab-module_linksList__wFmbu",
           NAVIGATION_CONTRIBS: "a[data-label='account.contributions']",
           DEFAULT_PLACEMENT: "a[data-label='account.preferences']"
         }),

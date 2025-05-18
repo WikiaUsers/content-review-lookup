@@ -440,7 +440,7 @@ $(function() {
 										action: 'query',
 										list: 'recentchanges',
 										rcshow: '!patrolled',
-										rcprop: 'ids|title|user|timestamp',
+										rcprop: 'ids|title|user|timestamp|loginfo',
 										format: 'json',
 										formatversion: '2',
 										rclimit: 'max'
@@ -487,23 +487,52 @@ $(function() {
 													revs,
 													function (rev, left, total) {
 														if (rev!==undefined) {
-															details.prepend('<div>('+(total-left)+'/'+total+') Patrolled '+
-																'<a href="'+mw.util.getUrl(config.wgFormattedNamespaces[2]+':'+rev.user)+'">'+rev.user+'</a>\'s edit to '+
-																'<a href="'+mw.util.getUrl(rev.title)+'">'+rev.title+'</a> on '+
-																(new Date(rev.timestamp)).toLocaleString({}, {
-																	hour12:false,
-																	month:'2-digit',
-																	day:'2-digit',
-																	hour:'2-digit',
-																	minute:'2-digit'
-																})+
-																' (<a class="quickDiff" '+
-																	'newid="'+rev.revid+'" '+
-																	'oldid="'+rev.old_revid+'" '+
-																	'data-target-page="'+rev.title.replace(/"/g, '&quot;')+'" '+
-																	'data-url="'+mw.util.getUrl(rev.title, {diff: rev.revid, oldid: rev.old_revid})+'" '+
-																'>view</a>)'+
-															'</div>');
+															let date = new Date(rev.timestamp);
+															let v = $('<a>', {
+																'class': 'tPatrol-view',
+																'data-target-page': rev.title,
+																text: 'diff'
+															});
+															let p = $('<div>', {
+																'class': 'tPatrol-patrolled',
+																'data-target-page': rev.title,
+																'data-mw-ts': 
+																	date.getUTCFullYear().toString()+
+																	(date.getUTCMonth()+1).toString().padStart(2,0)+
+																	date.getUTCDate().toString().padStart(2,0)+
+																	date.getUTCHours().toString().padStart(2,0)+
+																	date.getUTCMinutes().toString().padStart(2,0)+
+																	date.getUTCSeconds().toString().padStart(2,0),
+																html: [
+																	'(', (total-left), '/', total, ') Patrolled ',
+																	$('<a>', {href: mw.util.getUrl(config.wgFormattedNamespaces[2]+':'+rev.user), text: rev.user}),
+																	'\'s edit to ',
+																	$('<a>', {href: mw.util.getUrl(rev.title), text: rev.title}), ' on ',
+																	date.toLocaleString({}, {
+																		hour12: false,
+																		month: '2-digit',
+																		day: '2-digit',
+																		hour: '2-digit',
+																		minute: '2-digit',
+																		year: '2-digit',
+																	}),
+																]
+															});
+															if (rev.logtype==='upload') {
+																p.attr({ 'data-mw-logaction': 'upload/'+rev.logaction });
+															} else {
+																v.attr({ 
+																	href:
+																		mw.util.getUrl(rev.title)+'?'+
+																		new URLSearchParams({
+																			'diff': rev.revid,
+																			'oldid': rev.old_revid || 0
+																		}).toString()
+																});
+															}
+															p.append(' (', v, ')');
+															details.prepend(p);
+															$(window).trigger('loadDiffs'); // make the auto-loader run a lap
 														}
 														if (left === 0) { 
 															details.prepend('<div class="success">Finished patrolling!</div>');
@@ -731,7 +760,6 @@ $(function() {
 								'</tr>';
 						}
 					}
-					//console.log(diff);
 					quickview.show();
 					quickview.setContent(
 						'<div id="content" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+
@@ -1055,7 +1083,9 @@ $(function() {
 					link.classList.add('quickDiff');
 					link.setAttribute('tabindex', '0');
 					
-					if (diff.parentElement.nodeName === 'SPAN') {
+					if (diff.classList.contains('.tPatrol-view')) {
+						diff.replaceWith(link);
+					} else if (diff.parentElement.nodeName === 'SPAN') {
 						let span = document.createElement('span');
 						span.appendChild(link);
 						diff.closest('span:not([class])').after(span);
@@ -1068,13 +1098,15 @@ $(function() {
 					}
 				}
 			},
-			cond = 
-				'.mw-changeslist-diff:not(.quickDiffLoaded), '+
-				'.mw-changeslist-groupdiff:not(.quickDiffLoaded), '+
-				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded), '+
-				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff), '+
-				'.page__main .diff a:is(#differences-nextlink, #differences-prevlink):not(.quickDiffLoaded, .quickDiff), '+
-				'[data-mw-logaction^="upload"]:has(.mw-usertoollinks + :not(.new)) .mw-enhanced-rc-time:not(.quickDiffLoaded)';
+			cond = [
+				'.mw-changeslist-diff:not(.quickDiffLoaded)',
+				'.mw-changeslist-groupdiff:not(.quickDiffLoaded)',
+				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded)',
+				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff)',
+				'.page__main .diff a:is(#differences-nextlink, #differences-prevlink):not(.quickDiffLoaded, .quickDiff)',
+				'[data-mw-logaction^="upload"]:has(.mw-usertoollinks + :not(.new)) .mw-enhanced-rc-time:not(.quickDiffLoaded)',
+				'.tPatrol-patrolled:not(.quickDiffLoaded) .tPatrol-view',
+			].join(',');
 			if (els) {
 				els.filter(cond).each(function(_, el){ addLink(el); }); // run on elements that are the target
 				els.find(cond).each(function(_, el){ addLink(el); }); // run on wrappers that contain the target
@@ -1087,7 +1119,7 @@ $(function() {
 		
 		// Patrol inputted revid if user can patrol
 		patrolRevisions: function(revisions, step) {
-			if (can.patrol && revisions.length>0 && revisions[0].revid && tokens.patrol.length>2) {
+			if (can.patrol && revisions.length>0 && revisions[0].rcid && tokens.patrol.length>2) {
 				let r = structuredClone(revisions);
 				let patrol = function() {
 					let cr = r.shift();
@@ -1277,7 +1309,7 @@ $(function() {
 			$(query).each(handler);
 			
 			// lazy load
-			$(window).on('DOMContentLoaded.betterDiff load.betterDiff resize.betterDiff scroll.betterDiff', function(){
+			$(window).on('DOMContentLoaded.betterDiff load.betterDiff resize.betterDiff scroll.betterDiff loadDiffs.betterDiff', function(){
 				$(query).each(handler);
 			});
 		},

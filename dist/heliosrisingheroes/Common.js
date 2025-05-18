@@ -12,3 +12,6 @@ window.AddRailModule = [
 	{prepend: true},
     'Template:RailModule',
 ];
+
+/* Back To Top Button */
+window.BackToTopModern = true;

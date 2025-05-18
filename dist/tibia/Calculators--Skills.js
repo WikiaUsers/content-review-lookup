@@ -11,6 +11,7 @@ $(function () {
   var magic_vocs = {
     knight: 3,
     paladin: 1.4,
+    monk: 1.25,
     druid: 1.1,
     sorcerer: 1.1,
     none: 4,
@@ -18,6 +19,7 @@ $(function () {
   var melee_vocs = {
     knight: 1.1,
     paladin: 1.2,
+    monk:1.4,
     druid: 1.8,
     sorcerer: 2,
     none: 2,
@@ -25,6 +27,7 @@ $(function () {
   var fist_vocs = {
     knight: 1.1,
     paladin: 1.2,
+    monk: 1.1,
     druid: 1.5,
     sorcerer: 1.5,
     none: 1.5,
@@ -32,6 +35,7 @@ $(function () {
   var dist_vocs = {
     knight: 1.4,
     paladin: 1.1,
+    monk: 1.5,
     druid: 1.8,
     sorcerer: 2,
     none: 2,
@@ -39,6 +43,7 @@ $(function () {
   var shield_vocs = {
     knight: 1.1,
     paladin: 1.1,
+    monk: 1.15,
     druid: 1.5,
     sorcerer: 1.5,
     none: 1.5,
@@ -157,6 +162,8 @@ $(function () {
         vocation = 'knight';
       } else if ($('select[name=calculator_ew_voc_skill]').val() == 'magicpaladin') {
         vocation = 'paladin';
+      } else if ($('select[name=calculator_ew_voc_skill]').val() == 'magicmonk') {
+        vocation = 'monk';
       }
       var curr_pts = current_pts(level, vocation, pct_left, 'magic');
       var mode = $('input[name=ew_mode]:checked').val();
@@ -271,7 +278,7 @@ $(function () {
         '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:55px;"></label>' +
         '<label>Loyalty bonus:' +
         '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step="5" style="width:45px;">%</label><br/><br/>' +
-        '<label>Vocation and Skill: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Mage: Magic Level</option><option value="meleeknight">Knight: Melee/Shielding</option><option value="magicknight">Knight: Magic Level</option><option value="distancepaladin">Paladin: Distance/Shielding</option><option value="magicpaladin">Paladin: Magic Level</option></select><label><br/><br/>' +
+        '<label>Vocation and Skill: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Mage: Magic Level</option><option value="meleeknight">Knight: Melee/Shielding</option><option value="magicknight">Knight: Magic Level</option><option value="distancepaladin">Paladin: Distance/Shielding</option><option value="magicpaladin">Paladin: Magic Level</option><option value="magicmonk">Monk: Magic Level</option><option value="fistmonk">Monk: Fist</option><option value="meleemonk">Monk: Melee</option></select><label><br/><br/>' +
         '<label>Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select></label><br/><br/>' +
         '<label><input type="checkbox" name="ew_event" value="double">Double Skills Event</label>' +
         '<label><input type="checkbox" name="ew_dummy" value="expert">House Dummy</label><br/><br/>' +
@@ -496,6 +503,7 @@ $(function () {
         '<label><input type="radio" value="sorcerer" name="calculator_rs_vocation">Sorcerer</label>' +
         '<label><input type="radio" value="knight" name="calculator_rs_vocation">Knight</label>' +
         '<label><input type="radio" value="paladin" name="calculator_rs_vocation">Paladin</label>' +
+        '<label><input type="radio" value="monk" name="calculator_rs_vocation">Monk</label>' +
         '<label><input type="radio" value="none" name="calculator_rs_vocation">None</label>' +
         '<br/><br/>' +
         '<label>Loyalty points:' +

@@ -1,5 +1,6 @@
 importScriptPage('Countdown/code.js', 'dev');
 importScriptPage('ShowHide/code.js', 'dev');
+importScriptPage('PreloadFileDescription/code.js', 'dev');
 /* Spoiler Alert */
 SpoilerAlert = {
     isSpoiler: function () {
@@ -118,3 +119,6 @@ window.NoLicenseWarning = {
         'rollback'
     ]
 };
+
+// PreloadFileDescription
+PFD_template = '{{Image\n| media = \n| source = \n| artist = \n| note = \n| type = \n}}';
