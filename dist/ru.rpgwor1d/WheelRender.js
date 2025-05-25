@@ -92,7 +92,7 @@
     let amountElement = document.getElementById('skillsAmount');
     if (amountElement) {
       let amount = parseInt(amountElement.textContent, 10);
-      if (!isNaN(amount) && amount >= 2 && amount <= 7) {
+      if (!isNaN(amount) && amount >= 2 && amount <= 20) {
         return amount;
       }
     }
@@ -116,12 +116,12 @@
           lessSkillsButton.style.opacity = (maxSelectedSkills === 2) ? '0' : '1';
       }
       if (moreSkillsButton) {
-          moreSkillsButton.style.opacity = (maxSelectedSkills === 7) ? '0' : '1';
+          moreSkillsButton.style.opacity = (maxSelectedSkills === 20) ? '0' : '1';
       }
   }
 
   function increaseSkillsAmount() {
-    if (maxSelectedSkills < 7) {
+    if (maxSelectedSkills < 20) {
       maxSelectedSkills++;
       updateSkillsAmountDisplay();
     }

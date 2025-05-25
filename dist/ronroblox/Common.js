@@ -71,28 +71,28 @@ UserTagsJS.modules.metafilter = {
 UserTagsJS.modules.custom = {
 	/* 'user': [groups] */
 	// Current Staff: Edited.
-	'RabbyDevs': ['head-of-wiki','content-moderator'],
+	'Standoffiish': ['head-of-wiki','content-moderator'],
 	'3meraldKv': ['founder'],
 	// Retired Wiki Staff
 	'imnotacan': ['retired-staff'],
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
-	'GrayshaValor': ['ron-senior-administrator'],
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Contributors
 	'Dxrknrg': ['Wiki-Contributor'],
-	'PanzerundLancer': ['Wiki-Contributor'],
 	'Sdvwevfregv': ['Wiki-Contributor'],
-	'Eddy0725': ['Wiki-Contributor'],
 	'SuperGlitchyTheo': ['Wiki-Contributor'],
 	'Quinncm': ['Wiki-Contributor'],
-	'Spaniard123': ['Wiki-Contributor'],
 	'Zarc.0724': ['Wiki-Contributor'],
 	'Mysþıc': ['Wiki-Contributor'],
 	'Antiverta': ['Wiki-Contributor'],
 	'StrikerFRFX': ['Wiki-Contributor'],
 	'DankM3m3l0rd2': ['Wiki-Contributor'],
+    'Supetendo': ['Wiki-Contributor'],
+    'MP1Player': ['Wiki-Contributor'],
+    'K3raii19': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
+	'Slabx3': ['Guide-Maker'],
 	'PorlaiWasTaken': ['Guide-Maker'],
 	'Piteous': ['Guide-Maker'],
 	'BungoJungo': ['Guide-Maker'],

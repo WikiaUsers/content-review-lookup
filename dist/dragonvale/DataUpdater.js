@@ -1,6 +1,81 @@
 ;
+mw.loader.load('oojs-ui');
+
 $(document).ready(function () {
- 
+    const durationConfig = {
+        "units": {
+            "day": {
+                "label": "Days",
+                "short": "D",
+                "min": 0,
+                "max": null,
+                "maxlength": 3,
+                "matcher": /(\d+)\s*(?:D(?:AY)?S?)\b/i
+            },
+            "hour": {
+                "label": "Hours",
+                "short": "H",
+                "min": 0,
+                "max": 23,
+                "maxlength": 2,
+                "matcher": /(\d+)\s*(?:H(?:OUR)?S?)\b/i
+            },
+            "minute": {
+                "label": "Minutes",
+                "short": "M",
+                "min": 0,
+                "max": 59,
+                "maxlength": 2,
+                "matcher": /(\d+)\s*(?:M(?:IN(?:UTE)?S?)?)\b/i
+            },
+            "second": {
+                "label": "Seconds",
+                "short": "S",
+                "min": 0,
+                "max": 59,
+                "maxlength": 2,
+                "matcher": /(\d+)\s*(?:S(?:EC(?:OND)?S?)?)\b/i
+            },
+            "millisecond": {
+                "label": "Milliseconds",
+                "short": "MS",
+                "min": 0,
+                "max": 999,
+                "maxlength": 3,
+                "matcher": /(\d+)\s*(?:MS|MILLISECONDS?)\b/i
+            }
+        }
+    };
+
+    function handleDurationOverflow($input) {
+        const $durationDiv = $input.closest('div[data-type="duration"]');
+        const $inputs = $durationDiv.find('input[type="number"]');
+        const currentIndex = $inputs.index($input);
+
+        let value = parseInt($input.val()) || 0;
+        let maxValue = $input.attr('max') !== undefined ? parseFloat($input.attr('max')) : null;
+
+        if (maxValue !== null && value > maxValue) {
+            const overflow = Math.floor(value / (maxValue + 1));
+            const remainder = value % (maxValue + 1);
+
+            if (remainder > 0) {
+                $input.val(remainder);
+                $input.attr('value', remainder);
+            } else {
+                $input.val(null);
+                $input.attr('value', null);
+            }
+
+            if (currentIndex > 0) {
+                const $nextInput = $inputs.eq(currentIndex - 1);
+                const nextValue = parseInt($nextInput.val()) || 0;
+                $nextInput.val(nextValue + overflow);
+
+                handleDurationOverflow($nextInput);
+            }
+        }
+    }
 
     function makeTip(text, tip) {
         var $span = $('<span>', {
@@ -35,7 +110,7 @@ $(document).ready(function () {
                     for (var key in col) {
                         if (col.hasOwnProperty(key)) {
                             if (!existingObject && existingKey && key === "Name" && col[key] == existingKey) {
-                                existingObject = col
+                                existingObject = col;
                             }
                             allFields.add(key);
                         }
@@ -46,13 +121,14 @@ $(document).ready(function () {
                     existingObject = collection[existingKey];
                 }
                 for (var outerKey in collection) {
-                    if (collection.hasOwnProperty(outerKey))
+                    if (collection.hasOwnProperty(outerKey)) {
                         var nestedObject = collection[outerKey];
 
-                    if (typeof nestedObject === 'object' && nestedObject !== null) {
-                        for (var nestedKey in nestedObject) {
-                            if (nestedObject.hasOwnProperty(nestedKey)) {
-                                allFields.add(nestedKey);
+                        if (typeof nestedObject === 'object' && nestedObject !== null) {
+                            for (var nestedKey in nestedObject) {
+                                if (nestedObject.hasOwnProperty(nestedKey)) {
+                                    allFields.add(nestedKey);
+                                }
                             }
                         }
                     }
@@ -74,7 +150,7 @@ $(document).ready(function () {
         allFieldsArray.forEach(function (key) {
             var $fieldBlock = $('<div>', {
                 class: 'field'
-            })
+            });
 
             var field = fieldTypes[key] || {};
             var elementId = key + '-' + subform_key;
@@ -141,7 +217,7 @@ $(document).ready(function () {
             var $labelText = field.tip ? makeTip(fieldName, field.tip) : makeText(fieldName);
 
             if (fieldType !== "checkbox" && fieldType !== "toggle") {
-                $labelText.append(':')
+                $labelText.append(':');
             }
 
             var $label = $('<label>').attr('for', elementId).append($('<b>').append($labelText));
@@ -234,15 +310,93 @@ $(document).ready(function () {
                     required: isRequired
                 });
             } else if (fieldType === 'duration') {
-                var $durationDiv = $('<div>', { 'data-type': 'duration', id: elementId });
-                var $hoursLabel = $('<label>').attr('for', elementId + '_hours').text('Hours:');
-                var $hoursInput = $('<input>', { type: 'number', name: key + '_hours', min: 0 });
-                var $minutesLabel = $('<label>').attr('for', elementId + '_minutes').text('Minutes:');
-                var $minutesInput = $('<input>', { type: 'number', name: key + '_minutes', min: 0, max: 59 });
+                var $durationDiv = $('<div>', { 'data-type': 'duration', id: elementId, class: 'duration-container' });
 
-                $durationDiv.append($hoursLabel, $hoursInput, $minutesLabel, $minutesInput);
+                var clearButton = new OO.ui.ButtonInputWidget({
+                    label: 'Clear',
+                    name: 'durationClear',
+                    id: 'durationClear',
+                    type: 'submit',
+                    classes: ['clear-duration'],
+                    flags: ['destructive']
+                });
+
+                // field.format must be sorted largest to smallest
+                var formatOrder = field.format || ["hour", "minute"];
+                var largestUnitKey = formatOrder[0];
+
+                formatOrder.forEach(function (unitKey) {
+                    var unit = durationConfig.units[unitKey];
+                    if (unit) {
+                        const unitMax = unitKey === largestUnitKey ? null : (unit.max || null);
+
+                        var $unitLabel = $('<label>', {
+                            class: 'duration-label',
+                            for: elementId + '_' + unitKey
+                        }).text(unit.label + ':');
+
+                        var $unitInput = $('<input>', {
+                            type: 'number',
+                            name: key + '_' + unitKey,
+                            id: elementId + '_' + unitKey,
+                            min: unit.min,
+                            max: unitMax,
+                            placeholder: '',
+                            'data-maxlength': unit.maxlength
+                        });
+
+                        if (defaultValue && typeof defaultValue === 'string' && defaultValue.trim() !== '') {
+                            var match = defaultValue.trim().match(unit.matcher);
+                            if (match && match[1]) {
+                                var parsedValue = parseInt(match[1], 10);
+                                if (!isNaN(parsedValue) && parsedValue > 0) {
+                                    $unitInput.val(parsedValue);
+                                    $unitInput.attr('value', parsedValue);
+                                } else {
+                                    $unitInput.val(null);
+                                    $unitInput.attr('value', null);
+                                }
+                            }
+                        }
+
+                        var $wrapper = $('<span>', { class: 'duration-field' }).append($unitLabel, $unitInput);
+                        $durationDiv.append($wrapper);
+                    }
+                });
+
+                for (var i = formatOrder.length - 1; i >= 0; i--) {
+                    var currentUnitKey = formatOrder[i];
+                    var currentUnit = durationConfig.units[currentUnitKey];
+                    var $currentInput = $durationDiv.find(`input[name$="_${currentUnitKey}"]`);
+                    var currentValue = parseInt($currentInput.val()) || 0;
+                    const unitMax = currentUnitKey === largestUnitKey ? null : (currentUnit.max || null);
+
+                    // handleDurationOverflow
+                    if (unitMax !== null && currentValue > unitMax) {
+                        var overflow = Math.floor(currentValue / (unitMax + 1));
+                        var remainder = currentValue % (unitMax + 1);
+
+                        if (remainder > 0){
+                        $currentInput.val(remainder);
+                        $currentInput.attr('value', remainder);
+                        } else {
+                            $currentInput.val(null);
+                            $currentInput.attr('value', null);
+                        }
+
+                        if (i > 0) {
+                            var nextUnitKey = formatOrder[i - 1];
+                            var $nextInput = $durationDiv.find(`input[name$="_${nextUnitKey}"]`);
+                            var nextValue = parseInt($nextInput.val()) || 0;
+
+                            $nextInput.val(nextValue + overflow);
+                            $nextInput.attr('value', nextValue + overflow);
+                        }
+                    }
+                }
+
+                $durationDiv.append($('<span>', { class: 'duration-field' }).append(clearButton.$element));
                 $label = $('<div>').append($label).append($durationDiv);
-
                 $input = $durationDiv;
             } else if (fieldType === 'dropdown' || fieldType === 'rarity' || fieldType === 'currency' || fieldType === 'weather') {
                 if (fieldType === 'rarity') {
@@ -280,13 +434,9 @@ $(document).ready(function () {
                         field.options = field.options.concat(additionalOptions);
 
                         // remove duplicates
-                        var uniqueOptions = [];
-                        for (var k = 0; k < field.options.length; k++) {
-                            if (uniqueOptions.indexOf(field.options[k]) === -1) {
-                                uniqueOptions.push(field.options[k]);
-                            }
-                        }
-                        field.options = uniqueOptions;
+                        field.options = field.options.filter(function (item, pos, self) {
+                            return self.indexOf(item) == pos;
+                        });
                     }
                     else {
                         field.options = game.currencies.treasure;
@@ -301,14 +451,19 @@ $(document).ready(function () {
                         $input.append($('<option>', {
                             value: 'default',
                             text: 'Select a value',
-                            style: "display:none;"
+                            style: "display:none;",
+                            selected: !defaultValue
                         }));
                     } else {
                         //$input.prop("selectedIndex", index); // todo not yet supported
                     }
                 }
 
+                var defaultSelected = false;
                 field.options.forEach(function (option) {
+                    var isSelected = option === defaultValue;
+                    if (isSelected) defaultSelected = true;
+
                     var $option = $('<option>', {
                         value: option,
                         text: option,
@@ -316,6 +471,12 @@ $(document).ready(function () {
                     });
                     $input.append($option);
                 });
+
+                if (field.selected === -1 && !defaultSelected) {
+                    $input.find('option[value="default"]').prop('selected', true);
+                } else if (field.selected === -1 && defaultSelected) {
+                    $input.find('option[value="default"]').prop('selected', false);
+                }
 
             } else if (fieldType === 'multiselect') {
                 var $multiSelectDiv = $('<div>').attr({
@@ -343,7 +504,7 @@ $(document).ready(function () {
                         if (Array.isArray(defaultValue)) {
                             order = defaultValue.indexOf(option) + 1;
                         } else {
-                            order = 1
+                            order = 1;
                         }
                     }
 
@@ -394,18 +555,20 @@ $(document).ready(function () {
                         id: elementId + '-all',
                         value: 'All'
                     });
-                    var $checkmarkTextSpan = $('<span>', { class: 'checkmark-text' }).text('All');
-                    var $checkmarkIcon = $('<span>', { class: 'checkmark' });
+                    var $checkmarkTextSpanAll = $('<span>', { class: 'checkmark-text' }).text('All');
+                    var $checkmarkIconAll = $('<span>', { class: 'checkmark' });
 
-                    $toggleAllLabel.append($toggleAllCheckbox, $checkmarkIcon, $checkmarkTextSpan);
+                    $toggleAllLabel.append($toggleAllCheckbox, $checkmarkIconAll, $checkmarkTextSpanAll);
                     $multiSelectDiv.append($toggleAllLabel).append('<br>');
                 }
 
                 field.options.forEach(function (elementType) {
-                    elementOptions[elementType] = [];
-                    game.elements[elementType].forEach(function (option) {
-                        elementOptions[elementType].push(option);
-                    });
+                    if (game.elements[elementType]) {
+                        elementOptions[elementType] = [];
+                        game.elements[elementType].forEach(function (option) {
+                            elementOptions[elementType].push(option);
+                        });
+                    }
                 });
 
                 for (var elementOption in elementOptions) {
@@ -427,7 +590,7 @@ $(document).ready(function () {
                             if (Array.isArray(defaultValue)) {
                                 order = defaultValue.indexOf(option) + 1;
                             } else {
-                                order = 1
+                                order = 1;
                             }
                         }
 
@@ -499,17 +662,39 @@ $(document).ready(function () {
                     });
 
                     function initSelect($elm) {
+                        var isMultiSelect = true;
                         console.log('initing select2', elementId);
                         $elm.select2({
                             data: formattedData,
-                            placeholder: 'Select parent(s)',
+                            placeholder: field.placeholder || 'Select option(s)',
                             allowClear: true,
                             //width: width,
                             // minimumResultsForSearch: minimumResultsForSearch,
                             multiple: true,
                             maximumSelectionLength: field.maxSelect || undefined
                         });
+
+                        if (defaultValue !== null && defaultValue !== undefined) {
+                            var valToSet;
+                            if (isMultiSelect) {
+                                valToSet = Array.isArray(defaultValue) ? defaultValue : [defaultValue];
+                                valToSet = valToSet.filter(function (v) { return v !== null && v !== undefined && v !== ""; });
+                            } else {
+                                valToSet = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
+                            }
+
+                            if (valToSet !== undefined && (!Array.isArray(valToSet) || valToSet.length > 0)) {
+                                $elm.val(valToSet).trigger('change.select2');
+                            } else if (isMultiSelect && Array.isArray(valToSet) && valToSet.length === 0) {
+                                $elm.val([]).trigger('change.select2'); 
+                            } else if (!isMultiSelect && valToSet === undefined) {
+                                $elm.val(null).trigger('change.select2');
+                            }
+                        } else {
+                            $elm.val(isMultiSelect ? [] : null).trigger('change.select2');
+                        }
                     }
+
 
                     // must be init after added to dom
                     var observer = new MutationObserver(function (mutations, observerInstance) {
@@ -600,9 +785,9 @@ $(document).ready(function () {
             if ($input) {
                 if (fieldType === "toggle" || fieldType === "checkbox") {
                     $fieldBlock.append($input);
-                    $fieldBlock.append($label)
+                    $fieldBlock.append($label);
                 } else {
-                    $fieldBlock.append($label)
+                    $fieldBlock.append($label);
                     $fieldBlock.append($input);
                 }
                 
@@ -617,25 +802,44 @@ $(document).ready(function () {
 
         $subForm.append($formFields);
 
+        if ($formFieldsAdv.children().length > 0) {
+            var $toggleAdv = $('<div>', { 
+                class: 'mw-collapsible mw-collapsed',
+                // id: "mw-customcollapsible-advanced", 
+                'data-collapsetext': "Hide Advanced", 
+                'data-expandtext': "Show Advanced" 
+            }).text("{adv_placeholder}");
 
-        var $toggleAdv = $('<div>', { 
-            class: 'mw-collapsible mw-collapsed',
-            // id: "mw-customcollapsible-advanced", 
-              'data-collapsetext': "Hide Advanced", 
-              'data-expandtext': "Show Advanced" 
-            }).text("{adv}");
+            var collapsibleWikitext = $toggleAdv.prop('outerHTML');
 
-        DataHelpers.render_wikitext($toggleAdv.prop('outerHTML')).then(function(text) {
-            text = text.replace("{adv}", $formFieldsAdv.prop('outerHTML'));
+            var $advPlaceholder = $('<div>').attr('id', 'adv-temp-' + subform_key).hide().append($formFieldsAdv);
+            $subForm.append($advPlaceholder);
 
-            var $result = $('<div>');
-            $result.html(text);
+            ModuleInject.renderWikitext(collapsibleWikitext).then(function (renderedHtml) {
+                renderedHtml = renderedHtml.replace("{adv_placeholder}", '<div class="advanced-content-wrapper"></div>');
+                var $renderedCollapsible = $(renderedHtml);
+                $renderedCollapsible.find('.advanced-content-wrapper').append($formFieldsAdv);
+                $advPlaceholder.remove();
+                $subForm.append($renderedCollapsible);
+            }).catch(function (err) {
+                console.error("Error rendering wikitext for advanced section:", err);
+                $advPlaceholder.remove();
+                $subForm.append($formFieldsAdv);
+            });
+        }
 
-            $subForm.append($result);
-        });
 
-        // $subForm.append($('<span>', { class: 'mw-customtoggle-advanced' }).text("Advanced"));
+      //     ModuleInject.renderWikitext($toggleAdv.prop('outerHTML')).then(function(text) {
+      //         text = text.replace("{adv}", $formFieldsAdv.prop('outerHTML'));
 
+      //         var $result = $('<div>');
+      //         $result.html(text);
+
+      //         $subForm.append($result);
+      //     });
+
+      //     // $subForm.append($('<span>', { class: 'mw-customtoggle-advanced' }).text("Advanced"));
+      // }
 
 
         return $subForm;
@@ -663,7 +867,7 @@ $(document).ready(function () {
 
         var allData = {}
         $.each(formConfig, function (key, config) {
-            var promise = DataHelpers.loadJsonData(api, 'Data:' + key + '.json').then(function (results) {
+            var promise = ModuleInject.loadJsonData(api, 'Data:' + key + '.json').then(function (results) {
                 var data = null;
                 var jsonKey = key.charAt(0).toLowerCase() + key.slice(1);
                 if (results.hasOwnProperty(jsonKey)) {
@@ -703,7 +907,7 @@ $(document).ready(function () {
             });
             tabberHtml += "</tabber>";
 
-            DataHelpers.render_wikitext(tabberHtml).then(function(text) {
+            ModuleInject.renderWikitext(tabberHtml).then(function(text) {
                 $.each(subforms, function (key, $sb) {
                     var placeholder = new RegExp("\\*\\*" + key + "\\*\\*", "g");
                     text = text.replace(placeholder, $sb.prop('outerHTML'));
@@ -714,27 +918,181 @@ $(document).ready(function () {
 
                 $form.append($result);
 
-                $form.append($('<span>', {
-                    id: "wpPreviewWidget",
-                    class: 'oo-ui-widget oo-ui-widget-enabled oo-ui-inputWidget oo-ui-buttonElement oo-ui-buttonElement-framed oo-ui-labelElement oo-ui-buttonInputWidget'
-                }).append($('<input>', {
+                var $submitContainer = $('<div>', { class: 'form-submit-container' });
+                
+                var previewButton = new OO.ui.ButtonInputWidget({
+                    label: 'Preview',
+                    name: 'dragonPreview',
+                    id: 'dragonPreview',
                     type: 'submit',
-                    value: 'Preview',
-                    name: "dragonPreview",
-                    id: "dragonPreview",
-                    class: 'oo-ui-inputWidget-input oo-ui-buttonElement-button'
-                })));
+                    flags: []
+                });
 
-                $form.append($('<span>', {
-                    id: "wpSaveWidget",
-                    class: 'oo-ui-widget oo-ui-widget-enabled oo-ui-inputWidget oo-ui-buttonElement oo-ui-buttonElement-framed oo-ui-labelElement oo-ui-flaggedElement-progressive oo-ui-flaggedElement-primary oo-ui-buttonInputWidget'
-                }).append($('<input>', {
+                var saveButton = new OO.ui.ButtonInputWidget({
+                    label: 'Save',
+                    name: 'dragonSave',
+                    id: 'dragonSave',
                     type: 'submit',
-                    value: 'Save',
-                    name: "dragonSave",
-                    id: "dragonSave",
-                    class: 'oo-ui-inputWidget-input oo-ui-buttonElement-button'
-                })));
+                    flags: ['primary', 'progressive']
+                });
+
+                $submitContainer.append(previewButton.$element, saveButton.$element);
+                $form.append($submitContainer);
+
+
+
+
+                // var $container = $('<span>', {
+                //     id: 'ooui-widget-examples',
+                //     css: {
+                //         display: 'block',
+                //         padding: '20px',
+                //         border: '1px solid #ccc',
+                //         backgroundColor: '#f9f9f9'
+                //     }
+                // });
+
+                // $container.append($('<h3>').text('OOUI Widget Examples'));
+
+                // // 1. ButtonWidget
+                // var button = new OO.ui.ButtonWidget({
+                //     label: 'Click Me',
+                //     flags: ['primary', 'progressive']
+                // });
+                // $container.append($('<div>').text('ButtonWidget:').css('margin-top', '10px'));
+                // $container.append(button.$element);
+
+                // // 2. ButtonInputWidget
+                // var buttonInput = new OO.ui.ButtonInputWidget({
+                //     label: 'Submit',
+                //     type: 'submit',
+                //     flags: ['destructive']
+                // });
+                // $container.append($('<div>').text('ButtonInputWidget:').css('margin-top', '10px'));
+                // $container.append(buttonInput.$element);
+
+                // // 3. TextInputWidget
+                // var textInput = new OO.ui.TextInputWidget({
+                //     placeholder: 'Enter your name',
+                //     value: 'John Doe'
+                // });
+                // $container.append($('<div>').text('TextInputWidget:').css('margin-top', '10px'));
+                // $container.append(textInput.$element);
+
+                // // 4. CheckboxInputWidget
+                // var checkbox = new OO.ui.CheckboxInputWidget({
+                //     value: 'yes',
+                //     selected: true
+                // });
+                // $container.append($('<div>').text('CheckboxInputWidget:').css('margin-top', '10px'));
+                // $container.append(checkbox.$element);
+
+                // // 5. RadioButtonWidget
+                // var radioButton = new OO.ui.RadioSelectWidget({
+                //     items: [
+                //         new OO.ui.RadioOptionWidget({
+                //             data: 'option1',
+                //             label: 'Option 1'
+                //         }),
+                //         new OO.ui.RadioOptionWidget({
+                //             data: 'option2',
+                //             label: 'Option 2'
+                //         })
+                //     ]
+                // });
+                // $container.append($('<div>').text('RadioSelectWidget:').css('margin-top', '10px'));
+                // $container.append(radioButton.$element);
+
+                // // 6. DropdownWidget
+                // var dropdown = new OO.ui.DropdownWidget({
+                //     label: 'Select an option',
+                //     menu: {
+                //         items: [
+                //             new OO.ui.MenuOptionWidget({
+                //                 data: 'option1',
+                //                 label: 'Option 1'
+                //             }),
+                //             new OO.ui.MenuOptionWidget({
+                //                 data: 'option2',
+                //                 label: 'Option 2'
+                //             })
+                //         ]
+                //     }
+                // });
+                // $container.append($('<div>').text('DropdownWidget:').css('margin-top', '10px'));
+                // $container.append(dropdown.$element);
+
+                // // 7. FieldsetLayout
+                // var fieldset = new OO.ui.FieldsetLayout({
+                //     label: 'User Information'
+                // });
+                // fieldset.addItems([
+                //     new OO.ui.FieldLayout(new OO.ui.TextInputWidget({
+                //         placeholder: 'Username'
+                //     }), { label: 'Username' }),
+                //     new OO.ui.FieldLayout(new OO.ui.TextInputWidget({
+                //         placeholder: 'Password',
+                //         type: 'password'
+                //     }), { label: 'Password' })
+                // ]);
+                // $container.append($('<div>').text('FieldsetLayout:').css('margin-top', '10px'));
+                // $container.append(fieldset.$element);
+
+                // // 8. IconWidget
+                // var icon = new OO.ui.IconWidget({
+                //     icon: 'bell',
+                //     title: 'Notifications'
+                // });
+                // $container.append($('<div>').text('IconWidget:').css('margin-top', '10px'));
+                // $container.append(icon.$element);
+
+                // // 9. LabelWidget
+                // var label = new OO.ui.LabelWidget({
+                //     label: 'This is a LabelWidget'
+                // });
+                // $container.append($('<div>').text('LabelWidget:').css('margin-top', '10px'));
+                // $container.append(label.$element);
+
+                // // 10. ProgressBarWidget
+                // var progressBar = new OO.ui.ProgressBarWidget({
+                //     progress: 50 // 50% progress
+                // });
+                // $container.append($('<div>').text('ProgressBarWidget:').css('margin-top', '10px'));
+                // $container.append(progressBar.$element);
+
+                // // 11. ToggleSwitchWidget
+                // var toggleSwitch = new OO.ui.ToggleSwitchWidget({
+                //     value: true
+                // });
+                // toggleSwitch.on('change', function (value) {
+                //     console.log('ToggleSwitchWidget value:', value);
+                // });
+                // $container.append($('<div>').text('ToggleSwitchWidget:').css('margin-top', '10px'));
+                // $container.append(toggleSwitch.$element);
+
+                // // 12. PopupButtonWidget
+                // var popupButton = new OO.ui.PopupButtonWidget({
+                //     label: 'Open Popup',
+                //     popup: {
+                //         $content: $('<p>').text('This is the content of the popup.'),
+                //         padded: true,
+                //         align: 'center'
+                //     }
+                // });
+                // $container.append($('<div>').text('PopupButtonWidget:').css('margin-top', '10px'));
+                // $container.append(popupButton.$element);
+
+
+                // $form.append($container);
+
+
+
+
+
+
+
+
+
 
                 $form_container.append($('<div>').attr('id', 'box-result'));
 
@@ -765,13 +1123,18 @@ $(document).ready(function () {
                 }
 
                 function updateFeedbackImages($multiSelectDiv, selectedParams, imageType) {
-                    DataHelpers.updateModuleInvocation('DvWiki', 'Show', [], {
-                        type: imageType,
-                        elements: selectedParams,
-                        size:"40px"
-                    }).then(function (data) {
-                        var feedbackContainerId = $multiSelectDiv.attr('id') + '-feedback';
-                        $('#' + feedbackContainerId).html(data);
+                    var feedbackContainerId = $multiSelectDiv.attr('id') + '-feedback';
+                    ModuleInject.invokeModule(
+                        `DvWiki`,
+                        'Show',
+                        [],
+                        {
+                            type: imageType,
+                            elements: selectedParams,
+                            size: "40px"
+                        }
+                    ).then(html => {
+                        $('#' + feedbackContainerId).html(html);
                     });
                 }
 
@@ -826,6 +1189,17 @@ $(document).ready(function () {
                         }
                     });
 
+                    $sb.on('click', '.clear-duration', function (event) {
+                        event.preventDefault();
+
+                        var $durationDiv = $(this).closest('div[data-type="duration"]');
+
+                        $durationDiv.find('input[type="number"]').each(function () {
+                            $(this).val(null);
+                            $(this).attr('value', null);
+                        });
+                    });
+
                     // allow deselection of radio
                     // $sb.on('click', 'div[data-type="multi-select"] input[type="radio"]', function (event) {
                     //     event.preventDefault();
@@ -843,18 +1217,102 @@ $(document).ready(function () {
                     //     }
                     // });
 
-                    $sb.on('input', 'input[type="number"]', function () {
-                        var value = parseFloat($(this).val());
+                    $sb.on('input keydown paste', 'input[type="number"]:not(div[data-type="duration"] input)', function (event) {
+                        const $input = $(this);
 
-                        var minValue = $(this).attr('min') !== undefined ? parseFloat($(this).attr('min')) : undefined;
-                        var maxValue = $(this).attr('max') !== undefined ? parseFloat($(this).attr('max')) : undefined;
+                        if (event.type === 'input') {
+                            let value = $input.val().replace(/[^0-9]/g, '');
 
-                        if (minValue !== undefined && value < minValue) {
-                            $(this).val(minValue);
+                            const maxLength = $input.attr('data-maxlength');
+                            if (maxLength && value.length > maxLength) {
+                                value = value.slice(0, maxLength);
+                            }
+
+                            let minValue = $input.attr('min') !== undefined ? parseFloat($input.attr('min')) : undefined;
+                            let maxValue = $input.attr('max') !== undefined ? parseFloat($input.attr('max')) : undefined;
+
+                            $input.val(value);
+                            
+                            if (minValue !== undefined && value < minValue) {
+                                $input.val(minValue);
+                            }
+
+                            if (maxValue !== undefined && value > maxValue) {
+                                $input.val(maxValue);
+                            }
                         }
 
-                        if (maxValue !== undefined && value > maxValue) {
-                            $(this).val(maxValue);
+                        if (event.type === 'keydown') {
+                            if (event.ctrlKey || event.metaKey) {
+                                return;
+                            }
+                            if (
+                                !/[0-9]/.test(event.key) &&
+                                event.key !== 'Backspace' &&
+                                event.key !== 'Delete' &&
+                                event.key !== 'ArrowLeft' &&
+                                event.key !== 'ArrowRight' &&
+                                event.key !== 'Tab'
+                            ) {
+                                event.preventDefault();
+                            }
+                        }
+
+                        if (event.type === 'paste') {
+                            event.preventDefault();
+                            const pastedText = (event.originalEvent.clipboardData || window.clipboardData).getData('text');
+                            if (/^[0-9]+$/.test(pastedText)) {
+                                $input.val($input.val() + pastedText);
+                            }
+                        }
+                    });
+
+                    $sb.on('input keydown paste', 'div[data-type="duration"] input[type="number"]', function (event) {
+                        const $input = $(this);
+
+                        if (event.type === 'input') {
+                            let value = $input.val().replace(/[^0-9]/g, '');
+
+                            const maxLength = $input.attr('data-maxlength');
+                            if (maxLength && value.length > maxLength) {
+                                value = value.slice(0, maxLength);
+                            }
+
+                            let minValue = $input.attr('min') !== undefined ? parseFloat($input.attr('min')) : undefined;
+
+                            if (minValue !== undefined && value < minValue) {
+                                $input.val(minValue);
+                            }
+
+                            $input.val(value);
+
+                            handleDurationOverflow($input);
+                        }
+
+                        if (event.type === 'keydown') {
+                            if (event.ctrlKey || event.metaKey) {
+                                return;
+                            }
+
+                            if (
+                                !/[0-9]/.test(event.key) &&
+                                event.key !== 'Backspace' &&
+                                event.key !== 'Delete' &&
+                                event.key !== 'ArrowLeft' &&
+                                event.key !== 'ArrowRight' &&
+                                event.key !== 'Tab'
+                            ) {
+                                event.preventDefault();
+                            }
+                        }
+
+                        if (event.type === 'paste') {
+                            event.preventDefault();
+                            const pastedText = (event.originalEvent.clipboardData || window.clipboardData).getData('text');
+                            if (/^[0-9]+$/.test(pastedText)) {
+                                $input.val($input.val() + pastedText);
+                                handleDurationOverflow($input);
+                            }
                         }
                     });
 
@@ -946,7 +1404,9 @@ $(document).ready(function () {
 
                         {
                             var subformData = {};
-                            $subForm.find('input:not([id$="-all"]), select, textarea, div[data-type]').each(function () {
+                            $subForm.find('input:not([id$="-all"]), select, textarea, div[data-type]')
+                            .not('div[data-type="duration"] input')
+                            .each(function () {
                                 var key = $(this).attr('id');
 
                                 if (!key) {
@@ -966,18 +1426,30 @@ $(document).ready(function () {
                                 } else if ($(this).attr('type') === 'time') {
                                     subformData[key] = $(this).val();
                                 } else if ($(this).is('div[data-type="duration"]')) {
-                                    var hours = parseInt($(this).find('input[name$="_hours"]').val()) || 0;
-                                    var minutes = parseInt($(this).find('input[name$="_minutes"]').val()) || 0;
+                                    var durationString = '';
 
-                                    var breedingTime = '';
-                                    if (hours > 0) {
-                                        breedingTime += hours + ' H ';
-                                    }
-                                    if (minutes > 0) {
-                                        breedingTime += minutes + ' M ';
-                                    }
+                                    Object.keys(durationConfig.units)
+                                        .filter(unitKey => unitKey !== "day")
+                                        .forEach(function (unitKey)
+                                    {
+                                        var unit = durationConfig.units[unitKey];
+                                        var value = parseInt($(this).find(`input[name$="_${unitKey}"]`).val()) || 0;
 
-                                    subformData[key] = breedingTime.trim();
+                                        if (unitKey === 'hour') {
+                                            // Check for "day" and convert it to hours
+                                            var dayKey = 'day';
+                                            var dayValue = parseInt($(this).find(`input[name$="_${dayKey}"]`).val()) || 0;
+                                            if (dayValue > 0) {
+                                                value += dayValue * 24;
+                                            }
+                                        }
+
+                                        if (value > 0) {
+                                            durationString += value + ' ' + unit.short + ' ';
+                                        }
+                                    }.bind(this));
+
+                                    subformData[key] = durationString.trim();
                                 }
                                 else if ($(this).is('div[data-type="multi-select"].preserve-order')) {
                                     var checkedChildren = $(this).find('input[type="checkbox"]:checked:not([id$="-all"])');
@@ -1050,8 +1522,13 @@ $(document).ready(function () {
 
                     var formResults = getFormResults();
 
-                    DataHelpers.updateModuleInvocation('Dragonbox', 'dragonboxframe', [], formResults.Dragons).then(function (data) {
-                        $('div#box-result').html(data + "<hr/>");
+                    ModuleInject.invokeModule(
+                        `Dragonbox`,
+                        'preview',
+                        [],
+                        formResults.Dragons
+                    ).then(html => {
+                        $('div#box-result').html(html + "<hr/>");
                     });
 
                     $('html, body').animate({ scrollTop: 0 }, 'fast');
@@ -1092,30 +1569,30 @@ $(document).ready(function () {
                     });
                 });
             });
-
         }).catch(function (error) {
             console.error("One or more promises failed: ", error);
         });
     }
 
-    DataHelpers.initializeWhenSelectorReady('#dragon-form-container', function () {
-        mw.loader.using('mediawiki.api', function () {
-            var api = new mw.Api();
+    mw.loader.using('mediawiki.api', function () {
+        var api = new mw.Api();
 
-            mw.hook('wikipage.content').add(function () {
-                Promise.all([
-                    DataHelpers.loadJsonData(api, 'Data:NewDragonConfig.json'),
-                    DataHelpers.loadJsonData(api, 'Data:Game.json')
-                ])
-                    .then(function (results) {
-                        var config = results[0];
-                        var game = results[1];
+        mw.hook('wikipage.content').add(function () {
+            Promise.all([
+                ModuleInject.loadJsonData(api, 'Data:NewDragonConfig.json'),
+                ModuleInject.loadJsonData(api, 'Data:Game.json')
+            ])
+            .then(function (results) {
+                ModuleInject.waitForElement('#dragon-form-container').then(el => {
+                    var config = results[0];
+                    var game = results[1];
 
-                        initializeForm(config, game);
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
+                    initializeForm(config, game);
+
+                });
+            })
+            .catch(function (error) {
+                console.error(error);
             });
         });
     });

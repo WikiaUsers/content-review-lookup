@@ -17,7 +17,7 @@ $(document).ready(function () {
             }
 
             var api = new mw.Api();
-            DataHelpers.loadJsonData(api, 'Data:' + 'PageViews' + '.json').then(function (config) {
+            ModuleInject.loadJsonData(api, 'Data:' + 'PageViews' + '.json').then(function (config) {
                 config.forEach(function (page) {
                     var matchesAll = page.enabled === undefined ? true : page.enabled;
 
@@ -44,8 +44,9 @@ $(document).ready(function () {
                     }
 
                     if (user && matchesAll) {
-                        DataHelpers.initializeWhenSelectorReady(page.selector, function ($element, _) {
+                        ModuleInject.waitForElement(page.selector).then(el => {
                             setTimeout(function () {
+                                var $element = $(el);
                                 generatePage($element, page.views.length ? $(page.views.join(',')) : null, function ($element) {
                                     var $newElement = $('<' + page.tag + '>', {
                                         id: page.id,

@@ -21,7 +21,10 @@ window.tooltips_list = [
     }, {
         classname: 'custom-tooltip-parse',
         parse: '{|style="white-space:nowrap;"\n!Parameter:\n|<#parameter#>\n|-\n!Lc:\n|{'+'{lc:<#parameter#>}}\n|-\n!Uc:\n|{'+'{uc:<#parameter#>}}\n|-\n!PAGENAME:\n|{'+'{PAGENAME}}\n|}',
-    }, {
+    },{
+        classname: 'pattooltip',
+        parse: '{|style="white-space:nowrap;"<#parameter#>',
+    },{
         classname: 'basic-tooltip',
         delay: 500,
         onHide: function(handle) { $(this).html($(handle).html()) },

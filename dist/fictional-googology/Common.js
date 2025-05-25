@@ -4,3 +4,5 @@ mw.hook("wikipage.content").add(function () {
 		$(css.ownerNode).addClass("import-css").attr("data-css-hash", $("span.import-css").attr("data-css-hash")).attr("data-from", $("span.import-css").attr("data-from"));
 	});
 });
+
+window.lockOldComments.limit = 120;

@@ -41,15 +41,12 @@
       configurable: false,
       value: Object.freeze({
         NAMES: Object.freeze({
-          CLASS_DROPDOWN_LI: "user-tab__list-item",
+          CLASS_DROPDOWN_LI: "user-panel__list-item",
           DIR_DROPDOWN_LI: "auto",
           ID_DROPDOWN: "bl-"
         }),
         TARGETS: Object.freeze({
-          NAVIGATION_TAB: ":is(#user-tab__content, #user-panel__content) " +
-            ".navigation-tab",
-          NAVIGATION_UL: ":is(#user-tab__content, #user-panel__content) " +
-            ".UserTab-module_linksList__wFmbu",
+          NAVIGATION_PANEL: "#user-panel__content .navigation-panel",
           NAVIGATION_CONTRIBS: "a[data-label='account.contributions']",
           DEFAULT_PLACEMENT: "a[data-label='account.preferences']"
         }),
@@ -357,7 +354,7 @@
     // Definitions
     $helper = new $.Deferred();
     targets = this.Selectors.TARGETS;
-    target = targets.NAVIGATION_TAB;
+    target = targets.NAVIGATION_PANEL;
     needsMessages = false;
     i = 0;
 

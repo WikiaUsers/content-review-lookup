@@ -1,5 +1,5 @@
 /* Custom JavaScript functionality for [[Template:Extra Effect]]. */
-$(()=>{
+mw.loader.using('jquery', ()=>{
 	'use strict';
 	
 	// Double load prevention
@@ -57,4 +57,4 @@ $(()=>{
 			});
 		});
 	});
-})
+});

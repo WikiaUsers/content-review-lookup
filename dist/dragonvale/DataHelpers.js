@@ -52,8 +52,7 @@ DataHelpers.updateModuleInvocation = function (moduleName, functionName, unnamed
         });
 };
 
-
-DataHelpers.render_wikitext = function (html) {
+DataHelpers.renderWikitext = function (html) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             url: mw.util.wikiScript('api'),

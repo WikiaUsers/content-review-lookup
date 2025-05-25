@@ -55,7 +55,7 @@
         nkch.drm.el.section.$e.classList.add("rail-module", "activity-module", "discussions-activity");
         nkch.drm.el.section.$e.id = "discussions-activity-module";
 
-        if (document.getElementById("WikiaRail").classList.contains("is-ready")) {
+        if ($('#WikiaRail').hasClass('is-ready')) {
             insertToSiderail();
         } else {
             $("#WikiaRail").on("afterLoad.rail", insertToSiderail);

@@ -25,111 +25,136 @@ mw.hook('wikipage.collapsibleContent').add(autocollapseSetup);
 /* MAIN PAGE 2025 */
 
 function mainPageSeriesCarousel() {
-	var wrapper, tabs, numTabs, tabSpacing, tabsToJump;
+	var wrapper, gap;
 	
-	var currentStartTab = 0;
-	
-	function findModules() {
-		$(tabs).each(function() {
-			var id = $(this).attr('id');
-			
-			if ($('#' + id + 'Module').length) {
-				$(this).addClass('has-module');
-			}
+	function init() {
+		wrapper = $('.carousel__wrapper');
+		
+		setOffset(wrapper, 0);
+		
+		var gapCSS = wrapper.css('gap');
+		gap = parseInt(gapCSS.substring(0, gapCSS.length - 1));
+		
+		wrapper.each(function () {
+			$(wrapper.children().get(0)).addClass('active');
 		});
 		
-		$('.has-module').on('click', function() {
-			initCarouselValues();
-			if (!$(this).hasClass('active')) {
-				var id = $(this).attr('id');
-				var siblingTabs = $(this).siblings();
-				var siblingModules = $(this).parent().parent().next().children();
-				
-				$(siblingTabs).removeClass('active');
-				$(this).addClass('active');
-				
-				$(siblingModules).removeClass('active');
-				$('#' + id + 'Module').addClass('active');
-			}
+		// find modules
+		
+		$(wrapper.children()).each(function () {
+			var id = $(this).attr('id');
+			
+			if ($('#' + id + 'Module').length > 0) {
+				$(this).addClass('has-module');
+			} 
 		});
 	}
 	
-	function getTabsToJump() {
-		var containerWidth = $(wrapper).parent().width();
+	function getCurrentTab(wrapper) {
+		return wrapper.find('.active').index();
+	}
+	
+	function setCurrentTab(wrapper, i) {
+		var tabs = wrapper.children();
+		
+		tabs.removeClass('active');
+		$(tabs.get(i)).addClass('active');
+	}
+	
+	function getOffset(wrapper) {
+		return parseInt(wrapper.attr('data-offset'));
+	}
+	
+	function setOffset(wrapper, i) {
+		wrapper.attr('data-offset', i);
+	}
+	
+	function getTabsToJump(wrapper) {
+		var containerWidth = wrapper.parent().width();
 		var arrowsWidth = $('.main-page .carousel .arrows').width();
-		var tabWidth = $($(tabs).get(0)).outerWidth() + tabSpacing;
+		var tabWidth = $(wrapper.children().get(0)).outerWidth() + gap;
 		
 		return Math.floor((containerWidth - arrowsWidth) / tabWidth);
 	}
 	
-	function initCarouselValues() {
-		wrapper = $('.carousel__wrapper');
-		tabs = $(wrapper).children();
-		
-		numTabs = $(tabs).length;
-	
-		// get gap amount
-		var tabSpacingString = $(wrapper).css('gap');
-		tabSpacing = parseInt(tabSpacingString.substring(0, tabSpacingString.length - 1));
-	
-		tabsToJump = getTabsToJump();
-	}
-	
-	function getPosition(i) {
+	function getPosition(wrapper, i) {
 		var x = 0;
 		var position = 0;
 		
 		while (x < i) {
-			position += $($(tabs).get(x)).outerWidth() + tabSpacing;
-			
+			position += $(wrapper.children().get(x)).outerWidth() + gap;
 			x++;
 		}
 		
 		return -position;
 	}
 	
-	$(window).on('resize', function() {
-		initCarouselValues();
-	});
-	
-	function jumpBack(jump) {
-		$(wrapper).css('left', getPosition(currentStartTab - jump).toString() + 'px');
-		currentStartTab -= jump;
+	function jump(wrapper, jump, forward = true) {
+		var offset = getOffset(wrapper);
+		
+		var landingTab;
+		
+		if (forward) { landingTab = offset + jump; }
+		else { landingTab = offset - jump; }
+		
+		console.log(wrapper);
+		
+		wrapper.css('left', getPosition(wrapper, landingTab).toString() + 'px');
+		//setCurrentTab(wrapper, landingTab);
+		setOffset(wrapper, landingTab);
+		
 	}
 	
-	$('.arrows__prev').on('click', function() {
-		initCarouselValues();
+	$('.arrows__prev').on('click', function (event) {
+		var thisWrapper = $(this).parent().prev();
+		var tabsToJump = getTabsToJump(thisWrapper);
+		var offset = getOffset(thisWrapper);
 		
-		if (currentStartTab - tabsToJump >= 0) {
-			jumpBack(tabsToJump);
-		} else {
+		if (offset - tabsToJump >= 0) {
+			jump(thisWrapper, tabsToJump, false);
+		}
+		
+		else {
 			var x = 1;
+			
 			while (tabsToJump - x > 0) {
-				if (currentStartTab - (tabsToJump - x) >= 0) {
-					jumpBack(tabsToJump - x);
+				if (offset - (tabsToJump - x) >= 0) {
+					jump(thisWrapper, tabsToJump - x, false);
 				}
-				
 				x++;
 			}
 		}
 	});
 	
-	function jumpForward(jump) {
-		$(wrapper).css('left', getPosition(currentStartTab + jump).toString() + 'px');
-		currentStartTab += jump;
-	}
-	
-	$('.arrows__next').on('click', function() {
-		initCarouselValues();
+	$('.arrows__next').on('click', function (event) {
+		var thisWrapper = $(this).parent().prev();
+		var tabsToJump = getTabsToJump(thisWrapper);
+		var offset = getOffset(thisWrapper);
 		
-		if (currentStartTab + tabsToJump < numTabs) {
-			jumpForward(tabsToJump);
+		if (offset + tabsToJump < thisWrapper.children().length) {
+			jump(thisWrapper, tabsToJump);
 		}
 	});
 	
-	initCarouselValues();
-	findModules();
+	$(document).on('click', '.has-module', function (event) {
+		if (!$(this).hasClass('active')) {
+			var id = $(this).attr('id');
+			var siblings = $(this).siblings();
+			var otherModules = $(this).parent().parent().next().children();
+			
+			console.log(id);
+			console.log(siblings);
+			console.log(otherModules);
+			
+			siblings.removeClass('active');
+			$(this).addClass('active');
+			
+			otherModules.removeClass('active');
+			$('#' + id + 'Module').addClass('active');
+		}
+	});
 	
+	init();
 }
 
 // change OTD purge button to null edit when available

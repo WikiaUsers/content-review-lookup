@@ -17,7 +17,7 @@ futurehostile: true
 importArticles,
 structuredClone
 */
-$(function() {
+mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 	'use strict';
 	
 	// Double load protection
@@ -38,14 +38,14 @@ $(function() {
 			wpET: ''// Cannot get through mw.api or mw.user.tokens as they dont work with action=markpatrolled for some reason
 		},
 		can = {
-			patrol: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator'].includes(group);}),
-			rollback: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator', 'rollback'].includes(group);})
+			patrol: config.wgUserGroups.some((group) => {return ['sysop', 'content-moderator'].includes(group);}),
+			rollback: config.wgUserGroups.some((group) => {return ['sysop', 'content-moderator', 'rollback'].includes(group);})
 		},
 		fP = config.wgNamespaceNumber===6 && config.wgAction==='view' && !config.wgDiffNewId && window.dev.BD_FullFilePatrol;
 	
 	// Main class
 	const betterDiff = {
-		init: function() {
+		init: () => {
 			
 			// Make methods public for any desired use past the offered here
 			window.dev.BetterDiffMethods = betterDiff;
@@ -57,7 +57,7 @@ $(function() {
 			lApi.get({
 				meta: 'tokens',
 				type: 'patrol|rollback'
-			}).then(function(data){
+			}).then((data) => {
 				if (can.patrol && data.query.tokens.patroltoken && data.query.tokens.patroltoken.length>2) {
 					tokens.patrol = data.query.tokens.patroltoken;
 				}
@@ -67,7 +67,7 @@ $(function() {
 			});
 			
 			// Full patrol link in Files if setting is enabled
-			if (fP && !document.querySelector('#mw-imagepage-content > .patrollink > a')) {
+			if (fP && !document.querySelector('#mw-imagepage-content > .patrollink > :is(a, button)')) {
 				lApi.get({
 					action: 'query',
 					list: 'recentchanges',
@@ -75,18 +75,21 @@ $(function() {
 					rcprop: 'ids',
 					rclimit: '1',
 					rctitle: config.wgPageName
-				}).then(function(data){
+				}).then((data) => {
+					console.log(data);
 					if (data.query && data.query.recentchanges && data.query.recentchanges.length>0) {
-						mw.util.addCSS('#mw-imagepage-content > .patrollink {font-size: 75%; text-align: right;}');
-						let link = $('<a>', {id:'betterDiff-FullPatrol', href:'#betterDiff-FullPatrol', title:'File:'+config.wgTitle, text: 'Mark this file version as patrolled'});
+						mw.util.addCSS('#mw-imagepage-content > .patrollink { text-align: right; > button {font-size: 75%;} }');
+						let link = $('<button>', { 
+							'class': 'cdx-button cdx-button--action-progressive customPatrol',
+							text: 'Mark this file version as patrolled'
+						});
 						link.on('click', betterDiff.massPatrol);
 						$('#mw-imagepage-content').append(
-							$('<div>', {'class': 'patrollink', 'data-mw': 'interface'}).append(
-								$('<button>', { 
-									'class': 'cdx-button cdx-button--action-progressive',
-									text: 'Mark this file version as patrolled'}
-								)
-							)
+							$('<div>', {
+								'class': 'patrollink',
+								'data-mw': 'interface',
+								html: link
+							})
 						);
 					}
 				});
@@ -104,13 +107,13 @@ $(function() {
 			
 			// Check we're in Special:RecentChanges
 			if (config.wgCanonicalSpecialPageName === 'Recentchanges') {
-				betterDiff.waitFor('.mw-changeslist div', function(){
+				betterDiff.waitFor('.mw-changeslist div', () => {
 					betterDiff.newDiffLink();
 					betterDiff.quickDiff();
 					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targetedPatrol);
 					
 					// start observing
-					betterDiff.recentChangesReload(function() {
+					betterDiff.recentChangesReload(() => {
 						betterDiff.newDiffLink();
 						betterDiff.quickDiffLoad();
 					});
@@ -122,7 +125,7 @@ $(function() {
 				config.wgCanonicalSpecialPageName === 'Contributions' ||
 				config.wgAction === 'history'
 			) {
-				betterDiff.waitFor('ul.mw-contributions-list li', function(){
+				betterDiff.waitFor('ul.mw-contributions-list li', () => {
 					betterDiff.newDiffLink();
 					betterDiff.quickDiff();
 				});
@@ -140,7 +143,7 @@ $(function() {
 				betterDiff.quickDiff();
 			}
 			
-			document.addEventListener('keydown', function(event) {
+			document.addEventListener('keydown', (event) => {
 				// Mouseless massPatrol
 				if (event.altKey && ['1', 'p'].includes(event.key) && config.wgAction === 'view') {
 					betterDiff.massPatrol();
@@ -159,7 +162,7 @@ $(function() {
 		},
 		
 		// Run callback every time Special:RecentChanges reloads results
-		recentChangesReload: function(callback, query) {
+		recentChangesReload: (callback, query) => {
 			let observer = new MutationObserver(function (mutations, me) {
 				if (
 					mutations[0] &&
@@ -176,7 +179,7 @@ $(function() {
 		},
 		
 		// Add and update group diff view for page history based off selected diffs
-		historyGroupDiff: function() {
+		historyGroupDiff: () => {
 			let lastID = $('#pagehistory ul:last-of-type li.after:last-child').attr('data-mw-revid');
 			$('.mw-history-compareselectedversions').append(' (', $('<a>', {
 				'text': 'view',
@@ -195,7 +198,7 @@ $(function() {
 		},
 		
 		// Properly build diff links with page creation edits
-		newDiffLink: function() {
+		newDiffLink: () => {
 			let newDiffLink = {
 				searchRevid: function (row) {
 					let O = {
@@ -225,7 +228,7 @@ $(function() {
 					}
 				},
 				
-				buildLink: function(options) {
+				buildLink: (options) => {
 					let target = newDiffLink.getTarget(options.row);
 					let page = newDiffLink.getTitle(options.row);
 					if (target) {
@@ -261,14 +264,14 @@ $(function() {
 					}
 				},
 				
-				getTitle: function(row) {
+				getTitle: (row) => {
 					let title;
 					let queries = [
 						'.mw-changeslist-title',   // Normal Special:RecentChanges
 						'.mw-changeslist-date',    // Nested Special:RecentChanges
 						'.mw-enhanced-rc-time > a' // Special:Contributions
 					];
-					queries.forEach(function(query) {
+					queries.forEach((query) => {
 						if (!title && row.querySelector(query) && row.querySelector(query).getAttribute('title')) {
 							title = row.querySelector(query).getAttribute('title');
 						}
@@ -276,14 +279,14 @@ $(function() {
 					return title || '';
 				},
 				
-				getTarget: function(row) {
+				getTarget: (row) => {
 					let target;
 					let queries = [
 						'.mw-changeslist-links:not(.mw-history-histlinks, .mw-usertoollinks) > span:first-child', // Special:Contributions && Normal Special:RecentChanges
 						'.mw-changeslist-diff-cur + .mw-changeslist-separator', // Nested Special:RecentChanges
 						'.mw-changeslist-links.mw-history-histlinks:not(.mw-usertoollinks) > span:last-child', // ?action=history
 					];
-					queries.forEach(function(query) {
+					queries.forEach((query) => {
 						let test = row.querySelector(query);
 						if (!target && test && test.classList.length === 0) {
 							target = test.firstChild;
@@ -305,7 +308,7 @@ $(function() {
 						!document.querySelector('.mw-changeslist-src-mw-new .mw-changeslist-diff')
 					)
 				){
-					document.querySelectorAll('.mw-changeslist-src-mw-new').forEach(function(node){
+					document.querySelectorAll('.mw-changeslist-src-mw-new').forEach((node) => {
 						if (node) { newDiffLink.searchRevid(node); }
 					});
 				}
@@ -314,7 +317,7 @@ $(function() {
 			// Check we're in Special:Contributions
 			else if (config.wgCanonicalSpecialPageName === 'Contributions') {
 				if (document.querySelector('ul.mw-contributions-list abbr.newpage')) {
-					document.querySelectorAll('ul.mw-contributions-list abbr.newpage').forEach(function(node){
+					document.querySelectorAll('ul.mw-contributions-list abbr.newpage').forEach((node) => {
 						let row = node.parentElement;
 						if (row) {newDiffLink.searchRevid(row);}
 					});
@@ -331,7 +334,7 @@ $(function() {
 		},
 		
 		// Properly display diff for page creation edits
-		newDiff: function() {
+		newDiff: () => {
 			
 			if (document.querySelector('#mw-diff-ntitle1 > strong > a')) {
 				let table = document.querySelector('.diff');
@@ -358,7 +361,7 @@ $(function() {
 				} else if (revid && !document.querySelector('#differences-prevlink')) {
 					table.querySelector('.diff-ntitle').colSpan = 4;
 					table.querySelector('.diff-notice').parentNode.remove();
-					betterDiff.api(api_opt).then(function(data) {
+					betterDiff.api(api_opt).then((data) => {
 						table.innerHTML = '<colgroup><col class="diff-marker"><col class="diff-content"><col class="diff-marker"><col class="diff-content"></colgroup>' + table.innerHTML;
 						table.querySelector('tbody').innerHTML = table.querySelector('tbody').innerHTML + data.compare.body;
 					});
@@ -368,12 +371,12 @@ $(function() {
 		},
 		
 		// Mass patrol recent edits from specific user and/or namespace
-		targetedPatrol: function() {
+		targetedPatrol: () => {
 			if (!document.querySelector('#tp') && can.patrol) {
 				let entry = $('<span class="wds-button" id="tpOpen">Targeted Patrolling</span>');
 				$('.mw-rcfilters-ui-table-placeholder').append(entry);
 				// Build modal and start up listeners
-				mw.hook('dev.modal').add(function(Modal) {
+				mw.hook('dev.modal').add((Modal) => {
 					settings = 
 						new Modal.Modal({
 							title: 'Targeted Patrolling',
@@ -388,9 +391,9 @@ $(function() {
 												'<option value="-99">All</option>'+
 												'<option value="0">Main</option>'+
 												// Rest of namespaces ("Special" and "Media" excluded)
-												(function() {
+												(() => {
 													let options = [];
-													Object.keys(config.wgFormattedNamespaces).forEach(function(ns){
+													Object.keys(config.wgFormattedNamespaces).forEach((ns) => {
 														if (ns>0) {
 															options.push('<option value="'+ns+'">'+config.wgFormattedNamespaces[ns]+'</option>');
 														}
@@ -433,7 +436,7 @@ $(function() {
 								}
 							],
 							events: {
-								PatrolSubmit: function() {
+								PatrolSubmit: () => {
 									if ($('#tPatrol-Submit[disabled="disabled"]').length>0){mw.notify('Patrolling on-going, please wait!'); return;}
 									$('#tPatrol-Submit').attr('disabled', 'disabled');
 									let api_sett = {
@@ -473,12 +476,12 @@ $(function() {
 									// Attempt patrol if any valid setting
 									let details = $('#tpDetails');
 									details.prepend('<hr />');
-									if (Object.keys(api_sett).some(function(r){
+									if (Object.keys(api_sett).some((r) => {
 										return ['rcuser', 'rcnamespace', 'rcstart', 'rcend'].includes(r);
 									}) || yti.source!=='(?:)') {
-										lApi.get(api_sett).then(function(data){
+										lApi.get(api_sett).then((data) => {
 											let revs = (data.query.recentchanges || [])
-											.filter(function(e){
+											.filter((e) => {
 												return  (yti.source==='(?:)' ? true : e.title.search(yti)!==-1) &&
 														(nti.source==='(?:)' ? true : e.title.search(nti)===-1);
 											});
@@ -553,8 +556,8 @@ $(function() {
 							}
 						});
 					settings.create();
-					entry.on('click', function(){settings.show();});
-					$('#tPatrol-patrol').on('change', 'input', function(ch) {
+					entry.on('click', () => {settings.show();});
+					$('#tPatrol-patrol').on('change', 'input', (ch) => {
 						if (['targetedPatrolTimeEnd', 'targetedPatrolTimeStart'].includes(ch.target.id)) {
 							let date = new Date(ch.target.value);
 							let lbl = ch.target.nextElementSibling;
@@ -573,19 +576,19 @@ $(function() {
 		},
 		
 		// Diff pages but without moving away from the page, allowing patrolling still
-		quickDiff: function() {
+		quickDiff: () => {
 			// Diff link string's storage for "Open" and "Copy" buttons
 			let href = '';
 			betterDiff.quickDiffLoad();
 			
-			const generateModal = function(event) {
+			const generateModal = (event) => {
 				const turl = event.target.getAttribute('data-url'),
-				getURL = function(page, query, ns) {
+				getURL = (page, query, ns) => {
 					return  'https://'+betterDiff.getLoad(turl)+
 							'/wiki/'+encodeURIComponent(page).replace(/%3A/g, ':').replace(/%20/g, '_')+
 							(query ? ('?'+$.param(query)) : '');
 				},
-				generateHeader = function(data, url) {
+				generateHeader = (data, url) => {
 					href = data.log === 'upload' ?
 						getURL(data.totitle) :
 						getURL(data.totitle, {diff: data.torevid});
@@ -708,7 +711,7 @@ $(function() {
 					}
 				}
 				
-				betterDiff.api(api_opt, turl).then(function(e) {
+				betterDiff.api(api_opt, turl).then((e) => {
 					let diff = e.compare;
 					if (!diff && event.target.getAttribute('log') === 'upload') {
 						diff = {
@@ -786,10 +789,10 @@ $(function() {
 					);
 					quickview.setTitle('Changes: '+diff.totitle);
 					
-					betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', function() {
+					betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', () => {
 						quickview.setTitle('Changes: '+diff.totitle);
 						if (!diff.log) {
-							$('#quickDiff-quickview .quickDiff-preview').on('click', function() {
+							$('#quickDiff-quickview .quickDiff-preview').on('click', () => {
 								$('#quickDiff-quickview .quickDiff-preview').replaceWith('<strong class="quickDiff-preview">Loading the preview!</strong>');
 								betterDiff.api({
 									action:'parse',
@@ -798,7 +801,7 @@ $(function() {
 									usearticle: true,
 									disablelimitreport: true,
 									pst: true
-								}, turl).then(function(render){
+								}, turl).then((render) => {
 									$('#quickDiff-quickview .quickDiff-preview').replaceWith(
 										(render.parse && render.parse.text && render.parse.text['*']) ? 
 											render.parse.text['*'] :
@@ -830,7 +833,7 @@ $(function() {
 							params.rcstart = diff.totimestamp.replace(/[T\-:Z]/ig, '');
 							params.rcprop += '|loginfo';
 						}
-						lApi.get(params).then(function(check) {
+						lApi.get(params).then((check) => {
 							let num = 0,
 								patrol = false;
 							while (
@@ -880,7 +883,7 @@ $(function() {
 						titles: diff.totitle,
 						formatversion: '2',
 						rvlimit: 'max'
-					}, turl).then(function(check) {
+					}, turl).then((check) => {
 						const revs = check.query.pages[0].revisions;
 						let	num = 0,
 							prev = false,
@@ -939,7 +942,7 @@ $(function() {
 			};
 			
 			// Build modal and start up listeners
-			mw.hook('dev.modal').add(function(Modal) {
+			mw.hook('dev.modal').add((Modal) => {
 				let buttons = [
 					{
 						// Open Diff
@@ -978,10 +981,10 @@ $(function() {
 						content: '',
 						buttons: buttons,
 						events: {
-							CopyLink: function() {
+							CopyLink: () => {
 								navigator.clipboard.writeText(href);
 							},
-							OpenLink: function() {
+							OpenLink: () => {
 								window.open(href);
 							},
 							OpenPrev: betterDiff.openPrev,
@@ -989,7 +992,7 @@ $(function() {
 						}
 					});
 				quickview.create();
-				$(document).on('click.bdf keyup.bdf', function(event) {
+				$(document).on('click.bdf keyup.bdf', (event) => {
 					if (
 						(event.type === 'keyup' && event.key === 'Enter') ||
 						(event.type === 'click')
@@ -1019,8 +1022,8 @@ $(function() {
 		},
 		
 		// Get locations where to add custom link for quickDiff
-		quickDiffLoad: function(els, amt) {
-			const addLink = function(diff) {
+		quickDiffLoad: (els, amt) => {
+			const addLink = (diff) => {
 				if (diff && (
 					diff.getAttribute('href') ||
 					diff.closest('[data-mw-logaction^="upload"]')
@@ -1037,10 +1040,10 @@ $(function() {
 							titles: link.getAttribute('data-target-page'),
 							iilimit: 'max',
 							iiprop: 'parsedcomment|timestamp|user|url'
-						}).then(function(e){
+						}).then((e) => {
 							const ii = Object.values(e.query.pages)[0].imageinfo;
 							if (!ii) {return;}
-							ii.forEach(function(img, idx){
+							ii.forEach((img, idx) => {
 								const
 								date = new Date(img.timestamp),
 								ts = 
@@ -1089,9 +1092,9 @@ $(function() {
 						let span = document.createElement('span');
 						span.appendChild(link);
 						diff.closest('span:not([class])').after(span);
-					} else if (diff.closest('.quickDiff-custom') || diff.closest('.diff-ntitle')) {
+					} else if (diff.closest('.quickDiff-custom, .diff-ntitle, [data-mw-logaction^="upload"]')) {
 						diff.before('(', link, ') ');
-					} else if (diff.closest('.diff-otitle, [data-mw-logaction^="upload"]')) {
+					} else if (diff.closest('.diff-otitle')) {
 						diff.after(' (', link, ')');
 					} else {
 						diff.after(' | ', link);
@@ -1104,24 +1107,24 @@ $(function() {
 				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded)',
 				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff)',
 				'.page__main .diff a:is(#differences-nextlink, #differences-prevlink):not(.quickDiffLoaded, .quickDiff)',
-				'[data-mw-logaction^="upload"]:has(.mw-usertoollinks + :not(.new)) .mw-enhanced-rc-time:not(.quickDiffLoaded)',
-				'.tPatrol-patrolled:not(.quickDiffLoaded) .tPatrol-view',
+				'[data-mw-logaction^="upload"]:has(.mw-usertoollinks + :not(.new)) :is(.mw-changeslist-line-inner-separatorAfterLinks, .mw-changeslist-separator:not(:only-child)):not(.quickDiffLoaded)',
+				'.tPatrol-patrolled .tPatrol-view:not(.quickDiffLoaded)',
 			].join(',');
 			if (els) {
-				els.filter(cond).each(function(_, el){ addLink(el); }); // run on elements that are the target
-				els.find(cond).each(function(_, el){ addLink(el); }); // run on wrappers that contain the target
+				els.filter(cond).each((_, el) => { addLink(el); }); // run on elements that are the target
+				els.find(cond).each((_, el) => { addLink(el); }); // run on wrappers that contain the target
 			} else if (amt) {
-				$(cond).slice(0, amt).each(function(_, el){ addLink(el); }); // run on the next X targets, for betterDiff.openNext
+				$(cond).slice(0, amt).each((_, el) => { addLink(el); }); // run on the next X targets, for betterDiff.openNext
 			} else {
 				betterDiff.whenInView(cond, addLink);
 			}
 		},
 		
 		// Patrol inputted revid if user can patrol
-		patrolRevisions: function(revisions, step) {
+		patrolRevisions: (revisions, step) => {
 			if (can.patrol && revisions.length>0 && revisions[0].rcid && tokens.patrol.length>2) {
 				let r = structuredClone(revisions);
-				let patrol = function() {
+				let patrol = () => {
 					let cr = r.shift();
 					if (cr === undefined) {return;}
 					if (step && 'function' === typeof step) {
@@ -1142,7 +1145,7 @@ $(function() {
 					if (tokens.wpET!=='') {
 						forcePatrol();
 					} else {
-						$.post(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid).then(function(e){
+						$.post(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid).then((e) => {
 							tokens.wpET = $(e).find('[name="wpEditToken"]').attr('value');
 							if (tokens.wpET!=='') {
 								forcePatrol();
@@ -1158,26 +1161,26 @@ $(function() {
 		},
 		
 		// Patrol multiple revisions in a row
-		massPatrol: function() {
+		massPatrol: () => {
 			if (
 				document.querySelector('#quickDiff-quickview.oo-ui-window-active') ||
 				(fP)
 			) {
 				// continue to custom mass patrolling
 			}
-			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > a')) {
-				document.querySelector('#mw-diff-ntitle4 #massPatrol > a').click();
+			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > :is(a, button)')) {
+				document.querySelector('#mw-diff-ntitle4 #massPatrol > :is(a, button)').click();
 				return;
 			}
-			else if (document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a')) {
-				document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a').click();
+			else if (document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > :is(a, button)')) {
+				document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > :is(a, button)').click();
 				return;
 			}
-			else if (!document.querySelector('.patrollink > a')) {
+			else if (!document.querySelector('.patrollink > :is(a, button)')) {
 				// no target, do nothing, end
 				return;
 			}
-			let link = document.querySelector('.patrollink > a'),
+			let link = document.querySelector('.patrollink > :is(a, button)'),
 				wrapper = document.querySelector('.patrollink'),
 				torevid = fP ? false : link.getAttribute('torevid'),
 				fromrevid = fP ? false : link.getAttribute('fromrevid');
@@ -1189,10 +1192,10 @@ $(function() {
 				rcshow: '!patrolled',
 				rcprop: 'ids|loginfo',
 				format: 'json',
-				rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
+				rctitle: fP ? config.wgPageName : link.getAttribute('title').replace(/\&quot;/g, '"'),
 				formatversion: '2',
 				rclimit: 'max'
-			}).then(function(data) {
+			}).then((data) => {
 				let num = 0;
 				let revids = [];
 				while (data.query.recentchanges[num]) {
@@ -1230,7 +1233,7 @@ $(function() {
 		},
 		
 		// Open next diff in RC or user contribs list
-		openNext: function() {
+		openNext: () => {
 			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff');
 			let curr = $('.quickDiff.link-focused');
 			if (curr.is('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff')) {
@@ -1250,7 +1253,7 @@ $(function() {
 		},
 		
 		// Open next diff in RC or user contribs list
-		openPrev: function() {
+		openPrev: () => {
 			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff');
 			let curr = $('.quickDiff.link-focused');
 			if (curr.is('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff')) {
@@ -1268,7 +1271,7 @@ $(function() {
 		},
 		
 		// Delay until element exists to run function
-		waitFor: function(query, callback, extraDelay) {
+		waitFor: (query, callback, extraDelay) => {
 			if ('function' === typeof callback && 'string' === typeof query) {
 				extraDelay = extraDelay || 0;
 				if (document.querySelector(query)) {
@@ -1293,8 +1296,8 @@ $(function() {
 		},
 		
 		// Run function when given element enters viewport
-		whenInView: function(query, callback) {
-			let handler = function(_i, el) {
+		whenInView: (query, callback) => {
+			let handler = (_i, el) => {
 				const rect = el.getBoundingClientRect();
 				if (
 					rect.top >= 0 &&
@@ -1309,12 +1312,12 @@ $(function() {
 			$(query).each(handler);
 			
 			// lazy load
-			$(window).on('DOMContentLoaded.betterDiff load.betterDiff resize.betterDiff scroll.betterDiff loadDiffs.betterDiff', function(){
+			$(window).on('DOMContentLoaded.betterDiff load.betterDiff resize.betterDiff scroll.betterDiff loadDiffs.betterDiff', () => {
 				$(query).each(handler);
 			});
 		},
 		
-		api: function(params, url) {
+		api: (params, url) => {
 			let load = 'https://'+betterDiff.getLoad(url)+'/api.php';
 			params.format = 'json';
 			params.origin = '*';
@@ -1322,12 +1325,11 @@ $(function() {
 		},
 		
 		getLoad: function (url) {
-			return (url && url.search(/[\w\-]+\.fandom/)>=0) ?
-				url.match(/([\w-]+\.fandom.*?)\/wiki/)[1] :
-				(config.wgServerName+config.wgScriptPath);
+			let d = new URL(url || location.href, location.origin);
+			return d.host+d.pathname.replace(/\/wiki.*$/, '');
     	}
 	};
 	
 	// Load styles and start when API is loaded
-	mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles']).then(betterDiff.init);
+	betterDiff.init();
 });

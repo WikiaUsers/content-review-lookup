@@ -12,7 +12,8 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'PinkPugPrincess': ['assistant'],
-    'SpongeTron_D': ['discord']
+    'SpongeBot678': ['assistant'],
+    'SpongeTron_D': ['discord'],
     'WoofWoofGam3r': ['discord']
 };
 
@@ -357,7 +358,9 @@ window.MessageWallUserTags = {
 
         'LarryBoy_fan': 'Discussion Moderator • Rollback',
         
-        'SpongeBot678': 'Rollback',
+        'SpongeBot678': 'Assistant',
+        
+        'ItzSpongeBob_1999': 'Rollback',
     }
 };
 

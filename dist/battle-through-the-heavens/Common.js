@@ -2,6 +2,8 @@
 
 /* WAM Site-wide Installation */
 
+window.BackToTopModern = true;
+
 window.railWAM = {
     logPage:"Project:WAM Log"
 };

@@ -13,3 +13,25 @@ window.pPreview = $.extend(
 );
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
+
+/* == Для статей с множеством иконок, которых может не быть на вики == */
+mw.loader.using('mediawiki.util', function() {
+    var pageTitle = mw.config.get('wgTitle');
+    if (/Изучаемые|learnset/i.test(pageTitle)) {
+        var style = document.createElement('style');
+        style.textContent = `
+.mw-file-element.mw-broken-media {
+    background-image: url('https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png/revision/latest?cb=20211113135653');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    border: none;
+    text-indent: -9999px;
+}
+        `;
+        document.head.appendChild(style);
+    }
+});

@@ -10,7 +10,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 		hovermenu: true
 	};
 	if (window.dev.betterTopNav._LOADED) {return;}
-	else {window.dev.betterTopNav._LOADED=true;}
+	else {window.dev.betterTopNav._LOADED = true;}
 	
 	// Load styles
 	importArticle({ type:'style', article: 'u:dev:MediaWiki:BetterTopNav.css' });
@@ -28,7 +28,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 					sett = [50, {u:2, f:6, p:4, mw:8, t:10, c:14, m:828}];
 					break;
 				case 'number' || 'string':
-					sett = [(sett==='max' ? 50 : sett), {u:2, f:6, p:4, mw:8, t:10, c:14, m:828}];
+					sett = [(sett === 'max' ? 50 : sett), {u:2, f:6, p:4, mw:8, t:10, c:14, m:828}];
 					break;
 				case 'object':
 					if (!Array.isArray(sett)) {
@@ -52,14 +52,14 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 					if (longerLength === 0) { return 1.0; }
 					for (let i = 0; i < longerLength; i++) {
 						if (longer[i] === shorter[i]) { matchCount++; }
-						else if (initMatch===null) {initMatch = i;}
+						else if (initMatch === null) {initMatch = i;}
 					}
 					return [(matchCount / longerLength) * 100, initMatch];
 				}
 				let m1 = matchRate(s, s1),
 					m2 = matchRate(s, s2),
-					rel = m1[1]!==m2[1] ? m1[1]<m2[1]
-							: (m1[0]===m2[0] ? s1.localeCompare(s2)>=0 : m1[0]<m2[0]);
+					rel = m1[1] !== m2[1] ? m1[1] < m2[1]
+							: (m1[0] === m2[0] ? s1.localeCompare(s2) >= 0 : m1[0] < m2[0]);
 				if (rT) { return rel ? s2 : s1 ; }
 				else { return rel; }
 			}
@@ -67,114 +67,113 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 			// Detect DOM changes for when to load what
 			let search_observer = new MutationObserver(mw.util.throttle((ml)=>{
 					const nav = $(ml[0].target);
-					if ( nav.find('input').val().length>0 ) {
-						let searchquery = nav.find('input').val();
-						if (searchquery.length>0 && nav.is(':has(.search-app__suggestion, .search-app__no-suggestions)') && !nav.is(':has(.search-app__custom-suggestion, .search-app__heading)')) {
-							// Load search results
-							let opts = {
-								action: 'query',
-								list: 'search',
-								srlimit: sett[0],
-							};
-							
-							// Check for namespaces
-							let namespace = searchquery.includes(':') ? searchquery.split(':')[0].trim().toLowerCase().replace(/ /g, '_') : null;
-							let namespaceID = namespace !== null ? (config.wgNamespaceIds[namespace] || sett[1][namespace]) : null;
-							if (namespaceID === undefined){namespaceID=null;}
-							if (namespace !== null && namespaceID !== null) {
-								opts.srsearch = searchquery.replace(/^.*?:\s*/, '');
-								searchquery = searchquery.replace(/^.*?:\s*/, config.wgFormattedNamespaces[namespaceID]+':');
-								opts.srnamespace = config.wgNamespaceIds[namespace] || sett[1][namespace];
-								if (opts.srsearch==='') {return;}
-							} else {
-								opts.srsearch = searchquery;
-								opts.srnamespace = 0;
-							}
-							let keyword = new RegExp(searchquery.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&'), 'i');
-							
-							// Do search then check for redirects
-							api.get(opts).then((_d)=>{
-								if (_d.query && _d.query.search && _d.query.search.length>0) {
-									let pages = _d.query.search.map((e)=>e); // make a copy of search results as we may need to add redirect data
-									let listResults = () => {
-										let list = nav.is(':has(.search-app__suggestions-list)') ? nav.find('.search-app__suggestions-list') :
-												nav.find('.search-app__suggestions-box').append($('<ul>', {'class':'search-app__suggestions-list'}));
-										pages.sort((a, b)=>relevance(searchquery,
-											a.redirect ? relevance(searchquery, a.title, a.redirect, true) : a.title,
-											b.redirect ? relevance(searchquery, b.title, b.redirect, true) : b.title
-										));
-										if ($('.search-app__heading').length!==0){return;}
-										list.empty(); // Make sure no default results exist
-										nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
-										pages.forEach((page)=>{
-											let label = page.title;
-											mw.Title.exist.set(page.title.toLowerCase());
-											let useRD = !page.redirect ? false : relevance(searchquery, page.title, page.redirect);
-											if ( namespaceID === null && page.ns !== 0 ) {
-												label = label.replace(/^[^:]+:/, '');
-											}
-											label = label.replace(keyword, '<b>$&</b>');
-											if ( namespaceID === null && page.ns !== 0 ) {
-												label = config.wgFormattedNamespaces[page.ns]+':'+label;
-											}
-											if (useRD) {
-												label += ' <span class="search-app__suggestion-redirect">'+mw.msg('redirectedfrom', page.redirect.replace(keyword, '<span class="search-app__suggestion-highlight">$&</span>'))+'</span>';
-												mw.Title.exist.set(page.redirect.toLowerCase());
-											}
-											list.append($('<li>', {
-												'class': 'search-app__suggestion',
-												dir: 'auto',
-												html: $('<a>', {
-													'class': 'search-app__suggestion-link',
-													href: location.origin+new mw.Title(useRD ? page.redirect : page.title).getUrl(),
-													html: label
-												})
-											}));
-										});
-										list.append($('<li>',{
-											'class': 'search-app__suggestion search-app__suggestion-all',
+					if (nav.find('input').length === 0 || nav.find('input').val().length === 0 ) { return; }
+					let searchquery = nav.find('input').val();
+					if (searchquery.length>0 && nav.is(':has(.search-app__suggestion, .search-app__no-suggestions)') && !nav.is(':has(.search-app__custom-suggestion, .search-app__heading)')) {
+						// Load search results
+						let opts = {
+							action: 'query',
+							list: 'search',
+							srlimit: sett[0],
+						};
+						
+						// Check for namespaces
+						let namespace = searchquery.includes(':') ? searchquery.split(':')[0].trim().toLowerCase().replace(/ /g, '_') : null;
+						let namespaceID = namespace !== null ? (config.wgNamespaceIds[namespace] || sett[1][namespace]) : null;
+						if (namespaceID === undefined){namespaceID = null;}
+						if (namespace !== null && namespaceID !== null) {
+							opts.srsearch = searchquery.replace(/^.*?:\s*/, '');
+							searchquery = searchquery.replace(/^.*?:\s*/, config.wgFormattedNamespaces[namespaceID]+':');
+							opts.srnamespace = config.wgNamespaceIds[namespace] || sett[1][namespace];
+							if (opts.srsearch === '') {return;}
+						} else {
+							opts.srsearch = searchquery;
+							opts.srnamespace = 0;
+						}
+						let keyword = new RegExp(searchquery.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&'), 'i');
+						
+						// Do search then check for redirects
+						api.get(opts).then((_d)=>{
+							if (_d.query && _d.query.search && _d.query.search.length>0) {
+								let pages = _d.query.search.map((e)=>e); // make a copy of search results as we may need to add redirect data
+								let listResults = () => {
+									let list = nav.is(':has(.search-app__suggestions-list)') ? nav.find('.search-app__suggestions-list') :
+											nav.find('.search-app__suggestions-box').append($('<ul>', {'class':'search-app__suggestions-list'}));
+									pages.sort((a, b)=>relevance(searchquery,
+										a.redirect ? relevance(searchquery, a.title, a.redirect, true) : a.title,
+										b.redirect ? relevance(searchquery, b.title, b.redirect, true) : b.title
+									));
+									if ($('.search-app__heading').length !== 0){return;}
+									list.empty(); // Make sure no default results exist
+									nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
+									pages.forEach((page)=>{
+										let label = page.title;
+										mw.Title.exist.set(page.title.toLowerCase());
+										let useRD = !page.redirect ? false : relevance(searchquery, page.title, page.redirect);
+										if ( namespaceID === null && page.ns !== 0 ) {
+											label = label.replace(/^[^:]+:/, '');
+										}
+										label = label.replace(keyword, '<b>$&</b>');
+										if ( namespaceID === null && page.ns !== 0 ) {
+											label = config.wgFormattedNamespaces[page.ns]+':'+label;
+										}
+										if (useRD) {
+											label += ' <span class="search-app__suggestion-redirect">'+mw.msg('redirectedfrom', page.redirect.replace(keyword, '<span class="search-app__suggestion-highlight">$&</span>'))+'</span>';
+											mw.Title.exist.set(page.redirect.toLowerCase());
+										}
+										list.append($('<li>', {
+											'class': 'search-app__suggestion',
+											dir: 'auto',
 											html: $('<a>', {
 												'class': 'search-app__suggestion-link',
-												href: location.origin+new mw.Title('Special:Search').getUrl()+'?scope=internal&query='+encodeURIComponent(searchquery),
-												text: mw.msg('search-modal-see-all-results', searchquery)
+												href: location.origin+new mw.Title(useRD ? page.redirect : page.title).getUrl(),
+												html: label
 											})
 										}));
-									};
-									api.get({
-										action: 'query',
-										prop: 'redirects',
-										rdprop: 'pageid|title',
-										rdlimit: 'max',
-										titles: _d.query.search.map((_i)=>_i.title).join('|'),
-										redirects: 'false',
-									}).then((data)=>{
-										pages.forEach((page, _i)=>{
-											if (
-												page.pageid &&
-												data.query.pages[page.pageid] &&
-												data.query.pages[page.pageid].redirects
-											) {
-												let rd = (data.query.pages[page.pageid].redirects||[]).filter((elem, index)=>{
-													return elem && elem.title && keyword.test(elem.title);
-												})[0];
-												if (rd) {
-													pages[_i].redirect = rd.title;
-												}
+									});
+									list.append($('<li>',{
+										'class': 'search-app__suggestion search-app__suggestion-all',
+										html: $('<a>', {
+											'class': 'search-app__suggestion-link',
+											href: location.origin+new mw.Title('Special:Search').getUrl()+'?scope=internal&query='+encodeURIComponent(searchquery),
+											text: mw.msg('search-modal-see-all-results', searchquery)
+										})
+									}));
+								};
+								api.get({
+									action: 'query',
+									prop: 'redirects',
+									rdprop: 'pageid|title',
+									rdlimit: 'max',
+									titles: _d.query.search.map((_i)=>_i.title).join('|'),
+									redirects: 'false',
+								}).then((data)=>{
+									pages.forEach((page, _i)=>{
+										if (
+											page.pageid &&
+											data.query.pages[page.pageid] &&
+											data.query.pages[page.pageid].redirects
+										) {
+											let rd = (data.query.pages[page.pageid].redirects || []).filter((elem, index)=>{
+												return elem && elem.title && keyword.test(elem.title);
+											})[0];
+											if (rd) {
+												pages[_i].redirect = rd.title;
 											}
-										});
-										listResults();
+										}
 									});
-								} else {
-									const noRes = $('<p>', {
-										'class': 'search-app__no-suggestions',
-										dir: 'auto',
-										text: mw.msg('fd-global-top-navigation-no-search-results')
-									});
-									nav.find('.search-app__suggestions-box').empty().append(noRes);
-									nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
-								}
-							}).catch(console.log);
-						}
+									listResults();
+								});
+							} else {
+								const noRes = $('<p>', {
+									'class': 'search-app__no-suggestions',
+									dir: 'auto',
+									text: mw.msg('fd-global-top-navigation-no-search-results')
+								});
+								nav.find('.search-app__suggestions-box').empty().append(noRes);
+								nav.find('.search-app__suggestions-box').addClass('search-app__custom-suggestions');
+							}
+						}).catch(console.log);
 					}
 				}, 150));
 			search_observer.observe(document.querySelector('#global-top-navigation .search-app__wrapper'), {childList: true, subtree: true});
@@ -260,7 +259,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 		customizeTools: () => {
 			let sett = window.dev.betterTopNav.tools;
 			document.body.classList.add('dev-betterTopNav-customizeTools');
-			if (!Array.isArray(sett)||sett.length===0) {
+			if (!Array.isArray(sett) || sett.length === 0) {
 				sett = [];
 				$('#community-navigation #wiki-tools-menu li > a').each((_, el) => {
 					let item = {
@@ -291,7 +290,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 								$('<a>', {
 									href: item.link,
 									'class': item.class,
-									title: item.title||item.text||'Unknown',
+									title: item.title || item.text || 'Unknown',
 									'data-tracking-label': item.track
 								}).append(
 									(item.icon ? (item.icon+'&nbsp;') : ''),
@@ -303,8 +302,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 							$('#community-navigation .wiki-tools > .wds-dropdown').before(
 								$('<a>', {
 									href: item.link,
-									'class': 'wds-button wds-is-text is-hidden-on-smaller-breakpoints '+(item.class||''),
-									title: item.title||item.text||'Unknown',
+									'class': 'wds-button wds-is-text is-hidden-on-smaller-breakpoints '+(item.class || ''),
+									title: item.title || item.text || 'Unknown',
 									'data-tracking-label': item.track
 								}).append(item.icon)
 							);
@@ -324,15 +323,15 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 		hoverUserMenu: () => {
 			document.body.classList.add('dev-betterTopNav-hoverUserMenu');
 			// Inert attr makes the popup uninteractable, thx fandom, very cool
-			let observer = new MutationObserver(() => { $('#global-top-navigation .global-action__user .navigation-tab').removeAttr('inert'); });
+			let observer = new MutationObserver(() => { $('#global-top-navigation .global-action__user .navigation-panel').removeAttr('inert'); });
 			observer.observe(document.querySelector('#global-top-navigation .global-action__user'), { attributes: true, subtree: true });
 			
 			// Render custom list once the init process is done
-			bTN.waitFor('#global-top-navigation .global-action__user .navigation-tab ul>li>a', () => {
+			bTN.waitFor('#global-top-navigation .global-action__user .navigation-panel ul>li>a', () => {
 				
 				// Avoid initalization defaults
 				$('#global-top-navigation .global-action__user > button').click();
-				$('#global-top-navigation .global-action__user .navigation-tab ul').empty();
+				$('#global-top-navigation .global-action__user .navigation-panel ul').empty();
 				document.body.classList.remove('btn-noflash');
 				
 				// Render new list
@@ -345,8 +344,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 				];
 				if (Array.isArray(window.dev.betterTopNav.hovermenu) && window.dev.betterTopNav.hovermenu.length>0) { links = links.concat(window.dev.betterTopNav.hovermenu); }
 				links.forEach((link) => {
-					$('#global-top-navigation .global-action__user .navigation-tab ul').append(
-						$('<li>', {'class':'user-tab__list-item'}).append(
+					$('#global-top-navigation .global-action__user .navigation-panel ul').append(
+						$('<li>', {'class':'user-panel__list-item'}).append(
 							$('<a>', link)
 						)
 					);

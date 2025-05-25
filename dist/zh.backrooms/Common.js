@@ -431,3 +431,247 @@ $('.fandom-community-header__community-name-wrapper').append(
 		$('<img/>').css('height', '70px').css('position', 'relative').css('top', '20px')
 		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/c/ca/Fandom_Compass_dark.png/revision/latest?cb=20250412193710&format=original&path-prefix=zh').attr('title', '本站点已是Fandom Compass计划的成员之一。')
 ));
+
+$(document).ready(function() {
+    mw.hook('wikipage.content').add(function($content) {
+        // 为每个播放器创建独立的控制器
+        $content.find('.player-container').each(function() {
+            const $player = $(this);
+            const playerState = {
+                isPlaying: false,
+                isDragging: false,
+                progress: $player.find('.progress'),
+                playBtn: $player.find('.play-btn'),
+                audio: new Audio($player.data('audio-src')),
+                volumeControl: $player.find('.volume-control'),
+                volumeContainer: $player.find('.volume-slider-container'),
+                volumeFill: $player.find('.volume-slider-fill'),
+                volumeThumb: $player.find('.volume-slider-thumb'),
+                volumeIcon: $player.find('.volume-icon')
+            };
+            
+            // 设置专辑封面
+            const albumArt = $player.find('.album-art');
+            albumArt.css('background-image', `url(${$player.data('album-art')})`);
+            // 播放/暂停控制
+            playerState.playBtn.on('click', function() {
+                if (playerState.isPlaying) {
+                    playerState.audio.pause();
+                    playerState.isPlaying = false;
+                    $(this).text('▶');
+                } else {
+                    playerState.audio.play();
+                    playerState.isPlaying = true;
+                    $(this).text('⏸');
+                }
+            });
+            // 进度更新
+            $(playerState.audio).on('timeupdate', function() {
+                const percentage = (this.currentTime / this.duration) * 100;
+                playerState.progress.css('width', percentage + '%');
+            });
+            // 进度条点击
+            $player.find('.progress-bar').on('click', function(e) {
+                const percent = e.offsetX / $(this).width();
+                playerState.audio.currentTime = percent * playerState.audio.duration;
+            });
+            // 音量控制函数
+            function updateVolume(e) {
+                const rect = playerState.volumeContainer[0].getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                
+                playerState.volumeFill.css('transform', `scaleX(${percentage / 100})`);
+                playerState.volumeThumb.css('right', `${100 - percentage}%`);
+                playerState.audio.volume = percentage / 100;
+                updateVolumeIcon(percentage);
+            }
+            // 音量拖动事件
+            playerState.volumeContainer.on('mousedown', function(e) {
+                playerState.isDragging = true;
+                updateVolume(e);
+            });
+            $(document).on('mousemove', function(e) {
+                if (playerState.isDragging) {
+                    updateVolume(e);
+                }
+            });
+            $(document).on('mouseup', function() {
+                playerState.isDragging = false;
+            });
+            // 更新音量图标
+            function updateVolumeIcon(value) {
+                if (value == 0) {
+                    playerState.volumeIcon.text('🔇');
+                } else if (value < 50) {
+                    playerState.volumeIcon.text('🔉');
+                } else {
+                    playerState.volumeIcon.text('🔊');
+                }
+            }
+            // 音量图标双击事件
+            playerState.volumeIcon.on('dblclick', function() {
+                if (playerState.audio.volume > 0) {
+                    playerState.audio.volume = 0;
+                    playerState.volumeFill.css('transform', 'scaleX(0)');
+                    playerState.volumeThumb.css('right', '100%');
+                    playerState.volumeIcon.text('🔇');
+                } else {
+                    playerState.audio.volume = 1;
+                    playerState.volumeFill.css('transform', 'scaleX(1)');
+                    playerState.volumeThumb.css('right', '0%');
+                    playerState.volumeIcon.text('🔊');
+                }
+            });
+        });
+    });
+});
+
+
+var config = config || mw.config.get();
+
+mw.hook("wikipage.content").add(function () {
+	if (!["view", "edit", "submit"].includes(config.wgAction)) return;
+	if (window.NervieJS) return;
+	window.NervieJS = true;
+	mw.loader.load("mediawiki.util");
+	
+	$(".talescon-table tbody tr").each(function() {
+		var thisElement = this;
+		$.getJSON(mw.util.wikiScript("wikia"), {
+            controller: "DiscussionThread",
+            method: "getThread",
+            format: "json",
+            threadId: this.getAttribute("data-vote-id")
+        }).done(function(result) {
+        	thisElement.children[2].textContent = result.poll.answers[0].votes;
+        	thisElement.children[3].textContent = result.poll.answers[1].votes;
+        	thisElement.children[4].textContent = result.poll.answers[2].votes;
+        	thisElement.children[5].textContent = ((result.poll.answers[0].votes - result.poll.answers[2].votes) / result.poll.totalVotes).toFixed(4);
+        });
+	});
+	
+	$(".themedcon4-table tbody tr").each(function() {
+		var cells = this.children;
+		$.getJSON(mw.util.wikiScript("wikia"), {
+            controller: "DiscussionThread",
+            method: "getThread",
+            format: "json",
+            threadId: this.getAttribute("data-vote-id")
+        }).done(function(result) {
+        	cells[3].textContent = result.poll.answers[0].votes;
+        	cells[4].textContent = result.poll.answers[1].votes;
+        	cells[5].textContent = result.poll.answers[2].votes;
+        	cells[6].textContent = result.poll.answers[3].votes;
+        	cells[7].textContent = result.poll.answers[4].votes;
+        	cells[8].textContent = (
+        		(result.poll.answers[0].votes
+        		+ result.poll.answers[1].votes / 2
+        		- result.poll.answers[3].votes / 2
+        		- result.poll.answers[4].votes) / result.poll.totalVotes
+        	).toFixed(4);
+        });
+	});
+	
+    $.getJSON(mw.util.wikiScript("index"), {
+        title: "User:HyperNervie/竞赛2.json",
+        action: "raw",
+        ctype: "application/json"
+    }).done(function (result, status) {
+        if (status != "success" || typeof (result) != "object") return;
+        var entries_loaded = 0;
+        mw.hook("pollLoader.loaded").add(function() {
+            if (++entries_loaded < result.length) return;
+            result.sort(function (a, b) { return b.rating - a.rating; });
+            $("table.contest-results tbody").empty();
+            result.forEach(function (entry, place) {
+                $("table.contest-results tbody").append(
+                    "<tr>" +
+                        "<td>" + (place + 1) + "</td>" +
+                        "<td>" +
+                            '<a href="' + mw.util.getUrl(entry.name) + '" ' +
+                                'title="' + entry.name + '">' +
+                                (entry.title || entry.name) +
+                            "</a>" +
+                        "</td>" +
+                        "<td>" +
+                            '<a href="' + mw.util.getUrl("User:" + entry.author) + '" ' +
+                                'title="User:' + entry.author + '">' +
+                                entry.author +
+                            "</a>" +
+                        "</td>" +
+                        "<td>" + entry.upvote + "</td>" +
+                        "<td>" + entry.novote + "</td>" +
+                        "<td>" + entry.downvote + "</td>" +
+                        "<td>" + entry.rating.toFixed(4) + "</td>" +
+                    "</tr>"
+                );
+            });
+            $("table.contest-results").makeCollapsible();
+        });
+        result.forEach(function (entry) {
+            $.getJSON(mw.util.wikiScript("wikia"), {
+                controller: "DiscussionThread",
+                method: "getThread",
+                format: "json",
+                threadId: entry.poll_id
+            }).done(function (result, status) {
+                if (status != "success" || typeof (result) != "object") return;
+                entry.upvote = result.poll.answers[0].votes;
+                entry.novote = result.poll.answers[1].votes;
+                entry.downvote = result.poll.answers[2].votes;
+                entry.rating = (entry.upvote - entry.downvote) / result.poll.totalVotes;
+                mw.hook("pollLoader.loaded").fire();
+            });
+        });
+	});
+	
+	$.getJSON(mw.util.wikiScript("api"), {
+		action: "query",
+		formatversion: 2,
+		format: "json",
+		meta: "siteinfo",
+		siprop: "interwikimap",
+		siinlanguagecode: config.wgUserVariant
+	}, function (result, status) {
+		if (status != "success" || typeof (result) != "object" || !result.batchcomplete) return;
+		$("table.global-interwiki tbody").empty();
+		$("table.local-interwiki tbody").empty();
+		$("table.interlang tbody").empty();
+		result.query.interwikimap.forEach(function (obj) {
+			if (!obj.local)
+				$("table.global-interwiki tbody").append(
+					"<tr>" +
+						"<td>" + obj.prefix.toLowerCase() + "</td>" +
+						"<td>" + obj.url + "</td>" +
+					"</tr>"
+				);
+			else if (obj.language)
+				$("table.interlang tbody").append(
+					"<tr>" +
+						"<td>" + obj.prefix + "</td>" +
+						"<td>" + obj.language + "</td>" +
+						"<td>" + obj.url + "</td>" +
+					"</tr>"
+				);
+			else
+				$("table.local-interwiki tbody").append(
+					"<tr>" +
+						"<td>" + obj.prefix.toLowerCase() + "</td>" +
+						"<td>" + obj.url + "</td>" +
+					"</tr>"
+				);
+		});
+		$("table.global-interwiki").makeCollapsible();
+		$("table.local-interwiki").makeCollapsible();
+		$("table.interlang").makeCollapsible();
+	});
+})();
+
+mw.hook("wikipage.content").add(function () {
+	if (config.wgCanonicalSpecialPageName != "Whatlinkshere") return;
+	$(".mw-whatlinkshere-tools a.mw-redirect").each(function() {
+		var url = mw.util.getUrl($(this)[0].title, {action: "delete"});
+		$(this).after(' | <a href="' + url + '">删除</a>');
+	});
+});

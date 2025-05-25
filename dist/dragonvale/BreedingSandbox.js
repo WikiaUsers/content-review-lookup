@@ -1,38 +1,5 @@
 ;
 $(document).ready(function () {
-    function loadJsonData(api, pageTitle) {
-        return new Promise(function (resolve, reject) {
-            api.get({
-                action: "query",
-                format: "json",
-                prop: "revisions",
-                titles: pageTitle,
-                rvprop: "content",
-                rvslots: "main"
-            }).done(function (data) {
-                var pages = data.query.pages;
-                var pageId = Object.keys(pages)[0];
-
-                if (pageId === "-1") {
-                    console.info('Page not found');
-                    return;
-                }
-
-                var content = pages[pageId].revisions[0].slots.main['*'];
-
-                try {
-                    var jsonData = JSON.parse(content);
-                    resolve(jsonData);
-                } catch (e) {
-                    reject('Error parsing JSON:', e);
-                }
-            }).fail(function (error) {
-                reject('API request failed:', error);
-            });
-        });
-    }
-
-
     function addDropdown(id, placeholder, $parent) {
         var $container = $('<div class="dropdown-container field"></div>');
         var $label = $('<label for="' + id + '">' + placeholder + '</label>');
@@ -119,11 +86,10 @@ $(document).ready(function () {
             var $select = $container.find('select');
             $configMap[dropdown.id] = { el: $select, config: dropdown };
 
-            
             var data = dropdown.data;
             if (typeof data === 'string') {
                 var api = new mw.Api();
-                loadJsonData(api, data).then(function (result) {
+                ModuleInject.loadJsonData(api, data).then(function (result) {
                     var sortedData = dropdown.dataKey ? result[dropdown.dataKey] : result;
                     if (dropdown.config.sortKey) {
                         sortedData = sortedData.sort(function (a, b) {
@@ -183,7 +149,6 @@ $(document).ready(function () {
         var $results = $('<div id="sandboxResults"></div>');
         $sandbox.append($results);
 
-        
         function handleChange() {
             var unnamedArgs = [];
             var namedArgs = {};
@@ -214,8 +179,13 @@ $(document).ready(function () {
                 }
             });
 
-            updateModuleInvocation('BreedingSandbox', 'breed', unnamedArgs, namedArgs, function (data) {
-                $results.html(data);
+            ModuleInject.invokeModule(
+                `BreedingSandbox`,
+                'breed',
+                unnamedArgs,
+                namedArgs
+            ).then(html => {
+                $results.html(html);
             });
         }
     }
@@ -254,7 +224,7 @@ $(document).ready(function () {
         var data = dropdownConfig.data;
         if (typeof data === 'string') {
             var api = new mw.Api();
-            loadJsonData(api, data).then(function (result) {
+            ModuleInject.loadJsonData(api, data).then(function (result) {
                 var sortedData = dropdownConfig.dataKey ? result[dropdownConfig.dataKey] : result;
                 if (dropdownConfig.config.sortKey) {
                     sortedData = sortedData.sort(function (a, b) {
@@ -282,7 +252,6 @@ $(document).ready(function () {
             initializeDropdown($dragonSelect, data, dropdownConfig.config, handleHintChange);
         }
 
-
         // --- Results Area ---
         var $resultsContainer = $('<div id="hintSearchResults"></div>');
         $hintSearchDiv.append($resultsContainer);
@@ -302,91 +271,32 @@ $(document).ready(function () {
 
             $resultsContainer.html('<p><i>Loading hint...</i></p>');
 
-            updateModuleInvocation('BreedingSandbox', 'VisualHint', unnamedArgs, namedArgs, function (data) {
-                $resultsContainer.html(data);
+            ModuleInject.invokeModule(
+                `BreedingSandbox`,
+                'VisualHint',
+                unnamedArgs,
+                namedArgs
+            ).then(html => {
+                $resultsContainer.html(html);
             });
         }
     }
-
-    function generateModuleInvocation(moduleName, functionName, unnamedArgs, namedArgs) {
-        unnamedArgs = unnamedArgs || [];
-        namedArgs = namedArgs || {};
-
-        var unnamedArgsString = unnamedArgs.map(function (arg) {
-            return arg || '';
-        }).join('|');
-
-        var namedArgsString = Object.keys(namedArgs).map(function (key) {
-            return key + '=' + (namedArgs[key] || '');
-        }).join('|');
-
-        var luaInvocation = '{{#invoke:' + moduleName + '|' + functionName +
-            (unnamedArgsString ? '|' + unnamedArgsString : '') +
-            (namedArgsString ? '|' + namedArgsString : '') + '}}';
-
-        return luaInvocation;
-    }
-
-    function invokeModule(invocation, successCallback, errorCallback) {
-        $.ajax({
-            url: mw.util.wikiScript('api'),
-            data: {
-                action: 'parse',
-                format: 'json',
-                text: invocation,
-                prop: 'text'
-            },
-            dataType: 'json',
-            success: successCallback,
-            error: errorCallback
-        });
-    }
-
-    function updateModuleInvocation(module, functionName, unnamedArgs, namedArgs, callback) {
-        var invocation = generateModuleInvocation(module, functionName, unnamedArgs, namedArgs);
-
-        invokeModule(invocation,
-            function (data) {
-                callback(data.parse.text['*']);
-            },
-            function () {
-                console.error('Failed to update invocation.');
-            }
-        );
-    }
-
-    function initializeWhenDivIsReady(id, callback) {
-        var observer = new MutationObserver(function (mutations, observerInstance) {
-
-            var $element = document.getElementById(id);
-            if ($element) {
-                observerInstance.disconnect();
-
-                callback($element);
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    }
-
+ 
     mw.loader.using('mediawiki.api', function () {
         var api = new mw.Api();
 
         mw.hook('wikipage.content').add(function () {
             Promise.all([
-                loadJsonData(api, 'Data:SandboxConfig.json')
+                ModuleInject.loadJsonData(api, 'Data:SandboxConfig.json')
             ])
                 .then(function (results) {
                     var sandboxConfig = results[0];
 
-                    initializeWhenDivIsReady('dragonSandbox', function ($el) {
+                    ModuleInject.waitForElement('#dragonSandbox').then(el=>{
                         initializeSandbox(sandboxConfig);
                     });
 
-                    initializeWhenDivIsReady('hintSearch', function ($el) {
+                    ModuleInject.waitForElement('#hintSearch').then(el => {
                         initializeHintSearch(); 
                     });
                 })

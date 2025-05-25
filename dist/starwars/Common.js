@@ -386,6 +386,20 @@ function setupUploadForm(){
 	}
 }
 
+function addVisualEditorMessage() {
+	if( !$( '#ve-ui-modeSwitchPopupButtonWidget-button' ).length ) {
+		return;
+	} else if ( !$( '#ve-ui-modeSwitchPopupButtonWidget-button' ).find( '.oo-ui-labelElement-label') ) {
+		return;
+	}
+	
+	if ($( '#ve-ui-modeSwitchPopupButtonWidget-button' ).find( '.oo-ui-labelElement-label').text() === "Visual Editor") {
+		$message = $( '<div id="visualeditor-switch-msg" style="margin-right: 10px;"></div>' )
+		$message.append('Wookieepedia recommends <a href="/wiki/Wookieepedia:Welcome,_newcomers">editing using the Source Editor!</a><br />Click the button to the right and choose "Source Editing" to get started.')
+		$( '.ve-fd-header__actions').prepend($message);
+	}
+}
+
 function verifySummary(){
 	var wpLicense = document.getElementById('wpLicense');
 	var wpDestFile = document.getElementById('wpDestFile');
@@ -953,6 +967,7 @@ window.RollbackWikiDisable = true;
 
 function fillEditSummariesVisualEditor() {
 	mw.hook( 've.activationComplete' ).add(function () {
+	addVisualEditorMessage();
 	if ( $( '#stdEditSummaries' ).length ) return;
 		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 			var	$summaryOptionsList,

@@ -29,7 +29,7 @@ if(!!el.length && !!el.data('threadids')) {
 						text: dateCreated.toLocaleString()
 					})
 				),
-				$('<small />', { text: 'In ' + post.forumName }),
+				$('<small />').append($('<a />', { text: 'In ' + post.forumName, href:  mw.config.get('wgScriptPath') + '/d/p/' + post.forumId })),
 				$('<div />', { class: 'avatars' }).append(
                     $('<div />', { class: 'wds-avatar-stack contributors' })
                 ),
@@ -81,7 +81,13 @@ if(!!el.length && !!el.data('threadids')) {
 }
  
 function getThread(threadId, callback) {
-    $.getJSON('https://services.wikia.com/discussion/' + mw.config.get('wgCityId') + '/threads/' + threadId + '?responseGroup=full', function(data) {
+    $.getJSON(mw.config.get('wgScriptPath') + '/wikia.php', {
+		controller: 'DiscussionThread',
+		method: 'getThread',
+		limit: 3,
+		responseGroup: 'full',
+		threadId: threadId,
+	}, function(data) {
        callback(data); 
     });
 }

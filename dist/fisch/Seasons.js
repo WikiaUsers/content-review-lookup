@@ -1,23 +1,17 @@
 /**
- * Unified Season System
- * @version 4.5
- * 
- * Complete season tracking system for game seasons
- * Combines grid view, current season, next season, and target season functionality
+ * Fisch Season/Other System
+ * @version 4.7
  * 
  * Features:
  * - Season grid with visual states
  * - Current and next season displays
  * - Target season prediction
  * - Phantom Megaladon tracking
+ * - Hourly countdown timer
  * - Optional timers for all components
  * - Real-time updates
  * - MediaWiki integration
  */
-
-/*jshint jquery:true, browser:true, esversion:5*/
-/*global mediaWiki*/
-
 ;(function(window, mw, $) {
 	'use strict';
 
@@ -44,10 +38,10 @@
 			}
 		],
 		MEGALADON: {
-			MEG_INITIAL_SPAWN: 432000, // Initial spawn timestamp
-			MEG_EVENT_DURATION: 172800, // Duration of the event 
-			MEG_CYCLE_LENGTH: 604800, // Full cycle length
-			MEG_CYCLE_OFFSET: -259200 // Offset before the start
+			MEG_INITIAL_SPAWN: 432000,
+			MEG_EVENT_DURATION: 172800,
+			MEG_CYCLE_LENGTH: 604800,
+			MEG_CYCLE_OFFSET: -259200
 		}
 	};
 
@@ -90,7 +84,6 @@
 			var cycleLength = CONFIG.MEGALADON.MEG_CYCLE_LENGTH;
 			var cycleOffset = CONFIG.MEGALADON.MEG_CYCLE_OFFSET;
 
-			// Calculate the current cycle
 			var cyclesSinceStart = Math.floor((now - (initialSpawn + cycleOffset)) / cycleLength);
 			var currentCycleStart = initialSpawn + cycleOffset + (cyclesSinceStart * cycleLength);
 			var currentCycleEnd = currentCycleStart + duration;
@@ -102,6 +95,18 @@
 			};
 
 			return result;
+		},
+
+		getHourlyCountdown: function() {
+			var now = new Date();
+			var minutes = 59 - now.getUTCMinutes();
+			var seconds = 59 - now.getUTCSeconds();
+			
+			return {
+				minutes: minutes,
+				seconds: seconds,
+				formatted: minutes + ' min ' + (seconds < 10 ? '0' : '') + seconds + ' s'
+			};
 		},
 
 		formatTime: function(seconds) {
@@ -185,9 +190,14 @@
 				ComponentController.updateTargetSeason($(this));
 			});
 
-			// Обновление таймера Megaladon
+			// Update Megaladon timer
 			$('.phantom-megaladon-timer').each(function() {
 				ComponentController.updateMegaladonTimer($(this));
+			});
+
+			// Update hourly countdown
+			$('.hourly-countdown').each(function() {
+				ComponentController.updateHourlyCountdown($(this));
 			});
 		},
 
@@ -277,23 +287,33 @@
 			var timing = Utils.calculateMegaladonTiming();
 			var timeLeft, displayText;
 
-			// Determine current status and timer
 			if (now < timing.start) {
-				// Before start
 				timeLeft = timing.start - now;
 				displayText = 'Starts:';
 			} else if (now < timing.end) {
-				// Active period
 				timeLeft = timing.end - now;
 				displayText = 'Ends:';
 			} else {
-				// Between cycles
 				timeLeft = timing.nextStart - now;
 				displayText = 'Starts:';
 			}
 
 			$element.html(
-				'<div class="time-data megaladon-timer" style="font-size: 16px;">' + displayText + ' ' + Utils.formatTime(timeLeft) + '</div>'
+				'<div class="time-data megaladon-timer" style="font-size: 16px; color: #ccc;">' + displayText + ' ' + Utils.formatTime(timeLeft) + '</div>'
+			);
+		},
+
+		updateHourlyCountdown: function($element) {
+			var now = new Date();
+			var minutes = 59 - now.getUTCMinutes();
+			var seconds = 59 - now.getUTCSeconds();
+			var timeLeft = minutes * 60 + seconds;
+			
+			var displayText = 'Ends:';
+			var formatted = Utils.formatTime(timeLeft);
+			
+			$element.html(
+				'<div class="time-data hourly-timer" style="font-size: 16px;">' + displayText + ' ' + formatted + '</div>'
 			);
 		}
 	};
@@ -302,19 +322,16 @@
 	function init($content) {
 		$content = $content || $(document);
 
-		// Найти все компоненты сезонов
 		var $components = $content.find('.season-timer:not(.initialized), ' +
 			'.current-season:not(.initialized), ' +
 			'.next-season:not(.initialized), ' +
 			'.target-season:not(.initialized), ' +
-			'.phantom-megaladon-timer:not(.initialized)');
+			'.phantom-megaladon-timer:not(.initialized), ' +
+			'.hourly-countdown:not(.initialized)');
 
 		if (!$components.length) return;
 
-		// Пометить компоненты как инициализированные
 		$components.addClass('initialized');
-
-		// Запустить цикл обновлений
 		SeasonController.startUpdates();
 	}
 
