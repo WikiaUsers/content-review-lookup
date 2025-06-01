@@ -1,8 +1,41 @@
-/* Wiki Names */
-var wiki_names = ["Welcome to Dorthpeck", "Do not oversleep.", "Just this once, I hope you'll listen.", "Enjoy your stay!", "Rest easy", "Manage your time.", "Stanley walked through the red door.", "Talk to everyone. They know more than you do.", "Try not to miss anything before you sleep.", "...", "FREEDOM AT LAST", "Don't make this difficult.", "Collect my pages.", "ZOMG!!!", "CHEATER.", "Over 15 messages! Can you find them all?"];
-var wiki_name_number = -1;
-while (wiki_name_number < 0 || wiki_name_number > wiki_names.length) {
-  wiki_name_number = Math.random().toFixed(2) * 100;
-}
+/* Community Header Name */
+var wiki_names = [/* Games */
+"POINT OF NO RETURN. Wiki",
+"The Beginning And The End Wiki",
+/* Scrapped POINT NO RETURN. Titles */
+"DON'T MAKE THIS DIFFICULT Wiki", 
+"ONE MAN'S FINAL EFFORT Wiki", 
+"TICKING TIME Wiki", 
+"DEVIL'S ADVOCATE Wiki", 
+"START ANEW Wiki", 
+"PLEASE, LEAVE ME BE Wiki", 
+/* Development Team */
+"Wasted Time Studios Wiki",
+/* Thumbnail Messages */
+"Welcome to Dorthpeck", 
+"Enjoy your stay!", 
+"Rest easy", 
+/* Character Messages */
+"Don't make this difficult.",
+"FREEDOM AT LAST",
+"ZOMG!!!",
+"Just this once, I hope you'll listen.",
+"Collect my pages.",
+"...",
+"CHEATER.",
+/* Narrator & Loading Screens Messages */
+"Don't go into weird pages.",
+"These messages are kinda useless.",
+"Try not to miss anything before you sleep.",
+"Manage your time.",
+"Talk to everyone. They know more than you do.",
+"Dude. I'm just the narrator. Don't ask me.",
+"Stanley walked through the red door.",
+"Do not oversleep.",
+"More will come in the future!",
+"Stuck? Maybe trying again will help.",
+"Stay radical.",
+"Over 30 messages! Can you find them all?"];
+var wiki_name_number = Math.floor(Math.random() * wiki_names.length);
 var elements = document.getElementsByClassName('fandom-community-header__community-name');
 elements[0].textContent = wiki_names[wiki_name_number];

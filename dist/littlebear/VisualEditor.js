@@ -1,26 +1,6 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
 	const api = new mw.Api();
-	
-	mw.hook('wikiEditor.toolbarReady').add(() => {
-		const queryString = {
-			modules: 'ext.fandom.wikiEditorFandomDesktop.css',
-			only: 'styles',
-		};
-		const href = `/load.php?${new URLSearchParams(queryString).toString()}`;
-		mw.loader.load(href, 'text/css');
-	});
-	
-	mw.hook('ve.activationComplete').add(() => {
-		const docNode = $('.ve-ce-documentNode');
-		const classes = [
-			`mw-content-${docNode.attr('dir')}`,
-			'mw-parser-output',
-			'mw-show-empty-elt',
-		];
-		docNode.addClass(classes);
-	});
-	
 	const systemMsg = 'fandom-upload-form-label-own-work';
 	api.loadMessagesIfMissing(systemMsg).done(() => {
 		const parsedMsg = mw.message(systemMsg).parse();

@@ -53,7 +53,7 @@ $(document).ready(function () {
     },
      "Divinus": {
       link: "Divinus",
-      style: "text-shadow: 0 0 5px white; color: yellow; font-weight: bold;"
+      style: "text-shadow: 0 0 5px white; color: yellow; font-size: 25px; font-family: 'Moon Dance', Verdana;"
     },
      "Naptime": {
       link: "Naptime",
@@ -155,6 +155,26 @@ $(document).ready(function () {
       link: "MAOW:_Destroyer_Of_Worlds",
       style: "text-shadow: 0 0 5px yellow; color: yellow; font-weight: bold;"
     },
+     "Bus": {
+      link: "Bus",
+      style: "background:linear-gradient(135deg,black,yellow,black); -webkit-background-clip:text !important; -webkit-text-fill-color:transparent; font-weight: bold;"
+    },
+     "Error": {
+      link: "Error",
+      style: "background:linear-gradient(0deg,#ff10f0,black,#ff10f0,black); -webkit-background-clip:text !important; -webkit-text-fill-color:transparent; font-weight: bold;"
+    },
+     "OVERKILL": {
+      link: "OVERKILL",
+      style: "text-shadow: 0 0 5px  #FF7878; color:; background:linear-gradient(45deg,Red,orange,Red); -webkit-background-clip:text !important; -webkit-text-fill-color:transparent; font-weight: bold;"
+    },
+     "Space": {
+      link: "Space",
+      style: "opacity: 25%; text-shadow: 0 0 5px white; color: green; font-weight: bold;"
+    },
+     "Nova": {
+      link: "Nova",
+      style: "text-shadow: 0 0 5px white ; color:; background:linear-gradient(90deg,#FFFCD4,yellow ); -webkit-background-clip:text !important; -webkit-text-fill-color:transparent; font-weight: bold;"
+    },
      "Immunities": {
       link: "Mechanics#Immunities",
       style: "font-weight: bold;"
@@ -185,72 +205,77 @@ $(document).ready(function () {
     }
   };
 
-  const currentPage = window.location.pathname.split('/').pop();
-  console.log("Current page: ", currentPage);
+const currentPage = window.location.pathname.split('/').pop();
   const content = document.getElementById("mw-content-text");
-
   if (!content) return;
-
-  function walkTextNodes(node) {
-    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
-    const textNodes = [];
-    let currentNode;
-    while ((currentNode = walker.nextNode())) {
-      if (currentNode.nodeValue.trim() && !currentNode.parentNode.closest("a, span, b, strong, i, em")) {
-        textNodes.push(currentNode);
-      }
-    }
-    return textNodes;
-  }
 
   function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
   }
 
-  const textNodes = walkTextNodes(content);
-  
-  const sortedKeywordEntries = Object.entries(keywordData).sort((a, b) => b[0].length - a[0].length);
-
-for (const textNode of textNodes) {
-  let originalText = textNode.nodeValue;
-  let replacedParts = [originalText];
-
-  for (const [keyword, { link, style }] of sortedKeywordEntries) {
-    const escapedKeyword = escapeRegExp(keyword);
-	const needsBoundaries = /^[\w\s]+$/.test(keyword) && !/[:()]/.test(keyword);
-	const regex = new RegExp(
-	 needsBoundaries ? `\\b(${escapedKeyword})\\b(?!-)` : `(${escapedKeyword})(?!-)`,
-	 "gi"
-	);
-
-
-    replacedParts = replacedParts.flatMap(part => {
-      if (part.startsWith("<") && part.endsWith(">")) {
-        return [part];
+  for (const [keyword] of Object.entries(keywordData)) {
+    const elements = content.querySelectorAll("a, span");
+    for (const el of elements) {
+      if (el.textContent.trim().toLowerCase() === keyword.toLowerCase()) {
+        const textNode = document.createTextNode(el.textContent);
+        el.replaceWith(textNode);
       }
-      
-      const splitParts = [];
-      let lastIndex = 0;
-      part.replace(regex, (match, p1, offset) => {
-        splitParts.push(part.slice(lastIndex, offset));
-        const replacement = (link.toLowerCase() === currentPage.toLowerCase())
-          ? `<span style="${style}">${p1}</span>`
-          : `<a href="/wiki/${link}" style="${style}">${p1}</a>`;
-        splitParts.push(replacement);
-        lastIndex = offset + p1.length;
-      });
-      splitParts.push(part.slice(lastIndex));
-      return splitParts;
-    });
+    }
   }
 
-  const replacedText = replacedParts.join("");
+function processNode(node) {
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    for (let child of Array.from(node.childNodes)) {
+      processNode(child);
+    }
+  }
 
-  if (replacedText !== originalText) {
-    const span = document.createElement("span");
-    span.innerHTML = replacedText;
-    textNode.parentNode.replaceChild(span, textNode);
+  if (node.nodeType === Node.TEXT_NODE) {
+    let originalText = node.nodeValue;
+    let parent = node.parentNode;
+    let container = document.createElement('span');
+
+    const sortedKeywordEntries = Object.entries(keywordData).sort((a, b) => b[0].length - a[0].length);
+
+    let replaced = false;
+
+    for (const [keyword, { link, style }] of sortedKeywordEntries) {
+      const escapedKeyword = escapeRegExp(keyword);
+      const needsBoundaries = /^[\w\s]+$/.test(keyword) && !/[:()]/.test(keyword);
+
+      const regex = new RegExp(
+        needsBoundaries
+          ? "(\\`)?\\b(" + escapedKeyword + ")\\b(?!-)"
+          : "(\\`)?(" + escapedKeyword + ")(?!-)",
+        "gi"
+      );
+
+      if (regex.test(originalText)) {
+        const newHTML = originalText.replace(regex, (match, backtick, keywordMatch) => {
+          if (backtick) return keywordMatch;
+
+          return (link.toLowerCase() === currentPage.toLowerCase())
+            ? `<span style="${style}">${keywordMatch}</span>`
+            : `<a href="/wiki/${link}" style="${style}">${keywordMatch}</a>`;
+        });
+
+        container.innerHTML = newHTML;
+        parent.replaceChild(container, node);
+        replaced = true;
+        break;
+      }
+    }
+
+    if (!replaced && originalText.includes('`')) {
+      const cleanedText = originalText.replace(/\`(?=\w)/g, '');
+      if (cleanedText !== originalText) {
+        const cleanedNode = document.createTextNode(cleanedText);
+        parent.replaceChild(cleanedNode, node);
+      }
+    }
   }
 }
 
+
+  processNode(content);
 });

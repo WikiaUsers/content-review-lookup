@@ -70,8 +70,10 @@ $(function(){
 			this.effRanIdx = this.detailedStatTexts.indexOf("Effect Range");
 			this.effDurIdx = this.detailedStatTexts.indexOf("Effect Duration"); 
 			this.dmgIncIdx = this.detailedStatTexts.indexOf("Damage Dealt");
-			this.chargeDurIdx = this.detailedStatTexts.indexOf("Charge Duration"); //Charge stats needed for scatter & rail gun DPS
-			this.chargeDmgIdx = this.detailedStatTexts.indexOf("Charge Damage Increase");
+			this.chargeDurIdx = this.detailedStatTexts.indexOf("Charge Duration");          //stats needed for weapons with a charge phase
+			this.chargeDmgIdx = this.detailedStatTexts.indexOf("Charge Damage Increase");   //stats needed for weapons with a charge phase
+            this.burstCountIdx = this.detailedStatTexts.indexOf("Burst Shots");             //stats needed for weapons with burst fire
+            this.burstDurIdx = this.detailedStatTexts.indexOf("Burst Duration");            //stats needed for weapons with burst fire
 			
 			this.realLevel = 0;
 		};
@@ -93,41 +95,28 @@ $(function(){
 			
 			switch (this.altText) {
 				case ("Primary Weapon"):
+                    //damage modifiers
+                    var chargeDmgMod = (this.chargeDmgIdx != -1) ? this.baseDStats[this.chargeDmgIdx]/100.0 : 1.0;
+                    var burstDmgMod = (this.burstCountIdx != -1) ? this.baseDStats[this.burstCountIdx] : 1.0;
+                    
+                    //duration modifiers
+                    var fireDur = (this.rateIdx != -1)? 1/this.baseDStats[this.rateIdx] : 1.0;
+                    var chargeDur = (this.chargeDurIdx != -1)? this.baseDStats[this.chargeDurIdx] : 0.0;
+                    var burstDur = (this.burstDurIdx != -1)? this.baseDStats[this.burstDurIdx] : 0.0;
+                
 					if (this.kDPSIdx != -1){
-						var newKDmg = this.calc(this.baseDStats[this.kDmgIdx], 1.13); 
-						this.detailedStatVals.eq(this.kDmgIdx).html(Math.round(newKDmg)); //set kinetic dmg val
-						
-						var newKDPS;
-						if (this.rateIdx != -1){
-							newKDPS = newKDmg * this.baseDStats[this.rateIdx];
-						} 
-						else {
-							//Exception for Beam Lasers which have no displayed fire rate stat.
-							newKDPS = newKDmg; 
-						}
-						if ((this.equiptype == "Scatter Gun" || this.equiptype == "Rail Gun") && this.equipname != "Repeater"){
-							//DPS = (base damage * charge dmg increase %) / (charge duration + 1/fire rate), 1/fire rate is refire time
-							newKDPS = (newKDmg * (this.baseDStats[this.chargeDmgIdx] /100)) / (this.baseDStats[this.chargeDurIdx] + 1 / this.baseDStats[this.rateIdx]);
-						}
-						this.mainStatVals.eq(this.kDPSIdx).html(Math.round(newKDPS)); //set kinetic DPS val
+                        var newKDmg = this.calc(this.baseDStats[this.kDmgIdx], 1.13);
+						var newKDPS = (newKDmg * chargeDmgMod * burstDmgMod) / (fireDur + chargeDur + burstDur);
+
+						this.mainStatVals.eq(this.kDPSIdx).html(Math.round(newKDPS));       //set kinetic DPS val
+                        this.detailedStatVals.eq(this.kDmgIdx).html(Math.round(newKDmg));   //set kinetic dmg val
 					}
 					if (this.eDPSIdx != -1){
 						var newEDmg = this.calc(this.baseDStats[this.eDmgIdx],1.13); 
-						this.detailedStatVals.eq(this.eDmgIdx).html( Math.round(newEDmg)); //set energy dmg val
-						
-						var newEDPS;
-						if (this.rateIdx != -1){
-							newEDPS = newEDmg * this.baseDStats[this.rateIdx];
-						} 
-						else {
-							//Exception for Beam Lasers which have no displayed fire rate stat.
-							newEDPS = newEDmg; 
-						}
-						if ((this.equiptype == "Scatter Gun" || this.equiptype == "Rail Gun") && this.equipname != "Repeater"){
-							//DPS = (base damage * charge dmg increase %) / (charge duration + 1/fire rate), 1/rate is refire time
-							newEDPS = (newEDmg * (this.baseDStats[this.chargeDmgIdx] /100)) / (this.baseDStats[this.chargeDurIdx] + 1 / this.baseDStats[this.rateIdx]);
-						}
-						this.mainStatVals.eq(this.eDPSIdx).html(Math.round(newEDPS)); //set energy DPS val					
+						var newEDPS = (newEDmg * chargeDmgMod * burstDmgMod) / (fireDur + chargeDur + burstDur);
+
+						this.mainStatVals.eq(this.eDPSIdx).html(Math.round(newEDPS));       //set energy DPS val
+                        this.detailedStatVals.eq(this.eDmgIdx).html( Math.round(newEDmg));  //set energy dmg val
 					}	
 					this.detailedStatVals.eq(this.eCapIdx).html(Math.round(this.calc(this.baseDStats[this.eCapIdx], 1.16))); //set energy capacity val
 					this.detailedStatVals.eq(this.eConIdx).html(this.calc(this.baseDStats[this.eConIdx], 1.14) + "/s"); //set energy consumption val

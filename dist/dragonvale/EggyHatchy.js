@@ -5,6 +5,7 @@
         config: null,
         dragonsData: null,
         limitedData: null,
+        gameData: null,
         availableLimitedDragonNames: new Set(),
         //api: null,
         state: {
@@ -22,10 +23,11 @@
             shownNoMergeAlert: false
         },
 
-        initialize: function (gameConfig, dragonsData, limitedData, rootElement) {
+        initialize: function (gameConfig, dragonsData, limitedData, gameData, rootElement) {
             this.config = gameConfig;
             this.dragonsData = this.preprocessDragonsData(dragonsData);
             this.limitedData = this.preprocessLimitedData(limitedData);
+            this.gameData = gameData;
             //this.api = new mw.Api();
             this.ui.rootElement = rootElement;
 
@@ -173,9 +175,10 @@
 
         loadNewStage: function () {
             var self = this;
-            return this.generateInitialGrid(this.state.gridSize).then(grid=> {
+            this.state.goals = this.generateGoals();
+
+            return this.generateInitialGrid(this.state.gridSize, this.state.goals).then(grid=> {
                 self.state.grid = grid;
-                self.state.goals = self.generateGoals();
                 self.state.currentScore = 0;
                 self.state.bankedEggs = [];
                 self.deselectEggs();
@@ -185,10 +188,74 @@
             });
         },
 
-        generateInitialGrid: function (size) {
-            const difficultyConf = this.config.difficultySettings[this.state.difficulty];
-            const rules = difficultyConf.exclusionRules;
+        normalizeWeights: function (weights, allKeys) {
+            const definedKeys = Object.keys(weights);
+            const hasOnlyZeros = definedKeys.length > 0 && definedKeys.every(function (k) { return weights[k] === 0; });
 
+            // No weights: uniform across all
+            if (definedKeys.length === 0) {
+                const uniform = 1 / allKeys.length;
+                return allKeys.reduce(function (obj, key) {
+                    obj[key] = uniform;
+                    return obj;
+                }, {});
+            }
+
+            // Only 0.0 weights: uniform over remaining (excluded ones are 0.0)
+            if (hasOnlyZeros) {
+                const allowedKeys = allKeys.filter(function (k) { return definedKeys.indexOf(k) === -1; });
+                const uniformAllowed = allowedKeys.length > 0 ? 1 / allowedKeys.length : 0;
+                return allKeys.reduce(function (obj, key) {
+                    obj[key] = allowedKeys.indexOf(key) !== -1 ? uniformAllowed : 0.0;
+                    return obj;
+                }, {});
+            }
+
+            // Normal case: assign weights, missing keys = 0.0
+            var total = 0;
+            var rawWeights = {};
+            for (var i = 0; i < allKeys.length; i++) {
+                var k = allKeys[i];
+                rawWeights[k] = weights.hasOwnProperty(k) ? weights[k] : 0;
+                total += rawWeights[k];
+            }
+
+            if (total === 0) {
+                return allKeys.reduce(function (obj, k) { obj[k] = 0.0; return obj; }, {});
+            }
+
+            return allKeys.reduce(function (obj, k) {
+                obj[k] = rawWeights[k] / total;
+                return obj;
+            }, {});
+        },
+
+        weightedRandomSelection: function (items, weightGetter) {
+            const totalWeight = items.reduce((sum, item) => sum + weightGetter(item), 0);
+
+            const randomValue = Math.random() * totalWeight;
+
+            let cumulativeWeight = 0;
+            for (const item of items) {
+                cumulativeWeight += weightGetter(item);
+                if (randomValue < cumulativeWeight) {
+                    return item;
+                }
+            }
+
+            console.warn('invalid weight selection')
+            return items[0];
+        },
+
+        crystal: function(c) { return c**3; },
+        generateInitialGrid: function (size, goals) {
+            const difficultyConf = this.config.difficultySettings[this.state.difficulty];
+            const rules = difficultyConf.selectionRules;
+
+            function getRuleValue(obj, keys, defaultValue) {
+                return keys.split('.').reduce((acc, key) => acc && acc[key], obj) || defaultValue;
+            }
+            
             let sourceDragonList;
             if (rules && rules.availability === "available") {
                 sourceDragonList = this.getAvailableBreedingDragons();
@@ -196,11 +263,9 @@
                 sourceDragonList = Object.values(this.dragonsData);
             }
 
-            const raritiesToExclude = (rules.rarities && rules.rarities.length > 0)
-                ? rules.rarities
-                : ["Legendary", "Mythic"];
-            const elementsToExclude = rules.elements || [];
-            const tagsToExclude = rules.tags || [];
+            const raritiesToExclude = getRuleValue(rules, 'exclusions.rarities', ["Legendary", "Mythic"]);
+            const elementsToExclude = getRuleValue(rules, 'exclusions.elements', []);
+            const tagsToExclude = getRuleValue(rules, 'exclusions.tags', []);
             
             const availableDragonNames = sourceDragonList.filter(details => {
                 if (!details) return false;
@@ -223,13 +288,131 @@
                 return Promise.resolve(Array(size).fill(null).map(() => Array(size).fill(null)));
             }
 
-            const randomDragonNames = [];
-            for (let r = 0; r < size; r++) {
-                for (let c = 0; c < size; c++) {
-                    const randomDragonName = availableDragonNames[Math.floor(Math.random() * availableDragonNames.length)];
-                    randomDragonNames.push(randomDragonName);
+            const dragonsWithDetails = [];
+            for (let i = 0; i < availableDragonNames.length; i++) {
+                var name = availableDragonNames[i];
+                var details = this.getDragonDetails(name);
+                dragonsWithDetails.push(Object.assign({ name: name }, details));
+            }
+
+            var allElements = [];
+            for (var key in this.gameData.elements) {
+                if (Array.isArray(this.gameData.elements[key])) {
+                    allElements = allElements.concat(this.gameData.elements[key]);
                 }
             }
+            allElements = allElements.filter(function (e) {
+                return elementsToExclude.indexOf(e) === -1;
+            });
+
+            var allRarities = this.gameData.rarities.filter(function (r) {
+                return raritiesToExclude.indexOf(r) === -1;
+            });
+
+            const elementRules = getRuleValue(rules, 'elements', {});
+            const rarityRules = getRuleValue(rules, 'rarities', {});
+
+            const normalizedRarityWeights = this.normalizeWeights(rarityRules, allRarities);
+            const normalizedElementWeights = this.normalizeWeights(elementRules, allElements);
+            const normalizedAvailabilityWeights = this.normalizeWeights(getRuleValue(rules, 'availabilities', {}), ["limited", "permanent"]);
+            
+            const elementGoals = goals
+                .filter(g => g.type === 'elementLevel')
+                .map(g => ({ element: g.element, count: g.targetCount }));
+
+            const calculateWeight = (dragon) => {
+                const rarityWeight = Object.keys(normalizedRarityWeights).length === 0
+                    ? 1.0
+                    : (normalizedRarityWeights[dragon.Rarity] || 0.0);
+
+                const elementWeight = (function () {
+                    if (Object.keys(normalizedElementWeights).length === 0) return 1.0;
+
+                    if (Object.keys(elementRules).length > 0) {
+                        for (var i = 0; i < dragon.Elements.length; i++) {
+                            var el = dragon.Elements[i];
+                            if (rules.elements.hasOwnProperty(el) && rules.elements[el] === 0) return 0.0;
+                        }
+                    }
+
+                    return dragon.Elements.reduce(function (sum, el) {
+                        return sum + (normalizedElementWeights[el] || 0.0);
+                    }, 0);
+                })();
+
+                const availabilityWeight = Object.keys(normalizedAvailabilityWeights).length === 0
+                    ? 1.0
+                    : dragon.IsLimited
+                        ? (normalizedAvailabilityWeights["limited"] || 0.0)
+                        : (normalizedAvailabilityWeights["permanent"] || 0.0);
+
+                return rarityWeight * elementWeight * availabilityWeight;
+            };
+
+            const goalDragons = [];
+            for (var i = 0; i < dragonsWithDetails.length; i++) {
+                var d = dragonsWithDetails[i];
+                for (var j = 0; j < elementGoals.length; j++) {
+                    if (d.Elements.indexOf(elementGoals[j].element) !== -1) {
+                        goalDragons.push(d);
+                        break;
+                    }
+                }
+            }
+
+            const selectedDragons = [];
+            const goalSatisfactionMap = {};
+
+            for (let i = 0; i < elementGoals.length; i++) {
+                goalSatisfactionMap[elementGoals[i].element] = 0;
+            }
+
+            function needsMoreGoalDragons() {
+                for (let i = 0; i < elementGoals.length; i++) {
+                    let g = elementGoals[i];
+                    if (goalSatisfactionMap[g.element] < Math.max(3, g.count*1.5)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            const totalSlots = size * size;
+            while (selectedDragons.length < totalSlots) {
+                let pool;
+                const isGoalStage = needsMoreGoalDragons();
+
+                if (isGoalStage) {
+                    pool = goalDragons;
+                } else {
+                    pool = dragonsWithDetails;
+                }
+
+                if (pool.length === 0) {
+                    break;
+                }
+
+                const selectedDragon = this.weightedRandomSelection(pool, calculateWeight);
+                selectedDragons.push(selectedDragon);
+
+                for (let i = 0; i < elementGoals.length; i++) {
+                    let goalElement = elementGoals[i].element;
+                    if (selectedDragon.Elements.indexOf(goalElement) !== -1) {
+                        goalSatisfactionMap[goalElement]++;
+                    }
+                }
+            }
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+            }
+            const randomDragonNames = selectedDragons.map(function (dragon) { return dragon.Name; });
+            shuffle(randomDragonNames);
 
             var self = this;
             return ModuleInject.invokeModule('BreedingSandbox', 'EggyHatchyGetEggImageNames', randomDragonNames)
@@ -249,7 +432,9 @@
                         return;
                     }
 
-                    const eggImageNames = JSON.parse(extractedText);
+                    const result = JSON.parse(extractedText);
+                    const eggImageNames = result.eggs;
+                    const eggPoints = result.scores;
 
                     const minStartLevel = (difficultyConf.startLevel && typeof difficultyConf.startLevel.min === 'number') ? difficultyConf.startLevel.min : 1;
                     const maxStartLevel = (difficultyConf.startLevel && typeof difficultyConf.startLevel.max === 'number') ? difficultyConf.startLevel.max : 2;
@@ -262,14 +447,24 @@
                     for (let r = 0; r < size; r++) {
                         for (let c = 0; c < size; c++) {
                             const dragonName = randomDragonNames[index];
-                            const eggName = eggImageNames[index] || `${dragonName}DragonEgg.png`; //todo better fallback
+                            const eggName = eggImageNames[index] || (this.config.mysteryEggImage || 'EggOfMystery.png');
+                            let points = eggPoints[index] || 0;
 
                             const randomLevel = Math.floor(Math.random() * (actualMaxLevel - actualMinLevel + 1)) + actualMinLevel;
+                            const isTwin = Math.random() < (difficultyConf.twinChance || 0.05);
+
+                            points += self.crystal(randomLevel);
+
+                            if(isTwin) {
+                                points *= 2;
+                            }
+
                             grid[r][c] = self.createEggObject(
                                 dragonName,
                                 eggName,
                                 randomLevel,
-                                Math.random() < (difficultyConf.twinChance || 0.05)
+                                isTwin,
+                                points
                             );
                             index++;
                         }
@@ -282,7 +477,7 @@
                 });
         },
 
-        createEggObject: function (name, image, level, isTwin) {
+        createEggObject: function (name, image, level, isTwin, points) {
             const dragonInfo = this.getDragonDetails(name);
             if (!dragonInfo) {
                 console.error(`Dragon details not found for ${name}. Cannot create egg.`);
@@ -297,29 +492,8 @@
                 latentElements: dragonInfo.BreedingElements || [],
                 rarity: dragonInfo.Rarity,
                 tags: dragonInfo.Tags || [],
-                points: this.calculateEggPoints(name, level, isTwin)
+                points: points
             };
-        },
-
-        calculateEggPoints: function (name, level, isTwin) {
-            const dragonInfo = this.getDragonDetails(name);
-            if (!dragonInfo) return 0;
-
-            let points = 0;
-            const pointData = this.config.dragonPointData ? this.config.dragonPointData[name] : null;
-            const difficultyConf = this.config.difficultySettings[this.state.difficulty];
-
-            if (pointData && typeof pointData.base !== 'undefined' && typeof pointData.perLevel !== 'undefined') {
-                points = pointData.base + (level * pointData.perLevel);
-            } else {
-                let basePoints = (this.config.rarityPoints && this.config.rarityPoints[dragonInfo.Rarity]) || 1;
-                points = basePoints + (level * (difficultyConf.levelPointMultiplier || 5));
-            }
-
-            if (isTwin) {
-                points *= (difficultyConf.twinBonus|| 2);
-            }
-            return Math.round(points);
         },
 
         generateGoals: function () {
@@ -327,7 +501,7 @@
             
             let goals = [];
             const goalSettings = difficultyConf.goals;
-            const allElements = goalSettings.elements || ["Plant", "Fire", "Cold", "Earth", "Water", "Lightning", "Air", "Metal", "Light", "Dark"];
+            const allElements = goalSettings.elements || this.gameData.elements.primary;
 
             if (goalSettings.elementLevel && Math.random() < 0.8) {
                 const randomElement = allElements[Math.floor(Math.random() * allElements.length)];
@@ -375,8 +549,7 @@
                     } else {
                         this.state.selectedEgg2 = { cell: clickedCell, data: clickedEggData };
                         this.state.isProcessing = true;
-                        this.previewMerge();
-                        actionPromise = Promise.resolve();
+                        actionPromise = this.previewMerge();
                     }
                 } else {
                     this.deselectEggs();
@@ -391,7 +564,7 @@
             var self = this;
             
             return actionPromise.then(function () {
-                self.state.isProcessing = false; 
+                self.state.isProcessing = false;
                 return self.ui.render();
             }).catch(function (error) {
                 console.error("Error in cell click action:", error);
@@ -480,40 +653,84 @@
 
             let resultLevel = Math.min(egg1Data.level + egg2Data.level, maxLevel);
             let resultIsTwin = egg1Data.isTwin || egg2Data.isTwin;
-            let resultName, resultImage, resultPoints;
 
             if (egg1Data.name === egg2Data.name) {
-                resultName = egg1Data.name;
-                resultImage = egg1Data.image;
-
                 resultLevel = Math.min(resultLevel + (difficultyConf.identicalMergeBonusLevel || 1), maxLevel);
-                resultPoints = this.calculateEggPoints(resultName, resultLevel, resultIsTwin);
+                const resultPoints = egg1Data.points - this.crystal(egg1Data.level) + this.crystal(resultLevel);
 
                 this.state.previewedMergeResult = {
-                    name: resultName, image: resultImage, level: resultLevel,
+                    name: egg1Data.name, image: egg1Data.image, level: resultLevel,
                     isTwin: resultIsTwin, points: resultPoints, isPreview: false
                 };
+                return Promise.resolve();
             } else {
-                let minPoints = 0, maxPoints = 0;
-                const genericRange = this.config.pointRangeForUnknownBreed || { min: 50, max: 500 };
-                const twinMultiplier = difficultyConf.twinBonus || 2;
-
-                minPoints = Math.round((genericRange.min + resultLevel * 5) * (resultIsTwin ? twinMultiplier : 1));
-                maxPoints = Math.round((genericRange.max + resultLevel * 15) * (resultIsTwin ? twinMultiplier : 1));
-
-                this.state.previewedMergeResult = {
+                var self = this;
+                var result = {
                     name: "???",
                     image: this.config.mysteryEggImage || 'EggOfMystery.png',
                     level: resultLevel,
                     isTwin: resultIsTwin,
                     points: 0,
-                    minPoints: minPoints,
-                    maxPoints: maxPoints,
+                    minPoints: 9999,
+                    maxPoints: 0,
                     isPreview: true,
 
                     parent1Name: egg1Data.name,
                     parent2Name: egg2Data.name
                 };
+
+                var moduleArgs = {}
+
+                if (difficultyConf && difficultyConf.modes && Array.isArray(difficultyConf.modes) && difficultyConf.modes.length > 0) {
+                    const validModes = difficultyConf.modes.filter(function (modeStr) {
+                        return typeof modeStr === 'string' && modeStr.trim() !== '';
+                    });
+
+                    if (validModes.length > 0) {
+                        moduleArgs.events = validModes.join(',');
+                    }
+                }
+
+                moduleArgs.twin = result.isTwin;
+                moduleArgs.level = result.level;
+
+                return ModuleInject.invokeModule(
+                    self.config.breedModuleName,
+                    self.config.breedFunctionName+"Preview",
+                    [result.parent1Name, result.parent2Name],
+                    moduleArgs
+                ).then(function (rawHtmlResponse) {
+                    try {
+                        var tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = rawHtmlResponse;
+                        var contentContainer = tempDiv.querySelector('pre');
+                        if (!contentContainer) {
+                            console.error("Failed to find content response:", rawHtmlResponse);
+                            return;
+                        }
+
+                        var extractedText = contentContainer.textContent.trim();
+
+                        if (!extractedText) {
+                            console.error("Failed to retrieve text:", response);
+                            return;
+                        }
+
+                        const parsedResult = JSON.parse(extractedText);
+
+                        if (parsedResult.error) {
+                            result.error = parsedResult.error;
+                            //self.deselectEggs();
+                        } else {
+                            result.minPoints = parsedResult.minScore;
+                            result.maxPoints = parsedResult.maxScore;
+                        }
+
+                        self.state.previewedMergeResult = result;
+                    } catch (error) {
+                        return Promise.reject("Lua parsing error in previewMerge");
+                    }
+                });
             }},
 
         performMerge: function () {
@@ -540,6 +757,9 @@
                     moduleArgs.events = validModes.join(',');
                 }
             }
+
+            moduleArgs.twin = previewData.isTwin;
+            moduleArgs.level = previewData.level;
 
             var actualMergePromise;
 
@@ -575,7 +795,7 @@
                             image: parsedResult.image,
                             level: previewData.level,
                             isTwin: previewData.isTwin,
-                            points: self.calculateEggPoints(parsedResult.name, previewData.level, previewData.isTwin)
+                            points: parsedResult.score
                         };
                     } catch (error) {
                         console.error("Error parsing Lua result in performMerge:", error, "Raw:", rawHtmlResponse, "Extracted:", extractedText);
@@ -597,7 +817,7 @@
                     return;
                 }
 
-                const newEgg = self.createEggObject(finalEggSpec.name, finalEggSpec.image, finalEggSpec.level, finalEggSpec.isTwin);
+                const newEgg = self.createEggObject(finalEggSpec.name, finalEggSpec.image, finalEggSpec.level, finalEggSpec.isTwin, finalEggSpec.points);
 
                 if (!newEgg) {
                     console.error("Failed to create new egg from final spec.");
@@ -945,7 +1165,6 @@
                 this.previewContainer.style.margin = '10px auto';
                 this.previewContainer.style.minHeight = '100px';
                 this.previewContainer.style.width = 'calc(100% - 20px)';
-                this.previewContainer.style.maxWidth = '600px';
                 this.previewContainer.style.textAlign = 'center';
                 this.playingScreenContainer.appendChild(this.previewContainer);
 
@@ -1267,9 +1486,11 @@
                     this.gridContainer.style.display = 'grid';
                     this.gridContainer.style.gridTemplateColumns = 'repeat(' + gridSize + ', 1fr)';
                     this.gridContainer.style.gap = '3px';
-                    const cellSize = Math.min(100, 320 / gridSize);
+                    const cellSize = 100;//Math.min(100, 320 / gridSize);
                     this.gridContainer.style.width = (gridSize * (cellSize + 3)) + 'px';
                     this.gridContainer.style.height = (gridSize * (cellSize + 3)) + 'px';
+
+                    this.previewContainer.style.width = (gridSize * (cellSize + 3)) + 'px';
 
                     this.gridCellElements = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
                     const allCellPromises = [];
@@ -1429,7 +1650,7 @@
 
                 if (selectedEgg1 && selectedEgg2 && previewedMergeResult) {
                     if (previewedMergeResult.error) {
-                        this.previewContainer.textContent = `Error: ${previewedMergeResult.error}`;
+                        this.previewContainer.textContent = `${previewedMergeResult.error}`;
                         return Promise.resolve();
                     }
 
@@ -1453,7 +1674,7 @@
                         resultRenderPromise
                     ]).then(function (elements) {
                         if (currentVersion !== self.previewRenderVersion) {
-                            console.log("renderMergePreviewContent: Stale render (version " + currentVersion + "), current is " + self.previewRenderVersion);
+                            //console.log("renderMergePreviewContent: Stale render (version " + currentVersion + "), current is " + self.previewRenderVersion);
                             return; // Abort if a newer render has started
                         }
 
@@ -1477,7 +1698,7 @@
                 } else if (selectedEgg1) {
                     return self.renderElementWithEggGraphics(selectedEgg1.data, P_SIZE, true).then(function (egg1Elem) {
                         if (currentVersion !== self.previewRenderVersion) {
-                            console.log("renderMergePreviewContent: Stale render (version " + currentVersion + "), current is " + self.previewRenderVersion);
+                            //console.log("renderMergePreviewContent: Stale render (version " + currentVersion + "), current is " + self.previewRenderVersion);
                             return; // Abort if a newer render has started
                         }
 
@@ -1536,10 +1757,10 @@
         }
     };
 
-    function initializeGameWithData(gameConfig, dragonsData, limitedData) {
+    function initializeGameWithData(gameConfig, dragonsData, limitedData, gameData) {
         ModuleInject.waitForElement('#eggy-hatchy-game-container').then(el => {
-            game.initialize(gameConfig, dragonsData, limitedData, el);
-        }).catch(error => console.error("Failed to find #eggy-hatchy-game-container or initialize game:", error));
+            game.initialize(gameConfig, dragonsData, limitedData, gameData, el);
+        }).catch(error => console.error("Failed to find container or initialize game:", error));
     }
 
     if (mw.config.get('wgUserName') !== null) {
@@ -1557,12 +1778,14 @@
                 Promise.all([
                     ModuleInject.loadJsonData(api, 'Data:EggyHatchyConfig.json'),
                     ModuleInject.loadJsonData(api, 'Data:Dragons.json'),
-                    ModuleInject.loadJsonData(api, 'Data:Limited.json')
+                    ModuleInject.loadJsonData(api, 'Data:Limited.json'),
+                    ModuleInject.loadJsonData(api, 'Data:Game.json'),
                 ]).then(function (results) {
                     var gameConfig = results[0];
                     var dragons = results[1];
                     var limited = results[2];
-                    initializeGameWithData(gameConfig, dragons, limited);
+                    var game = results[3];
+                    initializeGameWithData(gameConfig, dragons, limited, game);
                 }).catch(function (error) {
                     console.error("Failed to load game data.", error);
                 });

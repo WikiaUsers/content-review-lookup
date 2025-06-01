@@ -26,20 +26,24 @@ $(document).ready(function () {
         }
     };
 
-    // Loop through all elements
-    $('p, li, span, td, th, h1, h2, h3, h4').each(function () {
-        let html = $(this).html();
+    // Only modify actual text nodes inside these elements
+    const elements = $('p, li, span, td, th, h1, h2, h3, h4');
 
-        // Check for each keyword and apply its style
-        for (let keyword in styles) {
-            const style = styles[keyword];
-            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
-            if (regex.test(html)) {
-                const styledHTML = `<span style="color: ${style.color}; text-shadow: ${style.textShadow};">${keyword}</span>`;
-                html = html.replace(regex, styledHTML);
+    elements.contents().each(function () {
+        if (this.nodeType === 3) { // TEXT_NODE
+            let text = this.nodeValue;
+
+            for (let keyword in styles) {
+                const style = styles[keyword];
+                const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+                const replacement = `<span style="color: ${style.color}; text-shadow: ${style.textShadow};">$1</span>`;
+                text = text.replace(regex, replacement);
+            }
+
+            // Only replace if needed
+            if (text !== this.nodeValue) {
+                $(this).replaceWith(text);
             }
         }
-
-        $(this).html(html);
     });
 });

@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
@@ -8,7 +10,11 @@ window.ajaxPages = [
     "Special:Log",
     "Special:Contributions",
 ];
+
+
 /* The following makes MediaWiki:Common.js/uploadform.js work */
+
+
 if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
         importScript('MediaWiki:Common.js/uploadform.js');
     }
@@ -34,3 +40,50 @@ $(function () {
     // Wait a bit to ensure rendering is complete
     setTimeout(shrinkTitle, 0);
 });
+
+
+/* Moves infobox down to be in-line with text, for sake of my autism */
+
+
+$(function () {
+    var $infobox = $('.portable-infobox.pi-background.pi-border-color.pi-theme-wikia.pi-layout-default');
+    if ($infobox.length) {
+        $infobox.css('margin-top', '6px');
+    }
+});
+
+/* Removed underline under references, so its more visible for visually impaired users  */
+
+$(document).ready(function () {
+    $("sup.reference a").each(function () {
+        $(this).css({
+            "text-decoration": "none",
+            "border-bottom": "none",
+            "box-shadow": "none",
+            "background-image": "none"
+        });
+    });
+});
+
+/* Fixes conitnuity tag sometimes going into the title, why the hell does this doesnt work in CSS, nothing work in CSS >:/ */
+
+(function () {
+    var mediaQuery = window.matchMedia('(max-width: 959px)');
+    var box = document.getElementById('ma-article-type');
+
+    function handleMediaChange(e) {
+        if (!box) return;
+        if (e.matches) {
+            box.style.setProperty('display', 'none', 'important');
+        } else {
+            box.style.removeProperty('display');
+        }
+    }
+
+    if (box) {
+        // Initial check
+        handleMediaChange(mediaQuery);
+        // Listen for future changes
+        mediaQuery.addListener(handleMediaChange);
+    }
+})();

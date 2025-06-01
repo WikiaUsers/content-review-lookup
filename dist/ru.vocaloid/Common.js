@@ -1,6 +1,6 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 // Кастом модуль
-window.AddRailModule = ['Template:NewPagesModule'];
+window.AddRailModule = ['Template:NewPagesModule', 'Template:RailModule'];
 
 // random class in mainpage (idk if this actually works, openai gave me this)
 (function() {

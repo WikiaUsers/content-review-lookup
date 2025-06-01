@@ -25,10 +25,3 @@ UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true };
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
-
-// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
-$('.fandom-community-header__community-name-wrapper').append(
-	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
-		$('<img/>').css('height', '60px').css('position', 'relative').css('top', '10px')
-		.attr('src', 'https://static.wikia.nocookie.net/sky-children-of-the-light/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230720221916').attr('title', 'This wiki is part of Fandom Compass')
-));

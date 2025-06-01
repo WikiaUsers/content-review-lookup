@@ -21,18 +21,18 @@
 		if (window.UserActivityLinkAdded) {
 			return;
 		}
-		const prefItem = $('.user-tab__list .user-tab__list-item:nth-child(1)');
-		if (prefItem.length) {
+		const list = $('.user-panel__list');
+		if (list.length) {
 			window.UserActivityLinkAdded = true;
-			addActivityLink(prefItem, i18n.data);
+			addActivityLink(list, i18n.data);
 		} else {
 			setTimeout(checkForList, 100, i18n);
 		}
 	}
-	function addActivityLink (nextItem, i18n) {
-		nextItem.before(
+	function addActivityLink (list, i18n) {
+		list.prepend(
 			$('<li>', {
-				'class': 'user-tab__list-item',
+				'class': 'user-panel__list-item',
 				'dir': 'auto',
 			}).append(
 				$('<a>', {

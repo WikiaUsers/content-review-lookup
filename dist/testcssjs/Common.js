@@ -1,42 +1,23 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+// Experimental Template JS 
+mw.hook("wikipage.content").add(function ($content) {
+	$content.find("span.import-js").each(function () {
+		const jsCode = $(this).attr("data-js");
+		const from = $(this).attr("data-from");
+		if (!jsCode) return;
 
-mw.loader.using(['oojs-ui'], function () 
-    $(function () {
-        if (mw.config.get('wgCanonicalSpecialPageName') !== 'UserRights') return;
+		try {
+			console.log("[T:JS] Running JS from:", from);
+			new Function(jsCode)();
+		} catch (err) {
+			console.error("[T:JS] Error in user-injected JS:", err);
+		}
+	});
+});
 
-        const form = document.querySelector('#mw-userrights-form');
-        const submitButton = document.querySelector('input[name="saveusergroups"]');
-        const bureaucratCheckbox = document.querySelector('#wpGroup-bureaucrat');
-
-        if (!form || !submitButton || !bureaucratCheckbox) return;
-
-        let confirmed = false;
-
-        form.addEventListener('submit', function (e) {
-            if (confirmed) return; // Prevent double dialogs
-
-            if (bureaucratCheckbox.checked) {
-                e.preventDefault();
-
-                const dialog = new OO.ui.MessageDialog();
-                const windowManager = new OO.ui.WindowManager();
-                $(document.body).append(windowManager.$element);
-                windowManager.addWindows([dialog]);
-
-                windowManager.openWindow(dialog, {
-                    title: '⚠️ Confirm Bureaucrat Promotion',
-                    message: 'You are promoting this user to <strong>Bureaucrat</strong>. This group has full administrative access. Proceed with caution.',
-                    actions: [
-                        { action: 'accept', label: 'Yes, promote', flags: ['primary', 'progressive'] },
-                        { action: 'cancel', label: 'Cancel', flags: ['safe', 'close'] }
-                    ]
-                }).then(function (closing) {
-                    if (closing.action === 'accept') {
-                        confirmed = true;
-                        form.submit(); // Proceed
-                    }
-                    // If cancel, do nothing
-                });
-            }
-        });
-    }));
+// T:CSS
+mw.hook("wikipage.content").add(function () {
+	$("span.import-css").each(function () {
+		var css = mw.util.addCSS($(this).attr("data-css"));
+		$(css.ownerNode).addClass("import-css").attr("data-css-hash", $("span.import-css").attr("data-css-hash")).attr("data-from", $("span.import-css").attr("data-from"));
+	});
+});

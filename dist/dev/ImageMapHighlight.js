@@ -67,7 +67,7 @@ $(document).ready(function() {
 			dims = { position: 'absolute', width: w + 'px', height: h + 'px', border: 0, top: 0, left: 0 },
 			parentMarker = img.closest('.imageMapHighlighter'),
 			liClasses = parentMarker.data('list-classes'),
-			
+
 			map = img.siblings('map:first'),
 			defaultLink = false;
 		if (!map.length) { // for maps with "default" link, img is inside <a>
@@ -85,7 +85,8 @@ $(document).ready(function() {
 			.css(dims)
 			.attr({ width: w, height: h });
 		var bgimg = $('<img>', { 'class': artifactClass, src: img.attr('src') })
-			.css(dims); // completely inert the original image
+			.css(dims) // completely inert the original image
+			.prop('alt', '').prop('ariaHidden', true); // also hide it from screen readers
 
 		// Extend area highlighting with data attributes
 		var areaHighlight = $.extend({}, defaultAreaHighlight, {
@@ -121,7 +122,13 @@ $(document).ready(function() {
 		} else {
 			ol.css('display', 'none');
 		}
-		div.after(ol);
+
+		// place legend inside <figcaption>
+		var figure = parentMarker.find('figure');
+		var figcaption = figure.children('figcaption');
+		figcaption.addClass('imageMapHighlighterLegend');
+		figcaption.empty(); // delete the default infoicon
+		figcaption.append(ol);
 
 		var lis = {}; // collapse areas with same caption to one list item
 		var someli; // select arbitrary one
@@ -149,15 +156,10 @@ $(document).ready(function() {
 	function init(i18no) {
 		i18n = i18no;
 
-		mw.util.addCSS(
-			'ol.' + artifactClass + ' { columns: 2; margin: 0; list-style: none; z-index: 500; }' + // css for main ol element
-			'li.' + artifactClass + ' { white-space: nowrap; border: solid 1px transparent; border-radius: 6px; }' + // css for li elements
-			'li.' + artifactClass + '.liHighlighting { background-color: var(--imagemaphighlight-legend-highlight, rgba(var(--theme-link-color--rgb, 255,255,0), 0.1)); }' + // css for highlighted li element
-
-			// hack for centering Legend toggle
-			'#content ol.' + artifactClass + ' { position: relative; margin-top: 1.5em; margin-left: unset; }' +
-			'#content ol.' + artifactClass + ' li.mw-collapsible-toggle-li { position: absolute; inset: -1.5em 0 auto; }'
-		);
+		// import [[MediaWiki:ImageMapHighlight.css]]
+		importArticle({
+			article: 'u:dev:MediaWiki:ImageMapHighlight.css'
+		});
 
 		var selector = '.imageMapHighlighter img[usemap]:not(.highlighted)';
 		$(selector).each(handleOneMap);

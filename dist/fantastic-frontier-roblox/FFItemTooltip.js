@@ -95,13 +95,12 @@ mw.hook("wikipage.content").add(function($content) {
             itemKey.text(
                 item.data.label.replace(isSmart ? htmlTagRgx : "", "")
             );
-            itemVal.html(
-                item.data.value.replace(isSmart ? htmlTagRgx : "", "")
-            ); // To allow for templates and listing.
+            itemVal.html(item.data.value); // To allow for templates and listing.
 
             var valImage = secItem.find(".it-infoitem-val > img");
-            if (valImage.length && valImage.attr("src").startsWith("data:"))
+            if (valImage.length && valImage.attr("src").startsWith("data:")) {
                 valImage.attr("src", valImage.attr("data-src"));
+            }
 
             section.append(secItem);
         });
@@ -267,8 +266,8 @@ mw.hook("wikipage.content").add(function($content) {
         var titleData = title.data.value;
         var image = findByProp(data, "type", "image")[0];
         var imageData = image.data[0];
-        var imageURL = image ? imageData.url.split("/rev")[0] : null;
-        var caption = image ? imageData.caption : null;
+        var imageURL = imageData ? imageData.url.split("/rev")[0] : null;
+        var caption = imageData ? imageData.caption : null;
         var header = $(
             '<div class="it-header"><img/><div class="it-title">-</div></div>'
         );
@@ -291,10 +290,11 @@ mw.hook("wikipage.content").add(function($content) {
         } else {
             tooltip.html(header);
 
-            if (caption && imageData.alt === null)
+            if (caption && imageData.alt === null) {
                 tooltip.append(
                     $('<div class="it-infobox it-desc"></div>').text(caption)
                 );
+            }
 
             var sections = findByProp(data, "type", ["data", "group"]);
             sections.forEach(function(section) {
@@ -357,21 +357,27 @@ mw.hook("wikipage.content").add(function($content) {
                     decodeURIComponent(queryParts[1]).replaceAll("_", " ") // Escape HTML characters and convert to user-readable format.
                 );
 
-                if (infoboxMatches.length) infobox = infoboxMatches[0]; // The anchor matches an infobox, we'll use it.
+                if (infoboxMatches.length) {
+                	infobox = infoboxMatches[0]; // The anchor matches an infobox, we'll use it.
+                }
             }
 
-            if (hovered_article == article) setTooltip(infobox);
+            if (hovered_article == article) {
+            	setTooltip(infobox);
+            }
         }
 
         if (articleName in cache) {
-            if (cache[articleName] !== false) handleParse(cache[articleName]); // The article data was cached, load it.
+            if (cache[articleName] !== false) {
+            	handleParse(cache[articleName]); // The article data was cached, load it.
+            }
         } else {
             // The article wasn't found in cache, pull it.
             tooltip.html('<div class="it-title it-loading">Loading...</div>');
             tooltip.show();
             updatePosition();
 
-            if (articleName in cache){
+            if (articleName in cache) {
                 handleParse(cache[articleName]);
             } else {
                 // We use the MediaWiki API to parse solely the article's infoboxes.
@@ -381,7 +387,9 @@ mw.hook("wikipage.content").add(function($content) {
                         if ("error" in data || !data.parse.properties.length) {
                             // Article did not exist or doesn't have an infobox, so we'll mark this article as not having a tooltip.
                             cache[articleName] = false;
-                            if (hovered_article == article) tooltip.hide();
+                            if (hovered_article == article) {
+                            	tooltip.hide();
+                            }
                         } else {
                             var infoboxes = findByProp(
                                 data.parse.properties,
@@ -392,7 +400,9 @@ mw.hook("wikipage.content").add(function($content) {
                             if (!infoboxes.length) {
                                 // Article now definitely doesn't have an infobox, mark it as not having a tooltip.
                                 cache[articleName] = false;
-                                if (hovered_article == article) tooltip.hide();
+                                if (hovered_article == article) {
+                                	tooltip.hide();
+                                }
                             } else {
                                 var parsedInfoboxes = JSON.parse(
                                     infoboxes[0]["*"]
@@ -416,7 +426,9 @@ mw.hook("wikipage.content").add(function($content) {
         "*:not(.mw-editsection, .mw-editform-cancel) > a[href^='/wiki/']",
         function() {
             var article = $(this).attr("href").substr(6); // Trim away /wiki/.
-            if (article.indexOf("action=") > -1) return; // Don't allow pulling any links with "action=", as it may be a URL query part.
+            if (article.indexOf("action=") > -1) {
+            	return; // Don't allow pulling any links with "action=", as it may be a URL query part.
+            }
             updateTooltip(article);
         }
     );

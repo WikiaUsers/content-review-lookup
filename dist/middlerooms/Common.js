@@ -25,7 +25,7 @@ window.lockOldComments.limit = 120; // Amount of time to lock comment
 
 
 // EditRootPageText Configuration 
-window.EditRootPageText = "Edit main page";
+window.EditRootPageText = "Edit parent page";
 // == Imports (configurations should stay above this) ==
 importArticles({
 	type: 'script',
@@ -93,7 +93,7 @@ window.UserTagsJS = {
 		bot: { link:'Help:Bots', order:-1 },
 		bureaucrat: { order:0 }, // <- lower order number = before other order tags (ex: tag with 1 will be placed before tag with 2)
 		sysop: { order:1 },
-		manager: { u:'Wiki System Manager', order:2 },
+		manager: { u:'Technician', order:2 },
 		inactivenotable: { u:'Legacy User', order:-2 }, 
 		cw: { u:'Contest Winner', order:7 },
 		ra: { u:'Regional Admin', order:3 },
