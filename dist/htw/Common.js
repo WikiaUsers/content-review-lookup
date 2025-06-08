@@ -4,6 +4,10 @@ nkch_gst_gadgets = [{
     title: "Theme extension",
     description: "Extends the theme to other elements of the interface."
 },{
+    name: "ThemeFix",
+    title: "Theme extension fix",
+    description: "Fix issues with the search bar; for Theme extension."
+},{
     name: "BlurEffects",
     title: "Blur effects",
     description: "Enables blur effects."
@@ -12,6 +16,8 @@ nkch_gst_gadgets = [{
     title: "Remove image titles",
     description: "Removes image titles, useful on Logos articles."
 }];
+
+window.AddRailModule = [{maxAge: 0}];
 
 importArticles({
     type: 'script',

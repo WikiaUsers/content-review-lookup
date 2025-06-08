@@ -15,6 +15,9 @@ mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweFanFeed.
 // Inactivity Popup
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweInactivityWindow.js?action=raw\u0026ctype=text/javascript");
 
+// ToDoList toggle
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweToDoList.js?action=raw\u0026ctype=text/javascript");
+
 /* Português do Basil -> Português
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweInterlanguageNames.js?action=raw\u0026ctype=text/javascript");*/
 

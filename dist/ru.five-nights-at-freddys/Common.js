@@ -158,11 +158,9 @@ setInterval(function () {
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
+$('.wds-avatar a[href$="SuperSadCat"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod'); 
+$('.wds-avatar a[href$="Makeins"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
 }, 500 );
-a[href$="SuperSadCat"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
-    $('.wds-avatar 
-a[href$="Makeins"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
-    $('.wds-avatar 
 
 /* ========== Анимированный логотип ========== */
 {

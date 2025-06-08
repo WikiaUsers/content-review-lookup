@@ -146,6 +146,7 @@ importArticles({
         'u:dev:MediaWiki:QuickDiff/code.js',
         'u:dev:MediaWiki:NoLicenseWarning.js',
         'u:dev:MediaWiki:AutoCreateUserPages.js',
+        'u:dev:MediaWiki:PreloadTemplates.js',
     ]
 });
 /* Import for only logged in user*/
@@ -168,4 +169,20 @@ $(document).on('readystatechange', function() {
       $("th", this).eq(columnIndex).trigger("click");
     });
   }
+});
+/**================================================================================
+ *                         Preload Templates Customization
+ * ================================================================================*/
+$(function () {
+    let tries = 0, max = 20;
+    let check = setInterval(() => {
+        let $label = $('#preload-templates > span');
+        if ($label.length) {
+            clearInterval(check);
+            $label.html('Preload Template (<strong>BEFORE SELECT PRELOAD TEMPLATE PLEASE USE SOURCE EDITOR AT TOP RIGHT</strong>)');
+        } else if (++tries >= max) {
+            clearInterval(check);
+            console.warn('[PreloadTemplates override] Label not found.');
+        }
+    }, 500);
 });

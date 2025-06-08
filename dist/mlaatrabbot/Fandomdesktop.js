@@ -1,4 +1,3 @@
-/***[[Category:Internal pages]]***/
 // Image slider
 $(function() {
   var slideTotal = $(".cslider ul li").length;

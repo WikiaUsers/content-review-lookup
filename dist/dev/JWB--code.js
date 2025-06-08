@@ -590,6 +590,7 @@ JWB.setup.save = function(name) {
 	};
 	//inputs with a text value
 	$('textarea, input[type="text"], input[type="number"], select').not('.replaces input, #editBoxArea, #settings *').each(function() {
+		if (!this.id || this.id === '') {return;}
 		if (typeof $(this).val() == 'string') { 
 			self.string[this.id] = this.value.replace(/\n{2,}/g,'\n');
 		} else {
@@ -609,6 +610,7 @@ JWB.setup.save = function(name) {
 		}
 	});
 	$('input[type="radio"], input[type="checkbox"]').not('.replaces input').each(function() {
+		if (!this.id || this.id === '') {return;}
 		self.bool[this.id] = this.checked;
 	});
 	if (!$('#loadSettings option[value="'+name+'"]').length) {

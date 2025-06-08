@@ -86,8 +86,8 @@ var BackToTop = true; // prevent duplication
 	// Переменные по умолчанию
 	var Defaults = {
 		dock: '#mw-content-text, #article-comments',
-		defimage: 'https://static.wikia.nocookie.net/elderscrolls/images/6/6c/Link_Preview_-_preloader.gif/revision/latest?cb=20210426191046&path-prefix=ru',
-		noimage : 'https://vignette.wikia.nocookie.net/elderscrolls/images/8/89/Wiki-wordmark.png/revision/latest?cb=20191231170042&path-prefix=ru',
+		defimage: 'https://static.wikia.nocookie.net/spacearena/images/6/6c/Link_Preview_-_preloader.gif/revision/latest?cb=20250605161509&path-prefix=ru',
+		noimage : 'https://static.wikia.nocookie.net/spacearena/images/e/e6/Site-logo.png/revision/latest?cb=20221106213124&path-prefix=ru',
 		delay : 100, // Задержка появления подсказки
 		tlen : 1000, // Максимальная длина текста
 		csize : 500, // Количество кэшированных страниц

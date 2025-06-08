@@ -148,6 +148,12 @@
     'S01E09': ['Images - Caprica', 'Season 1 - Caprica', 'S01E09 - Caprica'],
     'S01E10': ['Images - Caprica', 'Season 1 - Caprica', 'S01E10 - Caprica'],
 },
+ 'Other': {
+    "Other": ["Images - Other"],
+    "I don't know": ["Images - I don't know"],
+    "FanArt": ["Images - FanArt"],
+    "Unofficial Render": ["Images - Unofficial Render"],
+},
    
         },
         addCSS: function() {

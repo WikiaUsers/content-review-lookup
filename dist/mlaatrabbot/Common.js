@@ -1,4 +1,4 @@
-/***[[Category:Internal pages]]***/
+/******/
 /***Rail Module customization***/
 window.AddRailModule = [{prepend: true}];
 window.AddRailModule = ['Template:RailModule'];

@@ -83,13 +83,13 @@ function setup() {
 	};
 	bgImg.src = `/Special:Redirect/file/${bg}`;
 	// insert UI elements
-	$("#animation-toggle-div").append('<label class="switch" title="Переключить анимацию"><input type="checkbox" id="animation-toggle"><span class="slider round"><span class="animation-off">Выкл</span><span class="animation-on">Вкл</span></span></label>');
-	$("#input-bg-div").append('<input type="text" id="input-bg" placeholder="Ввести название файла" value="' + mw.html.escape(bg) + '">');
-	$("#input-form-div").append('<select class="input-element" name="Form" id="select-form" title="Выбрать форму"><option id="option-normal" value="f">Обычная</option><option id="option-evolved" value="c">Эволюция</option><option id="option-true" value="s">Истинная</option><option id="option-ultra" value="u">Ультра</option></select>');
-	$("#input-mode-div").append('<select class="input-element" name="Mode" id="select-mode" title="Выбрать тип анимации"><option value="00">Ходьба</option><option value="01">Простой</option><option value="02" id="option-attack">Атака</option><option value="03" id="option-knockback">Отскок</option></select>');
-	$("#input-frame-div").append('<input class="input-element" type="number" id="input-frame" value="0" min="0" title="Ввести название рамки для показа">');
+	$("#animation-toggle-div").append('<label class="switch" title="Переключить на анимацию"><input type="checkbox" id="animation-toggle"><span class="slider round"><span class="animation-off">Выкл</span><span class="animation-on">Вкл</span></span></label>');
+	$("#input-bg-div").append('<input type="text" id="input-bg" placeholder="Ввести имя файла" value="' + mw.html.escape(bg) + '">');
+	$("#input-form-div").append('<select class="input-element" name="Form" id="select-form" title="Выбрать форму юнита"><option id="option-normal" value="f">Обычная</option><option id="option-evolved" value="c">Эволюция</option><option id="option-true" value="s">Истинная</option><option id="option-ultra" value="u">Ультра</option></select>');
+	$("#input-mode-div").append('<select class="input-element" name="Mode" id="select-mode" title="Выбрать тип анимации"><option value="00">Походка</option><option value="01">Простой</option><option value="02" id="option-attack">Атака</option><option value="03" id="option-knockback">Отскок</option></select>');
+	$("#input-frame-div").append('<input class="input-element" type="number" id="input-frame" value="0" min="0" title="Ввести количество фреймов для показа">');
 	$("#animation-button-div").append('<button id="animation-button-attack" type="button" title="Проиграть анимацию атаки" style="display: none;">Атака</button>');
-	$("#animation-button-div").append('<button id="animation-button-knockback" type="button" title="Показание анимация отскоков" style="display: none;">Отскок</button>');
+	$("#animation-button-div").append('<button id="animation-button-knockback" type="button" title="Показать отскок" style="display: none;">Отскок</button>');
 	$("#hide-elements").append('<input type="checkbox">');
 	// read animation data
 	var map, urls;

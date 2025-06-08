@@ -1,22 +1,5 @@
-/* jshint
-undef: true,
-devel: true,
-typed: true,
-jquery: true,
-strict: true,
-eqeqeq: true,
-freeze: true,
-latedef: true,
-shadow: outer,
-varstmt: true,
-quotmark: single,
-esversion: 6,
-futurehostile: true
-*/
-/* global
-importArticles,
-structuredClone
-*/
+/* jshint undef: true, devel: true, typed: true, jquery: true, strict: true, eqeqeq: true, freeze: true, latedef: true, shadow: outer, varstmt: true, quotmark: single, esversion: 6, futurehostile: true */
+/* global importArticles, structuredClone */
 mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 	'use strict';
 	
@@ -382,16 +365,16 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 							title: 'Targeted Patrolling',
 							id: 'tPatrol-patrol',
 							size: 'medium',
-							content: 
-								'<div class="tpWrapper">'+
-									'<label for="tpNS">'+
-										'<span class="tpLabel">Namespace:</span>'+
-										'<select name="tpNS" id="tpNS">'+
-											'<optgroup label="Namespaces:">'+
-												'<option value="-99">All</option>'+
-												'<option value="0">Main</option>'+
-												// Rest of namespaces ("Special" and "Media" excluded)
-												(() => {
+							content: `
+								<div class="tpWrapper">
+									<label for="tpNS">
+										<span class="tpLabel">Namespace:</span>
+										<select name="tpNS" id="tpNS">
+											<optgroup label="Namespaces:">
+												<option value="-99">All</option>
+												<option value="0">Main</option>
+												${(() => {
+													// Rest of namespaces ("Special" and "Media" excluded)
 													let options = [];
 													Object.keys(config.wgFormattedNamespaces).forEach((ns) => {
 														if (ns>0) {
@@ -399,34 +382,35 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 														}
 													});
 													return options.join('');
-												})()+
-											'</optgroup>'+
-										'</select>'+
-									'</label>'+
-									'<label for="tpUser">'+
-										'<span class="tpLabel">User:</span>'+
-										'<input name="tpUser" id="tpUser" placeholder="User to mass patrol" />'+
-									'</label>'+
-									'<label for="tpTitle">'+
-										'<span class="tpLabel">Title:</span>'+
-										'<input name="tpTitle" id="tpTitle" placeholder="RegExp for title(s) to keep" />'+
-									'</label>'+
-									'<label for="tpNotTitle">'+
-										'<span class="tpLabel">Not title:</span>'+
-										'<input name="tpNotTitle" id="tpNotTitle" placeholder="RegExp for title(s) to exclude" />'+
-									'</label>'+
-									'<label for="tpTimeStart">'+
-										'<span class="tpLabel">From date:</span>'+
-										'<input name="tpTimeStart" id="tpTimeStart" placeholder="Date to start patrolling from" /> '+
-										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
-									'</label>'+
-									'<label for="tpTimeEnd">'+
-										'<span class="tpLabel">To date:</span>'+
-										'<input name="tpTimeEnd" id="tpTimeEnd" placeholder="Date to end patrolling at" /> '+
-										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
-									'</label>'+
-								'</div>'+
-								'<div id="tpDetails">Progress will be noted here!</div>',
+												})()}
+											</optgroup>
+										</select>
+									</label>
+									<label for="tpUser">
+										<span class="tpLabel">User:</span>
+										<input name="tpUser" id="tpUser" placeholder="User to mass patrol" />
+									</label>
+									<label for="tpTitle">
+										<span class="tpLabel">Title:</span>
+										<input name="tpTitle" id="tpTitle" placeholder="RegExp for title(s) to keep" />
+									</label>
+									<label for="tpNotTitle">
+										<span class="tpLabel">Not title:</span>
+										<input name="tpNotTitle" id="tpNotTitle" placeholder="RegExp for title(s) to exclude" />
+									</label>
+									<label for="tpTimeStart">
+										<span class="tpLabel">From date:</span>
+										<input name="tpTimeStart" id="tpTimeStart" placeholder="Date to start patrolling from" /> 
+										<span title="No date"><svg><use xlink:href="#wds-icons-info-small"></use></svg></span>
+									</label>
+									<label for="tpTimeEnd">
+										<span class="tpLabel">To date:</span>
+										<input name="tpTimeEnd" id="tpTimeEnd" placeholder="Date to end patrolling at" /> 
+										<span title="No date"><svg><use xlink:href="#wds-icons-info-small"></use></svg></span>
+									</label>
+								</div>
+								<div id="tpDetails">Progress will be noted here!</div>
+							`,
 							buttons: [
 								{
 									// Attempt patrol
@@ -765,7 +749,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 					}
 					quickview.show();
 					quickview.setContent(
-						'<div id="content" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+
+						'<div id="'+($('main#fandom-mobile-wrapper').length===0 ? 'content' : 'fandom-mobile-wrapper')+'" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+
 							'<table class="diff diff-contentalign-left diff-editfont-'+(mw.user.options.values.editfont||'default')+'" data-mw="interface">'+
 								'<colgroup>'+
 									'<col class="diff-marker">'+
@@ -899,10 +883,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 							}
 							num++;
 						}
-						if (prev === false && num === revs.length && diff.torevid > revs[num-1].revid) {
+						if (prev === false && revs.length > 1 && num === revs.length && diff.torevid > revs[num-1].revid) {
 							prev = revs[num-1].parentid;
 						}
-						if (next === false && num === revs.length && revs[num-1].parentid === 0 && diff.torevid === undefined) {
+						if (next === false && revs.length > 1 && num === revs.length && revs[num-1].parentid === 0 && diff.torevid === undefined) {
 							next = revs[num-1].revid;
 						}
 						
@@ -1034,10 +1018,11 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 						link.setAttribute('log', 'upload');
 						link.setAttribute('data-target-page', diff.closest('[data-target-page]').getAttribute('data-target-page'));
 						const tots = diff.closest('[data-mw-ts]').getAttribute('data-mw-ts');
+						const page = link.getAttribute('data-target-page');
 						betterDiff.api({
 							action: 'query',
 							prop: 'imageinfo',
-							titles: link.getAttribute('data-target-page'),
+							titles: page,
 							iilimit: 'max',
 							iiprop: 'parsedcomment|timestamp|user|url'
 						}).then((e) => {
@@ -1058,6 +1043,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 									link.setAttribute('data-target-touser', img.user);
 									link.setAttribute('data-target-tourl', img.url);
 									link.setAttribute('data-target-tocmt', img.parsedcomment);
+									link.setAttribute('data-url', mw.util.getUrl(page));
 									if (ii[idx+1] && diff.closest('[data-mw-logaction="upload/overwrite"]')) {
 										link.setAttribute('data-target-fromuser', ii[idx+1].user);
 										link.setAttribute('data-target-fromurl', ii[idx+1].url);
@@ -1106,7 +1092,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 				'.mw-changeslist-groupdiff:not(.quickDiffLoaded)',
 				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded)',
 				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff)',
-				'.page__main .diff a:is(#differences-nextlink, #differences-prevlink):not(.quickDiffLoaded, .quickDiff)',
+				':is(.page__main, main#fandom-mobile-wrapper) .diff a:is(#differences-nextlink, #differences-prevlink):not(.quickDiffLoaded, .quickDiff)',
 				'[data-mw-logaction^="upload"]:has(.mw-usertoollinks + :not(.new)) :is(.mw-changeslist-line-inner-separatorAfterLinks, .mw-changeslist-separator:not(:only-child)):not(.quickDiffLoaded)',
 				'.tPatrol-patrolled .tPatrol-view:not(.quickDiffLoaded)',
 			].join(',');
@@ -1324,7 +1310,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 			return $.ajax(load, {data: params});
 		},
 		
-		getLoad: function (url) {
+		getLoad: (url) => {
 			let d = new URL(url || location.href, location.origin);
 			return d.host+d.pathname.replace(/\/wiki.*$/, '');
     	}

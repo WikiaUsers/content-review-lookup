@@ -66,38 +66,32 @@ window.mapsExtendedConfig = {
                     ],
                     []
                 ],
+    "hiddenControls": ["edit"],
+    "collectibleCategories": ["quest"],
+    "collectibleCheckboxStyle": "fandom",
     "sortMarkers": "category",
-    "disabledCategories": [
-        "settings"
-    ],
     "categoryGroups": [
         {
-            "label": "Exfils",
+            "label": "Extractions",
             "children": [
                 "exfil_pmc",
                 "exfil_scav",
-                "exfil_shared"
+                "exfil_transit"
             ]
         },
         {
             "label": "Spawns",
             "children": [
                 "spawn_pmc",
-                {
-                    "label": "AI",
-                    "children": [
-                        "spawn_scav",
-                        "spawn_sniper",
-                        "spawn_boss",
-                        "spawn_rogueraider",
-                        "spawn_bloodhound",
-                        "spawn_cultist"
-                    ]
-                }
+                "spawn_scav",
+                "spawn_sniper",
+                "spawn_boss",
+                "spawn_rogueraider",
+                "spawn_cultist"
             ]
         },
         {
-            "label": "Misc",
+            "label": "Divers",
             "children": [
                 "lever",
                 "stationarygun",
@@ -106,13 +100,13 @@ window.mapsExtendedConfig = {
             ]
         },
         {
-            "label": "Loot",
+            "label": "Butin",
             "children": [
                 "loot_keycard",
                 "loot_key",
                 "loot_loose",
                 {
-                    "label": "Containers",
+                    "label": "Conteneurs",
                     "children": [
                         "container_ammo",
                         "container_stash",

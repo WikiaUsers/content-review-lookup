@@ -42,12 +42,14 @@ document.querySelectorAll('.fandom-slider').forEach((el) => {
 });
 
 /* add class to custom tabs when sticky */
-let stickyElm = document.querySelector('.custom-tabs')
-let observer = new IntersectionObserver( 
-  ([e]) => e.target.classList.toggle('isSticky', e.intersectionRatio < 1),
-  {threshold: [1], rootMargin: "-47px 0px 0px 0px"}
-);
-observer.observe(stickyElm)
+let stickyElm = document.querySelector('.custom-tabs');
+if (stickyElm) {
+    let observer = new IntersectionObserver( 
+      ([e]) => e.target.classList.toggle('isSticky', e.intersectionRatio < 1),
+      {threshold: [1], rootMargin: "-47px 0px 0px 0px"}
+    );
+    observer.observe(stickyElm);
+}
 
 /* Modifying redirect button from WikiEditor's source mode to automatically include the category */
 $('#wpTextbox1').on('wikiEditor-toolbar-buildSection-advanced', function(event, section) {
@@ -55,3 +57,21 @@ $('#wpTextbox1').on('wikiEditor-toolbar-buildSection-advanced', function(event, 
     section.groups.insert.tools.redirect.action.options.pre = '#REDIRECT [[';
     section.groups.insert.tools.redirect.action.options.post = ']]\n\n[[Category:Redirect Pages]]';
 });
+
+// Fix the search field not updating when ctrl+f with text selected (should be removed when/if fandom fixes it in native)
+if (['edit', 'submit'].includes(mw.config.get('wgAction'))) {
+    mw.hook('ext.CodeMirror.ready').add((cmDOM, cm)=>{
+        cmDOM.find('.cm-content').get(0).addEventListener('keydown', (e)=>{
+            if (e.key.toLowerCase()==='f' && e.ctrlKey) {
+                const    selected = cm.view.state.sliceDoc(
+                            cm.view.state.selection.main.from,
+                            cm.view.state.selection.main.to
+                        ),
+                        search = cmDOM.find('.cdx-text-input__input[name="search"]');
+                if (search.length>0 && selected.length>0) {
+                    search.val(selected);
+                }
+            }
+        }, { capture: true });
+    });
+}

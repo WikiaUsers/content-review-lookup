@@ -55,6 +55,7 @@ window.UserTagsJS = {
 		toychica: { u: 'Toy Chica', order: 4 },
         toyfreddy: { u: 'Toy Freddy', order: 4},
         kenny: { u: 'Kenny', order: 4},
+        marbles: { u: 'marbles', order: 4},
 		wikiresponsibility: { u: 'Wiki Responsibility', order: 2 },
 		cuddles: { u: 'Cuddles', order: 2 },
 		toothy: { u: 'Toothy', order: 2 },
@@ -76,7 +77,7 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-	"Lord O' Darkness": ['sysop', 'semiactive'],
+	"Lord O' Darkness": ['sysop'],
 	'Yong feng': ['honorarybureaucrat', 'toybonnie', 'formerstaff'],
 	'AnimationFan15': ['rollback', 'honorarybureaucrat', 'mime', 'toychica', 'lapis', 'formerstaff'],
     'Rorosilky5': ['flippy', 'kenny', 'formerstaff'],
@@ -84,18 +85,19 @@ UserTagsJS.modules.custom = {
     'PokemonTDHTF98': ['lifty', 'shifty', 'formerstaff'],
     'AdamISAWESOME': ['lumpy', 'mole', 'formerstaff'],
     'BonnieBunny1987': ['lifty', 'shifty'],
-    'KennyX1994': ['sysop', 'semiactive',  'cuddles', 'flaky', 'bandmstudios' ],
+    'KennyX1994': ['sysop',  'cuddles', 'flaky', 'bandmstudios' ],
     'IThrowLemonsAtLife': ['bandmstudios'],
     'Smart zombie': ['honorarybureaucrat', 'nutty', 'formerstaff'],
     'Mr Creeper500': ['cuddles', 'flippy'],
-    'DinoLord00': ['sysop', 'semiactive', 'lumpy', 'mole', 'russell'],
-    'Fasterrr': ['rollback'],
+    'DinoLord00': ['sysop', 'lumpy', 'mole', 'russell'],
     'Zrenjaninac': ['handy', 'mime', 'mole'],
     'BlueTide': ['rollback', 'handy'],
     'Sleep Mast R': ['rollback'],
     'Amber saffeels': ['lumpy'],
     'Splendit-HTF': ['sysop', 'splendid'],
     'SpongeBob\'s Biggest Enthusiast': ['sysop', 'sniffles', 'pop'],
+    'Marblyn': ['sysop', 'flaky', 'marbles'],
+    'THeWarioChanNEL8752': ['pop', 'lifty', 'mole'],
     'Tabletstoons123': ['rollback']
 };
 
@@ -111,12 +113,13 @@ window.MessageWallUserTags = {
         'Smart_zombie': 'Honorary Bureaucrat • Nutty',
         'Mr_Creeper500': 'Cuddles • Flippy',
         'DinoLord00': 'Admin • Russell • Lumpy • Mole',
-        'Fasterrr': 'Rollback',
         'Zrenjaninac': 'Admin • Handy • The Mole • Mime',
         'BlueTide': 'Rollback • Handy',
         'Sleep Mast R': 'Rollback',
         'Splendit-HTF': 'Admin • Splendid',
 	    'SpongeBob\'s Biggest Enthusiast': 'Admin • Sniffles • Pop',
+	    'Marblyn': 'Admin • Flaky • marbles',
+	    'THeWarioChanNEL8752': 'Admin • Pop • Lifty • The Mole',
 	    'Tabletstoons123': 'Rollback',
 	    'TravellingEye': 'Admin',
 	    'MattDet': 'Admin'
@@ -152,3 +155,8 @@ window.LockOldBlogs = {
     expiryMessage: "This blog is considered archived because it hasn\'t been commented on in over <expiryDays> days, please don\'t comment this blog!",
     nonexpiryCategory: "Never archived blogs"
 };
+
+// Right Rail (for the Discord server module)
+window.AddRailModule = [
+    {page: 'Template:DiscordWidget', prepend: true}
+];

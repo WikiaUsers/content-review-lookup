@@ -7,7 +7,7 @@ function subButtonLoad(delay, maxIter) {
   const platformJS = 'https://apis.google.com/js/platform.js';
   let iter = 0;
 
-  if (mw.config.get('wgNamespaceNumber') !== 0 && document.querySelector("div.g-ytsubscribe")) {
+  if (mw.config.get('wgNamespaceNumber') === 0 && document.querySelector("div.g-ytsubscribe")) {
     const handler = setInterval(function () {
       mw.loader.load(platformJS);
       console.count("[Wikitubia] Firing payload");
