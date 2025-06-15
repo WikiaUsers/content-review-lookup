@@ -8,7 +8,9 @@ caster : [2,"Mage_Outfit_Male_White"],
 target : [3,"Target_Dummy_(Object)"],
 sprite_1 : [4,"Fireworks in Shape of '1'"],
 sprite_2 : [5,"Fireworks in Shape of '2'"],
-sprite_3 : [6,"Fireworks in Shape of '3'"]
+sprite_3 : [6,"Fireworks in Shape of '3'"],
+sprite_4 : [7,"Fireworks in Shape of '4'"],
+sprite_5 : [8,"Fireworks in Shape of '5'"]
 };
 //arrays for storing selected cells to decide the area size
 field_rows = []; 
@@ -40,6 +42,8 @@ var default_scene_template =
 "\n|sprite_1="+brush_on_grid.sprite_1[1]+ 
 "\n|sprite_2="+brush_on_grid.sprite_2[1]+ 
 "\n|sprite_3="+brush_on_grid.sprite_3[1]+ 
+"\n|sprite_4="+brush_on_grid.sprite_4[1]+ 
+"\n|sprite_5="+brush_on_grid.sprite_5[1]+ 
 "\n|edge_size=32"+
 "\n|input_array="+array_grid+
 "\n|input_col="+array_col+
@@ -191,6 +195,8 @@ var tool_html =
 '<input type="radio" name="brush" id="sprite_1" value="sprite_1"><label for="sprite_1"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_1[1]+'.gif"> sprite_1</label>'+
 '<input type="radio" name="brush" id="sprite_2" value="sprite_2"><label for="sprite_2"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_2[1]+'.gif"> sprite_2</label>'+
 '<input type="radio" name="brush" id="sprite_3" value="sprite_3"><label for="sprite_3"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_3[1]+'.gif"> sprite_3</label>'+
+'<input type="radio" name="brush" id="sprite_4" value="sprite_4"><label for="sprite_4"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_4[1]+'.gif"> sprite_4</label>'+
+'<input type="radio" name="brush" id="sprite_5" value="sprite_5"><label for="sprite_5"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_5[1]+'.gif"> sprite_5</label>'+
 '</td></tr>'+
 '</table>'+
 '<table>'+

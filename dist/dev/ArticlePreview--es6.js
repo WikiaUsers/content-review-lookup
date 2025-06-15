@@ -3,7 +3,7 @@
     importArticles({
         type: 'style',
         articles: [
-            'u:dev:ArticlePreview/code.css'
+            'u:dev:MediaWiki:ArticlePreview.css'
         ]
     });
     // Setting variables

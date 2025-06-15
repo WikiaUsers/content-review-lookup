@@ -35,7 +35,7 @@ if ( editPage ) {
 var loadSpriteEditor = function() {
 	$spriteEditTab.add( '#ca-view' ).toggleClass( 'selected' );
 	
-	return mw.loader.using( 'ext.gadget.spriteEdit' );
+	return mw.loader.load( 'ext.gadget.spriteEdit' );
 };
 if ( location.search.match( '[?&]spriteaction=edit' ) ) {
 	loadSpriteEditor();

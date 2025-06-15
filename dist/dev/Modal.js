@@ -484,9 +484,8 @@
             'Modal';
         this.titleIsHTML = Boolean(isHTML);
         if (this._modal && !isHTML) {
-            this._modal.$head
-                .find('.oo-ui-processDialog-title')
-                .text(title);
+            this._modal.title.setLabel(this.title);
+            this._modal.constructor.static.title = this.title;
         }
         return this;
     };
@@ -625,18 +624,6 @@
     ['activate', 'deactivate'].forEach(function(method) {
         Modal.prototype[method] = function() {
             return; // Not supported on UCP yet.
-            if (method === 'show') {
-                this.wScrollTop = $(window).scrollTop();
-            }
-            if (this._modal) {
-                this._modal[method]();
-            } else if (this._loading) {
-                this._loading.then((function() {
-                    this._modal[method]();
-                }).bind(this));
-            } else {
-                throw new Error('Modal not created!');
-            }
         };
     });
 

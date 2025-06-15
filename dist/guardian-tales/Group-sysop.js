@@ -6,6 +6,7 @@ https://dev.fandom.com/wiki/UploadMultipleFiles
 https://dev.fandom.com/wiki/QuickDiff
 https://dev.fandom.com/wiki/PortableCSSPad
 https://dev.fandom.com/wiki/PreloadFileDescription
+https://dev.fandom.com/wiki/AjaxBatchDelete
 */
 
 if (mw.config.get('wgUserGroups').includes('sysop')) {
@@ -17,6 +18,7 @@ if (mw.config.get('wgUserGroups').includes('sysop')) {
 			'u:dev:MediaWiki:QuickDiff/code.js',
 			'u:dev:MediaWiki:PortableCSSPad/code.js',
 			'u:dev:MediaWiki:PreloadFileDescription.js',
+			'u:dev:MediaWiki:AjaxBatchDelete.js'
 		]
 	});
 }

@@ -7,10 +7,6 @@
  */
 
 $(document).ready(function() {
-    // Глобальные переменные для качества и Bolster
-    var globalQuality = 'mythic';
-    var globalBolster = 0;
-
     // Таблица качества
     var qualityLevels = {
         common: 0.0062,    // 0,62%
@@ -41,27 +37,40 @@ $(document).ready(function() {
         return values;
     };
 
-    // Создаем элементы управления только для первого calculate-mount-power
-    var $mainContainer = $('.calculate-mount-power').first();
-    if ($mainContainer.length) {
-        var $controls = $('<div>').css({
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '15px',
-            padding: '10px',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '5px',
-            border: '1px solid #ddd'
-        });
+    // Глобальные переменные для качества и Bolster с дефолтными значениями
+    var globalQuality = 'mythic';
+    var globalBolster = 0;
 
-        var $qualitySelect = $('<select>').attr('id', 'quality-select').attr('title', 'Выберите качество скакуна для расчета параметров').append(
-            $('<option>').val('common').text('Обычный'),
-            $('<option>').val('uncommon').text('Необычный'),
-            $('<option>').val('rare').text('Редкий'),
-            $('<option>').val('epic').text('Эпический'),
-            $('<option>').val('legendary').text('Легендарный'),
-            $('<option>').val('mythic').text('Мифический').prop('selected', true)
-        ).css({
+    // Получаем первый элемент с классом calculate-mount-power
+    var $mainContainer = $('.calculate-mount-power').first();
+    if (!$mainContainer.length) {
+        console.warn('calculate-mount-power element not found');
+        return;
+    }
+
+    // Читаем data-quality из атрибута
+    var dataQuality = $mainContainer.data('quality');
+    console.log('dataQuality read from attribute:', dataQuality);
+
+    if (dataQuality && qualityLevels.hasOwnProperty(dataQuality)) {
+        globalQuality = dataQuality;
+    }
+
+    // Создаём панель управления (селект качества и ввод Bolster)
+    var $controls = $('<div>').css({
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '15px',
+        padding: '10px',
+        backgroundColor: '#f5f5f5',
+        borderRadius: '5px',
+        border: '1px solid #ddd'
+    });
+
+    var $qualitySelect = $('<select>')
+        .attr('id', 'quality-select')
+        .attr('title', 'Выберите качество скакуна для расчета параметров')
+        .css({
             padding: '5px',
             borderRadius: '4px',
             border: '1px solid #ccc',
@@ -71,39 +80,56 @@ $(document).ready(function() {
             cursor: 'pointer'
         });
 
-        var $bolsterInput = $('<input>').attr({
-            type: 'number',
-            id: 'bolster-input',
-            min: 0,
-            max: 100,
-            value: 0,
-            title: 'Введите процент общего уровня предметов (0-100%)'
-        }).css({
-            width: '60px',
-            padding: '5px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            fontSize: '14px',
-            marginRight: '10px'
-        });
+    // Добавляем все уровни качества с выбором по умолчанию из data-quality
+    $.each(qualityLevels, function(key) {
+        var $option = $('<option>').val(key).text({
+            common: 'Обычный',
+            uncommon: 'Необычный',
+            rare: 'Редкий',
+            epic: 'Эпический',
+            legendary: 'Легендарный',
+            mythic: 'Мифический'
+        }[key] || key);
 
-        $controls.append(
-            $('<span>').addClass('settings-icon').html('⚙️').css({
-                marginRight: '10px',
-                fontSize: '18px'
-            }),
-            $('<label>').text('Качество скакуна: ').css({
-                marginRight: '5px',
-            }),
-            $qualitySelect,
-            $('<label>').text('Общее укрепление для скакуна (%): ').css({
-                marginRight: '5px',
-            }),
-            $bolsterInput
-        );
+        if (key === globalQuality) {
+            $option.prop('selected', true);
+        }
 
-        $mainContainer.append($controls);
-    }
+        $qualitySelect.append($option);
+    });
+
+    var $bolsterInput = $('<input>').attr({
+        type: 'number',
+        id: 'bolster-input',
+        min: 0,
+        max: 100,
+        value: 0,
+        title: 'Введите процент общего уровня предметов (0-100%)'
+    }).css({
+        width: '60px',
+        padding: '5px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        fontSize: '14px',
+        marginRight: '10px'
+    });
+
+    $controls.append(
+        $('<span>').addClass('settings-icon').html('⚙️').css({
+            marginRight: '10px',
+            fontSize: '18px'
+        }),
+        $('<label>').text('Качество скакуна: ').css({
+            marginRight: '5px',
+        }),
+        $qualitySelect,
+        $('<label>').text('Общее укрепление для скакуна (%): ').css({
+            marginRight: '5px',
+        }),
+        $bolsterInput
+    );
+
+    $mainContainer.append($controls);
 
     // Сохраняем исходный HTML для каждого target-блока
     $('.calculate-mount-power-target').each(function() {
@@ -173,6 +199,6 @@ $(document).ready(function() {
     $('#quality-select').on('change', updateAllTargets);
     $('#bolster-input').on('input', updateAllTargets);
 
-    // Инициализация
+    // Инициализация (обновим при загрузке)
     updateAllTargets();
 });

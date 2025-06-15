@@ -764,7 +764,7 @@ var create = function( state ) {
 		if ( !supports( 'position', 'sticky' ) && !supports( 'position', '-webkit-sticky' ) ) {
 			var fixedClass = 'spriteedit-toolbar-fixed';
 			var contentOffset = $content.offset().left + 1;
-			$win.on( 'scroll.spriteEdit', $.throttle( 32, function() {
+			$win.on( 'scroll.spriteEdit', mw.util.throttle( function() {
 				var fixed = $toolbar.hasClass( fixedClass ),
 					scrollTop = $win.scrollTop(),
 					offset = $barContainer.offset().top;
@@ -773,7 +773,7 @@ var create = function( state ) {
 				} else if ( fixed && scrollTop < offset ) {
 					$toolbar.removeClass( fixedClass ).css( 'left', '' );
 				}
-			} ) );
+			}, 32 ) );
 		}
 		
 		$( '#spriteedit-undo' ).find( 'button' ).on( 'click.spriteEdit', function() {
@@ -1454,7 +1454,7 @@ var create = function( state ) {
 		
 		
 		/* Window events */
-		$win.on( 'resize.spriteEdit', $.throttle( 32, function() {
+		$win.on( 'resize.spriteEdit', mw.util.throttle( function() {
 			var $conflict = $( '#spriteedit-dialog-conflict' );
 			if ( $conflict.length && $conflict.is( ':visible' ) ) {
 				var $textarea = $conflict.find( 'textarea' );
@@ -1462,7 +1462,7 @@ var create = function( state ) {
 					$conflict.find( '.spriteedit-dialog-text' ).height() - $textarea.parent()[0].offsetTop
 				) + 'px' );
 			}
-		} ) );
+		}, 32 ) );
 		
 		var updateMouse = function( e ) {
 			mouse.moved = true;
@@ -1484,9 +1484,9 @@ var create = function( state ) {
 		} );
 		
 		// Disable smooth scrolling once scrolling ends so it does not interfere with user scrolling.
-		$win.on( 'scroll.spriteEdit', $.debounce( 250, function() {
+		$win.on( 'scroll.spriteEdit', mw.util.debounce( function() {
 			$root.removeClass( 'spriteedit-smoothscroll' );
-		} ) );
+		}, 250 ) );
 	};
 	
 	

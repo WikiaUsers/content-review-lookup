@@ -1,5 +1,43 @@
 mw.loader.using('mediawiki.util').then(function () {
   jQuery(function ($) {
+
+    //-------Random Letter Reveal STARTS HERE-------//
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*()_+`-=";
+    const element = document.getElementById("scramble");
+
+    if (element) {
+      const targetText = element.textContent.trim();
+      let revealIndex = 0;
+      let frame = 0;
+      const scramblePerChar = 10;
+      const frameDelay = 30;
+
+      function scrambleFrame() {
+        let display = "";
+        for (let i = 0; i < targetText.length; i++) {
+          if (i < revealIndex) {
+            display += targetText[i];
+          } else if (targetText[i] === " ") {
+            display += " ";
+          } else {
+            const randChar = chars[Math.floor(Math.random() * chars.length)];
+            display += randChar;
+          }
+        }
+        element.textContent = display;
+        frame++;
+        if (frame % scramblePerChar === 0) {
+          revealIndex++;
+        }
+        if (revealIndex <= targetText.length) {
+          setTimeout(scrambleFrame, frameDelay);
+        }
+      }
+
+      scrambleFrame();
+    }
+    //-------Random Letter Reveal ENDS HERE-------//
+
     //-------Statistics Counter STARTS HERE-------//
 
     function animateCounter(element, end, duration) {

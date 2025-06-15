@@ -85,7 +85,6 @@ UserTagsJS.modules.custom = {
 	'Zarc.0724': ['Wiki-Contributor'],
 	'Mysþıc': ['Wiki-Contributor'],
 	'Antiverta': ['Wiki-Contributor'],
-	'StrikerFRFX': ['Wiki-Contributor'],
 	'DankM3m3l0rd2': ['Wiki-Contributor'],
     'Supetendo': ['Wiki-Contributor'],
     'MP1Player': ['Wiki-Contributor'],

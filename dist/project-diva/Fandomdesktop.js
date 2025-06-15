@@ -12,7 +12,7 @@ $(function() {
 		'https://static.wikia.nocookie.net/project-diva/images/1/1e/PjDWiki_Wordmark_Sakine_v2.png',
 		'https://static.wikia.nocookie.net/project-diva/images/d/db/PjDWiki_Wordmark_Teto_v2.png',
 		'https://static.wikia.nocookie.net/project-diva/images/3/37/PjDWiki_Wordmark_GUMI.png',
-		'https://static.wikia.nocookie.net/project-diva/images/6/6e/PjDWiki_Wordmark_SakuraMiku.png'
+		'https://static.wikia.nocookie.net/project-diva/images/8/86/PjDWiki_Wordmark_MagnetPride.png'
 		];
 		$('.fandom-community-header__image img').attr('src', images[Math.floor(Math.random() * images.length)]);
 });

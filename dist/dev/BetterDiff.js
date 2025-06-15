@@ -170,11 +170,14 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 				'data-page-target': config.wgPageName,
 				'tab-index': '0'
 			}), ')');
+			let groupDiff = $('.mw-history-compareselectedversions > .quickDiff');
 			function updateIDs() {
 				let newID = $('#pagehistory li.selected.before').attr('data-mw-revid');
 				let oldID = $('#pagehistory li.selected.after').attr('data-mw-revid');
-				$('.mw-history-compareselectedversions > .quickDiff').attr('newid', newID);
-				$('.mw-history-compareselectedversions > .quickDiff').attr('oldid', lastID === oldID ? '0' : oldID);
+				if (lastID === oldID) {oldID = '0';}
+				groupDiff.attr('newid', newID);
+				groupDiff.attr('oldid', oldID);
+				groupDiff.attr('data-url', mw.util.getUrl(config.wgPageName)+'?diff='+newID+'&oldid='+oldID);
 			}
 			updateIDs();
 			$('#pagehistory').on('change', updateIDs);

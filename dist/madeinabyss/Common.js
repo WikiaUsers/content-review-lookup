@@ -29,3 +29,6 @@ mw.hook('wikipage.content').add(function(){
   }
 
 });
+
+/* Reference Popup: Disable animations by default (see: https://dev.fandom.com/wiki/ReferencePopups#Administrator_Configuration) */
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false };

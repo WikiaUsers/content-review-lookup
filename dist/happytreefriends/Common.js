@@ -98,7 +98,8 @@ UserTagsJS.modules.custom = {
     'SpongeBob\'s Biggest Enthusiast': ['sysop', 'sniffles', 'pop'],
     'Marblyn': ['sysop', 'flaky', 'marbles'],
     'THeWarioChanNEL8752': ['pop', 'lifty', 'mole'],
-    'Tabletstoons123': ['rollback']
+    'Tabletstoons123': ['rollback'],
+    'BarelyGonnaDoAnything': ['cuddles']
 };
 
 window.MessageWallUserTags = {
@@ -121,6 +122,7 @@ window.MessageWallUserTags = {
 	    'Marblyn': 'Admin • Flaky • marbles',
 	    'THeWarioChanNEL8752': 'Admin • Pop • Lifty • The Mole',
 	    'Tabletstoons123': 'Rollback',
+	    'BarelyGonnaDoAnything': 'Admin • Cuddles',
 	    'TravellingEye': 'Admin',
 	    'MattDet': 'Admin'
     }

@@ -17,43 +17,39 @@ if (check112 != undefined || check113 != undefined) {
 
 
 /* the following makes up gameList class tabbers*/
-function getUrl(url, number) {
-	$.getJSON(url, function(data) {
-				var rawPath = data.url.split('/revision')[0]
-				
-				oldHTML = tabsList[number].innerHTML
-				tabsList[number].innerHTML = '<img src="'+ rawPath +'"/>' + oldHTML
-			});
-}
 
-tabbersList = document.getElementsByClassName('gameList withIcons')
-for (var i = 0; i < tabbersList.length; i++) {
-	tabsList = tabbersList[i].getElementsByClassName('wds-tabs__tab')
-	for (var k = 0; k < tabsList.length; k++) {
-		
+document.querySelectorAll('.gameList.withIcons').forEach((tabber) => {
+	tabber.querySelectorAll('.wds-tabs__tab').forEach((tab) => {
 		frameIndex = Math.floor(Math.random() * 4) + 1;
-		tabsList[k].classList.add('gameListFrame' + frameIndex);
+		tab.classList.add('gameListFrame' + frameIndex);
+		tab.onclick = (e) => {
+			tabber.querySelectorAll('.wds-tab__content video').forEach((video) => {
+				video.pause()
+			})
+			setTimeout(() => {
+				tabber.querySelector('.wds-tab__content.wds-is-current video').play()
+			}, 500)
+		}
 		
-		name = tabsList[k].querySelector('a').innerHTML
-		url = '/wikia.php?controller=CuratedContent&method=getImage&title=File:' + name + '_Icon.png';
+		let name = tab.querySelector('a').innerHTML
+		let url = '/wikia.php?controller=CuratedContent&method=getImage&title=File:' + name + '_Icon.png';
 		
-		getUrl(url, k)
-	}
-}
-
+		$.getJSON(url, function(data) {
+				var rawPath = data.url.split('/revision')[0]
+				tab.innerHTML = '<img src="'+ rawPath +'"/>' + tab.innerHTML
+			});
+	})
+	setTimeout(() => {
+		tabber.querySelector('.wds-tab__content.wds-is-current video').play()
+	}, 2000);
+})
 
 /* the following styles stratagem videos */
-var videos = document.getElementsByClassName("StratagemOverview");
-for (var i = 0; i < videos.length; i++) {
-	var video = videos.item(i).querySelector("video");
-	if (video != undefined) {
+document.querySelectorAll('.StratagemOverview video').forEach((video) => {
 	video.autoplay = video.loop = video.muted = true;
 	video.controls = false;
 	video.style.width = video.style.height = "auto";
-	video.play();
-		
-	}
-}
+})
 
 /* the following makes a cut on overview infobox border */
 /*var infoboxList = document.getElementsByClassName("gameOverviewInfobox")

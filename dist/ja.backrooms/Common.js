@@ -108,7 +108,8 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        var summary_text = '[[User:' + user_name + '|' + user_name + ']] が VoteGadget2024 を使用してプラス票を投じました。';
+                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用してプラス票を投じました。';
 
                         api
                         .postWithEditToken({
@@ -170,7 +171,8 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        var summary_text = '[[User:' + user_name + '|' + user_name + ']] が VoteGadget2024 を使用してマイナス票を投じました。';
+                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用してマイナス票を投じました。';
 
                         api
                         .postWithEditToken({
@@ -232,7 +234,8 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        var summary_text = '[[User:' + user_name + '|' + user_name + ']] が VoteGadget2024 を使用してニュートラル票を投じました。';
+                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用してニュートラル票を投じました。';
 
                         api
                         .postWithEditToken({
@@ -286,7 +289,8 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        var summary_text = '[[User:' + user_name + '|' + user_name + ']] が VoteGadget2024 を使用して投票を取り消しました。';
+                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用して投票を取り消しました。';
 
                         api
                         .postWithEditToken({

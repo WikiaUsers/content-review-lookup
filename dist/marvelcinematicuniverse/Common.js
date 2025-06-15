@@ -125,14 +125,23 @@ PFD_templates = '{{Image\n| media = \n| source = \n| artist = \n| note = \n| typ
 
 // Transcluding Talk Page Template
 $(function () {
+  let msSet = 500;
+  const firstLine = $('.cm-line').first();
+  if (!firstLine.length) {
+    msSet = 1200;
+  }
+
   setTimeout(() => {
     const isTalkPage = $('body').hasClass('ns-talk');
     const isEditAction = window.location.search.includes('action=edit');
-    const firstLine = $('.cm-line').first();
+    let firstLine = $('.cm-line').first();
+    if (!firstLine.length) {
+       firstLine = $('.ve-ce-branchNode-slug').first();
+    }
 
     const isOnlyBr = firstLine.length &&
                      firstLine.children().length === 1 &&
-                     firstLine.children().is('br') &&
+                     (firstLine.children().is('br') || firstLine.children().is('img')) &&
                      firstLine.text().trim() === '';
 
     if (isTalkPage && isEditAction && isOnlyBr) {
@@ -142,5 +151,5 @@ $(function () {
         window.location.href = url.toString();
       }
     }
-  }, 500);
+  }, msSet);
 });

@@ -582,86 +582,106 @@ $(function() {
  * Usage: Add to MediaWiki:Common.js to enable real-time event tables on wiki pages.
  */
 $(document).ready(function() {
-    const tables = document.querySelectorAll('.event-timer-table');
-    if (!tables.length) return;
+  const eventDurationDefault = 15 * 60; // 15 минут в секундах
 
-    tables.forEach(table => {
-        const eventDurationDefault = 15 * 60; // Default duration in seconds
-        const headerRow = table.querySelector('tr');
-        let rows = Array.from(table.querySelectorAll('tr')).slice(1);
+  // Расписание — часы событий (с 30 по 45 минуту)
+  const schedule = [
+    { hour: 1, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 3, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 5, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 7, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 9, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 11, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 13, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 15, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 17, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 19, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 21, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+    { hour: 23, minute: 30, duration: eventDurationDefault, name: 'Разбойники крепости', icon: '<img src="/images/f/f3/Icon_Event_Pvp.png" alt="PvP" style="width:20px;vertical-align:middle;">' },
+  ];
 
-        function formatTimeRange(startTime, duration) {
-            const startDate = new Date(startTime * 1000);
-            const endDate = new Date((startTime + duration) * 1000);
-            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
-            const startStr = startDate.toLocaleTimeString('en-US', options);
-            const endStr = endDate.toLocaleTimeString('en-US', options);
-            return `${startStr}–${endStr}`;
+  const table = document.querySelector('.event-timer-table');
+  if (!table) return;
+
+  function getNextEventTime(hour, minute) {
+    const now = new Date();
+    let eventDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0);
+
+    // Если событие уже прошло сегодня, переносим на завтра
+    if (eventDate < now) {
+      eventDate.setDate(eventDate.getDate() + 1);
+    }
+    return eventDate;
+  }
+
+  function formatTimeRange(startDate, duration) {
+    const endDate = new Date(startDate.getTime() + duration * 1000);
+    const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+    return `${startDate.toLocaleTimeString([], options)}–${endDate.toLocaleTimeString([], options)}`;
+  }
+
+  function updateTable() {
+    const now = new Date();
+
+    // Удаляем все строки кроме заголовка
+    while (table.rows.length > 1) {
+      table.deleteRow(1);
+    }
+
+    // Создаем список событий с актуальными временами и статусом
+    const events = schedule.map(ev => {
+      const startTime = getNextEventTime(ev.hour, ev.minute);
+      const endTime = new Date(startTime.getTime() + ev.duration * 1000);
+      const timeUntil = (startTime - now) / 1000;
+      const isActive = now >= startTime && now <= endTime;
+      let status;
+
+      if (isActive) {
+        const timeLeft = Math.floor((endTime - now) / 1000);
+        const minutesLeft = Math.floor(timeLeft / 60);
+        const secondsLeft = timeLeft % 60;
+        status = `<b>Активно</b> (осталось ${minutesLeft} мин ${secondsLeft} сек)`;
+      } else {
+        if (timeUntil > 3600) {
+          const h = Math.floor(timeUntil / 3600);
+          const m = Math.floor((timeUntil % 3600) / 60);
+          const s = Math.floor(timeUntil % 60);
+          status = `через ${h} ч ${m} мин ${s} сек`;
+        } else {
+          const m = Math.floor(timeUntil / 60);
+          const s = Math.floor(timeUntil % 60);
+          status = `через ${m} мин ${s} сек`;
         }
+      }
 
-        function updateTimers() {
-            const now = Math.floor(Date.now() / 1000);
-
-            let events = rows.map(row => {
-                const statusCell = row.cells[2];
-                const startTime = parseInt(statusCell.getAttribute('data-start-time'), 10);
-                const duration = parseInt(statusCell.getAttribute('data-duration'), 10) || eventDurationDefault;
-                let timeUntil = startTime - now;
-                if (timeUntil < 0) timeUntil += 24 * 60 * 60;
-                return { row, startTime, duration, timeUntil };
-            });
-
-            let activeEvent = null;
-            events = events.map(event => {
-                const endTime = event.startTime + event.duration;
-                if (now >= event.startTime && now <= endTime) {
-                    activeEvent = event;
-                    const timeLeft = endTime - now;
-                    const minutesLeft = Math.floor(timeLeft / 60);
-                    const secondsLeft = timeLeft % 60;
-                    event.status = `<b>Активно</b> (осталось ${minutesLeft} мин ${secondsLeft} сек)`;
-                    event.isActive = true;
-                } else {
-                    const hoursUntil = Math.floor(event.timeUntil / 3600);
-                    const minutesUntil = Math.floor((event.timeUntil % 3600) / 60);
-                    const secondsUntil = event.timeUntil % 60;
-                    event.status = hoursUntil > 0 
-                        ? `через ${hoursUntil} ч ${minutesUntil} мин ${secondsUntil} сек`
-                        : `через ${minutesUntil} мин ${secondsUntil} сек`;
-                    event.isActive = false;
-                }
-                return event;
-            });
-
-            const sortedEvents = events
-                .filter(event => !event.isActive)
-                .sort((a, b) => a.timeUntil - b.timeUntil);
-
-            if (activeEvent) {
-                sortedEvents.unshift(activeEvent);
-            } else {
-                sortedEvents[0].status = `<b>Ближайшее</b> (${sortedEvents[0].status.replace('через ', '')})`;
-            }
-
-            // Clear table except header
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
-            }
-
-            sortedEvents.forEach(event => {
-                const row = event.row;
-                const timeCell = row.cells[0];
-                const statusCell = row.cells[2];
-
-                timeCell.innerHTML = formatTimeRange(event.startTime, event.duration);
-                statusCell.innerHTML = event.status;
-                row.classList.toggle('active-event', event.isActive);
-
-                table.appendChild(row);
-            });
-        }
-
-        updateTimers();
-        setInterval(updateTimers, 1000);
+      return { ev, startTime, duration: ev.duration, status, isActive, timeUntil };
     });
+
+    // Сортируем: активное событие — в начало, остальные по времени до старта
+    const activeEvent = events.find(e => e.isActive);
+    let sortedEvents = events.filter(e => !e.isActive).sort((a, b) => a.timeUntil - b.timeUntil);
+
+    if (activeEvent) {
+      sortedEvents.unshift(activeEvent);
+    } else if (sortedEvents.length > 0) {
+      sortedEvents[0].status = `<b>Ближайшее</b> (${sortedEvents[0].status.replace('через ', '')})`;
+    }
+
+    // Вставляем строки в таблицу
+    sortedEvents.forEach(event => {
+      const row = table.insertRow();
+      row.classList.toggle('active-event', event.isActive);
+
+      const cellTime = row.insertCell();
+      const cellName = row.insertCell();
+      const cellStatus = row.insertCell();
+
+      cellTime.innerHTML = formatTimeRange(event.startTime, event.duration);
+      cellName.innerHTML = `${event.ev.icon} ${event.ev.name}`;
+      cellStatus.innerHTML = event.status;
+    });
+  }
+
+  updateTable();
+  setInterval(updateTable, 1000);
 });

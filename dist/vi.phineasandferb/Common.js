@@ -1,4 +1,5 @@
 /* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
+
 /* Test if an element has a certain class **************************************
  *
  * Description: Uses regular expressions and caching for better performance.
@@ -20,8 +21,8 @@ var hasClass = (function () {
   */
  
  var autoCollapse = 2;
- var collapseCaption = "ẩn";
- var expandCaption = "hiện";
+ var collapseCaption = "hide";
+ var expandCaption = "show";
  
  function collapseTable( tableIndex )
  {
@@ -127,16 +128,19 @@ importScriptPage('AjaxRC/code.js', 'dev');
 
 document.write('<link REL="shortcut icon" HREF="/images/6/64/Favicon.ico" />')
 
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
-
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */
+/* Courtesy of the My Little Pony Friendship is Magic Wiki */
+ 
+/* IRClogin div */
+$(function() {
+    if ($('#IRClogin').length) {
+        if (typeof wgUserName == 'undefined') {
+            var nick = 'Wikian' + Math.floor(Math.random() * 100);
+        } else {
+            var nick = wgUserName.replace(/ /g, "_");
+        }
+        $('#IRClogin').html('<iframe src="http://webchat.freenode.net/?nick=' + nick + '&channels=phineasandferb&prompt=true" width="660" height="400" style="border:0;"></iframe>');
+    }
+});
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -169,13 +173,13 @@ function updatetimer(i) {
   }
  
   // calcuate the diff
-  var left = (diff%60) + ' giây';
+  var left = (diff%60) + ' seconds';
     diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%60) + ' phút ' + left;
+  if(diff > 0) left = (diff%60) + ' minutes ' + left;
     diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%24) + ' giờ ' + left;
+  if(diff > 0) left = (diff%24) + ' hours ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' ngày ' + left
+  if(diff > 0) left = diff + ' days ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -200,27 +204,53 @@ function checktimers() {
   }
 }
 addOnloadHook(checktimers);
+
+//YouTube player
+mw.hook('wikipage.content').add(function($content) {
+    $content.find('.youtubeplayer:not(.loaded)').each(function() {
+        var $this = $(this),
+            data = $this.data(),
+            uri = new mw.Uri('https://www.youtube.com/embed/'),
+            id = String(data.id || '').trim(),
+            loop = String(data.loop || '').trim();
  
-/* Resolves conflict between icons and page header bottom border
- * by: [[User:The 888th Avatar]]
- */
+        if (id === '') {
+            console.warn('[YoutubePlayer] Video ID is not defined.');
+            return;
+        }
  
-$(document).ready(function() {
-    if (skin == "oasis" || skin == "wikia") {
-        $('.WikiaPageHeader').append($('#icons'));
-    }
+        uri.path += id;
+        uri.query = {
+            autoplay: window.YoutubePlayerDisableAutoplay ?
+                '0' :
+                String(data.autoplay || '').trim(),
+            loop: loop,
+            playlist: loop === '1' ? id : '',
+            start: String(data.start || '').trim(),
+            list: String(data.list || '').trim()
+        };
+ 
+        $this.html(
+            $('<iframe>', {
+                width: String(data.width || '').trim(),
+                height: String(data.height || '').trim(),
+                src: uri.toString(),
+                allowfullscreen: 'true',
+                allow: 'fullscreen' + (loop ? '; autoplay' : '')
+            })
+        ).addClass('loaded');
+    });
 });
+
+ 
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
-/* Reference Popups */
+
+
 importArticles({
-    type: 'script',
+    type: "script",
     articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
+        'w:c:dev:Countdown/code.js'
     ]
 });
-/* Hiển thị đồng hồ ở phía bên phải trên cùng */
-importScriptPage('DisplayClock/code.js', 'dev');

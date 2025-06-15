@@ -32,6 +32,6 @@
         $('#mw-content-text > ul li').prepend(button.clone());
         $('body').on('click', '.ppreview-toggle', handler);
     }//sethandlers
-    importArticles({type: "script", articles: ["u:dev:LinkPreview/code.js"]});
+    importArticles({type: "script", articles: ["u:dev:MediaWiki:LinkPreview/code.js"]});
     mw.hook('ppreview.ready').add(init);
 }(jQuery));

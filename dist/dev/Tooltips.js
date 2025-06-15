@@ -27,9 +27,9 @@ var tooltips = {
         }
         href = href.split('/wiki/');
         tooltips.api = href[0]+'/api.php?format=json&action=parse&disablelimitreport=true&prop=text&title='+href[1];
-        if(mw.util.getParamValue('uselang')) tooltips.api += '&uselang='+mw.util.getParamValue('uselang');
+        if(mw.util.getParamValue('uselang')) {tooltips.api += '&uselang='+mw.util.getParamValue('uselang');}
 		// Cache tooltip contents on the CDN for 10 minutes for anonymous users
-		tooltips.api += '&maxage=600&smaxage=600'
+		tooltips.api += '&maxage=600&smaxage=600';
         tooltips.api += '&text=';
         
         tooltips.types['basic-tooltip'] = {};
@@ -49,22 +49,6 @@ var tooltips = {
                 type: 'style',
                 article: 'u:dev:MediaWiki:Tooltips.css'
             });
-            if (Array.isArray(cssImport)) {
-                // MW 1.19
-                $(cssImport).prependTo('head');
-            } else {
-                // UCP
-                cssImport.then(function () {
-                    var expectedSource = mw.loader.moduleRegistry['u:dev:MediaWiki:Tooltips.css'].style.css[0];
-                    for (var node = document.querySelector('head > meta[name="ResourceLoaderDynamicStyles"]').previousElementSibling; node.tagName === 'STYLE'; node = node.previousElementSibling) {
-                        if (node.textContent === '\n' + expectedSource) {
-                            document.head.prepend(node);
-                            return;
-                        }
-                    }
-                    throw new Error('WTF? Failed to find RL-inserted style!');
-                });
-            }
         }
         
         if($('#tooltip-wrapper').length === 0) $('<div id="tooltip-wrapper" class="WikiaArticle"></div>').appendTo(document.body);
@@ -139,9 +123,8 @@ var tooltips = {
     addType: function(tt) {
         if(typeof tooltips.types[tt.classname] == 'undefined') {
             var obj = {};
-            
-            if(typeof tt.parse == 'string' || typeof tt.parse == 'function') var parse = tt.parse; else var parse = false;
-            if(typeof tt.text == 'string' || typeof tt.text == 'function') var text = tt.text; else var text = false;
+            var parse = (typeof tt.parse == 'string' || typeof tt.parse == 'function') ? tt.parse : false;
+            var text = (typeof tt.text == 'string' || typeof tt.text == 'function') ? tt.text : false;
             
             if(parse) {
                 obj.text = parse;
@@ -181,10 +164,11 @@ var tooltips = {
         return tooltips.api+encodeURIComponent(text);
     },
     getText: function(type, elem) {
+    	var text = '';
         if(typeof tooltips.types[type].text == 'function') {
-            var text = tooltips.types[type].text($(elem)[0]);
+            text = tooltips.types[type].text($(elem)[0]);
         } else {
-            var text = tooltips.types[type].text;
+            text = tooltips.types[type].text;
             for(var x=0; x<tooltips.types[type].parameters.length; x++) {
                 var param = tooltips.types[type].parameters[x];
                 var value = $(elem).data(param);
@@ -310,7 +294,7 @@ var tooltips = {
     wrapperPosition: function(mouseX, mouseY) {
         var tipH = parseInt($("#tooltip-wrapper").css('padding-top')) + parseInt($("#tooltip-wrapper").css('padding-bottom'));
         var tipW = 0;
-        var barH = $('#WikiaBarWrapper').height();
+        var barH = $('#WikiaBarWrapper').height() || 0;
        
         $("#tooltip-wrapper").find('.main-tooltip').each( function(){ if(typeof $(this).data('outerheight') != 'undefined') tipH += $(this).data('outerheight'); });
         $("#tooltip-wrapper").find('.main-tooltip').each( function(){ if(typeof $(this).data('outerwidth') != 'undefined') tipW = Math.max(tipW, $(this).data('outerwidth') + parseInt($("#tooltip-wrapper").css('padding-left')) + parseInt($("#tooltip-wrapper").css('padding-right'))); });
