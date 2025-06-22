@@ -18,7 +18,8 @@ if (mw.config.get('wgUserGroups').includes('sysop')) {
 			'u:dev:MediaWiki:QuickDiff/code.js',
 			'u:dev:MediaWiki:PortableCSSPad/code.js',
 			'u:dev:MediaWiki:PreloadFileDescription.js',
-			'u:dev:MediaWiki:AjaxBatchDelete.js'
+			'u:dev:MediaWiki:AjaxBatchDelete.js',
+			'u:dev:MediaWiki:Reconstitution.js'
 		]
 	});
 }

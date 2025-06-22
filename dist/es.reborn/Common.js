@@ -4,6 +4,14 @@ importScript('MediaWiki:Common.js/Clases/Gadget-HotCat.js');
 }); 
 }
 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		bureaucrat: { u:'Líder Vongola', link:'Project:Administradores' },
+		inactive: { u: 'No ha editado recientemente' }
+	}
+};
+
 /*****************/
 /* NOMBREUSUARIO */
 /*****************/

@@ -61,7 +61,7 @@ importArticles({
     ]
 });
 
-//Abn_Infobox Work_preference 数据形式切换
+//Abn_Infobox Work_preference 数据形式切换 (已弃用，仅为兼容性保留)
 var workPreferenceButtonCount = 0;
 
 document.getElementById("work_preference_button").addEventListener("click", function(){
@@ -70,21 +70,21 @@ document.getElementById("work_preference_button").addEventListener("click", func
     var stat = document.getElementsByClassName("work_preference_stat");
 	console.log("workPreference button clicked");
 	if (workPreferenceButtonCount==0){
-		workPreferenceButton.innerHTML = "显示文字";
-		for (i = 0; i < level.length; i++) {
-			level[i].style.display = "none";
-		}
-		for (i = 0; i < stat.length; i++) {
-			stat[i].style.display = "block";
-		}
-		workPreferenceButtonCount = 1;
-	}else{
 		workPreferenceButton.innerHTML = "显示数字";
 		for (i = 0; i < level.length; i++) {
 			level[i].style.display = "block";
 		}
 		for (i = 0; i < stat.length; i++) {
 			stat[i].style.display = "none";
+		}
+		workPreferenceButtonCount = 1;
+	}else{
+		workPreferenceButton.innerHTML = "显示文字";
+		for (i = 0; i < level.length; i++) {
+			level[i].style.display = "none";
+		}
+		for (i = 0; i < stat.length; i++) {
+			stat[i].style.display = "block";
 		}
 		workPreferenceButtonCount = 0;
 	}

@@ -26,63 +26,9 @@ mw.loader.using( [
 	if (window.dev.CCM) {return;}
 	else {window.dev.CCM = true;}
 	
-	// Necessary CSS + fixes
+	// Necessary CSS
 	importArticle({ type: 'style', article: 'u:dev:MediaWiki:CustomCodeMirror.css' });
-	mw.util.addCSS(`
-		.wikiEditor-ui-bottom { position: relative; }
-		.wikiEditor-ui-top {min-height: 58px !important;}
-		.wikiEditor-ui .wikiEditor-ui-toolbar { border-bottom: 1px solid var(--theme-border-color); }
-		.oo-ui-icon-squote { mask: url("/resources-ucp/mw143/dist/svg/wds-icons-quote-small.svg") no-repeat center; }
-		
-		.cm-editor {
-			.cm-mw-panel--search-panel .cdx-toggle-button--toggled-on {
-				/* !important as default styles have way too much specificity */
-				background-color: var(--theme-accent-color) !important;
-				border-color: var(--theme-accent-color) !important;
-				color: var(--theme-accent-label-color) !important;
-			}
-			.cm-scroller {
-				resize: vertical;
-				min-height: 300px;
-				overflow-x: hidden;
-			}
-			.cm-panels .cm-mw-panel,
-			.cm-scroller {
-				border-left: 1px solid var(--theme-border-color);
-				border-right: 1px solid var(--theme-border-color);
-			}
-		}
-		
-		.cm-linksuggest {
-			font-size: 14px;
-			padding: 0;
-			z-index: 500;
-			margin-top: 21px;
-			position: absolute;
-
-			&:not(:has(> .oo-ui-popupWidget-popup > div)) {
-				display: none;
-				pointer-events: none;
-			}
-			> .oo-ui-popupWidget-popup {
-				padding: 0;
-				width: 320px;
-				height: auto;
-			}
-			.cm-linksuggest-suggest {
-				box-sizing: border-box;
-				display: flex;
-				margin: 0 9px;
-				padding: 8px 6px;
-				cursor: pointer;
-			}
-			.cm-linksuggest-suggest:hover,
-			.cm-linksuggest-selected {
-				background-color: rgba(var(--theme-link-color--rgb), .15);
-				color: var(--theme-link-color);
-			}
-		}
-	`);
+	
 	const
 	CodeMirrorWikiEditor = require( 'ext.CodeMirror.v6.WikiEditor' ),
 	mediawikiLang = require( 'ext.CodeMirror.v6.mode.mediawiki' ),

@@ -189,7 +189,7 @@
           action: "edit",
           title: "Project:ArticleRates",
           text: JSON.stringify(ratings),
-          summary: "将" + pageTitle + "评为" + rating + "分",
+          summary: "将[[" + pageTitle + "]]评为" + rating + "分",
           baserevid: revisionId,
           format: "json"
         }).done(function() {

@@ -102,7 +102,7 @@ $(function () {
 				scParam = '&includeSubcats=1';
 			}
 			const headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]" etc.==';
-			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2 + '&category3=' + category3 + scParam;
+			const basePaginationLink = pageUrl + '?category1=' + encodeURIComponent(category1) + '&category2=' + encodeURIComponent(category2) + '&category3=' + encodeURIComponent(category3) + scParam;
 			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' previous page]' : 'previous page';
 			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
 			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';

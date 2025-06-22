@@ -7,8 +7,4 @@ window.tooltips_config = {
 };
 
 window.tooltips_list = [
-	{
-        classname: 'custom-tooltip',
-        parse: '{'+'{<#template#>}'+'}',
-    }
 ];

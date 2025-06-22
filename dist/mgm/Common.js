@@ -11,6 +11,7 @@ window.MessageWallUserTags = {
         'PinkPugPrincess': 'Wiki Adopter • Bureaucrat • Administrator',
     
         'Wikifan0653': 'Content Moderator',
+        'AdamDeanHall': 'Content Moderator',
     }
 };
 

@@ -6,7 +6,7 @@
             console.error('No data-media-id present on element', e);
             return;
         }
-        const target = document.getElementsByClassName('media-id-' + targetId)[0];
+        const target = document.getElementsByClassName('media-id-' + targetId)[0].getElementsByClassName("mw-file-element")[0];
         if (!target) {
             console.error('No element found with .media-id-' + targetId, e);
             return;
@@ -526,7 +526,6 @@ $(document).ready(function() {
         });
     });
 });
-
 
 var config = config || mw.config.get();
 

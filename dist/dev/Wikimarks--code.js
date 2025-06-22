@@ -78,6 +78,18 @@
                 .addClass('wds-is-not-scrollable wds-dropdown__content')
                 .append($parsed);
 
+		// fix links to non-existent local pages (interwiki doesnt check anything)
+		$menu.find('span.new').each(function() {
+			var $this = $(this),
+				$link = $('<a>', {
+					'class': 'new',
+					href: atob($this.attr('data-uncrawlable-url')),
+					html: $this.children(),
+					text: $this.text()
+				});
+			$this.replaceWith($link);
+		});
+
         // add classes to elements
         $menu
             .children('ul')

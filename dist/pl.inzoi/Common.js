@@ -1,6 +1,6 @@
 /* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
 
-/* TAGI PROFILÓW użytkowniczek i użytkowników */
+/* TAGI PROFILÓW */
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -36,3 +36,13 @@ UserTagsJS.modules.inactive = {
 
 /* DWA MODUŁY */
 window.AddRailModule = ['Szablon:Aktualności', 'Szablon:Discord'];
+
+/* WDSICONS */
+mw.hook('dev.wds').add(function(wds) {
+});
+
+importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
+
+mw.hook('dev.wds').add(function(wds) {
+    wds.render('.bar');
+});

@@ -113,7 +113,7 @@ function makeMap (isTrusted) {
         },
         onAdd: function (map) {
             var container = L.DomUtil.create('div', '');
-            container.innerHTML = 'Mode: SYSOP <br>' + wgUserName;
+            container.innerHTML = 'Mode: SYSOP <br>' + mw.config.get('wgUserName');
             container.style.color = '#00ff00';
             container.style.fontWeight = 'bold';
             return container;
@@ -208,7 +208,7 @@ function makeMap (isTrusted) {
                 htmlLinkTitle = '<span class="mapPopUpTitles">' + formatTitle[0] + '</span>';
             }
             
-            var eMarker = L.marker([parseInt(mapDataArray[i]), parseInt(mapDataArray[i+1])], {icon: eval(mapDataArray[i+2]), opacity: 0.6, title:titleField, riseOnHover:true});
+            var eMarker = L.marker([parseInt(mapDataArray[i]), parseInt(mapDataArray[i+1])], {icon: mapDataArray[i+2], opacity: 0.6, title:titleField, riseOnHover:true});
             
             descriptionLinkArray = mapDataArray[i+4].replace(/&amp;lt;/g,"<").replace(/&amp;quot;/g,'"').replace(/&amp;gt;/g,">").replace(/'''(.*)'''/g,"<span style='font-weight:bold'>$1</span>").split(/\[\[|]]/g); //Plus replacement of symbols
             concatHTMLDescription = concatenateHTMLlinksDescription (descriptionLinkArray);
@@ -450,7 +450,7 @@ function markerListControlFunction (i, iconNameOrder) {
 }
 
 $(document).ready(function() {
-    if (wgPageName == "Avatar_Wiki" || mw.config.get('wgPageName') == "User:KettleMeetPot/WorldMap")  {
+    if ( ["Avatar_Wiki", "User:KettleMeetPot/WorldMap"].includes( mw.config.get('wgPageName') ) )  {
         var isTrusted;
         var head  = document.getElementsByTagName('head')[0];
         var style  = document.createElement('link');
@@ -472,8 +472,8 @@ $(document).ready(function() {
             url: "https://avatar.fandom.com/api.php",
             data: { action:'query', prop:'revisions', titles:'Avatar_Wiki:MainpageMapData/CheckPage', rvprop:'content' },
             success: function ( data ) {
-                var match = data.search( wgUserName );
-                if ( match != -1 && wgUserName != null ) {
+                var match = data.search( mw.config.get('wgUserName') );
+                if ( match != -1 && mw.config.get('wgUserName') != null ) {
                     isTrusted = true;
                 }
             }

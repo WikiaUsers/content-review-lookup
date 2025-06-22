@@ -3,9 +3,9 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
 	const api = new mw.Api();
-	const msg = 'license-description-with-link';
+	const msg = 'license-description';
 	const url = 'https://www.fandom.com/licensing';
-	const link = $('<a>').attr('href', url).text('CC BY-NC').prop('outerHTML');
+	const link = $('<a>').attr('href', url).text('CC-BY-SA').prop('outerHTML');
 	api.loadMessagesIfMissing(msg).done(() => {
 		$('.license-description').html(mw.message(msg, link).text());
 	});

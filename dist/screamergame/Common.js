@@ -9,11 +9,128 @@
     const App = {
         config: {
             title: "Notification Panel",
-            version: "v1.03",
+            version: "v1.06",
+            tabNames: {
+                'sn-page-news': 'News',
+                'sn-page-menu': 'Menu',
+                'sn-page-settings': 'Settings',
+                'sn-page-help': 'Help',
+                'sn-page-credits': 'Credits',
+                'sn-page-debug': 'Debug'
+            },
+            editorTabs: ['sn-page-debug']
         },
         state: {
             currentContentHash: null,
             isEditor: false,
+            isAsNonEditor: false,
+            asNonEditorTimeout: null,
+            currentLiveStatus: null,
+            needsRefresh: false
+        },
+
+        accessManager: {
+            liveStatusPoller: null,
+            accessCheckPoller: null,
+            init: function() {
+                App.accessManager.liveStatusPoller = setInterval(App.accessManager.pollLiveStatus, 60000);
+                App.accessManager.pollLiveStatus();
+            },
+            pollLiveStatus: function() {
+                $.get('/wiki/Template:ScreamerNews?action=raw&cb=' + new Date().getTime())
+                    .done(function(data) {
+                        const match = /id="sn-live-mode"[^>]*>([^<]+)<\/span>/.exec(data);
+                        const liveModeContent = match ? match[1].trim().toLowerCase() : '';
+                        const liveModeEnabled = liveModeContent !== 'n';
+
+                        if (App.state.currentLiveStatus === liveModeEnabled) return;
+                        App.state.currentLiveStatus = liveModeEnabled;
+
+                        if (liveModeEnabled) {
+                            App.accessManager.restoreAccess();
+                        } else {
+                            App.accessManager.startAccessCheck();
+                        }
+                    })
+                    .fail(function() {
+                        if (App.state.currentLiveStatus === false) return;
+                        App.state.currentLiveStatus = false;
+                        App.accessManager.startAccessCheck();
+                    });
+            },
+            startAccessCheck: function() {
+                App.accessManager.stopAccessCheck();
+                App.accessManager.accessCheckPoller = setInterval(function() {
+                    if (App.isEffectivelyNonEditor()) {
+                        App.accessManager.enforceDenial();
+                        App.accessManager.stopAccessCheck();
+                    } else {
+                        App.accessManager.stopAccessCheck();
+                    }
+                }, 5000);
+                if (App.isEffectivelyNonEditor()) {
+                    App.accessManager.enforceDenial();
+                }
+            },
+            stopAccessCheck: function() {
+                if (App.accessManager.accessCheckPoller) {
+                    clearInterval(App.accessManager.accessCheckPoller);
+                    App.accessManager.accessCheckPoller = null;
+                }
+            },
+            enforceDenial: function() {
+                if ($('#sn-container').hasClass('is-visible')) {
+                    $('#sn-close-button').trigger('click');
+                }
+                App.fadeSwapBellIcon(function($bell) {
+                    const hasNotif = $bell.hasClass('sn-has-notification');
+                    $bell.removeClass('is-editor-mode').addClass('is-maintenance-mode');
+                    if (hasNotif) {
+                        $bell.addClass('sn-has-notification');
+                    }
+                });
+            },
+            restoreAccess: function() {
+                App.accessManager.stopAccessCheck();
+                if (!App.state.isEditor) {
+                    App.state.needsRefresh = true;
+                }
+                
+                if (localStorage.getItem('screamerPanelPersistAsNonEditorPref') === 'true') {
+                    localStorage.removeItem('screamerPanelPersistAsNonEditorPref');
+                    $('#np-persist-as-non-editor-checkbox').prop('checked', false);
+                }
+
+                if ($('#sn-as-non-editor-checkbox').is(':checked')) {
+                    App.disableAsNonEditorMode();
+                }
+                App.updateBellIcon();
+            },
+        },
+        
+        fadeSwapBellIcon: function(updateCallback) {
+            const $bell = $('#np-force-show-button');
+            if (!$bell.length) return;
+            
+            $bell.css('opacity', 0);
+            setTimeout(function() {
+                updateCallback($bell);
+                $bell.css('opacity', 1);
+            }, 400);
+        },
+
+        updateBellIcon: function() {
+            App.fadeSwapBellIcon(function($bell) {
+                const isEditorInMaint = App.state.isEditor && !App.state.currentLiveStatus;
+                $bell.removeClass('is-editor-mode is-maintenance-mode');
+                if (isEditorInMaint) {
+                    $bell.addClass('is-editor-mode');
+                }
+            });
+        },
+
+        isEffectivelyNonEditor: function() {
+            return !App.state.isEditor || App.state.isAsNonEditor;
         },
 
         simpleHash(str) {
@@ -25,30 +142,34 @@
             }
             return hash;
         },
-        
+
         markNewsAsRead() {
             $('#np-force-show-button').removeClass('sn-has-notification');
             localStorage.setItem('screamerNewsLastSeenHash', App.state.currentContentHash);
         },
 
         openPanel() {
-            setTimeout(function() {
-                $('#sn-container').addClass('is-visible');
-            }, 10);
             $('#np-force-show-button').addClass('is-hidden');
             sessionStorage.setItem('screamerPanelView', 'panel');
-            
-            if ($('#sn-page-news').hasClass('sn-page--active')) {
-                App.markNewsAsRead();
+
+            if (App.state.isEditor) {
+                const $bell = $('#np-force-show-button');
+                const $debugCheckbox = $('#sn-debug-maint-checkbox');
+                if ($debugCheckbox.length) {
+                    $debugCheckbox.prop('checked', $bell.hasClass('is-maintenance-mode'));
+                }
             }
+            
+            setTimeout(function() {
+                $('#sn-container').addClass('is-visible');
+            }, 50);
         },
 
         closePanel() {
+            if (App.state.isEditor) App.saveFailsafeTimer();
             $('#sn-container').removeClass('is-visible');
             $('#np-force-show-button').removeClass('is-hidden');
             sessionStorage.removeItem('screamerPanelView');
-            // FIX: Do not remove the last tab from session storage to remember it across loads.
-            // sessionStorage.removeItem('screamerPanelLastTab');
         },
 
         openModal() {
@@ -61,31 +182,26 @@
             sessionStorage.removeItem('screamerPanelView');
         },
 
+        navigateToTabById(targetPageId, $container) {
+            $container = $container || $('#sn-container');
+            if ($container.find('#' + targetPageId).length) {
+                $container.find('.sn-page').removeClass('sn-page--active');
+                $container.find('#' + targetPageId).addClass('sn-page--active');
+                
+                const $subHeaderH3 = $container.find('.sn-sub-header h3');
+                $subHeaderH3.fadeTo(100, 0, function() {
+                    $(this).text(App.config.tabNames[targetPageId] || '').fadeTo(100, 1);
+                });
+                
+                sessionStorage.setItem('screamerPanelLastTab', targetPageId);
+            }
+        },
+
         navigateTabs(e) {
+            if (App.state.isEditor) App.saveFailsafeTimer();
             const $button = $(e.currentTarget);
             const targetPageId = $button.data('target');
-            const $container = $button.closest('#sn-container');
-
-            $container.find('.sn-page').removeClass('sn-page--active');
-            $('#' + targetPageId).addClass('sn-page--active');
-            sessionStorage.setItem('screamerPanelLastTab', targetPageId);
-
-            if (targetPageId === 'sn-page-news') {
-                App.markNewsAsRead();
-            }
-
-            let newTitle = 'News';
-            switch (targetPageId) {
-                case 'sn-page-menu': newTitle = 'Menu'; break;
-                case 'sn-page-settings': newTitle = 'Settings'; break;
-                case 'sn-page-help': newTitle = 'Help'; break;
-                case 'sn-page-credits': newTitle = 'Credits'; break;
-            }
-            
-            const $subHeader = $container.find('.sn-sub-header h3');
-            $subHeader.fadeTo(100, 0, function() {
-                $(this).text(newTitle).fadeTo(100, 1);
-            });
+            App.navigateToTabById(targetPageId, $button.closest('#sn-container'));
         },
 
         saveCheckboxSetting() {
@@ -93,56 +209,187 @@
             localStorage.setItem('screamerNewsShowPref', isChecked ? 'true' : 'false');
         },
         
-        forceOpenToNews() {
-            const $container = $('#sn-container');
-            if (!$('#sn-page-news').hasClass('sn-page--active')) {
-                $container.find('.sn-page').removeClass('sn-page--active');
-                $('#sn-page-news').addClass('sn-page--active');
-                $container.find('.sn-sub-header h3').text('News');
-                sessionStorage.setItem('screamerPanelLastTab', 'sn-page-news');
+        saveResetOnCloseSetting() {
+            const isChecked = $('#sn-reset-on-close').is(':checked');
+            localStorage.setItem('screamerPanelResetOnClose', isChecked ? 'true' : 'false');
+        },
+        
+        saveFailsafeTimer() {
+            let newTime = parseInt($('#np-failsafe-input').val(), 10);
+            if (isNaN(newTime) || newTime < 1) {
+                newTime = 1;
+            } else if (newTime > 600) {
+                newTime = 600;
             }
+            $('#np-failsafe-input').val(newTime);
+            localStorage.setItem('screamerPanelFailsafeTime', newTime);
+
+            if (App.state.isAsNonEditor) {
+                clearTimeout(App.state.asNonEditorTimeout);
+                const failsafeTime = newTime * 1000;
+                const expiration = Date.now() + failsafeTime;
+                
+                if (localStorage.getItem('screamerPanelPersistAsNonEditorPref') === 'true') {
+                    sessionStorage.setItem('screamerPanelFailsafeTimestamp', expiration);
+                }
+                
+                App.state.asNonEditorTimeout = setTimeout(function() {
+                    App.disableAsNonEditorMode();
+                }, failsafeTime);
+            }
+        },
+
+        savePersistenceSetting() {
+            const isChecked = $('#np-persist-as-non-editor-checkbox').is(':checked');
+            localStorage.setItem('screamerPanelPersistAsNonEditorPref', isChecked ? 'true' : 'false');
+        },
+
+        forceOpenToNews() {
+            App.navigateToTabById('sn-page-news');
             App.openPanel();
         },
-        
-        handleBellClick() {
-            const shouldAutoOpen = (localStorage.getItem('screamerNewsShowPref') !== 'false');
-            if (shouldAutoOpen) {
+
+        handleBellClick(e) {
+            const autoOpenPref = (localStorage.getItem('screamerNewsShowPref') !== 'false');
+            const lastSeenHash = localStorage.getItem('screamerNewsLastSeenHash');
+            const isNewContent = lastSeenHash != App.state.currentContentHash;
+            
+            if (autoOpenPref && isNewContent && !$(e.currentTarget).hasClass('is-maintenance-mode')) {
                 App.forceOpenToNews();
+                return;
+            }
+
+            const resetOnClose = (localStorage.getItem('screamerPanelResetOnClose') === 'true');
+            let tabToOpen = sessionStorage.getItem('screamerPanelLastTab');
+
+            if (resetOnClose || !tabToOpen) {
+                 tabToOpen = localStorage.getItem('screamerPanelDefaultTab') || 'sn-page-news';
+            }
+            
+            App.navigateToTabById(tabToOpen);
+            App.openPanel();
+        },
+
+        restorePanelState() {
+            const lastTab = sessionStorage.getItem('screamerPanelLastTab');
+            if (lastTab) {
+                App.navigateToTabById(lastTab);
             } else {
-                // FIX: Restore state *before* opening the panel to ensure the correct tab is active.
-                App.restorePanelState();
-                App.openPanel();
+                const defaultTab = localStorage.getItem('screamerPanelDefaultTab') || 'sn-page-news';
+                App.navigateToTabById(defaultTab);
+            }
+        },
+
+        handleMaintDebugToggle() {
+            App.fadeSwapBellIcon(function($bell) {
+                const isChecked = $('#sn-debug-maint-checkbox').is(':checked');
+                if (isChecked) {
+                    $bell.removeClass('is-editor-mode sn-has-notification').addClass('is-maintenance-mode');
+                    $bell.attr('title', '');
+                } else {
+                    $bell.removeClass('is-maintenance-mode').addClass('is-editor-mode');
+                    $bell.attr('title', 'Show Notification Panel');
+                }
+            });
+        },
+
+        disableAsNonEditorMode: function() {
+            $('#sn-as-non-editor-checkbox').prop('checked', false);
+            clearTimeout(App.state.asNonEditorTimeout);
+            App.state.isAsNonEditor = false;
+            $('#np-exit-as-non-editor').hide();
+            $('#np-non-editor-options-modal').removeClass('is-visible');
+            sessionStorage.removeItem('screamerPanelFailsafeTimestamp');
+            App.updateBellIcon();
+            App.accessManager.stopAccessCheck();
+        },
+
+        toggleAsNonEditor: function() {
+            const isChecked = $('#sn-as-non-editor-checkbox').is(':checked');
+            
+            if (isChecked) {
+                App.state.isAsNonEditor = true;
+                $('#np-exit-as-non-editor').show();
+                App.accessManager.startAccessCheck();
+                
+                const failsafeTime = (parseInt(localStorage.getItem('screamerPanelFailsafeTime'), 10) || 60) * 1000;
+                const expiration = Date.now() + failsafeTime;
+                
+                if (localStorage.getItem('screamerPanelPersistAsNonEditorPref') === 'true') {
+                    sessionStorage.setItem('screamerPanelFailsafeTimestamp', expiration);
+                }
+                
+                App.state.asNonEditorTimeout = setTimeout(function() {
+                    App.disableAsNonEditorMode();
+                }, failsafeTime);
+            } else {
+                App.disableAsNonEditorMode();
             }
         },
         
-        restorePanelState() {
-            const lastTab = sessionStorage.getItem('screamerPanelLastTab');
-            if (lastTab && lastTab !== 'sn-page-news') {
-                const $container = $('#sn-container');
-                $container.find('.sn-page').removeClass('sn-page--active');
-                $container.find('#' + lastTab).addClass('sn-page--active');
-                
-                let newTitle = 'News';
-                 switch (lastTab) {
-                    case 'sn-page-menu': newTitle = 'Menu'; break;
-                    case 'sn-page-settings': newTitle = 'Settings'; break;
-                    case 'sn-page-help': newTitle = 'Help'; break;
-                    case 'sn-page-credits': newTitle = 'Credits'; break;
-                 }
-                $container.find('.sn-sub-header h3').text(newTitle);
+        updateDefaultTabStatus(fade) {
+            const defaultTabId = localStorage.getItem('screamerPanelDefaultTab') || 'sn-page-news';
+            const tabName = App.config.tabNames[defaultTabId] || 'News';
+            const $status = $('#sn-default-tab-status');
+            const newText = 'The default tab is currently ' + tabName + '.';
+            
+            if (fade) {
+                $status.removeClass('is-visible');
+                setTimeout(function() {
+                    $status.text(newText).addClass('is-visible');
+                }, 300);
+            } else {
+                $status.text(newText);
             }
+        },
+        
+        populateDefaultTabDropdown() {
+            const $dropdown = $('#sn-default-tab-dropdown');
+            $dropdown.empty();
+            const currentDefault = localStorage.getItem('screamerPanelDefaultTab') || 'sn-page-news';
+            
+            $('.sn-page').each(function() {
+                const pageId = this.id;
+                if (!pageId || App.config.editorTabs.includes(pageId) || pageId === currentDefault) {
+                    return;
+                }
+                const tabName = App.config.tabNames[pageId] || pageId;
+                $dropdown.append(
+                    $('<div>', {
+                        'class': 'sn-dropdown-option',
+                        'text': tabName,
+                        'data-target': pageId
+                    })
+                );
+            });
+        },
+
+        setDefaultTab(e) {
+            const newDefaultTabId = $(e.currentTarget).data('target');
+            localStorage.setItem('screamerPanelDefaultTab', newDefaultTabId);
+            App.updateDefaultTabStatus(true);
+            $('#sn-default-tab-dropdown').slideUp(200);
         },
 
         buildAndInit(data) {
             const $content = $('<div>').html(data);
             const liveMode = $content.find('#sn-live-mode').text().trim().toLowerCase() !== 'n';
-            const isAuthorized = liveMode || App.state.isEditor;
+            App.state.currentLiveStatus = liveMode;
 
-            if (!isAuthorized) return;
+            if (!liveMode && App.isEffectivelyNonEditor()) {
+                $('body').append('<div id="np-force-show-button" class="is-maintenance-mode"></div>');
+                $('body').append('<div id="sn-maint-tooltip">The Notification Panel is currently under maintenance.</div>');
+                if (App.state.isEditor) {
+                     $('body').append('<div id="np-exit-as-non-editor" style="display: block;"></div>');
+                }
+                return;
+            }
             
-            const isEditorMode = App.state.isEditor && !liveMode;
-            const buttonClass = isEditorMode ? 'is-editor-mode' : '';
-            $('body').append(`<div id="np-force-show-button" class="${buttonClass}" title="Show Notification Panel"></div>`);
+            $('body').append('<div id="np-force-show-button" title="Show Notification Panel"></div>');
+            $('body').append('<div id="sn-maint-tooltip">The Notification Panel is currently under maintenance.</div>');
+            $('body').append('<div id="np-exit-as-non-editor"></div>');
+            
+            App.updateBellIcon();
 
             const snippetHTML = $content.find('.sn-snippet-content').html();
             const expandedHTML = $content.find('.sn-expanded-content').html();
@@ -154,12 +401,86 @@
             $expandedClone.find('#sn-read-more-visibility, #sn-live-mode').remove();
             App.state.currentContentHash = App.simpleHash($snippetClone.html() + $expandedClone.html());
 
-            const editorModeIndicatorHTML = isEditorMode ? `<span class="sn-editor-mode">(Editor Mode)</span>` : '';
+            const editorModeIndicatorHTML = (App.state.isEditor && !App.state.currentLiveStatus) ? `<span class="sn-editor-mode">(Editor Mode)</span>` : '';
             const readMoreButtonHTML = $content.find('#sn-read-more-visibility').text().trim().toLowerCase() !== 'n' ? `<div id="sn-read-more" class="sn-nav-button">Read More</div>` : '';
-            const shouldAutoOpen = (localStorage.getItem('screamerNewsShowPref') !== 'false');
-            const isCheckedAttribute = shouldAutoOpen ? 'checked' : '';
+            
+            const autoOpenPref = (localStorage.getItem('screamerNewsShowPref') !== 'false');
+            const autoOpenChecked = autoOpenPref ? 'checked' : '';
+            
+            const resetOnClosePref = (localStorage.getItem('screamerPanelResetOnClose') === 'true');
+            const resetOnCloseChecked = resetOnClosePref ? 'checked' : '';
+            
+            const persistAsNonEditorPref = (localStorage.getItem('screamerPanelPersistAsNonEditorPref') === 'true');
+            const persistAsNonEditorChecked = persistAsNonEditorPref ? 'checked' : '';
+            
+            const failsafeTime = localStorage.getItem('screamerPanelFailsafeTime') || 60;
+
             const modalTitle = $content.find('.sn-modal-title-override').first().html() || 'New Updates';
 
+            const debugPageContent = `
+                <div class="sn-setting-item">
+                    <div class="sn-options" style="justify-content: flex-start;">
+                        <input type="checkbox" id="sn-debug-maint-checkbox">
+                        <label for="sn-debug-maint-checkbox" class="sn-checkbox-label">Enable maintenance icon</label>
+                    </div>
+                </div>
+                <div class="sn-setting-item">
+                    <div class="sn-options" style="justify-content: space-between; align-items: center;">
+                        <div>
+                           <input type="checkbox" id="sn-as-non-editor-checkbox">
+                           <label for="sn-as-non-editor-checkbox" class="sn-checkbox-label">Appear as non-editor</label>
+                        </div>
+                        <div id="np-non-editor-options-button" class="sn-nav-button">Options</div>
+                    </div>
+                    <div id="np-non-editor-options-modal">
+                        <div class="sn-setting-item">
+                            <label for="np-failsafe-input">Failsafe timer (1-600s). Default: 60.</label>
+                            <input type="number" id="np-failsafe-input" min="1" max="600" value="${failsafeTime}">
+                        </div>
+                        <div class="sn-setting-item">
+                            <div class="sn-options" style="justify-content: flex-start;">
+                                <input type="checkbox" id="np-persist-as-non-editor-checkbox" ${persistAsNonEditorChecked}>
+                                <label for="np-persist-as-non-editor-checkbox" class="sn-checkbox-label">Persist after refresh (will not persist in new tabs).</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const isEditorMode = App.state.isEditor && !liveMode;
+            const debugNavButtonHTML = isEditorMode ? `<div class="sn-nav-button" data-target="sn-page-debug">Debug</div>` : '';
+            const debugPageHTML = isEditorMode ? `
+                <div id="sn-page-debug" class="sn-page">
+                    <div class="sn-content-body" style="justify-content: flex-start; flex-direction: column; gap: 0;">
+                        ${debugPageContent}
+                    </div>
+                    <div class="sn-footer">
+                        <div class="sn-options"><div class="sn-nav-button" data-target="sn-page-menu">Menu</div></div>
+                        <div class="sn-read-more-placeholder">&nbsp;</div>
+                    </div>
+                </div>` : '';
+
+            const settingsPageContent = `
+                <div class="sn-setting-item">
+                    <div class="sn-options">
+                        <input type="checkbox" id="sn-hide-permanently" ${autoOpenChecked}>
+                        <label for="sn-hide-permanently" class="sn-checkbox-label">Automatically open the Notification Panel to the News tab when the news is updated</label>
+                    </div>
+                </div>
+                <div class="sn-setting-item">
+                    <div id="sn-default-tab-wrapper">
+                         <div id="sn-default-tab-button" class="sn-nav-button">Set Default Tab</div>
+                         <div id="sn-default-tab-dropdown"></div>
+                    </div>
+                </div>
+                <div class="sn-setting-item">
+                    <div class="sn-options" style="justify-content: flex-start;">
+                        <input type="checkbox" id="sn-reset-on-close" ${resetOnCloseChecked}>
+                        <label for="sn-reset-on-close" class="sn-checkbox-label">Load the default tab if the panel is closed</label>
+                    </div>
+                </div>
+            `;
+            
             const panelHTML = `
                 <div id="sn-container">
                     <div class="sn-header">
@@ -169,10 +490,11 @@
                     <div class="sn-sub-header"><h3>News</h3></div>
                     <div class="sn-page-container">
                         <div id="sn-page-news" class="sn-page sn-page--active"><div class="sn-content">${snippetHTML}</div><div class="sn-footer"><div class="sn-options"><div class="sn-nav-button" data-target="sn-page-menu">Menu</div>${readMoreButtonHTML}</div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
-                        <div id="sn-page-menu" class="sn-page"><div class="sn-content-body"><div class="sn-nav-button" data-target="sn-page-news">News</div><div class="sn-nav-button" data-target="sn-page-settings">Settings</div><div class="sn-nav-button" data-target="sn-page-help">Help</div><div class="sn-nav-button" data-target="sn-page-credits">Credits</div></div><div class="sn-footer"><div class="sn-options"></div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
-                        <div id="sn-page-settings" class="sn-page"><div class="sn-content-body"><div class="sn-options"><input type="checkbox" id="sn-hide-permanently" ${isCheckedAttribute}><label for="sn-hide-permanently">Automatically open the Notification Panel to the News tab when the news is updated</label></div></div><div class="sn-footer"><div class="sn-options"><div class="sn-nav-button" data-target="sn-page-menu">Menu</div></div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
+                        <div id="sn-page-menu" class="sn-page"><div class="sn-content-body"><div class="sn-nav-button" data-target="sn-page-news">News</div><div class="sn-nav-button" data-target="sn-page-settings">Settings</div><div class="sn-nav-button" data-target="sn-page-help">Help</div><div class="sn-nav-button" data-target="sn-page-credits">Credits</div>${debugNavButtonHTML}</div><div class="sn-footer"><div class="sn-options"></div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
+                        <div id="sn-page-settings" class="sn-page"><div class="sn-content-body" style="justify-content: flex-start; flex-direction: column; gap: 0;">${settingsPageContent}</div><div class="sn-footer"><div class="sn-options"><div class="sn-nav-button" data-target="sn-page-menu">Menu</div><div id="sn-default-tab-status"></div></div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
                         <div id="sn-page-help" class="sn-page"><div class="sn-content">${helpHTML}</div><div class="sn-footer"><div class="sn-options"><div class="sn-nav-button" data-target="sn-page-menu">Menu</div></div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
                         <div id="sn-page-credits" class="sn-page"><div class="sn-content">${creditsHTML}</div><div class="sn-footer"><div class="sn-options"><div class="sn-nav-button" data-target="sn-page-menu">Menu</div></div><div class="sn-read-more-placeholder">&nbsp;</div></div></div>
+                        ${debugPageHTML}
                     </div>
                 </div>
                 <div id="sn-modal-overlay">
@@ -185,6 +507,22 @@
                 </div>
             `;
             $('body').append(panelHTML);
+
+            App.updateDefaultTabStatus(false);
+
+            const newsTabNode = document.getElementById('sn-page-news');
+            if (newsTabNode) {
+                const observer = new MutationObserver(function(mutationsList) {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            if (mutation.target.classList.contains('sn-page--active')) {
+                                App.markNewsAsRead();
+                            }
+                        }
+                    }
+                });
+                observer.observe(newsTabNode, { attributes: true });
+            }
 
             $('#sn-container a, #sn-modal-overlay a').each(function() {
                 const $link = $(this);
@@ -203,10 +541,8 @@
 
             if (persistedView === 'modal') {
                 App.openModal();
-            } else if (isNewContent && shouldAutoOpen) {
+            } else if (isNewContent && autoOpenPref) {
                 App.forceOpenToNews();
-                // FIX: Explicitly mark as read to prevent the notification icon from reappearing.
-                App.markNewsAsRead();
             } else if (persistedView === 'panel') {
                 App.restorePanelState();
                 App.openPanel();
@@ -218,22 +554,104 @@
             }
         },
 
-        init() {
+        init: function() {
             if (new URLSearchParams(window.location.search).has('newsbox')) return;
 
             App.state.isEditor = (mw.config.get('wgUserGroups') || []).some(g =>
                 ['sysop', 'content-moderator', 'administrator'].includes(g));
-
-            $(document)
-                .on('click', '#np-force-show-button', App.handleBellClick)
-                .on('click', '#sn-close-button', App.closePanel)
-                .on('click', '#sn-read-more', App.openModal)
-                .on('click', '#sn-modal-close-button', App.closeModal)
-                .on('click', '.sn-nav-button:not(#sn-read-more)', App.navigateTabs)
-                .on('change', '#sn-hide-permanently', App.saveCheckboxSetting);
-
+            
             $.get('/wiki/Template:ScreamerNews?action=render&cb=' + new Date().getTime())
-                .done(App.buildAndInit)
+                .done(function(data) {
+                    let resumeAsNonEditor = false;
+                    let remainingTime = 0;
+                    if (localStorage.getItem('screamerPanelPersistAsNonEditorPref') === 'true' && App.state.isEditor) {
+                        const timestamp = sessionStorage.getItem('screamerPanelFailsafeTimestamp');
+                        if (timestamp) {
+                            remainingTime = parseInt(timestamp, 10) - Date.now();
+                            if (remainingTime > 0) {
+                                resumeAsNonEditor = true;
+                            } else {
+                                sessionStorage.removeItem('screamerPanelFailsafeTimestamp');
+                            }
+                        }
+                    }
+                    
+                    App.buildAndInit(data);
+
+                    $(document)
+                        .on('click', '#np-force-show-button', function(e) {
+                            if (App.state.needsRefresh) {
+                                location.reload();
+                                return;
+                            }
+                            if (App.isEffectivelyNonEditor() && $(this).hasClass('is-maintenance-mode')) {
+                                return;
+                            }
+                            App.handleBellClick(e);
+                        })
+                        .on('mouseenter', '#np-force-show-button', function() {
+                            const $bell = $(this);
+                            if ($bell.hasClass('is-maintenance-mode')) {
+                                const $tooltip = $('#sn-maint-tooltip');
+                                const bellRect = $bell[0].getBoundingClientRect();
+                                
+                                $tooltip.addClass('is-visible');
+                                const tooltipRect = $tooltip[0].getBoundingClientRect();
+        
+                                const top = bellRect.top - tooltipRect.height - 8;
+                                const left = bellRect.left;
+                                
+                                $tooltip.css({
+                                    top: top + 'px',
+                                    left: left + 'px',
+                                });
+                            }
+                        })
+                        .on('mouseleave', '#np-force-show-button', function() {
+                            $('#sn-maint-tooltip').removeClass('is-visible');
+                        })
+                        .on('click', '#sn-close-button', App.closePanel)
+                        .on('click', '#sn-read-more', App.openModal)
+                        .on('click', '#sn-modal-close-button', App.closeModal)
+                        .on('click', '.sn-nav-button:not(#sn-read-more)', App.navigateTabs)
+                        .on('change', '#sn-hide-permanently', App.saveCheckboxSetting)
+                        .on('change', '#sn-debug-maint-checkbox', App.handleMaintDebugToggle)
+                        .on('change', '#sn-reset-on-close', App.saveResetOnCloseSetting)
+                        .on('change', '#sn-as-non-editor-checkbox', App.toggleAsNonEditor)
+                        .on('change', '#np-persist-as-non-editor-checkbox', App.savePersistenceSetting)
+                        .on('click', '#np-exit-as-non-editor', function() {
+                            if (!App.state.isEditor) return;
+                            App.disableAsNonEditorMode();
+                        })
+                        .on('click', '#np-non-editor-options-button', function() {
+                            $('#np-non-editor-options-modal').toggleClass('is-visible');
+                        })
+                        .on('change blur', '#np-failsafe-input', App.saveFailsafeTimer)
+                        .on('click', '#sn-default-tab-button', function() {
+                            App.populateDefaultTabDropdown();
+                            $('#sn-default-tab-dropdown').slideToggle(200);
+                        })
+                        .on('click', '#sn-default-tab-dropdown .sn-dropdown-option', App.setDefaultTab)
+                        .on('mouseenter', '#sn-default-tab-wrapper', function() {
+                            App.updateDefaultTabStatus(false);
+                            $('#sn-default-tab-status').addClass('is-visible');
+                        })
+                        .on('mouseleave', '#sn-default-tab-wrapper', function() {
+                            $('#sn-default-tab-status').removeClass('is-visible');
+                        });
+                    
+                    if (resumeAsNonEditor) {
+                        App.state.isAsNonEditor = true;
+                        $('#sn-as-non-editor-checkbox').prop('checked', true);
+                        $('#np-exit-as-non-editor').show();
+                        App.accessManager.enforceDenial();
+                        App.state.asNonEditorTimeout = setTimeout(function() {
+                            App.disableAsNonEditorMode();
+                        }, remainingTime);
+                    }
+        
+                    App.accessManager.init();
+                })
                 .fail(() => console.error('Notification Panel: Failed to load template.'));
         }
     };
@@ -379,66 +797,6 @@ $(function() {
                localStorage.setItem('customAudioPlayerVolume', 0);
            }
         });
-    });
-});
-
-/* navbox animations */
-
-jQuery(function($) {
-    'use strict';
-
-    var FADE_DURATION = 400;
-    var SLIDE_DURATION = 400;
-
-    var $navboxWrapper = $('#screamer-navbox-wrapper');
-    if (!$navboxWrapper.length) {
-        return;
-    }
-
-    $navboxWrapper.on('click', '.mw-collapsible-toggle a', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        var $toggle = $(this);
-        var $toggleText = $toggle.find('.mw-collapsible-text');
-        var $header = $toggle.closest('.mw-collapsible');
-
-        if ($header.hasClass('is-animating')) {
-            return;
-        }
-        $header.addClass('is-animating');
-
-        var $contentToAnimate;
-        if ($header.is('table')) {
-            $contentToAnimate = $header.children('tbody');
-        } else {
-            $contentToAnimate = $header.nextUntil('.mw-collapsible');
-        }
-
-        if (!$contentToAnimate.length) {
-            $header.removeClass('is-animating');
-            return;
-        }
-
-        var isCurrentlyVisible = $contentToAnimate.first().is(':visible');
-
-        if (isCurrentlyVisible) {
-            $toggleText.text('Show');
-            $contentToAnimate.animate({ opacity: 0 }, FADE_DURATION, function() {
-                $contentToAnimate.slideUp(SLIDE_DURATION, function() {
-                    $header.addClass('mw-collapsed').removeClass('is-animating');
-                });
-            });
-        } else {
-            $toggleText.text('Hide');
-            $contentToAnimate.hide().css('opacity', 0);
-            
-            $contentToAnimate.slideDown(SLIDE_DURATION, function() {
-                $contentToAnimate.animate({ opacity: 1 }, FADE_DURATION, function() {
-                    $header.removeClass('mw-collapsed').removeClass('is-animating');
-                });
-            });
-        }
     });
 });
 

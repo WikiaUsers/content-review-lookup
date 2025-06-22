@@ -91,7 +91,7 @@
                     if (v.match(this.regexes.youtube)) {
                         this.links.youtube = v;
                     } else {
-                        this.links.youtube = 'https://youtube.com/user/' + v;
+                        this.links.youtube = 'https://youtube.com/' + v;
                     }
                     break;
                 case 'twitter':

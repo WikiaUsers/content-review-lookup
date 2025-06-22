@@ -21,8 +21,8 @@ var hasClass = (function () {
   */
  
  var autoCollapse = 2;
- var collapseCaption = "hide";
- var expandCaption = "show";
+ var collapseCaption = "ẩn";
+ var expandCaption = "hiện";
  
  function collapseTable( tableIndex )
  {

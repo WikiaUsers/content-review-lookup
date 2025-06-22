@@ -100,7 +100,7 @@ window.MessageBlock = {
 } );
 
 /**
- * Sound button functionality
+ * Sound button functionality (for Sound, ItemSound and AudioButton templates)
  * JS required to provide the functionality to add a button to play short sound
  * effects
  * Adapted from https://minecraft.fandom.com/wiki/MediaWiki:Gadget-sound.js
@@ -109,40 +109,68 @@ window.MessageBlock = {
 mw.hook('wikipage.content').add(function ($content) {
 	var i18n = {
 		playTitle: 'Click to play',
-		stopTitle: 'Click to stop'
+		stopTitle: 'Click to stop',
+		openFilePage: 'Open file page'
 	};
-
-	$content.find('.sound')
-		.prop('title', i18n.playTitle)
-		.on('click', function (e) {
-			// Ignore links
-			if (e.target.tagName === 'A') {
-				return;
+	
+	var $contextmenu = $('#sound-contextmenu');
+	
+	$content.find('.sound, .audio-button')
+		.prop('title', i18n.playTitle )
+		.on('contextmenu', function (e) {
+			// Ignore links or selection
+			if (e.target.tagName === 'A' || window.getSelection().toString()) return;
+			
+			e.preventDefault();
+			$contextmenu.remove();
+			
+			let fileHref = $(this).find('a[href*="/File:"]').attr('href');
+			let mwtitle = null;
+			
+			if (fileHref) {
+				let match = fileHref.match(/\/File:(.+)$/);
+				if (match) {
+					mwtitle = decodeURIComponent(match[1]);
+				}
 			}
-
+			
+			if (!mwtitle) return;
+			
+			$contextmenu = $('<a id="sound-contextmenu">')
+				.attr('href', mw.Title.makeTitle(6, mwtitle).getUrl())
+				.attr('title', mwtitle)
+				.css( {top: e.pageY, left: e.pageX} )
+				.text( i18n.openFilePage )
+				.appendTo( 'body' );
+		})
+		.on('click', function (e) {
+			if (e.target.tagName === 'A') return;
+			
 			var audio = $(this).find('.sound-audio audio')[0];
 			if (audio) {
 				audio.paused ? audio.play() : audio.pause();
 			}
-		})
-		.find('.sound-audio audio')
+		});
+		
+	$content.find('.sound .sound-audio audio')
 		.on('play', function () {
-			// Stop any already playing sounds
 			var playing = $('.sound-playing .sound-audio audio')[0];
-			if (playing && playing !== this) {
-				playing.pause();
-			}
+			if (playing) playing.pause();
 
 			$(this).closest('.sound')
-				.addClass('sound-playing')
-				.prop('title', i18n.stopTitle);
+				.addClass('sound-playing').prop('title', i18n.stopTitle);
 		})
 		.on('pause', function () {
-			// Reset back to the start
 			this.currentTime = 0;
-
 			$(this).closest('.sound')
-				.removeClass('sound-playing')
-				.prop('title', i18n.playTitle);
+				.removeClass('sound-playing').prop('title', i18n.playTitle);
 		});
+	
+	// Remove context menu if clicking elsewhere
+	$(window).on('click', function (e) {
+		if ($contextmenu.length && !$.contains($contextmenu[0], e.target)) {
+			$contextmenu.remove();
+			$contextmenu = $();
+		}
+	});
 });

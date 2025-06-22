@@ -15,7 +15,8 @@ window.LockOldBlogs = {
 importArticles({
     type: "script",
     articles: [
-        "u:dev:MediaWiki:LockOldBlogs/code.js"
+        "u:dev:MediaWiki:LockOldBlogs/code.js",
+        'u:dev:MediaWiki:BackToTopButton/code.js',
     ]
 });
 

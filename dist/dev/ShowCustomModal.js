@@ -25,14 +25,14 @@
                 top: $modal.offset().top + 100,
                 opacity: 0
             }, 'fast', function() {
-                $modal.remove();
+                $modal.detach();
             });
 
             var $blackout = $modal.data('blackout');
             var settings = $modal.data('settings');
             $blackout.fadeOut('fast', function() {
-                $modal.remove();
-                $blackout.remove();
+                $modal.detach();
+                $blackout.detach();
 
                 var callback = settings && settings.onAfterClose;
                 if ($.isFunction(callback)) {
@@ -75,13 +75,13 @@
             display: 'block',
             opacity: blackoutOpacity,
             zIndex: zIndex
-        }).removeClass('blackoutHidden');
+        }).removeClass('blackoutHidden').appendTo('body');
         wrapper.css({
-            top: wrapper.getModalTopOffset(),
+            top: getModalTopOffset(wrapper),
             zIndex: zIndex + 1,
             opacity: 1,
             display: 'block'
-        });
+        }).appendTo('body');
         $(document.body).addClass('modalShown');
     };
 

@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:Ontentcay/code.js?action=raw&ctype=text/javascript");

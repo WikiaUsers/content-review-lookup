@@ -26,3 +26,5 @@ window.UserTagsJS = {
 		
 	}
 };
+UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.newuser = true;
