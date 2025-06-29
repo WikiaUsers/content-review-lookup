@@ -1,1 +1,0 @@
-$(".featured-video__wrapper").remove();

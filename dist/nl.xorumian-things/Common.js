@@ -1,2 +1,2 @@
 /* JavaScript die hier wordt geplaatst heeft invloed op alle pagina's voor alle gebruikers */
-/* #REDIRECT */mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:Common.js?action=raw\u0026ctype=text/javascript");
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:Common.js?action=raw&ctype=text/javascript");

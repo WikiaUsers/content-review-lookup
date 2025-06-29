@@ -16,13 +16,16 @@ window.tooltips_config = {
 window.tooltips_list = [
     {
         classname: 'sequence-tooltip',
-        parse: '{' + '{Template:Seq/data|1=<#seq#>|2=<#text#>}}'
+        parse: '{' + '{Template:Seq/data|1=<#seq#>}}'
     }, {
         classname: 'pathway-tooltip',
         parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
     }, {
         classname: 'ingredient-tooltip',
-        parse: '{' + '{Template:Ingr/data|1=<#name#>|2=<#text#>}}'
+        parse: '{' + '{Template:Ingr/data|1=<#name#>}}'
+    }, {
+        classname: 'uniqueness-tooltip',
+        parse: '{' + '{Template:Uniqueness/data|1=<#name#>|2=<#description#>}}'
     }
 ],
 

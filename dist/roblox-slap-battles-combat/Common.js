@@ -230,52 +230,53 @@ function processNode(node) {
     }
   }
 
-  if (node.nodeType === Node.TEXT_NODE) {
-    let originalText = node.nodeValue;
-    let parent = node.parentNode;
-    let container = document.createElement('span');
+if (node.nodeType === Node.TEXT_NODE && node.parentNode && !node.parentNode.closest('.keyword-replaced')) {
+  let originalText = node.nodeValue;
+  let parent = node.parentNode;
+  let container = document.createElement('span');
 
-    const sortedKeywordEntries = Object.entries(keywordData).sort((a, b) => b[0].length - a[0].length);
+  const sortedKeywordEntries = Object.entries(keywordData).sort((a, b) => b[0].length - a[0].length);
 
-    let replaced = false;
+  let replaced = false;
 
-    for (const [keyword, { link, style }] of sortedKeywordEntries) {
-      const escapedKeyword = escapeRegExp(keyword);
-      const needsBoundaries = /^[\w\s]+$/.test(keyword) && !/[:()]/.test(keyword);
+  for (const [keyword, { link, style }] of sortedKeywordEntries) {
+    const escapedKeyword = escapeRegExp(keyword);
+    const needsBoundaries = /^[\w\s]+$/.test(keyword) && !/[:()]/.test(keyword);
 
-      const regex = new RegExp(
-        needsBoundaries
-          ? "(\\`)?\\b(" + escapedKeyword + ")\\b(?!-)"
-          : "(\\`)?(" + escapedKeyword + ")(?!-)",
-        "gi"
-      );
+    const regex = new RegExp(
+      needsBoundaries
+        ? "(\\`)?\\b(" + escapedKeyword + ")\\b(?!-)"
+        : "(\\`)?(" + escapedKeyword + ")(?!-)",
+      "gi"
+    );
 
-      if (regex.test(originalText)) {
-        const newHTML = originalText.replace(regex, (match, backtick, keywordMatch) => {
-          if (backtick) return keywordMatch;
+    if (regex.test(originalText)) {
+      const newHTML = originalText.replace(regex, (match, backtick, keywordMatch) => {
+        if (backtick) return keywordMatch;
 
-          return (link.toLowerCase() === currentPage.toLowerCase())
-            ? `<span style="${style}">${keywordMatch}</span>`
-            : `<a href="/wiki/${link}" style="${style}">${keywordMatch}</a>`;
-        });
+        const content = (link.toLowerCase() === currentPage.toLowerCase())
+          ? `<span class="keyword-replaced" style="${style}">${keywordMatch}</span>`
+          : `<a class="keyword-replaced" href="/wiki/${link}" style="${style}">${keywordMatch}</a>`;
 
-        container.innerHTML = newHTML;
-        parent.replaceChild(container, node);
-        replaced = true;
-        break;
-      }
+        return content;
+      });
+
+      container.innerHTML = newHTML;
+      parent.replaceChild(container, node);
+      replaced = true;
+      break;
     }
+  }
 
-    if (!replaced && originalText.includes('`')) {
-      const cleanedText = originalText.replace(/\`(?=\w)/g, '');
-      if (cleanedText !== originalText) {
-        const cleanedNode = document.createTextNode(cleanedText);
-        parent.replaceChild(cleanedNode, node);
-      }
+  if (!replaced && originalText.includes('`')) {
+    const cleanedText = originalText.replace(/\`(?=\w)/g, '');
+    if (cleanedText !== originalText) {
+      const cleanedNode = document.createTextNode(cleanedText);
+      parent.replaceChild(cleanedNode, node);
     }
   }
 }
-
+}
 
   processNode(content);
 });

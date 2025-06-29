@@ -537,10 +537,10 @@ $cl.fn.generateMarkup = function(anchor) {
             '\tmin-height: 32px;\n' +
             '\tpadding: 10px 15px 10px 55px;\n' +
             '\tposition: relative;\n' +
-            '\tborder-bottom: 1px solid #eee;\n' +
+            '\tborder-top: 1px solid #eee;\n' +
         '}\n' +
-        '#chatlog-output li:last-child {\n' +
-            '\tborder-bottom: none;\n' +
+        '#chatlog-output li:first-child {\n' +
+            '\tborder-top: none;\n' +
         '}\n' +
         '#chatlog-output .avatar {\n' +
             '\twidth: 28px;\n' +
@@ -587,8 +587,7 @@ $cl.fn.generateMarkup = function(anchor) {
             '\tmin-height: 0;\n' +
             '\tpadding-top: 0px;\n' +
             '\tpadding-bottom: 5px;\n' +
-            '\tborder-top: 1px dashed #eee;\n' +
-            '\tmargin-top: -1px;\n' +
+            '\tborder-top: none;\n' +
         '}\n' +
         '#chatlog-output .continued .avatar,\n' +
         '#chatlog-output .continued .time,\n' +

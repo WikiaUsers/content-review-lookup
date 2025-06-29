@@ -75,14 +75,14 @@ document.addEventListener("DOMContentLoaded", function() {
     mosaicDiv.appendChild(columnDiv1);
 
     var articleCards = [
-        { href: "https://xorumian-things.fandom.com/de/wiki/Zovin", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/0/0b/Zovin.png/revision/latest?cb=20240714130000&path-prefix=de", title: "Zovin" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Heinrych", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest?cb=20241007193623&path-prefix=de", title: "Heinrych" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Luq", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/3/38/Itslgd.png/revision/latest/scale-to-width-down/1000?cb=20241207175816&path-prefix=de", title: "Luq" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Qara", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/0/04/Qara.png/revision/latest/scale-to-width-down/1000?cb=20250504181934&path-prefix=de", title: "Qara" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Atrae", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/1/11/Atrae.png/revision/latest/scale-to-width-down/1000?cb=20241207204943&path-prefix=de", title: "Atrae" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Luna", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/1/13/Luna.png/revision/latest/scale-to-width-down/1000?cb=20241208195552&path-prefix=de", title: "Luna" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Rolfin", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/6/63/Rolfin.png/revision/latest/scale-to-width-down/1000?cb=20241215162139&path-prefix=de", title: "Rolfin" },
-        { href: "https://xorumian-things.fandom.com/de/wiki/Gorior", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/b/b5/Gorior.png/revision/latest/scale-to-width-down/1000?cb=20241103184643&path-prefix=de", title: "Gorior" }
+        { href: "https://xorumian-things.fandom.com/de/wiki/Zovin", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/0/0b/Zovin.png/revision/latest?path-prefix=de", title: "Zovin" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Heinrych", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest?path-prefix=de", title: "Heinrych" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Luq", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/5/5e/Luq.png/revision/latest/scale-to-width-down/1000?path-prefix=de", title: "Luq" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Qara", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/0/04/Qara.png/revision/latest/scale-to-width-down/1000?path-prefix=de", title: "Qara" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Atrae", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/1/11/Atrae.png/revision/latest/scale-to-width-down/1000?path-prefix=de", title: "Atrae" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Luna", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/1/13/Luna.png/revision/latest/scale-to-width-down/1000?path-prefix=de", title: "Luna" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Rolfin", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/6/63/Rolfin.png/revision/latest/scale-to-width-down/1000?path-prefix=de", title: "Rolfin" },
+        { href: "https://xorumian-things.fandom.com/de/wiki/Gorior", imgSrc: "https://static.wikia.nocookie.net/xorumian-things/images/b/b5/Gorior.png/revision/latest/scale-to-width-down/1000?path-prefix=de", title: "Gorior" }
     ];
     
     var columnDiv2 = document.createElement("div");

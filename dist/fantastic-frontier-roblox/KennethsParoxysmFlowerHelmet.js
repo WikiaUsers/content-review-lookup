@@ -115,9 +115,11 @@ mw.hook("wikipage.content").add(function($content) {
                 // - jQuery v3.3.1 (support for confetti effect)
                 // - https://codepen.io/Pillowfication/pen/PNEJbY (confetti effect)
                 
-                // The code for the minigame can be found here: https://uppah.net/ffw_afgame/main.js
+                // The link to the website previously used to host the minigame has been removed due to it having been compromised. 
                 
-                ifr.src = "https://uppah.net/ffw_afgame/";
+                // The code for the minigame can be found here: [REMOVED]
+                
+                ifr.src = "[REMOVED]";
                 ifr.width = 700;
                 ifr.height = 450;
                 $(".mw-content-text").append(ifr);*/

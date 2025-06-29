@@ -685,3 +685,54 @@ $(document).ready(function() {
   updateTable();
   setInterval(updateTable, 1000);
 });
+
+// This script ensures correct zebra striping on all `.wikitable` tables,
+// preserving the CSS :nth-child(odd) background color styling even when rows are hidden via `display:none`.
+// It works by detaching hidden rows from the DOM, so :nth-child(odd) counts only visible rows,
+// and re-attaches them when they become visible again.
+//
+// The script observes changes in each table body (`tbody`), such as sorting or filtering,
+// and updates the DOM accordingly with a slight debounce to optimize performance.
+$(function() {
+  $('.wikitable tbody').each(function() {
+    const $tbody = $(this);
+    let detachedRows = $();
+
+    // Cache previous count of visible rows to avoid unnecessary updates
+    let prevVisibleCount = -1;
+
+    function updateRows() {
+      const $rows = $tbody.children('tr');
+      const $hidden = $rows.filter((_, tr) => $(tr).css('display') === 'none');
+      const $visible = $rows.not($hidden);
+
+      // Only update if the number of visible rows has changed
+      if ($visible.length === prevVisibleCount) return;
+      prevVisibleCount = $visible.length;
+
+      // Re-attach previously detached rows if they are now visible
+      if (detachedRows.length) {
+        const $toReattach = detachedRows.filter((_, tr) => $(tr).css('display') !== 'none');
+        if ($toReattach.length) {
+          $tbody.append($toReattach);
+          detachedRows = detachedRows.not($toReattach);
+        }
+      }
+
+      // Detach rows that are hidden but still in the DOM
+      const newToDetach = $hidden.filter((_, tr) => !detachedRows.is(tr));
+      if (newToDetach.length) {
+        detachedRows = detachedRows.add(newToDetach.detach());
+      }
+    }
+
+    updateRows();
+
+    // Observe changes in tbody that may affect row visibility, such as sorting or filtering
+    const observer = new MutationObserver(() => {
+      clearTimeout($tbody.data('updateTimeout'));
+      $tbody.data('updateTimeout', setTimeout(updateRows, 50)); // debounce updates for performance
+    });
+    observer.observe($tbody[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+  });
+});

@@ -30,7 +30,7 @@
 		}
 	}
 	function addActivityLink (list, i18n) {
-		list.prepend(
+		list.append(
 			$('<li>', {
 				'class': 'user-panel__list-item',
 				'dir': 'auto',

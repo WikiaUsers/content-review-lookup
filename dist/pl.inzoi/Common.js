@@ -38,11 +38,10 @@ UserTagsJS.modules.inactive = {
 window.AddRailModule = ['Szablon:Aktualności', 'Szablon:Discord'];
 
 /* WDSICONS */
-mw.hook('dev.wds').add(function(wds) {
-});
-
 importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
 
 mw.hook('dev.wds').add(function(wds) {
+	mw.hook('wikipage.content').add(function() {
     wds.render('.bar');
+	});
 });

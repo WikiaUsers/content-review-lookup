@@ -11,14 +11,14 @@
 			id: 'default',
 			name: 'Standard',
 			note: 'Light & Dark',
-			image: "https://static.wikia.nocookie.net/xorumian-things/images/5/5c/BackgroundLight.png/revision/latest/scale-to-width-down/480?cb=20240902162337&path-prefix=de"
+			image: "https://static.wikia.nocookie.net/xorumian-things/images/5/5c/BackgroundLight.png/revision/latest/scale-to-width-down/480?path-prefix=de"
 		},
 		{
 			id: 'developer',
 			name: "Developer",
 			note: 'Inspection Mode',
 			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/Developer.css",
-			image: "https://static.wikia.nocookie.net/xorumian-things-pt/images/b/b1/BackgroundDeveloper.png/revision/latest/scale-to-width-down/480?cb=20250227200059"
+			image: "https://static.wikia.nocookie.net/xorumian-things-pt/images/b/b1/BackgroundDeveloper.png/revision/latest/scale-to-width-down/480"
 		},
 	];
 	

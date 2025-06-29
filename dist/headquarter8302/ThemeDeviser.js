@@ -1,57 +1,81 @@
+/**
+ * @name            ThemeDeviser
+ * @author          Headquarter8302
+ * @description     Utility for wiki admins to add CSS variable styling outside
+ *					of ThemeDesigner
+ */
 // index.ts
-(function (window, mw) {
-    if (mw.config.get('wgNamespaceNumber') !== 0) return;
-    window.dev = window.dev || {};
-    if (window.dev.themeDeviser && window.dev.themeDeviser.hasRan) {
-        return;
+(function(window, mw) {
+  const mwConfig = mw.config.get(["wgPageName", "wgNamespaceNumber"]);
+  //! don't run if not article namespace
+  if (mwConfig.wgNamespaceNumber !== 0)
+    return;
+  console.log("[ThemeDeviser] Bootstrapping");
+  window.dev = window.dev || {};
+  if (window.dev.themeDeviser !== undefined) {
+    return;
+  }
+  window.dev.themeDeviser = window.dev.themeDeviser || { hasRan: true };
+  if (!window.themeDeviserAllowlist) {
+    console.error("[ThemeDeviser] No allowlist found! Create an array with the desired page names in 'window.themeDeviserAllowlist'");
+    return;
+  }
+  if (!window.themeDeviserAllowlist.includes(mwConfig.wgPageName)) {
+    return;
+  }
+  //! https://stackoverflow.com/a/8831937
+  function hash(str) {
+    let hash2 = 0;
+    for (let i = 0, len = str.length;i < len; i++) {
+      let chr = str.charCodeAt(i);
+      hash2 = (hash2 << 5) - hash2 + chr;
+      hash2 |= 0;
     }
-    console.log('[ThemeDeviser] bootstrapping');
-    window.dev.themeDeviser = window.dev.themeDeviser || {
-        hasRan: true,
-        hash: function (str) {
-            let hash = 0;
-            for (let i = 0, len = str.length; i < len; i++) {
-                let chr = str.charCodeAt(i);
-                hash = (hash << 5) - hash + chr;
-                hash |= 0;
-            }
-            return Math.abs(hash).toString();
-        },
-        apply: function (input) {
-            const newStyleInject = function (contents) {
-                const stylesheet = document.createElement('style');
-                stylesheet.setAttribute('data-hash', cssHash);
-                stylesheet.classList.add('themedeviser-style');
-                stylesheet.innerText = `:root { ${contents} }`;
-                return stylesheet;
-            };
-            let concatCSS = '';
-            const cssHash = this.hash(input.toString());
-            const existingTDInject = document.querySelector('style[data-hash]');
-            for (let i = 0; i < input.length; i++) {
-                const varPair = input[i];
-                if (
-                    !varPair ||
-                    !varPair[0].startsWith('--') ||
-                    !(
-                        varPair[1].includes('url(') &&
-                        (varPair[1].includes('static.wikia.nocookie.net') ||
-                            varPair[1].includes('data:image'))
-                    )
-                )
-                    continue;
-                concatCSS = concatCSS.concat(`${varPair[0]}: ${varPair[1]};`);
-            }
-            if (
-                existingTDInject &&
-                existingTDInject.dataset['hash'] === cssHash
-            ) {
-                return;
-            } else if (existingTDInject) {
-                existingTDInject.innerText = `:root { ${concatCSS} }`;
-            } else {
-                window.document.head.appendChild(newStyleInject(concatCSS));
-            }
-        },
-    };
-})(window, mediaWiki);
+    return Math.abs(hash2).toString();
+  }
+  //! TODO: add deduplication/prevent duplication
+  function apply(input) {
+    if (input === null) {
+      console.error(`[ThemeDeviser] Empty injection input!`);
+      return;
+    }
+    console.log("[ThemeDeviser] Injecting styles");
+    const injectStylesheet = document.createElement("style");
+    const cssResult = input.theme.map(function([cssVar, cssVarVal]) {
+      //! "security hardening"
+      //! TODO: Should probably allow B64-encoded stuff
+      if (!cssVar.startsWith("--") || cssVarVal.includes("url("))
+        return;
+      return `${cssVar}: ${cssVarVal};`;
+    }).join(" ");
+    injectStylesheet.setAttribute("type", "text/css");
+    injectStylesheet.classList.add("themedeviser");
+    injectStylesheet.dataset["hash"] = hash(cssResult);
+    injectStylesheet.textContent = `:root { ${cssResult} }`;
+    document.head.appendChild(injectStylesheet);
+    console.log("[ThemeDeviser] Styles injected");
+  }
+  mw.hook("dev.fetch").add(function(fetch) {
+    let interfacePage = "Custom-ThemeDeviser.json";
+    if (window.themeDeviserPage) {
+      interfacePage = window.themeDeviserPage;
+    } else {
+      console.warn(`[ThemeDeviser] Configuration variable 'window.themeDeviserPage' not found, defaulting to MediaWiki:Custom-ThemeDeviser.json`);
+    }
+    fetch(interfacePage).then(function(payload) {
+      let payloadJSON;
+      try {
+        payloadJSON = JSON.parse(payload);
+      } catch (error) {
+        console.error(`[ThemeDeviser] Invalid JSON from URL: ${interfacePage}`);
+        throw error;
+      }
+      apply(payloadJSON);
+    });
+  });
+  //! hard dependency
+  importArticle({
+    type: "script",
+    article: "u:dev:MediaWiki:Fetch.js"
+  });
+})(this, mediaWiki);

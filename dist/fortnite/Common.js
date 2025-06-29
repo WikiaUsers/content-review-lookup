@@ -142,7 +142,9 @@ mw.hook('wikipage.content').add(function ($content) {
 				.css( {top: e.pageY, left: e.pageX} )
 				.text( i18n.openFilePage )
 				.appendTo( 'body' );
-		})
+		});
+		
+	$content.find('.sound')
 		.on('click', function (e) {
 			if (e.target.tagName === 'A') return;
 			

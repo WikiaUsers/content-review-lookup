@@ -2,9 +2,6 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
 	const api = new mw.Api();
-	if (mw.config.get('wgAction') !== 'view'){
-		return;
-	}
 	const title = 'Category intersection';
 	const intersectionPage = 'Special:BlankPage/CategoryIntersection';
 	const searchParams = new URLSearchParams(location.search);
@@ -26,12 +23,12 @@ mw.loader.using(['mediawiki.api'], () => {
 		const pageUrl = window.location.origin + window.location.pathname;
 		const category1 = searchParams.get('category1').replaceAll(' ', '_');
 		const category2 = searchParams.get('category2').replaceAll(' ', '_');
-
+		
 		document.title = title;
 		$('#firstHeading').html(title);
 		$('#firstHeading + .page-header__page-subtitle').append(`<br>&lt; <a href="${pageUrl}">New category intersection query</a>`);
 		$('#mw-content-text').empty();
-
+		
 		// Style results like category page
 		const importPromise = importArticles({
 			type: "script",
@@ -51,7 +48,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			}));
 			return Promise.resolve();
 		});
-
+		
 		// Build DPL query
 		const count = 200;
 		let currentPage = Number.parseInt(searchParams.get('page')) || 1;
@@ -74,7 +71,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		dpl += `resultsfooter = ${headerLinks}\n`;
 		dpl += 'resultsheader = \\n' + headerTitle + '\\nThe following %PAGES% pages are common to these categories, out of <span class="dpl-total-pages">%TOTALPAGES%</span> total.\\n\\n' + headerLinks + '\n';
 		dpl += '</DPL>';
-
+		
 		// Get results from API
 		const apiPromise = api.post({
 			action: 'parse',
@@ -91,7 +88,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			return Promise.reject();
 		});
-
+		
 		Promise.all([apiPromise, importPromise]).then((results) => {
 			$('#mw-content-text').html(results[0].parse.text['*']);
 			$('#mw-content-text a[target="_blank"]').removeAttr('target');
@@ -143,7 +140,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		$('#firstHeading').html(title);
 		const mwContentText = $('#mw-content-text');
 		mwContentText.empty();
-	
+		
 		importArticles({
 			type: "script",
 			articles: [

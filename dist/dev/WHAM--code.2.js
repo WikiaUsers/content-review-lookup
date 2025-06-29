@@ -13,6 +13,8 @@
     const config = mw.config.get([
         'wgCanonicalSpecialPageName',
         'wgFormattedNamespaces',
+        'wgRelevantUserName',
+        'profileUserName',
         'wgPageName',
         'wgUserGroups',
         'wgVersion',
@@ -35,7 +37,7 @@
         article: 'u:dev:MediaWiki:WHAM.css'
     });
 
-    const username = config.wgPageName.split('/')[1],
+    const username = config.wgRelevantUserName || config.profileUserName,
           delay = window.WHAMDelay || 100;
 
     var deleteReason,

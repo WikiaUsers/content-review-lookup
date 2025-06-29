@@ -7,7 +7,6 @@ document.querySelectorAll('.category-page__member img').forEach(img => {
 // Images limit = 500
 const links = [
   'https://xorumian-things.fandom.com/de/wiki/Spezial:NewFiles',
-  'https://xorumian-things.fandom.com/de/wiki/Spezial:Unbenutzte_Dateien',
   'https://xorumian-things.fandom.com/wiki/Special:NewFiles',
   'https://xorumian-tests.fandom.com/wiki/Special:NewFiles',
   'https://xorumian-things.fandom.com/fr/wiki/Sp%C3%A9cial:NewFiles',

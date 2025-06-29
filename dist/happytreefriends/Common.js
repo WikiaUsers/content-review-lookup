@@ -119,7 +119,7 @@ window.MessageWallUserTags = {
         'Sleep Mast R': 'Rollback',
         'Splendit-HTF': 'Admin • Splendid',
 	    'SpongeBob\'s Biggest Enthusiast': 'Admin • Sniffles • Pop',
-	    'Marblyn': 'Admin • Flaky • marbles',
+	    'Marblyn': '♍',
 	    'THeWarioChanNEL8752': 'Admin • Pop • Lifty • The Mole',
 	    'Tabletstoons123': 'Rollback',
 	    'BarelyGonnaDoAnything': 'Admin • Cuddles',

@@ -47,25 +47,41 @@ mw.loader.using('mediawiki.api', () => {
 							event.target.previousElementSibling.previousElementSibling
 							: event.target.previousElementSibling
 					); // start point of template opener, skip one extra for if matching brackets breaks the { pair
-					let render = TW.getEncased({
+					let wikitext = TW.getEncased({
 						str: TW.getCM().substring(tStart),
 						startC: '{',
 						endC: '}'
 					});
-					if (!render.startsWith('{{')) {console.warn('Invalid template!'); return;}
+					let name = wikitext.match(/^\{\{\s*([^\#<>\[\]\|\{\}]+)\s*/);
+					if (!wikitext.startsWith('{{') || !name || !name[1] || name[1].trim().length===0) {console.warn('Invalid template!'); return;}
+					name = name[1];
 					TW.templateData = null;
 					TW.templateCall = null;
 					TW.paramOrder = [];
-					TW.parseTemplate(render, tStart);
+					TW.getTD(name, (data) => {
+						TW.templateData = data || {
+							title: name,
+							params: {},
+							aliases: {},
+							paramOrder: [],
+							format: 'inline'
+						};
+						TW.paramOrder = (data && data.paramOrder) ? data.paramOrder : [];
+						TW.parseTemplate(wikitext, tStart);
+						TW.render();
+					});
+					
 				}
 			});
 			
 			// Param filter event
-			$(document).on('change input', (event) => {
-				if (event.target.id && (
-					event.target.id === 'tw-popup-template-filter' ||
-					event.target.id === 'template-filter-notincall' ||
-					event.target.id.indexOf('param-toggle-') === 0
+			$(document).on('change input click', (event) => {
+				if (!event.target) {return;}
+				let $t = $(event.target),
+					id = event.target.id;
+				if (id && (
+					['tw-popup-template-filter', 'template-filter-notincall'].includes(id) ||
+					id.indexOf('param-toggle-') === 0
 				)) {
 					let inputFilter = document.querySelector('#tw-popup-template-filter').value;
 					let existFilter = document.querySelector('#template-filter-notincall').checked;
@@ -86,7 +102,7 @@ mw.loader.using('mediawiki.api', () => {
 						if (filterOut === 0) { toHide.toggleClass('tw-popup-param-filterout', true); }
 						else { toHide.toggleClass('tw-popup-param-filterout', false); }
 					});
-				} else if (event.target.classList.contains('tw-popup-param-value')) {
+				} else if ($t.hasClass('tw-popup-param-value')) {
 					let param = event.target.id.replace(/^ParamVal/, '');
 					TW.templateCall.params[param] = TW.templateCall.params[param] || {name: param, value: ''};
 					TW.templateCall.params[param].value = event.target.value.trim() || '';
@@ -95,12 +111,18 @@ mw.loader.using('mediawiki.api', () => {
 					// Fix edit area size
 					event.target.style.height = '1px';
 					event.target.style.height = (5+event.target.scrollHeight)+'px';
+				} else if ($t.hasClass('tw-popup-param-list-item') && event.type==='change') {
+					let param = $t.attr('value'),
+						main = $t.attr('name').replace(/^param-list-/, '');
+					if (TW.templateCall && TW.templateCall.params && TW.templateCall.params[main]) {
+						TW.templateCall.params[main].selected = param;
+					}
 				}
 			});
 		},
 
 		// Get template's templatedata
-		getTD: (template) => {
+		getTD: (name, ret) => {
 			// API response handler
 			let apiResult = (data) => {
 				let id = Object.keys(data.pages)[0];
@@ -109,28 +131,35 @@ mw.loader.using('mediawiki.api', () => {
 				if (!Tdata) {
 					alert('Invalid template.');
 				} else if (id === '-1'){
-					alert('"Template:' + template + '" does not exist.');
-					TW.render({title:template});
+					alert('"Template:' + name + '" does not exist.');
+					ret();
 				} else if (Tdata.notemplatedata) {
-					alert('"Template:' + template + '" does not have templatedata.');
-					TW.render({title:template});
+					alert('"Template:' + name + '" does not have templatedata.');
+					ret();
 				} else {
-					if (!Tdata.paramOrder && Tdata.params) {
-						Tdata.paramOrder = [];
+					Tdata.paramOrder = Tdata.paramOrder || [];
+					Tdata.aliases = {};
+					if (Tdata.params) {
+						let fillOrder = Tdata.paramOrder.length===0;
 						Object.keys(Tdata.params).forEach((key) => {
-							Tdata.paramOrder.push(key);
+							if (fillOrder) { Tdata.paramOrder.push(key); }
+							if (Tdata.params[key].aliases) {
+								Tdata.params[key].aliases.forEach((alias) => {
+									Tdata.aliases[alias] = key;
+								});
+							}
 						});
 					}
-					if (Tdata.paramOrder && Tdata.paramOrder.length>0) {TW.paramOrder = Tdata.paramOrder.concat(TW.paramOrder);}
-					if (!Tdata.format) {Tdata.format='inline';}
-					TW.render(Tdata);
+					if (Tdata.paramOrder && Tdata.paramOrder.length>0) { TW.paramOrder = Tdata.paramOrder.concat(TW.paramOrder); }
+					if (!Tdata.format) { Tdata.format = 'inline'; }
+					ret(Tdata);
 				}
 			};
 
 			// API call
 			api.get({
 				action: 'templatedata',
-				titles: 'Template:' + template,
+				titles: 'Template:' + name,
 				includeMissingTitles: 1,
 				format: 'json'
 			}).then(apiResult);
@@ -139,7 +168,7 @@ mw.loader.using('mediawiki.api', () => {
 
 		// Render popup with templatadata and current template call's data
 		render: (data) => {
-			TW.templateData = data;
+			data = data || TW.templateData;
 			let getContent = ()=>{
 				let {toggles, params} = TW.parseParams();
 				return `
@@ -253,6 +282,7 @@ mw.loader.using('mediawiki.api', () => {
 				}
 				if (options.attributes) {
 					Object.keys(options.attributes).forEach((key) => {
+						if (options.attributes[key] === false) {return;}
 						newNode.setAttribute(key, options.attributes[key]);
 					});
 				}
@@ -279,14 +309,6 @@ mw.loader.using('mediawiki.api', () => {
 			if (!options.noreturn) {
 				return newNode;
 			}
-		},
-		nestElements: (startNode, optionsArray) => {
-			let oldNode = startNode;
-			optionsArray.forEach((options) => {
-				options.addTo = oldNode;
-				oldNode = TW.addElement(options);
-			});
-			return oldNode;
 		},
 		listElements: (parentNode, optionsArray) => {
 			let newNodes = [];
@@ -327,19 +349,52 @@ mw.loader.using('mediawiki.api', () => {
 					}
 				];
 				let all = [ { node: 'b', content: Tdata.label ? Tdata.label.en : param.toString() } ];
-				let param_names = [{ content: param, node: 'code', classNames: ['tw-popup-param-list-item'] }];
+				let selected = (TW.templateCall.params[param] && TW.templateCall.params[param].selected) ? TW.templateCall.params[param].selected : '';
+				let param_names = [{
+					content: [
+						param,
+						TW.addElement({
+							node: 'input',
+							classNames: ['tw-popup-param-list-item'],
+							attributes: {
+								type: 'radio',
+								id: 'param-list-item-'+param,
+								name: 'param-list-'+param,
+								value: param,
+								checked: selected === param.toString() ? 'checked' : false
+							}
+						})
+					],
+					node: 'label',
+					classNames: ['tw-popup-param-list-label'],
+					attributes: {'for': 'param-list-item-'+param}
+				}];
 				let param_desc  = [];
 				let hr = false;
 				if (Tdata.aliases && Tdata.aliases.length>0) {
 					Tdata.aliases.forEach((alias) => {
 						param_names.push({
-							content: alias,
-							node: 'code',
-							classNames: ['tw-popup-param-list-item']
+							content: [
+								alias,
+								TW.addElement({
+									node: 'input',
+									classNames: ['tw-popup-param-list-item'],
+									attributes: {
+										type: 'radio',
+										id: 'param-list-item-'+alias,
+										name: 'param-list-'+param,
+										value: alias,
+										checked: selected === alias.toString() ? 'checked' : false
+									}
+								})
+							],
+							node: 'label',
+							classNames: ['tw-popup-param-list-label'],
+							attributes: {'for': 'param-list-item-'+alias}
 						});
 					});
 				}
-				all.push({ classNames: [ 'tw-popup-param-list' ], content: TW.listElements(null,param_names) });
+				all.push({ classNames: [ 'tw-popup-param-list' ], content: TW.listElements(null, param_names) });
 				if (Tdata.description && Tdata.description.en) {
 					if (!hr){param_desc.push({node: 'hr'}); hr=true;}
 					param_desc.push({
@@ -465,17 +520,23 @@ mw.loader.using('mediawiki.api', () => {
 					};
 					// Terminate into parsed template
 					if (sectioned && sectioned[1]) {
-						param.prefix = sectioned[1]+sectioned[2];
 						param.value = sectioned[3];
 						param.name = sectioned[1].trim();
 					} else {
 						template.unnamedCount++;
-						param.prefix = '';
 						param.value = tempParam.value;
 						param.name = template.unnamedCount.toString();
 					}
-					TW.paramOrder.push(param.name);
-					template.params[param.name] = param;
+					param.selected = param.name;
+					param.name = TW.templateData.aliases[param.name] || param.name; // Prioritize using main name, as its what paramOrder uses
+					if (!template.params[param.name]) {
+						// Push to order if not a dupe
+						TW.paramOrder.push(param.name);
+						template.paramOrder.push(param.name);
+					} else if (!template.dupes || (template.dupes && !template.dupes.includes(param.selected))) {
+						template.dupes = (template.dupes || []).push(param.selected); // Mark as repeated
+					}
+					template.params[param.name] = param; // Only keep latest version
 	
 					// Initialize next
 					tempParam = {
@@ -497,7 +558,7 @@ mw.loader.using('mediawiki.api', () => {
 						template = {
 							name: null,
 							params: null,
-							paramOrder: [],
+							paramOrder: TW.paramOrder || [],
 							unnamedCount: 0
 						};
 						i++;
@@ -526,7 +587,6 @@ mw.loader.using('mediawiki.api', () => {
 							template.STR = str;
 							template._echo = JSON.parse(JSON.stringify(template));
 							TW.templateCall = template;
-							TW.getTD(template.name);
 							break;
 
 						// Template param start
@@ -606,19 +666,17 @@ mw.loader.using('mediawiki.api', () => {
 			
 			// Build in order
 			buildOrder.forEach((param) => {
-				if (params[param]) {
+				let data = params[param];
+				if (data) {
+					param = data.selected || data.name;
 					let param_str = '|';
-					if (!params[param].prefix) {
-						if (isNaN(param)) {
-							param_str = param_str +
-							param +
-							' '.repeat(Math.max(0, (format.maxlen - param.length))) +
-							(formatVal==='inline' ? '=' : ' = ');
-						}
-					} else {
-						param_str = param_str + params[param].prefix;
+					if (isNaN(param)) {
+						param_str = param_str +
+						param +
+						' '.repeat(Math.max(0, (format.maxlen - param.length))) +
+						(formatVal==='inline' ? '=' : ' = ');
 					}
-					param_str = param_str + params[param].value.replace(/[\s\n]*$/, '');
+					param_str = param_str + data.value.replace(/[\s\n]*$/, '');
 					newT.push(param_str);
 				}
 			});
@@ -669,7 +727,9 @@ mw.loader.using('mediawiki.api', () => {
 			// Params not specified in TD's paramOrder go to the end
 			TW.paramOrder.forEach((param) => {
 				let checkBox = document.querySelector('#param-toggle-'+param);
-				if (paramOrder.indexOf(param) === -1 && ((checkBox && checkBox.checked) || !checkBox)) { paramOrder.push(param); }
+				if (paramOrder.indexOf(param) === -1 && ((checkBox && checkBox.checked) || !checkBox)) {
+					paramOrder.push(param);
+				}
 			});
 			return paramOrder;
 		},
@@ -677,7 +737,12 @@ mw.loader.using('mediawiki.api', () => {
 		addParam: () => {
 			let name = document.querySelector('#tw-popup-newparam-name').value.trim() || '';
 			let value = document.querySelector('#tw-popup-newparam-value').value.trim() || '';
-			if (name.length > 0 && TW.paramOrder.indexOf(name) === -1) {
+			if (
+				name.length > 0
+				&& !TW.paramOrder.includes(name)
+				&& !TW.templateCall.aliases[name]
+				&& !TW.paramOrder.includes(TW.templateCall.aliases[name])
+			) {
 				TW.templateCall.params[name] = {
 					value: value,
 					name: name

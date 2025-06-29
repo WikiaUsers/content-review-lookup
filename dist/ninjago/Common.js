@@ -15,10 +15,11 @@ window.LockOldBlogs = {
 importArticles({
     type: "script",
     articles: [
-        "u:dev:MediaWiki:LockOldBlogs/code.js",
-        'u:dev:MediaWiki:BackToTopButton/code.js',
+        'u:dev:MediaWiki:LockOldBlogs/code.js'
     ]
 });
+
+window.BackToTopModern = true;
 
 // Configuration for NoLicenseWarning
 window.NoLicenseWarning = {

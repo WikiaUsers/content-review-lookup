@@ -352,11 +352,11 @@ window.MessageWallUserTags = {
         'Koolkitty108': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
-        'AndromedaMapping1': 'Discussion Moderator',
+        'AndromedaMapping1': 'Discussion Moderator • Rollback',
         
         'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
-        'LarryBoy_fan': 'Discussion Moderator • Rollback',
+        'LarryBoy_fan': 'Discussion Moderator',
         
         'SpongeBot678': 'Assistant',
         

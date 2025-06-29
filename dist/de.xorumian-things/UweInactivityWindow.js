@@ -11,14 +11,12 @@ function createPrompt() {
     prompt.className = 'inactivity-prompt';
 
     let img = document.createElement('img');
-    img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest/scale-to-width-down/1000?cb=20241007193623&path-prefix=de';
+    img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest/scale-to-width-down/1000?path-prefix=de';
 
     let text1 = document.createElement('span');
-    text1.className = 'text-line1';
     text1.innerText = 'You haven\'t moved your mouse for at least fifteen minutes. That got us wondering:';
 
     let text2 = document.createElement('span');
-    text2.className = 'text-line2';
     text2.innerText = 'Are you still alive?';
 
     let buttonContainer = document.createElement('div');
@@ -36,9 +34,7 @@ function createPrompt() {
 
     prompt.appendChild(img);
     prompt.appendChild(text1);
-    prompt.appendChild(document.createElement('br')); // Line break
     prompt.appendChild(text2);
-    prompt.appendChild(document.createElement('br')); // Line break
     prompt.appendChild(buttonContainer);
     modal.appendChild(prompt);
     document.body.appendChild(modal);

@@ -3,18 +3,11 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		// current staff
-		founder: { u:'Founder', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 0 },
-		bureaucrat: { u:'O5-Council Member', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 1 },
-		sysop: { u:'A-Class Personnel', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 2 },
-		threadmoderator: { u:'B-Class Personnel', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 3 },
-		"content-moderator": { u:'Scientific Department', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 3 },
-		rollback: { u:'D-Class Personnel', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 9 },
 
 		// former staff
-		formerbureaucrat: { u:'Former O5-Council Member', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 100 },
-		formersysop: { u:'Former A-Class Personnel', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 101 },
-		formermod: { u:'Former B-Class Personnel', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff',  order: 102 },
+		formerbureaucrat: { u:'Former Bereaucrat', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 100 },
+		formersysop: { u:'Former Administrator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 101 },
+		formermod: { u:'Former Moderator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff',  order: 102 },
 
 		// former staff reasons
 		retired: { u:'Retired Staff', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 103 },
