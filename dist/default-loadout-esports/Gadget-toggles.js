@@ -357,7 +357,6 @@ mw.hook('wikipage.content').add(function() {
 			$button.find('.popup-content-inner-action').html(resultBody);
 			$button.off('click')
 			$button.click(window.popupButton);
-			mw.hook('wikipage.content').fire($button);
 			return $.Deferred().resolve();
 		}).then(function() {
 			return window.popupButton.bind(button)(e);

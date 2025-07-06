@@ -558,7 +558,7 @@ mw.loader.using('mediawiki.api', () => {
 						template = {
 							name: null,
 							params: null,
-							paramOrder: TW.paramOrder || [],
+							paramOrder: [],
 							unnamedCount: 0
 						};
 						i++;
@@ -724,11 +724,34 @@ mw.loader.using('mediawiki.api', () => {
 		
 		templateOrder: () => {
 			let paramOrder = [];
-			// Params not specified in TD's paramOrder go to the end
-			TW.paramOrder.forEach((param) => {
+			console.log({
+				paramOrder: paramOrder,
+				tc: TW.templateCall.paramOrder,
+				tw: TW.paramOrder
+			});
+			// Maintain initial params' order
+			TW.templateCall.paramOrder.forEach((param) => {
 				let checkBox = document.querySelector('#param-toggle-'+param);
 				if (paramOrder.indexOf(param) === -1 && ((checkBox && checkBox.checked) || !checkBox)) {
 					paramOrder.push(param);
+				}
+			});
+			// Params not specified in initially go to the end, unless they are in TD, in which case try to fit them next to their closest relative
+			TW.paramOrder.forEach((param) => {
+				let checkBox = document.querySelector('#param-toggle-'+param),
+					checkList = $(checkBox).closest('.tw-popup-opts').find('.tw-popup-param-toggle-button:checked');
+				if (paramOrder.indexOf(param) === -1 && ((checkBox && checkBox.checked) || !checkBox)) {
+					let num = checkList.index(checkBox);
+					if (num && num > 0) {
+						let relative = checkList.get(num-1).id.replace(/^param-toggle-/, '');
+						if (paramOrder.includes(relative)) {
+							paramOrder.splice(paramOrder.indexOf(relative) + 1, 0, param);
+						} else {
+							paramOrder.push(param); // No anchor, add at the end
+						}
+					} else {
+						paramOrder.push(param); // No anchor, add at the end
+					}
 				}
 			});
 			return paramOrder;

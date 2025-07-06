@@ -216,7 +216,7 @@ var customizeToolbar2 = function () {
 					type: 'encapsulate',
 					options: {
 						pre: "{{subst:Move\n|page_name     = ",
-						post: "\n|reason        = \n|move_variants = Yes\n}}"
+						post: "\n|reason        = \n}}"
 					}
 				}
 			},

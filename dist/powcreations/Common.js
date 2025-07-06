@@ -1,41 +1,57 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+const WIKI_TOPICS = [
+	// SMPs
+	'Outsiders SMP', 
+	'Rats SMP', 
+	'Pirates SMP', 
+	'Rats: In Paris',
+	'Cowboy SMP',
+	
+	// PowMinis
+	'A Wild Pig\'s Chase', 
+	
+	// Other
+	'Rat Hunt', 
+];
+
 // ============================================
 //     Append article's topic to the header
 // ============================================
 
-var TOPIC_ARTICLES = ['Outsiders SMP', 'Rats SMP', 'A Wild Pig\'s Chase', 'Pirates SMP', 'Rat Hunt', 'Rats: In Paris'];
+// Articles which may contain wiki topic categories but are not canon to the universe - currently this only applies to TwitchCon panels.
+const CATEGORIES_TO_IGNORE = [
+	'TwitchCon'	
+];
 
-// Articles which are a part of the topic, but aren't "in" the topic, such as TwitchCon panels. "in XYZ" should therefore not be appended to the title.
-var BLACKLISTED_ARTICLES = ['Rats SMP: A Minecraft Tail', 'Pirates SMP: A Voyage to the Past!']
+let articleName = mw.config.get('wgTitle');
+let articleCategories = mw.config.get('wgCategories');
 
-var articleName = mw.config.get('wgTitle');
-var articleCategories = mw.config.get('wgCategories');
+let articleTopics = [];
 
-var topicCategories = [];
+// Look for any wiki topic categories
+articleCategories.forEach((category) => { if (WIKI_TOPICS.includes(category)) articleTopics.push(category); });
 
-articleCategories.forEach(function(cat) {
-	if (TOPIC_ARTICLES.includes(cat)) topicCategories.push(cat);
-});
+/*
+	A couple of checks we want to do:
+	- Make sure the page is an article (doesn't have a namespace)
+	- Make sure the article isn't the wiki topic itself (we don't want the header to say "Rats SMP in Rats SMP")
+	- Make sure the article isn't in any blacklisted categories (e.g. TwitchCon)
+*/
+let isArticle = !mw.config.get('wgCanonicalNamespace');
+let isTopicArticle = WIKI_TOPICS.includes(articleName);
+let includesIgnoredCategories = articleCategories.some((category) => CATEGORIES_TO_IGNORE.includes(category));
 
-// Unneccesary to add topic to header if the article is the topic itself (no need to put "in RATS SMP" if it's the Rats SMP article)
-var isTopicArticle = TOPIC_ARTICLES.includes(articleName);
-
-var isBlacklistedArticle = BLACKLISTED_ARTICLES.includes(articleName);
-
-// To make sure it's not adding the topic to category or template pages for example.
-var isArticle = !mw.config.get('wgCanonicalNamespace');
-
-// If article contains topic categories, is an article and not a topic one, and is not a blacklisted article.
-if ((topicCategories.length > 0) && (isArticle) && (!isTopicArticle) && (!isBlacklistedArticle)) {
-	var spanString ='<span class="page-title-category">in ';
+if ((articleTopics.length > 0) && (isArticle) && (!isTopicArticle) && (!includesIgnoredCategories)) {
+	let spanString ='<span class="page-title-category">in ';
 	
-	for (var i in topicCategories) {
-		var category = topicCategories[i];
+	for (let i in articleTopics) {
+		let category = articleTopics[i];
 		
 		spanString += '<a href="/wiki/' + category + '" title="' + category + '">' + category.toUpperCase() + '</a>';
 		
-		if (i != (topicCategories.length - 1)) spanString += ', ';
+		// If this isn't the last wiki topic in the list (if there's more than one), add a comma
+		if (i != (articleTopics.length - 1)) spanString += ', ';
 	}
 	
 	spanString += '</span>';

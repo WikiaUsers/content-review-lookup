@@ -811,3 +811,79 @@ importArticles({
         'u:dev:DiscordIntegrator/code.js'
     ]
 });
+
+/* vehicle viewer */
+
+(function() {
+    'use strict';
+
+    function initVehicleViewer() {
+        const container = document.querySelector('.vv-container');
+        if (!container) return;
+
+        const infoBlocks = container.querySelectorAll('.vv-info-block');
+        const images = container.querySelectorAll('.vv-image');
+        const liveryButtons = container.querySelector('.vv-livery-selectors');
+
+        let state = {
+            car: 'horizon',
+            team: 'angels',
+            view: 'front'
+        };
+
+        function updateDisplay() {
+            const currentCarButton = container.querySelector(`.vv-car-button[data-car="${state.car}"]`);
+            if (!currentCarButton) return;
+
+            const isBonus = currentCarButton.dataset.isBonus === 'true';
+
+            infoBlocks.forEach(block => block.classList.toggle('active', block.dataset.car === state.car));
+            container.querySelectorAll('.vv-car-button').forEach(btn => btn.classList.toggle('active', btn.dataset.car === state.car));
+            container.querySelectorAll('.vv-view-button').forEach(btn => btn.classList.toggle('active', btn.dataset.view === state.view));
+
+            liveryButtons.classList.toggle('hidden', isBonus);
+            if (!isBonus) {
+                liveryButtons.querySelectorAll('.vv-livery-button').forEach(btn => btn.classList.toggle('active', btn.dataset.livery === state.team));
+            }
+
+            images.forEach(img => {
+                const imgId = img.dataset.imageId;
+                let shouldBeActive = false;
+
+                if (state.view === 'interior') {
+                    if (imgId.includes(state.car) && imgId.includes('interior')) {
+                        shouldBeActive = true;
+                    }
+                } else {
+                    if (imgId.includes(state.team) && imgId.includes(state.car) && imgId.includes(state.view)) {
+                        shouldBeActive = true;
+                    }
+                }
+                img.classList.toggle('active', shouldBeActive);
+            });
+        }
+
+        container.addEventListener('click', function(e) {
+            const target = e.target.closest('button');
+            if (!target) return;
+
+            if (target.classList.contains('vv-car-button')) {
+                state.car = target.dataset.car;
+                if (target.dataset.isBonus === 'true') {
+                    state.team = target.dataset.team;
+                } else {
+                    state.team = 'angels';
+                }
+            } else if (target.classList.contains('vv-livery-button')) {
+                state.team = target.dataset.livery;
+            } else if (target.classList.contains('vv-view-button')) {
+                state.view = target.dataset.view;
+            }
+            updateDisplay();
+        });
+
+        updateDisplay();
+    }
+
+    mw.hook('wikipage.content').add(initVehicleViewer);
+})();

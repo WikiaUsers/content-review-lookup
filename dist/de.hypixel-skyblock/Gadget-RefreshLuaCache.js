@@ -2,13 +2,13 @@
 $( function () {
 	// Note: mainModule must contain a `local PREFIX = prefixname_01_`
 	var supportedCaches = {
-		invslot: { type:"simple", dataModule:"Inventory_slot/Datasheet", mainModule:"Cache", prefixVar:"INVSLOT_PREFIX" },
-		slot_aliases: { type:"simple", dataModule:"Inventory_slot/Aliases", mainModule:"Cache", prefixVar:"SLOT_ALIASES_PREFIX" },
-		item_variants: { type:"simple", dataModule:"Item/Variants", mainModule:"Cache", prefixVar:'ITEM_VARIANTS_PREFIX' },
-		item_api_data: { type:"simple", dataModule:"Item/ApiData/AsCacheTable", mainModule:"Cache", prefixVar:'ITEM_API_DATA_PREFIX' },
-		item_api_aliases: { type:"simple", dataModule:"Item/ApiAliases", mainModule:"Cache", prefixVar:'ITEM_API_ALIASES_PREFIX' },
-		crafting_aliases: { type:"simple", dataModule:"Crafting/Aliases", mainModule:"Cache", prefixVar:'CRAFTING_ALIASES_PREFIX' },
-		minion_data: { type:"simple", dataModule:"Minion/Data", mainModule:"Cache", prefixVar:'MINION_DATA_PREFIX' }
+		invslot: { type:"tooltips", dataModule:"Inventory_slot/Datasheet", mainModule:"Cache", prefixVar:["INVSLOT_1_PREFIX", "INVSLOT_2_PREFIX"] },
+		slot_aliases: { type:"simple", dataModule:"Inventory_slot/Aliases", mainModule:"Cache", prefixVar:["SLOT_ALIASES_PREFIX"] },
+		item_variants: { type:"simple", dataModule:"Item/Variants", mainModule:"Cache", prefixVar:['ITEM_VARIANTS_PREFIX'] },
+		item_api_data: { type:"simple", dataModule:"Item/ApiData/AsCacheTable", mainModule:"Cache", prefixVar:['ITEM_API_DATA_PREFIX'] },
+		item_api_aliases: { type:"simple", dataModule:"Item/ApiAliases", mainModule:"Cache", prefixVar:['ITEM_API_ALIASES_PREFIX'] },
+		crafting_aliases: { type:"simple", dataModule:"Crafting/Aliases", mainModule:"Cache", prefixVar:['CRAFTING_ALIASES_PREFIX'] },
+		minion_data: { type:"simple", dataModule:"Minion/Data", mainModule:"Cache", prefixVar:['MINION_DATA_PREFIX'] }
 	},
 	BUTTON_ID = ".refresh-lua-cache";
 	
@@ -46,20 +46,30 @@ $( function () {
 			for (var p in data.query.pages) {
 				content = data.query.pages[p].revisions[0]["*"];
 			}
-			var prefix = content.match(new RegExp((cacheInfo.prefixVar || 'PREFIX')+" = '(.+?)'"));
-			if(!prefix) {
-				mw.notify("'Module:" + cacheInfo.mainModule + "' is missing variable "+(cacheInfo.prefixVar || 'PREFIX'), { title: "Prefix Missing", type: "error" });
-				reEnableButton();
-				return;
+			var prefix = [];
+			for (let i = 0; i < cacheInfo.prefixVar.length; i++) {
+				var prefixMatch = content.match(new RegExp((cacheInfo.prefixVar[i] || 'PREFIX')+" = '(.+?)'"));
+				if(!prefixMatch) {
+					mw.notify("'Module:" + cacheInfo.mainModule + "' is missing variable "+(cacheInfo.prefixVar[i] || 'PREFIX'), { title: "Prefix Missing", type: "error" });
+					reEnableButton();
+					return;
+				}
+				prefix[i] = prefixMatch[1];
+				console.log(prefix);
 			}
-			prefix = prefix[1];
-			console.log(prefix);
+
+			var moduleCall = '';
+			if (cacheInfo.type === "simple") {
+				moduleCall = '{{#invoke:CacheUtil|resetAllSimple|' + cacheInfo.dataModule + '|prefix=' + prefix[0] + '}}';
+			} else if (cacheInfo.type === 'tooltips') { 
+				moduleCall = '{{#invoke:CacheUtil|resetTooltips|' + cacheInfo.dataModule + '|module=' + cacheInfo.mainModule + '|prefix1=' + prefix[0] + '|prefix2=' + prefix[1] + '}}';
+			} else {
+				moduleCall = '{{#invoke:CacheUtil|resetAll|' + cacheInfo.dataModule + '|module=' + cacheInfo.mainModule + '|f=' + cacheInfo.f + '|prefix=' + prefix[0] + '}}';
+			}
 			
 			api.get({
 				action : 'parse',
-				text : cacheInfo.type === "simple"
-					? '{{#invoke:CacheUtil|resetAllSimple|' + cacheInfo.dataModule + '|prefix=' + prefix + '}}'
-					: '{{#invoke:CacheUtil|resetAll|' + cacheInfo.dataModule + '|module=' + cacheInfo.mainModule + '|f=' + cacheInfo.f + '|prefix=' + prefix + '}}'
+				text : moduleCall
 			}).then(function(data) {
 				console.log('Done!', data);
 				mw.notify("Cache has been updated", { title: "Cache Refreshed Successfully!", type: "info" });

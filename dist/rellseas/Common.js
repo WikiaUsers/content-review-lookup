@@ -54,3 +54,10 @@ window.tooltips_list = [
     display: block !important;
   }
 </style>
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:CategoryQuickRemove.js',
+    ]
+});

@@ -4,7 +4,7 @@
 (function(global, $) {
     // 主功能函数
     function setupBookInfoButtons() {
-        var $volumeTables = $('table.volume-table');
+        var $volumeTables = $('.volume-table.has-book-info');
         
         $volumeTables.each(function() {
             var $table = $(this);

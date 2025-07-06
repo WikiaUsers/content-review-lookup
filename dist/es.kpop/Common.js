@@ -227,5 +227,18 @@ window.lockOldComments = (window.lockOldComments || {});
 // Configuración para advertencia de ausencia de licencia //
 window.NoLicenseWarning = {
     forceLicense: true,
-    ]
+ 
+};
+
+// Configuración para los grupos de usuario //
+window.UserTagsJS = {
+	modules: {},
+	tags: { 
+		bureaucrat: { u:'CEO', link:'K-pop Wiki:CEO' },
+		sysop: { u:'Director ejecutivo', link:'K-pop Wiki:Director ejecutivo' },
+		rollback: { u:'Mánager general', link:'K-pop Wiki:Mánager general' },
+		'content-moderator': { u:'Productor', link:'K-pop Wiki:Productor' },
+		threadmoderator: { u:'Coreógrafo', link:'K-pop Wiki:Coreógrafo' },
+		},
+	oasisPlaceBefore: ''
 };

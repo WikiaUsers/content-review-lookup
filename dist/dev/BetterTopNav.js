@@ -56,6 +56,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 					}
 					return [(matchCount / longerLength) * 100, initMatch];
 				}
+				if (s.toLowerCase()===s1.toLowerCase()) {return rT ? s1 : false}
+				else if (s.toLowerCase()===s2.toLowerCase()) {return rT ? s2 : true}
 				let m1 = matchRate(s, s1),
 					m2 = matchRate(s, s2),
 					rel = m1[1] !== m2[1] ? m1[1] < m2[1]

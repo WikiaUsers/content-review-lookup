@@ -15,7 +15,8 @@ importArticles({
         'u:dev:MediaWiki:MoreSocialLinks.js',
         'u:dev:MediaWiki:ThankYou.js',
         'u:dev:MediaWiki:UTCClock/code.js',
-        'u:dev:MediaWiki:ImageCompare.js'
+        'u:dev:MediaWiki:ImageCompare.js',
+        "u:dev:HighlightDeprecatedElements.js"
     ]
 });
 /* Any JavaScript here will be loaded for all users on every page load. */

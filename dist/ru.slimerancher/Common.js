@@ -6,7 +6,7 @@ $(function () {
         'https://static.wikia.nocookie.net/slimerancher/images/a/a2/Site-background-light1.jpg/revision/latest?cb=20250626142202&format=original&path-prefix=ru',
         'https://static.wikia.nocookie.net/slimerancher/images/d/db/Site-background-light2.jpg/revision/latest?cb=20250626142203&format=original&path-prefix=ru',
         'https://static.wikia.nocookie.net/slimerancher/images/5/59/Site-background-light3.jpg/revision/latest?cb=20250626142204&format=original&path-prefix=ru',
-        'https://static.wikia.nocookie.net/slimerancher/images/7/78/Site-background-light4.jpg/revision/latest?cb=20250626142205&format=original&path-prefix=ru',
+        'https://static.wikia.nocookie.net/slimerancher/images/7/78/Site-background-light4.jpg/revision/latest?cb=20250703194636&format=original&path-prefix=ru',
         'https://static.wikia.nocookie.net/slimerancher/images/3/34/Site-background-dark1.jpg/revision/latest?cb=20250626142158&format=original&path-prefix=ru',
         'https://static.wikia.nocookie.net/slimerancher/images/f/fe/Site-background-dark2.jpg/revision/latest?cb=20250626142159&format=original&path-prefix=ru',
         'https://static.wikia.nocookie.net/slimerancher/images/1/14/Site-background-dark3.jpg/revision/latest?cb=20250626142200&format=original&path-prefix=ru',

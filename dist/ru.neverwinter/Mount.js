@@ -1,12 +1,12 @@
 /**
- * 
  * This file serves as a centralized collection of JavaScript code related to mount functionality.
- * 
  * Dependencies: jQuery library
- * 
  */
-
 $(document).ready(function() {
+    if ($('.calculate-mount-power').length === 0) {
+        return; // Выходим, если элемент не найден
+    }
+
     // Таблица качества
     var qualityLevels = {
         common: 0.0062,    // 0,62%
@@ -43,15 +43,9 @@ $(document).ready(function() {
 
     // Получаем первый элемент с классом calculate-mount-power
     var $mainContainer = $('.calculate-mount-power').first();
-    if (!$mainContainer.length) {
-        console.warn('calculate-mount-power element not found');
-        return;
-    }
 
     // Читаем data-quality из атрибута
     var dataQuality = $mainContainer.data('quality');
-    console.log('dataQuality read from attribute:', dataQuality);
-
     if (dataQuality && qualityLevels.hasOwnProperty(dataQuality)) {
         globalQuality = dataQuality;
     }

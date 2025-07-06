@@ -17,3 +17,5 @@ importArticles({
 });
 /* Load avatar and user on the main page*/
 importScript('MediaWiki:CircleAvatar.js');
+/* Merchant Spawning Time Converter */
+importScript('MediaWiki:MerchantTime.js');

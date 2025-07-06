@@ -67,8 +67,8 @@ $(function(){
 
 $("#artifacts-table").prepend('<fieldset><legend>Параметры фильтра таблицы:</legend><p style="margin-bottom: 0.5em;">Нижеследующие таблицы можно отфильтровать. Несколько фильтров могут быть применены сразу, выбрав несколько параметров.</p><div class="table-filters-hide-option" id="table-filters"><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select></div></fieldset>');
 
-$("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));
-$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></div></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>На себе:</span></td><td><select class="equip"><option>Все</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
+$("#equipment-table").wrap($('<div id="fieldset-equipment-table" />'));
+$("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>На себе:</span></td><td><select class="equip"><option>Все</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
 
 // merges a repeating cell in a table
 var all = $('.merge-duplicate-td');
@@ -119,14 +119,12 @@ $('.artifact-weapon-table tr').each(function(){
 const tooltipsOn = true;
 let $tfb, activeHoverLink;
 
-// Hides the tooltip by clearing its content and resetting its state
 const hideTip = () => {
   if (!$tfb) return;
   $tfb.html('').addClass('hidden').removeClass('tooltip-ready').css('visibility', 'hidden');
   activeHoverLink = null;
 };
 
-// Adjusts the tooltip's position based on the link's location and window boundaries
 const moveTip = e => {
   if (!$tfb || !$tfb.length || !$tfb.hasClass('tooltip-ready') || !activeHoverLink) return;
 
@@ -158,42 +156,41 @@ const moveTip = e => {
   });
 };
 
-// Displays the tooltip by fetching and rendering wiki content
 const showTip = (e, $t) => {
   if (!$t || !$t.length || $t.parent().hasClass('selflink')) return;
 
   const title = $t.data('tt') || $t.attr('title');
   if (!title) return;
-  
+
   $t.removeAttr('title');
 
   const url = `/ru/index.php?title=${encodeURIComponent(decodeURIComponent(title))}&action=raw`,
-        newQuality = $t.closest('.ajaxttlink').attr('data-quality'); // Берем data-quality из родителя
+        newQuality = $t.closest('.ajaxttlink').attr('data-quality');
 
   hideTip();
   activeHoverLink = $t;
 
-	function extractTemplate(wikitext, templateName) {
-	  const startIndex = wikitext.indexOf(`{{${templateName}`);
-	  if (startIndex === -1) return '';
-	
-	  let index = startIndex + 2; // после {{
-	  let braces = 2;
-	  while (index < wikitext.length && braces > 0) {
-	    const char = wikitext[index];
-	    const nextChar = wikitext[index + 1];
-	    if (char === '{' && nextChar === '{') {
-	      braces += 2;
-	      index++;
-	    } else if (char === '}' && nextChar === '}') {
-	      braces -= 2;
-	      index++;
-	    }
-	    index++;
-	  }
-	
-	  return wikitext.substring(startIndex, index);
-	}
+  function extractTemplate(wikitext, templateName) {
+    const startIndex = wikitext.indexOf(`{{${templateName}`);
+    if (startIndex === -1) return '';
+
+    let index = startIndex + 2;
+    let braces = 2;
+    while (index < wikitext.length && braces > 0) {
+      const char = wikitext[index];
+      const nextChar = wikitext[index + 1];
+      if (char === '{' && nextChar === '{') {
+        braces += 2;
+        index++;
+      } else if (char === '}' && nextChar === '}') {
+        braces -= 2;
+        index++;
+      }
+      index++;
+    }
+
+    return wikitext.substring(startIndex, index);
+  }
 
   $.get(url, wikitext => {
     if ($t !== activeHoverLink) return;
@@ -201,14 +198,17 @@ const showTip = (e, $t) => {
     const enTitle = (wikitext.match(/\[\[en:([^\]]+)\]\]/) || [])[1] || '';
     let tooltipText = extractTemplate(wikitext, 'TooltipItem');
 
-    if (!tooltipText) {
-      return;
-    }
+    if (!tooltipText) return;
 
     if (newQuality) {
-      tooltipText = tooltipText.replace(/\|качество\s*=\s*[^\n|]+/, `|качество=${newQuality}`);
+      if (/\|\s*качество\s*=/.test(tooltipText)) {
+        tooltipText = tooltipText.replace(/\|\s*качество\s*=\s*[^\n|}]+/, `|качество=${newQuality}`);
+      } else {
+        tooltipText = tooltipText.replace(/\{\{TooltipItem/, `{{TooltipItem|качество=${newQuality}`);
+      }
     }
-    tooltipText = tooltipText.replace(/\}\}/, `|temp_en_title=${enTitle}\n}}`);
+
+    tooltipText = tooltipText.replace(/\}\}$/, `|temp_en_title=${enTitle}}}`);
 
     $.ajax({
       url: '/ru/api.php',
@@ -221,7 +221,6 @@ const showTip = (e, $t) => {
         } else {
           const html = data.parse.text['*'],
                 $tooltip = $(html).find('.tooltip-content');
-
           if ($tooltip.length) {
             $tfb.html($tooltip);
           } else {
@@ -242,20 +241,21 @@ const showTip = (e, $t) => {
   });
 };
 
-// Binds hover and mousemove events to links for tooltip interaction
-const bindTT = $t => {
-  if ($t.attr('title') && !$t.parent().hasClass('selflink')) {
-    $t.data('tt', $t.attr('title').replace(' (page does not exist)', '').replace('?', '%3F'));
-    $t.hover(e => showTip(e, $t), hideTip).mousemove(moveTip);
-  }
-};
-
-// Initializes the tooltip system on page load
 $(() => {
   if (!tooltipsOn) return;
   $('#content').append('<div id="tfb" class="htt hidden"></div>');
   $tfb = $('#tfb');
-  $('.ajaxttlink a').each((_, el) => bindTT($(el))); // Привязываем только к ссылкам внутри .ajaxttlink
+
+  $('#content')
+    .on('mouseenter', '.ajaxttlink a', function (e) {
+      const $link = $(this);
+      if (!$link.data('tt') && $link.attr('title')) {
+        $link.data('tt', $link.attr('title').replace(' (page does not exist)', '').replace('?', '%3F'));
+      }
+      showTip(e, $link);
+    })
+    .on('mouseleave', '.ajaxttlink a', hideTip)
+    .on('mousemove', '.ajaxttlink a', moveTip);
 });
 // END TOOLTIP
 
@@ -362,12 +362,12 @@ $(function() {
             });
             var $teamId = null;
             $opt.prop('disabled', false);
-            $chosen.each(function(i, el){0
-                $teamId = $(el).val();
-                $opt.not(el).filter(function(){
-                    return $(this).val() == $teamId;
-                }).prop('disabled', true);
-            })
+			$chosen.each(function(i, el) {
+			    $teamId = $(el).val();
+			    $opt.not(el).filter(function() {
+			        return $(this).val() == $teamId;
+			    }).prop('disabled', true);
+			});
             
             pattern[i] = select.value;
             var rows = trs.hide().filter(function(i, tr) {

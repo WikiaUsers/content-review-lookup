@@ -66,3 +66,17 @@ importArticles({
         'u:dev:MediaWiki:WallGreeting.js',
     ]
 });
+$(function() {
+    $('.ball_image').on('click', function() {
+        var $img = $(this).find('img');
+        
+        // 移除动画类
+        $img.removeClass('play-animation');
+        
+        // 强制重排
+        $img[0].offsetWidth;
+        
+        // 添加动画类
+        $img.addClass('play-animation');
+    });
+});

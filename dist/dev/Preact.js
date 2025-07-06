@@ -33,22 +33,8 @@
             document.head.appendChild(script);
         });
     }
-
-    // Import base preact library and preactHooks
-    // Both will be registered under `window.`
-    // They will be loaded in parallel, but they're forced to execute in order
-    // This is because of the script.async property being `false`
-    // This does not block user interactions or block the main thread
-    // The SHA384 hashes were generated with the following command:
-    // curl <URL> -s | openssl dgst -sha384 -binary | openssl base64 -A
-    importScript({
-        url: 'https://unpkg.com/preact@10.5.14/dist/preact.min.js',
-        hash: 'sha384-auG6x/Zk8r65Rlt+ny4jxUDnUdeT0kRCHjtVQnASpXOD4rl0slc2biB0nPJE+ofU'
-    });
-    importScript({
-        url: 'https://unpkg.com/preact@10.5.14/hooks/dist/hooks.umd.js',
-        hash: 'sha384-amHxNcED3Tgh59sXnRYw4uyDgATk8SUABATAxSA/biQCwTIwH6tveEplPo6Jdpef'
-    }).then(function() {
+    
+    function register() {
         var preact = window.preact;
         var hooks = window.preactHooks;
 
@@ -200,5 +186,33 @@
         if (typeof mw === 'object' && typeof mw.hook === 'function') {
             mw.hook('dev.preact').fire(exports);
         }
-    });
+    }
+
+	function imports() {
+	    // Import base preact library and preactHooks
+	    // Both will be registered under `window.`
+	    // They will be loaded in parallel, but they're forced to execute in order
+	    // This is because of the script.async property being `false`
+	    // This does not block user interactions or block the main thread
+	    // The SHA384 hashes were generated with the following command:
+	    // curl <URL> -s | openssl dgst -sha384 -binary | openssl base64 -A
+	    importScript({
+	        url: 'https://unpkg.com/preact@10.5.14/dist/preact.min.js',
+	        hash: 'sha384-auG6x/Zk8r65Rlt+ny4jxUDnUdeT0kRCHjtVQnASpXOD4rl0slc2biB0nPJE+ofU'
+	    });
+	    importScript({
+	        url: 'https://unpkg.com/preact@10.5.14/hooks/dist/hooks.umd.js',
+	        hash: 'sha384-amHxNcED3Tgh59sXnRYw4uyDgATk8SUABATAxSA/biQCwTIwH6tveEplPo6Jdpef'
+	    }).then(register);
+	}
+	
+	if (
+		typeof preact === 'object' && typeof preactHooks === 'object'
+		&& preact && preactHooks
+		&& 'render' in preact && 'useState' in preactHooks
+	) {
+		register();
+	} else {
+		imports();
+	}
 })();

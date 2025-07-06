@@ -1,4 +1,4 @@
 $(document).ready(function() {
-    // Append the template directly to the content area
+    // add update note to all pages.
     $('.mw-body-content').prepend('{{UpdatedNote}}');
 });

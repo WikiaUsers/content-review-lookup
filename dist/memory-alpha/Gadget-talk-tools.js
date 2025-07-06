@@ -1,7 +1,7 @@
 // <pre>
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.3.18 (beta)';
+	const version = '0.3.25 (beta)';
 	const api = new mw.Api();
 	const archived = $('#archivedPage').length === 1; // [[Template:Archived]]
 	const view = mw.config.get('wgAction') === 'view';
@@ -56,9 +56,9 @@ mw.loader.using(['mediawiki.api'], () => {
 		$('.mw-parser-output').find('p, dd').each(addReplyButtons);
 		
 		function addReplyButtons(i, e){
-			const userLinks = $(e).find(linkSelectors.join(', '));
 			const txtContents = $(e).contents().contents().addBack().toArray().filter(n => n.nodeType === 3 && n.nodeValue !== '\n');
 			const timestamp = txtContents[txtContents.length - 1];
+			const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
 			
 			if (!userLinks.length || !tsRegexp.test($(timestamp).text())){
 				return;
@@ -220,7 +220,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				const timestamp = event.data.timestamp.replace(/([)(])/g, '\\$1');
 				const pRegexp = new RegExp(`^.+${timestamp} *$`, 'mg');
 				const iRegexp = new RegExp(`[^]*^(:*).+${timestamp} *$[^]*`, 'm');
-				const rRegexp = new RegExp(`([^]*)^(:*)(.+${timestamp} *)$((?:\n\n?\\2:+.*)?(?:\n\\2:+.*)*)\n*([^]*)`, 'm');
+				const rRegexp = new RegExp(`([^]*)^(:*)(.+${timestamp} *)$((?:\n\n?\\2:+.*)?(?:\n\\2:+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
 				const indent = initialText.replace(iRegexp, '$1');
 				const iPrevRegexp = new RegExp(`[^]*^(:*).+${timestamp} *$\n\n?\\1:+[^]*`, 'm');
 				let finalText;
@@ -247,12 +247,12 @@ mw.loader.using(['mediawiki.api'], () => {
 				if (!indent.length && !iPrevRegexp.test(initialText)){
 					finalText = initialText.replace(
 						rRegexp,
-						`$1$2$3$4\n\n${comment}\n$5`
+						`$1$2$3$4\n\n${comment}$5\n\n$6`
 					);
 				} else {
 					finalText = initialText.replace(
 						rRegexp,
-						`$1$2$3$4\n${comment}\n$5`
+						`$1$2$3$4\n${comment}$5\n\n$6`
 					);
 				}
 				
@@ -345,9 +345,9 @@ mw.loader.using(['mediawiki.api'], () => {
 					return;
 				}
 				
-				const userLinks = $(e).find(linkSelectors.join(', '));
 				const txtContents = $(e).contents().contents().addBack().toArray().filter(n => n.nodeType === 3 && n.nodeValue !== '\n');
 				const timestamp = txtContents[txtContents.length - 1];
+				const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
 				
 				if (!userLinks.length || !tsRegexp.test($(timestamp).text())){
 					return;

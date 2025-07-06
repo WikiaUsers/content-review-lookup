@@ -8,7 +8,7 @@ $(function(){
   var gradeDiv = $("#equipment-grade");
   var gradeLabel = $("[data-item-name='scaling-grade'] h3");
 
-  if (slider !== null) {
+  if (slider.length) {
     //if there is an equipment infobox and it has the level scaling group enabled
 
     //create object from slider element

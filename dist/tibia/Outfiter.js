@@ -107,7 +107,7 @@ $(function () {
       //235
       'Bumblebee', 'Primal_Demonosaur', 'Pallbearer', 'Night_Locust', 'Leaf_Locust',
       //240
-      'Pearl_Locust'
+      'Pearl_Locust', 'Gloom_Maw_(Mount)'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -208,7 +208,7 @@ $(function () {
       //220
       'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid',
       //225
-      'Martial Artist'
+      'Martial_Artist', 'Necromancer', 'Illuminator'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -363,7 +363,8 @@ $(function () {
       Shellodon: true,
       Mutated_Abomination: true,
       Gorgon_Hydra: true,
-	  Primal_Demonosaur: true
+	  Primal_Demonosaur: true,
+	  Gloom_Maw_(Mount): true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

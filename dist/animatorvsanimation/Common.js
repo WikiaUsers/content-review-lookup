@@ -6,3 +6,8 @@ window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 /* LockOldComments */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;
+
+/* UTC Clock */
+window.DisplayClockJS = {
+	format: '%I:%2M:%2S %p, %b %d, %Y (UTC)'
+};

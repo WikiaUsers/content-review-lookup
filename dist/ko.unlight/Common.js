@@ -66,3 +66,25 @@ importArticles({
     }
     
 })();
+
+;(function () {
+    if ( mw.config.get('wgPageName') !== '대문' ) return;
+
+    mw.hook('wikipage.content').add(function ($content) {
+        var container = document.getElementById('BirthdayAlarmContainer');
+        if (!container) return;
+
+        mw.loader.using('mediawiki.api').then(function () {
+            new mw.Api().post({
+                action: 'parse',
+                page: mw.config.get('wgPageName'),
+                section: 0,     
+                format: 'json'
+            }).done(function (data) {
+                if ( data.parse && data.parse.text ) {
+                    container.innerHTML = data.parse.text['*'];
+                }
+            });
+        });
+    });
+})();

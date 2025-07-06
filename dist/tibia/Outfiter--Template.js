@@ -195,7 +195,7 @@ $(function () {
       //220
       'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid',
       //225
-      'Martial Artist'
+      'Martial_Artist', 'Necromancer', 'Illuminator'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -330,7 +330,9 @@ $(function () {
       Krakoloss: true,
       Shellodon: true,
       Mutated_Abomination: true,
-      Gorgon_Hydra: true
+      Gorgon_Hydra: true,
+	  Primal_Demonosaur: true,
+	  Gloom_Maw_(Mount): true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {
