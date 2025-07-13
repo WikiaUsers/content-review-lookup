@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+/* ----[FILTER AND SEARCH]---- */
+importScript('MediaWiki:CustomFilters.js');
 // Scroll bar
 importArticles({
     type: 'script',

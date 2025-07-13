@@ -81,6 +81,7 @@ UserTagsJS.modules.custom = {
 	'Dxrknrg': ['Wiki-Contributor'],
 	'Sdvwevfregv': ['Wiki-Contributor'],
 	'SuperGlitchyTheo': ['Wiki-Contributor'],
+	'Sorayaann': ['Wiki-Contributor'],
 	'Quinncm': ['Wiki-Contributor'],
 	'Zarc.0724': ['Wiki-Contributor'],
 	'Mysþıc': ['Wiki-Contributor'],

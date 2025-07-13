@@ -5,4 +5,5 @@ mw.hook("wikipage.content").add(function () {
 	});
 });
 
+window.lockOldComments = window.lockOldComments || {};
 window.lockOldComments.limit = 120;

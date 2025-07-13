@@ -7,13 +7,8 @@
 		hasRan: false
 	};
 
-	// Only run on article pages
-	if (mw.config.get("wgNamespaceNumber") !== 0) return;
-
-	if (window.dev.youtubeThumbnail.hasRan) {
-		console.log("YouTubeThumbnail already ran!");
-		return;
-	}
+	if (window.dev.youtubeThumbnail.hasRan) return;
+	
 	window.dev.youtubeThumbnail.hasRan = true;
 
 	mw.hook('wikipage.content').add(function($content) {

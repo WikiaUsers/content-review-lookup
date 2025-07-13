@@ -46,14 +46,14 @@ importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 /* Event header */
- $('.fandom-community-header__community-name-wrapper').append(
+/* $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
             .text('The Drying!')
         )
         .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/The Drying (2025)') 
-); 
+); */
 
 /* LastEdited config */
 window.lastEdited = {

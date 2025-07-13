@@ -1,4 +1,12 @@
 /* Any JavaScript here will be loaded for users using the 2 column main page layout */
+
+/*****************************************
+/* Front Page countdown for Events *
+/*****************************************/
+// Documentation https://dev.fandom.com/wiki/Countdown
+importScript('dev:Countdown/code.js');
+
+
 /*****************************************
 /* Front Page column height equalization *
 /*****************************************/
@@ -6,7 +14,6 @@
 // Date:    2015-Feb-12
 // License: CC-BY 3.0
 // Version: beta
-
 var fp = fp || {
   equalizeColumns : function() {
     $( '.fpcontent' ).each( function () {

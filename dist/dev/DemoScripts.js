@@ -185,6 +185,11 @@
             page: 'Special:EditorColorPicker',
             scripts: 'MediaWiki:EditorColorPicker.js'
         },
+        
+        EditorParity: {
+            page: 'EditorParity',
+            styles: ['MediaWiki:EditorParity.css', 'MediaWiki:EditorParity/personal.css']
+        },
 
         EmeraldGlobalNav: {
             page: 'EmeraldGlobalNav',
@@ -754,6 +759,11 @@
             scripts: ['MediaWiki:UserAvatarLink.js', 'MediaWiki:User_Avatar_Finder/code.js']
         },
 
+		UserProfilePopup: {
+			page: 'UserProfilePopup',
+			scripts: 'MediaWiki:UserProfilePopup.js'
+		},
+		
         UserStatus: {
             page: 'User:SapphireSonata',
             scripts: 'MediaWiki:UserStatus/demo.js'

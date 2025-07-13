@@ -22,10 +22,7 @@ window.UserTagsJS = {
         threadmoderator:    { u:'Forum Moderator', link:'4Classic Wiki:Staff', order: 4  },
         chatmoderator:      { u:'Chat Moderator', link:'4Classic Wiki:Staff', order: 5 },
         rollback:           { u:'Rollback', link:'4Classic Wiki:Staff', order: 6 },
-        verified:           { u:'Verified', order: 7 },
-        artist:             { u:'Artist', order: 8  },
-        moderator:          { u:'Moderator', link:'4Classic Wiki:Staff'},
-        '4classic-gm':      { u:'4Classic GM', link:'Game Master' }
+        '4classic-gm':      { u:'4Classic GM'}
     }
 };
 
@@ -40,23 +37,19 @@ UserTagsJS.modules.mwGroups = [
     'rollback',
     'sysop',
     'threadmoderator',
-    'moderator',
     'content-moderator',
     '4classic-gm'
 ];
-UserTagsJS.modules.custom = {
-    'GM': ['4classic-gm']
-};
+/*UserTagsJS.modules.custom = {
+    'NAME': ['4classic-gm']
+};*/
 UserTagsJS.modules.metafilter = {
     'sysop': ['bureaucrat'],
     'moderator': ['sysop', 'bureaucrat'],
     'rollback': ['moderator']
 };
-UserTagsJS.modules.implode = {
-    'moderator': ['content-moderator', 'threadmoderator', 'chatmoderator']
-};
 
-UserTagsJS.modules.inactive = 90; //Sets an inactive tag after 90 days
+/* UserTagsJS.modules.inactive = 90; //Sets an inactive tag after 90 days */
 
 /* RevealAnonIP */
 window.RevealAnonIP = {

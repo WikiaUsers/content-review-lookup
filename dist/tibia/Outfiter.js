@@ -9,7 +9,7 @@ $(function () {
     error_img = 'https://static.wikia.nocookie.net/tibia/en/images/f/f6/Outfiter_Error.png',
     //mounts, the array index is the idm
     //must also be added to Template:MountLink
-    outfiter_mount_names = [
+    outfiter_mount_names = [ 
       //0
       'None', 'Widow_Queen', 'Racing_Bird', 'War_Bear', 'Black_Sheep',
       //5
@@ -364,7 +364,7 @@ $(function () {
       Mutated_Abomination: true,
       Gorgon_Hydra: true,
 	  Primal_Demonosaur: true,
-	  Gloom_Maw_(Mount): true
+	  'Gloom_Maw_(Mount)': true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

@@ -41,8 +41,8 @@ UserTagsJS.modules.autoconfirmed = true;
 // New user module
 UserTagsJS.modules.newuser = {
     computation: function(days, edits) {
-        // Users are considered "new" if they have less than 5 days AND less than 20 edits
-        return days < 5 && edits < 20;
+        // Users are considered "new" if they have less than 7 days AND less than 20 edits
+        return days < 7 && edits < 20;
     }
 };
 
@@ -57,3 +57,9 @@ UserTagsJS.modules.mwGroups = [
     'rollback',
     'bannedfromchat'
 ];
+
+// BackToTopButton Config 
+window.BackToTopModern = true; 
+window.BackToTopSpeed = 300; 
+window.BackToTopStart = 400;
+window.BackToTopFade = 1;

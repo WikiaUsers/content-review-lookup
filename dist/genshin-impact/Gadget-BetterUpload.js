@@ -172,12 +172,15 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 		// iterate through preloads with a specified "pattern" field to attempt to detect one
 		detectFromDest: () => {
 			if (!Array.isArray(window.dev.BetterUpload.preloads) || !urlParams.has('wpDestFile')) return;
+			let filename = urlParams.get('wpDestFile').replace(/_/g, ' ');
 			let matched = window.dev.BetterUpload.preloads.find((preload) => {
-				if (preload.pattern !== null && new RegExp(preload.pattern).test(urlParams.get('wpDestFile').replace(/_/g, ' '))) {
-					return true;
-				}
+				if (preload.pattern
+					&& 'string' === typeof preload.pattern
+					&& new RegExp(preload.pattern).test(filename)
+				) { return true; }
+				else { return false; }
 			});
-			if (matched !== null) {
+			if (matched && matched.preload) {
 				return matched.preload;
 			}
 		},

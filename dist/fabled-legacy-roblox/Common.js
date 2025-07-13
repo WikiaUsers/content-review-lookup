@@ -1,33 +1,43 @@
 /* ----------------------------------------------------------------- */
 /* ---------- JAVASCRIPT FILE FOR THE FABLED LEGACY WIKI ----------- */
-/* --------------------- APPLIED TO ALL SKINS ---------------------- */
+/* ------------- APPLIED FOR USERS ON THE DESKTOP SITE ------------- */
 /* ----------------------------------------------------------------- */
 
 /* ------------------------Table of Contents------------------------ */
-/* 1. Add a modern button to the Back To Top Button script --------- */
-/* 2. Custom user tags --------------------------------------------- */
-/* 2.1. Initializing the custom user tags -------------------------- */
-/* 2.2. Remove the Administrator user tag from Bureaucrats --------- */
-/* 2.3. Manually giving the custom user tags to users -------------- */
-/* 2.4. Inactive users who have not edited the wiki for more than
+/* 1. Importing the external JavaScript files ---------------------- */
+/* 2. Add a modern button to the Back To Top Button script --------- */
+/* 3. Custom user tags --------------------------------------------- */
+/* 3.1. Initializing the custom user tags -------------------------- */
+/* 3.2. Remove the Administrator user tag from Bureaucrats --------- */
+/* 3.3. Manually giving the custom user tags to users -------------- */
+/* 3.4. Inactive users who have not edited the wiki for more than
 40 days ------------------------------------------------------------ */
-/* 2.5. New wiki editors ------------------------------------------- */
-/* 3. Stat potential bar & Guild color picker ---------------------- */
-/* 3.1. Adding the input boxes on both elements -------------------- */
-/* 3.2. Initializing the potential bar and guild color picker------- */
+/* 3.5. New wiki editors & disable the autoconfirmed user tag ------ */
+/* 4. Stat potential bar & Guild color picker ---------------------- */
+/* 4.1. Adding the input boxes on both elements -------------------- */
+/* 4.2. Initializing the potential bar and guild color picker------- */
 
 
 /* --------- 1 --------- */
+/* Importing the external JavaScript files */
+importArticles({
+    type: "script",
+    article: "MediaWiki:Experience_Calculator.js"
+});
+
+
+
+/* --------- 2 --------- */
 /* Add a modern button to the Back To Top Button script */
 window.BackToTopModern = true;
 window.BackToTopStart = 1250;
 
 
 
-/* --------- 2 --------- */
+/* --------- 3 --------- */
 /* Custom user tags */
 
-/* -------- 2.1 -------- */
+/* -------- 3.1 -------- */
 /* Initializing the custom user tags */
 window.UserTagsJS = {
     modules: {},
@@ -40,14 +50,14 @@ window.UserTagsJS = {
 };
 
 
-/* -------- 2.2 -------- */
+/* -------- 3.2 -------- */
 /* Remove the Administrator user tag from Bureaucrats */
 UserTagsJS.modules.metafilter = {
     sysop: ['bureaucrat'],
 };
 
 
-/* -------- 2.3 -------- */
+/* -------- 3.3 -------- */
 /* Manually giving the custom user tags to users */
 UserTagsJS.modules.custom = {
     '123 bst': ['founder'],
@@ -63,26 +73,26 @@ UserTagsJS.modules.custom = {
 };
 
 
-/* -------- 2.4 -------- */
+/* -------- 3.4 -------- */
 /* Inactive users who have not edited the wiki for more than 40 days */
 UserTagsJS.modules.inactive = 40;
 
 
-/* -------- 2.5 -------- */
-/* New wiki editors */
+/* -------- 3.5 -------- */
+/* New wiki editors & disable the autoconfirmed user tag */
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = true;
 
 
 
-/* --------- 3 --------- */
+/* --------- 4 --------- */
 /* Stat potential bar & Guild color picker */
 mw.loader.using('mediawiki.util', function () { // Adding this method so both of the input fields work properly on Fandom
     $(function () {
-        /* -------- 3.1 -------- */
+        /* -------- 4.1 -------- */
         /* Adding the input boxes on both elements */
         // Stat potential input
-        const statPotentialInputField = '<input type="number" id="statPotentialInput" min="-500" max="200" value="0"><span style="user-select:none;" class="stat-potential-bar-right">%</span>';
+        const statPotentialInputField = '<input type="number" id="statPotentialInput" min="-500" max="200" value="0" placeholder="0"><span style="user-select:none;" class="stat-potential-bar-right">%</span>';
         $('#inputWrapper').html(statPotentialInputField);
 
         // Guild color picker
@@ -100,7 +110,7 @@ mw.loader.using('mediawiki.util', function () { // Adding this method so both of
         var guildColorTag = document.getElementById("guildColorTag");
 
 
-        /* -------- 3.2 -------- */
+        /* -------- 4.2 -------- */
         /* Initializing the potential bar and guild color picker */
         // Stat potential bar
         if (statPotentialInput && statPotentialBar && statPotentialText) {
@@ -138,7 +148,9 @@ mw.loader.using('mediawiki.util', function () { // Adding this method so both of
                 statPotentialBar.style.background = "linear-gradient(90deg, #5C2020, #AD3C3C)"; // Stat Potential: UNOBTAINABLE
                 statPotentialText.textContent = "Stat Potential: UNOBTAINABLE";
                 if (percentage_value > 100) {
-                    statPotentialBar.style.width = "100%"; //Stops the background gradient color from moving
+                    statPotentialBar.style.width = "100%"; // Stops the background gradient color from moving
+                } else if (percentage_value < 0) {
+                    statPotentialBar.style.width = "0%"; // Sets the bar width as 0% when a negative number is directly typed
                 }
             }
             });

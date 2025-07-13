@@ -105,7 +105,7 @@ mw.loader.using('mediawiki.util').then(function () {
     LangSelect.prototype._edit = function(i, link) {
         var $link = $(link);
         var url = new URL($link.prop('href'));
-        url.pathname = this.pathname;
+        url.pathname = this.path;
         $link.attr('href', url.toString()).off('click');
     };
     /**
@@ -139,7 +139,7 @@ mw.loader.using('mediawiki.util').then(function () {
         .after(
             $('<li>', {
                 append: $('<a>', {
-                    'href': u.href(),
+                    'href': u.href,
                     'id': 'ca-base-' + a,
                     text: this._i18n.msg(a + 'Base').plain()
                 })

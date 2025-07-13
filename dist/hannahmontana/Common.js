@@ -1,3 +1,5 @@
+window.AddRailModule = [{prepend: true}];
+
 /*** Auto-refreshing recent changes ***/
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';

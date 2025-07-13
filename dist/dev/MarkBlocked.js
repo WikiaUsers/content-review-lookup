@@ -25,7 +25,7 @@
 	var userNS = [];
 	for ( var ns in mwConfig.wgNamespaceIds ) {
 		if ( mwConfig.wgNamespaceIds[ ns ] === 2 || mwConfig.wgNamespaceIds[ ns ] === 3 || mwConfig.wgNamespaceIds[ ns ] === 1200 ) {
-			userNS.push( ns.replace( /_/g, ' ' ) + ':' );
+			userNS.push( mw.util.escapeRegExp(ns.replace( /_/g, ' ' )) + ':' );
 		}
 	}
 

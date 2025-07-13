@@ -221,7 +221,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 						let link = document.createElement('a');
 						let from = options.revid[options.revid.length-1];
 						let to = options.revid[0];
-						let href = '/wiki/' + page + '?diff=' + to;
+						let href = mw.util.getUrl(page) + '?diff=' + to;
 						
 						if (from === to) {
 							link.classList.add('mw-changeslist-diff');

@@ -332,7 +332,7 @@ $(function () {
       Mutated_Abomination: true,
       Gorgon_Hydra: true,
 	  Primal_Demonosaur: true,
-	  Gloom_Maw_(Mount): true
+	  'Gloom_Maw_(Mount)': true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

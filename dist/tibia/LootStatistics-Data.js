@@ -18,6 +18,9 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// 
+'Cursed Prospector': '15.03.afe753',
+'Evil Prospector': '15.03.afe753',
 // Monk Vocation Update
 'Armadile': '15.00.249ccc',
 'Barbarian Skullhunter': '15.00.249ccc',
@@ -125,8 +128,8 @@ window.loot_parser_data = {
 'Flimsy Lost Soul': '14.12.5229e4',
 'Mean Lost Soul': '14.12.5229e4',
 'Freakish Lost Soul': '14.12.5229e4',
-'Cursed Prospector': '14.12.5229e4',
-'Evil Prospector': '14.12.5229e4',
+//'Cursed Prospector': '14.12.5229e4',
+//'Evil Prospector': '14.12.5229e4',
 'Bony Sea Devil': '14.12.5229e4',
 'Vibrant Phantom': '14.12.5229e4',
 'Capricious Phantom': '14.12.5229e4',

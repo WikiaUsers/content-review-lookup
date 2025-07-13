@@ -26,17 +26,14 @@ UserTagsJS.modules.inactive = {
 	zeroIsInactive: true // 0 article edits = inactive
 };
 
-UserTagsJS.modules.custom = {
-	'CJDakotaraptor': ['founder'],
-};
 
-window.enableReadProgressBarOnArticles = true;
 
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:MassCategorization/code.js',
         'u:dev:MediaWiki:MultipleFileDelete/code.js',
+        'u:dev:MediaWiki:CategoryQuickRemove.js',
     ]
 });
 
@@ -45,4 +42,39 @@ mw.hook("wikipage.content").add(function () {
 	$("span.import-css").each(function () {
 		mw.util.addCSS($(this).attr("data-css"));
 	});
+});
+
+// License thing for creative commons
+$(function() {
+    // Custom license text (modify as needed)
+    var customText = 'Unless otherwise stated, the content of this page is licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 License</a>.';
+
+    // Set up a MutationObserver to detect changes in the footer
+    var observer = new MutationObserver(function(mutations) {
+        var licenseElement = document.querySelector('.footer__license-text, .license-description, .wikia-license');
+        
+        if (licenseElement) {
+            // Replace the text
+            licenseElement.innerHTML = customText;
+            
+            // Stop observing once changed (optional)
+            observer.disconnect();
+        }
+    });
+
+    // Start observing the entire document
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: false,
+        characterData: false
+    });
+
+    // Fallback: Try replacing after 3 seconds in case MutationObserver fails
+    setTimeout(function() {
+        var fallbackElement = document.querySelector('.footer__license-text, .license-description, .wikia-license');
+        if (fallbackElement && fallbackElement.innerHTML.includes('unless otherwise noted')) {
+            fallbackElement.innerHTML = customText;
+        }
+    }, 3000);
 });

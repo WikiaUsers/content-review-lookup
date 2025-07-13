@@ -7,7 +7,7 @@ importArticles({
     articles: 'u:dev:MediaWiki:UTCClock/code.js',
 });
 window.DisplayClockJS = {
-	format: '%H:%M:%S %{T2;T3;T4;T5;T6;T7;CN}u, %d/%m/%Y (ICT)',
+	format: '%X %x (ICT)',
 	hoverText: 'Nhấp vào đây để làm mới cache phía máy chủ (purge) cho trang này.',
 	offset: 420,
 };
