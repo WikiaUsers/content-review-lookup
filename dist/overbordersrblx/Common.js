@@ -14,3 +14,14 @@ window.dev.editSummaries = {
 // discussions module
 
 window.discussEmbedLimit = 12;
+
+// tabber links
+
+window.tabberLinks = {
+	luaTabberOnly: false,
+	scrollToTab: true,
+	alwaysScroll: true,
+	neverScroll: false,
+	descendantSwitching: true,
+	prioritizeIds: false
+};

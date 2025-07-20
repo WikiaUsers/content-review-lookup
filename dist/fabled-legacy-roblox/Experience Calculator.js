@@ -186,7 +186,7 @@ var boostOptions = [
 ];
 boostOptions.forEach(boost => createCheckbox(boost));
 
-createInputField({ labelText: "Bonus EXP on a Ring (%)", id: "ringSubstatBoost", min: 0, max: 15, placeholder: "0" });
+createInputField({ labelText: "Bonus EXP on a Ring (%)", id: "ringSubstatBoost", min: 0, max: 18, placeholder: "0" });
 
 createSelectField({
   labelText: "Weapon Perk Bonus",
@@ -255,9 +255,9 @@ calcBtn.addEventListener('click', function () {
     resultDiv.className = "exp-calculator-result-error";
     resultDiv.innerHTML = `<b>Error!</b> Your goal level (${goalLevel}) cannot be equal or lower than your current level (${currentLevel}).`;
     return;
-  } else if (ringSubstatBoost > 15) {
+  } else if (ringSubstatBoost > 18) {
     resultDiv.className = "exp-calculator-result-error";
-    resultDiv.innerHTML = `<b>Error!</b> The Bonus EXP cannot be higher than 15%.`;
+    resultDiv.innerHTML = `<b>Error!</b> The Bonus EXP cannot be higher than 18%.`;
     return;
   } else if (ringSubstatBoost < 0) {
     resultDiv.className = "exp-calculator-result-error";

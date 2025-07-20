@@ -1,3 +1,5 @@
+// MediaWiki:Common.js
+importArticle({ type: 'script', article: 'u:dev:Tabber/code.js' });
 importScriptPage('Countdown/code.js', 'dev');
 importScriptPage('ShowHide/code.js', 'dev');
 /* Spoiler Alert */

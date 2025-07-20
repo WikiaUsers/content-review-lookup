@@ -309,3 +309,36 @@ $(function() {
     // 3. Apply filters initially (to show all rows if no filters selected)
     applyFilters();
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.wikitable');
+    if (!table) return;
+
+    const cells = table.querySelectorAll('th, td');
+    const rows = table.querySelectorAll('tr');
+
+    cells.forEach(cell => {
+        cell.addEventListener('mouseover', () => {
+            const rowIndex = cell.closest('tr').rowIndex;
+            const colIndex = cell.cellIndex;
+
+            // Highlight row
+            rows[rowIndex].classList.add('highlight-row');
+
+            // Highlight column
+            rows.forEach(row => {
+                if (row.cells[colIndex]) {
+                    row.cells[colIndex].classList.add('highlight-col');
+                }
+            });
+        });
+
+        cell.addEventListener('mouseout', () => {
+            // Remove all highlights
+            rows.forEach(row => {
+                row.classList.remove('highlight-row');
+                Array.from(row.cells).forEach(c => c.classList.remove('highlight-col'));
+            });
+        });
+    });
+});

@@ -211,7 +211,7 @@
                     disabled: true
                 }, line.trim());
             }
-        }).join();
+        }).join('');
     }
 
     // =================

@@ -59,7 +59,4 @@ UserTagsJS.modules.mwGroups = [
 ];
 
 // BackToTopButton Config 
-window.BackToTopModern = true; 
-window.BackToTopSpeed = 300; 
-window.BackToTopStart = 400;
-window.BackToTopFade = 1;
+window.BackToTopModern = true;

@@ -2,7 +2,6 @@
 
 const coloredTables = new Set(); // Track colored tables
 
-
 function applyColorsToTableCells() {
 	
 	const cols = ["UTR", "MOR", "CMP", "LTL", "OTT"];
@@ -83,13 +82,35 @@ function applyColorsToTableCells() {
                 });
             }
         });
+        
+        if ($(this).hasClass("placement-table")) {
+            
+            $(this).find("tr").toArray().forEach(row => {
+                const cells = row.cells;
+                for (let i=0; i < cells.length - 1; i++) {
+                    const currentCell = cells[i];
+                    const nextCell = cells[i+1];
+                    
+                    const currentContent = currentCell.textContent.trim();
+                    const nextContent = nextCell.textContent.trim();
+                    
+                    if (currentContent !== "" && nextContent === "") {
+                        currentCell.classList.add("placement-cell");
+                    }
+                }
+            })
+        }
 
         coloredTables.add($(this)); // Mark table as colored
     });
+    
 }
 
 mw.hook("wikipage.content").add(function($content) {
 	
     // Apply colors to existing tables
 	applyColorsToTableCells();
+	
+	// Apply Placement Cell Colors
+	
 });

@@ -23,16 +23,57 @@ $(document).ready(function() {
 });
 
 /* Wiki-headerverandering (Marvel Database, EN) */
-var number_of_wiki_names = 27;
-var wiki_name_number = 0;
+var wiki_names = [
+  "Gotta go fast!", "Aw, yeah! This is happenin'!", "What you see is what you get.",
+  "An adventure's no fun if it's too easy.", "Just a guy that loves adventure!",
+  "Talk about low budget flights.", "I'll make you eat those words!",
+  "I will fight like I always have!", "I found you, faker!", "C'mon! Step it up!",
+  "You're too slow!", "Way past cool!", "Gotta juice!", "Get a load of this!",
+  "Let's do it to it!", "It's no use!", "Chaos Control!", "Time for a Knuckles sandwich!",
+  "If you have time to worry, then run!", "Strange, isn't it!?", "That's no good.",
+  "All hail the king, baby.", "Snooping as usual, I see...", "Live and learn.",
+  "Moving around at the speed of sound.", "Gotta follow my rainbow!",
+  "Wooow, my head's spinning!", "Now I'll show you!", "Have no fear, Amy Rose is here!",
+  "The servers are the seven Chaos.", "It all starts with this...",
+  "Watch out! You're gonna crash! Ahhh!", "Come on, ya big drip! Where ya goin'?",
+  "Long time no see.", "Look! It's a giant talking egg!", "Tougher than leather.",
+  "Unlike Sonic, I don't chuckle", "I promise you... REVENGE!",
+  "I'm the world's ultimate life form.", "That blue hedgehog again, of all places.",
+  "Konichi-wa?", "Determination of the strong...", "All hail Shadow.",
+  "Can't hold on much longer...", "I know it's a one way track...",
+  "I'm not gonna think this way...", "Close my eyes and feel it burn...",
+  "Nor will I count on others!", "Thunder, rain, and lightning.",
+  "I hate that hedgehog!", "Oh no.", "Watch out! You're gonna crash! Ahhh!.",
+  "Where's that DAMN fourth Chaos Emerald!?", "This is like taking candy from a baby, which is fine by me!",
+  "I have no master, except the wind that blows free!", "I just gotta do what I gotta do, that's all!",
+  "It was never about chivalry to me.", "Faker!? I think you're the fake hedgehog around here.",
+  "You're not even good enough to be my fake!", "No copyright law in the universe is gonna stop me!",
+  "You've turned into a big time villain, doctor!", "Find the computer room!",
+  "I play by my own rules. Remember that.", "Hey, I'll play with you some other time!",
+  "You know, what can I say? I die hard!", "Sonic, this time, there's no way out of marrying me!",
+  "It all starts with this... a jewel containing the ultimate power!",
+  "Well, this is new. Showing remorse, Eggman?", "If you played nice, I wouldn't have to break all your toys!",
+  "Do I need a reason to want to help out a friend?", "We gotta live life to the fullest in the time we have.",
+  "Bounce pad!", "Baldy Nosehair?! That's the best thing that I've heard all day!",
+  "Too bad it’s all over, for you!", "I won't let him down, I won't give up!",
+  "I told you I'm not a rat! I'm a hedgehog.", "You can do anything!",
+  "Ask not what others can do for you, but what you can do for others.",
+  "When you want to do something, do it right away.",
+  "You must be ready to reach beyond the boundaries of Time itself.",
+  "Don't give up on the sun. Don't make the sun laugh at you.", "Watch out, Eggman! I'm coming at ya full speed!",
+  "Sonic's the name, speed is my game!", "You always have a choice... Making the right one is never easy.",
+  "Uh... meow?", "For a guy named Knuckles, you are really bad at punching!", "Porcupine? I am an echidna.",
+  "Do I look like I need your power?", "Oh flower, pretty flower, show your face and I'll sting you!",
+  "If I had to choose between the world and Sonic, I would choose Sonic.", "I'm the coolest!",
+  "It'll be a date to die for!"
+];
 
-while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
-  wiki_name_number = Math.random().toFixed(2) * 100;
-};
-var wiki_name_text=["Gotta go fast!", "Aw, yeah! This is happenin'!", "What you see is what you get.", "An adventure's no fun if it's too easy.", "Just a guy that loves adventure!", "Talk about low budget flights.", "I'll make you eat those words!", "I will fight like I always have!", "I found you, faker!", "C'mon! Step it up!", "You're too slow!", "Way past cool!", "Gotta juice!", "Get a load of this!", "Let's do it to it!", "It's no use!", "Chaos Control!", "Time for a Knuckles sandwich!", "If you have time to worry, then run!", "Strange, isn't it!?", "That's no good.", "All hail the king, baby.", "Snooping as usual, I see...", "Live and learn.", "Moving around at the speed of sound.", "Gotta follow my rainbow!", "Wooow, my head's spinning!", "Now I'll show you!", "Have no fear, Amy Rose is here!", "The servers are the seven Chaos.", "It all starts with this...", "Watch out! You're gonna crash! Ahhh!", "Come on, ya big drip! Where ya goin'?", "Long time no see.", "Look! It's a giant talking egg!", "Tougher than leather.", "Unlike Sonic, I don't chuckle", "I promise you... REVENGE!", "I'm the world's ultimate life form.", "That blue hedgehog again, of all places.", "Konichi-wa?", "Determination of the strong...", "All hail Shadow.", "Can't hold on much longer...", "I know it's a one way track...", "I'm not gonna think this way...", "Close my eyes and feel it burn...", "Nor will I count on others!", "Thunder, rain and lighting.", "I hate that hedgehog!", "Oh no.", "Watch out! You're gonna crash! Ahhh!.", "Where's that DAMN fourth Chaos Emerald!?", "This is like taking candy from a baby, which is fine by me!", "I have no master, except the wind that blows free!", "I just gotta do what I gotta do, that's all!", "It was never about chivalry to me.", "Faker!? I think you're the fake hedgehog around here.", "You're not even good enough to be my fake!", "No copyright law in the universe is gonna stop me!", "You've turned into a big time villain, doctor!", "Find the computer room!", "I play by my own rules. Remember that.", "Hey, I'll play with you some other time!", "You know, what can I say? I die hard!", "Sonic, this time, there's no way out of marrying me!", "Sonic, this time, there's no way out of marrying me!", "It all starts with this... a jewel containing the ultimate power!", "Well, this is new. Showing remorse, Eggman?", "If you played nice, I wouldn't have to break all your toys!", "Do I need a reason to want to help out a friend?", "We gotta live life to the fullest in the time we have.", "Bounce pad!", "Baldy Nosehair?! That's the best thing that I've heard all day!", "Too bad it’s all over, for you!", "I won't let him down, I won't give up!", "I told you I'm not a rat! I'm a hedgehog." ][wiki_name_number];
-var elements=document.getElementsByClassName('fandom-community-header__community-name');
-var wiki_name=elements[0];
-wiki_name.textContent=wiki_name_text;
+var wiki_name_number = Math.floor(Math.random() * wiki_names.length);
+
+var elements = document.getElementsByClassName('fandom-community-header__community-name');
+if (elements.length > 0) {
+  elements[0].textContent = wiki_names[wiki_name_number];
+}
 
 /* Tussen haakjes hoofdingen */
 $(document).ready(function() {

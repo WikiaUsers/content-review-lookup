@@ -54,5 +54,12 @@ $(function() {
             ]
         });
     }
-    
+    else if (cat.indexOf('Точка Невозврата') !== -1 && cat.indexOf('Межсезонные персонажи') == -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:TNStyles.css",
+            ]
+        });
+    }
 });

@@ -29,3 +29,11 @@ themes = document.getElementsByClassName("komunikat")[0].classList.item(1);
         }
     }
 });
+
+// Dynamiczne kolory dla "pudełek" list chronologicznych
+$(function(){
+	document.querySelectorAll('.pudelko-duze, .pudelko-male').forEach(element => {
+	  const bgcolor = element.getAttribute('data-bgcolor');
+	  element.style.setProperty('--bgcolor', bgcolor);
+	});
+});

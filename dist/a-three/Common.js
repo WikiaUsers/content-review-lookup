@@ -4,6 +4,4 @@
 window.BackToTopModern = true;
 
 /* AddRailModule on top */
-window.AddRailModule = [
-    {page: 'Template:CurrentBirthday', prepend: true},
-];
+window.AddRailModule = [{prepend: true}];

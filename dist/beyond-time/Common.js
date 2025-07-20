@@ -1,5 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+// BackToTopButton Config 
+window.BackToTopModern = true;
+
 if (mw.config.get('wgPageName') === 'User:Godof.FlameWater' && mw.config.get('wgAction') !== 'edit') {
 importArticles({
     type: 'script',
@@ -28,3 +31,15 @@ UserTagsJS.modules.newuser = {
         return days < 7 && edits < 20;
     }
 };
+
+// MediaWiki groups to include
+UserTagsJS.modules.mwGroups = [
+    'bureaucrat',
+    'sysop',
+    'bot',
+    'bot-global',
+    'content-moderator',
+    'threadmoderator',
+    'rollback',
+    'bannedfromchat'
+];

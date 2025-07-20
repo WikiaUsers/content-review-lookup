@@ -58,3 +58,6 @@ UserTagsJS.modules.mwGroups = [
     'rollback',
     'bannedfromchat'
 ];
+
+// BackToTopButton Config 
+window.BackToTopModern = true;

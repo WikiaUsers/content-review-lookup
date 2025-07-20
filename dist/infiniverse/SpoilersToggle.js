@@ -8,7 +8,7 @@
  * @author Tierrie
  * https://dragonage.fandom.com/wiki/MediaWiki:SpoilersToggle.js
  */
-mw.loader.using(['jquery.cookie']).then(function() { 
+mw.loader.using(['jquery']).then(function() { 
     if (window.SpoilersToggleLoaded) {
         return;
     }

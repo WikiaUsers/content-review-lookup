@@ -135,7 +135,6 @@ if (
         'u:dev:MediaWiki:AutoCreateUserPages.js',
         'u:dev:MediaWiki:Stella.js',
         'u:dev:MediaWiki:Matrix.js',
-        'u:dev:MediaWiki:EditConflictAlert/code.js',
         'u:dev:MediaWiki:Rollback/code.js',
         'u:dev:MediaWiki:ThemeToggler.js',
         'u:dev:MediaWiki:MultipleFileDelete/code.js',

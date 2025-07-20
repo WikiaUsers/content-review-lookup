@@ -31,7 +31,7 @@ $(function () {
 
 	$('#filter-type').html(
 		'<select id="filterType" class="bfw-filter">' +
-			'<option value="">Все</option>' +
+			'<option value="">Все типы</option>' +
 			'<option value="fruit-type-физический">Физические</option>' +
 			'<option value="fruit-type-звериный">Звериные</option>' +
 			'<option value="fruit-type-элементальный">Элементальные</option>' +
@@ -40,7 +40,7 @@ $(function () {
 
 	$('#filter-rarity').html(
 		'<select id="filterRarity" class="bfw-filter">' +
-			'<option value="">Все</option>' +
+			'<option value="">Все редкости</option>' +
 			'<option value="rarity-обычный">Обычный</option>' +
 			'<option value="rarity-необычный">Необычный</option>' +
 			'<option value="rarity-редкий">Редкий</option>' +
@@ -52,7 +52,7 @@ $(function () {
 	
 	$('#filter-effect').html(
 		'<select id="filterEffect" class="bfw-filter">' +
-			'<option value="">Все</option>' +
+			'<option value="">Все эффекты</option>' +
 			'<option value="effect-damage-styles">🤜 Урон Боевых Стилей</option>' +
 			'<option value="effect-damage-swords">⚔️ Урон Мечей</option>' +
 			'<option value="effect-damage-guns">🏹 Урон Оружий</option>' +
@@ -83,8 +83,9 @@ $(function () {
 			'<option value="effect-vampirism">🧛 Вампиризм</option>' +
 			'<option value="effect-instinct-dodge">👁🔟️ Уклонения Инстинкта</option>' +
 			'<option value="effect-instinct-range">👁🔝️ Дальность Инстинкта</option>' +
+			'<option value="effect-air-jump">☁️ Дополнительный Воздушный Прыжок</option>' +
 			'<option value="effect-sixth-area-vision">🪬 Видение</option>' +
-			'<option value="effect-boost-drop-chance">✖️🩻 Буст шанса дропа</option>' +
+			'<option value="effect-drop-chance-sea-events">✖️🌊 Шанс дропа с Морских Событий</option>' +
 			'<option value="effect-boost-exp">✖️💿 Буст опыта</option>' +
 			'<option value="effect-boost-mastery">✖️📀 Буст мастерства</option>' +
 		'</select>'
@@ -92,7 +93,7 @@ $(function () {
 
 	$('#filter-sea').html(
 		'<select id="filterSea" class="bfw-filter">' +
-			'<option value="">Все</option>' +
+			'<option value="">Все моря</option>' +
 			'<option value="sea-первое">Первое море</option>' +
 			'<option value="sea-второе">Второе море</option>' +
 			'<option value="sea-третье">Третье море</option>' +

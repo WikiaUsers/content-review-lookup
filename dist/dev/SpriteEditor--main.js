@@ -517,7 +517,7 @@ mw.loader.using( [
 		ulEle.addEventListener( 'dragenter', ( e ) => {
 			e.stopPropagation();
 			e.preventDefault();
-			if ( !e.dataTransfer.getData( 'Text' ) ) {
+			if ( !e.dataTransfer.getData( 'Text' ) && !e.dataTransfer.items.length ) {
 				return;
 			}
 			e.dataTransfer.dropEffect = 'move';
@@ -941,6 +941,16 @@ mw.loader.using( [
 		const imageEleInner = document.createElement( 'span' );
 		if ( isNewBtn ) {
 			imageEleInner.className = 'new-sprite-btn';
+			imageEleOuter.onclick = function () {
+				const input = document.createElement( 'input' );
+				input.type = 'file';
+				input.setAttribute( 'multiple', '' );
+				input.setAttribute( 'accept', 'image/*' );
+				input.onchange = function ( f ) {
+					handleFileUpload( f.target.files, sprite.myData );
+				};
+				input.click();
+			};
 		} else {
 			imageEleInner.className = 'sprite';
 			imageEleInner.append( sprite.image );
@@ -1255,17 +1265,10 @@ mw.loader.using( [
 				myData = this,
 				orgLength = sections.length;
 			this.sectionName = name;
-			this.id = id || sections.length;
-			canvasEle.onclick = function () {
-				const input = document.createElement( 'input' );
-				input.type = 'file';
-				input.setAttribute( 'multiple', '' );
-				input.setAttribute( 'accept', 'image/*' );
-				input.onchange = function ( f ) {
-					handleFileUpload( f.target.files, myData );
-				};
-				input.click();
-			};
+			this.id = id;
+			if ( typeof this.id !== 'number' ) {
+				this.id = sections.length;
+			}
 			addHistory( [
 				function () {
 					removeSection( myData );
@@ -1277,6 +1280,7 @@ mw.loader.using( [
 						addSprite( {
 							id: -1,
 							image: canvasEle,
+							myData: myData,
 							names: [ [ mw.message( 'interwiki_addbutton' ).plain(), {} ] ],
 							sectionId: myData.id
 						}, true );
@@ -2069,6 +2073,7 @@ mw.loader.using( [
 			) / ( imgWidth + options.spacing )
 		);
 		if ( !kioskMode ) {
+			document.querySelector( '#sidemenu1spacing' ).value = Number( options.spacing );
 			document.querySelector( '#sidemenu1sprites' ).value = options.spritesPerRow;
 		}
 		inLoadingProcess = true;
@@ -2219,6 +2224,8 @@ mw.loader.using( [
 			output.ids = output.ids || {};
 			output.sections = output.sections || [];
 			posSprite = output.settings.pos || 1;
+			options.spacing = output.settings ? output.settings.spacing : 0;
+			imgSpacingOrg = options.spacing;
 			loadPermissionsAndImage();
 		} );
 	}

@@ -1,17 +1,17 @@
 { // block-scoping
 
 // append '&format=original' to the url source of specified images
-const allImages = document.querySelectorAll('.mw-parser-output img');
-if (allImages.length) {
-	allImages.forEach(function(image) {
-		const imageName = image.getAttribute('data-image-name');
-		const imageSrc = image.getAttribute('data-src');
-		if (imageName === null) return;
-		if (imageName.match(/^(Sprite|NPC|Artifact|Icon|Equipment|Costume)/)) {
-			image.setAttribute('data-src', imageSrc + "&format=original");
-		}
-	});
-}
+// const allImages = document.querySelectorAll('.mw-parser-output img');
+// if (allImages.length) {
+// 	allImages.forEach(function(image) {
+// 		const imageName = image.getAttribute('data-image-name');
+// 		const imageSrc = image.getAttribute('data-src');
+// 		if (imageName === null) return;
+// 		if (imageName.match(/^(Sprite|NPC|Artifact|Icon|Equipment|Costume)/)) {
+// 			image.setAttribute('data-src', imageSrc + "&format=original");
+// 		}
+// 	});
+// }
 
 // add tabindex="-1" to tooltipped itemboxes to retain focus on click
 const itemboxTooltip = document.querySelectorAll('.custom-tooltip .itembox');
@@ -20,9 +20,9 @@ itemboxTooltip.forEach(function(itembox) {
 });
 
 // hide LastEdited's summary and modal
-if (!window.lastEdited) {
-	window.lastEdited = { diffModal: false, comment: false };
-}
+// if (!window.lastEdited) {
+// 	window.lastEdited = { diffModal: false, comment: false };
+// }
 
 // loop the video inside class="videoloop"
 mw.hook('wikipage.content').add(function($content) {
@@ -32,7 +32,7 @@ mw.hook('wikipage.content').add(function($content) {
 	}
 });
 
-// add default aspect-ratio to hero illustrations to animate `aspect-ratio` states in [[Template:HeroGallery]]
+// add default aspect-ratio to hero illustrations to animate `aspect-ratio` states in [[Template:Hero card]]
 const heroCard = document.querySelectorAll('.card__hero');
 if (heroCard.length) {
 	heroCard.forEach(function(illust) {

@@ -522,18 +522,18 @@ $(document).ready(function () {
 				if (customSheet != '') {
 					const sheets = customSheet.split(',');
 					for (let i = 0; i < sheets.length; i++) {
-						let src = '/Special:Redirect/file/' + sheets[i];
+						let src = './Special:Redirect/file/' + sheets[i];
 						this.spritesheets.push(this.createTextureInfo(src, i == 0));
 					}
 				} else {
 					for (let k = 0; k < maxForms; k++) {
 						let src;
 						if (k == 0 && this.unitData.get('f').imgcut[2][0].includes('m')) {
-							src = `/Special:Redirect/file/${this.unitData.get('f').imgcut[2][0]}`;
+							src = `./Special:Redirect/file/${this.unitData.get('f').imgcut[2][0]}`;
 						} else if (maxForms > 1 && k == 1 && this.unitData.get('c').imgcut[2][0].includes('m')) {
-							src = `/Special:Redirect/file/${this.unitData.get('c').imgcut[2][0]}`;
+							src = `./Special:Redirect/file/${this.unitData.get('c').imgcut[2][0]}`;
 						} else {
-							src = `/Special:Redirect/file/${this.unit.padStart(3, '0')}_${(['f', 'c', 's', 'u'])[k]}.png`;
+							src = `./Special:Redirect/file/${this.unit.padStart(3, '0')}_${(['f', 'c', 's', 'u'])[k]}.png`;
 						}
 						this.spritesheets.push(this.createTextureInfo(src, k == 0));
 					}
@@ -541,13 +541,13 @@ $(document).ready(function () {
 			} else if (this.type == 'enemy') {
 				let src;
 				if (customSheet != '') {
-					src = '/Special:Redirect/file/' + customSheet.split(',')[0];
+					src = './Special:Redirect/file/' + customSheet.split(',')[0];
 				} else {
-					src = `/Special:Redirect/file/${this.unit.padStart(3, '0')}_e.png`;
+					src = `./Special:Redirect/file/${this.unit.padStart(3, '0')}_e.png`;
 				}
 				this.spritesheets.push(this.createTextureInfo(src));
 			} else if (this.type == 'spirit') {
-				const src = `/Special:Redirect/file/${this.unitData.get('f').imgcut[2][0]}`;
+				const src = `./Special:Redirect/file/${this.unitData.get('f').imgcut[2][0]}`;
 				this.spritesheets.push(this.createTextureInfo(src));
 			}
 			// remove bg loading gif
@@ -1066,7 +1066,7 @@ $(document).ready(function () {
 				this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(color));
 				this.drawFrame();
 			};
-			this.bgImg.src = bg.includes('static.wikitide.net') ? bg : `/Special:Redirect/file/${bg}`;
+			this.bgImg.src = bg.includes('static.wikitide.net') ? bg : `./Special:Redirect/file/${bg}`;
 		}
 
 		createTextureInfo(url, draw = true) {

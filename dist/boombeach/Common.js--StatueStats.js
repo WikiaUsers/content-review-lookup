@@ -13,6 +13,7 @@ $(document).ready(function() {
     $("span#bonusInputRRHarness").html('<input type="text" value="0" id="bonusInputRR" class="bonusInput" style="text-align: right; width: 40px;"></input>');
     $("span#bonusInputTDHarness").html('<input type="text" value="0" id="bonusInputTD" class="bonusInput" style="text-align: right; width: 40px;"></input>');
     $("span#bonusInputTHHarness").html('<input type="text" value="0" id="bonusInputTH" class="bonusInput" style="text-align: right; width: 40px;"></input>');
+    $("span#bonusInputHEHarness").html('<input type="text" value="0" id="bonusInputHE" class="bonusInput" style="text-align: right; width: 40px;"></input>');
     $("span#ampOptionsHarness").html('<div id="ampOptions"> <div id="ampOptionsInner"> <div id="numOfAmpsOption"> Number of Damage Amplifiers affecting the Defense: <select name="numOfAmps" id="numOfAmps"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select> </div> <div id="firstAmpOption" style="display: none;"> <span id="firstAmpFirstWord" style="display: none;">First </span>Damage Amplifier\'s Mark: <select name="firstAmp" id="firstAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="secondAmpOption" style="display: none;"> Second Damage Amplifier\'s Mark: <select name="secondAmp" id="secondAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="thirdAmpOption" style="display: none;"> Third Damage Amplifier\'s Mark: <select name="thirdAmp" id="thirdAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fourthAmpOption" style="display: none;"> Fourth Damage Amplifier\'s Mark: <select name="fourthAmp" id="fourthAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fifthAmpOption" style="display: none;"> Fifth Damage Amplifier\'s Mark: <select name="fifthAmp" id="fifthAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> </div> </div> <center> <span id="showAmpOptions" class="ampOptionsTrigger">Show Damage Amplifier Options</span> <span id="hideAmpOptions" class="ampOptionsTrigger ampOptionsTriggerHidden">Hide Damage Amplifier Options</span> </center>');
     $("span#generatorOptionsHarness").html('<div id="generatorOptions"> <div id="generatorOptionsInner"> <div id="numOfGeneratorsOption"> Number of Shield Generators on the Base: <select name="numOfGenerators" id="numOfGenerators"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select> </div> <div id="firstGeneratorOption" style="display: none;"> <span id="firstGeneratorFirstWord" style="display: none;">First </span>Shield Generator\'s Mark: <select name="firstGenerator" id="firstGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="secondGeneratorOption" style="display: none;"> Second Shield Generator\'s Mark: <select name="secondGenerator" id="secondGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="thirdGeneratorOption" style="display: none;"> Third Shield Generator\'s Mark: <select name="thirdGenerator" id="thirdGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fourthGeneratorOption" style="display: none;"> Fourth Shield Generator\'s Mark: <select name="fourthGenerator" id="fourthGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fifthGeneratorOption" style="display: none;"> Fifth Shield Generator\'s Mark: <select name="fifthGenerator" id="fifthGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> </div> </div> <center> <span id="showGeneratorOptions" class="generatorOptionsTrigger">Show Shield Generator Options</span> <span id="hideGeneratorOptions" class="generatorOptionsTrigger generatorOptionsTriggerHidden">Hide Shield Generator Options</span> </center>');
     /* Remove margin from an automatically created p element */
@@ -35,6 +36,7 @@ $(document).ready(function() {
       var getInputDBD = $("#bonusInputDBD").val() * 1;
       var getInputRP = $("#bonusInputRP").val() * 1;
       var getInputRR = $("#bonusInputRR").val() * 1;
+      var getInputHE = $("#bonusInputHE").val() * 1;
       // Do the math and give each cell its new value
       // If cell values change, add styling to them
       $(".GBE").each(function() {
@@ -152,6 +154,16 @@ $(document).ready(function() {
             $(".RR").removeClass("StatModified");
         } else {
             $(".RR").addClass("StatModified");
+        }
+      });
+      $(".HE").each(function() {
+         var cellValueHE = $(this).attr("title") * 1;
+         var calcNewHE = roundNum(3, cellValueHE * (1 + (getInputHE / 100)));
+         $(this).text(calcNewHE.format("#,##0[.]###"));
+        if ((roundNum(3, calcNewHE)) === (roundNum(3, cellValueHE))) {
+            $(".HE").removeClass("StatModified");
+        } else {
+            $(".HE").addClass("StatModified");
         }
       });
     });

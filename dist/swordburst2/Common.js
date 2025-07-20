@@ -1,4 +1,4 @@
-// CategoryCSS
+// CategoryCSS 
 window.categoryCSS = {
     "Market": "MediaWiki:Market.css",
     "Shop Item": "MediaWiki:Shop_Item.css",
@@ -50,6 +50,8 @@ window.UserTagsJS = {
             Pulllemons: ["trusted-market-editor", "wiki-committee"],
             LucidR: ["wiki-committee"],
             Blockadepro: ["wiki-committee"],
+            Pyrixil: ["trusted-market-editor"],
+            "Mustache.17": ["trusted-market-editor"],
         },
         
         userfilter: {

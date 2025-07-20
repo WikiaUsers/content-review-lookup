@@ -96,17 +96,6 @@ all.each(function() {
 if (rowspan > 1) {
   setRowspan();
 }
-    
-$('.artifact-weapon-table tr').each(function(){
-  var $this = $(this),
-      title = $this.attr('data-power');
-  var $foundFIgure = $('[data-power="'+title+'"]');
-    
-  if($foundFIgure.length > 1){
-    $foundFIgure.eq(0).addClass("artifact-weapon-table-top");
-    $foundFIgure.eq(1).addClass("artifact-weapon-table-bottom");
-  }
-});
 
 // TOOLTIP
 // This script enhances wiki pages by adding interactive tooltips to links with class "ajaxttlink".

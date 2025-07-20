@@ -33,7 +33,7 @@ mw.loader.using('mediawiki.api', function() {
 	});
 	
 	// Account menu
-	mutationHoverHelper('#user-tab__content', '#user-tab__content > .navigation-tab');
+	mutationHoverHelper('#user-panel__content', '#user-panel__content > .navigation-panel');
 	$('.global-action__item.global-action__user').each(function(_, element) {
 		$(element).on('mouseenter', function() {
 			if (!$(element).hasClass('wds-is-active'))

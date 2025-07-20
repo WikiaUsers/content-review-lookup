@@ -1,4 +1,12 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+// Modèle:EditConflictAlert
+window.EditConflictAlertInterval = 5000;
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:EditConflictAlert/code.js',
+    ]
+});
 
 // Modèle:Onglet
 $(function() {

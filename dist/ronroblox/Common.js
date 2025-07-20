@@ -79,17 +79,13 @@ UserTagsJS.modules.custom = {
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Contributors
 	'Dxrknrg': ['Wiki-Contributor'],
-	'Sdvwevfregv': ['Wiki-Contributor'],
 	'SuperGlitchyTheo': ['Wiki-Contributor'],
 	'Sorayaann': ['Wiki-Contributor'],
 	'Quinncm': ['Wiki-Contributor'],
 	'Zarc.0724': ['Wiki-Contributor'],
 	'Mysþıc': ['Wiki-Contributor'],
 	'Antiverta': ['Wiki-Contributor'],
-	'DankM3m3l0rd2': ['Wiki-Contributor'],
-    'Supetendo': ['Wiki-Contributor'],
     'MP1Player': ['Wiki-Contributor'],
-    'K3raii19': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],
