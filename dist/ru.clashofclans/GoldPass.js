@@ -6,7 +6,7 @@
    * MagmaHound is one of the latest developers
    * 
    * Translated to RU by Flotiliya
-   * Last update 10.04.2025
+   * Last update 25.07.2025
 */
 
 $(document).ready(function() {
@@ -119,7 +119,10 @@ $(document).ready(function() {
         	'<select name="secondHeroGearLevel" id="secondHeroGearLevel">' +
     	    '</select></div>' +
     	'</div></td></tr>' +
+    	'<tr><td><span id="darkCrownHarness"></span></td></tr>' +
 	'</table></div>');
+	// Equipment-specific modifiers
+	$("span#darkCrownHarness").html('<div id="darkCrownInput" style="display:none;">Заряды темной короны: <select name="darkCrownStackLevel" id="darkCrownStackLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    // Auxillary array for wall HTKs
@@ -158,6 +161,8 @@ $(document).ready(function() {
         		}
         	}
         }
+        // Check the special choices
+        checkSpecialChoices();
     }
     function refreshSecondGearChoices(hmRefresh) {
     	var secondGearName = $("select#secondHeroGearChoice option:selected").text();
@@ -189,6 +194,8 @@ $(document).ready(function() {
         		}
         	}
         }
+        // Check the special choices
+        checkSpecialChoices();
     }
     // Function to initialise the options we have available
     function initChoices() {
@@ -201,6 +208,31 @@ $(document).ready(function() {
     	// Also disable the first item for second choice and second item for first choice
     	$("select#secondHeroGearChoice option[value=0]").prop('disabled',true);
     	$("select#firstHeroGearChoice option[value=1]").prop('disabled',true);
+    }
+    function checkSpecialChoices(){
+    	// A function to check for specific Hero Equipment selections ("special choices")
+        // Start by recording the selections
+        var firstGearName = $("select#firstHeroGearChoice option:selected").text();
+        var secondGearName = $("select#secondHeroGearChoice option:selected").text();
+        
+        // Now compare these against the special choices
+        if (checkIsSpecialChoiceSelected(firstGearName,secondGearName,"Темная корона")) {
+        	$("div#darkCrownInput").css("display","block");
+        } else {
+        	$("div#darkCrownInput").css("display","none");
+            // Also reset the value to 0
+            $("select#darkCrownStackLevel option[value=0]").prop('selected',true);
+        }
+    }
+    function checkIsSpecialChoiceSelected(firstGear, secondGear, choiceName) {
+    	// Always return false if hero gear toggle is false
+        if ($("input#heroGearToggle").is(":checked") === false) {
+        	return false;
+        }
+        if (firstGear === choiceName || secondGear === choiceName) {
+        	return true;
+        }
+        return false;
     }
     function toggleModifierMode() {
       	//Change the visibility of various items depending on the mode selected
@@ -231,6 +263,23 @@ $(document).ready(function() {
 	    refreshFirstGearChoices(hmEnabled = false);
 	    refreshSecondGearChoices(hmEnabled = false);
     }
+    function getSpecialChoiceLevel(choice) {
+    	// Returns the value corresponding to the level selected
+    	// If no gear is selected, return -1 (0 is reserved for the first level)
+    	if ($("input#heroGearToggle").val() === undefined) {
+    		return -1;
+    	}
+    	if ($("input#heroGearToggle").is(":checked") === false) {
+        	return -1;
+        }
+        // Look through the two equipments
+        if ($("select#firstHeroGearChoice option:selected").text() === choice) {
+        	return $("select#firstHeroGearLevel").val();
+        } else if ($("select#secondHeroGearChoice option:selected").text() === choice) {
+        	return $("select#secondHeroGearLevel").val();
+        }
+       	return -1;
+    }
    /* Initialize the choices
    We first start by writing down level caps corresponding to each choice 
    Since the Sep balance changes, each level cap is written as a size-2 array.
@@ -254,6 +303,7 @@ $(document).ready(function() {
     	"Сфера тьмы": [18,15],
     	"Железные штаны": [18,15],
         "Королевская гантель": [18,15],
+        "Темная корона": [27,21],
     	"Книга вечности": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Кристалл жизни": [18,15],
     	"Кристалл ярости": [18,15],
@@ -278,7 +328,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик"];
     		break;
     	case ("Принц миньонов"):
-    		heroGearOptions = ["Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель"];
+    		heroGearOptions = ["Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона"];
     		break;
      	case ("Хранитель"):
     		heroGearOptions = ["Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар"];
@@ -287,7 +337,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
+    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -332,6 +382,7 @@ $(document).ready(function() {
         } else {
         	$("#heroGearHarness, #heroAbilityHarness").css("display","none");
         }
+        checkSpecialChoices();
 	});
 	$("#hardModeBoost").change(function() {
 		// Reset the level caps for the currently existing equipment as required
@@ -1051,6 +1102,7 @@ $(document).ready(function() {
 			"Солдатик": [159,184,200,217,236,254,276,298,318,339,359,380,399,424,448,473,498,522,544,565,586,608,628,649,671,692,713],
 			"Сфера тьмы": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
 			"Железные штаны": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
+			"Темная корона": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
 			"Кристалл жизни": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
 			"Книга исцеления": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Кукла-лавашар": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
@@ -1075,6 +1127,7 @@ $(document).ready(function() {
 			"Вампирские усы": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Змеиный браслет": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
             "Королевская гантель": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,17],
+            "Темная корона": [1,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11],
 			"Кристалл ярости": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Фиал спешки": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
 		};
@@ -1096,6 +1149,8 @@ $(document).ready(function() {
 			"Перчатка гиганта": Array(27).fill("По площади (радиус 2.5 клетки)"),
 			"Копье-ракета": Array(27).fill("По площади (клетки 0.8 клетки)")
 		};
+		// Lookup for the Dark Crown's boosts
+		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
 		// This is to be compatible with the dictionaries, which are also zero-indexed
@@ -1276,6 +1331,8 @@ $(document).ready(function() {
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
+			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
 			// If there is no modifier mode, ignore this
@@ -1297,10 +1354,14 @@ $(document).ready(function() {
 		    if (isNaN(capitalRageSpellLevel) === true) {
 		    	capitalRageSpellLevel = 0;
 		    }
+		    if (isNaN(darkCrownStacks) === true) {
+		    	darkCrownStacks = 0;
+		    }
 			var calcNewDPH = initialDPH;
 			var rageMultiplier = 1;
 			var towerRageMultiplier = 1;
 			var auraRageMultiplier = 1;
+			var darkCrownMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if (isBuilding === true) {
@@ -1332,7 +1393,11 @@ $(document).ready(function() {
 					auraRageMultiplier = (100 + auraBoost) / 100;
 				}
 			}
-			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier);
+			// Dark crown boost
+			if (darkCrownLevel > -1) {
+				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
+			}
+			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier, darkCrownMultiplier);
 			
 			// For hero ability damage increase, look it up from dictionary
 			var firstGearAbilityDI = 0;
@@ -1785,6 +1850,11 @@ $(document).ready(function() {
 			if (isNaN(rageAuraLevel) === true) {
 		    	rageAuraLevel = 0;
 		    }
+		    var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
+			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
+			if (isNaN(darkCrownStacks) === true) {
+		    	darkCrownStacks = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -1821,6 +1891,7 @@ $(document).ready(function() {
 			var rageMultiplier = 1;
 			var towerRageMultiplier = 1;
 			var auraRageMultiplier = 1;
+			var darkCrownMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if ($(this).hasClass("Building") === true) {
@@ -1852,7 +1923,11 @@ $(document).ready(function() {
 					auraRageMultiplier = (100 + auraBoost) / 100;
 				}
 			}
-            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier);
+            // Dark crown boost
+			if (darkCrownLevel > -1) {
+				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
+			}
+            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier,darkCrownMultiplier);
 			// Now we adjust for hero abilities
 			var firstGearAbilityDI = 0;
 			var secondGearAbilityDI = 0;
@@ -2056,11 +2131,20 @@ $(document).ready(function() {
 			if (isNaN(apprenticePercent) === true) {
 				apprenticePercent = 0;
 			}
+			var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
+			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
+			if (isNaN(darkCrownStacks) === true) {
+		    	darkCrownStacks = 0;
+		    }
 			var calcPercentHP = baseHP * (1000 + auraPercent)/1000;
 			var calcMaxHP = baseHP + auraMaxHP;
 			var calcWardenHP = Math.min(calcPercentHP,calcMaxHP);
 			var calcApprenticeHP = baseHP * (1000 + apprenticePercent)/1000;
-			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP);
+			var calcDarkCrownHP = baseHP;
+			if (darkCrownLevel > -1) {
+				calcDarkCrownHP = baseHP * (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
+			}
+			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP,calcDarkCrownHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
 			// Add the final value to HP array if required
 			if ($(this).hasClass("Decay")) {
@@ -2333,7 +2417,7 @@ $(document).ready(function() {
             }
 		});
 		//Add a look-up array for wall HTK. Also define two variables to be used inside the loop here, and reset them afterwards
-		var wallHP = [300,500,700,900,1400,2000,2500,3000,3500,4000,5000,7000,9000,11000,12500,13500,14500,15500];
+		var wallHP = [100,200,400,800,1200,1800,2400,3000,3500,4000,5000,7000,8000,9000,10000,11000,12000,13000];
 		var currentWallLevel = 0;
 		var currentWBLevel = 0;
 		$(".HTK").each(function() {

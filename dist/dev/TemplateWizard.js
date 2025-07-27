@@ -763,7 +763,7 @@ mw.loader.using('mediawiki.api', () => {
 			if (
 				name.length > 0
 				&& !TW.paramOrder.includes(name)
-				&& !TW.templateCall.aliases[name]
+				&& !(TW.templateCall.aliases||{})[name]
 				&& !TW.paramOrder.includes(TW.templateCall.aliases[name])
 			) {
 				TW.templateCall.params[name] = {

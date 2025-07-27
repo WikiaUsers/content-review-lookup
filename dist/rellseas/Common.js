@@ -63,3 +63,5 @@ importArticles({
         'u:dev:MediaWiki:CategoryQuickRemove.js',
     ]
 });
+
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

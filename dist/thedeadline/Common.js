@@ -85,20 +85,35 @@ function applyColorsToTableCells() {
         
         if ($(this).hasClass("placement-table")) {
             
-            $(this).find("tr").toArray().forEach(row => {
-                const cells = row.cells;
-                for (let i=0; i < cells.length - 1; i++) {
-                    const currentCell = cells[i];
-                    const nextCell = cells[i+1];
+            const rows = this.querySelectorAll("tr");
+            
+            console.log("rows: " + rows);
+            
+            if (rows.length === 0) return;
+            
+            rows.forEach(row => {
+                
+                if (!row.cells) return;
+                
+                Array.from(row.cells).forEach((cell, i, cells) => {
                     
-                    const currentContent = currentCell.textContent.trim();
-                    const nextContent = nextCell.textContent.trim();
+                    let nextContent = "";
+                    const currentContent = cell.textContent.trim();
+                    if (i < rows.length - 1) {
+                        nextContent = cells[i+1].textContent.trim();
+                    }
                     
-                    if (currentContent !== "" && nextContent === "") {
+                    console.log("cell: " + cell);
+                    console.log("currentContent: " + currentContent);
+                    console.log("nextContent: " + nextContent);
+                    
+                    if (currentContent && !nextContent && !cell.classList.contains("placement-cell")) {
                         currentCell.classList.add("placement-cell");
                     }
-                }
-            })
+                    
+                    console.log("cellClasses: " + cell.classList);
+                });
+            });
         }
 
         coloredTables.add($(this)); // Mark table as colored

@@ -158,9 +158,9 @@ $(document).ready(function() {
       });
       $(".HE").each(function() {
          var cellValueHE = $(this).attr("title") * 1;
-         var calcNewHE = roundNum(3, cellValueHE * (1 + (getInputHE / 100)));
+         var calcNewHE = Math.ceil(roundNum(1,cellValueHE * (1 + (getInputHE / 100))));
          $(this).text(calcNewHE.format("#,##0[.]###"));
-        if ((roundNum(3, calcNewHE)) === (roundNum(3, cellValueHE))) {
+        if (calcNewHE === cellValueHE) {
             $(".HE").removeClass("StatModified");
         } else {
             $(".HE").addClass("StatModified");

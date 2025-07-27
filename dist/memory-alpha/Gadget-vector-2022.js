@@ -3,15 +3,16 @@ $(() => {
 	// Setup
 	$('.mediawiki').prepend($('<div id="page-grid">'));
 	$('#page-grid')
+		.append($('<div id="personal-tools" class="global-top-navigation">'))
+		.append($('.page-header__title-wrapper'))
 		.append($('<div id="left-rail-wrapper">'))
-		.append($('<div id="personal-tools" class="global-top-navigation">').append($('<ul>')))
 		.append($('<div id="page-actions">'))
+		.append($('<div id="right-rail-wrapper">'))
 		.append($('.main-container'))
 		.append($('<footer id="footer">'));
 	
 	// Left rail
 	$('#left-rail-wrapper')
-		.append($('<a id="p-logo" href="/wiki/">'))
 		.append($(portlet('navigation', 'Navigation')))
 		.append($(portlet('interaction', 'Contribute')))
 		.append($('.content-review__widget').removeAttr('class').attr(portletAttr('js-review')))
@@ -71,7 +72,17 @@ $(() => {
 	// Personal tools
 	const logoutURL = `https://auth.fandom.com/logout?source=mw&redirect=${window.location.href}`;
 	
-	$('#personal-tools ul')
+	$('#personal-tools').append($('<div>')).append($('<ul>'));
+	$('#personal-tools > div')
+		.append($('<a id="p-logo" href="/wiki/">'))
+		.append($('<div id="search-box">'));
+	
+	$('#search-box').append($(`<form action="${mw.util.getUrl('Special:Search')}">`));
+	$('#search-box form')
+		.append($('<input type="search" id="searchInput" name="query" required placeholder="Search Memory Alpha">'))
+		.append($('<input type="submit" id="searchButton" name="go" value="Search" title="Go to a page with this exact name if it exists">'));
+	
+	$('#personal-tools > ul')
 		.append($(ptItem('userpage', `User:${mw.config.get('wgUserName')}`, 'Your user page', mw.config.get('wgUserName'))))
 		.append($(ptItem('notifications')).append($('#global-top-navigation .notifications')))
 		.append($(ptItem('mytalk', `User talk:${mw.config.get('wgUserName')}`, 'Your talk page', 'Talk')))
@@ -119,13 +130,7 @@ $(() => {
 		.append($('<li id="ca-history-li">'))
 		.append($('<li id="ca-watch-li">'))
 		.append($('<li id="ca-unwatch-li">'))
-		.append($('<li id="more-page-actions" class="wds-dropdown">'))
-		.append($('<li id="search-box">'));
-	
-	$('#search-box').append($(`<form action="${mw.util.getUrl('Special:Search')}">`));
-	$('#search-box form')
-		.append($('<input type="search" id="searchInput" name="query" required placeholder="Search Memory Alpha">'))
-		.append($('<input type="submit" id="searchButton" name="go" value="🔍" title="Go to a page with this exact name if it exists">'));
+		.append($('<li id="more-page-actions" class="wds-dropdown">'));
 	
 	$('#more-page-actions').append($('<a class="wds-dropdown__toggle">More</a>'));
 	$('#more-page-actions').append($('<div class="wds-dropdown__content">').append($('<ul class="wds-list wds-is-linked">')));

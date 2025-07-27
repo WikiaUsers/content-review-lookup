@@ -1,0 +1,2 @@
+/*  iFrames  */
+$( '#stubs-view' ).html( '<iframe src="https://circus-tower-defense.fandom.com/wiki/Special:RandomInCategory/Stubs" width="450px" height="450px" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>' );

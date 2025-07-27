@@ -600,7 +600,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             return num.toLocaleString();
         }
 
-        var units = ["", "K", "M", "B", "T", "Q", "Qi", "sx", "Sp", "O", "N", "de"];
+        var units = ["", "K", "M", "B", "T", "Q", "Qi", "S", "Sp", "O", "N", "De"];
         // Get index of unit above (1 = K, 2 = M)
         var index = Math.floor((num.toFixed().length - 1) / 3);
         // Calculate the significant figures

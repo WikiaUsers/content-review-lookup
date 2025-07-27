@@ -1,5 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+mw.hook('wikipage.content').add(function() {
+  if (document.querySelector('.screamer-corner-icon')) {
+    document.body.classList.add('has-corner-icon');
+  }
+});
+
 /* notification panel */
 
 (function(window, $, mw) {

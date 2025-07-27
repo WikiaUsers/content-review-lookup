@@ -35,7 +35,7 @@ window.AjaxRename = {
         "Convention": "Renamed to match naming conventions in use on the wiki",
         "Formatting": "Reformatting name",
         "Namespace": "Incorrect namespace",
-        "Capitaliation": "Fixing capitalization",
+        "Capitalization": "Fixing capitalization",
     },
     
 	check: {

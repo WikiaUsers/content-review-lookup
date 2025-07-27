@@ -8,5 +8,4 @@ var SocialMediaButtons = {
 	buttonSize: "20px"
 };
 importScriptPage('SocialIcons/code.js','dev');
-
-// </nowiki></pre>
+ </nowiki></pre>

@@ -27,31 +27,3 @@ window.mbIndefStyle = 'opacity: 0.4; font-style: italic; text-decoration: line-t
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.limit = 30;
-
-/* --- UserAvatarFetch automatic image injection --- */
-mw.hook('wikipage.content').add(function($content) {
-    $content.find('.UserAvatarFetch').each(function() {
-        var $container = $(this);
-        var username = $container.find('.avi-thisUsername').text().trim();
-        var size = $container.find('.avi-thisSize').text().trim() || "100";
-        var link = $container.find('.avi-thisLink').text().trim();
-
-        if (!username) return;
-
-        var imgUrl = 'https://static.wikia.nocookie.net/__cb0/user_avatar/' + encodeURIComponent(username) + '/avatar.png/revision/latest/scale-to-width-down/' + size;
-
-        var $img = $('<img>', {
-            src: imgUrl,
-            width: size,
-            height: size,
-            alt: username,
-            style: 'border-radius: 50%; object-fit: cover;'
-        });
-
-        if (link) {
-            $img = $('<a>', { href: link }).append($img);
-        }
-
-        $container.append($img);
-    });
-});

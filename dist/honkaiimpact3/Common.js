@@ -5,6 +5,13 @@
 'use strict';
 /* DO NOT ADD CODE ABOVE THIS LINE */
 
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+    ]
+};
+
 /* Translation strings */
 const i18n = {
     expand: 'Expand',

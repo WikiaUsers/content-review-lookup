@@ -1,7 +1,7 @@
 // <pre>
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.3.33 (beta)';
+	const version = '0.3.47 (beta)';
 	const api = new mw.Api();
 	const archived = $('#archivedPage').length === 1; // {{archived}}
 	const view = mw.config.get('wgAction') === 'view';
@@ -9,15 +9,58 @@ mw.loader.using(['mediawiki.api'], () => {
 	const editable = mw.config.get('wgIsProbablyEditable');
 	const pgtitle = mw.config.get('wgTitle');
 	const pgid = mw.config.get('wgArticleId');
-	const wrongNamespace = (ns % 2 === 0 && ns !== 110) || ns === -1;
-	const addTopicButton = $('a[title^="Special:NewSection/"] > .mw-ui-button, #ca-addsection');
+	const sigNamespaces = [4, 110]; // TODO: replace with mw.config.get('wgExtraSignatureNamespaces'); also look into including ns:112
+	const wrongNamespace = (ns % 2 === 0 && sigNamespaces.indexOf(ns) === -1) || ns === -1;
+	const addTopicButton = $('#ca-addsection');
 	let revid = mw.config.get('wgCurRevisionId');
 	
-	if (wrongNamespace && !addTopicButton.length){
+	if (wrongNamespace && addTopicButton.length !== 1){
 		return;
 	}
 	
-	const tsRegexp = /^.* ([0-2]\d:[0-5]\d,(?: [1-3]?\d)? (?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?: [1-3]?\d,)? \d\d\d\d+ \((?:UTC|CEST)\))\s*$/;
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec',
+	];
+	
+	const timeZoneConverter = {
+		'PST': 'UTC-8',
+		'EST': 'UTC-5',
+		'EDT': 'UTC-4',
+		'GMT': 'UTC+0',
+		'UTC': 'UTC+0',
+		'CET': 'UTC+1',
+		'CEST': 'UTC+2',
+	};
+	
+	const timeZones = Object.keys(timeZoneConverter);
+	const time = '[0-2]\\d:[0-5]\\d,';
+	const day = ' [1-3]?\\d,?';
+	const month = ` (?:${months.join('|')})`;
+	const year = ' \\d\\d\\d\\d+';
+	const tZone = ` \\((?:${timeZones.join('|')})\\)`;
+	const tsRegexp = new RegExp(`^.* (${time}(?:${day}|${month}|${year})+${tZone})\\s*$`);
 	const linkSelectors = [
 		'a[title^="User:"]',
 		'a[title^="User talk:"]',
@@ -51,15 +94,17 @@ mw.loader.using(['mediawiki.api'], () => {
 		if (!view || archived || !editable){
 			return;
 		}
-		$('.mw-parser-output').find('p, dd').each(addReplyButtons);
+		$('.mw-parser-output').find('p, dd, div, li').each(addReplyButtons);
 	});
 	
 	function addReplyButtons(i, e){
 		const txtContents = $(e).contents().contents().addBack().toArray().filter(txtFilter);
 		const timestamp = txtContents[txtContents.length - 1];
 		const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
+		const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
+		const isArchived = $(timestamp).parents('.mw-archivedtalk').length;
 		
-		if (!userLinks.length || !tsRegexp.test($(timestamp).text())){
+		if (!userLinks.length || !tsRegexp.test($(timestamp).text()) || isNoTalk || isArchived){
 			return;
 		}
 		
@@ -113,7 +158,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		const pNextTag = pNext.prop('tagName');
 		const h = /^H[1-6]$/;
 		const dd = $('<dd>').append($('<form>', {
-			'on': {'submit': (e) => e.preventDefault()},
+			'on': {'submit': e => e.preventDefault()},
 		}).append($('<label>', {
 			'text': mw.message('custom-talk-tools-version', version).text(),
 		})).append($('<textarea>', {
@@ -214,11 +259,11 @@ mw.loader.using(['mediawiki.api'], () => {
 			'formatversion': 2,
 		};
 		
-		api.get(fetchParams).done((result) => {
+		api.get(fetchParams).done(result => {
 			const initialText = result.query.pages[0].revisions[0].slots.main.content;
 			const timestamp = event.data.timestamp.replace(/([()])/g, '\\$1');
 			const pRegexp = new RegExp(`^.+${timestamp} *$`, 'mg');
-			const iRegexp = new RegExp(`[^]*^(:*).+${timestamp} *$[^]*`, 'm');
+			const iRegexp = new RegExp(`[^]*^([:*#]*).+${timestamp} *$[^]*`, 'm');
 			const rRegexp = new RegExp(`([^]*)^(:*)(.+${timestamp} *)$((?:\n\n?\\2:+.*)?(?:\n\\2:+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
 			const indent = initialText.replace(iRegexp, '$1');
 			const iPrevRegexp = new RegExp(`[^]*^(:*).+${timestamp} *$\n\n?\\1:+[^]*`, 'm');
@@ -274,7 +319,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				'watchlist': 'watch',
 			};
 			
-			api.postWithToken('csrf', editParams).done((data) => {
+			api.postWithToken('csrf', editParams).done(data => {
 				if (data.warnings){
 					errorNotice(`Warning: ${data.warnings.main['*']}`, 'warn');
 				}
@@ -288,12 +333,12 @@ mw.loader.using(['mediawiki.api'], () => {
 					};
 					
 					revid = data.edit.newrevid;
-					api.get(parseParams).done((output) => {
+					api.get(parseParams).done(output => {
 						const parsedText = $(output.parse.text['*']).contents();
 						$('#mw-content-text > .mw-parser-output').html(parsedText);
 						mw.notify(mw.message('custom-talk-tools-success').text(), {type: 'success'});
 						addStats();
-						$('.mw-parser-output').find('p, dd').each(addReplyButtons);
+						$('.mw-parser-output').find('p, dd, div, li').each(addReplyButtons);
 					});
 				} else {
 					errorNotice(`An unknown error has occured: ${JSON.stringify(data)}`);
@@ -338,7 +383,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		const comments = [];
 		let currentSection = '';
 		
-		$('.mw-parser-output').find('p, dd, h2 .mw-headline').each((i, e) => {
+		$('.mw-parser-output').find('p, dd, div, li, h2 .mw-headline').each((i, e) => {
 			if ($(e).prop('tagName') === 'SPAN'){
 				currentSection = $(e).attr('id').replaceAll('_', ' ');
 				return;
@@ -347,14 +392,19 @@ mw.loader.using(['mediawiki.api'], () => {
 			const txtContents = $(e).contents().contents().addBack().toArray().filter(txtFilter);
 			const timestamp = txtContents[txtContents.length - 1];
 			const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
+			const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
 			
-			if (!userLinks.length || !tsRegexp.test($(timestamp).text())){
+			if (!userLinks.length || !tsRegexp.test($(timestamp).text()) || isNoTalk){
 				return;
 			}
 			
 			const userLinkTitle = userLinks.last().attr('title');
-			const tsString = $(timestamp).text().replace(tsRegexp, '$1').replace(/[(,)]/g, '').replace('CEST', 'UTC+2');
+			let tsString = $(timestamp).text().replace(tsRegexp, '$1').replace(/[,]/g, '');
 			let userRegexp;
+			
+			timeZones.forEach(timeZone => {
+				tsString = tsString.replace(`(${timeZone})`, timeZoneConverter[timeZone]);
+			});
 			
 			if (userLinks.last().filter(linkSelectors[0]).length){
 				userRegexp = /^User:(.+?)(?:\/.*)?$/;
@@ -377,7 +427,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		
 		const sections = {};
 		let latestComment = {'timestamp': 0};
-		comments.forEach((obj) => {
+		comments.forEach(obj => {
 			if (obj.timestamp > latestComment.timestamp){
 				latestComment = obj;
 			}
@@ -432,7 +482,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			
 			let latestCommentSect = 0;
-			sections[section].timestamps.forEach((ts) => {
+			sections[section].timestamps.forEach(ts => {
 				if (ts > latestCommentSect){
 					latestCommentSect = ts;
 				}

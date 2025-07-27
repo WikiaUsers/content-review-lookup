@@ -1,3 +1,0 @@
-autoconfirmed-only;{
-  display:initial;
-}

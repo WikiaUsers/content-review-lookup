@@ -18,6 +18,16 @@ $.getJSON(mw.config.get('wgScriptPath') + '/api.php', {
 /***********************************************************************/
 /************************ Import Configurations ************************/
 /***********************************************************************/
+/* PreloadFileDescription */
+PFD_templates = [
+    {
+        label:   'Default template',
+        desc:    '{{File\n| desc = \n| type = \n}}'
+    },
+];
+PFD_license = 'Fairuse';
+PFD_requireLicense = true;
+
 /* Signature Check */
 window.SignatureCheckJS = {
     preamble: 'There are a few potential problems with your edit:\n\n',

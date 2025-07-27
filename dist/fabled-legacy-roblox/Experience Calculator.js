@@ -230,7 +230,7 @@ function calculateExp(currentLevel, goalLevel) {
 }
 
 // Show results by using the button
-calcBtn.addEventListener('click', function () {
+calcBtn.onclick = function () {
   var currentLevel = parseInt(document.getElementById('currentLevel').value);
   var goalLevel = parseInt(document.getElementById('goalLevel').value);
   var baseDungeonExp = parseInt(document.getElementById('dungeonExp').value);
@@ -300,5 +300,5 @@ calcBtn.addEventListener('click', function () {
   // Publish the results if the calculation is successful
   var runText = runsNeeded == 1 ? "run" : "runs"; // Change "runs" to "run" if there's only one run needed
   resultDiv.className = "exp-calculator-result-success";
-  resultDiv.innerHTML = `Experience needed from level ${currentLevel} to level ${goalLevel}: <b>${requiredExp.toLocaleString()}</b>.<br>The total experience gain from 1 run: <b>${Math.round(totalExp).toLocaleString()}.<br></b>You will need to complete at least <b>${runsNeeded.toLocaleString()}</b> ${runText} to reach your goal level.`;
-});
+  resultDiv.innerHTML = `Experience needed from level ${currentLevel} to level ${goalLevel}: <b>${requiredExp.toLocaleString()}</b>.<br>The total experience gain from 1 run: <b>${Math.round(totalExp).toLocaleString()}</b>.<br>You will need to complete at least <b>${runsNeeded.toLocaleString()}</b> ${runText} to reach your goal level.`;
+};
