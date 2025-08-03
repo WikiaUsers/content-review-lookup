@@ -36,6 +36,15 @@ $(function() {
         if (formatted.toLowerCase() === 'armorpower') {
             formatted = 'Armor Power';
         }
+        if (formatted.toLowerCase() === 'blockpower') {
+            formatted = 'Block Power';
+        }
+        if (formatted.toLowerCase() === 'movementspeed') {
+            formatted = 'Movement Speed';
+        }
+        if (formatted.toLowerCase() === 'areamodifier') {
+            formatted = 'Area Modifier';
+        }
         if (formatted.toLowerCase() === 'criticalchance') {
             formatted = 'Critical Chance';
         }

@@ -22,7 +22,8 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Dralcyon': ['founder', 'bureaucrat', 'administrator']
+	'Dralcyon': ['founder', 'bureaucrat', 'administrator'],
+	'Fla1m9C': ['administrator']
 };
 UserTagsJS.modules.metafilter = {
 	'sysop': ['bureaucrat'] // remove "admin" tag from bureaucrats

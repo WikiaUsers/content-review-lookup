@@ -87,81 +87,81 @@ UserTagsJS.modules.newuser = true;
 
 /* --------- 4 --------- */
 /* Stat potential bar & Guild color picker */
-mw.loader.using('mediawiki.util', function () { // Adding this method so both of the input fields work properly on Fandom
-    $(function () {
-        /* -------- 4.1 -------- */
-        /* Adding the input boxes on both elements */
-        // Stat potential input
-        const statPotentialInputField = '<input type="number" id="statPotentialInput" min="-500" max="200" value="0" placeholder="0"><span style="user-select:none;" class="stat-potential-bar-right">%</span>';
-        $('#inputWrapper').html(statPotentialInputField);
+mw.loader.using('mediawiki.util', function () { // Adding this method so both of the input fields can work properly on Fandom
+  $(function () {
+    /* -------- 4.1 -------- */
+    /* Adding the input boxes on both elements */
+    // Stat potential input
+    const statPotentialInputField = '<input type="number" id="statPotentialInput" min="-500" max="200" value="0" placeholder="0"><span style="user-select:none;" class="stat-potential-bar-right">%</span>';
+    $('#inputWrapper').html(statPotentialInputField);
 
-        // Guild color picker
-        const guildColorPickerLoader = '<input type="color" id="guildColorPicker" value="#000000">';
-        $('#guildColorPickerWrapper').html(guildColorPickerLoader);
+    // Guild color picker
+    const guildColorPickerLoader = '<input type="color" id="guildColorPicker" value="#000000">';
+    $('#guildColorPickerWrapper').html(guildColorPickerLoader);
 
-        // Variables for the stat potential bar
-        var statPotentialInput = document.getElementById("statPotentialInput");
-        var statPotentialBar = document.getElementById("statPotentialBar");
-        var statPotentialText = document.getElementById("statPotentialText");
-        // Variables for the guild color picker
-        var guildColorPicker = document.getElementById("guildColorPicker");
-        var guildColorDisplay = document.getElementById("guildColorDisplay");
-        var guildHexCode = document.getElementById("guildHexCode");
-        var guildColorTag = document.getElementById("guildColorTag");
+    // Variables for the stat potential bar
+    var statPotentialInput = document.getElementById("statPotentialInput");
+    var statPotentialBar = document.getElementById("statPotentialBar");
+    var statPotentialText = document.getElementById("statPotentialText");
+    // Variables for the guild color picker
+    var guildColorPicker = document.getElementById("guildColorPicker");
+    var guildColorDisplay = document.getElementById("guildColorDisplay");
+    var guildHexCode = document.getElementById("guildHexCode");
+    var guildColorTag = document.getElementById("guildColorTag");
 
 
-        /* -------- 4.2 -------- */
-        /* Initializing the potential bar and guild color picker */
-        // Stat potential bar
-        if (statPotentialInput && statPotentialBar && statPotentialText) {
-            statPotentialInput.addEventListener('input', function() {
-            var percentage_value = parseInt(statPotentialInput.value);
+    /* -------- 4.2 -------- */
+    /* Initializing the potential bar and guild color picker */
+    // Stat potential bar
+    if (statPotentialInput && statPotentialBar && statPotentialText) {
+      statPotentialInput.oninput = function () {
+        var percentage_value = parseInt(statPotentialInput.value);
 
-            if (isNaN(percentage_value)) percentage_value = 0;
-            if (percentage_value < -500) percentage_value = -500; // Stops the user from going lower than -500
-            if (percentage_value > 200) percentage_value = 200; // Stops the user from going higher than 200
+        if (isNaN(percentage_value)) percentage_value = 0;
+        if (percentage_value < -500) percentage_value = -500; // Stops the user from going lower than -500
+        if (percentage_value > 200) percentage_value = 200; // Stops the user from going higher than 200
 
-            statPotentialBar.style.width = percentage_value + "%";
+        statPotentialBar.style.width = percentage_value + "%";
 
-            if (percentage_value >= 0 && percentage_value < 40) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #5C2020, #AD3C3C)"; // Stat Potential: Poor
-                statPotentialText.textContent = "Stat Potential: Poor";
-            } else if (percentage_value >= 40 && percentage_value < 60) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #5C581E, #ADA538)"; // Stat Potential: Average
-                statPotentialText.textContent = "Stat Potential: Average";
-            } else if (percentage_value >= 60 && percentage_value < 70) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #435C2D, #7DAD55)"; // Stat Potential: Good
-                statPotentialText.textContent = "Stat Potential: Good";
-            } else if (percentage_value >= 70 && percentage_value < 80) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #2A5C31, #4FAD5E)"; // Stat Potential: Great
-                statPotentialText.textContent = "Stat Potential: Great";
-            } else if (percentage_value >= 80 && percentage_value < 90) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #2E5C24, #58AD45)"; // Stat Potential: Amazing
-                statPotentialText.textContent = "Stat Potential: Amazing";
-            } else if (percentage_value >= 90 && percentage_value < 95) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #5C3A14, #AD6F27)"; // Stat Potential: Legendary
-                statPotentialText.textContent = "Stat Potential: Legendary";
-            } else if (percentage_value >= 95 && percentage_value <= 100) {
-                statPotentialBar.style.background = "linear-gradient(90deg, #5B3F07, #AD770D)"; // Stat Potential: Godly
-                statPotentialText.textContent = "Stat Potential: Godly";
-            } else {
-                statPotentialBar.style.background = "linear-gradient(90deg, #5C2020, #AD3C3C)"; // Stat Potential: UNOBTAINABLE
-                statPotentialText.textContent = "Stat Potential: UNOBTAINABLE";
-                if (percentage_value > 100) {
-                    statPotentialBar.style.width = "100%"; // Stops the background gradient color from moving
-                } else if (percentage_value < 0) {
-                    statPotentialBar.style.width = "0%"; // Sets the bar width as 0% when a negative number is directly typed
-                }
-            }
-            });
+        if (percentage_value >= 0 && percentage_value < 40) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #5C2020, #AD3C3C)"; // Stat Potential: Poor
+          statPotentialText.textContent = "Stat Potential: Poor";
+        } else if (percentage_value >= 40 && percentage_value < 60) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #5C581E, #ADA538)"; // Stat Potential: Average
+          statPotentialText.textContent = "Stat Potential: Average";
+        } else if (percentage_value >= 60 && percentage_value < 70) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #435C2D, #7DAD55)"; // Stat Potential: Good
+          statPotentialText.textContent = "Stat Potential: Good";
+        } else if (percentage_value >= 70 && percentage_value < 80) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #2A5C31, #4FAD5E)"; // Stat Potential: Great
+          statPotentialText.textContent = "Stat Potential: Great";
+        } else if (percentage_value >= 80 && percentage_value < 90) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #2E5C24, #58AD45)"; // Stat Potential: Amazing
+          statPotentialText.textContent = "Stat Potential: Amazing";
+        } else if (percentage_value >= 90 && percentage_value < 95) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #5C3A14, #AD6F27)"; // Stat Potential: Legendary
+          statPotentialText.textContent = "Stat Potential: Legendary";
+        } else if (percentage_value >= 95 && percentage_value <= 100) {
+          statPotentialBar.style.background = "linear-gradient(90deg, #5B3F07, #AD770D)"; // Stat Potential: Godly
+          statPotentialText.textContent = "Stat Potential: Godly";
+        } else {
+          statPotentialBar.style.background = "linear-gradient(90deg, #5C2020, #AD3C3C)"; // Stat Potential: UNOBTAINABLE
+          statPotentialText.textContent = "Stat Potential: UNOBTAINABLE";
+          if (percentage_value > 100) {
+            statPotentialBar.style.width = "100%"; // Stops the background gradient color from moving
+          } else if (percentage_value < 0) {
+            statPotentialBar.style.width = "0%"; // Sets the bar width as 0% when a negative number is directly typed
+          }
         }
-        // Guild color picker
-        if (guildColorPicker && guildColorDisplay && guildHexCode && guildColorTag) {
-            guildColorPicker.addEventListener('input', function() {
-                guildColorDisplay.style.borderColor = guildColorPicker.value;
-                guildHexCode.textContent = guildColorPicker.value.toUpperCase();
-                guildColorTag.style.color = guildColorPicker.value;
-            });
-        }
-    });
+      };
+    }
+    // Guild color picker
+    if (guildColorPicker && guildColorDisplay && guildHexCode && guildColorTag) {
+      guildColorPicker.oninput = function () {
+        guildColorDisplay.style.borderColor = guildColorPicker.value;
+        guildHexCode.textContent = guildColorPicker.value.toUpperCase();
+        guildColorTag.style.color = guildColorPicker.value;
+      };
+    }
+  });
 });

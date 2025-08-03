@@ -54,3 +54,16 @@ $( function eraIconsOasis() {
     	}
     }
 } );
+
+$(function eraIconsOasis() {
+    if ($('.tagfanonu').length) {
+        $('.tagfanonu').each(function() {
+            var $marker = $(this).show();
+            if (mw.config.get('skin') == 'fandomdesktop') {
+                $('.page-header__actions').first().prepend($marker);
+            } else {
+                $('.page-header__contribution > div').first().prepend($marker);
+            }
+        });
+    }
+});

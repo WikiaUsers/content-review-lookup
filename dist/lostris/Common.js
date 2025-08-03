@@ -1,18 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Licensing message */
-'use strict';
-mw.loader.using(['mediawiki.api'], () => {
-	const api = new mw.Api();
-	const msg = 'license-description';
-	const url = 'https://www.fandom.com/licensing';
-	const link = $('<a>').attr('href', url).text('CC-BY-SA').prop('outerHTML');
-	api.loadMessagesIfMissing(msg).done(() => {
-		$('.license-description').html(mw.message(msg, link).text());
-	});
-});
+mw.loader.using( 'mediawiki.api', () => {
+  'use strict';
+  const msg = 'license-description-with-link';
+  new mw.Api().loadMessagesIfMissing( msg ).done( () => {
+    document.querySelector( '.license-description' ).innerHTML = mw.message( msg ).parse();
+  } );
+} );
 
 
-/* Site-logo pop-up */
+/* Site-logo pop-up 
 $('.fandom-community-header__image').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
@@ -28,4 +25,4 @@ $('#WikiaRail').on('afterLoad.rail', function() {
   const wikiActivityRailHeader = $('#wikia-recent-activity.rail-module.recent-wiki-activity .rail-module__header');
   recentChangesLink.append(wikiActivityRailHeader.html());
   wikiActivityRailHeader.empty().prepend(recentChangesLink);
-});
+});*/

@@ -167,3 +167,20 @@ function zselector( $content ) {
     mw.hook( 'wikipage.content' ).add( zselector );
     zselector( mw.util.$content );
 });
+mw.loader.using( 'jquery' ).then( function () {
+	$( '.sliding-container' ).each( function () {
+		var $container = $( this ),
+			$content = $container.find( '.sliding-content' );
+
+		function animate() {
+			$content.animate( {
+				left: -($content.width() - $container.width())
+			}, 8000, 'linear', function () {
+				$content.animate( {
+					left: 0
+				}, 8000, 'linear', animate );
+			} );
+		}
+		animate();
+	} );
+} );

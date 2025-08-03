@@ -33,7 +33,7 @@ $.when(
     "use strict";
 
     /** International Customization Standard Notice (ICC-NOTICE-V2)
-     * REVISION: 1
+     * REVISION: 2
      * FLAGS: <code-modified: false> <code-appended: false> <msg-verified: true>
      * Please update flags accordingly. Please refer to en:Project:INT#ICS for details.
      * 
@@ -41,12 +41,15 @@ $.when(
      */
     var msg = {
         /* Alert Messages */
-        successfulUpdate: "Staff Color Updater: Successful updated LESS for staff colors.",
+        pleaseWait: "Processing, Please Wait",
+        waitForPopup: "Another pop-up should indicate completion.",
+        successfulUpdate: "Successfully updated LESS for staff colors.",
         skipTemporary: "Skipped Temporary Ranks",
         fileUpdated: "File Updated: $1", // placement: [config.cssPage]
         scriptUsed: "Script: $1", // placement: [config.scriptPage]
         configUsed: "Config: $1", // placement: [config.configPage]
         pleaseUpdateCSS: "Remark: To see the changes, you still have to update CSS.",
+        pageUpdated: "Staff colors has been updated",
 
         /* Button/Modal Text */
         updating: "Updating...",
@@ -63,7 +66,7 @@ $.when(
         /* Parsed CSS Heading */
         heading: "Staff Colors",
         headingIntro: "This stylesheet contains the css to color staff member\'s names.",
-        headingWarning: "It is automatically updated, any changes you make will be \noverwritten next time this stylesheet gets updated.",
+        headingWarningV2: "It is automatically updated, any changes you make will be \noverwritten next time this stylesheet gets updated.\nThis is configured on MediaWiki:$1", // placement: [config.configPage]
 
         /* Parsed CSS Text */
         selectorIsOverride: "This selector is an override",
@@ -126,7 +129,7 @@ $.when(
             getMsg("pleaseUpdateCSS")
         );
         new BannerNotification($("<div>", {
-            html: "<div><b>Finished updating staff colors.</b></div>",
+            html: "<div><b>" + getMsg("pageUpdated") + "</b><br>" + getMsg("fileUpdated", config.cssPage) + "<br>" + getMsg("pleaseUpdateCSS") + "</div>",
         }).prop("outerHTML"), "confirm", undefined, 5000).show();
     }
 
@@ -255,7 +258,7 @@ $.when(
                     return eachState(state, i);
                 });
 
-                var ret = ["/* " + getMsg("heading") + "\n\n" + getMsg("headingIntro") + "\n" + getMsg("headingWarning") + "\n*/"];
+                var ret = ["/* " + getMsg("heading") + "\n\n" + getMsg("headingIntro") + "\n" + getMsg("headingWarningV2", config.configPage) + "\n*/"];
                 for (var i in allstates)
                     ret.push(allstates[i]);
 
@@ -443,7 +446,7 @@ $.when(
                                 disabled: true
                             });
                             new BannerNotification($("<div>", {
-                                html: "<div><b>Processing, Please Wait.</b><br />Another pop-up should indicate completion.</div>",
+                                html: "<div><b>" + getMsg("pleaseWait") + "</b><br>" + getMsg("waitForPopup") + "</div>",
                             }).prop("outerHTML"), "confirm", undefined, 5000).show();
                             mw.util.StaffUtil.updateStaffColors(finalAlert.bind(null, $this));
                         }

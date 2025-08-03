@@ -18,6 +18,15 @@ importArticle( {
 } );
 
 /**
+ * Import GlobalFileUsage.js
+ * Odpowiada za wyświetlanie globalnego użycia plików na Wiki
+ */
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:GlobalFileUsage.js'
+});
+
+/**
  * Widżet Discorda na [[Gothicpedia:Discord]]
  */
 mw.hook( 'wikipage.content' ).add( function() {
@@ -141,3 +150,8 @@ mw.loader.using( 'mediawiki.util', function() {
 	listElement.append( linkElement );
 	maintenanceSpecialList.prepend( listElement );
 } );
+
+window.globalFileUsageConfig = {
+    'lang': ['cs','en','it','ru','uk'],
+    'auto_show': false
+};

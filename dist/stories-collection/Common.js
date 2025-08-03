@@ -21,7 +21,7 @@ function fetch_tags(callback) {
   function clean_link(tags) {
     const links = document.querySelectorAll('a');
     links.forEach(link => {
-      if (link.querySelector('img')) {
+      if (link.querySelector('img, svg')) {
         return;
       }
       if (link.textContent) {
@@ -43,14 +43,31 @@ function fetch_tags(callback) {
     }
   }
 
+  function remove_empty_paragraphs() {
+    const content_div = document.getElementById('content');
+    if (!content_div) return;
+    
+    const paragraphs = content_div.querySelectorAll('p');
+    paragraphs.forEach(p => {
+      const text_content = p.textContent.trim();
+      const innerHTML = p.innerHTML.trim();
+      const has_only_br = innerHTML.replace(/<br\s*\/?>/gi, '').trim() === '';
+      
+      if (text_content === '' && (innerHTML === '' || has_only_br)) {
+        p.remove();
+      }
+    });
+  }
+
   function cleanTexts(tags) {
     clean_link(tags);
     clean_heading(tags);
+    remove_empty_paragraphs();
     link_data_sources();
   }
 
   function link_data_sources() {
-    const data_sources = ['race'];
+    const data_sources = ['race', 'status', 'type', 'genre'];
     data_sources.forEach(source => {
       const el = document.querySelector(`.pi-data[data-source="${source}"] .pi-data-value`);
       if (el && el.textContent) {

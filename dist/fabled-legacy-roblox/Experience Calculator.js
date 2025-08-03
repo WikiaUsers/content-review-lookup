@@ -156,7 +156,7 @@ createSelectField({
 });
 
 // A checker of which dungeons support the calamity mode exp gain
-document.getElementById('dungeonExp').addEventListener('change', function () {
+document.getElementById('dungeonExp').onchange = function () {
   var selectedText = this.options[this.selectedIndex].text;
   var calamityRowSpacing = document.getElementById('calamityBoost-exp-calculator-spacing');
 
@@ -168,7 +168,7 @@ document.getElementById('dungeonExp').addEventListener('change', function () {
     calamityRowSpacing.style.display = 'none';
     document.getElementById('calamityBoost').checked = false;
   }
-});
+};
 
 // Current Level
 createInputField({ labelText: "Current Level", id: "currentLevel" });

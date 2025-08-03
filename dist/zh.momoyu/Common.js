@@ -1,4 +1,3 @@
-/* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -7,7 +6,7 @@
             console.error('No data-media-id present on element', e);
             return;
         }
-        const target = document.getElementsByClassName('media-id-' + targetId)[0];
+        const target = document.getElementsByClassName('media-id-' + targetId)[0].getElementsByClassName("mw-file-element")[0];
         if (!target) {
             console.error('No element found with .media-id-' + targetId, e);
             return;
@@ -131,8 +130,8 @@ window.wordRainSystem = (function() {
 
   function createDrop(instance) {
     const drop = document.createElement('div');
-    drop.className = 'word-drop'
-
+    drop.className = 'word-drop';
+    
     // 随机位置
     const leftPos = 5 + Math.random() * 90;
     drop.style.left = `${leftPos}vw`;
@@ -510,7 +509,7 @@ $(document).ready(function() {
                     playerState.volumeIcon.text('🔊');
                 }
             }
-// 音量图标双击事件
+            // 音量图标双击事件
             playerState.volumeIcon.on('dblclick', function() {
                 if (playerState.audio.volume > 0) {
                     playerState.audio.volume = 0;
@@ -527,7 +526,6 @@ $(document).ready(function() {
         });
     });
 });
-
 
 var config = config || mw.config.get();
 

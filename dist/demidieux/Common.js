@@ -1,5 +1,8 @@
 /* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
 
+/*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
+window.BackToTopModern = true;
+
 // Modèle:Onglet
 $(function() {
     // Si un sous-onglet est "sélectionné", rend aussi les onglets parents "sélectionnés"

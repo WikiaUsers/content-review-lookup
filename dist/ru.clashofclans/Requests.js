@@ -3,14 +3,10 @@
  *
  * by Flotiliya:
  * - the JS page has been adapted to the current Wiki 20.02.2025
- * - last update 06.05.2025
- * - desc: 
- * -    added warning when PageTitle already exists (see: "duplicate-warning")
- * -    the approach to hiding the "duplicate-warning" & "unfilled-warning" warnings has been changed; warnings are deleted when the user enters the data, and not after clicking on the send request button (see: var warning)
- * -    the "addMore" function was completely cut out of the script (not relevant for our Wiki)
- * -    and other minor fixs
- * -    edited name junior administrator to senior moderator
- *
+ * - last update 31.07.2025
+ * - desc:
+ * - added class "template-local" for adaptation of the design themes
+ * - added class "request-dialog-local" for form
  */
 /*******************************************************/
 !function() {
@@ -60,12 +56,24 @@
             createDiag.static.name = 'reqForm';
             createDiag.static.title = title;
             createDiag.static.actions = [
-				{ label: 'Отправить запрос', flags: [ 'secondary' ], action: 'checkAndSubmit' },
-                { label: 'Закрыть', flags: [ 'safe', 'close' ], action: 'onClose' }
+				{
+					label: 'Отправить запрос',
+					flags: [ 'secondary' ],
+					action: 'checkAndSubmit',
+					classes: [ 'template-local' ]
+				},
+                {
+                	label: 'Закрыть',
+                	flags: [ 'safe', 'close' ],
+                	action: 'onClose'
+                }
             ];
 
             createDiag.prototype.initialize = function () {
                 createDiag.super.prototype.initialize.apply(this, arguments);
+               
+                // Добавляем уникальный класс к корневому элементу диалога
+				this.$element.addClass('request-dialog-local');
                 this.content = new OO.ui.PanelLayout({ padded: true });
                 this.content.$element.html(form);
                 this.$content.addClass('requestForm');

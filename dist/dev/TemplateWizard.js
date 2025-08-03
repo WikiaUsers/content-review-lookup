@@ -118,6 +118,8 @@ mw.loader.using('mediawiki.api', () => {
 						TW.templateCall.params[main].selected = param;
 					}
 				}
+				// For some reason the scrolling gets a stroke if you interact when not at the top of the scrollbox
+				if ($('.tw-popup-hatnote').get(0)) {$('.tw-popup-hatnote').get(0).scrollIntoView();}
 			});
 		},
 

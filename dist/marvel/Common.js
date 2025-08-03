@@ -48,6 +48,8 @@ $(function() {
                     		media_type_class = 'category-link-media-game';
                     	} else if (media_type[1] == 'Novel') {
                     		media_type_class = 'category-link-media-novel';
+                    	} else if (media_type[1] == 'Sourcebook') {
+                    		media_type_class = 'category-link-media-sourcebook'
                     	}
                     	document.querySelector('[title="' + title + '"]').classList.add(media_type_class);
                     }

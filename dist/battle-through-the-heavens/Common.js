@@ -2,6 +2,26 @@
 
 /* WAM Site-wide Installation */
 
+
+//Adding Prefix for InputUsername
+function updateGreeting() {
+    const span = document.querySelector('.InputUsername');
+    const username = mw.config.get('wgUserName');
+    if (!span || !username) {
+        return;
+    }
+
+    if (span.textContent.trim() === username) {
+
+        span.textContent = `Hi ${username},`;
+    } else {
+
+        setTimeout(updateGreeting, 100);
+    }
+}
+setTimeout(updateGreeting, 200);
+
+//BackToTop button
 window.BackToTopModern = true;
 
 window.railWAM = {

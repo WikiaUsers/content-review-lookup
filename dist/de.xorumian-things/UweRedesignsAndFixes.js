@@ -8,11 +8,12 @@ document.querySelectorAll('.category-page__member img').forEach(img => {
 const links = [
   'https://xorumian-things.fandom.com/de/wiki/Spezial:NewFiles',
   'https://xorumian-things.fandom.com/wiki/Special:NewFiles',
-  'https://xorumian-tests.fandom.com/wiki/Special:NewFiles',
   'https://xorumian-things.fandom.com/fr/wiki/Sp%C3%A9cial:NewFiles',
   'https://xorumian-things.fandom.com/es/wiki/Especial:NewFiles',
   'https://xorumian-things.fandom.com/pt-br/wiki/Especial:NewFiles',
-  'https://xorumian-things.fandom.com/nl/wiki/Speciaal:NewFiles'
+  'https://xorumian-things.fandom.com/nl/wiki/Speciaal:NewFiles',
+  'https://xorumian-tests.fandom.com/wiki/Special:NewFiles',
+  'https://xorumian-cosplays.fandom.com/de/wiki/Spezial:NewFiles'
 ];
 
 links.forEach(url => {

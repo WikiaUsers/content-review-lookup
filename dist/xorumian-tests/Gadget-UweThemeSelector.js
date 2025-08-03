@@ -14,6 +14,13 @@
 			image: "https://static.wikia.nocookie.net/xorumian-things/images/5/5c/BackgroundLight.png/revision/latest/scale-to-width-down/480?path-prefix=de"
 		},
 		{
+			id: 'german',
+			name: "German",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/German.css",
+			image: "https://static.wikia.nocookie.net/xorumian-things/images/0/09/TeamAkun.png/revision/latest/scale-to-width-down/480?path-prefix=de"
+		},
+		{
 			id: 'developer',
 			name: "Developer",
 			note: 'Inspection Mode',

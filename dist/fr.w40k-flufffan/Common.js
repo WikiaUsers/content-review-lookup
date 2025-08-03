@@ -1,4 +1,7 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+/*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
+window.BackToTopModern = true;
+
 // Modèle:EditConflictAlert
 window.EditConflictAlertInterval = 5000;
 importArticles({

@@ -1223,7 +1223,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 		
 		// Open next diff in RC or user contribs list
 		openNext: () => {
-			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff');
+			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff, .quickDiff-ignore .quickDiff, .quickDiff-ignore .quickDiff');
 			let curr = $('.quickDiff.link-focused');
 			if (curr.is('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff')) {
 				curr = $('table:has(.quickDiff.link-focused) .mw-rcfilters-ui-highlights-enhanced-toplevel .quickDiff');
@@ -1243,7 +1243,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 		
 		// Open next diff in RC or user contribs list
 		openPrev: () => {
-			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff');
+			let all = $('.quickDiff').not('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff, .quickDiff-ignore .quickDiff, .quickDiff-ignore .quickDiff');
 			let curr = $('.quickDiff.link-focused');
 			if (curr.is('.mw-rcfilters-ui-highlights-enhanced-nested.mw-changeslist-edit .quickDiff')) {
 				curr = $('table:has(.quickDiff.link-focused) .mw-rcfilters-ui-highlights-enhanced-toplevel .quickDiff');

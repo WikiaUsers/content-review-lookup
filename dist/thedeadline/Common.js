@@ -87,7 +87,7 @@ function applyColorsToTableCells() {
             
             const rows = this.querySelectorAll("tr");
             
-            console.log("rows: " + rows);
+            console.log("rows: ", rows);
             
             if (rows.length === 0) return;
             
@@ -95,23 +95,25 @@ function applyColorsToTableCells() {
                 
                 if (!row.cells) return;
                 
+                console.log("cells: " + row.cells);
+                
                 Array.from(row.cells).forEach((cell, i, cells) => {
+                    
+                    console.log("cell: " + cell);
                     
                     let nextContent = "";
                     const currentContent = cell.textContent.trim();
-                    if (i < rows.length - 1) {
+                    if (i < cells.length - 1) {
                         nextContent = cells[i+1].textContent.trim();
                     }
-                    
-                    console.log("cell: " + cell);
                     console.log("currentContent: " + currentContent);
                     console.log("nextContent: " + nextContent);
                     
-                    if (currentContent && !nextContent && !cell.classList.contains("placement-cell")) {
-                        currentCell.classList.add("placement-cell");
+                    if (currentContent && nextContent.length === 0 && !cell.classList.contains("placement-cell")) {
+                        cell.classList.add("placement-cell");
+                        console.log("cellClasses: " + cell.classList);
                     }
                     
-                    console.log("cellClasses: " + cell.classList);
                 });
             });
         }
