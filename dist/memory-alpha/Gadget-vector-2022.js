@@ -23,7 +23,8 @@ $(() => {
 		.append($('.main-container'))
 		.append($('<footer id="footer">'));
 	
-	$('#page-header').before($('.page-header__subtitle'));
+	$('#page-header').before($('<div id="contentSub">'));
+	$('#contentSub').append($('.page-header__page-subtitle')).append($('.page-header__subtitle'));
 	
 	// Lang list
 	if ($('#collapsible-content-languages').length){

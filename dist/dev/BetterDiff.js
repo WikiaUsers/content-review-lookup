@@ -128,7 +128,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 			
 			document.addEventListener('keydown', (event) => {
 				// Mouseless massPatrol
-				if (event.altKey && ['1', 'p'].includes(event.key) && config.wgAction === 'view') {
+				if (event.altKey && ['1', 'p'].includes(event.key) && ['view', 'history'].includes(config.wgAction)) {
 					betterDiff.massPatrol();
 				}
 				
@@ -821,13 +821,11 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 							params.rcprop += '|loginfo';
 						}
 						lApi.get(params).then((check) => {
-							let num = 0,
-								patrol = false;
-							while (
-								document.querySelector('#quickDiff-quickview #mw-diff-ntitle4') &&
-								!document.querySelector('#quickDiff-quickview #mw-diff-ntitle4 > .patrollink') &&
-								check.query.recentchanges[num] &&
-								can.patrol && patrol === false
+							let num = 0;
+							while ( can.patrol
+								&& document.querySelector('#quickDiff-quickview #mw-diff-ntitle4')
+								&& !document.querySelector('#quickDiff-quickview #mw-diff-ntitle4 > .patrollink')
+								&& check.query.recentchanges[num]
 							) {
 								// Add patrol button if any revision to patrol
 								if (
@@ -840,7 +838,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 										)
 										|| (
 											diff.torevid && !diff.fromrevid
-											&& check.query.recentchanges[num].revid === diff.torevid
+											&& check.query.recentchanges[num].revid <= diff.torevid
 										)
 										|| diff.log === 'upload'
 									)

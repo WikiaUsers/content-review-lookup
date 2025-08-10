@@ -41,6 +41,7 @@ $(document).ready(function() {
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Gem Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#rageAuraHarness").html('<div id="rageAuraInput">Rage Gem Level: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
+	$("span#torchAuraHarness").html('<div id="torchAuraInput">Heroic Torch Level: <select name="torchAuraLevel" id="torchAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18-20</option> <option value="8">21-23</option> <option value="9">24-26</option> <option value="10">27</option></select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
 	$("span#hardModeHarness").html('<div id="hardModeInput">Toggle Hard Mode? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
@@ -236,15 +237,15 @@ $(document).ready(function() {
         	// Disable defense-only items
         	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
             // Enable all disabled items (except for hero gear inputs and hero ability toggle)
-            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
             // Re-initialize hero gear options
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
-            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel").val("0").change();
+            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel").val("0").change();
         	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
         	// Disable offense-only items
-            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
             $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","block");
         }
@@ -301,6 +302,7 @@ $(document).ready(function() {
     	"Healing Tome": [18,15],
     	"Fireball": [27,21],
     	"Lavaloon Puppet": [27,21],
+    	"Heroic Torch": [27,21],
     	"Royal Gem": [18,15],
     	"Seeking Shield": [18,15],
     	"Hog Rider Puppet": [18,15],
@@ -322,13 +324,13 @@ $(document).ready(function() {
     		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown"];
     		break;
      	case ("Grand Warden"):
-    		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet"];
+    		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch"];
     		break;
     	case ("Royal Champion"):
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1038,6 +1040,9 @@ $(document).ready(function() {
 	  var auraMaxHPIncrease = [0,330,420,510,600,690,780,870];
 	  // Another one for GW's rage aura ability
 	  var rageAuraPercentIncrease = [0,15,20,25,30,35,45,50];
+	  // Lookup array for GW's heroic torch speed boost
+	  // Note that there is currently no difference between some level groups, but I reserve the different levels for now
+	  var torchAuraSpeedIncrease = [0,5,6,6,7,7,7,8,8,8,9];
 	  // Lookup arrays for the apprentice's aura ability
 	  // Styled in thousandths for ease of comparison
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
@@ -1076,6 +1081,7 @@ $(document).ready(function() {
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Lavaloon Puppet": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
+			"Heroic Torch": [10,11,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45,48,51,54,57,60,63,66,69],
 			"Royal Gem": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
 			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
@@ -1097,6 +1103,7 @@ $(document).ready(function() {
 			"Life Gem": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
+			"Heroic Torch": [30,35,37,40,45,47,50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,125],
 			"Royal Gem": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
@@ -1111,6 +1118,7 @@ $(document).ready(function() {
 			"Henchmen Puppet": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
 			"Metal Pants": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
+			"Heroic Torch": [100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
 		};
@@ -2232,6 +2240,10 @@ $(document).ready(function() {
 		    if (isNaN(capitalHasteSpellLevel) === true) {
 		    	capitalHasteSpellLevel = 0;
 		    }
+		    var torchAuraLevel = $("#torchAuraLevel").val() * 1;
+		    if (isNaN(torchAuraLevel) === true) {
+		    	torchAuraLevel = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -2261,6 +2273,7 @@ $(document).ready(function() {
 			var rageBoost = 0;
 			var hasteBoost = 0;
 			var towerRageBoost = 0;
+			var torchBoost = 0;
 			var heroAbilityBoost = 0;
 			if (rageSpellLevel > 0) {
 				if ($(this).hasClass("Building") === true) {
@@ -2294,6 +2307,14 @@ $(document).ready(function() {
             } else if (capitalHasteSpellLevel > 0) {
             	hasteBoost = capitalHasteSpellLevel + 6;
             }
+            if (torchAuraLevel > 0) {
+            	if ($(this).hasClass("Hero") == true) {
+                	// Halve this increase
+                    torchBoost = torchAuraSpeedIncrease[torchAuraLevel] * 5 / 10;
+                } else {
+                    torchBoost = torchAuraSpeedIncrease[torchAuraLevel];
+                }
+            }
     		if (heroAbilityCheckBox != null) {
 				if (heroAbilityCheckBox.checked === true) {
 					/* Since the February update, this no longer acts on base speed,
@@ -2305,6 +2326,7 @@ $(document).ready(function() {
             	to avoid floating-point errors */
             var rageSpeed = (baseSpeed * 10 + Math.max(rageBoost,towerRageBoost) * 10) / 10;
 			var hasteSpeed = (baseSpeed * 10 + hasteBoost * 10) / 10;
+			var torchSpeed = (baseSpeed * 10 + torchBoost * 10) / 10;
 			var heroAbilitySpeed = (baseSpeed * 10 + heroAbilityBoost * 10) / 10;
 			
 			var abilityBoost = $(".AbilitySpeed").attr("title") * 1;
@@ -2318,7 +2340,7 @@ $(document).ready(function() {
 					abilitySpeed = (baseSpeed * 10 + abilityBoost * 10) / 10;
 				}
 			}
-			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, abilitySpeed, heroAbilitySpeed);
+			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, torchSpeed, abilitySpeed, heroAbilitySpeed);
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
@@ -2654,7 +2676,7 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
         $(".changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
 		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost, #resourceBoost, #clockBoost").prop("checked",false);
 		// Reinitialise the choices

@@ -6,6 +6,474 @@ mw.hook('wikipage.content').add(function() {
   }
 });
 
+/* vehicle viewer */
+
+(function(window, $, mw) {
+    var App = {
+        state: {
+            activeTab: 'vehicle',
+            lastPrimaryTab: 'vehicle',
+            activeModelId: 'horizon',
+            modelLiveryState: {},
+            isScrubbing: false,
+            wasVideoPlayingBeforeScrub: true,
+            isLiveryPanelVisible: true,
+            hasUserPaused: false,
+            reminderTimer: null
+        },
+        chevron: {
+            right: 'https://static.wikia.nocookie.net/screamergame/images/0/0d/Chevrongreylightright.png/revision/latest?cb=20250810044535',
+            left: 'https://static.wikia.nocookie.net/screamergame/images/1/10/Chevrongreylightleft.png/revision/latest?cb=20250810044600'
+        },
+        vehicleData: {
+            'horizon': { name: 'Horizon', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/4/43/Horizon_interior.png/revision/latest?cb=20250206211759', liveries: { 'angels': { name: 'Angels', icon: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Angels_horizon_front.png/revision/latest?cb=20250130211242', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/9/97/S2_angels_horizon_mp4.mp4/revision/latest?cb=20250807201227' }}, 'wasp': { name: 'Wasp', icon: 'https://static.wikia.nocookie.net/screamergame/images/9/92/Wasp_horizon_front.png/revision/latest?cb=20250130211652', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/8/82/S2_wasp_horizon_mp4.mp4/revision/latest?cb=20250807201903' }}, 'condor': { name: 'Condor', icon: 'https://static.wikia.nocookie.net/screamergame/images/2/28/Condor_horizon_front.png/revision/latest?cb=20250130211550', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/5/50/S2_condor_horizon_mp4.mp4/revision/latest?cb=20250807201549' }}, 'zeus': { name: 'Zeus', icon: 'https://static.wikia.nocookie.net/screamergame/images/a/aa/Zeus_horizon_front.png/revision/latest?cb=20250130211736', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/5/58/S2_zeus_horizon_mp4.mp4/revision/latest?cb=20250807202240' }}}},
+            'nebula': { name: 'Nebula', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/2/28/Nebula_interior.png/revision/latest?cb=20250206211855', liveries: { 'angels': { name: 'Angels', icon: 'https://static.wikia.nocookie.net/screamergame/images/3/3a/Angels_nebula_front.png/revision/latest?cb=20250202182226', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/4d/S2_angels_nebula_mp4.mp4/revision/latest?cb=20250807201302' }}, 'wasp': { name: 'Wasp', icon: 'https://static.wikia.nocookie.net/screamergame/images/7/75/Wasp_nebula_front.png/revision/latest?cb=20250202182403', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/7/75/S2_wasp_nebula_mp4.mp4/revision/latest?cb=20250807201929' }}, 'condor': { name: 'Condor', icon: 'https://static.wikia.nocookie.net/screamergame/images/8/89/Condor_nebula_front.png/revision/latest?cb=20250202182318', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/b/b9/S2_condor_nebula_mp4.mp4/revision/latest?cb=20250807201618' }}, 'zeus': { name: 'Zeus', icon: 'https://static.wikia.nocookie.net/screamergame/images/5/54/Zeus_nebula_front.png/revision/latest?cb=20250202182439', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/8/8a/S2_zeus_nebula_mp4.mp4/revision/latest?cb=20250807202302' }}}},
+            'spark': { name: 'Spark', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/8/8f/Spark_interior.png/revision/latest?cb=20250206211941', liveries: { 'angels': { name: 'Angels', icon: 'https://static.wikia.nocookie.net/screamergame/images/3/34/Angels_spark_front.png/revision/latest?cb=20250203205542', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/40/S2_angels_spark_mp4.mp4/revision/latest?cb=20250807201332' }}, 'wasp': { name: 'Wasp', icon: 'https://static.wikia.nocookie.net/screamergame/images/6/62/Wasp_spark_front.png/revision/latest?cb=20250203210652', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/0/02/S2_wasp_spark_mp4.mp4/revision/latest?cb=20250807201959' }}, 'condor': { name: 'Condor', icon: 'https://static.wikia.nocookie.net/screamergame/images/4/4c/Condor_spark_front.png/revision/latest?cb=20250203210613', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/e/e6/S2_condor_spark_mp4.mp4/revision/latest?cb=20250807201640' }}, 'zeus': { name: 'Zeus', icon: 'https://static.wikia.nocookie.net/screamergame/images/4/4e/Zeus_spark_front.png/revision/latest?cb=20250203210730', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/f/f8/S2_zeus_spark_mp4.mp4/revision/latest?cb=20250807202329' }}}},
+            'radiance': { name: 'Radiance', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/c/c3/Radiance_interior.png/revision/latest?cb=20250206212232', liveries: { 'angels': { name: 'Angels', icon: 'https://static.wikia.nocookie.net/screamergame/images/3/3d/Angels_radiance_front.png/revision/latest?cb=20250204213249', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/a/a8/S2_angels_radiance_mp4.mp4/revision/latest?cb=20250807201404' }}, 'wasp': { name: 'Wasp', icon: 'https://static.wikia.nocookie.net/screamergame/images/2/2c/Wasp_radiance_front.png/revision/latest?cb=20250204213401', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/44/S2_wasp_radiance_mp4.mp4/revision/latest?cb=20250807202050' }}, 'condor': { name: 'Condor', icon: 'https://static.wikia.nocookie.net/screamergame/images/9/9c/Condor_radiance_front.png/revision/latest?cb=20250204213326', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/e/e3/S2_condor_radiance_mp4.mp4/revision/latest?cb=20250807201716' }}, 'zeus': { name: 'Zeus', icon: 'https://static.wikia.nocookie.net/screamergame/images/0/07/Zeus_radiance_front.png/revision/latest?cb=20250204213444', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/40/S2_zeus_radiance_mp4.mp4/revision/latest?cb=20250807202356' }}}},
+            'hornet': { name: 'Hornet', category: 'bonus', interior: 'https://static.wikia.nocookie.net/screamergame/images/0/05/Wasp_hornet_interior.png/revision/latest?cb=20250206212329', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/6/6c/S2_wasp_hornet_mp4.mp4/revision/latest?cb=20250807202140' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/c/c5/Wasp_hornet_front.png/revision/latest?cb=20250206202619'},
+            'thunder': { name: 'Thunder', category: 'bonus', interior: 'https://static.wikia.nocookie.net/screamergame/images/4/4e/Zeus_thunder_interior.png/revision/latest?cb=20250206212402', display: { type: 'static', src: 'https://static.wikia.nocookie.net/screamergame/images/2/2c/Zeus_thunder_front.png/revision/latest?cb=20250206203732' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/2/2c/Zeus_thunder_front.png/revision/latest?cb=20250206203732'},
+            'aphrodite': { name: 'Aphrodite', category: 'bonus', interior: 'https://static.wikia.nocookie.net/screamergame/images/1/13/Angels_aphrodite_interior.png/revision/latest?cb=20250206212433', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/1/1b/S2_angels_aphrodite_mp4.mp4/revision/latest?cb=20250807201447' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/8/81/Angels_aphrodite_front.png/revision/latest?cb=20250206204425'},
+            'blackclaw': { name: 'Black Claw', category: 'bonus', interior: 'https://static.wikia.nocookie.net/screamergame/images/9/95/Condor_blackclaw_interior.png/revision/latest?cb=20250206212504', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/b/b2/S2_condor_black-claw.mp4/revision/latest?cb=20250807201743' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/f/fb/Condor_blackclaw_front.png/revision/latest?cb=20250206205141'}
+        },
+        parseAndLoadData: function() {
+            var $source = $('#vva-data-source');
+            if (!$source.length) return;
+            $source.find('.vva-data-entry').each(function() {
+                var $entry = $(this);
+                var carId = $entry.data('car-id');
+                if (App.vehicleData[carId]) {
+                    App.vehicleData[carId].description = $entry.find('.vva-description').html() || 'No description available.';
+                    var $statsContainer = $entry.find('.vva-stats');
+                    var stats = {};
+                    if ($statsContainer.length) {
+                        var rawStatsHtml = $statsContainer.html().replace(/;Statistics/g, '');
+                        var lines = rawStatsHtml.split(/<br\s*\/?>|\n/).filter(function(line) { return line.trim() !== ''; });
+                        lines.forEach(function(line) {
+                            var cleanedLine = $('<div>').html(line).text().trim();
+                            if (cleanedLine.startsWith(':')) {
+                                var parts = cleanedLine.substring(1).split(':');
+                                if (parts.length > 1) {
+                                    var key = parts[0].trim();
+                                    var value = parts.slice(1).join(':').trim();
+                                    var link = $statsContainer.find('a').filter(function() {
+                                        return $(this).text().trim() === value;
+                                    }).first();
+                                    if (link.length) {
+                                        stats[key] = link.prop('outerHTML');
+                                    } else {
+                                        stats[key] = value;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    App.vehicleData[carId].stats = stats;
+                }
+            });
+        },
+        manageReminderCycle: function() {
+            if (App.state.hasUserPaused) {
+                clearTimeout(App.state.reminderTimer);
+                return;
+            }
+            var model = App.vehicleData[App.state.activeModelId];
+            var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
+            var livery = model.liveries ? model.liveries[activeLiveryId] : null;
+            var display = model.display || (livery ? livery.display : null);
+            var shouldShow = App.state.activeTab === 'vehicle' && display && display.type === 'video';
+            if (shouldShow) {
+                var $tickerText = $('.vva-ticker-text');
+                $tickerText.removeClass('vva-hidden').css('animation', 'vva-scroll-left 20s linear');
+                $tickerText.one('animationend', function() {
+                    $(this).addClass('vva-hidden').css('animation', 'none');
+                });
+            }
+            App.state.reminderTimer = setTimeout(App.manageReminderCycle, 60000);
+        },
+        setupVideoPlayer: function($displayArea, display) {
+            var $video = $('<video>', {
+                id: 'vva-main-video',
+                src: display.src,
+                autoplay: true,
+                muted: true,
+                playsinline: true,
+                loop: true
+            });
+            var video = $video[0];
+            var $scrubber = $('.vva-scrubber');
+
+            $video.on('loadedmetadata', function() {
+                $scrubber.attr('max', video.duration);
+            });
+            $video.on('timeupdate', function() {
+                if (!App.state.isScrubbing) {
+                    $scrubber.val(video.currentTime);
+                }
+            });
+            $video.on('play', function() {
+                $scrubber.removeClass('vva-visible');
+            });
+            $video.on('pause', function() {
+                if (App.state.activeTab === 'vehicle') {
+                    $scrubber.addClass('vva-visible');
+                }
+            });
+            $video.on('click', function() {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    if (!App.state.hasUserPaused) {
+                        App.state.hasUserPaused = true;
+                        clearTimeout(App.state.reminderTimer);
+                        $('.vva-ticker-text').addClass('vva-hidden').css('animation', 'none');
+                    }
+                    video.pause();
+                }
+            });
+            $scrubber.on('input', function() {
+                if (App.state.isScrubbing) {
+                    video.currentTime = $(this).val();
+                }
+            });
+            $scrubber.on('mousedown touchstart', function() {
+                App.state.isScrubbing = true;
+                App.state.wasVideoPlayingBeforeScrub = !video.paused;
+                video.pause();
+            });
+            $displayArea.append($video);
+        },
+        updateDisplay: function() {
+            var model = App.vehicleData[App.state.activeModelId];
+            if (!model) return;
+            var $activePage = $('.vva-page.vva-active');
+            $activePage.stop(true, true).css('opacity', 0).empty();
+            if (App.state.activeTab === 'vehicle') {
+                var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
+                var livery = model.liveries ? model.liveries[activeLiveryId] : null;
+                var display = model.display || (livery ? livery.display : null);
+                if (!display) return;
+                var $displayArea = $('<div>', { class: 'vva-display-area' });
+                if (display.type === 'video' && display.src) {
+                    App.setupVideoPlayer($displayArea, display);
+                } else {
+                    $('.vva-ticker-text').addClass('vva-hidden');
+                    $('.vva-scrubber').removeClass('vva-visible');
+                    $displayArea.append($('<img>', { src: display.src, alt: model.name + (livery ? ' - ' + livery.name : '') }));
+                }
+                if (model.category === 'base') {
+                    $displayArea.append(App.buildLiverySelector());
+                }
+                $activePage.append($displayArea);
+            } else if (App.state.activeTab === 'interior') {
+                if (model.interior) {
+                    $activePage.append($('<div>', { class: 'vva-display-area' }).append($('<img>', { src: model.interior, alt: model.name + ' interior' })));
+                }
+            } else if (App.state.activeTab === 'info') {
+                var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
+                var livery = model.liveries ? model.liveries[activeLiveryId] : null;
+                var display = model.display || (livery ? livery.display : null);
+                var displayElement;
+                if (display.type === 'video' && display.src) {
+                    displayElement = $('<video>', { src: display.src, autoplay: true, loop: true, muted: true, playsinline: true });
+                } else {
+                    displayElement = $('<img>', { src: display.src, alt: '' });
+                }
+                var $infoGifContainer = $('<div>', { class: 'vva-info-gif' }).append(displayElement);
+                var $infoDesc = $('<div>', { class: 'vva-info-description' }).html(model.description || '');
+                var $infoHeader = $('<div>', { class: 'vva-info-header' }).append($infoGifContainer, $infoDesc);
+                var $statsList = $('<ul>');
+                if (model.stats) {
+                    $.each(model.stats, function(key, value) {
+                        $statsList.append($('<li>').append($('<span>').text(key), $('<span>').html(value)));
+                    });
+                }
+                var $statsContainer = $('<div>', { class: 'vva-info-stats' }).append('<h4>Statistics</h4>', $statsList);
+                $activePage.append($infoHeader, $statsContainer);
+            }
+            $activePage.animate({ opacity: 1 }, 200);
+        },
+        buildLiverySelector: function() {
+            var $liverySelector = $('<div>', { class: 'vva-livery-selector' });
+            var $toggleButton = $('<div>', { class: 'vva-livery-toggle-button' });
+            var $toggleImg = $('<img>', { src: App.state.isLiveryPanelVisible ? App.chevron.left : App.chevron.right });
+            var $iconWrapper = $('<div>', { class: 'vva-livery-icon-wrapper' });
+            var model = App.vehicleData[App.state.activeModelId];
+            var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
+            if (!model || model.category !== 'base' || !model.liveries) return null;
+            $.each(model.liveries, function(liveryId, livery) {
+                var $icon = $('<div>', { class: 'vva-livery-icon', 'data-livery-id': liveryId });
+                $icon.append($('<img>', { src: livery.icon }));
+                $icon.append($('<div>', { class: 'vva-livery-name', text: livery.name }));
+                $iconWrapper.append($icon);
+            });
+            $iconWrapper.find('[data-livery-id="' + activeLiveryId + '"]').addClass('vva-active');
+            if (!App.state.isLiveryPanelVisible) {
+                $liverySelector.addClass('vva-hidden-panel');
+            }
+            $toggleButton.append($toggleImg);
+            $liverySelector.append($toggleButton, $iconWrapper);
+            return $liverySelector;
+        },
+        toggleLiveryPanel: function(e) {
+            e.stopPropagation();
+            App.state.isLiveryPanelVisible = !App.state.isLiveryPanelVisible;
+            var $panel = $('.vva-livery-selector');
+            $panel.toggleClass('vva-hidden-panel', !App.state.isLiveryPanelVisible);
+            $(this).find('img').attr('src', App.state.isLiveryPanelVisible ? App.chevron.left : App.chevron.right);
+        },
+        setActiveTab: function(e) {
+            var $tab = $(e.currentTarget);
+            var tabName = $tab.data('tab');
+            if ($tab.hasClass('vva-active')) return;
+            App.state.lastPrimaryTab = (tabName === 'vehicle' || tabName === 'interior') ? tabName : App.state.lastPrimaryTab;
+            App.state.activeTab = tabName;
+            $('#vehicle-viewer-app').toggleClass('vva-show-side-borders', tabName === 'vehicle' || tabName === 'interior');
+            $('.vva-tab').removeClass('vva-active');
+            $('.vva-tab[data-tab="' + tabName + '"]').addClass('vva-active');
+            $('.vva-page').removeClass('vva-active');
+            $('#vva-page-' + tabName).addClass('vva-active');
+            $('.vva-livery-selector').toggle(tabName === 'vehicle');
+            App.updateDisplay();
+        },
+        setActiveModel: function(e) {
+            var $modelIcon = $(e.currentTarget);
+            var modelId = $modelIcon.data('model-id');
+            if (App.state.activeModelId === modelId) return;
+            App.state.activeModelId = modelId;
+            $('.vva-vehicle-icon').removeClass('vva-active');
+            $modelIcon.addClass('vva-active');
+            App.updateDisplay();
+            App.updateMainVehicleIcon();
+        },
+        setActiveLivery: function(e) {
+            var $liveryIcon = $(e.currentTarget);
+            var liveryId = $liveryIcon.data('livery-id');
+            var modelId = App.state.activeModelId;
+            if (App.state.modelLiveryState[modelId] === liveryId) return;
+            App.state.modelLiveryState[modelId] = liveryId;
+            App.updateDisplay();
+            App.updateMainVehicleIcon();
+        },
+        updateMainVehicleIcon: function() {
+            var modelId = App.state.activeModelId;
+            var model = App.vehicleData[modelId];
+            var activeLiveryId = App.state.modelLiveryState[modelId];
+            var iconSrc;
+            if (model.category === 'base' && model.liveries && activeLiveryId) {
+                iconSrc = model.liveries[activeLiveryId].icon;
+            } else {
+                iconSrc = model.icon;
+            }
+            if (!iconSrc) return;
+            var $mainIcon = $('.vva-vehicle-icon[data-model-id="' + modelId + '"]');
+            var $img = $mainIcon.find('img');
+            $img.stop(true, true).animate({ opacity: 0 }, 150, function() {
+                $(this).attr('src', iconSrc).animate({ opacity: 1 }, 150);
+            });
+        },
+        preloadImages: function() {
+            var imageUrls = new Set();
+            Object.values(App.vehicleData).forEach(function(model) {
+                if (model.interior) imageUrls.add(model.interior);
+                if (model.icon) imageUrls.add(model.icon);
+                if (model.display && model.display.type !== 'video') imageUrls.add(model.display.src);
+                if (model.liveries) {
+                    Object.values(model.liveries).forEach(function(livery) {
+                        imageUrls.add(livery.icon);
+                        if (livery.display.type !== 'video') {
+                            imageUrls.add(livery.display.src);
+                        }
+                    });
+                }
+            });
+            imageUrls.add(App.chevron.left);
+            imageUrls.add(App.chevron.right);
+            imageUrls.forEach(function(url) { new Image().src = url; });
+        },
+        build: function() {
+            var $app = $('#vehicle-viewer-app');
+            $app.empty();
+            $app.addClass('vva-show-side-borders');
+            var $header = $('<div>', { class: 'vva-header' });
+            $header.append($('<div>', { class: 'vva-tab vva-active', text: 'Vehicle', 'data-tab': 'vehicle' }));
+            $header.append($('<div>', { class: 'vva-tab', text: 'Interior', 'data-tab': 'interior' }));
+            $header.append($('<div>', { class: 'vva-tab', text: 'Info', 'data-tab': 'info' }));
+            var $mainContent = $('<div>', { class: 'vva-main-content' });
+            $mainContent.append($('<div>', { id: 'vva-page-vehicle', class: 'vva-page vva-active' }));
+            $mainContent.append($('<div>', { id: 'vva-page-interior', class: 'vva-page' }));
+            $mainContent.append($('<div>', { id: 'vva-page-info', class: 'vva-page' }));
+            var $tickerBar = $('<div>', { class: 'vva-ticker-bar' });
+            $tickerBar.append($('<span>', { class: 'vva-ticker-text vva-hidden', text: 'Reminder: The preview can be paused by clicking it. Use the scrubber that appears when paused to view different angles of the vehicle.' }));
+            $tickerBar.append($('<input>', { type: 'range', class: 'vva-scrubber', value: 0, min: 0, max: 100, step: 0.01 }));
+            var $footer = $('<div>', { class: 'vva-footer' });
+            var $selector = $('<div>', { class: 'vva-vehicle-selector' });
+            $.each(App.vehicleData, function(modelId, model) {
+                App.state.modelLiveryState[modelId] = model.category === 'base' ? 'angels' : null;
+                var iconSrc = model.icon || (model.liveries.angels || Object.values(model.liveries)[0]).icon;
+                var $icon = $('<div>', { class: 'vva-vehicle-icon', 'data-model-id': modelId });
+                $icon.append($('<img>', { src: iconSrc }));
+                $icon.append($('<div>', { class: 'vva-vehicle-name', text: model.name }));
+                $selector.append($icon);
+            });
+            $footer.append($selector);
+            $app.append($header, $mainContent, $tickerBar, $footer);
+            $('.vva-vehicle-icon[data-model-id="' + App.state.activeModelId + '"]').addClass('vva-active');
+            App.updateDisplay();
+            $app.css('opacity', 1);
+        },
+        init: function() {
+            var $appContainer = $('#vehicle-viewer-app');
+            if ($appContainer.data('vva-initialized')) return;
+            App.parseAndLoadData();
+            App.preloadImages();
+            App.build();
+            if (App.state.reminderTimer === null) {
+                App.manageReminderCycle();
+            }
+            $appContainer.on('click.vva', '.vva-tab', App.setActiveTab);
+            $appContainer.on('click.vva', '.vva-vehicle-icon[data-model-id]', App.setActiveModel);
+            $appContainer.on('click.vva', '.vva-livery-icon', App.setActiveLivery);
+            $appContainer.on('click.vva', '.vva-livery-toggle-button', App.toggleLiveryPanel);
+            $(document).on('mouseup.vva touchend.vva', function() {
+                if (App.state.isScrubbing) {
+                    App.state.isScrubbing = false;
+                    var video = $('#vva-main-video')[0];
+                    if (video && App.state.wasVideoPlayingBeforeScrub) {
+                        video.play();
+                    }
+                }
+            });
+            $appContainer.data('vva-initialized', true);
+        },
+        destroy: function() {
+            $('#vehicle-viewer-app').off('.vva');
+            $(document).off('.vva');
+            $('#vehicle-viewer-app').empty().removeData('vva-initialized');
+            clearTimeout(App.state.reminderTimer);
+            App.state.reminderTimer = null;
+            window.vehicleViewerInitialized = false;
+        }
+    };
+    mw.hook('wikipage.content').add(function($content) {
+        var $appContainer = $content.find('#vehicle-viewer-app');
+        if (!$appContainer.length) {
+            if (window.vehicleViewerInitialized) {
+                App.destroy();
+            }
+            return;
+        }
+        if (window.vehicleViewerInitialized) return;
+        window.vehicleViewerInitialized = true;
+        App.init();
+    });
+})(window, jQuery, mediaWiki);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* notification panel */
 
 (function(window, $, mw) {

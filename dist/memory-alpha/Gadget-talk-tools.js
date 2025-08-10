@@ -1,7 +1,6 @@
-// <pre>
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.3.47 (beta)';
+	const version = '0.3.48 (beta)';
 	const api = new mw.Api();
 	const archived = $('#archivedPage').length === 1; // {{archived}}
 	const view = mw.config.get('wgAction') === 'view';
@@ -280,6 +279,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			comment = comment.replace(/^:+ */gm, '');
 			comment = comment.replace(/^/gm, `${indent}:`);
 			
+			// <pre>
 			if (!/[^~]~~~~$/.test(comment)){
 				if (/~~~$/.test(comment)){
 					comment = comment.replace(/( *)~~~+$/, '$1~~~~');
@@ -287,6 +287,7 @@ mw.loader.using(['mediawiki.api'], () => {
 					comment = comment.replace(/$/, ' ~~~~');
 				}
 			}
+			// </pre>
 			
 			if (!indent.length && !iPrevRegexp.test(initialText)){
 				finalText = initialText.replace(
@@ -553,4 +554,3 @@ mw.loader.using(['mediawiki.api'], () => {
 		return n.nodeType === 3 && n.nodeValue !== '\n';
 	}
 });
-// </pre>

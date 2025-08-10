@@ -17,3 +17,10 @@ importArticles({
 		// ...
 	]
 });
+
+/* Spoiler text (click) */
+$(function() {
+  $('.spoiler').click(function() {
+    $(this).toggleClass('revealed');
+  });
+});

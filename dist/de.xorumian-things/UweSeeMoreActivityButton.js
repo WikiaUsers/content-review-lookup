@@ -1,7 +1,7 @@
+/* This JavaScript replaces the standard rail-module activity-icon with one that links to "Special:RecentChanges" */
 /**
- * Origoinal Name:        SeeMoreActivityButton
- * Origoinal Author:      KockaAdmiralac <1405223@gmail.com>
- * Origoinal Author:      Speedit <speeditwikia@gmail.com>
+ * Origoinal Name:              SeeMoreActivityButton
+ * Origoinal Authors:           KockaAdmiralac <1405223@gmail.com> | Speedit <speeditwikia@gmail.com>
  * URL for Original JavaScript: https://dev.fandom.com/wiki/SeeMoreActivityButton
  */
 (function($){
@@ -10,16 +10,11 @@
     if (window.SeeMoreActivityButtonLoaded) return;
     window.SeeMoreActivityButtonLoaded = true;
 
-    // Funktion zum Hinzufügen des Stylesheets
-    var STYLESHEET_CLASS = "uwe-moreactivitybutton-stylesheet";
-    function addStylesheetToHead(href) {
-        $("head").append("<link rel='stylesheet' href='"+href+"' type='text/css' class='"+STYLESHEET_CLASS+"'>");
+    // Function to add a stylesheet
+    function addStylesheetToHead() {
+        $("head").append("<style> #seemoreactivity-button svg { margin-right: 0; fill: rgba(var(--theme-page-text-color--rgb), .75); opacity: .75; } .rail-module:has(#seemoreactivity-button) .wds-icon.wds-icon-small.wds-activity-icon { fill: transparent /* Makes the normal icon transparent if the link icon exists */; } </style>");
     }
-
-    // Import CSS dynamically
-    var stylesheetPrefix = "https://xorumian-things.fandom.com/de/index.php?action=raw&ctype=text/css&title=";
-    var cssUrl = stylesheetPrefix + "MediaWiki:UweSeeMoreActivityButton.css";
-    addStylesheetToHead(cssUrl);
+    addStylesheetToHead();
 
     // Variables, double-run protection
     var $rail = $('#WikiaRail');
@@ -27,14 +22,7 @@
         return;
     }
 
-    /**
-     * Script preloader
-     * @function            loadLib
-     * @param               {string} lib Library's namespace.
-     * @param               {string} mod Interwiki link to library's code.
-     * @returns             {Object} jQuery Promise that resolves once the library loads and fires the relevant MediaWiki hook.
-     * @private
-     */
+    /* Script preloader loadLib */
     function loadLib(lib, mod) {
         var deferred = $.Deferred();
         if (!window.dev || !window.dev[lib]) {
@@ -46,11 +34,7 @@
         return deferred.promise();
     }
 
-    /**
-     * Script preloader
-     * @function            preload
-     * @private
-     */
+    /* Script preloader */
     function preload() {
         $.when(
             loadLib('i18n', 'u:dev:MediaWiki:I18n-js/code.js').then(function () {
@@ -63,17 +47,12 @@
         });
     }
 
-    /**
-     * Main class.
-     * @class               SeeMoreActivity
-     * @this                window.dev.seeMoreActivity
-     * @param               {Object} i18n I18n-js message object.
-     */
+    /* Main class */
     function SeeMoreActivity(i18n) {
         // Internal configuration for script.
         this.i18n = i18n.msg('see-more').plain();
         this.icon = {
-            btn:  window.dev.wds.icon('menu-control-small')
+            btn:  window.dev.wds.icon('activity-small')
         };
 
         // Rail callback.
@@ -87,11 +66,6 @@
         }
     }
 
-    /**
-     * Script UI execution
-     * @method              execute
-     * @this                window.dev.seeMoreActivity
-     */
     SeeMoreActivity.prototype._execute = function() {
         var $activity = $('#wikia-recent-activity');
         if ($activity.length === 0) {
@@ -103,7 +77,8 @@
                 'href':  mw.util.getUrl('Special:RecentChanges'),
                 'class': 'wds-button wds-is-text',
                 'id':    'seemoreactivity-button',
-                'title': this.i18n,
+                'style': 'position: absolute; left: 0; padding: 0; width: 18px; transform: translateY(2px);',
+                'title': 'Special:RecentChanges',
                 html:    this.icon.btn.cloneNode(true)
             })
         );

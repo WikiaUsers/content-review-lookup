@@ -90,7 +90,6 @@ UserTagsJS.modules.custom = {
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],
 	'PorlaiWasTaken': ['Guide-Maker'],
-	'Piteous': ['Guide-Maker'],
 	'BungoJungo': ['Guide-Maker'],
 };
 window.lockOldComments.limit = 14;

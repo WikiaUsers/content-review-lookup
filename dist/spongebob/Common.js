@@ -359,7 +359,8 @@ window.MessageWallUserTags = {
 		'AndromedaMapping1': 'Discussion Moderator • Rollback',
         'ItzSpongeBob_1999': 'Discussion Moderator • Rollback',
 
-        'LarryBoy_fan': 'Discussion Moderator'
+        'LarryBoy_fan': 'Discussion Moderator',
+        'SpongeTron D': 'Discussion Moderator'
     }
 };
 

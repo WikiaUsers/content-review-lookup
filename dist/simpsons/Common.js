@@ -346,3 +346,9 @@ window.UserTagsJS = {
  importArticles({ type: 'script', articles: [ 
     'u:dev:Standard_Edit_Summary/code.js'
 ]});
+
+/* LockOldComments */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.namespaceNumbers = [0];

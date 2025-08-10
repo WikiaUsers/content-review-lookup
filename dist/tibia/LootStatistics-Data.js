@@ -18,7 +18,14 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
-// 
+//gold amount change [[Updates/15.11.c5bf24]]
+'Norcferatu Heartless': '15.11.c5bf24',
+'Gloom Maw':'15.11.c5bf24',
+'Norcferatu Nightweaver':'15.11.c5bf24',
+'Varg':'15.11.c5bf24',
+'Orclops Bloodbreaker':'15.11.c5bf24',
+'Dworc Shadowstalker':'15.11.c5bf24',
+//
 'Cursed Prospector': '15.03.afe753',
 'Evil Prospector': '15.03.afe753',
 // Monk Vocation Update
@@ -327,11 +334,11 @@ window.loot_parser_data = {
 //'Darklight Matter': '13.22.14242',
 //'Darklight Source': '13.22.14242',
 //'Darklight Striker': '13.22.14242',
-'Meandering Mushroom': '13.22.14242',
+//'Meandering Mushroom': '13.22.14242',
 'Mycobiontic Beetle': '13.22.14242',
 //'Oozing Carcass': '13.22.14242',
 //'Oozing Corpus': '13.22.14242',
-'Rotten Man-Maggot': '13.22.14242',
+//'Rotten Man-Maggot': '13.22.14242',
 //'Sopping Carcass': '13.22.14242',
 //'Sopping Corpus': '13.22.14242',
 //'Walking Pillar': '13.22.14242',
@@ -341,7 +348,7 @@ window.loot_parser_data = {
 //      	
 //'Bony Sea Devil': '13.15.13186',
 //'Capricious Phantom': '13.15.13186',
-'Hazardous Phantom': '13.15.13186',
+//'Hazardous Phantom': '13.15.13186',
 //'Turbulent Elemental': '13.15.13186',
 'Branchy Crawler': '13.15.13186',
 //'Mould Phantom': '13.15.13186',

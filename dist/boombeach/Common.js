@@ -30,5 +30,28 @@ $(document).ready(function() {
 
     // Community Spotlight modules
     $("#PixelCruxModule a").removeClass("external");
+    
+    //Template:Toggle
+    document.addEventListener('DOMContentLoaded', function () {
+  const shopBtns = document.querySelectorAll('.shop-btn');
+  const shopPages = document.querySelectorAll('.shop-page');
+
+  shopBtns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      const target = btn.getAttribute('data-shop');
+
+      // Alle Buttons & Seiten "deaktivieren"
+      shopBtns.forEach(b => b.classList.remove('active'));
+      shopPages.forEach(p => p.classList.remove('active'));
+
+      // Button und passende Seite aktivieren
+      btn.classList.add('active');
+      const targetPage = document.querySelector(`.shop-page[data-shop="${target}"]`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+    });
+  });
+});
 
 });

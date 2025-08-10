@@ -80,3 +80,15 @@ $(function() {
         $img.addClass('play-animation');
     });
 });
+
+
+        // 添加站务组页面悬停效果
+        const statItems = document.querySelectorAll('.stat-item');
+        statItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'translateY(-5px)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'translateY(0)';
+            });
+        });

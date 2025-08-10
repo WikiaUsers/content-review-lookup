@@ -22,9 +22,9 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Dralcyon': ['founder', 'bureaucrat', 'administrator'],
-	'Fla1m9C': ['administrator']
+	'Dralcyon': ['founder', 'bureaucrat', 'administrator'], // [[User:Dralcyon]]
+	'Fla1m9C': ['administrator'] // [[User:Fla1m9C]]
 };
 UserTagsJS.modules.metafilter = {
-	'sysop': ['bureaucrat'] // remove "admin" tag from bureaucrats
+	'sysop': ['sysop', 'bureaucrat'] // remove "admin" tag from bureaucrats
 };

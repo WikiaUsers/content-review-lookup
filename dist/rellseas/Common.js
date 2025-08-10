@@ -1,5 +1,5 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/* ----[FILTER AND SEARCH]---- */
+/* Any JavaScript here will be loaded for all users on every page load */
+/* ---[FILTER AND SEARCH]--- */
 importScript('MediaWiki:CustomFilters.js');
 // Scroll bar
 importArticles({
@@ -65,3 +65,17 @@ importArticles({
 });
 
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+/* Lukitota trying something silly THIS DOES NOT WORK :cold: */
+var hoverSound = new Audio('https://static.wikia.nocookie.net/rell-seasw/images/d/d4/RSW_UI_SFX.mp3/revision/latest?cb=20250808140202');
+var navCard = document.querySelector('.nav-card');
+
+navCard.addEventListener('mouseenter', function() {
+  hoverSound.currentTime = 0;
+  hoverSound.play().catch(e => console.log(e));
+});
+
+navCard.addEventListener('mouseleave', function() {
+  hoverSound.pause();
+  hoverSound.currentTime = 0;
+});
