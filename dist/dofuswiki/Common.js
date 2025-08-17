@@ -1,4 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+console.log("Start of Common.JS");
 
 window.highlight = {
     selectAll: true,
@@ -177,3 +178,103 @@ addOnloadHook(loadFunc);
     document.getElementById('wpPreview').style.fontWeight = 'bold';
  }
  addOnloadHook(forcePreview);
+
+/* Filter Buttons Logic*/
+var questFilterButton = document.querySelector('.filterButton.questFilter');
+if (questFilterButton) questFilterButton.addEventListener('click', toggleQuestDrops);
+
+function toggleQuestDrops() {
+  const table = document.querySelector('.monsterDropsTable');
+  const allRows = table.getElementsByTagName('tr');
+  const button = document.querySelector('.filterButton.questFilter');
+  let nonQuestVisible = false;
+
+  for (let i = 0; i < allRows.length; i++) {
+    const row = allRows[i];
+    if (!row.classList.contains('header') && !row.classList.contains('questDrop') && !row.classList.contains('dnone')) {
+      nonQuestVisible = true;
+      break;
+    }
+  }
+
+  for (let i = 0; i < allRows.length; i++) {
+    const row = allRows[i];
+    if (row.classList.contains('header')) {
+      continue;
+    }
+    if (nonQuestVisible) {
+      if (!row.classList.contains('questDrop')) {
+        row.classList.add('dnone');
+      } else {
+        row.classList.remove('dnone');
+      }
+      button.classList.add('filterEnabled');
+    } else {
+      if (row.classList.contains('dnone')) {
+        row.classList.remove('dnone');
+        row.classList.add('highlight');
+        setTimeout(() => row.classList.remove('highlight'), 1000);
+      }
+      button.classList.remove('filterEnabled');
+    }
+  }
+}
+/* Collapsible menu clickable anywhere */
+console.log("Starting with registering a Collapsible Element Listeners");
+console.log(document.querySelectorAll('.mw-collapsible'));
+registerCollapsibleListeners();
+
+function registerCollapsibleListeners() {
+    var bound = new WeakSet();
+
+    function bind(container) {
+        if (bound.has(container)) return;
+
+        var toggle = container.querySelector('.mw-collapsible-toggle');
+        if (!toggle) return;
+
+        var th = toggle.closest('th');
+        var content = th ? th : toggle.nextElementSibling;
+        if (!content) return;
+
+        if (content.getAttribute('data-collapsible-bound') === '1') return;
+        content.setAttribute('data-collapsible-bound', '1');
+
+        content.style.cursor = 'pointer';
+
+        var isSelecting = false;
+        content.addEventListener('mousedown', function () { isSelecting = false; });
+        content.addEventListener('mousemove', function (e) { if (e.buttons === 1) isSelecting = true; });
+        content.addEventListener('click', function (e) {
+            if (e.target.closest('a')) return;
+            if (isSelecting) return;
+            toggle.click();
+        });
+
+        bound.add(container);
+        console.log('Collapsible button registered');
+    }
+
+    function scan() {
+        document.querySelectorAll('.mw-collapsible').forEach(bind);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', scan);
+    } else {
+        scan();
+    }
+
+    if ('MutationObserver' in window) {
+        var mo = new MutationObserver(scan);
+        mo.observe(document.documentElement, { childList: true, subtree: true });
+    } else {
+        var tries = 0;
+        var id = setInterval(function () {
+            scan();
+            if (++tries > 20) clearInterval(id);
+        }, 250);
+    }
+}
+
+console.log("END of Common.JS");

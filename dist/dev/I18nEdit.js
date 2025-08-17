@@ -2898,7 +2898,7 @@
          * @returns {$.Deferred<Object>} Promise to listen on for MediaWiki API response
          */
         fetchAllLuaPages: function() {
-            return this.api.get({
+            return this.api.postWithToken('csrf', {
                 action: 'scribunto-console',
                 question: '=p.main()',
                 title: 'Module:I18nEdit',

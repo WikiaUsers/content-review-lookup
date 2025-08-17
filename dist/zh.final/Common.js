@@ -64,3 +64,10 @@ importArticles({
         'u:dev:MediaWiki:WallGreeting.js',
     ]
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});

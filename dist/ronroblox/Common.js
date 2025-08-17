@@ -86,6 +86,7 @@ UserTagsJS.modules.custom = {
 	'Mysþıc': ['Wiki-Contributor'],
 	'Antiverta': ['Wiki-Contributor'],
     'MP1Player': ['Wiki-Contributor'],
+    'Silkened': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],

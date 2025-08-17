@@ -1,3 +1,4 @@
+// disables CategorySelectAdd button when Work In Progress template is on page
 mw.hook("wikipage.content").add(function() {
     var userName = mw.config.get('wgUserName');
     var element = document.querySelector('[data-user-owner-name]');
@@ -6,5 +7,5 @@ mw.hook("wikipage.content").add(function() {
     if (!element || !categoryButton) return;
   
     var userOwnerName = element.getAttribute('data-user-owner-name');
-	categoryButton.disabled = !!userOwnerName && userOwnerName !== userName
+	categoryButton.disabled = !!userOwnerName && userOwnerName !== userName;
 });

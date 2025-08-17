@@ -10,17 +10,34 @@ mw.hook('wikipage.content').add(function() {
 
 (function(window, $, mw) {
     var App = {
+        // EVENT BUS
+        events: {},
+        on: function(eventName, fn) {
+            App.events[eventName] = App.events[eventName] || [];
+            App.events[eventName].push(fn);
+        },
+        trigger: function(eventName, data) {
+            if (App.events[eventName]) {
+                App.events[eventName].forEach(function(fn) {
+                    fn(data);
+                });
+            }
+        },
+
+        // STATE & DATA
         state: {
             activeTab: 'vehicle',
-            lastPrimaryTab: 'vehicle',
             activeModelId: 'horizon',
             modelLiveryState: {},
             isScrubbing: false,
             wasVideoPlayingBeforeScrub: true,
             isLiveryPanelVisible: true,
             hasUserPaused: false,
-            reminderTimer: null
+            activeFilter: 'all',
+            hasInteractedWithVideo: false
         },
+        appObserver: null,
+        reminderIntervalId: null,
         chevron: {
             right: 'https://static.wikia.nocookie.net/screamergame/images/0/0d/Chevrongreylightright.png/revision/latest?cb=20250810044535',
             left: 'https://static.wikia.nocookie.net/screamergame/images/1/10/Chevrongreylightleft.png/revision/latest?cb=20250810044600'
@@ -35,6 +52,7 @@ mw.hook('wikipage.content').add(function() {
             'aphrodite': { name: 'Aphrodite', category: 'bonus', interior: 'https://static.wikia.nocookie.net/screamergame/images/1/13/Angels_aphrodite_interior.png/revision/latest?cb=20250206212433', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/1/1b/S2_angels_aphrodite_mp4.mp4/revision/latest?cb=20250807201447' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/8/81/Angels_aphrodite_front.png/revision/latest?cb=20250206204425'},
             'blackclaw': { name: 'Black Claw', category: 'bonus', interior: 'https://static.wikia.nocookie.net/screamergame/images/9/95/Condor_blackclaw_interior.png/revision/latest?cb=20250206212504', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/b/b2/S2_condor_black-claw.mp4/revision/latest?cb=20250807201743' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/f/fb/Condor_blackclaw_front.png/revision/latest?cb=20250206205141'}
         },
+        
         parseAndLoadData: function() {
             var $source = $('#vva-data-source');
             if (!$source.length) return;
@@ -71,112 +89,124 @@ mw.hook('wikipage.content').add(function() {
                 }
             });
         },
-        manageReminderCycle: function() {
-            if (App.state.hasUserPaused) {
-                clearTimeout(App.state.reminderTimer);
-                return;
-            }
-            var model = App.vehicleData[App.state.activeModelId];
-            var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
-            var livery = model.liveries ? model.liveries[activeLiveryId] : null;
-            var display = model.display || (livery ? livery.display : null);
-            var shouldShow = App.state.activeTab === 'vehicle' && display && display.type === 'video';
-            if (shouldShow) {
-                var $tickerText = $('.vva-ticker-text');
-                $tickerText.removeClass('vva-hidden').css('animation', 'vva-scroll-left 20s linear');
-                $tickerText.one('animationend', function() {
-                    $(this).addClass('vva-hidden').css('animation', 'none');
+        
+        runReminderDisplayLogic: function() {
+            clearInterval(App.reminderIntervalId);
+            var $tickerText = $('.vva-ticker-text');
+            var messages = [
+                'Reminder: Click on a rotating vehicle preview to pause it and gain manual control.',
+                'Reminder: You can view the interior of any car by clicking the "Interior" tab.',
+                'Reminder: Struggling to choose? The Horizon is a great all-around pick for new drivers.',
+                'Reminder: Bonus vehicles are hidden by default. Use the filters to reveal them.'
+            ];
+            var currentMessage = -1;
+            
+            function showNextMessage() {
+                $tickerText.fadeOut(400, function() {
+                    currentMessage = (currentMessage + 1) % messages.length;
+                    $tickerText.text(messages[currentMessage]).fadeIn(400);
                 });
             }
-            App.state.reminderTimer = setTimeout(App.manageReminderCycle, 60000);
+            
+            showNextMessage(); 
+            App.reminderIntervalId = setInterval(showNextMessage, 5000);
         },
+
         setupVideoPlayer: function($displayArea, display) {
             var $video = $('<video>', {
-                id: 'vva-main-video',
                 src: display.src,
                 autoplay: true,
+                loop: true,
                 muted: true,
-                playsinline: true,
-                loop: true
+                playsinline: true
             });
-            var video = $video[0];
+            var $tickerBar = $('.vva-ticker-bar');
             var $scrubber = $('.vva-scrubber');
 
-            $video.on('loadedmetadata', function() {
-                $scrubber.attr('max', video.duration);
-            });
-            $video.on('timeupdate', function() {
-                if (!App.state.isScrubbing) {
-                    $scrubber.val(video.currentTime);
-                }
-            });
-            $video.on('play', function() {
-                $scrubber.removeClass('vva-visible');
-            });
-            $video.on('pause', function() {
-                if (App.state.activeTab === 'vehicle') {
-                    $scrubber.addClass('vva-visible');
-                }
-            });
             $video.on('click', function() {
-                if (video.paused) {
-                    video.play();
+                App.state.hasUserPaused = true;
+                if (!App.state.hasInteractedWithVideo) {
+                    App.state.hasInteractedWithVideo = true;
+                    clearInterval(App.reminderIntervalId);
+                    $('.vva-ticker-text').stop().fadeOut(0);
+                }
+                
+                if (this.paused) {
+                    this.play();
+                    $tickerBar.removeClass('vva-scrubber-active');
                 } else {
-                    if (!App.state.hasUserPaused) {
-                        App.state.hasUserPaused = true;
-                        clearTimeout(App.state.reminderTimer);
-                        $('.vva-ticker-text').addClass('vva-hidden').css('animation', 'none');
-                    }
-                    video.pause();
+                    this.pause();
+                    $tickerBar.addClass('vva-scrubber-active');
                 }
             });
-            $scrubber.on('input', function() {
-                if (App.state.isScrubbing) {
-                    video.currentTime = $(this).val();
+
+            $video.on('timeupdate', function() {
+                if (!App.state.isScrubbing && this.duration) {
+                    var value = (this.currentTime / this.duration) * 100;
+                    $scrubber.val(value);
                 }
-            });
-            $scrubber.on('mousedown touchstart', function() {
-                App.state.isScrubbing = true;
-                App.state.wasVideoPlayingBeforeScrub = !video.paused;
-                video.pause();
             });
             $displayArea.append($video);
         },
+        
         updateDisplay: function() {
-            var model = App.vehicleData[App.state.activeModelId];
+            var modelIdToDisplay = App.state.activeModelId;
+            var model = App.vehicleData[modelIdToDisplay];
             if (!model) return;
+        
             var $activePage = $('.vva-page.vva-active');
             $activePage.stop(true, true).css('opacity', 0).empty();
+            
+            $('#vehicle-viewer-app').removeClass('vva-show-side-borders');
+            $('.vva-ticker-bar').removeClass('vva-scrubber-active');
+            
+            if (App.state.activeTab === 'vehicle' || App.state.activeTab === 'interior') {
+                $('#vehicle-viewer-app').addClass('vva-show-side-borders');
+            }
+        
             if (App.state.activeTab === 'vehicle') {
-                var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
-                var livery = model.liveries ? model.liveries[activeLiveryId] : null;
-                var display = model.display || (livery ? livery.display : null);
+                var display = null;
+                if (model.display) {
+                    display = model.display;
+                } else if (model.liveries) {
+                    var activeLiveryId = App.state.modelLiveryState[modelIdToDisplay];
+                    if (activeLiveryId && model.liveries[activeLiveryId]) {
+                        display = model.liveries[activeLiveryId].display;
+                    }
+                }
                 if (!display) return;
                 var $displayArea = $('<div>', { class: 'vva-display-area' });
                 if (display.type === 'video' && display.src) {
                     App.setupVideoPlayer($displayArea, display);
                 } else {
-                    $('.vva-ticker-text').addClass('vva-hidden');
-                    $('.vva-scrubber').removeClass('vva-visible');
-                    $displayArea.append($('<img>', { src: display.src, alt: model.name + (livery ? ' - ' + livery.name : '') }));
+                    $displayArea.append($('<img>', { src: display.src, alt: model.name }));
+                    if (!App.state.hasInteractedWithVideo) {
+                         clearInterval(App.reminderIntervalId);
+                         $('.vva-ticker-text').stop().fadeOut(0);
+                    }
+                    $('.vva-ticker-bar').addClass('vva-scrubber-active');
                 }
                 if (model.category === 'base') {
                     $displayArea.append(App.buildLiverySelector());
                 }
                 $activePage.append($displayArea);
             } else if (App.state.activeTab === 'interior') {
-                if (model.interior) {
-                    $activePage.append($('<div>', { class: 'vva-display-area' }).append($('<img>', { src: model.interior, alt: model.name + ' interior' })));
-                }
+                $activePage.append($('<div>', { class: 'vva-display-area' }).append($('<img>', { src: model.interior, alt: model.name + ' interior' })));
             } else if (App.state.activeTab === 'info') {
-                var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
-                var livery = model.liveries ? model.liveries[activeLiveryId] : null;
-                var display = model.display || (livery ? livery.display : null);
+                var infoDisplay = null;
+                if (model.display) {
+                    infoDisplay = model.display;
+                } else if (model.liveries) {
+                    var infoLiveryId = App.state.modelLiveryState[modelIdToDisplay];
+                    if (infoLiveryId && model.liveries[infoLiveryId]) {
+                        infoDisplay = model.liveries[infoLiveryId].display;
+                    }
+                }
                 var displayElement;
-                if (display.type === 'video' && display.src) {
-                    displayElement = $('<video>', { src: display.src, autoplay: true, loop: true, muted: true, playsinline: true });
-                } else {
-                    displayElement = $('<img>', { src: display.src, alt: '' });
+                if (infoDisplay && infoDisplay.type === 'video' && infoDisplay.src) {
+                    displayElement = $('<video>', { src: infoDisplay.src, autoplay: true, loop: true, muted: true, playsinline: true });
+                } else if (infoDisplay) {
+                    displayElement = $('<img>', { src: infoDisplay.src, alt: '' });
                 }
                 var $infoGifContainer = $('<div>', { class: 'vva-info-gif' }).append(displayElement);
                 var $infoDesc = $('<div>', { class: 'vva-info-description' }).html(model.description || '');
@@ -190,187 +220,260 @@ mw.hook('wikipage.content').add(function() {
                 var $statsContainer = $('<div>', { class: 'vva-info-stats' }).append('<h4>Statistics</h4>', $statsList);
                 $activePage.append($infoHeader, $statsContainer);
             }
-            $activePage.animate({ opacity: 1 }, 200);
-        },
-        buildLiverySelector: function() {
-            var $liverySelector = $('<div>', { class: 'vva-livery-selector' });
-            var $toggleButton = $('<div>', { class: 'vva-livery-toggle-button' });
-            var $toggleImg = $('<img>', { src: App.state.isLiveryPanelVisible ? App.chevron.left : App.chevron.right });
-            var $iconWrapper = $('<div>', { class: 'vva-livery-icon-wrapper' });
-            var model = App.vehicleData[App.state.activeModelId];
-            var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
-            if (!model || model.category !== 'base' || !model.liveries) return null;
-            $.each(model.liveries, function(liveryId, livery) {
-                var $icon = $('<div>', { class: 'vva-livery-icon', 'data-livery-id': liveryId });
-                $icon.append($('<img>', { src: livery.icon }));
-                $icon.append($('<div>', { class: 'vva-livery-name', text: livery.name }));
-                $iconWrapper.append($icon);
+            $activePage.animate({ opacity: 1 }, 200, function() {
+                var video = $activePage.find('video')[0];
+                if (video && !App.state.hasUserPaused) {
+                    video.play();
+                }
             });
-            $iconWrapper.find('[data-livery-id="' + activeLiveryId + '"]').addClass('vva-active');
-            if (!App.state.isLiveryPanelVisible) {
-                $liverySelector.addClass('vva-hidden-panel');
-            }
-            $toggleButton.append($toggleImg);
-            $liverySelector.append($toggleButton, $iconWrapper);
-            return $liverySelector;
         },
+
+        buildLiverySelector: function() {
+            var modelId = App.state.activeModelId;
+            var model = App.vehicleData[modelId];
+            var activeLiveryId = App.state.modelLiveryState[modelId];
+            var isVisible = App.state.isLiveryPanelVisible;
+
+            var $selector = $('<div>', {
+                class: 'vva-livery-selector' + (isVisible ? '' : ' vva-hidden-panel')
+            });
+            var $iconWrapper = $('<div>', { class: 'vva-livery-icon-wrapper' });
+
+            $.each(model.liveries, function(liveryId, livery) {
+                var $liveryIcon = $('<div>', {
+                    class: 'vva-livery-icon' + (liveryId === activeLiveryId ? ' vva-active' : ''),
+                    'data-livery-id': liveryId
+                }).append(
+                    $('<img>', { src: livery.icon }),
+                    $('<div>', { class: 'vva-livery-name', text: livery.name })
+                );
+                $iconWrapper.append($liveryIcon);
+            });
+
+            var $toggleButton = $('<button>', {
+                class: 'vva-livery-toggle-button',
+                title: (isVisible ? 'Hide' : 'Show') + ' Liveries'
+            }).append($('<img>', { src: isVisible ? App.chevron.left : App.chevron.right }));
+
+            $selector.append($iconWrapper, $toggleButton);
+            return $selector;
+        },
+
         toggleLiveryPanel: function(e) {
             e.stopPropagation();
             App.state.isLiveryPanelVisible = !App.state.isLiveryPanelVisible;
-            var $panel = $('.vva-livery-selector');
-            $panel.toggleClass('vva-hidden-panel', !App.state.isLiveryPanelVisible);
-            $(this).find('img').attr('src', App.state.isLiveryPanelVisible ? App.chevron.left : App.chevron.right);
+            App.updateDisplay();
         },
+
         setActiveTab: function(e) {
             var $tab = $(e.currentTarget);
             var tabName = $tab.data('tab');
             if ($tab.hasClass('vva-active')) return;
-            App.state.lastPrimaryTab = (tabName === 'vehicle' || tabName === 'interior') ? tabName : App.state.lastPrimaryTab;
+
             App.state.activeTab = tabName;
-            $('#vehicle-viewer-app').toggleClass('vva-show-side-borders', tabName === 'vehicle' || tabName === 'interior');
-            $('.vva-tab').removeClass('vva-active');
-            $('.vva-tab[data-tab="' + tabName + '"]').addClass('vva-active');
             $('.vva-page').removeClass('vva-active');
             $('#vva-page-' + tabName).addClass('vva-active');
-            $('.vva-livery-selector').toggle(tabName === 'vehicle');
+            $('.vva-tab').removeClass('vva-active');
+            $tab.addClass('vva-active');
             App.updateDisplay();
         },
+
         setActiveModel: function(e) {
-            var $modelIcon = $(e.currentTarget);
-            var modelId = $modelIcon.data('model-id');
-            if (App.state.activeModelId === modelId) return;
+            var modelId = $(e.currentTarget).data('model-id');
+            if (modelId === App.state.activeModelId) return;
             App.state.activeModelId = modelId;
+            App.state.hasUserPaused = false;
             $('.vva-vehicle-icon').removeClass('vva-active');
-            $modelIcon.addClass('vva-active');
+            $('.vva-vehicle-icon[data-model-id="' + modelId + '"]').addClass('vva-active');
             App.updateDisplay();
-            App.updateMainVehicleIcon();
         },
+
         setActiveLivery: function(e) {
-            var $liveryIcon = $(e.currentTarget);
-            var liveryId = $liveryIcon.data('livery-id');
+            e.stopPropagation();
             var modelId = App.state.activeModelId;
+            var liveryId = $(e.currentTarget).data('livery-id');
             if (App.state.modelLiveryState[modelId] === liveryId) return;
             App.state.modelLiveryState[modelId] = liveryId;
             App.updateDisplay();
-            App.updateMainVehicleIcon();
+            App.updateMainVehicleIcon(modelId);
         },
-        updateMainVehicleIcon: function() {
-            var modelId = App.state.activeModelId;
+        
+        updateMainVehicleIcon: function(modelId) {
             var model = App.vehicleData[modelId];
+            if (!model || !model.liveries) return;
+            
             var activeLiveryId = App.state.modelLiveryState[modelId];
-            var iconSrc;
-            if (model.category === 'base' && model.liveries && activeLiveryId) {
-                iconSrc = model.liveries[activeLiveryId].icon;
-            } else {
-                iconSrc = model.icon;
-            }
-            if (!iconSrc) return;
-            var $mainIcon = $('.vva-vehicle-icon[data-model-id="' + modelId + '"]');
-            var $img = $mainIcon.find('img');
-            $img.stop(true, true).animate({ opacity: 0 }, 150, function() {
-                $(this).attr('src', iconSrc).animate({ opacity: 1 }, 150);
+            if (!activeLiveryId) return;
+
+            var newIconSrc = model.liveries[activeLiveryId].icon;
+            var $iconImg = $('.vva-vehicle-icon[data-model-id="' + modelId + '"] img');
+
+            $iconImg.stop(true, true).fadeOut(150, function() {
+                $(this).attr('src', newIconSrc).fadeIn(150);
             });
         },
+
         preloadImages: function() {
-            var imageUrls = new Set();
-            Object.values(App.vehicleData).forEach(function(model) {
-                if (model.interior) imageUrls.add(model.interior);
-                if (model.icon) imageUrls.add(model.icon);
-                if (model.display && model.display.type !== 'video') imageUrls.add(model.display.src);
+            var imagesToLoad = [];
+            $.each(App.vehicleData, function(modelId, model) {
+                if (model.icon) imagesToLoad.push(model.icon);
+                if (model.interior) imagesToLoad.push(model.interior);
+                if (model.display && model.display.type === 'static') {
+                    imagesToLoad.push(model.display.src);
+                }
                 if (model.liveries) {
-                    Object.values(model.liveries).forEach(function(livery) {
-                        imageUrls.add(livery.icon);
-                        if (livery.display.type !== 'video') {
-                            imageUrls.add(livery.display.src);
-                        }
+                    $.each(model.liveries, function(liveryId, livery) {
+                        if (livery.icon) imagesToLoad.push(livery.icon);
                     });
                 }
             });
-            imageUrls.add(App.chevron.left);
-            imageUrls.add(App.chevron.right);
-            imageUrls.forEach(function(url) { new Image().src = url; });
+            imagesToLoad.forEach(function(url) {
+                var img = new Image();
+                img.src = url;
+            });
         },
+        
         build: function() {
             var $app = $('#vehicle-viewer-app');
-            $app.empty();
-            $app.addClass('vva-show-side-borders');
-            var $header = $('<div>', { class: 'vva-header' });
-            $header.append($('<div>', { class: 'vva-tab vva-active', text: 'Vehicle', 'data-tab': 'vehicle' }));
-            $header.append($('<div>', { class: 'vva-tab', text: 'Interior', 'data-tab': 'interior' }));
-            $header.append($('<div>', { class: 'vva-tab', text: 'Info', 'data-tab': 'info' }));
-            var $mainContent = $('<div>', { class: 'vva-main-content' });
-            $mainContent.append($('<div>', { id: 'vva-page-vehicle', class: 'vva-page vva-active' }));
-            $mainContent.append($('<div>', { id: 'vva-page-interior', class: 'vva-page' }));
-            $mainContent.append($('<div>', { id: 'vva-page-info', class: 'vva-page' }));
-            var $tickerBar = $('<div>', { class: 'vva-ticker-bar' });
-            $tickerBar.append($('<span>', { class: 'vva-ticker-text vva-hidden', text: 'Reminder: The preview can be paused by clicking it. Use the scrubber that appears when paused to view different angles of the vehicle.' }));
-            $tickerBar.append($('<input>', { type: 'range', class: 'vva-scrubber', value: 0, min: 0, max: 100, step: 0.01 }));
-            var $footer = $('<div>', { class: 'vva-footer' });
-            var $selector = $('<div>', { class: 'vva-vehicle-selector' });
-            $.each(App.vehicleData, function(modelId, model) {
-                App.state.modelLiveryState[modelId] = model.category === 'base' ? 'angels' : null;
-                var iconSrc = model.icon || (model.liveries.angels || Object.values(model.liveries)[0]).icon;
-                var $icon = $('<div>', { class: 'vva-vehicle-icon', 'data-model-id': modelId });
-                $icon.append($('<img>', { src: iconSrc }));
-                $icon.append($('<div>', { class: 'vva-vehicle-name', text: model.name }));
-                $selector.append($icon);
-            });
-            $footer.append($selector);
-            $app.append($header, $mainContent, $tickerBar, $footer);
-            $('.vva-vehicle-icon[data-model-id="' + App.state.activeModelId + '"]').addClass('vva-active');
+            var appHtml =
+                '<div class="vva-header">' +
+                    '<div class="vva-tab-wrapper">' +
+                        '<button class="vva-tab vva-active" data-tab="vehicle">Vehicle</button>' +
+                        '<button class="vva-tab" data-tab="interior">Interior</button>' +
+                        '<button class="vva-tab" data-tab="info">Info</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="vva-main-content">' +
+                    '<div id="vva-page-vehicle" class="vva-page vva-active"></div>' +
+                    '<div id="vva-page-interior" class="vva-page"></div>' +
+                    '<div id="vva-page-info" class="vva-page"></div>' +
+                '</div>' +
+                '<div class="vva-ticker-bar">' +
+                    '<div class="vva-ticker-text"></div>' +
+                    '<input type="range" class="vva-scrubber" min="0" max="100" value="0">' +
+                '</div>' +
+                '<div class="vva-footer">' +
+                    '<div class="vva-filter-controls">' +
+                        '<button class="vva-filter-button vva-active" data-filter="all">All Cars</button>' +
+                        '<button class="vva-filter-button" data-filter="base">Regular</button>' +
+                        '<button class="vva-filter-button" data-filter="bonus">Bonus</button>' +
+                    '</div>' +
+                    '<div class="vva-vehicle-selector"></div>' +
+                '</div>';
+            $app.html(appHtml).css('opacity', 1);
+
+            App.updateVehicleSelector();
             App.updateDisplay();
-            $app.css('opacity', 1);
+            App.runReminderDisplayLogic();
         },
+
         init: function() {
-            var $appContainer = $('#vehicle-viewer-app');
-            if ($appContainer.data('vva-initialized')) return;
+            if ($('#vehicle-viewer-app').children().length > 0) return;
             App.parseAndLoadData();
-            App.preloadImages();
-            App.build();
-            if (App.state.reminderTimer === null) {
-                App.manageReminderCycle();
-            }
-            $appContainer.on('click.vva', '.vva-tab', App.setActiveTab);
-            $appContainer.on('click.vva', '.vva-vehicle-icon[data-model-id]', App.setActiveModel);
-            $appContainer.on('click.vva', '.vva-livery-icon', App.setActiveLivery);
-            $appContainer.on('click.vva', '.vva-livery-toggle-button', App.toggleLiveryPanel);
-            $(document).on('mouseup.vva touchend.vva', function() {
-                if (App.state.isScrubbing) {
-                    App.state.isScrubbing = false;
-                    var video = $('#vva-main-video')[0];
-                    if (video && App.state.wasVideoPlayingBeforeScrub) {
-                        video.play();
+
+            $.each(App.vehicleData, function(modelId, model) {
+                if (model.liveries) {
+                    var firstLiveryId = Object.keys(model.liveries)[0];
+                    if (firstLiveryId) {
+                        App.state.modelLiveryState[modelId] = firstLiveryId;
                     }
                 }
             });
-            $appContainer.data('vva-initialized', true);
+            
+            App.preloadImages();
+            App.build();
+
+            var $app = $('#vehicle-viewer-app');
+            $app.on('click', '.vva-tab', App.setActiveTab);
+            $app.on('input', '.vva-scrubber', function() {
+                var $video = $('.vva-page.vva-active video');
+                if ($video.length && $video[0].duration) {
+                    $video[0].currentTime = ($video[0].duration / 100) * this.value;
+                }
+            });
+            $app.on('mousedown', '.vva-scrubber', function() {
+                var $video = $('.vva-page.vva-active video');
+                if (!$video.length) return;
+                App.state.isScrubbing = true;
+                App.state.wasVideoPlayingBeforeScrub = !$video[0].paused;
+                $video[0].pause();
+            });
+            $app.on('mouseup', '.vva-scrubber', function() {
+                App.state.isScrubbing = false;
+                var $video = $('.vva-page.vva-active video');
+                 if (!$video.length) return;
+                if (App.state.wasVideoPlayingBeforeScrub) {
+                    $video[0].play();
+                }
+            });
+            $app.on('click', '.vva-livery-icon', App.setActiveLivery);
+            $app.on('click', '.vva-livery-toggle-button', App.toggleLiveryPanel);
+            $app.on('click', '.vva-vehicle-icon', App.setActiveModel);
+            $app.on('click', '.vva-filter-button', App.setFilter);
+
+            App.appObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    var video = $('#vva-page-vehicle.vva-active video')[0];
+                    if (entry.isIntersecting) {
+                        if (video && !App.state.hasUserPaused) {
+                           video.play();
+                        }
+                    } else {
+                        if (video) {
+                           video.pause();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            App.appObserver.observe($app[0]);
         },
+        
         destroy: function() {
-            $('#vehicle-viewer-app').off('.vva');
-            $(document).off('.vva');
-            $('#vehicle-viewer-app').empty().removeData('vva-initialized');
-            clearTimeout(App.state.reminderTimer);
-            App.state.reminderTimer = null;
-            window.vehicleViewerInitialized = false;
+            if (App.appObserver) App.appObserver.disconnect();
+            clearInterval(App.reminderIntervalId);
+            $('#vehicle-viewer-app').empty().off();
+        },
+
+        setFilter: function(e) {
+            var filter = $(e.currentTarget).data('filter');
+            if (filter === App.state.activeFilter) return;
+            
+            App.state.activeFilter = filter;
+            $('.vva-filter-button').removeClass('vva-active');
+            $(e.currentTarget).addClass('vva-active');
+            App.updateVehicleSelector();
+        },
+
+        updateVehicleSelector: function() {
+            var $selector = $('.vva-vehicle-selector').empty();
+            $.each(App.vehicleData, function(modelId, model) {
+                if (App.state.activeFilter === 'all' || App.state.activeFilter === model.category) {
+                    var iconSrc = '';
+                    if (model.icon) {
+                        iconSrc = model.icon;
+                    } else if (model.liveries) {
+                        var activeLiveryId = App.state.modelLiveryState[modelId] || Object.keys(model.liveries)[0];
+                        iconSrc = model.liveries[activeLiveryId].icon;
+                    }
+                    var $icon = $('<div>', { class: 'vva-vehicle-icon', 'data-model-id': modelId });
+                    $icon.append($('<img>', { src: iconSrc }));
+                    $icon.append($('<div>', { class: 'vva-vehicle-name', text: model.name }));
+                    if (modelId === App.state.activeModelId) {
+                        $icon.addClass('vva-active');
+                    }
+                    $selector.append($icon);
+                }
+            });
         }
     };
+
     mw.hook('wikipage.content').add(function($content) {
-        var $appContainer = $content.find('#vehicle-viewer-app');
-        if (!$appContainer.length) {
-            if (window.vehicleViewerInitialized) {
-                App.destroy();
-            }
-            return;
+        if ($content.find('#vehicle-viewer-app').length) {
+            App.init();
         }
-        if (window.vehicleViewerInitialized) return;
-        window.vehicleViewerInitialized = true;
-        App.init();
     });
+
 })(window, jQuery, mediaWiki);
-
-
-
-
 
 
 

@@ -227,7 +227,7 @@ window.globalFileUsageConfig = {
 };
 
 /* ##################################################################################### */
-/* ### Mod table column toggles                                                      ### */
+/* ### Collapsible Form ID and Resources table columns                               ### */
 /* ### ----------------------------------------------------------------------------  ### */
 /* ### Description: Hides/unhides Resources & Form ID cols when a div is clicked     ### */
 /* ### Credit:      User:Scratchy1024                                                ### */
@@ -235,14 +235,14 @@ window.globalFileUsageConfig = {
 var toggleResourcesArray = document.getElementsByClassName("resourcesToggle"); //get array of resource toggle spans
 for (var ac = 0, resourceSpan; (resourceSpan = toggleResourcesArray[ac]); ac++) { //for each span
   resourceSpan.addEventListener("click", function () { //add an event listener, execure the following code on event
-    var tableArray = document.getElementsByClassName("mod-fallout76"); //get all mod tables
-    for (var tc = 0, table; (table = tableArray[tc]); tc++) { //for each mod table
-      for (var hc = 0; hc < table.rows[2].cells.length; hc++) { //for every header
-        if (table.rows[1].cells[hc].classList.contains("resourcesHeader")) { //check if resource header
+    var tableArray = document.getElementsByClassName("resources-collapsible"); //get all tables with the resources-collapsible class
+    for (var tc = 0, table; (table = tableArray[tc]); tc++) { //for each table
+      for (var hc = 0; hc < table.rows[2].cells.length; hc++) { //for every header cell
+        if (table.rows[1].cells[hc].classList.contains("resourcesHeader")) { //check if the cell has the resource header class
           var resCol1 = hc; //assign column number to var
         }
       }
-      for (var jc = 1; jc < table.rows.length; jc++) { //for every row in the column (start at index 1 to hide headers)
+      for (var jc = 1; jc < table.rows.length; jc++) { //for every row in the column with the resource header class (start at index 1 to hide headers)
         if (table.rows[jc].cells[resCol1]) { //if cell exists
           if (table.rows[jc].cells[resCol1].style.display === "none") { //if not visible
             table.rows[jc].cells[resCol1].style.display = ""; //make visible
@@ -265,7 +265,7 @@ for (var ac = 0, resourceSpan; (resourceSpan = toggleResourcesArray[ac]); ac++) 
 var toggleFormIDArray = document.getElementsByClassName("formIDToggle");
 for (var ad = 0, formIDSpan; (formIDSpan = toggleFormIDArray[ad]); ad++) {
   formIDSpan.addEventListener("click", function () {
-    var tableArray = document.getElementsByClassName("mod-fallout76"); //get all mod tables
+    var tableArray = document.getElementsByClassName("formID-collapsible"); //get all tables with the formID-collapsible class
     for (var td = 0, table; (table = tableArray[td]); td++) {
       for (var hd = 0; hd < table.rows[2].cells.length; hd++) {
         if (table.rows[1].cells[hd].classList.contains("formIDHeader")) {
@@ -292,21 +292,31 @@ for (var ad = 0, formIDSpan; (formIDSpan = toggleFormIDArray[ad]); ad++) {
   });
 }
 
-$(function() { //hide resources and Form ID rows on load
-var tableArray = document.getElementsByClassName("mod-fallout76"); //get all mod tables
+$(function() { //hide resources rows on load
+var tableArray = document.getElementsByClassName("resources-collapsible"); //get all mod tables
 for (var tb = 0, table; (table = tableArray[tb]); tb++) { //for each mod table
   for (var hb = 0; hb < table.rows[1].cells.length; hb++) { //for every cell in the header row (row 1)
     if (table.rows[1].cells[hb].classList.contains("resourcesHeader")) { //if the cell has this class
       var resCol = hb; //save that class in a variable
-    }
-    if (table.rows[1].cells[hb].classList.contains("formIDHeader")) { //if the cell has this class)
-      var IDCol = hb; //save that class in a variable
     }
   }
   for (var jb = 1; jb < table.rows.length; jb++) {//for every row (start at 1 to hide headers)
     if (table.rows[jb].cells[resCol]) { //check if cell exists
     table.rows[jb].cells[resCol].style.display = "none"; //make resources not visible
     }
+  }
+}
+});
+
+$(function() { //hide Form ID rows on load
+var tableArray = document.getElementsByClassName("formID-collapsible"); //get all mod tables
+for (var tb = 0, table; (table = tableArray[tb]); tb++) { //for each mod table
+  for (var hb = 0; hb < table.rows[1].cells.length; hb++) { //for every cell in the header row (row 1)
+    if (table.rows[1].cells[hb].classList.contains("formIDHeader")) { //if the cell has this class)
+      var IDCol = hb; //save that class in a variable
+    }
+  }
+  for (var jb = 1; jb < table.rows.length; jb++) {//for every row (start at 1 to hide headers)
     if (table.rows[jb].cells[IDCol]) { //check if cell exists
     table.rows[jb].cells[IDCol].style.display = "none"; //make Form ID not visible
     }

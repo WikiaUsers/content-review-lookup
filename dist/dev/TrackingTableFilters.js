@@ -20,8 +20,9 @@ mw.hook('wikipage.content').add(()=>{
 				checkIdx = 0,
 				id = $wrap.attr('data-tpt-id');
 			$wrap.addClass('ttf-loaded');
-			$wrap.on('input change', 'thead td input', mw.util.debounce((e) => {
-				if (e.target.getAttribute('type')==='checkbox') { checkIdx = (checkIdx+1) % 3; e.target.setAttribute('idx', checkIdx); }
+			
+			let filterRows = mw.util.debounce((e) => {
+				if (e.target.getAttribute('type')==='checkbox' && e.target.closest('thead')) { checkIdx = (checkIdx+1) % 3; e.target.setAttribute('idx', checkIdx); }
 				let toHide,
 					searches = [];
 				$wrap.find('thead td').each((i, td) => {
@@ -68,7 +69,9 @@ mw.hook('wikipage.content').add(()=>{
 				} else {
 					toToggle.fadeIn(250);
 				}
-			}, 500));
+			}, 500);
+			$wrap.on('input change', 'thead td input', filterRows);
+			$wrap.on('input change', 'tbody td.table-progress-checkbox-cell input', filterRows);
 			let tr = $('<tr>', {html: 
 				[`<td class="table-progress-checkbox-cell"><div class="wds-checkbox"><input type="checkbox" id="${id}" idx="0" /><label for="${id}"></label></div></td>`]
 				.concat(

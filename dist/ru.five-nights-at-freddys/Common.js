@@ -198,3 +198,11 @@ window.MessageBlock = {
 	title: 'Блокировка',
 	message: 'Вы были заблокированы на $2 по причине $1.'
 };
+
+/* ========== QuickDiff ========== */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:QuickDiff/code.js',
+    ]
+});

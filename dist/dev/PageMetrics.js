@@ -7,7 +7,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title', 'mediawik
 	    Uncategorizedpages: { pages: [] },
 	    Fewestrevisions: { pages: [], textMsg: 'nrevisions', linkMsgText: '<a href="' + mw.util.getUrl(pageName, { action: 'history' }) + '">$1</a>' },
 	    Lonelypages: { pages: [], descriptionMsg: 'lonelypagestext' },
-	    Longpages: { pages: [], text: 'nbytes' },
+	    Longpages: { pages: [], text: 'Nbytes' },
 	    Deadendpages: { pages: [], descriptionMsg: 'deadendpagestext' },
 	    Mostcategories: { pages: [], textMsg: 'ncategories', linkMsgText: '<a href="' + mw.util.getUrl(pageName) + '#collapsible-content-categories">$1</a>' },
 	    //Mostimages: { pages: [] },

@@ -131,12 +131,84 @@ function initPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2
 	}
 }
 
+function fixHoverPopup(e) {
+	var elem;
+	if (e.target) {
+		elem = e.target.nextElementSibling;
+	} else {
+		elem = e;
+	}
+	if (elem && elem.offsetWidth && elem.previousElementSibling && elem.previousElementSibling.offsetWidth) {
+		if (elem.getBoundingClientRect().x > window.innerWidth / 3) {
+			elem.style.left = '-' + (elem.offsetWidth - elem.previousElementSibling.offsetWidth + 20) + 'px';
+		} else {
+			elem.style.left = '20px';
+		}
+	}
+}
+
+function fixHoverPopups() {
+	var elems = document.querySelectorAll('.hoverpopup > a');
+	for (var i = 0; i < elems.length; i++) {
+		elems[i].title = '';
+		elems[i].addEventListener('mouseover', fixHoverPopup);
+	}
+	elems = document.querySelectorAll('.popuponhover img');
+	for (i = 0; i < elems.length; i++) {
+		fixHoverPopup(elems[i].parentElement);
+	}
+	elems = document.querySelectorAll('.popuponhover .popthisup');
+	for (i = 0; i < elems.length; i++) {
+		fixHoverPopup(elems[i].parentElement);
+	}
+}
+
+function initJSPopups() {
+	var elems = document.querySelectorAll('.hoverable a');
+	for (var i = 0; i < elems.length; i++) {
+		elems[i].title = '';
+	}
+	elems = document.querySelectorAll('.hoverable');
+	for (i = 0; i < elems.length; i++) {
+		for (var j = 0; j < elems[i].classList.length; j++) {
+			var popupid = elems[i].classList[j];
+			var re = /^popupid/i;
+			var found = popupid.match(re);
+			if (found) {
+				let elem = document.querySelector('.popupable.' + popupid);
+				if (elem) {
+					let elem0 = elems[i];
+					elems[i].addEventListener('mouseover', function () {
+						let rect = elem0.getBoundingClientRect();
+						elem.style.visibility = 'visible';
+						elem.style.height = 'auto';
+						elem.style.zIndex = 1;
+						elem.style.top = elem0.offsetTop + 23 + 'px';
+						console.log('if: ' + rect.x + ' > ' + window.innerWidth / 3);
+						if (rect.x > window.innerWidth / 3) {
+							elem.style.left = (elem0.offsetLeft - elem.offsetWidth + 20) + 'px';
+						} else {
+							elem.style.left = elem0.offsetLeft + 20 + 'px';
+						}
+					});
+					elems[i].addEventListener('mouseleave', function () {
+						elem.style.visibility = 'hidden';
+						elem.style.zIndex = -1;
+					});
+				}
+			}
+		}
+	}
+}
+
 function initCommon() {
 	initPreference('switchExpansion', 'preferredExpansion', 'hota', 'sod', 'Enable HotA', 'Disable HotA', 'Horn of the Abyss', togglePreferredExpansion);
 	initPreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning', toggleDoR);
 	if (!window.location.href.includes('action=edit') && !window.location.href.includes('action=submit')) {
 		removeTabsTags();
 	}
+	fixHoverPopups();
+	initJSPopups();
 }
 
 try {

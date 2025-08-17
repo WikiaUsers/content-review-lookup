@@ -7,6 +7,7 @@
 */
 
 ;(function($,mw) {
+ console.log("initialized");
 	importArticle({
     	type: 'script',
     	article: 'u:dev:MediaWiki:ShowCustomModal.js'
@@ -213,7 +214,7 @@
                 if (!medalFunctions.medalMatcher(medal_image)) return;
                             
                 result.dataMedal[medal_name] = {
-                    title: $(this).find('.MedalListTitle').val(),
+                    title: test,
                     image_url: medal_image
                 };
             });
@@ -545,6 +546,8 @@
                     // Parsing result
                     try {
                         MedalSettings = JSON.parse(data);
+console.log("current medal settings: ");
+                        console.log(MedalSettings);
                     } catch(err) {
                         if (namespace === 4) {
                             medalFunctions.medalDefaultSettings();

@@ -1,0 +1,1 @@
+window.BackToTopText = "Bay như Kẻ được chọn";

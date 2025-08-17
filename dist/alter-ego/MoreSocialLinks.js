@@ -1,9 +1,8 @@
 /**
  * Name:        MoreSocialLinks
- * Version:     v1.2ae
+ * Version:     v1.3ae
  * Author:      KockaAdmiralac <wikia@kocka.tech>
- * Description: Forked version to tailor it for Alterpedia
- *				It includes various bug fixes and additions
+ * Description: Forked version to tailor it for Alterpedia.
  */
 (function() {
 	'use strict';
@@ -22,7 +21,8 @@
 			twitch: /^https?:\/\/(?:www\.)?twitch\.tv\//,
 			twitter: /^https?:\/\/(?:mobile\.)?(?:twitter\.com|x\.com)\//,
 			youtube: /^https?:\/\/(?:m\.|www\.)?youtube\.com\/(?:user\/|channel\/|@)/,
-			tdsw: /^https?:\/\/tds\.fandom\.com\/wiki\/User:/
+			tdsw: /^https?:\/\/tds\.fandom\.com\/wiki\/User:/,
+			roblox: /^https?:\/\/(?:www\.)?roblox\.com\/users\/profile\?username=/
 		},
 		linkFields: [
 			'facebook',
@@ -30,8 +30,9 @@
 			'twitch',
 			'twitter',
 			'website',
+			'roblox',
 			'youtube',
-			'tdsw'
+			'discord'
 		],
 		links: {},
 		loaded: function() {
@@ -65,7 +66,6 @@
 				classes: ['user-identity-social'],
 				children: $.map(this.links, this.mapLink.bind(this))
 			});
-			$(links).append(this.$links.find('.user-identity-social__icon.wds-dropdown'));
 			this.$links.replaceWith(links);
 			this.initModal();
 			$(links).find('.edit > a')
@@ -73,9 +73,7 @@
 				.removeAttr('target');
 		},
 		eachLink: function(k, v) {
-			if (!v) {
-				return;
-			}
+			if (!v) return;
 			switch (k) {
 				case 'fbPage':
 					this.links.facebook = v;
@@ -87,11 +85,7 @@
 					this.links.twitch = 'https://twitch.tv/' + v;
 					break;
 				case 'social_youtube':
-					if (v.match(this.regexes.youtube)) {
-						this.links.youtube = v;
-					} else {
-						this.links.youtube = 'https://youtube.com/@' + v;
-					}
+					this.links.youtube = v.match(this.regexes.youtube) ? v : 'https://youtube.com/@' + v;
 					break;
 				case 'twitter':
 					this.links.twitter = 'https://x.com/' + v;
@@ -99,40 +93,103 @@
 				case 'website':
 					this.links.website = v;
 					break;
-				case 'occupation':
+				case 'username':
 					this.links.tdsw = 'https://tds.fandom.com/wiki/User:' + v;
+					break;
+				case 'occupation':
+					this.links.roblox = 'https://www.roblox.com/users/profile?username=' + v;
+					break;
+				case 'discordHandle':
+					this.links.discord = v;
 					break;
 			}
 		},
 		mapLink: function(v, k) {
+			if (k === 'discord') {
+				return {
+					type: 'li',
+					classes: [k, 'wds-dropdown'],
+					children: [{
+						type: 'div',
+						classes: ['user-identity-social__icon', 'wds-dropdown__toggle'],
+						title: this.labelFor(k),
+						children: [{
+							type: 'span',
+							classes: ['toru-i', 'i-discord1']
+						}]
+					}, {
+						type: 'div',
+						classes: ['wds-dropdown__content'],
+						children: [{
+							type: 'ul',
+							classes: ['wds-list'],
+							children: [{
+								type: 'li',
+								style: 'padding: 5px 10px;',
+								text: v
+							}]
+						}]
+					}]
+				};
+			}
+			if (k === 'edit') {
+				return {
+					type: 'li',
+					classes: ['edit'],
+					children: [{
+						type: 'a',
+						children: [{
+							type: 'span',
+							classes: ['toru-i', 'i-pencil1']
+						}],
+						classes: ['user-identity-social__icon'],
+						attr: {
+							href: v
+						},
+						title: this.labelFor(k)
+					}]
+				};
+			}
 			return {
 				type: 'li',
-				classes: [k],
+				classes: [k, 'wds-dropdown'],
 				children: [{
-					type: 'a',
+					type: 'div',
+					classes: ['wds-dropdown__toggle', 'user-identity-social__icon'],
+					title: this.labelFor(k),
 					children: [{
 						type: 'span',
 						classes: [
 							'toru-i',
 							'i-' + (
 								k === 'website' ? 'globe' :
-								k === 'edit' ? 'pencil1' :
 								k === 'twitter' ? 'twitter-x' :
-								k === 'tdsw' ? 'tdsw' :
 								k === 'youtube' ? 'youtube1' :
 								k === 'twitch' ? 'twitch1' :
 								k === 'facebook' ? 'facebook1' :
 								k
 							)
 						]
-					}],
-					classes: ['user-identity-social__icon'],
-					attr: {
-						href: v,
-						rel: 'noopener noreferrer',
-						target: '_blank'
-					},
-					title: this.labelFor(k)
+					}]
+				}, {
+					type: 'div',
+					classes: ['wds-dropdown__content'],
+					children: [{
+						type: 'ul',
+						classes: ['wds-list', 'wds-is-linked'],
+						children: [{
+							type: 'li',
+							children: [{
+								type: 'a',
+								attr: {
+									href: v,
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								},
+								text: this.linkLabelFor(k)
+							}]
+						}]
+					}]
 				}]
 			};
 		},
@@ -145,11 +202,8 @@
 				}],
 				content: {
 					type: 'form',
-					classes: [
-						'MoreSocialLinksForm'
-					],
-					children: $.map(this.linkFields, this.mapGroup.bind(this))
-						.filter(Boolean)
+					classes: ['MoreSocialLinksForm'],
+					children: $.map(this.linkFields, this.mapGroup.bind(this)).filter(Boolean)
 				},
 				context: this,
 				events: {
@@ -162,26 +216,25 @@
 			this.modal.create();
 		},
 		mapGroup: function(k) {
+			if (k === 'tdsw') return null;
 			return {
 				type: 'div',
 				classes: ['input-group'],
 				children: [{
-						type: 'label',
-						attr: {
-							'for': k
-						},
-						text: this.labelFor(k)
+					type: 'label',
+					attr: {
+						'for': k
 					},
-					{
-						type: 'input',
-						attr: {
-							id: k,
-							name: k,
-							type: 'text',
-							value: this.links[k] || ''
-						}
+					text: this.labelFor(k)
+				}, {
+					type: 'input',
+					attr: {
+						id: k,
+						name: k,
+						type: 'text',
+						value: this.links[k] || ''
 					}
-				]
+				}]
 			};
 		},
 		save: function() {
@@ -206,8 +259,11 @@
 					case 'twitter':
 						data.twitter = val;
 						break;
-					case 'tdsw':
+					case 'roblox':
 						data.occupation = val;
+						break;
+					case 'discord':
+						data.discordHandle = val;
 						break;
 					default:
 						data[name] = val;
@@ -218,8 +274,7 @@
 				context: this,
 				data: data,
 				type: 'PATCH',
-				url: 'https://services.fandom.com/user-attribute/user/' +
-					config.profileUserId,
+				url: 'https://services.fandom.com/user-attribute/user/' + config.profileUserId,
 				xhrFields: {
 					withCredentials: true
 				}
@@ -233,16 +288,31 @@
 		},
 		labelFor: function(k) {
 			var labels = {
-				facebook: 'Your Facebook username:',
-				instagram: 'Your Instagram username:',
-				twitch: 'Your Twitch username:',
-				twitter: 'Your X username:',
-				website: 'Your Website link:',
-				youtube: 'Your YouTube username:',
-				tdsw: 'Your TDS Wiki username:',
-				edit: 'Edit'
+				facebook: 'Facebook',
+				instagram: 'Instagram',
+				twitch: 'Twitch',
+				twitter: 'X',
+				website: 'Website',
+				youtube: 'YouTube',
+				tdsw: 'TDS Wiki',
+				discord: 'Discord',
+				roblox: 'Roblox',
+				edit: 'Edit links'
 			};
 			return labels[k] || k;
+		},
+		linkLabelFor: function(k) {
+			var labels = {
+				facebook: 'Facebook profile',
+				instagram: 'Instagram profile',
+				twitch: 'Twitch channel',
+				twitter: 'X profile',
+				website: 'website',
+				youtube: 'YouTube channel',
+				tdsw: 'TDS Wiki profile',
+				roblox: 'Roblox profile'
+			};
+			return 'Visit ' + (labels[k] || 'link');
 		}
 	};
 	importArticles({
@@ -254,9 +324,7 @@
 	});
 	importArticles({
 		type: 'style',
-		articles: [
-			'MediaWiki:MoreSocialLinks.css'
-		]
+		articles: ['MediaWiki:MoreSocialLinks.css']
 	});
 	mw.hook('dev.modal').add(MoreSocialLinks.loaded.bind(MoreSocialLinks));
 })();
