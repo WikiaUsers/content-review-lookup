@@ -21,6 +21,33 @@ function updateGreeting() {
 }
 setTimeout(updateGreeting, 200);
 
+// Hide blocked template automatically when countdown reaches zero
+$(function () {
+    $(".blockNotice").each(function () {
+    	var $notice = $(this);
+    	var $date = $notice.find(".countdowndate");
+    	
+    	if ($date.length === 0) return;
+    	
+    	function check() {
+    		var text = $date.text().trim();
+    		if (!text) return;
+    		
+    		var expiry = new Date(text.replace(/-/g, "/"));
+    		if (isNaN(expiry)) return;
+    		
+    		var now = new Date();
+    		if (now >= expiry) {
+    			$notice.fadeOut(300, function () {
+    				$(this).remove();
+    			});
+    		}
+    	}
+    	check();
+    	setInterval(check, 30000);
+    });
+});
+
 //BackToTop button
 window.BackToTopModern = true;
 
@@ -204,7 +231,7 @@ UserTagsJS.modules.mwGroups = [
     'bannedfromchat'
 ];
 UserTagsJS.modules.custom = {
-    
+    'Iamtharusha': ['former-bureaucrat'],
     'Immortal Sovereign': ['bureaucrat','sysop'],
     'Ruenslayer': ['founder','former-bureaucrat'],
     'Flareboy123': ['former-sysop'],

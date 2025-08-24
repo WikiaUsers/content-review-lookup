@@ -242,12 +242,11 @@ function registerCollapsibleListeners() {
 
         content.style.cursor = 'pointer';
 
-        var isSelecting = false;
-        content.addEventListener('mousedown', function () { isSelecting = false; });
-        content.addEventListener('mousemove', function (e) { if (e.buttons === 1) isSelecting = true; });
         content.addEventListener('click', function (e) {
             if (e.target.closest('a')) return;
-            if (isSelecting) return;
+            if (e.target.closest('.copy-to-clipboard-button')) return;
+            var sel = window.getSelection();
+            if (sel && sel.toString().trim() !== "") return;
             toggle.click();
         });
 

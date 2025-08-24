@@ -7,7 +7,7 @@
 mw.loader.using(['mediawiki.template.mustache']).then(function () {
 	glnbutt = {};
 	glnbutt.config = $.extend({
-		keepLinks: [] // tracking ids of links to keep (ex. 'explore-tab', 'fan-central', 'current-wiki-tab')
+		keepLinks: [] // tracking ids of links to keep (ex. 'explore-panel', 'menu-panel', 'recently-visited-link', 'history-panel' )
 	}, window.GlobalNavButtonsConf);
 
 	if (mw.config.get('skin') !== 'fandomdesktop') return console.error('[GlobalNavButtons] Unrecognized skin:', mw.config.get('skin'));

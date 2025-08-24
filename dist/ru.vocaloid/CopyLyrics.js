@@ -157,7 +157,6 @@ function findLyricsTables() {
 // Add copy functionality to column headers
 function addCopyIcon(cell, table, columnIndex) {
     var wrapper = document.createElement('div');
-    wrapper.style.cssText = 'display:flex; align-items:center; gap:8px;';
     wrapper.classList.add('song-lyrics-heading');
 
     // Move existing content
@@ -339,5 +338,4 @@ function main() {
     });
 }
 
-// Run when document is ready
 $(document).ready(main);

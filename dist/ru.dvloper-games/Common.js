@@ -106,3 +106,31 @@ function loadPageData() {
     if ( !user ) return;
     $( 'span.insertusername' ).text( user ); 
 }( this.jQuery, this.mediaWiki );
+
+window.lockOldComments = window.lockOldComments || {};
+window.lockOldComments.limit = 180; // Количество дней до закрытия комментариев
+
+ importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LockOldComments.js'
+    ]
+});
+
+/* Минимальный JS для работы Tabber и AjaxPoll */
+
+/* Загружаем Tabber */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:Tabber/code.js'
+    ]
+});
+
+/* Загружаем AjaxPoll */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:AjaxPoll/code.js'
+    ]
+});

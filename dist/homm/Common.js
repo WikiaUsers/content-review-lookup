@@ -47,7 +47,6 @@ function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, lin
 	var userlinks = document.querySelectorAll('.wds-tabs');
 	for (var i = 0; i < userlinks.length; i++) {
 		var switchView = document.querySelector('#' + linkSelector + i);
-		// the Castle page doesn't create #switchExpansion1 so we have to check this
 		if (switchView) {
 			if (preference == cookie2) {
 				switchView.textContent = link2;
@@ -67,7 +66,7 @@ function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, lin
 	}
 	var CookieDate = new Date();
 	CookieDate.setFullYear(CookieDate.getFullYear() + 1);
-	document.cookie = cookieName + '=' + preference + '; expires=' + CookieDate.toUTCString() + ';';
+	document.cookie = cookieName + '=' + preference + '; expires=' + CookieDate.toUTCString() + '; path=/';
 }
 
 function removeTabsTags() {
@@ -131,39 +130,21 @@ function initPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2
 	}
 }
 
-function fixHoverPopup(e) {
-	var elem;
-	if (e.target) {
-		elem = e.target.nextElementSibling;
-	} else {
-		elem = e;
+function getOffsetTop(e, top) {
+	if (e.id == 'bodyContent' || e.tagName == 'MAIN') {
+		return top;
 	}
-	if (elem && elem.offsetWidth && elem.previousElementSibling && elem.previousElementSibling.offsetWidth) {
-		if (elem.getBoundingClientRect().x > window.innerWidth / 3) {
-			elem.style.left = '-' + (elem.offsetWidth - elem.previousElementSibling.offsetWidth + 20) + 'px';
-		} else {
-			elem.style.left = '20px';
-		}
-	}
+	return getOffsetTop(e.offsetParent, top+e.offsetTop);
 }
 
-function fixHoverPopups() {
-	var elems = document.querySelectorAll('.hoverpopup > a');
-	for (var i = 0; i < elems.length; i++) {
-		elems[i].title = '';
-		elems[i].addEventListener('mouseover', fixHoverPopup);
+function getOffsetLeft(e, left) {
+	if (e.id == 'bodyContent' || e.tagName == 'MAIN') {
+		return left;
 	}
-	elems = document.querySelectorAll('.popuponhover img');
-	for (i = 0; i < elems.length; i++) {
-		fixHoverPopup(elems[i].parentElement);
-	}
-	elems = document.querySelectorAll('.popuponhover .popthisup');
-	for (i = 0; i < elems.length; i++) {
-		fixHoverPopup(elems[i].parentElement);
-	}
+	return getOffsetLeft(e.offsetParent, left+e.offsetLeft);
 }
 
-function initJSPopups() {
+function initHoverPopups() {
 	var elems = document.querySelectorAll('.hoverable a');
 	for (var i = 0; i < elems.length; i++) {
 		elems[i].title = '';
@@ -182,13 +163,13 @@ function initJSPopups() {
 						let rect = elem0.getBoundingClientRect();
 						elem.style.visibility = 'visible';
 						elem.style.height = 'auto';
-						elem.style.zIndex = 1;
-						elem.style.top = elem0.offsetTop + 23 + 'px';
-						console.log('if: ' + rect.x + ' > ' + window.innerWidth / 3);
-						if (rect.x > window.innerWidth / 3) {
-							elem.style.left = (elem0.offsetLeft - elem.offsetWidth + 20) + 'px';
+						elem.style.zIndex = 99;
+						elem.style.top = getOffsetTop(elem0.offsetParent, elem0.offsetTop) + 23 + 'px';
+						let left = getOffsetLeft(elem0.offsetParent, elem0.offsetLeft);
+						if (rect.x > window.innerWidth / 2) {
+							elem.style.left = (left - elem.offsetWidth + 20) + 'px';
 						} else {
-							elem.style.left = elem0.offsetLeft + 20 + 'px';
+							elem.style.left = left + 20 + 'px';
 						}
 					});
 					elems[i].addEventListener('mouseleave', function () {
@@ -207,8 +188,7 @@ function initCommon() {
 	if (!window.location.href.includes('action=edit') && !window.location.href.includes('action=submit')) {
 		removeTabsTags();
 	}
-	fixHoverPopups();
-	initJSPopups();
+	initHoverPopups();
 }
 
 try {

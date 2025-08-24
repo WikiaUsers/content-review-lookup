@@ -132,7 +132,6 @@ $(document).ready(function() {
         "Вито и Джо гоняют на Пежо",
         "Патронов много не бывает",
         "Семья требует жертв",
-        "#СынИзабеллы",
 		"История криминального мира Сицилии"
     ];
     var randomIndex = Math.floor(Math.random() * wikiNames.length);

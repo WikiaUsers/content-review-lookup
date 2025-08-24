@@ -24,6 +24,29 @@ $( function() {
 	} );
 } );
 
+/** Custom tags ****************************************************************
+ * 
+ * Description: Allows new tags to be added to a user's profile page and allows
+ *              modifying existing tags.
+ * Source:      Dev wiki (https://dev.fandom.com/wiki/UserTags)
+ */
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+	    'bureaucrat': { u:'Bureaucrat', link:'Bureaucrat', title:'This user is an Eberron Wiki bureaucrat.' },
+	    'sysop':      { u:'Administrator', link: 'Administrator', title:'This user is an Eberron Wiki administrator.' },
+	    'content-moderator': { u:'Moderator', link: 'Moderator', title:'This user is an Eberron Wiki content-moderator.' },
+	    'templates':  { u:'Templates Guru' },
+	    'chiefscribe':{ u:'Chief Scribe' },
+	},
+	oasisPlaceBefore: ''
+};
+
+UserTagsJS.modules.custom = {
+    'Moviesign' : ['templates'],
+    'BadCatMan': ['chiefscribe'],
+};
+
 /* Configuring AddRailModule */
 window.AddRailModule = [
 	{page: 'Template:RailModule', prepend: true},

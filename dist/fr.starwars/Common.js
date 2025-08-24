@@ -19,7 +19,7 @@ importArticles({
 });
 
 // InactiveUsers
-InactiveUsers = { months: 15 };
+InactiveUsers = { months: 12 };
 
 /* subtitle */
 // add the original english title as a subtitle for the article, linking to Wookieepedia's corresponding page.

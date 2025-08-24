@@ -24,10 +24,12 @@ function createPrompt() {
 
     let yesButton = document.createElement('button');
     yesButton.innerText = 'Yes';
+    yesButton.className = 'wds-button';
     yesButton.onclick = hidePrompt;
 
     let noButton = document.createElement('button');
     noButton.innerText = 'No';
+    noButton.className = 'wds-button';
 
     buttonContainer.appendChild(yesButton);
     buttonContainer.appendChild(noButton);

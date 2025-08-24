@@ -1,4 +1,4 @@
-/* script for [[Template:Tab Navigation]] animation */
+/* script for [[Template:Tab navigation]] animation */
 
 const $tabNavs = $('.tab-navigation');
 

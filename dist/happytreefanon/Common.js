@@ -39,3 +39,59 @@ UserTagsJS.modules.userfilter = {
 UserTagsJS.modules.mwGroups = ['bureaucrat,sysop']; 
 UserTagsJS.modules.mwGroups = ['rollback'];
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
+
+
+// reports
+mw.loader.using(['mediawiki.util', 'oojs-ui']).then(function() {
+    $(function() {
+        if (mw.config.get('wgNamespaceNumber') < 0) return;
+
+        var $reportBtn = $('<a href="#">')
+            .text('Report Article')
+            .addClass('oo-ui-buttonElement oo-ui-buttonElement-framed oo-ui-widget oo-ui-buttonElement-button')
+            .css({'margin-top':'15px','display':'block'})
+            .on('click', function() {
+                var dialog = new OO.ui.MessageDialog();
+                var windowManager = new OO.ui.WindowManager();
+                $('body').append(windowManager.$element);
+                windowManager.addWindows([dialog]);
+
+                var input = new OO.ui.MultilineTextInputWidget({
+                    placeholder: 'Explain the issue with this article...',
+                    rows: 4,
+                    autosize: true
+                });
+
+                var panel = new OO.ui.PanelLayout({
+                    padded: true,
+                    expanded: false
+                });
+                panel.$element.append(input.$element);
+
+                windowManager.openWindow(dialog, {
+                    title: 'Report Article',
+                    message: panel,
+                    actions: [
+                        { action: 'cancel', label: 'Cancel', flags: 'safe' },
+                        { action: 'submit', label: 'Submit', flags: ['primary', 'progressive'] }
+                    ]
+                }).closed.then(function(data) {
+                    if (data && data.action === 'submit') {
+                        $.post('https://marblyn.net/wiki/fanonwebhook.php', {
+                            page: mw.config.get('wgPageName'),
+                            user: mw.config.get('wgUserName'),
+                            url: mw.config.get('wgServer') + mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName')),
+                            reason: input.getValue()
+                        });
+                    }
+                });
+            });
+
+        var $catlinks = $('#catlinks');
+        if ($catlinks.length) {
+            $reportBtn.insertBefore($catlinks);
+        } else {
+            $('.page-footer').prepend($reportBtn);
+        }
+    });
+});

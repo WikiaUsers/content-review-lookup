@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://wf-staging.weirdgloop.org/w/MediaWiki:Gadget-countdown.js?action=raw&ctype=text/javascript");

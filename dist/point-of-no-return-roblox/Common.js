@@ -2,6 +2,7 @@
 var wiki_names = [/* Games */
 "POINT OF NO RETURN. Wiki",
 "The Beginning And The End Wiki",
+"ESCAPE EVIL HOSPITAL OBBY!! Wiki",
 /* Scrapped POINT NO RETURN. Titles */
 "DON'T MAKE THIS DIFFICULT Wiki", 
 "ONE MAN'S FINAL EFFORT Wiki", 
@@ -35,7 +36,7 @@ var wiki_names = [/* Games */
 "More will come in the future!",
 "Stuck? Maybe trying again will help.",
 "Stay radical.",
-"Over 30 messages! Can you find them all?"];
+"Over 31 messages! Can you find them all?"];
 var wiki_name_number = Math.floor(Math.random() * wiki_names.length);
 var elements = document.getElementsByClassName('fandom-community-header__community-name');
 elements[0].textContent = wiki_names[wiki_name_number];

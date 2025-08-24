@@ -49,8 +49,28 @@ window.AutoCreateUserPagesConfig = {
         2: '{{User}}'
     },
     summary: 'Welcome to the Mope.io Wiki!',
-    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
+    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1! Feel free to add as much info about yourself as you are comfortable with.</a>'
 };// End AutoCreateUserPages */
+
+/* WelcomeMessage configuration */
+window.welcomeMessage = {
+  enabled: true,
+  adminUsername: 'Gaia94',  // $4
+  adminNickname: '$4',  // $3
+  messageTitle: 'Welcome to the Mope.io Wiki!',
+  messageText: 'Hey there $1 — I\'m $4, an admin of the Mope.io Wiki. Welcome and thanks for your contribution: We hope you continue editing with us! We are a wiki dedicated to documenting all things <a href="mopeio.fandom.com/wiki/Mope.io">Mope.io</a>. \n\nPlease be sure to read and follow the <a href="mopeio.fandom.com/wiki/Project:Rules">general rules</a> of the wiki. In addition, note the <a href="mopeio.fandom.com/wiki/Help:Manual_of_Style">Manual of Style</a> and <a href="mopeio.fandom.com/wiki/Help:Layout_Guide">Layout Guide</a> when editing, and the <a href="mopeio.fandom.com/wiki/Help:Files">file policy</a> when uploading images. A full list of local wiki policies can be viewed <a href="mopeio.fandom.com/wiki/Category:Policies">here</a>. \n\nVisit <a href="mopeio.fandom.com/wiki/Forum:Index">the forums</a> to stay up-to-date on wiki-related discussions, consensus, votes, and make suggestions. If you want to talk about Mope.io and share gameplay screenshots, fanart, or fanon ideas, check out <a href="mopeio.fandom.com/f">the discussions</a>! \n\nIf you have any questions or concerns, you can make a post in the <a href="mopeio.fandom.com/wiki/Forum:Help">help forum</a>, or reply to this message. Thanks, and once again, welcome to the Mope.io Wiki!',
+  debug: false,
+  testAllEdits: false,
+  preferTalk: false,
+};// End WelcomeMessage config */
+
+// Import from dev
+importArticles({
+  type: 'script',
+  articles: [
+    'dev:MediaWiki:WelcomeMessage.js'
+  ]
+});
 
 /* LockOldComments Config */
 window.lockOldComments = (window.lockOldComments || {});

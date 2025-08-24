@@ -8,6 +8,4 @@ window.AjaxRCRefreshText = 'Tự động làm mới';
 window.AjaxRCRefreshHoverText = 'Tự động làm mới trang';
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;
-window.DisplayClockJS = {
-	format: '%I:%2M:%2S %{SA;CH}p, %{T2;T3;T4;T5;T6;T7;CN}w, %d/%m/%Y (UTC)',
-};
+window.DisplayClockJS = {};
