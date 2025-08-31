@@ -61,14 +61,6 @@ mw.hook('wikipage.content').add(function($content) {
                     }) 
                 );
                 break;
-            case 'Vine':
-                $this.html(
-                    $('<iframe>', {
-                        src: 'https://vine.co/v/' + id + '/embed/simple',
-                        css: css
-                    })
-                );
-                break;
             case 'afreeca':
                 $this.html(
                     $('<iframe>', {

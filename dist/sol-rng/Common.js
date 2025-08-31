@@ -14,10 +14,30 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'jquery'], function() {
     });
 });
 */
-importArticles({
-    type: 'script',
-    articles: [
-        'MediaWiki:OppressionTitleFont.js',
-        'MediaWiki:AuraDescription.js',
-]
-});
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		fandomcontributor: {u: "Fandom Contributor"},
+		bureaucrat: {order:0},
+		sysop: {order:1},
+		bot: {order:2},
+		'content-moderator': {order: 3},
+		'threadmoderator': {order: 4},
+	},
+	oasisPlaceBefore: ''
+};
+
+UserTagsJS.modules.custom = {
+	'Idk what life is or what the meaning is': ['fandomcontributor'],
+	'IamIV': ['fandomcontributor'],
+	'NoobieAtCode': ['fandomcontributor'],
+	'MattPlays607': ['fandomcontributor'],
+	'NiRex2002': ['fandomcontributor'],
+	'ItzJaack': ['fandomcontributor'],
+	'Arcsanta': ['fandomcontributor'],
+	'CraftyCookie': ['fandomcontributor'],
+	'Crytpt0hack_er': ['fandomcontributor'],
+	'IcySpriggan': ['fandomcontributor'],
+	//'UserName1': ['fandomcontributor'],
+}

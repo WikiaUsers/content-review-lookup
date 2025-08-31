@@ -1,29 +1,37 @@
 /* global mw, $ */
 (function () {
-  console.log('AutomatedEdit.js split-trigger loaded (With + Replace/b)');
+  console.log('Replace.js split-trigger loaded (tempered regex)');
 
   'use strict';
   if (!mw || mw.config.get('wgAction') !== 'view') return;
 
-  // Escape text for literal use inside a RegExp
+  // Escape for literal use inside RegExp
   function reEsc(str) {
     return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  // Build a regex that matches {{TemplateName ... id=<id> ...}}
-  function tplRegex(tplName, id) {
+  // Match exactly ONE template invocation whose id=... appears BEFORE its first }}
+  // Example match: {{ Replace ... id=foo ... }}
+  function tplRegexSingle(tplName, id) {
+    var name = reEsc(tplName);
+    var eid  = reEsc(id);
+    // (?!\}\}) tempered dot: consume anything that is not the closing '}}'
     return new RegExp(
-      '\\{\\{\\s*(?:Template:)?' + reEsc(tplName) + '\\b[\\s\\S]*?\\bid\\s*=\\s*' + reEsc(id) + '\\b[\\s\\S]*?\\}\\}',
+      '\\{\\{\\s*(?:Template:)?' + name + '\\b' +
+      '(?:(?!\\}\\})[\\s\\S])*?\\bid\\s*=\\s*' + eid +
+      '(?:(?!\\}\\})[\\s\\S])*?\\}\\}',
       'i'
     );
   }
 
-  // Build a regex that matches ANY of the provided template names
-  function tplRegexAny(tplNames, id) {
-    // e.g. (?:With|Replace\/b)
-    var alt = tplNames.map(reEsc).join('|');
+  // Same as above, but for ANY of several template names (e.g., With or Replace/b)
+  function tplRegexAnySingle(tplNames, id) {
+    var alt = tplNames.map(reEsc).join('|'); // e.g., With|Replace\/b
+    var eid = reEsc(id);
     return new RegExp(
-      '\\{\\{\\s*(?:Template:)?(?:' + alt + ')\\b[\\s\\S]*?\\bid\\s*=\\s*' + reEsc(id) + '\\b[\\s\\S]*?\\}\\}',
+      '\\{\\{\\s*(?:Template:)?(?:' + alt + ')\\b' +
+      '(?:(?!\\}\\})[\\s\\S])*?\\bid\\s*=\\s*' + eid +
+      '(?:(?!\\}\\})[\\s\\S])*?\\}\\}',
       'i'
     );
   }
@@ -40,6 +48,7 @@
     });
   }
 
+  // Do the actual wikitext swap for one id
   function performSwap(title, id, finalText, buttonRaw) {
     var api = new mw.Api();
     var TRIGGER_TPLS = ['With', 'Replace/b']; // support both
@@ -51,18 +60,18 @@
       var content = (page.revisions && page.revisions[0] && page.revisions[0].slots.main.content) || '';
       var ts = page.revisions[0].timestamp;
 
-      var reReplace = tplRegex('Replace', id);
-      var reTriggerAny = tplRegexAny(TRIGGER_TPLS, id);
+      var reReplace = tplRegexSingle('Replace', id);
+      var reTrigger = tplRegexAnySingle(TRIGGER_TPLS, id);
 
       if (!reReplace.test(content)) {
         return $.Deferred().reject('Could not find {{Replace}} id=' + id).promise();
       }
-      if (!reTriggerAny.test(content)) {
+      if (!reTrigger.test(content)) {
         return $.Deferred().reject('Could not find trigger ({{With}} or {{Replace/b}}) id=' + id).promise();
       }
 
-      // Replace the matching Replace and whichever trigger we find first
-      var newText = content.replace(reReplace, finalText).replace(reTriggerAny, buttonRaw);
+      // Replace exactly one Replace and exactly one trigger, without touching others
+      var newText = content.replace(reReplace, finalText).replace(reTrigger, buttonRaw);
 
       return api.postWithToken('csrf', {
         action: 'edit',
@@ -75,20 +84,22 @@
     });
   }
 
+  // Click handler for {{With}} or {{Replace/b}}
   function onTriggerClick(e) {
     e.preventDefault();
 
-    var $tr = $(this).closest('.mw-replace-trigger'); // emitted by the trigger template
+    var $tr = $(this).closest('.mw-replace-trigger'); // emitted by trigger template
     if (!$tr.length) return;
 
     var id        = String($tr.data('id') || '');
     var buttonRaw = String($tr.data('raw') || '');
     if (!id) { mw.notify('Trigger needs id=', { type: 'warn' }); return; }
 
-    // Find the matching target {{Replace … id=…}} in the rendered DOM to read its final text
+    // Find the matching {{Replace … id=…}} in rendered DOM to read final text
     var $target = $('.mw-replace-target').filter(function () {
       return String($(this).data('id')) === id;
     }).first();
+
     var finalText = String($target.data('replacement') || '');
     if (!finalText) { mw.notify('Replace id=' + id + ' is missing its final text.', { type: 'warn' }); return; }
 
@@ -109,7 +120,7 @@
   }
 
   function bind($root) {
-    // Clicks on the anchor inside the trigger template output
+    // Delegate to the anchor inside the trigger template output
     $root.on('click', '.mw-replace-trigger a', onTriggerClick);
   }
 

@@ -2,7 +2,7 @@
 
 window.MessageBlock = {
   title : 'Block',
-  message : 'You have been recived a blocked for $2, this behavior is not okay, because you have been committed follwing as: $1',
+  message : 'You have been received a blocked for $2, this behavior is not okay, because you have been committed following as: $1',
   autocheck : true
 };
 

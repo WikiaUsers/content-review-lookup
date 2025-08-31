@@ -110,3 +110,33 @@ $(function() {
   // Fallback: periodic update in case of dynamic content
   setInterval(insertBars, 2000);
 });
+
+
+window.tabberLinks = {
+    luaTabberOnly: false,
+    scrollToTab: true,
+    alwaysScroll: false,
+    neverScroll: false,
+    descendantSwitching: true,
+    prioritizeIds: false
+};
+
+
+// Insert logged-in user's name into elements with class "insertusername"
+mw.loader.using('mediawiki.util').then(function () {
+  $(function () {
+    var user = mw.config.get('wgUserName');
+    if (!user) return; // not logged in, keep fallback text
+
+    $('.insertusername').each(function () {
+      var $el = $(this);
+      // If you want the name to be a link to the user page, add data-link="true" to the span
+      if ($el.data('link')) {
+        var userUrl = mw.util.getUrl('User:' + user);
+        $el.empty().append($('<a>').attr('href', userUrl).text(user));
+      } else {
+        $el.text(user);
+      }
+    });
+  });
+});

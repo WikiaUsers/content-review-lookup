@@ -66,7 +66,7 @@ function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, lin
 	}
 	var CookieDate = new Date();
 	CookieDate.setFullYear(CookieDate.getFullYear() + 1);
-	document.cookie = cookieName + '=' + preference + '; expires=' + CookieDate.toUTCString() + '; path=/';
+	document.cookie = cookieName + '=' + preference + '; expires=' + CookieDate.toUTCString() + '; path=/;';
 }
 
 function removeTabsTags() {
@@ -144,13 +144,51 @@ function getOffsetLeft(e, left) {
 	return getOffsetLeft(e.offsetParent, left+e.offsetLeft);
 }
 
+function fixClassNames(selectors) {
+	for (var h = 0; h < selectors.length; h++) {
+		var elems = document.querySelectorAll(selectors[h]);
+		for (var i = 0; i < elems.length; i++) {
+			if (elems[i].className.includes(',')) {
+				elems[i].className = elems[i].className.replaceAll(',','');
+			}
+			if (elems[i].className.includes('(')) {
+				elems[i].className = elems[i].className.replaceAll('(','');
+			}
+			if (elems[i].className.includes(')')) {
+				elems[i].className = elems[i].className.replaceAll(')','');
+			}
+		}
+	}
+}
+
 function initHoverPopups() {
-	var elems = document.querySelectorAll('.hoverable a');
+	fixClassNames(['.hoverable','.popupable']);
+	var elems = document.querySelectorAll('.popupable');
+	var bodyContent = document.querySelector('#bodyContent');
+	var main = document.querySelector('main');
 	for (var i = 0; i < elems.length; i++) {
+		elems[i].parentElement.removeChild(elems[i]);
+		if (bodyContent) {
+			bodyContent.appendChild(elems[i]);
+		} else if (main) {
+			main.appendChild(elems[i]);
+		}
+	}
+	elems = document.querySelectorAll('.hoverable a');
+	for (i = 0; i < elems.length; i++) {
 		elems[i].title = '';
 	}
 	elems = document.querySelectorAll('.hoverable');
 	for (i = 0; i < elems.length; i++) {
+		// var p = elems[i].parentElement;
+		// if (p.tagName == 'P') {
+		//     var span = document.createElement('span');
+		//     p.parentElement.insertBefore(span, p);
+		//     while (p.childNodes.length > 0) {
+		//         span.appendChild(p.childNodes[0]);
+		//     }
+		//     p.parentElement.removeChild(p);
+		// }
 		for (var j = 0; j < elems[i].classList.length; j++) {
 			var popupid = elems[i].classList[j];
 			var re = /^popupid/i;

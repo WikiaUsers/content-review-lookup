@@ -12,3 +12,4 @@ while (wiki_name_number < 0 || wiki_name_number > wiki_names.length) {
 }
 var elements = document.getElementsByClassName('fandom-community-header__community-name');
 elements[0].textContent = wiki_names[wiki_name_number];
+window.AddRailModule = [{prepend: true}];

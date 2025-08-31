@@ -45,3 +45,8 @@ var mcw = window.mcw = {};
 }() );
 
 }() );
+
+/*** Adjustment for import: dev:LinkPreview/code.js (no preview image)***/
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = ''; // Set to empty string or null to disable default image
+window.pPreview.noimage = ''; // same^ gets rid of the stupid borderlands logo. Why is this even the default of an import on Fandom?

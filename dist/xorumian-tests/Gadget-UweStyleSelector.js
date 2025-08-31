@@ -72,7 +72,7 @@
 	function initDropdownHtml() {
 		$('.'+CONTENT_ID).remove();
 		var $dropdown = $("<div>").addClass("wds-button wds-is-secondary wds-dropdown "+CONTENT_ID);
-		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Wiki Style Selector").html(TOOLBAR_ICON).appendTo($dropdown);
+		var $toggle = $("<div>").addClass("wds-dropdown__toggle").attr("title", "Wiki Style Selector").html(TOOLBAR_ICON).appendTo($dropdown);
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
 
 		// Safari 3.0+ "[object HTMLElementConstructor]" - https://stackoverflow.com/a/9851769

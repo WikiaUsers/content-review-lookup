@@ -124,7 +124,6 @@ window.MessageWallUserTags = {
 	    'Tabletstoons123': 'Rollback',
 	    'BarelyGonnaDoAnything': 'Admin • Cuddles',
 	    'TravellingEye': 'Admin',
-	    'MattDet': 'Admin'
     }
 };
 

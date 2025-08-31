@@ -54,7 +54,7 @@ blazarSpan.onclick = function() {
 
 // Removes reference numbers from the table of contents
 mw.hook("wikipage.content").add(function($content) {
-	var regex = /\[[0-9]*?\]/;
+	var regex = /\[([0-9]+?|Note [0-9]+?)\]/;
 	var toctexts = document.querySelectorAll(".toctext");
 	for (var i = 0; i < toctexts.length; i++) {
 		var withoutRef = toctexts[i].innerHTML.replace(regex,"");

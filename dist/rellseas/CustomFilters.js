@@ -1,39 +1,62 @@
-/* Defer execution until the page is loaded */
-$(function() {
-    // Find the placeholder on the page
-    var $placeholder = $('#weapon-search-placeholder');
+$(function () {
+  // Search filter box
+  $('#search').html(
+    '<input id="searchInput" class="rsw-search" placeholder="Filter name...">'
+  );
 
-    // If the placeholder exists, then proceed. This stops the script from running on other pages.
-    if ($placeholder.length) {
+  // Type filter
+  $('#filter-type').html(
+    '<select id="filterType" class="rsw-filter">' +
+      '<option value="">All Types</option>' +
+      '<option value="fruit-type-paramecia">Paramecia</option>' +
+      '<option value="fruit-type-zoan">Zoan</option>' +
+      '<option value="fruit-type-logia">Logia</option>' +
+    '</select>'
+  );
 
-        // 1. Create the search input element dynamically
-        var $searchInput = $('<input>', {
-            type: 'text',
-            id: 'weaponSearchInput', // Give it the same ID the CSS will look for
-            placeholder: 'Search for weapons...'
-        });
+  // Grade filter
+  $('#filter-grade').html(
+    '<select id="filterGrade" class="rsw-filter">' +
+      '<option value="">All Grades</option>' +
+      '<option value="grade-a">Grade A</option>' +
+      '<option value="grade-b">Grade B</option>' +
+      '<option value="grade-c">Grade C</option>' +
+      '<option value="grade-d">Grade D</option>' +
+      '<option value="grade-e">Grade E</option>' +
+      '<option value="grade-f">Grade F</option>' +
+    '</select>'
+  );
 
-        // 2. Insert the newly created input into the placeholder
-        $placeholder.append($searchInput);
-        
-        // Add a class to the container for styling purposes
-        $placeholder.addClass('weapon-search-container');
+  // Filtering logic
+  function filterItems () {
+    const search = $('#searchInput').val().trim().toLowerCase();
 
-        // 3. Attach the keyup event to the new input to make it work
-        $searchInput.on('keyup', function() {
-            var filter = $(this).val().toUpperCase();
-            var $weaponGrid = $('#weaponGrid');
+    const filters = {
+      type  : $('#filterType').val(),
+      grade : $('#filterGrade').val()
+    };
 
-            // Find each weapon button inside the grid
-            $weaponGrid.find('.navbutton').each(function() {
-                var weaponName = $(this).find('.navbutton-caption').text().toUpperCase();
+    $('#itemList > div').each(function () {
+      const $t = $(this);
 
-                if (weaponName.indexOf(filter) > -1) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        });
-    }
+
+      const textOk =
+        !search ||
+        ($t.attr('id')||'').toLowerCase().includes(search) ||
+        $t.text().toLowerCase().includes(search);
+
+      const catsOk = Object.entries(filters).every(([attr, val]) => {
+        if (!val) return true;
+        const list = ($t.data(attr) || '')
+          .toString()
+          .split(/\s+/);
+        return list.includes(val);
+      });
+
+      $t.toggle(textOk && catsOk);
+    });
+  }
+
+  // Bind events
+  $(document).on('input change', '#searchInput, #filterType, #filterGrade', filterItems);
 });

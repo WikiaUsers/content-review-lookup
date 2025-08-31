@@ -1,5 +1,30 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+mw.hook('wikipage.content').add(function($content){
+	var typeChampionField = $('wpTextbox1').val().indexOf('type-exarch') !== -1;
+	if(typeChampionField){
+		$('#patron-deity').show();
+	}else{
+		$('#patron-deity').hide();
+	}
+});
+
+if(document.getElementsByClassName("portable-infobox") !== null){
+	console.log("hello world1");
+}else{
+	console.log("hello world2");
+	
+}
+if(document.getElementById("char-template") !== null){ //this is a character template
+	const titleLocation = document.getElementById("title-src").parentNode.parentNode;
+	console.log(titleLocation);
+	const isChamp = $('wpTextbox1').val().indexOf('type-exarch') !== -1;
+	console.log(isChamp);
+}
+
+
+
+
 console.log("this is working!");
 // var element = document.getElementById("OpacitySlider");
 // if(element != null){

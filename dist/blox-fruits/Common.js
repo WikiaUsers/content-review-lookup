@@ -72,9 +72,9 @@ $(function () {
 	$('#filter-sea').html(
 		'<select id="filterSea" class="bfw-filter">' +
 			'<option value="">All Seas</option>' +
-			'<option value="sea-first">First Sea</option>' +
-			'<option value="sea-second">Second Sea</option>' +
-			'<option value="sea-third">Third Sea</option>' +
+			'<option value="sea-1">First Sea</option>' +
+			'<option value="sea-2">Second Sea</option>' +
+			'<option value="sea-3">Third Sea</option>' +
 		'</select>'
 	);
 

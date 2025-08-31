@@ -147,6 +147,15 @@
     'S01E08': ['Images - Caprica', 'Season 1 - Caprica', 'S01E08 - Caprica'],
     'S01E09': ['Images - Caprica', 'Season 1 - Caprica', 'S01E09 - Caprica'],
     'S01E10': ['Images - Caprica', 'Season 1 - Caprica', 'S01E10 - Caprica'],
+    'S01E11': ['Images - Caprica', 'Season 1 - Caprica', 'S01E11 - Caprica'],
+    'S01E12': ['Images - Caprica', 'Season 1 - Caprica', 'S01E12 - Caprica'],
+    'S01E13': ['Images - Caprica', 'Season 1 - Caprica', 'S01E13 - Caprica'],
+    'S01E14': ['Images - Caprica', 'Season 1 - Caprica', 'S01E14 - Caprica'],
+    'S01E15': ['Images - Caprica', 'Season 1 - Caprica', 'S01E15 - Caprica'],
+    'S01E16': ['Images - Caprica', 'Season 1 - Caprica', 'S01E16 - Caprica'],
+    'S01E17': ['Images - Caprica', 'Season 1 - Caprica', 'S01E17 - Caprica'],
+    'S01E18': ['Images - Caprica', 'Season 1 - Caprica', 'S01E18 - Caprica'],
+
 },
  'Other': {
     "Other": ["Images - Other"],

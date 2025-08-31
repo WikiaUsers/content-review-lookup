@@ -18,13 +18,23 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Gold amount changes [[Updates/15.11.b91244]]
+'Brachiodemon': '15.11.b91244',
+'Infernal Demon': '15.11.b91244',
+'Infernal Phantom': '15.11.b91244',
+'Norcferatu Heartless': '15.11.b91244',
+'Gloom Maw':'15.11.b91244',
+'Norcferatu Nightweaver':'15.11.b91244',
+'Varg':'15.11.b91244',
+'Orclops Bloodbreaker':'15.11.b91244',
+'Dworc Shadowstalker':'15.11.b91244',
 //gold amount change [[Updates/15.11.c5bf24]]
-'Norcferatu Heartless': '15.11.c5bf24',
-'Gloom Maw':'15.11.c5bf24',
-'Norcferatu Nightweaver':'15.11.c5bf24',
-'Varg':'15.11.c5bf24',
-'Orclops Bloodbreaker':'15.11.c5bf24',
-'Dworc Shadowstalker':'15.11.c5bf24',
+//'Norcferatu Heartless': '15.11.c5bf24',
+//'Gloom Maw':'15.11.c5bf24',
+//'Norcferatu Nightweaver':'15.11.c5bf24',
+//'Varg':'15.11.c5bf24',
+//'Orclops Bloodbreaker':'15.11.c5bf24',
+//'Dworc Shadowstalker':'15.11.c5bf24',
 //
 'Cursed Prospector': '15.03.afe753',
 'Evil Prospector': '15.03.afe753',
@@ -140,7 +150,7 @@ window.loot_parser_data = {
 'Bony Sea Devil': '14.12.5229e4',
 'Vibrant Phantom': '14.12.5229e4',
 'Capricious Phantom': '14.12.5229e4',
-'Infernal Phantom': '14.12.5229e4',
+//'Infernal Phantom': '14.12.5229e4',
 'Mould Phantom': '14.12.5229e4',
 'Druid\'s Apparition': '14.12.5229e4',
 'Knight\'s Apparition': '14.12.5229e4',
@@ -570,8 +580,8 @@ window.loot_parser_data = {
 'Memory of an Insectoid': '12.85.11542',
 'Memory of an Ogre': '12.85.11542',
 // Changes made on February 01, 2022 - 12.85.11525 (2)
-'Brachiodemon': '12.85.11525',
-'Infernal Demon': '12.85.11525',
+//'Brachiodemon': '12.85.11525',
+//'Infernal Demon': '12.85.11525',
 //'Infernal Phantom': '12.85.11525',
 //'Branchy Crawler': '12.85.11525',
 //'Rotten Golem': '12.85.11525',
