@@ -4,7 +4,7 @@ window.BackToTopModern = true;
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 // window.pPreview.tlen = 200;
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/im-an-infinite-regressor/images/2/2e/Img_not_found.png/revision/latest/scale-to-width-down/200';
-window.pPreview.RegExp.noinclude = [".NoLinkPreview", ".LinkPreview-ignore", ".quote", ".mw-ext-cite-error", ".error", ".references", ".reference", ".sup.reference"];
+window.pPreview.RegExp.noinclude = [".NoLinkPreview", ".LinkPreview-ignore", ".quote", ".mw-ext-cite-error", ".error", ".references", ".reference", ".sup.reference",".TabsClass",".toc"];
 
 importArticles({
     type: 'script',

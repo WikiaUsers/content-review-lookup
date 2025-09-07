@@ -40,6 +40,11 @@
             styles: 'MediaWiki:ActivityFeedMimic.css'
         },
 
+		AddSocialActivityButton: {
+			page: 'AddSocialActivityButton',
+			scripts: 'MediaWiki:AddSocialActivityButton.js'
+		},
+
         BackToTopButton: {
             page: 'BackToTopButton',
             scripts: 'MediaWiki:BackToTopButton/code.js',
@@ -763,7 +768,7 @@
 			page: 'UserProfilePopup',
 			scripts: 'MediaWiki:UserProfilePopup.js'
 		},
-		
+
         UserStatus: {
             page: 'User:SapphireSonata',
             scripts: 'MediaWiki:UserStatus/demo.js'

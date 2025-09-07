@@ -140,3 +140,79 @@ mw.loader.using('mediawiki.util').then(function () {
     });
   });
 });
+
+
+
+
+//calculator test or calculation test for comparison of wep
+mw.loader.using('mediawiki.util', function () {
+  jQuery(function ($) {
+
+    function waitFor(selector, cb, timeoutMs) {
+      var start = Date.now();
+      var iv = setInterval(function () {
+        var $el = $(selector);
+        if ($el.length) { clearInterval(iv); cb($el); return; }
+        if (Date.now() - start > timeoutMs) { clearInterval(iv); cb(null); return; }
+      }, 200);
+    }
+
+    waitFor('#calculators_loading, #calculators_container', function (found) {
+      if (!found) {
+        console.log('Calculators: no placeholders found on this page.');
+        return;
+      }
+
+      var $loader = $('#calculators_loading');
+      var $container = $('#calculators_container');
+
+      if ($loader.length) $loader.hide();
+      if ($container.length) $container.show();
+
+      var $exercise = $('#calculator_exerciseweapons');
+      var $realskill = $('#calculator_realskill, #calculator_reakskill');
+
+      if (!$exercise.length && $container.length) $exercise = $('<div id="calculator_exerciseweapons"></div>').appendTo($container);
+      if (!$realskill.length && $container.length) $realskill = $('<div id="calculator_realskill"></div>').appendTo($container);
+
+      $exercise.html(
+        '<div class="calc-box"><h3>Training calculator</h3>' +
+        '<p>Exercise-weapons calculator injected. Replace with full logic when ready.</p></div>'
+      );
+
+      $realskill.html(
+        '<div class="calc-box">' +
+          '<h3>Skills without Loyalty</h3>' +
+          '<label>Displayed skill: <input type="number" id="tw_displayed" step="0.01" /></label> ' +
+          '<label>Loyalty %: <input type="number" id="tw_loyalty" value="5" step="0.01" /></label> ' +
+          '<button id="tw_calc">Calculate</button>' +
+          '<div id="tw_output" style="margin-top:8px"></div>' +
+        '</div>'
+      );
+
+      $('#tw_calc').on('click', function () {
+        var displayed = parseFloat($('#tw_displayed').val());
+        var loyalty = parseFloat($('#tw_loyalty').val()) || 0;
+        if (isNaN(displayed)) { $('#tw_output').text('Please enter a valid displayed skill.'); return; }
+        var base = displayed / (1 + loyalty / 100);
+        $('#tw_output').html('Base skill (without loyalty): <strong>' + base.toFixed(2) + '</strong>');
+      });
+
+      console.log('Calculators injected.');
+    }, 5000); 
+  });
+});
+
+
+// Load the AddRailModule script from Fandom Developers
+mw.loader.load('https://dev.fandom.com/load.php?mode=articles&articles=u:dev:MediaWiki:AddRailModule/code.js&only=scripts');
+
+// Add Discord widget to the rail
+window.AddRailModule = window.AddRailModule || [];
+window.AddRailModule.push({
+    prepend: true, 
+    content: '<iframe src="https://discord.com/widget?id=1380241105337061456&theme=dark" ' +
+             'width="300" height="400" allowtransparency="true" frameborder="0"></iframe>'
+});
+
+alert("Pixelblade Wiki JavaScript is working!");

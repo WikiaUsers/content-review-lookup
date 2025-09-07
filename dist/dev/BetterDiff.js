@@ -572,7 +572,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 				const turl = event.target.getAttribute('data-url'),
 				getURL = (page, query, ns) => {
 					return  'https://'+betterDiff.getLoad(turl)+
-							'/wiki/'+encodeURIComponent(page).replace(/%3A/g, ':').replace(/%20/g, '_')+
+							'/wiki/'+mw.util.escapeIdForLink(page).replace(/\?/g, '%3F')+
 							(query ? ('?'+$.param(query)) : '');
 				},
 				generateHeader = (data, url) => {

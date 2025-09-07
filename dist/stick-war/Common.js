@@ -19,3 +19,52 @@ window.lessOpts.push( {
 	// target page header
 	header: 'MediaWiki:Custom-css-header/common'
 } );
+
+// Simple Tabber
+document.addEventListener("DOMContentLoaded", function() {
+    const tabbers = document.querySelectorAll(".tabber");
+    tabbers.forEach(tabber => {
+        const tabs = tabber.querySelectorAll(".tabber-tab");
+        const contents = tabber.querySelectorAll(".tabber-content");
+
+        tabs.forEach((tab, i) => {
+            tab.addEventListener("click", () => {
+                tabs.forEach(t => t.classList.remove("active"));
+                contents.forEach(c => c.style.display = "none");
+                tab.classList.add("active");
+                contents[i].style.display = "block";
+            });
+        });
+    });
+});
+
+
+(function() {
+    // Detect Fandom theme
+    var isDark = document.body.classList.contains('theme-fandomdesktop-dark');
+
+    // Show correct navigation
+    var darkNav = document.getElementById('navigation-dark');
+    var lightNav = document.getElementById('navigation-light');
+
+    if (isDark) {
+        if(darkNav) darkNav.style.display = 'block';
+        if(lightNav) lightNav.style.display = 'none';
+    } else {
+        if(darkNav) darkNav.style.display = 'none';
+        if(lightNav) lightNav.style.display = 'block';
+    }
+
+    // Optional: Listen for theme changes without page reload (Fandom SPA)
+    var observer = new MutationObserver(function() {
+        isDark = document.body.classList.contains('theme-fandomdesktop-dark');
+        if(isDark) {
+            if(darkNav) darkNav.style.display = 'block';
+            if(lightNav) lightNav.style.display = 'none';
+        } else {
+            if(darkNav) darkNav.style.display = 'none';
+            if(lightNav) lightNav.style.display = 'block';
+        }
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+})();

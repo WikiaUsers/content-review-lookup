@@ -15,7 +15,6 @@ UserTagsJS.modules.custom = {
     'The Waffle Bot'    : ['bot'],
     'Azura Bot'         : ['bot'],
     'LuisAngel01'       : ['juniorsysop'],
-    'JoelPalencia12'    : ['juniorsysop'],
     };
 
 UserTagsJS.modules.userfilter = {

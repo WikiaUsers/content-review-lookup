@@ -316,8 +316,9 @@ window.cookpotAdd = function(title, src) { //Добавляет ингридие
 };
 
 window.updateResult = function(data) {
+    console.log(data.expandtemplates['*']);
     cookpotResult = JSON.parse(data.expandtemplates['*']);
-
+	
     for (var resultIndex = 0; resultIndex < cookpotResult.length; resultIndex++) {
         var resultInfo = cookpotResult[resultIndex];
         var src = $('#' + resultInfo['prefab']).children('img').attr('data-src');

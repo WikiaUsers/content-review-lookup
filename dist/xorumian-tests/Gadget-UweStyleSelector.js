@@ -28,12 +28,6 @@
 	// https://www.svgrepo.com/svg/91946/checked
 	var CHECK_ICON = '<svg class="uwe-check" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 60.364 60.364" xml:space="preserve"><g><path d="M58.968,12.734c-2.193-2.423-5.936-2.608-8.359-0.415L24.481,35.975L9.991,22.218c-2.371-2.25-6.117-2.152-8.366,0.218 c-2.249,2.37-2.152,6.115,0.218,8.365l18.208,17.283c1.145,1.088,2.609,1.627,4.072,1.627c0.822,0,1.643-0.176,2.406-0.516 c0.885-0.232,1.729-0.674,2.455-1.332l29.568-26.771C60.976,18.899,61.161,15.157,58.968,12.734z" fill="currentColor" /></g></svg>';
 
-	// Thanks to https://blog.logrocket.com/complete-guide-using-css-filters-svgs for helping figure the filters out
-	// Hiding the svg in anyways seems to break the filter, so instead move it offscreen
-	var SVG_FILTER = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"><feImage href="https://static.wikia.nocookie.net/hypixel-skyblock/images/3/32/Mcglint.gif" x="0" y="0" preserveAspectRatio="none" result="IMAGE"/><feBlend in="IMAGE" in2="SourceGraphic" mode="screen" result="BLEND"/><feComposite operator="in" in="BLEND" in2="SourceGraphic"/></filter></svg>';
-	// Before Safari 17 filter didn't work and showed nothing; now with Safari 17 it just makes the image vanish. So this is a custom filter that does nothing other than prevent css from breaking. Image with no enchant = better than no image
-	var SVG_FILTER_SAFARI = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"></filter></svg>';
-
 	var CONTENT_ID = 'uwe-style-dropdown';
 
 	function main() {
@@ -74,14 +68,6 @@
 		var $dropdown = $("<div>").addClass("wds-button wds-is-secondary wds-dropdown "+CONTENT_ID);
 		var $toggle = $("<div>").addClass("wds-dropdown__toggle").attr("title", "Wiki Style Selector").html(TOOLBAR_ICON).appendTo($dropdown);
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
-
-		// Safari 3.0+ "[object HTMLElementConstructor]" - https://stackoverflow.com/a/9851769
-		var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window.safari || (typeof safari !== 'undefined' && window.safari.pushNotification));
-		if(isSafari) {
-			$(SVG_FILTER_SAFARI).appendTo($toggle);
-		} else {
-			$(SVG_FILTER).appendTo($toggle);
-		}
 
 		// Insert dropdown to nav
 		$(".wiki-tools > .wds-button:last-of-type").after($dropdown);

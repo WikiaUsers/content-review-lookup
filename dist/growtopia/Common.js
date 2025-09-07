@@ -132,6 +132,33 @@ $(function() {
 		}
 	});
 });
+//----- [ Sharper Slider Images ] -----//
+mw.hook('wikipage.content').add(($content) => {
+	const slides =  $content.find('.mainpage .gtw-slider .fandom-slider .gallerybox img');
+	slides.each(function () {
+		const attrs = ['src','srcset','data-src','data-srcset'];
+		for (const a of attrs) {
+			const value = this.getAttribute(a);
+			if (!value) continue;
+			const updatedValue = value.replace(/\/scale-to-width(?:-down)?\/\d+/g, '/scale-to-width-down/1200');
+			if (updatedValue !== value) this.setAttribute(a, updatedValue);
+		}
+	});
+});
+
+//----- [ Sharper Slider Images ] -----//
+mw.hook('wikipage.content').add(($content) => {
+	const slides =  $content.find('.sharper-slider.gtw-slider .fandom-slider .gallerybox img');
+	slides.each(function () {
+		const attrs = ['src','srcset','data-src','data-srcset'];
+		for (const a of attrs) {
+			const value = this.getAttribute(a);
+			if (!value) continue;
+			const updatedValue = value.replace(/\/scale-to-width(?:-down)?\/\d+/g, '/scale-to-width-down/1200');
+			if (updatedValue !== value) this.setAttribute(a, updatedValue);
+		}
+	});
+});
 
 //----- [ Pagination ] -----//
 $(function() {

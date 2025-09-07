@@ -11,12 +11,12 @@ window.tooltips_list = [
         classname: 'burgle-ability-tooltip',
         parse: '{' + '{BurgleCatsSkillDetail|<#skillname#>}}',
     },
-    // Used in Template:Lineup
+    // [pre-migration, legacy] Used in Template:Lineup
     {
         classname: 'lineup-slot-info',
         parse: '{' + '{LineupSlotInfo|<#unitname#>|<#level#>|<#talents#>}}',
     },
-    // Used in Cat Filter
+    // [pre-migration] Used in Cat Filter (defunct)
     {
     	classname: 'cat-filter-icon-button',
     	parse: '{' + '{FilterIconInfo|<#name#>|<#desc#>}}',

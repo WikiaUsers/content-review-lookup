@@ -1,4 +1,4 @@
-/** 
+/**
  * Anchored Rollback
  * @description Perform rollbacks without changing location
  * @author Ozank
@@ -9,7 +9,7 @@
         return;
     }
     window.AnchoredRollbackLoaded = true;
-    
+
     var config = mw.config.get([
             'stylepath',
             'wgUserGroups'
@@ -20,12 +20,12 @@
 
     function click(e) {
         var $this = $(this),
-            href = new mw.Uri($this.attr('href'));
+            href = new URL($this.attr('href'), location.href);
 
         // validate that link is a rollback link for current wiki
         if (
-            href.host !== location.hostname ||
-            href.query.action !== 'rollback'
+            href.hostname !== location.hostname ||
+            href.searchParams.get('action') !== 'rollback'
         ) {
             return;
         }
@@ -33,7 +33,7 @@
         e.preventDefault();
 
         if (isBot) {
-            href += '&bot=1';
+            href.searchParams.set("bot", 1);
         }
 
         $this.addClass('mw-ajax-loader');

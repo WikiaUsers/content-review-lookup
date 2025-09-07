@@ -8,7 +8,7 @@ mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweRedesign
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweSearch.js?action=raw&ctype=text/javascript");
 
 // Activity button link to "Special:RecentChanges"
-mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweSeeMoreActivityButton.js?action=raw&ctype=text/javascript");
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweRecentActivityButton.js?action=raw&ctype=text/javascript");
 
 // FanFeed
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweFanFeed.js?action=raw&ctype=text/javascript");

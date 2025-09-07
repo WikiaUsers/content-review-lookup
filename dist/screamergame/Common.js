@@ -20,60 +20,51 @@ mw.hook('wikipage.content').add(function() {
             isScrubbing: false
         },
         teamLogos: {},
-        resolveUrl: function(url) {
-            if (typeof url === 'string' && url.startsWith('static.wikia')) {
-                return 'https://' + url;
-            }
-            return url;
-        },
         vehicleData: {
             'horizon': { name: 'Horizon', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/4/43/Horizon_interior.png/revision/latest?cb=20250206211759', liveries: {
                 'angels': { name: 'Angels', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/d/d1/Angels%27_logo.png/revision/latest?cb=20250107211749', icon: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Angels_horizon_front.png/revision/latest?cb=20250130211242', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/9/97/S2_angels_horizon_mp4.mp4/revision/latest?cb=20250807201227' }},
                 'wasp': { name: 'Wasp', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/4/46/Wasp%27s_logo.png/revision/latest?cb=20250110193740', icon: 'https://static.wikia.nocookie.net/screamergame/images/9/92/Wasp_horizon_front.png/revision/latest?cb=20250130211652', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/8/82/S2_wasp_horizon_mp4.mp4/revision/latest?cb=20250807201903' }},
                 'condor': { name: 'Condor', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Condor%27s_logo.png/revision/latest?cb=20250106212324', icon: 'https://static.wikia.nocookie.net/screamergame/images/2/28/Condor_horizon_front.png/revision/latest?cb=20250130211550', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/5/50/S2_condor_horizon_mp4.mp4/revision/latest?cb=20250807201549' }},
-                'zeus': { name: 'Zeus', teamLogo: 'static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'static.wikia.nocookie.net/screamergame/images/a/aa/Zeus_horizon_front.png/revision/latest?cb=20250130211736', display: { type: 'video', src: 'static.wikia.nocookie.net/screamergame/images/5/58/S2_zeus_horizon_mp4.mp4/revision/latest?cb=20250807202240' }}
+                'zeus': { name: 'Zeus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'https://static.wikia.nocookie.net/screamergame/images/a/aa/Zeus_horizon_front.png/revision/latest?cb=20250130211736', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/5/58/S2_zeus_horizon_mp4.mp4/revision/latest?cb=20250807202240' }}
             }},
             'nebula': { name: 'Nebula', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/2/28/Nebula_interior.png/revision/latest?cb=20250206211855', liveries: {
                 'angels': { name: 'Angels', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/d/d1/Angels%27_logo.png/revision/latest?cb=20250107211749', icon: 'https://static.wikia.nocookie.net/screamergame/images/3/3a/Angels_nebula_front.png/revision/latest?cb=20250202182226', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/4d/S2_angels_nebula_mp4.mp4/revision/latest?cb=20250807201302' }},
                 'wasp': { name: 'Wasp', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/4/46/Wasp%27s_logo.png/revision/latest?cb=20250110193740', icon: 'https://static.wikia.nocookie.net/screamergame/images/7/75/Wasp_nebula_front.png/revision/latest?cb=20250202182403', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/7/75/S2_wasp_nebula_mp4.mp4/revision/latest?cb=20250807201929' }},
                 'condor': { name: 'Condor', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Condor%27s_logo.png/revision/latest?cb=20250106212324', icon: 'https://static.wikia.nocookie.net/screamergame/images/8/89/Condor_nebula_front.png/revision/latest?cb=20250202182318', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/b/b9/S2_condor_nebula_mp4.mp4/revision/latest?cb=20250807201618' }},
-                'zeus': { name: 'Zeus', teamLogo: 'static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'static.wikia.nocookie.net/screamergame/images/5/54/Zeus_nebula_front.png/revision/latest?cb=20250202182439', display: { type: 'video', src: 'static.wikia.nocookie.net/screamergame/images/8/8a/S2_zeus_nebula_mp4.mp4/revision/latest?cb=20250807202302' }}
+                'zeus': { name: 'Zeus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'https://static.wikia.nocookie.net/screamergame/images/5/54/Zeus_nebula_front.png/revision/latest?cb=20250202182439', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/8/8a/S2_zeus_nebula_mp4.mp4/revision/latest?cb=20250807202302' }}
             }},
             'spark': { name: 'Spark', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/8/8f/Spark_interior.png/revision/latest?cb=20250206211941', liveries: {
                 'angels': { name: 'Angels', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/d/d1/Angels%27_logo.png/revision/latest?cb=20250107211749', icon: 'https://static.wikia.nocookie.net/screamergame/images/3/34/Angels_spark_front.png/revision/latest?cb=20250203205542', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/40/S2_angels_spark_mp4.mp4/revision/latest?cb=20250807201332' }},
                 'wasp': { name: 'Wasp', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/4/46/Wasp%27s_logo.png/revision/latest?cb=20250110193740', icon: 'https://static.wikia.nocookie.net/screamergame/images/6/62/Wasp_spark_front.png/revision/latest?cb=20250203210652', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/0/02/S2_wasp_spark_mp4.mp4/revision/latest?cb=20250807201959' }},
                 'condor': { name: 'Condor', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Condor%27s_logo.png/revision/latest?cb=20250106212324', icon: 'https://static.wikia.nocookie.net/screamergame/images/4/4c/Condor_spark_front.png/revision/latest?cb=20250203210613', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/e/e6/S2_condor_spark_mp4.mp4/revision/latest?cb=20250807201640' }},
-                'zeus': { name: 'Zeus', teamLogo: 'static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'static.wikia.nocookie.net/screamergame/images/4/4e/Zeus_spark_front.png/revision/latest?cb=20250203210730', display: { type: 'video', src: 'static.wikia.nocookie.net/screamergame/images/f/f8/S2_zeus_spark_mp4.mp4/revision/latest?cb=20250807202329' }}
+                'zeus': { name: 'Zeus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'https://static.wikia.nocookie.net/screamergame/images/4/4e/Zeus_spark_front.png/revision/latest?cb=20250203210730', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/f/f8/S2_zeus_spark_mp4.mp4/revision/latest?cb=20250807202329' }}
             }},
             'radiance': { name: 'Radiance', category: 'base', interior: 'https://static.wikia.nocookie.net/screamergame/images/c/c3/Radiance_interior.png/revision/latest?cb=20250206212232', liveries: {
                 'angels': { name: 'Angels', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/d/d1/Angels%27_logo.png/revision/latest?cb=20250107211749', icon: 'https://static.wikia.nocookie.net/screamergame/images/3/3d/Angels_radiance_front.png/revision/latest?cb=20250204213249', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/a/a8/S2_angels_radiance_mp4.mp4/revision/latest?cb=20250807201404' }},
                 'wasp': { name: 'Wasp', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/4/46/Wasp%27s_logo.png/revision/latest?cb=20250110193740', icon: 'https://static.wikia.nocookie.net/screamergame/images/2/2c/Wasp_radiance_front.png/revision/latest?cb=20250204213401', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/44/S2_wasp_radiance_mp4.mp4/revision/latest?cb=20250807202050' }},
                 'condor': { name: 'Condor', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Condor%27s_logo.png/revision/latest?cb=20250106212324', icon: 'https://static.wikia.nocookie.net/screamergame/images/9/9c/Condor_radiance_front.png/revision/latest?cb=20250204213326', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/e/e3/S2_condor_radiance_mp4.mp4/revision/latest?cb=20250807201716' }},
-                'zeus': { name: 'Zeus', teamLogo: 'static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'static.wikia.nocookie.net/screamergame/images/0/07/Zeus_radiance_front.png/revision/latest?cb=20250204213444', display: { type: 'video', src: 'static.wikia.nocookie.net/screamergame/images/4/40/S2_zeus_radiance_mp4.mp4/revision/latest?cb=20250807202356' }}
+                'zeus': { name: 'Zeus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', icon: 'https://static.wikia.nocookie.net/screamergame/images/0/07/Zeus_radiance_front.png/revision/latest?cb=20250204213444', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/4/40/S2_zeus_radiance_mp4.mp4/revision/latest?cb=20250807202356' }}
             }},
             'hornet': { name: 'Hornet', category: 'bonus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/4/46/Wasp%27s_logo.png/revision/latest?cb=20250110193740', interior: 'https://static.wikia.nocookie.net/screamergame/images/0/05/Wasp_hornet_interior.png/revision/latest?cb=20250206212329', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/6/6c/S2_wasp_hornet_mp4.mp4/revision/latest?cb=20250807202140' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/c/c5/Wasp_hornet_front.png/revision/latest?cb=20250206202619'},
-            'thunder': { name: 'Thunder', category: 'bonus', teamLogo: 'static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', interior: 'static.wikia.nocookie.net/screamergame/images/4/4e/Zeus_thunder_interior.png/revision/latest?cb=20250206212402', display: { type: 'static', src: 'static.wikia.nocookie.net/screamergame/images/2/2c/Zeus_thunder_front.png/revision/latest?cb=20250206203732' }, icon: 'static.wikia.nocookie.net/screamergame/images/2/2c/Zeus_thunder_front.png/revision/latest?cb=20250206203732'},
+            'thunder': { name: 'Thunder', category: 'bonus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/5/5e/Zeus%27s_logo.png/revision/latest?cb=20250109210321', interior: 'https://static.wikia.nocookie.net/screamergame/images/4/4e/Zeus_thunder_interior.png/revision/latest?cb=20250206212402', display: { type: 'static', src: 'https://static.wikia.nocookie.net/screamergame/images/2/2c/Zeus_thunder_front.png/revision/latest?cb=20250206203732' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/2/2c/Zeus_thunder_front.png/revision/latest?cb=20250206203732'},
             'aphrodite': { name: 'Aphrodite', category: 'bonus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/d/d1/Angels%27_logo.png/revision/latest?cb=20250107211749', interior: 'https://static.wikia.nocookie.net/screamergame/images/1/13/Angels_aphrodite_interior.png/revision/latest?cb=20250206212433', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/1/1b/S2_angels_aphrodite_mp4.mp4/revision/latest?cb=20250807201447' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/8/81/Angels_aphrodite_front.png/revision/latest?cb=20250206204425'},
             'blackclaw': { name: 'Black Claw', category: 'bonus', teamLogo: 'https://static.wikia.nocookie.net/screamergame/images/e/e2/Condor%27s_logo.png/revision/latest?cb=20250106212324', interior: 'https://static.wikia.nocookie.net/screamergame/images/9/95/Condor_blackclaw_interior.png/revision/latest?cb=20250206212504', display: { type: 'video', src: 'https://static.wikia.nocookie.net/screamergame/images/b/b2/S2_condor_black-claw.mp4/revision/latest?cb=20250807201743' }, icon: 'https://static.wikia.nocookie.net/screamergame/images/f/fb/Condor_blackclaw_front.png/revision/latest?cb=20250206205141'}
         },
         gatherTeamLogos: function() {
             var logos = {};
-            var teamNameRegex = /([A-Za-z]+)(?:%27s?)?_logo/;
             $.each(App.vehicleData, function(modelId, model) {
-                if (model.liveries) {
+                if (model.category === 'bonus' && model.teamLogo) {
+                    var match = model.teamLogo.match(/([a-zA-Z]+)%27s_logo/);
+                    var teamId = match && match[1] ? match[1].toLowerCase() : modelId;
+                    if (!logos[teamId]) {
+                        logos[teamId] = model.teamLogo;
+                    }
+                } else if (model.liveries) {
                     $.each(model.liveries, function(liveryId, livery) {
-                        if (!logos[liveryId] && livery.teamLogo) {
+                        if (!logos[liveryId]) {
                             logos[liveryId] = livery.teamLogo;
                         }
                     });
-                } else if (model.category === 'bonus' && model.teamLogo) {
-                    var match = App.resolveUrl(model.teamLogo).match(teamNameRegex);
-                    if (match && match[1]) {
-                        var teamId = match[1].toLowerCase();
-                        if (!logos[teamId]) {
-                            logos[teamId] = model.teamLogo;
-                        }
-                    }
                 }
             });
             App.teamLogos = logos;
@@ -129,8 +120,7 @@ mw.hook('wikipage.content').add(function() {
                     displayData = model.liveries[activeLiveryId].display;
                 } else {
                     $lsButton.addClass('is-disabled').css('cursor', 'default');
-                    var teamNameRegex = /([A-Za-z]+)(?:%27s?)?_logo/;
-                    var match = App.resolveUrl(model.teamLogo).match(teamNameRegex);
+                    var match = model.teamLogo.match(/([a-zA-Z]+)%27s_logo/);
                     if (match && match[1]) { teamId = match[1].toLowerCase(); }
                     displayData = model.display;
                 }
@@ -162,8 +152,8 @@ mw.hook('wikipage.content').add(function() {
                     } else {
                         infoMediaData = model.display;
                     }
-                    var resolvedSrc = App.resolveUrl(infoMediaData.src);
-                    var infoMediaTag = infoMediaData.type === 'video' ? '<video src="' + resolvedSrc + '" autoplay loop muted playsinline></video>' : '<img src="' + resolvedSrc + '" />';
+                    var infoMediaTag = infoMediaData.type === 'video' ?
+                        '<video src="' + infoMediaData.src + '" autoplay loop muted playsinline></video>' : '<img src="' + infoMediaData.src + '" />';
                     var statsHtml = '';
                     if (model.stats) {
                         $.each(model.stats, function(key, value) { statsHtml += '<li><span>' + key + '</span><span>' + value + '</span></li>'; });
@@ -194,7 +184,7 @@ mw.hook('wikipage.content').add(function() {
                 var activeLiveryId = App.state.modelLiveryState[App.state.activeModelId];
                 $.each(model.liveries, function(liveryId, livery) {
                     var $liveryIcon = $('<div>', { class: 'vva-livery-icon' + (liveryId === activeLiveryId ? ' vva-active' : ''), 'data-livery-id': liveryId })
-                        .append($('<img>', { src: App.resolveUrl(livery.icon) }), $('<div>', { class: 'vva-livery-name', text: livery.name }));
+                        .append($('<img>', { src: livery.icon }), $('<div>', { class: 'vva-livery-name', text: livery.name }));
                     $iconWrapper.append($liveryIcon);
                 });
                 if (isAnimated) {
@@ -214,6 +204,7 @@ mw.hook('wikipage.content').add(function() {
             if (!$newIcon.length || $newIcon.is($activeIcon)) {
                 return;
             }
+
             if ($activeIcon.length) {
                 $activeIcon.stop(true, true).fadeOut(200, function() {
                     $newIcon.stop(true, true).fadeIn(200);
@@ -312,22 +303,22 @@ mw.hook('wikipage.content').add(function() {
             if (!model || !model.liveries) return;
             var activeLiveryId = App.state.modelLiveryState[modelId];
             if (!activeLiveryId) return;
-            var newIconSrc = App.resolveUrl(model.liveries[activeLiveryId].icon);
+            var newIconSrc = model.liveries[activeLiveryId].icon;
             var $iconImg = $('.vva-vehicle-icon[data-model-id="' + modelId + '"] img');
             $iconImg.stop(true, true).fadeOut(200, function() { $(this).attr('src', newIconSrc).fadeIn(200); });
         },
         gatherAllAssets: function() {
             var assets = [];
             $.each(App.vehicleData, function(_, model) {
-                if (model.icon) assets.push(App.resolveUrl(model.icon));
-                if (model.interior) assets.push(App.resolveUrl(model.interior));
-                if (model.display && model.display.src) assets.push(App.resolveUrl(model.display.src));
-                if (model.teamLogo) assets.push(App.resolveUrl(model.teamLogo));
+                if (model.icon) assets.push(model.icon);
+                if (model.interior) assets.push(model.interior);
+                if (model.display && model.display.src) assets.push(model.display.src);
+                if (model.teamLogo) assets.push(model.teamLogo);
                 if (model.liveries) {
                     $.each(model.liveries, function(_, livery) {
-                        if (livery.icon) assets.push(App.resolveUrl(livery.icon));
-                        if (livery.teamLogo) assets.push(App.resolveUrl(livery.teamLogo));
-                        if (livery.display && livery.display.src) assets.push(App.resolveUrl(livery.display.src));
+                        if (livery.icon) assets.push(livery.icon);
+                        if (livery.teamLogo) assets.push(livery.teamLogo);
+                        if (livery.display && livery.display.src) assets.push(livery.display.src);
                     });
                 }
             });
@@ -371,19 +362,17 @@ mw.hook('wikipage.content').add(function() {
             $.each(App.vehicleData, function(modelId, model) {
                 if (model.category === 'base') {
                     $.each(model.liveries, function(liveryId, livery) {
-                        var resolvedSrc = App.resolveUrl(livery.display.src);
-                        mainContentHtml += '<div class="vva-view" data-model-id="' + modelId + '" data-view-type="vehicle" data-livery-id="' + liveryId + '"><video src="' + resolvedSrc + '" loop muted playsinline></video></div>';
+                        mainContentHtml += '<div class="vva-view" data-model-id="' + modelId + '" data-view-type="vehicle" data-livery-id="' + liveryId + '"><video src="' + livery.display.src + '" loop muted playsinline></video></div>';
                     });
                 } else {
-                    var resolvedSrc = App.resolveUrl(model.display.src);
-                    var mediaTag = model.display.type === 'video' ? '<video src="' + resolvedSrc + '" loop muted playsinline></video>' : '<img src="' + resolvedSrc + '" />';
+                    var mediaTag = model.display.type === 'video' ? '<video src="' + model.display.src + '" loop muted playsinline></video>' : '<img src="' + model.display.src + '" />';
                     mainContentHtml += '<div class="vva-view" data-model-id="' + modelId + '" data-view-type="vehicle">' + mediaTag + '</div>';
                 }
-                mainContentHtml += '<div class="vva-view" data-model-id="' + modelId + '" data-view-type="interior"><img src="' + App.resolveUrl(model.interior) + '" /></div>';
+                mainContentHtml += '<div class="vva-view" data-model-id="' + modelId + '" data-view-type="interior"><img src="' + model.interior + '" /></div>';
             });
             var lsButtonHtml = '<button class="vva-livery-toggle-button">';
             $.each(App.teamLogos, function(teamId, url) {
-                lsButtonHtml += '<img src="' + App.resolveUrl(url) + '" data-team-id="' + teamId + '" style="display: none;"/>';
+                lsButtonHtml += '<img src="' + url + '" data-team-id="' + teamId + '" style="display: none;"/>';
             });
             lsButtonHtml += '</button>';
             var appHtml = `
@@ -449,7 +438,23 @@ mw.hook('wikipage.content').add(function() {
             }, 2000);
         },
         init: function() {
-            if ($('#vehicle-viewer-app').children().length > 0) return;
+            // START: Temporary Debug Triangle
+            var $debugTriangle = $('<div>').css({
+                'position': 'absolute',
+                'top': '100px',
+                'left': '5px',
+                'width': '0',
+                'height': '0',
+                'border-left': '15px solid transparent',
+                'border-right': '15px solid transparent',
+                'border-bottom': '25px solid yellow',
+                'z-index': '9999',
+                'filter': 'drop-shadow(0 0 3px #000)'
+            });
+            $('#vehicle-viewer-app').append($debugTriangle);
+            // END: Temporary Debug Triangle
+
+            if ($('#vehicle-viewer-app').children().length > 1) return;
             App.parseAndLoadData();
             $.each(App.vehicleData, function(modelId, model) {
                 if (model.liveries) {
@@ -562,10 +567,9 @@ mw.hook('wikipage.content').add(function() {
             var $selector = $('.vva-vehicle-selector').empty();
             $.each(App.vehicleData, function(modelId, model) {
                 if (App.state.activeFilter === 'all' || App.state.activeFilter === model.category) {
-                    var initialLivery = model.liveries ? (App.state.modelLiveryState[modelId] || Object.keys(model.liveries)[0]) : null;
-                    var iconUrl = model.icon || (initialLivery ? model.liveries[initialLivery].icon : '');
+                    var iconSrc = model.icon || (model.liveries && model.liveries[App.state.modelLiveryState[modelId] || Object.keys(model.liveries)[0]].icon);
                     var $icon = $('<div>', { class: 'vva-vehicle-icon', 'data-model-id': modelId });
-                    $icon.append($('<img>', { src: App.resolveUrl(iconUrl) }));
+                    $icon.append($('<img>', { src: iconSrc }));
                     $icon.append($('<div>', { class: 'vva-vehicle-name', text: model.name }));
                     if (modelId === App.state.activeModelId) { $icon.addClass('vva-active'); }
                     $selector.append($icon);

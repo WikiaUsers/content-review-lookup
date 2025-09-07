@@ -1,6 +1,6 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.3.48 (beta)';
+	const version = '0.3.51 (beta)';
 	const api = new mw.Api();
 	const archived = $('#archivedPage').length === 1; // {{archived}}
 	const view = mw.config.get('wgAction') === 'view';
@@ -381,6 +381,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	}
 	
 	function addStats(){
+		// TODO: Fix timestamp parsing problem (on iPads)
 		const comments = [];
 		let currentSection = '';
 		

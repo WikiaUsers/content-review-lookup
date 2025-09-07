@@ -1,4 +1,4 @@
-// Dialogue.js made by Cxsnls
+// IsleDialogue.js made by Cxsnls
 // This script replicates the in-game dialogue format.
 
 // Settings
@@ -62,7 +62,7 @@ function reportError(error, dialogueID, dialogue) {
     // Terminate dialogue
     var elements = dialogueElements[dialogueID];
     var resetElement = elements.reset; // Get reset button
-    tweenOpacity(resetElement); // Display the reset button, making it possible to restart the dialogue
+    resetElement.style.display = ""; // Display the reset button, making it possible to restart the dialogue
 }
 
 // Processes a string and inserts required elements
@@ -109,12 +109,13 @@ function handleActions(dialogueID, dialogue, actions) {
     var resetElement = elements.reset;
 
     for (let action of actions) {
-        let actionParameter = action.parameter;
         if (action.action == "End") { // If the action is End,
-            tweenOpacity(resetElement); // Display the reset button, making it possible to restart the dialogue
+            resetElement.style.display = ""; // Display the reset button, making it possible to restart the dialogue
+            clearDescendants(answerContainerElement); // Clear answers to prevent any unintended effects
             return;
         }
-        else if (action.action == "GoTo" && typeof actionParameter == "string") { // If the action is GoTo,
+        let actionParameter = action.parameter;
+        if (action.action == "GoTo" && typeof actionParameter == "string") { // If the action is GoTo,
             dialogueStatuses[dialogueID] = actionParameter; // Change the dialogue status to the action of the button
             clearDescendants(answerContainerElement); // Clear out buttons
             updateDialogue(dialogueID, dialogue); // Update the dialogue
@@ -161,7 +162,7 @@ function displayAnswers(dialogueID, dialogue, currentAnswers) {
 
             if ("answerColor" in answer) { // If there is an answer color defined, 
                 answerButton.style.color = answer.answerColor; // set it
-            } 
+            }
 
             answerContainerElement.appendChild(answerButton); // Parent the answerButton to the answerContainer
 
@@ -177,7 +178,7 @@ function displayAnswers(dialogueID, dialogue, currentAnswers) {
         }
     }
     else { // If there are no answers,
-        tweenOpacity(resetElement); // Display the reset button, making it possible to restart the dialogue
+        resetElement.style.display = ""; // Display the reset button, making it possible to restart the dialogue
     }
 }
 
@@ -242,9 +243,11 @@ function updateDialogue(dialogueID, dialogue) {
                         nextElement.style.display = "none"; // Hide the next button
                         handleActions(dialogueID, dialogue, currentInteraction.actions); // Handle actions
                         nextElement.removeEventListener("click", displaySection); // Remove the click event listener from the next button
+                        questionContainerElement.removeEventListener("click", displaySection); // Remove the click event listener from the dialogue container
                     }
 
                     nextElement.addEventListener("click", displaySection); // Display the next section whenever the next button is clicked
+                    questionContainerElement.addEventListener("click", displaySection); // Display the next section whenever the dialogue box is clicked
                 }
             }, TYPEWRITER_CHARACTER_DELAY * splitQuestion[currentSection].length); // Set timer for when the typewriter effect is complete to display answers
         }
@@ -262,6 +265,7 @@ function updateDialogue(dialogueID, dialogue) {
                     if (currentSection == splitQuestion.length - 1 && ("actions" in currentInteraction == false || currentInteraction.actions.length == 0)) { // If this is the last section and there are no actions,
 
                         nextElement.removeEventListener("click", displaySection); // Remove the click event listener from the next button
+                        questionContainerElement.removeEventListener("click", displaySection); // Remove the click event listener from the dialogue box
                         setTimeout(() => {
                             displayAnswers(dialogueID, dialogue, currentAnswers); // Display answers
                         }, TYPEWRITER_CHARACTER_DELAY * splitQuestion[currentSection].length); // Set timer for when the typewriter effect is complete to display answers
@@ -270,6 +274,7 @@ function updateDialogue(dialogueID, dialogue) {
                     else if (currentSection > splitQuestion.length - 1) { // If the dialogue is over and it's time for actions,
                         handleActions(dialogueID, dialogue, currentInteraction.actions); // Handle actions
                         nextElement.removeEventListener("click", displaySection); // Remove the click event listener from the next button
+                        questionContainerElement.removeEventListener("click", displaySection); // Remove the click event listener from the dialogue box
                     }
                     else {
                         setTimeout(() => {
@@ -284,6 +289,7 @@ function updateDialogue(dialogueID, dialogue) {
             displaySection(true); // Display the first section
 
             nextElement.addEventListener("click", displaySection); // Display the next section whenever the next button is clicked
+            questionContainerElement.addEventListener("click", displaySection); // Display the next section whenever the dialogue box is clicked
         }
     }
     else { // If there is no information about the current status,
@@ -325,7 +331,7 @@ function createDialogue(dialogueID, dialogue) {
     console.assert(answerContainer, "Answer container element is missing.")
 
     reset.addEventListener("click", function () { // When the reset button is clicked,
-        reset.style.opacity = 0; // Make it transparent
+        reset.style.display = "none"; // Hide it
         dialogueStatuses[dialogueID] = "Start"; // Reset the dialogue status to the beginning
         updateDialogue(dialogueID, dialogue); // Update the dialogue to apply changes
     });

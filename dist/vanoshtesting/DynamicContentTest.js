@@ -1,0 +1,19 @@
+console.log('it should be loading')
+mw.loader.using("mediawiki.util", function () {
+	console.log('using mediawiki.util')
+    if (mw.config.get("wgPageName") === "MrVanoshJavascriptContentTest") {
+    	console.log('conditions passed')
+        const testDiv = document.createElement("div");
+        testDiv.innerText = `
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed varius erat. Aenean vestibulum velit id nibh tempor pulvinar. Vestibulum convallis mattis semper. Pellentesque ligula turpis, dapibus sit amet magna ac, rutrum pulvinar purus. Donec fringilla, felis vitae tempus consequat, nisl risus sollicitudin enim, ac ullamcorper est erat eu mauris. Pellentesque vitae maximus dolor, et interdum libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam pretium odio eget dolor accumsan, non tincidunt augue condimentum. In hac habitasse platea dictumst. Suspendisse luctus, augue eu condimentum imperdiet, risus mauris dictum justo, non vestibulum nunc elit quis lacus.
+
+Praesent nec leo nisi. Aenean imperdiet, nisi tempus tempor venenatis, quam tellus dapibus lorem, at luctus orci velit ut justo. Ut placerat, odio at pulvinar dignissim, metus felis suscipit est, nec tristique lacus lectus bibendum ex. Fusce finibus viverra erat sed semper. Maecenas tempor sapien quis tempus pellentesque. Vestibulum quam est, varius sed mauris quis, commodo efficitur sapien. Praesent eget iaculis quam, at ultricies mi. Mauris mattis mattis vestibulum. Aliquam a eros odio. Etiam lacinia id magna sit amet blandit.
+
+Morbi id arcu gravida, placerat mauris non, pharetra lectus. Fusce tristique ex sed turpis auctor, ut dictum lectus pellentesque. Quisque aliquet est tortor, vitae pharetra massa mattis malesuada. Nunc a tincidunt ipsum, eget dignissim urna. Sed sed blandit mi, a scelerisque velit. Phasellus condimentum tempus porta. Integer nec cursus nunc, sit amet semper mi. Quisque euismod auctor nulla vel posuere.
+
+Nam tellus ligula, condimentum nec tincidunt ac, mattis elementum purus. Sed auctor ipsum a orci consectetur volutpat posuere non orci. Aliquam eget ex eu nunc mattis convallis ac vel justo. Cras ut dignissim purus, quis facilisis nulla. Praesent convallis odio vel sem ornare, et facilisis tellus suscipit. In at massa convallis, scelerisque nisi in, ullamcorper elit. Vestibulum faucibus id neque et lacinia. Quisque fermentum consequat faucibus. Etiam at leo dictum, posuere urna at, pharetra lorem. Praesent dolor nisi, blandit eu mattis eu, aliquet euismod risus. Etiam non diam accumsan, elementum sapien et, eleifend ex. Praesent dui ante, tempor eu elementum sed, condimentum in ipsum. Sed eleifend maximus urna, in aliquet erat tempor et. Donec risus quam, mollis vitae risus quis, hendrerit laoreet sem.
+
+Etiam bibendum consequat sollicitudin. Nulla mollis metus eu leo cursus, sed efficitur nulla pretium. Integer efficitur vulputate nisl, non suscipit velit placerat vel. Etiam commodo magna ac nulla posuere laoreet. Etiam ac ex id dui rhoncus tincidunt. Nulla aliquam, magna eget ultrices viverra, metus odio dapibus orci, ac pellentesque risus lacus sed mi. Donec et libero quis est vulputate scelerisque. Phasellus rhoncus convallis posuere. Fusce posuere enim felis, sit amet tincidunt neque eleifend quis. Maecenas auctor dolor et lectus mollis gravida. Etiam ex nisi, gravida hendrerit hendrerit a, consectetur eu nisl. In molestie mauris ac elit porttitor imperdiet. Curabitur ornare libero velit, eget venenatis justo consequat ut.`;
+        document.querySelector('.mw-parser-output').appendChild(testDiv);
+    }
+});

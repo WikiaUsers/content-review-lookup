@@ -43,7 +43,7 @@ mw.loader.using('mediawiki.api', function (require) {
                 license = undefined;
             }
 
-            var file = elem.parents('.wikia-gallery-item').find('.thumbimage').attr('data-image-name');
+            var file = elem.parents('.wikia-gallery-item').find('.thumbimage').attr('data-image-name') || elem.parents('.wikia-gallery-item').find('.thumbimage').attr('data-video-name');
             api.edit('File:' + file, function () {
                 return {
                     text: (nondescriptiveFilename ? '{{Non-descriptive filename}}\n' : '') + (license ? '== Licensing ==\n{{' + license + '}}' : ''),

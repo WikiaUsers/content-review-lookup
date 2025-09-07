@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Filter taken from: https://blox-fruits.fandom.com/ru/wiki/MediaWiki:Common.js?oldid=28829 */
+/* Filter taken from: https://blox-fruits.fandom.com/ru/wiki/MediaWiki:Common.js?oldid=28829 so you have the credit*/
 
 $(function () {
 
@@ -10,9 +10,8 @@ $(function () {
 	$('#filter-type').html(
 		'<select id="filterType" class="bfw-filter">' +
 			'<option value="">All Types</option>' +
-			'<option value="fruit-type-natural">Natural</option>' +
-			'<option value="fruit-type-beast">Beast</option>' +
-			'<option value="fruit-type-elemental">Elemental</option>' +
+			'<option value="fruit-type-sorcerer">Sorcerer</option>' +
+			'<option value="fruit-type-curse">Curse</option>' +
 		'</select>'
 	);
 
@@ -75,8 +74,6 @@ $(function () {
 			'<option value="sea-1">First Sea</option>' +
 			'<option value="sea-2">Second Sea</option>' +
 			'<option value="sea-3">Third Sea</option>' +
-			'<option value="sea-events">Events</option>' +
-			'<option value="sea-admins">Admin-Exclusive</option>' +
 		'</select>'
 	);
 

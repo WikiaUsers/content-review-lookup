@@ -1,10 +1,16 @@
-/* something will be here soon, thanks no.1exe for the code.*/
+/* DO NOT TOUCH!*/
+window.UserTagsJS = {
+	modules: {},
+	tags: {},
+	oasisPlaceBefore: ''
+};
 const introPages = {
   'User:BluenoobandKitchenWizardareabsolutepeak': {
-    src: 'https://static.wikia.nocookie.net/block-tales-the-discussion-args/images/4/4c/IDONTGIVEASHIT.gif/revision/latest?cb=20250827211134',
+    src: 'https://static.wikia.nocookie.net/block-tales-the-discussion-args/images/f/fe/JX1DX1INTRO.mp4/revision/latest?cb=20250906033556&format=original',
+    sound: 'https://static.wikia.nocookie.net/block-tales-the-discussion-args/images/f/fe/JX1DX1INTRO.mp4/revision/latest?cb=20250906033556&format=original',
     duration: 5500
-  }
-};
+
+}
 
 const currentPage = mw.config.get('wgPageName');
 
@@ -71,12 +77,15 @@ if (introPages[currentPage]) {
 }
 
 $(function () {
-  if (mw.config.get('wgPageName') !== 'User:BluenoobandKitchenWizardareabsolutepeak') return;
+  if (mw.config.get('wgPageName') !== 'Outrageous') return;
 
-  if (location.hash === '#JX1DX1') {
-    document.body.style.backgroundImage = 'url(https://static.wikia.nocookie.net/block-tales-the-discussion-args/images/4/4c/IDONTGIVEASHIT.gif/revision/latest?cb=20250827211134';
+  if (location.hash === '#Outrageous') {
+    document.body.style.backgroundImage = 'url(https://static.wikia.nocookie.net/block-tales-the-discussion-args/images/f/fe/JX1DX1INTRO.mp4/revision/latest?cb=20250906033556&format=original)';
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'center';
     document.body.style.backgroundRepeat = 'no-repeat';
   }
 });
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 7;
+window.lockOldComments.addNoteAbove = true;

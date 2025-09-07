@@ -10,18 +10,52 @@ window.tooltips_config = {
 // tt improvement, from 神奇宝贝百科 https://wiki.52poke.com/wiki/MediaWiki:Common.js
     var tip = $('.explain, abbr, acronym');
     if (tip.length > 0) {
-        mw.loader.using('jquery.tipsy', function(){
-            tip.tipsy();
-        });
-        tip.click(function() {
-            if (tip.hasClass('no-fix')) {
-                return;
-            }
-            if ($('div.tipsy-n').length == 1) {
-                $('#MoeNotification').after($('div.tipsy-n').clone());
-            } else {
-                $('div.tipsy-n')[0].remove();
-            }
+        mw.loader.using('oojs-ui', function(){
+            const $label = $('<span>'),
+                popup = new OO.ui.PopupWidget($.extend({
+                    $content: $label,
+                    padded: true, 
+                    width: null, 
+                    classes: ['mw-tipsy'],
+                    align: 'bottom'
+                }));
+            popup.$element.appendTo(document.body);
+            const visibilityState = {};
+            tip.on('mouseenter', function() {
+                const $this = $(this);
+                var title = this.title;
+                if (title) { 
+                    $this.attr('data-title', title).removeAttr('title'); 
+                } else { 
+                    title = $this.data('title'); 
+                }
+                if (!title) { return; }
+                $label.text(title);
+
+                if (!visibilityState[$this[0]]) {
+                    popup.toggle(true).setFloatableContainer($this);
+                }
+            }).on('mouseleave', function() {
+                const $this = $(this);
+
+                if (!visibilityState[$this[0]]) {
+                    popup.toggle(false);
+                }
+            }).on('click', function(event) {
+                event.preventDefault();
+                const $this = $(this);
+                var title = this.title || $this.data('title');
+                if (!title || $this.hasClass('no-fix')) { return; }
+
+                visibilityState[$this[0]] = !visibilityState[$this[0]];
+
+                if (visibilityState[$this[0]]) {
+                    popup.toggle(true).setFloatableContainer($this);
+                } else {
+                    popup.toggle(false);
+                }
+            });
+            mw.util.addCSS(".explain { text-decoration: underline dashed; text-decoration-color: var(--theme-sticky-nav-background-color); cursor: help; }");
         });
     }
 
@@ -72,7 +106,7 @@ function filterTable(){
 				}
 				$(this).css("position","relative");
 				$(this).html('<a href="javascript:void(0)" class="showFilterMenu" style="color: var(--filter-text-color)">'+$(this).html()+'↓</a>');
-				$(this).append($('<div class="filterMenu" style="position:absolute;top:'+$(this).height()+'px;left:0;width:'+(22+l*10)+'px;text-align:left;padding:5px;background: #000000BB;color:#fff;border-radius: 0.3em;z-index:1;display:none"></div>'));
+				$(this).append($('<div class="filterMenu" style="position:absolute;top:'+$(this).height()+'px;left:0;width:'+(22+l*25)+'px;text-align:left;padding:5px;background: #000000BB;color:#fff;border-radius: 0.3em;z-index:1;display:none"></div>'));
 				for (j=0; j<cols.length; j++){
 					$(this).find(".filterMenu").append('<div><input type="checkbox" value="'+cols[j]+'" col="'+(i+1)+'" class="filterOption" checked>'+cols[j]+'</div>')
 				}

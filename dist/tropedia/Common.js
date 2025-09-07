@@ -3,7 +3,7 @@ window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {
 	window.pPreview.tlen = 200;
 	window.pPreview.csize = 100;
 	window.pPreview.apid = false;
-	window.pPreview.RegExp.noinclude = ['.work', '.trope', '.quote', '.Useful_Notes'];
+	window.pPreview.RegExp.noinclude = ['.work', '.trope', '.quote', '.Useful_Notes', ".NoLinkPreview", ".mw-ext-cite-error", ".error", ".references", ".reference", ".sup.reference"];
 	window.pPreview.delay = 200;
 
 //Customization for imported scripts

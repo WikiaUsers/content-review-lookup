@@ -47,6 +47,7 @@
 	
 	mw.hook('dev.fetch').add((fetch) => {
 		fetch({
+			name: "page-exists",
 			request: (resolve, reject) => {
 				new mw.Api().get({
 					action: 'query',

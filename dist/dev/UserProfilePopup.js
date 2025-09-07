@@ -13,6 +13,10 @@ importArticle({
 
 /**** FUNCTION FOR REGULAR USER PAGE *****/
 (function() {
+	// DO NOT RUN FOR ANONYMOUS
+	if (!mw.config.get('wgUserName')) {
+		return;
+	}
 	
 	// IGNORE USER LINK IF IT IS INSIDE GLOBAL NAVIGATION AND 2010 SOURCE EDITOR
 	function isInsideExcludedContainer($element) {
@@ -204,7 +208,11 @@ importArticle({
 
 /**** FUNCTION FOR IP ADDRESS PAGE *****/
 (function() {
-
+	// DO NOT RUN FOR ANONYMOUS
+	if (!mw.config.get('wgUserName')) {
+		return;
+	}
+	
 	// CHECK IP ADDRESS
 	function isIpAddress(text) {
 		if (/^\d{1,3}(\.\d{1,3}){3}(\/\d{1,2})?$/.test(text)) return true;

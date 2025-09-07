@@ -75,3 +75,11 @@ if (['edit', 'submit'].includes(mw.config.get('wgAction'))) {
         }, { capture: true });
     });
 }
+
+//Shared image repository managing for interwikis
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:GlobalFileUsage.js',
+    ]
+});

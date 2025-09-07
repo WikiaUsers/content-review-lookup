@@ -19,34 +19,17 @@ $.getJSON(mw.config.get('wgScriptPath') + '/api.php', {
 /************************ Import Configurations ************************/
 /***********************************************************************/
 /* PreloadFileDescription */
-PFD_templates = [
-    {
-        label:   'Default template',
-        desc:    '{{File\n| desc = \n| type = \n}}'
-    },
-];
-PFD_license = 'Fairuse';
-PFD_requireLicense = true;
+PFD_template =  '{{File\n| desc = \n| type = \n}}' ;
 
-/* Signature Check */
-window.SignatureCheckJS = {
-    preamble: 'There are a few potential problems with your edit:\n\n',
-    epilogue: '\nAre you sure you want to post this anyway?',
-    noSignature: 'It looks like you forgot to sign your post. Use \~\~\~\~ to sign your post so that we know who’s talking!\n',
-    forumheader: false,
-    checkSignature: true,
-    extraNamespaces: [
-        {
-            namespace: 2,
-            patterns:  [ '/Talk' ]
-        }
-    ]
-};//End SC*/
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+};
 
 /* AutoCreateUserPages */
 window.AutoCreateUserPagesConfig = {
     content: {
-        2: '<center>''This is your personal profile. Here you can tell everyone a little bit about yourself!''</center>'
+        2: '{{User}}'
     },
     summary: 'Welcome to the Mope.io Wiki!',
     notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1! Feel free to add as much info about yourself as you are comfortable with.</a>'
@@ -145,9 +128,7 @@ window.rwaOptions = {
 importArticles({
     type: 'script',
     articles: [
-        'u:diepio:ListUsers/code.js',
-        'u:diepio:Miscellaneous/code.js',
-        'u:tes:Common.js/DiscussionsLinks.js',
+        'u:diepio:Miscellaneous.js',
         'u:dev:MediaWiki:WelcomeMessage.js',
     ]
 });//End SI*/
