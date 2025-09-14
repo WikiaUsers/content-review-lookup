@@ -14,20 +14,21 @@
          * 创建并显示一个弹窗
          * @param {Object} options 配置对象
          * @param {string} [options.introText="查看详情"] 介绍文本
-         * @param {string} [options.headerText="评分详情"] 标题文本
+         * @param {string} [options.headerText="详情"] 标题文本
+         * @param {string} [options.frameCSS=""] Frame 的 CSS 类
          * @param {string} [options.content=""] 内容文本
          * @param {jQuery|string} [options.appendTo="body"] 要附加到的容器
          * @param {function} [options.onOpen] 弹窗打开时的回调
          * @param {function} [options.onClose] 弹窗关闭时的回调
          * @param {"create"|"add"} [options.mode="create"] 创建模式
-         * @returns {{triggerElement: jQuery, popupElement: jQuery, contentElement: jQuery}}
+         * @returns { {triggerElement: jQuery, popupElement: jQuery, contentElement: jQuery} }
          */
         createPopup: function(options) {
             options = options || {};
             var mode = options.mode || 'create';
             
             // 创建基础弹窗结构
-            var $popupFrame = $("<div>").addClass("popup-box-frame rating-popup").hide();
+            var $popupFrame = $("<div>").addClass("popup-box-frame").addClass(options.frameCSS || "").hide();
             var $popupSublayer = $("<div>").addClass("popup-box-sublayer");
             var $popupBox = $("<div>").addClass("popup-box");
             var $popupHeader = $("<div>").addClass("popup-box-header");
@@ -37,7 +38,7 @@
                 .html("&times;");
             var $headerText = $("<span>")
                 .addClass("popup-box-header-text")
-                .text(options.headerText || "评分详情");
+                .text(options.headerText || "详情");
             var $popupContent = $("<div>")
                 .addClass("popup-box-content")
                 .html(options.content || "");
@@ -75,6 +76,7 @@
             // 关闭弹窗函数
             var closePopup = function() {
                 $popupFrame.css('opacity', 0);
+                $popupFrame.removeClass('is-open');
                 setTimeout(function() {
                     $popupFrame.hide();
                     if (typeof options.onClose === 'function') {
@@ -86,6 +88,7 @@
             // 打开弹窗函数
             var openPopup = function() {
                 $popupFrame.show().css('opacity', 1);
+                $popupFrame.addClass('is-open');
                 if (typeof options.onOpen === 'function') {
                     options.onOpen();
                 }

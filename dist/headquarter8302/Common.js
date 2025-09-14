@@ -61,10 +61,13 @@
 			}
 		}).then((targetPage) => {
 			this.document.getElementById("mw-content-text")
-				.innerText = "Redirecting to ".concat(targetPage);
+				.innerText = "Redirecting to Project:Proposals/"
+								.concat(targetPage);
 
 			this.location.replace(
-				this.location.origin.concat("/wiki/").concat(targetPage)
+				this.location.origin
+					.concat("/wiki/Project:Proposals/")
+					.concat(targetPage)
 			);
 		});
 	});

@@ -1,4 +1,4 @@
-// 00:15, 22 May 2023 (UTC) <nowiki>
+// 10:53, 12 September 2025 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -131,7 +131,7 @@ $(function () {
         return;
     }
 
-    $('label.mw-userrights-groupcheckbox:contains(*)').each(function () {
+    $('.mw-userrights-groupcheckbox + label:contains(*)').each(function () {
         $(this).text(function (_, txt) {
             return txt.replace('*', '٭');
         });
@@ -145,7 +145,7 @@ $(function () {
         return;
     }
 
-    $('label.mw-userrights-groupcheckbox:contains(#)').each(function () {
+    $('.mw-userrights-groupcheckbox + label:contains(#)').each(function () {
         $(this).text(function (_, txt) {
             return txt.replace('#', '♯');
         });

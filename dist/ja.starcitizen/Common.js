@@ -2,8 +2,6 @@
 importScript('MediaWiki:ReferralCodes.js');
 
 (function () {
-  if (!Array.isArray(window.referralCodes) || window.referralCodes.length === 0) return;
-
   function sanitizeWeight(w) {
     w = Number(w);
     if (isNaN(w) || w < 0) return 1;
@@ -37,7 +35,7 @@ importScript('MediaWiki:ReferralCodes.js');
     });
 
     // 紹介コードクリックでコピー機能
-    $(document).on('click', '.referral-code-box', function () {
+    $(document).off('click.referral').on('click.referral', '.referral-code-box', function () {
       const text = $(this).text().trim();
       if (!text) return;
 
@@ -52,16 +50,22 @@ importScript('MediaWiki:ReferralCodes.js');
 
     // 折りたたみ初期化（MediaWiki標準）
     $content.find('.mw-collapsible').makeCollapsible();
+
+    // ▶ 回転用：クリックで.activeを付け外し
+    $content.find('.wikia-menu-button').off('click.toggleIcon').on('click.toggleIcon', function () {
+      $(this).toggleClass('active');
+    });
   }
 
+  // makeCollapsible 読み込み後に referralCodes.ready を待つ
   mw.loader.using('jquery.makeCollapsible').then(function () {
-    // 初回ロード時
-    $(function () {
+    mw.hook('referralCodes.ready').add(function () {
+      // 初回ロード
       processContent($(document));
-    });
 
-    // AJAX差し替え時
-    mw.hook('wikipage.content').add(processContent);
+      // AJAX差し替え時
+      mw.hook('wikipage.content').add(processContent);
+    });
   });
 
 })();

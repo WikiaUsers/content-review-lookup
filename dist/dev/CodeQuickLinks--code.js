@@ -656,7 +656,7 @@
   this.main = function () {
 
     // Declarations
-    var userLinks, assembledFiles, railModule, $adSlot;
+    var userLinks, assembledFiles;
 
     // Definitions/aliases
     userLinks = this.config.linkSet;
@@ -674,25 +674,41 @@
       }
     }
 
-    // Place module after last extant ad slot
-    $adSlot = $([
-      "ID_AD_BOXAD",
-      "ID_AD_BOXAD_WRAPPER",
-      "ID_AD_BOXAD_RIGHT",
-      "ID_AD_TABOOLA",
-    ].map(function (paramAdSelector) {
-      return "#" + this.Selectors[paramAdSelector];
-    }.bind(this)).join(", ")).last();
+    /*
+     * Update 11/09/2025
+     *
+     * #rail-boxad-wrapper now appears to be separate from the #WikiaRail
+     * wrapper and is now situated above the main rail, so there's no need to
+     * ensure ad modules sit higher than user custom modules prior to prepending
+     * new modules to the rail. Ads will always sit above any #WikiaRail modules
+     * by definition.
+     *
+     * Previous check:
+     *
+     *  // Place module after last extant ad slot
+     *  $adSlot = $([
+     *    "ID_AD_BOXAD",
+     *    "ID_AD_BOXAD_WRAPPER",
+     *    "ID_AD_BOXAD_RIGHT",
+     *    "ID_AD_TABOOLA",
+     *  ].map(function (paramAdSelector) {
+     *    return "#" + this.Selectors[paramAdSelector];
+     *  }.bind(this)).join(", ")).last();
+     *
+     *  // Assemble string HTML module
+     *  railModule = this.buildRailModule(assembledFiles);
+     *
+     *  // Prepend to rail only if ad slot is not found
+     *  if ($adSlot.length) {
+     *    $adSlot.after(railModule);
+     *  } else {
+     *    $("#" + this.Selectors.ID_WIKIA_RAIL).prepend(railModule);
+     *  }
+     */
 
-    // Assemble string HTML module
-    railModule = this.buildRailModule(assembledFiles);
-
-    // Prepend to rail only if ad slot is not found
-    if ($adSlot.length) {
-      $adSlot.after(railModule);
-    } else {
-      $("#" + this.Selectors.ID_WIKIA_RAIL).prepend(railModule);
-    }
+    // Just prepend to rail; no need for ad module check anymore
+    $("#" + this.Selectors.ID_WIKIA_RAIL).prepend(
+      this.buildRailModule(assembledFiles));
   };
 
   /****************************************************************************/

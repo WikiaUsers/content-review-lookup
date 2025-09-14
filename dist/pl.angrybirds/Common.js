@@ -1,6 +1,5 @@
 /* Umieszczony tutaj kod JavaScript zostanie załadowany przez każdego użytkownika, podczas każdego ładowania strony. */
 /* Oto CSS/JS stworzony przez Pawela1631, Edwina282, Szynke013 i Wedkarskiego */
-
 // IMPORT 1
 importArticles({
     type: 'script',
@@ -196,3 +195,42 @@ function ToTop() {
 // Display 12 hour time followed by day, month (English, full name)
 // and year with "(UTC)" at the end
 window.DisplayClockJS = '%2I:%2M:%2S %p %2d %{Styczeń;Luty;Marzec;Kwiecień;Maj;Czerwiec;Lipiec;Sierpień;Wrzesień;Październik;Listopad;Grudzień}m %Y (UTC)';
+
+
+
+
+
+/* Badge*/ 
+(function($, mw) {
+    // Sprawdź, czy są linki do użytkowników (optymalizacja)
+    if ($('.mw-userlink:not(.mw-anonuserlink)').length < 1) return;
+
+    // URL badge'a (możesz zmienić na własny obrazek)
+    var badgeUrl = 'https://images.wikia.nocookie.net/__cb20141028132300/testowanko/pl/images/a/ac/Gold_Medal_%28Master%29.png';
+
+    // Lokalizowana nazwa strony użytkownika (np. "User:EmilCioran" na EN, "Użytkownik:EmilCioran" na PL)
+    var fullpagename = new mw.Title('EmilCioran', 2).getPrefixedText();
+
+    // Znajdź linki do EmilCioran
+    var $userLink = $('.mw-userlink[title="' + fullpagename + '"]');
+
+    // Dodaj badge
+    $userLink.each(function() {
+        var $this = $(this);
+        // Sprawdź, czy badge już istnieje (zapobiega duplikatom)
+        if ($this.find('.user-badge-emilcioran').length > 0) return;
+
+        $this.append(
+            $('<img>', {
+                class: 'user-badge user-badge-emilcioran',
+                src: badgeUrl,
+                title: 'Custom Badge dla EmilCioran' // Tooltip (opcjonalny)
+            }).css({
+                width: '1em',
+                height: '1em',
+                marginLeft: '0.2em', // Odstęp od nicku
+                verticalAlign: 'middle' // Wyrównanie z tekstem
+            })
+        );
+    });
+})(window.jQuery, window.mediaWiki);

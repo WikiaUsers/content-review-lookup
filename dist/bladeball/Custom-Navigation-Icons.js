@@ -4,7 +4,7 @@ mw.hook('wikipage.content').add(function () {
     console.log('✅ Custom Navigation Icon Script Loaded');
     const iconMap = {
     // Wiki Guidelines section
-        'Editing Rules': 'https://static.wikia.nocookie.net/bladeball/images/9/9c/Editing_Rules.png',
+        'General Rules': 'https://static.wikia.nocookie.net/bladeball/images/9/9c/Editing_Rules.png',
         'Page Structures': 'https://static.wikia.nocookie.net/bladeball/images/a/ab/Page_Structures.png',
         'User Rights & Roles': 'https://static.wikia.nocookie.net/bladeball/images/6/64/User_Roles.png',
         'Activity': 'https://static.wikia.nocookie.net/bladeball/images/9/96/Activity.png',

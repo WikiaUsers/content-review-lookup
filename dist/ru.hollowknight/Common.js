@@ -2,7 +2,7 @@ if (mw.config.get('wgPageName') === 'Карта_Халлоунеста') {
     importArticle({ type: 'script', article: 'MediaWiki:MapHK.js' });
 }
 
-if (mw.config.get('wgPageName') === 'Шаблон:Map2') {
+if (mw.config.get('wgPageName') === 'Участник:TRJ-VoRoN/Тест') {
     importArticle({ type: 'script', article: 'MediaWiki:MapSS.js' });
 }
 

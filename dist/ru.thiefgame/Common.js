@@ -269,7 +269,7 @@ function setupModule(data) {
     var $module = 
     $('<section class="ChatModule module">' +
         '<h2 class="discord-header">' +
-            '<img alt="Discord" src="https://vignette.wikia.nocookie.net/atom-rpg/images/d/d0/Discord_logo.png/revision/latest?cb=20181227135639&path-prefix=ru" class="discord-icon">' + 
+            '<img alt="Discord" src="https://static.wikia.nocookie.net/thiefgame/images/f/f6/Discord_chat_logo.svg/revision/latest?cb=20250914105520&format=original&path-prefix=ru" class="discord-icon">' + 
             '<span>Discord</span>' + 
         '</h2>' +
         '<table>' +

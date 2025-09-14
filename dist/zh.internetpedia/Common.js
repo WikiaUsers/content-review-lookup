@@ -321,3 +321,34 @@ $(function () {
         });
     }
 });
+
+
+
+
+/* MEDIAWIKI JQUERY FUNCTION */
+(function ($, mw) {
+////////////////////////////////
+// MEDIAWIKI JQUERY FUNCTION
+
+/** FANDOM SVG logo **/
+$('.wds-community-header__wordmark').html(
+  $('<a>',{
+    'accesskey':'z',
+    'href':'/zh/wiki/%E7%A4%BE%E5%8C%BA%E4%B8%AD%E5%BF%83'
+  })
+  .append(
+    $('<img>',{
+      'src':'https://vignette.wikia.nocookie.net/central/images/8/8f/FANDOM-logo.svg',
+      'width':'250',
+      'height':'57',
+      'alt':'社区中心'
+    })
+  )
+);
+
+/* Discussion Icon */
+$('nav > ul > li:nth-child(3) > div > ul > li:nth-child(1) > a > span').prepend('<svg class="wds-icon-tiny wds-icon navigation-item-icon" id="wds-icons-discussions-tiny" viewBox="0 0 12 12"><path d="M1,12c-0.13,0-0.26-0.02-0.38-0.08C0.24,11.77,0,11.4,0,11V4c0-0.55,0.45-1,1-1s1,0.45,1,1v4.59l0.29-0.29 C2.48,8.11,2.73,8,3,8h4c0.55,0,1,0.45,1,1s-0.45,1-1,1H3.41l-1.71,1.71C1.52,11.9,1.26,12,1,12z M11.38,8.92 C11.76,8.77,12,8.4,12,8V2c0-1.1-0.9-2-2-2H5C3.9,0,3,0.9,3,2v3c0,1.1,0.9,2,2,2h3.59l1.71,1.71C10.48,8.9,10.74,9,11,9 C11.13,9,11.26,8.98,11.38,8.92z M10,2v3.59L9.71,5.29C9.52,5.11,9.27,5,9,5H5V2H10z"></path></svg> '); // too lazy to jQuery-ize this
+
+////////////////////////////////
+// END
+} (jQuery, mediaWiki) );

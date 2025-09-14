@@ -1,6 +1,6 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.3.51 (beta)';
+	const version = '0.4.4 (beta)';
 	const api = new mw.Api();
 	const archived = $('#archivedPage').length === 1; // {{archived}}
 	const view = mw.config.get('wgAction') === 'view';
@@ -12,6 +12,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	const wrongNamespace = (ns % 2 === 0 && sigNamespaces.indexOf(ns) === -1) || ns === -1;
 	const addTopicButton = $('#ca-addsection');
 	let revid = mw.config.get('wgCurRevisionId');
+	let updateInterval;
 	
 	if (wrongNamespace && addTopicButton.length !== 1){
 		return;
@@ -54,12 +55,13 @@ mw.loader.using(['mediawiki.api'], () => {
 	};
 	
 	const timeZones = Object.keys(timeZoneConverter);
-	const time = '[0-2]\\d:[0-5]\\d,';
+	const time = '[0-2]\\d:[0-5]\\d';
 	const day = ' [1-3]?\\d,?';
 	const month = ` (?:${months.join('|')})`;
 	const year = ' \\d\\d\\d\\d+';
 	const tZone = ` \\((?:${timeZones.join('|')})\\)`;
-	const tsRegexp = new RegExp(`^.* (${time}(?:${day}|${month}|${year})+${tZone})\\s*$`);
+	const tsRegexp = new RegExp(`^.* (${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
+	const commentElements = 'p, dd, div, li';
 	const linkSelectors = [
 		'a[title^="User:"]',
 		'a[title^="User talk:"]',
@@ -93,7 +95,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		if (!view || archived || !editable){
 			return;
 		}
-		$('.mw-parser-output').find('p, dd, div, li').each(addReplyButtons);
+		$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 	});
 	
 	function addReplyButtons(i, e){
@@ -126,12 +128,15 @@ mw.loader.using(['mediawiki.api'], () => {
 			tsElement = $(timestamp).parent();
 		}
 		
-		tsElement.after($('<a>', {
+		const ogTsString = $(timestamp).text().replace(tsRegexp, '$1');
+		const index = $(`[data-timestamp="${ogTsString}"]`).length;
+		
+		tsElement.after($('<button>', {
 			'class': 'reply-button-js',
-			'href': '#',
-			'role': 'button',
+			'type': 'button',
 			'data-user': userLinkTitle.replace(userRegexp, '$1'),
-			'data-timestamp': $(timestamp).text().replace(tsRegexp, '$1'),
+			'data-timestamp': ogTsString,
+			'data-index': index,
 			'tabindex': 0,
 			'text': mw.message('custom-talk-tools-reply-button').text(),
 			'on': {'click': activateReplyButton},
@@ -139,13 +144,12 @@ mw.loader.using(['mediawiki.api'], () => {
 	}
 	
 	function activateReplyButton(event){
-		event.preventDefault();
 		const button = $(event.currentTarget);
-		if (button.attr('aria-disabled')){
+		if (button.attr('disabled')){
 			return;
 		}
 		
-		$('.reply-button-js').attr({'tabindex': -1, 'aria-disabled': true});
+		$('.reply-button-js').attr({'tabindex': -1, 'disabled': true});
 		button.attr('id', 'active-reply-button-js');
 		const headings = 'h1, h2, h3, h4, h5, h6';
 		const rootParent = button.parents('.mw-parser-output > *');
@@ -167,7 +171,14 @@ mw.loader.using(['mediawiki.api'], () => {
 				button.data('user')
 			).text(),
 			'required': true,
-		})).append($('<div>').append($('<p>', {
+		})).append($('<div>', {
+			'id': 'reply-preview-js',
+			'data-label': 'Preview',
+			'lang': 'en',
+			'dir': 'ltr',
+		})).append($('<div>', {
+			'id': 'reply-footer-js',
+		}).append($('<p>', {
 			'id': 'reply-license-js',
 			'html': mw.message('custom-talk-tools-license-text').parse(),
 		})).append($('<div>').append($('<button>', {
@@ -193,6 +204,40 @@ mw.loader.using(['mediawiki.api'], () => {
 		}
 		
 		$('#reply-editor-js textarea').get(0).focus();
+		let currentCmt = $('#reply-editor-js textarea').val();
+		let cmtPreview = currentCmt;
+		updateInterval = setInterval(() => {
+			if (currentCmt === $('#reply-editor-js textarea').val()){
+				return;
+			}
+			
+			if (!$('#reply-editor-js textarea').val()){
+				$('#reply-preview-js').html('');
+				return;
+			}
+			
+			currentCmt = $('#reply-editor-js textarea').val();
+			cmtPreview = currentCmt.replace(/ +$/gm, '');
+			cmtPreview = cmtPreview.replace(/\n\n+/g, '\n');
+			cmtPreview = cmtPreview.replace(/^:+ */gm, '');
+			cmtPreview = cmtPreview.replace(/^/gm, ':');
+			cmtPreview = addSig(cmtPreview);
+			
+			api.get({
+				'action': 'parse',
+				'title': mw.config.get('wgPageName'),
+				'text': cmtPreview,
+				'revid': revid,
+				'prop': 'text',
+				// 'parsoid': 1,
+				'pst': true,
+				'preview': true,
+			}).done(previewJSON => {
+				const parsedPreview = $(previewJSON.parse.text['*']).contents();
+				$('#reply-preview-js').html(parsedPreview);
+			});
+		}, 2000);
+		
 		$('#reply-cancel-js').on('click', () => {
 			if ($('#reply-editor-js textarea').val()){
 				const confirmationDialog = new OO.ui.MessageDialog();
@@ -229,11 +274,13 @@ mw.loader.using(['mediawiki.api'], () => {
 			'section': section,
 			'user': button.data('user'),
 			'timestamp': button.data('timestamp'),
+			'index': button.data('index'),
 		}, submitReply);
 	}
 	
 	function discardComment(){
-		$('.reply-button-js').attr('tabindex', 0).removeAttr('aria-disabled');
+		clearInterval(updateInterval);
+		$('.reply-button-js').attr('tabindex', 0).removeAttr('disabled');
 		$('#active-reply-button-js').removeAttr('id');
 		$('#reply-editor-js').remove();
 	}
@@ -244,6 +291,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			return;
 		}
 		
+		clearInterval(updateInterval);
 		const elmts = 'textarea, .wds-button';
 		$('#reply-editor-js').find(elmts).attr('disabled', true);
 		
@@ -259,43 +307,31 @@ mw.loader.using(['mediawiki.api'], () => {
 		};
 		
 		api.get(fetchParams).done(result => {
-			const initialText = result.query.pages[0].revisions[0].slots.main.content;
+			const uneditedText = result.query.pages[0].revisions[0].slots.main.content;
 			const timestamp = event.data.timestamp.replace(/([()])/g, '\\$1');
-			const pRegexp = new RegExp(`^.+${timestamp} *$`, 'mg');
-			const iRegexp = new RegExp(`[^]*^([:*#]*).+${timestamp} *$[^]*`, 'm');
-			const rRegexp = new RegExp(`([^]*)^(:*)(.+${timestamp} *)$((?:\n\n?\\2:+.*)?(?:\n\\2:+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
-			const indent = initialText.replace(iRegexp, '$1');
-			const iPrevRegexp = new RegExp(`[^]*^(:*).+${timestamp} *$\n\n?\\1:+[^]*`, 'm');
+			const index = Number(event.data.index);
+			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${timestamp}){${index}}`), '');
+			const iRegexp = new RegExp(`[^]*?^([:*#]*).+?${timestamp} *$[^]*`, 'm');
+			const rRegexp = new RegExp(`([^]*?)^(:*)(.+?${timestamp} *)$((?:\n\n?\\2:+.*)?(?:\n\\2:+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
+			const indent = mainText.replace(iRegexp, '$1');
+			const iPrevRegexp = new RegExp(`[^]*?^(:*).+?${timestamp} *$\n\n?\\1:+[^]*`, 'm');
 			let finalText;
-			
-			if (initialText.match(pRegexp).length !== 1){
-				alert('Error: Unable to publish comment');
-				$('#reply-cancel-js').removeAttr('disabled');
-				return;
-			}
+			let prefix = uneditedText.split(event.data.timestamp).splice(0, index).join(event.data.timestamp);
+			prefix = prefix ? prefix + event.data.timestamp : '';
 			
 			comment = comment.replace(/ +$/gm, '');
 			comment = comment.replace(/\n\n+/g, '\n');
 			comment = comment.replace(/^:+ */gm, '');
 			comment = comment.replace(/^/gm, `${indent}:`);
+			comment = addSig(comment);
 			
-			// <pre>
-			if (!/[^~]~~~~$/.test(comment)){
-				if (/~~~$/.test(comment)){
-					comment = comment.replace(/( *)~~~+$/, '$1~~~~');
-				} else {
-					comment = comment.replace(/$/, ' ~~~~');
-				}
-			}
-			// </pre>
-			
-			if (!indent.length && !iPrevRegexp.test(initialText)){
-				finalText = initialText.replace(
+			if (!indent.length && !iPrevRegexp.test(mainText)){
+				finalText = prefix + mainText.replace(
 					rRegexp,
 					`$1$2$3$4\n\n${comment}$5\n\n$6`
 				);
 			} else {
-				finalText = initialText.replace(
+				finalText = prefix + mainText.replace(
 					rRegexp,
 					`$1$2$3$4\n${comment}$5\n\n$6`
 				);
@@ -339,7 +375,7 @@ mw.loader.using(['mediawiki.api'], () => {
 						$('#mw-content-text > .mw-parser-output').html(parsedText);
 						mw.notify(mw.message('custom-talk-tools-success').text(), {type: 'success'});
 						addStats();
-						$('.mw-parser-output').find('p, dd, div, li').each(addReplyButtons);
+						$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 					});
 				} else {
 					errorNotice(`An unknown error has occured: ${JSON.stringify(data)}`);
@@ -381,7 +417,6 @@ mw.loader.using(['mediawiki.api'], () => {
 	}
 	
 	function addStats(){
-		// TODO: Fix timestamp parsing problem (on iPads)
 		const comments = [];
 		let currentSection = '';
 		
@@ -401,7 +436,8 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			
 			const userLinkTitle = userLinks.last().attr('title');
-			let tsString = $(timestamp).text().replace(tsRegexp, '$1').replace(/[,]/g, '');
+			const tsOrderFix = new RegExp(`^(${time}) (.+)(${tZone})$`);
+			let tsString = $(timestamp).text().replace(tsRegexp, '$1').replace(/,/g, '').replace(tsOrderFix, '$2 $1$3');
 			let userRegexp;
 			
 			timeZones.forEach(timeZone => {
@@ -553,5 +589,19 @@ mw.loader.using(['mediawiki.api'], () => {
 	
 	function txtFilter(n){
 		return n.nodeType === 3 && n.nodeValue !== '\n';
+	}
+	
+	function addSig(comment){
+		// <pre>
+		let cmt = comment;
+		if (!/[^~]~~~~$/.test(cmt)){
+			if (/~~~$/.test(cmt)){
+				cmt = cmt.replace(/( *)~~~+$/, '$1~~~~');
+			} else {
+				cmt = cmt.replace(/$/, ' ~~~~');
+			}
+		}
+		return cmt;
+		// </pre>
 	}
 });

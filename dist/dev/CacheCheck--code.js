@@ -70,6 +70,7 @@ mw.loader.using('mediawiki.util').done(function() {
     // Skip execution if not on a relevant page, page is skipped by user, 
     // or list on page is empty. Else, check for empty listings on SpecialPages.
     if (
+    	!page ||
         pages.indexOf(page) === -1 ||
         skips.indexOf(page) !== -1 ||
         (list.length === 0 && page !== 'Specialpages') ||

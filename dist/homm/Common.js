@@ -130,6 +130,58 @@ function initPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2
 	}
 }
 
+function getCookieNumber(cookieName, cookieDefault) {
+	var cookieVal = getCookie(cookieName);
+	if (cookieVal == '') {
+		cookieVal = cookieDefault;
+	} else {
+		cookieVal = Number(cookieVal);
+	}
+	return cookieVal;
+}
+
+function initPreferenceNumber(linkSelector, cookieName, cookieDefault, prefName, displayText, min, max, step, changeFunc) {
+	var cookieVal = getCookieNumber(cookieName, 0.5);
+	var userlinks = document.querySelectorAll('.wds-tabs');
+	for (var i = 0; i < userlinks.length; i++) {
+		var switchView = document.querySelector('#' + linkSelector + i);
+		if (!switchView) {
+			switchView = document.createElement('li');
+			switchView.style = 'user-select:none; padding-bottom:8px;';
+			switchView.id = linkSelector;
+			switchView.title = prefName;
+			switchView.textContent = displayText;
+			var switchViewInput = document.createElement('input');
+			switchViewInput.type = 'number';
+			switchViewInput.step = step;
+			switchViewInput.min = min;
+			switchViewInput.max = max;
+			switchViewInput.value = cookieVal;
+			switchViewInput.style.marginLeft = '3px';
+			switchViewInput.style.fieldSizing = 'content';
+			switchViewInput.style.minWidth = '34px';
+			switchViewInput.addEventListener('change', changeFunc);
+			switchView.insertBefore(switchViewInput, null);
+			userlinks[i].insertBefore(switchView, null);
+		}
+	}
+}
+
+function adjustVolume(e) {
+	if (isNaN(Number(e.target.value))) {
+		e.target.value = 0.5;
+	} else if (e.target.value > 1) {
+		e.target.value = 1;
+	} else if (e.target.value < 0) {
+		e.target.value = 0;
+	}
+	var CookieDate = new Date();
+	CookieDate.setFullYear(CookieDate.getFullYear() + 1);
+	document.cookie = 'volumeLevel=' + e.target.value + '; expires=' + CookieDate.toUTCString() + '; path=/;';
+	
+	setVolume(e.target.value);
+}
+
 function getOffsetTop(e, top) {
 	if (e.id == 'bodyContent' || e.tagName == 'MAIN') {
 		return top;
@@ -162,7 +214,6 @@ function fixClassNames(selectors) {
 }
 
 function initHoverPopups() {
-	fixClassNames(['.hoverable','.popupable']);
 	var elems = document.querySelectorAll('.popupable');
 	var bodyContent = document.querySelector('#bodyContent');
 	var main = document.querySelector('main');
@@ -220,13 +271,69 @@ function initHoverPopups() {
 	}
 }
 
+function initPlayables() {
+	var elems = document.querySelectorAll('.playable');
+	var bodyContent = document.querySelector('#bodyContent');
+	var main = document.querySelector('main');
+	for (var i = 0; i < elems.length; i++) {
+		elems[i].parentElement.removeChild(elems[i]);
+		if (bodyContent) {
+			bodyContent.appendChild(elems[i]);
+		} else if (main) {
+			main.appendChild(elems[i]);
+		}
+	}
+	elems = document.querySelectorAll('.clickToPlay a');
+	for (i = 0; i < elems.length; i++) {
+		elems[i].title = '';
+		elems[i].style.pointerEvents = 'none';
+	}
+	elems = document.querySelectorAll('.clickToPlay');
+	for (i = 0; i < elems.length; i++) {
+		for (var j = 0; j < elems[i].classList.length; j++) {
+			var playid = elems[i].classList[j];
+			var re = /^playid/i;
+			var found = playid.match(re);
+			if (found) {
+				let elem = document.querySelector('.playable.' + playid + ' > a');
+				if (elem) {
+					let elem0 = elems[i];
+					elem0.style.cursor = 'pointer';
+					let audio = new Audio(elem.href);
+					elems[i].addEventListener('click', function () {
+						audio.volume = getCookieNumber('volumeLevel', 0.5);
+						audio.play();
+					});
+				}
+			}
+		}
+	}
+}
+
+function setVolume(value) {
+	if (value == 'cookie') {
+		value = getCookieNumber('volumeLevel', 0.5);
+	}
+	var volumeables = ['audio','video'];
+	for (var h = 0; h < volumeables.length; h++) {
+		var elems = document.querySelectorAll(volumeables[h]);
+		for (i = 0; i < elems.length; i++) {
+			elems[i].volume = value;
+		}
+	}
+}
+
 function initCommon() {
 	initPreference('switchExpansion', 'preferredExpansion', 'hota', 'sod', 'Enable HotA', 'Disable HotA', 'Horn of the Abyss', togglePreferredExpansion);
 	initPreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning', toggleDoR);
+	initPreferenceNumber('adjustVolume', 'volumeLevel', 0.5, 'Adjust Volume', 'Volume', 0, 1, 0.1, adjustVolume);
 	if (!window.location.href.includes('action=edit') && !window.location.href.includes('action=submit')) {
 		removeTabsTags();
 	}
+	fixClassNames(['.hoverable','.popupable','.clickToPlay','.playable']);
 	initHoverPopups();
+	initPlayables();
+	setVolume('cookie');
 }
 
 try {

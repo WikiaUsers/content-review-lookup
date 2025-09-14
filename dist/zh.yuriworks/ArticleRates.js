@@ -1,42 +1,47 @@
 (function($) {
   mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.jqueryMsg"], function() {
+    // 确保PopupGenerator已加载
+    if (typeof PopupGenerator === 'undefined') {
+      console.error('PopupGenerator is not loaded');
+      return;
+    }
+
     var pageId = mw.config.get("wgArticleId");
     var pageTitle = mw.config.get("wgPageName");
     var userId = mw.user.getId();
     var currentAverage = 0;
     var currentVoteCount = 0;
     var currentPageRatings = {};
+
     if (mw.config.get("wgNamespaceNumber") !== 0 || mw.user.isAnon() || pageId === 0) {
       return;
     }
+
     if (window.ArticleRatesExcludePages && window.ArticleRatesExcludePages.indexOf(pageTitle) !== -1) {
       return;
     }
+
     // 创建评分组件
     var $ratingContainer = $("<div>").addClass("article-rating-container");
     var $starsContainer = $("<div>").addClass("rating-stars-container");
     var $averageContainer = $("<div>").addClass("rating-average-container");
-    var $popupIntro = $("<div>").addClass("rating-popup-intro").text("查看详情");
     
-    // 创建弹窗元素并添加到评分容器
-    var $popupFrame = $("<div>").addClass("popup-box-frame rating-popup").hide();
-    var $popupSublayer = $("<div>").addClass("popup-box-sublayer");
-    var $popupBox = $("<div>").addClass("popup-box");
-    var $popupHeader = $("<div>").addClass("popup-box-header");
-    var $closeLabel = $("<span>")
-      .addClass("close-label")
-      .attr("title", "关闭")
-      .html("&times;");
-    var $headerText = $("<span>")
-      .addClass("popup-box-header-text")
-      .text("评分详情");
-    var $popupContent = $("<div>").addClass("popup-box-content");
-    
-    // 组装弹窗结构
-    $popupHeader.append($closeLabel, $headerText);
-    $popupBox.append($popupHeader, $popupContent);
-    $popupFrame.append($popupSublayer, $popupBox);
-    
+    // 使用PopupGenerator创建弹窗
+    var popup = PopupGenerator.createPopup({
+      introText: "查看详情",
+      headerText: "评分详情",
+      frameCSS: "rating-popup",
+      content: "",
+      appendTo: $ratingContainer,
+      mode: "create",
+      onOpen: function() {
+        showRatingDetailsDialog();
+      },
+      onClose: function() {
+        // 弹窗关闭时的清理工作（如果有）
+      }
+    });
+
     var $stars = [];
     for (var i = 1; i <= 5; i++) {
       var $star = $("<span>")
@@ -46,8 +51,9 @@
       $stars.push($star);
       $starsContainer.append($star);
     }
-    $ratingContainer.append($starsContainer, $averageContainer, $popupIntro, $popupFrame);
     
+    $ratingContainer.append($starsContainer, $averageContainer, popup.triggerElement, popup.popupElement);
+
     // 插入到页面 - 作为 .page-header 父元素的最后一个子元素
     var $pageHeader = $(".page-header");
     if ($pageHeader.length) {
@@ -58,10 +64,10 @@
         $titleElement.append($ratingContainer);
       }
     }
-    
+
     // 加载评分数据
     loadRatingData();
-    
+
     function loadRatingData() {
       var api = new mw.Api();
       api.get({
@@ -79,7 +85,7 @@
             // 新数据结构: { pageId: { userId: { rating: X, timestamp: "..." }, ... }, ... }
             var ratings = JSON.parse(content) || {};
             var pageRatings = ratings[pageId] || {};
-            
+
             // 转换为旧格式兼容: { userId: rating, ... }
             var simpleRatings = {};
             for (var uid in pageRatings) {
@@ -87,7 +93,7 @@
                 simpleRatings[uid] = pageRatings[uid].rating;
               }
             }
-            
+
             updateAverageRating(simpleRatings, pageRatings);
           } catch (e) {
             console.error("Error parsing rating data:", e);
@@ -97,7 +103,7 @@
         console.error("Error loading rating data:", error);
       });
     }
-    
+
     function highlightStars(rating) {
       var rounded = Math.round(rating * 2) / 2;
       var fullStars = Math.floor(rounded);
@@ -112,7 +118,7 @@
         }
       }
     }
-    
+
     // 修改updateAverageRating以接收完整评分数据
     function updateAverageRating(simpleRatings, fullRatings) {
       currentPageRatings = fullRatings || simpleRatings; // 优先使用完整数据
@@ -136,7 +142,7 @@
         highlightStars(0);
       }
     }
-    
+
     $starsContainer.on("mousemove", function(e) {
       var $target = $(e.target).closest(".rating-star");
       if ($target.length) {
@@ -144,16 +150,16 @@
         highlightStars(value);
       }
     });
-    
+
     $starsContainer.on("mouseleave", function() {
       highlightStars(currentAverage);
     });
-    
+
     $starsContainer.on("click", ".rating-star", function() {
       var rating = $(this).data("value");
       saveRating(rating);
     });
-    
+
     function saveRating(rating) {
       var api = new mw.Api();
       api.get({
@@ -173,18 +179,18 @@
         } catch (e) {
           ratings = {};
         }
-        
+
         // 初始化页面评分数据
         if (!ratings[pageId]) {
           ratings[pageId] = {};
         }
-        
+
         // 新数据结构: 存储评分和时间戳
         ratings[pageId][userId] = {
           rating: rating,
           timestamp: new Date().toISOString()
         };
-        
+
         api.postWithEditToken({
           action: "edit",
           title: "Project:ArticleRates",
@@ -209,115 +215,114 @@
         mw.notify("加载评分数据时出错: " + error, { type: "error" });
       });
     }
-    
-    // 点击查看详情按钮时显示评分详情弹窗
-    $popupIntro.on("click", function() {
-      showRatingDetailsDialog();
-    });
-    
-    // 关闭弹窗事件
-    $closeLabel.on("click", function(e) {
-      e.stopPropagation();
-      $popupFrame.hide();
-    });
-    
-    $popupSublayer.on("click", function() {
-      $popupFrame.hide();
-    });
-    
+
     // 显示评分详情弹窗
-    function showRatingDetailsDialog() {
-      if (!currentPageRatings || Object.keys(currentPageRatings).length === 0) {
-        mw.notify("暂无评分", { type: "info" });
-        return;
-      }
-      
-      // 显示弹窗
-      $popupFrame.show();
-      $popupContent.html("<div style='padding: 20px; text-align: center;'>加载中...</div>");
-      
-      // 获取用户信息
-      var api = new mw.Api();
-      api.get({
-        action: "query",
-        list: "users",
-        ususerids: Object.keys(currentPageRatings).join("|"),
-        usprop: "groups"
-      }).done(function(data) {
-        var users = data.query.users;
-        var userMap = {};
-        users.forEach(function(user) {
-          userMap[user.userid] = user;
-        });
-        
-        // 创建表格
-        var $table = $("<table>").addClass("fandom-table row-hover count-row-table-v2-first-column");
-        var $tbody = $("<tbody>");
-        $table.append($tbody);
-        
-        // 添加表头
-        var $header = $("<tr>");
-        $header.append(
-          $("<th>").text("序号").css({textAlign: "center"}),
-          $("<th>").text("用户"),
-          $("<th>").text("评分").css({textAlign: "center"}),
-          $("<th>").text("评分时间")
-        );
-        $tbody.append($header);
-        
-        // 添加评分行
-        var index = 1;
-        for (var userId in currentPageRatings) {
-          var ratingData = currentPageRatings[userId];
-          var rating = typeof ratingData === 'object' ? ratingData.rating : ratingData;
-          var $row = $("<tr>");
-          
-          // 序号列
-          $row.append($("<td>").css({textAlign: "center"}));
-          
-          // 用户列
-          var $userCell = $("<td>");
-          var userName = userMap[userId] ? userMap[userId].name : "用户ID:" + userId;
-          var $userLink = $("<a>")
-            .attr("href", mw.util.getUrl("User:" + userName))
-            .text(userName);
-          $userCell.append($userLink);
-          $row.append($userCell);
-          
-          // 评分列
-          $row.append(
-            $("<td>")
-              .text(rating)
-              .css({ 
-                textAlign: "center", 
-                color: "var(--theme-link-color)",
-                fontWeight: "bold"
-              })
-          );
-          
-          // 评分时间列
-          var ratingTime = "未知";
-          if (typeof ratingData === 'object' && ratingData.timestamp) {
-            ratingTime = new Date(ratingData.timestamp).toLocaleString();
-          }
-          $row.append($("<td>").text(ratingTime));
-          
-          $tbody.append($row);
-        }
-        
-        // 添加平均分信息
-        var $averageInfo = $("<div>")
-          .html("<p><strong>平均分:</strong> " + currentAverage.toFixed(1) + " (共" + currentVoteCount + "票)</p>");
-        
-        // 清空内容后追加平均分和表格
-        $popupContent.empty().append($averageInfo, $table);
-      }).fail(function(error) {
-        $popupContent.html("<div style='color: #d33; padding: 20px;'>加载评分详情失败: " + error + "</div>");
-      });
-    }
+	function showRatingDetailsDialog() {
+	  if (!currentPageRatings || Object.keys(currentPageRatings).length === 0) {
+	    mw.notify("暂无评分", { type: "info" });
+	    popup.close();
+	    return;
+	  }
+	
+	  // 设置弹窗内容为加载中
+	  popup.contentElement.html("<div style='padding: 20px; text-align: center;'>加载中...</div>");
+	
+	  // 获取用户信息
+	  var api = new mw.Api();
+	  api.get({
+	    action: "query",
+	    list: "users",
+	    ususerids: Object.keys(currentPageRatings).join("|"),
+	    usprop: "groups"
+	  }).done(function(data) {
+	    var users = data.query.users;
+	    var userMap = {};
+	    users.forEach(function(user) {
+	      userMap[user.userid] = user;
+	    });
+	
+	    // 创建表格
+	    var $table = $("<table>").addClass("article-rating-content-table row-hover count-row-table-v2-first-column");
+	    var $tbody = $("<tbody>");
+	    $table.append($tbody);
+	
+	    // 添加表头
+	    var $header = $("<tr>");
+	    $header.append(
+	      $("<th>").text("序号").css({textAlign: "center"}),
+	      $("<th>").text("用户"),
+	      $("<th>").text("评分").css({textAlign: "center"}),
+	      $("<th>").text("评分时间")
+	    );
+	    $tbody.append($header);
+	
+	    // 添加评分行
+	    for (var userId in currentPageRatings) {
+	      var ratingData = currentPageRatings[userId];
+	      var rating = typeof ratingData === 'object' ? ratingData.rating : ratingData;
+	      var $row = $("<tr>");
+	
+	      // 序号列
+	      $row.append($("<td>").css({textAlign: "center"}));
+	
+	      // 用户列 - 添加头像
+	      var $userCell = $("<td>");
+	      var userName = userMap[userId] ? userMap[userId].name : "用户ID:" + userId;
+	      
+	      // 创建包含头像的用户链接
+	      var $userLink = $("<a>")
+	        .attr("href", mw.util.getUrl("User:" + userName))
+	        .text(userName);
+	      
+	      // 添加头像容器
+	      var $avatarContainer = $("<span>")
+	        .addClass("UserAvatarFetch")
+	        .append(
+	          $("<span>").addClass("avi-thisUsername").text(userName).hide(),
+	          $("<span>").addClass("avi-thisSize").text("20").hide(),
+	          $("<span>").addClass("avi-thisLink").text("User:" + userName).hide()
+	        );
+	      
+	      $userCell.append($avatarContainer, $userLink);
+	      $row.append($userCell);
+	
+	      // 评分列
+	      $row.append(
+	        $("<td>").text(rating));
+	
+	      // 评分时间列
+	      var ratingTime = "未知";
+	      if (typeof ratingData === 'object' && ratingData.timestamp) {
+	        ratingTime = new Date(ratingData.timestamp).toLocaleString();
+	      }
+	      $row.append($("<td>").text(ratingTime));
+	
+	      $tbody.append($row);
+	    }
+	
+	    // 添加平均分信息
+	    var $averageInfo = $("<div>")
+	      .html("<p><strong>平均分:</strong> " + currentAverage.toFixed(1) + " (共" + currentVoteCount + "票)</p>");
+	
+	    // 清空内容后追加平均分和表格
+	    popup.contentElement.empty().append($averageInfo, $table);
+	    
+	    // 触发头像加载
+	    if (typeof findAvatars === 'function') {
+	      findAvatars(popup.contentElement);
+	    } else if (typeof mw.hook !== 'undefined') {
+	      // 如果User Avatar Finder脚本已加载，通过hook触发
+	      mw.hook('wikipage.content').fire(popup.contentElement);
+	    }
+	    
+	  }).fail(function(error) {
+	    popup.contentElement.html("<div style='color: #d33; padding: 20px;'>加载评分详情失败: " + error + "</div>");
+	  });
+	}
   });
 })(jQuery);
 
+// 第二个函数保持不变
 (function($) {
   // 只在 ArticleRates 页面执行（检查命名空间ID和页面名称）
   var pageName = mw.config.get('wgPageName');

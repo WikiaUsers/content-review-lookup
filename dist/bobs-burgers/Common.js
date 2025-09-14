@@ -62,6 +62,9 @@ function checktimers() {
 }
 addOnloadHook(checktimers);
 
+  //rail module
+  window.AddRailModule = [{prepend: true}];
+
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************

@@ -18,13 +18,16 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Adding spiked gorget and spiked bracers as loot
+'Norcferatu Heartless': '15.11.57e218',
+'Norcferatu Nightweaver':'15.11.57e218',
 // Gold amount changes [[Updates/15.11.b91244]]
 'Brachiodemon': '15.11.b91244',
 'Infernal Demon': '15.11.b91244',
 'Infernal Phantom': '15.11.b91244',
-'Norcferatu Heartless': '15.11.b91244',
+//'Norcferatu Heartless': '15.11.b91244',
 'Gloom Maw':'15.11.b91244',
-'Norcferatu Nightweaver':'15.11.b91244',
+//'Norcferatu Nightweaver':'15.11.b91244',
 'Varg':'15.11.b91244',
 'Orclops Bloodbreaker':'15.11.b91244',
 'Dworc Shadowstalker':'15.11.b91244',

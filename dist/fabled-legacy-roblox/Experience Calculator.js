@@ -142,6 +142,21 @@ var guildLevels = [
   { guildLevel: "Level 5 (+10% EXP)", guildBonus: "0.1" }
 ];
 
+var dungeonModifiers = [
+  { dungeonModifier: "None", EXPmultiplier: "1" },
+  { dungeonModifier: "Swarming Grounds (1.25x EXP)", EXPmultiplier: "1.25" },
+  { dungeonModifier: "Stonehide (1.25x EXP)", EXPmultiplier: "1.25" },
+  { dungeonModifier: "Sharpened Blades (1.25x EXP)", EXPmultiplier: "1.25" },
+  { dungeonModifier: "Ironhide Horde (1.5x EXP)", EXPmultiplier: "1.5" },
+  { dungeonModifier: "Scholar's Resolve (1.5x EXP)", EXPmultiplier: "1.5" },
+  { dungeonModifier: "Trial of Endurance (1.5x EXP)", EXPmultiplier: "1.5" },
+  { dungeonModifier: "Merchant's Delight (0.5x EXP)", EXPmultiplier: "0.5" },
+  { dungeonModifier: "Wisdom's Favour (2x EXP)", EXPmultiplier: "2" },
+  { dungeonModifier: "Blades Drawn (1.5x EXP)", EXPmultiplier: "1.5" },
+  { dungeonModifier: "Wisdom's Overload (3x EXP)", EXPmultiplier: "3" },
+  { dungeonModifier: "Legacy's Zenith (4x EXP)", EXPmultiplier: "4" }
+];
+
 
 /* -------- 2.2 -------- */
 /* Input fields and checkboxes */
@@ -204,6 +219,15 @@ createSelectField({
   valueKey: "guildBonus"
 });
 
+// Dungeon Modifiers
+createSelectField({
+  labelText: "Dungeon Modifier Bonus",
+  id: "dungeonModifierExpBoost",
+  options: dungeonModifiers,
+  nameKey: "dungeonModifier",
+  valueKey: "EXPmultiplier"
+});
+
 
 /* -------- 2.3 -------- */
 /* Calculator Button */
@@ -237,6 +261,7 @@ calcBtn.onclick = function () {
   var weaponPerkBoost = parseFloat(document.getElementById('weaponPerkBoost').value) || 0;
   var ringSubstatBoost = parseFloat(document.getElementById('ringSubstatBoost').value) || 0;
   var guildExpBoost = parseFloat(document.getElementById('guildExpBoost').value) || 0;
+  var dungeonModifierExpBoost = parseFloat(document.getElementById('dungeonModifierExpBoost').value) || 0;
 
   // Error messages
   if (isNaN(currentLevel) || isNaN(goalLevel)) {
@@ -292,7 +317,7 @@ calcBtn.onclick = function () {
 
 
   // Total Exp
-  var totalExp = baseDungeonExp + boostExp;
+  var totalExp = (baseDungeonExp + boostExp) * dungeonModifierExpBoost;
   var requiredExp = calculateExp(currentLevel, goalLevel);
   var runsNeeded = Math.ceil(requiredExp / totalExp);
 

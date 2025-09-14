@@ -29,7 +29,7 @@ UserTagsJS.modules.custom = {
 	'W-Eamon': ['weteran'],
 	'Glifion': ['weteran'],
 	'WITCHER-Sum': ['weteran'],
-	'Ausir': ['weteran'],
+	'Ausir-fduser': ['weteran'],
 	'Game widow': ['weteran'],
 	'Dyrektor Internetu': ['weteran'],
 	'Neggev': ['weteran'],

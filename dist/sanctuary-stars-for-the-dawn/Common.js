@@ -1,118 +1,131 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+// <syntaxhighlight lang="javascript" defer requires="jquery">
 $(document).ready(function() {
-    console.log('JS loaded');
-    const debug = true; // Переключатель отладки
-    const initialSymbol = '▶';
-    const successSymbol = '✔';
-    const duration = 2000;
-    const corsProxy = 'https://api.allorigins.win/raw?url='; // Прокси для обхода CORS
+    console.log('CopytxtScript loaded - v1.4.7');
+    var debug = true;
+    var PREVIEW_CONTAINER_SELECTOR = '.oo-ui-window-content-setup';
+    var BUTTON_SELECTOR = '.copy-to-clipboard-button';
+    var PASTEBIN_API = 'https://api.allorigins.win/get?url='; // Changed to /get for JSON
+    var SYMBOLS = {
+        DEFAULT: '▶',
+        SUCCESS: '✔',
+        ERROR: '❌'
+    };
 
-    function checkButtons(attempts = 5) {
-        var $buttons = $('.copy-to-clipboard-button');
-        if ($buttons.length > 0) {
-            $buttons.each(function() {
-                var $button = $(this);
-                // Убеждаемся, что data-symbol установлен
-                if (!$button.attr('data-symbol')) {
-                    $button.attr('data-symbol', initialSymbol);
-                    if (debug) console.log('Initialized data-symbol for button:', $button.text());
-                }
-                // Установка title, если не задан
-                if (!$button.attr('title')) {
-                    $button.attr('title', $button.data('content') || 'No content');
-                    if (debug) console.log('Initialized title for button:', $button.attr('title'));
-                }
-            });
-
-            $buttons.off('click').on('click', function(e) {
-                e.stopImmediatePropagation();
-                var $button = $(this);
-                var baseText = $button.text();
-                var content = $button.data('content') || '';
-
-                if (typeof content !== 'string') {
-                    content = String(content || '');
-                }
-
-                if (content) {
-                    if (content.match(/^https:\/\/pastebin\.com\/raw\//)) {
-                        if (debug) console.log('Loading Pastebin:', content);
-                        $.get(corsProxy + encodeURIComponent(content), function(data) {
-                            var text = (typeof data === 'string' ? data : data.contents || '').trim();
-                            if (text) {
-                                if (debug) console.log('Loaded text from Pastebin:', text.substring(0, 100) + '...');
-                                copyText(text, $button, baseText);
-                            } else {
-                                if (debug) console.error('No content from Pastebin:', content);
-                                handleError($button, baseText, 'No content from Pastebin');
-                            }
-                        }).fail(function(jqXHR, textStatus, error) {
-                            if (debug) console.error('Pastebin load error:', textStatus, error, 'for URL:', content);
-                            handleError($button, baseText, 'Pastebin load error: ' + textStatus);
-                        });
-                    } else {
-                        if (debug) console.log('Direct text:', content.substring(0, 100) + '...');
-                        copyText(content, $button, baseText);
-                    }
-                } else {
-                    if (debug) console.error('No content to copy');
-                    handleError($button, baseText, 'No content to copy');
-                }
-            });
-            if (debug) console.log('Buttons found and bound:', $buttons.length);
-        } else if (attempts > 0) {
-            if (debug) console.log('No copy-to-clipboard-button elements found, retrying... (' + attempts + ' attempts left)');
-            setTimeout(() => checkButtons(attempts - 1), 500);
-        }
-    }
-
-    function copyText(text, $button, baseText) {
-        if (text) {
+    // Function to copy text with fallback
+    function copyText(text, button) {
+        return new Promise((resolve, reject) => {
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text)
-                    .then(() => {
-                        if (debug) console.log('Copy successful');
-                        updateButton($button, baseText, successSymbol);
-                    })
-                    .catch(err => console.error('Error copying text: ', err));
+                navigator.clipboard.writeText(text).then(resolve).catch(reject);
             } else {
                 var $input = $('<textarea>').val(text).appendTo('body').select();
                 var success = document.execCommand('Copy');
                 $input.remove();
-                if (success) {
-                    if (debug) console.log('Fallback copy successful');
-                    updateButton($button, baseText, successSymbol);
-                } else {
-                    if (debug) console.error('Fallback copy failed');
-                }
+                success ? resolve() : reject(new Error('Fallback copy failed'));
             }
-        } else {
-            if (debug) console.error('No text to copy');
-            handleError($button, baseText, 'No text to copy');
+        });
+    }
+
+    // Function to initialize button
+    function initializeButton(button) {
+        if (button.dataset.initialized) return;
+
+        button.dataset.symbol = SYMBOLS.DEFAULT;
+        // Ensure tooltip is always present
+        if (!button.title) {
+            button.title = button.dataset.content || 'Copy text';
+        }
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            var content = button.dataset.content || '';
+            if (debug) console.log('Copying text from button:', content.substring(0, 100) + (content.length > 100 ? '...' : ''));
+
+            var isPastebinUrl = content.startsWith('http://pastebin.com/') || content.startsWith('https://pastebin.com/');
+            var textToCopy = content;
+
+            var handleClick = function() {
+                if (isPastebinUrl) {
+                    var controller = new AbortController();
+                    var timeoutId = setTimeout(() => controller.abort(), 5000);
+                    fetch(PASTEBIN_API + encodeURIComponent(content), { signal: controller.signal })
+                        .then(response => {
+                            clearTimeout(timeoutId);
+                            if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
+                            return response.json(); // Get JSON from /get
+                        })
+                        .then(data => {
+                            var rawText = data.contents.trim();
+                            if (rawText.startsWith('<!DOCTYPE html>') || rawText.includes('Just a moment')) {
+                                throw new Error('Cloudflare CAPTCHA detected');
+                            }
+                            textToCopy = rawText;
+                            return copyText(textToCopy, button);
+                        })
+                        .then(() => {
+                            button.dataset.symbol = SYMBOLS.SUCCESS;
+                        })
+                        .catch(error => {
+                            console.error('Failed to fetch or copy text:', error);
+                            button.dataset.symbol = SYMBOLS.ERROR;
+                            if (error.message.includes('CAPTCHA') || error.message.includes('Cloudflare')) {
+                                button.title = 'Cloudflare CAPTCHA, try manually'; // Temporary tooltip
+                                setTimeout(() => {
+                                    button.title = button.dataset.content || 'Copy text';
+                                    button.dataset.symbol = SYMBOLS.DEFAULT;
+                                }, 5000);
+                            } else {
+                                setTimeout(() => {
+                                    button.dataset.symbol = SYMBOLS.DEFAULT;
+                                }, 2000);
+                            }
+                        });
+                } else {
+                    copyText(textToCopy, button)
+                        .then(() => {
+                            button.dataset.symbol = SYMBOLS.SUCCESS;
+                        })
+                        .catch(error => {
+                            console.error('Failed to copy text:', error);
+                            button.dataset.symbol = SYMBOLS.ERROR;
+                        })
+                        .then(() => {
+                            setTimeout(() => {
+                                button.dataset.symbol = SYMBOLS.DEFAULT;
+                            }, 2000);
+                        });
+                }
+            };
+
+            handleClick();
+        }, false);
+
+        button.dataset.initialized = 'true';
+        if (debug) console.log('Initialized button in preview:', button.dataset.content);
+    }
+
+    // Activation of buttons via animation (limited to preview)
+    document.addEventListener('animationstart', function(e) {
+        if (e.target.classList.contains('copy-to-clipboard-button')) {
+            var previewContainer = document.querySelector(PREVIEW_CONTAINER_SELECTOR);
+            if (previewContainer && previewContainer.contains(e.target)) {
+                if (debug) console.log('Button detected via animation:', e.target.dataset.content);
+                initializeButton(e.target);
+            }
+        }
+    }, false);
+
+    // Initialization of buttons on static pages (outside editor)
+    if (!window.location.href.includes('action=edit')) {
+        findAndInitializeButtons(document.body);
+        if (debug) console.log('Initial scan for static page buttons complete.');
+    }
+
+    // Function to find and initialize buttons (used for static pages)
+    function findAndInitializeButtons(container) {
+        var buttons = container.querySelectorAll(BUTTON_SELECTOR);
+        for (var i = 0; i < buttons.length; i++) {
+            initializeButton(buttons[i]);
         }
     }
-
-    function updateButton($button, baseText, symbol) {
-        $button.attr('data-symbol', symbol); // Меняем символ через data-symbol
-        setTimeout(() => {
-            $button.attr('data-symbol', initialSymbol); // Возвращаем исходный символ
-        }, duration);
-    }
-
-    function handleError($button, baseText, message) {
-        if (debug) console.error(message);
-        $button.text(message);
-        setTimeout(() => {
-            $button.text(baseText); // Возвращаем базовый текст
-            $button.attr('data-symbol', initialSymbol); // Восстанавливаем стрелочку
-        }, duration);
-    }
-
-    // Запуск проверки сразу и повтор при необходимости
-    checkButtons();
-    // Перезапуск после изменений DOM (например, предпросмотр)
-    $(document).on('DOMSubtreeModified', function() {
-        if (debug) console.log('DOM changed, reinitializing buttons.');
-        checkButtons();
-    });
 });
+// </syntaxhighlight>

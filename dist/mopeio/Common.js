@@ -19,12 +19,27 @@ $.getJSON(mw.config.get('wgScriptPath') + '/api.php', {
 /************************ Import Configurations ************************/
 /***********************************************************************/
 /* PreloadFileDescription */
-PFD_template =  '{{File\n| desc = \n| type = \n}}' ;
-
-// Configuration for NoLicenseWarning
-window.NoLicenseWarning = {
-    forceLicense: true,
-};
+PFD_templates = [
+    {
+        label:   'Gameplay screenshot',
+        desc:    '{{File\n| desc = \n| type = screenshot \n| uploader = \n}}',
+    },
+    'Group header',
+    {
+        label:   'Asset (game files)',
+        desc:    '{{File\n| desc = \n| type = asset \n| source = \n| archive = \n}}\n',
+    },
+    {
+        label:   'Reconstructed asset',
+        desc:    '{{File\n| desc = \n| type = reconstructed \n| designer = \n| Author = \n|  Other versions = \n}}\n',
+    },
+    {
+        label:   'Other',
+        desc:    '{{File\n| desc = \n| type = \n}}\n',
+    },
+];
+PFD_license = 'Nolicense';
+PFD_requireLicense = true;
 
 /* AutoCreateUserPages */
 window.AutoCreateUserPagesConfig = {

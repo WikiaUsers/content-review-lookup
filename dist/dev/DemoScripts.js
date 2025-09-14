@@ -113,6 +113,11 @@
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
         },
 
+        CountdownScroller: {
+            page: 'CountdownScroller',
+            scripts: 'MediaWiki:CountdownScroller.js'
+        },
+
         CSS3Tooltip: {
             page: 'CSS3Tooltip',
             styles: 'MediaWiki:CSS3Tooltip.css',
@@ -225,6 +230,11 @@
         FandomXP: {
             page: 'FandomXP',
             styles: 'MediaWiki:FandomXP.css'
+        },
+
+        FanFeed: {
+            page: 'FanFeed',
+            scripts: 'MediaWiki:FanFeed.js'
         },
 
         FanFeedEnhancements: {
