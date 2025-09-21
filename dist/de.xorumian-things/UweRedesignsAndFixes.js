@@ -24,19 +24,21 @@ links.forEach(url => {
 
 // Recent Images design
 (function(mw, window) {
-    // Double-loading prevention
-    if (document.querySelector('.card-image img')) return;
-
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll('.card-image img').forEach(function(img) {
-            var src = img.src;
-            var dataSrc = img.getAttribute('data-src');
-            if (src.includes('width/300/height/168')) {
-                img.src = src.replace('width/300/height/168', 'width/300/height/300');
-            }
-            if (dataSrc && dataSrc.includes('width/300/height/168')) {
-                img.setAttribute('data-src', dataSrc.replace('width/300/height/168', 'width/300/height/300'));
-            }
+    setTimeout(function() {
+        // Double-loading prevention
+        if (document.querySelector('.card-image img')) return;
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.card-image img').forEach(function(img) {
+                var src = img.src;
+                var dataSrc = img.getAttribute('data-src');
+                if (src.includes('width/300/height/168')) {
+                    img.src = src.replace('width/300/height/168', 'width/300/height/300');
+                }
+                if (dataSrc && dataSrc.includes('width/300/height/168')) {
+                    img.setAttribute('data-src', dataSrc.replace('width/300/height/168', 'width/300/height/300'));
+                }
+            });
         });
-    });
+    }, 1000);
 })(mediaWiki, this);

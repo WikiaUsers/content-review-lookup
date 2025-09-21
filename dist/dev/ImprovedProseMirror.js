@@ -1,96 +1,126 @@
-(function() {
+// <nowiki> (this tag disables pre-save transforms) ~~~~~
+/* jshint
+	bitwise: true,
+	curly: true,
+	eqeqeq: true,
+	esversion: 7,
+	expr: false,
+	latedef: true,
+	loopfunc: true,
+	shadow: outer,
+	undef: true,
+	unused: true,
+	varstmt: true,
+	ignore: line,
+	trailingcomma: multi,
+*/
+/* globals importArticle, DataTransfer, getSelection */
+(() => {
 	'use strict';
+	
 	// Double load protection
-	(window.dev = window.dev || {}).IPM = window.dev.IPM || {};
-	if (window.dev.IPM._loaded == true) { return; }
+	if (((window.dev || (window.dev = {})).IPM || (window.dev.IPM = {}))._loaded) {return;}
 	window.dev.IPM._loaded = true;
 	
-	var config = mw.config.get(['wgServer', 'wgArticlePath', 'wgNamespaceNumber', 'wgPageName', 'wgAction']);
-	var api;
-	var IPM = {
-		init: function() {
-			// Check we're in MessageWall, UserBlog or Main namespace; Check we're in normal view
-			if ([1200, 500, 0].includes(config.wgNamespaceNumber) && config.wgAction === 'view') {
-				api = new mw.Api();
+	let localApi;
+	const config = mw.config.get([
+		'wgArticlePath',
+		'wgNamespaceNumber',
+		'wgPageName',
+		'wgServer',
+		'wgUserLanguage',
+		'articleHasCommentingEnabled',
+		'profileIsMessageWallPage',
+	]);
+	
+	const IPM = {
+		init() {
+			if (config.articleHasCommentingEnabled || config.profileIsMessageWallPage) {
+				localApi = new mw.Api({
+					parameters: {
+						uselang: config.wgUserLanguage,
+						errorformat: 'plaintext',
+						formatversion: '2',
+					},
+				});
 				
 				// Add necessary styles that dont load outside editor screen and custom ones
 				importArticle({
 					type: 'style',
-					article: 'u:dev:MediaWiki:ImprovedProseMirror.css'
+					article: 'u:dev:MediaWiki:ImprovedProseMirror.css',
 				});
-				IPM.waitFor('#MessageWall, #articleComments', function() {
-					$('#MessageWall, #articleComments').on('mouseout click keyup', '.ProseMirror', IPM.updateSel);
-					IPM.linkSuggest();
-					IPM.customInsert();
-				});
+				
+				IPM.linkSuggest();
+				IPM.customInsert();
 			}
 		},
 		
-		// Adds link suggest functionality to message walls and comment section text editors
-		linkSuggest: function() {
-			var SEARCH = {};
-			var selectCount = 0;
-			var resultCount = 0;
+		// Adds link suggest functionality to message walls and article comment section text editors
+		linkSuggest() {
+			let search = {};
+			let lastRequest = {};
+			let resultCount = 0;
 			
-			// Hidden by default
-			var wrapper = $(
-				'<div class="IPM-wrapper oo-ui-widget oo-ui-widget-enabled oo-ui-floatableElement-floatable oo-ui-popupWidget-anchored oo-ui-popupWidget IPM-ui-linkSuggest oo-ui-popupWidget-anchored-top" style="display:none;">'+
-					'<div class="oo-ui-popupWidget-anchor" style="left:8px;"></div>'+
-					'<div class="oo-ui-popupWidget-popup IPM-ui-linkSuggest-popup" style="padding:0;">'+
-						'<div class="oo-ui-clippableElement-clippable oo-ui-popupWidget-body IPM-body">'+
-							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget IPM-list" role="listbox" aria-multiselectable="false"></div>'+
+			const WIKILINK_REGEX = /\[\[([^\[\]]*)\]?\]?$/;
+			const EXT_LINK_REGEX = /\[([^\[\]]+)\]$/;
+			const URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // taken from Fandom's DeleteCommentModal.js module - links will be stripped after posting message if the url doesn't match this!
+			
+			const body = $(document.body);
+			const wrapper = $(
+				'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-popupWidget oo-ui-popupWidget-anchored oo-ui-popupWidget-anchored-top IPM-ui-linkSuggest" id="IPM-wrapper" style="display:none;">'+
+					'<div class="oo-ui-popupWidget-anchor" style="left:12px;"></div>'+
+					'<div class="oo-ui-popupWidget-popup" style="padding:0;">'+
+						'<div class="oo-ui-popupWidget-body" style="width:320px;">'+
+							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget" id="IPM-list" role="listbox" aria-multiselectable="false"></div>'+
 						'</div>'+
 					'</div>'+
 				'</div>'
 			);
-			var suggestBox = wrapper.find('.IPM-list');
+			const suggestBox = wrapper.find('#IPM-list');
+			body.append(wrapper);
 			
-			// Append wrapper to area
-			$('body').append(wrapper);
-			
-			var methods = {
-				initEvents: function() {
-					var checkMessageDebounced = mw.util.debounce(methods.checkMessage, 200);
-					var observer = new MutationObserver(checkMessageDebounced);
+			const methods = {
+				initEvents() {
+					const checkMessageDebounced = mw.util.debounce(methods.checkMessage, 250);
+					const observer = new MutationObserver(checkMessageDebounced);
+					const onSelectOption = () => {
+						if (search.type === 'link') {
+							methods.dispatchLink();
+						} else if (search.type === 'image') {
+							methods.insertImage();
+						}
+					};
 					
-					if (document.activeElement.matches('.ProseMirror')) {
-						observer.observe(document.activeElement, {
-							subtree: true,
-							childList: true,
-							characterData: true
-						});
-					}
-					
-					$('body').on('focus.IPM', '.ProseMirror', function(event) {
+					body.on('focus.IPM', '.ProseMirror', (event) => {
 						observer.disconnect();
 						observer.observe(event.target, {
 							subtree: true,
+							characterData: true,
 							childList: true,
-							characterData: true
 						});
 					});
 					
-					$('body').on('click.IPM', function(event) {
-						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event); methods.dispatchLink();}
+					body.on('click.IPM', (event) => {
+						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event); onSelectOption();}
 						else if (event.target.matches('.rich-text-editor__content')) {checkMessageDebounced();}
 					});
 					
-					$('body').on('mousedown.IPM', function(event) {
+					body.on('mousedown.IPM', (event) => {
 						if (event.target.closest('.IPM-ui-linkSuggest')) {event.preventDefault();}
 						else if (event.target.closest('.ProseMirror')) {checkMessageDebounced();}
 						else {methods.closeSuggestions();}
 					});
 					
-					$('body').on('contextmenu.IPM', function(event) {
+					body.on('contextmenu.IPM', (event) => {
 						if (event.target.closest('.IPM-ui-linkSuggest')) {event.preventDefault();}
 					});
 					
-					document.addEventListener('keydown', function(event) {
+					document.addEventListener('keydown', (event) => {
 						switch (event.key) {
 							case 'Enter':
 								if (suggestBox.attr('aria-activedescendant')) {
 									event.preventDefault();
-									methods.dispatchLink();
+									onSelectOption();
 								} else {
 									methods.closeSuggestions();
 								}
@@ -122,115 +152,281 @@
 						}
 					}, true);
 					
-					suggestBox.on('mousemove.IPM mouseout.IPM', function(event) {
-						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event);}
-					});
+					suggestBox.on('mousemove.IPM mouseleave.IPM', '.IPM-ui-linkSuggest-selectable', methods.handleOOUI);
 					
-					$(window).on('resize.IPM transitionend.IPM', function(event) {
+					$(window).on('resize.IPM transitionend.IPM', () => {
 						if (wrapper.css('display') !== 'none') {
-							var caret = IPM.getCaret();
-							wrapper.css({
-								top: caret.y,
-								left: caret.x
-							});
-						}
-					});
-				},
-				
-				checkMessage: function() {
-					var caret;
-					var match;
-					var raw_str = '';
-					var link_str = '';
-					var wikilink_regex = /\[\[([^\[\]]*)\]{0,2}$/;
-					var ext_link_regex = /\[([^\[\]]+)\]$/;
-					methods.closeSuggestions();
-					caret = IPM.getCaret();
-					if (caret && caret.data && caret.data.focusNode && caret.data.focusNode.nodeValue && caret.data.focusNode.parentNode.closest('.ProseMirror') && !caret.data.focusNode.parentNode.closest('pre')) {
-						raw_str = caret.data.focusNode.nodeValue.slice(0, caret.position);
-						if (wikilink_regex.test(raw_str)) {
-							match = wikilink_regex.exec(raw_str);
-							link_str = match[1].replace(/^\||\|[^\[\]]*/, '');
-							SEARCH.string = match[0];
-							SEARCH.offset = match.index;
-							SEARCH.node = caret.data.focusNode;
-							methods.getPages(link_str);
-							wrapper.css({
-								top: caret.y,
-								left: caret.x
-							});
-						} else if (ext_link_regex.test(raw_str)) {
-							match = ext_link_regex.exec(raw_str);
-							link_str = match[1];
-							SEARCH.string = match[0];
-							SEARCH.offset = match.index;
-							SEARCH.node = caret.data.focusNode;
-							var url = prompt('Enter URL to create a link to');
-							var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from fandom's DeleteCommentModal.js module
-							if (url_regex.test(url)) {
-								methods.dispatchLink(link_str, url);
-							} else if (url) {
-								alert('Invalid URL!');
+							let caret = IPM.getCaret();
+							if (caret) {
+								wrapper.css({
+									left: caret.x,
+									top: caret.y,
+								});
 							}
 						}
-					}
+					});
 				},
 				
-				getPages: function(prefix) {
-					var localCount = selectCount;
-					if (!prefix) {
-						methods.appendInformation('Search for a page...');
-						return;
+				matchReplace(str, patterns, rep) {
+					for (const pattern of patterns) {
+						if (pattern.test(str)) {return str.replace(pattern, rep);}
 					}
-					api.get({
-						list: 'prefixsearch',
-						pssearch: prefix.toWellFormed(), // avoid URIError
-						pslimit: '6',
-						maxage: '12',
-						errorformat: 'html',
-						formatversion: '2'
-					}).then(function(data) {
-						if (localCount !== selectCount) {return;} // abort if another request was made since making this one
-						if (data.query.prefixsearch.length > 0) {
-							methods.buildSuggestions(data.query.prefixsearch);
-						} else if (data.query.prefixsearch) {
-							methods.appendInformation('No results found for "'+prefix+'".');
+					return str;
+				},
+				
+				checkMessage() {
+					methods.closeSuggestions();
+					let caret = IPM.getCaret();
+					if (caret && caret.node.parentNode.closest('.ProseMirror') && !caret.node.parentNode.closest('pre')) {
+						let rawStr = caret.node.data.slice(0, caret.offset);
+						let match;
+						if ((match = WIKILINK_REGEX.exec(rawStr))) {
+							wrapper.css({
+								left: caret.x,
+								top: caret.y,
+							});
+							match[1] = match[1].replace(/^\||\|.*/, ''); // remove pipe character and everything after it, or just the pipe character if it's at the beginning
+							let image = false;
+							if (match[1].startsWith(':')) {
+								image = true;
+								match[1] = match[1].replace(':', '');
+							}
+							search = {
+								node: caret.node,
+								offsets: [match.index, match[0].length],
+								source: 'wiki',
+								type: image ? 'image' : 'link',
+							};
+							return methods.getPages(match[1], true);
+						} else if ((match = EXT_LINK_REGEX.exec(rawStr))) {
+							search = {
+								node: caret.node,
+								offsets: [match.index, match[0].length],
+								source: 'external',
+								type: 'link',
+							};
+							let url = prompt('Enter URL to create a link to');
+							if (URL_REGEX.test(url)) {methods.dispatchLink(url, match[1]);}
+							else if (url) {alert('Invalid URL!');}
 						}
-					}, function(code, data) {
-						if (localCount !== selectCount) {return;}
-						methods.appendInformation(api.getErrorMessage(data)[0].innerText);
-					});
+					}
 				},
 				
-				buildSuggestions: function(pages) {
-					pages.forEach(function(page) {
-						var suggestion = $(
-							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget IPM-ui-linkSuggest-suggestion" aria-selected="false" tabindex="-1" role="option" id="IPM-linkSuggest-'+(++resultCount)+'" data-url="'+config.wgServer+mw.util.getUrl(page.title)+'">'+
-								'<span class="oo-ui-labelElement-label">'+page.title+'</span>'+
-							'</div>'
-						);
-						suggestBox.append(suggestion);
-					});
-					wrapper.show();
+				getPages(prefix, interwikiMode, apiEndpoint, articlePath, offset, retries = 0) {
+					while (prefix.startsWith(':')) {
+						prefix = prefix.replace(':', '');
+					}
+					if (!prefix) {
+						methods.appendMessage(`Search for ${(search.type === 'image' ? 'an image' : 'a page')+(articlePath ? ` at ${articlePath.replace('$1', '...')}` : '...')}`);
+						return Promise.resolve();
+					}
+					let api = apiEndpoint ? new mw.ForeignApi(apiEndpoint, {
+						parameters: {
+							uselang: config.wgUserLanguage,
+							errorformat: 'plaintext',
+							formatversion: '2',
+						},
+						anonymous: true,
+					}) : localApi;
+					const onRejected = (code, data) => {
+						if (code === 'http') {
+							if (data && (data.error || data.errors)) {
+								return methods.appendMessage('Bad API response: server sent fake error data.');
+							} else if (data && data.textStatus !== 'abort' && !(interwikiMode && apiEndpoint && data.textStatus === 'error')) {
+								return api.getErrorMessage(data).each((_, element) => {
+									return methods.appendMessage(element.innerText);
+								});
+							}
+						} else if (code === 'internal_api_error_GuzzleHttp\\Exception\\ConnectException' && retries < 3) {
+							// Fandom prefixsearch occasionally fails with this error code; we can just retry the request
+							return methods.getPages(prefix, false, apiEndpoint, articlePath, offset, retries + 1);
+						} else if (data && data.errors instanceof Array) {
+							return data.errors.forEach((error) => {
+								return methods.appendMessage(`API returned error: ${error && typeof error.text === 'string' ? error.text : 'unknown'}`);
+							});
+						} else {
+							return methods.appendMessage('Bad API response: invalid or missing error data.');
+						}
+					};
+					let match = prefix.match(/^(.+?):/);
+					if (match && interwikiMode) {
+						let newPrefix = prefix.replace(/^.+?:/, '');
+						(lastRequest = api.get({
+							meta: 'siteinfo',
+							siprop: 'interwikimap',
+							maxage: '3600',
+						})).then((data) => {
+							if (!data.query || !data.query.interwikimap) {
+								return methods.appendMessage('Bad API response: invalid interwiki map.');
+							}
+							let interwiki = data.query.interwikimap.find((iw) => iw && typeof iw.prefix === 'string' && iw.prefix.toLowerCase() === match[1].toLowerCase() && typeof iw.url === 'string');
+							if (!interwiki) {
+								return methods.getPages(prefix, false, apiEndpoint, articlePath);
+							}
+							let wikiUrl;
+							try {
+								wikiUrl = new URL(interwiki.url);
+							} catch (_) {
+								return methods.appendMessage(`Invalid interwiki URL "${interwiki.url}".`);
+							}
+							if (wikiUrl.protocol !== 'http:' && wikiUrl.protocol !== 'https:') {
+								return methods.appendMessage(`Unsupported interwiki URL protocol "${wikiUrl.protocol.replace(':', '')}". Only "https" is allowed.`);
+							}
+							wikiUrl.protocol = 'https:'; // csp upgrades insecure requests so we can't access resources with http anyway
+							if (wikiUrl.host.endsWith('.wikia.com')) {
+								// update Wikia urls to Fandom ones
+								wikiUrl.host = wikiUrl.host.replace(/wikia\.com$/, 'fandom.com');
+							} else if (wikiUrl.host === 'mediawiki.org') {
+								// mediawiki.org redirects to www.mediawiki.org without cors headers so we have to replace it
+								wikiUrl.host = 'www.mediawiki.org';
+							} else if (wikiUrl.host === 'semantic-mediawiki.org') {
+								// same as above
+								wikiUrl.host = 'www.semantic-mediawiki.org';
+							}
+							let apiUrl;
+							let altApiUrls = [];
+							if (typeof interwiki.api === 'string') {
+								// ideally the api url will be provided by the interwiki map
+								try {
+									apiUrl = new URL(interwiki.api);
+								} catch (_) {
+									return methods.appendMessage(`Invalid interwiki API URL "${interwiki.api}".`);
+								}
+								if (wikiUrl.protocol !== 'http:' && wikiUrl.protocol !== 'https:') {
+									return methods.appendMessage(`Unsupported interwiki API URL protocol "${wikiUrl.protocol.replace(':', '')}". Only "https" is allowed.`);
+								}
+								apiUrl.protocol = 'https:';
+								if (apiUrl.host.endsWith('.wikia.com')) {
+									apiUrl.host = apiUrl.host.replace(/wikia\.com$/, 'fandom.com');
+								} else if (apiUrl.host === 'mediawiki.org') {
+									apiUrl.host = 'www.mediawiki.org';
+								} else if (apiUrl.host === 'semantic-mediawiki.org') {
+									apiUrl.host = 'www.semantic-mediawiki.org';
+								}
+							} else if ((wikiUrl.host === 'community.fandom.com' || wikiUrl.host === 'c.fandom.com') && /^\/+(?:w(?:iki)?\/)?(?:[Ww]::?)?[Cc]::?\$1$/.test(wikiUrl.pathname)) {
+								// w:c: syntax
+								match = newPrefix.match(/^(.+?):/);
+								if (!match) {
+									return methods.appendMessage('Find a Fandom community...');
+								}
+								if (!/^[-0-9a-z]+$/.test(match[1])) {
+									return methods.appendMessage(`Invalid community name "${match[1]}". Only letters, numbers, and hyphens are allowed.`);
+								}
+								newPrefix = newPrefix.replace(/^.+?:/, '');
+								wikiUrl = new URL(`https://${match[1]}.fandom.com/wiki/$1`);
+								apiUrl = new URL(`https://${match[1]}.fandom.com/api.php`);
+							} else if (wikiUrl.host.endsWith('.fandom.com')) {
+								// Fandom wikis
+								apiUrl = new URL(wikiUrl);
+								apiUrl.pathname = methods.matchReplace(apiUrl.pathname, [/\/wiki\/.*/, /.*/], '/api.php');
+							} else {
+								// we don't know the api url so we'll just try some common ones
+								apiUrl = new URL(wikiUrl.origin+methods.matchReplace(wikiUrl.pathname, [/\/wiki\/.*/, /.*/], '/w/api.php'));
+								altApiUrls = [
+									new URL(wikiUrl.origin+methods.matchReplace(wikiUrl.pathname, [/\/wiki\/.*/, /.*/], '/api.php')),
+								];
+							}
+							if (!apiUrl) {return;}
+							let attempt = methods.getPages(newPrefix, true, apiUrl.href, wikiUrl.href);
+							altApiUrls.forEach((altApiUrl) => {
+								attempt = attempt.catch((errCode, errData) => {
+									if (errCode === 'http' && !errData.error && !errData.errors && errData.textStatus === 'error') {
+										return methods.getPages(newPrefix, true, altApiUrl.href, wikiUrl.href);
+									} else {
+										return Promise.resolve();
+									}
+								});
+							});
+							attempt.catch((errCode, errData) => {
+								if (errCode === 'http' && !errData.error && !errData.errors && errData.textStatus === 'error') {
+									return methods.appendMessage(`Failed to locate the remote API. Does the interwiki prefix "${match[1]}" correspond to a wiki running MediaWiki software?`);
+								}
+							});
+						}, onRejected);
+						return lastRequest;
+					} else if (match && search.type === 'image') {
+						return methods.getPages(prefix.replace(/^.+?:/, ''), false, apiEndpoint, articlePath);
+					} else if (search.type === 'link') {
+						if (articlePath) {
+							methods.appendMessage(articlePath.replace('$1', '...'));
+						}
+						(lastRequest = api.get({
+							list: 'prefixsearch',
+							pssearch: prefix.toWellFormed ? prefix.toWellFormed() : prefix.replace(/\p{Cs}/gu, '\ufffd'), // jshint ignore: line
+							pslimit: '6',
+							maxage: '60',
+						})).then((data) => {
+							if (data.query && data.query.prefixsearch instanceof Array && data.query.prefixsearch.length) {
+								return methods.buildSuggestions(data.query.prefixsearch, articlePath);
+							} else {
+								return methods.appendMessage(`No results found for "${prefix}".`);
+							}
+						}, onRejected);
+						return lastRequest;
+					} else if (search.type === 'image') {
+						if (articlePath && !offset) {
+							methods.appendMessage(articlePath.replace('$1', '...'));
+						}
+						(lastRequest = api.get({
+							generator: 'prefixsearch',
+							gpssearch: prefix.toWellFormed ? prefix.toWellFormed() : prefix.replace(/\p{Cs}/gu, '\ufffd'), // jshint ignore: line
+							gpsnamespace: '6',
+							gpslimit: '6',
+							gpsoffset: offset,
+							prop: 'imageinfo',
+							iiprop: 'url|mime',
+							maxage: '60',
+						})).then((data) => {
+							if (data.query && data.query.pages instanceof Array && data.query.pages.length) {
+								methods.buildSuggestions(data.query.pages, articlePath);
+								if (resultCount < 6 && data.continue && typeof data.continue.gpsoffset === 'number' && data.continue.gpsoffset < 36) {
+									if (!Number.isSafeInteger(data.continue.gpsoffset) || offset && data.continue.gpsoffset <= offset) {
+										return methods.appendMessage('Bad API response: invalid continue offset.');
+									}
+									return methods.getPages(prefix, false, apiEndpoint, articlePath, data.continue.gpsoffset);
+								} else if (!resultCount) {
+									return methods.appendMessage(`No image results found for "${prefix}".`);
+								}
+							} else {
+								return methods.appendMessage(`No results found for "${prefix}".`);
+							}
+						}, onRejected);
+						return lastRequest;
+					}
 				},
 				
-				appendInformation: function(info) {
-					var information = $(
-						'<div class="oo-ui-widget oo-ui-labelElement oo-ui-optionWidget IPM-ui-linkSuggest-information" tabindex="-1">'+
-							'<span class="oo-ui-labelElement-label">'+info+'</span>'+
-						'</div>'
+				appendMessage(msg) {
+					const message = $(
+						`<div class="oo-ui-widget oo-ui-optionWidget oo-ui-labelElement IPM-ui-linkSuggest-message" tabindex="-1">`+
+							`<span class="oo-ui-labelElement-label">${msg}</span>`+
+						`</div>`
 					);
-					suggestBox.append(information);
+					suggestBox.append(message);
 					wrapper.show();
 				},
 				
-				handleOOUI: function(event) {
-					var currentNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#' + suggestBox.attr('aria-activedescendant'))[0] || null;
-					var newNode;
+				buildSuggestions(pages, path) {
+					for (const page of pages) {
+						if (resultCount >= 6) {break;}
+						if (page && typeof page.title === 'string' && (search.type !== 'image' || page.imageinfo && page.imageinfo[0] && typeof page.imageinfo[0].mime === 'string' && page.imageinfo[0].mime.startsWith('image/') && typeof page.imageinfo[0].url === 'string')) {
+							const suggestion = $(
+								`<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-optionWidget oo-ui-labelElement IPM-ui-linkSuggest-selectable IPM-ui-linkSuggest-suggestion" id="IPM-linkSuggest-${++resultCount}" role="option" aria-selected="false" tabindex="-1" data-url="${search.type === 'image' ? page.imageinfo[0].url : path ? path.replace('$1', mw.util.wikiUrlencode(page.title)) : config.wgServer+mw.util.getUrl(page.title)}">`+
+									`<span class="oo-ui-labelElement-label">${page.title}</span>`+
+								`</div>`
+							);
+							suggestBox.append(suggestion);
+						}
+					}
+					if (resultCount) {wrapper.show();}
+				},
+				
+				handleOOUI(event) {
+					let currentNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0) || null;
+					let newNode;
 					switch (event.type) {
 						case 'mousemove':
 						case 'click':
-							newNode = event.target.closest('.IPM-ui-linkSuggest-suggestion');
+							newNode = event.target.closest('.IPM-ui-linkSuggest-selectable');
 							if (currentNode) {
 								currentNode.classList.remove('oo-ui-optionWidget-highlighted');
 								currentNode.setAttribute('aria-selected', 'false');
@@ -239,7 +435,7 @@
 							newNode.setAttribute('aria-selected', 'true');
 							suggestBox.attr('aria-activedescendant', newNode.id);
 							break;
-						case 'mouseout':
+						case 'mouseleave':
 							if (currentNode) {
 								currentNode.classList.remove('oo-ui-optionWidget-highlighted');
 								currentNode.setAttribute('aria-selected', 'false');
@@ -249,18 +445,18 @@
 						case 'keydown':
 							switch (event.key) {
 								case 'ArrowUp':
-									newNode = currentNode && $(currentNode).prevAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
+									newNode = currentNode && $(currentNode).prevAll('.IPM-ui-linkSuggest-selectable').get(0) || suggestBox.children('.IPM-ui-linkSuggest-selectable').get(-1);
 									break;
 								case 'ArrowDown':
-									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
+									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-selectable').get(0) || suggestBox.children('.IPM-ui-linkSuggest-selectable').get(0);
 									break;
 								case 'Home':
 								case 'PageUp':
-									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
+									newNode = suggestBox.children('.IPM-ui-linkSuggest-selectable').get(0);
 									break;
 								case 'End':
 								case 'PageDown':
-									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
+									newNode = suggestBox.children('.IPM-ui-linkSuggest-selectable').get(-1);
 							}
 							if (newNode) {
 								if (currentNode) {
@@ -274,144 +470,105 @@
 					}
 				},
 				
-				dispatchLink: function(label, url) {
-					var optionNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#' + suggestBox.attr('aria-activedescendant'))[0] || null;
-					var parentNode = SEARCH.node.parentNode;
-					var searchNode = SEARCH.node.splitText(SEARCH.offset);
-					searchNode.splitText(SEARCH.string.length);
-					var linkNode = document.createElement('a');
-					if (!label) {
-						var match = /\[\[[^\[\]]*?\|([^\[\]]*)\]{0,2}$/.exec(SEARCH.string);
-						if (!match) {
-							label = optionNode.innerText;
-						} else if (match && !match[1]) {
-							// pipe trick
-							// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_39/includes/parser/Parser.php$4655
-							
-							// <nowiki>[[ns:page (context)|]]</nowiki>
-							var p1 = /^(?::?.+:|:|)(.+?)(?: ?[\(\uff08].+[\)\uff09])$/;
-							// <nowiki>[[ns:page (context), context|]]</nowiki>
-							var p2 = /^(?::?.+:|:|)(.+?)(?: ?\(.+\)|)(?:(?:, |\uff0c|\u060c ).+|)$/;
-							
-							// <nowiki>try p1 first, to turn "[[A, B (C)|]]" into "[[A, B (C)|A, B]]"</nowiki>
-							label = optionNode.innerText.replace(p1, '$1');
-							if (label === optionNode.innerText) {
-								label = optionNode.innerText.replace(p2, '$1');
+				dispatchLink(url, label) {
+					let parentNode = search.node.parentNode;
+					let searchNode = search.node.splitText(search.offsets[0]);
+					searchNode.splitText(search.offsets[1]);
+					if (search.source === 'wiki') {
+						let optionNode = suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0);
+						if (!url) {
+							url = optionNode.dataset.url;
+						}
+						if (!label) {
+							let match = searchNode.data.match(/\[\[.*?\|(.*)\]?\]?$/);
+							if (!match) {
+								label = optionNode.innerText;
+							} else if (!match[1]) {
+								// pipe trick
+								// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_43/includes/parser/Parser.php$4671
+								
+								// [[ns:page (context)|]]
+								const p1 = /^(?::?.+:|:|)(.+?)(?: ?[\(\uff08].+[\)\uff09])$/;
+								// [[ns:page (context), context|]]
+								const p2 = /^(?::?.+:|:|)(.+?)(?: ?\(.+\)|)(?:(?:, |\uff0c|\u060c ).+|)$/;
+								
+								// try p1 first, to turn "[[A, B (C)|]]" into "[[A, B (C)|A, B]]"
+								label = methods.matchReplace(optionNode.innerText, [p1, p2], '$1');
+							} else {
+								label = match[1];
 							}
-						} else {
-							label = match[1];
 						}
 					}
-					if (!url) {
-						url = optionNode.dataset.url;
-					}
+					let linkNode = document.createElement('a');
 					linkNode.href = url;
 					linkNode.append(label);
 					searchNode.replaceWith(linkNode);
 					parentNode.normalize();
-					var surroundWithParent = function(node) {
-						if (node === linkNode && parentNode.matches('a') || parentNode.matches('span')) {return;}
-						if (node === linkNode && parentNode.matches('em, strong')) {node = node.firstChild;}
-						node.parentNode.insertBefore(parentNode.cloneNode(), node).appendChild(node);
-					};
-					var oldNode;
-					// split parent elements among children
+					// normalize element hierarchy to ol/ul>li>p>a>em>strong>span
 					while (parentNode.matches('a, em, strong, span')) {
-						parentNode.childNodes.forEach(surroundWithParent);
-						parentNode.before.apply(parentNode, parentNode.childNodes);
-						oldNode = parentNode;
+						if (!parentNode.matches('span')) {
+							parentNode.childNodes.forEach((node) => {
+								if (node === linkNode) {
+									if (parentNode.matches('em, strong')) {node = node.firstChild;}
+									else if (parentNode.matches('a')) {return;}
+								}
+								node.parentNode.insertBefore(parentNode.cloneNode(), node).appendChild(node);
+							});
+						}
+						parentNode.before(...parentNode.childNodes);
+						let oldParent = parentNode;
 						parentNode = parentNode.parentNode;
-						oldNode.remove();
+						oldParent.remove();
 					}
+					getSelection().setPosition(linkNode, linkNode.childNodes.length); // move caret to the end of the new link node
 					parentNode.append('\ufeff'); // add invisible character so prosemirror doesn't strip the link
-					parentNode.normalize();
-					window.getSelection().setPosition(linkNode, linkNode.childNodes.length); // move caret to the end of the new link node
 					methods.closeSuggestions();
 					
-					setTimeout(function() {
-						// async to let prosemirror do stuff first
+					setTimeout(() => {
+						// let prosemirror do stuff first
 						parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1)); // remove invisible character
 					});
 				},
 				
-				closeSuggestions: function() {
-					// Close suggestion list
+				insertImage(url) {
+					let parentNode = search.node.parentNode;
+					let searchNode = search.node.splitText(search.offsets[0]);
+					searchNode.splitText(search.offsets[1]);
+					let inputNode = parentNode.closest('.rich-text-editor__wrapper').querySelector('#rich-text-editor__image-input');
+					if (search.source === 'wiki' && !url) {
+						url = suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0).dataset.url;
+					}
+					searchNode.remove();
+					methods.closeSuggestions();
+					
+					fetch(url).then((response) => response.blob()).then((blob) => {
+						let transfer = new DataTransfer();
+						transfer.items.add(new File([blob], url));
+						inputNode.files = transfer.files; // put the image in the input element's file list
+						inputNode.dispatchEvent(new Event('change', {bubbles: true})); // fire a change event to make Fandom upload and insert the image
+					});
+				},
+				
+				closeSuggestions() {
 					suggestBox.empty();
 					suggestBox.removeAttr('aria-activedescendant');
 					wrapper.css({
+						left: '',
 						top: '',
-						left: ''
 					});
 					wrapper.hide();
-					SEARCH = {};
-					++selectCount;
-				}
-			};
-			
-			methods.initEvents();
-		},
-		
-		// TODO:
-		/// usage in lists?
-		/// avoid unwanted line break upon insert?
-		/// allow images?
-		/* currently too unstable
-		wikiTemplate: function() {
-			var SEARCH = {};
-			var methods = {
-				initEvents: function() {
-					// Start looking
-					$('#MessageWall, #articleComments').on('mouseout click keyup', '.ProseMirror', function(event) {
-						if (event.target.closest('.ProseMirror')) {methods.checkTemplate(event);}
-					});
-				},
-				
-				expandTemplate: function() {
-					var newNode = SEARCH.node.splitText(SEARCH.offset);
-					var parentNode = SEARCH.node.parentNode;
-					var keepText = newNode.splitText(SEARCH.str.length) || '';
-					parentNode.append(' '); // need to add some text so that the link doesnt get stripped bc prosemirror is cancer to modify
-					IPM.parseInsert(SEARCH.str);
-					newNode.replaceWith(keepText);
-				},
-				
-				checkTemplate: function(event) {
-					var caret;
-					var template_regex = /^.*(\{\{[^\{\}]+\}\})/;
-					var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from https://dev.fandom.com/load.php?modules=DeleteCommentModal-voLa7ynP.js
-					var raw_str = '';
-					while (true) {
-						caret = IPM.getCaret(event.target);
-						if (caret && caret.data && caret.data.focusNode) {
-							break;
-						}
-					}
-					
-					if (
-						caret && caret.data && caret.data.focusNode &&
-						caret.data.focusNode.nodeValue && template_regex.test(caret.data.focusNode.nodeValue)
-					) {
-						raw_str = caret.data.focusNode.nodeValue;
-						SEARCH.str = template_regex.exec(raw_str.slice(0, caret.position))[1];
-						SEARCH.offset = raw_str.indexOf(SEARCH.str);
-						SEARCH.node = caret.data.focusNode;
-						if (
-							(caret.data.type == 'Caret' && caret.position > 0 && raw_str.length > 0) ||
-							(caret.data.type == 'Range')
-						) {
-							methods.expandTemplate();
-						}
-					}
+					search = {};
+					if (lastRequest.abort) {lastRequest.abort();}
+					resultCount = 0;
 				},
 			};
 			
 			methods.initEvents();
 		},
-		*/
 		
-		customInsert: function() {
+		customInsert() {
 			// Initialize wrapper
-			var wrapper = $(
+			let wrapper = $(
 				'<div class="custom-insert rich-text-editor__toolbar__icon-controls">'+
 					'<div class="tool tool-select">'+
 						'<a class="label" role="button" tabindex="0" aria-haspopup="menu">Insert</a>'+
@@ -423,16 +580,16 @@
 			);
 			
 			// Generate inserts
-			var count = 0;
-			var sel;
+			let count = 0;
+			let sel;
 			$('body').on('click', function(e){
 				$('.IPM-open').removeClass('IPM-open');
 				$(e.target).next('.menu').addClass('IPM-open');
 			});
 			mw.hook('dev.IPM').add(function(_i) {
-				if (!_i || !(Array.isArray(_i) || typeof _i == 'object')) {return;}
-				var inserts = Array.isArray(_i) ? _i : [_i];
-				var appendList = function(insert, list) {
+				if (!_i || !(Array.isArray(_i) || typeof _i === 'object')) {return;}
+				let inserts = Array.isArray(_i) ? _i : [_i];
+				let appendList = function(insert, list) {
 					if (!(list instanceof jQuery)) {list = $(list);}
 					if (
 						insert.insert && insert.button &&
@@ -440,13 +597,13 @@
 						(insert.namespace ? ((Array.isArray(insert.namespace)?insert.namespace:[insert.namespace]).includes(config.wgNamespaceNumber)) : true)
 					) {
 						count++;
-						var button = $('<a class="option" rel="custom-insert-'+count+'" tabindex="0" role="menuitem">'+(insert.button)+'</a>');
+						let button = $('<a class="option" rel="custom-insert-'+count+'" tabindex="0" role="menuitem">'+(insert.button)+'</a>');
 						button.on('mousedown', function(event){
 							event.preventDefault();
-							var temp = {};
-							var preparsedInsert = insert.insert
+							let temp = {};
+							let preparsedInsert = insert.insert
 								.replace(/%([\w\s]+)%/g, function(str, type){
-									var ret = '';
+									let ret = '';
 									ret = (insert[type] && insert[type].length>0) ?
 										insert[type] :
 										(
@@ -467,11 +624,40 @@
 						insert.nested.length>0 && insert.button.length>0
 					) {
 						count++;
-						var toggle = $('<a class="option options-nested" tabindex="0"><span class="label">'+(insert.button)+'</span><div class="menu options-nested-list" tabindex="0"></div></a>');
+						let toggle = $('<a class="option options-nested" tabindex="0"><span class="label">'+(insert.button)+'</span><div class="menu options-nested-list" tabindex="0"></div></a>');
 						list.append(toggle);
 						insert.nested.forEach(function(nested_insert){
 							appendList(nested_insert, toggle.children('.options-nested-list'));
 						});
+					}
+				};
+				// Delay until element exists to run function
+				let waitFor = function(query, callback, repeat) {
+					if (typeof callback === 'function' && typeof query === 'string') {
+						if (document.querySelector(query)) {
+							setTimeout(callback, 0);
+						}
+						if (!document.querySelector(query) || repeat === true) {
+							// set up the mutation observer
+							let observer = new MutationObserver(function (mutations, me) {
+								// mutations is an array of mutations that occurred
+								// me is the MutationObserver instance
+								let targetNode = document.querySelector(query);
+								if (targetNode) {
+									setTimeout(callback, 0);
+									if (repeat !== true) {
+										me.disconnect(); // stop observing
+									}
+									return;
+								}
+							});
+							
+							// start observing
+							observer.observe(document, {
+								childList: true,
+								subtree: true
+							});
+						}
 					}
 				};
 				inserts.forEach(function(insert){
@@ -479,7 +665,7 @@
 				});
 				if (count>0) {
 					$('.IPM-loaded .custom-insert').replaceWith(wrapper.clone(true, true));
-					IPM.waitFor('.rich-text-editor__wrapper:not(.IPM-loaded)', function() {
+					waitFor('.rich-text-editor__wrapper:not(.IPM-loaded)', function() {
 						sel = {
 							node: $('.rich-text-editor__wrapper:not(.IPM-loaded) .ProseMirror')[0],
 							data: '',
@@ -495,47 +681,44 @@
 			});
 		},
 		
-		getCaret: function() {
-			var cSel = window.getSelection();
-			var caretRect;
-			var caretOffset = 0;
-			if (cSel && cSel.rangeCount > 0) {
-				var range = cSel.getRangeAt(0);
-				if (range.collapsed && range.endContainer.nodeType !== 3 && range.endOffset > 0) {
-					// ensure range container is a text node
-					var newContainer = range.endContainer.childNodes[range.endOffset - 1];
-					while (newContainer && newContainer.nodeType !== 3) {
-						newContainer = newContainer.lastChild;
-					}
-					range.setEnd(newContainer, newContainer.length);
-					range.collapse();
+		getCaret() {
+			const sel = getSelection();
+			if (!sel.rangeCount) {return;}
+			const range = sel.getRangeAt(0);
+			if (!range.collapsed) {return;}
+			if (range.endContainer.nodeType !== Node.TEXT_NODE) {
+				// ensure range container is a text node
+				if (!range.endOffset) {return;}
+				let newContainer = range.endContainer.childNodes[range.endOffset - 1];
+				while (newContainer && newContainer.nodeType !== Node.TEXT_NODE) {
+					newContainer = newContainer.lastChild;
 				}
-				caretRect = range.getBoundingClientRect();
-				var preCaretRange = range.cloneRange();
-				preCaretRange.setStart(range.startContainer, 0);
-				caretOffset = preCaretRange.toString().length;
-				return {
-					data: cSel,
-					x: parseInt(caretRect.x + window.scrollX - 8),
-					y: parseInt(caretRect.y + window.scrollY + 8),
-					position: caretOffset
-				};
+				if (!newContainer) {return;}
+				range.setEnd(newContainer, newContainer.length);
+				range.collapse();
 			}
+			const rect = range.getBoundingClientRect();
+			return {
+				node: sel.focusNode,
+				offset: sel.focusOffset,
+				x: rect.x + window.scrollX,
+				y: rect.y + window.scrollY,
+			};
 		},
 		
-		parseInsert: function(str, replaceAll) {
+		parseInsert(str, replaceAll) {
 			str = str
 				.replace(/[\n]+\n\n/g, '\n\n') // max 2 line breaks
 				.replace(/(?<!\n[\*\#][^\n]*)\n(?![\*\# ])/g, '<br />'); // transform \n to <br/> for ease of parse
 				
 			// template expand only works with plain text returns, but thats up to user to use properly
-			api.parse(str, {
-				title:config.wgPageName, // make page name variables work as expected
-				contentmodel:'wikitext', // but don't inherit content model from page
-				disablelimitreport:true,
-				pst:true
+			localApi.parse(str, {
+				title: config.wgPageName, // make page name variables work as expected
+				contentmodel: 'wikitext', // but don't inherit content model from page
+				disablelimitreport: true,
+				pst: true,
 			}).then(function(txt){
-				var e = $(txt);
+				let e = $(txt);
 				if (!e.is('.mw-parser-output')) {e=e.find('.mw-parser-output');}
 				// make relative urls absolute so they don't get removed after posting message
 				// use wgArticlePath for compatibility with non-english wikis
@@ -546,66 +729,25 @@
 					// handle line breaks into ProseMirror format
 					.replace(/<br ?\/?><br ?\/?>/g, '</p><p><br /></p><p>')
 					.replace(/<br ?\/?>(?!\s*<\/p>)/g, '</p><p>');
-					
+				
+				let caret = IPM.getCaret();
+				if (!caret || !caret.node.parentNode.closest('.ProseMirror')) {return;}
+				
 				if (replaceAll) {
-					$(IPM.sel.node).closest('.ProseMirror').html(txt);
+					$(caret.node).closest('.ProseMirror').html(txt);
 				} else {
-					$(
-						IPM.sel.node.nodeType === 3 ?
-						IPM.sel.node.parentNode :
-						IPM.sel.node
-					).replaceWith($(
+					$(caret.node.parentNode).replaceWith($(
 						'<p>'+
-						IPM.sel.data.slice(0, IPM.sel.offset)+
-						txt.replace(/^<p>|<\/p>$/, '')+
-						IPM.sel.data.slice(IPM.sel.offset)+
+						caret.node.data.slice(0, caret.offset)+
+						txt.replace(/^<p>/, '').replace(/<\/p>$/, '')+
+						caret.node.data.slice(caret.offset)+
 						'</p>'
 					));
 				}
 			});
 		},
-		
-		updateSel: function(e) {
-			var a = window.getSelection();
-			if (a.focusNode && $(a.focusNode.parentNode).closest('.ProseMirror').length>0) {
-				IPM.sel = {
-					node: a.focusNode,
-					data: a.focusNode.data || '',
-					offset: a.focusOffset || 0
-				};
-			}
-		},
-		
-		// Delay until element exists to run function
-		waitFor: function(query, callback, repeat) {
-			if (('function' == typeof callback) && ('string' == typeof query)) {
-				if (document.querySelector(query)) {
-					setTimeout(callback, 0);
-				}
-				if (!document.querySelector(query)||repeat===true){
-					// set up the mutation observer
-					var observer = new MutationObserver(function (mutations, me) {
-						// mutations is an array of mutations that occurred
-						// me is the MutationObserver instance
-						var targetNode = document.querySelector(query);
-						if (targetNode) {
-							setTimeout(callback, 0);
-							if (repeat !== true) {
-								me.disconnect(); // stop observing
-							}
-							return;
-						}
-					});
-					
-					// start observing
-					observer.observe(document, {
-						childList: true,
-						subtree: true
-					});
-				}
-			}
-		}
 	};
 	
-	mw.loader.using(['mediawiki.api', 'mediawiki.util', 'oojs-ui-core.styles']).then(IPM.init);
+	return mw.loader.using(['mediawiki.api', 'mediawiki.ForeignApi', 'mediawiki.util', 'oojs-ui-core.styles'], IPM.init);
 })();
+// </nowiki>

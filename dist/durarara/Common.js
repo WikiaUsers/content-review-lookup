@@ -2,7 +2,3 @@
 
 CreatePage.redLinkClick = function() {
 };
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};

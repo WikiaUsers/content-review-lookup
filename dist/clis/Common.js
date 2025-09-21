@@ -80,6 +80,7 @@ var fp = fp || {
 
 $( document ).ready( fp.equalizeColumns );
 $( window ).resize( fp.equalizeColumns );
+
 /*********************************************
 /* End Front Page column height equalization *
 /*********************************************/

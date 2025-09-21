@@ -21,7 +21,6 @@
 			twitch: /^https?:\/\/(?:www\.)?twitch\.tv\//,
 			twitter: /^https?:\/\/(?:mobile\.)?(?:twitter\.com|x\.com)\//,
 			youtube: /^https?:\/\/(?:m\.|www\.)?youtube\.com\/(?:user\/|channel\/|@)/,
-			tdsw: /^https?:\/\/tds\.fandom\.com\/wiki\/User:/,
 			roblox: /^https?:\/\/(?:www\.)?roblox\.com\/users\/profile\?username=/
 		},
 		linkFields: [
@@ -216,7 +215,6 @@
 			this.modal.create();
 		},
 		mapGroup: function(k) {
-			if (k === 'tdsw') return null;
 			return {
 				type: 'div',
 				classes: ['input-group'],

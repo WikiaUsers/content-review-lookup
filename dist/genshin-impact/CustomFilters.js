@@ -109,8 +109,12 @@ mw.hook('wikipage.content').add(() => {
 					flc++;
 					let opt = $('<label for="fl-toggle-'+flc+'" class="fl-checkbox-label">');
 					let inpt = $('<input id="fl-toggle-'+flc+'" class="fl-checkbox" checked type="checkbox" tabindex="0" />');
-					if (toggle.img) {
-						opt.append('<img src="'+config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)+'" width="24px" />');
+					if (toggle.imgL && $('body[data-theme="light"]').length>0) {
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgL)}" class="${toggle.imgLClass || toggle.imgClass || ''}" width="24px" />`);
+					} else if (toggle.imgD && $('body[data-theme="dark"]').length>0) {
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgD)}" class="${toggle.imgDClass || toggle.imgClass || ''}" width="24px" />`);
+					} else if (toggle.img) {
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)}" class="${toggle.imgClass || ''}" width="24px" />`);
 					}
 					if (toggle.label) { opt.append(toggle.label); }
 					if (toggle.alt) { opt.attr('title', toggle.alt); }

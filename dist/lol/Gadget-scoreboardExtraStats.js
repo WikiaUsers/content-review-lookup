@@ -33,5 +33,5 @@ mw.hook('wikipage.content').add(function() {
 	}
 
 	$("select.sb-esd").off("change");
-	$("select.sb-esd").change(updateStats);	
+	$(document).on('change', 'select.sb-esd', updateStats);
 });

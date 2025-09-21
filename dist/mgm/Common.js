@@ -8,10 +8,11 @@ window.MessageWallUserTags = {
     glowColor: '#f77',
     users: {
         'username': 'usergroup',
-        'PinkPugPrincess': 'Wiki Adopter • Bureaucrat • Administrator',
+        'PinkPugPrincess': 'Wiki Adopter',
+        
+        'AdamDeanHall': 'Bureaucrat • Administrator',
     
         'Wikifan0653': 'Content Moderator',
-        'AdamDeanHall': 'Content Moderator',
     }
 };
 

@@ -47,19 +47,6 @@ mw.hook("wikipage.content").add(function () {
 		container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
 	});
 });
-
-$.getJSON(mw.util.wikiScript("index"), {
-    title: "MediaWiki:Custom-import-scripts.json",
-    action: "raw"
-}).done(function (result, status) {
-    if (status != "success" || typeof (result) != "object") return;
-    var scripts = result[mw.config.get("wgPageName")];
-    if (scripts) {
-        if (typeof (scripts) == "string") scripts = [scripts];
-        importArticles({ type: "script", articles: scripts });
-    }
-});
-
 (function (mw, $) {
 	"use strict";
 	if (mw.config.get('wgPageName').toLowerCase().endsWith('.css')) {
@@ -426,12 +413,6 @@ initImageCards(this);
 mw.loader.using('mediawiki.util').then(function() {
 image3DSystem.init();
 });
-
-$('.fandom-community-header__community-name-wrapper').append(
-	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
-		$('<img/>').css('height', '70px').css('position', 'relative').css('top', '20px')
-		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/c/ca/Fandom_Compass_dark.png/revision/latest?cb=20250412193710&format=original&path-prefix=zh').attr('title', '本站点已是Fandom Compass计划的成员之一。')
-));
 
 $(document).ready(function() {
     mw.hook('wikipage.content').add(function($content) {

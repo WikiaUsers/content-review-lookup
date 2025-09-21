@@ -1,20 +1,22 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.4.4 (beta)';
+	const version = '0.4.27 (beta)';
 	const api = new mw.Api();
-	const archived = $('#archivedPage').length === 1; // {{archived}}
-	const view = mw.config.get('wgAction') === 'view';
+	const notArchived = !$('#archivedPage').length; // {{archived}}
+	const curAction = mw.config.get('wgAction');
 	const ns = mw.config.get('wgNamespaceNumber');
 	const editable = mw.config.get('wgIsProbablyEditable');
 	const pgtitle = mw.config.get('wgTitle');
+	const pgname = mw.config.get('wgPageName');
 	const pgid = mw.config.get('wgArticleId');
 	const sigNamespaces = [4, 110]; // TODO: replace with mw.config.get('wgExtraSignatureNamespaces'); also look into including ns:112
 	const wrongNamespace = (ns % 2 === 0 && sigNamespaces.indexOf(ns) === -1) || ns === -1;
 	const addTopicButton = $('#ca-addsection');
+	const editorID = 'talk-tools-editor-js';
 	let revid = mw.config.get('wgCurRevisionId');
-	let updateInterval;
+	let updatePreview;
 	
-	if (wrongNamespace && addTopicButton.length !== 1){
+	if (wrongNamespace && !addTopicButton.length){
 		return;
 	}
 	
@@ -62,10 +64,15 @@ mw.loader.using(['mediawiki.api'], () => {
 	const tZone = ` \\((?:${timeZones.join('|')})\\)`;
 	const tsRegexp = new RegExp(`^.* (${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
 	const commentElements = 'p, dd, div, li';
+	const params = new URLSearchParams(location.search);
 	const linkSelectors = [
 		'a[title^="User:"]',
 		'a[title^="User talk:"]',
-		'a[title^="Special:Contributions/"]'
+		'a[title^="Special:Contributions/"]',
+	];
+	const newSectionLinkSelectors = [
+		'#ca-addsection',
+		`a[title="Special:NewSection/${pgname.replaceAll('_', ' ')}"]`,
 	];
 	const messages = [
 		'custom-talk-tools-reply-button',
@@ -92,14 +99,226 @@ mw.loader.using(['mediawiki.api'], () => {
 	
 	api.loadMessagesIfMissing(messages).done(() => {
 		addStats();
-		if (!view || archived || !editable){
-			return;
+		$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
+		if (!pgid && params.get('redlink') && sigNamespaces.indexOf(ns) === -1){
+			$('#editform').css('display', 'none');
 		}
-		$('.mw-parser-output').find(commentElements).each(addReplyButtons);
+		if (curAction === 'edit' && params.get('section') === 'new'){
+			$('#editform').css('display', 'none');
+			addTopic();
+		}
+		if (curAction === 'view' && notArchived && editable){
+			$('.mw-parser-output').find(commentElements).each(addReplyButtons);
+		}
 	});
 	
-	function addReplyButtons(i, e){
-		const txtContents = $(e).contents().contents().addBack().toArray().filter(txtFilter);
+	function addTopic(addTopicEvent){
+		if ((curAction === 'view' || $('#editform').css('display') === 'none') && addTopicEvent){
+			addTopicEvent.preventDefault();
+		} else if (addTopicEvent){
+			return;
+		}
+		
+		$('.reply-button-js').attr({'tabindex': -1, 'disabled': true});
+		const newTopicBox = $('<form>', {
+			'id': editorID,
+			'on': {'submit': formTopicEvent => formTopicEvent.preventDefault()},
+		}).append($('<label>', {
+			'text': mw.message('custom-talk-tools-version', version).text(),
+		})).append($('<h2>', {
+			'id': 'newtopic-sectiontitle-js',
+		}).append($('<input>', {
+			'placeholder': 'Subject',
+			'aria-label': 'Subject',
+			'spellcheck': true,
+			'required': true,
+		}))).append($('<textarea>', {
+			'rows': 5,
+			'placeholder': 'Description',
+			'required': true,
+		})).append($('<div>', {
+			'id': 'talk-tools-preview-js',
+			'data-label': 'Preview',
+			'lang': 'en',
+			'dir': 'ltr',
+		})).append($('<div>', {
+			'id': 'talk-tools-footer-js',
+		}).append($('<p>', {
+			'id': 'talk-tools-license-js',
+			'html': mw.message('custom-talk-tools-license-text').parse(),
+		})).append($('<div>').append($('<button>', {
+			'class': 'wds-button wds-is-secondary',
+			'id': 'newtopic-cancel-js',
+			'text': mw.message('custom-talk-tools-cancel').text(),
+		})).append($('<button>', {
+			'class': 'wds-button',
+			'id': 'newtopic-submit-js',
+			'text': 'Add topic',
+		}))));
+		
+		$('#mw-content-text').append(newTopicBox);
+		$(`#${editorID} input`).get(0).focus();
+		
+		let sectionTitle = parseHeadingText($(`#${editorID} input`).val());
+		let comment = parseTopicText($(`#${editorID} textarea`).val());
+		updatePreview = setInterval(() => {
+			if (
+				sectionTitle === parseHeadingText($(`#${editorID} input`).val())
+				&& comment === parseTopicText($(`#${editorID} textarea`).val())
+			){
+				return;
+			}
+			sectionTitle = parseHeadingText($(`#${editorID} input`).val());
+			comment = parseTopicText($(`#${editorID} textarea`).val());
+			if (!comment){
+				$('#talk-tools-preview-js').html('');
+				return;
+			}
+			const parseParams = {
+				'action': 'parse',
+				'title': pgname,
+				'text': comment,
+				'prop': 'text',
+				'parsoid': true,
+				'pst': true,
+				'section': 'new',
+				'sectiontitle': sectionTitle,
+				'disableeditsection': true,
+				'sectionpreview': true,
+			};
+			if (revid){
+				parseParams.revid = revid;
+			}
+			api.get(parseParams).done(previewJSON => {
+				const parsedPreview = $(previewJSON.parse.text['*']);
+				$('#talk-tools-preview-js').html(parsedPreview);
+			});
+		}, 2000);
+		
+		$('#newtopic-cancel-js').on('click', () => {
+			if ($(`#${editorID} input`).val() || $(`#${editorID} textarea`).val()){
+				const confirmationDialog = new OO.ui.MessageDialog();
+				const windowManager = new OO.ui.WindowManager();
+				$('body').append(windowManager.$element);
+				windowManager.addWindows([confirmationDialog]);
+				windowManager.openWindow(confirmationDialog, {
+					title: mw.message('custom-talk-tools-discard-label').text(),
+					message: 'Are you sure you want to discard the topic you are writing?',
+					actions: [
+						{
+							action: 'reject',
+							label: mw.message('custom-talk-tools-discard-keep').text(),
+							flags: 'progressive',
+						},
+						{
+							action: 'accept',
+							label: 'Discard topic',
+							flags: 'destructive',
+							id: 'discard-topic-js',
+						}
+					],
+				});
+				
+				setTimeout(() => {
+					$('#discard-topic-js a').on('click', closeEditor);
+				}, 10);
+			} else {
+				closeEditor();
+			}
+		});
+		
+		$('#newtopic-submit-js').on('click', submitTopic);
+	}
+	
+	function submitTopic(){
+		const sectionTitle = parseHeadingText($(`#${editorID} input`).val());
+		const comment = parseTopicText($(`#${editorID} textarea`).val());
+		if (!sectionTitle || !comment){
+			return;
+		}
+		
+		clearInterval(updatePreview);
+		const elmts = 'input, textarea, .wds-button';
+		$(`#${editorID}`).find(elmts).attr('disabled', true);
+		
+		const editParams = {
+			'action': 'edit',
+			'title': pgname,
+			'section': 'new',
+			'sectiontitle': sectionTitle,
+			'text': comment,
+			'tags': 'js-newtopic',
+			'notminor': 1,
+			'watchlist': 'watch',
+		};
+		
+		if (revid){
+			editParams.baserevid = revid;
+		}
+		
+		api.postWithToken('csrf', editParams).done(data => {
+			if (data.warnings){
+				errorNotice(`Warning: ${data.warnings.main['*']}`, 'warn');
+			}
+			
+			if (data.edit){
+				const parseParams = {
+					'action': 'parse',
+					'page': pgname,
+					'prop': 'text',
+					// 'parsoid': 1,
+				};
+				
+				revid = data.edit.newrevid;
+				api.get(parseParams).done(output => {
+					let parsedText;
+					if (pgid && curAction === 'view'){
+						parsedText = $(output.parse.text['*']).contents();
+						$('#mw-content-text > .mw-parser-output').html(parsedText);
+					} else {
+						parsedText = $(output.parse.text['*']);
+						$(`#${editorID}`).before(parsedText);
+					}
+					$(`#${editorID}`).remove();
+					mw.notify('Your topic was added.', {type: 'success'});
+					addStats();
+					$('.mw-parser-output').find(commentElements).each(addReplyButtons);
+				});
+			} else {
+				errorNotice(`An unknown error has occured: ${JSON.stringify(data)}`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			}
+		}).fail((code, data) => {
+			if (code === 'maxlag'){
+				errorNotice(`Error: ${code}: ${data.error.info}`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			} else if (code === 'protectedpage'){
+				errorNotice(`Error: ${code}: ${data.error.info}`);
+			} else if (code === 'ratelimited'){
+				errorNotice(`Error: ${code}: ${data.error.info}`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			} else if (code === 'http'){
+				errorNotice(`Error: ${code}: ${JSON.stringify(data)}`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			} else if (code === 'permissiondenied'){
+				errorNotice(`Error: ${code}: This page is in a protected namespace.`);
+			} else if (code === 'readonly'){
+				errorNotice(`Error: ${code}: ${data.error.info} Reason: ${data.error.readonlyreason}`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			} else if (code === 'articleexists'){
+				errorNotice(`Error: ${code}: ${data.error.info}`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			} else if (code === 'editconflict'){
+				errorNotice(`Error: ${code}: ${JSON.stringify(data)}`);
+			} else {
+				errorNotice(`Error: ${code}: ${typeof data} (${JSON.stringify(data)})`);
+				$(`#${editorID}`).find(elmts).removeAttr('disabled');
+			}
+		});
+	}
+	
+	function addReplyButtons(commentIndex, commentElement){
+		const txtContents = $(commentElement).contents().contents().addBack().toArray().filter(txtFilter);
 		const timestamp = txtContents[txtContents.length - 1];
 		const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
 		const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
@@ -122,7 +341,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		}
 		
 		let tsElement;
-		if ($(timestamp).parent().prop('tagName') === $(e).prop('tagName')){
+		if ($(timestamp).parent().prop('tagName') === $(commentElement).prop('tagName')){
 			tsElement = $(timestamp);
 		} else {
 			tsElement = $(timestamp).parent();
@@ -143,8 +362,8 @@ mw.loader.using(['mediawiki.api'], () => {
 		}));
 	}
 	
-	function activateReplyButton(event){
-		const button = $(event.currentTarget);
+	function activateReplyButton(addReplyEvent){
+		const button = $(addReplyEvent.currentTarget);
 		if (button.attr('disabled')){
 			return;
 		}
@@ -161,7 +380,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		const pNextTag = pNext.prop('tagName');
 		const h = /^H[1-6]$/;
 		const dd = $('<dd>').append($('<form>', {
-			'on': {'submit': e => e.preventDefault()},
+			'on': {'submit': formReplyEvent => formReplyEvent.preventDefault()},
 		}).append($('<label>', {
 			'text': mw.message('custom-talk-tools-version', version).text(),
 		})).append($('<textarea>', {
@@ -172,14 +391,14 @@ mw.loader.using(['mediawiki.api'], () => {
 			).text(),
 			'required': true,
 		})).append($('<div>', {
-			'id': 'reply-preview-js',
+			'id': 'talk-tools-preview-js',
 			'data-label': 'Preview',
 			'lang': 'en',
 			'dir': 'ltr',
 		})).append($('<div>', {
-			'id': 'reply-footer-js',
+			'id': 'talk-tools-footer-js',
 		}).append($('<p>', {
-			'id': 'reply-license-js',
+			'id': 'talk-tools-license-js',
 			'html': mw.message('custom-talk-tools-license-text').parse(),
 		})).append($('<div>').append($('<button>', {
 			'class': 'wds-button wds-is-secondary',
@@ -192,54 +411,46 @@ mw.loader.using(['mediawiki.api'], () => {
 		})))));
 		
 		if (!bNext.length && (!pNext.length || h.test(pNextTag))){
-			button.after($('<dl id="reply-editor-js">').append(dd));
+			button.after($(`<dl id="${editorID}">`).append(dd));
 		} else if (parent.prop('tagName') === 'P' && pNextTag === 'DL'){
-			pNext.append(dd.attr('id', 'reply-editor-js'));
+			pNext.append(dd.attr('id', editorID));
 		} else if (parent.prop('tagName') === 'P'){
-			parent.after($('<dl id="reply-editor-js">').append(dd));
+			parent.after($(`<dl id="${editorID}">`).append(dd));
 		} else if (bNext.length){
-			bNext.append(dd.attr('id', 'reply-editor-js'));
+			bNext.append(dd.attr('id', editorID));
 		} else {
-			button.after($('<dl id="reply-editor-js">').append(dd));
+			button.after($(`<dl id="${editorID}">`).append(dd));
 		}
 		
-		$('#reply-editor-js textarea').get(0).focus();
-		let currentCmt = $('#reply-editor-js textarea').val();
-		let cmtPreview = currentCmt;
-		updateInterval = setInterval(() => {
-			if (currentCmt === $('#reply-editor-js textarea').val()){
+		$(`#${editorID} textarea`).get(0).focus();
+		let comment = parseReplyText($(`#${editorID} textarea`).val());
+		updatePreview = setInterval(() => {
+			if (comment === parseReplyText($(`#${editorID} textarea`).val())){
 				return;
 			}
-			
-			if (!$('#reply-editor-js textarea').val()){
-				$('#reply-preview-js').html('');
+			comment = parseReplyText($(`#${editorID} textarea`).val());
+			if (!comment){
+				$('#talk-tools-preview-js').html('');
 				return;
 			}
-			
-			currentCmt = $('#reply-editor-js textarea').val();
-			cmtPreview = currentCmt.replace(/ +$/gm, '');
-			cmtPreview = cmtPreview.replace(/\n\n+/g, '\n');
-			cmtPreview = cmtPreview.replace(/^:+ */gm, '');
-			cmtPreview = cmtPreview.replace(/^/gm, ':');
-			cmtPreview = addSig(cmtPreview);
-			
-			api.get({
+			const parseParams = {
 				'action': 'parse',
-				'title': mw.config.get('wgPageName'),
-				'text': cmtPreview,
+				'title': pgname,
+				'text': comment,
 				'revid': revid,
 				'prop': 'text',
-				// 'parsoid': 1,
+				'parsoid': 1,
 				'pst': true,
 				'preview': true,
-			}).done(previewJSON => {
-				const parsedPreview = $(previewJSON.parse.text['*']).contents();
-				$('#reply-preview-js').html(parsedPreview);
+			};
+			api.get(parseParams).done(previewJSON => {
+				const parsedPreview = $(previewJSON.parse.text['*']);
+				$('#talk-tools-preview-js').html(parsedPreview);
 			});
 		}, 2000);
 		
 		$('#reply-cancel-js').on('click', () => {
-			if ($('#reply-editor-js textarea').val()){
+			if ($(`#${editorID} textarea`).val()){
 				const confirmationDialog = new OO.ui.MessageDialog();
 				const windowManager = new OO.ui.WindowManager();
 				$('body').append(windowManager.$element);
@@ -263,10 +474,10 @@ mw.loader.using(['mediawiki.api'], () => {
 				});
 				
 				setTimeout(() => {
-					$('#discard-comment-js a').on('click', discardComment);
+					$('#discard-comment-js a').on('click', closeEditor);
 				}, 10);
 			} else {
-				discardComment();
+				closeEditor();
 			}
 		});
 		
@@ -278,22 +489,24 @@ mw.loader.using(['mediawiki.api'], () => {
 		}, submitReply);
 	}
 	
-	function discardComment(){
-		clearInterval(updateInterval);
+	function closeEditor(){
+		clearInterval(updatePreview);
 		$('.reply-button-js').attr('tabindex', 0).removeAttr('disabled');
 		$('#active-reply-button-js').removeAttr('id');
-		$('#reply-editor-js').remove();
+		$(`#${editorID}`).remove();
 	}
 	
-	function submitReply(event){
-		let comment = $('#reply-editor-js textarea').val();
+	function submitReply(submitReplyEvent){
+		let comment = $(`#${editorID} textarea`).val();
+		comment = comment.replace(/^\s+/, '');
+		comment = comment.replace(/\s+$/, '');
 		if (!comment){
 			return;
 		}
 		
-		clearInterval(updateInterval);
+		clearInterval(updatePreview);
 		const elmts = 'textarea, .wds-button';
-		$('#reply-editor-js').find(elmts).attr('disabled', true);
+		$(`#${editorID}`).find(elmts).attr('disabled', true);
 		
 		const fetchParams = {
 			'generator': 'allpages',
@@ -308,22 +521,17 @@ mw.loader.using(['mediawiki.api'], () => {
 		
 		api.get(fetchParams).done(result => {
 			const uneditedText = result.query.pages[0].revisions[0].slots.main.content;
-			const timestamp = event.data.timestamp.replace(/([()])/g, '\\$1');
-			const index = Number(event.data.index);
+			const timestamp = submitReplyEvent.data.timestamp.replace(/([()])/g, '\\$1');
+			const index = Number(submitReplyEvent.data.index);
 			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${timestamp}){${index}}`), '');
 			const iRegexp = new RegExp(`[^]*?^([:*#]*).+?${timestamp} *$[^]*`, 'm');
 			const rRegexp = new RegExp(`([^]*?)^(:*)(.+?${timestamp} *)$((?:\n\n?\\2:+.*)?(?:\n\\2:+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
 			const indent = mainText.replace(iRegexp, '$1');
 			const iPrevRegexp = new RegExp(`[^]*?^(:*).+?${timestamp} *$\n\n?\\1:+[^]*`, 'm');
 			let finalText;
-			let prefix = uneditedText.split(event.data.timestamp).splice(0, index).join(event.data.timestamp);
-			prefix = prefix ? prefix + event.data.timestamp : '';
-			
-			comment = comment.replace(/ +$/gm, '');
-			comment = comment.replace(/\n\n+/g, '\n');
-			comment = comment.replace(/^:+ */gm, '');
-			comment = comment.replace(/^/gm, `${indent}:`);
-			comment = addSig(comment);
+			let prefix = uneditedText.split(submitReplyEvent.data.timestamp).splice(0, index).join(submitReplyEvent.data.timestamp);
+			prefix = prefix ? prefix + submitReplyEvent.data.timestamp : '';
+			comment = parseReplyText(comment, indent);
 			
 			if (!indent.length && !iPrevRegexp.test(mainText)){
 				finalText = prefix + mainText.replace(
@@ -338,15 +546,15 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			
 			let editSummary;
-			if (event.data.section){
-				editSummary = `/* ${event.data.section} */ Reply`;
+			if (submitReplyEvent.data.section){
+				editSummary = `/* ${submitReplyEvent.data.section} */ Reply`;
 			} else {
 				editSummary = 'Reply';
 			}
 			
 			const editParams = {
 				'action': 'edit',
-				'pageid': pgid,
+				'title': pgname,
 				'text': finalText,
 				'summary': editSummary,
 				'tags': 'js-reply',
@@ -364,7 +572,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				if (data.edit){
 					const parseParams = {
 						'action': 'parse',
-						'pageid': pgid,
+						'page': pgname,
 						'prop': 'text',
 						// 'parsoid': 1,
 					};
@@ -379,33 +587,33 @@ mw.loader.using(['mediawiki.api'], () => {
 					});
 				} else {
 					errorNotice(`An unknown error has occured: ${JSON.stringify(data)}`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				}
 			}).fail((code, data) => {
 				if (code === 'maxlag'){
 					errorNotice(`Error: ${code}: ${data.error.info}`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				} else if (code === 'protectedpage'){
 					errorNotice(`Error: ${code}: ${data.error.info}`);
 				} else if (code === 'ratelimited'){
 					errorNotice(`Error: ${code}: ${data.error.info}`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				} else if (code === 'http'){
 					errorNotice(`Error: ${code}: ${JSON.stringify(data)}`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				} else if (code === 'permissiondenied'){
 					errorNotice(`Error: ${code}: This page is in a protected namespace.`);
 				} else if (code === 'readonly'){
 					errorNotice(`Error: ${code}: ${data.error.info} Reason: ${data.error.readonlyreason}`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				} else if (code === 'articleexists'){
 					errorNotice(`Error: ${code}: ${data.error.info}`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				} else if (code === 'editconflict'){
 					errorNotice(`Error: ${code}: ${JSON.stringify(data)}`);
 				} else {
 					errorNotice(`Error: ${code}: ${typeof data} (${JSON.stringify(data)})`);
-					$('#reply-editor-js').find(elmts).removeAttr('disabled');
+					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				}
 			});
 		});
@@ -420,13 +628,13 @@ mw.loader.using(['mediawiki.api'], () => {
 		const comments = [];
 		let currentSection = '';
 		
-		$('.mw-parser-output').find('p, dd, div, li, h2 .mw-headline').each((i, e) => {
-			if ($(e).prop('tagName') === 'SPAN'){
-				currentSection = $(e).attr('id').replaceAll('_', ' ');
+		$('.mw-parser-output').find('p, dd, div, li, h2 .mw-headline').each((statsIndex, statsElement) => {
+			if ($(statsElement).prop('tagName') === 'SPAN'){
+				currentSection = $(statsElement).attr('id').replaceAll('_', ' ');
 				return;
 			}
 			
-			const txtContents = $(e).contents().contents().addBack().toArray().filter(txtFilter);
+			const txtContents = $(statsElement).contents().contents().addBack().toArray().filter(txtFilter);
 			const timestamp = txtContents[txtContents.length - 1];
 			const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
 			const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
@@ -513,8 +721,8 @@ mw.loader.using(['mediawiki.api'], () => {
 			}));
 		}
 		
-		$('.mw-parser-output > h2').each((i, e) => {
-			const section = $(e).find('.mw-headline').attr('id').replaceAll('_', ' ');
+		$('.mw-parser-output > h2').each((headingIndex, headingElement) => {
+			const section = $(headingElement).find('.mw-headline').attr('id').replaceAll('_', ' ');
 			if (!sections[section]){
 				return;
 			}
@@ -529,7 +737,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			const agoTextSect = age(latestCommentSect, now);
 			const commentCount = sections[section].timestamps.length;
 			const userCount = sections[section].users.length;
-			$(e).append($('<div>').addClass([
+			$(headingElement).append($('<div>').addClass([
 				'talk-stats-js',
 				'talk-stats-section-js'
 			]).append($('<span>', {
@@ -591,17 +799,44 @@ mw.loader.using(['mediawiki.api'], () => {
 		return n.nodeType === 3 && n.nodeValue !== '\n';
 	}
 	
+	function parseHeadingText(headingText){
+		headingText = headingText.replace(/^\s+/, '');
+		headingText = headingText.replace(/\s+$/, '');
+		return headingText;
+	}
+	
+	function parseTopicText(topicText){
+		topicText = topicText.replace(/^\s+/, '');
+		topicText = topicText.replace(/\s+$/, '');
+		topicText = topicText.replace(/ +$/gm, '');
+		if (topicText){
+			topicText = addSig(topicText);
+		}
+		return topicText;
+	}
+	
+	function parseReplyText(replyText, indent = ''){
+		replyText = replyText.replace(/^\s+/, '');
+		replyText = replyText.replace(/\s+$/, '');
+		replyText = replyText.replace(/ +$/gm, '');
+		if (replyText){
+			replyText = addSig(replyText);
+			replyText = replyText.replace(/\n\n+/g, '\n');
+			replyText = replyText.replace(/^/gm, `${indent}:`);
+		}
+		return replyText;
+	}
+	
 	function addSig(comment){
 		// <pre>
-		let cmt = comment;
-		if (!/[^~]~~~~$/.test(cmt)){
-			if (/~~~$/.test(cmt)){
-				cmt = cmt.replace(/( *)~~~+$/, '$1~~~~');
+		if (!/[^~]~~~~$/.test(comment)){
+			if (/~~~$/.test(comment)){
+				comment = comment.replace(/( *)~~~+$/, '$1~~~~');
 			} else {
-				cmt = cmt.replace(/$/, ' ~~~~');
+				comment = comment.replace(/$/, ' ~~~~');
 			}
 		}
-		return cmt;
+		return comment;
 		// </pre>
 	}
 });

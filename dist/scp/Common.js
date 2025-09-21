@@ -5,28 +5,33 @@ window.UserTagsJS = {
 	tags: {
 
 		// former staff
-		formerbureaucrat: { u:'Former Bereaucrat', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 100 },
-		formersysop: { u:'Former Administrator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 101 },
-		formermod: { u:'Former Moderator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff',  order: 102 },
+		formerbureaucrat: { u:'Former Bereaucrat', order: 100 },
+		formersysop: { u:'Former Administrator', order: 101 },
+		formermod: { u:'Former Moderator',  order: 102 },
 
 		// former staff reasons
-		retired: { u:'Retired Staff', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 103 },
-		fired: { u:'Hall of Shame', order: 104 },
+		fired: { u:'Hall of Shame', order: 103 },
 
-		// other
-		inactive: {u:'Dormant', order: 1001 },
-	}
+		// content-moderator and threadmoderator merged together
+		moderator: { u:'Moderator', order: 104 },
+
 };
 
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'content-moderator', 'sysop', 'bot', 'bot-global'];
+UserTagsJS.modules.mwGroups = ['threadmoderator', 'content-moderator'];
 
-UserTagsJS.modules.inactive = {
-	days: 30,
-	namespaces: [0],
-	zeroIsInactive: true // 0 article edits = inactive
+UserTagsJS.modules.mwGroups= {
+	merge: true
+        groups: ['moderator']
 };
 
 
+
+
+/* Adding custom user groups to users */
+
+UserTagsJS.modules.custom = {
+	'SnowyDasher47': ['moderator']
+};
 
 importArticles({
     type: 'script',

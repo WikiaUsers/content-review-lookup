@@ -7,12 +7,14 @@
 mw.loader.using([
     'mediawiki.api',
     'mediawiki.confirmCloseWindow',
-    'mediawiki.notification',
     'mediawiki.util',
     'oojs-ui-core',
     'ext.fandom.photoGallery.gallery.css',
 ]).then(function () {
     'use strict';
+    window.dev = window.dev || {};
+    window.dev.multiupload = window.dev.multiupload || {};
+
     var config = mw.config.get([
         'wgCanonicalSpecialPageName',
         'wgFormattedNamespaces',
@@ -22,9 +24,11 @@ mw.loader.using([
     ]);
 
     var query = new URLSearchParams(document.location.search);
+    
+    var useLegacyOptions = false;
 
     if (
-        window.MultiUploadJSLoaded ||
+        window.dev.multiupload.loaded ||
         config.wgCanonicalSpecialPageName !== "Upload" ||
         $("#wpForReUpload").val() || //Disabling for Reupload
         query.get('wpDestFile') || // Disabling when following a redlink
@@ -32,7 +36,14 @@ mw.loader.using([
     ) {
         return;
     }
-    window.MultiUploadJSLoaded = true;
+    window.dev.multiupload.loaded = true;
+    window.dev.multiupload.options = window.dev.multiupload.options || {};
+    
+    // Handle Legacy Option for a smooth transition
+    if (!!window.MultiUploadoption) {
+        Object.assign(window.dev.multiupload.options, window.MultiUploadoption);
+        useLegacyOptions = true;
+    }
 
     var api = new mw.Api(),
         i18n,
@@ -44,11 +55,12 @@ mw.loader.using([
             // General UI things
             'filedesc', 'license-header', 'watchthisupload', 'ignorewarnings',
             // Upload warnings
-            'badfilename', 'file-exists-duplicate', 'fileexists', 'fileexists-no-change',
+            'badfilename', 'file-deleted-duplicate', 'file-exists-duplicate', 'fileexists', 'fileexists-no-change', 'filename-bad-prefix', 
+            'filepageexists', 'filewasdeleted'
         ],
-        limit = (window.MultiUploadoption && window.MultiUploadoption.max) ? window.MultiUploadoption.max : -1,
-        defaultlicense = (window.MultiUploadoption && window.MultiUploadoption.defaultlicense) ? window.MultiUploadoption.defaultlicense : '',
-        defaultdescription = (window.MultiUploadoption && window.MultiUploadoption.defaultdescription) ? window.MultiUploadoption.defaultdescription : '',
+        limit = window.dev.multiupload.options.max || -1,
+        defaultlicense = window.dev.multiupload.options.defaultlicense || '',
+        defaultdescription = window.dev.multiupload.options.defaultdescription || '',
         curFile = 0,
         progressBarWidget,
         uploadResultCount = {
@@ -66,6 +78,11 @@ mw.loader.using([
 
     function init(i18nData) {
         i18n = i18nData;
+        // Legacy Options warning message
+        if (useLegacyOptions) {
+            var legacyWarningMsg = $('<p>').html(i18n.msg('legacy-options-warning').parse());
+            showNotification('warning', legacyWarningMsg, false);
+        }
         setLimit();
 
         api.loadMessagesIfMissing(stdmsgs).then(function() {
@@ -83,8 +100,11 @@ mw.loader.using([
             $("span.mw-htmlform-submit-buttons").append('<input type="button" value="' + i18n.msg('reset').escape() + '" class="multipleFileSelect" id="multiFileReset" />');
             $("#multiupload").change(addFields);
             $("#mw-upload-form").on('submit', uploadFiles);
-            $("#multiFileReset").click(reset);
-
+            $("#multiFileReset").click(() => {
+            	reset();
+            	$("#mw-upload-form")[0].reset();
+            });
+            
             allowCloseWindow = mw.confirmCloseWindow({
                 test: function() {
                     return files.length !== 0;
@@ -181,13 +201,13 @@ mw.loader.using([
         if (curFile > files.length) {
             allowCloseWindow.release();
             if (uploadResultCount.warnings === 0 && uploadResultCount.errors === 0) {
-                showNotification('success');
+                showUploadNotification('success');
             } else {
                 if (uploadResultCount.warnings !== 0) {
-                    showNotification('warning', uploadResultCount.warnings);
+                    showUploadNotification('warning', uploadResultCount.warnings);
                 }
                 if (uploadResultCount.errors !== 0) {
-                    showNotification('error', uploadResultCount.errors);
+                    showUploadNotification('error', uploadResultCount.errors);
                 }
             }
             progressBarWidget.setProgress(100);
@@ -225,7 +245,6 @@ mw.loader.using([
         if (ignoreWarnings) {
             params.ignorewarnings = 1;
         }
-
         var options = {
             contentType: 'multipart/form-data',
             // No timeout (copied from mw.Api.upload code)
@@ -238,7 +257,6 @@ mw.loader.using([
         // b) If you upload with `ignorewarnings` and the upload produced warnings, but succeeded,
         //    `api.upload()` will classify the call as failed, meaning we would need to add a special case for this.
         api.post(params, options).done(function (data) {
-            console.log(data);
             if (data.upload.result === 'Warning') {
                 uploadResultCount.warnings++;
                 getUploadWarningTexts(data.upload.warnings, filename).done(function(warnings) {
@@ -253,8 +271,6 @@ mw.loader.using([
             curFile++;
             apiUpload();
         }).fail(function (code, data) {
-            console.log(code);
-            console.log(data);
             uploadResultCount.errors++;
             var failureItem;
             if (data.errors) {
@@ -315,10 +331,21 @@ mw.loader.using([
         return deferred.promise();
     }
 
+    /**
+     * Retrieve and format the warning message
+     * @param key the warning we received
+     * @param args the data associated with the warning
+     * @param filenameWithoutNamespace the filename associated with the warning
+     * @returns the localized warning message formatted
+     */
     function getLocalizedWarningMessage(key, args, filenameWithoutNamespace) {
         switch (key) {
             case 'badfilename': {
                 var message = mw.message('badfilename', args).plain();
+                return message;
+            }
+            case 'bad-prefix': {
+                var message = mw.message('filename-bad-prefix', args).plain();
                 return message;
             }
             case 'duplicate': {
@@ -326,20 +353,39 @@ mw.loader.using([
                 var message = mw.message('file-exists-duplicate', filenames.length).plain();
                 var gallery = '<gallery>\n';
                 filenames.forEach(function(name) {
-                    gallery += prependNamespace('file', name) + '\n';
+                    gallery += name + '\n';
                 });
                 gallery += '</gallery>';
                 message += '\n' + gallery;
                 return message;
             }
+            case 'duplicate-archive': {
+            	  var filename = prependNamespace('file', args);
+                var message = mw.message('file-deleted-duplicate', filename).plain();
+                return message;
+            }
+            case 'exists-normalized':
             case 'exists': {
                 var filename = prependNamespace('file', args);
-                var message = mw.message('fileexists', filename).plain();
+                var message = mw.message('fileexists', filename).plain().replace('[['+filename+'|thumb]]', '');
                 return message;
             }
             case 'nochange': {
                 var filename = prependNamespace('file', filenameWithoutNamespace);
                 var message= mw.message('fileexists-no-change', filename).plain();
+                return message;
+            }
+            case 'page-exists': {
+                var filename = prependNamespace('file', filenameWithoutNamespace);
+                var message= mw.message('filepageexists', filename).plain();
+                return message;
+            }
+            case 'thumb-name': {
+                return mw.message('filename-thumb-name').plain();
+            }
+            case 'was-deleted': {
+                var filename = prependNamespace('file', filenameWithoutNamespace);
+                var message= mw.message('filewasdeleted', filename).plain();
                 return message;
             }
             default: {
@@ -354,16 +400,37 @@ mw.loader.using([
         }
     }
 
-    function showNotification(type, count) {
+    /**
+     * Display a notification
+     * @param type type of notification (error, warning, success)
+     * @param count number of error or warning encountered
+     */
+    function showUploadNotification(type, count) {
         var text = i18n.msg(type + '-notification', count).parse();
+        showNotification(type, text);
+    }
+    
+    /**
+     * Display a notification
+     * @param type type of notification (error, warning, success)
+     * @param msg  the message to display (either plaintext, mw message or HTML Element)
+     * @param autohide Option to autohide the notification after a certain time (default is true)
+     */
+    function showNotification(type, msg, autohide = true) {
         var messageWidget = new OO.ui.MessageWidget({
             type: type,
             inline: true,
-            label: text
+            label: msg
         });
-        mw.notification.notify(messageWidget.$element);
+        mw.notify(messageWidget.$element, { autoHide: autohide });
     }
 
+    /**
+     * Prepend the namespace to a page name
+     * @param canoncialNamespace the namespace
+     * @param pageName the page name
+     * @returns the pagename with its namespace
+     */
     function prependNamespace(canoncialNamespace, pageName) {
         var namespaceId = config.wgNamespaceIds[canoncialNamespace];
         var formattedNamespace = config.wgFormattedNamespaces[namespaceId];

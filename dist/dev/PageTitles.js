@@ -20,6 +20,8 @@
 	const messages = [
 		'creating',
 		'editing',
+		'editingcomment',
+		'editingsection',
 		'page-header-title-prefix-history',
 		'page-header-title-prefix-changes',
 	];
@@ -41,6 +43,10 @@
 				mw.hook('wikipage.content').add(() => {
 					if (activeEdit && id === -1){
 						setHeading(title, 'creating');
+					} else if (activeEdit && searchParams.get('section') === 'new'){
+						setHeading(title, 'editingcomment');
+					} else if (activeEdit && searchParams.has('section')){
+						setHeading(title, 'editingsection');
 					} else if (activeEdit){
 						setHeading(title, 'editing');
 					} else if (action === 'history'){

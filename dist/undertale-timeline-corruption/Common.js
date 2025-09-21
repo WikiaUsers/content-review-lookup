@@ -1,5 +1,6 @@
 importScript('MediaWiki:GalleryScript.js');
 importScript('MediaWiki:ImageScript.js');
+importScript('MediaWiki:TierlistScript.js');
 
 (function() {
     const cssId = 'custom-fandom-css'; // ID for our <style> tag

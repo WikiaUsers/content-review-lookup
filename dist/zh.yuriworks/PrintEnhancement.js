@@ -252,92 +252,13 @@ $(function () {
 $(document).ready(function () {
   $("head").append(
     '<style type="text/css">' +
-      "@media print {" +
-      "  .volume-print-container {" +
-      "    display: grid;" +
-      "    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));" +
-      "    gap: 10px;" +
-      "    width: 100%;" +
-      "  }" +
-      "  .volume-card {" +
-      "    border: 1px solid #ddd;" +
-      "    page-break-inside: avoid;" +
-      "    padding: 8px;" +
-      "    display: flex;" +
-      "    flex-direction: column;" +
-      "    align-items: center;" +
-      "  }" +
-      "  .volume-title {" +
-      "    font-weight: bold;" +
-      "    text-align: center;" +
-      "    margin-bottom: 8px;" +
-      "    padding-bottom: 4px;" +
-      "    border-bottom: 1px solid #eee;" +
-      "  }" +
-      "  .volume-cover {" +
-      "    margin-bottom: 10px;" +
-      "    text-align: center;" +
-      "  }" +
-      "  .volume-print-container .book-container {" +
-      "    height: 216px;" +
-      "    width: max-content;" +
-      "  }" +
-      "  .volume-cover img {" +
-      "    max-width: 100%;" +
-      "    height: auto;" +
-      "    display: block;" +
-      "    margin: 0 auto;" +
-      "  }" +
-      "  .volume-info {" +
-      "    margin-bottom: 4px;" +
-      "    line-height: 1.4;" +
-      "  }" +
-      "  .info-label {" +
-      "    font-weight: bold;" +
-      "    font-size: 0.9em;" +
-      "    color: #555;" +
-      "  }" +
-      "  .table-wide:has(.volume-print-container):before {" +
-      "    display:none;" +
-      "  }" +
-      "  @page {" +
-      "    size: auto;" +
-      "    margin: 10mm;" +
-      "  }" +
-      ".portable-infobox-table .pit-group {" +
-      "    text-align: start;" +
-      "    font-weight: initial;" +
-      "    font-family: var(--heiti-font);" +
-      "    font-size: larger;" +
-      "    padding-inline-start: 10px;" +
-      "    background-color: burlywood;" +
+      "@page {" +
+      "  size: auto;" +
+      "  margin: 10mm;" +
       "}" +
-      ".pit-label {" +
-      "    text-align: center;" +
-      "    width: calc(5rem + 10px);" +
-      "    background-color: antiquewhite;" +
-      "}" +
-      ".portable-infobox-table {" +
-      "    width: 100%;" +
-      "    border-collapse: collapse;" +
-      "}" +
-      ".portable-infobox-table :is(th, td) {" +
-      "    border: burlywood solid 1px;" +
-      "    padding: 5px;" +
-      "}" +
-      ".portable-infobox-table .block-cat.block-cat a {" +
-      "    background: none;" +
-      "}" +
-      ".portable-infobox-table .pit-group:before {" +
-      "    content: '★';" +
-      "    padding-inline-end: 5px;" +
-      "}" + 
-      ".volume-table, .portable-infobox, #toc {" +
-        "display: none" +
-      "}}" +
       "@media not print {" +
       ".volume-print-container, .portable-infobox-table.portable-infobox-table {" +
-        "display: none" +
+      "  display: none" +
       "}}" +
       "</style>"
   );

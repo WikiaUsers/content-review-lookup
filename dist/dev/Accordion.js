@@ -10,7 +10,7 @@ mw.hook('wikipage.content').add(function() {
   'use strict';
 
   // Double run protection.
-  if (window.accordionLoaded) return;
+  //if (window.accordionLoaded) return;
 
   window.accordionLoaded = true;
 

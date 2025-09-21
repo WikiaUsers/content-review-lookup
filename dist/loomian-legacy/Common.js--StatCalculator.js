@@ -54,13 +54,20 @@ function calcStat(Base, UP, TP, Level, Personality) {
 	return Math.floor(Math.floor((2*Base+UP+Math.floor(TP/4))*Level/100+5)*Personality);
 }
 
-// Input box creator
 $(document).ready(function() {
+	// Creating input boxes
 	var i = 1;
 	var length = document.querySelectorAll('.StatsTable').length;
 	while(i <= length) {
-		$("span#LevelBox-"+i).html('<input onClick="this.select();" type="number" value="50" class="Level oo-ui-inputWidget-input"></input>');
-		
+        var table = document.getElementById("Table-" + i);
+        var level = 50;
+        if (table) {
+            var match = table.className.match(/LevelDefault-(\d+)/);
+            if (match) {
+                level = parseInt(match[1], 10);
+            }
+        }
+		$("span#LevelBox-"+i).html('<input onClick="this.select();" value="' + level + '"type="number" class="Level oo-ui-inputWidget-input"></input>');
 		$("span#HPUPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="HPUP oo-ui-inputWidget-input"></input>');
 		$("span#HPTPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="HPTP oo-ui-inputWidget-input"></input>');
     

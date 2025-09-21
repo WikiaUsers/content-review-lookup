@@ -49,7 +49,8 @@ $('.fandom-community-header__community-name-wrapper').append(
 
 == VoteGadget2024 ==
 
-VoteGadget2024 は Hexirp が 2024 年に作成したプログラムです。 VoteGadget2024 のライセンスは Apache License 2.0 と CC BY 4.0 のデュアルライセンスです。
+VoteGadget2024 เป็นโปรแกรมที่สร้างโดย Hexirp ในปี 2024
+ใบอนุญาตของ VoteGadget2024 คือ Apache License 2.0 และ CC BY 4.0 (ลิขสิทธิ์คู่)
 
 */
 
@@ -57,20 +58,20 @@ function get_vote_data_vote_gadget_2024(api, vote_data_page_name, callback) {
     api
     .get({ action: 'parse', page: vote_data_page_name, prop: 'wikitext', format: 'json' })
     .done(function (result) {
-        console.log('VoteGadget2024: 投票データの取得が成功しました。');
+        console.log('VoteGadget2024: การดึงข้อมูลการโหวตสำเร็จแล้ว');
 
         var vote_data = JSON.parse(result.parse.wikitext['*']);
 
         if (vote_data['vote-data-type'] == 'VoteGadget2024') {
-            console.log('VoteGadget2024: 投票データの型が正規です。');
+            console.log('VoteGadget2024: ชนิดของข้อมูลโหวตถูกต้อง');
 
             callback(vote_data);
         } else {
-            console.log('VoteGadget2024: 投票データの型が不正です。');
+            console.log('VoteGadget2024: ชนิดของข้อมูลโหวตไม่ถูกต้อง');
         }
     })
     .fail(function () {
-        console.log('VoteGadget2024: 投票データの取得が失敗しました。');
+        console.log('VoteGadget2024: การดึงข้อมูลการโหวตล้มเหลว');
 
         var vote_data = { 'vote-data-type': 'VoteGadget2024', 'vote-data-list': [] };
 
@@ -97,20 +98,20 @@ function update_result_vote_gadget_2024(vote_data) {
 }
 
 $(function () {
-    console.log('VoteGadget2024: 処理を開始します。');
+    console.log('VoteGadget2024: เริ่มการทำงาน');
 
     $('.vote-gadget-2024').html(
         '<span class="vote-gadget-2024-box">'
         +
-        '<div class="vote-gadget-2024-result-box">評価:&nbsp;<span class="vote-gadget-2024-result">0</span></div>'
+        '<div class="vote-gadget-2024-result-box">คะแนน:&nbsp;<span class="vote-gadget-2024-result">0</span></div>'
         +
-        '<button type="button" aria-label="プラス票を投じる" class="vote-gadget-2024-up-vote-button">+</button>'
+        '<button type="button" aria-label="โหวตบวก" class="vote-gadget-2024-up-vote-button">+</button>'
         +
-        '<button type="button" aria-label="マイナス票を投じる" class="vote-gadget-2024-down-vote-button">−</button>'
+        '<button type="button" aria-label="โหวตลบ" class="vote-gadget-2024-down-vote-button">−</button>'
         +
-        '<button type="button" aria-label="ニュートラル票を投じる" class="vote-gadget-2024-neutral-vote-button">±</button>'
+        '<button type="button" aria-label="โหวตกลาง" class="vote-gadget-2024-neutral-vote-button">±</button>'
         +
-        '<button type="button" aria-label="投票を取り消す" class="vote-gadget-2024-cancel-button">✗</button>'
+        '<button type="button" aria-label="ยกเลิกการโหวต" class="vote-gadget-2024-cancel-button">✗</button>'
         +
         '</span>'
     );
@@ -127,14 +128,14 @@ $(function () {
             update_result_vote_gadget_2024(vote_data);
 
             $('.vote-gadget-2024-up-vote-button').click(function () {
-                console.log('VoteGadget2024: プラス票を投じる処理を開始します。');
+                console.log('VoteGadget2024: เริ่มกระบวนการโหวตบวก');
 
-                // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                var confimed_flag = window.confirm('あなたは [' + user_name + '] としてプラス票を投じようとしています。よろしいですか？');
+                // ใช้ "[" และ "]" เนื่องจากไม่สามารถใช้ในชื่อผู้ใช้ได้
+                var confimed_flag = window.confirm('คุณกำลังจะโหวตบวกในนาม [' + user_name + '] แน่ใจหรือไม่?');
 
                 if (confimed_flag) {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] がプラス票を投じる処理を承認しました。');
+                    // ใช้ "[" และ "]" เนื่องจากไม่สามารถใช้ในชื่อผู้ใช้ได้
+                    console.log('VoteGadget2024: [' + user_name + '] ยืนยันที่จะโหวตบวก');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
                         var new_vote_data_list = new_vote_data['vote-data-list'];
@@ -155,8 +156,8 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用してプラス票を投じました。';
+                        // ใช้ "[" และ "]" เนื่องจากไม่สามารถใช้ในชื่อผู้ใช้ได้
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; ใช้ VoteGadget2024 เพื่อโหวตบวก';
 
                         api
                         .postWithEditToken({
@@ -171,33 +172,30 @@ $(function () {
                             minor: true
                         })
                         .done(function (result) {
-                            console.log('VoteGadget2024: プラス票を投じる処理が成功しました。');
+                            console.log('VoteGadget2024: การโหวตบวกสำเร็จ');
 
                             get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (updated_vote_data) {
                                 update_result_vote_gadget_2024(updated_vote_data);
                             });
                         })
                         .fail(function () {
-                            console.log('VoteGadget2024: プラス票を投じる処理が失敗しました。');
+                            console.log('VoteGadget2024: การโหวตบวกไม่สำเร็จ');
 
-                            window.alert('プラス票を投じる処理が失敗しました。');
+                            window.alert('การโหวตบวกไม่สำเร็จ');
                         });
                     });
                 } else {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] がプラス票を投じる処理を拒否しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ปฏิเสธที่จะโหวตบวก');
                 }
             });
 
             $('.vote-gadget-2024-down-vote-button').click(function () {
-                console.log('VoteGadget2024: マイナス票を投じる処理を開始します。');
+                console.log('VoteGadget2024: เริ่มกระบวนการโหวตลบ');
 
-                // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                var confimed_flag = window.confirm('あなたは [' + user_name + '] としてマイナス票を投じようとしています。よろしいですか？');
+                var confimed_flag = window.confirm('คุณกำลังจะโหวตลบในนาม [' + user_name + '] แน่ใจหรือไม่?');
 
                 if (confimed_flag) {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] がマイナス票を投じる処理を承認しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ยืนยันที่จะโหวตลบ');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
                         var new_vote_data_list = new_vote_data['vote-data-list'];
@@ -218,8 +216,7 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用してマイナス票を投じました。';
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; ใช้ VoteGadget2024 เพื่อโหวตลบ';
 
                         api
                         .postWithEditToken({
@@ -234,33 +231,30 @@ $(function () {
                             minor: true
                         })
                         .done(function (result) {
-                            console.log('VoteGadget2024: マイナス票を投じる処理が成功しました。');
+                            console.log('VoteGadget2024: การโหวตลบสำเร็จ');
 
                             get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (updated_vote_data) {
                                 update_result_vote_gadget_2024(updated_vote_data);
                             });
                         })
                         .fail(function () {
-                            console.log('VoteGadget2024: マイナス票を投じる処理が失敗しました。');
+                            console.log('VoteGadget2024: การโหวตลบไม่สำเร็จ');
 
-                            window.alert('マイナス票を投じる処理が失敗しました。');
+                            window.alert('การโหวตลบไม่สำเร็จ');
                         });
                     });
                 } else {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] がマイナス票を投じる処理を拒否しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ปฏิเสธที่จะโหวตลบ');
                 }
             });
 
             $('.vote-gadget-2024-neutral-vote-button').click(function () {
-                console.log('VoteGadget2024: ニュートラル票を投じる処理を開始します。');
+                console.log('VoteGadget2024: เริ่มกระบวนการโหวตกลาง');
 
-                // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                var confimed_flag = window.confirm('あなたは [' + user_name + '] としてニュートラル票を投じようとしています。よろしいですか？');
+                var confimed_flag = window.confirm('คุณกำลังจะโหวตกลางในนาม [' + user_name + '] แน่ใจหรือไม่?');
 
                 if (confimed_flag) {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] がニュートラル票を投じる処理を承認しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ยืนยันที่จะโหวตกลาง');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
                         var new_vote_data_list = new_vote_data['vote-data-list'];
@@ -281,8 +275,7 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用してニュートラル票を投じました。';
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; ใช้ VoteGadget2024 เพื่อโหวตกลาง';
 
                         api
                         .postWithEditToken({
@@ -297,33 +290,30 @@ $(function () {
                             minor: true
                         })
                         .done(function (result) {
-                            console.log('VoteGadget2024: ニュートラル票を投じる処理が成功しました。');
+                            console.log('VoteGadget2024: การโหวตกลางสำเร็จ');
 
                             get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (updated_vote_data) {
                                 update_result_vote_gadget_2024(updated_vote_data);
                             });
                         })
                         .fail(function () {
-                            console.log('VoteGadget2024: ニュートラル票を投じる処理が失敗しました。');
+                            console.log('VoteGadget2024: การโหวตกลางไม่สำเร็จ');
 
-                            window.alert('ニュートラル票を投じる処理が失敗しました。');
+                            window.alert('การโหวตกลางไม่สำเร็จ');
                         });
                     });
                 } else {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] がニュートラル票を投じる処理を拒否しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ปฏิเสธที่จะโหวตกลาง');
                 }
             });
         
             $('.vote-gadget-2024-cancel-button').click(function () {
-                console.log('VoteGadget2024: 投票を取り消す処理を開始します。');
+                console.log('VoteGadget2024: เริ่มกระบวนการยกเลิกการโหวต');
 
-                // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                var confimed_flag = window.confirm('あなたは [' + user_name + '] として投票を取り消そうとしています。よろしいですか？');
+                var confimed_flag = window.confirm('คุณกำลังจะยกเลิกการโหวตในนาม [' + user_name + '] แน่ใจหรือไม่?');
 
                 if (confimed_flag) {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] が投票を取り消す処理を承認しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ยืนยันที่จะยกเลิกการโหวต');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
                         var new_vote_data_list = new_vote_data['vote-data-list'];
@@ -336,8 +326,7 @@ $(function () {
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 
-                        // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; が VoteGadget2024 を使用して投票を取り消しました。';
+                        var summary_text = '&#91;[[User:' + user_name + '|' + user_name + ']]&#93; ใช้ VoteGadget2024 เพื่อยกเลิกการโหวต';
 
                         api
                         .postWithEditToken({
@@ -352,21 +341,20 @@ $(function () {
                             minor: true
                         })
                         .done(function (result) {
-                            console.log('VoteGadget2024: 投票を取り消す処理が成功しました。');
+                            console.log('VoteGadget2024: การยกเลิกการโหวตสำเร็จ');
 
                             get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (updated_vote_data) {
                                 update_result_vote_gadget_2024(updated_vote_data);
                             });
                         })
                         .fail(function () {
-                            console.log('VoteGadget2024: 投票を取り消す処理が失敗しました。');
+                            console.log('VoteGadget2024: การยกเลิกการโหวตไม่สำเร็จ');
 
-                            window.alert('投票を取り消す処理が失敗しました。');
+                            window.alert('การยกเลิกการโหวตไม่สำเร็จ');
                         });
                     });
                 } else {
-                    // ユーザーの名前に使用できない文字であるため、 "[" と "]" を使用している。
-                    console.log('VoteGadget2024: [' + user_name + '] が投票を取り消す処理を拒否しました。');
+                    console.log('VoteGadget2024: [' + user_name + '] ปฏิเสธที่จะยกเลิกการโหวต');
                 }
             });
         });

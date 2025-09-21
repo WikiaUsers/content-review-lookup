@@ -1,22 +1,36 @@
 (function() {
-  function fixMapImages() {
-    $(".map-template").each(function() {
-      let $img = $(this).find("img");
-      if (!$img.length) return;
-      $img.each(function() {
-        let srcAttr = $(this).attr("src") ? "src" : "data-src";
-        let containerWidth = Math.min($(this).parent().width(), 2000);
-        let url = $(this).attr(srcAttr);
-        if (url) {
-          $(this).attr(srcAttr, url.replace(/\/scale-to-width\/\d*\?/g, "/scale-to-width/" + containerWidth + "?"));
-        }
-        $(this).removeAttr("width").removeAttr("height");
-        $(this).css({ width: "100%", height: "auto", display: "block" });
+  function fixImages(targetSelectors) {
+    targetSelectors.forEach(selector => {
+      $(selector).each(function() {
+        const $container = $(this);
+        const $img = $container.find("img");
+        if (!$img.length) return;
+
+        // Remove width/height attributes and set sizing on img
+        $img.each(function() {
+          $(this).removeAttr("width").removeAttr("height");
+          $(this).css({ 
+            width: "100%", 
+            height: "auto", 
+            display: "block",
+            border: "6px solid white", // border goes here
+            borderRadius: "0"
+          });
+        });
+
+        // Container styles (no border here)
+        $container.css({
+          display: "inline-block",
+          float: "right",
+          marginLeft: "1em",
+          position: "relative"
+        });
       });
     });
   }
 
-  setTimeout(fixMapImages, 1000);
-  let observer = new MutationObserver(fixMapImages);
+  setTimeout(() => fixImages([".map-template", ".tierlist-image"]), 1000);
+
+  const observer = new MutationObserver(() => fixImages([".map-template", ".tierlist-image"]));
   observer.observe(document.body, { childList: true, subtree: true });
 })();

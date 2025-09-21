@@ -42,14 +42,6 @@ window.UserTagsJS = {
         
         custom: {
             Blupo: ["cookie"],
-            Ethicz: ["guild-relations-manager", "market-editor", "wiki-committee"],
-            Natercrawford: ["wiki-organizer"],
-            
-            NightcoreRayRay: ["trusted-market-editor", "wiki-committee"],
-            LanceTheRabbit: ["trusted-market-editor", "wiki-committee"],
-            Pulllemons: ["trusted-market-editor", "wiki-committee"],
-            LucidR: ["wiki-committee"],
-            Blockadepro: ["wiki-committee"],
             Pyrixil: ["trusted-market-editor"],
             "Mustache.17": ["trusted-market-editor"],
         },

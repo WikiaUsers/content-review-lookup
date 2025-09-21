@@ -25,3 +25,7 @@ UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true };
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
+
+//badge leaderboard url fix
+const leaderboard = "?safemode=1";
+$('.data-details.ranking a').attr("href", "/wiki/Special:Leaderboard" + leaderboard);

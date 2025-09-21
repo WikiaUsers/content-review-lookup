@@ -41,17 +41,6 @@ $(function () {
     setTimeout(shrinkTitle, 0);
 });
 
-
-/* Moves infobox down to be in-line with text, for sake of my autism */
-
-
-$(function () {
-    var $infobox = $('.portable-infobox.pi-background.pi-border-color.pi-theme-wikia.pi-layout-default');
-    if ($infobox.length) {
-        $infobox.css('margin-top', '6px');
-    }
-});
-
 /* Removed underline under references, so its more visible for visually impaired users  */
 
 $(document).ready(function () {

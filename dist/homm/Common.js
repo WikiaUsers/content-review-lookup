@@ -175,6 +175,12 @@ function adjustVolume(e) {
 	} else if (e.target.value < 0) {
 		e.target.value = 0;
 	}
+	
+	var elems = document.querySelectorAll('#adjustVolume input');
+	for (var i = 0; i < elems.length; i++) {
+		elems[i].value = e.target.value;
+	}
+	
 	var CookieDate = new Date();
 	CookieDate.setFullYear(CookieDate.getFullYear() + 1);
 	document.cookie = 'volumeLevel=' + e.target.value + '; expires=' + CookieDate.toUTCString() + '; path=/;';

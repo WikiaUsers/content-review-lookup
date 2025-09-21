@@ -7,12 +7,12 @@
 (function($){
     'use strict';
     // Prevent double load
-    if (window.SeeMoreActivityButtonLoaded) return;
-    window.SeeMoreActivityButtonLoaded = true;
+    if (window.RecentActivityButtonLoaded) return;
+    window.RecentActivityButtonLoaded = true;
 
     // Function to add a stylesheet
     function addStylesheetToHead() {
-        $("head").append("<style> #seemoreactivity-button svg { margin-right: 0; fill: rgba(var(--theme-page-text-color--rgb), .75); opacity: .75; } .rail-module:has(#seemoreactivity-button) .wds-icon.wds-icon-small.wds-activity-icon { fill: transparent /* Makes the normal icon transparent if the link icon exists */; } </style>");
+        $("head").append("<style> #recentactivity-button svg { margin-right: 0; fill: rgba(var(--theme-page-text-color--rgb), .75); opacity: .75; } .rail-module:has(#recentactivity-button) .wds-icon.wds-icon-small.wds-activity-icon { fill: transparent /* Makes the normal icon transparent if the link icon exists */; } </style>");
     }
     addStylesheetToHead();
 
@@ -38,17 +38,17 @@
     function preload() {
         $.when(
             loadLib('i18n', 'u:dev:MediaWiki:I18n-js/code.js').then(function () {
-                return window.dev.i18n.loadMessages('SeeMoreActivityButton');
+                return window.dev.i18n.loadMessages('RecentActivityButton');
             }),
             loadLib('wds', 'u:dev:MediaWiki:WDSIcons/code.js'),
             mw.loader.using('mediawiki.api')
         ).done(function (i18n) {
-            window.dev.seeMoreActivity = new SeeMoreActivity(i18n);
+            window.dev.recentActivity = new RecentActivity(i18n);
         });
     }
 
     /* Main class */
-    function SeeMoreActivity(i18n) {
+    function RecentActivity(i18n) {
         // Internal configuration for script.
         this.i18n = i18n.msg('see-more').plain();
         this.icon = {
@@ -66,7 +66,7 @@
         }
     }
 
-    SeeMoreActivity.prototype._execute = function() {
+    RecentActivity.prototype._execute = function() {
         var $activity = $('#wikia-recent-activity');
         if ($activity.length === 0) {
             return;
@@ -75,14 +75,14 @@
         $activity.children('h2').append(
             $('<a>', {
                 'href':  mw.util.getUrl('Special:RecentChanges'),
-                'class': 'wds-button wds-is-text',
-                'id':    'seemoreactivity-button',
-                'style': 'position: absolute; left: 0; padding: 0; width: 18px; transform: translateY(2px);',
+                'class': '',
+                'id':    'recentactivity-button',
+                'style': 'position: absolute; left: 0; width: 18px;',
                 'title': 'Special:RecentChanges',
                 html:    this.icon.btn.cloneNode(true)
             })
         );
-        mw.hook('SeeMoreActivityButton.loaded').fire();
+        mw.hook('RecentActivityButton.loaded').fire();
     };
 
     // Import libraries.

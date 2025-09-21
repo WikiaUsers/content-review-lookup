@@ -21,7 +21,7 @@ $(function () {
 			'<option value="rarity-common">Common</option>' +
 			'<option value="rarity-uncommon">Uncommon</option>' +
 			'<option value="rarity-rare">Rare</option>' +
-			'<option value="rarity-legendary">Legendary</option>' +
+			'<option value="rarity-exotic">Exotic</option>' +
 			'<option value="rarity-mythical">Mythical</option>' +
 			'<option value="rarity-premium">Premium</option>' +
 		'</select>'

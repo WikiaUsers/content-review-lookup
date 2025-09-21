@@ -573,6 +573,7 @@
                 nocreate: true,
                 redirect: false,
                 bot: true,
+                watchlist: 'nochange',
                 token: mw.user.tokens.get('csrfToken')
             }).then(function() {
                 LIR.requestCompleted[pageKey] = true;

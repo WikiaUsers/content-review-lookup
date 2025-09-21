@@ -143,7 +143,7 @@
 					*/
 				}),
 				
-				'/swords': new Folder({
+				'/scythes': new Folder({
 					"frozen_scythe_hand": { selectors: [ s_iboxThumbnail_alt`Frozen Scythe` ] },
 					"frozen_scythe": { wiki: "Frozen Scythe" },
 					"ghoul_buster_hand": { selectors: [ s_iboxThumbnail_alt`Ghoul Buster`, s_iboxThumbnail_alt`Horseman Scythe` ] },

@@ -1,3 +1,6 @@
+// POTCALC-V1: refresh trigger — do not remove
+
+
 $(function () {
 
 	$('#search').html(

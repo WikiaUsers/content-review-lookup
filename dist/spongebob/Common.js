@@ -11,7 +11,6 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-    'PinkPugPrincess': ['assistant'],
     'SpongeBot678': ['assistant'],
     'SpongeTron D': ['discord'],
     'WoofWoofGam3r': ['discord']

@@ -1,10 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   setTimeout(function() {
     const container = document.querySelector(".resizable-container");
-    if (!container) {
-      console.warn("Container .resizable-container not found!");
-      return;
-    }
 
     const newDiv = document.createElement("div");
     newDiv.innerHTML = `
@@ -124,5 +120,5 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
 
     container.appendChild(newDiv);
-  }, 500);
+  }, 1000);
 });

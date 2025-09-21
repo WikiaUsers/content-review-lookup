@@ -292,6 +292,38 @@ body.page-Message_Wall_Lexzyrot {
     border-radius: 4px;                    / Rounded corners /
 }
 
+.page-User_Lotux_Eternum,
+.page-User_talk_Lotux_Eternum,
+.page-Special_Contributions_Lotux_Eternum,
+.page-Special_UserProfileActivity_Lotux_Eternum,
+.page-User_blog_Lotux_Eternum,
+.page-Message_Wall_Lotux_Eternum {
+	#userProfileApp {
+        background:linear-gradient(
+            rgba(0, 0, 0, 0.11),
+            rgba(0, 0, 0)
+        ), url("https://static.wikia.nocookie.net/forsaken2024/images/5/5c/Lotcuttaperfade.webp/revision/latest?cb=20250915193130");
+    	padding: 25px;
+    	background-size: cover;
+	}
+}
+
+.page-User_Rei_dotjpeg,
+.page-User_talk_Rei_dotjpeg,
+.page-Special_Contributions_Rei_dotjpeg,
+.page-Special_UserProfileActivity_Rei_dotjpeg,
+.page-User_blog_Rei_dotjpeg,
+.page-Message_Wall_Rei_dotjpeg{
+	#userProfileApp {
+        background:linear-gradient(
+            rgba(0, 0, 0, 0.11),
+            rgba(0, 0, 0)
+        ), url("https://static.wikia.nocookie.net/forsaken2024/images/1/10/Smthimportentidkorlikewow.webp/revision/latest?cb=20250915193206");
+    	padding: 25px;
+    	background-size: cover;
+	}
+}
+
 /* Active/selected tab styling */
 .user-identity-headertabs .wds-tabstab.wds-is-current {
     background-color: #111 !important;     / Slightly lighter black /

@@ -60,3 +60,46 @@ $(function() {
 });
  
 /* End of the {{USERNAME}} replacement */
+
+// Highlight sysops (Administrators) dynamically
+mw.loader.using('mediawiki.api').then(function() {
+    const api = new mw.Api();
+    const checkedUsers = {};
+
+    function markAdmins($container) {
+        $container.find('.mw-userlink').each(function() {
+            const $link = $(this);
+            const user = $link.text();
+
+            // Already checked this user?
+            if (checkedUsers[user]) {
+                if (checkedUsers[user] === 'sysop') {
+                    $link.addClass('user-admin');
+                }
+                return;
+            }
+
+            // Query MediaWiki API once per unique user
+            api.get({
+                action: 'query',
+                list: 'users',
+                ususers: user,
+                usprop: 'groups'
+            }).done(function(data) {
+                const groups = data?.query?.users?.[0]?.groups || [];
+                if (groups.includes('sysop')) {
+                    checkedUsers[user] = 'sysop';
+                    $link.addClass('user-admin');
+                } else {
+                    checkedUsers[user] = 'other';
+                }
+            });
+        });
+    }
+
+    // Run on initial load
+    markAdmins($(document));
+
+    // Run again when new content loads (diffs, RC, history, etc.)
+    mw.hook('wikipage.content').add(markAdmins);
+});
