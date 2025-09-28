@@ -276,4 +276,96 @@ function registerCollapsibleListeners() {
     }
 }
 
+/******************/
+/* Dynamic levels */
+/******************/
+
+registerEffectLevelDropdowns();
+function registerEffectLevelDropdowns() {
+  var bound = new WeakSet();
+
+  function parseMaxLevel(th) {
+    for (var i = 0; i < th.classList.length; i++) {
+      var m = th.classList[i].match(/^maxLevel-(\d+)$/);
+      if (m) return parseInt(m[1], 10);
+    }
+    return null;
+  }
+
+  function setDisplay(el, show) {
+    if (show) {
+      el.style.display = 'revert';
+      if (el.style.display === '') el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function showLevelInTable(table, level) {
+    var levelElems = table.querySelectorAll('[class*="level-"]');
+    levelElems.forEach(function (el) {
+      var nums = Array.from(el.classList)
+        .map(function (c) { return c.startsWith('level-') ? parseInt(c.slice(6), 10) : NaN; })
+        .filter(function (n) { return Number.isInteger(n); });
+      if (nums.length === 0) return;
+      setDisplay(el, nums.includes(level));
+    });
+  }
+
+  function buildDropdown(max, onChange) {
+    var wrap = document.createElement('span');
+    wrap.style.marginLeft = '0.5em';
+    var label = document.createElement('label');
+    label.textContent = 'Level: ';
+    label.style.fontWeight = 'normal';
+    label.style.marginRight = '0.25em';
+    var sel = document.createElement('select');
+    for (var i = max; i >= 1; i--) {
+      var opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      sel.appendChild(opt);
+    }
+    sel.value = String(max);
+    sel.addEventListener('change', function () { onChange(parseInt(sel.value, 10)); });
+    wrap.appendChild(label);
+    wrap.appendChild(sel);
+    return { wrap: wrap, sel: sel };
+  }
+
+  function bind(th) {
+    if (bound.has(th)) return;
+    var max = parseMaxLevel(th);
+    if (!max) return;
+    var table = th.closest('.infobox-subtable') || th.closest('table') || th.parentElement;
+    if (!table) return;
+    var built = buildDropdown(max, function (lvl) { showLevelInTable(table, lvl); });
+    th.appendChild(built.wrap);
+    showLevelInTable(table, max);
+    bound.add(th);
+  }
+
+  function scan() {
+    document.querySelectorAll('th.effectLevel').forEach(bind);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scan);
+  } else {
+    scan();
+  }
+
+  if ('MutationObserver' in window) {
+    var mo = new MutationObserver(scan);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+  } else {
+    var tries = 0;
+    var id = setInterval(function () {
+      scan();
+      if (++tries > 20) clearInterval(id);
+    }, 250);
+  }
+}
+
+
 console.log("END of Common.JS");

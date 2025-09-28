@@ -1,10 +1,63 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-mw.hook('wikipage.content').add(function() {
-  if (document.querySelector('.screamer-corner-icon')) {
-    document.body.classList.add('has-corner-icon');
-  }
-});
+(function() {
+    function initializeScreamerIcon() {
+        const iconContainer = document.querySelector('.screamer-corner-icon');
+        if (!iconContainer) {
+            return;
+        }
+
+        let attempts = 0;
+        const maxAttempts = 15;
+        const checkInterval = 100;
+
+        const waitForLayout = setInterval(function() {
+            const mainContentArea = document.querySelector('.page__main');
+            const fandomHeader = document.querySelector('.fandom-community-header');
+            
+            if (mainContentArea && fandomHeader) {
+                clearInterval(waitForLayout);
+
+                const pageHeader = mainContentArea.querySelector('.page-header');
+
+                const finalTopPosition = fandomHeader.getBoundingClientRect().bottom + 20;
+                const finalRightPosition = window.innerWidth - mainContentArea.getBoundingClientRect().right + 15;
+
+                iconContainer.style.top = finalTopPosition + 'px';
+                iconContainer.style.right = finalRightPosition + 'px';
+                
+                const iconImages = iconContainer.querySelectorAll('img');
+                iconImages.forEach(function(img) {
+                    img.style.width = '100%';
+                    img.style.height = 'auto';
+                });
+                
+                if (pageHeader) {
+                    const isCategorized = pageHeader.querySelector('.page-header__categories-container');
+                    if (!isCategorized) {
+                        const spacer = document.createElement('div');
+                        spacer.style.height = '50px';
+                        pageHeader.prepend(spacer);
+                    }
+                }
+
+                iconContainer.style.display = 'block';
+
+            } else {
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    clearInterval(waitForLayout);
+                }
+            }
+        }, checkInterval);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeScreamerIcon);
+    } else {
+        initializeScreamerIcon();
+    }
+})();
 
 /* vehicle viewer */
 

@@ -39,8 +39,9 @@ mw.loader.using('mediawiki.api', function() {
 		) return;
  
 		event.preventDefault();
- 
-		var messages, page;
+			
+		var blockerUsername = mw.config.get('wgUserName');
+		var page = $('input[name="wpTarget"]').val();
  
 		var durationBox = $('#mw-input-wpExpiry .oo-ui-inputWidget-input'),
 			durationDropdown = $('#mw-input-wpExpiry .oo-ui-dropdownWidget-handle .oo-ui-labelElement-label');
@@ -53,14 +54,11 @@ mw.loader.using('mediawiki.api', function() {
 				i18n.msg('blockreason').plain(), 
 				reasonDropdown.text() + (reasonBox.val() ? ': ' + reasonBox.val() : '')
 			);
-			
-			var blockerUsername = mw.config.get('wgUserName');
-
-		messages = config.message
+ 
+		var messages = config.message
 			.replace('$1', blockmessage)
 			.replace('$2', duration)
 			.replace('$3', blockerUsername);
-		page = $('input#ooui-php-1').val();
  
 		if (useTalk) {
 			api.newSection('User_talk:' + page, config.title, messages).then(callback);

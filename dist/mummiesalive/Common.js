@@ -55,3 +55,15 @@ $(function() {
     return false;
   });
 });
+
+$(function () {
+  // Add Random Article button if it doesn't exist
+  if ($('#random-article-button').length === 0) {
+    $('#nav-container').prepend('<div id="random-article-button" title="Random Article"></div>');
+  }
+
+  // Click → go to a random article
+  $('#random-article-button').on('click', function () {
+    window.location.href = '/wiki/Special:Random';
+  });
+});

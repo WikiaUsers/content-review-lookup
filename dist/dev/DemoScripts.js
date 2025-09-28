@@ -129,6 +129,11 @@
             scripts: 'MediaWiki:DataTables.js'
         },
 
+        DigitScroller: {
+            page: 'DigitScroller',
+            scripts: 'MediaWiki:DigitScroller.js'
+        },
+
         DiscordBanner: {
             page: 'DiscordBanner',
             scripts: 'MediaWiki:DiscordBanner.js',
@@ -788,6 +793,12 @@
             page: 'UWStyle',
             styles: 'MediaWiki:UWStyle.css'
         },
+        
+        ScratchEmbedded: {
+            page: 'ScratchEmbedded',
+            scripts: 'MediaWiki:ScratchEmbedded.js'
+        },
+        
 
         /* // Disabled in Favour of ProfileTags
         UserTags: {

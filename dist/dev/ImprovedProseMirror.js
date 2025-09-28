@@ -22,7 +22,6 @@
 	if (((window.dev || (window.dev = {})).IPM || (window.dev.IPM = {}))._loaded) {return;}
 	window.dev.IPM._loaded = true;
 	
-	let localApi;
 	const config = mw.config.get([
 		'wgArticlePath',
 		'wgNamespaceNumber',
@@ -32,6 +31,8 @@
 		'articleHasCommentingEnabled',
 		'profileIsMessageWallPage',
 	]);
+	
+	let localApi;
 	
 	const IPM = {
 		init() {
@@ -57,13 +58,13 @@
 		
 		// Adds link suggest functionality to message walls and article comment section text editors
 		linkSuggest() {
+			const URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // taken from Fandom's DeleteCommentModal.js module - links will be stripped after posting message if the url doesn't match this!
+			const WIKILINK_REGEX = /\[\[([^\[\]]*)\]?\]?$/;
+			const EXT_LINK_REGEX = /\[([^\[\]]+)\]$/;
+			
 			let search = {};
 			let lastRequest = {};
 			let resultCount = 0;
-			
-			const WIKILINK_REGEX = /\[\[([^\[\]]*)\]?\]?$/;
-			const EXT_LINK_REGEX = /\[([^\[\]]+)\]$/;
-			const URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // taken from Fandom's DeleteCommentModal.js module - links will be stripped after posting message if the url doesn't match this!
 			
 			const body = $(document.body);
 			const wrapper = $(
@@ -80,7 +81,7 @@
 			body.append(wrapper);
 			
 			const methods = {
-				initEvents() {
+				initListeners() {
 					const checkMessageDebounced = mw.util.debounce(methods.checkMessage, 250);
 					const observer = new MutationObserver(checkMessageDebounced);
 					const onSelectOption = () => {
@@ -150,13 +151,13 @@
 							case 'ArrowRight':
 								checkMessageDebounced();
 						}
-					}, true);
+					});
 					
 					suggestBox.on('mousemove.IPM mouseleave.IPM', '.IPM-ui-linkSuggest-selectable', methods.handleOOUI);
 					
 					$(window).on('resize.IPM transitionend.IPM', () => {
 						if (wrapper.css('display') !== 'none') {
-							let caret = IPM.getCaret();
+							const caret = IPM.getCaret();
 							if (caret) {
 								wrapper.css({
 									left: caret.x,
@@ -176,9 +177,9 @@
 				
 				checkMessage() {
 					methods.closeSuggestions();
-					let caret = IPM.getCaret();
+					const caret = IPM.getCaret();
 					if (caret && caret.node.parentNode.closest('.ProseMirror') && !caret.node.parentNode.closest('pre')) {
-						let rawStr = caret.node.data.slice(0, caret.offset);
+						const rawStr = caret.node.data.slice(0, caret.offset);
 						let match;
 						if ((match = WIKILINK_REGEX.exec(rawStr))) {
 							wrapper.css({
@@ -212,15 +213,17 @@
 					}
 				},
 				
-				getPages(prefix, interwikiMode, apiEndpoint, articlePath, offset, retries = 0) {
+				getPages(prefix, interwikiMode, apiEndpoint, articlePath, offset = 0, retries = 0) {
 					while (prefix.startsWith(':')) {
 						prefix = prefix.replace(':', '');
 					}
+					
 					if (!prefix) {
 						methods.appendMessage(`Search for ${(search.type === 'image' ? 'an image' : 'a page')+(articlePath ? ` at ${articlePath.replace('$1', '...')}` : '...')}`);
 						return Promise.resolve();
 					}
-					let api = apiEndpoint ? new mw.ForeignApi(apiEndpoint, {
+					
+					const api = apiEndpoint ? new mw.ForeignApi(apiEndpoint, {
 						parameters: {
 							uselang: config.wgUserLanguage,
 							errorformat: 'plaintext',
@@ -228,6 +231,7 @@
 						},
 						anonymous: true,
 					}) : localApi;
+					
 					const onRejected = (code, data) => {
 						if (code === 'http') {
 							if (data && (data.error || data.errors)) {
@@ -248,6 +252,7 @@
 							return methods.appendMessage('Bad API response: invalid or missing error data.');
 						}
 					};
+					
 					let match = prefix.match(/^(.+?):/);
 					if (match && interwikiMode) {
 						let newPrefix = prefix.replace(/^.+?:/, '');
@@ -263,6 +268,7 @@
 							if (!interwiki) {
 								return methods.getPages(prefix, false, apiEndpoint, articlePath);
 							}
+							
 							let wikiUrl;
 							try {
 								wikiUrl = new URL(interwiki.url);
@@ -283,6 +289,7 @@
 								// same as above
 								wikiUrl.host = 'www.semantic-mediawiki.org';
 							}
+							
 							let apiUrl;
 							let altApiUrls = [];
 							if (typeof interwiki.api === 'string') {
@@ -326,7 +333,7 @@
 									new URL(wikiUrl.origin+methods.matchReplace(wikiUrl.pathname, [/\/wiki\/.*/, /.*/], '/api.php')),
 								];
 							}
-							if (!apiUrl) {return;}
+							
 							let attempt = methods.getPages(newPrefix, true, apiUrl.href, wikiUrl.href);
 							altApiUrls.forEach((altApiUrl) => {
 								attempt = attempt.catch((errCode, errData) => {
@@ -347,9 +354,6 @@
 					} else if (match && search.type === 'image') {
 						return methods.getPages(prefix.replace(/^.+?:/, ''), false, apiEndpoint, articlePath);
 					} else if (search.type === 'link') {
-						if (articlePath) {
-							methods.appendMessage(articlePath.replace('$1', '...'));
-						}
 						(lastRequest = api.get({
 							list: 'prefixsearch',
 							pssearch: prefix.toWellFormed ? prefix.toWellFormed() : prefix.replace(/\p{Cs}/gu, '\ufffd'), // jshint ignore: line
@@ -357,6 +361,9 @@
 							maxage: '60',
 						})).then((data) => {
 							if (data.query && data.query.prefixsearch instanceof Array && data.query.prefixsearch.length) {
+								if (articlePath) {
+									methods.appendMessage(articlePath.replace('$1', '...'));
+								}
 								return methods.buildSuggestions(data.query.prefixsearch, articlePath);
 							} else {
 								return methods.appendMessage(`No results found for "${prefix}".`);
@@ -364,26 +371,27 @@
 						}, onRejected);
 						return lastRequest;
 					} else if (search.type === 'image') {
-						if (articlePath && !offset) {
-							methods.appendMessage(articlePath.replace('$1', '...'));
-						}
 						(lastRequest = api.get({
 							generator: 'prefixsearch',
 							gpssearch: prefix.toWellFormed ? prefix.toWellFormed() : prefix.replace(/\p{Cs}/gu, '\ufffd'), // jshint ignore: line
 							gpsnamespace: '6',
 							gpslimit: '6',
-							gpsoffset: offset,
+							gpsoffset: offset || undefined,
 							prop: 'imageinfo',
 							iiprop: 'url|mime',
 							maxage: '60',
 						})).then((data) => {
 							if (data.query && data.query.pages instanceof Array && data.query.pages.length) {
+								if (articlePath && !offset) {
+									methods.appendMessage(articlePath.replace('$1', '...'));
+								}
 								methods.buildSuggestions(data.query.pages, articlePath);
 								if (resultCount < 6 && data.continue && typeof data.continue.gpsoffset === 'number' && data.continue.gpsoffset < 36) {
-									if (!Number.isSafeInteger(data.continue.gpsoffset) || offset && data.continue.gpsoffset <= offset) {
-										return methods.appendMessage('Bad API response: invalid continue offset.');
+									if (data.continue.gpsoffset === offset + data.query.pages.length) {
+										return methods.getPages(prefix, false, apiEndpoint, articlePath, data.continue.gpsoffset);
+									} else {
+										return methods.appendMessage('Bad API response: incorrect continue offset.');
 									}
-									return methods.getPages(prefix, false, apiEndpoint, articlePath, data.continue.gpsoffset);
 								} else if (!resultCount) {
 									return methods.appendMessage(`No image results found for "${prefix}".`);
 								}
@@ -421,7 +429,7 @@
 				},
 				
 				handleOOUI(event) {
-					let currentNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0) || null;
+					const currentNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0) || null;
 					let newNode;
 					switch (event.type) {
 						case 'mousemove':
@@ -474,13 +482,14 @@
 					let parentNode = search.node.parentNode;
 					let searchNode = search.node.splitText(search.offsets[0]);
 					searchNode.splitText(search.offsets[1]);
+					
 					if (search.source === 'wiki') {
 						let optionNode = suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0);
 						if (!url) {
 							url = optionNode.dataset.url;
 						}
 						if (!label) {
-							let match = searchNode.data.match(/\[\[.*?\|(.*)\]?\]?$/);
+							let match = searchNode.data.match(/\[\[[^\[\]]*?\|([^\[\]]*)\]?\]?$/);
 							if (!match) {
 								label = optionNode.innerText;
 							} else if (!match[1]) {
@@ -499,12 +508,14 @@
 							}
 						}
 					}
+					
 					let linkNode = document.createElement('a');
 					linkNode.href = url;
 					linkNode.append(label);
 					searchNode.replaceWith(linkNode);
 					parentNode.normalize();
-					// normalize element hierarchy to ol/ul>li>p>a>em>strong>span
+					
+					// normalize element hierarchy to ol/ul > li > p > a > em > strong > span
 					while (parentNode.matches('a, em, strong, span')) {
 						if (!parentNode.matches('span')) {
 							parentNode.childNodes.forEach((node) => {
@@ -520,13 +531,14 @@
 						parentNode = parentNode.parentNode;
 						oldParent.remove();
 					}
-					getSelection().setPosition(linkNode, linkNode.childNodes.length); // move caret to the end of the new link node
-					parentNode.append('\ufeff'); // add invisible character so prosemirror doesn't strip the link
+					
+					getSelection().setPosition(linkNode, linkNode.childNodes.length); // move the caret to the end of the new link node
+					parentNode.append('\ufeff'); // add an invisible character so prosemirror doesn't strip the link
 					methods.closeSuggestions();
 					
 					setTimeout(() => {
 						// let prosemirror do stuff first
-						parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1)); // remove invisible character
+						parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1)); // remove the invisible character
 					});
 				},
 				
@@ -535,9 +547,11 @@
 					let searchNode = search.node.splitText(search.offsets[0]);
 					searchNode.splitText(search.offsets[1]);
 					let inputNode = parentNode.closest('.rich-text-editor__wrapper').querySelector('#rich-text-editor__image-input');
+					
 					if (search.source === 'wiki' && !url) {
 						url = suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0).dataset.url;
 					}
+					
 					searchNode.remove();
 					methods.closeSuggestions();
 					
@@ -563,7 +577,7 @@
 				},
 			};
 			
-			methods.initEvents();
+			methods.initListeners();
 		},
 		
 		customInsert() {

@@ -71,22 +71,35 @@ UserTagsJS.modules.metafilter = {
 UserTagsJS.modules.custom = {
 	/* 'user': [groups] */
 	// Current Staff: Edited.
-	'Standoffiish': ['head-of-wiki','content-moderator'],
+	// Bureaucrats
+	'MP1Player': ['head-of-wiki','bureaucrat','Wiki-Contributor'],
 	'3meraldKv': ['founder'],
-	// Retired Wiki Staff
+	// Administrators
+	'HaHaBlah': ['content-administrator'],
+	'HolyMoa': ['content-administrator','discussions-administrator'],
+	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
+	// Moderators
+	// Content Moderators
+	'RyeThePies': ['content-moderator','Wiki-Contributor'],
+	'Kaisergluck': ['content-moderator','Wiki-Contributor'],
+	'Dxrknrg': ['content-moderator'],
+	'SuperGlitchyTheo': ['content-moderator','Wiki-Contributor'],
+	'Quinncm': ['content-moderator','Wiki-Contributor'],
+	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
+	'Mysþıc': ['content-moderator','Wiki-Contributor'],
+	// Discussions Moderators
+	'YugoMafia': ['threadmoderator'],
+	'Noidtouse': ['threadmoderator'],
+	'Kaiyie': ['threadmoderator'],
+	'The Shashophille': ['threadmoderator'],
+	// Retired Wiki Staff 
 	'imnotacan': ['retired-staff'],
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Contributors
-	'Dxrknrg': ['Wiki-Contributor'],
-	'SuperGlitchyTheo': ['Wiki-Contributor'],
 	'Sorayaann': ['Wiki-Contributor'],
-	'Quinncm': ['Wiki-Contributor'],
-	'Zarc.0724': ['Wiki-Contributor'],
-	'Mysþıc': ['Wiki-Contributor'],
-	'Antiverta': ['Wiki-Contributor'],
-    'MP1Player': ['Wiki-Contributor'],
     'Silkened': ['Wiki-Contributor'],
+    'Cipherusxzy': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],

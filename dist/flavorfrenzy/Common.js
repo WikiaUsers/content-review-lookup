@@ -45,25 +45,9 @@ $(function () {
     processNavTree();
 });
 
-$(function() {
-  if ($('#WikiaRail .recent-activity').length) {
-    // For each activity item, add an edit magnifier
-    $('#WikiaRail .recent-activity li').each(function() {
-      var $li = $(this);
-      var $link = $li.find('.mw-rcactivity-title a').first();
-      var href = $link.attr('href');
-      if (!href) return;
-
-      // Create magnifier icon
-      var $loupe = $('<a>', {
-        class: 'rc-loupe-icon',
-        href: href + '?action=edit',
-        title: 'Edit this page',
-        target: '_blank'
-      });
-
-      // Insert after the title link
-      $link.after($loupe);
-    });
-  }
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ListFiles/code.js',
+    ]
 });

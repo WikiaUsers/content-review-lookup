@@ -29,3 +29,10 @@ UserTagsJS.modules.metafilter = false;
 //badge leaderboard url fix
 const leaderboard = "?safemode=1";
 $('.data-details.ranking a').attr("href", "/wiki/Special:Leaderboard" + leaderboard);
+
+// Fix odd browser behavior when clicking the discussion link on the community navigation
+if (window.location.pathname === '/wiki/F' && !window.location.search.includes('redirect=no'))
+{
+	document.querySelector('.page__main').textContent = '';
+	window.location.pathname = '/f';
+}

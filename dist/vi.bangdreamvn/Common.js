@@ -94,7 +94,7 @@ window.AddRailModule = [
 /* Discord Banner */
 window.DiscordBannerSettings = {
     bannerStyle: '3',
-    inviteLink: 'TYxrUXPAgx',
+    inviteLink: 'RYt9JwWbfq',
     prependToRail: false
 };
 

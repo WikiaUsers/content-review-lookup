@@ -1,3 +1,3 @@
 $('.page-header__categories').append(
-	$('<a/>').addClass('css-button').text('Toggle CSS')
+	$('<a/>').addClass('theme-toggler').text('Toggle T:CSS')
 );

@@ -4,7 +4,13 @@
 /* ========== List Content Filter ========== */
 
 $(function() {
-	function initializeListContentFilter() {
+	function initializeListContentFilter($content) {
+		// Prevent double initialization
+		if ($content.data("listContentFilterInitialized")) {
+			return;
+		}
+		$content.data("listContentFilterInitialized", true);
+		
 		// Create and append filter search input box
 		var searchFilterInput = $('<input type="text" placeholder="Filter search box" class="filter-search-box">');
 		$('#search-filter').append(searchFilterInput);
@@ -28,7 +34,7 @@ $(function() {
 		}
 		
 		// Debounce filterSelection, or delay animation
-		var debouncedFilterSelection = debounce(filterSelection, 300);
+		var debouncedFilterSelection = debounce(filterSelection, 500);
 		
 		// Check initial button states
 		$(".btn-filter-toggle-checked").each(function() {
@@ -204,5 +210,5 @@ $(function() {
 	}
 	
 	// Initialize the function
-	initializeListContentFilter();
+	mw.hook("wikipage.content").add(initializeListContentFilter);
 });

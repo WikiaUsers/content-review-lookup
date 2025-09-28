@@ -725,7 +725,7 @@
         HOOK_NAME: "dev.massEdit",
         STD_INTERVAL: 1500,
         BOT_INTERVAL: 750,
-        CACHE_VERSION: 7,
+        CACHE_VERSION: 8,
       }),
     }
   });
@@ -3158,6 +3158,10 @@
   main.displayModal = function () {
     if (this.modal.modal != null) {
       this.modal.modal.show();
+
+      // Wait for modal to load & show, then reset button visibility to default
+      this.modal.modal._loading.then(
+        this.toggleModalComponentsDisable.bind(this, "partial", false));
       return;
     }
 

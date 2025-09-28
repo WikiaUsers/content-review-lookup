@@ -19,6 +19,15 @@ $(function(){
 	});
 });
 
+// Countdown Timer Script
+/* Imports */
+importArticles({
+    type: 'script',
+    articles: [
+        "u:dev:MediaWiki:Countdown/code.js"  // Countdown timer
+    ]
+});
+
 // Configuration for Pathway application form
 window.adoptInternational = {
     unsupportedLanguages: window.communityRequestsUnsupportedLangs,

@@ -5,7 +5,7 @@ const introPages = {
     duration: 2700
   },
   'John_Doe': {
-    src: 'https://static.wikia.nocookie.net/forsaken2024/images/4/4a/John_Doe_intro.gif',
+    src: 'https://static.wikia.nocookie.net/forsaken2024/images/d/da/JohnDoeNewIntro.gif/revision/latest?cb=20250921213306',
     sound: 'https://static.wikia.nocookie.net/forsaken2024/images/e/ed/Mr-jogn-doe-final.ogg',
     duration: 4700
   },

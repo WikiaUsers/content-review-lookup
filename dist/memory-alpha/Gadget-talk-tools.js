@@ -1,19 +1,27 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const version = '0.4.27 (beta)';
+	if (window.TalkToolsLoaded){
+		return;
+	}
+	window.TalkToolsLoaded = true;
+	const version = '0.4.29 (beta)';
 	const api = new mw.Api();
 	const notArchived = !$('#archivedPage').length; // {{archived}}
-	const curAction = mw.config.get('wgAction');
-	const ns = mw.config.get('wgNamespaceNumber');
-	const editable = mw.config.get('wgIsProbablyEditable');
-	const pgtitle = mw.config.get('wgTitle');
-	const pgname = mw.config.get('wgPageName');
-	const pgid = mw.config.get('wgArticleId');
-	const sigNamespaces = [4, 110]; // TODO: replace with mw.config.get('wgExtraSignatureNamespaces'); also look into including ns:112
-	const wrongNamespace = (ns % 2 === 0 && sigNamespaces.indexOf(ns) === -1) || ns === -1;
+	const config = mw.config.get([
+		'wgAction',
+		'wgArticleId',
+		'wgCurRevisionId',
+		'wgExtraSignatureNamespaces',
+		'wgIsProbablyEditable',
+		'wgNamespaceNumber',
+		'wgPageName',
+		'wgTitle',
+	]);
+	const sigNamespaces = [4, 110]; // TODO: replace with `config.wgExtraSignatureNamespaces`; also look into including ns:112
+	const wrongNamespace = (config.wgNamespaceNumber % 2 === 0 && sigNamespaces.indexOf(config.wgNamespaceNumber) === -1) || config.wgNamespaceNumber === -1;
 	const addTopicButton = $('#ca-addsection');
 	const editorID = 'talk-tools-editor-js';
-	let revid = mw.config.get('wgCurRevisionId');
+	let revid = config.wgCurRevisionId;
 	let updatePreview;
 	
 	if (wrongNamespace && !addTopicButton.length){
@@ -72,7 +80,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	];
 	const newSectionLinkSelectors = [
 		'#ca-addsection',
-		`a[title="Special:NewSection/${pgname.replaceAll('_', ' ')}"]`,
+		`a[title="Special:NewSection/${config.wgPageName.replaceAll('_', ' ')}"]`,
 	];
 	const messages = [
 		'custom-talk-tools-reply-button',
@@ -100,20 +108,28 @@ mw.loader.using(['mediawiki.api'], () => {
 	api.loadMessagesIfMissing(messages).done(() => {
 		addStats();
 		$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
-		if (!pgid && params.get('redlink') && sigNamespaces.indexOf(ns) === -1){
+		if (
+			!config.wgArticleId
+			&& params.get('redlink')
+			&& sigNamespaces.indexOf(config.wgNamespaceNumber) === -1
+		){
 			$('#editform').css('display', 'none');
 		}
-		if (curAction === 'edit' && params.get('section') === 'new'){
+		if (config.wgAction === 'edit' && params.get('section') === 'new'){
 			$('#editform').css('display', 'none');
 			addTopic();
 		}
-		if (curAction === 'view' && notArchived && editable){
+		if (
+			config.wgAction === 'view'
+			&& notArchived
+			&& config.wgIsProbablyEditable
+		){
 			$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 		}
 	});
 	
 	function addTopic(addTopicEvent){
-		if ((curAction === 'view' || $('#editform').css('display') === 'none') && addTopicEvent){
+		if ((config.wgAction === 'view' || $('#editform').css('display') === 'none') && addTopicEvent){
 			addTopicEvent.preventDefault();
 		} else if (addTopicEvent){
 			return;
@@ -124,7 +140,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			'id': editorID,
 			'on': {'submit': formTopicEvent => formTopicEvent.preventDefault()},
 		}).append($('<label>', {
-			'text': mw.message('custom-talk-tools-version', version).text(),
+			'text': mw.message('custom-talk-tools-version', version).parse(),
 		})).append($('<h2>', {
 			'id': 'newtopic-sectiontitle-js',
 		}).append($('<input>', {
@@ -176,7 +192,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			const parseParams = {
 				'action': 'parse',
-				'title': pgname,
+				'title': config.wgPageName,
 				'text': comment,
 				'prop': 'text',
 				'parsoid': true,
@@ -243,7 +259,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		
 		const editParams = {
 			'action': 'edit',
-			'title': pgname,
+			'title': config.wgPageName,
 			'section': 'new',
 			'sectiontitle': sectionTitle,
 			'text': comment,
@@ -264,7 +280,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			if (data.edit){
 				const parseParams = {
 					'action': 'parse',
-					'page': pgname,
+					'page': config.wgPageName,
 					'prop': 'text',
 					// 'parsoid': 1,
 				};
@@ -272,7 +288,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				revid = data.edit.newrevid;
 				api.get(parseParams).done(output => {
 					let parsedText;
-					if (pgid && curAction === 'view'){
+					if (config.wgArticleId && config.wgAction === 'view'){
 						parsedText = $(output.parse.text['*']).contents();
 						$('#mw-content-text > .mw-parser-output').html(parsedText);
 					} else {
@@ -382,7 +398,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		const dd = $('<dd>').append($('<form>', {
 			'on': {'submit': formReplyEvent => formReplyEvent.preventDefault()},
 		}).append($('<label>', {
-			'text': mw.message('custom-talk-tools-version', version).text(),
+			'text': mw.message('custom-talk-tools-version', version).parse(),
 		})).append($('<textarea>', {
 			'rows': 5,
 			'placeholder': mw.message(
@@ -435,7 +451,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			const parseParams = {
 				'action': 'parse',
-				'title': pgname,
+				'title': config.wgPageName,
 				'text': comment,
 				'revid': revid,
 				'prop': 'text',
@@ -510,9 +526,9 @@ mw.loader.using(['mediawiki.api'], () => {
 		
 		const fetchParams = {
 			'generator': 'allpages',
-			'gapfrom': pgtitle,
-			'gapto': pgtitle,
-			'gapnamespace': ns,
+			'gapfrom': config.wgTitle,
+			'gapto': config.wgTitle,
+			'gapnamespace': config.wgNamespaceNumber,
 			'prop': 'revisions',
 			'rvprop': 'content',
 			'rvslots': 'main',
@@ -554,7 +570,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			
 			const editParams = {
 				'action': 'edit',
-				'title': pgname,
+				'title': config.wgPageName,
 				'text': finalText,
 				'summary': editSummary,
 				'tags': 'js-reply',
@@ -572,7 +588,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				if (data.edit){
 					const parseParams = {
 						'action': 'parse',
-						'page': pgname,
+						'page': config.wgPageName,
 						'prop': 'text',
 						// 'parsoid': 1,
 					};
