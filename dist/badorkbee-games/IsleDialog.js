@@ -1,21 +1,21 @@
-// IsleDialogue.js made by Cxsnls
+// IsleDialog.js made by Cxsnls
 // This script replicates the in-game dialogue format.
 
 // Settings
-var TYPEWRITER_CHARACTER_DELAY = 35; // Time in milliseconds which the typewriter must wait before writing the next character
-var TWEEN_OPACITY_DELAY = 5; // Time in milliseconds which the tween must wait before moving on to the next opacity value
+let TYPEWRITER_CHARACTER_DELAY = 35; // Time in milliseconds which the typewriter must wait before writing the next character
+let TWEEN_OPACITY_DELAY = 5; // Time in milliseconds which the tween must wait before moving on to the next opacity value
 
-var RANDOM_REGEX = new RegExp("{{RANDOM:(.+)}}", "gm"); // Regular expression used to capture random expressions
-var PLACEHOLDERS = { // Dictionary of placeholders
+let RANDOM_REGEX = new RegExp("{{RANDOM:(.+)}}", "gm"); // Regular expression used to capture random expressions
+let PLACEHOLDERS = { // Dictionary of placeholders
     ["Random"]: RANDOM_REGEX
 };
 
 // Variables
 
-var dialogues = []; // Dialogues (number, dialogue node)
-var dialogueInfo = {}; // Dialogue info
-var dialogueElements = {}; // Dialogue elements (questionContainer, question, next, reset, answerContainer, answer)
-var dialogueStatuses = {}; // Dialogue status (current question node)
+let dialogues = []; // Dialogues (number, dialogue node)
+let dialogueInfo = {}; // Dialogue info
+let dialogueElements = {}; // Dialogue elements (questionContainer, question, next, reset, answerContainer, answer)
+let dialogueStatuses = {}; // Dialogue status (current question node)
 
 // Effects
 
@@ -23,10 +23,10 @@ var dialogueStatuses = {}; // Dialogue status (current question node)
 // object (node): target
 // string (string): string
 function typewriter(object, string) { //
-    var currentString = "";
+    let currentString = "";
     for (let currentCharacterId = 0; currentCharacterId < string.length; currentCharacterId++) { // For each character in the string,
         setTimeout(function () {
-            var currentCharacter = string.charAt(currentCharacterId);
+            let currentCharacter = string.charAt(currentCharacterId);
             currentString += currentCharacter;
             object.innerText = currentString;
         }, TYPEWRITER_CHARACTER_DELAY * currentCharacterId);
@@ -60,15 +60,15 @@ function reportError(error, dialogueID, dialogue) {
     console.warn(dialogue);
 
     // Terminate dialogue
-    var elements = dialogueElements[dialogueID];
-    var resetElement = elements.reset; // Get reset button
+    let elements = dialogueElements[dialogueID];
+    let resetElement = elements.reset; // Get reset button
     resetElement.style.display = ""; // Display the reset button, making it possible to restart the dialogue
 }
 
 // Processes a string and inserts required elements
 // string (string): target
 function processString(string) {
-    var sectionedString = string.split("|"); // Split the string into sections
+    let sectionedString = string.split("|"); // Split the string into sections
 
     for (let placeholder in PLACEHOLDERS) {
         let placeholderRegex = PLACEHOLDERS[placeholder]; // Get regex for placeholder
@@ -104,9 +104,9 @@ function processString(string) {
 // action (dictionary): details about action
 function handleActions(dialogueID, dialogue, actions) {
     // Get information about dialogue elements
-    var elements = dialogueElements[dialogueID];
-    var answerContainerElement = elements.answerContainer;
-    var resetElement = elements.reset;
+    let elements = dialogueElements[dialogueID];
+    let answerContainerElement = elements.answerContainer;
+    let resetElement = elements.reset;
 
     for (let action of actions) {
         if (action.action == "End") { // If the action is End,
@@ -142,9 +142,9 @@ function handleActions(dialogueID, dialogue, actions) {
 // resetElement (node): node of class reset, which is a button used for resetting the dialogue
 function displayAnswers(dialogueID, dialogue, currentAnswers) {
     // Get information about dialogue elements
-    var elements = dialogueElements[dialogueID];
-    var answerContainerElement = elements.answerContainer;
-    var resetElement = elements.reset;
+    let elements = dialogueElements[dialogueID];
+    let answerContainerElement = elements.answerContainer;
+    let resetElement = elements.reset;
 
     clearDescendants(answerContainerElement); // Clear answers from previous runs
 
@@ -203,23 +203,23 @@ function displayQuestion(questionElement, question, currentQuestionSection) {
 // dialogueID (integer): dialogue identification number
 // dialogue (node): node of class dialogue
 function updateDialogue(dialogueID, dialogue) {
-    var currentDialogueInfo = dialogueInfo[dialogueID]; // Get dialogue info
-    var dialogueStatus = dialogueStatuses[dialogueID]; // Get dialogue status
+    let currentDialogueInfo = dialogueInfo[dialogueID]; // Get dialogue info
+    let dialogueStatus = dialogueStatuses[dialogueID]; // Get dialogue status
 
     // Get information about dialogue elements
-    var elements = dialogueElements[dialogueID];
-    var questionContainerElement = elements.questionContainer;
-    var questionElement = elements.question;
-    var altTextElement = elements.altText;
-    var nextElement = elements.next;
+    let elements = dialogueElements[dialogueID];
+    let questionContainerElement = elements.questionContainer;
+    let questionElement = elements.question;
+    let altTextElement = elements.altText;
+    let nextElement = elements.next;
 
     if (dialogueStatus in currentDialogueInfo) { // If there is information about the current status,
         // Get information about the current interaction
-        var currentInteraction = currentDialogueInfo[dialogueStatus];
-        var currentQuestion = currentInteraction.question;
-        var currentAnswers = currentInteraction.answers;
+        let currentInteraction = currentDialogueInfo[dialogueStatus];
+        let currentQuestion = currentInteraction.question;
+        let currentAnswers = currentInteraction.answers;
 
-        var splitQuestion = processString(currentQuestion); // Split the question into sections
+        let splitQuestion = processString(currentQuestion); // Split the question into sections
         let currentSection = 0; // Define variable for current section
 
         if ("altText" in currentInteraction) { // If the current interaction has any alt text,
@@ -302,17 +302,17 @@ function updateDialogue(dialogueID, dialogue) {
 // dialogue (node): node of class dialogue
 function createDialogue(dialogueID, dialogue) {
     dialogues[dialogueID] = dialogue; // Store dialogue in dialogues
-    var dialogueParameters = dialogue.querySelector(".content");
+    let dialogueParameters = dialogue.querySelector(".content");
     dialogueInfo[dialogueID] = JSON.parse(dialogueParameters.innerText); // Store dialogue information in dialogueInfo
     dialogueStatuses[dialogueID] = "Start"; // Store dialogue status ("Start") in dialogueStatuses
 
     // Get elements of dialogue
-    var questionContainer = dialogue.querySelector(".question-container");
-    var question = questionContainer.querySelector(".question");
-    var reset = questionContainer.querySelector(".reset");
-    var altText = questionContainer.querySelector(".alt-text");
-    var next = questionContainer.querySelector(".next");
-    var answerContainer = dialogue.querySelector(".answer-container");
+    let questionContainer = dialogue.querySelector(".question-container");
+    let question = questionContainer.querySelector(".question");
+    let reset = questionContainer.querySelector(".reset");
+    let altText = questionContainer.querySelector(".alt-text");
+    let next = questionContainer.querySelector(".next");
+    let answerContainer = dialogue.querySelector(".answer-container");
     dialogueElements[dialogueID] = {
         "questionContainer": questionContainer,
         "question": question,
@@ -340,7 +340,7 @@ function createDialogue(dialogueID, dialogue) {
 }
 
 // Business Logic
-var foundDialogues = document.querySelectorAll(".dialogue"); // Find all dialogues on page
+let foundDialogues = document.querySelectorAll(".dialogue"); // Find all dialogues on page
 
 if (foundDialogues.length != 0) { // If there are any dialogues,
     for (let currentDialogueID = 0; currentDialogueID < foundDialogues.length; currentDialogueID++) {

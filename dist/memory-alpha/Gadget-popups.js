@@ -1,1 +1,0 @@
-mw.loader.load('/load.php?mode=articles&only=scripts&articles=u:dev:MediaWiki:LinkPreview/code.js');

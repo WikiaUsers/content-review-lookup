@@ -12,4 +12,7 @@ importArticles({
         'u:dev:MediaWiki:BackToTopButton/code.js',
         'u:dev:MediaWiki:LinkPreview/code.js',
     ]
+})// --- Custom Fanart Slider --- //
+mw.loader.using(['mediawiki.util']).then(function() {
+    importScript('MediaWiki:RSlider.js');
 });

@@ -78,12 +78,12 @@ UserTagsJS.modules.custom = {
 	'HaHaBlah': ['content-administrator'],
 	'HolyMoa': ['content-administrator','discussions-administrator'],
 	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
+	'SuperGlitchyTheo': ['content-administrator','Wiki-Contributor'],
 	// Moderators
 	// Content Moderators
 	'RyeThePies': ['content-moderator','Wiki-Contributor'],
-	'Kaisergluck': ['content-moderator','Wiki-Contributor'],
-	'Dxrknrg': ['content-moderator'],
-	'SuperGlitchyTheo': ['content-moderator','Wiki-Contributor'],
+	'Kaisergluck': ['content-moderator'],
+	'Dxrknrg': ['content-moderator','Wiki-Contributor'],
 	'Quinncm': ['content-moderator','Wiki-Contributor'],
 	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
@@ -100,6 +100,7 @@ UserTagsJS.modules.custom = {
 	'Sorayaann': ['Wiki-Contributor'],
     'Silkened': ['Wiki-Contributor'],
     'Cipherusxzy': ['Wiki-Contributor'],
+    'Therealusman': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],

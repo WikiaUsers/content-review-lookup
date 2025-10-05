@@ -2,14 +2,22 @@
 
 // accurate item names for links
   // [[Pumpkin_placeholder]]
-    // credits: https://community.fandom.com/wiki/Admin_Forum:How_do_you_create_a_page_with_an_underscore_in_the_title%3F
-    // i hope this works :sobe:
+  // please ai pleaseeee
 $(function() {
-    $('a[href*="/Pumpkin_placeholder"]').filter(function () {
-        return /\(\)$/.test($(this).html());
-    }).html(function (index, oldhtml) {
-        return oldhtml.replace(/ +/g, '_'); // Added 'g' for global replacement
-    });
+    // 1. Select the specific <a> element using the CSS selector:
+    //    Selects <a> elements whose 'href' attribute ends with "Pumpkin placeholder"
+    var $link = $('a[href$="Pumpkin placeholder"], a[href$="Pumpkin_placeholder"]');
+
+    // 2. Check if the link was found
+    if ($link.length) {
+        var newText = "Pumpkin_placeholder"; // The desired encoded text
+
+        // 3. Replace the link's inner text (what the user sees)
+        $link.text(newText);
+
+        // 4. Replace the link's 'title' attribute (what appears on hover)
+        $link.attr('title', newText);
+    }
 });
 
 window.MessageBlock = {
@@ -18,8 +26,8 @@ window.MessageBlock = {
 	autocheck : true
 };
 
-//lock comments
-.LockOldComments-locked [class^="ReplyCreate"] {
+//lock comments doesnt seem to work in the slightest im commenting it out
+/* .LockOldComments-locked [class^="ReplyCreate"] {
     display: none;
 }
 
@@ -27,3 +35,4 @@ window.lockOldComments = (window.lockOldComments || {});
 
 window.lockOldComments.limit = 100;
 window.lockOldComments.addNoteAbove = true;
+*/

@@ -72,7 +72,15 @@ mw.hook('wikipage.content').add(function() {
             iShakra = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Шакра_иконка.png?width=32'}),
             iToolr = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Красный.png?width=32'}),
             iToolb = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Синий.png?width=32'}),
-            iTooly = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Желтый.png?width=32'});
+            iTooly = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Желтый.png?width=32'}),
+            iPsalm1 = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Псалмовый_цилиндр.png?width=32'}),
+            iPsalm2 = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Священный_цилиндр.png?width=32'}),
+            
+            iRelicScroll = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Костяной_свиток.png?width=32'}),
+            iRelicWeaver = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Фигурка_Ткача.png?width=32'}),
+            iRelicChoir = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Приказ_для_Хора.png?width=32'}),
+            iRelicArpha = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Рунная_арфа.png?width=32'}),
+            iRelicEgg = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Загадочное_яйцо.png?width=32'});
             
             //иконки умений
             iSkil1 = new HKIcon32x32({iconUrl: 'https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Шёлковое копьё.png?width=32'});
@@ -101,6 +109,8 @@ mw.hook('wikipage.content').add(function() {
         var gTool = L.layerGroup().addTo(map), 
             gSkil = L.layerGroup().addTo(map),
             gSign = L.layerGroup().addTo(map),
+            gPsalm = L.layerGroup().addTo(map),
+            gRelic = L.layerGroup().addTo(map),
         	gBench = L.featureGroup().bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Скамейка (Silksong)" target="_blank">Скамейка</a>').addTo(map),
             gFlea = L.featureGroup().bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Блохи" target="_blank">Блоха</a>').addTo(map),
             gBellw = L.featureGroup().bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Звонкий_путь" target="_blank">Звонкий путь</a>').addTo(map),
@@ -195,15 +205,46 @@ mw.hook('wikipage.content').add(function() {
  L.marker([728.0, 657.0], {icon: iSign6, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Знаки">Знак Шаманки</a>').openPopup().addTo(gSign);
   }
  
+  //Псалмовые цилиндры
+        function mPsalm() {
+            L.marker([1692.0, 1784.0], {icon: iPsalm1, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Псалмовый цилиндр">Псалмовый цилиндр</a>').openPopup().addTo(gPsalm);
+            L.marker([2221.0, 1897.0], {icon: iPsalm1, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Псалмовый цилиндр">Псалмовый цилиндр</a>').openPopup().addTo(gPsalm);
+            L.marker([2049.0, 2679.0], {icon: iPsalm1, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Псалмовый цилиндр">Псалмовый цилиндр</a>').openPopup().addTo(gPsalm);
+            L.marker([2001.0, 2762.0], {icon: iPsalm1, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Псалмовый цилиндр">Псалмовый цилиндр</a>').openPopup().addTo(gPsalm);
+            L.marker([1572.0, 624.0], {icon: iPsalm1, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Псалмовый цилиндр">Псалмовый цилиндр</a>').openPopup().addTo(gPsalm);
+            L.marker([1838.0, 2672.0], {icon: iPsalm2, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Священный цилиндр">Священный цилиндр</a>').openPopup().addTo(gPsalm);
  
+        }
  
- 
- 
+ //Реликвии
+        function mRelic() {
+            L.marker([679.0, 3263.0], {icon: iRelicScroll, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Костяной свиток">Костяной свиток</a>').openPopup().addTo(gRelic);
+            L.marker([1159.0, 2711.0], {icon: iRelicScroll, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Костяной свиток">Костяной свиток</a>').openPopup().addTo(gRelic);
+            L.marker([1543.0, 1518.0], {icon: iRelicScroll, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Костяной свиток">Костяной свиток</a>').openPopup().addTo(gRelic);
+            L.marker([1487.0, 2245.0], {icon: iRelicScroll, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Костяной свиток">Костяной свиток</a>').openPopup().addTo(gRelic);
+            
+            L.marker([821.0, 798.0], {icon: iRelicWeaver, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Фигурка Ткача">Фигурка Ткача</a>').openPopup().addTo(gRelic);
+            L.marker([1064.0, 1612.0], {icon: iRelicWeaver, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Фигурка Ткача">Фигурка Ткача</a>').openPopup().addTo(gRelic);
+            L.marker([1839.0, 1281.0], {icon: iRelicWeaver, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Фигурка Ткача">Фигурка Ткача</a>').openPopup().addTo(gRelic);
+            
+            L.marker([934.0, 875.0], {icon: iRelicChoir, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Приказ для Хора">Приказ для Хора</a>').openPopup().addTo(gRelic);
+            L.marker([1793.0, 1793.0], {icon: iRelicChoir, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Приказ для Хора">Приказ для Хора</a>').openPopup().addTo(gRelic);
+            L.marker([2098.0, 2578.0], {icon: iRelicChoir, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Приказ для Хора">Приказ для Хора</a>').openPopup().addTo(gRelic);
+            L.marker([1824.0, 2173.0], {icon: iRelicChoir, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Приказ для Хора">Приказ для Хора</a>').openPopup().addTo(gRelic);
+            
+            L.marker([672.0, 1253.0], {icon: iRelicArpha, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Рунная арфа">Рунная арфа</a>').openPopup().addTo(gRelic);
+            L.marker([618.0, 3657.0], {icon: iRelicArpha, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Рунная арфа">Рунная арфа</a>').openPopup().addTo(gRelic);
+            L.marker([2156.0, 1683.0], {icon: iRelicArpha, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Рунная арфа">Рунная арфа</a>').openPopup().addTo(gRelic);
+            
+            L.marker([208.0, 1964.0], {icon: iRelicEgg, zIndexOffset: 1000}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/  Загадочное яйцо">Загадочное яйцо</a>').openPopup().addTo(gRelic);
+        }
  
         /***Метки***/
         mSign();
         mTool();
         mSkil();
+        mPsalm();
+        mRelic();
         mBench();
         mFlea();
         mBellw();
@@ -438,7 +479,7 @@ mw.hook('wikipage.content').add(function() {
             L.marker([1104.0, 1775.0], {icon: iMask}).addTo(gMask);
         }
        
-       // Ремесленнный метал
+       // Ремесленнный металл
        function mMetal() {
             L.marker([2066.0, 3880.0], {icon: iMetal}).addTo(gMetal);
             L.marker([2105.0, 2565.0], {icon: iMetal}).addTo(gMetal);
@@ -528,6 +569,8 @@ mw.hook('wikipage.content').add(function() {
             'Знаки': gSign,
             'Умения': gSkil,
             'Инструменты': gTool,
+            'Цилиндры': gPsalm,
+            'Реликвии': gRelic,
             'Скамейки': gBench,
             'Блохи': gFlea,
             'Звонкие пути': gBellw,
@@ -548,6 +591,8 @@ mw.hook('wikipage.content').add(function() {
             'Знаки': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Охотница 1.png?width=32" /> Знаки',
             'Умения': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Буйство нитей.png?width=32" /> Умения',
             'Инструменты': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Инструменты_иконка.png?width=32" /> Инструменты',
+            'Цилиндры': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Псалмовый_цилиндр.png?width=32" /> Цилиндры',
+            'Реликвии': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Костяной_свиток.png?width=32" /> Реликвии',
             'Скамейки': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Скамейка_иконкаSS.png?width=32" /> Скамейки',
             'Блохи': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Блоха_иконка.png?width=32" /> Блохи',
             'Звонкие пути': '<img  src="https://hollowknight.fandom.com/ru/wiki/Special  :Filepath/Звонкий_путь.png?width=32" /> Звонкие пути',

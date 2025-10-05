@@ -179,7 +179,9 @@ $(function () {
       //170
       'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist', 'Weretiger',
       //180
-      'Werecrocodile', 'Werepanther'
+      'Werecrocodile', 'Werepanther', 'Crusader', 'Wyrmling', 'Headwalker',
+      //190
+      'Shell_Drake'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
@@ -410,6 +412,10 @@ $(function () {
       Weretiger: true,
       Werecrocodile: true,
       Werepanther: true,
+      Crusader: true,
+      Wyrmling: true,
+      Headwalker: true,
+      'Shell_Drake': true,
       None: true
     },
     //no mount
@@ -483,7 +489,11 @@ $(function () {
       Scientist: true,
       Weretiger: true,
       Werecrocodile: true,
-      Werepanther: true
+      Werepanther: true,
+      Crusader: true,
+      Wyrmling: true,
+      Headwalker: true,
+      'Shell_Drake': true
     },
     //no addon
     outfiter_a_names = {
@@ -531,7 +541,8 @@ $(function () {
       Phantom: true,
       Werehyaena: true,
       Scientist: true,
-      Werecrocodile: true
+      Werecrocodile: true,
+      Headwalker: true
     },
     //no ride frame
     outfiter_no_ride_names = {
@@ -604,7 +615,11 @@ $(function () {
       Scientist: true,
       Weretiger: true,
       Werecrocodile: true,
-      Werepanther: true
+      Werepanther: true,
+      Crusader: true,
+      Wyrmling: true,
+      Headwalker: true,
+      'Shell_Drake': true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

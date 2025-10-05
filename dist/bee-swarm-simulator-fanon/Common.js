@@ -76,3 +76,28 @@
 // MARKBLOCKED CUSTOMIZATION
 window.mbTooltip = 'blocked by $2 for $1 with the reason, \"$3\" ($4 ago)';
 // END MARKBLOCKED
+
+// GRADIENT TEXT
+@import "/load.php?articles=MediaWiki:GradientText.css&only=styles&mode=articles";
+
+export default function GradientText({
+  children,
+  className = '',
+  colors = ['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa'],
+  animationSpeed = 8,
+  showBorder = false
+}) {
+  const gradientStyle = {
+    backgroundImage: `linear-gradient(to right, ${colors.join(', ')})`,
+    animationDuration: `${animationSpeed}s`
+  };
+
+  return (
+    <div className={`animated-gradient-text ${className}`}>
+      {showBorder && <div className="gradient-overlay" style={gradientStyle}></div>}
+      <div className="text-content" style={gradientStyle}>
+        {children}
+      </div>
+    </div>
+  );
+}

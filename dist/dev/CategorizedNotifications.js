@@ -44,7 +44,6 @@ $(function() {
 	}
 	
 	function translateCategory(attr) {
-		attr = attr.slice(19);
 		var category, def;
 		
 		categoryMap.forEach(function(array) {
@@ -78,7 +77,7 @@ $(function() {
 			notifications.each(function(index, notification) {
 				notification = $(notification);
 				
-				var categoryClass = notification.attr('data-tracking-label');
+				var categoryClass = notification.attr('data-notification-type');
 				var timestamp = notification.find('time').attr('datetime');
 				
 				var notificationId = categoryClass + '_' + timestamp;

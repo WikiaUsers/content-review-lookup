@@ -75,7 +75,7 @@ $(document).ready(function(){
 	var maxTHLevel = 17;
     var maxBHLevel = 10;
     // Create a list of available decorations
-    var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue","Goblin Dragon Statue","Sour Elixir Cauldron","World Finals 23 Statue","Cozy Clam","Hog Pen","Duck Bath","Gingerbread Bakery","Jingle Bell"];
+    var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue","Goblin Dragon Statue","Sour Elixir Cauldron","World Finals 23 Statue","Cozy Clam","Hog Pen","Duck Bath","Gingerbread Bakery","Jingle Bell","Dragon Pinata", "Goblin Explorer", "Baby Ptah", "Crown Sword", "Surprising Squad", "Celebration Cup", "Haaland Statue", "Football Camp", "Cowboy Skeleton", "Wizard Vendor", "Hydra Headstone"];
     // Similar for houses
     var housesList = ["Brown Tent Roof", "Red Tent Roof", "Yellow Tent Roof", "Blue Tent Roof", "Blue Cross Roof", "Green Cross Roof", "Red Cross Roof", "Orange Castle Roof", "Blue Castle Roof", "Black Castle Roof", "Red Castle Roof", "Yellow Castle Roof", "Red Pagoda Roof", "Blue Pagoda Roof", "Black Pagoda Roof", "Green Pagoda Roof", "White Pagoda Roof", "Stone Roof", "Grass Roof (Type 1)", "Grass Roof (Type 2)", "White Windmill Roof", "Blue Windmill Roof", "Orange Windmill Roof", "Red Windmill Roof", "Green Windmill Roof", "Winter Roof", "Igloo Roof", "Gingerbread Roof",
     "Dark Stone Walls", "Stilt Walls", "Grass Walls", "Winter Walls", "Igloo Walls", "Gingerbread Walls",
@@ -85,17 +85,18 @@ $(document).ready(function(){
     // This is split into different pools for each Hero,
     // which is needed to individually show/hide options
     var equipmentList = {
-    	"BK": ["Giant Gauntlet", "Spiky Ball"],
-        "AQ": ["Frozen Arrow", "Magic Mirror"],
-        "GW": ["Fireball", "Lavaloon Puppet"],
+    	"BK": ["Giant Gauntlet", "Spiky Ball", "Snake Bracelet"],
+        "AQ": ["Frozen Arrow", "Magic Mirror", "Action Figure"],
+        "MP": ["Dark Crown"],
+        "GW": ["Fireball", "Lavaloon Puppet", "Heroic Torch"],
         "RC": ["Rocket Spear", "Electro Boots"],
     };
     // Do the same for hero skins
     var heroSkinList = {
-    	"BK": ["Gladiator King", "P.E.K.K.A King", "Skeleton King", "Jolly King", "Primal King", "Clockwork King", "Party King", "Pirate King", "Rogue King", "Jungle King", "Golem King", "Shadow King", "Clash Fest King", "Beast King", "Dark Ages King", "Goblin King", "King of the North"],
-        "AQ": ["Gladiator Queen", "Valkyrie Queen", "Autumn Queen", "Ice Queen", "Primal Queen", "Clockwork Queen", "Pirate Queen", "Rogue Queen", "Jungle Queen", "Party Queen", "Shadow Queen", "Miner Queen", "Summer Queen", "Spooky Queen", "Jolly Queen", "Goblin Queen", "Chess Queen"],
-        "GW": ["Party Warden", "Primal Warden", "Clockwork Warden", "Gladiator Warden", "Pirate Warden", "Warden of the North", "Jungle Warden", "Warden Master", "Jolly Warden", "Warrior Warden", "Summer Warden", "Dark Ages Warden", "Future Warden", "Gingerbread Warden"],
-        "RC": ["Winter Champion", "Rogue Champion", "Gladiator Champion", "Shadow Champion", "Party Champion", "Pirate Champion", "Warrior Champion", "Ghost Champion", "Champions' Champion"],
+    	"BK": ["Gladiator King", "P.E.K.K.A King", "Skeleton King", "Jolly King", "Primal King", "Clockwork King", "Party King", "Pirate King", "Rogue King", "Jungle King", "Golem King", "Shadow King", "Clash Fest King", "Beast King", "Dark Ages King", "Goblin King", "King of the North", "Clash Games King"],
+        "AQ": ["Gladiator Queen", "Valkyrie Queen", "Autumn Queen", "Ice Queen", "Primal Queen", "Clockwork Queen", "Pirate Queen", "Rogue Queen", "Jungle Queen", "Party Queen", "Shadow Queen", "Miner Queen", "Summer Queen", "Spooky Queen", "Jolly Queen", "Goblin Queen", "Chess Queen", "Space Queen", "Dark Minion Queen"],
+        "GW": ["Party Warden", "Primal Warden", "Clockwork Warden", "Gladiator Warden", "Pirate Warden", "Warden of the North", "Jungle Warden", "Warden Master", "Jolly Warden", "Warrior Warden", "Summer Warden", "Dark Ages Warden", "Future Warden", "Gingerbread Warden", "Egypt Warden", "Wild West Warden"],
+        "RC": ["Winter Champion", "Rogue Champion", "Gladiator Champion", "Shadow Champion", "Party Champion", "Pirate Champion", "Warrior Champion", "Ghost Champion", "Champions' Champion", "Dragon Champion", "Football Champion", "Anime Champion"],
         "BM": ["Armored Machine"]
     };
     // Add booleans for the status of checklist toggles (used for flavor text)
@@ -864,14 +865,13 @@ $(document).ready(function(){
         	$("span.itemAQ").each(enableCheckBox);
             $("div#heroSkinListAQ").show();
         }
-        /* Reserved for Minion Prince
         if (THL < 9) {
         	$("span.itemMP").each(disableCheckBox);
-            $("div#heroSkinListMP").hide();
+            // $("div#heroSkinListMP").hide();		Reserved for MP skins
         } else {
         	$("span.itemMP").each(enableCheckBox);
-            $("div#heroSkinListMP").show();
-        } */
+            // $("div#heroSkinListMP").show();		Reserved for MP skins
+        }
         if (THL < 11) {
         	$("span.itemGW").each(disableCheckBox);
             $("div#heroSkinListGW").hide();

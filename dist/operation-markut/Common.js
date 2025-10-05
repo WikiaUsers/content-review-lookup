@@ -80,3 +80,56 @@ $(".game-box").each(function() {
         'u:dev:UserTags/code.js',
     ]
 });
+
+/* ECharts – delayed display against JSON flash */
+(function () {
+  var REVEAL_DELAY = 500; // ms
+
+  function wrap(el) {
+    if (el._wrapped) return;
+    var holder = document.createElement('div');
+    holder.className = 'echarts-holder';
+    el.parentNode.insertBefore(holder, el);
+    holder.appendChild(el);
+    var overlay = document.createElement('div');
+    overlay.className = 'echarts-loading';
+    overlay.textContent = 'Loading…';
+    holder.appendChild(overlay);
+    el._wrapped = true;
+  }
+
+  function revealAfterDelay(el) {
+    setTimeout(function () {
+      el.classList.add('echarts-ready');
+      var p = el.parentElement;
+      if (p && p.classList.contains('echarts-holder')) p.dataset.ready = '1';
+    }, REVEAL_DELAY);
+  }
+
+  function observe(el) {
+    wrap(el);
+    var mo = new MutationObserver(function () {
+      if (el.querySelector('canvas, svg')) {
+        revealAfterDelay(el);
+        mo.disconnect();
+      }
+    });
+    mo.observe(el, { childList: true, subtree: true });
+    if (el.querySelector('canvas, svg')) {
+      revealAfterDelay(el);
+      mo.disconnect();
+    }
+  }
+
+  function initIn($root) {
+    ($root || document).querySelectorAll('.echarts').forEach(observe);
+  }
+
+  if (window.mw && mw.hook) {
+    mw.hook('wikipage.content').add(function ($content) {
+      initIn($content && $content[0] ? $content[0] : document);
+    });
+  } else {
+    $(initIn);
+  }
+})();

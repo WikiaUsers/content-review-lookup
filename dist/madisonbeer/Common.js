@@ -4,6 +4,8 @@ function pluralize(value, unit) {
     return value + " " + unit + (value === 1 ? "" : "s");
 }
 
+window.AddRailModule = [{prepend: true}];
+
 function startCountdown(id) {
     var countdownElement = document.getElementById(id);
     var targetDate = countdownElement.getAttribute("data-date");

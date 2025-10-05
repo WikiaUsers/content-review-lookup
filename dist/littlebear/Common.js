@@ -2,7 +2,9 @@
 console.log('************ MediaWiki:Common.js ************');
 
 // Customizing text of auto-created user and user talk pages
-const welcomeLink = $('<a>').attr('href', mw.util.getUrl('User talk:$2')).text('Welcome to the Little Bear Wiki!');
+const welcomeText = 'Welcome to the Little Bear Wiki!';
+const talkLink = mw.util.getUrl('User talk:$2');
+const welcomeLink = $('<a>').attr('href', talkLink).text(welcomeText);
 window.AutoCreateUserPagesConfig = {
 	content: {
 		2: '{{Placeholder}}',
@@ -13,4 +15,4 @@ window.AutoCreateUserPagesConfig = {
 };
 
 // Prevent undesirable scroll behavior
-$('[href="#"], [href^="#cite_note"]').click(event => event.preventDefault());
+$('[href="#"]').on('click', event => event.preventDefault());

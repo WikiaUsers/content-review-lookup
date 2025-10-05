@@ -105,7 +105,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			widget.remove();
 			
 			if (parserOutput){
-				const captionParsed = $(parserOutput.parse.text['*']).text().trim();
+				const captionParsed = $(parserOutput.parse.text['*']).children().html();
 				const caption = $('<p class="caption">' + captionParsed + '</p>');
 				figcaption.append(caption);
 			}

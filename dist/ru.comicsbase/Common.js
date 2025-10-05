@@ -1,0 +1,1 @@
+{{#js:Dev:Accordion/scripts.js}}

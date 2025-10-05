@@ -48,6 +48,26 @@ function toggleInit() {
     for (a = 0; a < e.length; a++) createTogglerLink(e[a], a)
 }
 
+// Expand All
+var expandAllFlag = 0;
+var $expandAll = $('.expandAll a');
+$('.expandAll a').click(function(){
+    if (expandAllFlag === 0){
+        for (let i = 0; i < togglers.length(); i += 2) {
+            toggler(i);
+        }
+        expandAllFlag = 1;
+        $expandAll.text('Hide Raw Spoilers');
+    } else {
+        for (let i = 1; i < togglers.length(); i += 2) {
+            toggler(i);
+        }
+        expandAllFlag = 0;
+        $expandAll.text('Show Raw Spoilers');
+    }
+});
+// END of Expand All
+
 function owwsitesearch(e) {
     e.q.value = "site:http://openwetware.org/wiki/" + e.base.value + "++" + e.qfront.value
 }

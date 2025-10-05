@@ -51,7 +51,7 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 			hover = !toggle || isEE,
 			$toggle = $('<span>', {
 				'class': 'custom-tt toggle-tooltip'+(isEE ? ' giw-extra-effect' : ''),
-				html: $wrapper.find('.mw-collapsible-toggle').html()
+				html: $wrapper.find('.custom-tt.toggle-tooltip').html()
 			}),
 			$content = $wrapper.find('.mw-collapsible-content'),
 			popup = new OO.ui.PopupWidget({
@@ -59,22 +59,27 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 				$container: $('.page__main'),
 				anchor: !isEE,
 			});
+			if (isEE) { popup.$element.find('.oo-ui-popupWidget-popup').toggleClass('giw-extra-effect', true); }
 			
 			// Remove default collapsible
-			$wrapper.toggleClass(['mw-collapsible', 'mw-made-collapsible', 'mw-collapsed'], false);
-			$wrapper.find('.mw-collapsible-toggle').replaceWith($toggle);
-			$content.remove();
-			$wrapper.append(popup.$element);
-			if (isEE) { popup.$element.find('.oo-ui-popupWidget-popup').toggleClass('giw-extra-effect', true); }
+			const newWrap = $('<span>', {
+				'class': $wrapper.attr('class').replace(/mw-collapsible|mw-made-collapsible|mw-made-collapsible/g, ''),
+				attr: { 'data-tt-text': $wrapper.attr('data-tt-text') },
+				html: [
+					$toggle,
+					popup.$element
+				]
+			});
+			$wrapper.replaceWith(newWrap);
 			
 			// Functionality
 			let time = null;
 			$toggle.on('click', ()=> {
-				$wrapper.toggleClass('cutom-tt-forceStay');
-				popup.toggle($wrapper.hasClass('cutom-tt-forceStay'));
+				newWrap.toggleClass('cutom-tt-forceStay');
+				popup.toggle(newWrap.hasClass('cutom-tt-forceStay'));
 			});
 			$toggle.add(popup.$element).on('mouseover mouseout', (e) => {
-				if ($wrapper.hasClass('cutom-tt-forceStay')) {clearTimeout(time); return;}
+				if (newWrap.hasClass('cutom-tt-forceStay')) {clearTimeout(time); return;}
 				else if (time) { clearTimeout(time); }
 				time = setTimeout(()=>{
 					popup.toggle(e.type==='mouseout' ? false : true);

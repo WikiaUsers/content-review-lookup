@@ -23,7 +23,7 @@ mw.loader.using('mediawiki.api', ()=>{
 		$('table.table-progress-tracking:not(.cpt-synced):not(:has(.table-progress-checkbox-cell input[disabled]))'+only+excl).each((_2, wrap) => {
 			wrap.classList.add('cpt-synced');
 			let	$wrap = $(wrap),
-				id = $wrap.attr('data-tpt-id'),
+				id = $wrap.attr('data-tpt-id').replace(/ /g, '_'), // user option cant have spaces, apparently
 				checks = $wrap.find('.table-progress-checkbox-cell input[data-tpt-row-id]'),
 				cache,
 				setCache = mw.util.throttle(()=>{ api.saveOption('userjs-CPT-'+config.wgWikiID+'_'+id, JSON.stringify(cache)); }, 500);

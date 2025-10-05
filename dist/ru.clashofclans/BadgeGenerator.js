@@ -7,7 +7,7 @@
         '<canvas id="canvas_gen" width="210" height="210"></canvas>' +
         '<img src="" id="canvas_mirror" />' +
         '<center>' +
-            '<a href="#" class="button" id="dwn-clanbadge" download="clan-badge.png">Download</a>' +
+            '<a href="#" class="button" id="dwn-clanbadge" download="clan-badge.png">Скачать</a>' +
         '</center>'
     );
  
@@ -18,9 +18,9 @@
     o.blank = 'd/d2/Blank.png';
  
     o.tags = {
-        'background': 'Background',
-        'pg': 'Pattern',
-        'border': 'Border'
+        'background': 'Фон',
+        'pg': 'Символ',
+        'border': 'Рамка'
     };
  
     o.background = {
@@ -211,14 +211,14 @@
  
     $( '#options-container' ).append(
         '<div id="container-lvl" class="container">' +
-            '<div class="container-header">Level</div>' +
+            '<div class="container-header">Уровень</div>' +
             '<div class="container-values" />' +
         '</div>'
     );
  
     for ( var i = 1; i < 22; i++ ) {
         var _i = i - 1,
-            _n = ( i == 21 ) ? 'None': i;
+            _n = ( i == 21 ) ? 'Убрать': i;
  
         $( '#container-lvl .container-values' ).append(
             '<span class="level-toggler-body">' +

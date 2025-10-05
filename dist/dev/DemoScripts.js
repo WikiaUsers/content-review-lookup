@@ -799,6 +799,16 @@
             scripts: 'MediaWiki:ScratchEmbedded.js'
         },
         
+        DesmosIntegrator: {
+            page: 'DesmosIntegrator',
+            scripts: 'MediaWiki:DesmosIntegrator.js'
+        },
+        
+        GoogleDocsIntegrator: {
+            page: 'GoogleDocsIntegrator',
+            scripts: 'MediaWiki:GoogleDocsIntegrator.js'
+        },
+        
 
         /* // Disabled in Favour of ProfileTags
         UserTags: {

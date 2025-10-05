@@ -3,13 +3,16 @@ switch (mw.config.get('wgPageName')) {
     var checksEl = document.querySelectorAll('.settingsCheckbox');
     var redirEl = document.querySelectorAll('.settingsRedirect');
     var descr = document.getElementById("settingsDescr");
-    var loader = document.getElementById("loadPopupTab");
+    var loaders = document.querySelectorAll(".loadPopupTab");
 
     function selectCycles() {
       checksEl.forEach(status => {
         status.onclick = () => {
           // Удаляем активный класс у всех
-          animateOpacity(loader, 0, 1, 800);
+          
+          loaders.forEach(loader => {
+          animateOpacity(loader, 0, 1, 600);
+          })
           
           checksEl.forEach(s => s.classList.remove('selected'));
           // Добавляем выбранный
@@ -18,7 +21,9 @@ switch (mw.config.get('wgPageName')) {
           
           
           loadTemplate(status.dataset.template, "settingsDescr", () => {
-          	animateOpacity(loader, 1, 0, 800);
+          	loaders.forEach(loader => {
+        		animateOpacity(loader, 1, 0, 600);
+        	})
           });
           
         };
@@ -66,14 +71,25 @@ function loadTemplate(templateName, targetId, callback) {
 
 
 function animateOpacity(el, from, to, time) {
-	let start = null;
+	if (!el) return; // защита от null
+	el.style.display = 'flex'; // убедимся, что элемент видим
 	el.style.opacity = from;
+
+	let start = null;
+
 	function step(timestamp) {
 		if (!start) start = timestamp;
 		let progress = (timestamp - start) / time;
 		if (progress > 1) progress = 1;
-		el.style.opacity = from + (to - from) * progress; if (progress < 1) { requestAnimationFrame(step); 
+
+		el.style.opacity = from + (to - from) * progress;
+
+		if (progress < 1) {
+			requestAnimationFrame(step);
+		} else if (to === 0) {
+			el.style.display = 'none'; // скрываем после исчезновения
 		}
-	} 
-	requestAnimationFrame(step); 
+	}
+
+	requestAnimationFrame(step);
 }

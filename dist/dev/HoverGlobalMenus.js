@@ -1,6 +1,6 @@
 /**
  * @title HoverGlobalMenus
- * @version v1.0
+ * @version v1.0.2
  * @author DarkBarbarian
  * @description Makes the notification and user avatar buttons in the global navigation hoverable, instead of the click default
  */
@@ -28,7 +28,7 @@ mw.loader.using('mediawiki.api', function() {
 	$('.notifications.global-action__item.global-action-notifications').each(function(_, element) {
 		$(element).on('mouseenter', function() {
 			if (!$('#global-top-navigation .notifications .wds-dropdown').hasClass('wds-is-active'))
-				$('div[tracking-label="notifications-toggle"]').first().click();
+				$('.wds-dropdown__toggle.notifications__toggle').first().click();
 		});
 	});
 	
@@ -37,7 +37,7 @@ mw.loader.using('mediawiki.api', function() {
 	$('.global-action__item.global-action__user').each(function(_, element) {
 		$(element).on('mouseenter', function() {
 			if (!$(element).hasClass('wds-is-active'))
-				$('button[data-tracking-label="user-avatar"]').first().click();
+				$('button[aria-controls="user-panel__content"]').first().click();
 		});
 	});
 });

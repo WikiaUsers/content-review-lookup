@@ -4,18 +4,12 @@ console.log('MediaWiki:Common.js');
 
 (function () {
 
+let articlePath = mw.config.values.wgArticlePath.replace(/\/\$1/, '');
+
 function getCookie(cname) {
-	var name = cname + '=';
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0) == ' ') {
-			c = c.substring(1);
-		}
-		if (c.indexOf(name) == 0) {
-			return c.substring(name.length, c.length);
-		}
+	var result = localStorage.getItem(cname);
+	if (result) {
+		return result;
 	}
 	return '';
 }
@@ -48,7 +42,7 @@ function hideElements(desc) {
 	}
 }
 
-function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, link2) {
+function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, link2, prefName) {
 	var preference = getCookie(cookieName);
 	var userlinks = document.querySelectorAll('.wds-tabs');
 	for (var i = 0; i < userlinks.length; i++) {
@@ -70,9 +64,28 @@ function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, lin
 		hideElements('.only' + cookie1);
 		showElements('.only' + cookie2, linkSelector);
 	}
-	var CookieDate = new Date();
-	CookieDate.setFullYear(CookieDate.getFullYear() + 1);
-	document.cookie = cookieName + '=' + preference + '; expires=' + CookieDate.toUTCString() + '; path=/;';
+	localStorage.setItem(cookieName, preference);
+}
+
+function setPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2, prefName, preference) {
+	var userlinks = document.querySelectorAll('.wds-tabs');
+	for (var i = 0; i < userlinks.length; i++) {
+		var switchView = document.querySelector('#' + linkSelector + i);
+		if (switchView) {
+			if (preference == cookie1) {
+				switchView.textContent = link2;
+			} else {
+				switchView.textContent = link1;
+			}
+		}
+	}
+	if (preference == cookie1) {
+		hideElements('.only' + cookie2);
+		showElements('.only' + cookie1, linkSelector);
+	} else {
+		hideElements('.only' + cookie1);
+		showElements('.only' + cookie2, linkSelector);
+	}
 }
 
 function removeTabsTags() {
@@ -105,6 +118,20 @@ function togglePreferredExpansion() {
 
 function toggleDoR() {
 	togglePreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning');
+}
+
+function toggleHeroesStyle() {
+	togglePreference('switchHeroesStyle', 'heroesStyle', 'heroesStyleDisabled', 'heroesStyleEnabled', 'Disable H3CSS', 'Enable H3CSS', 'Heroes Style');
+	setHeroesStyle();
+}
+
+function setHeroesStyle() {
+	var preference = getCookie('heroesStyle');
+	if (preference == 'heroesStyleEnabled') {
+		document.adoptedStyleSheets.push(heroesStyleSheet);
+	} else if (heroesStyleSheet) {
+		while (document.adoptedStyleSheets.pop());
+	}
 }
 
 function initPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2, prefName, toggleFunc) {
@@ -187,9 +214,7 @@ function adjustVolume(e) {
 		elems[i].value = e.target.value;
 	}
 	
-	var CookieDate = new Date();
-	CookieDate.setFullYear(CookieDate.getFullYear() + 1);
-	document.cookie = 'volumeLoudness=' + e.target.value + '; expires=' + CookieDate.toUTCString() + '; path=/;';
+	localStorage.setItem('volumeLoudness', e.target.value);
 	
 	setVolume(e.target.value / 100);
 	
@@ -199,14 +224,14 @@ function adjustVolume(e) {
 }
 
 function getOffsetTop(e, top) {
-	if (e.id == 'bodyContent' || e.tagName == 'MAIN') {
+	if (!e || e.id == 'bodyContent' || e.tagName == 'MAIN') {
 		return top;
 	}
 	return getOffsetTop(e.offsetParent, top+e.offsetTop);
 }
 
 function getOffsetLeft(e, left) {
-	if (e.id == 'bodyContent' || e.tagName == 'MAIN') {
+	if (!e || e.id == 'bodyContent' || e.tagName == 'MAIN') {
 		return left;
 	}
 	return getOffsetLeft(e.offsetParent, left+e.offsetLeft);
@@ -403,18 +428,24 @@ function setupWatchables() {
 	for (var i = 0; i < elems.length; i++) {
 		var a = elems[i].querySelector('a');
 		a.style.display = 'none';
+		let fileName = 'File:' + mw.util.parseImageUrl(a.href.replace(/\/revision\/latest\?cb=\d+/, '')).name;
+		let fileLink = articlePath + '/' + fileName;
 		let video;
+		let videoTitle = 'Click anywhere on the page, then hover here and press shift to open ' + fileName;
 		if (elems[i].dataset && elems[i].dataset.audio) {
 			video = document.createElement('audio');
 			video.volume = getCookieNumber('volumeLoudness', 50) / 100;
 			video.controls = true;
 		} else if (a.href.toLowerCase().search('.gif') == -1 && a.href.toLowerCase().search('.png') == -1 && a.href.toLowerCase().search('.webp') == -1 && a.href.toLowerCase().search('.jpg') == -1) {
 			video = document.createElement('video');
-			video.crossOrigin = 'anonymous';
 			video.volume = getCookieNumber('volumeLoudness', 50) / 100;
 			let isFocused = false;
 			video.addEventListener('play', function (e) {
 				video.focus();
+				video.title = '';
+			});
+			video.addEventListener('pause', function (e) {
+				video.title = videoTitle;
 			});
 			video.addEventListener('mouseover', function (e) {
 				window.setTimeout(setSavedScrollPosition, 0);
@@ -463,6 +494,9 @@ function setupWatchables() {
 					clickTimer = null;
 				}
 			});
+			if (!a.href.includes(window.location.hostname)) {
+				video.crossOrigin = 'anonymous';
+			}
 		} else {
 			video = document.createElement('img');
 		}
@@ -478,7 +512,28 @@ function setupWatchables() {
 			}
 		}
 		video.src = a.href;
-		elems[i].insertBefore(video, null);
+		if (video.tagName == 'AUDIO' || video.tagName == 'VIDEO') {
+			video.title = videoTitle;
+			function openOnShift(e) {
+			    if (e.shiftKey) {
+			        window.open(fileLink);
+			    }
+			}
+			video.addEventListener('mouseover', function (e) {
+			    document.addEventListener('keydown', openOnShift);
+			});
+			video.addEventListener('mouseleave', function (e) {
+			    document.removeEventListener('keydown', openOnShift);
+			});
+		}
+		if (video.tagName == 'IMG') {
+			var wrapA = document.createElement('a');
+			wrapA.href = fileLink;
+			wrapA.appendChild(video);
+			elems[i].insertBefore(wrapA, null);
+		} else {
+			elems[i].insertBefore(video, null);
+		}
 	}
 }
 
@@ -486,9 +541,25 @@ function initWatchables() {
 	window.setTimeout(setupWatchables, 0);
 }
 
+function handleStorageChange(e) {
+	if (event.storageArea == localStorage) {
+		if (e.key == 'preferredExpansion') {
+			setPreference('switchExpansion', 'preferredExpansion', 'hota', 'sod', 'Enable HotA', 'Disable HotA', 'Horn of the Abyss', e.newValue);
+		} else if (e.key == 'preferredDoR') {
+			setPreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning', e.newValue);
+		} else if (e.key == 'volumeLoudness') {
+			adjustVolume({target:{value:e.newValue}});
+		} else if (e.key == 'heroesStyle') {
+			setPreference('switchHeroesStyle', 'heroesStyle', 'heroesStyleDisabled', 'heroesStyleEnabled', 'Disable H3CSS', 'Enable H3CSS', 'Heroes Style', e.newValue);
+			setHeroesStyle();
+		}
+	}
+}
+
 function initCommon() {
 	initPreference('switchExpansion', 'preferredExpansion', 'hota', 'sod', 'Enable HotA', 'Disable HotA', 'Horn of the Abyss', togglePreferredExpansion);
 	initPreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning', toggleDoR);
+	initPreference('switchHeroesStyle', 'heroesStyle', 'heroesStyleDisabled', 'heroesStyleEnabled', 'Disable H3CSS', 'Enable H3CSS', 'Heroes Style', toggleHeroesStyle);
 	initPreferenceNumber('adjustVolume', 'volumeLoudness', 50, 'Adjust Volume %', 'Volume', 0, 100, 5, adjustVolume);
 	if (!window.location.href.includes('action=edit') && !window.location.href.includes('action=submit')) {
 		removeTabsTags();
@@ -499,12 +570,33 @@ function initCommon() {
 	setVolume('cookie');
 	initWatchables();
 	fixFullscreen();
+	window.addEventListener('storage', handleStorageChange);
 }
 
-try {
-	initCommon();
-} catch (error) {
-	window.setTimeout(initCommon, 2000);
+function beforeInitCommon() {
+	var userlinks = document.querySelectorAll('.wds-tabs');
+	if (userlinks) {
+		try {
+			initCommon();
+			return;
+		} catch (e) {
+			// console.log('initCommon failed');
+			// console.error(e);
+		}
+	}
+	window.setTimeout(beforeInitCommon, 0);
 }
+
+// run immediately
+beforeInitCommon();
+
+$.when(
+	mw.loader.getScript(articlePath + '/MediaWiki:H3CSS.min.js?action=raw&ctype=text/javascript')
+).done(function() {
+	setHeroesStyle();
+}).fail(function (e) {
+	console.error('mw.loader.getScript failed');
+	console.error(e);
+});
 
 })();

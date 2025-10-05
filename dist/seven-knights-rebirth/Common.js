@@ -22,3 +22,14 @@
         $('.infobox-hero-main').on('click', '.section-header', toggleCollapsible);
     });
 })(mediaWiki, jQuery);
+/* === Tooltip effect list === */
+window.tooltips_list = [
+    {   classname: 'skill-tooltip',
+        parse: '{'+'{Tooltips/skillIcon|<#param#>}}'}    
+];
+window.tooltips_config = {
+	offsetX: 5,
+    offsetY: 10,
+    waitForImages: true,
+    noCSS: false
+};

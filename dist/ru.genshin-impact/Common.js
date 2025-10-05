@@ -2,7 +2,6 @@
     var currentUrl = decodeURIComponent(window.location.href);
     var username = currentUrl.replace(/.*\/(Участни(к|ца):|Стена_обсуждения:|Служебная:Вклад\/|Служебная:UserProfileActivity\/)/g, "").replace(/\?action=(edit|history|purge|protect|delete)/, "");
     var profile = "https://genshin-impact.fandom.com/ru/wiki/Участник:" + username;
-
     if (/(Стена_обсуждения:|Служебная:Вклад\/|Служебная:UserProfileActivity\/|Участни(к|ца):)/.test(currentUrl)) {
         $.ajax({
         url: profile,
@@ -39,6 +38,14 @@
 /* BackToTopButton */
     window.BackToTopModern = true;
 
+/* EraIcons */
+	/* Copied from https://starwars.fandom.com/wiki/MediaWiki:Common.js */
+	$( function eraIconsOasis() {
+	    if ( $( '#title-eraicons' ).length && $( '.page-header__actions' ).length ) {
+	    	$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
+	    }
+	} );
+
 /* LockOldComments */
     window.lockOldComments = (window.lockOldComments || {});
     window.lockOldComments.limit = 90;
@@ -54,8 +61,6 @@
 		enableSearch: true,
 		enableSidebar: true,
 		enableTooltips: true,
-		sidebarBehaviour: "manual",
-		sidebarInitialState: "show",
 		openPopupsOnHover: false,
 	};
         /** translation change **/

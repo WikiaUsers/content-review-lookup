@@ -186,9 +186,9 @@ $(function () {
       //170
       'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist', 'Weretiger',
       //180
-      'Werecrocodile', 'Werepanther', 'Merudri'
+      'Werecrocodile', 'Werepanther', 'Merudri', 'Crusader', 'Wyrmling',
       //185
-      
+      'Headwalker', 'Shell_Drake'
       //190
       
       //195
@@ -443,6 +443,10 @@ $(function () {
       Weretiger: true,
       Werecrocodile: true,
       Werepanther: true,
+      Crusader: true,
+      Wyrmling: true,
+      Headwalker: true,
+      'Shell_Drake': true,
       None: true
     },
     //no mount
@@ -517,7 +521,11 @@ $(function () {
       Weretiger: true,
       Werecrocodile: true,
       Werepanther: true,
-      Merudri: true
+      Merudri: true,
+      Crusader: true,
+      Wyrmling: true,
+      Headwalker: true,
+      'Shell_Drake': true
     },
     //no addon
     outfiter_a_names = {
@@ -565,7 +573,8 @@ $(function () {
       Phantom: true,
       Werehyaena: true,
       Scientist: true,
-      Werecrocodile: true
+      Werecrocodile: true,
+      Headwalker: true
     },
     //no ride frame
     outfiter_no_ride_names = {
@@ -639,7 +648,11 @@ $(function () {
       Weretiger: true,
       Werecrocodile: true,
       Werepanther: true,
-      Merudri: true
+      Merudri: true,
+      Crusader: true,
+      Wyrmling: true,
+      Headwalker: true,
+      'Shell_Drake': true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

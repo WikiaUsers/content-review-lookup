@@ -12,6 +12,7 @@ mw.hook("wikipage.content").add(function() {
 		
 		var wait = $(this).attr("data-wait");
 		var portal = $(this).attr("data-portal");
+		var portalOpened = false;
 		
 		if (wait != "none") {
 			css.disabled = true;
@@ -22,17 +23,21 @@ mw.hook("wikipage.content").add(function() {
 			css.disabled = true;
 			$(".t-css-portal-" + portal).click(function() {
 				css.disabled = !css.disabled;
-				var portal = "opened";
+				portalOpened = true;
 			});
 		}
 		
 		$(".theme-toggler").click(function() {
 			switch (true) {
 				case wait != "none":
-					timer || css.disabled == false ? (clearTimeout(timer), timer = '', css.disabled = true) : css.disabled = false;
+					if (timer || css.disabled == false) {
+						clearTimeout(timer);
+						timer = false;
+						css.disabled = true;
+					} else css.disabled = false;
 					break;
 				case portal != "none":
-					if (portal == "opened") css.disabled = !css.disabled;
+					if (portalOpened) css.disabled = !css.disabled;
 					break;
 				default:
 					css.disabled = !css.disabled;
