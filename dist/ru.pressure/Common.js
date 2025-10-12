@@ -4,10 +4,13 @@ switch (mw.config.get('wgPageName')) {
     var redirEl = document.querySelectorAll('.settingsRedirect');
     var descr = document.getElementById("settingsDescr");
     var loaders = document.querySelectorAll(".loadPopupTab");
+    
+    var header = document.getElementById("descrHeader");
+    var block = document.getElementById("descrBlock");
 
     function selectCycles() {
-      checksEl.forEach(status => {
-        status.onclick = () => {
+      checksEl.forEach(check => {
+        check.onclick = () => {
           // Удаляем активный класс у всех
           
           loaders.forEach(loader => {
@@ -16,11 +19,11 @@ switch (mw.config.get('wgPageName')) {
           
           checksEl.forEach(s => s.classList.remove('selected'));
           // Добавляем выбранный
-          status.classList.add('selected');
-          console.log(status.textContent);
+          check.classList.add('selected');
+          console.log(check.textContent);
           
           
-          loadTemplate(status.dataset.template, "settingsDescr", () => {
+          loadTemplate(check.dataset.template, "settingsDescr", () => {
           	loaders.forEach(loader => {
         		animateOpacity(loader, 1, 0, 600);
         	})
@@ -37,6 +40,13 @@ switch (mw.config.get('wgPageName')) {
     			descr = document.getElementById("settingsDescr");
     			selectCycles();
     			console.log("Обработчики перенавешаны");
+    			if(redirect.textContent === "Титры") {
+    				header.style.display = 'none';
+    				block.style.display = 'none';
+    			} else {
+    				header.style.display = '';
+    				block.style.display = '';
+    			}
     	});
 	  };
 	});
@@ -71,8 +81,8 @@ function loadTemplate(templateName, targetId, callback) {
 
 
 function animateOpacity(el, from, to, time) {
-	if (!el) return; // защита от null
-	el.style.display = 'flex'; // убедимся, что элемент видим
+	if (!el) return;
+	el.style.display = 'flex';
 	el.style.opacity = from;
 
 	let start = null;

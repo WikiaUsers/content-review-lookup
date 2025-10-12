@@ -10,7 +10,7 @@ $(function() {
 
     // 2. Check if the link was found
     if ($link.length) {
-        var newText = "Pumpkin_placeholder"; // The desired encoded text
+        var newText = "Pumpkin&#x5Fplaceholder"; // The desired encoded text
 
         // 3. Replace the link's inner text (what the user sees)
         $link.text(newText);

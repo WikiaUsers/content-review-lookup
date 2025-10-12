@@ -69,6 +69,25 @@ $(function() {
         });
     }
 });
+mw.hook('wikipage.content').add(function($content) {
+  const links = {
+    'card-a': 'https://verdad0.fandom.com/ko/wiki/%EC%95%8C%ED%8E%98%EC%9D%B4%EC%98%A4%EC%8A%A4',
+    'card-b': 'https://verdad0.fandom.com/ko/wiki/%EC%95%84%EC%A6%88%EB%9D%BC%EC%97%98',
+    'card-c': 'https://verdad0.fandom.com/ko/wiki/%EB%94%94%EB%AF%B8%ED%8A%B8%EB%A6%AC',
+    'card-d': 'https://verdad0.fandom.com/ko/wiki/%EC%B9%B4%ED%97%A4%ED%85%94',
+    'card-e': 'https://verdad0.fandom.com/ko/wiki/%ED%97%A4%EB%A5%B4%ED%82%A4%EB%82%98'
+  };
+
+  Object.entries(links).forEach(([cls, url]) => {
+    const el = $content[0].querySelector(`.${cls}`);
+    if (el) {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => {
+        window.location.href = url;
+      });
+    }
+  });
+});
 $(document).ready(function() {
     // 문서 이름이 "문서_A"일 때만 실행
     if (mw.config.get('wgPageName') === 'Sia') {

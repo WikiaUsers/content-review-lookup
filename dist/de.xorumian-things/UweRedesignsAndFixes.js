@@ -1,7 +1,6 @@
 // Category thumbnails 1x1
 document.querySelectorAll('.category-page__member img').forEach(img => {
     img.src = img.src.replace('width/40/height/30', 'width/120/height/120');
-    img.setAttribute('data-src', img.getAttribute('data-src').replace('width/40/height/30', 'width/120/height/120'));
 });
 
 // Images limit = 500
@@ -23,22 +22,8 @@ links.forEach(url => {
 });
 
 // Recent Images design
-(function(mw, window) {
-    setTimeout(function() {
-        // Double-loading prevention
-        if (document.querySelector('.card-image img')) return;
-    
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll('.card-image img').forEach(function(img) {
-                var src = img.src;
-                var dataSrc = img.getAttribute('data-src');
-                if (src.includes('width/300/height/168')) {
-                    img.src = src.replace('width/300/height/168', 'width/300/height/300');
-                }
-                if (dataSrc && dataSrc.includes('width/300/height/168')) {
-                    img.setAttribute('data-src', dataSrc.replace('width/300/height/168', 'width/300/height/300'));
-                }
-            });
-        });
-    }, 1000);
-})(mediaWiki, this);
+setTimeout(() => {
+    document.querySelectorAll('.card-image img').forEach(img => {
+        img.src = img.src.replace('width/300/height/168', 'width/300/height/300');
+    });
+}, 3000);

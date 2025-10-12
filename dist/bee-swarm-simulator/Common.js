@@ -69,15 +69,6 @@ var questions = [
 ];
 
 
-// background clip to text class
-$(function(){
-    $('.background-clip-text').css({'-webkit-background-clip':'text',
-                                        '-webkit-text-fill-color':'transparent',
-                             'background-clip':'text'
-    });
-});
-
-
 importArticles({
     type: 'script',
     articles: [

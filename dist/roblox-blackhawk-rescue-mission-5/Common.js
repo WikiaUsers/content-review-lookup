@@ -15,3 +15,8 @@ UserTagsJS.modules.custom = {
 	'ContemplationInChalk': ['developer'],
 	'MB SNiper': ['developer']
 }
+/* The Configurations for the LockOldComments script. */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 60;
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.namespaceNumbers = [0];

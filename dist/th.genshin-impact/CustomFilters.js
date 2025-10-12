@@ -100,7 +100,7 @@ mw.hook('wikipage.content').add(() => {
 							'<div class="fl-toggle-qa">'+
 								'<a class="fl-toggle-qa-all">ทั้งหมด</a>'+
 								' &mdash; '+
-								'<a class="fl-toggle-qa-none">ไม่มี</a>'+
+								'<a class="fl-toggle-qa-none">ล้าง</a>'+
 							'</div>'+
 						'</div>'+
 					'</div>'

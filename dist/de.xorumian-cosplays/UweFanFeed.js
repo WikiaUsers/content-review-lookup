@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var container = document.querySelector(".resizable-container");
+  setTimeout(function() {
+    const container = document.querySelector(".resizable-container");
 
-    var newDiv = document.createElement("div");
+    const newDiv = document.createElement("div");
     newDiv.innerHTML = `
         <div id="mixed-content-footer" class="mixed-content-footer">
             <div class="mcf-wrapper">
@@ -117,5 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
         </div>
     `;
+
     container.appendChild(newDiv);
+  }, 1000);
 });

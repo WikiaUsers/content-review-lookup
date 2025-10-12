@@ -1,5 +1,5 @@
 (function($){
-	// prevent double load
+	// Prevent double load
 	window.xorumwiki = window.xorumwiki || {};
 	if (window.xorumwiki.themeSelectorLoaded) return;
 	window.xorumwiki.themeSelectorLoaded = true;
@@ -28,10 +28,10 @@
 	var CONTENT_ID = 'uwe-themeselector-dropdown';
 	
 	function main() {
-		// Not sure why this sometimes doesn't show up on page load; attempting to delay add a bit to try and make it more consitent
-		setTimeout(initDropdownHtml, 600);
+		// Delay add a bit to try and make it more consitent
+		setTimeout(initDropdownHtml, 500);
 		
-		// we still want to trigger any selected stylesheets right away though
+		// Still trigger any selected stylesheets right away
 		updateStylesheets();
 	}
 	

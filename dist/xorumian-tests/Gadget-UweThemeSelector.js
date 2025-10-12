@@ -36,7 +36,7 @@
 	
 	function main() {
 		// Not sure why this sometimes doesn't show up on page load; attempting to delay add a bit to try and make it more consitent
-		setTimeout(initDropdownHtml, 600);
+		setTimeout(initDropdownHtml, 500);
 		
 		// we still want to trigger any selected stylesheets right away though
 		updateStylesheets();

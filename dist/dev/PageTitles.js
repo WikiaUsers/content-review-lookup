@@ -1,38 +1,39 @@
 'use strict';
 (($, mw) => {
-	const ns = mw.config.get('wgNamespaceNumber');
+	const config = mw.config.values;
+	const ns = config.wgNamespaceNumber;
 	if (window.PageTitlesScriptLoaded || ns === -1){
 		return;
 	}
-	
 	window.PageTitlesScriptLoaded = true;
-	
-	const action = mw.config.get('wgAction');
+	const action = config.wgAction;
 	const activeEdit = ['edit', 'submit'].indexOf(action) !== -1;
-	const articleId = mw.config.get('wgArticleId');
+	const articleId = config.wgArticleId;
 	const id = !articleId ? -1 : articleId;
-	const mainPage = mw.config.get('wgIsMainPage');
-	const nsFormatted = mw.config.get('wgFormattedNamespaces')[ns];
+	const mainPage = config.wgIsMainPage;
+	const nsFormatted = config.wgFormattedNamespaces[ns];
 	const f = new RegExp(`^ *(${nsFormatted}) *: *(.+) *$`, 'i');
 	const nsString = '<span class="mw-page-title-namespace">$1</span>';
 	const sepString = '<span class="mw-page-title-separator">:</span>';
 	const tString = '<span class="mw-page-title-main">$2</span>';
 	const messages = [
 		'creating',
+		'delete-confirm',
+		'difference-title',
 		'editing',
 		'editingcomment',
 		'editingsection',
-		'page-header-title-prefix-history',
-		'page-header-title-prefix-changes',
+		'history-title',
+		'pageinfo-title',
+		'protect-title',
 	];
 	
 	mw.loader.using(['mediawiki.api'], () => {
 		const api = new mw.Api();
-		
 		api.loadMessagesIfMissing(messages).done(() => {
 			api.get({
 				prop: 'info',
-				titles: mw.config.get('wgPageName'),
+				titles: config.wgPageName,
 				inprop: 'displaytitle',
 			}).done(data => {
 				const title = data.query.pages[id].title;
@@ -50,9 +51,15 @@
 					} else if (activeEdit){
 						setHeading(title, 'editing');
 					} else if (action === 'history'){
-						setHeading(title, 'page-header-title-prefix-history');
+						setHeading(title, 'history-title');
+					} else if (action === 'info'){
+						setHeading(title, 'pageinfo-title');
+					} else if (action === 'protect'){
+						setHeading(title, 'protect-title');
+					} else if (action === 'delete'){
+						setHeading(title, 'delete-confirm');
 					} else if (searchParams.has('diff')){
-						setHeading(title, 'page-header-title-prefix-changes');
+						setHeading(title, 'difference-title');
 					} else if (!mainPage && nsFormatted){
 						$('#firstHeading').html(htmlTitle);
 					}

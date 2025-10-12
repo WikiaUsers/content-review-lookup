@@ -12,8 +12,16 @@ const introPages = {
 };
 
 const currentPage = mw.config.get('wgPageName');
+const currentAction = mw.config.get('wgAction');
+const urlParams = new URLSearchParams(window.location.search);
 
-if (introPages[currentPage]) {
+const isBlockedContext = (
+  currentAction === 'history' ||
+  urlParams.has('diff') ||
+  urlParams.has('oldid')
+);
+
+if (introPages[currentPage] && !isBlockedContext) {
   $(function () {
     const { src, sound, duration } = introPages[currentPage];
 
@@ -22,8 +30,8 @@ if (introPages[currentPage]) {
 
     const gif = new Image();
     gif.src = src;
-    gif.style.width = '100vw';
-    gif.style.height = '100vh';
+    gif.style.width = '100%';
+    gif.style.height = '100%';
     gif.style.objectFit = 'cover';
 
     const overlay = document.createElement('div');
@@ -31,8 +39,8 @@ if (introPages[currentPage]) {
     overlay.style.cssText = `
       position: fixed;
       top: 0;
-      left: 0;
-      width: 100%;
+      left: var(--global-navigation-width, 64px);
+      width: calc(100% - var(--global-navigation-width, 64px));
       height: 100%;
       background: black;
       z-index: 9999;
@@ -75,13 +83,7 @@ if (introPages[currentPage]) {
   });
 }
 
-$(function () {
-  if (mw.config.get('wgPageName') !== '1x1x1x1/Skins') return;
-
-  if (location.hash === '#Hacklord') {
-    document.body.style.backgroundImage = 'url(https://static.wikia.nocookie.net/forsaken2024/images/0/0d/Hacklord1xRemodelIntro.gif)';
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
-  }
+importArticle({
+  type: 'script',
+  article: 'u:dev:LangSelect/code.js'
 });

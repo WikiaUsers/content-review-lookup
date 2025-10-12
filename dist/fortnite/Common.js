@@ -176,3 +176,35 @@ mw.hook('wikipage.content').add(function ($content) {
 		}
 	});
 });
+
+
+/**
+ * Rarest Item Shop Cosmetics (RISC) table functionality
+ * JS required to take a DPL output and sort it by descending rarity *and*
+ * ensure only 4 cosmetics per table row
+ */
+$(function() {
+  $('.reward-table.risc-dpl-table').each(function() {
+    const $table = $(this);
+    const $tds = $table.find('td').get();
+
+    // Extract numeric days ago value
+    $tds.forEach(td => {
+      const text = $(td).text();
+      const match = text.match(/(\d+)\s+days\s+ago/);
+      td._daysAgo = match ? parseInt(match[1], 10) : 0;
+    });
+
+    // Sort descending (most days ago first)
+    $tds.sort((a, b) => b._daysAgo - a._daysAgo);
+
+    // Rebuild table body with 4 per row
+    const $newBody = $('<tbody></tbody>');
+    for (let i = 0; i < $tds.length; i++) {
+      if (i % 4 === 0) $newBody.append('<tr></tr>');
+      $newBody.find('tr').last().append($tds[i]);
+    }
+
+    $table.find('tbody').replaceWith($newBody);
+  });
+});

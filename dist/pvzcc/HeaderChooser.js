@@ -115,8 +115,6 @@ var possibleTexts = [
 			"Check out the Creative Hub!",
 			"Tell us your stories!",
 			"Snorkel gear not included!",
-			"Ungh! Ungh! Ungh! Aaaah!",
-			"I'm a gnome! I'm a garden gnome!",
 			"OddLy PlaCed CaPitAL leTTerS!",
 			"Why is it so quiet?",
 			"Keep calm and plant on!",
@@ -230,7 +228,6 @@ var possibleTexts = [
 			"Turn on the lights!",
 			"The stuff of legends!",
 			"Gnomes on the loose!",
-			"December 14th, 2024!",
 			"Use boar!",
 			"Check out Page of Resources!",
 			"Check out Image Resources!",
@@ -259,7 +256,6 @@ var possibleTexts = [
 			"Nuttin' to see here was... well, here!",
 			"Ha ha ha!",
 			"*giggles cutely*",
-			"<nowiki>It's just you and me now!</nowiki>",
 			"Make sure to add a strategies section!",
 			"Creepes is not a creative color!",
 			":bonkchoy:",
@@ -477,8 +473,8 @@ var possibleTexts = [
             "💚 DsFanboy!",
             "🩵 Fun Animator!",
             "🩵 Miss Pembroke!",
-            "🩵 AsterWasTaken!",
-            "💜 ShogunyanMasterOFishCom!",
+            "💚 AsterWasTaken!",
+            "💜 FILIPN0F1SHSTICKF4ILURE!",
             "💜 404That'sAnError!"
         ],
         weight: 450000
@@ -489,8 +485,8 @@ var possibleTexts = [
             "💚💚 DsFanboy!",
             "🩵🩵 Fun Animator!",
             "🩵🩵 Miss Pembroke!",
-            "🩵🩵 AsterWasTaken!",
-            "💜💜 ShogunyanMasterOFishCom!",
+            "💚💚 AsterWasTaken!",
+            "💜💜 FILIPN0F1SHSTICKF4ILURE!",
             "💜💜 404That'sAnError!"
         ],
         weight: 300000
@@ -501,8 +497,8 @@ var possibleTexts = [
             "💚💚💚 DsFanboy!",
             "🩵🩵🩵 Fun Animator!",
             "🩵🩵🩵 Miss Pembroke!",
-            "🩵🩵🩵 AsterWasTaken!",
-            "💜💜💜 ShogunyanMasterOFishCom!",
+            "💚💚💚 AsterWasTaken!",
+            "💜💜💜 FILIPN0F1SHSTICKF4ILURE!",
             "💜💜💜 404That'sAnError!"
         ],
         weight: 15000
@@ -691,7 +687,8 @@ var possibleTexts = [
             "👻💚 WiLdCaRd2048!",
             "👻🩵 Nuttin' to see here!",
             "👻💜 Creepes.",
-            "👻💜 Dartichoke Enjoyer!"
+            "👻💜 Dartichoke Enjoyer!",
+            "👻💜 ShogunyanMasterOFishCom!"
         ],
         weight: 45000
     },
@@ -702,7 +699,8 @@ var possibleTexts = [
             "👻💚💚 WiLdCaRd2048!",
             "👻🩵🩵 Nuttin' to see here!",
             "👻💜💜 Creepes.",
-            "👻💜💜 Dartichoke Enjoyer!"
+            "👻💜💜 Dartichoke Enjoyer!",
+            "👻💜💜 ShogunyanMasterOFishCom!"
         ],
         weight: 30000
     },
@@ -713,7 +711,8 @@ var possibleTexts = [
             "👻💚💚💚 WiLdCaRd2048!",
             "👻🩵🩵🩵 Nuttin' to see here!",
             "👻💜💜💜 Creepes.",
-            "👻💜💜💜 Dartichoke Enjoyer!"
+            "👻💜💜💜 Dartichoke Enjoyer!",
+            "👻💜💜💜 ShogunyanMasterOFishCom!"
         ],
         weight: 1500
     },
@@ -738,7 +737,7 @@ var possibleTexts = [
         ],
         weight: 5
     },
-    // Rainbow - Weight 1
+    // Rainbow - Weight 2
     {
         texts: [
             "🌈 You found the Rainbow Splash! Love wins. Message a staff member for your reward! 😏",

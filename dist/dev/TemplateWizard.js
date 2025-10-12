@@ -174,7 +174,7 @@ mw.loader.using('mediawiki.api', () => {
 			let getContent = ()=>{
 				let {toggles, params} = TW.parseParams();
 				return `
-					<div class="tw-popup-hatnote"><i>Generated from: <a href="${mw.util.getUrl(data.title)}">${data.title}</a></i></div>
+					<div class="tw-popup-hatnote"><i>Generated from: <a href="${mw.util.getUrl(data.title)}">${data.title}</a> (<a href="${mw.util.getUrl(data.title)}?action=edit">edit</a>&ThinSpace;|&ThinSpace;<a href="${mw.util.getUrl(data.title)}?action=history">hist</a>)</i></div>
 					<div class="tw-popup-template-description">${data.description ? (data.description[cfg.wgUserLanguage]||data.description.en) : 'No template description available.'}</div>
 					<div class="tw-popup-format-text">Format: ${data.format ? data.format.replace('\n', '\\n') : 'inline'}</div>
 					<div class="tw-popup-opts">

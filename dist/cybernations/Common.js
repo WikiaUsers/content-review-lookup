@@ -466,6 +466,8 @@ function searchtab() {
 addOnloadHook(searchtab);
 ****/
 
+/* this is causing errors and likely not necessary, use personal JS
+
 $(function() {
  var us = mw.config.get('wgCanonicalNamespace');
  if((us == "User") || (us == "User_talk") || (us == "User_blog")) {
@@ -475,6 +477,7 @@ $(function() {
   }
  }
 });
+*/
 
 // Automatically fix Wikipedia links that are appearing as external links
 $('a[href*="wikipedia.org/wiki/"].external.exitstitial').removeClass('external exitstitial').addClass('text');

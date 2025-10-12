@@ -1,3 +1,4 @@
+// Tooltip
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
         var css = mw.util.addCSS($(this).attr("data-css"));
@@ -70,3 +71,20 @@ $(function () {
     });
   });
 });
+
+// User profiles (adopted from the BFS wiki)
+importArticle({
+    type: 'script',
+    article: 'u:dev:UserTags/code.js'
+});
+
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		henry: {u:'Hello I am HenryRifle',order:-2001},
+	}
+};
+UserTagsJS.modules.custom = {
+	'Henryguy1234': ["henry"]
+};

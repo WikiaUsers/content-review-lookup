@@ -1,33 +1,28 @@
+/* TODO:
+ * Implement {{notifications}} system
+ * Add [[Memory Alpha:Topic subscriptions]] feature
+ * Add dropdown to assist @-mentions
+ */
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	if (window.TalkToolsLoaded){
+	const config = mw.config.values;
+	const ns = config.wgNamespaceNumber;
+	const notExtraSigNS = config.wgExtraSignatureNamespaces.indexOf(ns) === -1;
+	const wrongNamespace = (ns % 2 === 0 && notExtraSigNS) || ns < 0;
+	const addTopicButton = $('#ca-addsection');
+	const noTalkTools = wrongNamespace && !addTopicButton.length;
+	
+	if (window.TalkToolsLoaded || noTalkTools){
 		return;
 	}
+	
 	window.TalkToolsLoaded = true;
-	const version = '0.4.29 (beta)';
-	const api = new mw.Api();
-	const notArchived = !$('#archivedPage').length; // {{archived}}
-	const config = mw.config.get([
-		'wgAction',
-		'wgArticleId',
-		'wgCurRevisionId',
-		'wgExtraSignatureNamespaces',
-		'wgIsProbablyEditable',
-		'wgNamespaceNumber',
-		'wgPageName',
-		'wgTitle',
-	]);
-	const sigNamespaces = [4, 110]; // TODO: replace with `config.wgExtraSignatureNamespaces`; also look into including ns:112
-	const wrongNamespace = (config.wgNamespaceNumber % 2 === 0 && sigNamespaces.indexOf(config.wgNamespaceNumber) === -1) || config.wgNamespaceNumber === -1;
-	const addTopicButton = $('#ca-addsection');
-	const editorID = 'talk-tools-editor-js';
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
-	
-	if (wrongNamespace && !addTopicButton.length){
-		return;
-	}
-	
+	const version = '0.5.1 (beta)';
+	const api = new mw.Api();
+	const notArchived = !$('#archivedPage').length; // {{archived}}
+	const editorID = 'talk-tools-editor-js';
 	const months = [
 		'January',
 		'February',
@@ -53,7 +48,6 @@ mw.loader.using(['mediawiki.api'], () => {
 		'Nov',
 		'Dec',
 	];
-	
 	const timeZoneConverter = {
 		'PST': 'UTC-8',
 		'EST': 'UTC-5',
@@ -63,7 +57,6 @@ mw.loader.using(['mediawiki.api'], () => {
 		'CET': 'UTC+1',
 		'CEST': 'UTC+2',
 	};
-	
 	const timeZones = Object.keys(timeZoneConverter);
 	const time = '[0-2]\\d:[0-5]\\d';
 	const day = ' [1-3]?\\d,?';
@@ -106,12 +99,12 @@ mw.loader.using(['mediawiki.api'], () => {
 	];
 	
 	api.loadMessagesIfMissing(messages).done(() => {
-		addStats();
+		mw.hook('wikipage.content').add(addStats);
 		$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
 		if (
 			!config.wgArticleId
 			&& params.get('redlink')
-			&& sigNamespaces.indexOf(config.wgNamespaceNumber) === -1
+			&& notExtraSigNS
 		){
 			$('#editform').css('display', 'none');
 		}
@@ -120,11 +113,14 @@ mw.loader.using(['mediawiki.api'], () => {
 			addTopic();
 		}
 		if (
-			config.wgAction === 'view'
-			&& notArchived
-			&& config.wgIsProbablyEditable
+			config.wgAction === 'view' &&
+			config.wgArticleId &&
+			config.wgIsProbablyEditable &&
+			notArchived
 		){
-			$('.mw-parser-output').find(commentElements).each(addReplyButtons);
+			mw.hook('wikipage.content').add(content => {
+				content.find(commentElements).each(addReplyButtons);
+			});
 		}
 	});
 	
@@ -149,9 +145,9 @@ mw.loader.using(['mediawiki.api'], () => {
 			'spellcheck': true,
 			'required': true,
 		}))).append($('<textarea>', {
-			'rows': 5,
 			'placeholder': 'Description',
 			'required': true,
+			'on': {'input': resizeTextBox},
 		})).append($('<div>', {
 			'id': 'talk-tools-preview-js',
 			'data-label': 'Preview',
@@ -208,6 +204,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			api.get(parseParams).done(previewJSON => {
 				const parsedPreview = $(previewJSON.parse.text['*']);
 				$('#talk-tools-preview-js').html(parsedPreview);
+				mw.hook('wikipage.content').fire($('#talk-tools-preview-js'));
 			});
 		}, 2000);
 		
@@ -294,11 +291,11 @@ mw.loader.using(['mediawiki.api'], () => {
 					} else {
 						parsedText = $(output.parse.text['*']);
 						$(`#${editorID}`).before(parsedText);
+						$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 					}
+					mw.hook('wikipage.content').fire($('#mw-content-text'));
 					$(`#${editorID}`).remove();
 					mw.notify('Your topic was added.', {type: 'success'});
-					addStats();
-					$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 				});
 			} else {
 				errorNotice(`An unknown error has occured: ${JSON.stringify(data)}`);
@@ -337,7 +334,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		const txtContents = $(commentElement).contents().contents().addBack().toArray().filter(txtFilter);
 		const timestamp = txtContents[txtContents.length - 1];
 		const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
-		const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
+		const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q, #talk-tools-editor-js').length;
 		const isArchived = $(timestamp).parents('.mw-archivedtalk').length;
 		
 		if (!userLinks.length || !tsRegexp.test($(timestamp).text()) || isNoTalk || isArchived){
@@ -400,12 +397,12 @@ mw.loader.using(['mediawiki.api'], () => {
 		}).append($('<label>', {
 			'text': mw.message('custom-talk-tools-version', version).parse(),
 		})).append($('<textarea>', {
-			'rows': 5,
 			'placeholder': mw.message(
 				'custom-talk-tools-reply-to',
 				button.data('user')
 			).text(),
 			'required': true,
+			'on': {'input': resizeTextBox},
 		})).append($('<div>', {
 			'id': 'talk-tools-preview-js',
 			'data-label': 'Preview',
@@ -462,6 +459,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			api.get(parseParams).done(previewJSON => {
 				const parsedPreview = $(previewJSON.parse.text['*']);
 				$('#talk-tools-preview-js').html(parsedPreview);
+				mw.hook('wikipage.content').fire($('#talk-tools-preview-js'));
 			});
 		}, 2000);
 		
@@ -528,7 +526,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			'generator': 'allpages',
 			'gapfrom': config.wgTitle,
 			'gapto': config.wgTitle,
-			'gapnamespace': config.wgNamespaceNumber,
+			'gapnamespace': ns,
 			'prop': 'revisions',
 			'rvprop': 'content',
 			'rvslots': 'main',
@@ -597,9 +595,8 @@ mw.loader.using(['mediawiki.api'], () => {
 					api.get(parseParams).done(output => {
 						const parsedText = $(output.parse.text['*']).contents();
 						$('#mw-content-text > .mw-parser-output').html(parsedText);
+						mw.hook('wikipage.content').fire($('#mw-content-text'));
 						mw.notify(mw.message('custom-talk-tools-success').text(), {type: 'success'});
-						addStats();
-						$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 					});
 				} else {
 					errorNotice(`An unknown error has occured: ${JSON.stringify(data)}`);
@@ -640,11 +637,11 @@ mw.loader.using(['mediawiki.api'], () => {
 		alert(message);
 	}
 	
-	function addStats(){
+	function addStats(content){
 		const comments = [];
 		let currentSection = '';
 		
-		$('.mw-parser-output').find('p, dd, div, li, h2 .mw-headline').each((statsIndex, statsElement) => {
+		content.find('p, dd, div, li, h2 .mw-headline').each((statsIndex, statsElement) => {
 			if ($(statsElement).prop('tagName') === 'SPAN'){
 				currentSection = $(statsElement).attr('id').replaceAll('_', ' ');
 				return;
@@ -846,13 +843,19 @@ mw.loader.using(['mediawiki.api'], () => {
 	function addSig(comment){
 		// <pre>
 		if (!/[^~]~~~~$/.test(comment)){
-			if (/~~~$/.test(comment)){
-				comment = comment.replace(/( *)~~~+$/, '$1~~~~');
+			if (/^[;:*#].*(?![^])/m.test(comment)){
+				comment = comment.replace(/$/, '\n~~~~');
 			} else {
 				comment = comment.replace(/$/, ' ~~~~');
 			}
 		}
 		return comment;
 		// </pre>
+	}
+	
+	function resizeTextBox(boxEvent){
+		const textBox = $(boxEvent.currentTarget);
+		textBox.removeAttr('style');
+		textBox.css('height', textBox.prop('scrollHeight') + 2);
 	}
 });

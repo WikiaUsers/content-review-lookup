@@ -42,6 +42,7 @@ UserTagsJS.modules.custom = {
      'Gisela :3': ['sysop2'],
      'CaramelRandom Girl': ['chatmoderator2'],
      'LapisLazuli987': ['sysop2'],
+    'TamashīSora': ['sysop'], 
         
 };
  

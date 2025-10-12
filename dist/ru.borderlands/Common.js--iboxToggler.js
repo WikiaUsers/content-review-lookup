@@ -14,9 +14,10 @@
             for (ni=0; ni<ne.length; ni++) {
                 //add .pi-header. 4 collapse\expand marker
                 //wrapInner to prevent style overlapping (pi-title>>pi-header)
-                $(ne[ni]).find('.pi-title').addClass('pi-header').wrapInner('<span class="pi-title" />');
+                //causes visual glitches (double pi-title?) on new engine. also, seems like not needed anymore
+                //$(ne[ni]).find('.pi-title').addClass('pi-header').wrapInner('<span class="pi-title" />');
                 //wrap title to make it possible
-                $(ne[ni]).children(':first').wrap('<span id="nihTogglerWrap1" class="nihTogglerWrap1 pi-item pi-collapse pi-collapse-open pi-title"></span>').on('click', niheaderToggler_handler);
+                $(ne[ni]).children(':first').wrap('<span id="nihTogglerWrap1" class="nihTogglerWrap1 pi-header pi-item pi-collapse pi-collapse-open pi-title"></span>').on('click', niheaderToggler_handler);
             }
             return;
         } //niheaderToggler

@@ -588,7 +588,7 @@ function beforeInitCommon() {
 }
 
 // run immediately
-beforeInitCommon();
+window.setTimeout(beforeInitCommon, 0);
 
 $.when(
 	mw.loader.getScript(articlePath + '/MediaWiki:H3CSS.min.js?action=raw&ctype=text/javascript')

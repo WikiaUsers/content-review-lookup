@@ -1,15 +1,18 @@
+'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	if (!$('.number-of-users').length){
-		return;
-	}
-	
 	const api = new mw.Api();
-	api.get({
-		action: 'listuserssearchuser',
-		contributed: '1',
-		limit: '0',
-		order: 'ts_edit',
-		sort: 'desc',
-		offset: '0',
-	}).done(result => $('.number-of-users').text(result.listuserssearchuser.result_count));
+	mw.hook('wikipage.content').add(content => {
+		const counts = content.find('.number-of-users');
+		if (!counts.length){
+			return;
+		}
+		api.get({
+			action: 'listuserssearchuser',
+			contributed: '1',
+			limit: '0',
+			order: 'ts_edit',
+			sort: 'desc',
+			offset: '0',
+		}).done(result => counts.text(result.listuserssearchuser.result_count));
+	});
 });

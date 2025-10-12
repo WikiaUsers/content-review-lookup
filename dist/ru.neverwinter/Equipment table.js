@@ -55,6 +55,15 @@ $(function() {
 
   const createOptions = (options, labels = null) => options.map(v => `<option value="${v}">${labels ? labels[v] : v}</option>`).join('');
 
+  // ---------- Чтение начальных параметров из div ----------
+  const $tableDiv = $('#equipment-table');
+  currentClass = $tableDiv.data('class') || '';
+  currentCategory = $tableDiv.data('category') || '';
+  currentQuality = $tableDiv.data('quality') || '';
+  currentAttributes = $tableDiv.data('attributes') ? $tableDiv.data('attributes').split(',') : [];
+  currentSort = $tableDiv.data('sort') || 'name_asc';
+
+  // ---------- Создание фильтров ----------
   function buildSelectors() {
     const $container = $('#filter-controls');
     if (!$container.length) $('#equipment-table').before('<div id="filter-controls" style="margin-bottom:15px;"></div>');
@@ -116,6 +125,7 @@ $(function() {
 
     $filters.append(htmlLeft, htmlRight);
 
+    // ---------- Навешивание событий ----------
     $('#search-input').on('input', () => updateState('search'));
     $('#sort-select, #class-select, #category-select, #quality-select').on('change', function () {
       updateState($(this).attr('id').replace('-select', ''));
@@ -130,8 +140,18 @@ $(function() {
       currentPage = 1;
       loadPage();
     });
+
+    // ---------- Установка начальных значений фильтров ----------
+    $('#class-select').val(currentClass);
+    $('#category-select').val(currentCategory);
+    $('#quality-select').val(currentQuality);
+    $('#sort-select').val(currentSort);
+    $('.attribute-checkbox').each(function() {
+      $(this).prop('checked', currentAttributes.includes($(this).val()));
+    });
   }
 
+  // ---------- Обновление состояния ----------
   function updateState(type) {
     const map = {
       search: () => currentSearch = $('#search-input').val().trim(),
@@ -145,6 +165,7 @@ $(function() {
     loadPage();
   }
 
+  // ---------- Пагинация ----------
   function insertPaginationRows() {
     const $table = $('#equipment-table table.wikitable');
     if (!$table.length) return;
@@ -161,13 +182,9 @@ $(function() {
       `);
     }
 
-    // Удаляем старые пагинации
     $table.find('tr.pagination-row').remove();
-
-    // Вставляем ТОЛЬКО в конец таблицы
     $table.append(createPaginationRow());
 
-    // Навешиваем события на кнопки
     $table.find('button.prev-page').off('click').on('click', () => {
       if (currentPage > 1) {
         currentPage--;
@@ -183,6 +200,7 @@ $(function() {
     });
   }
 
+  // ---------- Загрузка страницы ----------
   function loadPage() {
     const offset = (currentPage - 1) * itemsPerPage;
     const api = new mw.Api();
@@ -195,7 +213,6 @@ $(function() {
       if (!html) return $('#equipment-table').html('<p>Ошибка загрузки данных</p>');
       $('#equipment-table').html(html);
 
-      // Вставляем пагинацию только ВНИЗУ
       insertPaginationRows();
 
       checkHasNextPage().then(hasNext => {

@@ -18,19 +18,29 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Norcs nerfs, rootthings buffs
+'Dworc Shadowstalker':'15.11.dde523',
+'Gloom Maw':'15.11.dde523',
+'Norcferatu Heartless': '15.11.dde523',
+'Norcferatu Nightweaver':'15.11.dde523',
+'Orclops Bloodbreaker':'15.11.dde523',
+'Rootthing Amber Shaper':'15.11.dde523',
+'Rootthing Bug Tracker':'15.11.dde523',
+'Rootthing Nutshell':'15.11.dde523',
+'Varg':'15.11.dde523',
 // Adding spiked gorget and spiked bracers as loot
-'Norcferatu Heartless': '15.11.57e218',
-'Norcferatu Nightweaver':'15.11.57e218',
+//'Norcferatu Heartless': '15.11.57e218',
+//'Norcferatu Nightweaver':'15.11.57e218',
 // Gold amount changes [[Updates/15.11.b91244]]
 'Brachiodemon': '15.11.b91244',
 'Infernal Demon': '15.11.b91244',
 'Infernal Phantom': '15.11.b91244',
 //'Norcferatu Heartless': '15.11.b91244',
-'Gloom Maw':'15.11.b91244',
+//'Gloom Maw':'15.11.b91244',
 //'Norcferatu Nightweaver':'15.11.b91244',
-'Varg':'15.11.b91244',
-'Orclops Bloodbreaker':'15.11.b91244',
-'Dworc Shadowstalker':'15.11.b91244',
+//'Varg':'15.11.b91244',
+//'Orclops Bloodbreaker':'15.11.b91244',
+//'Dworc Shadowstalker':'15.11.b91244',
 //gold amount change [[Updates/15.11.c5bf24]]
 //'Norcferatu Heartless': '15.11.c5bf24',
 //'Gloom Maw':'15.11.c5bf24',
@@ -213,7 +223,7 @@ window.loot_parser_data = {
 'Stalking Stalk': '14.00.7103e2',
 'Undertaker': '14.00.7103e2',
 // 
-'Rootthing Amber Shaper': '13.40.e15431',
+//'Rootthing Amber Shaper': '13.40.e15431',
 // Balancing Project Changes Part VI - 2024
 'Deathstrike': '13.36.d8d851',
 'Gnomevil': '13.36.d8d851',

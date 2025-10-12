@@ -1,8 +1,9 @@
 'use strict';
-$(() => {
+mw.hook('wikipage.content').add(content => {
 	const smallTreeCount = 3;
+	const appearLists = content.find('.appear');
 	
-	$('.appear').each((index, currentTree) => {
+	appearLists.each((index, currentTree) => {
 		const currentButtonID = `mainButton-${index}`;
 		const numberOfSubLists = $(currentTree).find('ul li ul, ol li ol, ul li ol, ol li ul').length;
 		const total = $(currentTree).find('ul li, ol li').length - numberOfSubLists;
@@ -16,7 +17,7 @@ $(() => {
 			$(currentTree).find('ul li ul, ol li ol, ul li ol, ol li ul').hide();
 		}
 		
-		$(`#${currentButtonID}`).on('click', (event) => {
+		$(`#${currentButtonID}`).on('click', event => {
 			event.preventDefault();
 			if ($(event.currentTarget).text() === 'show all'){
 				$(currentTree).find('ul li ul, ol li ol, ul li ol, ol li ul').show();
@@ -28,14 +29,14 @@ $(() => {
 		});
 	});
 	
-	$('.appear li ul, .appear li ol').each((index, currentTree) => {
+	appearLists.find('li ul, li ol').each((index, currentTree) => {
 		const currentButtonID = `pane-${index}`;
 		const total = $(currentTree).find('li').length - $(currentTree).find('ul, ol').length;
 		const button = `<a href="#" id="${currentButtonID}" class="show-hide-button">${total}</a>`;
 		
 		$(currentTree).before(` (${button})`);
 		
-		$(`#${currentButtonID}`).on('click', (event) => {
+		$(`#${currentButtonID}`).on('click', event => {
 			event.preventDefault();
 			$(currentTree).toggle();
 		});
