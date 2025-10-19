@@ -23,7 +23,6 @@
 		'MediaWiki:AttackStrategies.js',
         'MediaWiki:AvailableBuildings.js',
         'MediaWiki:BadgeGenerator.js',
-        'MediaWiki:BadgeGenerator2.js',
         'MediaWiki:ChestLootTable.js',
         'MediaWiki:ClanHouseGenerator.js',
         'MediaWiki:Experience.js',

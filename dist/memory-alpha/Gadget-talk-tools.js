@@ -1,5 +1,5 @@
 /* TODO:
- * Implement {{notifications}} system
+ * Implement {{Talk Tools notifications}} system
  * Add [[Memory Alpha:Topic subscriptions]] feature
  * Add dropdown to assist @-mentions
  */
@@ -19,7 +19,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	window.TalkToolsLoaded = true;
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
-	const version = '0.5.1 (beta)';
+	const version = '0.5.6 (beta)';
 	const api = new mw.Api();
 	const notArchived = !$('#archivedPage').length; // {{archived}}
 	const editorID = 'talk-tools-editor-js';
@@ -136,7 +136,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			'id': editorID,
 			'on': {'submit': formTopicEvent => formTopicEvent.preventDefault()},
 		}).append($('<label>', {
-			'text': mw.message('custom-talk-tools-version', version).parse(),
+			'html': mw.message('custom-talk-tools-version', version).parse(),
 		})).append($('<h2>', {
 			'id': 'newtopic-sectiontitle-js',
 		}).append($('<input>', {
@@ -395,7 +395,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		const dd = $('<dd>').append($('<form>', {
 			'on': {'submit': formReplyEvent => formReplyEvent.preventDefault()},
 		}).append($('<label>', {
-			'text': mw.message('custom-talk-tools-version', version).parse(),
+			'html': mw.message('custom-talk-tools-version', version).parse(),
 		})).append($('<textarea>', {
 			'placeholder': mw.message(
 				'custom-talk-tools-reply-to',
@@ -724,14 +724,16 @@ mw.loader.using(['mediawiki.api'], () => {
 			).parse();
 		}
 		
-		if ($('#talk-stats-top-js').length){
-			$('#talk-stats-top-js').html(latestCommentTopText);
-		} else {
-			$('#mw-content-text').before($('<div>', {
-				'class': 'talk-stats-js',
-				'id': 'talk-stats-top-js',
-				'html': latestCommentTopText,
-			}));
+		if (content.attr('id') !== 'talk-tools-preview-js'){
+			if ($('#talk-stats-top-js').length){
+				$('#talk-stats-top-js').html(latestCommentTopText);
+			} else {
+				$('#mw-content-text').before($('<div>', {
+					'class': 'talk-stats-js',
+					'id': 'talk-stats-top-js',
+					'html': latestCommentTopText,
+				}));
+			}
 		}
 		
 		$('.mw-parser-output > h2').each((headingIndex, headingElement) => {
@@ -842,7 +844,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	
 	function addSig(comment){
 		// <pre>
-		if (!/[^~]~~~~$/.test(comment)){
+		if (!/(?<!~)~~~~$/.test(comment)){
 			if (/^[;:*#].*(?![^])/m.test(comment)){
 				comment = comment.replace(/$/, '\n~~~~');
 			} else {

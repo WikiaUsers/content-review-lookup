@@ -168,7 +168,6 @@ var MutationsGallery = (function() {
 		$notification: null,
 		
 		init: function() {
-
             if (typeof jQuery === 'undefined') {
                 console.error('UMI: jQuery is required but not available');
                 return;
@@ -416,7 +415,7 @@ var MutationsGallery = (function() {
 				// If modal is open
 				if ($('#mutation-modal').is(':visible')) {
 					// Close modal with Esc
-					if (e.key === 'Escape') {
+					if (e.key === 'Escape' || e.key === 'Esc') { // For older browsers
 						$('#mutation-modal').hide();
 						UI.resetForm();
 					}
@@ -457,8 +456,6 @@ var MutationsGallery = (function() {
 		
 		// Clipboard paste for images
         setupClipboardPaste: function() {
-            var self = this;
-            
             $('#mutation-modal').on('paste', function(e) {
                 var items = (e.clipboardData || e.originalEvent.clipboardData).items;
                 
@@ -709,7 +706,12 @@ var MutationsGallery = (function() {
 				if (dataUrl) {
 					// Convert data URL to Blob
 					var arr = dataUrl.split(',');
-					var mime = arr[0].match(/:(.*?);/)[1];
+					var mimeMatch = arr[0].match(/:(.*?);/);
+					if (!mimeMatch) {
+						UI.showStatus('Error: Could not determine image type from edited data.', 'error');
+						return;
+					}
+					var mime = mimeMatch[1];
 					var bstr = atob(arr[1]);
 					var n = bstr.length;
 					var u8arr = new Uint8Array(n);
@@ -1266,24 +1268,19 @@ var MutationsGallery = (function() {
                     '    var id = data.id;' +
                     '    var fileBuffer = data.buffer;' +
                     '    ' +
-                    '    // Function to convert string to ArrayBuffer' +
-                    '    function str2ab(str) {' +
-                    '        var buf = new ArrayBuffer(str.length);' +
-                    '        var bufView = new Uint8Array(buf);' +
-                    '        for (var i=0, strLen=str.length; i < strLen; i++) {' +
-                    '            bufView[i] = str.charCodeAt(i);' +
-                    '        }' +
-                    '        return buf;' +
+                    '    if (typeof crypto === "undefined" || !crypto.subtle) {' +
+                    '        self.postMessage({ id: id, error: "Web Crypto API not available in worker." });' +
+                    '        return;' +
                     '    }' +
                     '    ' +
                     '    // Function to calculate SHA1' +
                     '    function sha1(buffer) {' +
-                    '        return crypto.subtle.digest(\'SHA-1\', buffer)' +
+                    '        return crypto.subtle.digest("SHA-1", buffer)' +
                     '            .then(function(hash) {' +
                     '                var hashArray = Array.from(new Uint8Array(hash));' +
                     '                var hashHex = hashArray.map(function(b) {' +
-                    '                    return (\'00\' + b.toString(16)).slice(-2);' +
-                    '                }).join(\'\');' +
+                    '                    return ("00" + b.toString(16)).slice(-2);' +
+                    '                }).join("");' +
                     '                return hashHex;' +
                     '            });' +
                     '    }' +
@@ -1292,7 +1289,7 @@ var MutationsGallery = (function() {
                     '    sha1(fileBuffer).then(function(result) {' +
                     '        self.postMessage({ id: id, result: result });' +
                     '    }).catch(function(error) {' +
-                    '        self.postMessage({ id: id, error: error.message || \'SHA1 calculation failed\' });' +
+                    '        self.postMessage({ id: id, error: error.message || "SHA1 calculation failed" });' +
                     '    });' +
                     '};'
                 ], { type: 'application/javascript' });
@@ -1347,6 +1344,9 @@ var MutationsGallery = (function() {
 					} else {
 						// Fallback: calculate SHA1 in main thread
 						try {
+							if (typeof crypto === 'undefined' || !crypto.subtle) {
+								throw new Error("Web Crypto API not available.");
+							}
 							crypto.subtle.digest('SHA-1', buffer)
 								.then(function(hashBuffer) {
 									var hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -1945,19 +1945,13 @@ var MutationsGallery = (function() {
 		
 		// Add upload buttons to section headers
 		addUploadButtons: function() {
-			// Use native DOM API to avoid querySelectorAll errors on macOS
-			var headers = document.getElementsByTagName('th');
-			if (!headers || headers.length === 0) return;
-			
-			for (var i = 0; i < headers.length; i++) {
-				var header = headers[i];
-				if (!header) continue;
-				
-				var $header = $(header);
-				var $div = $header.children('div:first');
+			try {
+				$('th').each(function() {
+					var $header = $(this);
+					var $div = $header.children('div:first');
 
-				if ($div.length && !$div.find('.mutation-upload-btn').length) {
-					try {
+					// **FIX:** Check that $div exists AND does not already contain the button
+					if ($div.length && !$div.find('.mutation-upload-btn').length) {
 						var uploadBtn = $('<div>', {
 							'class': 'mutation-upload-btn no-ink',
 							'text': 'Upload Mutation Image'
@@ -1983,8 +1977,11 @@ var MutationsGallery = (function() {
 							var files = e.originalEvent.dataTransfer.files;
 							if (files.length) {
 								$('#mutation-modal').show();
-								$('#mutation-image')[0].files = files;
-								$('#mutation-image').trigger('change');
+								var $input = $('#mutation-image');
+								if ($input.length) {
+									$input[0].files = files;
+									$input.trigger('change');
+								}
 							}
 						});
 
@@ -2002,10 +1999,11 @@ var MutationsGallery = (function() {
 								.append(uploadBtn)
 								.append(expandButton);
 						}
-					} catch (error) {
-						console.warn('Error adding upload button:', error);
 					}
-				}
+				});
+			} catch (error) {
+				ErrorLogger.logError(error, 'ButtonManager.addUploadButtons');
+				console.warn('Error adding upload button:', error);
 			}
 		}
 	};
@@ -2178,7 +2176,7 @@ var MutationsGallery = (function() {
 			// Check for touch device
 			hasTouch = 'ontouchstart' in window || 
 					   navigator.maxTouchPoints > 0 || 
-					   navigator.msMaxTouchPoints > 0;
+					   (window.navigator && window.navigator.msMaxTouchPoints > 0);
 					   
 			// Check if mobile device based on user agent
 			isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -2294,7 +2292,7 @@ var MutationsGallery = (function() {
 			
 			// Handle rotation
 			var rotation = this.editState.rotation;
-			var swapDimensions = rotation === 90 || rotation === 270;
+			var swapDimensions = rotation === 90 || rotation === 270 || rotation === -90 || rotation === -270;
 			
 			// Set canvas dimensions
 			this.canvas.width = swapDimensions ? height : width;
@@ -2749,7 +2747,7 @@ var MutationsGallery = (function() {
 		},
 		
 		// Public method to access the version
-		version: '2.1.0'
+		version: '2.1.1' // Incremented version for fixes
 	};
 })();
 

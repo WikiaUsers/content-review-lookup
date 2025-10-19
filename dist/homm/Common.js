@@ -4,6 +4,8 @@ console.log('MediaWiki:Common.js');
 
 (function () {
 
+const siteUploadPath = 'https://static.wikia.nocookie.net/heroes-of-might-and-magic/images/';
+
 let articlePath = mw.config.values.wgArticlePath.replace(/\/\$1/, '');
 
 function getCookie(cname) {
@@ -556,6 +558,86 @@ function handleStorageChange(e) {
 	}
 }
 
+function displayWebp(parent, src) {
+    var img = document.createElement('img');
+    parent.appendChild(img);
+    img.src = src;
+}
+
+function escapeMediaWiki(fileName) {
+  return fileName
+    .replace(/ /g, '_')           // spaces to underscores
+    .replace(/'/g, '%27')         // apostrophes
+    .replace(/"/g, '%22')         // double quotes
+    .replace(/\(/g, '%28')        // left parenthesis
+    .replace(/\)/g, '%29')        // right parenthesis
+    .replace(/:/g, '%3A')         // colon
+    .replace(/;/g, '%3B')         // semicolon
+    .replace(/@/g, '%40')         // at symbol
+    .replace(/&/g, '%26')         // ampersand
+    .replace(/\+/g, '%2B')        // plus
+    .replace(/,/g, '%2C')         // comma
+    .replace(/\?/g, '%3F')        // question mark
+    .replace(/#/g, '%23')         // hash
+    .replace(/\[/g, '%5B')        // left square bracket
+    .replace(/\]/g, '%5D');       // right square bracket
+}
+
+function getFileName(href) {
+	return escapeMediaWiki(href.split('/').at(-1).replace('File:', ''));
+}
+
+function getFileNameHash(fileName) {
+	return new Hashes.MD5().hex(decodeURIComponent(fileName));
+}
+
+function fixWebpDisplay() {
+	if (location.href.includes('Category:')) {
+	    var galleryBoxes = document.querySelectorAll('.wikia-gallery-item');
+		for (const galleryBox of galleryBoxes) {
+			galleryBox.style.width = 'unset';
+		    const elem = galleryBox.querySelector('a');
+		    if (elem.href && elem.href.endsWith('webp')) {
+		        const thumb = galleryBox.querySelector('.thumb');
+		        thumb.style.width = 'unset';
+		        thumb.style.height = 'unset';
+		        thumb.classList.remove('thumb');
+		        elem.innerHTML = '';
+		        var fileName = getFileName(elem.href);
+		        var fileHash = getFileNameHash(fileName);
+		        displayWebp(elem, siteUploadPath + fileHash[0] + '/' + fileHash.substr(0, 2) + '/' + fileName);
+		    }
+		}	
+	}
+    var searchThumbnails = document.querySelectorAll('.searchResultImage-thumbnail');
+    for (const searchThumbnail of searchThumbnails) {
+        const elem = searchThumbnail.querySelector('a');
+        if (elem.href && elem.href.endsWith('webp')) {
+            elem.innerHTML = '';
+            var fileName = getFileName(elem.href);
+            var fileHash = getFileNameHash(fileName);
+            displayWebp(elem, siteUploadPath + fileHash[0] + '/' + fileHash.substr(0, 2) + '/' + fileName);
+        }
+    }
+    var links = document.querySelectorAll('a');
+    for (const link of links) {
+    	if (!link.href || !link.href.split) {
+    		continue;
+    	}
+        var fileExt = link.href.split('/').at(-3).split('.').at(-1);
+        if (fileExt == 'webp') {
+            var img = link.querySelector('img');
+            if (img) {
+                var fileIcon = img.src.split('/').at(-1).split('.').at(-2);
+                if (fileIcon == 'fileicon') {
+                    link.innerHTML = '';
+                    displayWebp(link, link.href);
+                }
+            }
+        }
+    }
+}
+
 function initCommon() {
 	initPreference('switchExpansion', 'preferredExpansion', 'hota', 'sod', 'Enable HotA', 'Disable HotA', 'Horn of the Abyss', togglePreferredExpansion);
 	initPreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning', toggleDoR);
@@ -595,7 +677,16 @@ $.when(
 ).done(function() {
 	setHeroesStyle();
 }).fail(function (e) {
-	console.error('mw.loader.getScript failed');
+	console.error('mw.loader.getScript H3CSS.min.js failed');
+	console.error(e);
+});
+
+$.when(
+	mw.loader.getScript(articlePath + '/MediaWiki:Hashes.min.js?action=raw&ctype=text/javascript')
+).done(function() {
+	fixWebpDisplay();
+}).fail(function (e) {
+	console.log('mw.loader.getScript Hashes.min.js failed');
 	console.error(e);
 });
 

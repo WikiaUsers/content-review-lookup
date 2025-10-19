@@ -81,20 +81,13 @@ function switchTemplateColor(event) {
     var enabled = event.target.checked;
     console.log("Color Toggle changed:", enabled);
 
-    if (enabled) {
-        if (forsakenWikiSettings.isLoggedIn) {
-            changeGadget(settingID, true, activateTemplateColor);
-        } else {
-            localStorage.setItem(getStorageID(settingID), 'True');
-            activateTemplateColor();
-        }
+    if (forsakenWikiSettings.isLoggedIn) {
+        changeGadget(settingID, enabled, function() {
+            location.reload(); // reload page after saving setting
+        });
     } else {
-        if (forsakenWikiSettings.isLoggedIn) {
-            changeGadget(settingID, false, deactivateTemplateColor);
-        } else {
-            localStorage.setItem(getStorageID(settingID), 'False');
-            deactivateTemplateColor();
-        }
+        localStorage.setItem(getStorageID(settingID), enabled ? 'True' : 'False');
+        location.reload(); // reload page for localStorage users
     }
 }
 

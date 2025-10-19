@@ -102,3 +102,21 @@ queue: false
 mw.hook( 'wikipage.content' ).add( zselector );
 zselector( mw.util.$content );
 });
+$(document).ready(function() {
+  // Executa só na página Dying Light
+  if (mw.config.get('wgPageName') === 'Dying_Light') {
+    $('.ayoText').on('click', function() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      fetch('https://files.catbox.moe/x2bztl.mp3')
+        .then(r => r.arrayBuffer())
+        .then(b => ctx.decodeAudioData(b))
+        .then(buf => {
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(ctx.destination);
+          src.start(0);
+        })
+        .catch(e => console.error('Erro ao reproduzir áudio:', e));
+    });
+  }
+});

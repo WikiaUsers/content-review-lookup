@@ -895,7 +895,7 @@ window.loot_parser_data = {
 //'Betrayed Wraith': '9.86',
 //'Blightwalker': '9.86',
 'Crystal Spider': '9.86',
-'Deathbine': '9.86',
+'Deathbine': '15.11.dde523',
 'Gargoyle': '9.86',
 //'Hand of Cursed Fate': '9.86',
 'Hide': '9.86',

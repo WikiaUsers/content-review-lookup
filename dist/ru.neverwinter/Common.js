@@ -196,31 +196,39 @@ const showTip = (e, $t) => {
 
     tooltipText = tooltipText.replace(/\}\}$/, `|temp_en_title=${enTitle}}}`);
 
-    $.ajax({
-      url: '/ru/api.php',
-      data: { action: 'parse', format: 'json', text: tooltipText, title, prop: 'text', contentmodel: 'wikitext' },
-      dataType: 'json',
-      success: data => {
-        if ($t !== activeHoverLink) return;
-        if (data.error) {
-          $tfb.html('API Error: ' + data.error.info);
-        } else {
-          const html = data.parse.text['*'],
-                $tooltip = $(html).find('.tooltip-content');
-          if ($tooltip.length) {
-            $tfb.html($tooltip);
-          } else {
-            $tfb.html('Error: could not extract tooltip.');
-          }
-        }
-        $tfb.removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
-        moveTip(e);
-      },
-      error: () => {
-        $tfb.html('API request error').removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
-        moveTip(e);
-      }
-    });
+	$tfb
+	  .html('<div class="tooltip-content">Загрузка...</div>')
+	  .removeClass('hidden')
+	  .addClass('tooltip-ready')
+	  .css('visibility', 'visible');
+	moveTip(e);
+
+	$.ajax({
+	  url: '/ru/api.php',
+	  method: 'POST',
+	  data: { action: 'parse', format: 'json', text: tooltipText, title, prop: 'text', contentmodel: 'wikitext' },
+	  dataType: 'json',
+	  success: data => {
+	    if ($t !== activeHoverLink) return;
+	    if (data.error) {
+	      $tfb.html('API Error: ' + data.error.info);
+	    } else {
+	      const html = data.parse.text['*'],
+	            $tooltip = $(html).find('.tooltip-content');
+	      if ($tooltip.length) {
+	        $tfb.html($tooltip);
+	      } else {
+	        $tfb.html('Error: could not extract tooltip.');
+	      }
+	    }
+	    $tfb.removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
+	    moveTip(e);
+	  },
+	  error: () => {
+	    $tfb.html('API request error').removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
+	    moveTip(e);
+	  }
+	});
   }).fail(() => {
     $tfb.html('Error loading page').removeClass('hidden').addClass('tooltip-ready').css('visibility', 'visible');
     moveTip(e);
@@ -547,5 +555,16 @@ $(function() {
       $tbody.data('updateTimeout', setTimeout(updateRows, 50)); // debounce updates for performance
     });
     observer.observe($tbody[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+  });
+});
+
+// Simple jQuery collapsible script
+// Toggles the visibility of the next element when the header is clicked
+// Use classes: .collapsible (header) and .collapse-content (hidden block)
+
+$(document).ready(function() {
+  $(".collapsible").click(function() {
+    $(this).toggleClass("active");
+    $(this).next(".collapse-content").slideToggle(200);
   });
 });

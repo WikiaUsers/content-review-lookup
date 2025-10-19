@@ -10,12 +10,18 @@ window.DiscordBannerSettings = {
     prependToRail: false
 };
 
-#userProfileApp {
-        background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.11),
-            rgba(0, 0, 0)
-        ), url("https://static.wikia.nocookie.net/scratchspritecorruption/images/b/b5/Site-background-light/revision/latest?cb=20250509002843&format=original");	
-    padding: 25px;
-    background-size: cover;
+
+function startClock() {
+  var clock = document.getElementById("liveClock");
+  if (!clock) return; // safety check
+  setInterval(function() {
+    var now = new Date();
+    clock.textContent = now.toLocaleTimeString();
+  }, 1000);
+}
+$(startClock);
+
+function toggleLyrics() {
+  const lyrics = document.getElementById("lyrics");
+  lyrics.style.display = lyrics.style.display === "none" ? "block" : "none";
 }

@@ -1,5 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Adds icons to page header */
+$(function() {
+    if( $( '#PageHeader' ).length ) {
+        $( '#PageHeader' ).prepend(
+            $( '#icons' ).attr( 'style', 'position: absolute; right: 0px; bottom: 50px;' )
+        );
+    }
+});
+
 /* Default Fairuse License When Uploading File */
 $(document).on("submit", function (e) {
   if (e.target.id == "mw-upload-form") {

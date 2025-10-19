@@ -51,6 +51,7 @@
     'Brachiodemon': {'Head': 'Head (Brachiodemon)'},
     'Bragrumol': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Brain Squid': {'Inkwell': 'Inkwell (Black)'},
+    'Brain Head': {'Amber': 'Amber (Item)'},
     'Cave Chimera': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Chopper': {'Dung Ball': 'Dung Ball (Quest)'},
     'Cloak of Terror': {'Crown': 'Crown (Plant)'},

@@ -1,8 +1,8 @@
 (function($){
 	// prevent double load
 	window.xorumwiki = window.xorumwiki || {};
-	if (window.xorumwiki.themeSelectorLoaded) return;
-	window.xorumwiki.themeSelectorLoaded = true;
+	if (window.xorumwiki.modeSelectorLoaded) return;
+	window.xorumwiki.modeSelectorLoaded = true;
 	
 	var SELECTED_CACHE_KEY = 'uwe-themeselector-selected';
 	var stylesheetPrefix = "https://xorumian-tests.fandom.com/index.php?action=raw&ctype=text/css&title=";
@@ -17,14 +17,14 @@
 			id: 'german',
 			name: "German",
 			note: 'Light & Dark',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/German.css",
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweModeSelector.js/German.css",
 			image: "https://static.wikia.nocookie.net/xorumian-things/images/0/09/TeamAkun.png/revision/latest/scale-to-width-down/480?path-prefix=de"
 		},
 		{
 			id: 'developer',
 			name: "Developer",
 			note: 'Inspection Mode',
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/Developer.css",
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweModeSelector.js/Developer.css",
 			image: "https://static.wikia.nocookie.net/xorumian-things-pt/images/b/b1/BackgroundDeveloper.png/revision/latest/scale-to-width-down/480"
 		},
 	];

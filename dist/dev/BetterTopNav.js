@@ -342,6 +342,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 					{href: new mw.Title('Message_Wall:'+mw.user.getName()).getUrl(), text: mw.msg('fd-global-navigation-user-message-wall')},
 					{href: new mw.Title('Special:Contributions/'+mw.user.getName()).getUrl(), text: mw.msg('mycontributions')},
 					{href: new mw.Title('Special:Preferences').getUrl(), text: mw.msg('fd-global-navigation-user-my-preferences')},
+					{href: 'https://www.fandom.com/my-fandom', text: mw.msg('fd-global-navigation-link-my-fandom-label')},
 					{href: 'https://auth.fandom.com/logout?source=mw&redirect='+encodeURIComponent(window.location.href), text: mw.msg('fd-global-navigation-user-sign-out')}
 				];
 				if (Array.isArray(window.dev.betterTopNav.hovermenu) && window.dev.betterTopNav.hovermenu.length>0) { links = links.concat(window.dev.betterTopNav.hovermenu); }
@@ -395,6 +396,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 		'fd-global-navigation-user-message-wall',
 		'mycontributions',
 		'fd-global-navigation-user-my-preferences',
+		'fd-global-navigation-link-my-fandom-label',
 		'fd-global-navigation-user-sign-out'
 	];
 	api.loadMessagesIfMissing(msgs).then(() => {

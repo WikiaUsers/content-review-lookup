@@ -12,8 +12,8 @@ $(function(){
     'use strict';
     var bestiary_creature_baseinfo = [],
     bestiary_difficulty = ['harmless', 'trivial', 'easy', 'medium', 'hard', 'challenging', 'veryrare'],
-    bestiary_classes = {Amphibic:0,  Aquatic:0,  Bird:0,  Construct:0,  Demon:0,  Dragon:0,  Elemental:0,  'Extra Dimensional':0,  Fey:0,  Giant:0,  Human:0,  Humanoid:0,  Lycanthrope:0,  Magical:0,  Mammal:0,  Plant:0,  Reptile:0,  Slime:0,  Undead:0,  Vermin:0},
-    bestiary_creature_classes = {Amphibic:[],  Aquatic:[],  Bird:[],  Construct:[],  Demon:[],  Dragon:[],  Elemental:[],  'Extra Dimensional':[],  Fey:[],  Giant:[],  Human:[],  Humanoid:[],  Lycanthrope:[],  Magical:[],  Mammal:[],  Plant:[],  Reptile:[],  Slime:[],  Undead:[],  Vermin:[]},
+    bestiary_classes = {Amphibic:0,  Aquatic:0,  Bird:0,  Construct:0,  Demon:0,  Dragon:0,  Elemental:0,  'Extra Dimensional':0,  Fey:0,  Giant:0,  Human:0,  Humanoid:0,  Inkborn:0,  Lycanthrope:0,  Magical:0,  Mammal:0,  Plant:0,  Reptile:0,  Slime:0,  Undead:0,  Vermin:0},
+    bestiary_creature_classes = {Amphibic:[],  Aquatic:[],  Bird:[],  Construct:[],  Demon:[],  Dragon:[],  Elemental:[],  'Extra Dimensional':[],  Fey:[],  Giant:[],  Human:[],  Humanoid:[],  Inkborn:[],  Lycanthrope:[],  Magical:[],  Mammal:[],  Plant:[],  Reptile:[],  Slime:[],  Undead:[],  Vermin:[]},
     dmgMods = ['physicalDmgMod', 'earthDmgMod', 'fireDmgMod', 'energyDmgMod', 'iceDmgMod','deathDmgMod', 'holyDmgMod', 'healMod'],
     dmgNames = ['physical', 'earth', 'fire', 'energy', 'ice', 'death', 'holy', 'heal'],
     bestiary_vr_creatures = [],

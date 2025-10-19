@@ -20,3 +20,11 @@ $(function() {
     });
 });
 // Fin de Modèle:Onglet
+
+/* Suppression des anciens fils de discussion devenus inaccessibles */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:RemoveLegacyThreads.js',
+    ]
+});

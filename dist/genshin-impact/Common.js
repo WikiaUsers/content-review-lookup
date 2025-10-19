@@ -53,11 +53,13 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 			const content = $wrapper.children('.mw-collapsible-content').html();
 			$wrapper.children('.mw-collapsible-content').remove();
 			
+			const toggleCont = $wrapper.children('.toggle-tooltip').html();
+			$wrapper.children('.toggle-tooltip').replaceWith(toggleCont);
 			const $toggle = $('<span>', {
 				'class': 'custom-tt toggle-tooltip'+(isEE ? ' giw-extra-effect' : ''),
-				html: $wrapper.html().replace(/mw-collapsible-toggle|mw-collapsible-toggle-collapsed|mw-collapsible-toggle-expanded/g, '')
+				html: $wrapper.html().replace(/mw-collapsible-toggle(-collapsed|-expanded)? ?/g, '')
 			});
-			console.log($toggle, 'toggle');
+			console.log($toggle.html(), 'toggle');
 			console.log(content, 'content');
 			const popup = new OO.ui.PopupWidget({
 				$content: $('<div>', { html: content }),

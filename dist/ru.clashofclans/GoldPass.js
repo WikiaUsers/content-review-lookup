@@ -1,21 +1,19 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
 /*
    * Authors: EN Wiki COC: https://clashofclans.fandom.com/wiki/Clash_of_Clans_Wiki
    * Adapted from King Dragonhoff's StatueStats javascript
    * MagmaHound is one of the latest developers
    * 
    * Translated to RU by Flotiliya
-   * Last update 25.07.2025
+   * Last update 15.10.2025
 */
 
 $(document).ready(function() {
     /* Create inputs */
-	$("span#builderBoostHarness").html('<div id="builderBoostInput">Ускорение строительства: <select name="builderBoost" id="builderBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> </select> %</div>');
+	$("span#builderBoostHarness").html('<div id="builderBoostInput">Ускорение строительства: <select name="builderBoost" id="builderBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> </select> %</div>');
 	$("span#hammerJamHarness").html('<div id="hammerJamInput">Включить Hammer Jam? <input type="checkbox" name="hammerJamBoost" id="hammerJamBoost"></input></div>');
 	$("span#autoForgeHarness").html('<div id="autoForgeInput">Обновить стоимость доп.ячейки кузницы? <input type="checkbox" name="autoForgeBoost" id="autoForgeBoost"></input></div>');
-	$("span#trainingBoostHarness").html('<div id="trainingBoostInput">Ускорение тренировки: <select name="trainingBoost" id="trainingBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
-	$("span#researchBoostHarness").html('<div id="researchBoostInput">Ускорение исследований: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
+	$("span#trainingBoostHarness").html('<div id="trainingBoostInput">Ускорение тренировки: <select name="trainingBoost" id="trainingBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
+	$("span#researchBoostHarness").html('<div id="researchBoostInput">Ускорение исследований: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#armyBoostHarness").html('<div id="armyBoostInput">Вкл. ускор. тренировки? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
 	$("span#freezeHarness").html('<div id="freezeInput">Включить замедление? <input type="checkbox" name="freezeBoost" id="freezeBoost"></input></div>');
 	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Замедление: '+
@@ -39,22 +37,30 @@ $(document).ready(function() {
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Вкл. способность героя? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Ур. заклинания ярости: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
 	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Ур. заклинания ярости: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#rageTowerHarness").html('<div id="rageTowerInput">Включить ярость от Башни? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
-	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Включить яд от Башни? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
-	$("span#valkRageHarness").html('<div id="valkRageInput">Вкл. ярость супервалькирии? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
+	$("span#rageTowerHarness").html('<div id="rageTowerInput">Вкл. ярость башни закл.? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
+	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Вкл. яд башни закл.? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
+	$("span#valkRageHarness").html('<div id="valkRageInput">Вкл. ярость супервальк.? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Ур. спешного заклинания: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option></select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Ур. спешного заклинания: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Уровень яда: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option></select></div>');
-	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">Ур. яда от Ратуши: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Ур. яда Охотницы: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">Ур. яда ратуши: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Ур. яда охотницы: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Ур. кристалла жизни: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#rageAuraHarness").html('<div id="rageAuraInput">Ур. кристалла ярости: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
-	$("span#targetHPHarness").html('<div id="targetHPInput">Максимальное ХП цели: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
-	$("span#hardModeHarness").html('<div id="hardModeInput">Включить сложный режим? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
-	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Ур. Ауры жизни ученика: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
-	$("span#resourceBoostHarness").html('<div id="resourceBoostInput">Вкл. ускор. за Кристаллы? <input type="checkbox" name="resourceBoost" id="resourceBoost"></input></div>');
-	$("span#clockTowerBoostHarness").html('<div id="clockBoostInput">Вкл. ускор. Часовой башни? <input type="checkbox" name="clockBoost" id="clockBoost"></input></div>');
+	$("span#torchAuraHarness").html('<div id="torchAuraInput">Ур. факела героев: <select name="torchAuraLevel" id="torchAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18-20</option> <option value="8">21-23</option> <option value="9">24-26</option> <option value="10">27</option></select></div>');
+	$("span#targetHPHarness").html('<div id="targetHPInput">Макс. здоровье цели: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
+	//$("span#hardModeHarness").html('<div id="hardModeInput">Включить сложный режим? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
+	$("span#difficultyModeHarness").html('<div id="difficultyModeInput">Модификаторы боя: <select name="difficultyModeBoost" id="difficultyModeBoost">' +
+		'<option value="0">Нет</option>' +
+	    '<option value="1">Эксперт</option>' +
+	    '<option value="2">Мастер</option>' +
+	    '<option value="3">Легенда</option>' +
+	    '<option value="4">Киберспорт</option>' +
+		'</select></div>');
+	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Ур. ауры жизни ученика: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
+	$("span#resourceBoostHarness").html('<div id="resourceBoostInput">Вкл. ускор. за кристаллы? <input type="checkbox" name="resourceBoost" id="resourceBoost"></input></div>');
+	$("span#clockTowerBoostHarness").html('<div id="clockBoostInput">Вкл. ускор. час. башни? <input type="checkbox" name="clockBoost" id="clockBoost"></input></div>');
 	/* Event boosts: change the options as appropriate for the event
 	Last event: Anime Clash */
 	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Ускорение строительства: <select name="eventBuilderBoost" id="eventBuilderBoost">' +
@@ -108,7 +114,8 @@ $(document).ready(function() {
     		'<div id="firstHeroGearLvl"> Уровень: ' +
         	'<select name="firstHeroGearLevel" id="firstHeroGearLevel">' +
         	'</select></div>' +
-    	'</div></td></tr>' +
+    	'</div></td>' +
+    	'<td><div id="firstHeroGearEffLvlInfo" style="display:none; cursor:help;">&#9432;</div></td></tr>' +
     	'<tr><td><div id="secondHeroGear">' +
     		'<div id="secondHeroGearOption"> Снаряжение 2: ' +
         	'<select name="secondHeroGearChoice" id="secondHeroGearChoice">' +
@@ -118,7 +125,8 @@ $(document).ready(function() {
     		'<div id="secondHeroGearLvl"> Уровень: ' +
         	'<select name="secondHeroGearLevel" id="secondHeroGearLevel">' +
     	    '</select></div>' +
-    	'</div></td></tr>' +
+    	'</div></td>' +
+    	'<td><div id="secondHeroGearEffLvlInfo" style="display:none; cursor:help;">&#9432;</div></td></tr>' +
     	'<tr><td><span id="darkCrownHarness"></span></td></tr>' +
 	'</table></div>');
 	// Equipment-specific modifiers
@@ -131,14 +139,13 @@ $(document).ready(function() {
    var hmCapEnabled = 0;
     /* Auxillary functions to refresh the level options for the choices
     Call on initialisation and whenever the choice is amended */
-    function refreshFirstGearChoices(hmRefresh) {
+    function refreshFirstGearChoices() {
     	var firstGearName = $("select#firstHeroGearChoice option:selected").text();
-    	var levelCapArr = dictLevelCaps[firstGearName];
-    	var levelCap;
-    	if (levelCapArr != undefined) {
-        	levelCap = levelCapArr[hmCapEnabled];
-    	} else {
-    		levelCap = 0;
+    	if (dictEquipment[firstGearName] != undefined) {
+    		var levelCap = dictEquipment[firstGearName].level;
+    		if (levelCap == undefined) {
+    			levelCap = 0;
+    		}
     	}
         var firstLevelChoices = $("select#firstHeroGearLevel");
         var currentChoice = firstLevelChoices.val();
@@ -152,26 +159,26 @@ $(document).ready(function() {
         } else {
         	$("#firstHeroGearLvl").css("display","block");
         	/* If refreshed from hard mode, initialise the selection to the currently selected level,
-        	or to the new level cap if that is lower. Note that level cap's actual value is one less than displayed level */
+        	or to the new level cap if that is lower. Note that level cap's actual value is one less than displayed level
+        	
         	if (hmRefresh === true) {
         		if (currentChoice < levelCap) {
         			firstLevelChoices.prop('selectedIndex', currentChoice);
         		} else {
         			firstLevelChoices.prop('selectedIndex', levelCap - 1);
         		}
-        	}
+        	} */
         }
         // Check the special choices
         checkSpecialChoices();
     }
-    function refreshSecondGearChoices(hmRefresh) {
+    function refreshSecondGearChoices() {
     	var secondGearName = $("select#secondHeroGearChoice option:selected").text();
-    	var levelCapArr = dictLevelCaps[secondGearName];
-    	var levelCap;
-    	if (levelCapArr != undefined) {
-        	levelCap = levelCapArr[hmCapEnabled];
-    	} else {
-    		levelCap = 0;
+    	if (dictEquipment[secondGearName] != undefined) {
+    		var levelCap = dictEquipment[secondGearName].level;
+    		if (levelCap == undefined) {
+    			levelCap = 0;
+    		}
     	}
         var secondLevelChoices = $("select#secondHeroGearLevel");
         var currentChoice = secondLevelChoices.val();
@@ -185,14 +192,15 @@ $(document).ready(function() {
         } else {
         	$("#secondHeroGearLvl").css("display","block");
         	/* If refreshed from hard mode, initialise the selection to the currently selected level,
-        	or to the new level cap if that is lower. Note that level cap's actual value is one less than displayed level */
+        	or to the new level cap if that is lower. Note that level cap's actual value is one less than displayed level
+        	
         	if (hmRefresh === true) {
         		if (currentChoice < levelCap) {
         			secondLevelChoices.prop('selectedIndex', currentChoice);
         		} else {
         			secondLevelChoices.prop('selectedIndex', levelCap - 1);
         		}
-        	}
+        	} */
         }
         // Check the special choices
         checkSpecialChoices();
@@ -245,23 +253,23 @@ $(document).ready(function() {
         	// Disable defense-only items
         	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
             // Enable all disabled items (except for hero gear inputs and hero ability toggle)
-            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
             // Re-initialize hero gear options
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
-            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel").val("0").change();
+            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel").val("0").change();
         	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
         	// Disable offense-only items
-            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
             $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","block");
         }
     }
     function refreshHeroGear() {
 		initChoices();
-	    refreshFirstGearChoices(hmEnabled = false);
-	    refreshSecondGearChoices(hmEnabled = false);
+	    refreshFirstGearChoices();
+	    refreshSecondGearChoices();
     }
     function getSpecialChoiceLevel(choice) {
     	// Returns the value corresponding to the level selected
@@ -280,43 +288,99 @@ $(document).ready(function() {
         }
        	return -1;
     }
+    function getEffectiveLevel(equipName, equipLevel){
+  		// Returns the effective level of equipment following difficulty modifiers
+        // Remember that for the purposes of entry into arrays, things are offset by one
+  		var diff = $("select#difficultyModeBoost").val() * 1;
+  		var equipType = 0;
+  		var levelPenalty = 0;
+  		if (isNaN(diff)) {
+  			diff = 0; //Failsafe
+  		}
+  		if (dictEquipment[equipName] != undefined) {
+	        equipType = dictEquipment[equipName].type;
+	        if (equipType === undefined) {
+	        	equipType = 0; // Failsafe
+	        }
+  		}
+  		if (difficultyEquipLevelPenalty[equipType][diff] != undefined) {
+	        levelPenalty = difficultyEquipLevelPenalty[equipType][diff];
+	        if (levelPenalty === undefined) {
+	        	levelPenalty = 0; // Failsafe
+	        }
+  		}
+        
+        return Math.max(0, equipLevel - levelPenalty);
+	}
+    function updateEffectiveEquipLevels() {
+        // Read the equipment and determine their type
+        var firstEquip = $("select#firstHeroGearChoice option:selected").text();
+        var secondEquip = $("select#secondHeroGearChoice option:selected").text();
+        // Get the raw levels of the equipment
+        var firstEquipLevel = $("select#firstHeroGearLevel").val() * 1;
+        var secondEquipLevel = $("select#secondHeroGearLevel").val() * 1;
+        
+        // Determine the effective levels of the equipment
+        // We need to add one to effective level
+        // This is merely for display purposes, as internally they are off by one
+        var effFirstEquipLevel = getEffectiveLevel(firstEquip,firstEquipLevel) + 1;
+        var effSecondEquipLevel = getEffectiveLevel(secondEquip,secondEquipLevel) + 1;
+        var effLevelStr = "Due to difficulty modifiers, stats from the equipment will be calculated as if the equipment was lower-leveled. The effective level of this equipment is "; // Convenient for storing a description string
+        
+        if (firstEquipLevel + 1 != effFirstEquipLevel) {
+        	$("#firstHeroGearEffLvlInfo").css("display","block");
+            	document.getElementById("firstHeroGearEffLvlInfo").setAttribute("title",
+            	effLevelStr + effFirstEquipLevel + ".");
+        } else {
+        	$("#firstHeroGearEffLvlInfo").css("display","none");
+        }
+    	if (secondEquipLevel + 1 != effSecondEquipLevel) {
+        	$("#secondHeroGearEffLvlInfo").css("display","block");
+            	document.getElementById("secondHeroGearEffLvlInfo").setAttribute("title",
+            	effLevelStr + effSecondEquipLevel + ".");
+        } else {
+        	$("#secondHeroGearEffLvlInfo").css("display","none");
+        }
+	}
    /* Initialize the choices
-   We first start by writing down level caps corresponding to each choice 
-   Since the Sep balance changes, each level cap is written as a size-2 array.
-   Entry 0 is for the normal cap, whereas Entry 1 is for the hard mode cap */
-    var dictLevelCaps = {
-    	"Кукла-варвар": [18,15],
-        "Фиал ярости": [18,15],
-        "Землетрясущие ботинки": [18,15],
-        "Вампирские усы": [18,15],
-        "Перчатка гиганта": [27,21],
-        "Мяч с шипами": [27,21],
-        "Змеиный браслет": [27,21],
-    	"Кукла-лучница": [18,15],
-    	"Фиал невидимости": [18,15],
-    	"Гигантская стрела": [18,15],
-    	"Кукла-целительница": [18,15],
-    	"Ледяная стрела": [27,21],
-    	"Волшебное зеркало": [27,21],
-    	"Солдатик": [27,21],
-    	"Кукольные приспешники": [18,15],
-    	"Сфера тьмы": [18,15],
-    	"Железные штаны": [18,15],
-        "Королевская гантель": [18,15],
-        "Темная корона": [27,21],
-    	"Книга вечности": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
-    	"Кристалл жизни": [18,15],
-    	"Кристалл ярости": [18,15],
-    	"Книга исцеления": [18,15],
-    	"Огненный шар": [27,21],
-    	"Кукла-лавашар": [27,21],
-    	"Королевский кристалл": [18,15],
-    	"Щит-искатель": [18,15],
-    	"Кукла-всадник на кабане": [18,15],
-    	"Фиал спешки": [18,15],
-    	"Копье-ракета": [27,21],
-    	"Электросапоги": [27,21]
+   As of October 2025, we write this as a dictionary of objects, each with two properties.
+   level is the level cap, whereas type is 0 for common and 1 for epic (this feeds into the level penalty array) */
+    var dictEquipment = {
+    	"Кукла-варвар": {level: 18, type: 0},
+        "Фиал ярости": {level: 18, type: 0},
+        "Землетрясущие ботинки": {level: 18, type: 0},
+        "Вампирские усы": {level: 18, type: 0},
+        "Перчатка гиганта": {level: 27, type: 1},
+        "Мяч с шипами": {level: 27, type: 1},
+        "Змеиный браслет": {level: 27, type: 1},
+    	"Кукла-лучница": {level: 18, type: 0},
+    	"Фиал невидимости": {level: 18, type: 0},
+    	"Гигантская стрела": {level: 18, type: 0},
+    	"Кукла-целительница": {level: 18, type: 0},
+    	"Ледяная стрела": {level: 27, type: 1},
+    	"Волшебное зеркало": {level: 27, type: 1},
+    	"Солдатик": {level: 27, type: 1},
+    	"Кукольные приспешники": {level: 18, type: 0},
+    	"Сфера тьмы": {level: 18, type: 0},
+    	"Железные штаны": {level: 18, type: 0},
+        "Королевская гантель": {level: 18, type: 0},
+        "Темная корона": {level: 27, type: 1},
+    	"Книга вечности": {level: 1, type: 0}, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
+    	"Кристалл жизни": {level: 18, type: 0},
+    	"Кристалл ярости": {level: 18, type: 0},
+    	"Книга исцеления": {level: 18, type: 0},
+    	"Огненный шар": {level: 27, type: 1},
+    	"Кукла-лавашар": {level: 27, type: 1},
+    	"Факел героев": {level: 27, type: 1},
+    	"Королевский кристалл": {level: 18, type: 0},
+    	"Щит-искатель": {level: 18, type: 0},
+    	"Кукла-всадник на кабане": {level: 18, type: 0},
+    	"Фиал спешки": {level: 18, type: 0},
+    	"Копье-ракета": {level: 27, type: 1},
+    	"Электросапоги": {level: 27, type: 1},
     };
+    // Equipment level penalty is a 2D array - first entry is for Common equipment, second entry for Epic equipment
+		var difficultyEquipLevelPenalty = [[0,0,0,0,3],[0,0,0,0,6]];
     // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
     var heroGearOptions = [];
@@ -331,13 +395,13 @@ $(document).ready(function() {
     		heroGearOptions = ["Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона"];
     		break;
      	case ("Хранитель"):
-    		heroGearOptions = ["Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар"];
+    		heroGearOptions = ["Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Факел героев"];
     		break;
     	case ("Королевский чемпион"):
     		heroGearOptions = ["Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
+    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Факел героев", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -364,7 +428,8 @@ $(document).ready(function() {
     	choiceToDisable.prop('disabled',true);
     	choiceToDisable.siblings().prop('disabled',false);
 		
-		refreshFirstGearChoices(hmEnabled = false);
+		refreshFirstGearChoices();
+		updateEffectiveEquipLevels();
     });
     $("select#secondHeroGearChoice").change(function() {
    	    // Identify the choice to disable, and enable all other choices
@@ -373,7 +438,8 @@ $(document).ready(function() {
     	choiceToDisable.prop('disabled',true);
     	choiceToDisable.siblings().prop('disabled',false);
     	
-		refreshSecondGearChoices(hmEnabled = false);
+		refreshSecondGearChoices();
+		updateEffectiveEquipLevels();
     });
 	$("#heroGearToggle").change(function() {
   		var tog = $("#heroGearToggle");
@@ -384,6 +450,7 @@ $(document).ready(function() {
         }
         checkSpecialChoices();
 	});
+	/* TODO: Rework this if necessary
 	$("#hardModeBoost").change(function() {
 		// Reset the level caps for the currently existing equipment as required
 		// (If hero equipment is not present, this function simply appears to do nothing)
@@ -400,7 +467,14 @@ $(document).ready(function() {
     	if ($("select#secondHeroGearLevel").val() != undefined) {
 	    	refreshSecondGearChoices(hmEnabled = true);
     	}
-	});
+	}); */
+   $("select#firstHeroGearLevel, select#secondHeroGearLevel, select#difficultyModeBoost").change(function() {
+   		// If the hero equipment stuff exists, update effective levels
+   		// (Do not apply if the hero equipment stuff does not exist)
+   		if ($("input#heroGearToggle").val() != undefined) {
+    		updateEffectiveEquipLevels();
+    	}
+   });
    $(".GoldPass").each(function() {
 	  var initialStr = $(this).text();
 	  $(this).attr("title", initialStr);
@@ -1047,6 +1121,9 @@ $(document).ready(function() {
 	  var auraMaxHPIncrease = [0,330,420,510,600,690,780,870];
 	  // Another one for GW's rage aura ability
 	  var rageAuraPercentIncrease = [0,15,20,25,30,35,45,50];
+	  // Lookup array for GW's heroic torch speed boost
+	  // Note that there is currently no difference between some level groups, but I reserve the different levels for now
+	  var torchAuraSpeedIncrease = [0,5,6,6,7,7,7,8,8,8,9];
 	  // Lookup arrays for the apprentice's aura ability
 	  // Styled in thousandths for ease of comparison
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
@@ -1085,6 +1162,7 @@ $(document).ready(function() {
 			"Кристалл ярости": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Огненный шар": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Кукла-лавашар": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
+			"Факел героев": [10,11,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45,48,51,54,57,60,63,66,69],
 			"Королевский кристалл": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
 			"Ледяная стрела": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Фиал спешки": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
@@ -1106,6 +1184,7 @@ $(document).ready(function() {
 			"Кристалл жизни": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
 			"Книга исцеления": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Кукла-лавашар": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
+			"Факел героев": [30,35,37,40,45,47,50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,125],
 			"Королевский кристалл": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Щит-искатель": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Кукла-всадник на кабане": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
@@ -1120,6 +1199,7 @@ $(document).ready(function() {
 			"Кукольные приспешники": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
 			"Железные штаны": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
 			"Книга исцеления": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
+			"Факел героев": [100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360],
 			"Королевский кристалл": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Кукла-всадник на кабане": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
 		};
@@ -1140,7 +1220,8 @@ $(document).ready(function() {
 		};
 		var dictAbilitySpeedBonus = { //Written in number of tenths
 			"Фиал ярости": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
-			"Фиал спешки": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383]
+			"Фиал спешки": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
+			"Факел героев": [25,25,30,30,30,30,30,30,35,35,35,35,35,35,35,35,35,40,40,40,40,40,40,40,40,40,45] // Since the aura acts on GW himself, this is for all intents and purposes identical to an ability speed boost
 		};
 		var dictAbilityASBonus = { //Written in percent
 			"Фиал спешки": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
@@ -1151,6 +1232,9 @@ $(document).ready(function() {
 		};
 		// Lookup for the Dark Crown's boosts
 		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
+		// Difficulty lookups
+		var difficultyAttackPenalty = [0,3,6,10,10];
+		var difficultyDefenseBoost = [0,7,14,20,20];
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
 		// This is to be compatible with the dictionaries, which are also zero-indexed
@@ -1160,6 +1244,10 @@ $(document).ready(function() {
     		firstHeroGearLvl = $("select#firstHeroGearLevel").val();
       		secondHeroGearName = $("select#secondHeroGearChoice option:selected").text();
     		secondHeroGearLvl = $("select#secondHeroGearLevel").val();
+    		    		
+    		// Modify by difficulty
+    		firstHeroGearLvl = getEffectiveLevel(firstHeroGearName, firstHeroGearLvl);
+    		secondHeroGearLvl = getEffectiveLevel(secondHeroGearName, secondHeroGearLvl);
     	}
 		$(".AttackSpeed").each(function() {
 			// Flags for CSS styling
@@ -1330,9 +1418,10 @@ $(document).ready(function() {
 			var rageAuraLevel = $("#rageAuraLevel").val() * 1;
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
-			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var difficultyLevel = $("#difficultyModeBoost").val() * 1;
 			var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
 			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
+			var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
 			// If there is no modifier mode, ignore this
@@ -1469,18 +1558,18 @@ $(document).ready(function() {
 			calcNewDPH = Math.max(rageDamage,heroAbilityDamage,normalAbilityDamage,heroAbilityDPH);
 			// Finally, modify for hard mode as necessary, using "isBuilding" and "isHero" as needed
 			// First, check the modifier mode, which will override other checks
-			if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true) {
-					if (modifierMode == "Attack") { // Hero in attack mode gets 10% less damage
-						calcNewDPH *= 90/100;
-					} else if (modifierMode == "Defense") { // Hero in defense mode gets 20% more damage
-						calcNewDPH *= 120/100;
+			if (!isNaN(diff)) {
+				if (diff > 0) {
+					if (modifierMode == "Attack") { // Hero in attack mode gets less damage
+						calcNewDPH *= (100 - difficultyAttackPenalty[diff])/100;
+					} else if (modifierMode == "Defense") { // Hero in defense mode gets more damage
+						calcNewDPH *= (100 + difficultyDefenseBoost[diff])/100;
 					} else {
 						if (isHero === true) { // For heroes when modifier mode is ignored
 							// (example: Hero equipments)
-							calcNewDPH *= 90/100;
+							calcNewDPH *= (100 - difficultyAttackPenalty[diff])/100;
 						} else if (isBuilding === true || isStatue === true) { // For buildings or "statues"
-							calcNewDPH *= 120/100;
+							calcNewDPH *= (100 + difficultyDefenseBoost[diff])/100;
 						}
 					}
 				}
@@ -1492,7 +1581,7 @@ $(document).ready(function() {
 			var baseDPH = initialDPH;
 			var calcNewDPH = initialDPH;
 			// For CSS styling purposes
-			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
 			// First, alter the initial DPH by passive DPS-increasing equipment
 			// We'll write our attack speed in milliseconds
 			var attackSpeed = $(".AttackSpeed").attr("title") * 1000;
@@ -1572,8 +1661,8 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
             }
-            if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+            if (!isNaN(difficultyBoost)) {
+				if (difficultyBoost > 0 && $(this).hasClass("Builder") === false) {
 					$(this).addClass("StatPoisoned");
 				} else {
 					$(this).removeClass("StatPoisoned");
@@ -1583,7 +1672,7 @@ $(document).ready(function() {
 		$(".DPHRange").each(function() {
 			var initRange = $(this).attr("title");
 			// For CSS styling purposes
-			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
 			// Initial range but formatted - used to compare with the final output
 			var initFormat = "";
 			var initArray = readRange(initRange);
@@ -1619,8 +1708,8 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
             }
-            if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+            if (!isNaN(difficultyBoost)) {
+				if (difficultyBoost > 0 && $(this).hasClass("Builder") === false) {
 					$(this).addClass("StatPoisoned");
 				} else {
 					$(this).removeClass("StatPoisoned");
@@ -1680,9 +1769,9 @@ $(document).ready(function() {
 			}
 			// Hard mode toggle overrides all other CSS
 			var hardModeUsed = false;
-			var hardModeCheckBox = document.getElementById("hardModeBoost");
-			if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
+			if (!isNaN(difficultyBoost)) {
+				if (difficultyBoost > 0 && $(this).hasClass("Builder") === false) {
 					hardModeUsed = true;
 				}
 			}
@@ -1753,9 +1842,9 @@ $(document).ready(function() {
 			}
 			// Hard mode toggle overrides all other CSS
 			var hardModeUsed = false;
-			var hardModeCheckBox = document.getElementById("hardModeBoost");
-			if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
+			if (!isNaN(difficultyBoost)) {
+				if (difficultyBoost > 0 && $(this).hasClass("Builder") === false) {
 					hardModeUsed = true;
 				}
 			}
@@ -1879,7 +1968,7 @@ $(document).ready(function() {
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
-			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
 			// If there is no modifier mode, ignore this
@@ -2037,18 +2126,18 @@ $(document).ready(function() {
 			// Finally, modify for hard mode as necessary, using classes as needed
 			// First, check the modifier mode, which will override other checks
 			var hardModeUsed = false;
-			if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true) {
+			if (!isNaN(diff)) {
+				if (diff > 0) {
 					hardModeUsed = true;
 					if (modifierMode == "Attack") { // Hero in attack mode gets 10% less damage
-						buffedDPS *= 90/100;
+						buffedDPS *= (100 - difficultyAttackPenalty[diff])/100;
 					} else if (modifierMode == "Defense") { // Hero in defense mode gets 20% more damage
-						buffedDPS *= 120/100;
+						buffedDPS *= (100 + difficultyDefenseBoost[diff])/100;
 					} else {
 						if ($(this).hasClass("Hero") === true) { // For heroes when modifier mode is ignored (e.g. Hero equipment)
-							buffedDPS *= 90/100;
+							buffedDPS *= (100 - difficultyAttackPenalty[diff])/100;
 						} else if ($(this).hasClass("Building") === true || $(this).hasClass("Statue") === true) { // For buildings or "statues"
-							buffedDPS *= 120/100;
+							buffedDPS *= (100 + difficultyDefenseBoost[diff])/100;
 						}
 					}
 				}
@@ -2096,7 +2185,7 @@ $(document).ready(function() {
     		
     		baseHP = initialHP + firstGearHP + secondGearHP;
     		// Add also hard mode modifiers. HP modifiers in hard mode apply at this point
-    		var hardModeCheckBox = document.getElementById("hardModeBoost");
+    		var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			var hardModeUsed = false;
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
@@ -2106,13 +2195,13 @@ $(document).ready(function() {
 			}
 			// Hard mode modifiers only apply to Heroes
 			// The Hero class check is redundant currently but useful if troops get modified in hard mode
-			if (hardModeCheckBox != null) {
-				if (hardModeCheckBox.checked === true && $(this).hasClass("Hero") === true) {
+			if (!isNaN(diff)) {
+				if (diff > 0 && $(this).hasClass("Hero") === true) {
 					hardModeUsed = true; // This flag is used for aesthetics
 					if (modifierMode == "" || modifierMode == "Attack") {
-						baseHP *= 90/100; // 10% nerf to base HP
+						baseHP *= (100 - difficultyAttackPenalty[diff])/100; // 10% nerf to base HP
 					} else if (modifierMode == "Defense") {
-						baseHP *= 120/100; // 20% buff to base HP
+						baseHP *= (100 + difficultyDefenseBoost[diff])/100; // 20% buff to base HP
 					}
 				}
 			}
@@ -2241,6 +2330,10 @@ $(document).ready(function() {
 		    if (isNaN(capitalHasteSpellLevel) === true) {
 		    	capitalHasteSpellLevel = 0;
 		    }
+		    var torchAuraLevel = $("#torchAuraLevel").val() * 1;
+		    if (isNaN(torchAuraLevel) === true) {
+		    	torchAuraLevel = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -2270,6 +2363,7 @@ $(document).ready(function() {
 			var rageBoost = 0;
 			var hasteBoost = 0;
 			var towerRageBoost = 0;
+			var torchBoost = 0;
 			var heroAbilityBoost = 0;
 			if (rageSpellLevel > 0) {
 				if ($(this).hasClass("Building") === true) {
@@ -2303,6 +2397,14 @@ $(document).ready(function() {
             } else if (capitalHasteSpellLevel > 0) {
             	hasteBoost = capitalHasteSpellLevel + 6;
             }
+            if (torchAuraLevel > 0) {
+            	if ($(this).hasClass("Hero") == true) {
+                	// Halve this increase
+                    torchBoost = torchAuraSpeedIncrease[torchAuraLevel] * 5 / 10;
+                } else {
+                    torchBoost = torchAuraSpeedIncrease[torchAuraLevel];
+                }
+            }
     		if (heroAbilityCheckBox != null) {
 				if (heroAbilityCheckBox.checked === true) {
 					/* Since the February update, this no longer acts on base speed,
@@ -2314,6 +2416,7 @@ $(document).ready(function() {
             	to avoid floating-point errors */
             var rageSpeed = (baseSpeed * 10 + Math.max(rageBoost,towerRageBoost) * 10) / 10;
 			var hasteSpeed = (baseSpeed * 10 + hasteBoost * 10) / 10;
+			var torchSpeed = (baseSpeed * 10 + torchBoost * 10) / 10;
 			var heroAbilitySpeed = (baseSpeed * 10 + heroAbilityBoost * 10) / 10;
 			
 			var abilityBoost = $(".AbilitySpeed").attr("title") * 1;
@@ -2327,7 +2430,7 @@ $(document).ready(function() {
 					abilitySpeed = (baseSpeed * 10 + abilityBoost * 10) / 10;
 				}
 			}
-			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, abilitySpeed, heroAbilitySpeed);
+			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, torchSpeed, abilitySpeed, heroAbilitySpeed);
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
@@ -2663,9 +2766,9 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
         $(".changeBonusButton").text("Применить");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
-		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost, #resourceBoost, #clockBoost").prop("checked",false);
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #resourceBoost, #clockBoost").prop("checked",false);
 		// Reinitialise the choices
 		$("select#modifierMode").val("Attack").change();
     	// Only toggle modifier mode if it is on the page

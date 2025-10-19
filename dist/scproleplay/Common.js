@@ -7,8 +7,8 @@ window.lockOldComments.addNoteAbove = false;
 /* Hopefully fairly performant and almost issue-free.*/
 window.snowStorm = { 
 	excludeMobile: true,
-	flakesMax: 48,
-	flakesMaxActive: 48,
+	flakesMax: 36,
+	flakesMaxActive: 36,
 	animationInterval: 50,
 	followMouse: false,
 	snowColor: '#fff',

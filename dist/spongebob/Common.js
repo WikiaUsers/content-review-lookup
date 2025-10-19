@@ -12,6 +12,7 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'SpongeBot678': ['assistant'],
+    'AndromedaMapping1': ['assistant'],
     'SpongeTron D': ['discord'],
     'WoofWoofGam3r': ['discord']
 };
@@ -351,13 +352,11 @@ window.MessageWallUserTags = {
         'Koolkitty108': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
         
-        'PinkPugPrincess': 'Assistant • Discussion Moderator',
-
+        'AndromedaMapping1': 'Assistant • Discussion Moderator',
 		'SpongeBot678': 'Assistant',
 		
-		'AndromedaMapping1': 'Discussion Moderator • Rollback',
-        'ItzSpongeBob_1999': 'Discussion Moderator • Rollback',
-
+		'SPONGEBOBSUPERFANINFINITY': 'Rollback',
+		
         'LarryBoy_fan': 'Discussion Moderator',
         'SpongeTron D': 'Discussion Moderator'
     }

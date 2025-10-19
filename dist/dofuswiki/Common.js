@@ -292,23 +292,11 @@ function registerEffectLevelDropdowns() {
     return null;
   }
 
-  function setDisplay(el, show) {
-    if (show) {
-      el.style.display = 'revert';
-      if (el.style.display === '') el.style.display = '';
-    } else {
-      el.style.display = 'none';
-    }
-  }
-
-  function showLevelInTable(table, level) {
-    var levelElems = table.querySelectorAll('[class*="level-"]');
-    levelElems.forEach(function (el) {
-      var nums = Array.from(el.classList)
-        .map(function (c) { return c.startsWith('level-') ? parseInt(c.slice(6), 10) : NaN; })
-        .filter(function (n) { return Number.isInteger(n); });
-      if (nums.length === 0) return;
-      setDisplay(el, nums.includes(level));
+  function updateEvolutiveStats(table, level) {
+    var evolutiveElems = table.querySelectorAll('.evolutiveEffect');
+    evolutiveElems.forEach(function (el) {
+      var levelValue = Math.floor(parseFloat(el.dataset.minValue) + (parseFloat(el.dataset.progression) * level));
+      el.textContent = levelValue;
     });
   }
 
@@ -320,7 +308,7 @@ function registerEffectLevelDropdowns() {
     label.style.fontWeight = 'normal';
     label.style.marginRight = '0.25em';
     var sel = document.createElement('select');
-    for (var i = max; i >= 1; i--) {
+    for (var i = max; i >= 0; i--) {
       var opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = String(i);
@@ -339,9 +327,9 @@ function registerEffectLevelDropdowns() {
     if (!max) return;
     var table = th.closest('.infobox-subtable') || th.closest('table') || th.parentElement;
     if (!table) return;
-    var built = buildDropdown(max, function (lvl) { showLevelInTable(table, lvl); });
+    var built = buildDropdown(max, function (lvl) { updateEvolutiveStats(table, lvl); });
     th.appendChild(built.wrap);
-    showLevelInTable(table, max);
+    updateEvolutiveStats(table, max);
     bound.add(th);
   }
 

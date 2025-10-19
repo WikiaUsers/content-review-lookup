@@ -34,6 +34,7 @@
         'MediaWiki:WikiNotification.js',
         'MediaWiki:ClanHouseGenerator.js',
         'MediaWiki:ChestLootTable.js',
+        'MediaWiki:RankedLeagueTable.js',
     	]
     });
 	

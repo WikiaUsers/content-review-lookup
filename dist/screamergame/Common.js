@@ -1,5 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* */
+
 (function() {
     function initializeScreamerIcon() {
         const iconContainer = document.querySelector('.screamer-corner-icon');

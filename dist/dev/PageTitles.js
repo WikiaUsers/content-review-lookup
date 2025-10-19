@@ -54,7 +54,7 @@
 						setHeading(title, 'history-title');
 					} else if (action === 'info'){
 						setHeading(title, 'pageinfo-title');
-					} else if (action === 'protect'){
+					} else if (action === 'protect' || action === 'unprotect'){
 						setHeading(title, 'protect-title');
 					} else if (action === 'delete'){
 						setHeading(title, 'delete-confirm');

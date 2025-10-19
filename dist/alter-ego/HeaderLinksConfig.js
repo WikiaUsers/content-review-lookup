@@ -1,0 +1,1 @@
+window.HeaderLinksCustomPrefix = 'https://alterego.wiki'

@@ -1,22 +1,26 @@
+/* global importArticle */
+'use strict';
 (($, mw) => {
-	'use strict';
-	const namespaces = [4, 110],
-		ns = mw.config.get('wgNamespaceNumber');
+	const config = mw.config.values;
+	const namespaces = config.wgExtraSignatureNamespaces;
+	const ns = config.wgNamespaceNumber;
+	
+	window.dev = window.dev || {};
+	window.dev.DisableArchivedPages = window.dev.DisableArchivedPages || {};
+	window.dev.DisableArchivedPages.id = window.dev.DisableArchivedPages.id || 'archivedPage';
 	
 	if (
 		window.DisableArchivedPagesLoaded ||
-		$('#archivedPage').length !== 1 ||
+		!$(`#${window.dev.DisableArchivedPages.id}`).length ||
 		(namespaces.indexOf(ns) === -1 && ns % 2 !== 1)
 	){
 		return;
 	}
 	
 	window.DisableArchivedPagesLoaded = true;
-	
 	mw.hook('dev.i18n').add((i18n) => {
 		i18n.loadMessages('DisableArchivedPages').done((i18n) => {
 			const archived = i18n.msg('archived').escape();
-			
 			$('#ca-edit').html(archived).removeAttr('href');
 			$('#ca-addsection').html(archived).removeAttr('href');
 			$('#log-in-edit').html(archived).removeAttr('href');
@@ -31,7 +35,6 @@
 	$('#ca-edit-side-tool').remove();
 	$('#ca-addsection-side-tool').remove();
 	$('#log-in-edit-side-tool').remove();
-	
 	$('.mw-editsection').remove();
 	$('#ca-move').parent().remove();
 	$('#ca-edit[data-tracking-label="ca-edit-dropdown"]').parent().remove();

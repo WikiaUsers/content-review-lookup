@@ -41,3 +41,16 @@ UserTagsJS.modules.custom = {
 	'IcySpriggan': ['fandomcontributor'],
 	//'UserName1': ['fandomcontributor'],
 }
+
+/*Test Popups*/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});
+
+/* Rail Module */
+window.AddRailModule = [{prepend: true}];
+
+importScript('MediaWiki:OppressionTitleFont.js');

@@ -359,6 +359,7 @@ $(document).ready(function() {
     	"Metal Pants": {level: 18, type: 0},
     	"Noble Iron": {level: 18, type: 0},
     	"Dark Crown": {level: 27, type: 1},
+    	"Meteor Staff": {level: 27, type: 1},
     	"Eternal Tome": {level: 1, type: 0}, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Life Gem": {level: 18, type: 0},
     	"Rage Gem": {level: 18, type: 0},
@@ -386,7 +387,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure"];
     		break;
     	case ("Minion Prince"):
-    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown"];
+    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff"];
     		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch"];
@@ -395,7 +396,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1152,6 +1153,7 @@ $(document).ready(function() {
 			"Action Figure": [28,32,36,40,44,48,53,58,63,68,74,80,84,89,94,98,102,106,109,112,116,119,122,125,128,132,135],
 			"Henchmen Puppet": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
 			"Dark Orb": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
+			"Meteor Staff": [13,17,21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,90,95,100,105,110,115,120,125],
 			"Life Gem": [11,13,16,18,20,22,24,26,31,35,42,46,51,55,59,64,68,73],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
@@ -1175,6 +1177,7 @@ $(document).ready(function() {
 			"Dark Orb": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
 			"Metal Pants": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
 			"Dark Crown": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
+			"Meteor Staff": [58,87,115,144,173,202,230,259,288,317,345,374,403,432,460,489,518,547,607,639,671,705,739,773,809,845,881],
 			"Life Gem": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],

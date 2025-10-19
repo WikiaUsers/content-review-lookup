@@ -1,116 +1,117 @@
-document.addEventListener("DOMContentLoaded", function() {
-  setTimeout(function() {
-    const container = document.querySelector(".resizable-container");
+// Fan Feed --------------------------------------------------------------------
+(function($){
+	// Prevent double load
+	window.xorumwiki = window.xorumwiki || {};
+	if (window.xorumwiki.fanFeed) return;
+	window.xorumwiki.fanFeed = true;
 
-    const newDiv = document.createElement("div");
-    newDiv.innerHTML = `
-        <div id="mixed-content-footer" class="mixed-content-footer">
-            <div class="mcf-wrapper">
-                <div class="mcf-content" style="display: block;">
-                    <h2 class="mcf-header">Fan Feed</h2>
-                    <div class="mcf-mosaic">
-                        <div class="mcf-column">
-                            <div class="mcf-card mcf-card-wiki-articles">
-                                <header class="mcf-card-wiki-articles__header">
-                                    <span class="mcf-card-wiki-articles__header-text">More Xorum Wiki</span>
-                                </header>
-                                <ul class="mcf-card-wiki-articles__list">
-                                    <li class="mcf-card-wiki-articles__item">
-                                        <a href="https://xorumian-cosplays.fandom.com/de/wiki/Kategorie:Darsteller" class="mcf-card-wiki-articles__item-link" title="Darsteller">
-                                            <span class="mcf-card-wiki-articles__circle">1</span>
-                                            <span class="mcf-card-wiki-articles__title">Darsteller</span>
-                                        </a>
-                                    </li>
-                                    <li class="mcf-card-wiki-articles__item">
-                                        <a href="https://xorumian-cosplays.fandom.com/de/wiki/Kategorie:Kollektionen" class="mcf-card-wiki-articles__item-link" title="Kollektionen">
-                                            <span class="mcf-card-wiki-articles__circle">2</span>
-                                            <span class="mcf-card-wiki-articles__title">Kollektionen</span>
-                                        </a>
-                                    </li>
-                                    <li class="mcf-card-wiki-articles__item">
-                                        <a href="https://xorumian-cosplays.fandom.com/de/wiki/Kategorie:Cosplays" class="mcf-card-wiki-articles__item-link" title="Cosplays">
-                                            <span class="mcf-card-wiki-articles__circle">3</span>
-                                            <span class="mcf-card-wiki-articles__title">Cosplays</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Zovin" class=" mcf-card mcf-card-article" title="Zovin">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/0/0b/Zovin.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Zovin</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Einari" class=" mcf-card mcf-card-article" title="Einari">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/d/da/Einari.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Einari</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
+	// Fan Feed HTML
+	var FAN_FEED = `
+        <div class="mcf-wrapper">
+            <div class="mcf-content" style="display: block;">
+                <h2 class="mcf-header">Fan Feed</h2>
+                <div class="mcf-mosaic">
+                    <div class="mcf-column">
+                        <div class="mcf-card mcf-card-wiki-articles">
+                            <header class="mcf-card-wiki-articles__header">
+                                <span class="mcf-card-wiki-articles__header-text">More Xorum Wiki</span>
+                            </header>
+                            <ul class="mcf-card-wiki-articles__list">
+                                <li class="mcf-card-wiki-articles__item">
+                                    <a href="https://xorumian-cosplays.fandom.com/de/wiki/Kategorie:Darsteller" class="mcf-card-wiki-articles__item-link" title="Darsteller">
+                                        <span class="mcf-card-wiki-articles__circle">1</span>
+                                        <span class="mcf-card-wiki-articles__title">Darsteller</span>
+                                    </a>
+                                </li>
+                                <li class="mcf-card-wiki-articles__item">
+                                    <a href="https://xorumian-cosplays.fandom.com/de/wiki/Kategorie:Kollektionen" class="mcf-card-wiki-articles__item-link" title="Kollektionen">
+                                        <span class="mcf-card-wiki-articles__circle">2</span>
+                                        <span class="mcf-card-wiki-articles__title">Kollektionen</span>
+                                    </a>
+                                </li>
+                                <li class="mcf-card-wiki-articles__item">
+                                    <a href="https://xorumian-cosplays.fandom.com/de/wiki/Kategorie:Cosplays" class="mcf-card-wiki-articles__item-link" title="Cosplays">
+                                        <span class="mcf-card-wiki-articles__circle">3</span>
+                                        <span class="mcf-card-wiki-articles__title">Cosplays</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="mcf-column">
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Luq" class=" mcf-card mcf-card-article" title="Luq">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/5/5e/Luq.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Luq</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Qara" class=" mcf-card mcf-card-article" title="Qara">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/0/04/Qara.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Qara</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="mcf-card-article__link">
-                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Atrae" class=" mcf-card mcf-card-article" title="Atrae">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/1/11/Atrae.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                    <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Atrae</span>
-                                        <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="mcf-card-article__link">
+                            <a href="https://xorumian-cosplays.fandom.com/de/wiki/Zovin" class=" mcf-card mcf-card-article" title="Zovin">
+                                <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/0/0b/Zovin.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <span class="mcf-card-article__wrapper has-thumbnail">
+                                    <span class="mcf-card-article__title">Zovin</span>
+                                    <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                                </span>
+                            </a>
                         </div>
-                        <div class="mcf-column">
+                        <div class="mcf-card-article__link">
+                            <a href="https://xorumian-cosplays.fandom.com/de/wiki/Einari" class=" mcf-card mcf-card-article" title="Einari">
+                                <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/d/da/Einari.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <span class="mcf-card-article__wrapper has-thumbnail">
+                                    <span class="mcf-card-article__title">Einari</span>
+                                    <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mcf-column">
+                        <div class="mcf-card-article__link">
+                            <a href="https://xorumian-cosplays.fandom.com/de/wiki/Luq" class=" mcf-card mcf-card-article" title="Luq">
+                                <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/5/5e/Luq.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <span class="mcf-card-article__wrapper has-thumbnail">
+                                    <span class="mcf-card-article__title">Luq</span>
+                                    <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="mcf-card-article__link">
+                            <a href="https://xorumian-cosplays.fandom.com/de/wiki/Qara" class=" mcf-card mcf-card-article" title="Qara">
+                                <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/0/04/Qara.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <span class="mcf-card-article__wrapper has-thumbnail">
+                                    <span class="mcf-card-article__title">Qara</span>
+                                    <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="mcf-card-article__link">
+                            <a href="https://xorumian-cosplays.fandom.com/de/wiki/Atrae" class=" mcf-card mcf-card-article" title="Atrae">
+                                <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/1/11/Atrae.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <span class="mcf-card-article__wrapper has-thumbnail">
+                                    <span class="mcf-card-article__title">Atrae</span>
+                                    <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mcf-column">
+                        <div class="mcf-card-article__link">
+                            <a href="https://xorumian-cosplays.fandom.com/de/wiki/Luna" class=" mcf-card mcf-card-article" title="Luna">
+                                <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/1/13/Luna.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <span class="mcf-card-article__wrapper has-thumbnail">
+                                    <span class="mcf-card-article__title">Luna</span>
+                                    <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                            	    </span>
+                                </a>
+                            </div>
                             <div class="mcf-card-article__link">
-                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Luna" class=" mcf-card mcf-card-article" title="Luna">
-                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/1/13/Luna.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Rolfin" class=" mcf-card mcf-card-article" title="Rolfin">
+                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/6/63/Rolfin.png/revision/latest/scale-to-width-down/800?path-prefix=de">
                                     <span class="mcf-card-article__wrapper has-thumbnail">
-                                        <span class="mcf-card-article__title">Luna</span>
+                                        <span class="mcf-card-article__title">Rolfin</span>
                                         <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                	    </span>
-                                    </a>
-                                </div>
-                                <div class="mcf-card-article__link">
-                                    <a href="https://xorumian-cosplays.fandom.com/de/wiki/Rolfin" class=" mcf-card mcf-card-article" title="Rolfin">
-                                        <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/6/63/Rolfin.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                        <span class="mcf-card-article__wrapper has-thumbnail">
-                                            <span class="mcf-card-article__title">Rolfin</span>
-                                            <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="mcf-card-article__link">
-                                    <a href="https://xorumian-cosplays.fandom.com/de/wiki/Troel" class=" mcf-card mcf-card-article" title="Troel">
-                                        <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/e/e6/Troel.png/revision/latest/scale-to-width-down/800?path-prefix=de">
-                                        <span class="mcf-card-article__wrapper has-thumbnail">
-                                            <span class="mcf-card-article__title">Troel</span>
-                                            <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
-                                        </span>
-                                    </a>
-                                </div>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="mcf-card-article__link">
+                                <a href="https://xorumian-cosplays.fandom.com/de/wiki/Troel" class=" mcf-card mcf-card-article" title="Troel">
+                                    <img class="mcf-card-article__thumbnail" src="https://static.wikia.nocookie.net/xorumian-cosplays/images/e/e6/Troel.png/revision/latest/scale-to-width-down/800?path-prefix=de">
+                                    <span class="mcf-card-article__wrapper has-thumbnail">
+                                        <span class="mcf-card-article__title">Troel</span>
+                                        <span class="mcf-card-article__subtitle">Xorum Cosplay Wiki</span>
+                                    </span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -119,6 +120,20 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
     `;
 
-    container.appendChild(newDiv);
-  }, 1000);
-});
+	function main() {
+		// Delay add to try to make it more consitent
+		setTimeout(fanFeedHTML, 3000);
+	}
+
+	function fanFeedHTML() {
+		var $feed = $("<div>")
+			.addClass("mixed-content-footer")
+			.attr("id", "mixed-content-footer")
+			.html(FAN_FEED);
+
+		// Insert under page
+		$(".resizable-container > div:last-of-type").after($feed);
+	}
+
+	main();
+})(jQuery);
