@@ -738,7 +738,7 @@
 		)
 		.flat();
 	
-	const customArmorUrlBase = 'https://hsbwrp.fewfre.com/latest/piece_renders';
+	const customArmorUrlBase = 'https://skyblock-wiki.github.io/wiki-resource-packs/MinecraftLatest/piece_renders';
 	const mappedCustomArmorFiles = customArmorFiles.reduce((arr, { name, h, c, l, b })=>{
 		[{ type:'Helmet', flag:h }, { type:'Chestplate', flag:c }, { type:'Leggings', flag:l }, { type:'Boots', flag:b }]
 		.forEach(({ type, flag:existsOrName }) => {

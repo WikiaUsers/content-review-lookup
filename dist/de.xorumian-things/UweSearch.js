@@ -25,12 +25,12 @@
 			.attr("href", mw.util.getUrl("Special:Search"))
 			.addClass("wds-button wds-is-text is-hidden-on-smaller-breakpoints")
 			.attr("title", "Search")
-			.attr("data-tracking", "search")
+			.attr("data-tracking-label", "search")
 			.html(TOOLBAR_ICON);
 
 		// Insert to nav
-		$(".wiki-tools:has(.wds-is-secondary[title='Discuss']) > .wds-button:not([class*='uwe-']):first-of-type").before($buttonNav);
-		$(".wiki-tools:has(.wds-is-text[title='Discuss']) > .wds-button:not([class*='uwe-']):first-of-type").before($buttonSticky);
+		$(".wiki-tools:has(.wds-is-secondary[data-tracking='discussions']) > .wds-button:not([class*='uwe-']):first-of-type").before($buttonNav);
+		$(".wiki-tools:has(.wds-is-text[data-tracking-label='discussions']) > .wds-button:not([class*='uwe-']):first-of-type").before($buttonSticky);
 	}
 
 	main();

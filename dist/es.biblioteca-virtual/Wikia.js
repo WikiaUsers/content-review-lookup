@@ -37,7 +37,7 @@ $(function subeEnlacesUtiles() {
 });
 
 $(function() {
-    if (document.location.href.indexOf('?action=edit&preload=Biblioteca_Virtual_de_Literatura_Wiki:Preload_') > -1) {
+    if (document.location.href.indexOf('?action=edit&preload=biblioteca-virtual.fandom:Preload_') > -1) {
         alert("¡Después del ''='' escribe lo que corresponde en cada una de las línea de la plantilla!");
     }
 });

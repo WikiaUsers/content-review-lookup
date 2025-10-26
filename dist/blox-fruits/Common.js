@@ -90,13 +90,15 @@ $(function () {
 			sea    : $('#filterSea').val()
 		};
 
+		let anyVisible = false;
+
 		$('#itemList > div').each(function () {
 			const $t = $(this);
 
 			const textOk =
 				!search ||
-					($t.attr('id')||'').toLowerCase().startsWith(search) ||
-					$t.text().toLowerCase().startsWith(search);
+					($t.attr('id')||'').toLowerCase().includes(search) ||
+					$t.text().toLowerCase().includes(search);
 
 			const catsOk = Object.entries(filters).every(([attr, val]) => {
 				if (!val) return true;
@@ -106,8 +108,15 @@ $(function () {
 				return list.includes(val);
 			});
 
-			$t.toggle(textOk && catsOk);
+			const isVisible = textOk && catsOk;
+			$t.toggle(isVisible);
+
+			if (isVisible) {
+				anyVisible = true;
+			}
 		});
+		
+		$('#noResults').toggle(!anyVisible);
 	}
 
 	$(document).on('input change', '#searchInput, #filterType, #filterRarity, #filterEffect, #filterSea', filterItems);

@@ -12,7 +12,7 @@
 					if ((rule.selectorText || '').includes(toDisplay) && rule.style.display == 'none') {
 						var newRule = rule.cssText.replace(toDisplay, toHide);
 						sheet.deleteRule(j);
-						sheet.insertRule(newRule);
+						sheet.insertRule(newRule, j);
 						// Stop after the first replacement
 						return true;
 					}

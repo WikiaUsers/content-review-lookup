@@ -358,7 +358,7 @@ window.MessageWallUserTags = {
 		'SPONGEBOBSUPERFANINFINITY': 'Rollback',
 		
         'LarryBoy_fan': 'Discussion Moderator',
-        'SpongeTron D': 'Discussion Moderator'
+        'SpongeTron D': 'Rollback • Discussion Moderator'
     }
 };
 

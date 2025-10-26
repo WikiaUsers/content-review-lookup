@@ -6,12 +6,12 @@ mw.hook('wikipage.content').add(function() {
 
     /* --- Removes the need for adding a surfeit amount of <gallery> attributes --- */
     /* --- by making the desirable ones the default.                             --- */
-    const wikiaGallery = document.querySelector(".wikia-gallery");
-    if (wikiaGallery) {
-        // Use classList for better management than directly setting className
-        // which would remove all other existing classes.
-        wikiaGallery.className = "wikia-gallery wikia-gallery-caption-below wikia-gallery-position-center wikia-gallery-spacing-small wikia-gallery-border-none wikia-gallery-captions-center wikia-gallery-caption-size-medium";
-    }
+	const wikiaGalleries = document.querySelectorAll(".wikia-gallery");
+	if (wikiaGalleries.length > 0) {
+		wikiaGalleries.forEach(gallery => {
+			gallery.className = "wikia-gallery wikia-gallery-caption-below wikia-gallery-position-center wikia-gallery-spacing-small wikia	-gallery-border-none wikia-gallery-captions-center wikia-gallery-caption-size-medium";
+	    });
+	}
 
     /* --- Special:Upload template preload --- */
     if (

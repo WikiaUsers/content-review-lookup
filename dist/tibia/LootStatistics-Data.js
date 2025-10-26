@@ -18,6 +18,10 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Newhaven update
+'Muglex Clan Assassin':'15.12.c7d92c',
+'Muglex Clan Footman':'15.12.c7d92c',
+'Grimeleech':'15.12.c7d92c',
 // Norcs nerfs, rootthings buffs
 'Dworc Shadowstalker':'15.11.dde523',
 'Gloom Maw':'15.11.dde523',
@@ -702,7 +706,7 @@ window.loot_parser_data = {
 'Choking Fear' : '12.31.9530',
 'Retching Horror': '12.31.9530',
 'Plaguesmith': '12.31.9530',
-'Grimeleech': '12.31.9530',
+//'Grimeleech': '12.31.9530',
 'Rage Squid': '12.31.9530',
 'Burning Book': '12.31.9530',
 'Guardian of Tales': '12.31.9530',
@@ -844,7 +848,7 @@ window.loot_parser_data = {
 //'Mountain Troll': '10.93',
 'Troll-Trained Salamander': '10.93',
 'Minotaur Bruiser': '10.93',
-'Muglex Clan Footman': '10.93',
+//'Muglex Clan Footman': '10.93',
 'Woodling': '10.93',
 'Meadow Strider': '10.93',
 'Dawnfly': '10.93',
@@ -854,7 +858,7 @@ window.loot_parser_data = {
 'Minotaur Poacher': '10.93',
 'Dawn Scorpion': '10.93',
 'Juvenile Cyclops': '10.93',
-'Muglex Clan Assassin': '10.93',
+//'Muglex Clan Assassin': '10.93',
 'Muglex Clan Scavenger': '10.93',
 'Minotaur Occultist': '10.93',
 'Crazed Dwarf': '10.93',
@@ -1102,9 +1106,9 @@ window.loot_parser_data = {
 'Minotaur Occultist': '10.55',
 'Minotaur Poacher': '10.55',
 //'Mountain Troll': '10.55',
-'Muglex Clan Assassin': '10.55',
-'Muglex Clan Footman': '10.55',
-'Muglex Clan Scavenger': '10.55',
+//'Muglex Clan Assassin': '10.55',
+//'Muglex Clan Footman': '10.55',
+//'Muglex Clan Scavenger': '10.55',
 'Sacred Snake': '10.55',
 'Salamander Trainer': '10.55',
 'Scar Tribe Shaman': '10.55',

@@ -1,196 +1,189 @@
-/*
-    * @description     Adds token simulator form to pages.
-    * @author          CA.EXCELSIOR
-    * @notes           
-        * Works only is there is an element with id='tokenSimulationContainer' where form elements are added
-        * Optionaly element with id='tokenSimulationResult' is targeted for output if it exsist, else it is created
-        * Best option is to use Template:TokenSimulation created in purpose of using it with this script
+/**
+ * @description Adds token simulator form to pages. Depends on: [[MediaWiki:CustomForm.js]] and [[MediaWiki:CustomForm.css]] for styles
+ *              Works only if there is an element with id='tokenSimulationContainer' where form elements are added.
+ *              Best option is to use [[Template:TokenSimulator]] created in purpose of using it with this script.
+ * @author      CA.EXCELSIOR      
 */
+'use strict';
 
-const maxNumOfIterations = 1000000; // upper limit preventing unreasonable input
-const tokenSpentLimit = 20000; // upper limit preventing unreasonable input i.e. 100% token refund
-var simulationRunning = false;
-var stopSimulation = false;
+const MAX_NUM_OF_ITERATIONS = 1000000; // upper limit preventing unreasonable input
+const TOKEN_SPENT_LIMIT = 20000; // upper limit preventing unreasonable input i.e. 100% token refund
+const CHUNK_SIZE = 100; // size for running chunked simulation
+const IDS = {
+    targetContainerId: 'tokenSimulationContainer',
+    form: 'tokenSimulationForm',
+    numOfIterations: 'numOfIterationsTokenSim',
+    initialTokens: 'initialTokensTokenSim',
+    tokenCap: 'tokenCapTokenSim',
+    layla: 'laylaTokenSim',
+    monkeyKing: 'monkeyKingTokenSim',
+    isla: 'islaTokenSim',
+    wall: 'wallTokenSim',
+    progress: 'simProgressTokenSim',
+    result: 'resultTokenSim'
+};
+
+let simulationRunning = false;
+let stopSimulation = false;
+
+// get container
+const formContainer = document.getElementById(IDS.targetContainerId);
+
+if (formContainer) {
+    // load CustomForm.js file
+    importArticles({
+        type: "script",
+        article: "MediaWiki:CustomForm.js"
+    }).then(function () {
+        // build form
+        buildTokenSimulationForm();
+    }).catch(function (error) {
+        console.error('Error loading MediaWiki:CustomForm.js: ', error);
+    });
+}
+else {
+    console.error("TokenSimulator container missing: element with id='tokenSimulationContainer' does not exist.");
+}
+
+// after this only definitions ==============================
+// ==========================================================
 
 function buildTokenSimulationForm() {
-    const formContainer = document.getElementById('tokenSimulationContainer');
-
-    // if tokenSimulationContainer doesn't exist than silent return
-    if (!formContainer) {
-        return;
-    }
-
-    console.log('|--> Starting: build token simulation form --->');
+    // cache customForm namespace
+    const cf = window.customForm;
 
     // form element
-    const form = document.createElement('form');
-    form.setAttribute('id', 'tokenSimulationForm');
-    form.setAttribute('action', 'javascript:;');
-
-    // Initial tokens input
-    const initialTokensInput = document.createElement('input');
-    initialTokensInput.setAttribute('name', 'initialTokens');
-    initialTokensInput.setAttribute('id', 'initialTokens');
-    initialTokensInput.setAttribute('required', true);
-    initialTokensInput.setAttribute('type', 'number');
-    initialTokensInput.setAttribute('min', 0);
-    initialTokensInput.setAttribute('max', 1000);
-    initialTokensInput.setAttribute('placeholder', '10');
-    initialTokensInput.setAttribute('value', '10');
-
-    const initialTokensLabel = document.createElement('label');
-    initialTokensLabel.setAttribute('for', 'initialTokens');
-    initialTokensLabel.textContent = 'Initial tokens:';
-
-    form.appendChild(initialTokensLabel);
-    form.appendChild(initialTokensInput);
-
-    // Maximum tokens input
-    const maxTokensInput = document.createElement('input');
-    maxTokensInput.setAttribute('name', 'maxTokens');
-    maxTokensInput.setAttribute('id', 'maxTokens');
-    maxTokensInput.setAttribute('required', true);
-    maxTokensInput.setAttribute('type', 'number');
-    maxTokensInput.setAttribute('min', 0);
-    maxTokensInput.setAttribute('max', 1000);
-    maxTokensInput.setAttribute('placeholder', '10');
-    maxTokensInput.setAttribute('value', '10');
-
-    const maxTokensLabel = document.createElement('label');
-    maxTokensLabel.setAttribute('for', 'maxTokens');
-    maxTokensLabel.textContent = 'Max tokens:';
-
-    form.appendChild(maxTokensLabel);
-    form.appendChild(maxTokensInput);
+    const form = cf.createForm({ id: IDS.form });
 
     // Number of iterations input
-    const numOfIterationsInput = document.createElement('input');
-    numOfIterationsInput.setAttribute('name', 'numOfIterations');
-    numOfIterationsInput.setAttribute('id', 'numOfIterations');
-    numOfIterationsInput.setAttribute('required', true);
-    numOfIterationsInput.setAttribute('type', 'number');
-    numOfIterationsInput.setAttribute('min', 1);
-    numOfIterationsInput.setAttribute('max', maxNumOfIterations);
-    numOfIterationsInput.setAttribute('placeholder', '20000');
-    numOfIterationsInput.setAttribute('value', '20000');
+    const numOfIterations = document.createElement('input');
+    numOfIterations.id = IDS.numOfIterations;
+    numOfIterations.name = numOfIterations.id;
+    numOfIterations.type = 'number';
+    numOfIterations.required = true;
+    numOfIterations.value = 20000;
+    numOfIterations.placeholder = '20000';
+    numOfIterations.min = 1;
+    numOfIterations.max = MAX_NUM_OF_ITERATIONS;
 
-    const numOfIterationsLabel = document.createElement('label');
-    numOfIterationsLabel.setAttribute('for', 'numOfIterations');
-    numOfIterationsLabel.textContent = 'Number of iterations:';
+    form.appendChild(cf.createLabelGroupVertical({
+        input: numOfIterations,
+        label: 'Number of iterations'
+    }));
 
-    form.appendChild(numOfIterationsLabel);
-    form.appendChild(numOfIterationsInput);
+    // Token group
+    // Initial tokens input
+    const initialTokens = document.createElement('input');
+    initialTokens.id = IDS.initialTokens;
+    initialTokens.name = initialTokens.id;
+    initialTokens.type = 'number';
+    initialTokens.required = true;
+    initialTokens.value = 10;
+    initialTokens.placeholder = '10';
+    initialTokens.min = 0;
+    initialTokens.max = 1000;
 
+    // Token cap input
+    const tokenCap = document.createElement('input');
+    tokenCap.id = IDS.tokenCap;
+    tokenCap.name = tokenCap.id;
+    tokenCap.type = 'number';
+    tokenCap.required = true;
+    tokenCap.value = 10;
+    tokenCap.placeholder = '10';
+    tokenCap.min = 1;
+    tokenCap.max = 1000;
+
+    form.appendChild(cf.createFormGroupHorizontal({
+        elements: [
+            cf.createLabelGroupVertical({ input: initialTokens, label: 'Initial tokens' }),
+            cf.createLabelGroupVertical({ input: tokenCap, label: 'Token cap' }),
+        ]
+    }));
+
+    // Refund section
     // Layla input
-    const laylaInput = document.createElement('input');
-    laylaInput.setAttribute('name', 'layla');
-    laylaInput.setAttribute('id', 'layla');
-    laylaInput.setAttribute('required', true);
-    laylaInput.setAttribute('type', 'number');
-    laylaInput.setAttribute('step', '0.01');
-    laylaInput.setAttribute('min', 0);
-    laylaInput.setAttribute('max', 200);
-    laylaInput.setAttribute('placeholder', '101.04');
-    laylaInput.setAttribute('value', '101.04');
-
-    const laylaLabel = document.createElement('label');
-    laylaLabel.setAttribute('for', 'layla');
-    laylaLabel.textContent = 'Layla:';
-
-    form.appendChild(laylaLabel);
-    form.appendChild(laylaInput);
-
-    let spanPercent = document.createElement('span');
-    spanPercent.textContent = '%';
-    form.appendChild(spanPercent);
+    const layla = document.createElement('input');
+    layla.id = IDS.layla;
+    layla.name = layla.id;
+    layla.type = 'number';
+    layla.value = 101.04;
+    layla.placeholder = '0.00';
+    layla.min = 0;
+    layla.max = 200;
+    layla.step = 0.01;
 
     // Monkey King input
-    const monkeyKingInput = document.createElement('input');
-    monkeyKingInput.setAttribute('name', 'monkeyKing');
-    monkeyKingInput.setAttribute('id', 'monkeyKing');
-    monkeyKingInput.setAttribute('required', true);
-    monkeyKingInput.setAttribute('type', 'number');
-    monkeyKingInput.setAttribute('step', '0.01');
-    monkeyKingInput.setAttribute('min', 0);
-    monkeyKingInput.setAttribute('max', 100);
-    monkeyKingInput.setAttribute('placeholder', '0.00');
-    monkeyKingInput.setAttribute('value', '20');
-
-    const monkeyKingLabel = document.createElement('label');
-    monkeyKingLabel.setAttribute('for', 'monkeyKing');
-    monkeyKingLabel.textContent = 'Monkey King:';
-
-    form.appendChild(monkeyKingLabel);
-    form.appendChild(monkeyKingInput);
-
-    spanPercent = document.createElement('span');
-    spanPercent.textContent = '%';
-    form.appendChild(spanPercent);
+    const monkeyKing = document.createElement('input');
+    monkeyKing.id = IDS.monkeyKing;
+    monkeyKing.name = monkeyKing.id;
+    monkeyKing.type = 'number';
+    monkeyKing.value = 20;
+    monkeyKing.placeholder = '0.00';
+    monkeyKing.min = 0;
+    monkeyKing.max = 100;
+    monkeyKing.step = 0.01;
 
     // Isla input
-    const islaInput = document.createElement('input');
-    islaInput.setAttribute('name', 'isla');
-    islaInput.setAttribute('id', 'isla');
-    islaInput.setAttribute('required', true);
-    islaInput.setAttribute('type', 'number');
-    islaInput.setAttribute('step', '0.1');
-    islaInput.setAttribute('min', 0);
-    islaInput.setAttribute('max', 100);
-    islaInput.setAttribute('placeholder', '0.0');
-    islaInput.setAttribute('value', '16');
-
-    const islaLabel = document.createElement('label');
-    islaLabel.setAttribute('for', 'isla');
-    islaLabel.textContent = 'Isla:';
-
-    form.appendChild(islaLabel);
-    form.appendChild(islaInput);
-
-    spanPercent = document.createElement('span');
-    spanPercent.textContent = '%';
-    form.appendChild(spanPercent);
+    const isla = document.createElement('input');
+    isla.id = IDS.isla;
+    isla.name = isla.id;
+    isla.type = 'number';
+    isla.value = 16;
+    isla.placeholder = '0.0';
+    isla.min = 0;
+    isla.max = 100;
+    isla.step = 0.1;
 
     // Wall input
-    const wallInput = document.createElement('input');
-    wallInput.setAttribute('name', 'wall');
-    wallInput.setAttribute('id', 'wall');
-    wallInput.setAttribute('required', true);
-    wallInput.setAttribute('type', 'number');
-    wallInput.setAttribute('step', '1');
-    wallInput.setAttribute('min', 0);
-    wallInput.setAttribute('max', 100);
-    wallInput.setAttribute('placeholder', '18');
-    wallInput.setAttribute('value', '18');
+    const wall = document.createElement('input');
+    wall.id = IDS.wall;
+    wall.name = wall.id;
+    wall.type = 'number';
+    wall.value = 18;
+    wall.placeholder = '0';
+    wall.min = 0;
+    wall.max = 100;
+    wall.step = 1;
 
-    const wallLabel = document.createElement('label');
-    wallLabel.setAttribute('for', 'wall');
-    wallLabel.textContent = 'Wall:';
-
-    form.appendChild(wallLabel);
-    form.appendChild(wallInput);
-
-    spanPercent = document.createElement('span');
-    spanPercent.textContent = '%';
-    form.appendChild(spanPercent);
+    form.appendChild(cf.createFormGroupHorizontal({
+        elements: [
+            cf.createLabelGroupVertical({ input: layla, label: 'Layla', suffixes: ['%'] }),
+            cf.createLabelGroupVertical({ input: monkeyKing, label: 'Monkey King', suffixes: ['%'] }),
+            cf.createLabelGroupVertical({ input: isla, label: 'Isla', suffixes: ['%'] }),
+            cf.createLabelGroupVertical({ input: wall, label: 'Wall', suffixes: ['%'] })
+        ]
+    }));
 
     // Submit button
     const submitButton = document.createElement('button');
-    submitButton.setAttribute('type', 'submit');
     submitButton.textContent = 'Simulate';
+    submitButton.type = 'submit';
     form.appendChild(submitButton);
 
-    // if it doesn't exist create it
-    if (!document.getElementById('tokenSimulationResult')) {
-        const resultDiv = document.createElement('div');
-        resultDiv.setAttribute('id', 'tokenSimulationResult');
-        form.appendChild(resultDiv);
-    }
+    // Progress bar
+    const simProgressElement = document.createElement('progress');
+    simProgressElement.id = IDS.progress;
+    simProgressElement.value = 0;
+    simProgressElement.max = 100;
+    form.appendChild(simProgressElement);
 
+    // Result textarea
+    const resultElement = document.createElement('textarea');
+    resultElement.id = IDS.result;
+    resultElement.rows = 7;
+    resultElement.readonly = true;
+    resultElement.placeholder = 'Simulation report...';
+
+    form.appendChild(resultElement);
+
+    // add event listener for submit
     form.addEventListener('submit', function (e) {
         e.preventDefault();
 
         if (simulationRunning) {
             stopSimulation = true;
+            submitButton.disabled = true;
             submitButton.textContent = 'Stopping simulation...';
         }
         else {
@@ -203,98 +196,111 @@ function buildTokenSimulationForm() {
                 })
                 .catch(err => {
                     console.error('Simulation error: ', err);
+                    resultElement.textContent = 'Simulation error: ' + err;
                 })
                 .finally(() => {
                     simulationRunning = false;
                     stopSimulation = false;
                     submitButton.textContent = 'Simulate';
+                    submitButton.disabled = false;
                 });
         }
     });
 
+    cf.finalizeCustomForm(form);
 
-
-    document.body.appendChild(form);
-
-    console.log('---> Finished: build token simulation form -->|');
+    formContainer.appendChild(form);
 }
-addOnloadHook(buildTokenSimulationForm);
 
 function simulateTokensChunked(form) {
     return new Promise((resolve, reject) => {
 
-        console.log('|--> Starting: token simulation --->');
+        console.log('----- Starting: token simulation -----');
 
-        const resultDiv = document.getElementById('tokenSimulationResult');
-        if (!resultDiv) {
-            reject("simulationResult div element not found!");
+        const resultElement = document.getElementById(IDS.result);
+        if (!resultElement) {
+            reject("element with id='resultTokenSim' not found!");
             return;
         }
+
+        resultElement.textContent = '';
+        const simProgress = document.getElementById(IDS.progress);
 
         const formData = new FormData(form);
 
-        const initialTokens = Number(formData.get('initialTokens'));
-        const maxTokens = Number(formData.get('maxTokens'));
+        const initialTokens = Number(formData.get(IDS.initialTokens));
+        const tokenCap = Number(formData.get(IDS.tokenCap));
 
-        if (initialTokens > maxTokens) {
-            resultDiv.textContent = "Initial tokens exceed max tokens, it could be intentional or an error.";
-            console.warn("Initial tokens exceed max tokens, it could be intentional or an error.");
+        if (initialTokens > tokenCap) {
+            reject("Initial tokens exceed token cap.");
+            return;
         }
 
-        const numOfIterations = Number(formData.get('numOfIterations'));
+        const numOfIterations = Number(formData.get(IDS.numOfIterations));
 
         if (numOfIterations <= 0) {
-            resultDiv.textContent = 'Number of iterations too low (min: 1)!';
-            reject('Number of iterations too low low (min: 1)!');
+            reject('Number of iterations too low (min: 1)!');
             return;
-        } else if (numOfIterations > maxNumOfIterations) {
-            resultDiv.textContent = `Number of iterations too high (max: ${maxNumOfIterations})!`;
-            reject(`Number of iterations too high (max: ${maxNumOfIterations})!`);
+        } else if (numOfIterations > MAX_NUM_OF_ITERATIONS) {
+            reject(`Number of iterations too high (max: ${MAX_NUM_OF_ITERATIONS})!`);
             return;
         }
 
-        const layla = Number(formData.get('layla')) / 100;
-        const monkeyKing = (Number(formData.get('monkeyKing')) / 100) * (1 + layla);
-        const isla = (Number(formData.get('isla')) / 100) * (1 + layla);
-        const wall = (Number(formData.get('wall')) / 100);
+        // get values and modify with Layla
+        const layla = (Number(formData.get(IDS.layla) || 0) || 0) / 100;
+        const monkeyKing = ((Number(formData.get(IDS.monkeyKing) || 0) || 0) / 100) * (1 + layla);
+        const isla = ((Number(formData.get(IDS.isla) || 0) || 0) / 100) * (1 + layla);
+        const wall = ((Number(formData.get(IDS.wall) || 0) || 0) / 100);
 
-        console.log('Token simulation input data:', Object.fromEntries(formData.entries()));
+        // return if 100%
+        if (monkeyKing >= 1) {
+            reject(`100% refund! Monkey King value modified by Layla: ${monkeyKing * 100}%!`);
+            return;
+        }
+        if (isla >= 1) {
+            reject(`100% refund! Isla value modified by Layla: ${isla * 100}%!`);
+            return;
+        }
+        if (wall >= 1) {
+            reject(`100% refund! Wall value: ${wall * 100}%!`);
+            return;
+        }
 
         let tokenLimitReachedCount = 0
         let totalTokensSpent = 0;
+        let minTokensSpent = +Infinity;
+        let maxTokensSpent = -Infinity;
         let iterationsCnt = 0;
 
-        resultDiv.textContent = `Simulating for ${numOfIterations} iterations....`
-        console.log(`Simulating for ${numOfIterations} iterations....`)
+        resultElement.textContent = `Simulating for ${numOfIterations} iterations...\n`
         const startTime = performance.now();
 
         function runChunk() {
-            const chunkSize = 500;
-            const end = Math.min(iterationsCnt + chunkSize, numOfIterations);
-
+            const end = Math.min(iterationsCnt + CHUNK_SIZE, numOfIterations);
             for (; iterationsCnt < end; iterationsCnt++) {
+                if (stopSimulation) break;
+
                 let tokensSpent = 0;
                 let tokensCurrent = initialTokens;
-                // spend tokens until 0 or tokenSpentLimit reached
-                while (tokensSpent < tokenSpentLimit && tokensCurrent > 0) {
+
+                // spend tokens until 0 or tokenSpentLimit reached - one iteration
+                for (; tokensSpent < TOKEN_SPENT_LIMIT && tokensCurrent > 0; tokensSpent++) {
                     if (stopSimulation) break;
 
                     tokensCurrent--; // spent one token
-                    if (Math.random() >= (1 - monkeyKing)) tokensCurrent++; // gained token form Monkey King
-                    if (Math.random() >= (1 - isla)) tokensCurrent++; // gained token form Isla
-                    if (Math.random() >= (1 - wall)) tokensCurrent++; // gained token form Wall Tower
-                    tokensCurrent = Math.min(maxTokens, tokensCurrent); // cap tokens
-
-                    tokensSpent++
+                    if (Math.random() < monkeyKing) tokensCurrent++; // gained token form Monkey King
+                    if (Math.random() < isla) tokensCurrent++; // gained token form Isla
+                    if (Math.random() < wall) tokensCurrent++; // gained token form Wall Tower
+                    tokensCurrent = Math.min(tokenCap, tokensCurrent); // cap tokens
                 }
 
-                if (stopSimulation) break;
-
                 totalTokensSpent += tokensSpent;
-                if (tokensSpent >= tokenSpentLimit) tokenLimitReachedCount++;
+                if (tokensSpent >= TOKEN_SPENT_LIMIT) tokenLimitReachedCount++;
+                minTokensSpent = Math.min(minTokensSpent, tokensSpent);
+                maxTokensSpent = Math.max(maxTokensSpent, tokensSpent);
             }
 
-            resultDiv.textContent = `Progress: ${iterationsCnt} / ${numOfIterations} iterations`;
+            simProgress.value = 100 * iterationsCnt / numOfIterations;
 
             if (iterationsCnt < numOfIterations && !stopSimulation) {
                 setTimeout(runChunk, 0);
@@ -307,30 +313,31 @@ function simulateTokensChunked(form) {
                 else
                     avgTokens = totalTokensSpent / iterationsCnt;
 
-                let finishedMessage;
+                let finishedMsg;
                 if (stopSimulation)
-                    finishedMessage = `Simulation stopped early! It took ${((endTime - startTime) / 1000).toFixed(2)} seconds.`;
+                    finishedMsg = 'Simulation stopped early!\n';
                 else
-                    finishedMessage = `Simulation finished! It took ${((endTime - startTime) / 1000).toFixed(2)} seconds.`;
+                    finishedMsg = 'Simulation finished successfully!\n';
 
-                if (tokenLimitReachedCount > 0) {
-                    let message = `${finishedMessage}\n\nAverage tokens:\n ${avgTokens} (NOTE: might not be accurate because ${tokenLimitReachedCount} out of ${iterationsCnt} iterations reached tokenSpentLimit of ${tokenSpentLimit})`;
-                    resultDiv.textContent = message;
-                    console.log(message);
-                }
-                else {
-                    let message = `${finishedMessage}\n\nAverage tokens: ${avgTokens}`
-                    resultDiv.textContent = message;
-                    console.log(message);
-                }
+                let contextMsg = '';
+                if (tokenLimitReachedCount > 0)
+                    contextMsg = `* Results might not be accurate because ${tokenLimitReachedCount} out of ${iterationsCnt} iterations reached tokenSpentLimit of ${TOKEN_SPENT_LIMIT}\n`;
+
+                let timeMsg = `Simulation time: ${((endTime - startTime) / 1000).toFixed(2)} seconds\n`
+                let minMsg = `Minimum tokens: ${minTokensSpent}\n`;
+                let maxMsg = `Maximum tokens: ${maxTokensSpent}\n`;
+                let avgMsg = `Average tokens: ${avgTokens}`;
+
+                let message = `${finishedMsg}${contextMsg}${timeMsg}\n${minMsg}${maxMsg}${avgMsg}`;
+                resultElement.textContent = message;
+                console.log(message);
+
+                console.log('----- Finished: token simulation -----');
 
                 resolve();
             }
         }
 
         runChunk();
-
-        console.log('---> Finished: token simulation -->|');
-
     });
 }

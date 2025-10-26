@@ -1,13 +1,13 @@
 $(document).ready(function() {
-    // Add input elements
-    $('table#cardPricesCalc td#cardPricesCalcRarity').html('<select id="cpcRarity" name="cpcRarity"><option value="Comune" selected>Comune</option><option value="Rara">Rara</option><option value="Epica">Epica</option><option value="Leggendaria">Leggendaria</option></select>');
+    // Aggiungi elementi
+    $('table#cardPricesCalc td#cardPricesCalcRarity').html('<select id="cpcRarity" name="cpcRarity"><option value="Common" selected>Common</option><option value="Rare">Rare</option><option value="Epic">Epic</option><option value="Legendary">Legendary</option></select>');
     $('table#cardPricesCalc td#cardPricesCalcNum').html('<input type="number" id="cpcNum" name="cpcNum" value="1" min="0" max="100" step="1" style="width: 30px;">');
-    // Calculate
+    // Calcolatore
     $('table#cardPricesCalc input, table#cardPricesCalc select').change(function() {
         var cardRarity = $("table#cardPricesCalc select#cpcRarity").val();
         var rarityFactor;
         switch(cardRarity) {
-            case "Comune":
+            case "Common":
                 rarityFactor = 2;
                 $("input#cpcNum").attr("max", "100");
                 if ($("input#cpcNum").val() > 100) {
@@ -16,7 +16,7 @@ $(document).ready(function() {
                     $("input#cpcNum").val("0");
                 }
                 break;
-            case "Rara":
+            case "Rare":
                 rarityFactor = 20;
                 $("input#cpcNum").attr("max", "50");
                 if ($("input#cpcNum").val() > 50) {
@@ -25,7 +25,7 @@ $(document).ready(function() {
                     $("input#cpcNum").val("0");
                 }
                 break;
-            case "Epica":
+            case "Epic":
                 rarityFactor = 1000;
                 $("input#cpcNum").attr("max", "10");
                 if ($("input#cpcNum").val() > 10) {
@@ -34,7 +34,7 @@ $(document).ready(function() {
                     $("input#cpcNum").val("0");
                 }
                 break;
-            case "Leggendaria":
+            case "Legendary":
                 rarityFactor = 40000;
                 $("input#cpcNum").attr("max", "3");
                 if ($("input#cpcNum").val() > 3) {

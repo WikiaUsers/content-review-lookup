@@ -66,6 +66,12 @@
                 'SD screenshots': 'Screenshot',
                 'SD sprites': 'Sprite'
             },
+            'Victory Road': {
+                'Victory Road artwork images': 'Artwork',
+                'Victory Road emblem images': 'Emblem',
+                'Victory Road game screenshots': 'Screenshot',
+                'Victory Road sprites': 'Sprite'
+            },
             'Others': {
                 'Merchandise images': 'Merchandise',
                 'Movie images': 'Movie',

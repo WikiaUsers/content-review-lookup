@@ -1,5 +1,8 @@
 /* jshint esversion: 6 */
 
+$( document ).ready(function() {
+    importScriptPage('MediaWiki:Tippy.js');
+});
 
 // Prevents ProfileTags extension to overwrite default user tags.
 (window.dev = window.dev || {}).profileTags = {

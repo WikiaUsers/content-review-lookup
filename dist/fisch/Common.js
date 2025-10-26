@@ -6,6 +6,8 @@ window.BackToTopModern = true;
 
   /* By: user:gronox CUSTOM Gallery uploading fish mutations button */
 importScript('MediaWiki:UploadMutationsImage.js');
+  /* By: user:gronox CUSTOM add Mutation text */
+importScript('MediaWiki:AddMutation.js');
 
   /* By: user:gronox ICONS staff or custom in special panel (Fisch_Wiki:Staff) */
 importScript('MediaWiki:Staff.js');
@@ -80,4 +82,24 @@ $(document).ready(function() {
         }
     }
 });
-/* Footer | Fandom Staff, please accept js code :C */
+
+/* Test pages warning 
+ * TEMPLATE: https://fisch.fandom.com/wiki/Template:TW
+*/
+var pageName = mw.config.get('wgPageName');
+if (pageName === 'Test' || pageName.startsWith('Test/') || /^Test\d+$/.test(pageName)) {
+    $(function() {
+        new mw.Api().get({
+            action: 'parse',
+            page: 'Template:TW',
+            prop: 'text',
+            formatversion: 2
+        }).done(function(data) {
+            if (data.parse && data.parse.text) {
+                $('.mw-parser-output').prepend(data.parse.text);
+            }
+        });
+    });
+}
+
+/* Footer */

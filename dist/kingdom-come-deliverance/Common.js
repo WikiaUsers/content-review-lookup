@@ -2,6 +2,44 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /************************************************************************/
 
+// COLLAPSIBLE HEADERS
+$(function () {
+    var $content = $('#mw-content-text');
+    if (!$content.length) return;
+
+    var headers = $content.find('h2');
+    headers.each(function (i, el) {
+        var $header = $(el);
+        var id = 'myDivision-' + i;
+
+        // Collect all elements until the next h2
+        var $sectionContent = $();
+        var $next = $header.next();
+        while ($next.length && !$next.is('h2')) {
+            $sectionContent = $sectionContent.add($next);
+            $next = $next.next();
+        }
+
+        // Wrap content in collapsible div (expanded by default)
+        if ($sectionContent.length) {
+            $sectionContent.wrapAll(
+                '<div class="mw-collapsible" id="mw-customcollapsible-' + id + '"></div>'
+            );
+
+            // Make header a toggle
+            $header.wrapInner(
+                '<span role="button" class="mw-customtoggle-' + id + '" style="cursor:pointer;"></span>'
+            );
+        }
+    });
+
+    // Initialize collapsibles
+    mw.loader.using('jquery.makeCollapsible').then(function () {
+        $('.mw-collapsible').makeCollapsible();
+    });
+});
+
+// From Genshin Impact wiki
 // Modifying redirect button from WikiEditor's source mode
 mw.hook('ext.CodeMirror.ready').add(() => {
 	$( '#wpTextbox1' ).on('wikiEditor-toolbar-buildSection-advanced', ( event, section ) => {

@@ -13,7 +13,7 @@ mw.loader.using('mediawiki.api').then(
                 /* Create main block that will contain everything (and make it hidden by default) */
                 const communityPageHeaderLinks = document.createElement("div");
                 communityPageHeaderLinks.id = "communityPageHeaderLinks";
-                communityPageHeaderLinks.style = "background: #0006; backdrop-filter: blur(5px); position: absolute; top: 20px; right: 20px; border-radius: 20px; padding: 5px 15px; text-align: right; font-size: 13px; color: white";
+                communityPageHeaderLinks.style = "background: #0009; position: absolute; top: 20px; right: 20px; border-radius: 20px; padding: 5px 15px; text-align: right; font-size: 13px; color: white";
                 communityPageHeaderLinks.innerText = i18n.msg('edit').plain();
                 communityPageHeaderLinks.style.visibility = "hidden";
     

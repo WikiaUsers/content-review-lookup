@@ -59,6 +59,25 @@ $.getJSON(mw.util.wikiScript("index"), {
     }
 });
 
+mw.hook("wikipage.content").add(function () {
+
+    $("span.import-script").each(function () {
+        var $this = $(this);
+        var scriptContent = $this.attr("data-script");
+        var pageName = $this.attr("data-page");
+        
+        if (scriptContent) {
+            try {
+                (new Function(scriptContent))();
+                console.log("JavaScript加载成功: " + pageName);
+            } catch (error) {
+                console.error("JavaScript执行错误 (" + pageName + "):", error);
+                $this.after('<strong class="error">JavaScript执行错误: ' + error.message + '</strong>');
+            }
+        }
+    });
+});
+
 function getIeVersion() {
             var userAgent = navigator.userAgent; 
             var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; 

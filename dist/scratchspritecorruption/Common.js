@@ -25,3 +25,32 @@ function toggleLyrics() {
   const lyrics = document.getElementById("lyrics");
   lyrics.style.display = lyrics.style.display === "none" ? "block" : "none";
 }
+
+$(function() {
+  if (mw.config.get('wgUserName') !== null) {
+    $('.insertusername').text(mw.config.get('wgUserName'));
+  }
+});
+
+$(document).ready(function () {
+  var words = /\b(rixtyd|rix|rixen)\b/gi;
+
+  function highlightText(node) {
+    if (node.nodeType === 3) { // text node
+      var match = node.nodeValue.match(words);
+      if (match) {
+        var span = document.createElement("span");
+        span.innerHTML = node.nodeValue.replace(words, '<span class="rix-highlight">$1</span>');
+        node.parentNode.replaceChild(span, node);
+      }
+    } else if (node.nodeType === 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+      for (var i = 0; i < node.childNodes.length; i++) {
+        highlightText(node.childNodes[i]);
+      }
+    }
+  }
+
+  highlightText(document.body);
+});
+
+importArticle({ type: 'script', article: 'MediaWiki:UTCClock.js' });

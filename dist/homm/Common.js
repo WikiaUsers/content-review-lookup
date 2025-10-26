@@ -432,6 +432,9 @@ function setupWatchables() {
 		a.style.display = 'none';
 		let fileName = 'File:' + mw.util.parseImageUrl(a.href.replace(/\/revision\/latest\?cb=\d+/, '')).name;
 		let fileLink = articlePath + '/' + fileName;
+		if (elems[i].dataset && elems[i].dataset.link) {
+			fileLink = articlePath + '/' + elems[i].dataset.link;
+		}
 		let video;
 		let videoTitle = 'Click anywhere on the page, then hover here and press shift to open ' + fileName;
 		if (elems[i].dataset && elems[i].dataset.audio) {
@@ -558,8 +561,15 @@ function handleStorageChange(e) {
 	}
 }
 
-function displayWebp(parent, src) {
+function displayWebp(parent, src, maxWidth, maxHeight) {
     var img = document.createElement('img');
+    if (maxWidth) {
+    	img.style.maxWidth = maxWidth + 'px';
+    }
+    if (maxHeight) {
+    	img.style.maxHeight = maxHeight + 'px';
+    }
+    img.classList.add('finishedFixingWebp');
     parent.appendChild(img);
     img.src = src;
 }
@@ -592,36 +602,35 @@ function getFileNameHash(fileName) {
 }
 
 function fixWebpDisplay() {
-	if (location.href.includes('Category:')) {
-	    var galleryBoxes = document.querySelectorAll('.wikia-gallery-item');
-		for (const galleryBox of galleryBoxes) {
-			galleryBox.style.width = 'unset';
-		    const elem = galleryBox.querySelector('a');
-		    if (elem.href && elem.href.endsWith('webp')) {
-		        const thumb = galleryBox.querySelector('.thumb');
-		        thumb.style.width = 'unset';
-		        thumb.style.height = 'unset';
-		        thumb.classList.remove('thumb');
-		        elem.innerHTML = '';
-		        var fileName = getFileName(elem.href);
-		        var fileHash = getFileNameHash(fileName);
-		        displayWebp(elem, siteUploadPath + fileHash[0] + '/' + fileHash.substr(0, 2) + '/' + fileName);
-		    }
-		}	
+    var galleryBoxes = document.querySelectorAll('.wikia-gallery-item');
+	for (const galleryBox of galleryBoxes) {
+		if (galleryBox.querySelector('.finishedFixingWebp')) {
+			continue;
+		}
+	    const elem = galleryBox.querySelector('a');
+	    if (elem.href && elem.href.endsWith('webp')) {
+	        elem.innerHTML = '';
+	        var fileName = getFileName(elem.href);
+	        var fileHash = getFileNameHash(fileName);
+	        displayWebp(elem, siteUploadPath + fileHash[0] + '/' + fileHash.substr(0, 2) + '/' + fileName, 150, 150);
+	    }
 	}
     var searchThumbnails = document.querySelectorAll('.searchResultImage-thumbnail');
     for (const searchThumbnail of searchThumbnails) {
+		if (searchThumbnail.querySelector('.finishedFixingWebp')) {
+			continue;
+		}
         const elem = searchThumbnail.querySelector('a');
         if (elem.href && elem.href.endsWith('webp')) {
             elem.innerHTML = '';
             var fileName = getFileName(elem.href);
             var fileHash = getFileNameHash(fileName);
-            displayWebp(elem, siteUploadPath + fileHash[0] + '/' + fileHash.substr(0, 2) + '/' + fileName);
+            displayWebp(elem, siteUploadPath + fileHash[0] + '/' + fileHash.substr(0, 2) + '/' + fileName, 104, 90);
         }
     }
     var links = document.querySelectorAll('a');
     for (const link of links) {
-    	if (!link.href || !link.href.split) {
+    	if (!link.href || !link.href.split || link.querySelector('.finishedFixingWebp')) {
     		continue;
     	}
         var fileExt = link.href.split('/').at(-3).split('.').at(-1);
@@ -636,6 +645,56 @@ function fixWebpDisplay() {
             }
         }
     }
+}
+
+function verifyWebp() {
+	var links = document.querySelectorAll('a');
+    for (const link of links) {
+    	if (!link.href || !link.href.split || link.querySelector('.finishedFixingWebp')) {
+    		continue;
+    	}
+        var fileExt = link.href.split('/').at(-3).split('.').at(-1);
+        if (fileExt == 'webp') {
+            var images = link.querySelectorAll('img');
+            for (const img of images) {
+                var fileIcon = img.src.split('/').at(-1).split('.').at(-2);
+                if (fileIcon == 'fileicon') {
+                    window.setTimeout(initWebp, 0);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+function finalizeWebp() {
+	var links = document.querySelectorAll('a');
+    for (const link of links) {
+    	if (!link.href || !link.href.split || !link.querySelector('.finishedFixingWebp')) {
+    		continue;
+    	}
+        var images = link.querySelectorAll('img');
+		for (const img of images) {
+			if (!img.className.includes('finishedFixingWebp')) {
+				img.remove();
+			}
+		}
+    }
+}
+
+function initWebp() {
+	try {
+		fixWebpDisplay();
+		verifyWebp();
+		finalizeWebp();
+		window.setTimeout(verifyWebp, 150);
+		window.setTimeout(verifyWebp, 1500);
+		return;
+	} catch (e) {
+		// console.log('fixWebpDisplay failed');
+		// console.error(e);
+	}
+	window.setTimeout(initWebp, 0);
 }
 
 function initCommon() {
@@ -684,10 +743,16 @@ $.when(
 $.when(
 	mw.loader.getScript(articlePath + '/MediaWiki:Hashes.min.js?action=raw&ctype=text/javascript')
 ).done(function() {
-	fixWebpDisplay();
+	initWebp();
 }).fail(function (e) {
 	console.log('mw.loader.getScript Hashes.min.js failed');
 	console.error(e);
 });
+
+try {
+	mw.config.set("wgMediaViewerOnClick", false);
+} catch (e) {
+	// console.error(e);
+}
 
 })();

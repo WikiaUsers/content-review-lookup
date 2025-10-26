@@ -321,7 +321,8 @@ mw.hook('wikipage.content').add(function ($content) {
               items.forEach(item => {
                 areaTable.querySelectorAll("tr").forEach(sumRow => {
                   if (isFooterRow(sumRow)) return;
-                  const nameCell = sumRow.querySelector("a");
+                  //const nameCell = sumRow.querySelector("a");  -- making a bug: when the item iamge is not uploaded it probably decrease all items of that level without the image.
+                  const nameCell = sumRow.querySelector("td:nth-child(1) a:not([href*='Special:Upload'])");
                   const amountCell = sumRow.querySelector("td:nth-child(2)");
                   if (!nameCell || !amountCell) return;
                   if (nameCell.textContent.trim() === item.name) {

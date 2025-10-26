@@ -1,252 +1,280 @@
-/* ===============================
-   Community Hub: Drag + Smooth Glow
-   =============================== */
-(function() {
-  const hub = document.getElementById('communityHub');
-  const header = document.getElementById('hubToggle');
-  if (!hub || !header) return;
+/* ======================================
+   Universal Fandom-Safe Script Wrapper
+   ====================================== */
+mw.hook('wikipage.content').add(function($content) {
+    // --- Community Hub ---
+    const hub = document.getElementById('communityHub');
+    const header = document.getElementById('hubToggle');
+    if (hub && header) {
+        let isDragging = false, startX = 0, startY = 0, offsetX = 0, offsetY = 0;
+        hub.style.transition = 'box-shadow 0.25s ease, border-color 0.25s ease';
 
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let offsetX = 0, offsetY = 0;
+        header.addEventListener('mouseenter', () => {
+            hub.style.boxShadow = '0 0 18px 4px #FFF2B0';
+            hub.style.borderColor = '#FFF2B0';
+        });
+        header.addEventListener('mouseleave', () => {
+            if (!isDragging) {
+                hub.style.boxShadow = '0 0 12px #D9B55D';
+                hub.style.borderColor = '#D9B55D';
+            }
+        });
 
-  // Hover glow
-  hub.style.transition = 'box-shadow 0.25s ease, border-color 0.25s ease';
-  header.addEventListener('mouseenter', () => {
-    hub.style.boxShadow = '0 0 18px 4px #FFF2B0';
-    hub.style.borderColor = '#FFF2B0';
-  });
-  header.addEventListener('mouseleave', () => {
-    if (!isDragging) {
-      hub.style.boxShadow = '0 0 12px #D9B55D';
-      hub.style.borderColor = '#D9B55D';
+        header.addEventListener('mousedown', e => {
+            isDragging = true;
+            header.style.cursor = 'grabbing';
+            hub.style.transition = 'none';
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            offsetX = e.clientX - startX;
+            offsetY = e.clientY - startY;
+            hub.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            header.style.cursor = 'grab';
+            if (hub.animate) {
+                const anim = hub.animate([
+                    { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` },
+                    { transform: `translate(${offsetX}px, ${offsetY}px) scale(1.03)` },
+                    { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` }
+                ], { duration: 200, easing: 'ease-out' });
+                anim.onfinish = () => {
+                    hub.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+                    hub.style.transition = 'box-shadow 0.25s ease, border-color 0.25s ease';
+                    hub.style.boxShadow = '0 0 12px #D9B55D';
+                    hub.style.borderColor = '#D9B55D';
+                };
+            }
+        });
     }
-  });
 
-  // Drag start
-  header.addEventListener('mousedown', e => {
-    isDragging = true;
-    header.style.cursor = 'grabbing';
-    hub.style.transition = 'none';
-    startX = e.clientX - offsetX;
-    startY = e.clientY - offsetY;
-    e.preventDefault();
-  });
+    // --- Idiot Popups ---
+    document.querySelectorAll('.idiot-popup').forEach(popup => {
+        const title = popup.querySelector('.idiot-title');
+        if (!title) return;
 
-  // Drag move
-  document.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    offsetX = e.clientX - startX;
-    offsetY = e.clientY - startY;
-    hub.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-  });
+        let isDragging = false, startX = 0, startY = 0, offsetX = 0, offsetY = 0;
+        popup.style.transform = 'translate(0, 0)';
+        popup.style.position = 'absolute';
 
-  // Drag stop
-  document.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    header.style.cursor = 'grab';
+        title.addEventListener('mousedown', e => {
+            isDragging = true;
+            title.style.cursor = 'grabbing';
+            popup.style.transition = 'none';
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            e.preventDefault();
+        });
 
-    // Smooth bounce
-    hub.animate([
-      { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` },
-      { transform: `translate(${offsetX}px, ${offsetY}px) scale(1.03)` },
-      { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` }
-    ], {
-      duration: 200,
-      easing: 'ease-out'
+        document.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            offsetX = e.clientX - startX;
+            offsetY = e.clientY - startY;
+            popup.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            title.style.cursor = 'grab';
+            if (popup.animate) {
+                popup.animate([
+                    { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` },
+                    { transform: `translate(${offsetX}px, ${offsetY - 8}px) scale(1.08)` },
+                    { transform: `translate(${offsetX}px, ${offsetY + 4}px) scale(0.96)` },
+                    { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` }
+                ], { duration: 400, easing: 'ease-out' });
+            }
+        });
     });
 
-    hub.style.transition = 'box-shadow 0.25s ease, border-color 0.25s ease';
-    hub.style.boxShadow = '0 0 12px #D9B55D';
-    hub.style.borderColor = '#D9B55D';
-  });
-
-  // Smooth glide back on page refresh
-  window.addEventListener('beforeunload', () => {
-    hub.style.transition = 'transform 0.6s cubic-bezier(0.22, 1.61, 0.36, 1)';
-    hub.style.transform = 'translate(0, 0)';
-  });
-})();
-
-
-/* ===============================
-   Idiot Popups: Retro 80s Drag + Bounce
-   =============================== */
-(function() {
-  const popups = document.querySelectorAll('.idiot-popup');
-  if (!popups.length) return;
-
-  popups.forEach(popup => {
-    const title = popup.querySelector('.idiot-title');
-    if (!title) return;
-
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let offsetX = 0, offsetY = 0;
-
-    // Set initial transform
-    popup.style.transform = 'translate(0px, 0px)';
-    popup.style.willChange = 'transform';
-    popup.style.right = 'auto';
-    popup.style.bottom = 'auto';
-    if (!popup.style.top || popup.style.top === 'auto') popup.style.top = '100px';
-    if (!popup.style.left || popup.style.left === 'auto') popup.style.left = '50px';
-
-    // Drag start
-    title.addEventListener('mousedown', e => {
-      isDragging = true;
-      title.style.cursor = 'grabbing';
-      popup.style.transition = 'none';
-      startX = e.clientX - offsetX;
-      startY = e.clientY - offsetY;
-      e.preventDefault();
-    });
-
-    // Drag move
-    document.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      offsetX = e.clientX - startX;
-      offsetY = e.clientY - startY;
-      popup.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-    });
-
-    // Drag stop
-    document.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      title.style.cursor = 'grab';
-
-      // Retro choppy bounce (centered)
-      popup.animate([
-        { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` },
-        { transform: `translate(${offsetX}px, ${offsetY - 8}px) scale(1.08)` },
-        { transform: `translate(${offsetX}px, ${offsetY + 4}px) scale(0.96)` },
-        { transform: `translate(${offsetX}px, ${offsetY}px) scale(1)` }
-      ], {
-        duration: 400,
-        easing: 'steps(5, end)'
-      });
-
-      // Reset transform so next reload returns to start
-      popup.style.transition = 'none';
-    });
-
-    // Glide back + bounce on page reload
-    window.addEventListener('load', () => {
-      popup.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-      popup.style.transform = 'translate(0px, 0px)';
-
-      // Small retro bounce
-      popup.animate([
-        { transform: 'translate(0px, 0px) scale(0.95)' },
-        { transform: 'translate(0px, -8px) scale(1.05)' },
-        { transform: 'translate(0px, 0px) scale(1)' }
-      ], {
-        duration: 500,
-        easing: 'steps(5, end)'
-      });
-
-      setTimeout(() => {
-        popup.style.transition = 'none';
-      }, 600);
-    });
-  });
-})();
-
-// ================================
-// Chaos Page Smooth Breathing + Rotational Wobble + Smooth Gradient Transition + Warning
-// ================================
-(function() {
-    if (!document.body.classList.contains('page-Chaos')) return;
-
-    const colors = [
-        '#CC6A6E', '#4A3472', '#5E8C63', '#D9B55D',
-        '#0A1A2F', '#1F182A', '#468189', '#B0454A',
-        '#FF8C42', '#9D4EDD', '#FF5C5C'
+// --- Sword of Corruption floating notices ---
+if (mw.config.get('wgPageName') === 'Sword_of_Corruption') {
+    const username = mw.config.get('wgUserName') || 'Chaosborn';
+    const messages = [
+        "MUAHAHAEHEAHAAH",
+        `Hello, <span class="InputUsername">${username}</span>.`,
+        "GET F*^&KED!",
+        "The Wiki editors won't like this.",
+        "Y'know, all demons only asked questions.",
+        "I had a great friend in a third-dimensional world; he was a weird triangle.",
+        `Uh oh! Bad decision, <span class="InputUsername">${username}</span>!`,
+        "I dunno about you, but I kinda wanna kill people with hammers.",
+        "Connection terminated. I'm sorry to interrupt you... Wait, wrong franchise.",
+        "WHERE IS THE LAMB SAUCE?!!?",
+        "Why is Wonder the one who's got the most pictures?",
+        "Have you ever been hit with a wrench before?",
+        "As the mighty Father John from The Unholy Trinity once said, 'A gun With one Bullet'.",
+        "Panic! In-static! Out-manic.",
+        "Don't you find it all romantic, the way things used to be?",
+        "Classic, ecstatic, it's magic to trip the light fantastic, repeat it after me!",
+        "Thank you, I'll say goodbye soon... Though, it's the end of the world. Don't blame yourself, now.",
+        "One must imagine how horrible the world may be.",
+        "I'm trying to save you from yourselves! Let me do that!",
+        "There's nothing more to me. So please, stop looking.",
+        "Have you ever eaten a depressed person before?",
+        "You HAVE to take the cooling system out of the DeLorean, dude! That's the only rule!",
+        "Doctor Wily ain't got sh*t on me!",
+        "BACK TO THE FUTURE PART III!",
+        "I have a very good friend, he's a cool triangle. △",
+        "It's super illegal to say ''I want to kill the President of the United States of America''.",
+        "I'm afraid of Americans, I'm afraid of the world!",
+        "I'm so happy cuse today I've found my friends, they're in my head",
+        "I'm so ugly, that's okay! Cause so are you!",
+        "Broke our mirrors.",
+        "'Cause I've found God.",
+        "YEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH",
+        "YAYYYYYEYYYAY YAAAAAAAH",
+        "Skibidi Sigma",
+        "gernig",
+        "Smells like teen spirit.",
+        "Come as you are, are you were,as I want you to be.",
+        "A child, a child! He shivers in  the cold! Let us bring him silver and gold!",
+        "HOW ABOUT A BLANKET?!?!?!?!",
+        "Hello, hello, hello, hello, how low.",
+        "*Opening to Johnny B. Goode*",
+        "''Not S + P approved'' has been approved by the S + P."
     ];
 
-    function pickColors(count) {
-        const shuffled = colors.sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, count);
+    const images = [
+        'https://static.wikia.nocookie.net/varandia/images/e/ef/ChaosIcon.png/revision/latest/scale-to-width-down/240?cb=20250602113959',
+        'https://static.wikia.nocookie.net/varandia/images/3/39/WonderLaugh.gif/revision/latest/scale-to-width-down/185?cb=20251005190823',
+        'https://static.wikia.nocookie.net/varandia/images/9/9c/WIP2d.png/revision/latest/scale-to-width-down/65?cb=20251001165921'
+    ];
+
+    const notices = [];     // text notices
+    const imagesList = [];  // image notices
+    const maxSpeed = 1.2;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function randomColor() {
+        return `rgb(${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)})`;
     }
 
-    // Convert hex to RGB
-    function hexToRgb(hex) {
-        hex = hex.replace('#','');
-        const bigint = parseInt(hex,16);
-        return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+    function spawnNotice() {
+        const isImage = Math.random() < 0.3; // 30% chance for image
+
+        if (isImage && images.length > 0) {
+            // --- IMAGE SPAWN ---
+            const img = document.createElement('img');
+            img.src = images[Math.floor(Math.random() * images.length)];
+            img.style.width = `${50 + Math.random() * 80}px`;
+            img.style.height = 'auto';
+            Object.assign(img.style, {
+                position: 'fixed',
+                left: `${Math.random() * (window.innerWidth - 100)}px`,  // random X
+                top: `${Math.random() * (window.innerHeight - 100)}px`, // random Y
+                opacity: 0,
+                zIndex: 9999,
+                pointerEvents: 'none',
+                transformOrigin: 'center',
+                transition: `opacity ${0.5 + Math.random()}s ease`
+            });
+
+            document.body.appendChild(img);
+
+            img.angle = Math.random() * 360;
+            img.spinSpeed = (Math.random() * 3) + 1; // 1-4 deg/frame
+
+            // Fade in
+            setTimeout(() => img.style.opacity = 0.7 + Math.random() * 0.3, 50);
+
+            imagesList.push(img);
+
+            // Fade out after 8s
+            setTimeout(() => {
+                img.style.opacity = 0;
+                setTimeout(() => img.remove(), 2000);
+            }, 8000);
+
+        } else {
+            // --- TEXT SPAWN ---
+            const notice = document.createElement('div');
+            notice.innerHTML = messages[Math.floor(Math.random() * messages.length)];
+            Object.assign(notice.style, {
+                position: 'fixed',
+                background: randomColor(),
+                color: randomColor(),
+                padding: '6px 12px',
+                border: `2px solid ${randomColor()}`,
+                borderRadius: '8px',
+                fontWeight: 'bold',
+                pointerEvents: 'none',
+                whiteSpace: 'nowrap',
+                opacity: 0,
+                transition: 'opacity 0.5s ease',
+                zIndex: 9999
+            });
+
+            document.body.appendChild(notice);
+
+            const w = notice.offsetWidth;
+            const h = notice.offsetHeight;
+            notice.x = mouseX - w / 2;
+            notice.y = mouseY - h / 2;
+            notice.vx = (Math.random() - 0.5) * maxSpeed;
+            notice.vy = (Math.random() - 0.5) * maxSpeed;
+            notice.phaseX = Math.random() * Math.PI * 2;
+            notice.phaseY = Math.random() * Math.PI * 2;
+
+            notice.style.left = notice.x + 'px';
+            notice.style.top = notice.y + 'px';
+            requestAnimationFrame(() => notice.style.opacity = 0.95);
+
+            notices.push(notice);
+
+            // Fade out after 8s
+            setTimeout(() => {
+                notice.style.opacity = 0;
+                setTimeout(() => notice.remove(), 2000);
+            }, 8000);
+        }
     }
-
-    // Convert RGB to hex
-    function rgbToHex(r,g,b) {
-        return "#" + ((1 << 24) + (r <<16) + (g<<8) + b).toString(16).slice(1);
-    }
-
-    // Interpolate between two colors
-    function lerpColor(c1, c2, t) {
-        const r = Math.round(c1[0] + (c2[0]-c1[0])*t);
-        const g = Math.round(c1[1] + (c2[1]-c1[1])*t);
-        const b = Math.round(c1[2] + (c2[2]-c1[2])*t);
-        return [r,g,b];
-    }
-
-    // Initial colors
-    let currentColors = pickColors(5).map(hexToRgb);
-    let targetColors = pickColors(5).map(hexToRgb);
-    let colorTransitionProgress = 0; // 0 → 1
-
-    function applyGradient(colorsArray) {
-        const gradient = `radial-gradient(circle at center, ${colorsArray.map(rgbToHex).join(', ')})`;
-        document.body.style.background = `
-            ${gradient},
-            url('https://static.wikia.nocookie.net/varandia/images/2/29/WhiteNoise.png/revision/latest?cb=20250513164951') center/cover no-repeat
-        `;
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundSize = 'cover';
-    }
-
-    // Overlay
-    let overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.background = 'rgba(15, 10, 25, 0.4)';
-    overlay.style.pointerEvents = 'none';
-    overlay.style.zIndex = '-1';
-    document.body.appendChild(overlay);
-
-    // Smooth breathing + wobble
-    const breathingAmplitude = 0.1;
-    const rotationAmplitude = 2;
-    const speed = 0.0005;
-    let start = Date.now();
 
     function animate() {
-        const t = Date.now() - start;
+        // TEXT: drift + bounce
+        notices.forEach(n => {
+            n.phaseX += 0.02;
+            n.phaseY += 0.02;
+            const driftX = Math.sin(n.phaseX) * 1.5;
+            const driftY = Math.cos(n.phaseY) * 1.5;
+            n.x += n.vx + driftX;
+            n.y += n.vy + driftY;
 
-        // Breathing scale and wobble
-        const scale = 1 + Math.sin(t*speed) * breathingAmplitude;
-        const rotation = Math.sin(t*speed*0.8) * rotationAmplitude;
-        document.body.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+            if (n.x <= 0) { n.x = 0; n.vx *= -1; }
+            else if (n.x + n.offsetWidth >= window.innerWidth) { n.x = window.innerWidth - n.offsetWidth; n.vx *= -1; }
 
-        // Smooth color transition
-        colorTransitionProgress += 0.1; // adjust speed of color flow
-        if(colorTransitionProgress > 1){
-            colorTransitionProgress = 0;
-            currentColors = targetColors;
-            targetColors = pickColors(5).map(hexToRgb);
-        }
-        const lerpedColors = currentColors.map((c,i)=>lerpColor(c, targetColors[i], colorTransitionProgress));
-        applyGradient(lerpedColors);
+            if (n.y <= 0) { n.y = 0; n.vy *= -1; }
+            else if (n.y + n.offsetHeight >= window.innerHeight) { n.y = window.innerHeight - n.offsetHeight; n.vy *= -1; }
+
+            n.style.left = n.x + 'px';
+            n.style.top = n.y + 'px';
+        });
+
+        // IMAGES: spin only
+        imagesList.forEach(img => {
+            img.angle += img.spinSpeed;
+            img.style.transform = `rotate(${img.angle}deg)`;
+        });
 
         requestAnimationFrame(animate);
     }
 
+    setInterval(spawnNotice, 2000); // spawn every 2s
     animate();
-
-    // System warning
-    alert("⚠ ALERT: Chaos anomaly detected in the Common.js.");
-})();
+}
+});

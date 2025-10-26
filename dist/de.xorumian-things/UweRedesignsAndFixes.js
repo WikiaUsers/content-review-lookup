@@ -17,7 +17,17 @@ setTimeout(() => {
 
 // Replace letters with other letters that have the font-family ----------------
 document.querySelectorAll('.page-header__title').forEach(h1 => {
+	h1.innerHTML = h1.innerHTML.replace(/Ɔ/g, '<span style="display:inline-block;transform:scaleX(-1);">C</span>');
 	h1.innerHTML = h1.innerHTML.replace(/ɔ/g, '<span style="display:inline-block;transform:scaleX(-1);">c</span>');
 	h1.innerHTML = h1.innerHTML.replace(/Ɛ/g, '<span style="display:inline-block;transform:scaleX(-1);">З</span>');
 	h1.innerHTML = h1.innerHTML.replace(/ɛ/g, '<span style="display:inline-block;transform:scaleX(-1);">з</span>');
+	h1.innerHTML = h1.innerHTML.replace(/ɑ/g, '<span style="display:inline-block;overflow:hidden;height:22px;transform:translateY(2.2px);"><span style="display:inline-block;transform:translateY(-14.5px);">d</span></span>');
+});
+
+// Audio from URL---------------------------------------------------------------
+document.querySelectorAll('.mw-default-size').forEach(span => {
+	span.innerHTML = span.innerHTML.replace('&lt;', '<');
+	span.innerHTML = span.innerHTML.replace('&gt;', '>');
+	span.innerHTML = span.innerHTML.replace('delete', '');
+	span.innerHTML = span.innerHTML.replace('<span style="display:none">', '');
 });

@@ -5,17 +5,11 @@ $(function() {
     .filter-section { flex:1 0 30%; min-width:150px; border:1px solid #ccc; padding:5px; margin-bottom:5px; border-radius:4px; }\
     .filter-button { display:inline-block; margin:3px; padding:5px 8px; background:black; color:white; border-radius:4px; cursor:pointer; font-size:13px; }\
     .filter-button.active { background:#007BFF; }\
-    #accessoryList > div, #itemList > div { padding:5px; border:1px solid gray; margin:3px 0; }\
+    #accessoryList > .bfw-filter-wrapper > div, #itemList > div { padding:5px; border:1px solid gray; margin:3px 0; }\
     #noResults, #fruitNoResults { display:none; text-align:center; color:red; font-weight:bold; margin-top:10px; }';
   $('head').append('<style>'+css+'</style>');
 
-  /********** FRUIT FILTER (dropdowns + search) **********/
-  if (!$('#search').length) $('body').prepend('<div id="search"></div>');
-  if (!$('#filter-type').length) $('body').prepend('<div id="filter-type" class="filter-section"></div>');
-  if (!$('#filter-rarity').length) $('body').prepend('<div id="filter-rarity" class="filter-section"></div>');
-  if (!$('#filter-effect').length) $('body').prepend('<div id="filter-effect" class="filter-section"></div>');
-  if (!$('#filter-sea').length) $('body').prepend('<div id="filter-sea" class="filter-section"></div>');
-
+  /********** FRUIT FILTER (UNCHANGED) **********/
   $('#search').html('<input type="text" id="searchInput" placeholder="Filter fruit name" style="width:100%; margin-bottom:5px;">');
 
   var fruitDropdowns = [
@@ -90,7 +84,7 @@ $(function() {
 
   $(document).on('input change','#searchInput,#filter-typeSelect,#filter-raritySelect,#filter-effectSelect,#filter-seaSelect',filterFruits);
 
-  /********** ACCESSORY FILTER (buttons) **********/
+  /********** ACCESSORY FILTER **********/
   $('#accessorySearch').html('<input id="accessorySearchInput" placeholder="Search accessories…" style="width:100%; padding:5px; margin-bottom:5px;">');
 
   var accessorySections = [
@@ -134,6 +128,7 @@ $(function() {
       ]}
   ];
 
+  // Create buttons
   accessorySections.forEach(function(section){
       var $c = $(section.container);
       if(!$c.length) return;
@@ -144,46 +139,73 @@ $(function() {
       });
   });
 
-  function filterAccessories(){
-      var search = ($('#accessorySearchInput').val()||'').toLowerCase();
-      var activeFilters = [];
-      $('.filter-button.active').each(function(){ activeFilters.push($(this).data('value')); });
-      var anyVisible = false;
-
-      $('#accessoryList > div').each(function(){
-          var $item = $(this);
-          var raw = $item.data('attributes') || '';
-          if(!raw){ $item.hide(); return; }
-
-          var attrs = {};
-          raw.split(',').forEach(function(pair){
-              var parts = pair.split(':');
-              if(parts.length===2) attrs[$.trim(parts[0])] = $.trim(parts[1]);
-          });
-
-          var matchesFilters = activeFilters.every(function(val){
-              if(val.indexOf('Sea:')===0){
-                  return attrs['Sea'] === val.split(':')[1];
-              } else return attrs[val]==='true';
-          });
-
-          var matchesSearch = search==='' || ($item.attr('id')||'').toLowerCase().indexOf(search)!==-1 || $item.text().toLowerCase().indexOf(search)!==-1;
-
-          if(matchesFilters && matchesSearch){ $item.show(); anyVisible=true; } else { $item.hide(); }
-      });
-
-      $('#noResults').toggle(!anyVisible);
+  function normalize(str) {
+      return (str || '').toLowerCase().replace(/[^\w\s]/gi,'').trim();
   }
 
-  // Event listeners
+  function filterAccessories() {
+    var search = normalize($('#accessorySearchInput').val());
+    var activeFilters = [];
+    $('.filter-button.active').each(function() { 
+        activeFilters.push($(this).data('value')); 
+    });
+    var anyVisible = false;
+
+    $('#accessoryList .bfw-filter-wrapper > div').each(function() {
+        var $item = $(this);
+        if ($item.attr('id') === 'noResults') return; // ignore "no results"
+
+        var rawAttrs = $item.attr('data-attributes') || '';
+        if (!rawAttrs) { $item.hide(); return; }
+
+        // Parse attributes
+        var attrs = {};
+        rawAttrs.split(',').forEach(function(pair) {
+            var parts = pair.split(':');
+            if (parts.length === 2) attrs[$.trim(parts[0])] = $.trim(parts[1]);
+        });
+
+        // Extract accessory name
+        var rawText = $item.html() || ''; // use html() instead of text() to keep template intact
+        var accessoryName = '';
+
+        // Match {{Accessory|Headband (Orange)}} (allowing spaces)
+        var templateMatch = rawText.match(/\{\{\s*Accessory\s*\|\s*([^}]+?)\s*\}\}/i);
+        if (templateMatch) {
+            accessoryName = templateMatch[1];
+        } else {
+            accessoryName = rawText;
+        }
+
+        accessoryName = normalize(accessoryName);
+
+        // Match search
+        var matchesSearch = search === '' || accessoryName.includes(search);
+
+        // Match filters
+        var matchesFilters = activeFilters.every(function(val) {
+            if (val.indexOf('Sea:') === 0) {
+                var seas = (attrs['Sea'] || '').split('/');
+                return seas.includes(val.split(':')[1]);
+            } else {
+                return attrs[val] === 'true';
+            }
+        });
+
+        if (matchesSearch && matchesFilters) {
+            $item.show();
+            anyVisible = true;
+        } else {
+            $item.hide();
+        }
+    });
+
+    $('#noResults').toggle(!anyVisible);
+}
+
+  $(document).on('input','#accessorySearchInput',filterAccessories);
   $(document).on('click','.filter-button',function(){
       $(this).toggleClass('active');
-      filterAccessories();  
-      filterFruits();       
-  });
-
-  $(document).on('input','#searchInput,#accessorySearchInput',function(){
-      filterFruits();
       filterAccessories();
   });
 

@@ -1261,39 +1261,41 @@ var MutationsGallery = (function() {
 		// Initialize worker for SHA1
 		createWorker: function() {
 			try {
-				// Create inline worker
-                var workerBlob = new Blob([
-                    'self.onmessage = function(e) {' +
-                    '    var data = e.data;' +
-                    '    var id = data.id;' +
-                    '    var fileBuffer = data.buffer;' +
-                    '    ' +
-                    '    if (typeof crypto === "undefined" || !crypto.subtle) {' +
-                    '        self.postMessage({ id: id, error: "Web Crypto API not available in worker." });' +
-                    '        return;' +
-                    '    }' +
-                    '    ' +
-                    '    // Function to calculate SHA1' +
-                    '    function sha1(buffer) {' +
-                    '        return crypto.subtle.digest("SHA-1", buffer)' +
-                    '            .then(function(hash) {' +
-                    '                var hashArray = Array.from(new Uint8Array(hash));' +
-                    '                var hashHex = hashArray.map(function(b) {' +
-                    '                    return ("00" + b.toString(16)).slice(-2);' +
-                    '                }).join("");' +
-                    '                return hashHex;' +
-                    '            });' +
-                    '    }' +
-                    '    ' +
-                    '    // Start SHA1 calculation' +
-                    '    sha1(fileBuffer).then(function(result) {' +
-                    '        self.postMessage({ id: id, result: result });' +
-                    '    }).catch(function(error) {' +
-                    '        self.postMessage({ id: id, error: error.message || "SHA1 calculation failed" });' +
-                    '    });' +
-                    '};'
-                ], { type: 'application/javascript' });
-				
+				// ИСПРАВЛЕНИЕ: Использование шаблонных литералов (обратные кавычки) вместо конкатенации строк.
+				// Это предотвращает синтаксические ошибки.
+                var workerScript = `
+                    self.onmessage = function(e) {
+                        var data = e.data;
+                        var id = data.id;
+                        var fileBuffer = data.buffer;
+
+                        if (typeof crypto === "undefined" || !crypto.subtle) {
+                            self.postMessage({ id: id, error: "Web Crypto API not available in worker." });
+                            return;
+                        }
+
+                        // Function to calculate SHA1
+                        function sha1(buffer) {
+                            return crypto.subtle.digest("SHA-1", buffer)
+                                .then(function(hash) {
+                                    var hashArray = Array.from(new Uint8Array(hash));
+                                    var hashHex = hashArray.map(function(b) {
+                                        return ("00" + b.toString(16)).slice(-2);
+                                    }).join("");
+                                    return hashHex;
+                                });
+                        }
+
+                        // Start SHA1 calculation
+                        sha1(fileBuffer).then(function(result) {
+                            self.postMessage({ id: id, result: result });
+                        }).catch(function(error) {
+                            self.postMessage({ id: id, error: error.message || "SHA1 calculation failed" });
+                        });
+                    };
+                `;
+
+                var workerBlob = new Blob([workerScript], { type: 'application/javascript' });
 				var workerUrl = URL.createObjectURL(workerBlob);
 				sha1Worker = new Worker(workerUrl);
 				
@@ -1937,7 +1939,7 @@ var MutationsGallery = (function() {
 		}
 	};
 
-	// Button manager module
+    // Button manager module
 	var ButtonManager = {
 		init: function() {
 			this.addUploadButtons();
@@ -1950,7 +1952,7 @@ var MutationsGallery = (function() {
 					var $header = $(this);
 					var $div = $header.children('div:first');
 
-					// **FIX:** Check that $div exists AND does not already contain the button
+					// Проверка, что div существует и еще не содержит кнопку загрузки
 					if ($div.length && !$div.find('.mutation-upload-btn').length) {
 						var uploadBtn = $('<div>', {
 							'class': 'mutation-upload-btn no-ink',
@@ -1979,7 +1981,7 @@ var MutationsGallery = (function() {
 								$('#mutation-modal').show();
 								var $input = $('#mutation-image');
 								if ($input.length) {
-									$input[0].files = files;
+									$input.files = files;
 									$input.trigger('change');
 								}
 							}
@@ -1989,15 +1991,15 @@ var MutationsGallery = (function() {
 						var expandButton = $div.find('.mw-customtoggle-rodsContent');
 
 						if (titleSpan.length && expandButton.length) {
-							$div.empty()
-								.css({
-									'display': 'flex',
-									'justify-content': 'space-between',
-									'align-items': 'center'
-								})
-								.append(titleSpan)
-								.append(uploadBtn)
-								.append(expandButton);
+							// ИСПРАВЛЕНИЕ: Вместо .empty() вставляем кнопку перед кнопкой "развернуть"
+							uploadBtn.insertBefore(expandButton);
+							
+							// Применяем стили flexbox для правильного расположения элементов
+							$div.css({
+								'display': 'flex',
+								'justify-content': 'space-between',
+								'align-items': 'center'
+							});
 						}
 					}
 				});
