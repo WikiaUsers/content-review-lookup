@@ -16,18 +16,12 @@ $(function() {
     // BEGIN LIST OF ACCOUNTS GIVEN EXTRA USER RIGHTS ICONS
 
     // BUREAUCRATS
-    rights["Felinoel"] = [adminTag, cratTag],
-    rights["Bmoisawsome"] = [adminTag, cratTag],
-    rights["Adventuretimegurl123"] = [adminTag, cratTag],
+    rights["Luke0Skywalker"] = [adminTag, cratTag]
 
     // ADMINS
-    rights["Bunai Di"] = [adminTag],
-    rights["Bellamybug"] = [adminTag],
-    rights["Flambo the Epic Epic(;"] = [adminTag],
-    rights["A hero boy named Finn"] = [adminTag],
-    rights["Giaria"] = [adminTag],
-    rights["AquaSeashells"] = [adminTag],
     rights["RyaNayR"] = [adminTag],
+    rights["Queen of Ooo 1216"] = [adminTag],
+    rights["SwegWrestlur"] = [adminTag],
 
     // CHAT MODERATORS
     rights["CHolt"] = [chatMod],

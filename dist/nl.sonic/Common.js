@@ -39,11 +39,11 @@ var wiki_names = [
   "Long time no see.", "Look! It's a giant talking egg!", "Tougher than leather.",
   "Unlike Sonic, I don't chuckle", "I promise you... REVENGE!",
   "I'm the world's ultimate life form.", "That blue hedgehog again, of all places.",
-  "Konichi-wa?", "Determination of the strong...", "All hail Shadow.",
+  "Konichi-waaaaaa?", "Determination of the strong...", "All hail Shadow.",
   "Can't hold on much longer...", "I know it's a one way track...",
   "I'm not gonna think this way...", "Close my eyes and feel it burn...",
   "Nor will I count on others!", "Thunder, rain, and lightning.",
-  "I hate that hedgehog!", "Oh no.", "Watch out! You're gonna crash! Ahhh!.",
+  "I hate that hedgehog!", "Oh no.", "Watch out! You're gonna crash! Ahhh!",
   "Where's that DAMN fourth Chaos Emerald!?", "This is like taking candy from a baby, which is fine by me!",
   "I have no master, except the wind that blows free!", "I just gotta do what I gotta do, that's all!",
   "It was never about chivalry to me.", "Faker!? I think you're the fake hedgehog around here.",
@@ -54,7 +54,7 @@ var wiki_names = [
   "It all starts with this... a jewel containing the ultimate power!",
   "Well, this is new. Showing remorse, Eggman?", "If you played nice, I wouldn't have to break all your toys!",
   "Do I need a reason to want to help out a friend?", "We gotta live life to the fullest in the time we have.",
-  "Bounce pad!", "Baldy Nosehair?! That's the best thing that I've heard all day!",
+  "Bounce pad!", "“Baldy Nosehair?!” That's the best thing that I've heard all day!",
   "Too bad it’s all over, for you!", "I won't let him down, I won't give up!",
   "I told you I'm not a rat! I'm a hedgehog.", "You can do anything!",
   "Ask not what others can do for you, but what you can do for others.",
@@ -65,7 +65,13 @@ var wiki_names = [
   "Uh... meow?", "For a guy named Knuckles, you are really bad at punching!", "Porcupine? I am an echidna.",
   "Do I look like I need your power?", "Oh flower, pretty flower, show your face and I'll sting you!",
   "If I had to choose between the world and Sonic, I would choose Sonic.", "I'm the coolest!",
-  "It'll be a date to die for!"
+  "It'll be a date to die for!", "Everybody's Super Sonic Racing.", "Can you feel the sunshine?", "Because we're Sonic Heroes!",
+  "Our next adventure awaits us, so there's no time to waste!", "A friend of a friend is a friend!",
+  "Shadow the Hedgehog... Why does that name haunt me?", "I bet no one expected this baby could fly.",
+  "My... That's a pretty snazzy performance there.", "Your smile... That's all I need.",
+  "Just raise your head and run!", "Nothing starts until you take action.",
+  "I finally found him... the Iblis Trigger!", "Yeah, this is the real me! Pretty cool, huh?",
+  "Thanks for that little skydiving adventure the other day!", "Some things never change, do they?"
 ];
 
 var wiki_name_number = Math.floor(Math.random() * wiki_names.length);

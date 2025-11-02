@@ -6,7 +6,7 @@
 /* 下列原代碼中含有控制網頁行為的語句，其可能會對網路安全造成影響。依據本站站規第四部分第8條與第十部分第6條，未經授權人員以任何方式對於本頁面信息進行編輯與滲透均不被允許。*/
 
 /* JavaScript of Operation Avenue Wiki */
-/* March 2024 (Version:1.2.0) */
+/* October 2025 (Version:2.0) */
 
 /* Basic JavaScript Feature, by M.E.G.CN & C.H.P.*/
 (function () {
@@ -86,4 +86,24 @@ importArticles({
     articles: [
         'u:dev:MediaWiki:WallGreeting.js',
     ]
+});
+
+/* Import Scripts, by C.H.P. */
+mw.hook("wikipage.content").add(function () {
+
+    $("span.import-script").each(function () {
+        var $this = $(this);
+        var scriptContent = $this.attr("data-script");
+        var pageName = $this.attr("data-page");
+        
+        if (scriptContent) {
+            try {
+                (new Function(scriptContent))();
+                console.log("JavaScript加载成功: " + pageName);
+            } catch (error) {
+                console.error("JavaScript执行错误 (" + pageName + "):", error);
+                $this.after('<strong class="error">JavaScript执行错误: ' + error.message + '</strong>');
+            }
+        }
+    });
 });

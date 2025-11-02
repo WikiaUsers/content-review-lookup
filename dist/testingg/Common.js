@@ -166,21 +166,11 @@ $(function() {
         });
 
         // Extract accessory name
-        var rawText = $item.html() || ''; // use html() instead of text() to keep template intact
-        var accessoryName = '';
-
-        // Match {{Accessory|Headband (Orange)}} (allowing spaces)
-        var templateMatch = rawText.match(/\{\{\s*Accessory\s*\|\s*([^}]+?)\s*\}\}/i);
-        if (templateMatch) {
-            accessoryName = templateMatch[1];
-        } else {
-            accessoryName = rawText;
-        }
-
-        accessoryName = normalize(accessoryName);
+        var accessoryName = normalize($item.attr('id') || '');
+        
 
         // Match search
-        var matchesSearch = search === '' || accessoryName.includes(search);
+        var matchesSearch = !search || accessoryName.startsWith(search);
 
         // Match filters
         var matchesFilters = activeFilters.every(function(val) {

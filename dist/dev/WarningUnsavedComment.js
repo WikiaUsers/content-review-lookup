@@ -14,9 +14,9 @@
 	
 	if (typeof window.mw === 'undefined' || typeof window.jQuery === 'undefined') return;
 	
-    // DO NOT RUN IF IT IS IN UPLOAD FORM, VISUAL OR SOURCE EDITOR
+    // DO NOT RUN IF IT IS IN UPLOAD FORM, ABUSE FILTER NOTE, VISUAL OR SOURCE EDITOR
 	function isInsideExcludedContainer($element) {
-		return $element.closest('#editform, #mw-htmlform-description, .wikiEditor-ui, .ve-init-mw-desktopArticleTarget').length > 0;
+		return $element.closest('#editform, #mw-htmlform-description, #mw-abusefilter-edit-rules, #mw-abusefilter-edit-notes .wikiEditor-ui, .ve-init-mw-desktopArticleTarget').length > 0;
 	}
 	
 	// UTILIZE CSS

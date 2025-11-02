@@ -1,5 +1,83 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.my-gallery').forEach(gallery => {
+    const imgs = Array.from(gallery.querySelectorAll('.gallery-img'));
+    const ctrls = Array.from(gallery.querySelectorAll('.gallery-control'));
+
+    if (!imgs.length || !ctrls.length) return;
+
+    function showIndex(i) {
+      imgs.forEach(img => img.classList.remove('active'));
+      ctrls.forEach(c => c.classList.remove('active'));
+
+      const index = (i + imgs.length) % imgs.length;
+      const img = imgs.find(x => Number(x.dataset.i) === index);
+      const ctrl = ctrls.find(x => Number(x.dataset.i) === index);
+
+      if (img) img.classList.add('active');
+      if (ctrl) ctrl.classList.add('active');
+    }
+
+    if (!imgs.some(x => x.classList.contains('active'))) {
+      showIndex(0);
+    }
+
+    ctrls.forEach(ctrl => {
+      ctrl.addEventListener('click', function (e) {
+        e.preventDefault();
+        const i = Number(this.dataset.i) || 0;
+        showIndex(i);
+      });
+    });
+
+    // (опционально) автоплей — раскомментируй если нужно
+    /*
+    let auto = true;
+    if (auto) {
+      let cur = 0;
+      setInterval(() => {
+        cur = (cur + 1) % imgs.length;
+        showIndex(cur);
+      }, 3000); // 3s между сменами
+    }
+    */
+  });
+});
+
+mw.hook('wikipage.content').add(function($content) {
+  const galleries = $content.find('.my-gallery');
+  galleries.each(function() {
+    const gallery = this;
+    const imgs = gallery.querySelectorAll('.gallery-img');
+    const controls = gallery.querySelectorAll('.gallery-control');
+
+	if (imgs.length > 0 && controls.length > 0) {
+		imgs[0].classList.add('active');
+		controls[0].classList.add('active');
+    }
+
+    controls.forEach(control => {
+      control.addEventListener('click', () => {
+        const i = control.dataset.i;
+        imgs.forEach(img => img.classList.remove('active'));
+        controls.forEach(btn => btn.classList.remove('active'));
+        imgs[i].classList.add('active');
+        control.classList.add('active');
+      });
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
 document.querySelectorAll('.research-collapsible-button').forEach(btn => {
 	btn.addEventListener('click', () => {
 		const isActive = btn.classList.toggle('active');

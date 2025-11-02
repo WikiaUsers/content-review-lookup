@@ -10,6 +10,7 @@ if (
 	const config = mw.config.values;
 	const api = new mw.Api();
 	const init = (ccmLoader) => {
+		window.dev.ESE = window.dev.ESE || {};
 		if (window.dev.ESE.__LOADED) {return;}
 		else {window.dev.ESE.__LOADED = true; document.body.classList.add('ese-init')}
 		let popup;
@@ -105,7 +106,7 @@ if (
 					disablelimitreport: true,
 					contentmodel: 'wikitext'
 				};
-				api.get(params).then((p)=>{
+				api.post(params).then((p)=>{
 					if (p && p.parse && p.parse.text && p.parse.text['*']) {
 						popup.show();
 						let preview = $('<div>', {

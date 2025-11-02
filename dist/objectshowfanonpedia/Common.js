@@ -16,3 +16,6 @@ window.MessageBlock = {
 
 // prevents existing tags from being hidden
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+// [[w:dev:TopicBlockLog]]
+window.TBL_GROUP = "objectshows-en";

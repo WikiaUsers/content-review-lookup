@@ -42,3 +42,20 @@ $(function() {
         });
     }
 });
+/** Adds the Page Tabs template to every page */
+mw.hook('wikipage.content').add(function($content) {
+    
+    // The name of your template without the "Template:" prefix
+    var templateName = 'Talk header'; 
+    
+    // Add the template call as a string
+    var wikitext = '{{' + templateName + '}}';
+    
+    // Convert the wikitext into HTML and prepend it to the main content area
+    new mw.Api().parse( wikitext, {
+        title: mw.config.get('wgPageName')
+    }).done(function(html) {
+        // This selector targets the area right above the main content
+        $('.page-header').after(html); 
+    });
+});

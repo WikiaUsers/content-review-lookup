@@ -19,6 +19,11 @@ const introPages = {
     sound: 'https://static.wikia.nocookie.net/forsaken2024/images/7/7f/Jason_Intro.mp3',
     duration: 3500
   },
+    'Slasher': {
+    src: 'https://static.wikia.nocookie.net/forsaken2024/images/d/d7/SlasherNew.gif/revision/latest?cb=20251029183638',
+    sound: 'https://static.wikia.nocookie.net/forsaken2024/images/7/7f/Jason_Intro.mp3',
+    duration: 3500
+  },
   'Guest_666': {
     src: 'https://static.wikia.nocookie.net/forsaken2024/images/4/42/Guest_666_Intro.gif',
     sound: 'https://static.wikia.nocookie.net/forsaken2024/images/f/f6/Guest_666_intro_audio.mp3',

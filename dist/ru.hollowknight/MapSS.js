@@ -419,7 +419,7 @@ mw.hook('wikipage.content').add(function() {
            L.marker([1949.0, 1180.0], {icon: iLocket}).addTo(gLocket);
            L.marker([1616.0, 385.0], {icon: iLocket}).addTo(gLocket);
            L.marker([1330.0, 754.0], {icon: iLocket}).addTo(gLocket);
-           L.marker([846.0, 378.0], {icon: iLocket}).addTo(gLocket);
+           L.marker([831.0, 431.0], {icon: iLocket}).addTo(gLocket);
            L.marker([756.0, 962.0], {icon: iLocket}).addTo(gLocket);
            L.marker([981.0, 1442.0], {icon: iLocket}).addTo(gLocket);
            L.marker([1098.0, 1762.0], {icon: iLocket}).addTo(gLocket);

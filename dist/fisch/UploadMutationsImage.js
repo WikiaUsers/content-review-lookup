@@ -309,7 +309,8 @@ var MutationsGallery = (function() {
 			this.$mutationsInput = $('#mutation-names');
 			this.$notification = $('.mutation-notification');
 			
-			// Add character counter
+			// Add character counter (удаляем старый если есть, затем добавляем новый)
+			$('.char-counter').remove();
 			this.$mutationsInput.after('<div class="char-counter"><span id="char-count">0</span>/150</div>');
 			this.$charCount = $('#char-count');
 			
@@ -1943,6 +1944,24 @@ var MutationsGallery = (function() {
 	var ButtonManager = {
 		init: function() {
 			this.addUploadButtons();
+			this.setupGlobalClickHandler();
+		},
+		
+		// Глобальный обработчик для мобильных устройств (делегирование событий)
+		setupGlobalClickHandler: function() {
+			$(document).on('click touchend', '#umi-upload-button, .mutation-upload-btn', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				
+				console.log('UMI: Global handler - button clicked');
+				
+				// Показываем модал
+				$('#mutation-modal').show();
+				window.currentGallery = $(this).closest('table').find('.mw-customcollapsible-rodsContent');
+				
+				return false;
+			});
 		},
 		
 		// Add upload buttons to section headers
@@ -1955,14 +1974,40 @@ var MutationsGallery = (function() {
 					// Проверка, что div существует и еще не содержит кнопку загрузки
 					if ($div.length && !$div.find('.mutation-upload-btn').length) {
 						var uploadBtn = $('<div>', {
+							'id': 'umi-upload-button',
 							'class': 'mutation-upload-btn no-ink',
-							'text': 'Upload Mutation Image'
-						}).on('click', function(e) {
+							'text': 'Upload Mutation Image',
+							'role': 'button',
+							'tabindex': '0',
+							'aria-label': 'Upload Mutation Image'
+						});
+						
+						// Обработчик для мобильных и десктопов
+						var handleClick = function(e) {
 							e.preventDefault();
 							e.stopPropagation();
+							e.stopImmediatePropagation();
+							
+							console.log('UMI: Upload button clicked');
+							
+							// Показываем модал
 							$('#mutation-modal').show();
 							window.currentGallery = $(this).closest('table').find('.mw-customcollapsible-rodsContent');
-						});
+						};
+						
+						// Используем native addEventListener для лучшей совместимости с мобильными
+						var btnElement = uploadBtn[0];
+						if (btnElement) {
+							btnElement.addEventListener('click', handleClick, false);
+							btnElement.addEventListener('touchend', function(e) {
+								e.preventDefault();
+								e.stopPropagation();
+								handleClick.call(this, e);
+							}, { passive: false });
+						}
+						
+						// Также добавляем jQuery обработчик как fallback
+						uploadBtn.on('click', handleClick);
 						uploadBtn.on('dragover', function(e) {
 							e.preventDefault();
 							e.stopPropagation();

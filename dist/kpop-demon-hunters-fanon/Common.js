@@ -21,7 +21,7 @@ window.ripplesConfig = {
 
 // Masthead Rights
 window.MastheadRightsBadgeSettings = {
-    iconSize: '40px',
+    iconSize: '45px',
 };
 
 //Link Preview

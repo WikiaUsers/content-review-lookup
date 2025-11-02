@@ -37,3 +37,18 @@ $(function(){
 	  element.style.setProperty('--bgcolor', bgcolor);
 	});
 });
+
+// Obsługa Szablonu:Sic wystającego poza prawą krawędź artykułu
+$(function() {
+  $('.sic').each(function() {
+    const $popup = $(this).find('.sic-popup');
+    $(this).on('mouseenter', function() {
+      const rect = $popup[0].getBoundingClientRect();
+      if(rect.right > window.innerWidth) {
+        $popup.css({ left: 'auto', right: '0' });
+      } else {
+        $popup.css({ left: '0', right: 'auto' });
+      }
+    });
+  });
+});

@@ -200,6 +200,18 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
                             usersList.slice(0, 10).forEach(function(item, index) {
                                 var avatarUrl = self.avatarCache[item.user];
                                 
+                                // Динамическое уменьшение для длинных никнеймов
+                                var usernameLength = item.user.length;
+                                var fontSize = '14px';
+                                
+                                if (usernameLength > 15) {
+                                    fontSize = '11px';
+                                } else if (usernameLength > 12) {
+                                    fontSize = '12px';
+                                } else if (usernameLength > 10) {
+                                    fontSize = '13px';
+                                }
+                                
                                 html += '<div class="contributor">' +
                                        '<div class="contributor-info">' +
                                        '<span class="position">' + (index + 1) + '.</span>';
@@ -211,8 +223,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
                                 
                                 html += tempContainer.html() +
                                        '<span class="name">' +
-                                       '<a href="' + mw.util.getUrl('User:' + item.user) + '">' + 
-                                       item.user + '</a></span></div>' +
+                                       '<a href="' + mw.util.getUrl('User:' + item.user) + '" style="font-size: ' + fontSize + ';">' + 
+                                       '<span class="username-text">' + item.user + '</span>' +
+                                       '</a></span></div>' +
                                        '<div class="edits">' + item.count + ' edits</div>' +
                                        '</div>';
                             });

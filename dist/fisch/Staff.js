@@ -2,7 +2,7 @@
  * Staff Management System
  * A comprehensive icon and username colorization system for Fandom wikis
  * Created by xGronox/Gronox/v.lad
- * Version: 2.0.5
+ * Version: 2.1.1
  * 
  * This system provides a powerful, flexible interface for managing staff badges,
  * colored usernames, and custom icons across all wiki pages. It allows administrators
@@ -452,8 +452,11 @@
                 if (typeof(data) !== "object") {
                     console.warn('[Staff System] API Error in purging:', data);
                 }
+                
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
             });
-            window.location.reload();
         },
 
         // Default settings template
@@ -721,7 +724,8 @@
                                     '<input class="StaffUserBadgeTooltip md-input" placeholder="Custom tooltip for this user\'s badges"/>' +
                                 '</div>' +
                             '</div>' +
-                            '<div class="md-chip-container" id="user-icon-container-' + uniqueId + '"></div>' +
+                            '<div class="staff-section-divider"></div>' +
+                            '<div class="md-chip-container md-chip-sortable" id="user-icon-container-' + uniqueId + '"></div>' +
                         '</div>' +
                     '</div>' +
                 '</div>'
@@ -729,6 +733,197 @@
             
             var $container = $('.StaffUser .UserForm:last-child .md-chip-container');
             this.populateIconSelector($container);
+            this.enableUserFormDragDrop();
+        },
+        
+        // Add new folder for organizing users/icons
+        addUserFolder: function() {
+            var uniqueId = staffFunctions.generateUniqueId();
+            var $folder = $(
+                '<div class="UserFolder md-card md-card-folder">' +
+                    '<div class="md-card-header">' +
+                        '<div class="md-card-title">' +
+                            '<span class="md-icon">folder</span>' +
+                            '<input class="FolderName md-input" value="New Folder" placeholder="Folder name" style="width: 200px;"/>' +
+                        '</div>' +
+                        '<div class="md-card-action-buttons">' +
+                            '<button class="md-button md-button-icon md-button-icon-red" onclick="$(this).closest(\'.UserFolder\').remove()" title="Delete Folder">' +
+                                '<span class="md-icon">delete</span>' +
+                            '</button>' +
+                            '<button class="md-button md-button-icon md-button-icon-green folder-toggle" onclick="staffFunctions.toggleFolder(this)" title="Toggle Folder">' +
+                                '<span class="md-icon">expand_more</span>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="folder-content" style="padding: 12px; border-top: 1px solid rgba(0,0,0,0.1);">' +
+                        '<div class="folder-drop-zone" style="min-height: 100px; border: 2px dashed rgba(103, 80, 164, 0.3); border-radius: 8px; padding: 20px; text-align: center; color: var(--theme-page-text-color--hover);">' +
+                            'Drag users or icons here' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+            
+            $('.StaffUser').append($folder);
+            staffFunctions.enableUserFormDragDrop();
+            staffFunctions.showNotification('Folder created! Drag users or icons here to organize them.', 'success');
+        },
+        
+        // Toggle folder expansion
+        toggleFolder: function(button) {
+            var $button = $(button);
+            var $folder = $button.closest('.UserFolder');
+            var $content = $folder.find('.folder-content');
+            var $icon = $button.find('.md-icon');
+            
+            $content.slideToggle(200, function() {
+                if ($content.is(':visible')) {
+                    $icon.text('expand_more');
+                } else {
+                    $icon.text('chevron_right');
+                }
+            });
+        },
+        
+        // Enable drag-and-drop for user forms and folders
+        enableUserFormDragDrop: function() {
+            var $staffUser = $('.StaffUser');
+            
+            // Make only top-level items draggable
+            $staffUser.find('> .UserForm, > .UserFolder').attr('draggable', 'true');
+            
+            var draggedElement = null;
+            var placeholder = null;
+            
+            $staffUser.on('dragstart', '.UserForm, .UserFolder', function(e) {
+                // Don't allow drag if item is inside a folder (prevent folder from moving)
+                if ($(this).parent().hasClass('folder-drop-zone')) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                draggedElement = this;
+                $(this).addClass('dragging');
+                e.originalEvent.dataTransfer.effectAllowed = 'move';
+                
+                // Create placeholder
+                placeholder = $('<div class="UserForm-placeholder"></div>');
+                $(this).after(placeholder);
+            });
+            
+            $staffUser.on('dragend', '.UserForm, .UserFolder', function(e) {
+                $(this).removeClass('dragging');
+                $staffUser.find('.drag-over').removeClass('drag-over');
+                
+                // Remove placeholder
+                if (placeholder) {
+                    placeholder.remove();
+                    placeholder = null;
+                }
+            });
+            
+            $staffUser.on('dragover', '.UserForm, .UserFolder', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.originalEvent.dataTransfer.dropEffect = 'move';
+                
+                if (draggedElement && draggedElement !== this) {
+                    var $target = $(this);
+                    
+                    // Prevent dropping element into itself or its children
+                    if ($target[0].contains(draggedElement) || draggedElement === $target[0]) {
+                        return false;
+                    }
+                    
+                    $staffUser.find('.drag-over').removeClass('drag-over');
+                    $target.addClass('drag-over');
+                    
+                    // Move placeholder
+                    if (placeholder && !$target.hasClass('UserFolder')) {
+                        var $allItems = $staffUser.find('> .UserForm, > .UserFolder');
+                        var draggedIndex = $allItems.index(draggedElement);
+                        var targetIndex = $allItems.index(this);
+                        
+                        if (draggedIndex < targetIndex) {
+                            $target.after(placeholder);
+                        } else {
+                            $target.before(placeholder);
+                        }
+                    }
+                }
+                
+                return false;
+            });
+            
+            $staffUser.on('drop', '.UserForm, .UserFolder', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (draggedElement && draggedElement !== this) {
+                    var $dragged = $(draggedElement);
+                    var $target = $(this);
+                    
+                    // Prevent dropping element into itself
+                    if ($target[0].contains(draggedElement) || draggedElement === $target[0]) {
+                        if (placeholder) placeholder.remove();
+                        return false;
+                    }
+                    
+                    // If dropping into folder
+                    if ($target.hasClass('UserFolder') && $dragged.hasClass('UserForm')) {
+                        var $dropZone = $target.find('.folder-drop-zone');
+                        $dropZone.empty().append($dragged);
+                        $dragged.css('margin-bottom', '8px').removeAttr('draggable');
+                    } else if (placeholder && placeholder.parent().length) {
+                        // Reorder using placeholder position
+                        placeholder.replaceWith($dragged);
+                    }
+                }
+                
+                $staffUser.find('.drag-over').removeClass('drag-over');
+                if (placeholder) {
+                    placeholder.remove();
+                    placeholder = null;
+                }
+                return false;
+            });
+            
+            // Folder drop zone handling
+            $staffUser.on('dragover', '.folder-drop-zone', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.originalEvent.dataTransfer.dropEffect = 'move';
+                
+                if (draggedElement && $(draggedElement).hasClass('UserForm')) {
+                    $(this).addClass('folder-drop-zone-active');
+                }
+                return false;
+            });
+            
+            $staffUser.on('dragleave', '.folder-drop-zone', function(e) {
+                // Check if really leaving (not entering child)
+                if (!$(e.relatedTarget).closest('.folder-drop-zone').length) {
+                    $(this).removeClass('folder-drop-zone-active');
+                }
+            });
+            
+            $staffUser.on('drop', '.folder-drop-zone', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (draggedElement && $(draggedElement).hasClass('UserForm')) {
+                    var $dragged = $(draggedElement);
+                    $(this).empty().append($dragged);
+                    $dragged.css('margin-bottom', '8px').removeAttr('draggable');
+                    
+                    if (placeholder) {
+                        placeholder.remove();
+                        placeholder = null;
+                    }
+                }
+                
+                $(this).removeClass('folder-drop-zone-active');
+                return false;
+            });
         },
         
         // Toggle user icons selector
@@ -747,13 +942,41 @@
             });
         },
         
-        // Populate icon selector with chips
-        populateIconSelector: function($container) {
+        // Populate icon selector with chips (with drag-and-drop support)
+        populateIconSelector: function($container, orderedTypes) {
             $container.empty();
             
             if (StaffSettings && StaffSettings.dataStaffTypes) {
-                $.each(StaffSettings.dataStaffTypes, function(typeId, typeData) {
-                    var $chip = $('<div class="md-chip" data-staff-type="' + typeId + '">' +
+                var typesToAdd = [];
+                
+                // If we have ordered types (from saved data), use that order
+                if (orderedTypes && Array.isArray(orderedTypes)) {
+                    // Add ordered types first
+                    $.each(orderedTypes, function(i, typeId) {
+                        if (StaffSettings.dataStaffTypes[typeId]) {
+                            typesToAdd.push(typeId);
+                        }
+                    });
+                    // Add any remaining types not in the ordered list
+                    $.each(StaffSettings.dataStaffTypes, function(typeId, typeData) {
+                        if (typesToAdd.indexOf(typeId) === -1) {
+                            typesToAdd.push(typeId);
+                        }
+                    });
+                } else {
+                    // No ordering specified, use default order
+                    $.each(StaffSettings.dataStaffTypes, function(typeId, typeData) {
+                        typesToAdd.push(typeId);
+                    });
+                }
+                
+                // Create chips in the determined order
+                $.each(typesToAdd, function(i, typeId) {
+                    var typeData = StaffSettings.dataStaffTypes[typeId];
+                    var $chip = $('<div class="md-chip md-chip-draggable" data-staff-type="' + typeId + '" draggable="true">' +
+                        '<div class="md-chip-drag-handle">' +
+                        '<span class="md-icon md-icon-small">drag_indicator</span>' +
+                        '</div>' +
                         '<div class="md-chip-icon">' +
                         '<img src="' + typeData.image_url + '" alt="' + typeData.title + '" />' +
                         '</div>' +
@@ -765,7 +988,92 @@
                     
                     $container.append($chip);
                 });
+                
+                // Enable drag and drop for sorting
+                staffFunctions.enableChipSorting($container);
             }
+        },
+        
+        // Enable drag-and-drop sorting for chips
+        enableChipSorting: function($container) {
+            var draggedElement = null;
+            var placeholder = null;
+            
+            // Prevent checkbox clicks from interfering with drag
+            $container.on('click', '.staff-type-checkbox', function(e) {
+                e.stopPropagation();
+            });
+            
+            $container.on('dragstart', '.md-chip-draggable', function(e) {
+                // Only allow drag from drag handle
+                if (!$(e.target).closest('.md-chip-drag-handle').length && e.target !== this) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                draggedElement = this;
+                $(this).addClass('md-chip-dragging');
+                e.originalEvent.dataTransfer.effectAllowed = 'move';
+                
+                // Create placeholder
+                placeholder = $('<div class="md-chip-placeholder"></div>');
+                $(this).after(placeholder);
+            });
+            
+            $container.on('dragend', '.md-chip-draggable', function(e) {
+                $(this).removeClass('md-chip-dragging');
+                $container.find('.md-chip').removeClass('md-chip-drag-over');
+                
+                // Remove placeholder
+                if (placeholder) {
+                    placeholder.remove();
+                    placeholder = null;
+                }
+            });
+            
+            $container.on('dragover', '.md-chip-draggable', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.originalEvent.dataTransfer.dropEffect = 'move';
+                
+                if (draggedElement && draggedElement !== this) {
+                    var $this = $(this);
+                    var $allChips = $container.find('.md-chip-draggable');
+                    var draggedIndex = $allChips.index(draggedElement);
+                    var targetIndex = $allChips.index(this);
+                    
+                    // Move placeholder to show where item will drop
+                    if (placeholder) {
+                        if (draggedIndex < targetIndex) {
+                            $this.after(placeholder);
+                        } else {
+                            $this.before(placeholder);
+                        }
+                    }
+                    
+                    $container.find('.md-chip').removeClass('md-chip-drag-over');
+                    $this.addClass('md-chip-drag-over');
+                }
+                
+                return false;
+            });
+            
+            $container.on('drop', '.md-chip-draggable', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (draggedElement && draggedElement !== this) {
+                    var $dragged = $(draggedElement);
+                    
+                    // Move actual element to placeholder position
+                    if (placeholder && placeholder.parent().length) {
+                        placeholder.replaceWith($dragged);
+                    }
+                }
+                
+                $container.find('.md-chip').removeClass('md-chip-drag-over');
+                return false;
+            });
         },
         
         // Generate unique ID
@@ -837,10 +1145,15 @@
                 var badgeTooltip = $(this).find('.StaffUserBadgeTooltip').val();
                 var badgeTitle = $(this).find('.StaffUserBadgeTitle').val();
                 
-                $(this).find('.staff-type-checkbox:checked').each(function() {
-                    var staffType = $(this).closest('.md-chip').attr('data-staff-type');
-                    if (staffType) {
-                        staffTypes.push(staffType);
+                // Collect icons in DOM order (maintains drag-and-drop sort)
+                $(this).find('.md-chip').each(function() {
+                    var $chip = $(this);
+                    var isChecked = $chip.find('.staff-type-checkbox').prop('checked');
+                    if (isChecked) {
+                        var staffType = $chip.attr('data-staff-type');
+                        if (staffType) {
+                            staffTypes.push(staffType);
+                        }
                     }
                 });
                             
@@ -1201,28 +1514,36 @@
                 if (displaySettings.profile_page !== false) {
                     $('h1[itemprop="name"]').each(function() {
                         var $header = $(this);
-                        if ($header.text().trim() === username && !$header.hasClass('staff-username')) {
+                        if ($header.text().trim() === username && 
+                            !$header.hasClass('staff-username') && 
+                            $header.find('.staff-icon').length === 0 && 
+                            !$header.attr('data-staff-processed')) {
                             $header.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $header.append(icon);
                             });
+                            $header.attr('data-staff-processed', 'true');
                         }
                     });
                 }
                 
                 // STEP 2: Message Wall
                 if (displaySettings.message_wall !== false) {
-                    $('a[class^="EntityHeader_name"]:not(.staff-username)').each(function() {
+                    $('a[class^="EntityHeader_name"]').each(function() {
                         var $link = $(this);
                         var href = $link.attr('href');
                         var text = $link.text().trim();
-                        if (href === '/wiki/User:' + username || text === username) {
+                        if ((href === '/wiki/User:' + username || text === username) && 
+                            !$link.hasClass('staff-username') && 
+                            $link.find('.staff-icon').length === 0 && 
+                            !$link.attr('data-staff-processed')) {
                             $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $link.append(icon);
                             });
+                            $link.attr('data-staff-processed', 'true');
                         }
                     });
                 }
@@ -1231,12 +1552,16 @@
                 if (displaySettings.blog_listing !== false) {
                     $('.blog-listing__user-name').each(function() {
                         var $link = $(this);
-                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && !$link.hasClass('staff-username')) {
+                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && 
+                            !$link.hasClass('staff-username') && 
+                            $link.find('.staff-icon').length === 0 && 
+                            !$link.attr('data-staff-processed')) {
                             $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $link.append(icon);
                             });
+                            $link.attr('data-staff-processed', 'true');
                         }
                     });
                 }
@@ -1246,12 +1571,16 @@
                     $('.mw-userlink').each(function() {
                         var $link = $(this);
                         var linkText = $link.find('bdi').length > 0 ? $link.find('bdi').text() : $link.text().trim();
-                        if (($link.attr('href') === '/wiki/User:' + username || linkText === username) && !$link.hasClass('staff-username')) {
+                        if (($link.attr('href') === '/wiki/User:' + username || linkText === username) && 
+                            !$link.hasClass('staff-username') && 
+                            $link.find('.staff-icon').length === 0 && 
+                            !$link.attr('data-staff-processed')) {
                             $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $link.append(icon);
                             });
+                            $link.attr('data-staff-processed', 'true');
                         }
                     });
                 }
@@ -1261,14 +1590,17 @@
                     $('a.circle-avatar-link').each(function() {
                         var $link = $(this);
                         var dataUsername = $link.attr('data-username');
-                        if (dataUsername === username || dataUsername === '@' + username) {
+                        if ((dataUsername === username || dataUsername === '@' + username) && !$link.attr('data-staff-processed')) {
                             var $nameSpan = $link.find('span').last();
-                            if ($nameSpan.length > 0 && !$nameSpan.hasClass('staff-username')) {
+                            if ($nameSpan.length > 0 && 
+                                !$nameSpan.hasClass('staff-username') && 
+                                $nameSpan.find('.staff-icon').length === 0) {
                                 $nameSpan.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                                 staffTypes.forEach(function(staffType) {
                                     var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                     if (icon) $nameSpan.append(icon);
                                 });
+                                $link.attr('data-staff-processed', 'true');
                             }
                         }
                     });
@@ -1278,12 +1610,16 @@
                 if (displaySettings.top_contributors !== false) {
                     $('.contributor .name a, .weekly-leaderboard .name a').each(function() {
                         var $link = $(this);
-                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && !$link.hasClass('staff-username')) {
+                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && 
+                            !$link.hasClass('staff-username') && 
+                            $link.find('.staff-icon').length === 0 && 
+                            !$link.attr('data-staff-processed')) {
                             $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $link.append(icon);
                             });
+                            $link.attr('data-staff-processed', 'true');
                         }
                     });
                 }
@@ -1292,12 +1628,16 @@
                 if (displaySettings.discussion_posts !== false) {
                     $('a.nkch-rdp-item__author-link').each(function() {
                         var $link = $(this);
-                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && !$link.hasClass('staff-username')) {
+                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && 
+                            !$link.hasClass('staff-username') && 
+                            $link.find('.staff-icon').length === 0 && 
+                            !$link.attr('data-staff-processed')) {
                             $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $link.append(icon);
                             });
+                            $link.attr('data-staff-processed', 'true');
                         }
                     });
                 }
@@ -1306,12 +1646,16 @@
                 if (displaySettings.wiki_activity !== false) {
                     $('.recent-wiki-activity__username, .edit-info-user').each(function() {
                         var $link = $(this);
-                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && !$link.hasClass('staff-username')) {
+                        if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && 
+                            !$link.hasClass('staff-username') && 
+                            $link.find('.staff-icon').length === 0 && 
+                            !$link.attr('data-staff-processed')) {
                             $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                             staffTypes.forEach(function(staffType) {
                                 var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                 if (icon) $link.append(icon);
                             });
+                            $link.attr('data-staff-processed', 'true');
                         }
                     });
                 }
@@ -1344,14 +1688,18 @@
                     var primaryStaffType = staffTypes[0];
                     
                     if (displaySettings.message_wall !== false) {
-                        $('a[class^="EntityHeader_name"]:not(.staff-username)').each(function() {
+                        $('a[class^="EntityHeader_name"]').each(function() {
                             var $link = $(this);
-                            if ($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) {
+                            if (($link.attr('href') === '/wiki/User:' + username || $link.text().trim() === username) && 
+                                !$link.hasClass('staff-username') && 
+                                $link.find('.staff-icon').length === 0 && 
+                                !$link.attr('data-staff-processed')) {
                                 $link.addClass('staff-username').attr('data-staff-type', primaryStaffType);
                                 staffTypes.forEach(function(staffType) {
                                     var icon = self.addStaffIcon(username, staffType, badgeTitle, badgeTooltip);
                                     if (icon) $link.append(icon);
                                 });
+                                $link.attr('data-staff-processed', 'true');
                             }
                         });
                     }
@@ -1504,15 +1852,17 @@
         
             var staffModalForm = $('<div id="staff-settings-container" class="md-container">');
             
-            staffModalForm.append('<div class="staff-notification" style="display:none;"></div>');
-            
+            // Tabs FIRST (moved up)
             staffModalForm.append(
                 '<div class="staff-settings-tabs md-tabs">' +
                     '<div class="staff-settings-tab active" data-tab="StaffMainDialog" onclick="staffFunctions.switchSettings(\'StaffMainDialog\')">General</div>' +
                     '<div class="staff-settings-tab" data-tab="StaffUserDialog" onclick="staffFunctions.switchSettings(\'StaffUserDialog\')">Users</div>' +
                     '<div class="staff-settings-tab" data-tab="StaffTypesDialog" onclick="staffFunctions.switchSettings(\'StaffTypesDialog\')">Icon Types</div>' +
+                    '<div class="staff-settings-tab" data-tab="StaffNameColorsDialog" onclick="staffFunctions.switchSettings(\'StaffNameColorsDialog\')">Name Colors</div>' +
                 '</div>'
             );
+            
+            staffModalForm.append('<div class="staff-notification" style="display:none;"></div>');
             
             var displaySettings = StaffSettings.display_settings || {};
             var iconSizes = StaffSettings.icon_sizes || {};
@@ -1680,6 +2030,10 @@
                         '<div class="md-card-header">' +
                             '<div class="md-card-title">Manage Users</div>' +
                             '<div class="md-card-actions">' +
+                                '<button onclick="staffFunctions.addUserFolder()" class="md-button md-button-raised md-button-secondary" title="Add Folder" style="margin-right: 8px;">' +
+                                    '<span class="md-icon">create_new_folder</span>' +
+                                    '<span>Add Folder</span>' +
+                                '</button>' +
                                 '<button onclick="staffFunctions.addUserForm()" class="md-button md-button-raised md-button-primary" title="Add User">' +
                                     '<span class="md-icon">person_add</span>' +
                                     '<span>Add User</span>' +
@@ -1776,6 +2130,33 @@
                 $(this).siblings('.staff-type-editor').slideToggle(200);
             });
             
+            // Name Colors Dialog (4th tab)
+            staffModalForm.append(
+                '<div class="StaffNameColorsDialog StaffSetMenu" style="display:none;">' +
+                    '<div class="md-card">' +
+                        '<div class="md-card-header">' +
+                            '<div class="md-card-title">🎨 Advanced Name Color Customization</div>' +
+                        '</div>' +
+                        '<div class="md-card-content" style="padding: 40px; text-align: center;">' +
+                            '<div style="font-size: 48px; margin-bottom: 20px;">🚧</div>' +
+                            '<div style="font-size: 24px; font-weight: 500; margin-bottom: 12px;">Work In Progress</div>' +
+                            '<div style="color: var(--theme-page-text-color--hover); margin-bottom: 20px;">This feature is under development</div>' +
+                            '<div style="background: rgba(103, 80, 164, 0.1); padding: 20px; border-radius: 8px; margin-top: 20px;">' +
+                                '<div style="font-weight: 500; margin-bottom: 10px;">Upcoming Features:</div>' +
+                                '<ul style="text-align: left; max-width: 400px; margin: 0 auto;">' +
+                                    '<li>✨ Animated username colors</li>' +
+                                    '<li>🌈 Gradient color support</li>' +
+                                    '<li>💫 Pulsation effects</li>' +
+                                    '<li>🎭 Multiple animation styles</li>' +
+                                    '<li>⚙️ Detailed color customization per user</li>' +
+                                    '<li>🎨 Advanced CSS effects</li>' +
+                                '</ul>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+            
             $.each(StaffSettings.dataUser, function(username, userData) {
                 var staffTypes = Array.isArray(userData) ? userData : (userData.types || []);
                 var badgeTooltip = !Array.isArray(userData) ? userData.badge_tooltip : '';
@@ -1809,7 +2190,8 @@
                                         '<input class="StaffUserBadgeTooltip md-input" value="' + (badgeTooltip || '') + '" placeholder="Custom tooltip for this user\'s badges"/>' +
                                     '</div>' +
                                 '</div>' +
-                                '<div class="md-chip-container" id="user-icon-container-' + uniqueId + '"></div>' +
+                                '<div class="staff-section-divider"></div>' +
+                                '<div class="md-chip-container md-chip-sortable" id="user-icon-container-' + uniqueId + '"></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>'
@@ -1818,12 +2200,17 @@
                 staffModalForm.find('.StaffUser').append($userForm);
                 
                 var $container = $userForm.find('.md-chip-container');
-                staffFunctions.populateIconSelector($container);
+                // Pass staffTypes array to maintain order
+                staffFunctions.populateIconSelector($container, staffTypes);
                 
+                // Mark checked icons
                 $.each(staffTypes, function(i, staffType) {
                     $container.find('.md-chip[data-staff-type="' + staffType + '"] .staff-type-checkbox').prop('checked', true);
                 });
             });
+            
+            // Enable drag-and-drop for user forms and folders
+            staffFunctions.enableUserFormDragDrop();
             
             CustomColorPicker.init();
             
@@ -1904,60 +2291,92 @@
             });
         },
         
-        // Initialize script
+        // Initialize script with retry mechanism
         init: function(modalScript) {
             showCustomModal = modalScript;
             
             $('head').append('<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">');
             
-            $.ajax({
-                url: mw.util.wikiScript(),
-                type: 'GET',
-                data: {
-                    title: 'Fisch_Wiki:Staff',
-                    action: 'raw',
-                    cb: Math.ceil(new Date().getTime() / 1000),
-                    dataType:'text'
-                },
-                success: function(data) {
-                    console.log('[Staff System] AJAX success, data length:', data.length);
-                    
-                    try {
-                        window.StaffSettings = JSON.parse(data);
-                        console.log('[Staff System] Settings parsed successfully:', StaffSettings);
-                    } catch(err) {
-                        console.error('[Staff System] JSON parse error:', err);
+            // Retry mechanism for loading data
+            var maxRetries = 3;
+            var retryDelay = 500; // ms
+            var currentRetry = 0;
+            
+            var loadStaffData = function() {
+                console.log('[Staff System] Loading data, attempt', currentRetry + 1, '/', maxRetries);
+                
+                $.ajax({
+                    url: mw.util.wikiScript(),
+                    type: 'GET',
+                    cache: false,
+                    timeout: 5000,
+                    data: {
+                        title: 'Fisch_Wiki:Staff',
+                        action: 'raw',
+                        cb: Math.ceil(new Date().getTime() / 1000),
+                        dataType:'text'
+                    },
+                    success: function(data) {
+                        console.log('[Staff System] AJAX success, data length:', data.length);
+                        
+                        try {
+                            window.StaffSettings = JSON.parse(data);
+                            console.log('[Staff System] Settings parsed successfully:', StaffSettings);
+                            currentRetry = maxRetries; // Stop retries on success
+                        } catch(err) {
+                            console.error('[Staff System] JSON parse error:', err);
+                            
+                            if (currentRetry < maxRetries - 1) {
+                                currentRetry++;
+                                console.warn('[Staff System] Retrying in', retryDelay, 'ms...');
+                                setTimeout(loadStaffData, retryDelay);
+                                return;
+                            }
+                            
+                            var wgAction = mw.config.get('wgAction');
+                            var isEditPage = (wgAction === 'edit' || wgAction === 'submit');
+                            if (namespace === 4 && mw.config.get('wgTitle') === 'Staff' && !isEditPage) {
+                                staffFunctions.staffDefaultSettings();
+                            }
+                            return;
+                        }
+                        
+                        console.log('[Staff System] Namespace:', namespace, 'Title:', mw.config.get('wgTitle'));
+                        
+                        var wgAction = mw.config.get('wgAction');
+                        var isEditPage = (wgAction === 'edit' || wgAction === 'submit');
+                        
+                        if (namespace === 4 && mw.config.get('wgTitle') === 'Staff' && !isEditPage) {
+                            console.log('[Staff System] Calling staffSettingsFunction...');
+                            staffFunctions.staffSettingsFunction();
+                        } else {
+                            console.log('[Staff System] Applying styles and icons...');
+                            staffFunctions.applyStaffStyles();
+                            staffFunctions.attributeUserLinks();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('[Staff System] AJAX error:', status, error, 'XHR:', xhr);
+                        
+                        if (currentRetry < maxRetries - 1) {
+                            currentRetry++;
+                            console.warn('[Staff System] Retrying in', retryDelay, 'ms... (attempt', currentRetry + 1, '/', maxRetries, ')');
+                            setTimeout(loadStaffData, retryDelay);
+                            return;
+                        }
+                        
+                        console.error('[Staff System] All retry attempts failed');
                         var wgAction = mw.config.get('wgAction');
                         var isEditPage = (wgAction === 'edit' || wgAction === 'submit');
                         if (namespace === 4 && mw.config.get('wgTitle') === 'Staff' && !isEditPage) {
                             staffFunctions.staffDefaultSettings();
                         }
-                        return;
                     }
-                    
-                    console.log('[Staff System] Namespace:', namespace, 'Title:', mw.config.get('wgTitle'));
-                    
-                    var wgAction = mw.config.get('wgAction');
-                    var isEditPage = (wgAction === 'edit' || wgAction === 'submit');
-                    
-                    if (namespace === 4 && mw.config.get('wgTitle') === 'Staff' && !isEditPage) {
-                        console.log('[Staff System] Calling staffSettingsFunction...');
-                        staffFunctions.staffSettingsFunction();
-                    } else {
-                        console.log('[Staff System] Applying styles and icons...');
-                        staffFunctions.applyStaffStyles();
-                        staffFunctions.attributeUserLinks();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('[Staff System] AJAX error:', status, error);
-                    var wgAction = mw.config.get('wgAction');
-                    var isEditPage = (wgAction === 'edit' || wgAction === 'submit');
-                    if (namespace === 4 && mw.config.get('wgTitle') === 'Staff' && !isEditPage) {
-                        staffFunctions.staffDefaultSettings();
-                    }
-                }
-            });
+                });
+            };
+            
+            // Start loading with potential retries
+            loadStaffData();
         }
     };
     

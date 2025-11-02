@@ -142,6 +142,15 @@ var guildLevels = [
   { guildLevel: "Level 5 (+10% EXP)", guildBonus: "0.1" }
 ];
 
+var friendBoosts = [
+  { friendAmount: "None", friendBonus: "0" },
+  { friendAmount: "1 (+2% EXP)", friendBonus: "0.02" },
+  { friendAmount: "2 (+4% EXP)", friendBonus: "0.04" },
+  { friendAmount: "3 (+6% EXP)", friendBonus: "0.06" },
+  { friendAmount: "4 (+8% EXP)", friendBonus: "0.08" },
+  { friendAmount: "5 (+10% EXP)", friendBonus: "0.1" }
+];
+
 var dungeonModifiers = [
   { dungeonModifier: "None", EXPmultiplier: "1" },
   { dungeonModifier: "Swarming Grounds (1.25x EXP)", EXPmultiplier: "1.25" },
@@ -219,6 +228,14 @@ createSelectField({
   valueKey: "guildBonus"
 });
 
+createSelectField({
+  labelText: "Amount of Friends in-game",
+  id: "friendExpBoost",
+  options: friendBoosts,
+  nameKey: "friendAmount",
+  valueKey: "friendBonus"
+});
+
 // Dungeon Modifiers
 createSelectField({
   labelText: "Dungeon Modifier Bonus",
@@ -261,6 +278,7 @@ calcBtn.onclick = function () {
   var weaponPerkBoost = parseFloat(document.getElementById('weaponPerkBoost').value) || 0;
   var ringSubstatBoost = parseFloat(document.getElementById('ringSubstatBoost').value) || 0;
   var guildExpBoost = parseFloat(document.getElementById('guildExpBoost').value) || 0;
+  var friendExpBoost = parseFloat(document.getElementById('friendExpBoost').value) || 0;
   var dungeonModifierExpBoost = parseFloat(document.getElementById('dungeonModifierExpBoost').value) || 0;
 
   // Error messages
@@ -314,6 +332,7 @@ calcBtn.onclick = function () {
   boostExp += baseDungeonExp * (ringSubstatBoost / 100);
   boostExp += baseDungeonExp * guildExpBoost;
   boostExp += baseDungeonExp * weaponPerkBoost;
+  boostExp += baseDungeonExp * friendExpBoost;
 
 
   // Total Exp

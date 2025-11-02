@@ -56,6 +56,24 @@ mw.hook('wikipage.content').add(function($content) {
         });
     }
 
+	// --- Community Hub Time Thing ---
+	$(document).ready(function() {
+  const hubTime = document.getElementById('hubTime');
+  if (!hubTime) return;
+
+  function updateTime() {
+    const now = new Date();
+    const formatted = now.toLocaleString('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'long'
+    });
+    hubTime.textContent = formatted;
+  }
+
+  updateTime();
+  setInterval(updateTime, 1000);
+});
+
     // --- Idiot Popups ---
     document.querySelectorAll('.idiot-popup').forEach(popup => {
         const title = popup.querySelector('.idiot-title');
@@ -95,6 +113,69 @@ mw.hook('wikipage.content').add(function($content) {
             }
         });
     });
+/* ======================================
+   Featured Article Rotator
+   Rotates a featured article every 24h (12AM ET)
+   ====================================== */
+mw.hook('wikipage.content').add(function($content) {
+  if (mw.config.get('wgPageName') !== 'Main_Page') return;
+
+  // Featured article pool
+  const featuredArticles = [
+    {
+      title: '.ChefGaming7540',
+      image: 'MinecraftChefIcon.png',
+      desc: '.ChefGaming7540 has joined the server'
+    },
+    {
+      title: 'Wonder',
+      image: 'WonderIcon2d.png',
+      desc: 'We lcome, t o  W ond erl and! !! !!   !'
+    },
+    {
+      title: 'The Nameless Knight',
+      image: 'NamelessKnightIcon.png',
+      desc: 'Betrayed! Abandoned! Cast to decay... You gave them your soul, and they threw you away. You bled for a crown that never did care; Now silence is all that you`re left to wear.'
+    },
+      {
+      title: 'Robert Somme Bankes',
+      image: 'Westernrobbankes.png',
+      desc: 'I smell what you`re stepping in. The power in the Chef`s Game Universe is about to change forever. I am the Messiah. I am Chef`s Game Jesus.'
+    }
+  ];
+
+  // --- Time zone math for EST ---
+  const now = new Date();
+  // Convert to EST (UTC−5 or UTC−4 with daylight saving)
+  const estOffset = now.getTimezoneOffset() + 300; // convert minutes to EST
+  const estDate = new Date(now.getTime() + estOffset * 60000);
+
+  // Determine which article to show (changes daily at midnight EST)
+  const dayIndex = Math.floor(estDate / 86400000) % featuredArticles.length;
+  const article = featuredArticles[dayIndex];
+
+  // Create the box dynamically
+  const box = `
+  <div class="featured-article">
+    <div class="fa-header">Featured Article</div>
+    <div class="fa-divider"></div>
+    <div class="fa-flex">
+      <div class="fa-overview">
+        <span class="fa-section">Overview</span><br><br>
+        <strong>[[${article.title}]]</strong><br><br>
+        ${article.desc}
+      </div>
+      <div class="fa-image">
+        [[File:${article.image}|250px]]
+      </div>
+    </div>
+    <div class="fa-divider"></div>
+  </div>`;
+
+  // Insert it wherever you want (example: top of the page)
+  $content.find('#mw-content-text').prepend(box);
+});
+
 
 // --- Sword of Corruption floating notices ---
 if (mw.config.get('wgPageName') === 'Sword_of_Corruption') {
@@ -147,7 +228,9 @@ if (mw.config.get('wgPageName') === 'Sword_of_Corruption') {
     const images = [
         'https://static.wikia.nocookie.net/varandia/images/e/ef/ChaosIcon.png/revision/latest/scale-to-width-down/240?cb=20250602113959',
         'https://static.wikia.nocookie.net/varandia/images/3/39/WonderLaugh.gif/revision/latest/scale-to-width-down/185?cb=20251005190823',
-        'https://static.wikia.nocookie.net/varandia/images/9/9c/WIP2d.png/revision/latest/scale-to-width-down/65?cb=20251001165921'
+        'https://static.wikia.nocookie.net/varandia/images/9/9c/WIP2d.png/revision/latest/scale-to-width-down/65?cb=20251001165921',
+        'https://static.wikia.nocookie.net/varandia/images/e/e9/CourierIcon2d.png/revision/latest/scale-to-width-down/185?cb=20251027223750',
+        'https://static.wikia.nocookie.net/varandia/images/e/e6/Site-logo.png/revision/latest?cb=20251028143900'
     ];
 
     const notices = [];     // text notices

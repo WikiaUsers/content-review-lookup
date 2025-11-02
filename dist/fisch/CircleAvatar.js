@@ -143,12 +143,20 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
          });
      }
  
-    // Main processing function
-     function processAvatars($content) {
-         if (!$content || $content.length === 0) return;
- 
-         var avatarElements = $content.find('.circle-avatar-template');
-         if (avatarElements.length === 0) return;
+   // Main processing function
+    function processAvatars($content) {
+        if (!$content || $content.length === 0) {
+            console.warn('CircleAvatar: processAvatars called with no content');
+            return;
+        }
+
+        var avatarElements = $content.find('.circle-avatar-template');
+        console.log('CircleAvatar: processAvatars found', avatarElements.length, 'templates to process');
+        
+        if (avatarElements.length === 0) {
+            console.warn('CircleAvatar: No avatar templates found in content');
+            return;
+        }
          
          // Extract unique usernames that aren't in cache
          var usersToFetch = [];
@@ -215,17 +223,60 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
    // Initialize on page load - multiple hooks for better mobile support
    mw.hook('wikipage.content').add(processAvatars);
    
-   // Additional initialization for mobile devices (Minerva skin)
+   // Additional initialization for mobile devices (Minerva skin & fandommobile)
    var skin = mw.config.get('skin');
-   if (skin === 'minerva' || isMobile) {
-       console.log('CircleAvatar: Initializing for mobile/Minerva skin');
+   var isFandomMobile = document.body.classList.contains('skin-fandommobile');
+   
+   console.log('CircleAvatar: Skin:', skin, 'isMobile:', isMobile, 'isFandomMobile:', isFandomMobile);
+   
+   if (skin === 'minerva' || isMobile || isFandomMobile) {
+       console.log('CircleAvatar: Initializing for mobile/Minerva/FandomMobile skin');
        
        // Direct initialization after DOM ready
        $(document).ready(function() {
            setTimeout(function() {
-               console.log('CircleAvatar: Processing avatars on mobile');
-               processAvatars($('body'));
+               var $templates = $('.circle-avatar-template');
+               console.log('CircleAvatar: First attempt - found', $templates.length, 'templates');
+               if ($templates.length > 0) {
+                   console.log('CircleAvatar: Processing avatars on mobile');
+                   processAvatars($('body'));
+               } else {
+                   console.warn('CircleAvatar: No templates found on first attempt!');
+               }
            }, 100);
+           
+           // Дополнительные попытки для fandommobile
+           if (isFandomMobile) {
+               setTimeout(function() {
+                   var $templates = $('.circle-avatar-template');
+                   console.log('CircleAvatar: Second attempt (500ms) - found', $templates.length, 'templates');
+                   if ($templates.length > 0) {
+                       processAvatars($('body'));
+                       $(document).trigger('circleavatar-processed');
+                   }
+               }, 500);
+               
+               setTimeout(function() {
+                   var $templates = $('.circle-avatar-template');
+                   console.log('CircleAvatar: Third attempt (1000ms) - found', $templates.length, 'templates');
+                   if ($templates.length > 0) {
+                       processAvatars($('body'));
+                       $(document).trigger('circleavatar-processed');
+                   }
+               }, 1000);
+               
+               setTimeout(function() {
+                   var $templates = $('.circle-avatar-template');
+                   console.log('CircleAvatar: Fourth attempt (2000ms) - found', $templates.length, 'templates');
+                   if ($templates.length > 0) {
+                       processAvatars($('body'));
+                       $(document).trigger('circleavatar-processed');
+                   } else {
+                       console.error('CircleAvatar: Still no templates after 2 seconds! Checking DOM...');
+                       console.log('CircleAvatar: Body HTML preview:', $('body').html().substring(0, 500));
+                   }
+               }, 2000);
+           }
        });
        
        // Also try when content is complete
@@ -235,22 +286,63 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
        
        // Fallback: MutationObserver to catch dynamically added content
        if (typeof MutationObserver !== 'undefined') {
+           var processTimeout;
            var observer = new MutationObserver(function(mutations) {
+               var shouldProcess = false;
                mutations.forEach(function(mutation) {
                    if (mutation.addedNodes.length) {
                        var $addedNodes = $(mutation.addedNodes);
                        var $templates = $addedNodes.find('.circle-avatar-template').addBack('.circle-avatar-template');
-                       if ($templates.length > 0) {
-                           processAvatars($('body'));
+                       var $teamContainer = $addedNodes.find('.meet-our-team-container').addBack('.meet-our-team-container');
+                       
+                       if ($templates.length > 0 || $teamContainer.length > 0) {
+                           shouldProcess = true;
                        }
                    }
                });
+               
+               if (shouldProcess) {
+                   clearTimeout(processTimeout);
+                   processTimeout = setTimeout(function() {
+                       console.log('CircleAvatar: MutationObserver detected changes, processing...');
+                       processAvatars($('body'));
+                       
+                       if (isFandomMobile) {
+                           setTimeout(function() {
+                               processAvatars($('body'));
+                               $(document).trigger('circleavatar-processed');
+                           }, 200);
+                       }
+                   }, 100);
+               }
            });
            
            observer.observe(document.body, {
                childList: true,
                subtree: true
            });
+       }
+       
+       // Агрессивная обработка для FandomMobile
+       if (isFandomMobile) {
+           var attempts = 0;
+           var maxAttempts = 10; // 5 секунд
+           
+           var intervalId = setInterval(function() {
+               attempts++;
+               var $templates = $('.circle-avatar-template');
+               
+               if ($templates.length > 0) {
+                   console.log('CircleAvatar: Interval check (attempt ' + attempts + ') found ' + $templates.length + ' templates');
+                   processAvatars($('body'));
+                   $(document).trigger('circleavatar-processed');
+               }
+               
+               if (attempts >= maxAttempts) {
+                   clearInterval(intervalId);
+                   console.log('CircleAvatar: Interval check completed after ' + attempts + ' attempts');
+               }
+           }, 500);
        }
    }
    
