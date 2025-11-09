@@ -5,7 +5,8 @@
 const dataModalTexts = {
 	modalTitle: "Création d'avatar",
 	btnLink: "Créer un avatar",
-	formName: "Formulaire",
+	formOuputName: "Paramètres de l'image",
+	formCalcName: "Paramètres des calques",
 	outputName: "Aperçu",
 	startBtn: "Commencer"
 };
@@ -58,10 +59,18 @@ mw.loader.using('mediawiki.api', function() {
 	        modal = new window.dev.modal.Modal({
 	            content: {
 	            	type: "div",
-	            	attr: { style: "display: grid; grid-template-columns: 1fr 1fr .5fr;" },
+	            	attr: { style: "display: grid; grid-template-columns: repeat(2, 1fr);" },
 	            	children: [
-	            		ui({ type: 'form', children: getOutputForm(), attr: { id: scriptName + "Output" } }),
-	            		ui({ type: 'form', children: getCalcForm(), attr: { id: scriptName + "Calc" } }),
+	            		ui({ type: 'div', children: [
+	            			ui({ type: 'details', children: [
+	            				ui({ type: 'summary', text: dataModalTexts.formOutputName }),
+	            				ui({ type: 'form', children: getOutputForm(), attr: { id: scriptName + "Output" } })
+	            			], attr: { open: true }}),
+	            			ui({ type: 'details', children: [
+	            				ui({ type: 'summary', text: dataModalTexts.formCalcName }),
+	            				ui({ type: 'form', children: getCalcForm(), attr: { id: scriptName + "Calc" } })
+	            			], attr: { open: true }})
+	            		] }),
 	            		ui({ type: 'section' })
 	            	]
 			    },
@@ -145,9 +154,11 @@ mw.loader.using('mediawiki.api', function() {
 		console.log(calcData);
 		
 		const output = container.querySelector('section');
-		const canvasSizes = outputSizesData[outputData.fieldSize];
+		const canvasSizes = outputSizesData[outputData[scriptName + 'FieldSize'].value];
 		
-		const urlList = Object.values(calcData).flatMap(e => e.value.split('\n'));
+		const urlList = Object.entries(calcData)
+			.filter(([key, e]) => Number.isNaN(Number(key)) && e.value)
+			.flatMap(([_, e]) => e.value.split('\n'));
 		getNewCanvas(urlList, canvasSizes, function(canvas) {
 		    output.appendChild(canvas);
 		});

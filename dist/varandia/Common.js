@@ -113,69 +113,6 @@ mw.hook('wikipage.content').add(function($content) {
             }
         });
     });
-/* ======================================
-   Featured Article Rotator
-   Rotates a featured article every 24h (12AM ET)
-   ====================================== */
-mw.hook('wikipage.content').add(function($content) {
-  if (mw.config.get('wgPageName') !== 'Main_Page') return;
-
-  // Featured article pool
-  const featuredArticles = [
-    {
-      title: '.ChefGaming7540',
-      image: 'MinecraftChefIcon.png',
-      desc: '.ChefGaming7540 has joined the server'
-    },
-    {
-      title: 'Wonder',
-      image: 'WonderIcon2d.png',
-      desc: 'We lcome, t o  W ond erl and! !! !!   !'
-    },
-    {
-      title: 'The Nameless Knight',
-      image: 'NamelessKnightIcon.png',
-      desc: 'Betrayed! Abandoned! Cast to decay... You gave them your soul, and they threw you away. You bled for a crown that never did care; Now silence is all that you`re left to wear.'
-    },
-      {
-      title: 'Robert Somme Bankes',
-      image: 'Westernrobbankes.png',
-      desc: 'I smell what you`re stepping in. The power in the Chef`s Game Universe is about to change forever. I am the Messiah. I am Chef`s Game Jesus.'
-    }
-  ];
-
-  // --- Time zone math for EST ---
-  const now = new Date();
-  // Convert to EST (UTC−5 or UTC−4 with daylight saving)
-  const estOffset = now.getTimezoneOffset() + 300; // convert minutes to EST
-  const estDate = new Date(now.getTime() + estOffset * 60000);
-
-  // Determine which article to show (changes daily at midnight EST)
-  const dayIndex = Math.floor(estDate / 86400000) % featuredArticles.length;
-  const article = featuredArticles[dayIndex];
-
-  // Create the box dynamically
-  const box = `
-  <div class="featured-article">
-    <div class="fa-header">Featured Article</div>
-    <div class="fa-divider"></div>
-    <div class="fa-flex">
-      <div class="fa-overview">
-        <span class="fa-section">Overview</span><br><br>
-        <strong>[[${article.title}]]</strong><br><br>
-        ${article.desc}
-      </div>
-      <div class="fa-image">
-        [[File:${article.image}|250px]]
-      </div>
-    </div>
-    <div class="fa-divider"></div>
-  </div>`;
-
-  // Insert it wherever you want (example: top of the page)
-  $content.find('#mw-content-text').prepend(box);
-});
-
 
 // --- Sword of Corruption floating notices ---
 if (mw.config.get('wgPageName') === 'Sword_of_Corruption') {
@@ -360,4 +297,33 @@ if (mw.config.get('wgPageName') === 'Sword_of_Corruption') {
     setInterval(spawnNotice, 2000); // spawn every 2s
     animate();
 }
+});
+
+/* ============================================
+   Varandia — Random Logo Hover Image
+   ============================================ */
+$(function() {
+    const $logo = $('.fandom-community-header__image img');
+    if (!$logo.length) return;
+
+    const images = [
+        'https://static.wikia.nocookie.net/varandia/images/d/df/FaviconAlt.png/revision/latest/scale-to-width-down/182?cb=20251106224811',
+        'https://static.wikia.nocookie.net/varandia/images/8/8a/ChefIcon2d.png/revision/latest/scale-to-width-down/185?cb=20251030141228',
+        'https://static.wikia.nocookie.net/varandia/images/a/a4/WonderIcon2d.png/revision/latest/scale-to-width-down/185?cb=20251002133033',
+        'https://static.wikia.nocookie.net/varandia/images/e/ec/CrystarionIcon2d.png/revision/latest/scale-to-width-down/185?cb=20251104180958',
+        'https://static.wikia.nocookie.net/varandia/images/c/c2/CorporateChefIcon2d.png/revision/latest/scale-to-width-down/185?cb=20251106171603',
+        'https://static.wikia.nocookie.net/varandia/images/2/28/FaviconAlt2.png/revision/latest?cb=20251107165214'
+    ];
+
+    const original = $logo.attr('src');
+
+    $logo.hover(
+        function() {
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+            $(this).attr('src', randomImage);
+        },
+        function() {
+            $(this).attr('src', original);
+        }
+    );
 });

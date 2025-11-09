@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* the script works but is now bugged in my page :sob: */
+/* Only for the gaster page, if they want to remove this then i should do */
 
 const introPages = {
   'Gaster_(BOSS)': {

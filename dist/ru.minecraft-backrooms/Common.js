@@ -2,19 +2,23 @@
 
 // Константы
 
-var userName = mw.config.get('wgUserName');
-var userEdits = mw.config.get("wgUserEditCount");
-var userGroups = mw.config.get("wgUserGroups");
-var NeededGroups = ["autoconfirmed","emailconfirmed"];
+var CONFIG = mw.config.get();
+var userName = CONFIG.wgUserName;
+var userEdits = CONFIG.wgUserEditCount;
+var userGroups = CONFIG.wgUserGroups;
+var pageName = CONFIG.wgPageName;
 var IsUserAdmin = ArrayIncludesAny(userGroups,['sysop','bureaucrat','interface-admin']);
 var IsUserMod = IsUserAdmin || ArrayIncludesAny(userGroups,['content-moderator']);
 
 var RATING = {
 	StoringPage: "Закулисье_Майнкрафта_вики:Оценки_статей",
 	MinEdits: 50,
-	UserHasNeededGroups: ArrayIncludesAll(userGroups,NeededGroups),
+	NeededGroups: ["autoconfirmed","emailconfirmed"],
+	TimeDelaySeconds: 120,
 	Err: 0
 };
+
+RATING.UserHasNeededGroups = ArrayIncludesAll(userGroups,RATING.NeededGroups);
 
 if (!userName) {
 	RATING.Err = "Войдите в аккаунт, чтобы ставить оценки";
@@ -111,7 +115,7 @@ function ArrayIncludesAny(arr, included) {
 }
 
 // Кастомные лого и заголовок вики
-mw.hook("wikipage.content").add(function () {
+mw.hook("wikipage.content").add( () => {
 	if (Inits.LogoModule !== 0) return;
 	Inits.LogoModule = parseInt(Inits.LogoModule) + 1;
 	var customCommunityName = $('#customCommunityName')[0];
@@ -130,7 +134,7 @@ mw.hook("wikipage.content").add(function () {
 });
 
 // Шаблон оценки
-mw.hook("wikipage.content").add(function () {
+mw.hook("wikipage.content").add( () => {
 	if ( Inits.RatingModule !== 0 || $(".pageRate").length <= 0 ) return;
 	Inits.RatingModule = parseInt(Inits.RatingModule) + 1;
 	
@@ -161,23 +165,30 @@ mw.hook("wikipage.content").add(function () {
 	$(RatingModuleElements.body).appendTo($(".PageRatingModule"));
 	RatingModuleElements.body.style.setProperty("display","");
     
-	get_article(RATING.StoringPage).done(function(data) { // получаем текущие оценки всех статей
+	get_article(RATING.StoringPage).done( (data) => { // получаем текущие оценки всех статей
         try {
         	data = JSON.parse(data);
         } catch (err) { // если происходит ошибка парсинга, то код показывает сообщение о ней в блоке шаблона оценки и выдаёт ошибку в консоль
-        	if (!IsUserMod) { // шаблон прячется от обычных пользователей при ошибке
-        		section.style.setProperty("display","none");
-        	} else {
-        		RatingModuleElements.body.style.setProperty("display","none");
-        		$("<p>",{class:"error",html:"Ошибка парсинга JSON",style:"font-weight:bold;text-align:center;font-size:150%"}).appendTo($(section));
-        	}
+        	RatingModuleElements.body.style.setProperty("display","none");
+        	$("<p>",{class:"error",html:"Ошибка парсинга JSON",style:"font-weight:bold;text-align:center;font-size:150%"}).appendTo($(section));
         	throw err; // код не выполняется дальше
         }
-        var myRate = data[mw.config.get('wgPageName')] || [[],[]]; // проверяем есть ли данные о текущей статье, если нет, то создаём пустой шаблон для заполнения
-		var userRate = myRate[0].includes(userName) ? "+" : myRate[1].includes(userName) ? "-" : 0; // оценка текущего участника
+        var currentPageRate = data[pageName] || [[],[]]; // проверяем есть ли данные о текущей статье, если нет, то создаём пустой шаблон для заполнения
+		var userRate = currentPageRate[0].includes(userName) ? 1 : currentPageRate[1].includes(userName) ? -1 : 0; // оценка текущего участника
+		var SYSTEM = data.$SYSTEM;
+		var lastTimeUserRate = SYSTEM.LAST_EDIT_TIME[userName];
+		function CheckTime() {
+        	if ( lastTimeUserRate != undefined ) {
+        		var DeltaTime = Math.floor( (Date.now() - parseInt(lastTimeUserRate) ) / 1000 );
+        		if ( DeltaTime < RATING.TimeDelaySeconds ) {
+        			RATING.Err = `Подождите ещё ${RATING.TimeDelaySeconds - DeltaTime} сек., прежде чем ставить оценки`;
+        			RATING.UserCanVote = false;
+        		}
+        	}
+        }
 		
-		var p = myRate[0].length;
-		var n = myRate[1].length;
+		var p = currentPageRate[0].length;
+		var n = currentPageRate[1].length;
         var calculatedRating = p - n; // вычисляем рейтинг по формуле: положительные_голоса - негативные_голоса
         var totalRating = p + n; // всего голосов
         
@@ -189,60 +200,91 @@ mw.hook("wikipage.content").add(function () {
         if (RatingModuleElements.positive != null) RatingModuleElements.positive.innerHTML = (p).toString();
         if (RatingModuleElements.negative != null) RatingModuleElements.negative.innerHTML = (n).toString();
         
-        if (RatingModuleElements.current_rate != null && userRate !== 0) {
+        if (RatingModuleElements.current_rate != null && userRate) {
            	RatingModuleElements.current_rate.style.setProperty("display","");
-           	$(RatingModuleElements.current_rate).html("Ваша текущая оценка: " + userRate);
+           	$(RatingModuleElements.current_rate).html(`Ваша текущая оценка: ${userRate == 1 ? "+" : "-"}`);
         }
-        RatingModuleElements.rating.innerHTML = ( calculatedRating > 0 && '+' || '' ) + calculatedRating.toString(); // записываем полученный рейтинг в элемент
-        RatingModuleElements.rating.setAttribute("style","color:" + (calculatedRating > 0 && 'var(--theme-positive-rating-text-color)' || calculatedRating < 0 && 'var(--theme-negative-rating-text-color)' || 'var(--theme-page-text-color)') + ";font-size:30px"); // устанавливаем цвет текста в зависимости от рейтинга
+        RatingModuleElements.rating.innerHTML = `${calculatedRating > 0 ? '+' : ''}${calculatedRating.toString()}`; // записываем полученный рейтинг в элемент
+        RatingModuleElements.rating.setAttribute("style",`color:${ calculatedRating > 0 ? 'var(--theme-positive-rating-text-color)' : calculatedRating < 0 ? 'var(--theme-negative-rating-text-color)' : 'var(--theme-page-text-color)' };font-size:30px`); // устанавливаем цвет текста в зависимости от рейтинга
         
         if (RATING.UserCanVote && userRate) {
 			RatingModuleElements.remove_rate.style.setProperty("display","");
 		}
+		if (userRate == 1) {
+			RatingModuleElements.add_plus.title = "";
+			RatingModuleElements.add_plus.classList.add("pageRate-button-inactive");
+		} else if (userRate == -1) {
+			RatingModuleElements.add_minus.title = "";
+			RatingModuleElements.add_minus.classList.add("pageRate-button-inactive");
+		}
+		
+		function ClearTimes() {
+			var NOW = Date.now();
+			Object.keys(SYSTEM.LAST_EDIT_TIME).forEach( (user) => {
+				if ( Math.floor( (NOW - SYSTEM.LAST_EDIT_TIME[user]) / 1000 ) >= RATING.TimeDelaySeconds ) {
+					delete SYSTEM.LAST_EDIT_TIME[user];
+				}
+			});
+		}
         
-        $(RatingModuleElements.add_plus).click(function () { // положительная оценка статьи
-            // если у чела меньше десяти правок, то он не может ставить оценку
+        $(RatingModuleElements.add_plus).click( () => { // положительная оценка статьи
+        	if (userRate == 1) {
+				return;
+			}
+            CheckTime();
   			if (!RATING.UserCanVote) {
 				alert(RATING.Err);
 				return;
 			}
-           	RemoveElementFromArray(myRate[0],userName);
-           	RemoveElementFromArray(myRate[1],userName);
+           	RemoveElementFromArray(currentPageRate[1],userName);
 			    	     	
-        	myRate[0][p] = userName;
+        	currentPageRate[0][p] = userName;
         	
-           	data[mw.config.get('wgPageName')] = myRate;
+           	data[pageName] = currentPageRate;
+           	ClearTimes();
+           	SYSTEM.LAST_EDIT_TIME[userName] = Date.now();
         	var to_save = JSON.stringify(data);
-           	post_article(RATING.StoringPage,to_save,'Поставлена оценка (+) для ' + mw.config.get('wgPageName'));
+        	
+           	post_article(RATING.StoringPage,to_save,'Поставлена оценка (+) для ' + pageName);
         });
        	$(RatingModuleElements.add_minus).click(function () { // отрицательная оценка статьи
-           	// если у чела меньше десяти правок, то он не может ставить оценку
+       		if (userRate == -1) {
+				return;
+			}
+           	CheckTime();
             if (!RATING.UserCanVote) {
 				alert(RATING.Err);
 				return;
 			}
-           	RemoveElementFromArray(myRate[0],userName);
-          	RemoveElementFromArray(myRate[1],userName);
+           	RemoveElementFromArray(currentPageRate[0],userName);
              	
-            myRate[1][n] = userName;
+            currentPageRate[1][n] = userName;
                     	
-            data[mw.config.get('wgPageName')] = myRate;
+            data[pageName] = currentPageRate;
+            ClearTimes();
+            SYSTEM.LAST_EDIT_TIME[userName] = Date.now();
             var to_save = JSON.stringify(data);
-                    	
-            post_article(RATING.StoringPage,to_save,'Поставлена оценка (-) для ' + mw.config.get('wgPageName'));
+            
+            post_article(RATING.StoringPage,to_save,'Поставлена оценка (-) для ' + pageName);
         });
         $(RatingModuleElements.remove_rate).click(function () { // удаление оценки
+        	if (userRate == 0) { // на случай если кому-то захочется сделать кнопку видимой через изменение элемента
+				return;
+			}
+			CheckTime();
         	if (!RATING.UserCanVote) {
 				alert(RATING.Err);
 				return;
 			}
-        	RemoveElementFromArray(myRate[0],userName);
-           	RemoveElementFromArray(myRate[1],userName);
+        	RemoveElementFromArray(currentPageRate[0],userName);
+           	RemoveElementFromArray(currentPageRate[1],userName);
             	
-           	data[mw.config.get('wgPageName')] = myRate;
+           	data[pageName] = currentPageRate;
+           	ClearTimes();
+           	SYSTEM.LAST_EDIT_TIME[userName] = Date.now() - 60*1000;
            	var to_save = JSON.stringify(data);
            	
-           	post_article(RATING.StoringPage,to_save,'Убрана оценка для ' + mw.config.get('wgPageName'));
+           	post_article(RATING.StoringPage,to_save,'Убрана оценка для ' + pageName);
         });
     }).fail(function (jqXHR, textStatus, errorThrown) {
     	console.log("%cОценки статей не были получены!","color:red;");
@@ -250,7 +292,7 @@ mw.hook("wikipage.content").add(function () {
     });
 });
 
-;(function ($,mw) {
+;( ($,mw) => {
 	var $e;
 	if ( $("span[aria-labelledby='ooui-php-1']").length > 0 ) { // удаление
 		$e = $("span[aria-labelledby='ooui-php-1']");
@@ -258,8 +300,8 @@ mw.hook("wikipage.content").add(function () {
 		$e[0].addEventListener("click",function () {
 			get_article(RATING.StoringPage).done( function (data) {
 				data = JSON.parse(data);
-				delete data[config.wgPageName];
-				post_article(RATING.StoringPage, JSON.stringify(data),"Удалены оценки " + config.wgPageName);
+				delete data[pageName];
+				post_article(RATING.StoringPage, JSON.stringify(data),"Удалены оценки " + pageName);
 			});
 		});
 	} else if ($("span[aria-labelledby='ooui-php-5']").length > 0 || $("span[aria-labelledby='ooui-php-7']").length > 0) { // переименование
@@ -283,7 +325,7 @@ mw.hook("wikipage.content").add(function () {
 })(this.jQuery,this.mediaWiki);
 
 // Список страниц по их оценкам
-mw.hook("wikipage.content").add(function () {
+mw.hook("wikipage.content").add( () => {
 	if ( Inits.ListModule !== 0 ) return;
 	Inits.ListModule = parseInt(Inits.ListModule) + 1;
 	
@@ -334,7 +376,7 @@ mw.hook("wikipage.content").add(function () {
 	
 });
 
-// ;(function ($,mw) {
+// ;( () => {
 	
 // })(this.jQuery,this.mediaWiki);
 

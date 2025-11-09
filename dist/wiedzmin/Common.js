@@ -4,19 +4,19 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		founder: { u:'Założyciel', link:'Project:Weterani' },
-		bureaucrat: { u:'Biurokrata_ka', m:'Biurokrata', f: 'Biurokratka', link:'Project:Administracja' },
-		sysop: { u:'Administrator_ka', m:'Administrator', f: 'Administratorka', link:'Project:Administracja' },
-		contentsysop: { u:'Administrator_ka treści', m:'Administrator treści', f: 'Administratorka treści', link:'Project:Administracja' },
-		threadsysop: { u:'Administrator_ka dyskusji', m:'Administrator dyskusji', f: 'Administratorka dyskusji', link:'Project:Administracja' },
-		contentmoderator: { u:'Moderator_ka treści', m:'Moderator treści', f: 'Moderatorka treści', link:'Project:Administracja' },
+		'founder': { u:'Założyciel', link:'Project:Weterani' },
+		'bureaucrat': { u:'Biurokrata_ka', m:'Biurokrata', f: 'Biurokratka', link:'Project:Administracja' },
+		'sysop': { u:'Administrator_ka', m:'Administrator', f: 'Administratorka', link:'Project:Administracja' },
+		'contentsysop': { u:'Administrator_ka treści', m:'Administrator treści', f: 'Administratorka treści', link:'Project:Administracja' },
+		'threadsysop': { u:'Administrator_ka dyskusji', m:'Administrator dyskusji', f: 'Administratorka dyskusji', link:'Project:Administracja' },
+		'content-moderator': { u:'Moderator_ka treści', m:'Moderator treści', f: 'Moderatorka treści', link:'Project:Administracja' },
 		threadmoderator: { u:'Moderator_ka dyskusji', m:'Moderator dyskusji', f: 'Moderatorka dyskusji', link:'Project:Administracja' },
-		technik: { u:'Administrator_ka techniczny_a', m:'Administrator techniczny', f: 'Administratorka techniczna', link:'Project:Administracja' },
-		weteran: { u: 'Weteran_ka', m:'Weteran', f:'Weteranka', link:'Project:Weterani' },
-		blocked: { u: 'Zablokowany_a', m:'Zablokowany', f:'Zablokowana' },
-		newuser: { u: 'Nowy_a użytkownik_czka', m:'Nowy użytkownik', f:'Nowa użytkowniczka' },
-		inactive: { u: 'Nieaktywny_a', m:'Nieaktywny', f:'Nieaktywna' },
-		tt: { u: 'Zwycięzca Turnieju Trójtwórczego 2021' },
+		'technik': { u:'Administrator_ka techniczny_a', m:'Administrator techniczny', f: 'Administratorka techniczna', link:'Project:Administracja' },
+		'weteran': { u: 'Weteran_ka', m:'Weteran', f:'Weteranka', link:'Project:Weterani' },
+		'blocked': { u: 'Zablokowany_a', m:'Zablokowany', f:'Zablokowana' },
+		'newuser': { u: 'Nowy_a użytkownik_czka', m:'Nowy użytkownik', f:'Nowa użytkowniczka' },
+		'inactive': { u: 'Nieaktywny_a', m:'Nieaktywny', f:'Nieaktywna' },
+		'tt': { u: 'Zwycięzca Turnieju Trójtwórczego 2021' },
 	}
 };
 

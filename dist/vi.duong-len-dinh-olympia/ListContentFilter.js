@@ -207,6 +207,9 @@ $(function() {
 		setupButtonClickHandlers("phase-filter", "phase");
 		setupButtonClickHandlers("type-filter", "type");
 		setupButtonClickHandlers("rank-filter", "rank");
+		
+		// Run filterSelection when page is loaded
+		filterSelection();
 	}
 	
 	// Initialize the function

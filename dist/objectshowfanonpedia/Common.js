@@ -19,3 +19,5 @@ window.MessageBlock = {
 
 // [[w:dev:TopicBlockLog]]
 window.TBL_GROUP = "objectshows-en";
+window.TBL_CONTRIBS = true;   // Special:Contributions
+window.TBL_ACTIVITY = true;   // Special:UserProfileActivity

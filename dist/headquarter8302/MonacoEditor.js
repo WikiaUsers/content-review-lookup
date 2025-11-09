@@ -16,8 +16,12 @@
 	window.dev = {} || window.dev;
 	if (window.dev.monacoEditor) return;
 	window.dev.monacoEditor = {} || window.dev.monacoEditor;
+	if (!window.dev.monacoEditor.allowlist) { console.warn("[MonacoEditor] No allowlist!") }
 	
-	if (mw.config.get( 'wgTitle' ) == "BlankPage/MonacoEditor") {
+	if (
+		mw.config.get( 'wgTitle' ) == "BlankPage/MonacoEditor" // default test page
+		|| window.dev.monacoEditor.allowlist.includes(mw.config.get( 'wgTitle' )) // whatever is in the allowlist
+	) {
 		const scriptInject = `import * as monaco from 'https://esm.sh/monaco-editor@0.52.2';
 import editorWorker from 'https://esm.sh/monaco-editor@0.52.2/esm/vs/editor/editor.worker?worker';
 
@@ -29,7 +33,7 @@ self.MonacoEnvironment = {
     if (label === 'css' || label === 'scss' || label === 'less') {
       return new cssWorker();
     }
-    if (label === 'html' || label === 'handlebars' || label === 'razor') {
+    if (label === 'html') {
       return new htmlWorker();
     }
     if (label === 'typescript' || label === 'javascript') {
@@ -44,7 +48,7 @@ monaco.editor.create(document.getElementById('mw-content-text'), {
   language: 'javascript'
 });`;
 		
-		mw.hook( 'wikipage.content' ).add(function() {
+		mw.hook( 'wikipage.content' ).add(() => {
 			const scriptTag = document.createElement("script");
 			const styleLinkTag = document.createElement("link");
 			

@@ -434,13 +434,15 @@ $(function () {
             el.innerHTML = updatedHtml;
         });
 
-        $tableElement.find('.dt-name span')
-            .removeClass('common uncommon rare epic legendary mythic celestial')
-            .addClass(selected);
-            
-		$tableElement.find('.dt-icon')
+		/*
+		$tableElement.find('.dt-name span')
 		    .removeClass('common uncommon rare epic legendary mythic celestial')
 		    .addClass(selected);
+		*/
+            
+        $tableElement.find('.dt-icon')
+            .removeClass('common uncommon rare epic legendary mythic celestial')
+            .addClass(selected);
     }
 
     /**
@@ -685,6 +687,9 @@ $(function () {
                     $bonusDropdown = $dropdown;
                     $bonusInput = $input;
                     $bonusHint = $table.find('#bonus-hint');
+                
+                    // Скрываем "Любой бонус" при первой загрузке таблицы
+                    $bonusDropdown.find('.dt-dropdown-item[data-value=""]').hide();
                 }
 
                 const maxCount = field === 'attributes' ? (config.maxAttributes || 2) : Infinity;
@@ -721,19 +726,8 @@ $(function () {
                             const slotsStr = $item.data('slots-count') || '';
                             if (slotsStr) {
                                 const required = parseSlotsCount(slotsStr);
-                                if (!bonusOverrideActive) {
-                                    manualSlotState = $.extend({}, slotFilterState);
-                                    bonusOverrideActive = true;
-                                }
-                                applySlotVisuals($table, required);
-                                slotFilterState = required;
                                 updateBonusHint($bonusHint, required, 'Требуются');
                             } else {
-                                if (bonusOverrideActive) {
-                                    applySlotVisuals($table, manualSlotState);
-                                    slotFilterState = $.extend({}, manualSlotState);
-                                    bonusOverrideActive = false;
-                                }
                                 $bonusHint.text('Список бонусов зависит от сочетания выбранных знаков.');
                             }
                         }
@@ -878,29 +872,29 @@ $(function () {
              * Проверяет совместимость бонуса с текущими ячейками.
              */
             function isBonusCompatibleWithFilter(bonusSlots, filterSlots) {
-			    const universal = filterSlots['универсальная'] || 0;
-			    let usedUniversal = 0;
-			
-			    // Если фильтр пуст — показываем все бонусы
-			    if (!Object.keys(filterSlots).length) return true;
-			
-			    // Проверяем: каждая выбранная ячейка должна быть допустима для бонуса
-			    for (const [slotType, count] of Object.entries(filterSlots)) {
-			        // если бонус вообще не использует этот тип — несовместим
-			        if (!bonusSlots[slotType] && slotType !== 'универсальная') {
-			            return false;
-			        }
-			
-			        // если бонус требует меньше, чем выбрано — проверяем, можно ли покрыть универсальными
-			        const required = bonusSlots[slotType] || 0;
-			        if (count > required) {
-			            usedUniversal += count - required;
-			            if (usedUniversal > universal) return false;
-			        }
-			    }
-			
-			    return true;
-			}
+                const universal = filterSlots['универсальная'] || 0;
+                let usedUniversal = 0;
+            
+                // Если фильтр пуст — показываем все бонусы
+                if (!Object.keys(filterSlots).length) return true;
+            
+                // Проверяем: каждая выбранная ячейка должна быть допустима для бонуса
+                for (const [slotType, count] of Object.entries(filterSlots)) {
+                    // если бонус вообще не использует этот тип — несовместим
+                    if (!bonusSlots[slotType] && slotType !== 'универсальная') {
+                        return false;
+                    }
+            
+                    // если бонус требует меньше, чем выбрано — проверяем, можно ли покрыть универсальными
+                    const required = bonusSlots[slotType] || 0;
+                    if (count > required) {
+                        usedUniversal += count - required;
+                        if (usedUniversal > universal) return false;
+                    }
+                }
+            
+                return true;
+            }
 
             /**
              * Обновляет видимость пунктов в фильтре бонусов.
@@ -908,10 +902,21 @@ $(function () {
             function updateBonusFilter() {
                 const $bonusDD = $table.find('.dt-bonus-dropdown');
                 if (!$bonusDD.length) return;
+            
                 const $items = $bonusDD.find('.dt-dropdown-item');
+                const $any = $bonusDD.find('.dt-dropdown-item[data-value=""]'); // "Любой бонус"
                 const visibleBonuses = new Set();
                 const hasSlotFilters = Object.keys(slotFilterState).length > 0;
-
+            
+                // --- Скрываем "Любой бонус", если фильтр бонусов пуст ---
+                const hasBonusSelected = activeFilters['insignia_bonuses'] && activeFilters['insignia_bonuses'].length > 0;
+                if (!hasBonusSelected) {
+                    $any.hide();
+                } else {
+                    $any.show();
+                }
+            
+                // --- Собираем видимые бонусы из списка скакунов ---
                 $itemsContainer.find('.dt-item:visible').each(function () {
                     const info = JSON.parse($(this).attr('data-info') || '{}');
                     const bonuses = info.insignia_bonuses;
@@ -921,11 +926,13 @@ $(function () {
                         if (clean) visibleBonuses.add(clean);
                     });
                 });
-
+            
+                // --- Фильтруем бонусы ---
                 $items.each(function () {
                     const $item = $(this);
                     const val = ($item.data('value') || '').trim().toLowerCase();
-                    if (!val) { $item.show(); return; }
+                    if (!val) return; // "Любой бонус" пропускаем (обработан выше)
+            
                     let show = visibleBonuses.has(val);
                     if (show && hasSlotFilters) {
                         const slotsStr = $item.data('slots-count') || '';
@@ -936,6 +943,23 @@ $(function () {
                     }
                     $item.toggle(show);
                 });
+            
+                const $visibleBonuses = $items.filter(function () {
+                    return $(this).css('display') !== 'none' && $(this).data('value');
+                });
+            
+                // --- Нет видимых бонусов ---
+                if ($visibleBonuses.length === 0) {
+                    $any.find('.name').text('Бонусы не найдены');
+                    $any.find('.bonus-desc').text('Нет доступных бонусов для выбранных ячеек.');
+                    $any.show(); // показываем только это сообщение
+                    $itemsContainer.find('.dt-item').hide();
+                    $itemsContainer.find('.dt-no-results').show();
+                } else {
+                    // Возвращаем нормальный текст "Любой бонус"
+                    $any.find('.name').text('Любой бонус');
+                    $any.find('.bonus-desc').text('Показать все бонусы знаков');
+                }
             }
 
             $searchInput.on('input', rateLimit(applyAllFilters, 150, 'debounce'));

@@ -321,7 +321,7 @@
          * @returns {Array} Parts to append to last edited information
          */
         renderMinor: function(data, i18n) {
-            if (data.minor === '') {
+            if (data.minor === true) {
                 return [
                     ' ',
                     $('<span>', {

@@ -46,10 +46,25 @@ mw.loader.using(['mediawiki.util', 'oojs-ui']).then(function() {
     $(function() {
         if (mw.config.get('wgNamespaceNumber') < 0) return;
 
+        // List of pages that should NOT show the report button
+        var excludedPages = [
+            'Happy_Tree_Fanon_Wiki',
+            'Happy_Tree_Friends_Fanon_Wiki:Rules'
+        ];
+
+        var pageName = mw.config.get('wgPageName');
+        var userName = mw.config.get('wgUserName');
+
+        // Stop if user is not logged in
+        if (!userName) return;
+
+        // Stop if this page is in the excluded list
+        if (excludedPages.includes(pageName)) return;
+
         var $reportBtn = $('<a href="#">')
             .text('Report Article')
             .addClass('oo-ui-buttonElement oo-ui-buttonElement-framed oo-ui-widget oo-ui-buttonElement-button')
-            .css({'margin-top':'15px','display':'block'})
+            .css({ 'margin-top': '15px', 'display': 'block' })
             .on('click', function() {
                 var dialog = new OO.ui.MessageDialog();
                 var windowManager = new OO.ui.WindowManager();
@@ -78,9 +93,9 @@ mw.loader.using(['mediawiki.util', 'oojs-ui']).then(function() {
                 }).closed.then(function(data) {
                     if (data && data.action === 'submit') {
                         $.post('https://marblyn.net/wiki/fanonwebhook.php', {
-                            page: mw.config.get('wgPageName'),
-                            user: mw.config.get('wgUserName'),
-                            url: mw.config.get('wgServer') + mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName')),
+                            page: pageName,
+                            user: userName,
+                            url: mw.config.get('wgServer') + mw.config.get('wgArticlePath').replace('$1', pageName),
                             reason: input.getValue()
                         });
                     }

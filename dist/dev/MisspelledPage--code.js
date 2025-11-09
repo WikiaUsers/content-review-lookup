@@ -67,7 +67,7 @@ Under CC-BY-SA licence */
         });
     }
 
-    if (!$('.noarticletext').length || $('.mw-warning-with-logexcerpt').length) {
+    if (!$('.noarticletext').length || ($('.mw-warning-with-logexcerpt').length && !window.deletedToo)) {
         return; //No need to check for potential searched pages
     } else {
         mw.hook('dev.i18n').add(function(i18n) {

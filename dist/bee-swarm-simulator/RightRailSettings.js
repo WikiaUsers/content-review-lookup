@@ -93,59 +93,61 @@ function switchTemplateColor(event) {
 }
 
 //do you need to check mediawiki.user?
-mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).then(
-	function() {
-		//getting user settings
-		//should i attempt to save calls here?
-		bssWikiSettings.isLoggedIn = !mw.user.isAnon();
-		bssWikiSettings.settings = {};
-		for (var i=0;i<settingsList.length;i++) {
-			var curSetting = settingsList[i];
-			if (curSetting.isGadget && bssWikiSettings.isLoggedIn) {
-				var gadgetEnabled = mw.user.options.get(getGadgetID(curSetting.name));
-				//console.log(gadgetEnabled);
-				bssWikiSettings.settings[curSetting.name] = returnBool(gadgetEnabled, "1", "0");
+$(function() {
+	mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).then(
+		function() {
+			//getting user settings
+			//should i attempt to save calls here?
+			bssWikiSettings.isLoggedIn = !mw.user.isAnon();
+			bssWikiSettings.settings = {};
+			for (var i=0;i<settingsList.length;i++) {
+				var curSetting = settingsList[i];
+				if (curSetting.isGadget && bssWikiSettings.isLoggedIn) {
+					var gadgetEnabled = mw.user.options.get(getGadgetID(curSetting.name));
+					//console.log(gadgetEnabled);
+					bssWikiSettings.settings[curSetting.name] = returnBool(gadgetEnabled, "1", "0");
+				}
+				else {
+					var storedSetting = localStorage.getItem(getStorageID(curSetting.name));
+					console.log(storedSetting);
+					bssWikiSettings.settings[curSetting.name] = returnBool(storedSetting, 'True', 'False');
+				}
 			}
-			else {
-				var storedSetting = localStorage.getItem(getStorageID(curSetting.name));
-				console.log(storedSetting);
-				bssWikiSettings.settings[curSetting.name] = returnBool(storedSetting, 'True', 'False');
-			}
-		}
+			
+			//creating the module in DOM
+			var settingsWrapper = document.createElement("div");
+			settingsWrapper.classList.add("rail-module", "RightRailSettingsWrapper");
+			settingsWrapper.id = "bss-wiki-right-rail-settings";
+			document.querySelector(".right-rail-wrapper").prepend(settingsWrapper);
+				
+			var header = "<h2>Settings</h2><br>\n";
+			$("#"+settingsWrapper.id).append(header);
+				
+			for (var i=0;i<settingsList.length;i++) {
+				var curSetting = settingsList[i];
 		
-		//creating the module in DOM
-		var settingsWrapper = document.createElement("div");
-		settingsWrapper.classList.add("rail-module", "RightRailSettingsWrapper");
-		settingsWrapper.id = "bss-wiki-right-rail-settings";
-		document.querySelector(".right-rail-wrapper").prepend(settingsWrapper);
-			
-		var header = "<h2>Settings</h2><br>\n";
-		$("#"+settingsWrapper.id).append(header);
-			
-		for (var i=0;i<settingsList.length;i++) {
-			var curSetting = settingsList[i];
-	
-			var checkbox = document.createElement("input");
-			checkbox.id = getCheckboxID(curSetting.name);
-			checkbox.setAttribute("type","checkbox");
-			for (var attr in curSetting.functions) {
-				//console.log(attr);
-				//console.log(typeof curSetting.functions[attr]);
-				checkbox.addEventListener(attr, curSetting.functions[attr]);
+				var checkbox = document.createElement("input");
+				checkbox.id = getCheckboxID(curSetting.name);
+				checkbox.setAttribute("type","checkbox");
+				for (var attr in curSetting.functions) {
+					//console.log(attr);
+					//console.log(typeof curSetting.functions[attr]);
+					checkbox.addEventListener(attr, curSetting.functions[attr]);
+				}
+				//console.log(bssWikiSettings.settings[curSetting.name]);
+				checkbox.checked = bssWikiSettings.settings[curSetting.name];
+				if (bssWikiSettings.settings[curSetting.name] && 
+				(!curSetting.isGadget || !bssWikiSettings.isLoggedin) &&
+				"initiate" in curSetting && typeof curSetting.initiate === "function") {
+					curSetting.initiate();
+				}
+		
+				var label = document.createElement("label");
+				label.setAttribute("for", checkbox.id);
+				label.innerHTML = curSetting.desc;
+		
+				$("#"+settingsWrapper.id).append(checkbox, label);
 			}
-			//console.log(bssWikiSettings.settings[curSetting.name]);
-			checkbox.checked = bssWikiSettings.settings[curSetting.name];
-			if (bssWikiSettings.settings[curSetting.name] && 
-			(!curSetting.isGadget || !bssWikiSettings.isLoggedin) &&
-			"initiate" in curSetting && typeof curSetting.initiate === "function") {
-				curSetting.initiate();
-			}
-	
-			var label = document.createElement("label");
-			label.setAttribute("for", checkbox.id);
-			label.innerHTML = curSetting.desc;
-	
-			$("#"+settingsWrapper.id).append(checkbox, label);
 		}
-	}
-);
+	);
+});

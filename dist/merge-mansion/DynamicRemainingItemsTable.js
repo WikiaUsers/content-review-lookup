@@ -1,7 +1,8 @@
-console.log("DynamicRemainingItemsTable Script Executed")
 // ==========================
-// DynamicRemainingItemsTable.js  (VERSION 5.5)
+// DynamicRemainingItemsTable.js  (VERSION 5.7)
 // ==========================
+
+console.log("DynamicRemainingItemsTable Script Executed");
 
 mw.hook('wikipage.content').add(function ($content) {
   try {
@@ -25,7 +26,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
     // Disconnect previous observer (if any) to avoid duplicates on repeated hooks
     if (window.__RemainingItems.toggleObserver) {
-      try { window.__RemainingItems.toggleObserver.disconnect(); } catch(e){}
+      try { window.__RemainingItems.toggleObserver.disconnect(); } catch (e) {}
       window.__RemainingItems.toggleObserver = null;
     }
 
@@ -67,77 +68,171 @@ mw.hook('wikipage.content').add(function ($content) {
           return !!(th1 && th2);
         };
 
-        // Global “Area Completed!” row helpers
+        // Global header row helper
         const tableHeaderRow = () => areaTable?.querySelector("tbody > tr:first-child");
+
+        // ======= Area Completed + Next Area rows =======
 
         function ensureGlobalCompletedRow() {
           if (!enabled) return null;
-          let row = areaTable.querySelector("tr.area-completed-global");
-          if (row) return row;
+
+          // If already created, do nothing
+          let completedRow = areaTable.querySelector("tr.area-completed-global");
+          let nextAreaRow = areaTable.querySelector("tr.area-next-global");
+          if (completedRow && nextAreaRow) return completedRow;
 
           const header = tableHeaderRow();
           if (!header) return null;
 
-          row = document.createElement("tr");
-          row.className = "area-completed-global center";
-          const td = document.createElement("td");
-          td.setAttribute("colspan", "3");
+          // 1) Area Completed row
+          completedRow = document.createElement("tr");
+          completedRow.className = "area-completed-global center";
+          const td1 = document.createElement("td");
+          td1.setAttribute("colspan", "3");
 
           const span = document.createElement("span");
-          // NOTE: your CSS should define span.areaCompleted::after (checkmark icon)
           span.className = "fancy areaCompleted";
           span.textContent = "Area Completed!";
-          span.style.fontSize = "18px";
+          span.style.fontSize = "26px"; // bigger font as requested
           span.style.padding = "10px 0 10px 0";
 
-          td.appendChild(span);
-          row.appendChild(td);
+          td1.appendChild(span);
+          completedRow.appendChild(td1);
 
-          row.style.opacity = "0";
-          row.style.transition = "opacity 1.5s";
-          header.insertAdjacentElement("afterend", row);
-          requestAnimationFrame(() => { if (enabled) row.style.opacity = "1"; });
+          completedRow.style.opacity = "0";
+          completedRow.style.transition = "opacity 1.5s";
 
-          return row;
+          header.insertAdjacentElement("afterend", completedRow);
+
+          // 2) Next Area row (from data-source="unlocks")
+          const unlockDiv = document.querySelector('div[data-source="unlocks"]');
+
+          if (unlockDiv) {
+            const valueDiv = unlockDiv.querySelector(".pi-data-value");
+            if (valueDiv) {
+              nextAreaRow = document.createElement("tr");
+              nextAreaRow.className = "area-next-global center";
+
+              const td2 = document.createElement("td");
+              td2.setAttribute("colspan", "3");
+
+              // Label "Next Area:"
+              const label = document.createElement("span");
+              label.className = "fancy";
+              label.textContent = "Next Area:";
+              label.style.fontSize = "18px";
+              label.style.padding = "10px 0";
+              td2.appendChild(label);
+
+              // Wrapper for cloned unlock content
+              const wrapper = document.createElement("div");
+              wrapper.className = "fancy";
+              wrapper.style.marginLeft = "20px";
+              wrapper.style.display = "inline";
+
+              // Clone inner HTML and tweak styles
+              const html = valueDiv.innerHTML;
+              const fixedHTML = html
+                .replace(/--shrinker-multiplier:\s*[^;"]+/g, "--shrinker-multiplier: 10.666666666667")
+                .replace(/width:\s*[^;"]+/g, "width: 48px")
+                .replace(/height:\s*[^;"]+/g, "height: 48px");
+
+              wrapper.innerHTML = fixedHTML;
+              td2.appendChild(wrapper);
+              nextAreaRow.appendChild(td2);
+
+              nextAreaRow.style.opacity = "0";
+              nextAreaRow.style.transition = "opacity 1.5s";
+
+              completedRow.insertAdjacentElement("afterend", nextAreaRow);
+            }
+          }
+
+          // Fade-in both rows (or just completed if no unlock found)
+          requestAnimationFrame(() => {
+            if (!enabled) return;
+            completedRow.style.opacity = "1";
+            if (nextAreaRow) nextAreaRow.style.opacity = "1";
+          });
+
+          return completedRow;
         }
 
         function removeGlobalCompletedRow() {
-          const row = areaTable?.querySelector("tr.area-completed-global");
-          if (row) row.remove();
+          const rows = areaTable?.querySelectorAll("tr.area-completed-global, tr.area-next-global");
+          if (rows) rows.forEach(r => r.remove());
         }
+
+        // ========= Quantities & item parsing =========
 
         // Quantities parsing (strip spans, split by <br>, detect leading "Nx")
         function extractQuantitiesFromCell(cell) {
-          const clone = cell.cloneNode(true);
-          clone.querySelectorAll("span").forEach(s => s.remove());
-          const parts = clone.innerHTML.split(/<br\s*\/?>/i);
-          const quantities = parts.map((part, idx) => {
-            const tmp = document.createElement("div");
-            tmp.innerHTML = part;
-            const raw = (tmp.textContent || "").replace(/\u00A0/g, " ").trim();
-            const m = raw.match(/(\d+)\s*[x×]/i);
-            const qty = m ? parseInt(m[1], 10) : 1;
-            console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty}`);
-            return qty;
-          });
-          return quantities;
-        }
+		  const clone = cell.cloneNode(true);
+		  clone.querySelectorAll("span").forEach(s => s.remove());
+		  const parts = clone.innerHTML.split(/<br\s*\/?>/i);
+		  const quantities = parts.map((part, idx) => {
+		    const tmp = document.createElement("div");
+		    tmp.innerHTML = part;
+		    const raw = (tmp.textContent || "").replace(/\u00A0/g, " ").trim();
+		
+		    // 1) původní detekce "Nx" / "N×"  → zůstává
+		    let qty = 1;
+		    let m = raw.match(/(\d+)\s*[x×]/i);
+		    if (m) {
+		      qty = parseInt(m[1], 10);
+		      console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (Nx/× match)`);
+		    } else {
+		      // 2) NOVÁ detekce: čisté číslo na řádku (např. "300" u Coinů)
+		      const mPlain = raw.match(/^(\d+)\s*$/);
+		      if (mPlain) {
+		        qty = parseInt(mPlain[1], 10);
+		        console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (plain number)`);
+		      } else {
+		        console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (fallback = 1)`);
+		      }
+		    }
+		
+		    return qty;
+		  });
+		  return quantities;
+		}
 
+        // Parse items from task table cell:
+        //  - quantities are parsed from text (3x, 5×, …)
+        //  - anchors = only links to real item pages (ignore Special:Upload "Level N" icons)
         function parseItems(cell) {
           const items = [];
           if (!cell) return items;
-          const anchors = Array.from(cell.querySelectorAll("a"));
+
+          const anchors = Array
+            .from(cell.querySelectorAll("a"))
+            .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""));
+
           const quantities = extractQuantitiesFromCell(cell);
+
           anchors.forEach((a, i) => {
             const name = a.textContent.trim();
             const qty = Number.isFinite(quantities[i]) ? quantities[i] : 1;
             console.log(`➡️ [RI] Item #${i + 1}: ${name}, qty=${qty}`);
             items.push({ name, qty });
           });
+
           if (quantities.length !== anchors.length) {
             console.log(`⚠️ [RI] Anchors=${anchors.length} vs lines=${quantities.length}. Missing qty = 1.`);
           }
+
           return items;
+        }
+
+        // Helper: finds the "item anchor" in area table row (ignores Special:Upload Level N links)
+        function getItemAnchorFromRow(row) {
+          if (!row) return null;
+          const anchors = Array
+            .from(row.querySelectorAll("td:nth-of-type(1) a"))
+            .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""));
+          if (anchors.length > 0) return anchors[0];
+          // fallback: first anchor in the first TD if no valid one found
+          return row.querySelector("td:nth-of-type(1) a");
         }
 
         // Build groups from original headers: from each .startOfTheGroup until next header/footer
@@ -164,7 +259,7 @@ mw.hook('wikipage.content').add(function ($content) {
           return groups;
         }
 
-        // Move visual .newItemGroup to current visible group start
+        // Move visual .newItemGroup to the current visible group start
         function moveNewItemGroupClass(g, visibleStartRow) {
           g.rows.forEach(r => r.classList.remove("newItemGroup"));
           if (visibleStartRow) visibleStartRow.classList.add("newItemGroup");
@@ -177,9 +272,9 @@ mw.hook('wikipage.content').add(function ($content) {
           groups.forEach((g) => {
             let sum = 0;
             g.rows.forEach(tr => {
-              if (tr.style.display === "none" || tr.classList.contains("area-completed-global")) return;
-              const nameCell = tr.querySelector("td:nth-child(1) a");
-              const amountCell = tr.querySelector("td:nth-child(2)");
+              if (tr.style.display === "none" || tr.classList.contains("area-completed-global") || tr.classList.contains("area-next-global")) return;
+              const nameCell = getItemAnchorFromRow(tr);
+              const amountCell = tr.querySelector("td:nth-of-type(2)");
               if (!nameCell || !amountCell) return;
               const amount = parseIntSafe(amountCell.textContent);
               const levelMatch = nameCell.textContent.match(/\(L\s*(\d+)\s*\)/i);
@@ -222,7 +317,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
             // Read amounts
             const amounts = g.rows.map(tr => {
-              const td = tr.querySelector("td:nth-child(2)");
+              const td = tr.querySelector("td:nth-of-type(2)");
               return td ? parseIntSafe(td.textContent) : 0;
             });
 
@@ -249,7 +344,7 @@ mw.hook('wikipage.content').add(function ($content) {
             const newSpan = Math.max(1, visibleRows.length);
 
             if (headerIsZero) {
-              // Clone TH to first visible row
+              // Clone TH to the first visible row, but keep total as the LAST column
               const recipient = visibleRows[0];
               if (recipient) {
                 const clone = g.headerTh.cloneNode(true);
@@ -257,6 +352,8 @@ mw.hook('wikipage.content').add(function ($content) {
                 clone.style.display = "";
                 clone.setAttribute("rowspan", String(newSpan));
                 clone.textContent = g.headerTh.textContent;
+
+                // Append as last cell -> column order stays [name][amount][total]
                 recipient.appendChild(clone);
 
                 g.headerTh.setAttribute("rowspan", String(newSpan));
@@ -307,7 +404,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
           // Reset amounts to original
           areaTable.querySelectorAll("tr").forEach(tr => {
-            const amountCell = tr.querySelector("td:nth-child(2)");
+            const amountCell = tr.querySelector("td:nth-of-type(2)");
             if (amountCell && amountCell.dataset.original) {
               amountCell.textContent = amountCell.dataset.original;
             }
@@ -321,9 +418,8 @@ mw.hook('wikipage.content').add(function ($content) {
               items.forEach(item => {
                 areaTable.querySelectorAll("tr").forEach(sumRow => {
                   if (isFooterRow(sumRow)) return;
-                  //const nameCell = sumRow.querySelector("a");  -- making a bug: when the item iamge is not uploaded it probably decrease all items of that level without the image.
-                  const nameCell = sumRow.querySelector("td:nth-child(1) a:not([href*='Special:Upload'])");
-                  const amountCell = sumRow.querySelector("td:nth-child(2)");
+                  const nameCell = getItemAnchorFromRow(sumRow);
+                  const amountCell = sumRow.querySelector("td:nth-of-type(2)");
                   if (!nameCell || !amountCell) return;
                   if (nameCell.textContent.trim() === item.name) {
                     if (!amountCell.dataset.original) {
@@ -408,8 +504,8 @@ mw.hook('wikipage.content').add(function ($content) {
           groups.forEach((g) => {
             let sum = 0;
             g.rows.forEach(tr => {
-              const nameCell = tr.querySelector("td:nth-child(1) a");
-              const amountCell = tr.querySelector("td:nth-child(2)");
+              const nameCell = getItemAnchorFromRow(tr);
+              const amountCell = tr.querySelector("td:nth-of-type(2)");
               if (!nameCell || !amountCell) return;
               const amount = parseIntSafe(amountCell.textContent);
               const levelMatch = nameCell.textContent.match(/\(L\s*(\d+)\s*\)/i);
@@ -449,7 +545,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
             // Persist originals and mark group starts
             areaTable.querySelectorAll("tr").forEach(tr => {
-              const amountCell = tr.querySelector("td:nth-child(2)");
+              const amountCell = tr.querySelector("td:nth-of-type(2)");
               if (amountCell && !amountCell.dataset.original) {
                 amountCell.dataset.original = amountCell.textContent.trim();
               }
@@ -507,7 +603,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
             // Ensure originals exist (idempotent)
             areaTable.querySelectorAll("tr").forEach(tr => {
-              const amountCell = tr.querySelector("td:nth-child(2)");
+              const amountCell = tr.querySelector("td:nth-of-type(2)");
               if (amountCell && !amountCell.dataset.original) {
                 amountCell.dataset.original = amountCell.textContent.trim();
               }
@@ -558,7 +654,7 @@ mw.hook('wikipage.content').add(function ($content) {
                 th.style.display = "";
               });
               areaTable.querySelectorAll("tr").forEach(tr => {
-                const amountCell = tr.querySelector("td:nth-child(2)");
+                const amountCell = tr.querySelector("td:nth-of-type(2)");
                 if (amountCell && amountCell.dataset.original) {
                   amountCell.textContent = amountCell.dataset.original;
                 }
@@ -625,4 +721,4 @@ mw.hook('wikipage.content').add(function ($content) {
   }
 });
 
-console.log("DynamicRemainingItemsTable Script END")
+console.log("DynamicRemainingItemsTable Script END");

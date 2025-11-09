@@ -1,4 +1,8 @@
 (function() {
+	// Discussions are only available for logged-in users
+	if (!mw.config.get('wgUserId')) {
+		return;
+	}
     window.nkch = window.nkch || {};
     nkch.rdp = nkch.rdp || {};
     

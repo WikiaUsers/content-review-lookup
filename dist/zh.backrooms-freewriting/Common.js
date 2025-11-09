@@ -22,6 +22,31 @@
     });
 })();
 
+mw.hook("wikipage.content").add(function () {
+    // 处理JS脚本导入
+    $("span.import-script").each(function () {
+        var $this = $(this);
+        var scriptContent = $this.attr("data-script");
+        var pageName = $this.attr("data-page");
+        
+        if (scriptContent) {
+            try {
+                // 执行脚本内容
+                /*(new Function(scriptContent))();*/
+                var script_element = document.createElement('script');
+            	script_element.type = 'text/javascript';
+            	script_element.textContent = scriptContent;
+            	this.parentNode.appendChild(script_element);
+                console.log("JS加载成功: " + pageName);
+            } catch (error) {
+                console.error("JS加载错误 (" + pageName + "):", error);
+                $this.after('<strong class="error">JS加载失败: ' + error.message + '</strong>');
+            }
+            
+        }
+    });
+});
+
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
@@ -59,6 +84,7 @@ $.getJSON(mw.util.wikiScript("index"), {
     }
 });
 
+//处理CSS导入
 (function (mw, $) {
 	"use strict";
 	if (mw.config.get('wgPageName').toLowerCase().endsWith('.css')) {
@@ -254,176 +280,176 @@ window.wordRainSystem = (function() {
 
 // 初始化
 mw.loader.using(['mediawiki.util', 'jquery']).then(function() {
-  wordRainSystem.init();
+    wordRainSystem.init();
 });
 
 /* Image Slider System */
 window.imageSlider = (function() {
-'use strict';
+    'use strict';
 
-const sliders = new Map();
+    const sliders = new Map();
 
-function initSlider(container) {
-const images = container.dataset.images.split(',');
-const captions = container.dataset.captions.split(',');
-const track = container.querySelector('.slider-track');
-let currentIndex = 0;
-let autoPlayInterval = null;
+    function initSlider(container) {
+        const images = container.dataset.images.split(',');
+        const captions = container.dataset.captions.split(',');
+        const track = container.querySelector('.slider-track');
+        let currentIndex = 0;
+        let autoPlayInterval = null;
 
-// 动态生成幻灯片
-images.forEach((image, index) => {
-const slide = document.createElement('div');
-slide.className = 'slide-item';
-slide.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
+        // 动态生成幻灯片
+        images.forEach((image, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'slide-item';
+            slide.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
 
-const overlay = document.createElement('div');
-overlay.className = 'image-overlay';
-slide.appendChild(overlay);
+            const overlay = document.createElement('div');
+            overlay.className = 'image-overlay';
+            slide.appendChild(overlay);
 
-const caption = document.createElement('div');
-caption.className = 'slide-caption';
-caption.textContent = (captions[index] || '').replace(/[{}]/g, ''); // 移除描述中的{}
-slide.appendChild(caption);
+            const caption = document.createElement('div');
+            caption.className = 'slide-caption';
+            caption.textContent = (captions[index] || '').replace(/[{}]/g, ''); // 移除描述中的{}
+            slide.appendChild(caption);
 
-// 确保每张图片的描述都能显示
-slide.addEventListener('mouseenter', () => {
-overlay.style.opacity = '0.7';
-caption.style.bottom = '0';
-});
+            // 确保每张图片的描述都能显示
+            slide.addEventListener('mouseenter', () => {
+                overlay.style.opacity = '0.7';
+                caption.style.bottom = '0';
+            });
 
-slide.addEventListener('mouseleave', () => {
-overlay.style.opacity = '0';
-caption.style.bottom = '-50px';
-});
+            slide.addEventListener('mouseleave', () => {
+                overlay.style.opacity = '0';
+                caption.style.bottom = '-50px';
+            });
 
-track.appendChild(slide);
-});
+            track.appendChild(slide);
+        });
 
-function goToSlide(index) {
-currentIndex = (index + images.length) % images.length;
-track.style.transform = `translateX(-${currentIndex * 100}%)`;
-}
+        function goToSlide(index) {
+            currentIndex = (index + images.length) % images.length;
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
 
-function startAutoPlay() {
-if (container.dataset.autoplay === '1') {
-autoPlayInterval = setInterval(() => {
-goToSlide(currentIndex + 1);
-}, parseInt(container.dataset.speed));
-}
-}
+        function startAutoPlay() {
+            if (container.dataset.autoplay === '1') {
+                autoPlayInterval = setInterval(() => {
+                    goToSlide(currentIndex + 1);
+                }, parseInt(container.dataset.speed));
+            }
+        }
 
-function stopAutoPlay() {
-clearInterval(autoPlayInterval);
-}
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
 
-// 事件绑定
-container.querySelector('.prev-slide').addEventListener('click', () => goToSlide(currentIndex - 1));
-container.querySelector('.next-slide').addEventListener('click', () => goToSlide(currentIndex + 1));
+        // 事件绑定
+        container.querySelector('.prev-slide').addEventListener('click', () => goToSlide(currentIndex - 1));
+        container.querySelector('.next-slide').addEventListener('click', () => goToSlide(currentIndex + 1));
 
-// 悬停暂停
-if (container.dataset.autoplay === '1') {
-container.addEventListener('mouseenter', stopAutoPlay);
-container.addEventListener('mouseleave', startAutoPlay);
-}
+        // 悬停暂停
+        if (container.dataset.autoplay === '1') {
+            container.addEventListener('mouseenter', stopAutoPlay);
+            container.addEventListener('mouseleave', startAutoPlay);
+        }
 
-startAutoPlay();
-sliders.set(container, { goToSlide, stopAutoPlay });
-}
+        startAutoPlay();
+        sliders.set(container, { goToSlide, stopAutoPlay });
+    }
 
-return {
-init: function() {
-mw.hook('wikipage.content').add(function($content) {
-$content.find('.js-slider-container').each(function() {
-if (!this.dataset.initialized) {
-this.dataset.initialized = true;
-initSlider(this);
-}
-});
-});
-}
-};
+    return {
+        init: function() {
+            mw.hook('wikipage.content').add(function($content) {
+                $content.find('.js-slider-container').each(function() {
+                    if (!this.dataset.initialized) {
+                        this.dataset.initialized = true;
+                        initSlider(this);
+                    }
+                });
+            });
+        }
+    };
 })();
 
 // 初始化
 mw.loader.using('mediawiki.util').then(function() {
-imageSlider.init();
+    imageSlider.init();
 });
 
 
 //Flat3D
 /* 3D Image Hover System */
 window.image3DSystem = (function() {
-'use strict';
+    'use strict';
 
-function initImageCards(container) {
-const images = container.dataset.images.split(',');
-const captions = container.dataset.captions.split(',');
-const grid = container.querySelector('.image-grid');
+    function initImageCards(container) {
+        const images = container.dataset.images.split(',');
+        const captions = container.dataset.captions.split(',');
+        const grid = container.querySelector('.image-grid');
 
-images.forEach((image, index) => {
-const card = document.createElement('div');
-card.className = 'image-card';
+        images.forEach((image, index) => {
+            const card = document.createElement('div');
+            card.className = 'image-card';
 
-const content = document.createElement('div');
-content.className = 'image-content';
-content.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
+            const content = document.createElement('div');
+            content.className = 'image-content';
+            content.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
 
-const caption = document.createElement('div');
-caption.className = 'caption';
+            const caption = document.createElement('div');
+            caption.className = 'caption';
 
-// 解析Fandom内链
-const captionText = (captions[index] || '').replace(/[{}]/g, '');
-const linkMatch = captionText.match(/\[\[(.*?)\]\]/);
-if (linkMatch) {
-const linkParts = linkMatch[1].split('|');
-const linkText = linkParts[1] || linkParts[0];
-const linkHref = mw.util.getUrl(linkParts[0]);
+            // 解析Fandom内链
+            const captionText = (captions[index] || '').replace(/[{}]/g, '');
+            const linkMatch = captionText.match(/\[\[(.*?)\]\]/);
+            if (linkMatch) {
+                const linkParts = linkMatch[1].split('|');
+                const linkText = linkParts[1] || linkParts[0];
+                const linkHref = mw.util.getUrl(linkParts[0]);
 
-const link = document.createElement('a');
-link.href = linkHref;
-link.textContent = linkText;
-link.style.color = '#fff';
-link.style.textDecoration = 'none';
-caption.appendChild(link);
-} else {
-caption.textContent = captionText;
-}
+                const link = document.createElement('a');
+                link.href = linkHref;
+                link.textContent = linkText;
+                link.style.color = '#fff';
+                link.style.textDecoration = 'none';
+                caption.appendChild(link);
+            } else {
+                caption.textContent = captionText;
+            }
 
-card.appendChild(content);
-card.appendChild(caption);
-grid.appendChild(card);
+            card.appendChild(content);
+            card.appendChild(caption);
+            grid.appendChild(card);
 
-// 性能优化
-card.style.willChange = 'transform';
-});
+            // 性能优化
+            card.style.willChange = 'transform';
+        });
 
-// 移动端优化
-if ('ontouchstart' in window) {
-grid.querySelectorAll('.image-card').forEach(card => {
-card.addEventListener('click', function() {
-this.classList.toggle('hover-active');
-});
-});
-}
-}
+        // 移动端优化
+        if ('ontouchstart' in window) {
+            grid.querySelectorAll('.image-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('hover-active');
+                });
+            });
+        }
+    }
 
-return {
-init: function() {
-mw.hook('wikipage.content').add(function($content) {
-$content.find('.flat-3d-container').each(function() {
-if (!this.dataset.initialized) {
-this.dataset.initialized = true;
-initImageCards(this);
-}
-});
-});
-}
-};
+    return {
+        init: function() {
+            mw.hook('wikipage.content').add(function($content) {
+                $content.find('.flat-3d-container').each(function() {
+                    if (!this.dataset.initialized) {
+                        this.dataset.initialized = true;
+                        initImageCards(this);
+                    }
+                });
+            });
+        }
+    };
 })();
 
 // 初始化
 mw.loader.using('mediawiki.util').then(function() {
-image3DSystem.init();
+    image3DSystem.init();
 });
 
 $('.fandom-community-header__community-name-wrapper').append(
@@ -530,6 +556,7 @@ $(document).ready(function() {
 
 var config = config || mw.config.get();
 
+//竞赛投票相关
 mw.hook("wikipage.content").add(function () {
 	if (!["view", "edit", "submit"].includes(config.wgAction)) return;
 	if (window.NervieJS) return;

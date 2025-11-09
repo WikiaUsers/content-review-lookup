@@ -1,3 +1,4 @@
+/* from EN Genshin Impact wiki: https://genshin-impact.fandom.com/wiki/MediaWiki:CustomFilters.js */
 /* jshint undef: true, devel: true, typed: true, jquery: true, strict: true, eqeqeq: true, freeze: true, latedef: true, shadow: outer, varstmt: true, quotmark: single, esversion: 6, futurehostile: true */
 mw.hook('wikipage.content').add(() => {
 	if(window.dev && window.dev.CustomFilters) {return;}
@@ -98,9 +99,9 @@ mw.hook('wikipage.content').add(() => {
 						'<div class="fl-toggle-label">'+
 							(curr.label ? (curr.label+':') :'')+
 							'<div class="fl-toggle-qa">'+
-								'<a class="fl-toggle-qa-all">ALL</a>'+
+								'<a class="fl-toggle-qa-all">ВСЕ</a>'+
 								' &mdash; '+
-								'<a class="fl-toggle-qa-none">NONE</a>'+
+								'<a class="fl-toggle-qa-none">НИКТО</a>'+
 							'</div>'+
 						'</div>'+
 					'</div>'
@@ -109,13 +110,17 @@ mw.hook('wikipage.content').add(() => {
 					flc++;
 					let opt = $('<label for="fl-toggle-'+flc+'" class="fl-checkbox-label">');
 					let inpt = $('<input id="fl-toggle-'+flc+'" class="fl-checkbox" checked type="checkbox" tabindex="0" />');
-					if (toggle.imgL && $('body[data-theme="light"]').length>0) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgL)}" class="${toggle.imgLClass || toggle.imgClass || ''}" width="24px" />`);
-					} else if (toggle.imgD && $('body[data-theme="dark"]').length>0) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgD)}" class="${toggle.imgDClass || toggle.imgClass || ''}" width="24px" />`);
-					} else if (toggle.img) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)}" class="${toggle.imgClass || ''}" width="24px" />`);
+					let imgClass = toggle.imgClass || '';
+					if (toggle.class) {
+						imgClass += ' ' + toggle.class;
 					}
+					if (toggle.imgL && $('body[data-theme="light"]').length>0) {
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgL)}" class="${imgClass}" width="24px" />`);
+					} else if (toggle.imgD && $('body[data-theme="dark"]').length>0) {
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgD)}" class="${imgClass}" width="24px" />`);
+					} else if (toggle.img) {
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)}" class="${imgClass}" width="24px" />`);
+	}
 					if (toggle.label) { opt.append(toggle.label); }
 					if (toggle.alt) { opt.attr('title', toggle.alt); }
 					opt.append(inpt);

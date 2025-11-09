@@ -83,16 +83,25 @@ function switchTemplateColor(event) {
 
     if (forsakenWikiSettings.isLoggedIn) {
         changeGadget(settingID, enabled, function() {
-            location.reload(); // reload page after saving setting
+            location.reload();
         });
     } else {
         localStorage.setItem(getStorageID(settingID), enabled ? 'True' : 'False');
-        location.reload(); // reload page for localStorage users
+        location.reload();
     }
 }
 
 // --- Build Settings Box ---
 mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).then(function() {
+
+    if (
+        mw.config.get('wgAction') === 'edit' || 
+        mw.config.get('wgAction') === 'submit' || 
+        mw.config.get('wgCanonicalSpecialPageName') === 'VisualEditor' ||
+        document.body.classList.contains('ve-active') ||
+        document.body.classList.contains('source-editing')
+    ) return;
+
     forsakenWikiSettings.isLoggedIn = !mw.user.isAnon();
     forsakenWikiSettings.settings = {};
 
@@ -108,15 +117,40 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).then(func
         }
     }
 
-    // Create sidebar container
+    // Create floating container
     var settingsWrapper = document.createElement("div");
-    settingsWrapper.classList.add("rail-module", "RightRailSettingsWrapper");
+    settingsWrapper.classList.add("RightRailSettingsWrapper");
     settingsWrapper.id = "forsaken-wiki-right-rail-settings";
-    document.querySelector(".right-rail-wrapper").prepend(settingsWrapper);
+    document.body.appendChild(settingsWrapper);
 
-    // Header
-    var header = "<h2>Settings</h2><br>\n";
+    // Header + Buttons
+    var header = `
+        <h2>Settings</h2>
+        <div class="settings-buttons">
+            <button id="settings-discussions">💬 Discussions</button>
+            <button id="settings-analytics">📜 Recent Changes</button>
+            <button id="settings-theme-toggle">🌗 Theme</button>
+        </div>
+        <br>
+    `;
     $("#" + settingsWrapper.id).append(header);
+
+    $("#settings-discussions").on("click", function() {
+        if (window.location.pathname === "/f/") {
+            window.location.href = "/wiki/Main_Page";
+        } else {
+            window.location.href = "/f/";
+        }
+    });
+
+    $("#settings-analytics").on("click", function() {
+        window.location.href = "/wiki/Special:RecentChanges";
+    });
+
+    $("#settings-theme-toggle").on("click", function() {
+        var themeSwitch = document.querySelector(".wiki-tools__theme-switch, .wds-button.wds-is-secondary.wiki-tools__theme-switch");
+        if (themeSwitch) themeSwitch.click();
+    });
 
     // Build toggles
     for (var i = 0; i < settingsList.length; i++) {
@@ -138,23 +172,104 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).then(func
         $("#" + settingsWrapper.id).append(checkbox, `<label for="${checkbox.id}">${curSetting.desc}</label><br>`);
     }
 
+    // --- Add collapse arrow (kept near top, under dropdowns) ---
+    var collapseArrow = document.createElement("div");
+    collapseArrow.id = "settings-collapse-arrow";
+    collapseArrow.innerHTML = "⬆"; 
+    collapseArrow.style.cursor = "pointer";
+    collapseArrow.style.textAlign = "center";
+    collapseArrow.style.position = "fixed";
+    collapseArrow.style.right = "20px";
+    collapseArrow.style.top = "60px"; // keep top position
+    collapseArrow.style.zIndex = "10"; // below notification dropdowns
+    collapseArrow.style.background = "black";
+    collapseArrow.style.color = "white";
+    collapseArrow.style.border = "2px solid white";
+    collapseArrow.style.borderRadius = "4px";
+    collapseArrow.style.width = "30px";
+    collapseArrow.style.height = "20px";
+    collapseArrow.style.lineHeight = "20px";
+    document.body.appendChild(collapseArrow);
+
+    // Load collapsed state, default open if first visit
+    var stored = localStorage.getItem("forsakenSettingsCollapsed");
+    var collapsed = stored === null ? false : stored === "true";
+
+    function applyCollapseState() {
+        var wrapper = document.getElementById("forsaken-wiki-right-rail-settings");
+        wrapper.style.display = collapsed ? "none" : "block";
+        collapseArrow.innerHTML = collapsed ? "⬇" : "⬆";
+    }
+
+    collapseArrow.addEventListener("click", function() {
+        collapsed = !collapsed;
+        localStorage.setItem("forsakenSettingsCollapsed", collapsed);
+        applyCollapseState();
+    });
+
+    applyCollapseState();
+
+    mw.hook('ve.activationStart').add(function() {
+        $("#forsaken-wiki-right-rail-settings").hide();
+    });
+    mw.hook('ve.deactivationComplete').add(function() {
+        $("#forsaken-wiki-right-rail-settings").show();
+    });
+
     // Styling
     var style = document.createElement("style");
     style.innerHTML = `
-        #forsaken-wiki-right-rail-settings {
-            background: black;
-            border: 2px solid white;
-            padding: 10px;
-            border-radius: 5px;
-            color: white;
-        }
-        #forsaken-wiki-right-rail-settings h2 {
-            color: white;
-        }
-        #forsaken-wiki-right-rail-settings label {
-            color: white;
-            margin-left: 5px;
-        }
+    #forsaken-wiki-right-rail-settings {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        width: 200px;
+        max-height: 220px;
+        overflow-y: auto;  
+        background: black;
+        border: 2px solid white;
+        padding: 5px;
+        border-radius: 4px;
+        color: white;
+        z-index: 10;
+        font-size: 11px;
+    }
+    #forsaken-wiki-right-rail-settings h2 {
+        color: white;
+        margin-top: 0;
+        text-align: center;
+        font-size: 14px;
+    }
+    .settings-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 2px;
+    }
+    .settings-buttons button {
+        flex: 1;
+        background: #111;
+        color: #fff;
+        border: 1px solid #555;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 10px;
+        padding: 2px;
+    }
+    .settings-buttons button:hover {
+        background: #333;
+        border-color: #fff;
+    }
+    #forsaken-wiki-right-rail-settings label {
+        color: white;
+        margin-left: 4px;
+        font-size: 11px;
+    }
+    #settings-collapse-arrow {
+        font-size: 14px;
+        text-align: center;
+        cursor: pointer;
+    }
     `;
     document.head.appendChild(style);
 });

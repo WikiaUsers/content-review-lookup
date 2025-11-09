@@ -81,5 +81,6 @@ importArticles({
 	type: 'script',
 	articles: [
 		'u:dev:MediaWiki:Fetch.js',
+		'w:c:headquarter8302:MediaWiki:MonacoEditor.js',
 	]
 });

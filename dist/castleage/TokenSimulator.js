@@ -19,6 +19,8 @@ const IDS = {
     monkeyKing: 'monkeyKingTokenSim',
     isla: 'islaTokenSim',
     wall: 'wallTokenSim',
+    intimidate: 'intimidateTokenSim',
+    intimidateCheckbox: 'intimidateCheckboxTokenSim',
     progress: 'simProgressTokenSim',
     result: 'resultTokenSim'
 };
@@ -50,10 +52,10 @@ else {
 
 function buildTokenSimulationForm() {
     // cache customForm namespace
-    const cf = window.customForm;
+    const customForm = window.customForm;
 
     // form element
-    const form = cf.createForm({ id: IDS.form });
+    const form = customForm.createForm({ id: IDS.form });
 
     // Number of iterations input
     const numOfIterations = document.createElement('input');
@@ -66,7 +68,7 @@ function buildTokenSimulationForm() {
     numOfIterations.min = 1;
     numOfIterations.max = MAX_NUM_OF_ITERATIONS;
 
-    form.appendChild(cf.createLabelGroupVertical({
+    form.appendChild(customForm.createLabelGroupVertical({
         input: numOfIterations,
         label: 'Number of iterations'
     }));
@@ -94,10 +96,10 @@ function buildTokenSimulationForm() {
     tokenCap.min = 1;
     tokenCap.max = 1000;
 
-    form.appendChild(cf.createFormGroupHorizontal({
+    form.appendChild(customForm.createFormGroupHorizontal({
         elements: [
-            cf.createLabelGroupVertical({ input: initialTokens, label: 'Initial tokens' }),
-            cf.createLabelGroupVertical({ input: tokenCap, label: 'Token cap' }),
+            customForm.createLabelGroupVertical({ input: initialTokens, label: 'Initial tokens' }),
+            customForm.createLabelGroupVertical({ input: tokenCap, label: 'Token cap' }),
         ]
     }));
 
@@ -146,12 +148,39 @@ function buildTokenSimulationForm() {
     wall.max = 100;
     wall.step = 1;
 
-    form.appendChild(cf.createFormGroupHorizontal({
+    form.appendChild(customForm.createFormGroupHorizontal({
         elements: [
-            cf.createLabelGroupVertical({ input: layla, label: 'Layla', suffixes: ['%'] }),
-            cf.createLabelGroupVertical({ input: monkeyKing, label: 'Monkey King', suffixes: ['%'] }),
-            cf.createLabelGroupVertical({ input: isla, label: 'Isla', suffixes: ['%'] }),
-            cf.createLabelGroupVertical({ input: wall, label: 'Wall', suffixes: ['%'] })
+            customForm.createLabelGroupVertical({ input: layla, label: 'Layla', suffixes: ['%'] }),
+            customForm.createLabelGroupVertical({ input: monkeyKing, label: 'Monkey King', suffixes: ['%'] }),
+            customForm.createLabelGroupVertical({ input: isla, label: 'Isla', suffixes: ['%'] }),
+            customForm.createLabelGroupVertical({ input: wall, label: 'Wall', suffixes: ['%'] })
+        ]
+    }));
+
+    // Intimidate input
+    const intimidate = document.createElement('input');
+    intimidate.id = IDS.intimidate;
+    intimidate.name = intimidate.id;
+    intimidate.type = 'number';
+    intimidate.value = 20;
+    intimidate.placeholder = '0';
+    intimidate.min = 0;
+    intimidate.max = 100;
+    intimidate.step = 1;
+    intimidate.disabled = true;
+
+    const intimidateCheckbox = document.createElement('input');
+    intimidateCheckbox.id = IDS.intimidateCheckbox;
+    intimidateCheckbox.name = intimidateCheckbox.id;
+    intimidateCheckbox.type = 'checkbox';
+    intimidateCheckbox.checked = !intimidate.disabled;
+    intimidateCheckbox.addEventListener('change', function () {
+        intimidate.disabled = !intimidateCheckbox.checked;
+    });
+
+    form.appendChild(customForm.createFormGroupHorizontal({
+        elements: [
+            customForm.createLabelGroupHorizontal({ input: intimidate, label: 'Intimidate (rogue ability)', prefixes: [intimidateCheckbox], suffixes: ['%'] }),
         ]
     }));
 
@@ -207,8 +236,9 @@ function buildTokenSimulationForm() {
         }
     });
 
-    cf.finalizeCustomForm(form);
-
+    customForm.finalizeCustomForm(form);
+    
+    formContainer.innerHTML = "";
     formContainer.appendChild(form);
 }
 
@@ -252,6 +282,11 @@ function simulateTokensChunked(form) {
         const isla = ((Number(formData.get(IDS.isla) || 0) || 0) / 100) * (1 + layla);
         const wall = ((Number(formData.get(IDS.wall) || 0) || 0) / 100);
 
+        const useIntimidate = document.getElementById(IDS.intimidateCheckbox).checked;
+        const intimidate = useIntimidate ? ((Number(formData.get(IDS.intimidate) || 0) || 0) / 100) : 0;
+
+        const abilityTokenCost = useIntimidate ? 2 : 1;
+
         // return if 100%
         if (monkeyKing >= 1) {
             reject(`100% refund! Monkey King value modified by Layla: ${monkeyKing * 100}%!`);
@@ -263,6 +298,10 @@ function simulateTokensChunked(form) {
         }
         if (wall >= 1) {
             reject(`100% refund! Wall value: ${wall * 100}%!`);
+            return;
+        }
+        if (intimidate >= 1) {
+            reject(`100% refund! Intimidate value: ${intimidate * 100}%!`);
             return;
         }
 
@@ -284,14 +323,19 @@ function simulateTokensChunked(form) {
                 let tokensCurrent = initialTokens;
 
                 // spend tokens until 0 or tokenSpentLimit reached - one iteration
-                for (; tokensSpent < TOKEN_SPENT_LIMIT && tokensCurrent > 0; tokensSpent++) {
+                while (tokensSpent < TOKEN_SPENT_LIMIT && tokensCurrent > 0) {
                     if (stopSimulation) break;
 
-                    tokensCurrent--; // spent one token
-                    if (Math.random() < monkeyKing) tokensCurrent++; // gained token form Monkey King
-                    if (Math.random() < isla) tokensCurrent++; // gained token form Isla
-                    if (Math.random() < wall) tokensCurrent++; // gained token form Wall Tower
+                    let tokenCost = tokensCurrent >= abilityTokenCost ? abilityTokenCost : 1;
+
+                    tokensCurrent = tokensCurrent - tokenCost; // spent tokens
+                    if (Math.random() < monkeyKing) tokensCurrent = tokensCurrent + tokenCost; // refunded tokens from Monkey King
+                    if (Math.random() < isla) tokensCurrent++; // gained token from Isla
+                    if (Math.random() < wall) tokensCurrent = tokensCurrent + tokenCost; // refunded tokens from Wall Tower
+                    if (Math.random() < intimidate) tokensCurrent++; // gained token from Intimidate
                     tokensCurrent = Math.min(tokenCap, tokensCurrent); // cap tokens
+
+                    tokensSpent = tokensSpent + tokenCost; // increment counter
                 }
 
                 totalTokensSpent += tokensSpent;
@@ -314,21 +358,23 @@ function simulateTokensChunked(form) {
                     avgTokens = totalTokensSpent / iterationsCnt;
 
                 let finishedMsg;
+                let timeString = ((endTime - startTime) / 1000).toFixed(2);
                 if (stopSimulation)
-                    finishedMsg = 'Simulation stopped early!\n';
+                    finishedMsg = `Simulation stopped early after ${timeString} seconds!\n`;
                 else
-                    finishedMsg = 'Simulation finished successfully!\n';
+                    finishedMsg = `Simulation finished successfully after ${timeString} seconds!\n`;
 
-                let contextMsg = '';
-                if (tokenLimitReachedCount > 0)
-                    contextMsg = `* Results might not be accurate because ${tokenLimitReachedCount} out of ${iterationsCnt} iterations reached tokenSpentLimit of ${TOKEN_SPENT_LIMIT}\n`;
-
-                let timeMsg = `Simulation time: ${((endTime - startTime) / 1000).toFixed(2)} seconds\n`
+                let avgMsg = `AVERAGE TOKENS: ${avgTokens}\n`;
                 let minMsg = `Minimum tokens: ${minTokensSpent}\n`;
                 let maxMsg = `Maximum tokens: ${maxTokensSpent}\n`;
-                let avgMsg = `Average tokens: ${avgTokens}`;
 
-                let message = `${finishedMsg}${contextMsg}${timeMsg}\n${minMsg}${maxMsg}${avgMsg}`;
+                let contextMsg = '';
+                if (useIntimidate)
+                    contextMsg = `* Using Intimidate (2 token ability), and 1 token ability when having less than 2 tokens\n`;
+                if (tokenLimitReachedCount > 0)
+                    contextMsg += `* Results might not be accurate because ${tokenLimitReachedCount} out of ${iterationsCnt} iterations reached tokenSpentLimit of ${TOKEN_SPENT_LIMIT}\n`;
+
+                let message = `${finishedMsg}\n${avgMsg}${minMsg}${maxMsg}\n${contextMsg}`;
                 resultElement.textContent = message;
                 console.log(message);
 

@@ -2,6 +2,10 @@
 
 (function ($, mw) {
 	'use strict';
+	// Discussions are only available for logged-in users
+	if (!mw.config.get('wgUserId')) {
+		return;
+	}
 	$.when(mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.jqueryMsg"]), mw.hook("wikipage.content"))
 	.then(function() {
 		return new mw.Api().loadMessagesIfMissing(["recirculation-discussions-latest-discussions", "recirculation-discussion-link-text", "recirculation-discussions-in", "recirculation-discussion-title"]);

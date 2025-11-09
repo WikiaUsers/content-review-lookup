@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/*Welcome Module (Sia Wiki)*/
+/*Welcome Module */
 $(function() {
     var welcome;
     if (localStorage.getItem('welcome-' + mw.config.get('wgDBname'))) {
@@ -48,7 +48,7 @@ $(function() {
                                             .addClass('wds-button')
                                             .addClass('wds-is-secondary')
                                             .attr('id', 'cancel')
-                                            .text('Cancel')
+                                            .text('Close')
                                     )
                             )  
                     )

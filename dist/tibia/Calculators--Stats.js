@@ -94,7 +94,7 @@ $(function() {
                 x = calculator_stats_voc[$('#calculator_statsi1').val()][1];
                 $('#calculator_statsr2').text(50 + (5 * Math.min(8, lvl)) + (Math.max(0, lvl - 8) * x));
                 x = calculator_stats_voc[$('#calculator_statsi1').val()][2];
-                $('#calculator_statsr3').text(390 + (10 * Math.min(8, lvl)) + (Math.max(0, lvl - 8) * x));
+                $('#calculator_statsr3').text(590 + (10 * Math.min(8, lvl)) + (Math.max(0, lvl - 8) * x));
                 $('#calculator_statsr4').text(109 + (lvl));
             };
 

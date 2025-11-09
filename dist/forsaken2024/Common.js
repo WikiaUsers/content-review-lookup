@@ -82,8 +82,99 @@ if (introPages[currentPage] && !isBlockedContext) {
     audio.oncanplaythrough = checkStart;
   });
 }
+/*Mainpages tuff*/
+const playButton = document.querySelector('.play-button');
+const slideshow = document.querySelector('.slideshow-box');
+const eggText = document.querySelector('.easter-egg-text');
 
-importArticle({
-  type: 'script',
-  article: 'u:dev:LangSelect/code.js'
+const creepyLines = [
+  "you aren't alone here.",
+  "do you call this your home?",
+  "i decide when you can leave.",
+  "don't test my patience.",
+  "i want to see your face.",
+  "come back and play.",
+  "you wouldn't dare defy me.",
+  "don't turn around.",
+  "the air is heavier out there, isn't it?",
+  "i've been waiting for you.",
+  "is this where it ends?",
+  "do you hear that?",
+  "i never left.",
+  "if you leave, you won't make it far.",
+  "can you feel me watching?",
+  "why did you lock the door?",
+  "you brought this upon yourself.",
+  "there's nowhere to hide.",
+  "don't make me find you.",
+  "leaving is not an option.",
+  "you belong to me now.",
+  "who else knows you're here?",
+  "it's colder now, isn't it?",
+  "you can't escape me.",
+  "APieceForThePuzzle Awaits You"
+];
+
+function randomCaps(str) {
+  return str.split('').map(c => Math.random() < 0.5 ? c.toUpperCase() : c.toLowerCase()).join('');
+}
+
+let hoverInterval;
+let flickerInterval;
+
+playButton.addEventListener('mouseenter', () => {
+  // Start repeating Easter egg every 30 seconds
+  hoverInterval = setInterval(() => {
+    // Pick random creepy line
+    const randomLine = creepyLines[Math.floor(Math.random() * creepyLines.length)];
+
+    slideshow.classList.add('darkened');
+    eggText.style.opacity = '1';
+    eggText.style.animation = 'glitchFlicker 0.1s infinite';
+
+    // Start random capitalization flicker
+    flickerInterval = setInterval(() => {
+      eggText.textContent = randomCaps(randomLine);
+    }, 50);
+
+    // Stop after 3 seconds
+    setTimeout(() => {
+      clearInterval(flickerInterval);
+      eggText.style.opacity = '0';
+      eggText.style.animation = 'none';
+      slideshow.classList.remove('darkened');
+    }, 3000);
+
+  }, 30000); // repeat every 30s
 });
+
+playButton.addEventListener('mouseleave', () => {
+  clearInterval(hoverInterval);
+  clearInterval(flickerInterval);
+  eggText.style.opacity = '0';
+  eggText.style.animation = 'none';
+  slideshow.classList.remove('darkened');
+});
+
+function fetchStats() {
+  // Edits and active users
+  fetch('/api.php?action=query&meta=siteinfo&siprop=statistics&format=json')
+    .then(res => res.json())
+    .then(data => {
+      const stats = data.query.statistics;
+      document.getElementById('editCount').textContent = stats.edits.toLocaleString();
+      document.getElementById('userCount').textContent = stats.activeusers.toLocaleString();
+    });
+
+  // Posts count from the "ALL" category
+  fetch('/api.php?action=query&list=categorymembers&cmtitle=Category:ALL&cmlimit=max&format=json')
+    .then(res => res.json())
+    .then(data => {
+      const postCount = data.query.categorymembers.length;
+      document.getElementById('postCount').textContent = postCount.toLocaleString();
+    });
+}
+
+// Update every 10 seconds
+fetchStats();
+setInterval(fetchStats, 10000);

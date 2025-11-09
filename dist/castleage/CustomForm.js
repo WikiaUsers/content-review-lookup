@@ -96,6 +96,12 @@ function createLabelGroup({ isHorizontal, input, label, prefixes, suffixes, labe
                 prefixSpan.textContent = elem;
                 inputGroup.appendChild(prefixSpan);
             }
+            else if (elem instanceof HTMLInputElement && ["checkbox", "radio"].includes(elem.type)) {
+                const prefixSpan = document.createElement('span');
+                prefixSpan.classList.add('input-group-text');
+                prefixSpan.appendChild(elem);
+                inputGroup.appendChild(prefixSpan);
+            }
             else if (elem instanceof Element) {
                 inputGroup.appendChild(elem);
             }
@@ -113,6 +119,12 @@ function createLabelGroup({ isHorizontal, input, label, prefixes, suffixes, labe
                 const suffixSpan = document.createElement('span');
                 suffixSpan.classList.add('input-group-text');
                 suffixSpan.textContent = elem;
+                inputGroup.appendChild(suffixSpan);
+            }
+            else if (elem instanceof HTMLInputElement && ["checkbox", "radio"].includes(elem.type)) {
+                const suffixSpan = document.createElement('span');
+                suffixSpan.classList.add('input-group-text');
+                suffixSpan.appendChild(elem);
                 inputGroup.appendChild(suffixSpan);
             }
             else if (elem instanceof Element) {

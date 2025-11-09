@@ -8,7 +8,7 @@ $(function () {
     loading_img = 'https://static.wikia.nocookie.net/tibia/en/images/8/81/Outfiter_Loading.gif',
     error_img = 'https://static.wikia.nocookie.net/tibia/en/images/f/f6/Outfiter_Error.png',
     //mounts, the array index is the idm
-    //must also be added to Template:MountLink
+    //must also be added to Template:MountLink (https://tibia.fandom.com/wiki/Template:MountLink)
     outfiter_mount_names = [ 
       //0
       'None', 'Widow_Queen', 'Racing_Bird', 'War_Bear', 'Black_Sheep',
@@ -105,12 +105,18 @@ $(function () {
       //230
       'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang', 'Pegasus',
       //235
-      'Bumblebee', 'Primal_Demonosaur', 'Pallbearer', 'Night_Locust', 'Leaf_Locust',
+      'Bumblebee', 'Primal_Demonosaur', 'Pallbearer', 'Hell_Demonosaur', 'Alpha_Demonosaur',
       //240
-      'Pearl_Locust', 'Gloom_Maw_(Mount)'
+      'Night_Locust', 'Leaf_Locust', 'Pearl_Locust', 'Satin_Moth', 'Corpse_Phoenix',
+      //245
+      'Death_Phoenix', 'Soul_Phoenix', 'Gloom_Maw_(Mount)', 'Battle_Werewolf', 'Battlefrazzle',
+      //250
+      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator'
+      //255
+      
     ],
     //outfits the array index is the id(from 0 to 99)
-    //must also be added to Template:OutfiterLink
+    //must also be added to Template:OutfiterLink (https://tibia.fandom.com/wiki/Template:OutfiterLink)
     outfiter_names0 = [
       //0
       'Citizen', 'Hunter', 'Mage', 'Knight', 'Nobleman',
@@ -195,7 +201,7 @@ $(function () {
       
     ],
     //outfits the array index is the id (starting at 200)
-    //must also be added to Template:OutfiterLink
+    //must also be added to Template:OutfiterLink (https://tibia.fandom.com/wiki/Template:OutfiterLink)
     outfiter_names200 = [
       //200
       'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress', 'Ghost_Blade',
@@ -208,7 +214,9 @@ $(function () {
       //220
       'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid',
       //225
-      'Martial_Artist', 'Necromancer', 'Illuminator'
+      'Martial_Artist', 'Necromancer', 'Illuminator', 'Bat_Knight', 'Feral_Trapper'
+      //230
+      
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -245,8 +253,10 @@ $(function () {
       Celestial_Avenger: 8,
       Blade_Dancer: 8,
       Beekeeper: 8,
-      Winged_Druid: 8,
-	  Merudri: 8
+	  Merudri: 8,
+	  Winged_Druid: 8,
+	  Necromancer: 8,
+	  Bat_Knight: 8
     },
     outfiter_sprites_walking = {
       //None: 2,
@@ -287,7 +297,11 @@ $(function () {
       Dawnbringer_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
       Wrathfire_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
       Skybreaker_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
-      Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100]
+      Night_Locust: [325, 100, 100, 100, 100, 325, 100, 100],
+      Leaf_Locust: [325, 100, 100, 100, 100, 325, 100, 100],
+      Pearl_Locust: [325, 100, 100, 100, 100, 325, 100, 100],
+      Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
+      Battle_Werewolf: [1200, 100, 100, 100, 100, 2200, 100, 100]
     },
     //outfits that use ping-pong animation. ping-pong animation means 5 unique sprites, middle ones repeat backwards (1-2-3-4-5-4-3-2)
     outfiter_pingpong_animation = {
@@ -353,7 +367,11 @@ $(function () {
       Pegasus: 8,
       Night_Locust: 8,
       Leaf_Locust: 8,
-      Pearl_Locust: 8
+      Pearl_Locust: 8,
+      Corpse_Phoenix: 8,
+      Death_Phoenix: 8, 
+      Soul_Phoenix: 8,
+      Battle_Werewolf: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -364,6 +382,8 @@ $(function () {
       Mutated_Abomination: true,
       Gorgon_Hydra: true,
 	  Primal_Demonosaur: true,
+	  Hell_Demonosaur: true,
+	  Alpha_Demonosaur: true,
 	  'Gloom_Maw_(Mount)': true
     },
     //image names with _Female suffix for female

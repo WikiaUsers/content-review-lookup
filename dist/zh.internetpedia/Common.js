@@ -352,3 +352,17 @@ $('nav > ul > li:nth-child(3) > div > ul > li:nth-child(1) > a > span').prepend(
 ////////////////////////////////
 // END
 } (jQuery, mediaWiki) );
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
+    // 呼叫 API 取得條目數
+    new mw.Api().get({
+        action: 'query',
+        meta: 'siteinfo',
+        siprop: 'statistics'
+    }).done(function (data) {
+        var articles = data.query.statistics.articles.toLocaleString();
+        var input = document.querySelector('#p-search input[type="search"], #searchInput');
+        if (input) {
+            input.placeholder = '搜尋 ' + articles + ' 個條目';
+        }
+    });
+});

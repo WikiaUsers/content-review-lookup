@@ -1,5 +1,9 @@
 /* from https://nkch.fandom.com/wiki/MediaWiki:DiscussionsRailModule.js */
 (function () {
+	// Discussions are only available for logged-in users
+	if (!mw.config.get('wgUserId')) {
+		return;
+	}
     if (!$(".fandom-community-header .explore-menu a[data-tracking='explore-discuss']").length) {
         return;
     }

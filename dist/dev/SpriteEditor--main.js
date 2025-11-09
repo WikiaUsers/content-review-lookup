@@ -2224,7 +2224,7 @@ mw.loader.using( [
 			output.ids = output.ids || {};
 			output.sections = output.sections || [];
 			posSprite = output.settings.pos || 1;
-			options.spacing = output.settings ? output.settings.spacing : 0;
+			options.spacing = output.settings & output.settings.spacing | 0;
 			imgSpacingOrg = options.spacing;
 			loadPermissionsAndImage();
 		} );

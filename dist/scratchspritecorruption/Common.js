@@ -86,3 +86,11 @@ importArticles({
     'u:dev:MediaWiki:CustomComments.js'
   ]
 });
+
+/* === Category $h1t === */
+importArticles({type:'script', articles:['u:dev:MediaWiki:HotCat.js']}); 
+mw.loader.load('mediawiki.categoryTree');
+importArticles({type:'script', articles:['u:dev:MediaWiki:Cat-a-lot.js']});
+
+/* === random stuff, useless like gewfeh tho === */
+importArticles({type:'script', articles:['u:dev:MediaWiki:FloatingToc/code.js']});

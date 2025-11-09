@@ -9,20 +9,6 @@ importArticles({
     ]
 });
 
-importArticles({
-    type: 'script',
-    articles: [
-        'MediaWiki:ECharts-PowerMap.js'
-    ]
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        'MediaWiki:HallOfBeyonder.js'
-    ]
-});
-
 // Custom Tooltip CSS removal
 window.tooltips_config = {
 	offsetX: 20,
