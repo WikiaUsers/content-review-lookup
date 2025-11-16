@@ -1,7 +1,7 @@
 window.ThemeSelector = {
        addSticky: true,
        hideBuiltIn: true,
-       useDropdown: true,
+       useDropdown: true
 },
 
 importArticle({

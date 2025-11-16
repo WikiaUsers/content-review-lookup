@@ -129,3 +129,8 @@ window.dev.editSummaries = {
      css: '#stdSummaries { ... }',
      select: 'MediaWiki:Custom-StandardEditSummary'
 };
+
+
+// Configuration for comment locking
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 14;

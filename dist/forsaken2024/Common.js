@@ -178,3 +178,25 @@ function fetchStats() {
 // Update every 10 seconds
 fetchStats();
 setInterval(fetchStats, 10000);
+
+//Infoboxes
+$(function() {
+    if (!window.nameGadgetEnabled) return; // only run if gadget is enabled
+
+    // Loop through all title1 spans
+    $('span.title1').each(function() {
+        const $span = $(this);
+        const original = $span.html(); // keep original [[File:...]] markup
+
+        // Extract the file name from [[File:...]]
+        const match = original.match(/\[\[File:([^\]|]+)(?:\|[^\]]*)?\]\]/);
+        if (!match) return;
+        const filename = match[1];
+
+        // Lookup in NameData (already loaded as JS object)
+        if (nameData[filename]) {
+            $span.attr('data-title1', original); // temporarily store original
+            $span.text(nameData[filename]); // replace with text
+        }
+    });
+});

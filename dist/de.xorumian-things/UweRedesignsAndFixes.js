@@ -21,17 +21,27 @@ $("head").append(`<style>
 	    font-size: 0;
 	    display: inline-block;
 	}
-	span[data-letter]:after {
+	span[data-letter]::after {
 	    content: attr(data-letter);
 	    font-size: 36px;
-	} </style>`
+	} 
+	span[data-letter="d"]::after {
+    	transform: translateY(-15px);
+    	display: inline-block;
+	}
+	</style>`
 );
 document.querySelectorAll('.page-header__title').forEach(h1 => {
-	h1.innerHTML = h1.innerHTML.replace(/Ɔ/g, '<span data-letter="C" style="transform:scaleX(-1);">Ɔ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɔ/g, '<span data-letter="c" style="transform:scaleX(-1);">ɔ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/Ɛ/g, '<span data-letter="З" style="transform:scaleX(-1);">Ɛ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɛ/g, '<span data-letter="з" style="transform:scaleX(-1);">ɛ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɑ/g, '<span style="display:inline-block;overflow:hidden;height:22px;transform:translateY(2.2px);"><span style="display:inline-block;transform:translateY(-14.5px);">d</span></span>');
+	h1.innerHTML = h1.innerHTML.replace(/Ɔ/g, '<span data-letter="C" style="transform:scaleX(-1)">Ɔ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/ɔ/g, '<span data-letter="c" style="transform:scaleX(-1)">ɔ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/Ɛ/g, '<span data-letter="З" style="transform:scaleX(-1)">Ɛ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/ɛ/g, '<span data-letter="з" style="transform:scaleX(-1)">ɛ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/Ǝ/g, '<span data-letter="E" style="transform:scaleX(-1)">Ǝ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/ə/g, '<span data-letter="e" style="transform:scaleX(-1)">ə</span>');
+	h1.innerHTML = h1.innerHTML.replace(/Ʒ/g, '<span data-letter="3">Ʒ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/ʒ/g, '<span data-letter="3" style="transform:translateY(6px)">ʒ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/ɑ/g, '<span data-letter="d" style="display:inline-block;overflow:hidden;height:20px;transform:translateY(.7px);">ɑ</span>');
+	/*h1.innerHTML = h1.innerHTML.replace(/ɽ/g, 'r<span data-letter="j" style="transform:scaleX(-1);">ɽ</span>');*/
 });
 
 // Audio from URL---------------------------------------------------------------

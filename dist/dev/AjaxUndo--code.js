@@ -22,7 +22,8 @@
     var conf = mw.config.get([
         'wgArticlePath',
         'wgAction',
-        'wgVersion'
+        'wgVersion',
+        'wgCanonicalSpecialPageName',
     ]);
 
     if (!(window.dev && dev.i18n && dev.i18n.loadMessages)) {
@@ -124,21 +125,27 @@
                     url = $(this).prop( 'href' ),
                     $link = createUndoLink(url);
 
-                $this.parent().after(' | ', $link);
+                $this.parent().parent().after($('<span>').append($link));
             });
         } else if ($('table.diff').length && mw.util.getParamValue('diff') !== undefined) {
-            var $undoLink = $('table.diff').find('.diff-ntitle .mw-diff-undo a:first'),
+            const $undoLink = $('table.diff').find('.diff-ntitle .mw-diff-undo a:first'),
                 url = $undoLink.prop('href'),
                 $link = createUndoLink(url);
 
-            $undoLink.parent().append('(', $link, ')');
+            $undoLink.parent().after(' (', $link, ')');
+        } else if (conf.wgCanonicalSpecialPageName === 'Contributions'){
+        	$('.mw-contributions-list > li:has(.mw-changeslist-diff)').each(function () {
+        		const url = $(this).find('.mw-changeslist-diff').prop('href').replace('?diff=prev&oldid=', '?action=edit&undo=');
+        		const $link = createUndoLink(url);
+                $(this).append($('<span>').append(' (', $link, ')'));
+        	});
         }
         mw.hook('quickdiff.ready').add(function() {
-            var $undoLink = $('#quickdiff-modal table.diff').find('.diff-ntitle .mw-diff-undo a:first'),
+            const $undoLink = $('#quickdiff-modal table.diff').find('.diff-ntitle .mw-diff-undo a:first'),
                 url = $undoLink.prop('href'),
                 $link = createUndoLink(url);
 
-            $undoLink.parent().append('(', $link, ')');
+            $undoLink.parent().after(' (', $link, ')');
         });
     }
 

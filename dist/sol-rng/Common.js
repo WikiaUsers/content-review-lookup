@@ -51,6 +51,9 @@ importArticles({
 });
 
 /* Rail Module */
-window.AddRailModule = [{prepend: true}];
+window.AddRailModule = [
+    {page: 'Template:RandomPage', prepend: true},
+    'Template:AdminList',
+];
 
 importScript('MediaWiki:OppressionTitleFont.js');

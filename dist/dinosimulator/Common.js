@@ -8,3 +8,6 @@ window.ajaxPages = [
     "Special:RecentChanges",
     "Special:WikiActivity",
 ];
+
+// UploadMultipleFiles
+mw.config.set('UMFBypassLicenseCheck', true);

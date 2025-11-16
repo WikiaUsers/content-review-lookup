@@ -745,16 +745,25 @@
 					.replace(/<br ?\/?>(?!\s*<\/p>)/g, '</p><p>');
 				
 				let caret = IPM.getCaret();
-				if (!caret || !caret.node.parentNode.closest('.ProseMirror')) {return;}
+				if (caret && caret.node && !caret.node.parentNode.closest('.ProseMirror')) {return;}
 				
 				if (replaceAll) {
-					$(caret.node).closest('.ProseMirror').html(txt);
-				} else {
+					let target = caret ? $(caret.node).closest('.ProseMirror') : $('.ProseMirror');
+					target.html(txt);
+				} else if (caret) {
 					$(caret.node.parentNode).replaceWith($(
 						'<p>'+
 						caret.node.data.slice(0, caret.offset)+
 						txt.replace(/^<p>/, '').replace(/<\/p>$/, '')+
 						caret.node.data.slice(caret.offset)+
+						'</p>'
+					));
+				} else if (!caret) {
+					let target = $('.ProseMirror').children(':last-child');
+					target.replaceWith($(
+						'<p>'+
+						target.prop('innerHTML')+
+						txt.replace(/^<p>/, '').replace(/<\/p>$/, '')+
 						'</p>'
 					));
 				}

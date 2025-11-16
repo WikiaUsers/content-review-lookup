@@ -44,3 +44,12 @@ $(document).ready(function() {
     $("#DoctorDecksModule a, #PixelCruxModule a").removeClass("external");
 
 });
+
+    // Funzione link per il Template:Pulsante
+    mw.loader.using(['jquery'], function () {
+        $(document).on('click', '.pulsante-click', function () {
+        var url = $(this).data('link');
+        if (url) window.location.href = url;
+    });
+    
+});

@@ -72,17 +72,15 @@ UserTagsJS.modules.custom = {
 	/* 'user': [groups] */
 	// Current Staff: Edited.
 	// Bureaucrats
-	'MP1Player': ['head-of-wiki','bureaucrat','Wiki-Contributor'],
+	'HolyMoa': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
 	// Administrators
 	'HaHaBlah': ['content-administrator'],
-	'HolyMoa': ['content-administrator','discussions-administrator'],
 	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
 	'SuperGlitchyTheo': ['content-administrator','Wiki-Contributor'],
 	// Moderators
 	// Content Moderators
 	'RyeThePies': ['content-moderator','Wiki-Contributor'],
-	'Kaisergluck': ['content-moderator'],
 	'Dxrknrg': ['content-moderator','Wiki-Contributor'],
 	'Quinncm': ['content-moderator','Wiki-Contributor'],
 	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
@@ -99,6 +97,7 @@ UserTagsJS.modules.custom = {
 	'Aurawra': ['retired-staff'],
 	'TheRichSeries': ['retired-staff'],
 	'ZackRoN00': ['retired-staff'],
+	'MP1Player': ['retired-staff'],
 	// Retired Administrators
 	'GrayshaValor': ['retired-staff'],
 	'Man with no name or life': ['retired-staff'],
@@ -131,6 +130,7 @@ UserTagsJS.modules.custom = {
 	'Mylan389': ['retired-staff'],
 	'The Ukulele Man': ['retired-staff'],
 	'Alan Builder': ['retired-staff'],
+	'Kaisergluck': ['retired-staff'],
 	// Retired Discussions Moderator
 	'CreeperSPG': ['retired-staff'],
 	'CrunchMCMunch': ['retired-staff'],
@@ -139,7 +139,6 @@ UserTagsJS.modules.custom = {
 	'Nexandr': ['retired-staff'],
 	'Hisslandia': ['retired-staff'],
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
-	'Yxrae': ['ron-senior-administrator'],
 	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
 	// Wiki Contributors
 	'Sorayaann': ['Wiki-Contributor'],

@@ -5,8 +5,6 @@
 
 function percent_completed() {
     const tables = document.querySelectorAll('.table-progress-tracking');
-    var selected_boxes = 0;
-    var total_boxes = -1; // Omits the first row.
     
     for (let i = 0; i < tables.length; i++) {
     	// Important for updating percentages when page laods.
@@ -16,6 +14,8 @@ function percent_completed() {
             attributes: true
         });
         
+        var selected_boxes = 0;
+    	var total_boxes = -1; // Omits the first row.
         for (let row of tables[i].rows) {
             total_boxes += 1;
             

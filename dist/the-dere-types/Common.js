@@ -9,6 +9,24 @@ $(function() {
     }
 });
 
+
+/* Audio Formatting */
+mw.loader.using('jquery').then(function () {
+    $('.pronunciation-audio').each(function () {
+        var file = $(this).data('audio');
+        if (!file) return;
+        var audio = new Audio(mw.util.getUrl('File:' + file, { action: 'raw' }));
+
+        $(this).on('click', function () {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.play().catch(function (err) {
+                console.error("Audio playback failed:", err);
+            });
+        });
+    });
+});
+
 /* Default Fairuse License When Uploading File */
 $(document).on("submit", function (e) {
   if (e.target.id == "mw-upload-form") {

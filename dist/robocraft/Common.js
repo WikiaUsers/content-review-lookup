@@ -40,3 +40,81 @@ else
 
 head.appendChild(style);
 */
+
+// **************************************************
+// Countdown Timer
+// Supports Unix timestamps and past/future detection
+// **************************************************
+
+(function() {
+    var timers = [];
+    var timeouts = [];
+
+    function updatetimer(i) {
+        var now = Math.floor(Date.now() / 1000); // current Unix time in seconds
+        var then = timers[i].eventdate; // target Unix timestamp
+        var diff = then - now;
+
+        if (isNaN(diff)) {
+            timers[i].textContent = '** invalid timestamp **';
+            return;
+        }
+
+        var suffix = diff < 0 ? ' ago' : ' left';
+        if (diff < 0) diff = -diff;
+
+        var seconds = diff % 60;
+        diff = Math.floor(diff / 60);
+        var minutes = diff % 60;
+        diff = Math.floor(diff / 60);
+        var hours = diff % 24;
+        diff = Math.floor(diff / 24);
+        var days = diff;
+
+        // Unix time to days
+        var left = '';
+        if (days) left += days + ' days ';
+        if (hours) left += hours + ' hours ';
+        if (minutes) left += minutes + ' minutes ';
+        left += seconds + ' seconds';
+
+        timers[i].textContent = left + suffix;
+
+        timeouts[i] = setTimeout(function() { updatetimer(i); }, 1000);
+    }
+
+    function checktimers() {
+        // Hide fallback text
+        var nocountdowns = document.getElementsByClassName('nocountdown');
+        for (var i = 0; i < nocountdowns.length; i++) {
+            nocountdowns[i].style.display = 'none';
+        }
+
+        // Show countdown containers
+        var countdowns = document.getElementsByClassName('countdown');
+        for (var i = 0; i < countdowns.length; i++) {
+            countdowns[i].style.display = 'inline';
+        }
+
+        timers = document.getElementsByClassName('countdowndate');
+        timeouts = [];
+        if (timers.length === 0) return;
+
+        for (var i = 0; i < timers.length; i++) {
+            var ts = parseInt(timers[i].textContent.trim(), 10);
+            if (!isNaN(ts)) {
+                timers[i].eventdate = ts;
+                updatetimer(i);
+            } else {
+                timers[i].textContent = '** invalid timestamp **';
+            }
+        }
+    }
+
+    // MediaWiki hook for dynamic pages
+    if (typeof mw !== 'undefined' && mw.hook) {
+        mw.hook('wikipage.content').add(checktimers);
+    } else {
+        window.addEventListener('load', checktimers);
+    }
+})();

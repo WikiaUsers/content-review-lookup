@@ -1,5 +1,17 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/*VIP Tag Module */
+$(function() {
+    if ($('.page-header__categories a[title="Category:VIP Items"]').length) {
+        $('.page-header__title').append(' <img src="https://static.wikia.nocookie.net/dti-dress-to-impress/images/8/85/VIP_Display_Tag_-_Icon.png/revision/latest?cb=20251110180002&format=original" width="50" height="22" alt="VIP">');
+    }
+});
+
+window.MessageBlock = {
+	title: 'Blocked!',
+	message: 'Hello user, you have been blocked for the following reason:'
+};
+
 /*Welcome Module */
 $(function() {
     var welcome;

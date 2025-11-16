@@ -2,4 +2,4 @@
 // RailModule
 window.AddRailModule = ['Template:Discussion moudle'];
 
-dev:ProfileTags.js
+/* The invalid "dev:ProfileTags.js" line has been removed from here. */

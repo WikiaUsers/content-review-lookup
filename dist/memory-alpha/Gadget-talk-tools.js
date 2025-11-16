@@ -1,5 +1,5 @@
 'use strict';
-mw.loader.using(['mediawiki.api'], () => {
+mw.loader.using(['mediawiki.api', 'mediawiki.Title'], () => {
 	const config = mw.config.values;
 	const ns = config.wgNamespaceNumber;
 	const notExtraSigNS = config.wgExtraSignatureNamespaces.indexOf(ns) === -1;
@@ -18,7 +18,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
-	const version = '0.5.15 (beta)';
+	const version = '0.5.21 (beta)';
 	const api = new mw.Api({'parameters': {
 		'action': 'query',
 		'format': 'json',
@@ -64,21 +64,23 @@ mw.loader.using(['mediawiki.api'], () => {
 	};
 	const timeZones = Object.keys(timeZoneConverter);
 	const time = '[0-2]\\d:[0-5]\\d';
-	const day = ' [1-3]?\\d,?';
+	const day = ' [0-3]?\\d,?';
 	const month = ` (?:${months.join('|')})`;
 	const year = ' \\d\\d\\d\\d+';
 	const tZone = ` \\((?:${timeZones.join('|')})\\)`;
 	const tsRegexp = new RegExp(`^.* (${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
 	const commentElements = 'p, dd, div, li';
 	const params = new URLSearchParams(location.search);
-	const linkSelectors = [
-		'a[title^="User:"]',
-		'a[title^="User talk:"]',
-		'a[title^="Special:Contributions/"]',
-	];
+	const pageName = config.wgPageName.replaceAll('_', ' ');
+	const linkSelectors = {
+		'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
+		'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
+		'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
+		'a[title^="Special:TalkPage/User:"]': /^Special:TalkPage\/User: ?(.+?)(?: ?\/.*)?$/,
+	};
 	const newSectionLinkSelectors = [
 		'#ca-addsection',
-		`a[title="Special:NewSection/${config.wgPageName.replaceAll('_', ' ')}"]`,
+		`a[title="Special:NewSection/${pageName}"]`,
 	];
 	const messages = [
 		'custom-talk-tools-reply-button',
@@ -105,12 +107,12 @@ mw.loader.using(['mediawiki.api'], () => {
 	
 	api.loadMessagesIfMissing(messages).done(() => {
 		mw.hook('wikipage.content').add(addStats);
-		$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
 		if (
 			!config.wgArticleId
 			&& params.get('redlink')
 			&& notExtraSigNS
 		){
+			$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
 			$('#editform').css('display', 'none');
 		}
 		if (config.wgAction === 'edit' && params.get('section') === 'new'){
@@ -123,19 +125,16 @@ mw.loader.using(['mediawiki.api'], () => {
 			config.wgIsProbablyEditable &&
 			notArchived
 		){
+			$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
 			mw.hook('wikipage.content').add(content => {
-				$('p:has(br:only-child)').remove();
-				$('dl + dl').each((dlIndex, dl) => {
+				content.find('p:has(br:only-child)').remove();
+				content.find('dl + dl').each((dlIndex, dl) => {
 					$(dl).prepend($(dl).prev().html());
 					$(dl).prev().remove();
 				});
-				$('dd:has(dl:last-child) + dd > dl:first-child').each((dlIndex, dl) => {
-					const prevDL = $(dl).parent().prev().children(':last-child');
-					$(dl).prepend(prevDL.html());
-					prevDL.remove();
-					$(dl).before($(dl).parent().prev().html());
-					$(dl).parent().prev().remove();
-				});
+				while(content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
+					content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
+				}
 				content.find(commentElements).each(addReplyButtons);
 			});
 		}
@@ -153,7 +152,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			
 			const txtContents = $(statsElement).contents().contents().addBack().toArray().filter(txtFilter);
 			const timestamp = txtContents[txtContents.length - 1];
-			const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
+			const userLinks = $(timestamp).prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', '));
 			const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
 			
 			if (!userLinks.length || !tsRegexp.test($(timestamp).text()) || isNoTalk){
@@ -169,13 +168,11 @@ mw.loader.using(['mediawiki.api'], () => {
 				tsString = tsString.replace(`(${timeZone})`, timeZoneConverter[timeZone]);
 			});
 			
-			if (userLinks.last().filter(linkSelectors[0]).length){
-				userRegexp = /^User:(.+?)(?:\/.*)?$/;
-			} else if (userLinks.last().filter(linkSelectors[1]).length){
-				userRegexp = /^User talk:(.+?)(?:\/.*)?$/;
-			} else {
-				userRegexp = /^Special:Contributions\/(.+?)(?:\/.*)?$/;
-			}
+			Object.keys(linkSelectors).forEach(selector => {
+				if (userLinks.last().filter(selector).length){
+					userRegexp = linkSelectors[selector];
+				}
+			});
 			
 			comments.push({
 				'user': userLinkTitle.replace(userRegexp, '$1'),
@@ -281,7 +278,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	function addReplyButtons(commentIndex, commentElement){
 		const txtContents = $(commentElement).contents().contents().addBack().toArray().filter(txtFilter);
 		const timestamp = txtContents[txtContents.length - 1];
-		const userLinks = $(timestamp).prevAll().find('*').addBack().filter(linkSelectors.join(', '));
+		const userLinks = $(timestamp).prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', '));
 		const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q, #talk-tools-editor-js').length;
 		const isArchived = $(timestamp).parents('.mw-archivedtalk').length;
 		
@@ -293,13 +290,11 @@ mw.loader.using(['mediawiki.api'], () => {
 		const userLinkTitle = userLinks.last().attr('title');
 		let userRegexp;
 		
-		if (userLinks.last().filter(linkSelectors[0]).length){
-			userRegexp = /^User:(.+?)(?:\/.*)?$/;
-		} else if (userLinks.last().filter(linkSelectors[1]).length){
-			userRegexp = /^User talk:(.+?)(?:\/.*)?$/;
-		} else {
-			userRegexp = /^Special:Contributions\/(.+?)(?:\/.*)?$/;
-		}
+		Object.keys(linkSelectors).forEach(selector => {
+			if (userLinks.last().filter(selector).length){
+				userRegexp = linkSelectors[selector];
+			}
+		});
 		
 		let tsElement;
 		if ($(timestamp).parent().prop('tagName') === $(commentElement).prop('tagName')){
@@ -395,20 +390,12 @@ mw.loader.using(['mediawiki.api'], () => {
 				return;
 			}
 			const parseParams = {
-				'action': 'parse',
-				'title': config.wgPageName,
-				'text': comment,
+				'title': pageName,
 				'revid': revid,
-				'prop': 'text',
-				'parsoid': 1,
 				'pst': true,
 				'preview': true,
 			};
-			api.post(parseParams).done(previewJSON => {
-				const parsedPreview = $(previewJSON.parse.text);
-				$('#talk-tools-preview-js').html(parsedPreview);
-				mw.hook('wikipage.content').fire($('#talk-tools-preview-js'));
-			});
+			api.parse(comment, parseParams).done(renderPreview);
 		}, 2000);
 		
 		$('#reply-cancel-js').on('click', () => {
@@ -464,7 +451,7 @@ mw.loader.using(['mediawiki.api'], () => {
 		$(`#${editorID}`).find(elmts).attr('disabled', true);
 		
 		const fetchParams = {
-			'titles': config.wgPageName,
+			'titles': pageName,
 			'prop': 'revisions',
 			'rvprop': 'content',
 			'rvslots': 'main',
@@ -505,17 +492,17 @@ mw.loader.using(['mediawiki.api'], () => {
 			
 			const editParams = {
 				'action': 'edit',
-				'title': config.wgPageName,
+				'title': pageName,
 				'text': finalText,
 				'summary': editSummary,
 				'tags': 'js-reply',
-				'notminor': 1,
+				'notminor': true,
 				'baserevid': revid,
-				'nocreate': 1,
+				'nocreate': true,
 				'watchlist': 'watch',
 			};
 			
-			api.postWithToken('csrf', editParams).done(data => {
+			api.postWithEditToken(editParams).done(data => {
 				if (data.warnings){
 					console.warn(data.warnings);
 					for (const i in data.warnings){
@@ -525,17 +512,9 @@ mw.loader.using(['mediawiki.api'], () => {
 				}
 				
 				if (data.edit){
-					const parseParams = {
-						'action': 'parse',
-						'page': config.wgPageName,
-						'prop': 'text',
-						// 'parsoid': 1,
-					};
-					
 					revid = data.edit.newrevid;
-					api.post(parseParams).done(output => {
-						const parsedText = $(output.parse.text).contents();
-						$('#mw-content-text > .mw-parser-output').html(parsedText);
+					api.parse(new mw.Title(pageName)).done(parsedText => {
+						$('#mw-content-text > .mw-parser-output').html($(parsedText).contents());
 						mw.hook('wikipage.content').fire($('#mw-content-text'));
 						mw.notify(mw.message('custom-talk-tools-success').text(), {type: 'success'});
 					});
@@ -621,11 +600,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				return;
 			}
 			const parseParams = {
-				'action': 'parse',
-				'title': config.wgPageName,
-				'text': comment,
-				'prop': 'text',
-				'parsoid': true,
+				'title': pageName,
 				'pst': true,
 				'section': 'new',
 				'sectiontitle': sectionTitle,
@@ -635,11 +610,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			if (revid){
 				parseParams.revid = revid;
 			}
-			api.post(parseParams).done(previewJSON => {
-				const parsedPreview = $(previewJSON.parse.text);
-				$('#talk-tools-preview-js').html(parsedPreview);
-				mw.hook('wikipage.content').fire($('#talk-tools-preview-js'));
-			});
+			api.parse(comment, parseParams).done(renderPreview);
 		}, 2000);
 		
 		$('#newtopic-cancel-js').on('click', () => {
@@ -689,13 +660,8 @@ mw.loader.using(['mediawiki.api'], () => {
 		$(`#${editorID}`).find(elmts).attr('disabled', true);
 		
 		const editParams = {
-			'action': 'edit',
-			'title': config.wgPageName,
-			'section': 'new',
-			'sectiontitle': sectionTitle,
-			'text': comment,
 			'tags': 'js-newtopic',
-			'notminor': 1,
+			'notminor': true,
 			'watchlist': 'watch',
 		};
 		
@@ -703,7 +669,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			editParams.baserevid = revid;
 		}
 		
-		api.postWithToken('csrf', editParams).done(data => {
+		api.newSection(pageName, sectionTitle, comment, editParams).done(data => {
 			if (data.warnings){
 				console.warn(data.warnings);
 				for (const i in data.warnings){
@@ -713,21 +679,14 @@ mw.loader.using(['mediawiki.api'], () => {
 			}
 			
 			if (data.edit){
-				const parseParams = {
-					'action': 'parse',
-					'page': config.wgPageName,
-					'prop': 'text',
-					// 'parsoid': 1,
-				};
-				
 				revid = data.edit.newrevid;
-				api.post(parseParams).done(output => {
+				api.parse(new mw.Title(pageName)).done(parserOutput => {
 					let parsedText;
 					if (config.wgArticleId && config.wgAction === 'view'){
-						parsedText = $(output.parse.text).contents();
+						parsedText = $(parserOutput).contents();
 						$('#mw-content-text > .mw-parser-output').html(parsedText);
 					} else {
-						parsedText = $(output.parse.text);
+						parsedText = $(parserOutput);
 						$(`#${editorID}`).before(parsedText);
 						$('.mw-parser-output').find(commentElements).each(addReplyButtons);
 					}
@@ -760,11 +719,6 @@ mw.loader.using(['mediawiki.api'], () => {
 		$(`#${editorID}`).remove();
 	}
 });
-
-function errorNotice(message, type = 'error'){
-	console[type](message);
-	alert(message);
-}
 
 function age(date, now){
 	const ageNum = now - date;
@@ -802,8 +756,32 @@ function age(date, now){
 	return ageText;
 }
 
+function mergeAdjacentDLs(dlIndex, dl){
+	const prevDL = $(dl).parent().prev().children(':last-child');
+	$(dl).prepend(prevDL.html());
+	prevDL.remove();
+	$(dl).before($(dl).parent().prev().html());
+	$(dl).parent().prev().remove();
+}
+
+function errorNotice(message, type = 'error'){
+	console[type](message);
+	alert(message);
+}
+
 function txtFilter(n){
 	return n.nodeType === 3 && n.nodeValue !== '\n';
+}
+
+function resizeTextBox(boxEvent){
+	const textBox = $(boxEvent.currentTarget);
+	textBox.removeAttr('style');
+	textBox.css('height', textBox.prop('scrollHeight') + 2);
+}
+
+function renderPreview(parsedPreview){
+	$('#talk-tools-preview-js').html(parsedPreview);
+	mw.hook('wikipage.content').fire($('#talk-tools-preview-js'));
 }
 
 function parseHeadingText(headingText){
@@ -845,10 +823,4 @@ function addSig(comment){
 	}
 	return comment;
 	// </pre>
-}
-
-function resizeTextBox(boxEvent){
-	const textBox = $(boxEvent.currentTarget);
-	textBox.removeAttr('style');
-	textBox.css('height', textBox.prop('scrollHeight') + 2);
 }
