@@ -113,6 +113,11 @@
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
         },
 
+        CountdownRegular: {
+            page: 'CountdownRegular',
+            scripts: 'MediaWiki:CountdownRegular.js'
+        },
+
         CountdownScroller: {
             page: 'CountdownScroller',
             scripts: 'MediaWiki:CountdownScroller.js'

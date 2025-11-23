@@ -29,7 +29,7 @@ function voting ($, mw) {
     };
  
     function closeModal() {
-		var confirmation = confirm("Are you sure you want to close this modal? Any work you enter will not be saved.")
+		var confirmation = confirm("Are you sure you want to close this modal? Any work you enter will not be saved.");
         if (confirmation) $($('.modalWrapper')[$('.modalWrapper').length - 1]).closeModal();
     }
  
@@ -43,13 +43,13 @@ function voting ($, mw) {
     }
  
     function help() {
-        createModal("Help", "<b>Help</b><br/>This system is designed to make it as easy as possible to vote on a RfR. If you experience any problems while using it, which is fairly likely, firstly consider whether this is the sort of thing you want to waste your time on. If the answer is yes, please leave <a href='http://animaljam.fandom.com/wiki/User:CheesyPotatoes :)'>CheesyPotatoes :)</a> a message.");
+        createModal("Help", "<b>Help</b><br/>This system is designed to make it as easy as possible to vote on a RfR. If you experience any problems while using it, which is fairly likely, firstly consider whether this is the sort of thing you want to waste your time on. If the answer is yes, please leave <a href='http://animaljam.fandom.com/wiki/User:PhosphorescentBloom'>PhosphorescentBloom</a> a message.");
     }
  
     function rfrVote() {
         createModal(
             "Vote",
-            "<form id='voteForm'><select name='voteSelect'><option name='support'>Support</option><option name='neutral'>Neutral</option><option name='oppose'>Oppose</option></select><br/>Reason<br/><textarea name='voteReason' style='width: 90%'/></form><br/><small>Note: changes may not show up immediately.",
+            "<form id='voteForm'><select name='voteSelect'><option name='support'>Support</option><option name='neutral'>Neutral</option><option name='oppose'>Oppose</option></select><br/>Reason<br/><textarea name='voteReason' style='width: 90%'/></textarea></form><br/><small>Note: changes may not show up immediately.",
             {buttons: [{id: "submit", message: "Submit", handler: function() {getExistingVotes(submitVote)}}, {id: "remove", message: "Remove", handler: function() {getExistingVotes(removeVote)}}]}
         );
         $('#remove').hide();
@@ -78,12 +78,18 @@ function voting ($, mw) {
             delete data[conf.userVote][conf.wgUserName];
         }
         data[$("[name='voteSelect']").val()][conf.wgUserName] = $("[name='voteReason']").val();
-        saveVotes(data);
+		var api = new mw.Api();
+		api.getToken('csrf').then(function (token) {
+        	saveVotes(data, token);
+		});
     }
  
     function removeVote(data) {
         delete data[conf.userVote][conf.wgUserName];
-        saveVotes(data);
+		var api = new mw.Api();
+		api.getToken('csrf').then(function (token) {
+        	saveVotes(data, token);
+		});
     }
  
     function getExistingVotes(callback) {
@@ -103,7 +109,7 @@ function voting ($, mw) {
         });
     }
  
-    function saveVotes(data) {
+    function saveVotes(data, token) {
         $.ajax({
             url: mw.util.wikiScript('api'),
             data: {
@@ -112,7 +118,7 @@ function voting ($, mw) {
                 section: 0,
                 text: JSON.stringify(data),
                 format: 'json',
-                token: mw.user.tokens.get('editToken')
+                token: token
             },
             dataType: 'json',
             type: 'POST',
@@ -161,4 +167,4 @@ function voting ($, mw) {
     }
  
 	$(init);
-};
+}

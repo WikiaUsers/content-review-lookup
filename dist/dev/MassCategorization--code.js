@@ -519,7 +519,7 @@
                     var escapedCat = this.escapeRegex(category);
                     var categoryNamespaceGroup = '(' + this.categoryAliases.join('|') + ')';
                     // TODO: Simplify
-                    var sRegEx = '(\\[\\[' + categoryNamespaceGroup + ':' + escapedCat + '\\]\\]|\\[\\[' + categoryNamespaceGroup + ':' + escapedCat + '\\|.*?\\]\\])';
+                    var sRegEx = '(\\[\\[' + categoryNamespaceGroup + ':\\s*' + escapedCat + '\\]\\]|\\[\\[' + categoryNamespaceGroup + ':\\s*' + escapedCat + '\\|.*?\\]\\])';
                     var regex = new RegExp(sRegEx, flags);
                     var newCat = this.categoryLocal + ':' + this.upcaseFirst(replacement);
 
@@ -542,7 +542,7 @@
                     var escapedCat = this.escapeRegex(category);
                     var categoryNamespaceGroup = '(' + this.categoryAliases.join('|') + ')';
                     // TODO: Simplify
-                    var sRegEx = '(\\[\\[' + categoryNamespaceGroup + ':' + escapedCat + '\\]\\]|\\[\\[' + categoryNamespaceGroup + ':' + escapedCat + '\\|.*?\\]\\])';
+                    var sRegEx = '(\\[\\[' + categoryNamespaceGroup + ':\\s*' + escapedCat + '\\]\\]|\\[\\[' + categoryNamespaceGroup + ':\\s*' + escapedCat + '\\|.*?\\]\\])';
                     var regex = new RegExp(sRegEx, flags);
 
                     if (regex.test(newContent)) {

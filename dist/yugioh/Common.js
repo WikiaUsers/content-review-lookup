@@ -1,4 +1,7 @@
 /*global mw, $, console, importStylesheet, importScript, importArticles, addOnloadHook, enableOldForumEdit */
+/* Add RailModule to the top of right rail */
+window.AddRailModule = [{prepend: true}];
+
 /*jshint browser:true, curly:false, eqnull:true, strict:false */
 mw.loader.using(['mediawiki.util', 'jquery.client'], function () {
 /* Begin of mw.loader.using callback */

@@ -2,6 +2,16 @@
 
 /* WAM Site-wide Installation */
 
+// For filtering source material template's gif
+
+window.pPreview = window.pPreview || {};
+window.pPreview.RegExp = window.pPreview.RegExp || {};
+
+window.pPreview.RegExp.iimages = window.pPreview.RegExp.iimages || [];
+window.pPreview.RegExp.iimages.push(/^2015060816373561467\.gif$/i);
+
+window.pPreview.RegExp.noinclude = window.pPreview.RegExp.noinclude || [];
+window.pPreview.RegExp.noinclude.push('.source-notice');
 
 //Adding Prefix for InputUsername
 function updateGreeting() {

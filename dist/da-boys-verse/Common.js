@@ -49,14 +49,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const max = 5;
     // read values (coerce to numbers and clamp 0..max)
-    const vals = [
-      Number(container.dataset.vocals || 0),
-      Number(container.dataset.stamina || 0),
-      Number(container.dataset.talent || 0),
-      Number(container.dataset.mental || 0),
-      Number(container.dataset.star || 0),
-      Number(container.dataset.visuals || 0)
-    ].map(v => Math.min(max, Math.max(0, Number.isFinite(v) ? v : 0)));
+const vals = [
+  Number(container.dataset.mental || 0),
+  Number(container.dataset.vocals || 0),
+  Number(container.dataset.potential || 0),
+  Number(container.dataset.intelligence || 0),
+  Number(container.dataset.athletics || 0),
+  Number(container.dataset.social || 0)
+].map(v => Math.min(max, Math.max(0, Number.isFinite(v) ? v : 0)));
 
     // create svg area
     const wrapper = document.createElement('div');
@@ -98,15 +98,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     wrapper.appendChild(svg);
     // add labels overlay
-    const labels = document.createElement('div');
-    labels.className = 'radar-labels';
-    labels.innerHTML = ''
-      + '<span class="label label-vocals">Vocals</span>'
-      + '<span class="label label-stamina">Stamina</span>'
-      + '<span class="label label-talent">Talent</span>'
-      + '<span class="label label-mental">Mental Strength</span>'
-      + '<span class="label label-star">Star Potential</span>'
-      + '<span class="label label-visuals">Visuals</span>';
+const labels = document.createElement('div');
+labels.className = 'radar-labels';
+labels.innerHTML = ''
+  + '<span class="label label-mental">Mental</span>'
+  + '<span class="label label-vocals">Vocals</span>'
+  + '<span class="label label-potential">Potential</span>'
+  + '<span class="label label-intelligence">Intelligence</span>'
+  + '<span class="label label-athletics">Athletics</span>'
+  + '<span class="label label-social">Social</span>';
 
     container.appendChild(wrapper);
     container.appendChild(labels);
@@ -180,3 +180,92 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
 } )( mw, window, document );
+
+/* ==========================================
+   Auto-load pages tagged under Category:Tales
+   And detect: Canon / Non-canon tags
+   ========================================== */
+
+mw.loader.using('mediawiki.api').then(function () {
+    var api = new mw.Api();
+
+    function loadFanfics() {
+        var container = document.getElementById("fanfics-container");
+        if (!container) return;
+
+        api.get({
+            action: "query",
+            list: "categorymembers",
+            cmtitle: "Category:Tales",
+            cmlimit: "500",
+            format: "json"
+        }).done(function (data) {
+            container.innerHTML = "";
+            var pages = data.query.categorymembers;
+
+            if (!pages.length) {
+                container.innerHTML = "<div>No fanfics found in Category:Tales.</div>";
+                return;
+            }
+
+            // For each page, fetch categories
+            pages.forEach(function (page) {
+                api.get({
+                    action: "query",
+                    prop: "categories",
+                    titles: page.title,
+                    cllimit: "max",
+                    format: "json"
+                }).done(function (catData) {
+
+                    var pageId = Object.keys(catData.query.pages)[0];
+                    var categories = catData.query.pages[pageId].categories || [];
+
+                    // Detect canon vs noncanon
+                    var tagType = null;
+
+                    categories.forEach(function (c) {
+                        var name = c.title.replace("Category:", "").toLowerCase();
+                        if (name === "canon") tagType = "canon";
+                        if (name === "non-canon" || name === "noncanon") tagType = "noncanon";
+                    });
+
+                    // Build entry
+                    var div = document.createElement("div");
+                    div.className = "fanfics-entry";
+
+                    var link = document.createElement("a");
+                    link.href = mw.util.getUrl(page.title);
+                    link.textContent = page.title;
+
+                    div.appendChild(link);
+
+                    // Add tag if detected
+                    if (tagType) {
+                        var tag = document.createElement("span");
+                        tag.className = "fanfics-tag " + tagType;
+                        tag.textContent = tagType === "canon" ? "Canon" : "Non-canon";
+                        div.appendChild(tag);
+                    }
+
+                    container.appendChild(div);
+                });
+            });
+        });
+    }
+
+    loadFanfics();
+});
+
+// Planet status colorizer
+$(function () {
+    $('.planet-box, .planet-holo, .galaxy-card').each(function () {
+        const status = ($(this).data('status') || "").toLowerCase();
+
+        if (status.includes("uncolonized") && status.includes("uninhabitable")) {
+            $(this).addClass('planet-danger');
+            $(this).addClass('danger-holo');
+            $(this).addClass('galaxy-alert');
+        }
+    });
+});

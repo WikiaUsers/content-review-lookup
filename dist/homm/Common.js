@@ -533,6 +533,9 @@ function setupWatchables() {
 		}
 		if (video.tagName == 'IMG') {
 			var wrapA = document.createElement('a');
+			if (elems[i].dataset && elems[i].dataset.hover) {
+				wrapA.title = elems[i].dataset.hover;
+			}
 			wrapA.href = fileLink;
 			wrapA.appendChild(video);
 			elems[i].insertBefore(wrapA, null);

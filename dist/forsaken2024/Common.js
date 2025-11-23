@@ -180,23 +180,55 @@ fetchStats();
 setInterval(fetchStats, 10000);
 
 //Infoboxes
-$(function() {
-    if (!window.nameGadgetEnabled) return; // only run if gadget is enabled
+// === Popup for Discuss button ===
+function addDiscussPopup() {
+    // Look for the Discuss button
+    const discussBtn = document.querySelector(
+        '.wds-button.wds-is-secondary.is-hidden-on-smaller-breakpoints[href*="/f"]'
+    );
+    if (!discussBtn) return; // not found yet
 
-    // Loop through all title1 spans
-    $('span.title1').each(function() {
-        const $span = $(this);
-        const original = $span.html(); // keep original [[File:...]] markup
+    // Prevent adding multiple times
+    if (document.getElementById("discuss-popup")) return;
 
-        // Extract the file name from [[File:...]]
-        const match = original.match(/\[\[File:([^\]|]+)(?:\|[^\]]*)?\]\]/);
-        if (!match) return;
-        const filename = match[1];
+    // Create popup
+    const popup = document.createElement("div");
+    popup.id = "discuss-popup";
+    popup.style.cssText = `
+        position: fixed; top:0; left:0; width:100%; height:100%;
+        background: rgba(0,0,0,0.7); display:flex; align-items:center;
+        justify-content:center; z-index:99999; display:none;
+    `;
+    popup.innerHTML = `
+        <div style="
+            background: #222; color:white; padding:20px; border-radius:10px;
+            text-align:center; border:2px solid #ff4444;
+        ">
+            <h2>⚠ WARNING!</h2>
+            <p>Before entering the Discussion area, please read the rules.</p>
+            <button id="popup-continue" style="
+                margin-top:10px; padding:8px 15px; background:#ff4444;
+                color:white; border:none; cursor:pointer;
+            ">Continue</button>
+        </div>
+    `;
+    document.body.appendChild(popup);
 
-        // Lookup in NameData (already loaded as JS object)
-        if (nameData[filename]) {
-            $span.attr('data-title1', original); // temporarily store original
-            $span.text(nameData[filename]); // replace with text
-        }
+    // Show popup on click
+    discussBtn.addEventListener("click", function(e){
+        e.preventDefault();
+        popup.style.display = "flex";
     });
-});
+
+    // Continue button
+    document.getElementById("popup-continue").addEventListener("click", function(){
+        window.location.href = discussBtn.href;
+    });
+}
+
+// Observe DOM changes in case the button is loaded later
+const observer = new MutationObserver(addDiscussPopup);
+observer.observe(document.body, { childList: true, subtree: true });
+
+// Also try to run immediately in case button is already loaded
+addDiscussPopup();

@@ -77,10 +77,18 @@ function handleTalentFilter() {
 		]
 	};
 	// html for the search form
+	const CAT_RELEASE_ORDER_PAGENAME = "Cat_Release_Order";
+	const CRO_INPUT_SEPARATOR = " ";
+	const MSG_SEARCH_BY_CRO_EXPLANATION = "Input space-separated values e.g. \"10 25 71 76 259\"";
+	const HOW_TO_MANAGE_SELECTION_MSG = "Click on a talent to remove it from selection";
+
 	const DEFAULT_DROPDOWN_TEXT = "Select a talent...";
-	const SEARCH_FORM_HTML = `<table>
+	const SEARCH_FORM_HTML = `<table style="width: 100%">
 <tr>
-	<td><b>Gain ability</b></td>
+	<td colspan=3 style="text-align:center; background: #ffffff25"><b>Available conditions:</b></td>
+</tr>
+<tr>
+	<td style="width: 20%"><b>Gain ability</b></td>
 	<td colspan=2><select class='dd' id='` + CRITERIA_GAIN + `'><option value="">` + DEFAULT_DROPDOWN_TEXT + `</option></select></td>
 </tr>
 <tr>
@@ -104,13 +112,25 @@ function handleTalentFilter() {
 	<td colspan=2><select class='dd' id='` + CRITERIA_MISC + `'><option value="">` + DEFAULT_DROPDOWN_TEXT + `</option></select></td>
 </tr>
 <tr>
-	<td></td>
+	<td colspan=3 style="text-align:center; background: #ffffff25"><b>Selected conditions:</b></td>
+</tr>
+<tr>
+	<td><b><span style="text-decoration-line: underline; text-decoration-style: dotted" title="` + HOW_TO_MANAGE_SELECTION_MSG + `">Talents</span></b></td>
+	<td colspan=2 id="condition_selected"></td>
+</tr>
+<tr>
+	<td><b>Types</b></td>
 	<td>Talents<input type="checkbox" id="include_talent" checked></td>
 	<td>Ultra Talents<input type="checkbox" id="include_utalent" checked></td>
 </tr>
 <tr>
+	<td><b>Specific <a href='/` + CAT_RELEASE_ORDER_PAGENAME + `'>CROs</a></b></td>
+	<td colspan=2><textarea rows="4" id="cros" placeholder='` + MSG_SEARCH_BY_CRO_EXPLANATION + `'></textarea></td>
+	</tr>
+</tr>
+<tr>
 	<td></td>
-	<td><button id="btnCalculate" type="button">Calculate</button></td>
+	<td><button id="btnCalculate" type="button">Search</button></td>
 	<td><button id="btnReset" type="button">Reset</button></td>
 </tr>
 </table>`;
@@ -122,8 +142,7 @@ function handleTalentFilter() {
 	let TALENT_DESCRIPTION = null;
 	// decorate
 	$("#search_form").css({"border": "1px solid black", "padding": "20px"});
-	$("#selected").css({"border": "1px solid black", "padding": "20px"});
-	$("#description").css({"border": "1px solid black", "padding": "10px"});
+	$("#condition_selected").css({"border": "1px solid black", "padding": "20px"});
 	$("#search_form").append(SEARCH_FORM_HTML);
 
 	// fill dropdowns
@@ -142,6 +161,10 @@ function handleTalentFilter() {
     api.get(SOURCE_TALENT_DETAIL).done(function (res) {
     	let content = res.query.pages[0].revisions[0].slots.main.content;
         TALENT_DETAIL = JSON.parse(content);
+    });
+    api.get(SOURCE_TALENT_LEVEL).done(function (res) {
+    	let content = res.query.pages[0].revisions[0].slots.main.content;
+        TALENT_LEVEL = JSON.parse(content);
     });
     api.get(SOURCE_TALENT_DESCRIPTION).done(function (res) {
     	let content = res.query.pages[0].revisions[0].slots.main.content;
@@ -162,16 +185,37 @@ function handleTalentFilter() {
 		if (selected_value == "")
 			return;
 		let selected_text =  $("#" + id + " option:selected").text();
-		$("#selected").append("<button class='selected_option' value='" + selected_value +"' />" + selected_text + "</button>");
+		$("#condition_selected").append("<button class='selected_option' value='" + selected_value +"' />" + selected_text + "</button>");
 	});
 	// remove a selected talent
-	$("#selected").on("click", "button.selected_option", function() {
+	$("#condition_selected").on("click", "button.selected_option", function() {
 		$(this).remove();
 	});
 	// display talent of the selected Cat
 	$("#result").on("click", "span.cat_image", function() {
 		let cro = $(this).data("cro");
-		buildTooltip(cro);
+
+		$("#description").html("");
+		$("#description").append("<img style='vertical-align: middle' src='/Special:Redirect/file/Uni"+ padding(cro) +"_s00.png' /><b>CRO-" + cro + "</b>");
+
+		let detail_header = `{\| class="article-table"
+!#
+!Type
+!Talent
+!Detail
+!Max Level
+!NP
+!Total NP`;
+
+		let parse_to_html = {
+			action: 'parse',
+			text: detail_header + buildTooltip(cro) + "\n|}",
+		    contentmodel: 'wikitext',
+		};
+		api.post(parse_to_html)
+		.done(function(parse_result) {
+			$("#description").append(parse_result.parse.text['*']);
+		});
 	});
 	/* filter */
 	const MAX_TALENT_COUNT = 8;
@@ -187,7 +231,7 @@ function handleTalentFilter() {
 	$("#btnReset").on("click", function() { 
 		$("#description").html("");
 		$("#result").html("");
-		$("#selected").html("");
+		$("#condition_selected").html("");
 	});
 	// filtering
 	$("#btnCalculate").on("click", function() {
@@ -203,6 +247,14 @@ function handleTalentFilter() {
 		$(".selected_option").each(function() {
 			criteria.push( parseInt($(this).val()) );
 		});
+		// get inputted CROs if exist
+		let selected_cros_initial = $("#cros").val().trim().split(CRO_INPUT_SEPARATOR);
+		let selected_cros = [];
+		for (let i = 0; i < selected_cros_initial.length; i++) {
+			if (selected_cros_initial[i].length == 0 || isNaN(parseInt(selected_cros_initial[i])))
+				continue;
+			selected_cros.push(selected_cros_initial[i]);
+		}
 		// actually filter
 		let result = [];
 		// talent index range
@@ -210,6 +262,13 @@ function handleTalentFilter() {
 		let flag_check_utalent = $("#include_utalent").is(":checked");
 		// loop
 		for (const [key, value] of Object.entries(TALENT_DATA)) {
+			// if CROs are provided, check if this Cat is one of it
+			if (selected_cros.length > 0 && selected_cros.indexOf(key) < 0) continue;
+			// if no criteria is selected, get all available Cats
+			if (criteria.length == 0) {
+				result.push(key);
+				continue;
+			}
 			// retrieve this Cat's all talents
 			let this_cat_all_talents = [];
 			for (let i = 0; i < MAX_TALENT_COUNT; i++) {
@@ -230,26 +289,48 @@ function handleTalentFilter() {
 				result.push(key);
 		}
 		// count the matching Cats
-		$("#result").append("<p>Found " + result.length + " Cat(s)</p>");
+		$("#result").append("<p>Found " + result.length + " Cat(s), click a Cat's icon for details.</p>");
 		// display
 		for (let i = 0; i < result.length; i++) {
 			$("#result").append("<span class='cat_image' data-cro='" + result[i] + "' title='CRO-" + result[i] + "'><img src='/Special:Redirect/file/Uni" + padding(result[i]) + "_s00.png' /></span>");
 		}
 	});
-	// can just be merged with getDetail()
 	function buildTooltip(cro) {
-		$("#description").html("");
-		let tooltip = "<img style='vertical-align: middle' src='/Special:Redirect/file/Uni"+ padding(cro) +"_s00.png' /><b>CRO-" + cro + "</b><br />";
+
+		let body = [];
 		let data = TALENT_DATA[cro];
 		for (let i = 0; i < MAX_TALENT_COUNT; i++) {
 			if (data[i*OFFSET+DESCRIPTION_OFFSET] == 0) break;
-			
-			if (data[i*OFFSET+ULTRA_TALENT_OFFSET] != 0)
-				tooltip = tooltip + "● <u><i>Ultra Talent:</i></u> " + TALENT_DESCRIPTION[data[i*OFFSET+DESCRIPTION_OFFSET]] + "<br />";
-			else
-				tooltip = tooltip + "● <u><i>Talent:</i></u> " + TALENT_DESCRIPTION[data[i*OFFSET+DESCRIPTION_OFFSET]] + "<br />";
+
+			let talent_type = data[i*OFFSET+ULTRA_TALENT_OFFSET] == 0 ? "Talent" : "Ultra Talent";
+			let total_np = 0;
+			let max_level = data[i*OFFSET+MAX_LEVEL_OFFSET] == 0 ? 1 : data[i*OFFSET+MAX_LEVEL_OFFSET];
+			for (let j = 0; j < max_level; j++) {
+				total_np += TALENT_LEVEL[data[i*OFFSET+UPGRADE_TYPE_OFFSET]][j];
+			}
+
+			let talent_detail = TALENT_DETAIL[data[i*OFFSET+DESCRIPTION_OFFSET]];
+			for (let j = 0; j < MAX_PARAMS_COUNT; j++) {
+				talent_detail = talent_detail.replaceAll("{" + String(j+1) + "}", display_talent_parameter(data[i*OFFSET+PARAMS_OFFSET+j*2], data[i*OFFSET+PARAMS_OFFSET+j*2+1]));
+				talent_detail = talent_detail.replaceAll("{" + String(j+1) + "r}", display_talent_parameter(data[i*OFFSET+PARAMS_OFFSET+j*2]/4, data[i*OFFSET+PARAMS_OFFSET+j*2+1]/4));
+			}
+
+			let wikitext = `\n\|-
+\|` + String(i+1) + `\n
+\|` + talent_type + `\n
+\|` + TALENT_DESCRIPTION[data[i*OFFSET+DESCRIPTION_OFFSET]] + `\n
+\|` + talent_detail + `\n
+\|` + max_level + `\n
+\|` + String(TALENT_LEVEL[data[i*OFFSET+UPGRADE_TYPE_OFFSET]].slice(0, max_level)) + `\n
+\|` + total_np;
+			body.push(wikitext);
 		}
-		$("#description").append("<p>" + tooltip + "</p>");
+
+		return body.join("\n");
+	}
+	function display_talent_parameter(param_1, param_2) {
+		if (param_1 == param_2) return param_1;
+			return param_1 + "~" + param_2;
 	}
 	// contruct valid cro for the image filename
 	function padding(num) {

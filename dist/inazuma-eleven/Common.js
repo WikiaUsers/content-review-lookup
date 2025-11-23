@@ -92,3 +92,23 @@
 }) (window.mediaWiki);
 
 window.i = window.i || 0; //Required for SignatureCheck to work properly
+
+// Optional config — leave blank to use defaults
+window.welcomeMessage = {
+  enabled: true,
+  adminUsername: 'ExampleAdmin',     // $4
+  adminNickname: 'Example Admin',    // $3
+  messageTitle: 'Welcome, $1!',
+  messageText: '{{Welcome}}',
+  debug: false,
+  testAllEdits: false,
+  preferTalk: true,
+};
+
+// Import from dev
+importArticles({
+  type: 'script',
+  articles: [
+    'dev:MediaWiki:WelcomeMessage.js'
+  ]
+});

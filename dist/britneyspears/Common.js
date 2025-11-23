@@ -42,20 +42,57 @@ $(function() {
         });
     }
 });
-/** Adds the Page Tabs template to every page */
-mw.hook('wikipage.content').add(function($content) {
-    
-    // The name of your template without the "Template:" prefix
-    var templateName = 'Talk header'; 
-    
-    // Add the template call as a string
-    var wikitext = '{{' + templateName + '}}';
-    
-    // Convert the wikitext into HTML and prepend it to the main content area
-    new mw.Api().parse( wikitext, {
-        title: mw.config.get('wgPageName')
-    }).done(function(html) {
-        // This selector targets the area right above the main content
-        $('.page-header').after(html); 
+$(function () {
+
+    $('.album-carousel').each(function () {
+
+        var $carousel = $(this);
+        var $items = $carousel.find('.album-item');
+        var visible = 4;            // show 4 albums
+        var index = 0;              // starting index
+        var lastIndex = $items.length - visible;
+
+        var $prev = $carousel.find('.album-prev');
+        var $next = $carousel.find('.album-next');
+
+        function showItems() {
+            $items.hide();
+            for (var i = 0; i < visible; i++) {
+                var pos = index + i;
+                if (pos < $items.length) {
+                    $items.eq(pos).show();
+                }
+            }
+
+            // Hide/show arrows at edges
+            if (index <= 0) {
+                $prev.hide();
+            } else {
+                $prev.show();
+            }
+
+            if (index >= lastIndex) {
+                $next.hide();
+            } else {
+                $next.show();
+            }
+        }
+
+        $next.on('click', function () {
+            if (index < lastIndex) {
+                index++;
+                showItems();
+            }
+        });
+
+        $prev.on('click', function () {
+            if (index > 0) {
+                index--;
+                showItems();
+            }
+        });
+
+        showItems();
     });
+
 });

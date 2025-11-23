@@ -111,3 +111,47 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+/* Autosize nav label */ 
+function scaleNavLabels() {
+  const containers = document.querySelectorAll('.NavLabel');
+
+  containers.forEach(container => {
+    if (container.clientWidth === 0) return;
+
+    container.style.fontSize = ''; 
+    
+    let textSpan = container.querySelector('span');
+    if (!textSpan) {
+      textSpan = document.createElement('span');
+      textSpan.textContent = container.textContent;
+      container.innerHTML = ''; 
+      container.appendChild(textSpan);
+    }
+    
+    textSpan.style.whiteSpace = 'nowrap';
+    textSpan.style.display = 'inline-block';
+
+    let fontSize = parseFloat(window.getComputedStyle(container).fontSize);
+    
+    while (textSpan.offsetWidth > (container.clientWidth - 6) && fontSize > 5) {
+      fontSize -= 0.5;
+      container.style.fontSize = `${fontSize}px`;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', scaleNavLabels);
+document.fonts.ready.then(scaleNavLabels);
+window.addEventListener('load', scaleNavLabels);
+
+window.addEventListener('load', () => {
+    setTimeout(scaleNavLabels, 500);
+});
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(scaleNavLabels, 100);
+});

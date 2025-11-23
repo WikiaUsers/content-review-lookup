@@ -7,7 +7,8 @@ function percent_completed() {
     const tables = document.querySelectorAll('.table-progress-tracking');
     
     for (let i = 0; i < tables.length; i++) {
-    	// Important for updating percentages when page laods.
+    	
+    	// Important for updating percentages when page loads.
         observer.observe(tables[i], {
             subtree: true,
             childNodes: true,
@@ -16,10 +17,13 @@ function percent_completed() {
         
         var selected_boxes = 0;
     	var total_boxes = -1; // Omits the first row.
+    	
         for (let row of tables[i].rows) {
+        	
             total_boxes += 1;
             
             for (let cell of row.cells) {
+            	// On cell change, update percentage.
                 cell.addEventListener("change", percent_completed);
                 if (cell.getAttribute('data-sort-value') == "1") {
                     selected_boxes += 1;
@@ -27,6 +31,7 @@ function percent_completed() {
             }
         }
         
+        // Selects the first table header cell (top left).
         const th = tables[i].querySelector('th');
         const text = Math.round(selected_boxes / total_boxes * 100) + '%';
         

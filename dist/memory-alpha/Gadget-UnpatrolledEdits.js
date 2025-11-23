@@ -1,17 +1,16 @@
 'use strict';
 mw.loader.using(['mediawiki.api'], () => {
-	const api = new mw.Api();
-	const rights = mw.config.get('wgUserGroups');
-	const pagename = 'BlankPage/UnpatrolledEdits';
-	const wrongNs = mw.config.get('wgNamespaceNumber') !== -1;
-	const wrongRights =
-		rights.indexOf('content-moderator') === -1 &&
-		rights.indexOf('helper') === -1 &&
-		rights.indexOf('staff') === -1 &&
-		rights.indexOf('sysop') === -1 &&
-		rights.indexOf('wiki-specialist') === -1;
+	const config = mw.config.values;
+	const wrongNs = config.wgCanonicalSpecialPageName !== 'Blankpage';
+	const wrongPage = config.wgPageName.split('/')[1] !== 'UnpatrolledEdits';
+	const api = new mw.Api({'parameters': {
+		'action': 'query',
+		'format': 'json',
+		'formatversion': 2,
+		'errorformat': 'plaintext',
+	}});
 	
-	if (wrongNs || mw.config.get('wgTitle') !== pagename || wrongRights){
+	if (wrongNs || wrongPage){
 		return;
 	}
 	
@@ -29,7 +28,7 @@ mw.loader.using(['mediawiki.api'], () => {
 	];
 	
 	api.loadMessagesIfMissing(messages).done(() => {
-		const validNamespaces = Object.keys(mw.config.get('wgFormattedNamespaces')).filter((x) => x >= 0);
+		const validNamespaces = Object.keys(config.wgFormattedNamespaces).filter(x => x >= 0);
 		const opening = $('#mw-content-text p');
 		const searchParams = new URLSearchParams(location.search);
 		const limit = searchParams.get('limit') ? Number(searchParams.get('limit')) : 1000;
@@ -45,7 +44,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			.append($(`<textarea id="myModalNamespaces" rows="4" style="display: block;">${namespace.split('|').join('\n')}</textarea>`))
 			.append($('<label for="myModalUser">User</label>'))
 			.append($(`<input type="text" value="${user}" id="myModalUser" style="display: block;">`))
-			.append($('<button class="wds-button" id="myModalGo">Go</button>'));
+			.append($('<button class="cdx-button" id="myModalGo">Go</button>'));
 		
 		document.title = mw.message('pagetitle', title).text();
 		$('#firstHeading').html(title);
@@ -54,30 +53,42 @@ mw.loader.using(['mediawiki.api'], () => {
 		
 		$('#myModalGo').on('click', () => {
 			user = $('#myModalUser').val();
-			namespace = $('#myModalNamespaces').val().split('\n').filter((x) => x >= 0).join('|');
-			location.href = mw.util.getUrl(`Special:${pagename}`, {limit: limit, offset: offset, namespace: namespace, user: user});
+			namespace = $('#myModalNamespaces').val().split('\n').filter(x => x >= 0).join('|');
+			location.href = mw.util.getUrl(config.wgPageName, {
+				'limit': limit,
+				'offset': offset,
+				'namespace': namespace,
+				'user': user,
+			});
 		});
 		
 		requestSome();
 		
 		function requestSome(continueParameter){
 			const params = {
-				action: 'query',
-				list: 'recentchanges',
-				rcprop: 'title|ids',
-				rcshow: '!patrolled',
-				rclimit: 5000,
-				rcnamespace: namespace,
-				rccontinue: continueParameter,
+				'list': 'recentchanges',
+				'rcprop': 'title|ids',
+				'rcshow': '!patrolled',
+				'rclimit': 'max',
+				'rcnamespace': namespace,
+				'rccontinue': continueParameter,
 			};
 			
 			if (user){
 				params.rcuser = user;
 			}
 			
-			api.get(params).done((result) => {
+			api.post(params).done(result => {
+				if (result.warnings){
+					console.warn(result.warnings);
+					for (const i in result.warnings){
+						const warning = result.warnings[i];
+						console.warn(`Warning: ${warning.code}: ${warning.text}`);
+					}
+				}
+				
 				if (result.query){
-					result.query.recentchanges.forEach((edit) => changes.push(edit));
+					result.query.recentchanges.forEach(edit => changes.push(edit));
 				}
 				
 				if (result['continue']){
@@ -86,10 +97,10 @@ mw.loader.using(['mediawiki.api'], () => {
 					renderList();
 				}
 			}).fail((code, data) => {
-				if (code === 'http'){
-					console.error(`Error: ${code}: ${JSON.stringify(data)}`);
-				} else {
-					console.error(`Error: ${code}: ${typeof data}`);
+				console.error(data.errors);
+				for (const i in data.errors){
+					const error = data.errors[i];
+					console.error(`Error: ${error.code}: ${error.text}`);
 				}
 			});
 		}
@@ -104,19 +115,20 @@ mw.loader.using(['mediawiki.api'], () => {
 				list.append($(`<li><a href="${mw.util.getUrl(changes[i].title)}">${mw.html.escape(changes[i].title)}</a> (<a href="${mw.util.getUrl(`Special:Diff/${changes[i].revid}`)}">diff</a>)</li>`));
 			}
 			
-			const prev = !offset ? mw.message('prevn', limit).text() : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: limit, offset: offset - limit, namespace: namespace, user: user})}">${mw.message('prevn', limit).text()}</a>`;
-			const next = (end >= changes.length) ? mw.message('nextn', limit).text() : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: limit, offset: offset + limit, namespace: namespace, user: user})}">${mw.message('nextn', limit).text()}</a>`;
+			const prev = !offset ? mw.message('prevn', limit).text() : link(config, limit, offset - limit, namespace, user, -1, mw.message('prevn', limit).text());
+			const next = (end >= changes.length) ? mw.message('nextn', limit).text() : link(config, limit, offset + limit, namespace, user, -1, mw.message('nextn', limit).text());
 			
 			const range = mw.message('showingresultsinrange', ((end > changes.length) ? changes.length : end) - offset, start, ((end > changes.length) ? changes.length : end)).text();
+			const pipeSeparator = mw.message('pipe-separator').text();
 			const nav = mw.message(
 				'viewprevnext',
 				prev,
 				next,
-				((limit === 20) ? '20' : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: 20, offset: offset, namespace: namespace, user: user})}">20</a>`) + mw.message('pipe-separator').text() +
-				((limit === 50) ? '50' : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: 50, offset: offset, namespace: namespace, user: user})}">50</a>`) + mw.message('pipe-separator').text() +
-				((limit === 100) ? '100' : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: 100, offset: offset, namespace: namespace, user: user})}">100</a>`) + mw.message('pipe-separator').text() +
-				((limit === 250) ? '250' : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: 250, offset: offset, namespace: namespace, user: user})}">250</a>`) + mw.message('pipe-separator').text() +
-				((limit === 500) ? '500' : `<a href="${mw.util.getUrl(`Special:${pagename}`, {limit: 500, offset: offset, namespace: namespace, user: user})}">500</a>`)
+				link(config, 20, offset, namespace, user, limit) + pipeSeparator +
+				link(config, 50, offset, namespace, user, limit) + pipeSeparator +
+				link(config, 100, offset, namespace, user, limit) + pipeSeparator +
+				link(config, 250, offset, namespace, user, limit) + pipeSeparator +
+				link(config, 500, offset, namespace, user, limit)
 			).text();
 			
 			myModal
@@ -127,3 +139,15 @@ mw.loader.using(['mediawiki.api'], () => {
 		}
 	});
 });
+
+function link(config, limit, offset, namespace, user, oldLimit, text = limit){
+	if (limit === oldLimit){
+		return String(limit);
+	}
+	return `<a href="${mw.util.getUrl(config.wgPageName, {
+		'limit': limit,
+		'offset': offset,
+		'namespace': namespace,
+		'user': user,
+	})}">${String(text)}</a>`;
+}

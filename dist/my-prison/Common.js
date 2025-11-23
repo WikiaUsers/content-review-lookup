@@ -5,12 +5,9 @@ mw.hook('wikipage.content').add(function ($content) {
   if (!pageName.includes('change_log') && !pageName.includes('game_updates')) return;
 
   // --- CONFIGURATION ---
-  // Choose where to place the search bar:
-  // "top"      = before the page content
-  // "bottom"   = after the page content
-  // "afterH1"  = right after the first main heading
-  // "manual"   = replaces <div id="search-placeholder"></div> if present
-  var searchPlacement = "top";
+  var searchPlacement = "top"; // "top" | "bottom" | "afterH1" | "manual"
+  var debounceMs = 150;
+  var matchWholeWord = false; // set true to match whole words only
   // ---------------------
 
   // avoid injecting twice
@@ -20,7 +17,8 @@ mw.hook('wikipage.content').add(function ($content) {
   var $container = $('<div id="inpage-search" style="margin:10px 0;text-align:left;"></div>');
   var $input = $('<input id="pageSearchInput" type="search" placeholder="Search this page..." style="width:60%;padding:8px;border:1px solid #ccc;border-radius:6px;">');
   var $clear = $('<button id="pageSearchClear" style="margin-left:6px;padding:6px 8px;border:1px solid #ccc;border-radius:4px;background:#f9f9f9;">Clear</button>');
-  $container.append($input).append($clear);
+  var $meta = $('<span id="pageSearchMeta" style="margin-left:12px;font-size:0.95em;color:#444;"></span>');
+  $container.append($input).append($clear).append($meta);
 
   // place according to configuration
   if (searchPlacement === "bottom") {
@@ -50,6 +48,16 @@ mw.hook('wikipage.content').add(function ($content) {
     }
   }
 
+  // helper: debounce
+  function debounce(fn, wait) {
+    var t;
+    return function () {
+      var args = arguments, ctx = this;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(ctx, args); }, wait);
+    };
+  }
+
   // clear previous highlights
   function clearHighlightsIn($group) {
     $group.find('span.page-search-highlight').each(function () {
@@ -57,27 +65,83 @@ mw.hook('wikipage.content').add(function ($content) {
     });
   }
 
-  // highlight matching terms
-  function highlightIn($group, term) {
+  // normalize text: lowercase + remove diacritics
+  function normalizeText(s) {
+    if (!s) return '';
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  // highlight matching terms using an already-normalized term to avoid mismatch
+  function highlightIn($group, term, normTerm) {
     if (!term) return;
-    var safe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp('(' + safe + ')', 'ig');
+    var normTermLocal = typeof normTerm !== 'undefined' ? normTerm : normalizeText(term);
+    var termLen = normTermLocal.length;
+    if (!termLen) return;
+
+    var useWhole = !!matchWholeWord;
 
     $group.find('h1,h2,h3,h4,h5,h6,p,li,td,th,div').each(function () {
+      // only process text nodes inside this element
       $(this).contents().filter(function () { return this.nodeType === 3; }).each(function () {
         var txt = this.nodeValue;
-        if (!txt || !re.test(txt)) return;
+        if (!txt) return;
+
+        // build mapping from normalized indices to original indices
+        var norm = '';
+        var map = [];
+        for (var i = 0; i < txt.length; i++) {
+          var ch = txt[i];
+          var nch = ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          if (nch.length === 0) continue;
+          for (var k = 0; k < nch.length; k++) {
+            norm += nch[k].toLowerCase();
+            map.push(i);
+          }
+        }
+        if (!norm) return;
+
+        var startIndex = 0;
+        var foundAny = false;
         var frag = document.createDocumentFragment();
-        var last = 0;
-        txt.replace(re, function (m, g, offset) {
-          if (offset > last) frag.appendChild(document.createTextNode(txt.slice(last, offset)));
+        var lastOrig = 0;
+
+        while (true) {
+          var pos = norm.indexOf(normTermLocal, startIndex);
+          if (pos === -1) break;
+
+          // if whole-word required, check boundaries in the normalized string
+          if (useWhole) {
+            var before = pos - 1;
+            var after = pos + termLen;
+            var okBefore = before < 0 || !(/[a-z0-9_]/i).test(norm[before]);
+            var okAfter = after >= norm.length || !(/[a-z0-9_]/i).test(norm[after]);
+            if (!(okBefore && okAfter)) {
+              startIndex = pos + 1;
+              continue;
+            }
+          }
+
+          foundAny = true;
+          var origStart = map[pos];
+          var origEnd = map[pos + termLen - 1] + 1; // slice end
+
+          // append text between lastOrig and origStart
+          if (origStart > lastOrig) {
+            frag.appendChild(document.createTextNode(txt.slice(lastOrig, origStart)));
+          }
+          // create highlight span for matched original substring
           var span = document.createElement('span');
           span.className = 'page-search-highlight';
-          span.textContent = g;
+          span.textContent = txt.slice(origStart, origEnd);
           frag.appendChild(span);
-          last = offset + g.length;
-        });
-        if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+
+          lastOrig = origEnd;
+          startIndex = pos + termLen;
+        }
+
+        if (!foundAny) return; // return from this text-node callback (equivalent to continue)
+
+        if (lastOrig < txt.length) frag.appendChild(document.createTextNode(txt.slice(lastOrig)));
         this.parentNode.replaceChild(frag, this);
       });
     });
@@ -85,25 +149,58 @@ mw.hook('wikipage.content').add(function ($content) {
 
   // perform search
   function doSearch() {
-    var q = ($input.val() || '').trim().toLowerCase();
+    var q = ($input.val() || '').trim();
+    var normQ = normalizeText(q);
+
+    // reset groups
     groups.forEach(function ($g) {
       clearHighlightsIn($g);
       $g.each(function () { $(this).show(); });
     });
-    if (!q) return;
+
+    if (!normQ) {
+      $meta.text('');
+      return;
+    }
+
+    var totalMatches = 0;
+    var firstMatchedGroup = null;
+
     groups.forEach(function ($g) {
-      var text = ($g.text() || '').toLowerCase();
-      if (text.indexOf(q) !== -1) {
+      var text = ($g.text() || '');
+      if (!text) {
+        $g.each(function () { $(this).hide(); });
+        return;
+      }
+      var normText = normalizeText(text);
+      if (normText.indexOf(normQ) !== -1) {
         $g.each(function () { $(this).show(); });
-        highlightIn($g, q);
+        highlightIn($g, q, normQ); // use same normalized query for highlighting
+        totalMatches++;
+        if (!firstMatchedGroup) firstMatchedGroup = $g;
       } else {
         $g.each(function () { $(this).hide(); });
       }
     });
+
+    $meta.text(totalMatches ? (totalMatches + ' group(s) matched') : 'No matches');
+
+    // scroll to first matched group only when query is at least 2 chars (avoids jumping on first letter)
+    if (firstMatchedGroup && normQ && normQ.length >= 2 && firstMatchedGroup.length) {
+      var el = firstMatchedGroup.first()[0];
+      if (el && el.scrollIntoView) {
+        try {
+          var y = $(el).offset().top - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        } catch (e) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
   }
 
   // events
-  $input.on('input', doSearch);
+  $input.on('input', debounce(doSearch, debounceMs));
   $input.on('keyup', function (e) {
     if (e.key === 'Escape') { $input.val(''); doSearch(); }
   });

@@ -7,6 +7,10 @@ $(function () {
     // Skip mobile Fandom
     if (mw.config.get('skin') === 'fandommobile') return;
 
+    // Skip Category (14) and File (6) pages
+    var excludedNamespaces = [6, 14];
+    if (excludedNamespaces.includes(mw.config.get('wgNamespaceNumber'))) return;
+
     var $content = $('#mw-content-text');
     if (!$content.length) return;
 

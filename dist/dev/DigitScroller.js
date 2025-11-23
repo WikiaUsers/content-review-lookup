@@ -99,8 +99,12 @@ importArticle({
 			var target = $digit.data('targetDigit') || 0;
 			var $stack = $digit.find('.digit-scroller__digit-strip');
 			
-			var $row = $stack.children().first();
-			var rowHeight = ($row.length && $row[0].getBoundingClientRect().height) || 16;
+			var fontSize = $digit.css('font-size');
+			var rowHeight = parseFloat(fontSize);
+			if (isNaN(rowHeight) || rowHeight < 1) {
+				rowHeight = 16;
+				if (rowHeight === 0) return;
+			}
 			
 			var scrollDown;
 			if (isNegative) {
@@ -111,12 +115,19 @@ importArticle({
 			
 			// NEGATIVE SCORE WILL SCROLL DOWN, OTHERWISE SCROLL UP
 			if (scrollDown) {
-				var startOffset = -9 * rowHeight;
-				var finalIndex = 9 - target;
-				var finalOffset = -finalIndex * rowHeight;
+				var finalOffset;
+				if (isNegative) {
+					var finalIndex = 9 - target;
+					finalOffset = -finalIndex * rowHeight;
+				} else {
+					finalOffset = -target * rowHeight;
+				}
+				
+				var startOffset = isNegative ? (-9 * rowHeight) : 0;
 				
 				var prevTransition = $stack.css('transition');
 				$stack.css('transition', 'none');
+				
 				$stack.css('transform', 'translateY(' + startOffset + 'px)');
 				
 				$stack[0].getBoundingClientRect();
@@ -166,6 +177,9 @@ importArticle({
 				entries.forEach(function (entry) {
 					if (entry.isIntersecting) {
 						animateDigitScroller($el);
+						setTimeout(function() {
+							animateDigitScroller($el);
+						}, 500);
 						observer.unobserve(entry.target); // RUN ONCE ONLY
 					}
 				});

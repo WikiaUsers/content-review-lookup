@@ -1,3 +1,10 @@
+
+/*********** 
+THE MAIN CSS OF THE FANDOM WIKI LIES IN HERE. 
+CHANGING THE CODE WITHOUT ANY PERMISSION OR APPROVAL FROM THE WIKI'S CURRENT BUREAUCRAT WILL RESULT IN A PERMANENT BAN. 
+PROCEED AT YOUR OWN RISK. 
+**********/
+
 mw.loader.using('mediawiki.util').then(function () {
   jQuery(function ($) {
 

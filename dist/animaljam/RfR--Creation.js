@@ -16,7 +16,8 @@ function creation($, mw) {
         'wgNamespaceNumber',
         'wgUserGroups',
         'wgUserName',
-        'wgUserRegistration'
+        'wgUserRegistration',
+        'wgServer'
     ]);
     
     // Days since registration
@@ -82,7 +83,7 @@ function creation($, mw) {
     }
     
     function closeModal() {
-    	var confirmation = confirm("Are you sure you want to close this modal? Any work you enter will not be saved.")
+    	var confirmation = confirm("Are you sure you want to close this modal? Any work you enter will not be saved.");
         if (confirmation) dev.showCustomModal.closeModal($($('.modalWrapper')[$('.modalWrapper').length - 1]));
     }
  
@@ -99,7 +100,22 @@ function creation($, mw) {
         if (conf.userEdits > req[id].edits && conf.userTime > req[id].time && conf.wgUserGroups.indexOf(req[id].group) > -1) {
             console.log("Suitable");
             getUserGroups();
-            createModal(req[id].name + " RfR", 'Please provide a summary as to why you believe you are suitable for rights. <br/><form class="WikiaForm" id="rightsForm"><fieldset><textarea id="summary" class="formField" placeholder="Personal statement" type="text" style="width:100%"/><span id="br2" /></fieldset></form>', {buttons: [{id: "submit", message: "Submit", handler: function() { submitRfR(req[id], $('#summary').val()) }}]});
+            createModal(
+            	req[id].name + " RfR",
+            	'Please provide a summary as to why you believe you are suitable for rights. <br/><form class="WikiaForm" id="rightsForm"><textarea id="summary" class="formField" placeholder="Personal statement" type="text" style="width:100%"/></textarea></form>',
+            	{buttons: [
+            		{
+            			id: "submit",
+            			message: "Submit",
+            			handler: function() {
+            				var api = new mw.Api();
+            				api.getToken('csrf').then(function(token) {
+            					submitRfR(req[id], $('#summary').val(), token);
+            				});
+        				}
+            		}
+            	]}
+            );
         } else {
             console.log("Not suitable");
             console.log(conf.userEdits + "vs" + req[id].edits + "required");
@@ -109,9 +125,10 @@ function creation($, mw) {
         }
     }
     
-    function submitRfR(right, summary) {
+    function submitRfR(right, summary, token) {
         var now = new Date();
         var dateString = now.getUTCDate() + "/" + (now.getUTCMonth() + 1) + "/" + now.getUTCFullYear();
+
         $.ajax({
             url: mw.util.wikiScript('api'),
             data: {
@@ -121,7 +138,7 @@ function creation($, mw) {
                 createonly: true,
                 text: "{{" + "subst:RfR|right=" + right.name + "|user=" + conf.wgUserName + "|currentrights=" + conf.userGroups.join(", ") + "|edits=" + conf.userEdits + "|regtime=" + Math.round(conf.userTime) + "|statement=" + summary + "|creation=" + dateString + "}}",
                 format: 'json',
-                token: mw.user.tokens.get('editToken')
+                token: token
             },
             dataType: 'json',
             type: 'POST',
@@ -136,14 +153,14 @@ function creation($, mw) {
                             createonly: true,
                             text: JSON.stringify({Support: {}, Neutral:{}, Oppose:{}}),
                             format: 'json',
-                            token: mw.user.tokens.get('editToken')
+                            token: token
                         },
                         dataType: 'json',
                         type: 'POST',
                         success: function( data ) {
                             if ( data && data.edit && data.edit.result == 'Success' ) {
                                 //Redirect to their new page
-                                window.location.href = 'http://' + wgDBname + '.wikia.com/wiki/Project:Request for ' + right.name + '/' + conf.wgUserName;
+                                window.location.href = conf.wgServer + mw.util.getUrl('Project:Request for ' + right.name + '/' + conf.wgUserName);
                             } else if ( data && data.error ) {
                                 alert( 'Error: API returned error code "' + data.error.code + '": ' + data.error.info );
                             } else {

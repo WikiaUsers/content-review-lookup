@@ -276,9 +276,9 @@ function registerCollapsibleListeners() {
     }
 }
 
-/******************/
-/* Dynamic levels */
-/******************/
+/*************************/
+/* Dynamic levels - Pets */
+/*************************/
 
 registerEffectLevelDropdowns();
 function registerEffectLevelDropdowns() {
@@ -355,5 +355,108 @@ function registerEffectLevelDropdowns() {
   }
 }
 
+/*****************************/
+/* Dynamic levels - Quest XP */
+/*****************************/
+
+registerQuestXPDropdowns();
+function registerQuestXPDropdowns() {
+  var bound = new WeakSet();
+
+  function getFixedXP(level, duration, xpRatio) {
+    var levelPow = Math.floor((100 + (2 * level)) ** 2);
+    var xp = (level * levelPow * duration * xpRatio) / 20;
+    return xp;
+  }
+
+  function getStepXP(level, optimalLevel, xpRatio, duration) {
+    if (level <= optimalLevel) {
+      return Math.floor(getFixedXP(level, duration, xpRatio));
+    } else {
+      var rewardLevel = Math.min(level, Math.floor(optimalLevel * 1.5));
+      var optimalFixedXP = getFixedXP(optimalLevel, duration, xpRatio);
+      var fixedXP = getFixedXP(rewardLevel, duration, xpRatio);
+      var rewardReducedScale = 0.3;
+      var reducedOptimalXP = rewardReducedScale * optimalFixedXP;
+      var reducedXP = (1 - rewardReducedScale) * fixedXP;
+      return Math.floor(reducedOptimalXP + reducedXP);
+    }
+  }
+
+  function updateQuestXP(questXPSpan, level) {
+    var ratios = questXPSpan.dataset.ratios.split(',');
+    var durations = questXPSpan.dataset.durations.split(',');
+    var optimalLevels = questXPSpan.dataset.optimalLevels.split(',');
+    var totalXP = 0;
+    for (let i = 0; i < ratios.length; i++) {
+      var stepXP = getStepXP(
+        parseInt(level, 10),
+        parseInt(optimalLevels[i], 10),
+        parseFloat(ratios[i]),
+        parseFloat(durations[i])
+      );
+      totalXP += Math.floor(stepXP);
+    }
+    totalXP = Math.floor(totalXP * 1.05);
+    questXPSpan.textContent = totalXP.toLocaleString();
+  }
+
+  function buildDropdown(min, max, onChange) {
+    var wrap = document.createElement('span');
+    wrap.style.marginLeft = '0.5em';
+    var sel = document.createElement('select');
+    for (var i = max; i >= min; i--) {
+      var opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      sel.appendChild(opt);
+    }
+    sel.value = String(max);
+    sel.addEventListener('change', function () {
+      onChange(parseInt(sel.value, 10));
+    });
+    wrap.appendChild(sel);
+    return { wrap: wrap, sel: sel };
+  }
+
+  function bind(th) {
+    if (bound.has(th)) return;
+    var td = th.parentElement;
+    var questXPSpan = td.querySelector('.questXP');
+    var questLevelSpan = td.querySelector('.questLevel');
+    if (!questXPSpan || !questLevelSpan) return;
+    var built = buildDropdown(
+      parseInt(questLevelSpan.dataset.minLevel),
+      parseInt(questLevelSpan.dataset.maxLevel),
+      function (lvl) {
+        updateQuestXP(questXPSpan, lvl);
+      }
+    );
+    td.replaceChild(built.wrap, questLevelSpan);
+    updateQuestXP(questXPSpan, questLevelSpan.dataset.maxLevel);
+    bound.add(td);
+  }
+
+  function scan() {
+    document.querySelectorAll('span.questXP').forEach(bind);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scan);
+  } else {
+    scan();
+  }
+
+  if ('MutationObserver' in window) {
+    var mo = new MutationObserver(scan);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+  } else {
+    var tries = 0;
+    var id = setInterval(function () {
+      scan();
+      if (++tries > 20) clearInterval(id);
+    }, 250);
+  }
+}
 
 console.log("END of Common.JS");

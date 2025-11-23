@@ -69,7 +69,8 @@ importArticle({
 		container.innerHTML = '';
 		
 		var options = container.getAttribute('data-countdown-options') || '';
-		var useTimeText = options.includes('time-text');
+		var useTextLabelDay = options.includes('time-text-day');
+		var useTextLabelHms = options.includes('time-text-hms');
 		
 		var dayBlock = createDayBlock();
 		var hourBlock = createTimeBlock("hour", 3, 10);
@@ -78,19 +79,19 @@ importArticle({
 		
 		var daySeparator = document.createElement("div");
 		daySeparator.className = "countdown-scroller__separator day-separator";
-		if (useTimeText) daySeparator.classList.add('countdown-scroller__label');
+		if (useTextLabelDay) daySeparator.classList.add('countdown-scroller__label');
 		
 		var hourSeparator = document.createElement("div");
 		hourSeparator.className = "countdown-scroller__separator hour-separator";
-		if (useTimeText) hourSeparator.classList.add('countdown-scroller__label');
+		if (useTextLabelHms) hourSeparator.classList.add('countdown-scroller__label');
 		
 		var minuteSeparator = document.createElement("div");
 		minuteSeparator.className = "countdown-scroller__separator minute-separator";
-		if (useTimeText) minuteSeparator.classList.add('countdown-scroller__label');
+		if (useTextLabelHms) minuteSeparator.classList.add('countdown-scroller__label');
 		
 		var secondSeparator = document.createElement("div");
 		secondSeparator.className = "countdown-scroller__separator second-separator";
-		if (useTimeText) secondSeparator.classList.add('countdown-scroller__label');
+		if (useTextLabelHms) secondSeparator.classList.add('countdown-scroller__label');
 		
 		container.appendChild(dayBlock);
 		container.appendChild(daySeparator);
@@ -145,11 +146,16 @@ importArticle({
 	
 	// UPDATE ENTIRE COUNTDOWN
 	function updateCountdownFor(container, targetDate, type) {
+		if (container.querySelector('.countdown-scroller__complete-message')) {
+			return;
+		}
+		
 		var now = new Date();
 		var diff = Math.floor((targetDate - now) / 1000);
 		
 		var options = container.getAttribute('data-countdown-options') || '';
-		var useTimeText = options.includes('time-text');
+		var useTimeTextHms = options.includes('time-text-hms');
+		var useTimeTextDay = options.includes('time-text-day');
 		var noDateLeadingZero = options.includes('no-date-leading-zero');
 		var noTimeLeadingZero = options.includes('no-time-leading-zero');
 		
@@ -168,7 +174,7 @@ importArticle({
 			container.querySelector(".countdown-scroller__time-block.second").style.display = 'flex';
 			container.querySelector(".countdown-scroller__separator.second-separator").style.display = 'block';
 			
-			if (useTimeText) {
+			if (useTimeTextHms) {
 				container.querySelector('.countdown-scroller__separator.hour-separator').textContent = 'hours';
 				container.querySelector('.countdown-scroller__separator.minute-separator').textContent = 'minutes';
 				container.querySelector('.countdown-scroller__separator.second-separator').textContent = 'seconds';
@@ -225,17 +231,15 @@ importArticle({
 			});
 			clearInterval(container._timer);
 			
-			if (!alreadyExpired) {
-				// If data-countdown-message is used
-				if (container.hasAttribute('data-countdown-message')) {
-					var completeMessage = container.getAttribute('data-countdown-message');
-					var messageToShow = completeMessage && completeMessage.trim().length
-						? completeMessage : 'Countdown ended!';
-					container.innerHTML = '<span class="countdown-scroller__complete-message">' + messageToShow + '</span>';
-					console.log('Countdown ended. Message has displayed.');
-				} else {
-					console.log('Countdown ended.');
-				}
+			// If data-countdown-message is used
+			if (container.hasAttribute('data-countdown-message')) {
+				var completeMessage = container.getAttribute('data-countdown-message');
+				var messageToShow = completeMessage && completeMessage.trim().length
+					? completeMessage : 'Countdown ended!';
+				container.innerHTML = '<span class="countdown-scroller__complete-message">' + messageToShow + '</span>';
+				console.log('Countdown ended. Message has displayed.');
+			} else {
+				console.log('Countdown ended.');
 			}
 			return;
 		}
@@ -271,7 +275,7 @@ importArticle({
 			if (minuteSeparator) minuteSeparator.style.display = 'none';
 			if (secondSeparator) secondSeparator.style.display = 'none';
 			
-			if (useTimeText) {
+			if (useTimeTextDay) {
 				daySeparator.textContent = day === 1 ? "day" : "days";
 			} else {
 				daySeparator.textContent = "-";
@@ -318,16 +322,22 @@ importArticle({
 			if (minuteSeparator) minuteSeparator.style.display = 'block';
 			if (secondSeparator) secondSeparator.style.display = 'block';
 			
-			if (useTimeText) {
+			if (useTimeTextDay) {
 				daySeparator.textContent = day === 1 ? "day" : "days";
-				if (hourSeparator) hourSeparator.textContent = hour === 1 ? "hour" : "hours";
-				if (minuteSeparator) minuteSeparator.textContent = minute === 1 ? "minute" : "minutes";
-				if (secondSeparator) secondSeparator.textContent = second === 1 ? "second" : "seconds";
 			} else {
 				daySeparator.textContent = "-";
-				if (hourSeparator) hourSeparator.textContent = ":";
-				if (minuteSeparator) minuteSeparator.textContent = ":";
-				if (secondSeparator) secondSeparator.textContent = "";
+			}
+			
+			if (hourSeparator) {
+				if (useTimeTextHms) {
+					hourSeparator.textContent = hour === 1 ? "hour" : "hours";
+					if (minuteSeparator) minuteSeparator.textContent = minute === 1 ? "minute" : "minutes";
+					if (secondSeparator) secondSeparator.textContent = second === 1 ? "second" : "seconds";
+				} else {
+					hourSeparator.textContent = ":";
+					if (minuteSeparator) minuteSeparator.textContent = ":";
+					if (secondSeparator) secondSeparator.textContent = "";
+				}
 			}
 			
 			var digits = pad3(day) + pad2(hour) + pad2(minute) + pad2(second);

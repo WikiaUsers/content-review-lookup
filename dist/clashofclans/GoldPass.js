@@ -33,11 +33,12 @@ $(document).ready(function() {
 	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
 	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
-	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option></select></div>');
+	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6-7</option></select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option></select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	$("span#PLpoisonSpellHarness").html('<div id="PLpoisonSpellInput">Poison Lizard Poison Level: <select name="PLpoisonSpellLevel" id="PLpoisonSpellLevel"> <option value="0">0</option> <option value="1">1-4</option> <option value="2">5-9</option> <option value="3">10-14</option> <option value="4">15</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Gem Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#rageAuraHarness").html('<div id="rageAuraInput">Rage Gem Level: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
@@ -124,6 +125,9 @@ $(document).ready(function() {
 	'</table></div>');
 	// Equipment-specific modifiers
 	$("span#darkCrownHarness").html('<div id="darkCrownInput" style="display:none;">Dark Crown Stacks: <select name="darkCrownStackLevel" id="darkCrownStackLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	// Crafted Defense-specific modifiers
+	$("span#heroBellDamageHarness").html('<div id="heroBellDamageInput">Hero Bell DPS Level: <select name="heroBellDamageLevel" id="heroBellDamageLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
+	$("span#heroBellHPHarness").html('<div id="heroBellHPInput">Hero Bell HP Level: <select name="heroBellHPLevel" id="heroBellHPLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    // Auxillary array for wall HTKs
@@ -243,9 +247,9 @@ $(document).ready(function() {
         if (mode == "Attack") {
         	// Reset the values of defense-only items
             $("#rageTowerBoost, #valkRageBoost").prop("checked",false);
-            $("#poisonSpellLevel, #frostPotencyLevel").val("0").change();
+            $("#poisonSpellLevel, #frostPotencyLevel, #PLpoisonSpellLevel, #heroBellDamageLevel, #heroBellHPLevel").val("0").change();
         	// Disable defense-only items
-        	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
+        	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #PLpoisonSpellHarness, #heroBellDamageHarness, #heroBellHPHarness, #defenseModsOnly").css("display","none");
             // Enable all disabled items (except for hero gear inputs and hero ability toggle)
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
             // Re-initialize hero gear options
@@ -257,7 +261,7 @@ $(document).ready(function() {
         	// Disable offense-only items
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
-            $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","block");
+            $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #PLpoisonSpellHarness, #heroBellDamageHarness, #heroBellHPHarness, #defenseModsOnly").css("display","block");
         }
     }
     function refreshHeroGear() {
@@ -1124,9 +1128,15 @@ $(document).ready(function() {
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
 	  var apprenticeAuraPercentIncrease = [0,200,220,240,260];
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
-	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72,73];
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72,73,74];
+	  // Lookup for Poison Lizard attack rate decrease
+	  var plPoisonASMultiplier = [0,35,45,50,55];
 	  // And a lookup for haste speed increase
+	  // Level 7, which has no stat boosts, shares with level 6
 	  var hasteSpeedIncrease = [0,28,34,40,46,52,56];
+	  // Two lookup arrays for Hero Bell boosts
+	  var heroBellDPSIncrease = [0,4,5,7,8,10,11,13,14,16,17];
+	  var heroBellHPIncrease = [0,8,11,14,17,20,23,26,29,32,35];
 	  /* Hero Equipment stat dictionaries. We include one for each of the following:
 			1. DPS bonus (effectively adds to DPH, but we'll add raw DPS)
 			2. HP bonus
@@ -1174,10 +1184,12 @@ $(document).ready(function() {
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
 			"Magic Mirror": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
 			"Action Figure": [159,184,200,217,236,254,276,298,318,339,359,380,399,424,448,473,498,522,544,565,586,608,628,649,671,692,713],
-			"Dark Orb": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
-			"Metal Pants": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
-			"Dark Crown": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
-			"Meteor Staff": [58,87,115,144,173,202,230,259,288,317,345,374,403,432,460,489,518,547,607,639,671,705,739,773,809,845,881],
+			"Henchmen Puppet": Array(18).fill(500),
+			"Dark Orb": [588,603,617,631,647,661,675,690,719,766,813,859,906,953,1000,1046,1093,1140],
+			"Metal Pants": [850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550,1600,1650,1700],
+			"Noble Iron": Array(18).fill(500),
+			"Dark Crown": [550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1025,1050,1075,1100,1125,1150,1175,1200],
+			"Meteor Staff": [558,587,615,644,673,702,730,759,788,817,845,874,903,932,960,989,1018,1047,1107,1139,1171,1205,1239,1273,1309,1345,1381],
 			"Life Gem": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
@@ -1264,6 +1276,10 @@ $(document).ready(function() {
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
 		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
+		    }
 		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
 		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
 		    if (HHpoisonSpellLevel > 0) {
@@ -1322,12 +1338,13 @@ $(document).ready(function() {
                 poisonTowerMultiplier = 75/100;
             	}
 			}
+			var plPoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100;
 			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
-				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier) < 1) {
+				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,plPoisonMultiplier) < 1) {
 					poisonUsed = true;
 				}
-				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
+				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,plPoisonMultiplier);
 			}
 			
 			// Frost: Compare the toggle (50%) and potency multipliers
@@ -1413,6 +1430,7 @@ $(document).ready(function() {
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
 			var rageAuraLevel = $("#rageAuraLevel").val() * 1;
+			var heroBellDPSLevel = $("#heroBellDamageLevel").val() * 1;
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			var difficultyLevel = $("#difficultyModeBoost").val() * 1;
@@ -1431,6 +1449,9 @@ $(document).ready(function() {
 		    if (isNaN(rageAuraLevel) === true) {
 		    	rageAuraLevel = 0;
 		    }
+		    if (isNaN(heroBellDPSLevel) === true) {
+		    	heroBellDPSLevel = 0;
+		    }
 		    // Set the rage level to 4 if using Super Valkyrie Rage checkbox
 		    if (valkRageCheckBox != null) {
 				if (valkRageCheckBox.checked === true) {
@@ -1448,6 +1469,7 @@ $(document).ready(function() {
 			var towerRageMultiplier = 1;
 			var auraRageMultiplier = 1;
 			var darkCrownMultiplier = 1;
+			var heroBellMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if (isBuilding === true) {
@@ -1479,11 +1501,14 @@ $(document).ready(function() {
 					auraRageMultiplier = (100 + auraBoost) / 100;
 				}
 			}
+			if (heroBellDPSLevel > 0) {
+				heroBellMultiplier = (100 + heroBellDPSIncrease[heroBellDPSLevel]) / 100;
+			}
 			// Dark crown boost
 			if (darkCrownLevel > -1) {
 				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
 			}
-			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier,darkCrownMultiplier);
+			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier,darkCrownMultiplier, heroBellMultiplier);
 			
 			// For hero ability damage increase, look it up from dictionary
 			var firstGearAbilityDI = 0;
@@ -1743,6 +1768,10 @@ $(document).ready(function() {
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
 		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
+		    }
 		    var freezeUsed = false;
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			if (freezeCheckBox != null) {
@@ -1772,7 +1801,7 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
-			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
@@ -1816,6 +1845,10 @@ $(document).ready(function() {
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
 		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
+		    }
 		    var freezeUsed = false;
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			if (freezeCheckBox != null) {
@@ -1845,7 +1878,7 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
-			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
@@ -1941,6 +1974,10 @@ $(document).ready(function() {
 			if (isNaN(darkCrownStacks) === true) {
 		    	darkCrownStacks = 0;
 		    }
+		    var heroBellDPSLevel = $("#heroBellDamageLevel").val() * 1;
+		    if (isNaN(heroBellDPSLevel) === true) {
+		    	heroBellDPSLevel = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -1952,6 +1989,10 @@ $(document).ready(function() {
 			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
+		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
 		    }
 		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
 		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
@@ -1978,6 +2019,7 @@ $(document).ready(function() {
 			var towerRageMultiplier = 1;
 			var auraRageMultiplier = 1;
 			var darkCrownMultiplier = 1;
+			var heroBellMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if ($(this).hasClass("Building") === true) {
@@ -2013,7 +2055,10 @@ $(document).ready(function() {
 			if (darkCrownLevel > -1) {
 				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
 			}
-            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier,darkCrownMultiplier);
+			if (heroBellDPSLevel > 0) {
+				heroBellMultiplier = (100 + heroBellDPSIncrease[heroBellDPSLevel]) / 100;
+			}
+            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier,darkCrownMultiplier,heroBellMultiplier);
 			// Now we adjust for hero abilities
 			var firstGearAbilityDI = 0;
 			var secondGearAbilityDI = 0;
@@ -2089,6 +2134,7 @@ $(document).ready(function() {
 			}
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
+			var PLpoisonMultiplier = (100 - PLpoisonASMultiplier[PLpoisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
@@ -2100,10 +2146,10 @@ $(document).ready(function() {
             	}
 			}
 			if ($(this).hasClass("Building") === false) {
-				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier) < 1) {
+				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,PLpoisonMultiplier) < 1) {
 					poisonUsed = true;
 				}
-				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
+				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,PLpoisonMultiplier);
 			}
 			var freezeMultiplier = 1;
 			var frostMultiplier = 1;
@@ -2222,6 +2268,11 @@ $(document).ready(function() {
 			if (isNaN(darkCrownStacks) === true) {
 		    	darkCrownStacks = 0;
 		    }
+		    var heroBellHPLevel = $("#heroBellHPLevel").val() * 1;
+		    var heroBellPercent = heroBellHPIncrease[heroBellHPLevel];
+		    if (isNaN(heroBellPercent) === true) {
+		    	heroBellPercent = 0;
+		    }
 			var calcPercentHP = baseHP * (1000 + auraPercent)/1000;
 			var calcMaxHP = baseHP + auraMaxHP;
 			var calcWardenHP = Math.min(calcPercentHP,calcMaxHP);
@@ -2230,7 +2281,8 @@ $(document).ready(function() {
 			if (darkCrownLevel > -1) {
 				calcDarkCrownHP = baseHP * (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
 			}
-			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP,calcDarkCrownHP);
+			var calcHeroBellHP = baseHP * (100 + heroBellPercent)/100;
+			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP,calcDarkCrownHP,calcHeroBellHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
 			// Add the final value to HP array if required
 			if ($(this).hasClass("Decay")) {
@@ -2343,6 +2395,10 @@ $(document).ready(function() {
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
 		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
+		    }
 		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
 		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
 		    if (HHpoisonSpellLevel > 0) {
@@ -2431,16 +2487,18 @@ $(document).ready(function() {
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
-			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50,51];
+			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50,51,52];
 			// Also a small lookup for TH poison
 			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
+			// and PL poison
+			var PLpoisonSpeedDebuff = [0,26,34,38,42];
 			var poisonTowerDebuff = 0;
 			if (poisonTowerCheckBox != null) {
 				if (poisonTowerCheckBox.checked === true) {
                 poisonTowerDebuff = 35;
             	}
 			}
-			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff);
+			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff,PLpoisonSpeedDebuff[PLpoisonSpellLevel]);
 			poisonUsed = (poisonDebuff > 0);
 			
 			buffedSpeed = buffedSpeed * (100 - poisonDebuff) /100;
@@ -2517,7 +2575,7 @@ $(document).ready(function() {
             }
 		});
 		//Add a look-up array for wall HTK. Also define two variables to be used inside the loop here, and reset them afterwards
-		var wallHP = [100,200,400,800,1200,1800,2400,3000,3500,4000,5000,7000,8000,9000,10000,11000,12000,13000];
+		var wallHP = [100,200,400,800,1200,1800,2400,3000,3500,4000,5000,7000,8000,9000,10000,11000,12000,13000,14000];
 		var currentWallLevel = 0;
 		var currentWBLevel = 0;
 		$(".HTK").each(function() {
@@ -2763,7 +2821,7 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
         $(".changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #PLpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #heroBellDamageLevel, #heroBellHPLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
 		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #resourceBoost, #clockBoost").prop("checked",false);
 		// Reinitialise the choices

@@ -1,3 +1,4 @@
+
 // Universal Fandom-Safe Script Wrapper
 mw.hook('wikipage.content').add(function($content) {
 
@@ -131,7 +132,15 @@ mw.hook('wikipage.content').add(function($content) {
 			"But a foolish samurai warrior wielding a magic sword stepped forth to oppose me.",
 			"Before the final blow was struck, I tore open a portal in time, and flung him into the future where my evil is law.",
 			"Now the fool seeks to return to the past and undo the future that is Chaos.",
-			"I always come back."
+			"I always come back.",
+			"Immortality is awesome, don't listen to the foolish Plant man.",
+			"There once was a ship that put to sea, the name os this ship was the Armada.",
+			"Chuck Alfrey REALLY went downhill, good thing he won't show up again.",
+			"EVIL Diablo? Really? Oooh, scary! Shiver me timbers!",
+			"An hour before my father banished me from his kitchen, he thought I was a monster.",
+			"I was the first. I have seen everything.",
+			"Throughout his Kitchen and Wonderland, I alone am the Architect.",
+			"W elco me, to Wonde rland."
         	];
         const images = [
         	];

@@ -772,6 +772,17 @@ $(function () {
 		document.getElementById("dayview").style.setProperty('--g', 80+(new Date().getMinutes()*2.21) + "%");
 	}
 });
+
+/* Template:DynamicGallery */
+$(function () {
+	if (document.getElementById("gallery_list")) {
+		importArticles({
+			type: 'script',
+			article: 'MediaWiki:DynamicGallery.js'
+	    });
+	}
+});
+
 /* gets the current minute / day value on page load for [[Time]]*/
 $(function () {
 	if (document.getElementById("minutes")) {

@@ -3,6 +3,33 @@
 
 // MediaWiki:Common.js
 // Show ADMIN badge on user profile pages for certain usergroups
+
+var api = new mw.Api();
+
+var config = mw.config.get([
+    'wgAction',
+    'wgArticlePath',
+    'wgCanonicalSpecialPageName',
+    'wgPagename',
+    'wgTitle',
+    'wgSiteName'
+]);
+
+
+$(function () {
+    if (mw.config.get("wgTitle") === "Value") {
+
+        var notice = $('<div><b>'
+            + 'Trading values are just opinions, and do not matter much. '
+            + 'They only depend on trades, popularity, rarity, less owned, etc.'
+            + '</b></div><br>');
+
+        // Insert at the top of the article content
+        $('#mw-content-text').prepend(notice);
+    }
+});
+
+
 ( function () {
     'use strict';
 
@@ -134,3 +161,18 @@
     });
 
 })();
+
+
+// Insert warning text at top of page if title is "Lore"
+$(function () {
+    if (mw.config.get("wgPageName") === "Trading Value") {
+
+        var notice = $('<div><b>'
+            + 'Trading values do not exist in Pet Story.'
+            + 'It is mostly based on how many people want it, trade for it, and the items value.'
+            + '</b></div><br>');
+
+        // Insert at the top of the article content
+        $('#mw-content-text').prepend(notice);
+    }
+});

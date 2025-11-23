@@ -24,35 +24,35 @@ Maintenance
 	}
 	// Rage Effect Math Function for increases in the stat (non-time)
 	function rageEffectUp(originalValue) {
-	    // Factor is 135 since Rage boosts by 35%
-	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) * (135/100))));
+	    // Factor is 130 since Rage boosts by 30%
+	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) * (130/100))));
 	}
 	// Rage Effect Math Function for decreases in the stat (time)
 	/*   Value is converted to milliseconds for calculation then back to seconds for output */
 	function rageEffectDown(originalValue) {
-	    // Factor is 135 since Rage decreases by 35%
-	    return String(Math.floor(roundNum(1,(Number(originalValue.replace(",", "")) * 1000) / (135/100))) / 1000);
+	    // Factor is 130 since Rage decreases by 30%
+	    return String(Math.floor(roundNum(1,(Number(originalValue.replace(",", "")) * 1000) / (130/100))) / 1000);
 	}
 	// Rage Effect Math Function for increases to DPS
 	function rageEffectDPS(originalValue) {
-	    // Factor is 135 since Rage boosts by 35%
-	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) * (135/100))));
+	    // Factor is 130 since Rage boosts by 30%
+	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) * (130/100))));
 	}
 	// Slow Effect Math Function for decreases in the stat (non-time)
 	function slowEffectDown(originalValue) {
-	    // Factor is 135 since Slow decreases by 35%
-	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) / (135/100))));
+	    // Factor is 130 since Slow decreases by 30%
+	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) / (130/100))));
 	}
 	// Slow Effect Math Function for increases in the stat (time)
 	/*   Value is converted to milliseconds for calculation then back to seconds for output */
 	function slowEffectUp(originalValue) {
-	    // Factor is 135 since Slow increases by 35%
-	    return String(Math.floor(roundNum(1,(Number(originalValue.replace(",", "")) * 1000) * (135/100))) / 1000);
+	    // Factor is 130 since Slow increases by 30%
+	    return String(Math.floor(roundNum(1,(Number(originalValue.replace(",", "")) * 1000) * (130/100))) / 1000);
 	}
 	// Slow Effect Math Function for decreases to DPS
 	function slowEffectDPS(originalValue) {
-	    // Factor is 135 since Slow decreases by 35%
-	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) / (135/100))));
+	    // Factor is 130 since Slow decreases by 30%
+	    return String(Math.floor(roundNum(1,Number(originalValue.replace(",", "")) / (130/100))));
 	}
 	
 	// ********** Get Started **********
