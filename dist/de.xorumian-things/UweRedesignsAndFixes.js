@@ -42,6 +42,16 @@ $("head").append(`<style>
 	span[data-letter="э"]:before {
 	    margin-left: -0.6px;
 	}
+	span[data-letter="o"]::before {
+	    content: "1";
+	    font-size: 36px;
+	    position: absolute;
+	    translate: 0 -2px;
+	    scale: -1 1;
+	    rotate: 323deg;
+	    overflow: hidden;
+	    height: 18px;
+	}
 	</style>`
 );
 document.querySelectorAll('.page-header__title').forEach(h1 => {
@@ -55,6 +65,7 @@ document.querySelectorAll('.page-header__title').forEach(h1 => {
 	h1.innerHTML = h1.innerHTML.replace(/ʒ/g, '<span data-letter="3" style="translate:0 6px">ʒ</span>');
 	h1.innerHTML = h1.innerHTML.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>');
 	h1.innerHTML = h1.innerHTML.replace(/ɵ/g, '<span data-letter="э">ɵ</span>');
+	h1.innerHTML = h1.innerHTML.replace(/δ/g, '<span data-letter="o">δ</span>');
 	h1.innerHTML = h1.innerHTML.replace(/ɑ/g, '<span data-letter="d" style="overflow:hidden;height:20px;translate:0 .7px;">ɑ</span>');
 	h1.innerHTML = h1.innerHTML.replace(/ɾ/g, '<span data-letter="n" style="overflow:hidden;height:20px;scale:-1 1;translate:0 .7px;width:11px;margin-right:1px;">ɾ</span>');
 	/*h1.innerHTML = h1.innerHTML.replace(/ɽ/g, 'r<span data-letter="j" style="scale:-1 1">ɽ</span>');*/

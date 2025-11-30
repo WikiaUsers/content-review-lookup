@@ -13,9 +13,12 @@ $(function() {
 /* Audio Formatting */
 mw.loader.using('jquery').then(function () {
     $('.pronunciation-audio').each(function () {
+
         var file = $(this).data('audio');
         if (!file) return;
-        var audio = new Audio(mw.util.getUrl('File:' + file, { action: 'raw' }));
+
+        // Load audio using Fandom's guaranteed redirect to the actual file
+        var audio = new Audio(mw.util.getUrl('Special:Redirect/file/' + file));
 
         $(this).on('click', function () {
             audio.pause();
@@ -24,6 +27,7 @@ mw.loader.using('jquery').then(function () {
                 console.error("Audio playback failed:", err);
             });
         });
+
     });
 });
 
@@ -80,5 +84,6 @@ TBL_WIKIS = [
 		"yandere-girls",
 		"yandere-simulator",
 		"yandere-simulator-fan",
-		"yandere-simulator-fan-ocs"
+		"yandere-simulator-fan-ocs",
+		"yuripedia"
 ];

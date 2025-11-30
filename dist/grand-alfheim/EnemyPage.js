@@ -1,6 +1,4 @@
-$(document).ready(function () {
-
-  const enemies = {
+const enemies = {
     aqualarirugue: {
       name: "Aqualari Rugue",
       image: "https://static.wikia.nocookie.net/grand-alfheim/images/9/9f/Aqualari_Rugue.png",
@@ -87,39 +85,33 @@ $(document).ready(function () {
   const enemyLocation  = document.getElementById("enemyLocation");
   const enemyDrops     = document.getElementById("enemyDrops");
 
-  document.querySelectorAll(".enemy-item").forEach(item => {
-    item.addEventListener("click", () => {
+document.querySelectorAll(".enemy-item").forEach(item => {
+  item.addEventListener("click", () => {
 
-      const key = item.dataset.enemy;
-      const e = enemies[key];
-      if (!e) return;
+    const key = item.dataset.enemy;
+    const e = enemies[key];
+    if (!e) return;
 
-      document.querySelectorAll(".enemy-item").forEach(i =>
-        i.classList.remove("active")
-      );
-      item.classList.add("active");
+    document.querySelectorAll(".enemy-item").forEach(i =>
+      i.classList.remove("active")
+    );
+    item.classList.add("active");
 
-      enemyImage.src = e.image;
-      enemyImage.alt = e.name;
+    enemyImage.src = e.image;
+    enemyImage.alt = e.name;
+    enemyType.textContent = `Type: ${e.type}`;
+    enemyInfo.textContent = e.info;
+    enemyLocation.innerHTML = e.locationLink
+      ? `<a href="${e.locationLink}" class="ga-link">${e.location}</a>`
+      : e.location;
 
-      enemyType.textContent = `Type: ${e.type}`;
-      enemyInfo.textContent = e.info;
-
-      enemyLocation.innerHTML = e.locationLink
-        ? `<a href="${e.locationLink}" class="ga-link">${e.location}</a>`
-        : e.location;
-
-      enemyDrops.innerHTML = e.drops
-        .map(d => `
-          <div class="enemy-drop">
-            <a href="${d.link}">
-              <img src="${d.img}" alt="${d.name}">
-            </a>
-            <span>${d.name}</span>
-          </div>
-        `
-        ).join("");
-    });
+    enemyDrops.innerHTML = e.drops.map(d => `
+      <div class="enemy-drop">
+        <a href="${d.link}">
+          <img src="${d.img}" alt="${d.name}">
+        </a>
+        <span>${d.name}</span>
+      </div>
+    `).join("");
   });
-
 });

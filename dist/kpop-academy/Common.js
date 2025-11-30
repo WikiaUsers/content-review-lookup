@@ -349,3 +349,138 @@ mw.loader.using('jquery').then(function () {
     
         initPlayer();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// === Load dependencies ===
+mw.loader.using(['mediawiki.api','jquery'], function(){
+
+    let filters = {};            // selected filters
+    let logic = 'OR';            // default logic
+
+    // ============================================
+    // 1) LOAD FILTER DATA FROM TEMPLATE <div>
+    // ============================================
+    const filtersData = {};  // replaced version (no hardcode)
+
+    $('div.type-field[data-type="dropbox"]').each(function(){
+        const key = $(this).data('key');
+        const raw = $(this).data('options');       // "Idol,Sexy,Sporty"
+        const arr = raw.split(',').map(x => x.trim());
+        filtersData[key] = arr;
+
+        // Insert a clickable span.dropdown same as old system
+        const label = $('<span>')
+            .addClass('dropdown')
+            .attr('data-key', key)
+            .text(key);
+
+        $(this).replaceWith(label);
+    });
+
+    // ============================================
+    // 2) RENDER DROPDOWNS (dynamic from dropbox)
+    // ============================================
+    $('span.dropdown').each(function(){
+        let key = $(this).data('key');
+        let $menu = $('<div>').addClass('dropdown-menu');
+
+        filtersData[key].forEach(val => {
+            let $item = $('<div>')
+                .addClass('dropdown-item')
+                .text(val)
+                .data('value', val);
+
+            $menu.append($item);
+        });
+
+        $(this).after($menu);
+
+        $(this).click(function(){
+            $menu.toggle();
+        });
+    });
+
+    // ============================================
+    // 3) SELECT/UNSELECT ITEM
+    // ============================================
+    $(document).on('click', '.dropdown-item', function(){
+        let val = $(this).data('value');
+        let key = $(this).closest('.dropdown-menu').prev('.dropdown').data('key');
+
+        if(!filters[key]) filters[key] = [];
+
+        if(filters[key].includes(val)){
+            filters[key] = filters[key].filter(v => v !== val);
+            $(this).removeClass('selected');
+        } else {
+            filters[key].push(val);
+            $(this).addClass('selected');
+        }
+    });
+
+    // ============================================
+    // 4) QUERY DPL
+    // ============================================
+    $('#queryDataBtn').click(function(){
+        if($.isEmptyObject(filters)){
+            $('#queryDataGrid').html('No filter selected.');
+            return;
+        }
+
+        let dplLines = ['{{#dpl:'];
+
+        Object.keys(filters).forEach(key => {
+            if(filters[key].length === 1){
+                dplLines.push('|category=' + filters[key][0]);
+            } else if(filters[key].length > 1){
+                if(logic === 'OR'){
+                    dplLines.push('|category=' + filters[key].join('¦'));
+                } else {
+                    filters[key].forEach(v => dplLines.push('|category=' + v));
+                }
+            }
+        });
+
+        dplLines.push('|notnamespace=File¦Template¦Category');
+        dplLines.push('|ordermethod=title');
+        dplLines.push('|format=,²{Shop¦food¦¦%TITLE%_ui¦¦5¦}²\\n,,');
+        dplLines.push('}}');
+
+        new mw.Api().get({
+            action: 'parse',
+            format: 'json',
+            text: dplLines.join('\n'),
+            contentmodel: 'wikitext'
+        }).done(function(data){
+            $('#queryDataGrid').html(data.parse.text['*']);
+        });
+    });
+
+    // ============================================
+    // 5) CLEAR FILTERS
+    // ============================================
+    $('#clearParamBtn').click(function(){
+        filters = {};
+        $('.dropdown-item').removeClass('selected');
+        $('#queryDataGrid').html('');
+    });
+
+});

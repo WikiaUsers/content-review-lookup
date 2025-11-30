@@ -83,10 +83,8 @@ UserTagsJS.modules.custom = {
     'J192': ['old'],
     'Zomplant Jelo': ['old'],
     'DsFanboy': ['discowner'],
-    'Krayleb': ['discmod'],
+    'AsterWasTaken': ['discmod'],
     'Fun Animator': ['discmod'],
-    'Creepes': ['hansybo'],
-    'WiLdCaRd2048': ['discmod']
 	
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'inactive', 'threadmoderator', 'chatmoderator'];

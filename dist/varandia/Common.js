@@ -258,10 +258,8 @@ $(function() {
     if (!$logo.length) return;
 
     const images = [
-    	'https://static.wikia.nocookie.net/varandia/images/f/ff/EarthIcon.png/revision/latest/scale-to-width-down/185?cb=20251107181855',
     	'https://static.wikia.nocookie.net/varandia/images/d/df/FaviconAlt.png/revision/latest/scale-to-width-down/182?cb=20251106224811',
-    	'https://static.wikia.nocookie.net/varandia/images/8/83/ArchitectIcon2d.png/revision/latest/scale-to-width-down/185?cb=20251105161135',
-    	'https://static.wikia.nocookie.net/varandia/images/4/4a/Site-favicon.ico/revision/latest?cb=20251029215751'
+    	'https://static.wikia.nocookie.net/varandia/images/e/e9/OtherVarandiaIcon.png/revision/latest/scale-to-width-down/134?cb=20251118182529'
     	];
     const original = $logo.attr('src');
 

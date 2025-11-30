@@ -2301,5 +2301,120 @@ $(function () {
       };
     if (outfiter_init()) { outfiter_load_outfit(); }
     $('.outfiter_img').hide();
+    	function arrayToKeyedObject(array, increment) {
+	    const result = {};
+	    array.forEach((item, index) => {
+	        const key = index + increment; // Create the key using index + increment
+	        result[key] = item; // Assign the value from the array
+	    });
+	    return result; // Return the final object
+	}
+	var mountlinkintro = `<noinclude>
+	This template is a helper template for [[Template:Infobox Mount]] and can be used to generate an outfiter link, based on the name of the mount. The input parameter is the '''name''' of the mount, which defaults to "None".
+	The output is a hyperlink to the [[Outfiter]], with the given mount pre-selected. For example, if you would call the template using: <pre><nowiki>{{MountLink|Donkey}}</nowiki></pre>
+The output would be the following hyperlink: [https://tibia.fandom.com/wiki/Outfiter?o=105&f=2&m=16 Outfiter]
+[[Category:Templates]]
+</noinclude><includeonly>[https://tibia.fandom.com/wiki/Outfiter?o=105&f=2&m=`; 
+	var outfiterlinkintro =`<noinclude>
+This template is a helper template for [[Template:Infobox Outfit]] and can be used to generate an outfiter link, based on the name of the outfit. The input parameter is the '''name''' of the outfit, which defaults to "Citizen". The output is a hyperlink to the [[Outfiter]], with the given outfit pre-selected. For example, if you would call the template using: <pre><nowiki>{{OutfiterLink|Jester}}</nowiki></pre>
+The output would be the following hyperlink: [https://tibia.fandom.com/wiki/Outfiter?o=16&f=2&f=2&c1=78&c2=69&c3=58&c4=76 Outfiter]
+[[Category:Templates]]
+</noinclude><includeonly>[https://tibia.fandom.com/wiki/Outfiter?o=`;
+	function generate_outfitlinker() {
+		const outfiter_names200_obj = arrayToKeyedObject(outfiter_names200, 200);
+		const outfiter_names100_obj = arrayToKeyedObject(outfiter_names100, 100);
+		const outfiter_names0_obj = arrayToKeyedObject(outfiter_names0, 0);
+		const combined_outfits = {};
+		Object.assign(combined_outfits,outfiter_names0_obj,outfiter_names100_obj,outfiter_names200_obj);
+		var switch_condition = "";
+		for (var key in combined_outfits) {
+			switch_condition += "| "+ combined_outfits[key].replace("_", " ") + " = " + key + "\n";
+		}
+		switch_condition = outfiterlinkintro + "{{#switch:{{{1|}}}\n"+ switch_condition + "| #default = 0}}" +"&f=2&f=2&c1=78&c2=69&c3=58&c4=76 Outfiter]</includeonly>" ;
+		return switch_condition;
+	}
+	    
+	function generate_mountlinker() {
+		const outfiter_mount_names_obj = arrayToKeyedObject(outfiter_mount_names,0);
+		var mount_switch_condition = "";
+		for (var key in outfiter_mount_names_obj) {
+			mount_switch_condition += "| "+ outfiter_mount_names_obj[key].replace("_", " ") + " = " + key + "\n";
+		}
+		mount_switch_condition = mountlinkintro + "{{#switch:{{{1|}}}\n"+ mount_switch_condition + "| #default = 0}}"+ "Outfiter]</includeonly>";
+		return mount_switch_condition;
+	}
+	
+	
+	function is_allowed() {
+		mw.loader.using('mediawiki.api', function() {
+		const api = new mw.Api();
+		api.get({
+			action: 'query',
+			meta: 'userinfo',
+			usprop: 'groups',
+			format: 'json'
+		}).done(function(data) {
+			const userGroups = data.query.userinfo.groups;
+			if (userGroups.includes('sysop') || userGroups.includes('content-moderator')) {
+				return True;
+			} else {
+				return False;
+			}
+		}).fail(function() {
+			alert('Failed to check user rights.');
+			});
+		});
+	}
+	
+	function edit_page(page_name,page_new_text,edit_summary) {
+		mw.loader.using('mediawiki.api', function() {
+		const api = new mw.Api();
+	    api.get({
+			action: 'query',
+			meta: 'tokens',
+			format: 'json'
+		}).done(function(tokenData) {
+			const csrfToken = tokenData.query.tokens.csrftoken;
+			console.log("got csrf token");
+			api.post({
+				action: 'edit',
+				title: page_name,
+				text: page_new_text,
+				summary: edit_summary,
+				token: csrfToken,
+				format: 'json'
+			}).done(function(editData) {
+				var messagediv = document.getElementById("message_div");
+				if (editData.edit && editData.edit.result === 'Success') {
+					messagediv.innerHTML +=  page_name + " updated successfully.";
+				} else {
+					messagediv.innerHTML +=  'Error updating page: ' + (editData.error ? editData.error.info : 'Unknown error');
+	            }
+	        }).fail(function(jqXHR, textStatus, errorThrown) {
+				messagedi.innerHTML +='Failed to update the page.' + jqXHR.responseText.text();
+	        });
+	    }).fail(function() {
+			messagediv +='Failed to fetch CSRF token.';
+	    });
+	    });
+	}
+	
+	function update_button() {
+		var updated_outfit_data = generate_outfitlinker();
+		var updated_mount_data = generate_mountlinker();
+		edit_page("Template:OutfiterLink",updated_outfit_data,"updating outfit ids");
+		edit_page("Template:MountLink",updated_mount_data,"updating mount ids");
+	}
+	
+	if (is_allowed) {
+		var outfiter_container = document.getElementById("outfiter_container"); 
+		var update_list_button = document.createElement('button');
+		var message_div = document.createElement('div');
+		message_div.id = "message_div";
+		update_list_button.innerHTML = "Update OutfiterLink and MountLink Templates.";
+		update_list_button.addEventListener("click", update_button, false);
+		outfiter_container.appendChild(update_list_button);
+		outfiter_container.appendChild(message_div);
+	}
   });
 });

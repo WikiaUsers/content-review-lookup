@@ -41,13 +41,13 @@
     f.style.fontSize = size + "px";
 
     // Прозрачность
-    f.style.opacity = 0.2 + Math.random() * 0.8;
+    f.style.opacity = 0.2 + Math.random() * 0.28;
 
-    f.style.animationDuration = 5 + Math.random() * 12 + "s";
-    f.style.animationDelay = -Math.random() * 10 + "s";
+    f.style.animationDuration = 10 + Math.random() * 12 + "s";
+    f.style.animationDelay = -Math.random() * 12 + "s";
 
     // Смещение при падении
-    f.style.setProperty("--drift", Math.random() * 30 - 15 + "px");
+    f.style.setProperty("--drift", Math.random() * 45 - 15 + "px");
 
     // Цвет
     f.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];

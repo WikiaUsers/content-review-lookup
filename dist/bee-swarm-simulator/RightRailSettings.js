@@ -60,12 +60,12 @@ function initiateTemplateColor() {
 
 function activateTemplateColor() {
 	console.log("color being activated");
-	$(".color-template").removeClass("revertAllClass");
+	location.reload();
 }
 
 function deactivateTemplateColor() {
 	console.log("color being deactivated");
-	$(".color-template").addClass("revertAllClass");
+	location.reload();
 }
 
 function switchTemplateColor(event) {

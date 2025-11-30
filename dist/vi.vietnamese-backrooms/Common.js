@@ -42,3 +42,40 @@ $('.fandom-community-header__community-name-wrapper').append(
 		$('<img/>').css('height', '60px').css('position', 'relative').css('top', '10px')
 		.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009').attr('title', 'This wiki is part of Fandom Compass')
 ));
+
+// Biến để theo dõi template hiện tại
+let currentTemplate = 'meg-theme';
+
+// Hàm chuyển đổi template
+function toggleTemplate() {
+    // Ẩn template hiện tại
+    document.getElementById(currentTemplate).classList.remove('active');
+    
+    // Chuyển đổi template
+    if (currentTemplate === 'meg-theme') {
+        currentTemplate = 'hallprint-theme';
+    } else {
+        currentTemplate = 'meg-theme';
+    }
+    
+    // Hiển thị template mới
+    document.getElementById(currentTemplate).classList.add('active');
+    
+    // Cập nhật nội dung nút (tuỳ chọn)
+    updateButtonText();
+}
+
+// Hàm cập nhật văn bản nút (tuỳ chọn)
+function updateButtonText() {
+    const button = document.querySelector('.template-toggle-btn');
+    if (currentTemplate === 'meg-theme') {
+        button.textContent = 'Chuyển sang Hallprint Theme';
+    } else {
+        button.textContent = 'Chuyển sang MEG Theme';
+    }
+}
+
+// Khởi tạo nút khi trang tải
+document.addEventListener('DOMContentLoaded', function() {
+    updateButtonText();
+});

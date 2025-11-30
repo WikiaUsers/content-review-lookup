@@ -1,5 +1,5 @@
 /**
- * Script: CountdownScroller
+ * Script: CountdownRegular
  * Author: Marisa1980
  * Description: Create a dynamic countdown with regular effect
  * Other: This script can not run on mobile site

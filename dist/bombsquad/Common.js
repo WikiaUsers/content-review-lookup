@@ -10,3 +10,12 @@
 if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }
+
+/* Light mode and dark mode detector */
+if (document.querySelector('body.theme-fandomdesktop-dark')) {
+  // User is in dark mode
+  $('.islightmode').html('0');
+} else {
+  // User is in light mode
+  $('.islightmode').html('1');
+}

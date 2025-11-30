@@ -74,7 +74,7 @@ $( function () {
 				if (data.parse.text['*'].includes('scribunto-error')) {
 					console.log('Error!', data);
 					mw.notify("Contact staff to resolve the issue", { title: "Error Refreshing Cache!", type: "info" });
-					$bttn.attr("disabled", true).text("Success!");
+					$bttn.attr("disabled", true).text("Error!");
 				} else {
 					console.log('Done!', data);
 					mw.notify("Cache has been updated", { title: "Cache Refreshed Successfully!", type: "info" });

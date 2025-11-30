@@ -368,7 +368,7 @@ mw.loader.using('mediawiki.util').then(function() {
             newrights = rights.newstr,
             before = ev[1] || ev.params && ev.params.oldtype,
             after = ev[0] || ev.params && ev.params.newtype,
-            duration = ev.block && ev.block.duration ? ev.block.duration : '',
+            duration = ((ev.block && ev.block.duration) || (ev.params && ev.params.duration)) ? (ev.block ? ev.block.duration : ev.params.duration) : '',
             flags = ((ev.block && ev.block.flags) || (ev.params && ev.params.flags)) ? ' (' + (ev.block ? ev.block.flags.replace(/,/g, ', ') : ev.params.flags.join(', ')) + ') ' : '';
 
             if (ev.type === 'block') target = page;

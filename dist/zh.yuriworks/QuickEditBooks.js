@@ -738,7 +738,7 @@ var quickEditBooks = (function () {
           : "无页面名");
 
       var prefix = "";
-      if ($pageExists.data("type") === "file") {
+      if (pageType === "file") {
         prefix = "File:";
       }
       var actionLink = "";

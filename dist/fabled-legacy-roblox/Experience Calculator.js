@@ -144,11 +144,16 @@ var guildLevels = [
 
 var friendBoosts = [
   { friendAmount: "None", friendBonus: "0" },
-  { friendAmount: "1 (+2% EXP)", friendBonus: "0.02" },
-  { friendAmount: "2 (+4% EXP)", friendBonus: "0.04" },
-  { friendAmount: "3 (+6% EXP)", friendBonus: "0.06" },
-  { friendAmount: "4 (+8% EXP)", friendBonus: "0.08" },
-  { friendAmount: "5 (+10% EXP)", friendBonus: "0.1" }
+  { friendAmount: "1 (+1% EXP)", friendBonus: "0.01" },
+  { friendAmount: "2 (+2% EXP)", friendBonus: "0.02" },
+  { friendAmount: "3 (+3% EXP)", friendBonus: "0.03" },
+  { friendAmount: "4 (+4% EXP)", friendBonus: "0.04" },
+  { friendAmount: "5 (+5% EXP)", friendBonus: "0.05" },
+  { friendAmount: "6 (+6% EXP)", friendBonus: "0.06" },
+  { friendAmount: "7 (+7% EXP)", friendBonus: "0.07" },
+  { friendAmount: "8 (+8% EXP)", friendBonus: "0.08" },
+  { friendAmount: "9 (+9% EXP)", friendBonus: "0.09" },
+  { friendAmount: "10 (+10% EXP)", friendBonus: "0.1" }
 ];
 
 var dungeonModifiers = [

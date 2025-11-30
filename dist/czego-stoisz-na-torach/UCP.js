@@ -1,9 +1,5 @@
 /* from https://nkch.fandom.com/wiki/MediaWiki:DiscussionsRailModule.js */
 (function () {
-	// Discussions are only available for logged-in users
-	if (!mw.config.get('wgUserId')) {
-		return;
-	}
     if (!$(".fandom-community-header .explore-menu a[data-tracking='explore-discuss']").length) {
         return;
     }
@@ -59,7 +55,7 @@
         nkch.drm.el.section.$e.classList.add("rail-module", "activity-module", "discussions-activity");
         nkch.drm.el.section.$e.id = "discussions-activity-module";
 
-        if ($('#WikiaRail').hasClass('is-ready')) {
+        if (document.getElementById("WikiaRail").classList.contains("is-ready")) {
             insertToSiderail();
         } else {
             $("#WikiaRail").on("afterLoad.rail", insertToSiderail);
@@ -216,7 +212,7 @@
                             });
 
                             item.content.text.lastReply.$e.href = encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/wiki/" + mw.Title.makeTitle(2, post.createdBy.name).getPrefixedText());
-                            item.content.text.lastReply.$e.innerText = post.createdBy.name;
+                            item.content.text.lastReply.$e.innerHTML = mw.html.escape(post.createdBy.name);
 
                             item.content.text.$e.appendChild(item.content.text.lastReply.$e);
 
@@ -241,25 +237,25 @@
 
                             if (diff < msPerMinute) {
                                 time = Math.round(diff / 1000);
-                                createdAgo = mw.message("timeago-second", time).escaped();
+                                createdAgo = mw.message("timeago-second", time).text();
                             } else if (diff < msPerHour) {
                                 time = Math.round(diff / msPerMinute);
-                                createdAgo = mw.message("timeago-minute", time).escaped();
+                                createdAgo = mw.html.escape(mw.message("timeago-minute", time).text());
                             } else if (diff < msPerDay) {
                                 time = Math.round(diff / msPerHour);
-                                createdAgo = mw.message("timeago-hour", time).escaped();
+                                createdAgo = mw.html.escape(mw.message("timeago-hour", time).text());
                             } else {
                                 time = Math.round(diff / msPerDay);
-                                createdAgo = mw.message("timeago-day", time).escaped();
+                                createdAgo = mw.html.escape(mw.message("timeago-day", time).text());
                             }
 
                             if (diff >= msPerMonth) {
                                 if (diff < msPerYear) {
                                     addtime = Math.round(diff / msPerMonth);
-                                    createdAgo = mw.message("timeago-month", addtime).escaped();
+                                    createdAgo = mw.message("timeago-month", addtime).text();
                                 } else {
                                     addtime = Math.round(diff / msPerYear);
-                                    createdAgo = mw.message("timeago-year", addtime).escaped();
+                                    createdAgo = mw.message("timeago-year", addtime).text();
                                 }
                             }
 

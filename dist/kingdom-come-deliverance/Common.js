@@ -7,8 +7,8 @@ $(function () {
     // Skip mobile Fandom
     if (mw.config.get('skin') === 'fandommobile') return;
 
-    // Skip Category (14) and File (6) pages
-    var excludedNamespaces = [6, 14];
+    // Skip Category (14), File (6), Template (10), and Template Talk (11) pages
+    var excludedNamespaces = [6, 10, 11, 14];
     if (excludedNamespaces.includes(mw.config.get('wgNamespaceNumber'))) return;
 
     var $content = $('#mw-content-text');

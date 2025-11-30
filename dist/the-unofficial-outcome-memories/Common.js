@@ -1,219 +1,342 @@
-// weather thing 
-(function() {
-    'use strict';
-    
-    if (mw.config.get('wgTitle') !== 'BeyondPaper', 'Bluester462' || mw.config.get('wgCanonicalNamespace') !== 'User') {
-        return;
+// common.js — NoMoreGamesOld lyric sync + flash & yellow-gradient effect
+$(document).ready(function() {
+    // Load Merriweather
+    $('head').append('<link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">');
+
+    // Internal audio (in case page plays programmatically)
+    var nmAudio = new Audio();
+    nmAudio.src = '/wiki/Special:FilePath/NoMoreGamesOld.mp3';
+
+    // Container + displays
+    var lyricContainer = $('<div>')
+        .attr('id', 'nomore-lyric-container')
+        .css({
+            position: 'fixed',
+            bottom: '10%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '80%',
+            textAlign: 'center',
+            zIndex: 9999,
+            pointerEvents: 'none',
+            fontFamily: "'Merriweather', serif"
+        });
+
+    var lyricDisplay = $('<div>')
+        .attr('id', 'nomore-lyric-display')
+        .css({
+            fontSize: '40px',
+            color: '#000',                      // start plain black
+            fontWeight: '400',
+            whiteSpace: 'pre-wrap',
+            pointerEvents: 'none',
+            textShadow: '0 1px 0 rgba(0,0,0,0.05)'
+        })
+        .html('');
+
+    lyricContainer.append(lyricDisplay);
+    $('body').append(lyricContainer);
+
+    // Raw lyric block you provided — kept verbatim for precise parsing
+    var raw = `
+[00:32.77]Look 
+[00:32.87]Look at
+[00:33.06]Look at my
+[00:33.28]Look at my eyes
+[00:34.11]and
+[00:34.27]and tell
+[00:34.58]and tell me
+[00:34.83]and tell me how
+[00:35.11]and tell me how you
+[00:35.45]and tell me how you feel
+[00:36.34]the
+[00:36.65]the fear
+[00:36.96]the fear I
+[00:37.15]the fear I put
+[00:37.58]the fear I put in
+[00:37.81]the fear I put in your
+[00:38.60]the fear I put in your soul.
+[00:39.31]Oh
+[00:39.96]Oh the
+[00:40.57]Oh the silver
+[00:41.17]Oh the silver lining.
+[00:47.51]Shadows
+[00:47.75]Shadows of
+[00:47.76]Shadows of dark,
+[00:48.80]why
+[00:49.09]why tear
+[00:49.33]why tear their
+[00:49.58]why tear their hearts
+[00:49.88]why tear their hearts apart?
+[00:51.24]Is
+[00:51.33]Is it
+[00:51.80]Is it the
+[00:52.03]Is it the thrill
+[00:52.42]Is it the thrill you
+[00:52.77]Is it the thrill you seek?
+[00:53.36]Well
+[00:53.99]Well pal
+[00:54.63]Well pal here’s
+[00:55.26]Well pal here’s some
+[00:55.97]Well pal here’s some karma!
+[01:08.98](Fight! x6)
+[01:14.40]I
+[01:14.81]I hear
+[01:15.03]I hear that
+[01:15.29]I hear that heart
+[01:15.66]I hear that heart ache
+[01:15.95]I hear that heart ache so–
+[01:16.25](Hide! x6)
+[01:24.40]Shadows
+[01:24.65]Shadows of
+[01:24.67]Shadows of dark,
+[01:25.70]you
+[01:25.94]you won’t
+[01:26.24]you won’t hold
+[01:26.49]you won’t hold me
+[01:26.86]you won’t hold me back
+[01:27.19]you won’t hold me back down!
+[01:28.22]Such
+[01:28.41]Such shackles
+[01:28.97]Such shackles for
+[01:29.30]Such shackles for the
+[01:29.64]Such shackles for the WEAK.
+[01:30.33]I’ll
+[01:30.99]I’ll break
+[01:31.60]I’ll break free
+[01:32.08]I’ll break free from
+[01:32.82]I’ll break free from these
+[01:33.50]I’ll break free from these chains!
+[01:34.36]Look
+[01:34.44]Look at
+[01:34.59]Look at my
+[01:34.68]Look at my eyes
+[01:35.56]and
+[01:35.81]and tell
+[01:35.94]and tell me
+[01:36.34]and tell me how
+[01:36.64]and tell me how you
+[01:37.02]and tell me how you feel
+[01:37.98]the
+[01:38.21]the fear
+[01:38.63]the fear I
+[01:38.76]the fear I put
+[01:39.11]the fear I put in
+[01:39.48]the fear I put in your
+[01:40.19]the fear I put in your soul.
+[01:40.81]Oh
+[01:41.51]Oh the
+[01:42.08]Oh the silver
+[01:42.63]Oh the silver lining.
+[02:08.26]In
+[02:08.51]In the
+[02:08.70]In the darkness
+[02:09.17]In the darkness you
+[02:09.48]In the darkness you will
+[02:09.69]In the darkness you will hear
+[02:09.89]In the darkness you will hear my
+[02:10.28]In the darkness you will hear my voice,
+[02:10.64]together
+[02:11.38]together along
+[02:11.81]together along those
+[02:12.01]together along those tight
+[02:12.35]together along those tight struggles.
+[02:13.06]There
+[02:13.48]There is
+[02:13.69]There is no
+[02:13.96]There is no such
+[02:14.14]There is no such thing
+[02:14.37]There is no such thing as
+[02:14.41]There is no such thing as a
+[02:14.93]There is no such thing as a final
+[02:15.31]There is no such thing as a final act
+[02:15.78]only
+[02:16.34]only endless
+[02:16.91]only endless fun!
+[02:17.18]I’ll
+[02:17.74]I’ll make
+[02:19.53]I’ll make you
+[02:20.18]I’ll make you pay
+[02:21.98]I’ll make you pay for
+[02:22.70]I’ll make you pay for the
+[02:24.49]I’ll make you pay for the souls
+[02:24.97]I’ll make you pay for the souls you
+[02:25.47]I’ll make you pay for the souls you toyed
+[02:26.10]I’ll make you pay for the souls you toyed with,
+[02:26.93]I’ll make you pay for the souls you toyed with, you
+[02:27.58]I’ll make you pay for the souls you toyed with, you fake!
+[02:29.36]My
+[02:30.08]My face,
+[02:31.79]that
+[02:32.48]that part
+[02:34.24]that part that
+[02:34.89]that part that you’ve
+[02:35.40]that part that you’ve taken
+[02:36.69]that part that you’ve taken from
+[02:37.40]that part that you’ve taken from me!
+    `;
+
+    // Parse the raw text into {time(ms), text} entries
+    function parseRawToArray(rawText) {
+        var re = /\[(\d{2}):(\d{2}\.\d{2})\](.*)/g;
+        var m;
+        var arr = [];
+        while ((m = re.exec(rawText)) !== null) {
+            var mm = parseInt(m[1], 10);
+            var ss = parseFloat(m[2]); // seconds with fraction
+            var txt = m[3].trim();
+            var ms = mm * 60000 + Math.round(ss * 1000);
+            arr.push({ time: ms, text: txt });
+        }
+        // sort by time to be robust to ordering issues
+        arr.sort(function(a, b){ return a.time - b.time; });
+        return arr;
     }
-    
-    const API_PARTS = [
-        atob('aHR0cHM6Ly9hcGkub3Blbi1tZXRlby5jb20vdjEvZm9yZWNhc3Q/bGF0aXR1ZGU9'),
-        atob('NTIuNjAyNDcwNA=='),
-        atob('JmxvbmdpdHVkZT0='),
-        atob('LTEuMTIwNjY1Ng=='),
-        atob('JmhvdXJseT1yYWluLHRlbXBlcmF0dXJlXzJtLHNub3dmYWxsLHNob3dlcnMsYXBwYXJlbnRfdGVtcGVyYXR1cmUsaXNfZGF5'),
-        atob('JnRpbWV6b25lPUdNVCZmb3JlY2FzdF9kYXlzPTE=')
-    ];
-    const API_URL = API_PARTS.join('');
-    const MY_TIMEZONE = 'Europe/London';
-    
-    function init() {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createWidget);
-        } else {
-            createWidget();
+
+    var nomoreLyrics = parseRawToArray(raw);
+
+    // Flash + gradient trigger time (00:33.28 => 33280 ms)
+    var flashTriggerMs = 33280;
+    var flashTriggered = false;
+
+    var currentIndex = -1;
+    var intervalId = null;
+    var activeAudio = null;
+
+    function reset() {
+        lyricDisplay.html('');
+        lyricDisplay.css({
+            color: '#000',
+            background: 'none',
+            '-webkit-background-clip': '',
+            '-webkit-text-fill-color': ''
+        });
+        currentIndex = -1;
+        flashTriggered = false;
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
         }
     }
-    
-    function createWidget() {
-        const widget = document.createElement('div');
-        widget.id = 'status-widget';
-        updateWidgetTheme(widget);
-        
-        const contentArea = document.querySelector('#mw-content-text') || 
-                           document.querySelector('.page__main') ||
-                           document.querySelector('.page-content');
-        
-        if (contentArea) {
-            contentArea.appendChild(widget);
-            updateWidget();
-            setInterval(updateWidget, 60000);
-        }
+
+    function applyYellowGradientStyle() {
+        // yellow gradient (gold -> orange)
+        lyricDisplay.css({
+            background: 'linear-gradient(#ffd700, #ff8c00)',
+            '-webkit-background-clip': 'text',
+            '-webkit-text-fill-color': 'transparent',
+            'background-clip': 'text',
+            color: 'transparent'
+        });
     }
-    
-    function updateWidgetTheme(widget, isDay) {
-        if (isDay === undefined) {
-            const hour = new Date().getHours();
-            isDay = hour >= 6 && hour < 20;
-        }
-        
-        if (isDay) {
-            widget.style.cssText = `
-                background: #f9f9f9;
-                border: 1px solid #c5c5c5;
-                border-radius: 2px;
-                padding: 12px 14px;
-                margin: 16px 0;
-                font-family: Rubik, Helvetica, Arial, sans-serif;
-                font-size: 12px;
-                color: #3a3a3a;
-                line-height: 1.5;
-            `;
-        } else {
-            widget.style.cssText = `
-                background: #1a1a1a;
-                border: 1px solid #3a3a3a;
-                border-radius: 2px;
-                padding: 12px 14px;
-                margin: 16px 0;
-                font-family: Rubik, Helvetica, Arial, sans-serif;
-                font-size: 12px;
-                color: #e0e0e0;
-                line-height: 1.5;
-            `;
-        }
-    }
-    
-    function getTimeInfo() {
-        const myTime = new Date().toLocaleTimeString('en-GB', {
-            timeZone: MY_TIMEZONE,
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        }).toLowerCase();
-        
-        const visitorTime = new Date().toLocaleTimeString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        }).toLowerCase();
-        
-        return { myTime, visitorTime };
-    }
-    
-    function getCurrentWeather(data) {
-        const now = new Date();
-        const currentHour = now.getHours();
-        
-        return {
-            temp: data.hourly.temperature_2m[currentHour],
-            rain: data.hourly.rain[currentHour],
-            snowfall: data.hourly.snowfall[currentHour],
-            showers: data.hourly.showers[currentHour],
-            isDay: data.hourly.is_day[currentHour],
-            tempUnit: data.hourly_units.temperature_2m
-        };
-    }
-    
-    function getWeatherStatement(weather) {
-        const statements = [];
-        
-        if (weather.isDay) {
-            statements.push("☀️ It's daytime here");
-        } else {
-            statements.push("🌙 It's nighttime here");
-        }
-        
-        if (weather.snowfall > 0) {
-            statements.push("❄️ It's snowing");
-        } else if (weather.rain > 1.0) {
-            statements.push("🌧️ It's raining heavily");
-        } else if (weather.rain > 0.3) {
-            statements.push("🌦️ It's raining");
-        } else if (weather.showers > 0) {
-            statements.push("🌦️ There are showers");
-        } else {
-            statements.push("✨ It's clear outside");
-        }
-        
-        statements.push(`🌡️ ${weather.temp}${weather.tempUnit}`);
-        
-        return statements;
-    }
-    
-    function displayWidget(weatherData) {
-        const widget = document.getElementById('status-widget');
-        if (!widget) return;
-        
-        const times = getTimeInfo();
-        const weather = getCurrentWeather(weatherData);
-        const statements = getWeatherStatement(weather);
-        const hour = new Date().getHours();
-        const isDay = hour >= 6 && hour < 20;
-        
-        updateWidgetTheme(widget, isDay);
-        
-        const timeStatement = times.myTime === times.visitorTime 
-            ? `For me, it's currently <strong>${times.myTime}</strong>`
-            : `For me, it's currently <strong>${times.myTime}</strong>, but for you, it's <strong>${times.visitorTime}</strong>`;
-        
-        const textColor = isDay ? '#3a3a3a' : '#e0e0e0';
-        const borderColor = isDay ? '#e0e0e0' : '#3a3a3a';
-        const mutedColor = isDay ? '#888' : '#999';
-        
-        const content = document.createElement('div');
-        content.innerHTML = `
-            <div style="margin-bottom: 8px; color: ${textColor};">
-                ${timeStatement}
-            </div>
-            
-            ${statements.map(statement => `
-                <div style="margin-bottom: 6px; color: ${textColor};">
-                    ${statement}
-                </div>
-            `).join('')}
-            
-            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid ${borderColor}; font-size: 11px; color: ${mutedColor}; text-align: right;">
-                Updated ${new Date().toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}
-            </div>
-        `;
-        
-        while (widget.childNodes.length > 0) {
-            widget.removeChild(widget.lastChild);
-        }
-        widget.appendChild(content);
-    }
-    
-    function updateWidget() {
-        fetch(API_URL)
-            .then(response => response.json())
-            .then(data => displayWidget(data))
-            .catch(error => {
-                const widget = document.getElementById('status-widget');
-                if (widget) {
-                    const times = getTimeInfo();
-                    const hour = new Date().getHours();
-                    const isDay = hour >= 6 && hour < 20;
-                    
-                    updateWidgetTheme(widget, isDay);
-                    
-                    const timeStatement = times.myTime === times.visitorTime 
-                        ? `For me, it's currently <strong>${times.myTime}</strong>`
-                        : `For me, it's currently <strong>${times.myTime}</strong>, but for you, it's <strong>${times.visitorTime}</strong>`;
-                    
-                    const textColor = isDay ? '#3a3a3a' : '#e0e0e0';
-                    const mutedColor = isDay ? '#888' : '#999';
-                    
-                    const content = document.createElement('div');
-                    content.innerHTML = `
-                        <div style="margin-bottom: 8px; color: ${textColor};">
-                            ${timeStatement}
-                        </div>
-                        <div style="color: ${mutedColor};">
-                            ⚠️ Weather data unavailable
-                        </div>
-                    `;
-                    
-                    while (widget.childNodes.length > 0) {
-                        widget.removeChild(widget.lastChild);
-                    }
-                    widget.appendChild(content);
-                }
+
+    function doWhiteFlash() {
+        // Quick white flash overlay
+        var overlay = $('<div>')
+            .attr('id', 'nomore-flash-overlay')
+            .css({
+                position: 'fixed',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                background: '#fff',
+                opacity: 0,
+                zIndex: 10000,
+                pointerEvents: 'none'
+            })
+            .appendTo('body');
+
+        // animate in/out quickly
+        overlay.animate({ opacity: 1 }, 80, function() {
+            overlay.animate({ opacity: 0 }, 200, function() {
+                overlay.remove();
             });
+        });
     }
-    
-    init();
-})();
+
+    function updateLyricForTime(currentTime) {
+        var tms = Math.round(currentTime * 1000);
+        // trigger flash exactly once when we pass the trigger time
+        if (!flashTriggered && tms >= flashTriggerMs) {
+            flashTriggered = true;
+            // white flash + switch to yellow gradient
+            doWhiteFlash();
+            applyYellowGradientStyle();
+        }
+
+        // find latest lyric index <= tms
+        var newIndex = -1;
+        for (var i = nomoreLyrics.length - 1; i >= 0; i--) {
+            if (tms >= nomoreLyrics[i].time) {
+                newIndex = i;
+                break;
+            }
+        }
+
+        if (newIndex !== -1 && newIndex !== currentIndex) {
+            currentIndex = newIndex;
+            lyricDisplay.html(nomoreLyrics[currentIndex].text);
+        }
+    }
+
+    function startMonitoringAudio(aud) {
+        if (activeAudio === aud) return;
+        activeAudio = aud;
+        reset();
+        intervalId = setInterval(function() {
+            if (!aud || aud.paused || aud.ended) {
+                reset();
+                activeAudio = null;
+                return;
+            }
+            updateLyricForTime(aud.currentTime);
+        }, 50);
+    }
+
+    function isNoMoreAudio(aud) {
+        var src = (aud && (aud.currentSrc || aud.src || aud.baseURI || '') + '').toString();
+        return src && src.indexOf('NoMoreGamesOld.mp3') !== -1;
+    }
+
+    // auto-detect any <audio> element playing the file
+    document.addEventListener('play', function(e) {
+        if (e.target && e.target.tagName === 'AUDIO') {
+            var a = e.target;
+            if (isNoMoreAudio(a)) {
+                startMonitoringAudio(a);
+            }
+        }
+    }, true);
+
+    document.addEventListener('pause', function(e) {
+        if (e.target === activeAudio) {
+            reset();
+            activeAudio = null;
+        }
+    }, true);
+
+    document.addEventListener('ended', function(e) {
+        if (e.target === activeAudio) {
+            reset();
+            activeAudio = null;
+        }
+    }, true);
+
+    // also hook the internal audio object in case scripts use it
+    nmAudio.addEventListener('play', function() { if (isNoMoreAudio(nmAudio)) startMonitoringAudio(nmAudio); });
+    nmAudio.addEventListener('pause', function() { if (activeAudio === nmAudio) reset(); });
+    nmAudio.addEventListener('ended', function() { if (activeAudio === nmAudio) reset(); });
+
+    // append container (already appended above) — done
+});
+
+
+
+
+
+
+
 
 
 console.log('=== LORD X SCRIPT LOADED ===');

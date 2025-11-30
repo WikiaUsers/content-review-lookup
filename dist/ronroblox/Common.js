@@ -75,7 +75,6 @@ UserTagsJS.modules.custom = {
 	'HolyMoa': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
 	// Administrators
-	'HaHaBlah': ['content-administrator'],
 	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
 	'SuperGlitchyTheo': ['content-administrator','Wiki-Contributor'],
 	// Moderators
@@ -108,6 +107,7 @@ UserTagsJS.modules.custom = {
 	'OfficialKhrome': ['retired-staff'],
 	'DefoNotSyki': ['retired-staff'],
 	'LollipopWut': ['retired-staff'],
+	'HaHaBlah': ['retired-staff'],
 	// Retired Dual Moderators
 	'Awsomemysticcheese': ['retired-staff'],
 	'YesIHaveAnAccount': ['retired-staff'],
@@ -145,6 +145,7 @@ UserTagsJS.modules.custom = {
     'Silkened': ['Wiki-Contributor'],
     'Cipherusxzy': ['Wiki-Contributor'],
     'Therealusman': ['Wiki-Contributor'],
+    'DragooNit': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],
