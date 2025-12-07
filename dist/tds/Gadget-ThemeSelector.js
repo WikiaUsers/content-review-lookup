@@ -1,4 +1,4 @@
 importArticles({
 	type: 'script',
-	article: 'u:dev:MediaWiki:FileTools.js',
+	article: 'u:dev:MediaWiki:ThemeSelector.js',
 });

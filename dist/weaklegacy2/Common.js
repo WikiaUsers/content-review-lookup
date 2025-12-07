@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Filter taken from: https://blox-fruits.fandom.com/ru/wiki/MediaWiki:Common.js?oldid=28829 so you have the credit*/
+
 
 $(function () {
 
@@ -12,6 +12,7 @@ $(function () {
 			'<option value="">All Types</option>' +
 			'<option value="fruit-type-breathing style">Breathing Style</option>' +
 			'<option value="fruit-type-clans">Clans</option>' +
+			'<option value="fruit-type-items">Items</option>' +
 		'</select>'
 	);
 
@@ -21,7 +22,9 @@ $(function () {
 			'<option value="rarity-common">Common</option>' +
 			'<option value="rarity-uncommon">Uncommon</option>' +
 			'<option value="rarity-rare">Rare</option>' +
+			'<option value="rarity-epic">Epic</option>' +
 			'<option value="rarity-legendary">Legendary</option>' +
+			'<option value="rarity-exotic">Exotic</option>' +
 			'<option value="rarity-mythical">Mythical</option>' +
 			'<option value="rarity-first swordsmen">First Swordsmen</option>' +
 		'</select>'

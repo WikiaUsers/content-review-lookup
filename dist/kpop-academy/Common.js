@@ -370,117 +370,156 @@ mw.loader.using('jquery').then(function () {
 
 
 // === Load dependencies ===
-mw.loader.using(['mediawiki.api','jquery'], function(){
+mw.loader.using(['mediawiki.api','jquery'], function () {
 
-    let filters = {};            // selected filters
-    let logic = 'OR';            // default logic
+    // --- DATA: giá trị phụ thuộc ---
+    var subOptions = {
+        Food: ["Sweet", "Savory", "Spicy"],
+        Dressing: ["Hair", "Top", "Bottom"],
+        Idols: ["Sexy", "Sassy", "Smart", "Sporty", "Sorrowful", "Sweet"]
+    };
 
-    // ============================================
-    // 1) LOAD FILTER DATA FROM TEMPLATE <div>
-    // ============================================
-    const filtersData = {};  // replaced version (no hardcode)
+    var filters = {};
 
-    $('div.type-field[data-type="dropbox"]').each(function(){
-        const key = $(this).data('key');
-        const raw = $(this).data('options');       // "Idol,Sexy,Sporty"
-        const arr = raw.split(',').map(x => x.trim());
-        filtersData[key] = arr;
+    // ==========================================================
+    //  HÀM TẠO DROPDOWN
+    // ==========================================================
+    function createDropdown(targetId, key, options, placeholder, disabled) {
+        var $select = $("<select>")
+            .addClass("dynamic-select")
+            .attr("data-key", key);
 
-        // Insert a clickable span.dropdown same as old system
-        const label = $('<span>')
-            .addClass('dropdown')
-            .attr('data-key', key)
-            .text(key);
+        $select.append(
+            $("<option>").val("").text(placeholder || "Select...")
+        );
 
-        $(this).replaceWith(label);
-    });
-
-    // ============================================
-    // 2) RENDER DROPDOWNS (dynamic from dropbox)
-    // ============================================
-    $('span.dropdown').each(function(){
-        let key = $(this).data('key');
-        let $menu = $('<div>').addClass('dropdown-menu');
-
-        filtersData[key].forEach(val => {
-            let $item = $('<div>')
-                .addClass('dropdown-item')
-                .text(val)
-                .data('value', val);
-
-            $menu.append($item);
-        });
-
-        $(this).after($menu);
-
-        $(this).click(function(){
-            $menu.toggle();
-        });
-    });
-
-    // ============================================
-    // 3) SELECT/UNSELECT ITEM
-    // ============================================
-    $(document).on('click', '.dropdown-item', function(){
-        let val = $(this).data('value');
-        let key = $(this).closest('.dropdown-menu').prev('.dropdown').data('key');
-
-        if(!filters[key]) filters[key] = [];
-
-        if(filters[key].includes(val)){
-            filters[key] = filters[key].filter(v => v !== val);
-            $(this).removeClass('selected');
-        } else {
-            filters[key].push(val);
-            $(this).addClass('selected');
+        if (Array.isArray(options)) {
+            options.forEach(function(opt){
+                if (opt) $select.append($("<option>").val(opt).text(opt));
+            });
         }
+
+        if (disabled) $select.prop("disabled", true);
+
+        $("#" + targetId).html($select);
+    }
+
+    // ==========================================================
+    //  ĐỌC OPTIONS TỪ TEMPLATE
+    // ==========================================================
+    function getOptionsFromTemplate() {
+        var div = $("#js-filter-obtain");
+
+        if (div.length === 0) return []; // không có template
+
+        var count = Number(div.data("count")) || 10;
+        var arr = [];
+
+        for (var i = 1; i <= count; i++) {
+            var val = div.data("opt" + i);
+            if (val) arr.push(val);
+        }
+
+        return arr;
+    }
+
+    // ==========================================================
+    //  KHỞI TẠO DROPDOWN MAIN & SUB
+    // ==========================================================
+    createDropdown("dd-main", "main", Object.keys(subOptions), "Chọn loại chính", false);
+    createDropdown("dd-sub", "sub", [], "Filter 2", false);
+
+    // ==========================================================
+    //  KHỞI TẠO DROPDOWN OBTAIN TỪ TEMPLATE
+    // ==========================================================
+    var obtainOptions = getOptionsFromTemplate();
+    createDropdown("dd-obtain", "obtain", obtainOptions, "Obtain method", false);
+
+
+    // ==========================================================
+    //  HÀM POPULATE SUB
+    // ==========================================================
+    function populateSub(mainVal) {
+        if (mainVal && subOptions[mainVal]) {
+            createDropdown("dd-sub", "sub", subOptions[mainVal], "Chọn loại phụ", false);
+        } else {
+            createDropdown("dd-sub", "sub", [], "Filter 2", false);
+        }
+    }
+
+    // ==========================================================
+    //  HÀM BUILD FILTERS
+    // ==========================================================
+    function recomputeFiltersFromSelects(){
+        var mainVal   = $("#dd-main select").val();
+        var subVal    = $("#dd-sub select").val();
+        var obtainVal = $("#dd-obtain select").val();
+
+        filters = {};
+
+        if (mainVal)   filters.main = [ mainVal ];
+        if (subVal)    filters.sub  = [ subVal ];
+        if (obtainVal) filters.obtain = [ obtainVal ];
+    }
+
+    // ==========================================================
+    //  EVENT LISTENERS
+    // ==========================================================
+    $("body").on("change", "#dd-main select", function(){
+        populateSub($(this).val());
+        recomputeFiltersFromSelects();
     });
 
-    // ============================================
-    // 4) QUERY DPL
-    // ============================================
-    $('#queryDataBtn').click(function(){
-        if($.isEmptyObject(filters)){
-            $('#queryDataGrid').html('No filter selected.');
+    $("body").on("change", "#dd-sub select, #dd-obtain select", function(){
+        recomputeFiltersFromSelects();
+    });
+
+    // ==========================================================
+    //  QUERY BUTTON
+    // ==========================================================
+    $("#queryDataBtn").on("click", function(){
+
+        if ($.isEmptyObject(filters)) {
+            $("#queryDataGrid").html("No filter selected.");
             return;
         }
 
-        let dplLines = ['{{#dpl:'];
+        var dpl = ["{{#dpl:"];
 
-        Object.keys(filters).forEach(key => {
-            if(filters[key].length === 1){
-                dplLines.push('|category=' + filters[key][0]);
-            } else if(filters[key].length > 1){
-                if(logic === 'OR'){
-                    dplLines.push('|category=' + filters[key].join('¦'));
-                } else {
-                    filters[key].forEach(v => dplLines.push('|category=' + v));
-                }
-            }
+        Object.keys(filters).forEach(group => {
+            filters[group].forEach(val => {
+                dpl.push("|category=" + val);
+            });
         });
 
-        dplLines.push('|notnamespace=File¦Template¦Category');
-        dplLines.push('|ordermethod=title');
-        dplLines.push('|format=,²{Shop¦food¦¦%TITLE%_ui¦¦5¦}²\\n,,');
-        dplLines.push('}}');
+        dpl.push("|notnamespace=File¦Template¦Category");
+        dpl.push("|ordermethod=title");
+        dpl.push("|format=,²{Shop¦food¦¦%TITLE%_ui¦¦5¦}²\\n,,");
+        dpl.push("}}");
+
+        var queryText = dpl.join("\n");
 
         new mw.Api().get({
-            action: 'parse',
-            format: 'json',
-            text: dplLines.join('\n'),
-            contentmodel: 'wikitext'
+            action:'parse',
+            format:'json',
+            text: queryText,
+            contentmodel:'wikitext'
         }).done(function(data){
-            $('#queryDataGrid').html(data.parse.text['*']);
+            $("#queryDataGrid").html(data.parse.text["*"]);
         });
     });
 
-    // ============================================
-    // 5) CLEAR FILTERS
-    // ============================================
-    $('#clearParamBtn').click(function(){
+    // ==========================================================
+    //  CLEAR BUTTON
+    // ==========================================================
+    $("#clearParamBtn").on("click", function(){
+        $("#dd-main select").val("");
+        $("#dd-obtain select").val("");
+
+        populateSub(null);
+
         filters = {};
-        $('.dropdown-item').removeClass('selected');
-        $('#queryDataGrid').html('');
+        $("#queryDataGrid").html("");
     });
 
 });

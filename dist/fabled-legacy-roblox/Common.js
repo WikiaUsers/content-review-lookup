@@ -15,7 +15,11 @@
 /* 3.5. New wiki editors & disable the autoconfirmed user tag ------ */
 /* 4. Stat potential bar & Guild color picker ---------------------- */
 /* 4.1. Adding the input boxes on both elements -------------------- */
-/* 4.2. Initializing the potential bar and guild color picker------- */
+/* 4.2. Initializing the potential bar and guild color picker ------ */
+/* 5. Countdowns --------------------------------------------------- */
+/* 5.1. Global Boss ------------------------------------------------ */
+/* 5.2. Daily refresh ---------------------------------------------- */
+/* 5.3. Weekly refresh --------------------------------------------- */
 
 
 /* --------- 1 --------- */
@@ -165,3 +169,97 @@ mw.loader.using('mediawiki.util', function () { // Adding this method so both of
     }
   });
 });
+
+
+/* --------- 5 --------- */
+/* Countdowns */
+mw.hook('wikipage.content').add(function ($content) {
+   /* -------- 5.1 -------- */
+   /* Global Boss */
+   function globalBossCountdown() {
+      var date_now = new Date();
+
+      var utcH = date_now.getUTCHours();
+      var utcM = date_now.getUTCMinutes();
+      var utcS = date_now.getUTCSeconds();
+
+      var nextHour = Math.ceil((utcH + utcM / 60 + utcS / 3600) / 3) * 3; // Refreshes once every 3 hours based on UTC times
+      var date_next = new Date(Date.UTC(date_now.getUTCFullYear(),date_now.getUTCMonth(),date_now.getUTCDate(),nextHour, 0, 0));
+
+      var global_boss_countdown = date_next - date_now;
+
+      var Hours = Math.floor(global_boss_countdown / 3600000);
+      var Minutes = Math.floor((global_boss_countdown % 3600000) / 60000);
+      var Seconds = Math.floor((global_boss_countdown % 60000) / 1000);
+
+      if (Hours >= 1) {
+         CountdownTimer = `${Hours}h ${Minutes}m ${Seconds}s`;
+      } else if (Minutes >= 1) {
+         CountdownTimer = `${Minutes}m ${Seconds}s`;
+      } else {
+         CountdownTimer = `${Seconds}s`;
+      }
+
+      document.getElementById("global-boss-countdown").textContent = CountdownTimer;
+   }
+   
+
+   /* -------- 5.2 -------- */
+   /* Daily refresh */
+   function dailyRefreshCountdown() {
+      var date_now = new Date();
+      var date_next = new Date(Date.UTC(date_now.getUTCFullYear(),date_now.getUTCMonth(),date_now.getUTCDate() + 1, 0, 0, 0)); // Refreshes once every 24 hours at 12AM UTC
+
+      const daily_refresh_countdown = date_next - date_now;
+
+      var Hours = Math.floor(daily_refresh_countdown / 3600000);
+      var Minutes = Math.floor((daily_refresh_countdown % 3600000) / 60000);
+      var Seconds = Math.floor((daily_refresh_countdown % 60000) / 1000);
+
+      if (Hours >= 1) {
+         CountdownTimer = `${Hours}h ${Minutes}m ${Seconds}s`;
+      } else if (Minutes >= 1) {
+         CountdownTimer = `${Minutes}m ${Seconds}s`;
+      } else {
+         CountdownTimer = `${Seconds}s`;
+      }
+	  
+      document.getElementById("daily-refresh-countdown").textContent = CountdownTimer;
+   }
+   
+
+   /* -------- 5.3 -------- */
+   /* Weekly refresh */
+   function weeklyRefreshCountdown() {
+      var date_now = new Date();
+      var utcD = date_now.getUTCDay();
+
+      var days_until_thursday = (4 - utcD + 7) % 7 || 7; // Refreshes every Thursday at 12AM UTC
+      var date_next_thursday = new Date(Date.UTC(date_now.getUTCFullYear(),date_now.getUTCMonth(),date_now.getUTCDate() + days_until_thursday, 0, 0, 0));
+
+      var weekly_refresh_countdown = date_next_thursday - date_now;
+	  
+      var Days = Math.floor(weekly_refresh_countdown / (24 * 3600000));
+      var Hours = Math.floor((weekly_refresh_countdown % (24 * 3600000)) / 3600000);
+      var Minutes = Math.floor((weekly_refresh_countdown % 3600000) / 60000);
+      var Seconds = Math.floor((weekly_refresh_countdown % 60000) / 1000);
+
+      if (Days >= 1) {
+         CountdownTimer = `${Days}d ${Hours}h ${Minutes}m ${Seconds}s`;
+      } else if (Hours >= 1) {
+         CountdownTimer = `${Hours}h ${Minutes}m ${Seconds}s`;
+      } else if (Minutes >= 1) {
+         CountdownTimer = `${Minutes}m ${Seconds}s`;
+      } else {
+         CountdownTimer = `${Seconds}s`;
+      }
+      document.getElementById("weekly-refresh-countdown").textContent = CountdownTimer;
+   }
+
+   globalBossCountdown();
+   dailyRefreshCountdown();
+   weeklyRefreshCountdown();
+   setInterval(globalBossCountdown, 1000);
+   setInterval(dailyRefreshCountdown, 1000);
+   setInterval(weeklyRefreshCountdown, 1000);
+})();

@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://fittest-surviors.fandom.com/wiki/MediaWiki:ImportJS?action=raw&ctype=text/javascript");

@@ -4,22 +4,9 @@ window.UserTagsJS = {
 		projectpagecreator: {u:'Project Page Creator',order:-2001},
 		inactive: {u:'Not Active',order:100},
 		newuser: {u:'New User',order:100},
-		championS: {u:'Slicer Champion',order:0,link:"Champions"},
-		championC: {u:'Crusher Champion',order:0,link:"Champions"},
-		championP: {u:'Piercer Champion',order:0,link:"Champions"},
-		championB: {u:'Baller Champion',order:0,link:"Champions"},
-		echampionS: {u:'Slicer Ex-Champion',order:0,link:"Champions"},
-		echampionC: {u:'Crusher Ex-Champion',order:0,link:"Champions"},
-		echampionP: {u:'Piercer Ex-Champion',order:0,link:"Champions"},
-		echampionB: {u:'Baller Ex-Champion',order:0,link:"Champions"},
-		SuperCloud: {u:"SuperCloud9",order:0},
 		notificationmanager: {u:"Notification Manager",order:0,link:"Project:Notifications"},
-		NSFWFFMaker: {u:"NSFW FanFiction Maker",order:-1},
-		OCContestWinner: {u:"",order:0,link:"BFS OC Contest"},
-		/*  Editor of the month tags start below.  I expect this list to get very long.*/
-		monthshowoff: {u:'Editor of the Month (No Date)',link:"Project:Editor of the month"},
-		monthjuly2016: {u:'Editor of the Month (July 2016)',link:"Project:Editor of the month"},
-		monthaugust2016: {u:'Editor of the Month (August 2016)',link:"Project:Editor of the month"},
+		occontestv1winner: {u:"OC Contest v1 Winner",order:0,link:"BFS OC Contest"},
+		occontestv2winner: {u:"OC Contest v2 Winner",order:0,link:"BFS OC Contest"}, // May never exist, but the prospect is there.
 	}
 };
 UserTagsJS.modules.inactive = {
@@ -35,13 +22,9 @@ UserTagsJS.modules.userfilter = {
 	'EditorOfTheMonthShowoff': ['inactive'],
 };
 UserTagsJS.modules.custom = {
-	'Fyzu': ['projectpagecreator',"monthjuly2016","championC","NSFWFFMaker"],
+	'Fyzu': ['projectpagecreator',"occontestv1winner"],
 	'Thundermaker300': ['projectpagecreator','notificationmanager'],
 	'Dryswordmaster': ['projectpagecreator'],
-	'EditorOfTheMonthShowoff': ['monthshowoff'],
-	'Ironhide2962': ["championS"],
-	'Lolzarena': ["echampionP"],
-	'EvilJacobthehero2013': ["championP"],
 };
 // Namespace for notiplus
 window.notiplus = window.notiplus || {};

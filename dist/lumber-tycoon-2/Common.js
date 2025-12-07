@@ -9,13 +9,7 @@ window.BackToTopModern = true;
 /* Cross-Wiki Block log check */
 TBL_GROUP = "roblox-en";
 
-//To help avoid confusion over the Fanon: pages, this message will be displayed under the title's of all pages in the fanon namespace
-$('.ns-112 .page-header__bottom').each(function() {
-  $(this).after($('<span>').html("<h3><b><i>This is not real game content, it is fan made!</i></b></h3>"));
-});
-
-
-/* Adds altered translator button. Script credited to Deadcoder. https://dev.fandom.com/wiki/Translator */
+/* Modified Translator.js from dev.fandom.com by Deadcoder (https://dev.fandom.com/wiki/MediaWiki:Translator/Translator.js) */
 $(function() {
     var config = mw.config.get([
         'wgAction',
@@ -26,12 +20,14 @@ $(function() {
         return;
     }
     window.UseTranslator = false;
+    
+    if (config.wgPageContentLanguage === config.wgUserLanguage) config.wgUserLanguage = navigator.language;
 
     function click() {
         window.open(new mw.Uri('https://translate.google.com/translate').extend({
-            hl: config.wgUserLanguage,
             sl: config.wgPageContentLanguage,
 			tl: config.wgUserLanguage,
+			hl: config.wgUserLanguage,
             u: location.href
         }).toString());
     }
@@ -48,3 +44,9 @@ $(function() {
         })
     );
 });
+
+/* Custom placeholder image for link previews */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/lumber-tycoon-2/images/4/4a/Site-favicon.ico/revision/latest?cb=20210601183622&format=original';
+window.pPreview.tlen = 500;
+window.pPreview.scale = {r: '?', t: '/scale-to-height-down/175?'};

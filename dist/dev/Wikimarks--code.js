@@ -363,7 +363,7 @@
         var $nav = $('.wds-community-header__local-navigation .wds-tabs, .fandom-community-header__local-navigation .wds-tabs'),
             $li = $('<li>');
 
-        $li.addClass('wds-tabs__tab wikimarks')
+        $li.addClass('wds-dropdown wikimarks')
             .css({
                 backgroundImage: 'url("https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif")',
                 backgroundPosition: 'center center',

@@ -2,6 +2,56 @@
 
 /* WAM Site-wide Installation */
 
+// Automatically updates the countdown to the next scheduled reset time
+function getNextSundayReset() {
+  const now = new Date();
+  const day = now.getDay();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  
+  let daysToSunday = (0 - day + 7) % 7;
+
+
+  if(day === 0) {
+    if(hour < 10 || (hour === 10 && minute === 0)) {
+      daysToSunday = 0;
+    } else {
+      daysToSunday = 7;
+    }
+  }
+
+  return new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + daysToSunday,
+    10, 0, 0, 0
+  );
+}
+
+
+function updateCountdown() {
+  const nextReset = getNextSundayReset();
+
+  const yyyy = nextReset.getFullYear();
+  const mm = String(nextReset.getMonth() + 1).padStart(2, '0');
+  const dd = String(nextReset.getDate()).padStart(2, '0');
+  const hh = String(nextReset.getHours()).padStart(2, '0');
+  const mi = String(nextReset.getMinutes()).padStart(2, '0');
+  const ss = String(nextReset.getSeconds()).padStart(2, '0');
+
+  const dateStr = `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+  
+
+  $('#weekly-reset-date').text(dateStr);
+}
+
+
+$(function() {
+  updateCountdown();
+
+  setInterval(updateCountdown, 60000); // Refresh every minute to handle weekly reset
+});
+
 // For filtering source material template's gif
 
 window.pPreview = window.pPreview || {};

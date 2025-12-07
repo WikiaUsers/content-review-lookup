@@ -69,6 +69,62 @@ UserTagsJS.modules.inactive = {
 	zeroIsInactive: false
 };
 
+/* Podtytuły zamiast prefiksów */
+$(function FixNsUCPFinalSpan() {
+	const $h1 = $('#firstHeading');
+	const ns = mw.config.get('wgNamespaceNumber');
+
+	if (!$h1.length) return;
+
+	const desc = {
+		4: 'Strona projektu Wiedźmin Wiki'
+	};
+
+	if (desc[ns]) {
+		$h1.find('.mw-page-title-namespace, .mw-page-title-separator').hide();
+
+		$h1.after(
+				$('<div>', {
+				class: 'page-header__page-subtitle',
+				text: desc[ns]
+			})
+		).find('.mw-page-title-main').text(mw.config.get('wgTitle'));
+	}
+
+	document.title = mw.config.get('wgTitle');
+});
+
+
+/* Podtytuły podstron zamiast ukośników */ 
+$(function() {
+	const $h1 = $('#firstHeading');
+	if (!$h1.length) return;
+
+    const ns = mw.config.get('wgNamespaceNumber');
+	if (ns === 500 || ns === 502) return;
+
+	const name = mw.config.get('wgTitle');
+
+	if (name.includes('/')) {
+		const parts = name.split('/');
+		let main = parts[0];
+		const sub = parts.slice(1).join(' · ');
+
+		const namespaceSeparatorIndex = main.indexOf(':');
+		if (namespaceSeparatorIndex !== -1) {
+			main = main.slice(namespaceSeparatorIndex + 1);
+        }
+
+		$h1.text(main);
+
+		$h1.after(
+			$('<div>', {
+				class: 'page-header__page-subtitle',
+				text: sub
+			})
+		);
+	}
+});
 
 /* WDSIcons */
 importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });

@@ -79,14 +79,6 @@ $.getJSON(mw.util.wikiScript("index"), {
 	}
 })(mediaWiki, jQuery);
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WallGreeting.js',
-    ]
-});
-
-
 //New JS 4 Wordrain
 /* Word Rain System v2.1 - Fandom Optimized */
 window.wordRainSystem = (function() {

@@ -109,3 +109,10 @@ addOnloadHook(ttforhandy);
 if (wgPageName.indexOf("Special:MovePage/File:") != -1 || (wgCanonicalNamespace == "File" && Storage)) {
    importScriptPage("FileUsageAuto-update/code.js/min.js", "dev");
 }
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AbuseLogRC.js',
+    ]
+});

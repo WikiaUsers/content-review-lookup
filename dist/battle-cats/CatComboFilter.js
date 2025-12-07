@@ -35,6 +35,7 @@ function handleComboFilter() {
 		<td>L<input type="checkbox" value="2" class="effect_power" checked></td>
 		<td>XL<input type="checkbox" value="3" class="effect_power" checked></td>
 		<!-- <td>DOWN<input type="checkbox" value="4" class="effect_power" checked></td> -->
+		<td>Enable<input type="checkbox" value="5" class="effect_power" checked></td>
 	</tr>
 	<tr>
 		<td><b>Effect</b></td>
@@ -69,10 +70,11 @@ function handleComboFilter() {
 	// constants
 	const UNLOCK_CONDITION = 1;
 	const LEGACY_COMBO_FLAG = "-1";
-	const SLOT_OFFSET = 2;
+	const AFFECT_CONDITION = 2;
+	const SLOT_OFFSET = 3;
 	const EMPTY_SLOT = "-1";
-	const COMBO_EFFECT = 12;
-	const COMBO_STRENGTH = 13;
+	const COMBO_EFFECT = 13;
+	const COMBO_STRENGTH = 14;
 
 	const FORM_CHAR_MAP = {
 		"0": "f",
@@ -87,6 +89,7 @@ function handleComboFilter() {
 		"2": "L",
 		"3": "XL",
 		"4": "DOWN",
+		"5": "Enable"
 	};
 
 	const UNLOCK_CONDITION_MAP = {
@@ -126,12 +129,14 @@ function handleComboFilter() {
 		"22": "Witch Killer effect increased by X%",
 		"23": "Eva Angel Killer effect increased by X%",
 		"24": "Adds X% to Critical hit rate",
+		"25": "\"Monster Slayer\" effect is granted: against Monster trait enemies: deals 2.5x damage and takes 0.4x damage",
+		"26": "\"Wave Resist\" effect is granted",
+		"27": "Deployment Cost is reduced by X%"
 	};
 	// data source
 	let combo_data = null;
 	let combo_effect = null;
 	let combo_name = null;
-	let cat_link = null;
 
 	const PARAMS_COMBO_DATA = {
 		action: 'query',
@@ -160,15 +165,6 @@ function handleComboFilter() {
 	    rvprop: 'content',
 	    rvslots: 'main'
 	};
-	const PARAMS_CRO_TO_WIKILINK = {
-		action: 'query',
-		format: 'json',
-		formatversion: '2',
-	    prop: 'revisions',
-	    titles: 'MediaWiki:Custom-DataSource/cat_id_to_wikilink.json',
-	    rvprop: 'content',
-	    rvslots: 'main'
-	};
 
 	// JSON parsing
 	api = new mw.Api();
@@ -187,10 +183,6 @@ function handleComboFilter() {
     api.get(PARAMS_COMBO_NAMES).done(function (res) {
     	let content = res.query.pages[0].revisions[0].slots.main.content;
         combo_name = JSON.parse(content);
-    });
-    api.get(PARAMS_CRO_TO_WIKILINK).done(function (res) {
-    	let content = res.query.pages[0].revisions[0].slots.main.content;
-        cat_link = JSON.parse(content);
     });
     
     // populate unlock_conditions dropdown
@@ -365,6 +357,7 @@ function handleComboFilter() {
 		<th>Effect</th>
 		<th>Pwr</th>
 		<th>Icons & CROs</th>
+		<th>Note</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -378,7 +371,8 @@ function handleComboFilter() {
 				"<td>" + UNLOCK_CONDITION_MAP[combo_data[result[i]][UNLOCK_CONDITION]] + "</td>" +
 				"<td>" + display_effect(combo_data[result[i]][COMBO_EFFECT]) + "</td>" +
 				"<td>" + display_strength(combo_data[result[i]][COMBO_EFFECT], combo_data[result[i]][COMBO_STRENGTH]) + "</td>" +
-				"<td>" + display_icons(combo_data[result[i]]) + "<br />" + display_cats(combo_data[result[i]]) + "</td></tr>"
+				"<td>" + display_icons(combo_data[result[i]]) + "<br />" + display_cats(combo_data[result[i]]) + "</td>" +
+				"<td>" + display_affect_condition(combo_data[result[i]][AFFECT_CONDITION]) + "</td></tr>"
 			);
 		}
 		// decorate the rows in the resulting table
@@ -398,22 +392,30 @@ function handleComboFilter() {
 	// display a list of Cat CROs
 	function display_cats(combo) {
 		let this_combo_cats = [];
-		for (let i = 1; i < 6; i++) {
-			if (combo[SLOT_OFFSET*i] == EMPTY_SLOT)
+		for (let i = 0; i < 5; i++) {
+			if (combo[SLOT_OFFSET+2*i] == EMPTY_SLOT)
 				break;
-			this_combo_cats.push(combo[SLOT_OFFSET*i] + "-" + (parseInt(combo[SLOT_OFFSET*i+1])+1));
+			this_combo_cats.push(combo[SLOT_OFFSET+2*i] + "-" + (parseInt(combo[SLOT_OFFSET+2*i+1])+1));
 		}
 		return this_combo_cats.join("; ");
 	}
 	// display Cat icons
 	function display_icons(combo) {
 		let this_combo_cats = [];
-		for (let i = 1; i < 6; i++) {
-			if (combo[SLOT_OFFSET*i] == EMPTY_SLOT)
+		for (let i = 0; i < 5; i++) {
+			if (combo[SLOT_OFFSET+2*i] == EMPTY_SLOT)
 				break;
-			this_combo_cats.push("<a href='" + cat_link[combo[SLOT_OFFSET*i]] + "'><img style='width:64px' src='/Special:Redirect/file/Uni" + padding(combo[SLOT_OFFSET*i]) + "_" + FORM_CHAR_MAP[combo[SLOT_OFFSET*i+1]] +"00.png' /></a>");
+			this_combo_cats.push("<img style='width:64px' src='/Special:Redirect/file/Uni" + padding(combo[SLOT_OFFSET+2*i]) + "_" + FORM_CHAR_MAP[combo[SLOT_OFFSET+2*i+1]] +"00.png' />");
 		}
 		return this_combo_cats.join("");
+	}
+	function display_affect_condition(val) {
+		if (val == 10) {
+			return "Only affect Catrangers";
+		}
+		if (val != -1)
+			return "?";
+		return "-";
 	}
 	// contruct valid cro for the image filename
 	function padding(num) {

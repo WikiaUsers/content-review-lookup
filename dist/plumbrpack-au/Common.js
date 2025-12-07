@@ -27,3 +27,9 @@ UserTagsJS.modules.newuser = {
 };
 /*Mediawiki*/
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback'];
+
+/*RailModule*/
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true},
+    'Template:Bottom RailModule',
+];

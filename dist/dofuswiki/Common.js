@@ -397,7 +397,7 @@ function registerQuestXPDropdowns() {
       );
       totalXP += Math.floor(stepXP);
     }
-    totalXP = Math.floor(totalXP * 1.05);
+    totalXP = Math.floor(totalXP * Math.fround(1.05));
     questXPSpan.textContent = totalXP.toLocaleString();
   }
 

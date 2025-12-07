@@ -209,7 +209,7 @@
 						domain = re.exec( text );
 						if ( domain !== null ) {
 							// for non-EN wikis, add the lang code (es.community)
-							params[ x ] = ( domain[ 3 ] ? ( domain[ 3 ] + '.' ) : '' ) + domain[ 1 ];
+							params[ x ] = ( domain[ 2 ] ? ( domain[ 2 ] + '.' ) : '' ) + domain[ 1 ];
 							continue;
 						}
 					}
