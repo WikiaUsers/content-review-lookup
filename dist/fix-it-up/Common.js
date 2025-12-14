@@ -101,3 +101,49 @@ mw.loader.using('mediawiki.util').then(function () {
 
     applyRibbons();
 });
+
+mw.hook("wikipage.content").add(function ($content) {
+  $content.find(".dot-gallery").each(function () {
+    var gallery = this;
+    var $gallery = $(gallery);
+    var $images = $gallery.find(".dot-gallery-images img");
+    if ($images.length === 0) return;
+
+    var index = 0;
+
+    function updateFlags() {
+      gallery.dataset.index = String(index);
+      if (index === $images.length - 1) {
+        gallery.dataset.indexLast = "true";
+      } else {
+        delete gallery.dataset.indexLast;
+      }
+    }
+
+    function showImage(i) {
+      if (i < 0 || i >= $images.length) return;
+      index = i;
+      $images.hide();
+      $images.eq(index).show();
+      updateFlags();
+    }
+
+    showImage(0);
+
+    $gallery.find(".dot-left").on("click", function () {
+      if (index > 0) {
+        showImage(index - 1);
+      }
+    });
+
+    $gallery.find(".dot-right").on("click", function () {
+      if (index < $images.length - 1) {
+        showImage(index + 1);
+      }
+    });
+
+    $gallery.find(".dot-center").on("click", function () {
+      // middle dot does nothing
+    });
+  });
+});

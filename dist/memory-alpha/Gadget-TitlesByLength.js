@@ -1,5 +1,12 @@
 'use strict';
-mw.loader.using(['mediawiki.api'], () => {
+mw.loader.using(['mediawiki.api', 'mediawiki.user'], () => {
+	mw.user.getRights(rights => {
+		const limit = rights.includes('apihighlimits') ? 5000 : 500;
+		init(limit);
+	});
+});
+
+function init(limit){
 	const api = new mw.Api();
 	const titles = {
 		list: [],
@@ -16,39 +23,16 @@ mw.loader.using(['mediawiki.api'], () => {
 		.append(button('myModalShort', 'Find shortest titles'))
 		.append(button('myModalCancel', 'Cancel', true))
 		.append(button('myModalClose', 'Close', true));
-	const limit = (
-		mw.config.get('wgUserGroups').indexOf('bot') === -1 &&
-		mw.config.get('wgUserGroups').indexOf('helper') === -1 &&
-		mw.config.get('wgUserGroups').indexOf('soap') === -1 &&
-		mw.config.get('wgUserGroups').indexOf('staff') === -1 &&
-		mw.config.get('wgUserGroups').indexOf('sysop') === -1 &&
-		mw.config.get('wgUserGroups').indexOf('wiki-specialist') === -1
-	) ? '500' : '5000';
 	const findTitles = $('<li><a href="#">Titles by length</a></li>');
 	$('#my-tools-menu').prepend(findTitles);
-	findTitles.on('click', createModal);
-	
-	function button(id, txt, secondary = false){
-		const classes = ['wds-button'];
-		if (secondary){
-			classes.push('wds-is-secondary');
-		}
-		const classString = classes.join(' ');
-		return $(`<button class="${classString}" id="${id}">`).text(txt);
-	}
-	
-	function createModal(){
+	findTitles.on('click', () => {
 		$('body').append(myModal);
 		$('#myModal').on('submit', submitForm);
 		$('#myModalLong').on('click', findLongTitles);
 		$('#myModalShort').on('click', findShortTitles);
 		$('#myModalCancel').on('click', cancel);
 		$('#myModalClose').on('click', close);
-	}
-	
-	function submitForm(e){
-		e.preventDefault();
-	}
+	});
 	
 	function findLongTitles(){
 		titles.mode = 'long';
@@ -88,8 +72,8 @@ mw.loader.using(['mediawiki.api'], () => {
 			list: 'allpages',
 			aplimit: limit,
 			apcontinue: continueParameter,
-		}).done((result) => {
-			result.query.allpages.forEach((p) => titles.list.push(p.title));
+		}).done(result => {
+			result.query.allpages.forEach(p => titles.list.push(p.title));
 			
 			if (titles.canceled){
 				return;
@@ -104,10 +88,23 @@ mw.loader.using(['mediawiki.api'], () => {
 					titles.list.sort((a, b) => a.length - b.length);
 				}
 				
-				for (let i = 0; i < titles.numberOfResults; i++){
-					$('#myModalResults').append(`# [[${titles.list[i]}]]\n`);
+				for (const title of titles.list){
+					$('#myModalResults').append(`# [[${title}]]\n`);
 				}
 			}
 		});
 	}
-});
+}
+
+function button(id, txt, secondary = false){
+	const classes = ['wds-button'];
+	if (secondary){
+		classes.push('wds-is-secondary');
+	}
+	const classString = classes.join(' ');
+	return $(`<button class="${classString}" id="${id}">`).text(txt);
+}
+
+function submitForm(e){
+	e.preventDefault();
+}

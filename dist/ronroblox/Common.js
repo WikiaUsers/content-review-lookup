@@ -146,6 +146,7 @@ UserTagsJS.modules.custom = {
     'Cipherusxzy': ['Wiki-Contributor'],
     'Therealusman': ['Wiki-Contributor'],
     'DragooNit': ['Wiki-Contributor'],
+    'HaHaBlah': ['Wiki-Contributor'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],

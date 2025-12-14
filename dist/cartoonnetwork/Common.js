@@ -8,3 +8,9 @@ importArticles({
     ]
 });
         'u:dev:Countdown/code.js'
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassRename/code.js',
+    ]
+});

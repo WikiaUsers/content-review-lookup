@@ -64,3 +64,128 @@ mw.hook('wikipage.content').add(function ($content) {
     node.title = date.toUTCString(); // hovering shows UTC
   });
 });
+
+// for staff clocks
+function initializeDynamicOffsetClocks() {
+    const allElements = document.querySelectorAll('.dynamic-offset-time');
+    
+    if (allElements.length === 0) return;
+
+    const uniqueOffsets = new Set();
+    allElements.forEach(element => {
+        const offset = element.getAttribute('data-offset');
+        if (offset !== null) {
+            uniqueOffsets.add(offset);
+        }
+    });
+
+    uniqueOffsets.forEach(offsetHoursStr => {
+        const offsetHours = parseFloat(offsetHoursStr);
+        const elementsForThisOffset = document.querySelectorAll('.dynamic-offset-time[data-offset="' + offsetHoursStr + '"]');
+
+        function updateTimeForOffsetGroup() {
+            const now = new Date();
+            const offsetMs = now.getTime() + (now.getTimezoneOffset() * 60000) + (offsetHours * 3600000);
+            const offsetDate = new Date(offsetMs);
+
+            let hours = offsetDate.getHours();
+            const minutes = offsetDate.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+
+            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+            const timeString = `${hours}:${formattedMinutes} ${ampm}`;
+
+            elementsForThisOffset.forEach(element => {
+                element.textContent = timeString;
+            });
+        }
+
+        updateTimeForOffsetGroup();
+
+        const now = new Date();
+        const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+        setTimeout(() => {
+            updateTimeForOffsetGroup();
+            setInterval(updateTimeForOffsetGroup, 60000);
+        }, msUntilNextMinute);
+    });
+}
+
+jQuery(function($) {
+    initializeDynamicOffsetClocks();
+});
+
+$(function () {
+    var conf = mw.config.get();
+    console.log('[SAB wall helper] script running');
+
+    if (!conf.wgUserName) return;
+
+    var groups = conf.wgUserGroups || [];
+    var isStaff = groups.indexOf('sysop') !== -1 || groups.indexOf('bureaucrat') !== -1;
+    if (!isStaff) return;
+
+    if (conf.wgNamespaceNumber !== 1200) return;
+
+    var targetUser = conf.wgTitle;
+    var adminUser  = conf.wgUserName;
+
+    var $btn = $('<a>')
+        .addClass('SAB-blockLog-button wds-button wds-is-secondary')
+        .attr('href', '#')
+        .text('Fetch Report Template')
+        .on('click', function (e) {
+            e.preventDefault();
+            console.log('[SAB wall helper] button clicked');
+
+            $.get('/wiki/Template:PreloadBlockReport/text?action=raw', function (tmpl) {
+                var noticeText = tmpl
+                    .replace(/\$USERNAME\$/g, targetUser)
+                    .replace(/\$ADMIN\$/g, adminUser);
+
+                noticeText = noticeText
+                    .replace(/\[\[User:(.*?)\|(.*?)\]\]/g, '<a href="/wiki/User:$1">$2</a>')
+                    .replace(/\[\[(.*?)\|(.*?)\]\]/g, '<a href="/wiki/$1">$2</a>')
+                    .replace(/\[\[(.*?)\]\]/g, '<a href="/wiki/$1">$1</a>')
+                    .replace(/'''(.*?)'''/g, '<strong>$1</strong>')
+                    .replace(/''(.*?)''/g, '<em>$1</em>');
+
+                var $editable = $('[contenteditable="true"]:visible').last();
+                var $textarea = $('textarea:visible').last();
+
+                if ($editable.length) {
+                    console.log('[SAB wall helper] injecting HTML into editor');
+
+                var normalized = noticeText.replace(/<br\s*\/?>/gi, '\n');
+                var lines = normalized.split(/\r?\n/);
+                var html = lines.map(function (line) {
+                    if (line.trim() === '') {
+                        return '<div>&nbsp;</div>';
+                    }
+                    return '<div>' + line + '</div>';
+                }).join('');
+                $editable.html(html);
+
+                } else if ($textarea.length) {
+                    console.log('[SAB wall helper] injecting plain text into textarea');
+                    var plain = noticeText
+                        .replace(/<br\s*\/?>/gi, '\n')
+                        .replace(/<\/?[^>]+>/g, '');
+                    $textarea.val(plain).trigger('input');
+                } else {
+                    alert('Open the write-a-message box first.');
+                }
+            });
+        });
+
+    var $startArea = $('.reskin-message-wall__start-topic');
+    if ($startArea.length) {
+        $startArea.before($btn);
+    } else {
+        $('#content, .mw-body, .page__main').first().prepend($btn);
+    }
+});

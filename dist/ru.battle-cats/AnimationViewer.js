@@ -1,4 +1,9 @@
 $(document).ready(function () {
+	mw.loader.load('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+	mw.loader.load('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.min.js');
+	mw.loader.load('https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js');
+	mw.loader.load('https://cdn.jsdelivr.net/gh/photopea/UPNG.js/UPNG.js');
+
 	// constants
 	const degToRad = Math.PI / 180;
 	const defaultY = -140;
@@ -10,48 +15,61 @@ $(document).ready(function () {
 	const minZoom = 0.2;
 	const maxZoom = 5;
 	const bgScaleConst = 0.8;
+	const bgStandardWidth = 770;
 	const dpr = window.devicePixelRatio || 1;
 	const mobile = window.matchMedia('(hover: none)').matches;
 	const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
-	const formNames = ['Обычная', 'Эволюция', 'Истинная', 'Ультра'];
-	const formLetters = ['f', 'c', 's', 'u'];
-	const animationTypes = ['Походка', 'Простой', 'Атака', 'Отскок'];
 	const bgFiles = ['Bg000.png', 'Bg002.png'];
-	const spiritInitialFrame = 65;
-	const spiritSVG = '<svg width="20" height="20"><ellipse cx="10" cy="8" rx="4.5" ry="3.5" style="fill: #fff; stroke-width: 0;" /><polygon points="7,2 9,4.588 6.5,5.8" style="fill: #fff; stroke-width: 0;" /><polygon points="13,2 11,4.588 13.5,5.8" style="fill: #fff; stroke-width: 0;" /><path d="M7 10.609 C7 10.609 8 19 14 17.5 C14 17.5 12.75 17.5 12.5 16.5 C12.5 16.5 12 15 13 10.609 Z" style="fill: #fff; stroke-width: 0;" /><circle cx="8" cy="7.75" r="0.7" style="fill: #000; stroke-width: 0;" /><circle cx="12" cy="7.75" r="0.7" style="fill: #000; stroke-width: 0;" /><line x1="7" y1="10.609" x2="6" y2="12" style="stroke: #fff; stroke-width: 0.75; stroke-linecap: round;" /><line x1="13" y1="10.609" x2="14" y2="12" style="stroke: #fff; stroke-width: 0.75; stroke-linecap: round;" /></svg>';
+	const continuousFlag = 'continuous';
+	const onceFlag = 'once';
+
+	// will be modified later
+	let bgScaleFactor = bgScaleConst;
 
 	// Viewer class
 	class Viewer {
 		constructor($container) {
+			this.initial = true;
+			this.unitOrigins = new Set();
 			// get data passed from template in data attributes
 			this.$container = $container;
-			this.unit = $container.attr('data-unit-id');
-			this.type = $container.attr('data-unit-type');
-			const customJSON = $container.attr('data-custom-json');
+			this.json = $container.attr('data-json');
 			// get animation data
 			const api = new mw.Api();
 			api.get({
 				action: 'query',
 				prop: 'revisions',
-				titles: customJSON != '' ? customJSON : ('MediaWiki:Custom-AnimationViewer/' + this.unit.padStart(3, '0') + (this.type == 'enemy' ? '_e' : '') + '.json'),
+				titles: this.json,
 				rvprop: 'content',
 				rvslots: 'main',
 				formatversion: '2'
 			}).done((data) => {
-				const content = data.query.pages[0].revisions[0].slots.main.content;
-				this.unitData = new Map(Object.entries(JSON.parse(content)));
+				this.unitData = JSON.parse(data.query.pages[0].revisions[0].slots.main.content);
 				this.setup();
 			});
 		}
 
+		connect(viewer) {
+			viewer.unitOrigins.add(this.origin);
+			const viewerOrigin = viewer.getOrigin();
+			if (viewerOrigin) this.unitOrigins.add(viewer.getOrigin());
+		}
+
+		getOrigin() {
+			return this.origin;
+		}
+
 		setup() {
+			this.static = !('maanim' in this.unitData);
 			this.playing = false;
-			this.spritesheets = [];
+			this.spritesheet = {};
 			this.spritesNow = [];
 			this.glow = false;
-			this.currentForm = 0;
+			this.transparent = false;
 			this.map, this.timeout;
 			let focused = false;
+			this.copyCanvas = document.createElement('canvas');
+			this.copyCtx = this.copyCanvas.getContext('2d');
 			// unit and background positioning [origin x, origin y, zoom, unit offset x, unit offset y]
 			this.origin = new Proxy([0, 0, defaultZoom, 0, defaultY], {
 				'set': (target, key, value) => {
@@ -63,9 +81,18 @@ $(document).ready(function () {
 					return true;
 				}
 			});
+			this.unitOrigins.add(this.origin);
+			// get other viewers for UnitViewer template
+			this.$unitViewers = this.$container.parents('.unit-viewer').find('.animation-container').not(this.$container);
+			this.$unitViewers.each((index, element) => {
+				this.connect($(element).data('viewer'));
+			});
 			// get rest of data attributes
-			const customSheet = this.$container.attr('data-custom-spritesheet');
+			const customSheet = this.$container.attr('data-spritesheet');
 			const defaultBg = this.$container.attr('data-default-bg');
+			this.bgType = this.$container.attr('data-bg-type');
+			this.bgAlign = this.$container.attr('data-bg-align');
+			this.initialFrame = this.$container.attr('data-initial-frame');
 			// determine initial viewer background
 			let wikiBg = window.getComputedStyle(document.body).getPropertyValue('--wiki-bg-image').slice(4, -1).replaceAll('\\', '');
 			let bg;
@@ -76,23 +103,26 @@ $(document).ready(function () {
 			} else {
 				bg = ($('html').hasClass('skin-theme-clientpref-os') ? window.matchMedia('(prefers-color-scheme: light)').matches : $('html').hasClass('skin-theme-clientpref-day')) ? bgFiles[0] : bgFiles[1];
 			}
+			this.bg = bg;
 			// set up html
+			const $bottomLeft = this.$container.find('.viewer-bottom-left');
 			this.$playButton = $('<button>', {
 				'class': 'animation-play viewer-button',
-				'title': 'Play and pause the animation'
+				'title': 'Проиграть/остановить анимацию'
 			})
-				.appendTo(this.$container)
+				.appendTo($bottomLeft)
 				.on('click', () => {
 					this.$container.toggleClass('animation-playing');
+					this.$container.find('.option-once').toggle();
 					this.playing = !this.playing;
 					if (this.playing && (this.$modeSelect.val() == '02' || this.$modeSelect.val() == '03')) {
 						this.$modeSelect.val('00');
 					}
-					this.renderModel(0, false, true);
+					this.renderModel(-1, true);
 				});
 			this.$infoButton = $('<button>', {
 				'class': 'viewer-info viewer-button',
-				'title': 'See how to use the viewer'
+				'title': 'См. как использовать шаблон'
 			})
 				.appendTo(this.$container)
 				.on('click', (e) => {
@@ -103,15 +133,22 @@ $(document).ready(function () {
 					});
 				});
 			this.$infoText = this.$container.find('.viewer-info-text');
+			this.$downloadButton = $('<button>', {
+				'class': 'viewer-download-button viewer-button',
+				'title': 'Скачать анимацию или фрейм'
+			})
+				.appendTo($bottomLeft)
+				.on('click', () => { this.download(); });
 			this.$hideButton = $('<button>', {
 				'class': 'hide-elements viewer-button',
 				'title': 'Hide/Show UI elements'
 			})
 				.text('Скрыть')
 				.appendTo(this.$container)
-				.on('click', () => {
+				.on('click', (e, trigger) => {
 					this.$container.toggleClass('ui-hidden');
-					this.$hideButton.text(this.$hideButton.text() == 'Скрыть' ? 'Показать' : 'Скрыть');
+					this.$hideButton.text(this.$hideButton.text() == 'Hide' ? 'Show' : 'Hide');
+					if (!trigger) this.$unitViewers.find('.hide-elements').trigger('click', true);
 				});
 			this.$zoomIn = $('<button>', {
 				'class': 'zoom-in viewer-button'
@@ -143,27 +180,18 @@ $(document).ready(function () {
 				'value': bg.includes('static.wikitide.net') ? bg.split('/').slice(-1)[0] : bg
 			})
 				.appendTo($bgRow)
-				.on('change', () => { this.updateBackground(this.$bgInput.val()); });
-			const $formRow = $('<div>', {
-				'class': 'menu-row row-form'
-			}).appendTo(this.$menu);
-			this.$formSelect = $('<select>', {
-				'class': 'select-form',
-				'name': 'Форма',
-				'title': "Выбрать форму юнита"
-			})
-				.appendTo($formRow)
 				.on('change', () => {
-					this.$unitName.text(this.unitData.get(this.$formSelect.val()).name);
-					this.renderModel(0, true, true);
+					const newBg = this.$bgInput.val();
+					if (this.bg == newBg) return;
+					this.bg = newBg;
+					this.updateBackground(newBg);
+					const $unitContainer = this.$container.closest('.unit-viewer');
+					if ($unitContainer.length > 0) {
+						$unitContainer.find('.input-bg')
+							.val(newBg)
+							.trigger('change');
+					}
 				});
-			for (let i = 0; i < this.unitData.size; i++) {
-				$('<option>', {
-					'value': formLetters[i]
-				})
-					.text(formNames[i])
-					.appendTo(this.$formSelect);
-			}
 			const $modeRow = $('<div>', {
 				'class': 'menu-row row-mode'
 			}).appendTo(this.$menu);
@@ -174,18 +202,20 @@ $(document).ready(function () {
 			})
 				.appendTo($modeRow)
 				.on('change', () => {
-					this.renderModel(0, false, false);
-					this.$frameInput
-						.val(0)
-						.prop('disabled', this.$modeSelect.val() == '03');
+					this.renderModel(-1, false);
+					this.$frameInput.val(0);
 				});
-			for (let i = 0; i < 4; i++) {
-				$('<option>', {
-					'class': `option-${animationTypes[i].toLowerCase()}`,
-					'value': '0' + i
-				})
-					.text(animationTypes[i])
-					.appendTo(this.$modeSelect);
+			if (!this.static) {
+				let i = 0;
+				for (const anim of this.unitData.maanim) {
+					$('<option>', {
+						'class': `option-${anim.type}`,
+						'value': i
+					})
+						.text(anim.name)
+						.appendTo(this.$modeSelect);
+					i++;
+				}
 			}
 			const $frameRow = $('<div>', {
 				'class': 'menu-row row-frame'
@@ -195,42 +225,69 @@ $(document).ready(function () {
 				'type': 'number',
 				'value': 0,
 				'min': 0,
-				'title': 'Введите фрейм для отображения'
+				'title': 'Ввеcnb фрейм  для отображения'
 			})
 				.appendTo($frameRow);
+			const $saveRow = $('<div>', {
+				'class': 'menu-row row-save'
+			}).appendTo(this.$menu);
+			const $saveInputGroup = $('<div>')
+				.text('~')
+				.appendTo($saveRow);
+			this.$saveInputLower = $('<input>', {
+				'class': 'input-save-lower',
+				'type': 'number',
+				'min': 0
+			})
+				.prependTo($saveInputGroup);
+			this.$saveInputUpper = $('<input>', {
+				'class': 'input-save-upper',
+				'type': 'number',
+				'min': 0
+			})
+				.appendTo($saveInputGroup);
+			const $fileRow = $('<div>', {
+				'class': 'menu-row row-file'
+			}).appendTo(this.$menu);
+			this.$fileSelect = $('<select>', {
+				'class': 'select-file-type'
+			})
+				.appendTo($fileRow)
+				.append($('<option>', { 'value': 'zip' }).text('ZIP'))
+				.append($('<option>', { 'value': 'gif' }).text('GIF'))
+				.append($('<option>', { 'value': 'apng' }).text('APNG'));
 			const $menuButtons = $('<div>', {
 				'class': 'menu-button-div'
 			}).appendTo(this.$menu);
-			this.$atkButton = $('<button>', {
-				'class': 'attack-button menu-button',
-				'title': 'Проиграть анимацию атаки'
-			})
-				.text('Атака')
-				.appendTo($menuButtons)
-				.on('click', () => { this.renderModel(1, false, false); });
-			this.$kbButton = $('<button>', {
-				'class': 'knockback-button menu-button',
-				'title': 'Проиграть отскок'
-			})
-				.text('Отскок')
-				.appendTo($menuButtons)
-				.on('click', () => { this.renderModel(2, false, false); });
-			this.$unitName = this.$container.find('.unit-name');
-			if (this.type == 'cat' || this.type == 'enemy') {
-				this.$unitName.text(this.unitData.get(this.type == 'cat' ? this.$formSelect.val() : 'e').name);
-			} else if (this.type == 'spirit') {
-				this.$unitName.append(spiritSVG);
+			if (!this.static) {
+				let i = 0;
+				for (const anim of this.unitData.maanim) {
+					if (anim.type === onceFlag) {
+						$('<button>', {
+							'class': 'menu-button',
+							'data-anim': i
+						})
+							.text(anim.name)
+							.appendTo($menuButtons);
+					}
+					i++;
+				}
 			}
+			const obj = this;
+			this.$container.find('.menu-button').on('click', function () {
+				obj.renderModel(Number(this.dataset.anim));
+			});
 			this.$viewerShadow = this.$container.find('.inner-box-shadow');
+			if (this.$unitViewers) this.$viewerShadow = this.$viewerShadow.add(this.$unitViewers.find('.inner-box-shadow'));
 			// set up the canvas
 			this.$canvas = $('<canvas class="animation-canvas">').prependTo(this.$container);
 			this.canvas = this.$canvas[0];
 			this.canvas.width = this.canvas.clientWidth * dpr;
 			this.canvas.height = this.canvas.clientHeight * dpr;
 			this.calculateConversionMatrix();
-			this.gl = this.canvas.getContext('webgl', { alpha: true });
+			this.gl = this.canvas.getContext('webgl', { alpha: true, preserveDrawingBuffer: true, premultipliedAlpha: true });
 			if (this.gl === null) {
-				alert('Unable to initialize WebGL');
+				this.$container.html('<strong class="error">Unable to initialize WebGL. Close and reopen your browser to see the animation viewer.</strong>');
 				return;
 			}
 			this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
@@ -245,12 +302,10 @@ $(document).ready(function () {
 				attribute vec2 a_position;
 				attribute vec2 a_texcoord;
 				uniform mat3 u_transform;
-				uniform mat3 u_convert;
-				uniform mat3 u_controls;
 				varying vec2 v_texcoord;
 
 				void main() {
-					gl_Position = vec4((u_convert * u_controls * u_transform * vec3(a_position, 1)).xy, 0, 1);
+					gl_Position = vec4((u_transform * vec3(a_position, 1)).xy, 0, 1);
 					v_texcoord = a_texcoord;
 				}
 			`;
@@ -272,8 +327,6 @@ $(document).ready(function () {
 			};
 			this.uLocationsSprite = {
 				'transform': this.gl.getUniformLocation(this.spriteProgram, 'u_transform'),
-				'convert': this.gl.getUniformLocation(this.spriteProgram, 'u_convert'),
-				'controls': this.gl.getUniformLocation(this.spriteProgram, 'u_controls'),
 				'tex': this.gl.getUniformLocation(this.spriteProgram, 'u_texture'),
 				'opacity': this.gl.getUniformLocation(this.spriteProgram, 'u_opacity')
 			};
@@ -333,7 +386,6 @@ $(document).ready(function () {
 				'height': 1,
 				'texture': this.gl.createTexture()
 			};
-			this.updateBackground(bg);
 			// handling resize
 			const previousSize = [this.$container.width(), this.$container.height()];
 			new ResizeObserver(() => {
@@ -353,29 +405,29 @@ $(document).ready(function () {
 			this.interval = {};
 			if (mobile) {
 				this.$scrollUp.on('touchstart', () => {
-					this.interval.up = setInterval(() => { this.origin[4] += scrollDistance; }, buttonRateMS);
+					this.interval.up = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[4] += scrollDistance; }); }, buttonRateMS);
 				});
 				this.$scrollDown.on('touchstart', () => {
-					this.interval.down = setInterval(() => { this.origin[4] -= scrollDistance; }, buttonRateMS);
+					this.interval.down = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[4] -= scrollDistance; }); }, buttonRateMS);
 				});
 				this.$scrollLeft.on('touchstart', () => {
-					this.interval.left = setInterval(() => { this.origin[3] -= scrollDistance; }, buttonRateMS);
+					this.interval.left = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[3] -= scrollDistance; }); }, buttonRateMS);
 				});
 				this.$scrollRight.on('touchstart', () => {
-					this.interval.right = setInterval(() => { this.origin[3] += scrollDistance; }, buttonRateMS);
+					this.interval.right = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[3] += scrollDistance; }); }, buttonRateMS);
 				});
 			} else {
 				this.$scrollUp.on('mousedown', () => {
-					this.interval.up = setInterval(() => { this.origin[1] -= scrollDistance; }, buttonRateMS);
+					this.interval.up = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[1] -= scrollDistance; }); }, buttonRateMS);
 				});
 				this.$scrollDown.on('mousedown', () => {
-					this.interval.down = setInterval(() => { this.origin[1] += scrollDistance; }, buttonRateMS);
+					this.interval.down = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[1] += scrollDistance; }); }, buttonRateMS);
 				});
 				this.$scrollLeft.on('mousedown', () => {
-					this.interval.left = setInterval(() => { this.origin[0] += scrollDistance; }, buttonRateMS);
+					this.interval.left = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[0] += scrollDistance; }); }, buttonRateMS);
 				});
 				this.$scrollRight.on('mousedown', () => {
-					this.interval.right = setInterval(() => { this.origin[0] -= scrollDistance; }, buttonRateMS);
+					this.interval.right = setInterval(() => { this.unitOrigins.forEach((origin) => { origin[0] -= scrollDistance; }); }, buttonRateMS);
 				});
 			}
 			this.$zoomIn.on('mousedown touchstart', () => {
@@ -425,7 +477,9 @@ $(document).ready(function () {
 				});
 				this.$container[0].addEventListener('pointermove', (e) => {
 					if (e.pointerType != 'mouse' || !isDragging) return;
-					[this.origin[3], this.origin[4]] = [initialX + (e.clientX - clickX) / this.origin[2], initialY + (clickY - e.clientY) / this.origin[2]];
+					this.unitOrigins.forEach((origin) => {
+						[origin[3], origin[4]] = [initialX + (e.clientX - clickX) / origin[2], initialY + (clickY - e.clientY) / origin[2]];
+					});
 					e.preventDefault();
 				});
 				this.$container[0].addEventListener('pointerup', (e) => {
@@ -498,7 +552,9 @@ $(document).ready(function () {
 						touchNewX = touch.clientX;
 						touchNewY = touch.clientY;
 						if (!isDragging) return;
-						[this.origin[0], this.origin[1]] = [initialX + touch.clientX - touchX, initialY + touchY - touch.clientY];
+						this.unitOrigins.forEach((origin) => {
+							[origin[0], origin[1]] = [initialX + touch.clientX - touchX, initialY + touchY - touch.clientY];
+						});
 						e.preventDefault();
 					}
 				});
@@ -516,149 +572,325 @@ $(document).ready(function () {
 					}
 				});
 			}
-			const maxForms = this.unitData.size;
-			if (this.type == 'cat') {
-				// get form spritesheets
-				if (customSheet != '') {
-					const sheets = customSheet.split(',');
-					for (let i = 0; i < sheets.length; i++) {
-						let src = './Special:Redirect/file/' + sheets[i];
-						this.spritesheets.push(this.createTextureInfo(src, i == 0));
-					}
-				} else {
-					for (let k = 0; k < maxForms; k++) {
-						let src;
-						if (k == 0 && this.unitData.get('f').imgcut[2][0].includes('m')) {
-							src = `./Special:Redirect/file/${this.unitData.get('f').imgcut[2][0]}`;
-						} else if (maxForms > 1 && k == 1 && this.unitData.get('c').imgcut[2][0].includes('m')) {
-							src = `./Special:Redirect/file/${this.unitData.get('c').imgcut[2][0]}`;
-						} else {
-							src = `./Special:Redirect/file/${this.unit.padStart(3, '0')}_${(['f', 'c', 's', 'u'])[k]}.png`;
-						}
-						this.spritesheets.push(this.createTextureInfo(src, k == 0));
-					}
-				}
-			} else if (this.type == 'enemy') {
-				let src;
-				if (customSheet != '') {
-					src = './Special:Redirect/file/' + customSheet.split(',')[0];
-				} else {
-					src = `./Special:Redirect/file/${this.unit.padStart(3, '0')}_e.png`;
-				}
-				this.spritesheets.push(this.createTextureInfo(src));
-			} else if (this.type == 'spirit') {
-				const src = `./Special:Redirect/file/${this.unitData.get('f').imgcut[2][0]}`;
-				this.spritesheets.push(this.createTextureInfo(src));
-			}
+
+			this.spritesheet = this.createTextureInfo(mw.util.getUrl('Special:Redirect/file/' + customSheet), false, true);
+
 			// remove bg loading gif
 			this.$container.css('background-image', 'none');
 		}
 
 		scroll(dx, dy) {
-			[this.origin[0], this.origin[1]] = [this.origin[0] + dx, this.origin[1] + dy];
+			this.unitOrigins.forEach((origin) => {
+				[origin[0], origin[1]] = [origin[0] + dx, origin[1] + dy];
+			});
 		}
 
 		zoom(factor, origin = [0, 0]) {
 			const newZoom = this.origin[2] * factor;
 			if (newZoom < minZoom || newZoom > maxZoom) return;
-			[this.origin[0], this.origin[1], this.origin[2]] = [
-				(this.origin[0] - origin[0]) * factor + origin[0],
-				(this.origin[1] - origin[1]) * factor + origin[1],
-				this.origin[2] * factor
-			];
+			this.unitOrigins.forEach((viewerOrigin) => {
+				[viewerOrigin[0], viewerOrigin[1], viewerOrigin[2]] = [
+					(viewerOrigin[0] - origin[0]) * factor + origin[0],
+					(viewerOrigin[1] - origin[1]) * factor + origin[1],
+					viewerOrigin[2] * factor
+				];
+			});
 		}
 
-		renderModel(type, reset, inputDefault) {
-			if (this.type == 'spirit') type = 1;
-			this.stopAnimation();
-			const mode = this.$modeSelect.val();
-			const form = this.type == 'enemy' ? 'e' : this.$formSelect.val();
-			this.currentForm = this.type == 'enemy' ? 0 : (['f', 'c', 's', 'u']).indexOf(form);
-			const animData = this.unitData.get(form);
-			// get each component of animation data
-			const imgcut = animData.imgcut;
-			const mamodel = animData.mamodel;
-			const maanim = type != 0 ? animData['maanim0' + (type + 1)] : animData['maanim' + mode];
-			// take only necessary parts of imgcut and mamodel
-			const imgcutData = [];
-			let length = imgcut.length;
-			for (let i = 0; i < length; i++) {
-				if (imgcut[i].length >= 4) {
-					imgcutData.push(imgcut[i]);
+		download() {
+			const range = [this.$saveInputLower.val(), this.$saveInputUpper.val()];
+			const nan = [isNaN(range[0]), isNaN(range[1])];
+			if (nan[0] && nan[1]) return;
+			if (range[0] == range[1] || (nan[0] || nan[1])) {
+				const frame = nan[1] ? range[0] : range[1];
+				this.$frameInput
+					.val(frame)
+					.trigger('input');
+				const imageData = this.copyToCanvas().toDataURL();
+				const $a = $('<a>').attr({
+					'href': imageData,
+					'download': `animation_frame_${frame}.png`
+				});
+				$a[0].click();
+			} else {
+				switch (this.$fileSelect.val()) {
+					case 'zip':
+						this.generateZIP(range);
+						break;
+					case 'gif':
+						this.generateGIF(range);
+						break;
+					case 'apng':
+						this.generateAPNG(range);
 				}
 			}
+		}
+
+		copyToCanvas(onlyData = false) {
+			if (!(isFirefox || onlyData)) {
+				return this.canvas;
+			}
+			const width = this.gl.drawingBufferWidth;
+			const height = this.gl.drawingBufferHeight;
+			const data = new Uint8Array(width * height * 4);
+			this.gl.readPixels(0, 0, width, height, this.gl.RGBA, this.gl.UNSIGNED_BYTE, data);
+			for (let i = 0; i < data.length; i += 4) {
+				const r = data[i];
+				const g = data[i + 1];
+				const b = data[i + 2];
+				const a = data[i + 3];
+				if (a > 0 && a < 255) {
+					data[i] = Math.min(255, Math.round(r * 255 / a));
+					data[i + 1] = Math.min(255, Math.round(g * 255 / a));
+					data[i + 2] = Math.min(255, Math.round(b * 255 / a));
+				}
+			}
+			const flippedData = new Uint8Array(data.length);
+			for (let y = 0; y < height; y++) {
+				for (let x = 0; x < width; x++) {
+					const originalIndex = (y * width + x) * 4;
+					const flippedY = height - 1 - y;
+					const flippedIndex = (flippedY * width + x) * 4;
+					flippedData[flippedIndex] = data[originalIndex];
+					flippedData[flippedIndex + 1] = data[originalIndex + 1];
+					flippedData[flippedIndex + 2] = data[originalIndex + 2];
+					flippedData[flippedIndex + 3] = data[originalIndex + 3];
+				}
+			}
+			if (onlyData) return flippedData;
+			this.copyCtx.reset();
+			this.copyCanvas.width = width;
+			this.copyCanvas.height = height;
+			const imageData = new ImageData(new Uint8ClampedArray(flippedData), width, height);
+			this.copyCtx.putImageData(imageData, 0, 0);
+			return this.copyCanvas;
+		}
+
+		async generateZIP(range) {
+			const zip = new JSZip();
+			const folder = zip.folder('frames');
+			const fList = [];
+			if (range[0] > range[1]) {
+				for (let i = range[0]; i >= range[1]; i--) {
+					fList.push(i);
+				}
+			} else {
+				for (let i = range[0]; i <= range[1]; i++) {
+					fList.push(i);
+				}
+			}
+			for (const f of fList) {
+				this.$frameInput
+					.val(f)
+					.trigger('input');
+				const blob = await new Promise(resolve => this.copyToCanvas().toBlob(resolve, 'image/png'));
+				folder.file(`frame_${f}.png`, blob);
+			}
+			zip.generateAsync({ type: 'blob' }).then((content) => {
+				const $a = $('<a>').attr({
+					'href': URL.createObjectURL(content),
+					'download': 'animation_frames.zip'
+				});
+				$a[0].click();
+			});
+		}
+
+		generateGIF(range) {
+			let gifLoading = fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js')
+				.then((response) => {
+					if (response.ok) return response.blob();
+				})
+				.then(workerBlob => {
+					let gif = new GIF({
+						workers: 4,
+						workerScript: URL.createObjectURL(workerBlob),
+						quality: 1,
+						width: this.canvas.width,
+						height: this.canvas.height
+					});
+					gif.on('finished', function (blob) {
+						const $a = $('<a>').attr({
+							'href': URL.createObjectURL(blob),
+							'download': `animation_frame_${range[0]}-${range[1]}.gif`
+						});
+						$a[0].click();
+					});
+					return gif;
+				});
+
+			gifLoading.then(gif => {
+				const fList = [];
+				if (range[0] > range[1]) {
+					for (let i = range[0]; i >= range[1]; i--) {
+						fList.push(i);
+					}
+				} else {
+					for (let i = range[0]; i <= range[1]; i++) {
+						fList.push(i);
+					}
+				}
+				for (const f of fList) {
+					this.$frameInput
+						.val(f)
+						.trigger('input');
+					gif.addFrame(this.canvas, { copy: true, delay: 30 });
+				}
+				gif.render();
+			});
+		}
+
+		generateAPNG(range) {
+			const frames = [];
+			const fList = [];
+			if (range[0] > range[1]) {
+				for (let i = range[0]; i >= range[1]; i--) {
+					fList.push(i);
+				}
+			} else {
+				for (let i = range[0]; i <= range[1]; i++) {
+					fList.push(i);
+				}
+			}
+			for (const f of fList) {
+				this.$frameInput
+					.val(f)
+					.trigger('input');
+				frames.push(this.copyToCanvas(true));
+			}
+			const apngData = UPNG.encode(frames, this.canvas.width, this.canvas.height, 0, new Array(frames.length).fill(33));
+			const blob = new Blob([apngData], { type: 'image/apng' });
+			const $a = $('<a>').attr({
+				'href': URL.createObjectURL(blob),
+				'download': `animation_frame_${range[0]}-${range[1]}.png`
+			});
+			$a[0].click();
+		}
+
+		renderModel(type, inputDefault) {
+			this.stopAnimation();
+			let mode = this.$modeSelect.val();
+			const animData = this.unitData;
+			// set mode to first continuous animation type if selected is type once when turning player on
+			if (this.playing && animData.maanim[mode].type === onceFlag) {
+				for (let m = 0; m < animData.maanim.length; m++) {
+					if (animData.maanim[m].type === continuousFlag) {
+						mode = m;
+						this.$modeSelect.val(m);
+						break;
+					}
+				}
+			}
+			// get each component of animation data
+			let imgcut = animData.imgcut;
+			const mamodel = animData.mamodel;
+			const animNum = type != -1 ? type : mode;
+			let maanim;
+			if (!this.static) maanim = animData.maanim[animNum].data;
+			// clean up mamodel data
 			const mamodelData = [];
-			length = mamodel.length;
+			let length = mamodel.length;
 			for (let z = 0; z < length; z++) {
 				if (mamodel[z].length >= 13) {
 					mamodelData.push(mamodel[z]);
 				}
 			}
 			const maxValues = mamodel[3 + mamodel[2][0]];
+			// prepare imgcut data
+			let imgcutReal = {};
+			if (Array.isArray(imgcut)) {
+				let imgcutID = '0';
+				for (const row of mamodelData) {
+					if (row[1] != -1) {
+						imgcutID = row[1].toString();
+						break;
+					}
+				}
+				imgcutReal[imgcutID] = imgcut;
+			} else {
+				imgcutReal = imgcut;
+			}
+			// take only necessary parts of imgcut and mamodel
+			const imgcutData = {};
+			for (const key in imgcutReal) {
+				imgcutData[key] = [];
+				const length = imgcutReal[key].length;
+				for (let i = 0; i < length; i++) {
+					if (imgcutReal[key][i].length >= 4) {
+						imgcutData[key].push(imgcutReal[key][i]);
+					}
+				}
+			}
 
 			// create each sprite defined by mamodel
 			this.sprites = [];
 			length = mamodelData.length;
 			for (let j = 0; j < length; j++) {
 				const row = mamodelData[j];
-				const data = this.createSprite(j, imgcutData[row[2]], mamodelData, maxValues);
+				const imgcutRow = row[1] == -1 ? [0, 0, 0, 0] : imgcutData[row[1].toString()][row[2]];
+				const data = this.createSprite(j, imgcutRow, mamodelData, maxValues);
 				if (row[1] == -1) data.hidden = true;
 				this.sprites.push(data);
 			}
 			this.spritesNow = structuredClone(this.sprites);
 			this.spritesTotal = Array.from({ length: length }, () => ({}));
 
+			// for static images without maanim files
+			if (this.static) {
+				this.updateSprites(true);
+				return;
+			}
+
 			// find animation length
 			let maxF = 0;
-			length = maanim.length;
-			for (let k = 0; k < length; k++) {
-				if (maanim[k].length >= 5 && maanim[k + 1][0] != 0) {
-					const value = maanim[k + 2][0] + (maanim[k + maanim[k + 1][0] + 1][0] - maanim[k + 2][0]) * (maanim[k][2] >= 2 ? maanim[k][2] : 1);
-					if (value > maxF) maxF = value;
-				}
-			}
-			// begin walking animation or set to first frame of walking animation
-			if (this.type == 'spirit') {
-				if (this.playing) {
-					this.animate(0, maxF, animData, '02', imgcutData, maxValues);
-				} else {
-					setTimeout(() => {
-						this.showFrame(0, maanim, imgcutData, maxValues);
-						for (let f = 1; f <= spiritInitialFrame; f++) {
-							this.showFrame(f, maanim, imgcutData, maxValues);
-						}
-					}, 0);
-				}
+			if (animData.maanim[animNum].name === 'Отскок') {
+				maxF = 24;
 			} else {
-				if (type == 1 && this.playing) {
-					this.animate(0, maxF, animData, '02', imgcutData, maxValues);
-				} else if (type == 2 && this.playing) {
-					this.animate(0, 24, animData, '03', imgcutData, maxValues);
-				} else {
-					if (this.playing) {
-						this.animate(0, maxF, animData, mode, imgcutData, maxValues);
-					} else {
-						this.showFrame(0, maanim, imgcutData, maxValues);
+				length = maanim.length;
+				for (let k = 0; k < length; k++) {
+					if (maanim[k].length >= 5 && maanim[k + 1][0] != 0) {
+						const value = maanim[k + 2][0] + (maanim[k + maanim[k + 1][0] + 1][0] - maanim[k + 2][0]) * (maanim[k][2] >= 2 ? maanim[k][2] : 1);
+						if (value > maxF) maxF = value;
 					}
 				}
 			}
+
+			// begin walking animation or set to first frame of walking animation
+			if (this.playing) {
+				this.animate(0, maxF, maanim, animData.maanim[animNum].type, imgcutData, maxValues);
+			} else {
+				this.showFrame(this.initialFrame, maanim, imgcutData, maxValues);
+				this.$saveInputLower.val(0);
+				this.$saveInputUpper.val(maxF);
+			}
+
+			// frame handler
 			this.$frameInput.off('input');
 			this.$frameInput.on('input', () => {
 				if (maxF == 0) return;
 				let frame = this.$frameInput.val();
 				if (frame.length == 0 || frame.indexOf('.') > -1 || frame.indexOf('-') > -1) return;
-				const currentMode = this.type == 'spirit' ? '02' : this.$modeSelect.val();
-				const anim = animData['maanim' + currentMode];
-				frame %= maxF;
+				const currentMode = Number(this.$modeSelect.val());
+				const anim = animData.maanim[currentMode].data;
+				if (animData.maanim[animNum].type === 'once') frame %= maxF + 1;
 
 				if (
 					this.prevFrameInput
 					&& this.prevFrameInput[0] === currentMode
-					&& ([frame - 1, frame, frame + 1].includes(this.prevFrameInput[1]))
+					&& (
+						[frame - 1, frame].includes(this.prevFrameInput[1]) ||
+						// incrementing count/keeping it the same
+						(this.prevFrameInput[1] == frame + 1 && frame > 100)
+						// horrifically slow above frame ~25 (tested on Ultima
+						// Galaxy Cosmo) so keep this in as a compromise
+						// between accuracy and performance
+						// (a lot better now that it no longer draws every
+						// single frame, but still leaving it here for high
+						// frame numbers just in case)
+					)
 				) {
-					// most common use case is where you're just
-					// incrementing/decrementing the count, so all of the rest
-					// of this function does not need to happen
+					// most common use case is where you're just incrementing
+					// the count, so all of the rest of this function does not
+					// need to happen
 					this.showFrame(frame, anim, imgcutData, maxValues);
 					this.prevFrameInput = [currentMode, frame];
 					return;
@@ -668,10 +900,11 @@ $(document).ready(function () {
 
 				// recreate sprites
 				this.sprites = [];
-				length = mamodelData.length;
+				const length = mamodelData.length;
 				for (let j = 0; j < length; j++) {
 					const row = mamodelData[j];
-					const data = this.createSprite(j, imgcutData[row[2]], mamodelData, maxValues);
+					const imgcutRow = row[1] == -1 ? [0, 0, 0, 0] : imgcutData[row[1].toString()][row[2]];
+					const data = this.createSprite(j, imgcutRow, mamodelData, maxValues);
 					if (row[1] == -1) data.hidden = true;
 					this.sprites.push(data);
 				}
@@ -680,15 +913,16 @@ $(document).ready(function () {
 
 				// go through all frames from 0 to wanted frame to not miss one-time changes
 				for (let f = 0; f <= frame; f++) {
-					this.showFrame(f, anim, imgcutData, maxValues);
+					this.showFrame(f, anim, imgcutData, maxValues, f == frame);
 				}
 			});
-			if (inputDefault) this.$frameInput.val(this.type == 'spirit' ? spiritInitialFrame : 0);
-			// position unit
-			if (reset) {
-				let minY = Number.MAX_VALUE;
+			if (inputDefault) this.$frameInput.val(this.initialFrame);
+
+			// unit and background positioning for initial load
+			if (this.initial) {
+				let minY = 0;
 				for (const s of this.spritesNow) {
-					if (s.hidden || this.getOpacity(s.id) != 1 || s.glow != 0 || s.spriteHeight * s.spriteWidth <= 16) continue;
+					if (s.hidden || this.getOpacity(s.id) < 0.9 || s.glow != 0 || s.spriteHeight * s.spriteWidth <= 16) continue;
 					const scaleX = this.getScaleX(s.id) * this.getFlipX(s.id);
 					const scaleY = this.getScaleY(s.id) * this.getFlipY(s.id);
 					const angle = -this.getAngle(s.id) * degToRad;
@@ -703,8 +937,20 @@ $(document).ready(function () {
 					temp = Math.min(...temp);
 					if (temp < minY) minY = temp;
 				}
-				[this.origin[3], this.origin[4]] = [0, defaultY - minY];
+				const bgMoveX = (this.canvas.clientWidth - this.backgroundInfo.width) * this.origin[2] / 2;
+				const newOrigin = [bgMoveX, 0, 0, -bgMoveX / this.origin[2], defaultY - minY];
+				if (this.bgAlign === 'top') {
+					const bgMoveY = this.canvas.clientHeight - this.backgroundInfo.height * this.origin[2];
+					[newOrigin[1], newOrigin[4]] = [bgMoveY, newOrigin[4] - bgMoveY / this.origin[2]];
+				}
+				[this.origin[0], this.origin[1], this.origin[3], this.origin[4]] = [newOrigin[0], newOrigin[1], newOrigin[3], newOrigin[4]];
+			} else { // still call these which is initially done by the origin proxy
+				this.calculateConversionMatrix();
+				this.calculateTextureQuad();
+				this.calculateUnitPosition();
+				this.drawFrame();
 			}
+			this.initial = false;
 		}
 
 		createSprite(id, imgcutRow, mamodel, maxValues) {
@@ -740,16 +986,11 @@ $(document).ready(function () {
 			};
 		}
 
-		animate(frame, length, animData, type, imgcutData, maxValues) {
-			const maanim = animData['maanim' + type];
-			if (frame < length || (type != '02' && type != '03')) {
-				this.timeout = setTimeout(() => { this.animate(frame + 1, length, animData, type, imgcutData, maxValues); }, 33.33);
-			} else if (frame >= length && (type == '02' || type == '03')) {
-				if (this.type == 'spirit') {
-					this.$playButton.trigger('click');
-				} else {
-					this.renderModel(0, false, false);
-				}
+		animate(frame, length, maanim, type, imgcutData, maxValues) {
+			if (frame < length || type === 'continuous') {
+				this.timeout = setTimeout(() => { this.animate(frame + 1, length, maanim, type, imgcutData, maxValues); }, 33.33);
+			} else if (frame >= length && type === 'once') {
+				this.renderModel(-1, false);
 				return;
 			}
 			this.showFrame(frame, maanim, imgcutData, maxValues);
@@ -759,7 +1000,7 @@ $(document).ready(function () {
 			clearTimeout(this.timeout);
 		}
 
-		showFrame(frame, maanim, imgcut, maxValues) {
+		showFrame(frame, maanim, imgcut, maxValues, updateCanvas = true) {
 			const length = maanim.length;
 			for (let i = 0; i < length; i++) {
 				const row = maanim[i];
@@ -790,78 +1031,75 @@ $(document).ready(function () {
 						}
 					}
 					const last = i + modCount;
-					for (let k = i + 2; k <= last; k++) {
-						const modRow = maanim[k];
-						const nextRow = maanim[k + 1];
-						const f = modRow[0];
-						const nextF = nextRow[0];
-						if (frameNow == f) {
-							this.modify(partID, imgcut, mod, modRow[1], maxValues);
-							break;
-						} else if (frameNow == nextF) {
-							this.modify(partID, imgcut, mod, nextRow[1], maxValues);
-							break;
-						} else if (f < frameNow && frameNow < nextF) {
-							if (mod == 0) {
-								this.modify(partID, imgcut, 0, modRow[1], maxValues);
+					if (frameNow >= maanim[last + 1][0]) { // case for frames past defined modifications
+						this.modify(partID, imgcut, mod, maanim[last + 1][1], maxValues);
+					} else {
+						for (let k = i + 2; k <= last; k++) {
+							const modRow = maanim[k];
+							const nextRow = maanim[k + 1];
+							const f = modRow[0];
+							const nextF = nextRow[0];
+							if (f <= frameNow && frameNow < nextF) {
+								if (mod == 0) {
+									this.modify(partID, imgcut, 0, modRow[1], maxValues);
+									break;
+								}
+								const change = modRow[1];
+								const nextChange = nextRow[1];
+								const ease = modRow[2];
+								let step;
+								if (ease == 0) { // linear
+									step = change + (nextChange - change) / (nextF - f) * (frameNow - f);
+								} else if (ease == 1) { // step
+									step = frameNow == nextF ? nextChange : change;
+								} else if (ease == 2) { // semi-circle with different exponents
+									const p = modRow[3];
+									const x = (frameNow - f) / (nextF - f);
+									step = (nextChange - change) * (p >= 0 ? 1 - Math.sqrt(1 - Math.pow(x, p)) : Math.sqrt(1 - Math.pow(1 - x, -p))) + change;
+								} else if (ease == 3) { // lagrange
+									const points = [];
+									let frameRow;
+									const min = i + 2;
+									for (let a = k; a >= min; a--) {
+										frameRow = maanim[a];
+										if (frameRow[2] != 3) break;
+										points.push([frameRow[0], frameRow[1]]);
+									}
+									const max = i + modCount + 2;
+									for (let b = k + 1; b < max; b++) {
+										frameRow = maanim[b];
+										points.push([frameRow[0], frameRow[1]]);
+										if (frameRow[2] != 3) break;
+									}
+									const deg = points.length;
+									step = 0;
+									for (let j = 0; j < deg; j++) {
+										let prod = points[j][1];
+										for (let l = 0; l < deg; l++) {
+											if (l == j) continue;
+											prod *= (frameNow - points[l][0]) / (points[j][0] - points[l][0]);
+										}
+										step += prod;
+									}
+								}
+								if (mod == 2) {
+									if (nextChange - change < 0) {
+										step = Math.ceil(step);
+									} else {
+										step = Math.floor(step);
+									}
+								} else if (mod == 13 || mod == 14) {
+									step = change;
+								}
+								this.modify(partID, imgcut, mod, step, maxValues);
 								break;
 							}
-							const change = modRow[1];
-							const nextChange = nextRow[1];
-							const ease = modRow[2];
-							let step;
-							if (ease == 0) { // linear
-								step = change + (nextChange - change) / (nextF - f) * (frameNow - f);
-							} else if (ease == 1) { // step
-								step = frameNow == nextF ? nextChange : change;
-							} else if (ease == 2) { // semi-circle with different exponents
-								const p = modRow[3];
-								const x = (frameNow - f) / (nextF - f);
-								step = (nextChange - change) * (p > 0 ? 1 - Math.sqrt(1 - Math.pow(x, p)) : Math.sqrt(1 - Math.pow(1 - x, -p))) + change;
-							} else if (ease == 3) { // lagrange
-								const points = [];
-								let frameRow;
-								const min = i + 2;
-								for (let a = k; a >= min; a--) {
-									frameRow = maanim[a];
-									if (frameRow[2] != 3) break;
-									points.push([frameRow[0], frameRow[1]]);
-								}
-								const max = i + modCount + 2;
-								for (let b = k + 1; b < max; b++) {
-									frameRow = maanim[b];
-									points.push([frameRow[0], frameRow[1]]);
-									if (frameRow[2] != 3) break;
-								}
-								const deg = points.length;
-								step = 0;
-								for (let j = 0; j < deg; j++) {
-									let prod = points[j][1];
-									for (let l = 0; l < deg; l++) {
-										if (l == j) continue;
-										prod *= (frameNow - points[l][0]) / (points[j][0] - points[l][0]);
-									}
-									step += prod;
-								}
-							}
-							if (mod == 2) {
-								if (nextChange - change < 0) {
-									step = Math.ceil(step);
-								} else {
-									step = Math.floor(step);
-								}
-							} else if (mod == 13 || mod == 14) {
-								step = change;
-							}
-							this.modify(partID, imgcut, mod, step, maxValues);
-							break;
 						}
-						if (row[2] == 1 && k == last && frameNow > maanim[k + 1][0]) this.modify(partID, imgcut, mod, maanim[k + 1][1], maxValues);
 					}
 					i += modCount + 1;
 				}
 			}
-			this.updateSprites();
+			this.updateSprites(updateCanvas);
 		}
 
 		modify(partID, imgcut, mod, change, maxValues) {
@@ -872,7 +1110,7 @@ $(document).ready(function () {
 					sprite.parent = change;
 					break;
 				case 2: // sprite
-					const row = imgcut[change];
+					const row = imgcut[Object.keys(imgcut)[0]][change];
 					sprite.spriteX = row[0];
 					sprite.spriteY = row[1];
 					sprite.spriteWidth = row[2];
@@ -918,7 +1156,7 @@ $(document).ready(function () {
 			}
 		}
 
-		updateSprites() {
+		updateSprites(updateCanvas) {
 			const length = this.spritesNow.length;
 			this.spritesTotal = Array.from({ length: length }, () => ({}));
 			for (let i = 0; i < length; i++) {
@@ -953,7 +1191,7 @@ $(document).ready(function () {
 				this.spritesNow[id].posX = pos[0];
 				this.spritesNow[id].posY = pos[1];
 			}
-			this.drawFrame();
+			if (updateCanvas) this.drawFrame();
 
 			function addVectors(v, u) {
 				return [v[0] + u[0], v[1] + u[1]];
@@ -982,9 +1220,8 @@ $(document).ready(function () {
 			// draw unit
 			this.gl.useProgram(this.spriteProgram);
 			this.gl.activeTexture(this.gl.TEXTURE0);
-			this.gl.bindTexture(this.gl.TEXTURE_2D, this.spritesheets[this.currentForm].texture);
-			this.gl.uniformMatrix3fv(this.uLocationsSprite.convert, false, this.unitConvert);
-			this.gl.uniformMatrix3fv(this.uLocationsSprite.controls, false, this.unitPosition);
+			this.gl.bindTexture(this.gl.TEXTURE_2D, this.spritesheet.texture);
+			const matrix = multiplyMat3(this.unitConvert, this.unitPosition);
 			const spriteList = Object.values(this.spritesNow);
 			spriteList.sort((a, b) => { return a.z - b.z; });
 			for (const sprite of spriteList) {
@@ -1001,6 +1238,7 @@ $(document).ready(function () {
 					sy * sin, sy * cos, 0,
 					sprite.posX, sprite.posY, 1
 				];
+				const finalMatrix = multiplyMat3(matrix, transform);
 				const initial = [
 					-sprite.pivotX, sprite.pivotY, sprite.spriteWidth - sprite.pivotX, sprite.pivotY, -sprite.pivotX, sprite.pivotY - sprite.spriteHeight,
 					-sprite.pivotX, sprite.pivotY - sprite.spriteHeight, sprite.spriteWidth - sprite.pivotX, sprite.pivotY, sprite.spriteWidth - sprite.pivotX, sprite.pivotY - sprite.spriteHeight
@@ -1014,21 +1252,25 @@ $(document).ready(function () {
 					sprite.spriteX, sprite.spriteY + sprite.spriteHeight, sprite.spriteX + sprite.spriteWidth, sprite.spriteY, sprite.spriteX + sprite.spriteWidth, sprite.spriteY + sprite.spriteHeight
 				];
 				for (let i = 0; i < imgcut.length; i += 2) {
-					imgcut[i] /= this.spritesheets[this.currentForm].width;
+					imgcut[i] /= this.spritesheet.width;
 				}
 				for (let i = 1; i < imgcut.length; i += 2) {
-					imgcut[i] /= this.spritesheets[this.currentForm].height;
+					imgcut[i] /= this.spritesheet.height;
 				}
 				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.spriteBuffers.texcoord);
 				this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(imgcut));
 				this.gl.enableVertexAttribArray(this.aLocationsSprite.texcoord);
 				this.gl.vertexAttribPointer(this.aLocationsSprite.texcoord, 2, this.gl.FLOAT, false, 0, 0);
-				this.gl.uniformMatrix3fv(this.uLocationsSprite.transform, false, transform);
+				this.gl.uniformMatrix3fv(this.uLocationsSprite.transform, false, finalMatrix);
 				this.gl.uniform1i(this.uLocationsSprite.tex, 0);
 				this.gl.uniform1f(this.uLocationsSprite.opacity, opacity);
 				if (!this.glow && sprite.glow != 0) {
 					this.glow = true;
-					this.gl.blendFunc(this.gl.ONE, this.gl.ONE);
+					if (this.transparent) {
+						this.gl.blendFuncSeparate(this.gl.ONE, this.gl.ONE, this.gl.ZERO, this.gl.ONE);
+					} else {
+						this.gl.blendFunc(this.gl.ONE, this.gl.ONE);
+					}
 				} else if (this.glow && sprite.glow == 0) {
 					this.glow = false;
 					this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -1041,6 +1283,8 @@ $(document).ready(function () {
 			this.bgImg = new Image();
 			this.bgImg.crossOrigin = 'anonymous';
 			this.bgImg.onload = () => {
+				this.transparent = false;
+				bgScaleFactor = this.bgType === 'stage' ? bgStandardWidth / this.bgImg.width * bgScaleConst : 1;
 				this.backgroundInfo.width = this.bgImg.width;
 				this.backgroundInfo.height = this.bgImg.height;
 				this.gl.activeTexture(this.gl.TEXTURE0);
@@ -1050,12 +1294,15 @@ $(document).ready(function () {
 				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
 				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 				this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.bgImg);
-				this.renderModel(0, true, true);
+				this.renderModel(-1, true);
 			};
 			this.bgImg.onerror = () => {
-				let color = [255, 255, 255, 0];
+				let color = [0, 0, 0, 0];
 				if (bg.length === 7 && !isNaN(Number(`0x${bg.slice(1)}`))) {
 					color = [Number(`0x${bg.slice(1, 3)}`), Number(`0x${bg.slice(3, 5)}`), Number(`0x${bg.slice(5)}`), 255];
+					this.transparent = false;
+				} else {
+					this.transparent = true;
 				}
 				this.gl.activeTexture(this.gl.TEXTURE0);
 				this.gl.bindTexture(this.gl.TEXTURE_2D, this.backgroundInfo.texture);
@@ -1066,10 +1313,10 @@ $(document).ready(function () {
 				this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(color));
 				this.drawFrame();
 			};
-			this.bgImg.src = bg.includes('static.wikitide.net') ? bg : `./Special:Redirect/file/${bg}`;
+			this.bgImg.src = bg.includes('static.wikitide.net') ? bg : mw.util.getUrl(`Special:Redirect/file/${bg}`);
 		}
 
-		createTextureInfo(url, draw = true) {
+		createTextureInfo(url, draw = true, initial = false) {
 			const tex = this.gl.createTexture();
 			this.gl.activeTexture(this.gl.TEXTURE0);
 			this.gl.bindTexture(this.gl.TEXTURE_2D, tex);
@@ -1096,7 +1343,8 @@ $(document).ready(function () {
 				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
 				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 				this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, img);
-				if (draw) this.renderModel(0, true, true);
+				if (draw) this.renderModel(-1, true);
+				if (initial) this.updateBackground(this.bg);
 			};
 			img.src = url;
 			return textureInfo;
@@ -1132,18 +1380,18 @@ $(document).ready(function () {
 			const texBounds = [this.$canvas.width() * texSpace[0], this.$canvas.height() * texSpace[1]];
 			const texCenter = [texBounds[0] / 2, texBounds[1] / 2];
 			const texTranslate = [
-				this.origin[0] * texSpace[0] / this.origin[2] * bgScaleConst,
-				this.origin[1] * texSpace[1] / this.origin[2] * bgScaleConst + (1 - texBounds[1])
+				this.origin[0] * texSpace[0] / this.origin[2] * bgScaleFactor,
+				this.origin[1] * texSpace[1] / this.origin[2] * bgScaleFactor + (1 - texBounds[1])
 			];
 			const texOrigin = [
 				texCenter[0] - texTranslate[0],
 				texCenter[1] + texTranslate[1]
 			];
 			const texSides = [
-				texOrigin[0] - texBounds[0] / 2 / this.origin[2] * bgScaleConst, // left
-				texOrigin[1] - texBounds[1] / 2 / this.origin[2] * bgScaleConst, // bottom
-				texOrigin[0] + texBounds[0] / 2 / this.origin[2] * bgScaleConst, // right
-				texOrigin[1] + texBounds[1] / 2 / this.origin[2] * bgScaleConst // top
+				texOrigin[0] - texBounds[0] / 2 / this.origin[2] * bgScaleFactor, // left
+				texOrigin[1] - texBounds[1] / 2 / this.origin[2] * bgScaleFactor, // bottom
+				texOrigin[0] + texBounds[0] / 2 / this.origin[2] * bgScaleFactor, // right
+				texOrigin[1] + texBounds[1] / 2 / this.origin[2] * bgScaleFactor // top
 			];
 			this.textureQuad = new Float32Array([
 				texSides[0], texSides[1],
@@ -1206,10 +1454,46 @@ $(document).ready(function () {
 		}
 	}
 
+	function multiplyMat3(a, b) {
+		return [
+			a[0] * b[0] + a[3] * b[1] + a[6] * b[2],
+			a[1] * b[0] + a[4] * b[1] + a[7] * b[2],
+			a[2] * b[0] + a[5] * b[1] + a[8] * b[2],
+			a[0] * b[3] + a[3] * b[4] + a[6] * b[5],
+			a[1] * b[3] + a[4] * b[4] + a[7] * b[5],
+			a[2] * b[3] + a[5] * b[4] + a[8] * b[5],
+			a[0] * b[6] + a[3] * b[7] + a[6] * b[8],
+			a[1] * b[6] + a[4] * b[7] + a[7] * b[8],
+			a[2] * b[6] + a[5] * b[7] + a[8] * b[8]
+		];
+	}
+
 	// create Viewer objects
 	const $viewer = $('.animation-container');
-	const viewers = [];
 	$viewer.each(function () {
-		viewers.push(new Viewer($(this)));
+		const $this = $(this);
+
+		function waitUntilOpened() {
+			return new Promise((resolve) => {
+				const observer = new MutationObserver((mutations, observer) => {
+					if ($this.closest('section.collapsible-block.open-block').length > 0) {
+						observer.disconnect();
+						resolve();
+					}
+				});
+				observer.observe(document.body, {
+					childList: true,
+					subtree: true
+				});
+			});
+		}
+
+		if ($(this).closest('section.collapsible-block:not(.open-block)').length > 0) {
+			waitUntilOpened().then(() => {
+				$(this).data('viewer', new Viewer($(this)));
+			});
+		} else {
+			$(this).data('viewer', new Viewer($(this)));
+		}
 	});
 });

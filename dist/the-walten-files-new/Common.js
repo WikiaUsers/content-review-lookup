@@ -113,7 +113,7 @@ $(function () {
 
     function pickRandomTrack() {
         var pool = tracks.filter(t => t !== currentTrack);
-        return pool[Math.floor(Math.random() * pool.length)];
+        return pool[Math.floor(Math.random() * Math.random() * pool.length)];
     }
 
     function showGif(show) {
@@ -291,5 +291,54 @@ $(function () {
         }
         showGif(isPlaying);
         localStorage.setItem("radioPlaying", isPlaying);
+    });
+});
+
+
+
+$(function () {
+    var $toggleBtn = $('<div>', {
+        id: "radio-toggle",
+        text: "▼",
+        css: {
+            position: "fixed",
+            bottom: "212px",
+            right: "20px",
+            width: "26px",
+            height: "26px",
+            background: "#820f03",
+            color: "#fff",
+            borderRadius: "6px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+            zIndex: 10000,
+            userSelect: "none",
+            transition: "opacity 0.2s ease, transform 0.2s ease"
+        }
+    });
+
+    $('body').append($toggleBtn);
+
+    var radioVisible = true;
+
+    $toggleBtn.on("click", function () {
+        if (radioVisible) {
+            $("#radio-container").css({
+                transform: "scale(0.001)",
+                opacity: "0"
+            });
+            $(this).text("▲");
+            radioVisible = false;
+        } else {
+            $("#radio-container").css({
+                transform: "scale(1)",
+                opacity: "1"
+            });
+            $(this).text("▼");
+            radioVisible = true;
+        }
     });
 });

@@ -1,4 +1,3 @@
-
 // Universal Fandom-Safe Script Wrapper
 mw.hook('wikipage.content').add(function($content) {
 
@@ -140,7 +139,8 @@ mw.hook('wikipage.content').add(function($content) {
 			"An hour before my father banished me from his kitchen, he thought I was a monster.",
 			"I was the first. I have seen everything.",
 			"Throughout his Kitchen and Wonderland, I alone am the Architect.",
-			"W elco me, to Wonde rland."
+			"W elco me, to Wonde rland.",
+			"May God have mercy upon you!"
         	];
         const images = [
         	];
@@ -251,6 +251,24 @@ mw.hook('wikipage.content').add(function($content) {
     }
 
 });
+
+//Chef secret stuff
+$(function() {
+    // Check if the user is logged in
+    if (mw.config.get('wgUserName')) {
+        var username = mw.config.get('wgUserName');
+        var profileUrl = '/wiki/User:' + encodeURIComponent(username);
+        
+        // Update the placeholder to say 'You'
+        $('#userProfileLinkPlaceholder').html('<a href="' + profileUrl + '">You</a>');
+    } else {
+        // For anonymous users, display a default message or link
+        $('#userProfileLinkPlaceholder').html('Log in to see your profile link');
+
+    }
+});
+
+
 
 // Random Logo Hover Image
 $(function() {

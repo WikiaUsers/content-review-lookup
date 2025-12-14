@@ -123,7 +123,10 @@ var dungeonList = [
   { name: "Hellbound Sanctum: Chaos", baseEXP: 7050000000000 },
   { name: "Forsaken Limbo: Normal", baseEXP: 15720000000000 },
   { name: "Forsaken Limbo: Expert", baseEXP: 31440000000000 },
-  { name: "Forsaken Limbo: Chaos", baseEXP: 57200000000000 }
+  { name: "Forsaken Limbo: Chaos", baseEXP: 57200000000000 },
+  { name: "Neon District: Normal", baseEXP: 401000000000000 },
+  { name: "Neon District: Expert", baseEXP: 802000000000000 },
+  { name: "Neon District: Chaos", baseEXP: 1110000000000000 }
 ];
   
 var weaponPerks = [

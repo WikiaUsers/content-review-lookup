@@ -1,4 +1,5 @@
 /* global mw, $ */
+/* <nowiki> */
 (function () {
   console.log('Replace.js split-trigger loaded (tempered regex)');
 
@@ -129,3 +130,4 @@
     mw.hook('wikipage.content').add(function ($c) { bind($c); });
   });
 })();
+/* </nowiki> */

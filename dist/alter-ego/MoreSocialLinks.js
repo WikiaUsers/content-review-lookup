@@ -145,7 +145,7 @@
 						title: this.labelFor(k),
 						children: [{
 							type: 'span',
-							classes: ['toru-i', 'i-discord1']
+							classes: ['ego-i', 'i-discord1']
 						}]
 					}, {
 						type: 'div',
@@ -171,7 +171,7 @@
 						type: 'a',
 						children: [{
 							type: 'span',
-							classes: ['toru-i', 'i-pencil1']
+							classes: ['ego-i', 'i-pencil1']
 						}],
 						classes: ['user-identity-social__icon'],
 						attr: { href: v },
@@ -197,7 +197,7 @@
 					title: this.labelFor(k),
 					children: [{
 						type: 'span',
-						classes: ['toru-i', `i-${iconMap[k] || k}`]
+						classes: ['ego-i', `i-${iconMap[k] || k}`]
 					}]
 				}, {
 					type: 'div',

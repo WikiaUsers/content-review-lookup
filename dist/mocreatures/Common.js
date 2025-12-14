@@ -212,7 +212,7 @@ mw.hook( 'wikipage.content' ).add( function( $content ) {
 			return;
 		}
 		
-		var audio = $( this ).find( '.sound-audio' )[0];
+		var audio = $( this ).find( '.sound-audio audio' )[0];
 		if ( audio ) {
 			audio.paused ? audio.play() : audio.pause();
 		}

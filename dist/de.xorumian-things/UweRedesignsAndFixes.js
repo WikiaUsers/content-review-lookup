@@ -52,31 +52,48 @@ $("head").append(`<style>
 	    overflow: hidden;
 	    height: 18px;
 	}
+	span[data-letter=e][φ]::before {
+	    content: "-";
+	    font-size: 36px;
+	    position: absolute;
+	    translate: -12px 1.5px;
+	}
+	span[data-letter="I"]::before {
+	    content: "C";
+	    font-size: 36px;
+	    position: absolute;
+	    rotate: 270deg;
+	    translate: -6.3px -4px;
+	}
 	</style>`
 );
 document.querySelectorAll('.page-header__title').forEach(h1 => {
-	h1.innerHTML = h1.innerHTML.replace(/Ɔ/g, '<span data-letter="C" style="scale:-1 1">Ɔ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɔ/g, '<span data-letter="c" style="scale:-1 1">ɔ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/Ɛ/g, '<span data-letter="З" style="scale:-1 1">Ɛ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɛ/g, '<span data-letter="з" style="scale:-1 1">ɛ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/Ǝ/g, '<span data-letter="E" style="scale:-1 1">Ǝ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ǝ/g, '<span data-letter="e" style="scale:-1 1">ǝ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/Ʒ/g, '<span data-letter="3">Ʒ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ʒ/g, '<span data-letter="3" style="translate:0 6px">ʒ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɵ/g, '<span data-letter="э">ɵ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/δ/g, '<span data-letter="o">δ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɑ/g, '<span data-letter="d" style="overflow:hidden;height:20px;translate:0 .7px;">ɑ</span>');
-	h1.innerHTML = h1.innerHTML.replace(/ɾ/g, '<span data-letter="n" style="overflow:hidden;height:20px;scale:-1 1;translate:0 .7px;width:11px;margin-right:1px;">ɾ</span>');
-	/*h1.innerHTML = h1.innerHTML.replace(/ɽ/g, 'r<span data-letter="j" style="scale:-1 1">ɽ</span>');*/
+	h1.innerHTML = h1.innerHTML
+		.replace(/Ɔ/g, '<span data-letter="C" style="scale:-1 1">Ɔ</span>')
+		.replace(/ɔ/g, '<span data-letter="c" style="scale:-1 1">ɔ</span>')
+		.replace(/Ɛ/g, '<span data-letter="З" style="scale:-1 1">Ɛ</span>')
+		.replace(/ɛ/g, '<span data-letter="з" style="scale:-1 1">ɛ</span>')
+		.replace(/Ǝ/g, '<span data-letter="E" style="scale:-1 1">Ǝ</span>')
+		.replace(/ǝ/g, '<span data-letter="e" style="scale:-1 1">ǝ</span>')
+		.replace(/Ʒ/g, '<span data-letter="3">Ʒ</span>')
+		.replace(/ʒ/g, '<span data-letter="3" style="translate:0 6px">ʒ</span>')
+		.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>')
+		.replace(/ɵ/g, '<span data-letter="э">ɵ</span>')
+		.replace(/δ/g, '<span data-letter="o">δ</span>')
+		.replace(/ɑ/g, '<span data-letter="d" style="overflow:hidden;height:20px;translate:0 .7px;">ɑ</span>')
+		.replace(/Ψ/g, '<span data-letter="I" style="margin:0 10px;">Ψ</span>')
+		.replace(/φ/g, '<span data-letter="e" φ style="rotate:270deg;translate:3.5px 1px;scale:1 -1;margin-right:2px;">φ</span>')
+		.replace(/ɾ/g, '<span data-letter="n" style="overflow:hidden;height:20px;scale:-1 1;translate:0 .7px;width:11px;margin-right:1px;">ɾ</span>');
+		/*.replace(/ɽ/g, 'r<span data-letter="j" style="scale:-1 1">ɽ</span>');*/
 });
 
 // Audio from URL---------------------------------------------------------------
 document.querySelectorAll('.mw-default-size').forEach(span => {
-	span.innerHTML = span.innerHTML.replace('&lt;', '<');
-	span.innerHTML = span.innerHTML.replace('&gt;', '>');
-	span.innerHTML = span.innerHTML.replace('delete', '');
-	span.innerHTML = span.innerHTML.replace('<span style="display:none">', '');
+	span.innerHTML = span.innerHTML
+		.replace('&lt;', '<')
+		.replace('&gt;', '>')
+		.replace('delete', '')
+		.replace('<span style="display:none">', '');
 });
 
 // History button --------------------------------------------------------------

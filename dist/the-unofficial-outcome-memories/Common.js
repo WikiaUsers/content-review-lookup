@@ -2395,3 +2395,789 @@ $(function(){
     }
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$(document).ready(function() {
+    $('head').append('<link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">');
+    $('head').append('<style>' +
+        '@keyframes cameraShakeLight { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-0.5px); } 50% { transform: translateY(0.5px); } 75% { transform: translateY(-0.25px); } }' +
+        '@keyframes cameraShakeMedium { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-1px); } 50% { transform: translateY(1px); } 75% { transform: translateY(-0.75px); } }' +
+        '@keyframes cameraShakeHeavy { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-1.5px); } 50% { transform: translateY(1.5px); } 75% { transform: translateY(-1px); } }' +
+        '@keyframes cameraShakeExtreme { 0%, 100% { transform: translateY(0); } 20% { transform: translateY(-2px); } 40% { transform: translateY(2px); } 60% { transform: translateY(-1.5px); } 80% { transform: translateY(1.5px); } }' +
+        '.shake-light { animation: cameraShakeLight 0.15s ease-out; }' +
+        '.shake-medium { animation: cameraShakeMedium 0.15s ease-out; }' +
+        '.shake-heavy { animation: cameraShakeHeavy 0.2s ease-out; }' +
+        '.shake-extreme { animation: cameraShakeExtreme 0.25s ease-out; }' +
+        '</style>');
+
+    var catboxUrl = 'https://files.catbox.moe/wcvzop.mp3';
+    var audioContext = null;
+    var analyser = null;
+    var source = null;
+    var dataArray = null;
+    var bufferLength = 0;
+    
+    // Create shake wrapper
+    var shakeWrapper = $('<div>')
+        .attr('id', 'visualizer-shake-wrapper')
+        .css({
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+            zIndex: 9997
+        });
+    
+    $('body').append(shakeWrapper);
+
+    // Create canvas for visualizer
+    var topCanvas = $('<canvas>')
+        .attr('id', 'top-visualizer')
+        .css({
+            position: 'fixed',
+            top: '80px',
+            left: '0',
+            width: '100%',
+            height: '100px',
+            zIndex: 10000,
+            opacity: '0',
+            transition: 'opacity 0.5s ease-in-out',
+            pointerEvents: 'none'
+        });
+
+    var bottomCanvas = $('<canvas>')
+        .attr('id', 'bottom-visualizer')
+        .css({
+            position: 'fixed',
+            bottom: '80px',
+            left: '0',
+            width: '100%',
+            height: '100px',
+            zIndex: 10000,
+            opacity: '0',
+            transition: 'opacity 0.5s ease-in-out',
+            pointerEvents: 'none'
+        });
+
+    // Create border containers
+    var topBorder = $('<div>')
+        .attr('id', 'top-border')
+        .css({
+            position: 'fixed',
+            top: '-100px',
+            left: '0',
+            width: '100%',
+            height: '80px',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 9999,
+            transition: 'top 0.5s ease-in-out',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: "'Merriweather', serif",
+            pointerEvents: 'none'
+        });
+
+    var bottomBorder = $('<div>')
+        .attr('id', 'bottom-border')
+        .css({
+            position: 'fixed',
+            bottom: '-100px',
+            left: '0',
+            width: '100%',
+            height: '80px',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 9999,
+            transition: 'bottom 0.5s ease-in-out',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: "'Merriweather', serif",
+            pointerEvents: 'none'
+        });
+
+    // Create cutscene overlay
+    var cutsceneOverlay = $('<div>')
+        .attr('id', 'cutscene-overlay')
+        .css({
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            zIndex: 9996,
+            opacity: '0',
+            transition: 'opacity 1s ease-in-out',
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)'
+        });
+
+    var cutsceneGif = $('<img>')
+        .attr('id', 'cutscene-gif')
+        .attr('src', 'https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/8/80/SonicCutscene.gif/revision/latest?cb=20251208023546')
+        .css({
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: '0.85'
+        });
+
+    cutsceneOverlay.append(cutsceneGif);
+
+    // Create spectrum canvas for top border
+    var spectrumCanvas = $('<canvas>')
+        .attr('id', 'spectrum-canvas')
+        .css({
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            zIndex: 1,
+            pointerEvents: 'none'
+        });
+
+    var lyricDisplay = $('<div>')
+        .attr('id', 'lyric-display')
+        .css({
+            fontSize: '32px',
+            fontWeight: '400',
+            whiteSpace: 'pre-wrap',
+            textShadow: '0 1px 0 rgba(0,0,0,0.05)',
+            background: 'linear-gradient(#4da6ff, #0066cc)',
+            '-webkit-background-clip': 'text',
+            '-webkit-text-fill-color': 'transparent',
+            'background-clip': 'text',
+            color: 'transparent',
+            padding: '0 20px',
+            position: 'relative',
+            zIndex: 2
+        })
+        .html('');
+
+    var creditsDisplay = $('<div>')
+        .attr('id', 'credits-display')
+        .css({
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '18px',
+            fontWeight: '400',
+            whiteSpace: 'pre-line',
+            textAlign: 'center',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+            color: '#ffffff',
+            padding: '20px 40px',
+            zIndex: 10001,
+            opacity: '0',
+            transition: 'opacity 1s ease-in-out',
+            maxWidth: '80%',
+            lineHeight: '1.6',
+            pointerEvents: 'none',
+            fontFamily: "'Merriweather', serif"
+        })
+        .html('CREDITS:\n\nMain Melody: @johntayjinf\nComposition / Mixing: @astranovayt @ThatGuyNamedPanther\nVocalist: @JohnnyGioeliOfficial\nSonic VA: @zestyra\nArtists: So2onic, SonicDaMAURICE\nLyricists: @SquandaliusScoundrel, SonicDaMAURICE, MadestLadd, @pn_cherryz870\nAnimators: @Palyoshi, _bluewazhere (on disc), @shipi7, @-mr.nam-4412');
+
+    topBorder.append(spectrumCanvas);
+    bottomBorder.append(lyricDisplay);
+    $('body').append(cutsceneOverlay);
+    $('body').append(creditsDisplay);
+    shakeWrapper.append(topCanvas).append(bottomCanvas).append(topBorder).append(bottomBorder);
+
+    var isDrawing = false;
+    var setupDone = false;
+    var frameCount = 0;
+    var beatThreshold = 0.15;
+    var lastBeatTime = 0;
+    var beatCooldown = 150;
+    var frequencyDataArray = null;
+    var replacedAudioElements = new WeakSet();
+
+    function setupAudioContext(audioElement) {
+        if (setupDone) {
+            console.log('[Visualizer] Already setup, skipping');
+            return;
+        }
+        
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 2048;
+            analyser.smoothingTimeConstant = 0.8;
+            bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            frequencyDataArray = new Uint8Array(bufferLength);
+            
+            source = audioContext.createMediaElementSource(audioElement);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            
+            setupDone = true;
+            console.log('[Visualizer] ✓✓✓ Web Audio API setup complete! FFT Size:', analyser.fftSize, 'Bins:', bufferLength);
+            console.log('[Visualizer] Audio context state:', audioContext.state);
+        } catch(e) {
+            console.error('[Visualizer] Failed to setup audio context:', e);
+        }
+    }
+
+    function drawSpectrum() {
+        if (!isDrawing || !analyser) return;
+        
+        requestAnimationFrame(drawSpectrum);
+        
+        var canvas = spectrumCanvas[0];
+        var ctx = canvas.getContext('2d');
+        var width = canvas.width;
+        var height = canvas.height;
+        
+        // Get frequency data
+        var freqData = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(freqData);
+        
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw frequency spectrum bars mirrored from center
+        var bars = 50; // Half the bars since we're mirroring
+        var barWidth = (width / 2) / bars;
+        var centerX = width / 2;
+        
+        for (var i = 0; i < bars; i++) {
+            // Map bars so that higher frequencies are in the center
+            var freqIndex = Math.floor(((bars - 1 - i) / bars) * (freqData.length * 0.5));
+            var value = freqData[freqIndex];
+            var barHeight = (value / 255) * height;
+            
+            // Color gradient based on frequency intensity
+            var gradient = ctx.createLinearGradient(0, height - barHeight, 0, height);
+            if (value > 180) {
+                gradient.addColorStop(0, 'rgba(120, 220, 255, 0.9)');
+                gradient.addColorStop(0.5, 'rgba(60, 160, 255, 0.8)');
+                gradient.addColorStop(1, 'rgba(0, 120, 255, 0.7)');
+            } else if (value > 100) {
+                gradient.addColorStop(0, 'rgba(100, 200, 255, 0.7)');
+                gradient.addColorStop(0.5, 'rgba(50, 150, 255, 0.6)');
+                gradient.addColorStop(1, 'rgba(0, 100, 255, 0.5)');
+            } else {
+                gradient.addColorStop(0, 'rgba(80, 180, 255, 0.5)');
+                gradient.addColorStop(0.5, 'rgba(40, 130, 255, 0.4)');
+                gradient.addColorStop(1, 'rgba(0, 80, 255, 0.3)');
+            }
+            
+            ctx.fillStyle = gradient;
+            
+            // Draw bar on the right side of center
+            ctx.fillRect(centerX + (i * barWidth), height - barHeight, barWidth - 1, barHeight);
+            
+            // Draw mirrored bar on the left side of center
+            ctx.fillRect(centerX - ((i + 1) * barWidth), height - barHeight, barWidth - 1, barHeight);
+        }
+    }
+
+    function drawVisualizer(canvas, isTop) {
+        var ctx = canvas.getContext('2d');
+        var width = canvas.width;
+        var height = canvas.height;
+        var bars = 100;
+        
+        function draw() {
+            if (!isDrawing) {
+                return;
+            }
+            
+            requestAnimationFrame(draw);
+            frameCount++;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            if (analyser && dataArray) {
+                analyser.getByteTimeDomainData(dataArray);
+                
+                // Get frequency data for better beat detection
+                analyser.getByteFrequencyData(frequencyDataArray);
+                
+                // Calculate beat detection using bass frequencies
+                var bassSum = 0;
+                var bassCount = 10;
+                for (var k = 0; k < bassCount; k++) {
+                    bassSum += frequencyDataArray[k];
+                }
+                var bassAverage = bassSum / bassCount;
+                
+                // Detect beat
+                var currentTime = Date.now();
+                if (bassAverage > 80 && (currentTime - lastBeatTime) > beatCooldown) {
+                    lastBeatTime = currentTime;
+                    
+                    // Determine shake intensity
+                    var shakeClass = '';
+                    if (bassAverage > 180) {
+                        shakeClass = 'shake-extreme';
+                        console.log('[Visualizer] EXTREME BEAT! Bass:', bassAverage);
+                    } else if (bassAverage > 140) {
+                        shakeClass = 'shake-heavy';
+                        console.log('[Visualizer] HEAVY BEAT! Bass:', bassAverage);
+                    } else if (bassAverage > 110) {
+                        shakeClass = 'shake-medium';
+                        console.log('[Visualizer] MEDIUM BEAT! Bass:', bassAverage);
+                    } else {
+                        shakeClass = 'shake-light';
+                        console.log('[Visualizer] LIGHT BEAT! Bass:', bassAverage);
+                    }
+                    
+                    // Trigger camera shake
+                    var wrapper = document.getElementById('visualizer-shake-wrapper');
+                    wrapper.className = '';
+                    void wrapper.offsetWidth;
+                    wrapper.classList.add(shakeClass);
+                    
+                    // Remove class after animation
+                    var duration = shakeClass === 'shake-extreme' ? 250 : (shakeClass === 'shake-heavy' ? 200 : 150);
+                    setTimeout(function() {
+                        wrapper.classList.remove(shakeClass);
+                    }, duration);
+                }
+                
+                // Draw bars following waveform pattern
+                var barWidth = width / bars;
+                var sliceSize = Math.floor(bufferLength / bars);
+                
+                for (var i = 0; i < bars; i++) {
+                    var dataIndex = i * sliceSize;
+                    var v = dataArray[dataIndex] / 128.0;
+                    var amplitude = Math.abs(v - 1);
+                    var barHeight = amplitude * height * 0.8;
+                    
+                    // Color gradient based on amplitude
+                    var gradient = ctx.createLinearGradient(0, 0, 0, height);
+                    if (amplitude > 0.3) {
+                        gradient.addColorStop(0, 'rgba(120, 220, 255, 1)');
+                        gradient.addColorStop(0.5, 'rgba(60, 160, 255, 1)');
+                        gradient.addColorStop(1, 'rgba(0, 120, 255, 0.8)');
+                    } else {
+                        gradient.addColorStop(0, 'rgba(100, 200, 255, 0.7)');
+                        gradient.addColorStop(0.5, 'rgba(50, 150, 255, 0.7)');
+                        gradient.addColorStop(1, 'rgba(0, 100, 255, 0.5)');
+                    }
+                    
+                    ctx.fillStyle = gradient;
+                    
+                    var x = i * barWidth;
+                    if (isTop) {
+                        ctx.fillRect(x, 0, barWidth - 1, barHeight);
+                    } else {
+                        ctx.fillRect(x, height - barHeight, barWidth - 1, barHeight);
+                    }
+                }
+                
+                // Draw waveform outline on top
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'rgba(150, 220, 255, 0.9)';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(100, 200, 255, 0.6)';
+                
+                ctx.beginPath();
+                
+                var sliceWidth = width / bufferLength;
+                var x = 0;
+                
+                for(var i = 0; i < bufferLength; i++) {
+                    var v = dataArray[i] / 128.0;
+                    var y;
+                    
+                    if (isTop) {
+                        y = (v - 1) * height * 0.4;
+                    } else {
+                        y = height - (v - 1) * height * 0.4;
+                    }
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                    
+                    x += sliceWidth;
+                }
+                
+                ctx.stroke();
+            }
+        }
+        
+        draw();
+    }
+
+    function resizeCanvases() {
+        topCanvas[0].width = window.innerWidth;
+        topCanvas[0].height = 100;
+        bottomCanvas[0].width = window.innerWidth;
+        bottomCanvas[0].height = 100;
+        spectrumCanvas[0].width = window.innerWidth;
+        spectrumCanvas[0].height = 80;
+    }
+
+    $(window).resize(resizeCanvases);
+    resizeCanvases();
+
+    var raw = `[00:27.51]Rollin' around at the
+[00:28.76]speed
+[00:28.88]of
+[00:29.29]sound
+[00:29.68]You wonder what's runnin' by you
+[00:32.52]In
+[00:32.98]a
+[00:33.53]flash
+[00:35.11]Oooh!
+[00:37.69]Breakin' the rules,
+[00:38.49]guess I'll switch my pace
+[00:40.13]Some things in life
+[00:41.04]you just can't replace
+[00:42.23]Oh nooo!
+[00:44.85]You can't replace, no
+[00:48.48]You wanna dig my skull under your heel
+[00:52.43]But in time you'll find
+[00:54.77]There aren't any tricks left to pull on me
+[01:00.17]Fight
+[01:00.59]to
+[01:00.93]be
+[01:01.32]free!
+[01:02.74]And I'm always thinkin'
+[01:05.14]two
+[01:05.77]two steps
+[01:06.16]two steps ahead
+[01:07.45]Don't care who stands in my path
+[01:09.92]I'll never change
+[01:11.06]who I am!
+[01:13.06]And who they all believed in, push me to carry on
+[01:17.88]Clashing 'till the break of dawn
+[01:20.29]Fightin' with the terms
+[01:22.22]That are gone!
+[01:25.35]Gone,
+[01:25.71]gone,
+[01:26.33]gone!
+[01:48.32]I don't let uncertainty slow me down
+[01:51.48]Or make me second guess
+[01:54.06]I'll pave my own way forward
+[01:56.48]And clean up this mess!
+[01:59.14]Gotta keep on rollin'
+[02:01.73]Gotta keep singin' my song
+[02:04.00]If you think that you're faster
+[02:10.02]Prove me wrong!
+[02:13.16]Lost it all, still I stand
+[02:15.59]No circumstance I'll die by your hands
+[02:20.54]With the strength burned in my mind
+[02:23.15]Bring your worst, I won't hold back
+[02:25.52]You can't twist the way I feel
+[02:27.73]I keep movin' on!
+[02:51.88]There's no more holding back
+[02:54.54]All the souls you've toyed with
+[02:57.00]Siding with violence, isn't this what you wanted from me?
+[03:02.18]There's no mercy left, no more
+[03:04.62]Nothing can bring them back
+[03:06.43]Be as fast as you are, you can't outrun me, no, no!
+[03:12.23]Cut all the twisted games
+[03:14.46]I'll break free of the chains
+[03:16.93]That held me back from showing you what I'm made of
+[03:22.15]I live to see the day
+[03:24.43]I'll escape from this place
+[03:26.96]That's who I am, the master of defyin'..
+[03:34.84]Defyin' fate!
+[03:41.02](I've got your limit, right here!)
+[03:43.92]I'll live my own way
+[03:45.95]And by my own rules
+[03:48.51]Copy my face, can't get my ideals
+[03:50.76]Now can you? No!
+[03:53.60]Don't stand down, endure the pain
+[03:56.06]Bring the thunder like a hurricane!
+[03:58.67]Live and learn!
+[04:01.14]Hanging on the edge of tomorrow
+[04:03.69]Never go your way, so don't blink!`;
+
+    function parseRawToArray(rawText) {
+        var re = /\[(\d{2}):(\d{2}\.\d{2})\](.*)/g;
+        var m;
+        var arr = [];
+        while ((m = re.exec(rawText)) !== null) {
+            var mm = parseInt(m[1], 10);
+            var ss = parseFloat(m[2]);
+            var txt = m[3].trim();
+            var ms = mm * 60000 + Math.round(ss * 1000);
+            arr.push({ time: ms, text: txt });
+        }
+        arr.sort(function(a, b){ return a.time - b.time; });
+        return arr;
+    }
+
+    var lyrics = parseRawToArray(raw);
+
+    var currentIndex = -1;
+    var intervalId = null;
+    var activeAudio = null;
+    var creditsStartTime = 4.9;
+    var creditsDuration = 4.1; // Fade out at 9 seconds (9 - 4.9 = 4.1)
+    var cutscene1StartTime = 87.5;
+    var cutscene1Duration = 20.16;
+    var cutscene2StartTime = 148.5;
+    var cutscene2Duration = 22.0;
+    var cutsceneTimeout = null;
+    var cutsceneEndTimeout = null;
+    var currentCutscene = null;
+    var creditsShown = false;
+
+    function reset(keepVisuals) {
+        console.log('[Visualizer] Reset called, keepVisuals:', keepVisuals);
+        // Don't clear lyrics or currentIndex when keeping visuals
+        // This allows lyrics to reappear on unpause
+        if (!keepVisuals) {
+            lyricDisplay.html('');
+            currentIndex = -1;
+        }
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+        if (cutsceneTimeout) {
+            clearTimeout(cutsceneTimeout);
+            cutsceneTimeout = null;
+        }
+        if (cutsceneEndTimeout) {
+            clearTimeout(cutsceneEndTimeout);
+            cutsceneEndTimeout = null;
+        }
+        cutsceneOverlay.css('opacity', '0');
+        currentCutscene = null;
+        creditsDisplay.css('opacity', '0');
+        creditsShown = false;
+        
+        if (!keepVisuals) {
+            activeAudio = null;
+            isDrawing = false;
+            topBorder.css('top', '-100px');
+            bottomBorder.css('bottom', '-100px');
+            topCanvas.css('opacity', '0');
+            bottomCanvas.css('opacity', '0');
+        }
+        
+        var wrapper = document.getElementById('visualizer-shake-wrapper');
+        if (wrapper) {
+            wrapper.className = '';
+        }
+    }
+
+    function updateLyricForTime(currentTime) {
+        var tms = Math.round(currentTime * 1000);
+        console.log('[Visualizer] updateLyricForTime called - time:', currentTime, 'ms:', tms, 'currentIndex:', currentIndex);
+
+        var newIndex = -1;
+        for (var i = lyrics.length - 1; i >= 0; i--) {
+            if (tms >= lyrics[i].time) {
+                newIndex = i;
+                break;
+            }
+        }
+
+        console.log('[Visualizer] Found newIndex:', newIndex, 'currentIndex:', currentIndex);
+
+        // Always update if we have a valid lyric AND the index actually changed
+        if (newIndex !== -1 && newIndex !== currentIndex) {
+            currentIndex = newIndex;
+            lyricDisplay.html(lyrics[currentIndex].text);
+            console.log('[Visualizer] ✓✓✓ Lyric updated to:', lyrics[currentIndex].text);
+        } else {
+            console.log('[Visualizer] No lyric update - newIndex:', newIndex, 'currentIndex:', currentIndex);
+        }
+        
+        // Check for credits
+        if (currentTime >= creditsStartTime && currentTime < creditsStartTime + creditsDuration) {
+            if (!creditsShown) {
+                console.log('[Visualizer] Showing credits at', currentTime);
+                creditsDisplay.css('opacity', '1');
+                creditsShown = true;
+            }
+        } else if (creditsShown && currentTime >= creditsStartTime + creditsDuration) {
+            console.log('[Visualizer] Hiding credits at', currentTime);
+            creditsDisplay.css('opacity', '0');
+            creditsShown = false;
+        }
+        
+        // Check for cutscene 1
+        if (currentTime >= cutscene1StartTime && currentTime < cutscene1StartTime + cutscene1Duration) {
+            if (currentCutscene !== 1) {
+                console.log('[Visualizer] Starting cutscene 1 at', currentTime);
+                cutsceneOverlay.css('opacity', '0');
+                cutsceneGif.attr('src', 'https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/8/80/SonicCutscene.gif/revision/latest?cb=20251208023546');
+                setTimeout(function() {
+                    cutsceneOverlay.css('opacity', '1');
+                }, 50);
+                currentCutscene = 1;
+            }
+        }
+        // Check for cutscene 2
+        else if (currentTime >= cutscene2StartTime && currentTime < cutscene2StartTime + cutscene2Duration) {
+            if (currentCutscene !== 2) {
+                console.log('[Visualizer] Starting cutscene 2 at', currentTime);
+                cutsceneOverlay.css('opacity', '0');
+                cutsceneGif.attr('src', 'https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/3/35/SonicCutscene2.gif/revision/latest?cb=20251208031036');
+                setTimeout(function() {
+                    cutsceneOverlay.css('opacity', '1');
+                }, 50);
+                currentCutscene = 2;
+            }
+        }
+        // Check if we need to hide cutscene
+        else if (currentCutscene !== null) {
+            if ((currentCutscene === 1 && currentTime >= cutscene1StartTime + cutscene1Duration) ||
+                (currentCutscene === 2 && currentTime >= cutscene2StartTime + cutscene2Duration)) {
+                console.log('[Visualizer] Ending cutscene', currentCutscene, 'at', currentTime);
+                cutsceneOverlay.css('opacity', '0');
+                currentCutscene = null;
+            }
+        }
+    }
+
+    function startMonitoringAudio(aud) {
+        console.log('[Visualizer] Starting monitoring for audio element');
+        
+        // If we're restarting the same audio, keep visuals
+        var keepVisuals = (activeAudio === aud);
+        
+        // Clear any existing interval
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+        
+        // Only do full reset if it's a different audio source
+        if (!keepVisuals) {
+            reset(false);
+        }
+        
+        activeAudio = aud;
+        
+        if (!setupDone) {
+            setupAudioContext(aud);
+        }
+        
+        if (audioContext) {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(function() {
+                    console.log('[Visualizer] Audio context resumed successfully');
+                }).catch(function(err) {
+                    console.error('[Visualizer] Failed to resume audio context:', err);
+                });
+            }
+        }
+        
+        topBorder.css('top', '0');
+        bottomBorder.css('bottom', '0');
+        topCanvas.css('opacity', '1');
+        bottomCanvas.css('opacity', '1');
+        
+        isDrawing = true;
+        frameCount = 0;
+        
+        drawVisualizer(topCanvas[0], true);
+        drawVisualizer(bottomCanvas[0], false);
+        drawSpectrum();
+        
+        // Start the interval to update lyrics
+        intervalId = setInterval(function() {
+            if (!aud) {
+                console.log('[Visualizer] Interval: no audio element');
+                return;
+            }
+            console.log('[Visualizer] Interval running - currentTime:', aud.currentTime, 'paused:', aud.paused);
+            updateLyricForTime(aud.currentTime);
+        }, 50);
+        
+        // Immediately update lyric for current position
+        console.log('[Visualizer] Immediately updating lyric for time:', aud.currentTime);
+        updateLyricForTime(aud.currentTime);
+    }
+
+    function isDontBlinkAudio(aud) {
+        var src = (aud && (aud.currentSrc || aud.src || aud.baseURI || '') + '').toString();
+        var result = src && (src.indexOf('DontBlinkFULL.mp3') !== -1 || src.indexOf('wcvzop.mp3') !== -1);
+        return result;
+    }
+
+    document.addEventListener('play', function(e) {
+        if (e.target && e.target.tagName === 'AUDIO') {
+            var a = e.target;
+            console.log('[Visualizer] Detected audio play event for:', a.src || a.currentSrc);
+            console.log('[Visualizer] isDontBlinkAudio?', isDontBlinkAudio(a));
+            console.log('[Visualizer] activeAudio matches?', a === activeAudio);
+            
+            if (isDontBlinkAudio(a)) {
+                if (!replacedAudioElements.has(a)) {
+                    console.log('[Visualizer] Replacing Fandom source with Catbox source');
+                    
+                    replacedAudioElements.add(a);
+                    
+                    a.pause();
+                    
+                    var savedTime = a.currentTime || 0;
+                    
+                    a.src = catboxUrl;
+                    a.crossOrigin = "anonymous";
+                    a.load();
+                    
+                    a.currentTime = savedTime;
+                    
+                    a.play().then(function() {
+                        console.log('[Visualizer] Successfully playing Catbox audio');
+                        startMonitoringAudio(a);
+                    }).catch(function(err) {
+                        console.error('[Visualizer] Failed to play replaced audio:', err);
+                    });
+                } else {
+                    // Always call startMonitoringAudio, even if already set up
+                    // This restarts the interval when unpausing
+                    console.log('[Visualizer] ✓✓✓ Restarting monitoring on play/unpause');
+                    startMonitoringAudio(a);
+                }
+            } else {
+                console.log('[Visualizer] Not a DontBlink audio, ignoring');
+            }
+        }
+    }, true);
+
+    document.addEventListener('pause', function(e) {
+        if (e.target === activeAudio) {
+            console.log('[Visualizer] Audio paused - keeping visuals, clearing lyric index');
+            // Clear the currentIndex so lyrics can update properly on unpause
+            currentIndex = -1;
+            reset(true); // Keep visuals visible
+        }
+    }, true);
+
+    document.addEventListener('ended', function(e) {
+        if (e.target === activeAudio) {
+            console.log('[Visualizer] Audio ended - keeping visuals');
+            reset(true); // Keep visuals visible
+        }
+    }, true);
+    
+    console.log('[Visualizer] Script initialized, waiting for audio play...');
+});

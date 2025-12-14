@@ -15,6 +15,7 @@ futurehostile: true
 *//* global
 importArticle
 */
+/* <nowiki> */
 mw.loader.using( [
 	'ext.wikiEditor',
 	'ext.CodeMirror.v6.WikiEditor',
@@ -155,3 +156,4 @@ mw.loader.using( [
 	// Startup the process
 	mw.hook('dev.CCM.load').fire(loader);
 });
+/* </nowiki> */

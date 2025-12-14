@@ -60,3 +60,7 @@ UserTagsJS.modules.mwGroups = [
 
 // BackToTopButton Config 
 window.BackToTopModern = true;
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 365;
+window.lockOldComments.addNoteAbove = true;

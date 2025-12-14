@@ -4,6 +4,7 @@
 /* ### JavaScript here is loaded for all users and all skins.           ### */
 /* ######################################################################## */
 
+window.RollbackWikiDisable = true;
 
 /* ######################################################################## */
 /* ### ImportJS OVERRIDES                                               ### */

@@ -61,3 +61,6 @@ importArticles({
         }
     }
 }() );
+
+window.AddRailModule = [{prepend: true}];
+window.AddRailModule = ['Template:RailModuleTabs'];

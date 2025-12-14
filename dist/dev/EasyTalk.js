@@ -1,5 +1,10 @@
 'use strict';
-mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
+mw.loader.using([
+	'mediawiki.api',
+	'mediawiki.Title',
+	'mediawiki.util',
+	'oojs-ui',
+], () => {
 	const config = mw.config.values;
 	const ns = config.wgNamespaceNumber;
 	const extraSigNs = config.wgExtraSignatureNamespaces.includes(ns);
@@ -19,7 +24,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
 	let msg = () => {};
-	const version = '1.0.5 (beta)';
+	const version = '1.0.15';
+	const toolName = 'EasyTalk';
+	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
 		'action': 'query',
 		'format': 'json',
@@ -27,14 +34,14 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 		'errorformat': 'plaintext',
 		'uselang': config.wgUserLanguage,
 	}});
-	const notArchived = !$(`#${window.dev.DisableArchivedPages.id}`).length;
+	const archived = $(`#${window.dev.DisableArchivedPages.id}`).length;
 	const previewDelay = 1000;
 	const editorID = 'easy-talk-editor-js';
+	const docRef = `[[${helpPage}|${toolName}]] v${version}`;
 	const fatalErrors = [
 		'protectedpage',
 		'permissiondenied',
 		'editconflict',
-		'badtags',
 	];
 	const months = [
 		'January',
@@ -88,7 +95,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 	};
 	const newSectionLinkSelectors = [
 		'#ca-addsection',
-		`a[title="Special:NewSection/${pageName}"]`,
+		`a[title="Special:NewSection/${pageName.replaceAll('"', '\\"')}"]`,
 	];
 	const messages = [
 		'mw-widgets-abandonedit-title',
@@ -99,17 +106,14 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 		'years',
 	];
 	
-	api.loadMessagesIfMissing(messages).done(() => {
-		mw.hook('dev.i18n').add(i18n => {
-			i18n.loadMessages('EasyTalk', {cacheVersion: 1}).done(init);
-		});
-		window.importArticle({
-			'type': 'style',
-			'article': 'u:dev:MediaWiki:EasyTalk.css',
-		});
-		window.importArticle({
-			'type': 'script',
-			'article': 'u:dev:MediaWiki:I18n-js/code.js',
+	api.loadMessagesIfMissing(messages).then(() => {
+		window.importArticles({'articles': [
+			'u:dev:MediaWiki:EasyTalk.css',
+			'u:dev:MediaWiki:I18n-js/code.js',
+		]}).then(() => {
+			mw.hook('dev.i18n').add(i18n => {
+				i18n.loadMessages('EasyTalk', {cacheVersion: 3}).then(init);
+			});
 		});
 	});
 	
@@ -132,24 +136,25 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 			config.wgAction === 'view' &&
 			config.wgArticleId &&
 			config.wgIsProbablyEditable &&
-			notArchived
+			!archived
 		){
 			$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
-			mw.hook('wikipage.content').add(content => {
-				content.find('p:has(br:only-child)').remove();
-				content.find('dl + dl').each((dlIndex, dl) => {
-					$(dl).prepend($(dl).prev().html());
-					$(dl).prev().remove();
-				});
-				while(content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
-					content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
-				}
-				content.find(commentElements).each(addReplyButtons);
-			});
+			mw.hook('wikipage.content').add(implementer);
 		}
 	}
 	
 	function addStats(content){
+		window.EasyTalkStatsDone = window.EasyTalkStatsDone || [];
+		window.EasyTalkStatsDone.push(content);
+		if (!window.EasyTalkStatsLoaded){
+			window.EasyTalkStatsLoaded = true;
+			window.EasyTalkStatsToDo.forEach(pageSnippet => {
+				if (!window.EasyTalkStatsDone.includes(pageSnippet)){
+					addStats(pageSnippet);
+				}
+			});
+		}
+		
 		const comments = [];
 		let currentSection = '';
 		
@@ -224,13 +229,13 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 				'pageframe-latestcomment',
 				agoText,
 				latestComment.user,
-				latestComment.section,
+				latestComment.section
 			).parse();
 		} else {
 			latestCommentTopText = msg(
 				'pageframe-latestcomment-notopic',
 				agoText,
-				latestComment.user,
+				latestComment.user
 			).parse();
 		}
 		
@@ -277,9 +282,31 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 				$('<span>').text(msg(
 					'topicheader-authorcount',
 					userCount
-				).parse()),
+				).parse())
 			));
 		});
+	}
+	
+	function implementer(content){
+		window.EasyTalkHtmlDone = window.EasyTalkHtmlDone || [];
+		window.EasyTalkHtmlDone.push(content);
+		if (!window.EasyTalkHtmlLoaded){
+			window.EasyTalkHtmlLoaded = true;
+			window.EasyTalkHtmlToDo.forEach(pageSnippet => {
+				if (!window.EasyTalkHtmlDone.includes(pageSnippet)){
+					implementer(pageSnippet);
+				}
+			});
+		}
+		content.find('p:has(br:only-child)').remove();
+		content.find('dl + dl').each((dlIndex, dl) => {
+			$(dl).prepend($(dl).prev().html());
+			$(dl).prev().remove();
+		});
+		while(content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
+			content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
+		}
+		content.find(commentElements).each(addReplyButtons);
 	}
 	
 	function addReplyButtons(commentIndex, commentElement){
@@ -346,11 +373,16 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 			'submit',
 			formReplyEvent => formReplyEvent.preventDefault()
 		).append(
-			$('<label>', {'html': msg('replywidget-label', version).parse()}),
+			$('<label>').html(msg(
+				'replywidget-label',
+				helpPage,
+				toolName,
+				version
+			).parse()),
 			$('<textarea>', {
 				'placeholder': msg(
 					'replywidget-placeholder-reply',
-					button.data('user'),
+					button.data('user')
 				).parse(),
 				'required': true,
 				'on': {'input': resizeTextBox},
@@ -365,7 +397,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 					'html': msg(
 						'replywidget-terms-click',
 						msg('replywidget-reply').parse(),
-						$('link[rel="license"]').attr('href'),
+						$('link[rel="license"]').attr('href')
 					).plain(),
 				}),
 				$('<div>').append(
@@ -378,9 +410,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 						'class': 'wds-button',
 						'id': 'reply-submit-js',
 						'text': msg('replywidget-reply').parse(),
-					}),
-				),
-			),
+					})
+				)
+			)
 		));
 		
 		if (!bNext.length && (!pNext.length || h.test(pNextTag))){
@@ -412,7 +444,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 				'pst': true,
 				'preview': true,
 			};
-			api.parse(comment, parseParams).done(renderPreview);
+			api.parse(comment, parseParams).then(renderPreview);
 		}, previewDelay);
 		
 		$('#reply-cancel-js').on('click', () => {
@@ -474,7 +506,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 			'rvslots': 'main',
 		};
 		
-		api.post(fetchParams).done(result => {
+		api.post(fetchParams).then(result => {
 			const uneditedText = result.query.pages[0].revisions[0].slots.main.content;
 			const timestamp = mw.util.escapeRegExp(submitReplyEvent.data.timestamp);
 			const index = Number(submitReplyEvent.data.index);
@@ -500,11 +532,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 				);
 			}
 			
-			let editSummary;
-			if (submitReplyEvent.data.section){
-				editSummary = `/* ${submitReplyEvent.data.section} */ Reply`;
-			} else {
-				editSummary = 'Reply';
+			let editSummary = `Reply (${docRef})`;
+			const section = submitReplyEvent.data.section;
+			if (section){
+				editSummary = `/* ${section} */ ${editSummary}`;
 			}
 			
 			const editParams = {
@@ -512,14 +543,13 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 				'title': pageName,
 				'text': finalText,
 				'summary': editSummary,
-				'tags': 'js-reply',
 				'notminor': true,
+				'watchlist': 'watch',
 				'baserevid': revid,
 				'nocreate': true,
-				'watchlist': 'watch',
 			};
 			
-			api.postWithEditToken(editParams).done(data => {
+			api.postWithEditToken(editParams).then(data => {
 				if (data.warnings){
 					console.warn(data.warnings);
 					for (const warning of data.warnings){
@@ -529,7 +559,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 				
 				if (data.edit){
 					revid = data.edit.newrevid;
-					api.parse(new mw.Title(pageName)).done(parsedText => {
+					api.parse(new mw.Title(pageName)).then(parsedText => {
 						$('#mw-content-text > .mw-parser-output').html($(parsedText).contents());
 						mw.hook('wikipage.content').fire($('#mw-content-text'));
 						mw.notify(
@@ -538,7 +568,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 						);
 					});
 				}
-			}).fail((code, data) => {
+			}, (code, data) => {
 				console.error(data.errors);
 				for (const error of data.errors){
 					if (error.code === 'permissiondenied'){
@@ -567,7 +597,12 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 			'id': editorID,
 			'on': {'submit': formTopicEvent => formTopicEvent.preventDefault()},
 		}).append(
-			$('<label>', {'html': msg('replywidget-label', version).parse()}),
+			$('<label>').html(msg(
+				'replywidget-label',
+				helpPage,
+				toolName,
+				version
+			).parse()),
 			$('<h2>', {'id': 'newtopic-sectiontitle-js'}).append($('<input>', {
 				'placeholder': msg('newtopic-placeholder-title').parse(),
 				'aria-label': msg('newtopic-placeholder-title').parse(),
@@ -589,8 +624,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 					'html': msg(
 						'replywidget-terms-click',
 						msg('replywidget-reply').parse(),
-						$('link[rel="license"]').attr('href'),
-					).parse(),
+						$('link[rel="license"]').attr('href')
+					).plain(),
 				}),
 				$('<div>').append(
 					$('<button>', {
@@ -602,9 +637,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 						'class': 'wds-button',
 						'id': 'newtopic-submit-js',
 						'text': msg('replywidget-newtopic').parse(),
-					}),
-				),
-			),
+					})
+				)
+			)
 		);
 		
 		$('#mw-content-text').append(newTopicBox);
@@ -636,7 +671,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 			if (revid){
 				parseParams.revid = revid;
 			}
-			api.parse(comment, parseParams).done(renderPreview);
+			api.parse(comment, parseParams).then(renderPreview);
 		}, previewDelay);
 		
 		$('#newtopic-cancel-js').on('click', () => {
@@ -685,17 +720,23 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 		const elmts = 'input, textarea, .wds-button';
 		$(`#${editorID}`).find(elmts).attr('disabled', true);
 		
+		const editSummary = `/* ${sectionTitle} */ new section (${docRef})`;
 		const editParams = {
-			'tags': 'js-newtopic',
+			'action': 'edit',
+			'title': pageName,
+			'text': comment,
+			'summary': editSummary,
 			'notminor': true,
 			'watchlist': 'watch',
+			'section': 'new',
+			'sectiontitle': sectionTitle,
 		};
 		
 		if (revid){
 			editParams.baserevid = revid;
 		}
 		
-		api.newSection(pageName, sectionTitle, comment, editParams).done(data => {
+		api.postWithEditToken(editParams).then(data => {
 			if (data.warnings){
 				console.warn(data.warnings);
 				for (const warning of data.warnings){
@@ -705,7 +746,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 			
 			if (data.edit){
 				revid = data.edit.newrevid;
-				api.parse(new mw.Title(pageName)).done(parserOutput => {
+				api.parse(new mw.Title(pageName)).then(parserOutput => {
 					let parsedText;
 					if (config.wgArticleId && config.wgAction === 'view'){
 						parsedText = $(parserOutput).contents();
@@ -723,7 +764,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Title', 'mediawiki.util'], () => {
 					);
 				});
 			}
-		}).fail((code, data) => {
+		}, (code, data) => {
 			console.error(data.errors);
 			for (const error of data.errors){
 				if (error.code === 'permissiondenied'){
@@ -851,3 +892,14 @@ function addSig(comment){
 	return comment;
 	// </pre>
 }
+
+mw.hook('wikipage.content').add(content => {
+	if (!window.EasyTalkStatsLoaded){
+		window.EasyTalkStatsToDo = window.EasyTalkStatsToDo || [];
+		window.EasyTalkStatsToDo.push(content);
+	}
+	if (!window.EasyTalkHtmlLoaded){
+		window.EasyTalkHtmlToDo = window.EasyTalkHtmlToDo || [];
+		window.EasyTalkHtmlToDo.push(content);
+	}
+});

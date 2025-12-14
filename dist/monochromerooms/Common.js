@@ -45,4 +45,9 @@ mw.hook("wikipage.content").add(function() {
 			}
 		});
 	});
+});$(".switchtext").click(function() {
+  var el = $(this);
+  var from = el.attr("data-from");
+  var to = el.attr("data-to");
+  el.text(el.text() === from ? to : from);
 });

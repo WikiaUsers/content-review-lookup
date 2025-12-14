@@ -6,8 +6,8 @@
 //wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
 //wsl.loadScript("http://assassinscreed.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
 
-
-mw.loader.using( ['jquery.ui.tabs'], function() {
+const wgPageName = mw.config.get('wgPageName');
+mw.loader.using( ['jquery.ui'], function() {
 $(document).ready(function() {
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
   $("[class^=portal_sliderlink]").click(function() { // bind click event to link

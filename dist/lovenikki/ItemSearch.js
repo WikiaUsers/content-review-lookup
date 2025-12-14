@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 	
-	if (mw.config.get('wgTitle') !== 'Item Search') {
+	if (mw.config.get('wgPageName') !== 'Item_Search') {
 		return;
 	}
 	

@@ -1,3 +1,5 @@
+// Kodların çoğunun kaynağı: https://starwars.fandom.com/wiki/MediaWiki:Common.js
+
 // onload stuff
 var firstRun = true;
 
@@ -39,6 +41,7 @@ function loadFunc() {
 	substUsernameTOC();
 	hideContentSub();
 	addTalkheaderPreload();
+	rearrangeCategories();
 
 	if( typeof(onPageLoad) != "undefined" ) {
 		onPageLoad();
@@ -336,8 +339,22 @@ function setupUploadForm(){
 			// Add link to guided form
 			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//kurtlarvadisi.fandom.com/tr/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Rehberli yükleme formuna geç</a></div>');
 			
-			$('#mw-upload-form').bind('submit', verifyName);
+			// $('#mw-upload-form').bind('submit', verifyName);
 		}
+	}
+}
+
+function addVisualEditorMessage() {
+	if( !$( '#ve-ui-modeSwitchPopupButtonWidget-button' ).length ) {
+		return;
+	} else if ( !$( '#ve-ui-modeSwitchPopupButtonWidget-button' ).find( '.oo-ui-labelElement-label') ) {
+		return;
+	}
+	
+	if ($( '#ve-ui-modeSwitchPopupButtonWidget-button' ).find( '.oo-ui-labelElement-label').text() === "Görsel Editör") {
+		$message = $( '<div id="visualeditor-switch-msg" style="margin-right: 10px;"></div>' )
+		$message.append('Kurtlar Vadisi Viki, <a href="/tr/wiki/Kurtlar_Vadisi_Viki:Hoş_geldin">Kaynak Editörü\'nü kullanmayı öneriyor!</a><br />Başlamak için sağdaki butona basıp "Kaynak Editörü"nü seçin.')
+		$( '.ve-fd-header__actions').prepend($message);
 	}
 }
 
@@ -679,6 +696,175 @@ $(document).ready( function () {
 	}
 } );
 
+function isOutOfUniverseCategory(t) {
+	t = t.toLowerCase();
+
+	if (t.includes('lisanssız')) {
+		return true;
+	}
+
+	var start = ["bilinen makaleler", "gelecek"];
+	if (start.some((v) => t.startsWith(v))) {
+		return true;
+	}
+	
+	var middle = [
+		"başlıklara sahip",   // Tahminî başlıklara sahip sayfalar
+		"bakıma ihtiyacı",
+		"çatışan kaynak",
+		"kesilmiş içerik",
+		"kesilmiş materyal"
+	];
+	if (middle.some((v) => t.includes(v))) {
+		return true;
+	}
+
+	return false;
+}
+
+function isMaintenanceCategory(t) {
+	t = t.toLowerCase();
+
+	if (t == "makaleler ve akademik yazılar") {
+		return false;
+	} else if (t.includes('korumalı sayfalar') || t.includes(' parametresi')) {
+		return true;
+	}
+	
+	var match = [
+		"doğruluk tartışmaları",
+		"olası fanon",
+		"kendisiyle çelişen makaleler"
+	];
+	if (match.some((v) => v == t)) {
+		return true;
+	}
+	
+	var start = [
+		"makaleler",
+		"sayfalar",
+		"bilgi kutuları",
+		"taslak",
+		"kullanımları",
+		"tanınmayan",
+		"geçersiz",
+		"olmayan medya",
+		"resimkat",
+		"kurtlar vadisi viki",
+		"eksik"
+	];
+	if (start.some((v) => t.startsWith(v))) {
+		return true;
+	}
+	
+	var middle = [
+		"bilgi kutuları",
+		"kalıcı bağlantıları",
+		"kullanımları",
+		"listelenen",
+		"taslaklar",
+		"resme ihtiyaç",
+		"kategori bağlantıları"
+	];
+	if (middle.some((v) => t.includes(v))) {
+		return true;
+	}
+	return false;
+}
+
+function buildNewCategoryLine(node, cats, prefix) {
+	if (cats.length == 0) {
+		return;
+	}
+	node.append('<span class="page-header__categories-in">' + prefix + ' </span>');
+	var i = 0;
+	if (cats.length <= 4) {
+		for (i = 0; i < cats.length - 1; i++) {
+			node.append(cats[i]);
+			node.append(', ');
+		}
+		node.append(cats[cats.length - 1]);
+	} else {
+		for (i = 0; i < 3; i++) {
+			node.append(cats[i]);
+			node.append(', ');
+		}
+		var x = (cats.length - 3) + ' daha fazla';
+		node.append(
+			'<div class="wds-dropdown page-header__categories-dropdown">' +
+				'<span>ve </span>' +
+				'<a class="wds-dropdown__toggle" data-tracking="categories-more">' + x + '</a>' +
+				'<div class="wds-dropdown__content page-header__categories-dropdown-content wds-is-left-aligned">' +
+					'<ul class="wds-list wds-is-linked"></ul>' +
+				'</div>' +
+			'</div>'
+		);
+		var $ul = node.find('ul');
+		for (i = 3; i < cats.length; i++) {
+			$ul.append('<li></li>');
+			$ul.find('li').last().append(cats[i]);
+		}
+	}
+}
+
+function rearrangeCategories() {
+	var $header = $('.page-header__categories');
+	if (!$header.length) return;
+
+	// Eski: sadece [data-tracking-label^="categories-top-more"]
+	// Yeni: Header içindeki bütün kategori linklerini al
+	var $links = $header.find('a[title^="Kategori:"]');
+	if (!$links.length) return;
+
+	var links = $links.toArray();
+
+	var iuCats = [];
+	var newCats = [];
+	var oouCats = [];
+	var maintenance = [];
+
+	for (var i = 0; i < links.length; i++) {
+		var link = links[i];
+
+		if (!link.text || !link.text.length) continue;
+
+		var t = link.text.toLowerCase();
+
+		if (link.classList.contains("newcategory")) {
+			newCats.push(link);
+		} else if (isOutOfUniverseCategory(t)) {
+			oouCats.push(link);
+		} else if (isMaintenanceCategory(t)) {
+			maintenance.push(link);
+		} else {
+			iuCats.push(link);
+		}
+	}
+
+	// Hepsi in-universe ise bir şey yapma
+	if (iuCats.length === links.length) {
+		return;
+	}
+
+	// Header'ı temizle ve yeniden inşa et
+	$header.empty();
+
+	$header.append('<div id="iu-category-header"></div>');
+	buildNewCategoryLine($header.find('#iu-category-header'), iuCats, 'Kategoriler:');
+
+	$header.append('<div id="oou-category-header"></div>');
+	buildNewCategoryLine(
+		$header.find('#oou-category-header'),
+		newCats.concat(oouCats, maintenance),
+		'Diğer kategoriler:'
+	);
+}
+
+// Sayfa yüklendiğinde çalıştır
+mw.hook('wikipage.content').add(rearrangeCategories);
+// Alternatif:
+// $(rearrangeCategories);
+
 /* Disable rollback script */
 window.RollbackWikiDisable = true;
 
@@ -689,6 +875,7 @@ window.RollbackWikiDisable = true;
 
 function fillEditSummariesVisualEditor() {
 	mw.hook( 've.activationComplete' ).add(function () {
+	addVisualEditorMessage();
 	if ( $( '#stdEditSummaries' ).length ) return;
 		$.get( mw.config.get( 'wgScript' ), { title: 'Şablon:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 			var	$summaryOptionsList,
@@ -739,3 +926,30 @@ if ( mw.config.get( 'wgCanonicalNamespace' ) == 'Dosya' ) {
 		return b + '&format=original';
 	} );
 }
+
+// Copied from https://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
+$( function eraIconsOasis() {
+    if ( $( '#title-eraicons' ).length && $( '.page-header__actions' ).length ) {
+    	$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
+    }
+} );
+
+// Dosyaların .webp olarak indirilmesini engeller, orijinal formatı zorlar
+if (mw.config.get('wgCanonicalNamespace') === 'File') {
+	$('#file a').each(function () {
+		var url = new URL($(this).attr('href'), window.location.origin);
+		url.searchParams.delete('format');
+		url.searchParams.set('format', 'original');
+		$(this).attr('href', url.toString());
+	});
+}
+
+// Hesabı açık olmayan kullanıcılarının "Explore" kısmına "rastgele sayfa" tuşu ekler
+$(document).ready(function() {
+	if(mw.config.get("wgUserName")) return;
+
+    $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
+});
+
+// Rail module
+window.AddRailModule = [{prepend: true}];

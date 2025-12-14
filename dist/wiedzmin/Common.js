@@ -91,7 +91,9 @@ $(function FixNsUCPFinalSpan() {
 		).find('.mw-page-title-main').text(mw.config.get('wgTitle'));
 	}
 
-	document.title = mw.config.get('wgTitle');
+	const pageTitle = mw.config.get('wgTitle');      // np. "Kronika"
+	const siteName  = mw.config.get('wgSiteName');   // np. "Wiedźmin Wiki"
+	document.title  = pageTitle + ' | ' + siteName + ' | Fandom';
 });
 
 

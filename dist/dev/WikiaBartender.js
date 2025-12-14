@@ -3,7 +3,8 @@
  * @author Headquarter8302
  * @description Interface for manipulating the WikiaBar
  */
-; (function (window, mw) {
+/* <nowiki> */
+;(function (window, mw) {
 	// double-run
 	window.dev = window.dev || {};
 	window.dev.bartender = window.dev.bartender || { hasRan: false, disabled: false };
@@ -79,3 +80,4 @@
 		}));
 	}
 })(this, mediaWiki);
+/* </nowiki> */

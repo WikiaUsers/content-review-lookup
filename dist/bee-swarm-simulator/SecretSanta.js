@@ -121,20 +121,26 @@ $(function() {
 		}).fail(function() {
 			throw new Error("data page does not exist, check " + dataPage + " for errors");
 		}).done(function() {
-			var today = new Date();
-			var beesmasDate = new Date(2025, 11, 1, 6); // 6 am utc = 12 am cst, leaderboard reset time
-			if (today < beesmasDate && !retData.forceActivate) return;
-			
 			let config = mw.config.get([ 'wgTitle', 'wgNamespaceNumber', 'wgUserName' ]);
 			console.log(config);
 			console.log(retData);
 			if (config.wgNamespaceNumber != 1200 || config.wgTitle != config.wgUserName) return;
 		
-			let user = config.wgUserName,
-			    batch;
-			if (retData.batch1 && retData.batch1.includes(user)) batch = retData.batch1;
-			else if (retData.batch2 && retData.batch2.includes(user)) batch.retData.batch2;
+			let today = new Date(),
+			    user = config.wgUserName,
+			    batch, beesmasDate;
+			if (retData.batch1 && retData.batch1.includes(user)) {
+				batch = retData.batch1;
+				beesmasDate = new Date(2025, 11, 1, 6); // 6 am utc = 12 am cst, leaderboard reset time
+			}
+			else if (retData.batch2 && retData.batch2.includes(user)) {
+				batch = retData.batch2;
+				beesmasDate = new Date(2025, 11, 11, 6);
+			}
 			else return;
+			if (today < beesmasDate && !retData.forceActivate) return;
+			
+			console.log(batch);
 			
 			let shuffledBatch = generateDerangement(batch),
 				giftUser = shuffledBatch[batch.indexOf(user)],

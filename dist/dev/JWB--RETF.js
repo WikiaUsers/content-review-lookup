@@ -79,3 +79,4 @@ RETF.replace = function(text) {
 };
 
 RETF.load();
+/* </nowiki> */

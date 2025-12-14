@@ -1,52 +1,56 @@
-function initializeDynamicOffsetClocks() {
-    const allElements = document.querySelectorAll('.dynamic-offset-time');
+/* Auto-Updating DST clocks */
+function initializeDynamicTimezoneClocks() {
+    const allElements = document.querySelectorAll('.dynamic-timezone-time');
     
     if (allElements.length === 0) return;
-
-    const uniqueOffsets = new Set();
+    
+    const uniqueTimezones = new Set();
     allElements.forEach(element => {
-        const offset = element.getAttribute('data-offset');
-        if (offset !== null) {
-            uniqueOffsets.add(offset);
+        const timezone = element.getAttribute('data-timezone');
+        if (timezone) {
+            uniqueTimezones.add(timezone);
         }
     });
-
-    uniqueOffsets.forEach(offsetHoursStr => {
-        const offsetHours = parseFloat(offsetHoursStr);
-        const elementsForThisOffset = document.querySelectorAll('.dynamic-offset-time[data-offset="' + offsetHoursStr + '"]');
-
-        function updateTimeForOffsetGroup() {
-            const now = new Date();
-            const offsetMs = now.getTime() + (now.getTimezoneOffset() * 60000) + (offsetHours * 3600000);
-            const offsetDate = new Date(offsetMs);
-
-            let hours = offsetDate.getHours();
-            const minutes = offsetDate.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-
-            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-            const timeString = `${hours}:${formattedMinutes} ${ampm}`;
-
-            elementsForThisOffset.forEach(element => {
-                element.textContent = timeString;
-            });
+    
+    uniqueTimezones.forEach(timezone => {
+        const elementsForThisTimezone = document.querySelectorAll('.dynamic-timezone-time[data-timezone="' + timezone + '"]');
+        
+        function updateTimeForTimezoneGroup() {
+            try {
+                const timeString = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                }).format(new Date());
+                
+                elementsForThisTimezone.forEach(element => {
+                    element.textContent = timeString;
+                });
+            } catch (e) {
+                // Invalid timezone, fallback
+                elementsForThisTimezone.forEach(element => {
+                    element.textContent = 'Invalid timezone, please use IANA official timezones.';
+                });
+            }
         }
-
-        updateTimeForOffsetGroup();
-
+        
+        updateTimeForTimezoneGroup();
+        
         const now = new Date();
         const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-
+        
         setTimeout(() => {
-            updateTimeForOffsetGroup();
-            setInterval(updateTimeForOffsetGroup, 60000);
+            updateTimeForTimezoneGroup();
+            setInterval(updateTimeForTimezoneGroup, 60000);
         }, msUntilNextMinute);
     });
 }
 
 jQuery(function($) {
-    initializeDynamicOffsetClocks();
+    initializeDynamicTimezoneClocks();
 });
+
+/* Autolock Comments */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 14;

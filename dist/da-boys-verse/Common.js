@@ -257,178 +257,149 @@ mw.loader.using('mediawiki.api').then(function () {
     loadFanfics();
 });
 
-// Planet status colorizer
-$(function () {
-    $('.planet-box, .planet-holo, .galaxy-card').each(function () {
-        const status = ($(this).data('status') || "").toLowerCase();
 
-        if (status.includes("uncolonized") && status.includes("uninhabitable")) {
-            $(this).addClass('planet-danger');
-            $(this).addClass('danger-holo');
-            $(this).addClass('galaxy-alert');
-        }
-    });
-});
 
-/* === User Edit-Badges (put in MediaWiki:Common.js) ===
-   Adds 1 badge per 1000 edits up to 10 (10000+)
-   Caches results in localStorage for 15 minutes.
-*/
+
+
+
+
+
+
 
 ( function () {
-  // only run on profile pages
-  if ( typeof mw === 'undefined' || typeof jQuery === 'undefined' ) return;
-  mw.loader.using( ['mediawiki.api', 'mediawiki.util'], function () {
-    $(function () {
-      try {
-        var api = new mw.Api();
+  'use strict';
 
-        // helpful function to get the username of the profile being viewed
-        function getProfileUsername() {
-          // Try wgRelevantUserName (common in Fandom)
-          var uname = mw.config.get('wgRelevantUserName');
-          if ( uname ) return uname;
-          // Fallback: if on User:Page form
-          var title = mw.config.get('wgPageName') || mw.config.get('wgTitle') || '';
-          if ( title.indexOf('User:') === 0 ) {
-            return title.replace(/^User:/i, '').replace(/_/g, ' ');
-          }
-          // Last resort: try to parse from URL
-          var m = location.pathname.match(/\/wiki\/User:(.+)/);
-          if ( m && m[1] ) return decodeURIComponent(m[1]).replace(/_/g,' ');
-          return null;
+  function initEntityViewers() {
+    var viewers = document.querySelectorAll('.entity-viewer-wrap');
+    if (!viewers.length) return;
+
+    viewers.forEach(function (view) {
+      var selectBox = view.querySelector('.ev-selectbox');
+      var selectedLabel = view.querySelector('.ev-selected');
+      var optionsList = view.querySelector('.ev-options');
+      var options = optionsList ? Array.from(optionsList.querySelectorAll('li[role="option"]')) : [];
+      var cardsWrap = view.querySelector('#ev-cards');
+      var cards = cardsWrap ? Array.from(cardsWrap.querySelectorAll('.entity-card')) : [];
+
+      function hideAllCards() {
+        cards.forEach(function (c) {
+          c.hidden = true;
+          c.setAttribute('aria-hidden', 'true');
+          c.classList.remove('active');
+        });
+      }
+
+      function showEntity(key) {
+        hideAllCards();
+        // clear selection state on options
+        options.forEach(function (o) { o.setAttribute('aria-selected', 'false'); });
+        if (!key) {
+          selectedLabel.textContent = '— Select —';
+          optionsList.setAttribute('aria-hidden', 'true');
+          selectBox.setAttribute('aria-expanded', 'false');
+          return;
         }
-
-        var username = getProfileUsername();
-        if (!username) return; // not a user profile or cannot detect
-
-        // Local cache key
-        var cacheKey = 'editbadges:' + username;
-        var cacheTTL = 15 * 60 * 1000; // 15 minutes
-
-        function readCache() {
-          try {
-            var raw = localStorage.getItem(cacheKey);
-            if (!raw) return null;
-            var data = JSON.parse(raw);
-            if (!data || !data.ts) return null;
-            if ((Date.now() - data.ts) > cacheTTL) {
-              localStorage.removeItem(cacheKey);
-              return null;
-            }
-            return data;
-          } catch (e) { return null; }
+        var targetCard = cardsWrap.querySelector('.entity-card[data-entity="' + key + '"]');
+        var targetOption = optionsList.querySelector('li[data-entity="' + key + '"]');
+        if (targetCard) {
+          targetCard.hidden = false;
+          targetCard.setAttribute('aria-hidden', 'false');
+          targetCard.classList.add('active');
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        function writeCache(editcount) {
-          try {
-            var data = { ts: Date.now(), editcount: editcount };
-            localStorage.setItem(cacheKey, JSON.stringify(data));
-          } catch (e) { /* ignore */ }
+        if (targetOption) {
+          targetOption.setAttribute('aria-selected', 'true');
+          selectedLabel.textContent = targetOption.textContent;
         }
+        optionsList.setAttribute('aria-hidden', 'true');
+        selectBox.setAttribute('aria-expanded', 'false');
+      }
 
-        function createBadgeElement(level, editcount) {
-          var $b = $('<div>', {
-            'class': 'user-edit-badge tier-' + level,
-            'tabindex': 0,
-            'role': 'img',
-            'aria-label': 'Edit badge level ' + level,
-            'title': level + ' badge — ' + (level*1000) + '+ edits'
-          });
-
-          // Number inside badge (e.g., "1k", or medal number)
-          var numText = (level === 10) ? '10k' : (level + 'k');
-          $b.text(numText);
-
-          // Optional small label for tiny screens
-          var label = $('<div/>', { 'class': 'badge-label', text: rankName(level) });
-          $b.append(label);
-
-          return $b;
-        }
-
-        // Map tier to friendly rank/title (customize as you like)
-        function rankName(n) {
-          var ranks = {
-            1: 'Rookie',
-            2: 'Contributor',
-            3: 'Editor',
-            4: 'Keeper',
-            5: 'Veteran',
-            6: 'Sage',
-            7: 'Master',
-            8: 'Legend',
-            9: 'Icon',
-            10: 'Mythic'
-          };
-          return ranks[n] || ('Tier ' + n);
-        }
-
-        function placeBadgesInHeader($badges) {
-          // Preferred container: .user-identity-header__badges (if extension exists)
-          var $header = $('.user-identity-header');
-          if ( !$header.length ) {
-            // fallback: top of .user-identity-box
-            $header = $('.user-identity-box').first();
-          }
-          if ( !$header.length ) return;
-
-          var $container = $header.find('.user-edit-badges');
-          if ( !$container.length ) {
-            // put after header actions if present, otherwise append to header
-            var $actions = $header.find('.user-identity-header__actions').first();
-            $container = $('<div>', { 'class': 'user-edit-badges', 'aria-live': 'polite' });
-            if ( $actions.length ) {
-              $actions.after($container);
-            } else {
-              $header.append($container);
-            }
-          } else {
-            $container.empty();
-          }
-
-          $container.append($badges);
-        }
-
-        function updateBadges(editcount) {
-          // compute badges: 1 per 1000 edits, up to 10
-          var badges = Math.min(10, Math.floor(editcount / 1000));
-          if (badges < 1) return; // no badges to show
-          var $frag = $();
-          for (var i = 1; i <= badges; i++) {
-            $frag = $frag.add(createBadgeElement(i, editcount));
-          }
-          placeBadgesInHeader($frag);
-        }
-
-        // Main flow
-        var cached = readCache();
-        if (cached && typeof cached.editcount === 'number') {
-          updateBadges(cached.editcount);
+      // toggle options
+      function toggleOptions(show) {
+        var expanded = !!show;
+        optionsList.setAttribute('aria-hidden', (!expanded).toString());
+        selectBox.setAttribute('aria-expanded', expanded.toString());
+        if (expanded) {
+          optionsList.style.display = 'block';
+          optionsList.focus();
         } else {
-          // Query API for user's editcount
-          api.get({
-            action: 'query',
-            list: 'users',
-            ususers: username,
-            usprop: 'editcount',
-            format: 'json'
-          }).done(function (data) {
-            try {
-              var u = data && data.query && data.query.users && data.query.users[0];
-              var edits = (u && u.editcount) ? Number(u.editcount) : 0;
-              writeCache(edits);
-              updateBadges(edits);
-            } catch (e) { /* silent fail */ }
-          }).fail(function () {
-            // API failed — do nothing
-            return;
-          });
+          optionsList.style.display = 'none';
         }
+      }
 
-      } catch (e) {
-        // fail softly
-        console.error('Edit-badges error', e);
+      // initial styles for non-js (hide the list)
+      optionsList.style.display = 'none';
+      optionsList.setAttribute('aria-hidden', 'true');
+
+      // click handler for the fake select
+      selectBox.addEventListener('click', function (e) {
+        var isOpen = selectBox.getAttribute('aria-expanded') === 'true';
+        toggleOptions(!isOpen);
+      });
+
+      // keyboard for the fake select
+      selectBox.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          var isOpen = selectBox.getAttribute('aria-expanded') === 'true';
+          toggleOptions(!isOpen);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          toggleOptions(true);
+          // focus first option
+          var first = optionsList.querySelector('li[role="option"]');
+          if (first) first.focus();
+        }
+      });
+
+      // option click & keyboard
+      options.forEach(function (opt) {
+        opt.tabIndex = 0;
+        opt.addEventListener('click', function () {
+          var key = this.getAttribute('data-entity');
+          showEntity(key);
+        });
+        opt.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            var key = this.getAttribute('data-entity');
+            showEntity(key);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            var next = this.nextElementSibling || optionsList.querySelector('li[role="option"]:first-child');
+            if (next) next.focus();
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            var prev = this.previousElementSibling || optionsList.querySelector('li[role="option"]:last-child');
+            if (prev) prev.focus();
+          } else if (e.key === 'Escape') {
+            toggleOptions(false);
+            selectBox.focus();
+          }
+        });
+      });
+
+      // click outside to close
+      document.addEventListener('click', function (e) {
+        if (!view.contains(e.target)) {
+          toggleOptions(false);
+        }
+      });
+
+      // If an initial selected option exists (data-entity on first card visible), show it:
+      var preselected = view.querySelector('.entity-card.active, .entity-card[aria-preselect="true"], .entity-card[data-default="true"]');
+      if (preselected) {
+        showEntity(preselected.getAttribute('data-entity'));
+      } else {
+        hideAllCards();
       }
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEntityViewers);
+  } else {
+    initEntityViewers();
+  }
 })();
