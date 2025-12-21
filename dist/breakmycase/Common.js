@@ -9,3 +9,8 @@ $(function(){
 		articles: ["u:pad.wikia.com:MediaWiki:FilterTable.js"]
 	});
 });
+
+// PreloadTemplate config
+window.preloadTemplates_list = "MediaWiki:Custom-PreloadTemplates";
+window.preloadTemplates_subpage = "syntax";
+window.preloadTemplates_namespace = "Template";

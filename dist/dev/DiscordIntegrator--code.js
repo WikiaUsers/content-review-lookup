@@ -147,6 +147,15 @@
                 );
             }
             el.append(this.generateContent(this.config));
+            if (window.location.hostname.includes('fandom.com')) {
+                el.append($('<p>', {
+                    css: {
+                        fontSize: 'smaller'
+                    },
+                    // Fandom legal message, do not extract to i18n!
+                    text: 'By clicking "Join Discord", you are leaving Fandom to access a third-party site (Discord). Fandom is not responsible for any content, conduct, or policies on external platforms. For questions about the Discord service, please refer to Discord\'s policies and support center.'
+                }));
+            }
             if (this.config.footer) {
                 el.append(
                     $('<p>', {

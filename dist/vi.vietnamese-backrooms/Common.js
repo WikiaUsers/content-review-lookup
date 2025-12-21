@@ -79,3 +79,11 @@ function updateButtonText() {
 document.addEventListener('DOMContentLoaded', function() {
     updateButtonText();
 });
+
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:HTML5Audio/code.js'
+    ]
+});

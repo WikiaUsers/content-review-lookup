@@ -1,10 +1,9 @@
 // ========================================================
-//  PWI BH Rotation Calendar — Multi-Server
+//  PWI BH Rotation Calendar â€” Multi-Server
 //  Author: ChatGPT + Lorizza
-//  Shows rotation for Dawnglory (UTC+1), Etherblade/TT (UTC-8),
-//  and Tideswell (UTC-5), based on server date only.
+//  Shows BH rotation for Dawnglory (UTC+1), Etherblade/TT (UTC-8),
+//  and Tideswell (UTC-5), based on server date.
 // ========================================================
-console.log('BH BH-calendar script loaded (final UTC-based multi-server version)');
 
 (function () {
     'use strict';
@@ -16,7 +15,8 @@ console.log('BH BH-calendar script loaded (final UTC-based multi-server version)
     // Base rotation start:
     // On this date, BH = Artifact globally (per server date).
     // Month index: 11 = December (0=Jan)
-    var baseRotationDate = new Date(Date.UTC(2025, 11, 1)); // Dec 1 2025 UTC
+    // DEFAULT base rotation (fallback if no config found)
+	var defaultBaseRotationDate = new Date(Date.UTC(2025, 11, 1)); // Dec 1 2025 UTC
 
     // Rotation: Artifact -> Weapon -> Armor -> repeat
     var rotationEvents = [
@@ -41,11 +41,11 @@ console.log('BH BH-calendar script loaded (final UTC-based multi-server version)
     ];
 
     // Server time zones
-    // ⚠ Keeps consistent year-round for now (DST optional later)
+    // UtcOffset is consistent year-round, using timeZone for DST-proof time
     var servers = [
-        { label: 'DA',       utcOffset: +1 },
-        { label: 'ET / TT', utcOffset: -8 },
-        { label: 'TI',       utcOffset: -5 }
+        { label: 'DA',		utcOffset: +1,	timeZone: 'Europe/Berlin' },
+        { label: 'ET / TT',	utcOffset: -8,	timeZone: 'America/Los_Angeles' },
+        { label: 'TI',		utcOffset: -5,	timeZone: 'America/New_York' }
     ];
 
     var monthNames = [
@@ -54,52 +54,100 @@ console.log('BH BH-calendar script loaded (final UTC-based multi-server version)
     ];
 
     var dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    var MS_PER_DAY = 86400000;
+	var MS_PER_DAY = 86400000;
+    
+    // ========================================================
+    //  DATE CONFIG LOAD HELPERS
+    // ========================================================
+
+    function parseISODateToUTC(iso) {
+	    // iso = "YYYY-MM-DD"
+	    if (!iso) return null;
+	    var parts = iso.split('-');
+	    if (parts.length !== 3) return null;
+	    var y = parseInt(parts[0], 10);
+	    var m = parseInt(parts[1], 10) - 1; // 0-based
+	    var d = parseInt(parts[2], 10);
+	    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+	    return new Date(Date.UTC(y, m, d));
+	}
+	
+	function getConfiguredBaseRotationDate() {
+	    var span = document.getElementById('pwi-bh-base-date');
+	    if (!span) {
+	        return defaultBaseRotationDate;
+	    }
+	
+	    var iso = span.getAttribute('data-bh-basedate');
+	    var parsed = parseISODateToUTC(iso);
+	    return parsed || defaultBaseRotationDate;
+	}
+	
+	// Settable baseRotationDate. Set in Template:BHCalendarConfig
+	var baseRotationDate = getConfiguredBaseRotationDate();
 
 
     // ========================================================
     //  TIMEZONE & ROTATION HELPERS
     // ========================================================
 
-    var nowLocal = new Date(); // Viewer local but we only use UTC values
-
-    function getUTCDateOnly(date) {
-        return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-    }
-
-    // Get the server's current date (yyyy-mm-dd) using its UTC offset
-    function getServerDate(utcOffset) {
-        var nowUTC = nowLocal.getTime() + nowLocal.getTimezoneOffset() * 60000;
-        var serverDateTime = new Date(nowUTC + utcOffset * 3600000);
-        return getUTCDateOnly(serverDateTime);
-    }
-
-    function getEventForDate(dateUTC) {
-        var base = getUTCDateOnly(baseRotationDate);
-        var d = getUTCDateOnly(dateUTC);
+    var nowLocal = new Date(); // Viewer local
+    // For testing purposes
+    //var nowLocal = new Date(Date.parse("Dec 15 2025 00:00:00 GMT+0100")); // DA 0
+    //var nowLocal = new Date(Date.parse("Dec 15 2025 00:00:00 GMT-0800")); // ET 0
+    //var nowLocal = new Date(Date.parse("Dec 15 2025 00:00:00 GMT-0500")); // TI 0
+    
+    function getServerDateWithTZ(timeZone) {
+	    // Get parts in that timezone
+	    var fmt = new Intl.DateTimeFormat('en-US', {
+	        timeZone: timeZone,
+	        year: 'numeric',
+	        month: 'numeric',
+	        day: 'numeric'
+	    });
+	
+	    var parts = fmt.formatToParts(nowLocal);
+	    var y = 0, m = 0, d = 0;
+	
+	    parts.forEach(function (p) {
+	        if (p.type === 'year')  y = parseInt(p.value, 10);
+	        if (p.type === 'month') m = parseInt(p.value, 10);
+	        if (p.type === 'day')   d = parseInt(p.value, 10);
+	    });
+	
+	    // Return a "date only" in UTC for rotation math
+	    return new Date(Date.UTC(y, m - 1, d));
+	}
+	
+	function getEventForDate(dateUTC) {
+        var base = baseRotationDate;
+        var d = dateUTC
         var deltaDays = Math.floor((d - base) / MS_PER_DAY);
 
         return (deltaDays >= 0)
             ? rotationEvents[deltaDays % rotationEvents.length]
             : null;
     }
-
-    function getEventForServer(utcOffset) {
-        var date = getServerDate(utcOffset);
-        return getEventForDate(date);
-    }
+    
+    function getEventForServerTZ(timeZone) {
+	    var serverDate = getServerDateWithTZ(timeZone);
+	    return getEventForDate(serverDate);
+	}
 
 
     // ========================================================
-    //  TODAY’S BH — MULTI SERVER
+    //  TODAYâ€™S BH â€” MULTI SERVER
     // ========================================================
 
-    function buildTodayServersHTML() {
+    function buildServerBhHTML() {
         var html = '<div class="pwi-bh-today-banner">';
-        html += '<div class="pwi-bh-today-title">Today’s BH:</div>';
+        html += '<div class="pwi-bh-today-title">Today\'s BH:</div>';
+        //html += '<div> debug-local: '+ nowLocal +'</div>';
 
         servers.forEach(function (s) {
-            var ev = getEventForServer(s.utcOffset);
+            var ev = getEventForServerTZ(s.timeZone); // Changed to work with DST timezones
+            var dt = getServerDateWithTZ(s.timeZone);
+            //html += '<div> debug-server date: '+ dt +'</div>';
             html += '<div class="pwi-bh-today-row">';
             html += '<span class="pwi-bh-today-server">' + s.label + ':</span> ';
 
@@ -120,37 +168,24 @@ console.log('BH BH-calendar script loaded (final UTC-based multi-server version)
         return html;
     }
 
-    function fillTodayOnlyBlocks() {
-        var blocks = document.getElementsByClassName('pwi-bh-today');
-        if (!blocks.length) return;
-
-        var content = buildTodayServersHTML();
-        Array.prototype.forEach.call(blocks, function (el) {
-            el.innerHTML = content;
-        });
-    }
-
-
     // ========================================================
     //  MONTHLY CALENDAR
     // ========================================================
 
-    var calYear = nowLocal.getUTCFullYear();
-    var calMonth = nowLocal.getUTCMonth();
-    var calDay = nowLocal.getUTCDate();
+    var calYearUTC = nowLocal.getUTCFullYear();
+    var calMonthUTC = nowLocal.getUTCMonth();
+    var calDayLocal = nowLocal.getDate();
 
     function buildCalendarHTML() {
-        var first = new Date(Date.UTC(calYear, calMonth, 1));
+        var first = new Date(Date.UTC(calYearUTC, calMonthUTC, 1));
         var startingWeekday = (first.getUTCDay() + 6) % 7;
-        var daysInMonth = new Date(Date.UTC(calYear, calMonth + 1, 0)).getUTCDate();
+        var daysInMonth = new Date(Date.UTC(calYearUTC, calMonthUTC + 1, 0)).getUTCDate();
 
         var html = '';
 
-        html += buildTodayServersHTML();
-
         html += '<div class="pwi-bh-calendar-wrapper">';
         html += '<div class="pwi-bh-calendar-header">';
-        html += monthNames[calMonth] + ' ' + calYear;
+        html += monthNames[calMonthUTC] + ' ' + calYearUTC;
         html += '</div>';
 
         html += '<table class="pwi-bh-calendar-table"><thead><tr>';
@@ -182,10 +217,10 @@ console.log('BH BH-calendar script loaded (final UTC-based multi-server version)
     }
 
     function buildDayCell(day) {
-        var dateUTC = new Date(Date.UTC(calYear, calMonth, day));
+        var dateUTC = new Date(Date.UTC(calYearUTC, calMonthUTC, day));
         var ev = getEventForDate(dateUTC);
 
-        var isToday = (day === calDay);
+        var isToday = (day === calDayLocal);
 
         var html = '<td class="pwi-bh-calendar-day' +
                (isToday ? ' pwi-bh-calendar-day-today' : '') +
@@ -212,21 +247,31 @@ console.log('BH BH-calendar script loaded (final UTC-based multi-server version)
     //  INIT
     // ========================================================
 
-    function init() {
-        fillTodayOnlyBlocks();
+	function initPwiBhCalendarWidget() {
+        var bhtodayblocks = document.getElementsByClassName('pwi-bh-today');
+        if (!bhtodayblocks.length) return;
 
-        var calendars = document.getElementsByClassName('pwi-bh-calendar');
-        if (!calendars.length) return;
+        var content = buildServerBhHTML();
+        Array.prototype.forEach.call(bhtodayblocks, function (el) {
+            el.innerHTML = content;
+        });
+    }
+	
+    function initPwiBhCalendar() {
+        initPwiBhCalendarWidget();
 
-        var html = buildCalendarHTML();
-        Array.prototype.forEach.call(calendars, function (el) {
-            el.innerHTML = html;
+        var bhcalendarblocks = document.getElementsByClassName('pwi-bh-calendar');
+        if (!bhcalendarblocks.length) return;
+
+        var content = buildCalendarHTML();
+        Array.prototype.forEach.call(bhcalendarblocks, function (el) {
+            el.innerHTML = content;
         });
     }
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        init();
+        initPwiBhCalendar();
     } else {
-        document.addEventListener('DOMContentLoaded', init);
+		document.addEventListener('DOMContentLoaded', initPwiBhCalendar);
     }
 })();

@@ -47,6 +47,7 @@
     'Blemished Spawn': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Blightwalker': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Blue Djinn': {'Book': 'Book (Blue)'},
+    'Boar Man': {'Boar Men Hoof': 'Boar Man Hoof'},
     'Bony Sea Devil': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)', 'Rod': 'Rod (Creature Product)'},
     'Brachiodemon': {'Head': 'Head (Brachiodemon)'},
     'Bragrumol': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},

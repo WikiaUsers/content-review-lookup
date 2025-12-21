@@ -4,3 +4,5 @@ var backgrounds = [{image : 'https://static.wikia.nocookie.net/demonology/images
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 /* BackToTop Button customization */
 window.BackToTopModern = true; window.BackToTopArrow = true; window.BackToTopSpeed = 450;
+/* Enable the ReadProgressBar */
+window.enableReadProgressBarOnArticles = true;

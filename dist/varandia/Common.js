@@ -140,9 +140,16 @@ mw.hook('wikipage.content').add(function($content) {
 			"I was the first. I have seen everything.",
 			"Throughout his Kitchen and Wonderland, I alone am the Architect.",
 			"W elco me, to Wonde rland.",
-			"May God have mercy upon you!"
+			"May God have mercy upon you!",
+			"In Chef's plan, he made Chaos so much stronger than a man.",
+			"Now, Chaosborn, it's your turn!",
+			"Minister Frollo, the Gypsy has escaped.",
+			"Be mine or you will BURN!",
+			"I really like that icefolk."
         	];
         const images = [
+        	"https://static.wikia.nocookie.net/varandia/images/c/cf/CourierShocked.svg/revision/latest/scale-to-width-down/185?cb=20251204171230",
+        	"https://static.wikia.nocookie.net/varandia/images/f/f7/FlakeyRenderUnverifiedInfo.svg/revision/latest/scale-to-width-down/185?cb=20251205182058"
         	];
 
         const notices = [];

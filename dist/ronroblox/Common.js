@@ -84,11 +84,18 @@ UserTagsJS.modules.custom = {
 	'Quinncm': ['content-moderator','Wiki-Contributor'],
 	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
+	// Junior Content Moderators
+	'Sorayaann': ['content-moderator','Wiki-Contributor'],
+    'Silkened': ['content-moderator','Wiki-Contributor'],
+    'Therealusman': ['content-moderator','Wiki-Contributor'],
+    'DarkTonics': ['content-moderator','Wiki-Contributor'],
+    'DragooNit': ['content-moderator','Wiki-Contributor'],
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
 	'Noidtouse': ['threadmoderator'],
 	'Kaiyie': ['threadmoderator'],
 	'The Shashophille': ['threadmoderator'],
+	'RXRunner27': ['threadmoderator'],
 	// Retired Wiki Staff 
 	// Retired Bureaucrats
 	'Standoffiish': ['retired-staff'],
@@ -107,7 +114,6 @@ UserTagsJS.modules.custom = {
 	'OfficialKhrome': ['retired-staff'],
 	'DefoNotSyki': ['retired-staff'],
 	'LollipopWut': ['retired-staff'],
-	'HaHaBlah': ['retired-staff'],
 	// Retired Dual Moderators
 	'Awsomemysticcheese': ['retired-staff'],
 	'YesIHaveAnAccount': ['retired-staff'],
@@ -141,12 +147,8 @@ UserTagsJS.modules.custom = {
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
 	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
 	// Wiki Contributors
-	'Sorayaann': ['Wiki-Contributor'],
-    'Silkened': ['Wiki-Contributor'],
     'Cipherusxzy': ['Wiki-Contributor'],
-    'Therealusman': ['Wiki-Contributor'],
-    'DragooNit': ['Wiki-Contributor'],
-    'HaHaBlah': ['Wiki-Contributor'],
+    'HaHaBlah': ['Wiki-Contributor','retired-staff'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
 	'Slabx3': ['Guide-Maker'],

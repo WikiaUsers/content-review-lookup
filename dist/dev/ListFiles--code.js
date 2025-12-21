@@ -682,7 +682,7 @@
 					$container;
 
 				// set filenames
-			    $('.gallery-image-wrapper > a').each(function() {
+			    $('.gallery-image-wrapper > a, .gallery-image-wrapper > audio > a').each(function() {
 			        filenames += getFile(this) + "\n";
 			        count++;
 			    });

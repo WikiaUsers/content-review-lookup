@@ -380,3 +380,4 @@
   // Prévient le nettoyage du MutationObserver si le noeud observé disparaît.
   window.ebg.newPagePopUp.obsBodyChildren = obs;
 })();
+// [[Catégorie:CSS et JavaScript]]

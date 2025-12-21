@@ -1,5 +1,82 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* countdown */
+
+(function() {
+    function initScreamerCountdown() {
+        var root = document.getElementById('screamer-countdown-root');
+        if (!root) return;
+
+        root.innerHTML = 
+            '<div class="screamer-widget-header">' +
+                '<img src="https://static.wikia.nocookie.net/screamergame/images/e/e6/Site-logo.png/revision/latest?cb=20250605040708" class="screamer-logo" alt="Screamer Logo" />' +
+                '<div class="screamer-date-sub">2026-03-26 @ 08:00 UTC</div>' +
+            '</div>' +
+            '<div class="screamer-timer-grid">' +
+
+                '<div class="screamer-timer-box">' +
+                    '<h3 class="screamer-timer-title text-purple">Early Access // Deluxe</h3>' +
+                    '<div class="screamer-time-display" id="timer-early">Loading...</div>' +
+                '</div>' +
+
+                '<div class="screamer-timer-box">' +
+                    '<h3 class="screamer-timer-title text-red">Global Launch // Standard</h3>' +
+                    '<div class="screamer-time-display" id="timer-global">Loading...</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="screamer-footer">' +
+                '<div style="width:50%; background-color: rgba(188, 157, 214, 0.5);"></div>' +
+                '<div style="width:50%; background-color: rgba(253, 58, 100, 0.5);"></div>' +
+            '</div>';
+
+        var earlyAccessDate = new Date("March 23, 2026 08:00:00 UTC").getTime();
+        var releaseDate = new Date("March 26, 2026 08:00:00 UTC").getTime();
+
+        function p(n) { return String(n).padStart(2, '0'); }
+
+        function updateTimer(targetDate, elementId, colorClass) {
+            var now = new Date().getTime();
+            var distance = targetDate - now;
+            var el = document.getElementById(elementId);
+            
+            if (!el) return;
+
+            if (distance < 0) {
+                el.innerHTML = "LAUNCHED";
+                return;
+            }
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            var html = 
+                '<div class="screamer-time-unit"><span class="screamer-digit">' + p(days) + '</span><span class="screamer-label">Days</span></div>' +
+                '<span class="screamer-colon">:</span>' +
+                '<div class="screamer-time-unit"><span class="screamer-digit">' + p(hours) + '</span><span class="screamer-label">Hrs</span></div>' +
+                '<span class="screamer-colon">:</span>' +
+                '<div class="screamer-time-unit"><span class="screamer-digit">' + p(minutes) + '</span><span class="screamer-label">Min</span></div>' +
+                '<span class="screamer-colon">:</span>' +
+                '<div class="screamer-time-unit"><span class="screamer-digit ' + colorClass + '">' + p(seconds) + '</span><span class="screamer-label">Sec</span></div>';
+
+            el.innerHTML = html;
+        }
+
+        setInterval(function() {
+            updateTimer(earlyAccessDate, 'timer-early', 'text-purple');
+            updateTimer(releaseDate, 'timer-global', 'text-red');
+        }, 1000);
+
+        updateTimer(earlyAccessDate, 'timer-early', 'text-purple');
+        updateTimer(releaseDate, 'timer-global', 'text-red');
+    }
+
+    $(function() {
+        initScreamerCountdown();
+    });
+})();
+
 /* vehicle viewer */
 
 (function($, mw) {

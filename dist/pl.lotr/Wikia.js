@@ -1,15 +1,27 @@
 // 14:39, November 25, 2011 (UTC)
 // <source lang="JavaScript">
 // CODE WRITTEN BY USER:RAPPY_4187
+
+/* Importy zewnętrzne */
+importArticles({
+    type: "script",
+    articles: [
+        'w©dev:Countdown/code.js',
+        'w©pl.tes:MediaWiki:Change.js',
+        'u:dev:Message/code.js',
+        'u:dev:User Rights Reasons Dropdown/code.js',
+        'u:dev:DiscordIntegrator/code.js',
+        'u:dev:MediaWiki:DiscordChat.js'
+    ]
+});
  
 $(function() {
   var rights = {};
-    rights["Puck Norris"] = ["Administrator", "Redaktor fanpejdża"]
-    rights["Tar-Súrion"] = ["Moderator dyskusji", "Moderator treści"],
+    rights["Tar-Súrion"] = ["Administrator"],
     rights["Pio387"] = ["Biurokrata"],
-    rights["AGS00K"] = ["Redaktor fanpejdża"],
-    rights["Mithgaraf"] = ["Redaktor fanpejdża"]
-
+    rights["Amarthann"] = ["Moderator treści"] ["Moderator dyskusji"],
+    rights["Manwe-wódz Celadrimów"] = ["Moderator treści"] ["Moderator dyskusji"],
+	rights["Bladorthin12"] = ["Moderator treści"] ["Moderator dyskusji"]
 
   if (typeof rights[wgTitle] != "undefined") {
     // Usunięcie poprzednich opisów grup

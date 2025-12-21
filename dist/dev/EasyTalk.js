@@ -1,4 +1,12 @@
 'use strict';
+/*
+TODO: [[mw:Extension:CodeMirror#Using ResourceLoader]]
+mw.loader.using('ext.CodeMirror.v6', require => {
+	const CodeMirror = require('ext.CodeMirror.v6');
+	console.log(CodeMirror);
+	new CodeMirror('#easy-talk-editor-js textarea').initialize();
+});
+*/
 mw.loader.using([
 	'mediawiki.api',
 	'mediawiki.Title',
@@ -24,7 +32,7 @@ mw.loader.using([
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
 	let msg = () => {};
-	const version = '1.0.15';
+	const version = '1.0.18';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -43,60 +51,8 @@ mw.loader.using([
 		'permissiondenied',
 		'editconflict',
 	];
-	const months = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-		'Jan',
-		'Feb',
-		'Mar',
-		'Apr',
-		'Jun',
-		'Jul',
-		'Aug',
-		'Sep',
-		'Oct',
-		'Nov',
-		'Dec',
-	];
-	const timeZoneConverter = {
-		'PST': 'UTC-8',
-		'EST': 'UTC-5',
-		'EDT': 'UTC-4',
-		'GMT': 'UTC+0',
-		'UTC': 'UTC+0',
-		'CET': 'UTC+1',
-		'CEST': 'UTC+2',
-	};
-	const timeZones = Object.keys(timeZoneConverter);
-	const time = '[0-2]\\d:[0-5]\\d';
-	const day = ' [0-3]?\\d,?';
-	const month = ` (?:${months.join('|')})`;
-	const year = ' \\d\\d\\d\\d+';
-	const tZone = ` \\((?:${timeZones.join('|')})\\)`;
-	const tsRegExp = new RegExp(`^.* (${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
-	const commentElements = 'p, dd, div, li';
 	const params = new URLSearchParams(location.search);
 	const pageName = config.wgPageName.replaceAll('_', ' ');
-	const linkSelectors = {
-		'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
-		'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
-		'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
-		'a[title^="Special:TalkPage/User:"]': /^Special:TalkPage\/User: ?(.+?)(?: ?\/.*)?$/,
-	};
-	const newSectionLinkSelectors = [
-		'#ca-addsection',
-		`a[title="Special:NewSection/${pageName.replaceAll('"', '\\"')}"]`,
-	];
 	const messages = [
 		'mw-widgets-abandonedit-title',
 		'minutes',
@@ -112,162 +68,220 @@ mw.loader.using([
 			'u:dev:MediaWiki:I18n-js/code.js',
 		]}).then(() => {
 			mw.hook('dev.i18n').add(i18n => {
-				i18n.loadMessages('EasyTalk', {cacheVersion: 3}).then(init);
+				i18n.loadMessages('EasyTalk', {cacheVersion: 3}).then(i18n => {
+					msg = (...args) => i18n.msg(...args);
+					if (config.wgAction === 'edit' && params.get('section') === 'new'){
+						$('#editform').css('display', 'none');
+						addTopic();
+					}
+					mw.hook('wikipage.content').add(findComments);
+				});
 			});
 		});
 	});
 	
-	function init(i18n){
-		msg = (...args) => i18n.msg(...args);
-		mw.hook('wikipage.content').add(addStats);
-		if (
-			!config.wgArticleId
-			&& params.get('redlink')
-			&& !extraSigNs
-		){
-			$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
-			$('#editform').css('display', 'none');
-		}
-		if (config.wgAction === 'edit' && params.get('section') === 'new'){
-			$('#editform').css('display', 'none');
-			addTopic();
-		}
-		if (
-			config.wgAction === 'view' &&
-			config.wgArticleId &&
-			config.wgIsProbablyEditable &&
-			!archived
-		){
-			$(newSectionLinkSelectors.join(', ')).on('click', addTopic);
-			mw.hook('wikipage.content').add(implementer);
-		}
-	}
-	
-	function addStats(content){
-		window.EasyTalkStatsDone = window.EasyTalkStatsDone || [];
-		window.EasyTalkStatsDone.push(content);
-		if (!window.EasyTalkStatsLoaded){
-			window.EasyTalkStatsLoaded = true;
-			window.EasyTalkStatsToDo.forEach(pageSnippet => {
-				if (!window.EasyTalkStatsDone.includes(pageSnippet)){
-					addStats(pageSnippet);
+	function findComments(content){
+		window.EasyTalkProcessed = window.EasyTalkProcessed || [];
+		window.EasyTalkProcessed.push(content);
+		if (!window.EasyTalkProcessingLive){
+			window.EasyTalkProcessingLive = true;
+			window.EasyTalkUnprocessed.forEach(pageSnippet => {
+				if (!window.EasyTalkProcessed.includes(pageSnippet)){
+					findComments(pageSnippet);
 				}
 			});
 		}
 		
-		const comments = [];
-		let currentSection = '';
+		let topic = '';
+		let section = '';
+		const months = [
+			'January',
+			'February',
+			'March',
+			'April',
+			'May',
+			'June',
+			'July',
+			'August',
+			'September',
+			'October',
+			'November',
+			'December',
+			'Jan',
+			'Feb',
+			'Mar',
+			'Apr',
+			'Jun',
+			'Jul',
+			'Aug',
+			'Sep',
+			'Oct',
+			'Nov',
+			'Dec',
+		];
+		const timeZoneConverter = {
+			'PST': 'UTC-8',
+			'EST': 'UTC-5',
+			'EDT': 'UTC-4',
+			'GMT': 'UTC+0',
+			'UTC': 'UTC+0',
+			'CET': 'UTC+1',
+			'CEST': 'UTC+2',
+		};
+		const timeZones = Object.keys(timeZoneConverter);
+		const time = '[0-2]\\d:[0-5]\\d';
+		const day = ' [0-3]?\\d,?';
+		const month = ` (?:${months.join('|')})`;
+		const year = ' \\d\\d\\d\\d+';
+		const tZone = ` \\((?:${timeZones.join('|')})\\)`;
+		const tsRegExp = new RegExp(`^(.* )(${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
+		const newSectionLinkSelectors = [
+			'#ca-addsection',
+			`a[title="Special:NewSection/${pageName.replaceAll('"', '\\"')}"]`,
+		];
 		
-		content.find('p, dd, div, li, h2 .mw-headline').each((statsIndex, statsElement) => {
-			if ($(statsElement).prop('tagName') === 'SPAN'){
-				currentSection = $(statsElement).attr('id').replaceAll('_', ' ');
+		content.find('*').each((elementIndex, element) => {
+			if ($(element).is('.mw-headline')){
+				section = $(element).attr('id').replaceAll('_', ' ');
+				if ($(element).parent().is('h2')){
+					$(element).parent().addClass('easytalk-topic-header');
+					topic = section;
+				}
 				return;
 			}
 			
-			const txtContents = $(statsElement).contents().contents().addBack().toArray().filter(txtFilter);
-			const timestamp = txtContents[txtContents.length - 1];
-			const userLinks = $(timestamp).prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', '));
-			const isNoTalk = $(timestamp).parents('.mw-notalk, blockquote, cite, q').length;
+			const noTalkSelectors = [
+				'.mw-notalk',
+				'blockquote',
+				'cite',
+				'q',
+				`#${editorID}`,
+			];
+			const linkSelectors = {
+				'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
+				'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
+				'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
+				'a[title^="Special:TalkPage/User:"]': /^Special:TalkPage\/User: ?(.+?)(?: ?\/.*)?$/,
+			};
+			const userLinks = $(element).find(Object.keys(linkSelectors).join(', '));
+			const datetime = $($(element).contents().toArray().filter(node => node.nodeType === 3)).last();
+			const noTalk = datetime.parents(noTalkSelectors.join(', '));
 			
-			if (!userLinks.length || !tsRegExp.test($(timestamp).text()) || isNoTalk){
+			if (!userLinks.length || !tsRegExp.test(datetime.text()) || noTalk.length){
 				return;
 			}
 			
 			const userLinkTitle = userLinks.last().attr('title');
 			const tsOrderFix = new RegExp(`^(${time}) (.+)(${tZone})$`);
-			let tsString = $(timestamp).text().replace(tsRegExp, '$1').replace(/,/g, '').replace(tsOrderFix, '$2 $1$3');
+			let tsString = datetime.text().replace(tsRegExp, '$2').replace(/,/g, '').replace(tsOrderFix, '$2 $1$3');
 			let userRegExp;
+			
+			Object.keys(linkSelectors).forEach(selector => {
+				if (userLinks.last().is(selector)){
+					userRegExp = linkSelectors[selector];
+				}
+			});
 			
 			timeZones.forEach(timeZone => {
 				tsString = tsString.replace(`(${timeZone})`, timeZoneConverter[timeZone]);
 			});
 			
-			Object.keys(linkSelectors).forEach(selector => {
-				if (userLinks.last().filter(selector).length){
-					userRegExp = linkSelectors[selector];
-				}
-			});
-			
-			comments.push({
-				'user': userLinkTitle.replace(userRegExp, '$1'),
-				'timestamp': new Date(tsString).getTime(),
-				'section': currentSection,
-			});
+			tsString = new Date(tsString).toISOString();
+			const timeTag = `$1${$('<time>', {
+				'datetime': tsString,
+				'class': 'js-comment-date-time',
+				'data-user': userLinkTitle.replace(userRegExp, '$1'),
+				'data-topic': topic,
+				'data-section': section,
+				'text': '$2',
+			}).prop('outerHTML')}`;
+			datetime.replaceWith(datetime.text().replace(tsRegExp, timeTag));
 		});
 		
+		const comments = content.find('.js-comment-date-time');
+		addStats(content, comments);
+		
+		if (!config.wgArticleId && params.get('redlink') && !extraSigNs){
+			content.find(newSectionLinkSelectors.join(', ')).on('click', addTopic);
+			content.find('#editform').css('display', 'none');
+		}
+		
+		if (
+			!archived &&
+			config.wgAction === 'view' &&
+			config.wgArticleId &&
+			config.wgIsProbablyEditable &&
+			config.wgRevisionId === config.wgCurRevisionId
+		){
+			content.find(newSectionLinkSelectors.join(', ')).on('click', addTopic);
+			addReplyButtons(content, comments);
+		}
+	}
+	
+	function addStats(content, comments){
 		if (!comments.length){
 			return;
 		}
-		
-		const sections = {};
-		let latestComment = {'timestamp': 0};
-		comments.forEach(obj => {
-			if (obj.timestamp > latestComment.timestamp){
-				latestComment = obj;
+		const topics = {};
+		let latestComment = $('<time>').attr('datetime', new Date(0).toISOString());
+		comments.each((commentIndex, comment) => {
+			if (timeIndex($(comment)) > timeIndex(latestComment)){
+				latestComment = $(comment);
 			}
 			
-			if (!sections[obj.section]){
-				sections[obj.section] = {
+			if (!topics[$(comment).data('topic')]){
+				topics[$(comment).data('topic')] = {
 					'users': [],
-					'timestamps': [],
+					'datetimes': [],
 				};
 			}
 			
-			if (!sections[obj.section].users.includes(obj.user)){
-				sections[obj.section].users.push(obj.user);
+			if (!topics[$(comment).data('topic')].users.includes($(comment).data('user'))){
+				topics[$(comment).data('topic')].users.push($(comment).data('user'));
 			}
 			
-			sections[obj.section].timestamps.push(obj.timestamp);
+			topics[$(comment).data('topic')].datetimes.push(timeIndex($(comment)));
 		});
 		
 		const now = Date.now();
-		const agoText = age(latestComment.timestamp, now);
+		const agoText = age(timeIndex(latestComment), now);
 		let latestCommentTopText;
 		
-		if (latestComment.section){
+		if (latestComment.data('topic')){
 			latestCommentTopText = msg(
 				'pageframe-latestcomment',
 				agoText,
-				latestComment.user,
-				latestComment.section
+				latestComment.data('user'),
+				latestComment.data('topic')
 			).parse();
 		} else {
 			latestCommentTopText = msg(
 				'pageframe-latestcomment-notopic',
 				agoText,
-				latestComment.user
+				latestComment.data('user')
 			).parse();
 		}
 		
-		if (content.attr('id') !== 'easy-talk-preview-js'){
-			if ($('#talk-stats-top-js').length){
-				$('#talk-stats-top-js').html(latestCommentTopText);
-			} else {
-				$('#mw-content-text').before($('<div>', {
-					'class': 'talk-stats-js',
-					'id': 'talk-stats-top-js',
-					'html': latestCommentTopText,
-				}));
-			}
+		if ($('#talk-stats-top-js').length){
+			$('#talk-stats-top-js').html(latestCommentTopText);
+		} else {
+			$('#mw-content-text').before($('<div>', {
+				'class': 'talk-stats-js',
+				'id': 'talk-stats-top-js',
+				'html': latestCommentTopText,
+			}));
 		}
 		
-		$('.mw-parser-output > h2').each((headingIndex, headingElement) => {
-			const section = $(headingElement).find('.mw-headline').attr('id').replaceAll('_', ' ');
-			if (!sections[section]){
+		content.find('.easytalk-topic-header').each((headerIndex, header) => {
+			const topic = $(header).find('.mw-headline').attr('id').replaceAll('_', ' ');
+			if (!topics[topic]){
 				return;
 			}
-			
-			let latestCommentSect = 0;
-			sections[section].timestamps.forEach(ts => {
-				if (ts > latestCommentSect){
-					latestCommentSect = ts;
-				}
-			});
-			
+			const latestCommentSect = Math.max(...topics[topic].datetimes);
 			const agoTextSect = age(latestCommentSect, now);
-			const commentCount = sections[section].timestamps.length;
-			const userCount = sections[section].users.length;
-			$(headingElement).append($('<div>').addClass([
+			const commentCount = topics[topic].datetimes.length;
+			const userCount = topics[topic].users.length;
+			$(header).append($('<div>').addClass([
 				'talk-stats-js',
 				'talk-stats-section-js'
 			]).append(
@@ -287,17 +301,7 @@ mw.loader.using([
 		});
 	}
 	
-	function implementer(content){
-		window.EasyTalkHtmlDone = window.EasyTalkHtmlDone || [];
-		window.EasyTalkHtmlDone.push(content);
-		if (!window.EasyTalkHtmlLoaded){
-			window.EasyTalkHtmlLoaded = true;
-			window.EasyTalkHtmlToDo.forEach(pageSnippet => {
-				if (!window.EasyTalkHtmlDone.includes(pageSnippet)){
-					implementer(pageSnippet);
-				}
-			});
-		}
+	function addReplyButtons(content, comments){
 		content.find('p:has(br:only-child)').remove();
 		content.find('dl + dl').each((dlIndex, dl) => {
 			$(dl).prepend($(dl).prev().html());
@@ -306,50 +310,29 @@ mw.loader.using([
 		while(content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
 			content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
 		}
-		content.find(commentElements).each(addReplyButtons);
-	}
-	
-	function addReplyButtons(commentIndex, commentElement){
-		const txtContents = $(commentElement).contents().contents().addBack().toArray().filter(txtFilter);
-		const timestamp = txtContents[txtContents.length - 1];
-		const userLinks = $(timestamp).prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', '));
-		const isNoTalk = $(timestamp).parents(`.mw-notalk, blockquote, cite, q, #${editorID}`).length;
-		const isArchived = $(timestamp).parents('.mw-archivedtalk').length;
-		
-		if (!userLinks.length || !tsRegExp.test($(timestamp).text()) || isNoTalk || isArchived){
-			return;
-		}
-		
-		timestamp.nodeValue = timestamp.nodeValue.trimEnd();
-		const userLinkTitle = userLinks.last().attr('title');
-		let userRegExp;
-		
-		Object.keys(linkSelectors).forEach(selector => {
-			if (userLinks.last().filter(selector).length){
-				userRegExp = linkSelectors[selector];
+		comments.each((commentIndex, comment) => {
+			if ($(comment).parents('.mw-archivedtalk').length){
+				return;
 			}
+			const datetime = $(comment).attr('datetime');
+			const index = $(`[data-datetime="${datetime}"]`).length;
+			let anchor = $(comment);
+			while (anchor.parent().css('display') === 'inline'){
+				anchor = anchor.parent();
+			}
+			anchor.after($('<button>', {
+				'class': 'reply-button-js',
+				'type': 'button',
+				'data-user': $(comment).data('user'),
+				'data-topic': $(comment).data('topic'),
+				'data-section': $(comment).data('section'),
+				'data-datetime': datetime,
+				'data-index': index,
+				'tabindex': 0,
+				'text': msg('replybutton').parse(),
+				'on': {'click': activateReplyButton},
+			}));
 		});
-		
-		let tsElement;
-		if ($(timestamp).parent().prop('tagName') === $(commentElement).prop('tagName')){
-			tsElement = $(timestamp);
-		} else {
-			tsElement = $(timestamp).parent();
-		}
-		
-		const ogTsString = $(timestamp).text().replace(tsRegExp, '$1');
-		const index = $(`[data-timestamp="${ogTsString}"]`).length;
-		
-		tsElement.after($('<button>', {
-			'class': 'reply-button-js',
-			'type': 'button',
-			'data-user': userLinkTitle.replace(userRegExp, '$1'),
-			'data-timestamp': ogTsString,
-			'data-index': index,
-			'tabindex': 0,
-			'text': msg('replybutton').parse(),
-			'on': {'click': activateReplyButton},
-		}));
 	}
 	
 	function activateReplyButton(addReplyEvent){
@@ -357,13 +340,8 @@ mw.loader.using([
 		if (button.attr('disabled')){
 			return;
 		}
-		
 		$('.reply-button-js').attr({'tabindex': -1, 'disabled': true});
 		button.attr('id', 'active-reply-button-js');
-		const headings = 'h1, h2, h3, h4, h5, h6';
-		const rootParent = button.parents('.mw-parser-output > *');
-		const sectionHeading = rootParent.prevAll(headings).first();
-		const section = sectionHeading.find('.mw-headline').text();
 		const parent = button.parent();
 		const bNext = button.next();
 		const pNext = parent.next();
@@ -480,9 +458,9 @@ mw.loader.using([
 		});
 		
 		$('#reply-submit-js').on('click', {
-			'section': section,
+			'section': button.data('section'),
 			'user': button.data('user'),
-			'timestamp': button.data('timestamp'),
+			'datetime': button.data('datetime'),
 			'index': button.data('index'),
 		}, submitReply);
 	}
@@ -508,16 +486,16 @@ mw.loader.using([
 		
 		api.post(fetchParams).then(result => {
 			const uneditedText = result.query.pages[0].revisions[0].slots.main.content;
-			const timestamp = mw.util.escapeRegExp(submitReplyEvent.data.timestamp);
+			const datetime = mw.util.escapeRegExp(submitReplyEvent.data.datetime);
 			const index = Number(submitReplyEvent.data.index);
-			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${timestamp}){${index}}`), '');
-			const iRegExp = new RegExp(`[^]*?^([:*#]*).+?${timestamp} *$[^]*`, 'm');
-			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${timestamp} *)$((?:\n+\\2[:*#]+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
+			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${datetime}){${index}}`), '');
+			const iRegExp = new RegExp(`[^]*?^([:*#]*).+?${datetime} *$[^]*`, 'm');
+			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${datetime} *)$((?:\n+\\2[:*#]+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
 			const indent = mainText.replace(iRegExp, '$1');
-			const repliesWithIndent = new RegExp(`[^]*?^.+?${timestamp} *$\n+:+[^]*`, 'm');
+			const repliesWithIndent = new RegExp(`[^]*?^.+?${datetime} *$\n+:+[^]*`, 'm');
 			let finalText;
-			let prefix = uneditedText.split(submitReplyEvent.data.timestamp).splice(0, index).join(submitReplyEvent.data.timestamp);
-			prefix = prefix ? prefix + submitReplyEvent.data.timestamp : '';
+			let prefix = uneditedText.split(submitReplyEvent.data.datetime).splice(0, index).join(submitReplyEvent.data.datetime);
+			prefix = prefix ? prefix + submitReplyEvent.data.datetime : '';
 			comment = parseReplyText(comment, indent);
 			
 			if (!indent.length && !repliesWithIndent.test(mainText)){
@@ -747,14 +725,11 @@ mw.loader.using([
 			if (data.edit){
 				revid = data.edit.newrevid;
 				api.parse(new mw.Title(pageName)).then(parserOutput => {
-					let parsedText;
 					if (config.wgArticleId && config.wgAction === 'view'){
-						parsedText = $(parserOutput).contents();
-						$('#mw-content-text > .mw-parser-output').html(parsedText);
+						const output = $(parserOutput).contents();
+						$('#mw-content-text > .mw-parser-output').html(output);
 					} else {
-						parsedText = $(parserOutput);
-						$(`#${editorID}`).before(parsedText);
-						$('.mw-parser-output').find(commentElements).each(addReplyButtons);
+						$(`#${editorID}`).before($(parserOutput));
 					}
 					mw.hook('wikipage.content').fire($('#mw-content-text'));
 					$(`#${editorID}`).remove();
@@ -893,13 +868,13 @@ function addSig(comment){
 	// </pre>
 }
 
+function timeIndex(timeElement){
+	return new Date(timeElement.attr('datetime')).getTime();
+}
+
 mw.hook('wikipage.content').add(content => {
-	if (!window.EasyTalkStatsLoaded){
-		window.EasyTalkStatsToDo = window.EasyTalkStatsToDo || [];
-		window.EasyTalkStatsToDo.push(content);
-	}
-	if (!window.EasyTalkHtmlLoaded){
-		window.EasyTalkHtmlToDo = window.EasyTalkHtmlToDo || [];
-		window.EasyTalkHtmlToDo.push(content);
+	if (!window.EasyTalkProcessingLive){
+		window.EasyTalkUnprocessed = window.EasyTalkUnprocessed || [];
+		window.EasyTalkUnprocessed.push(content);
 	}
 });

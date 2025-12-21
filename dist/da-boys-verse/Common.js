@@ -403,3 +403,237 @@ mw.loader.using('mediawiki.api').then(function () {
     initEntityViewers();
   }
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mw.loader.using('mediawiki.util').then(() => {
+  const arena = document.getElementById("arena");
+  if (!arena) return;
+
+  const player = document.getElementById("player");
+
+  const vnBox = document.getElementById("vn-box");
+  const vnName = document.getElementById("vn-name");
+  const vnText = document.getElementById("vn-text");
+
+  const questText = document.getElementById("quest-text");
+
+  /* INVENTORY UI */
+  const inventoryButton = document.getElementById("inventory");
+  const inventoryPanel = document.getElementById("inventory-panel");
+  const inventoryList = document.getElementById("inventory-list");
+
+  let px = 290;
+  let py = 190;
+  const speed = 3;
+  let keys = {};
+
+  let inVN = true;
+  let inDialogue = false;
+
+  let nearbyNPC = null;
+  let currentNPC = null;
+
+  const npcs = Array.from(document.querySelectorAll(".npc"));
+
+  /* ---------------- INVENTORY ---------------- */
+  const inventory = [];
+
+  function updateInventoryUI() {
+    inventoryButton.textContent = `Inventory (${inventory.length})`;
+    inventoryList.innerHTML = "";
+
+    inventory.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "inventory-item";
+      div.textContent = item;
+      inventoryList.appendChild(div);
+    });
+  }
+
+  inventoryButton.addEventListener("click", () => {
+    inventoryPanel.classList.toggle("hidden");
+  });
+
+  /* ---------------- VN NAME COLORS ---------------- */
+  function setVNName(name) {
+    vnName.textContent = name;
+
+    if (name === "Phoebe") {
+      vnName.style.color = "#b58b5e"; // warm brown
+    } else if (name === "Daphne") {
+      vnName.style.color = "#d0d0d0"; // grayish white
+    } else {
+      vnName.style.color = "#ffffff";
+    }
+  }
+
+  /* ---------------- VN INTRO ---------------- */
+  const vnScript = [
+    "…It’s so quiet here.",
+    "Too quiet.",
+    "The walls never end. No doors. No windows.",
+    "Just the same yellow halls, looping forever.",
+    "I want to leave.",
+    "…",
+    "Oh.",
+    "Daphne wanted to see me.",
+    "She said it was important.",
+    "I should go find her."
+  ];
+
+  let vnIndex = 0;
+
+  function startVN() {
+    inVN = true;
+    vnIndex = 0;
+    vnBox.classList.remove("hidden");
+    setVNName("Phoebe");
+    vnText.textContent = vnScript[vnIndex];
+  }
+
+  function advanceVN() {
+    vnIndex++;
+    if (vnIndex >= vnScript.length) return endVN();
+    vnText.textContent = vnScript[vnIndex];
+  }
+
+  function endVN() {
+    inVN = false;
+    vnBox.classList.add("hidden");
+    questText.textContent = "Quest: Talk to Daphne";
+  }
+
+  /* ---------------- DAPHNE DIALOGUE ---------------- */
+  const daphneDialogue = [
+    { name: "Daphne", text: "You’re late." },
+    { name: "Phoebe", text: "You said it was important." },
+    { name: "Daphne", text: "It is. I made gear." },
+    { name: "Daphne", text: "I don’t want to deal with people." },
+    { name: "Daphne", text: "Take these. Give them to the others." },
+    { name: "Phoebe", text: "…All of them?" },
+    { name: "Daphne", text: "Yes. Assol. Yvette. Antonio." },
+    { name: "Daphne", text: "Don’t lose them." }
+  ];
+
+  let daphneIndex = 0;
+
+  function startDaphneDialogue() {
+    inDialogue = true;
+    daphneIndex = 0;
+    vnBox.classList.remove("hidden");
+    showDaphneLine();
+  }
+
+  function showDaphneLine() {
+    const line = daphneDialogue[daphneIndex];
+    setVNName(line.name);
+    vnText.textContent = line.text;
+  }
+
+  function advanceDaphneDialogue() {
+    daphneIndex++;
+    if (daphneIndex >= daphneDialogue.length) {
+      endDaphneDialogue();
+    } else {
+      showDaphneLine();
+    }
+  }
+
+  function endDaphneDialogue() {
+    inDialogue = false;
+    vnBox.classList.add("hidden");
+
+    inventory.push(
+      "Gear for Assol",
+      "Gear for Yvette",
+      "Gear for Antonio"
+    );
+
+    updateInventoryUI();
+    questText.textContent =
+      "Quest: Deliver the gear to Assol, Yvette, and Antonio";
+  }
+
+  /* ---------------- NPC PROXIMITY ---------------- */
+  function checkNPCProximity() {
+    nearbyNPC = null;
+    npcs.forEach(npc => {
+      const dist = Math.hypot(px - npc.offsetLeft, py - npc.offsetTop);
+      if (dist < 35 && currentNPC !== npc) nearbyNPC = npc;
+      if (dist > 45 && currentNPC === npc) currentNPC = null;
+    });
+  }
+
+  /* ---------------- MOVEMENT ---------------- */
+  function movePlayer() {
+    if (!inVN && !inDialogue) {
+      if (keys["w"] || keys["arrowup"]) py -= speed;
+      if (keys["s"] || keys["arrowdown"]) py += speed;
+      if (keys["a"] || keys["arrowleft"]) px -= speed;
+      if (keys["d"] || keys["arrowright"]) px += speed;
+    }
+
+    px = Math.max(0, Math.min(580, px));
+    py = Math.max(0, Math.min(380, py));
+
+    player.style.left = px + "px";
+    player.style.top = py + "px";
+
+    checkNPCProximity();
+    requestAnimationFrame(movePlayer);
+  }
+
+  /* ---------------- INPUT ---------------- */
+  function keyDownHandler(e) {
+    const key = e.key.toLowerCase();
+    if (
+      ["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright","e"]
+      .includes(key)
+    ) {
+      e.preventDefault();
+      keys[key] = true;
+    }
+
+    if (key === "e") {
+      if (inVN) advanceVN();
+      else if (inDialogue) advanceDaphneDialogue();
+      else if (nearbyNPC && nearbyNPC.dataset.name === "Daphne") {
+        startDaphneDialogue();
+      }
+    }
+  }
+
+  function keyUpHandler(e) {
+    keys[e.key.toLowerCase()] = false;
+  }
+
+  arena.addEventListener("mouseenter", () => {
+    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener("keyup", keyUpHandler);
+  });
+
+  arena.addEventListener("mouseleave", () => {
+    document.removeEventListener("keydown", keyDownHandler);
+    document.removeEventListener("keyup", keyUpHandler);
+  });
+
+  startVN();
+  updateInventoryUI();
+  movePlayer();
+});

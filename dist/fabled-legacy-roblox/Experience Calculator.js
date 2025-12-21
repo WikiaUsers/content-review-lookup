@@ -118,15 +118,15 @@ var dungeonList = [
   { name: "Ethereal Farlands: Normal", baseEXP: 274000000000 },
   { name: "Ethereal Farlands: Expert", baseEXP: 548000000000 },
   { name: "Ethereal Farlands: Chaos", baseEXP: 1145000000000 },
-  { name: "Hellbound Sanctum: Normal", baseEXP: 1500000000000 },
-  { name: "Hellbound Sanctum: Expert", baseEXP: 3000000000000 },
-  { name: "Hellbound Sanctum: Chaos", baseEXP: 7050000000000 },
-  { name: "Forsaken Limbo: Normal", baseEXP: 15720000000000 },
-  { name: "Forsaken Limbo: Expert", baseEXP: 31440000000000 },
-  { name: "Forsaken Limbo: Chaos", baseEXP: 57200000000000 },
-  { name: "Neon District: Normal", baseEXP: 401000000000000 },
-  { name: "Neon District: Expert", baseEXP: 802000000000000 },
-  { name: "Neon District: Chaos", baseEXP: 1110000000000000 }
+  { name: "Hellbound Sanctum: Normal", baseEXP: 3000000000000 },
+  { name: "Hellbound Sanctum: Expert", baseEXP: 6000000000000 },
+  { name: "Hellbound Sanctum: Chaos", baseEXP: 14100000000000 },
+  { name: "Forsaken Limbo: Normal", baseEXP: 39300000000000 },
+  { name: "Forsaken Limbo: Expert", baseEXP: 78600000000000 },
+  { name: "Forsaken Limbo: Chaos", baseEXP: 143000000000000 },
+  { name: "Neon District: Normal", baseEXP: 399000000000000 },
+  { name: "Neon District: Expert", baseEXP: 798000000000000 },
+  { name: "Neon District: Chaos", baseEXP: 1104000000000000 }
 ];
   
 var weaponPerks = [
@@ -211,7 +211,7 @@ createInputField({ labelText: "Goal Level", id: "goalLevel" });
 // Boosts
 createCheckbox({ labelText: '<span style="font-family: Verdana, Arial;" class="calamity">Calamity</span> Mode Enabled', id: 'calamityBoost', boostValue: 0.7, hidden: true });
 var boostOptions = [
-  { labelText: '<span style="font-family: Verdana, Arial;" class="hardcore">Hardcore</span> Mode Enabled', id: 'hardcoreBoost', boostValue: 0.2 },
+  { labelText: '<span style="font-family: Verdana, Arial;" class="hardcore">Hardcore</span> Mode Enabled', id: 'hardcoreBoost', boostValue: 0.4 },
   { labelText: 'With VIP Gamepass', id: 'VIPGamepass', boostValue: 0.2 },
   { labelText: 'EXP Boost Enabled', id: 'EXPBoost', boostValue: 0.5 },
   { labelText: 'Weekend Boost Enabled', id: 'weekendBoost', boostValue: 0.5 }
@@ -325,7 +325,7 @@ calcBtn.onclick = function () {
     if (dungeonName == "Ethereal Farlands: Chaos") {
       baseDungeonExp += 15000000000; // Add 3 additional "Crystalline Ballista" XP values (only spawn in calamity)
     } else if (dungeonName == "Forsaken Limbo: Chaos") {
-      baseDungeonExp += 8000000000000; // Add "The Destined Death" XP value (only spawns in calamity)
+      baseDungeonExp += 20000000000000; // Add "The Destined Death" XP value (only spawns in calamity)
     }
     boostExp += baseDungeonExp * parseFloat(calamityCheckbox.dataset.boost);
   }

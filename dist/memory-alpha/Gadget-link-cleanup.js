@@ -1,15 +1,21 @@
 // <pre>
-
 'use strict';
-mw.loader.using(['mediawiki.api'], () => {
-	const version = '2.0.0';
-	const api = new mw.Api();
+mw.loader.using(['mediawiki.api', 'mediawiki.util'], () => {
+	const version = '2.1.1';
+	const config = mw.config.values;
+	const api = new mw.Api({'parameters': {
+		'action': 'query',
+		'format': 'json',
+		'formatversion': 2,
+		'errorformat': 'plaintext',
+		'uselang': config.wgUserLanguage,
+	}});
 	const removeLinksButton = $('<li><a href="#">Link cleanup</a></li>');
 	const editLag = 2500;
 	const linkCleanup = {
-		pages: [],
-		content: [],
-		canceled: false,
+		'pages': [],
+		'content': [],
+		'canceled': false,
 	};
 	const myModal = $('<form id="myModal">')
 		.append($('<h4>').text(`Link cleanup tool, version ${version}`))
@@ -21,30 +27,11 @@ mw.loader.using(['mediawiki.api'], () => {
 	$('#my-tools-menu').prepend(removeLinksButton);
 	removeLinksButton.on('click', createModal);
 	
-	function log(value, type = 'log'){
-		$('#myModalResults').prepend(value + '\n');
-		console[type](value);
-	}
-	
-	function button(id, txt, secondary = false){
-		const classes = ['wds-button'];
-		if (secondary){
-			classes.push('wds-is-secondary');
-		}
-		const classString = classes.join(' ');
-		return $(`<button class="${classString}" id="${id}">`).text(txt);
-	}
-	
 	function createModal(){
 		$('body').append(myModal);
 		$('#myModal').on('submit', submitForm);
 		$('#myModalClose').on('click', close);
-		
 		fetchPages();
-	}
-	
-	function submitForm(e){
-		e.preventDefault();
 	}
 	
 	function close(){
@@ -54,38 +41,29 @@ mw.loader.using(['mediawiki.api'], () => {
 	
 	function fetchPages(){
 		linkCleanup.canceled = false;
-		api.get({
-			generator: 'allpages',
-			gapnamespace: 4,
-			gapprefix: 'List of unwritten',
-			gapfilterredir: 'nonredirects',
-			gaplimit: 500,
-			prop: 'revisions',
-			rvprop: 'content',
-			rvslots: 'main',
-			formatversion: 2,
-		}).done((result) => {
-			if (result.warnings){
-				log(`Warning: ${result.warnings.main['*']}`, 'warn');
-			}
+		api.post({
+			'generator': 'allpages',
+			'gapnamespace': 4,
+			'gapprefix': 'List of unwritten',
+			'gapfilterredir': 'nonredirects',
+			'gaplimit': 500,
+			'prop': 'revisions',
+			'rvprop': 'content',
+			'rvslots': 'main',
+		}).then(result => {
+			warn(result);
 			
 			if (linkCleanup.canceled){
 				return;
 			}
 			
-			result.query.pages.forEach((entry) => {
+			result.query.pages.forEach(entry => {
 				linkCleanup.pages.push(entry.title);
 				linkCleanup.content.push(entry.revisions[0].slots.main.content);
 			});
 			
 			removeLinks(iValue++);
-		}).fail((code, data) => {
-			if (code === 'http'){
-				log(`Error: ${code}: ${JSON.stringify(data)}`, 'error');
-			} else {
-				log(`Error: ${code}: ${typeof data}`, 'error');
-			}
-		});
+		}, logFail);
 	}
 	
 	function removeLinks(i){
@@ -103,7 +81,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			return;
 		}
 		
-		api.postWithToken('csrf', params).done((data) => {
+		api.postWithEditToken(params).then(data => {
 			if (data.edit.newtimestamp){
 				logEdit(data);
 				setTimeout(() => formatFix(i), editLag);
@@ -115,7 +93,7 @@ mw.loader.using(['mediawiki.api'], () => {
 					log('Done.');
 				}
 			}
-		}).fail(logFail);
+		}, logFail);
 	}
 	
 	function formatFix(i){
@@ -123,7 +101,7 @@ mw.loader.using(['mediawiki.api'], () => {
 			return;
 		}
 		
-		$.get(mw.util.getUrl(linkCleanup.pages[i], {action: 'raw'}), (data) => {
+		$.get(mw.util.getUrl(linkCleanup.pages[i], {action: 'raw'}), data => {
 			const newText = data
 				.replace(/[/; ]+\n/g, '\n')
 				.replace(/\n\*[/; ]+/g, '\n* ')
@@ -138,7 +116,7 @@ mw.loader.using(['mediawiki.api'], () => {
 				return;
 			}
 			
-			api.postWithToken('csrf', params).done((data) => {
+			api.postWithEditToken(params).then(data => {
 				if (data.edit.newtimestamp){
 					logEdit(data);
 				}
@@ -148,46 +126,60 @@ mw.loader.using(['mediawiki.api'], () => {
 				} else {
 					log('Done.');
 				}
-			}).fail(logFail);
+			}, logFail);
 		});
 	}
 	
 	function logEdit(data){
-		if (data.warnings){
-			log(`Warning: ${data.warnings.main['*']}`, 'warn');
-		}
-		
+		warn(data);
 		log(`${iValue}/${linkCleanup.pages.length}: ${data.edit.result}: [[${data.edit.title}]], ${data.edit.newtimestamp}`);
-	}
-	
-	function logFail(code, data){
-		if (code === 'maxlag'){
-			log(`Error: ${code}: ${data.error.info}`, 'error');
-		} else if (code === 'protectedpage'){
-			log(`Error: ${code}: ${data.error.info}`, 'error');
-		} else if (code === 'ratelimited'){
-			log(`Error: ${code}: ${data.error.info}`, 'error');
-		} else if (code === 'http'){
-			log(`Error: ${code}: ${JSON.stringify(data)}`, 'error');
-		} else if (code === 'readonly'){
-			log(`Error: ${code}: ${JSON.stringify(data)}`, 'error');
-		} else {
-			log(`Error: ${code}: ${typeof data}`, 'error');
-		}
-	}
-	
-	function paramsMaker(ttl, txt, cmt){
-		return {
-			action: 'edit',
-			title: ttl,
-			text: txt,
-			summary: cmt,
-			minor: 1,
-			bot: 1,
-			watchlist: 'nochange',
-			maxlag: 5,
-		};
 	}
 });
 
+function log(value, type = 'log'){
+	$('#myModalResults').prepend(value + '\n');
+	console[type](value);
+}
+
+function button(id, txt, secondary = false){
+	const classes = ['wds-button'];
+	if (secondary){
+		classes.push('wds-is-secondary');
+	}
+	const classString = classes.join(' ');
+	return $(`<button class="${classString}" id="${id}">`).text(txt);
+}
+
+function submitForm(e){
+	e.preventDefault();
+}
+
+function logFail(code, data){
+	console.error(data.errors);
+	for (const error of data.errors){
+		log(`Error: ${error.code}: ${error.text}`, 'error');
+	}
+}
+
+function warn(apiOutput){
+	if (apiOutput.warnings){
+		console.warn(apiOutput.warnings);
+		for (const warning of apiOutput.warnings){
+			log(`Warning: ${warning.code}: ${warning.text}`, 'warn');
+		}
+	}
+}
+
+function paramsMaker(ttl, txt, cmt){
+	return {
+		'action': 'edit',
+		'title': ttl,
+		'text': txt,
+		'summary': cmt,
+		'minor': 1,
+		'bot': 1,
+		'watchlist': 'nochange',
+		'maxlag': 5,
+	};
+}
 // </pre>

@@ -111,7 +111,7 @@ $(function () {
       //245
       'Death_Phoenix', 'Soul_Phoenix', 'Gloom_Maw_(Mount)', 'Battle_Werewolf', 'Battlefrazzle',
       //250
-      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator'
+      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear'
       //255
       
     ],
@@ -214,9 +214,9 @@ $(function () {
       //220
       'Beekeeper', 'Fiend_Slayer', 'Field_Surgeon', 'Monk', 'Winged_Druid',
       //225
-      'Martial_Artist', 'Necromancer', 'Illuminator', 'Bat_Knight', 'Feral_Trapper'
+      'Martial_Artist', 'Necromancer', 'Illuminator', 'Bat_Knight', 'Feral_Trapper',
       //230
-      
+      'Phoenix_Evoker'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -256,7 +256,8 @@ $(function () {
 	  Merudri: 8,
 	  Winged_Druid: 8,
 	  Necromancer: 8,
-	  Bat_Knight: 8
+	  Bat_Knight: 8,
+      Phoenix_Evoker: 8
     },
     outfiter_sprites_walking = {
       //None: 2,
@@ -371,7 +372,8 @@ $(function () {
       Corpse_Phoenix: 8,
       Death_Phoenix: 8, 
       Soul_Phoenix: 8,
-      Battle_Werewolf: 8
+      Battle_Werewolf: 8,
+      Flame_Bear: 8
     },
     outfiter_sprites_mount_walking = {
     },

@@ -1,0 +1,3 @@
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.RegExp.iparents = ['.tiles__description', '.character-circle', '.noLinkPreview']; /*Array of strings. Ignored parent selectors, links that are descendants of these elements will not generate previews. By default, tabviews are ignored. */
