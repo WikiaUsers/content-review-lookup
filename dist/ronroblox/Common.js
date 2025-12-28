@@ -74,13 +74,15 @@ UserTagsJS.modules.custom = {
 	// Bureaucrats
 	'HolyMoa': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
+	'Standoffiish': ['bureaucrat'],
 	// Administrators
 	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
 	'SuperGlitchyTheo': ['content-administrator','Wiki-Contributor'],
 	// Moderators
+	// Dual Moderators
+	'Dxrknrg': ['content-moderator','threadmoderator','Wiki-Contributor'],
 	// Content Moderators
 	'RyeThePies': ['content-moderator','Wiki-Contributor'],
-	'Dxrknrg': ['content-moderator','Wiki-Contributor'],
 	'Quinncm': ['content-moderator','Wiki-Contributor'],
 	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
@@ -90,6 +92,7 @@ UserTagsJS.modules.custom = {
     'Therealusman': ['content-moderator','Wiki-Contributor'],
     'DarkTonics': ['content-moderator','Wiki-Contributor'],
     'DragooNit': ['content-moderator','Wiki-Contributor'],
+    'Penguinz12': ['content-moderator'],
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
 	'Noidtouse': ['threadmoderator'],
@@ -98,7 +101,6 @@ UserTagsJS.modules.custom = {
 	'RXRunner27': ['threadmoderator'],
 	// Retired Wiki Staff 
 	// Retired Bureaucrats
-	'Standoffiish': ['retired-staff'],
 	'RabbyDevs': ['retired-staff'],
 	'Aurawra': ['retired-staff'],
 	'TheRichSeries': ['retired-staff'],

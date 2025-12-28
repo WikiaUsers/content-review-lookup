@@ -1,10 +1,14 @@
 'use strict';
-/*
-TODO: [[mw:Extension:CodeMirror#Using ResourceLoader]]
-mw.loader.using('ext.CodeMirror.v6', require => {
+/* TODO:
+mw.loader.using([
+	'ext.CodeMirror.v6',
+	'ext.CodeMirror.v6.mode.mediawiki',
+	'ext.fandom.wikiEditor.codeMirrorTheming.css',
+], require => {
 	const CodeMirror = require('ext.CodeMirror.v6');
-	console.log(CodeMirror);
-	new CodeMirror('#easy-talk-editor-js textarea').initialize();
+	const mediawikiLang = require('ext.CodeMirror.v6.mode.mediawiki');
+	const cm = new CodeMirror('#easy-talk-editor-js textarea');
+	cm.initialize([cm.defaultExtensions, mediawikiLang()]);
 });
 */
 mw.loader.using([
@@ -32,7 +36,7 @@ mw.loader.using([
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
 	let msg = () => {};
-	const version = '1.0.18';
+	const version = '2.0.1';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -135,10 +139,24 @@ mw.loader.using([
 		const year = ' \\d\\d\\d\\d+';
 		const tZone = ` \\((?:${timeZones.join('|')})\\)`;
 		const tsRegExp = new RegExp(`^(.* )(${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
+		const tsOrderFix = new RegExp(`^(${time}) (.+)(${tZone})$`);
 		const newSectionLinkSelectors = [
 			'#ca-addsection',
 			`a[title="Special:NewSection/${pageName.replaceAll('"', '\\"')}"]`,
 		];
+		const noTalkSelectors = [
+			'.mw-notalk',
+			'blockquote',
+			'cite',
+			'q',
+			`#${editorID}`,
+		];
+		const linkSelectors = {
+			'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
+			'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
+			'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
+			'a[title^="Special:TalkPage/User:"]': /^Special:TalkPage\/User: ?(.+?)(?: ?\/.*)?$/,
+		};
 		
 		content.find('*').each((elementIndex, element) => {
 			if ($(element).is('.mw-headline')){
@@ -150,19 +168,6 @@ mw.loader.using([
 				return;
 			}
 			
-			const noTalkSelectors = [
-				'.mw-notalk',
-				'blockquote',
-				'cite',
-				'q',
-				`#${editorID}`,
-			];
-			const linkSelectors = {
-				'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
-				'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
-				'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
-				'a[title^="Special:TalkPage/User:"]': /^Special:TalkPage\/User: ?(.+?)(?: ?\/.*)?$/,
-			};
 			const userLinks = $(element).find(Object.keys(linkSelectors).join(', '));
 			const datetime = $($(element).contents().toArray().filter(node => node.nodeType === 3)).last();
 			const noTalk = datetime.parents(noTalkSelectors.join(', '));
@@ -172,8 +177,8 @@ mw.loader.using([
 			}
 			
 			const userLinkTitle = userLinks.last().attr('title');
-			const tsOrderFix = new RegExp(`^(${time}) (.+)(${tZone})$`);
-			let tsString = datetime.text().replace(tsRegExp, '$2').replace(/,/g, '').replace(tsOrderFix, '$2 $1$3');
+			const datetimeMw = datetime.text().replace(tsRegExp, '$2');
+			let datetimeIntl = datetimeMw.replaceAll(',', '').replace(tsOrderFix, '$2 $1$3');
 			let userRegExp;
 			
 			Object.keys(linkSelectors).forEach(selector => {
@@ -183,17 +188,20 @@ mw.loader.using([
 			});
 			
 			timeZones.forEach(timeZone => {
-				tsString = tsString.replace(`(${timeZone})`, timeZoneConverter[timeZone]);
+				datetimeIntl = datetimeIntl.replace(`(${timeZone})`, timeZoneConverter[timeZone]);
 			});
 			
-			tsString = new Date(tsString).toISOString();
+			datetimeIntl = new Date(datetimeIntl).toISOString();
+			const index = content.find(`[data-datetime="${datetimeMw}"]`);
 			const timeTag = `$1${$('<time>', {
-				'datetime': tsString,
+				'datetime': datetimeIntl,
 				'class': 'js-comment-date-time',
 				'data-user': userLinkTitle.replace(userRegExp, '$1'),
 				'data-topic': topic,
 				'data-section': section,
-				'text': '$2',
+				'data-datetime': datetimeMw,
+				'data-index': index.length,
+				'text': datetimeMw,
 			}).prop('outerHTML')}`;
 			datetime.replaceWith(datetime.text().replace(tsRegExp, timeTag));
 		});
@@ -314,8 +322,6 @@ mw.loader.using([
 			if ($(comment).parents('.mw-archivedtalk').length){
 				return;
 			}
-			const datetime = $(comment).attr('datetime');
-			const index = $(`[data-datetime="${datetime}"]`).length;
 			let anchor = $(comment);
 			while (anchor.parent().css('display') === 'inline'){
 				anchor = anchor.parent();
@@ -326,8 +332,8 @@ mw.loader.using([
 				'data-user': $(comment).data('user'),
 				'data-topic': $(comment).data('topic'),
 				'data-section': $(comment).data('section'),
-				'data-datetime': datetime,
-				'data-index': index,
+				'data-datetime': $(comment).data('datetime'),
+				'data-index': $(comment).data('index'),
 				'tabindex': 0,
 				'text': msg('replybutton').parse(),
 				'on': {'click': activateReplyButton},
@@ -810,10 +816,6 @@ function mergeAdjacentDLs(dlIndex, dl){
 function errorNotice(message, type = 'error'){
 	console[type](message);
 	alert(message);
-}
-
-function txtFilter(n){
-	return n.nodeType === 3 && n.nodeValue !== '\n';
 }
 
 function resizeTextBox(boxEvent){

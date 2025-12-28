@@ -5,3 +5,4 @@ importArticles({    type: 'script',    articles: [        'u:dev:MediaWiki:Multi
 dev:CustomSlider.js//神奇妙妙自定义幻灯片
 dev:AjaxPoll.js//显示投票
 dev:DiscussionsPollEmbed.js//死马当活马医之我再复制一个试试
+dev:Discord.js

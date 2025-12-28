@@ -459,4 +459,69 @@ function registerQuestXPDropdowns() {
   }
 }
 
+/*****************************/
+/* Replaces CopyText script  */
+/*****************************/
+
+registerCopyText();
+function registerCopyText() {
+    $('body').on('click.ct', '.copy-text', function copyText(event) {
+        var textContent = event.currentTarget.getAttribute('data-text') || '';
+        $input = $('<textarea>', { type: 'text' }).val(textContent).appendTo('body').select();
+        var success = document.execCommand('Copy');
+        $input.remove();
+        if (success) {
+            mw.notify('Copied the text: ' + textContent); //Optional
+        } else {
+            if (window.navigator && navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () {
+                    mw.notify('Copied the text: ' + textContent); //Optional
+                });
+            }
+        }
+    });
+}
+
+/******************************/
+/* Show/hide all quest steps  */
+/******************************/
+
+document.addEventListener("click", function (e) {
+    const btn = e.target.closest(".questStepButton");
+    if (!btn) return;
+
+    const wrappers = document.querySelectorAll(
+        '[id^="mw-customcollapsible-queststep-"]'
+    );
+    if (!wrappers.length) return;
+
+    let isExpanded = btn.dataset.expanded;
+
+    if (isExpanded === undefined) {
+        isExpanded = "true";
+    } else {
+        isExpanded = isExpanded !== "true" ? "true" : "false";
+    }
+
+    wrappers.forEach(wrapper => {
+        const content = wrapper.querySelector(".mw-collapsible-content");
+
+        if (isExpanded === "true") {
+            wrapper.classList.remove("mw-collapsed");
+            if (content) content.style.display = "";
+        } else {
+            wrapper.classList.add("mw-collapsed");
+            if (content) content.style.display = "none";
+        }
+    });
+
+    btn.dataset.expanded = isExpanded;
+
+    btn.textContent = isExpanded === "true"
+        ? "Collapse all Quest steps"
+        : "Expand all Quest steps";
+
+    btn.setAttribute("aria-expanded", isExpanded);
+});
+
 console.log("END of Common.JS");

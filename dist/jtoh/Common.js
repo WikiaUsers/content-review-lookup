@@ -6,7 +6,7 @@ window.AutoCreateUserPagesConfig = {
         3: false,
         1202: false
     },
-    summary: 'Welcome to the JToH Wiki!',
+    summary: 'Welcome to the EToH Wiki!',
     notify: '<a href="/wiki/User:$2">Welcome to our wiki! Here is a link to your userpage, $1!</a>'
 }; //Automatically creates user pages for first-time editors/posters
 

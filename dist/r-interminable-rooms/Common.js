@@ -30,3 +30,8 @@ document.querySelectorAll('[class*="id"]').forEach(el => {
 
   document.head.appendChild(script); // Append badge count to class
 });
+
+/* LockOldComments thing */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.limit = 35;

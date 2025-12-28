@@ -415,225 +415,79 @@ mw.loader.using('mediawiki.api').then(function () {
 
 
 
+$(function() {
+    var audio = new Audio();
+    var playlistDiv = $('.mp3-playlist .track-list');
+    var tracks = [];
+    var currentIndex = -1;
 
-
-
-
-
-
-mw.loader.using('mediawiki.util').then(() => {
-  const arena = document.getElementById("arena");
-  if (!arena) return;
-
-  const player = document.getElementById("player");
-
-  const vnBox = document.getElementById("vn-box");
-  const vnName = document.getElementById("vn-name");
-  const vnText = document.getElementById("vn-text");
-
-  const questText = document.getElementById("quest-text");
-
-  /* INVENTORY UI */
-  const inventoryButton = document.getElementById("inventory");
-  const inventoryPanel = document.getElementById("inventory-panel");
-  const inventoryList = document.getElementById("inventory-list");
-
-  let px = 290;
-  let py = 190;
-  const speed = 3;
-  let keys = {};
-
-  let inVN = true;
-  let inDialogue = false;
-
-  let nearbyNPC = null;
-  let currentNPC = null;
-
-  const npcs = Array.from(document.querySelectorAll(".npc"));
-
-  /* ---------------- INVENTORY ---------------- */
-  const inventory = [];
-
-  function updateInventoryUI() {
-    inventoryButton.textContent = `Inventory (${inventory.length})`;
-    inventoryList.innerHTML = "";
-
-    inventory.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "inventory-item";
-      div.textContent = item;
-      inventoryList.appendChild(div);
+    // Parse the songs list
+    var songsData = playlistDiv.data('songs').split('\n');
+    songsData.forEach(function(line) {
+        line = line.trim();
+        if(line){
+            var parts = line.split(';');
+            tracks.push({src: parts[0].trim(), title: parts[1] ? parts[1].trim() : 'Track'});
+        }
     });
-  }
 
-  inventoryButton.addEventListener("click", () => {
-    inventoryPanel.classList.toggle("hidden");
-  });
-
-  /* ---------------- VN NAME COLORS ---------------- */
-  function setVNName(name) {
-    vnName.textContent = name;
-
-    if (name === "Phoebe") {
-      vnName.style.color = "#b58b5e"; // warm brown
-    } else if (name === "Daphne") {
-      vnName.style.color = "#d0d0d0"; // grayish white
-    } else {
-      vnName.style.color = "#ffffff";
-    }
-  }
-
-  /* ---------------- VN INTRO ---------------- */
-  const vnScript = [
-    "…It’s so quiet here.",
-    "Too quiet.",
-    "The walls never end. No doors. No windows.",
-    "Just the same yellow halls, looping forever.",
-    "I want to leave.",
-    "…",
-    "Oh.",
-    "Daphne wanted to see me.",
-    "She said it was important.",
-    "I should go find her."
-  ];
-
-  let vnIndex = 0;
-
-  function startVN() {
-    inVN = true;
-    vnIndex = 0;
-    vnBox.classList.remove("hidden");
-    setVNName("Phoebe");
-    vnText.textContent = vnScript[vnIndex];
-  }
-
-  function advanceVN() {
-    vnIndex++;
-    if (vnIndex >= vnScript.length) return endVN();
-    vnText.textContent = vnScript[vnIndex];
-  }
-
-  function endVN() {
-    inVN = false;
-    vnBox.classList.add("hidden");
-    questText.textContent = "Quest: Talk to Daphne";
-  }
-
-  /* ---------------- DAPHNE DIALOGUE ---------------- */
-  const daphneDialogue = [
-    { name: "Daphne", text: "You’re late." },
-    { name: "Phoebe", text: "You said it was important." },
-    { name: "Daphne", text: "It is. I made gear." },
-    { name: "Daphne", text: "I don’t want to deal with people." },
-    { name: "Daphne", text: "Take these. Give them to the others." },
-    { name: "Phoebe", text: "…All of them?" },
-    { name: "Daphne", text: "Yes. Assol. Yvette. Antonio." },
-    { name: "Daphne", text: "Don’t lose them." }
-  ];
-
-  let daphneIndex = 0;
-
-  function startDaphneDialogue() {
-    inDialogue = true;
-    daphneIndex = 0;
-    vnBox.classList.remove("hidden");
-    showDaphneLine();
-  }
-
-  function showDaphneLine() {
-    const line = daphneDialogue[daphneIndex];
-    setVNName(line.name);
-    vnText.textContent = line.text;
-  }
-
-  function advanceDaphneDialogue() {
-    daphneIndex++;
-    if (daphneIndex >= daphneDialogue.length) {
-      endDaphneDialogue();
-    } else {
-      showDaphneLine();
-    }
-  }
-
-  function endDaphneDialogue() {
-    inDialogue = false;
-    vnBox.classList.add("hidden");
-
-    inventory.push(
-      "Gear for Assol",
-      "Gear for Yvette",
-      "Gear for Antonio"
-    );
-
-    updateInventoryUI();
-    questText.textContent =
-      "Quest: Deliver the gear to Assol, Yvette, and Antonio";
-  }
-
-  /* ---------------- NPC PROXIMITY ---------------- */
-  function checkNPCProximity() {
-    nearbyNPC = null;
-    npcs.forEach(npc => {
-      const dist = Math.hypot(px - npc.offsetLeft, py - npc.offsetTop);
-      if (dist < 35 && currentNPC !== npc) nearbyNPC = npc;
-      if (dist > 45 && currentNPC === npc) currentNPC = null;
+    // Build track divs
+    tracks.forEach(function(track){
+        playlistDiv.append('<div class="track" data-src="'+track.src+'">▶ '+track.title+'</div>');
     });
-  }
 
-  /* ---------------- MOVEMENT ---------------- */
-  function movePlayer() {
-    if (!inVN && !inDialogue) {
-      if (keys["w"] || keys["arrowup"]) py -= speed;
-      if (keys["s"] || keys["arrowdown"]) py += speed;
-      if (keys["a"] || keys["arrowleft"]) px -= speed;
-      if (keys["d"] || keys["arrowright"]) px += speed;
+    function playTrack(index) {
+        if(index < 0 || index >= tracks.length) return;
+        currentIndex = index;
+        audio.src = tracks[index].src;
+        audio.play();
+        playlistDiv.find('.track').removeClass('playing')
+            .eq(currentIndex).addClass('playing');
+        playlistDiv.closest('.mp3-playlist').find('.current-track').text('Now playing: ' + tracks[index].title);
+        playlistDiv.closest('.mp3-playlist').find('.play-pause').text('⏸️');
     }
 
-    px = Math.max(0, Math.min(580, px));
-    py = Math.max(0, Math.min(380, py));
+    // Track click
+    playlistDiv.on('click', '.track', function() {
+        var index = $(this).index();
+        if(currentIndex === index && !audio.paused){
+            audio.pause();
+            $(this).removeClass('playing');
+            playlistDiv.closest('.mp3-playlist').find('.play-pause').text('▶️');
+        } else {
+            playTrack(index);
+        }
+    });
 
-    player.style.left = px + "px";
-    player.style.top = py + "px";
+    // Play/pause button
+    $('.mp3-playlist .play-pause').click(function() {
+        if(currentIndex === -1 && tracks.length > 0){
+            playTrack(0);
+        } else if(audio.paused){
+            audio.play();
+            $(this).text('⏸️');
+            playlistDiv.find('.track').eq(currentIndex).addClass('playing');
+        } else {
+            audio.pause();
+            $(this).text('▶️');
+            playlistDiv.find('.track').eq(currentIndex).removeClass('playing');
+        }
+    });
 
-    checkNPCProximity();
-    requestAnimationFrame(movePlayer);
-  }
+    // Next
+    $('.mp3-playlist .next').click(function() {
+        if(tracks.length === 0) return;
+        playTrack((currentIndex + 1) % tracks.length);
+    });
 
-  /* ---------------- INPUT ---------------- */
-  function keyDownHandler(e) {
-    const key = e.key.toLowerCase();
-    if (
-      ["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright","e"]
-      .includes(key)
-    ) {
-      e.preventDefault();
-      keys[key] = true;
-    }
+    // Previous
+    $('.mp3-playlist .prev').click(function() {
+        if(tracks.length === 0) return;
+        playTrack((currentIndex - 1 + tracks.length) % tracks.length);
+    });
 
-    if (key === "e") {
-      if (inVN) advanceVN();
-      else if (inDialogue) advanceDaphneDialogue();
-      else if (nearbyNPC && nearbyNPC.dataset.name === "Daphne") {
-        startDaphneDialogue();
-      }
-    }
-  }
-
-  function keyUpHandler(e) {
-    keys[e.key.toLowerCase()] = false;
-  }
-
-  arena.addEventListener("mouseenter", () => {
-    document.addEventListener("keydown", keyDownHandler);
-    document.addEventListener("keyup", keyUpHandler);
-  });
-
-  arena.addEventListener("mouseleave", () => {
-    document.removeEventListener("keydown", keyDownHandler);
-    document.removeEventListener("keyup", keyUpHandler);
-  });
-
-  startVN();
-  updateInventoryUI();
-  movePlayer();
+    // Auto-next
+    audio.addEventListener('ended', function() {
+        playTrack((currentIndex + 1) % tracks.length);
+    });
 });
