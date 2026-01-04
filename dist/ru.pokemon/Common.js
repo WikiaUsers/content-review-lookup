@@ -14,12 +14,17 @@ window.pPreview = $.extend(
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
 
-/* == Для статей с множеством иконок, которых может не быть на вики == */
+/* == Для статей-списков изучаемых покемонами движений == */
 mw.loader.using('mediawiki.util', function() {
     var pageTitle = mw.config.get('wgTitle');
     if (/Изучаемые|learnset/i.test(pageTitle)) {
         var style = document.createElement('style');
         style.textContent = `
+.roundy img {
+    width: 35px;
+    height: auto;
+}
+
 .mw-file-element.mw-broken-media {
     background-image: url('https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png/revision/latest?cb=20211113135653');
     background-size: contain;

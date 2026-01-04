@@ -111,3 +111,37 @@ mw.hook('wikipage.content').add(function() {
     // 扩展：赋值正文文字变量
     body.style.setProperty('--custom-body-text', params.bodyText);
 });
+
+mw.loader.using(['jquery', 'mediawiki.api']).done(function(){$(document).ready(function(){var t='Template:CustomSidebar',e=$('#WikiaRail');e.length>0&&new mw.Api().get({action:'parse',page:t,format:'json',prop:'text'}).done(function(t){var n=t.parse.text['*'];e.prepend(n)})})});
+
+// 等待页面DOM加载完成后执行
+document.addEventListener('DOMContentLoaded', function() {
+// 获取图片切换容器（通过类名注入JS功能，这就是JS的页面生效方式）
+const imgSlider = document.querySelector('.error-flash-img-slider');
+if (!imgSlider) return;
+
+// 获取所有待切换图片
+const sliderImages = imgSlider.querySelectorAll('.slider-single-img');
+const maxImgCount = 5; // 限制最多5张图片
+const actualImgCount = Math.min(sliderImages.length, maxImgCount);
+let currentImgIndex = 0;
+
+// 核心修改：2000 → 5000（毫秒），图片切换间隔改为5秒
+setInterval(function() {
+// 给当前显示的图片添加闪烁动画
+sliderImages[currentImgIndex].classList.add('flash-error-active');
+
+// 保留300毫秒延时，匹配CSS 0.3秒无过渡闪烁时长
+setTimeout(function() {
+// 隐藏当前图片并移除动画类
+sliderImages[currentImgIndex].style.display = 'none';
+sliderImages[currentImgIndex].classList.remove('flash-error-active');
+
+// 更新索引（循环切换，最多5张）
+currentImgIndex = (currentImgIndex + 1) % actualImgCount;
+
+// 显示下一张图片
+sliderImages[currentImgIndex].style.display = 'block';
+}, 300);
+}, 5000); // 切换间隔改为5秒（5000毫秒）
+});

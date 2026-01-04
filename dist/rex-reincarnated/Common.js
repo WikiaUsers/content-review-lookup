@@ -1,6 +1,9 @@
 // For header links, on click copy as full page URL
 window.HeaderLinksCopyAsURL = true
 
+// PreloadTemplates settings */
+preloadTemplates_subpage = "case-by-case";
+
 /* Topic block log settings */
 TBL_GROUP = "roblox-en";
 

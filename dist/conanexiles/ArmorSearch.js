@@ -14,11 +14,17 @@
 		container.innerHTML =	
 			'<form id="armor-search-form" onkeydown="return event.key != \'Enter\';" style="width: 610px;">' +
 			'  <label for="name" style="display: inline-block; width: 50px;">Name:</label><input name="name" id="armor-search-name" maxlength="30"><br>' +
-			'  <fieldset style="width: 610px; margin-bottom: 0;">' +
+			'  <fieldset style="width: 300px; margin-bottom: 0; float: left;">' +
 			'    <legend>Armor Type</legend>' +
-			'    <input type="checkbox" value="Light" id="armor-search-armortype-light"><label for="armor-search-armortype-light" style="display: inline-block; width: 100px;">Light</label>' +
-			'    <input type="checkbox" value="Medium" id="armor-search-armortype-medium"><label for="armor-search-armortype-medium" style="display: inline-block; width: 100px;">Medium</label>' +
-			'    <input type="checkbox" value="Heavy" id="armor-search-armortype-heavy"><label for="armor-search-armortype-heavy" style="display: inline-block; width: 100px;">Heavy</label>' +
+			'    <input type="checkbox" value="Light" id="armor-search-armortype-light"><label for="armor-search-armortype-light" style="display: inline-block; width: 65px;">Light</label>' +
+			'    <input type="checkbox" value="Medium" id="armor-search-armortype-medium"><label for="armor-search-armortype-medium" style="display: inline-block; width: 65px;">Medium</label>' +
+			'    <input type="checkbox" value="Heavy" id="armor-search-armortype-heavy"><label for="armor-search-armortype-heavy" style="display: inline-block; width: 65px;">Heavy</label>' +
+			'  </fieldset>' +
+			'  <fieldset style="widht: 300px; margin-bottom: 0; float: right;">' +
+			'    <legend>Craftable</legend>' +
+    		'    <input type="radio" name="craftable" value="yes" id="armor-search-craftable-yes"><label for="armor-search-craftable-yes" style="display: inline-block; width: 65px;">Yes</label>' +
+    		'    <input type="radio" name="craftable" value="no" id="armor-search-craftable-no"><label for="armor-search-craftable-no" style="display: inline-block; width: 65px;">No</label>' +
+    		'    <input type="radio" name="craftable" value="both" id="armor-search-craftable-both" checked=""><label for="armor-search-craftable-both" style="display: inline-block; width: 65px;">Both</label>' +
 			'  </fieldset>' +
 			'  <fieldset style="width: 200px; float: left;">' +
 			'    <legend>Bonus</legend>' +
@@ -79,13 +85,14 @@
 			armorSearchResultContainer.style.display = 'none'
 			
 			var params = prepareParameters()
-			if(params == '') {
+			if(params == '' || params == '|craftable=both') {
 				// error message if nothing is selected
 				armorSearchMessageContainer.innerHTML = '⚠️ At least one search option must be specified! ⚠️' 
 				armorSearchMessageContainer.style.display = 'unset'
 				return false
 			}
 
+			// https://conanexiles.fandom.com/wiki/Module:ItemSearch
 			new mw.Api().get({
 				action:'parse', 
 				text: '{{#invoke:ItemSearch|Main|limit=' + (limit + 1) + '|type=Armor' + params + '}}', 
@@ -156,6 +163,23 @@
 			
 			if(armorTypes != '') {
 				params += '|armorTypes=' + armorTypes
+			}
+			
+			var craftable = ''
+			var possibleCraftableValues = Array('yes', 'no', 'both')
+			for(var i in possibleCraftableValues) {
+				var key = possibleCraftableValues[i]
+				var element = document.getElementById('armor-search-craftable-' + key)
+				if(element != null && element.checked) {
+					if(craftable != '') {
+						craftable += ','
+					}
+					craftable += key
+				}
+			}
+			
+			if(craftable != '') {
+				params += '|craftable=' + craftable
 			}
 
 			var bonus = ''

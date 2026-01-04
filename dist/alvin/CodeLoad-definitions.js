@@ -58,17 +58,6 @@ codeLoad.definitions = {
             "enabled": false
         }
     },
-    "ratings": {
-        "title": "Star Ratings",
-        "description": "Adds five star ratings to episode, special, and film pages",
-        "group": "content",
-        "articles": [
-            "Fandomdesktop.js/star-ratings.js"
-        ],
-        "preferences": {
-            "enabled": true
-        }
-    },
     "references": {
         "title": "Reference Popups",
         "description": "Adds a floating citation box on hover of a reference number",

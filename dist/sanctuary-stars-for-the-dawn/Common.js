@@ -159,4 +159,125 @@ $(document).ready(function() {
         cacheKeys.forEach(key => sessionStorage.removeItem(key));
         console.log('Cache cleared');
     });
+// ==================== СЛАЙД-ШОУ УВЕДОМЛЕНИЙ (финальная версия) ====================
+mw.hook('wikipage.content').add(function () {
+    const notices = document.querySelectorAll('.mbox.notice');
+    if (notices.length < 2) return; // Если меньше двух — ничего не делаем
+    // Создаём контейнер слайд-шоу
+    const slideshow = document.createElement('div');
+    slideshow.className = 'notices-slideshow';
+    // Футер с навигацией
+    const footer = document.createElement('div');
+    footer.className = 'slideshow-footer';
+    footer.innerHTML = `
+        <div class="slideshow-nav">
+            <span class="slideshow-prev">◄</span>
+            <span class="slideshow-pause" title="Пауза">❚❚</span>
+            <div class="slideshow-dots"></div>
+            <span class="slideshow-next">►</span>
+        </div>
+    `;
+    // Прогресс-бар
+    const progressContainer = document.createElement('div');
+    progressContainer.className = 'progress-container';
+    progressContainer.innerHTML = '<div class="progress-bar"></div>';
+    const dotsContainer = footer.querySelector('.slideshow-dots');
+    const progressBar = progressContainer.querySelector('.progress-bar');
+    let current = 0;
+    let timer = null;
+    let isPaused = false;
+    // Создаём слайды и точки
+    notices.forEach((notice, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'notice-slide';
+        if (i === 0) slide.classList.add('active'); // Первый сразу активный
+        slide.innerHTML = notice.innerHTML; // Копируем содержимое (текст, заголовок, крестик и т.д.)
+        slideshow.appendChild(slide);
+        // Точка-индикатор
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        if (i === 0) dot.classList.add('active');
+        dot.dataset.index = i;
+        dotsContainer.appendChild(dot);
+    });
+    // Добавляем футер и прогресс-бар в контейнер
+    slideshow.appendChild(footer);
+    slideshow.appendChild(progressContainer);
+    // Вставляем слайд-шоу перед первым уведомлением
+    notices[0].parentNode.insertBefore(slideshow, notices[0]);
+    // Скрываем оригинальные уведомления
+    notices.forEach(n => n.style.display = 'none');
+    // Получаем элементы для управления
+    const slides = slideshow.querySelectorAll('.notice-slide');
+    const dots = slideshow.querySelectorAll('.dot');
+    const prev = slideshow.querySelector('.slideshow-prev');
+    const next = slideshow.querySelector('.slideshow-next');
+    const pauseBtn = slideshow.querySelector('.slideshow-pause');
+    // Сброс и запуск прогресс-бара
+    function resetProgress() {
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        void progressBar.offsetWidth; // Форсируем reflow
+        if (!isPaused) {
+            progressBar.style.transition = 'width 5s linear';
+            progressBar.style.width = '100%';
+        }
+    }
+    // Показ слайда с плавной анимацией
+    function showSlide(n) {
+        current = (n + slides.length) % slides.length;
+        // Убираем active у всех
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        // Добавляем с небольшой задержкой для триггера transition opacity
+        requestAnimationFrame(() => {
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+            if (!isPaused) resetProgress();
+        });
+    }
+    // Автопрокрутка
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => showSlide(current + 1), 5000);
+        resetProgress();
+    }
+    function stopTimer() {
+        clearInterval(timer);
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        isPaused = true;
+        pauseBtn.textContent = '▶';
+        pauseBtn.title = 'Воспроизвести';
+    }
+    function resumeTimer() {
+        isPaused = false;
+        pauseBtn.textContent = '❚❚';
+        pauseBtn.title = 'Пауза';
+        startTimer();
+    }
+    // Обработчики событий
+    pauseBtn.addEventListener('click', () => {
+        if (isPaused) resumeTimer();
+        else stopTimer();
+    });
+    prev.addEventListener('click', () => {
+        showSlide(current - 1);
+        if (!isPaused) startTimer();
+    });
+    next.addEventListener('click', () => {
+        showSlide(current + 1);
+        if (!isPaused) startTimer();
+    });
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            showSlide(parseInt(dot.dataset.index));
+            if (!isPaused) startTimer();
+        });
+    });
+    // Запуск
+    resetProgress();
+    startTimer();
+});
+// ==============================================================================
 });

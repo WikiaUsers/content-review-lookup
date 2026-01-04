@@ -4,8 +4,8 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		founder: { u:'Maker', order: -1/0, title: 'This is the founder of the wiki.'},
-		altacc: { u: 'Alternate account of someone.'}
+		founder: { u: 'Maker', order: -1/0, title: 'This is the founder of the wiki.'},
+		alt: { u: 'Alternate Account', title: 'Alternate account of someone.'}
 	}
 };
 UserTagsJS.modules.inactive = 45;
@@ -17,12 +17,12 @@ UserTagsJS.modules.implode = {
 };
 UserTagsJS.modules.custom = {
 	'HarryplaysOMG4': ['founder'], // Hello! Im the founder!
-	'HarryplaysOMG3': ['Alternate Account'],
+	'HarryplaysOMG3': ['alt'],
 };
 UserTagsJS.modules.userfilter = {
 	'HarryplaysOMG4': ['sysop', 'bureaucrat', 'threadmoderator', 'patroller', 'rollback'],
 };
 // END USERTAG SECTION
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 365.24225;
+window.lockOldComments.limit = 365.24219;
 window.lockOldComments.addNoteAbove = true;

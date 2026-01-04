@@ -15,17 +15,5 @@ window.preloadTemplates_list = "MediaWiki:Custom-PreloadTemplates";
 window.preloadTemplates_subpage = "syntax";
 window.preloadTemplates_namespace = "Template";
 
-//DataTables Options
-$(document).ready(function() {
-    $('.article-table.datatable').DataTable({
-        rowGroup: {
-            dataSrc: 4
-        },
-        order: [[0, "desc"]],
-        lengthMenu: [
-            [10, 25, 50, -1],
-            [10, 25, 50, "All"]
-        ],
-        pageLength: -1
-    });
-});
+//Filter table
+importScript('MediaWiki:CardSelectTr.js');

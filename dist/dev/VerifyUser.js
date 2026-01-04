@@ -47,7 +47,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
                 '</div>' + 
             '{{/usernameCompare}}' +
             '{{#i18n}}verify-instructions{{/i18n}}<br/><br/>' + 
-            '<input placeholder="discord#0000" value="{{discordHandle}}" style="padding:8px; width:350px;font-family:\'Rubik\';font-size:20px" id="verify-input"/> ' +
+            '<input placeholder="discordusername" value="{{discordHandle}}" style="padding:8px; width:350px;font-family:\'Rubik\';font-size:20px" id="verify-input"/> ' +
             '<div class="wds-button wds-is-disabled" type="submit" style="vertical-align:bottom;cursor:pointer;line-height:inherit;" id="verify"><span>{{#i18n}}button-verify{{/i18n}}</span></div>' +
             '<br/><span style="visibility: hidden; color: red;" id="verify-input-invalid">{{#i18n}}verify-invalid{{/i18n}}</span><br/><small>{{#i18n}}verify-notice{{/i18n}}</small>' +
         '{{/username}}' + 

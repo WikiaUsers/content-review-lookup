@@ -105,3 +105,32 @@ $.getJSON(mw.util.wikiScript("index"), {
         importArticles({ type: "script", articles: scripts });
     }
 });
+
+/*
+ * Script Name: Template JS
+ * Author: Fandom Backrooms Freewriting
+*/
+mw.hook("wikipage.content").add(function () {
+    // 处理JS脚本导入
+    $("span.import-script").each(function () {
+        var $this = $(this);
+        var scriptContent = $this.attr("data-script");
+        var pageName = $this.attr("data-page");
+        
+        if (scriptContent) {
+            try {
+                // 执行脚本内容
+                /*(new Function(scriptContent))();*/
+                var script_element = document.createElement('script');
+            	script_element.type = 'text/javascript';
+            	script_element.textContent = scriptContent;
+            	this.parentNode.appendChild(script_element);
+                console.log("JS加载成功: " + pageName);
+            } catch (error) {
+                console.error("JS加载错误 (" + pageName + "):", error);
+                $this.after('<strong class="error">JS加载失败: ' + error.message + '</strong>');
+            }
+            
+        }
+    });
+});

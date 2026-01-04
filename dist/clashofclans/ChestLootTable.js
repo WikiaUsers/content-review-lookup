@@ -72,7 +72,7 @@ $(document).ready(function(){
 		'<table class="lootTable wikitable" id="lootTableRare"></table>'+
 		'<table class="lootTable wikitable" id="lootTableEpic"></table>'+
 		'<table class="lootTable wikitable" id="lootTableLegendary"></table>');
-	var maxTHLevel = 17;
+	var maxTHLevel = 18;
     var maxBHLevel = 10;
     // Create a list of available decorations
     var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue","Goblin Dragon Statue","Sour Elixir Cauldron","World Finals 23 Statue","Cozy Clam","Hog Pen","Duck Bath","Gingerbread Bakery","Jingle Bell","Dragon Pinata", "Goblin Explorer", "Baby Ptah", "Crown Sword", "Surprising Squad", "Celebration Cup", "Haaland Statue", "Football Camp", "Cowboy Skeleton", "Wizard Vendor", "Hydra Headstone"];
@@ -146,7 +146,8 @@ $(document).ready(function(){
             "600,000-1,050,000", 	// TH14
             "650,000-1,100,000", 	// TH15
             "700,000-1,150,000",    // TH16
-            "750,000-1,200,000"],   // TH17
+            "750,000-1,200,000",	// TH17
+            "800,000-1,200,000"],	// TH18
         		"Rare": [0,
             "4,000-8,000",			// TH1
             "6,000-12,000",			// TH2
@@ -164,7 +165,8 @@ $(document).ready(function(){
             "1,200,000-2,100,000",	// TH14
             "1,300,000-2,200,000",	// TH15
             "1,400,000-2,300,000",  // TH16
-            "1,500,000-2,400,000"]},// TH17
+            "1,500,000-2,400,000",	// TH17
+            "1,600,000-2,500,000"]},// TH18
     	"Elixir": {"Common": [0,
         	"2,000-4,000", 			// TH1
         	"3,000-6,000", 			// TH2
@@ -182,7 +184,8 @@ $(document).ready(function(){
             "600,000-1,050,000", 	// TH14
             "650,000-1,100,000", 	// TH15
             "700,000-1,150,000",    // TH16
-            "750,000-1,200,000"],   // TH17
+            "750,000-1,200,000",	// TH17
+            "800,000-1,200,000"],	// TH18
         		"Rare": [0,
             "4,000-8,000",			// TH1
             "6,000-12,000",			// TH2
@@ -200,7 +203,8 @@ $(document).ready(function(){
             "1,200,000-2,100,000",	// TH14
             "1,300,000-2,200,000",	// TH15
             "1,400,000-2,300,000",  // TH16
-            "1,500,000-2,400,000"]},// TH17
+            "1,500,000-2,400,000",	// TH17
+            "1,600,000-2,500,000"]},// TH18
          "Dark Elixir": {"Common": [0,0,0,0,0,0,0,
          	"1,200-2,000", 		// TH7
             "2,400-4,000",		// TH8
@@ -212,7 +216,8 @@ $(document).ready(function(){
             "8,250-13,000",		// TH14
             "8,750-13,500",		// TH15
             "9,000-13,750",		// TH16
-            "9,250-14,000"], 	// TH17
+            "9,250-14,000", 	// TH17
+            "9,500-14,250"], 	// TH18
             	"Rare": [0,0,0,0,0,0,0,
             "2,400-4,000",		// TH7
             "4,800-8,000",		// TH8
@@ -224,7 +229,8 @@ $(document).ready(function(){
             "16,500-26,000",	// TH14
             "17,500-27,000",	// TH15
             "18,000-27,500",	// TH16
-            "18,500-28,000"]},	// TH17
+            "18,500-28,000",	// TH17
+            "19,000-28,500"]},	// TH18
        	"Builder Gold": {"Common": [0,
          	"17,500-25,000",		// BH1
             "17,500-25,000",		// BH2
@@ -279,7 +285,8 @@ $(document).ready(function(){
             "450-700",		// TH14
             "450-700",		// TH15
             "500-750",		// TH16
-			"500-750"],		// TH17
+			"500-750",		// TH17
+			"500-750"],		// TH18
             	"Epic": [0,0,0,0,0,0,0,0,
             "900-1,300",	// TH8
             "900-1,300",	// TH9
@@ -290,7 +297,8 @@ $(document).ready(function(){
             "1,350-2,200",	// TH14
             "1,350-2,200",	// TH15
             "1,500-2,500",	// TH16
-            "1,500-2,500"]},// TH17
+            "1,500-2,500",	// TH17
+            "1,500-2,500"]},// TH18
         "Glowy Ore": {"Rare": [0,0,0,0,0,0,0,0,
         	"30-40",		// TH8
         	"30-40",		// TH9
@@ -301,7 +309,8 @@ $(document).ready(function(){
             "45-70",		// TH14
             "45-70",		// TH15
             "50-75",		// TH16
-            "50-75"],		// TH17
+            "50-75",		// TH17
+            "50-75"],		// TH18
             	"Epic": [0,0,0,0,0,0,0,0,
             "90-130",		// TH8
             "90-130",		// TH9
@@ -312,7 +321,8 @@ $(document).ready(function(){
             "135-220",		// TH14
             "135-220",		// TH15
             "150-250",		// TH16
-            "150-250"]},	// TH17
+            "150-250",		// TH17
+            "150-250"]},	// TH18
         "Starry Ore": {"Rare": [0,0,0,0,0,0,0,0,
         	"2-3",			// TH8
         	"2-3",			// TH9
@@ -323,7 +333,8 @@ $(document).ready(function(){
             "5-6",			// TH14
             "5-6",			// TH15
             "6-7",			// TH16
-            "6-7"],			// TH17
+            "6-7",			// TH17
+            "6-7"],			// TH18
             	"Epic": [0,0,0,0,0,0,0,0,
             "17-27",		// TH8
             "17-27",		// TH9
@@ -334,7 +345,8 @@ $(document).ready(function(){
             "23-33",		// TH14
             "23-33",		// TH15
             "25-35",		// TH16
-            "25-35"]},		// TH17
+            "25-35",		// TH17
+            "25-35"]},		// TH18
     };
     function resetDictionary(){
     	// Each dictionary contains sub-dictionaries.

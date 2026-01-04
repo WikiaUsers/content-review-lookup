@@ -1,4 +1,4 @@
-/* Custom JavaScript functionality */
+/* Custom JavaScript functionality for [[Template:Extra Effect]]. */
 (function () {
 	function init() {
 		

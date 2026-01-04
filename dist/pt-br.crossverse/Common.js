@@ -124,4 +124,5 @@ $(document).ready(function() {
 // Configuração do AddRailModule para Discord
 window.AddRailModule = ['Template:RailModule'];
 
+
 // Importação do script (se já tiver no ImportJS, não precisa repetir aqui)

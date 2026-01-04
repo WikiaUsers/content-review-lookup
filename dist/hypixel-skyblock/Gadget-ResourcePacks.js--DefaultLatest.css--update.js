@@ -74,7 +74,7 @@
 			{ name: 'Ice' },
 			{ name: 'Iron Ingot', enchName: 'Enchanted Iron' },
 			{ name: 'Lapis Lazuli' },
-			{ name: 'Nether Quartz', enchName: 'Enchanted Quartz' },
+			{ name: 'Nether Quartz' },
 			{ name: 'Netherrack' },
 			{ name: 'Obsidian' },
 			{ name: 'Redstone' },
@@ -83,7 +83,7 @@
 			{ name: 'Red Sand' }
 		],
 		'Misc - Mining': [
-			{ name: 'Charcoal', enchName: 'Enchanted Charcoal' }, //
+			{ name: 'Charcoal' }, //
 			{ name: 'Stone' },
 			{ name: 'Gold Nugget' },
 			{ name: 'Packed Ice' },
@@ -98,7 +98,7 @@
 			{ name: 'Emerald Ore' },
 			{ name: 'Nether Quartz Ore' },
 			{ name: 'Glowstone' },
-			{ name: 'Block of Coal', enchName: 'Enchanted Block of Coal' },
+			{ name: 'Block of Coal', enchName: 'Enchanted Coal Block' },
 			{ name: 'Block of Iron', enchName: 'Enchanted Iron Block' },
 			{ name: 'Block of Gold', enchName: 'Enchanted Gold Block' },
 			{ name: 'Lapis Lazuli Block', enchName: 'Enchanted Lapis Block' },
@@ -537,7 +537,9 @@
 			{ name: 'Fishing Rod' },
 			{ name: 'Carrot on a Stick' },
 			{ name: 'Compass' },
+			{ name: 'Compass', sbExt: 'gif' },
 			{ name: 'Clock' },
+			{ name: 'Clock', sbExt: 'gif' },
 			{ name: 'Bed', mcName: 'Red Bed (N)' },
 			{ name: 'Iron Horse Armor', mcName: 'Iron Horse Armor (item)' },
 			{ name: 'Gold Horse Armor', mcName: 'Golden Horse Armor (item)' },
@@ -594,7 +596,7 @@
 			{ name: 'Skeleton Horse' },
 			{ name: 'Skeleton Horse Pet (summoned)', mcName:'Saddled Skeleton Horse' },
 			{ name: 'Skeleton' },
-			{ name: 'Skeleton (Unarmed)', mcName: 'Skeleton Without Bow' },
+			// { name: 'Skeleton (Unarmed)', mcName: 'Skeleton Without Bow' },
 			{ name: 'Slime', png:true },
 			{ name: 'Snow Golem' },
 			{ name: 'Spider Jockey' },

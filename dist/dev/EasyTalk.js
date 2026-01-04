@@ -36,7 +36,8 @@ mw.loader.using([
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
 	let msg = () => {};
-	const version = '2.0.1';
+	let newTopicToolAvailable = true;
+	const version = '2.1.2';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -48,6 +49,7 @@ mw.loader.using([
 	}});
 	const archived = $(`#${window.dev.DisableArchivedPages.id}`).length;
 	const previewDelay = 1000;
+	const now = Date.now();
 	const editorID = 'easy-talk-editor-js';
 	const docRef = `[[${helpPage}|${toolName}]] v${version}`;
 	const fatalErrors = [
@@ -59,12 +61,31 @@ mw.loader.using([
 	const pageName = config.wgPageName.replaceAll('_', ' ');
 	const messages = [
 		'mw-widgets-abandonedit-title',
+		'just-now',
 		'minutes',
 		'hours',
 		'days',
 		'months',
 		'years',
 	];
+	const newTalkPage =
+		config.wgIsProbablyEditable &&
+		!config.wgArticleId &&
+		params.get('redlink') &&
+		!extraSigNs;
+	const newSection =
+		config.wgIsProbablyEditable &&
+		config.wgAction === 'edit' &&
+		params.get('section') === 'new' &&
+		!params.get('preload') &&
+		!params.get('preloadtitle');
+	const canEditFromReadView =
+		config.wgIsProbablyEditable &&
+		config.wgAction === 'view';
+	
+	if (newTalkPage || newSection){
+		$('#editform').css('display', 'none');
+	}
 	
 	api.loadMessagesIfMissing(messages).then(() => {
 		window.importArticles({'articles': [
@@ -74,11 +95,13 @@ mw.loader.using([
 			mw.hook('dev.i18n').add(i18n => {
 				i18n.loadMessages('EasyTalk', {cacheVersion: 3}).then(i18n => {
 					msg = (...args) => i18n.msg(...args);
-					if (config.wgAction === 'edit' && params.get('section') === 'new'){
-						$('#editform').css('display', 'none');
+					mw.hook('wikipage.content').add(findComments);
+					if (newTalkPage || newSection || canEditFromReadView){
+						addTopicButton.on('click', addTopic);
+					}
+					if (newSection){
 						addTopic();
 					}
-					mw.hook('wikipage.content').add(findComments);
 				});
 			});
 		});
@@ -140,10 +163,6 @@ mw.loader.using([
 		const tZone = ` \\((?:${timeZones.join('|')})\\)`;
 		const tsRegExp = new RegExp(`^(.* )(${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
 		const tsOrderFix = new RegExp(`^(${time}) (.+)(${tZone})$`);
-		const newSectionLinkSelectors = [
-			'#ca-addsection',
-			`a[title="Special:NewSection/${pageName.replaceAll('"', '\\"')}"]`,
-		];
 		const noTalkSelectors = [
 			'.mw-notalk',
 			'blockquote',
@@ -155,7 +174,6 @@ mw.loader.using([
 			'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
 			'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
 			'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
-			'a[title^="Special:TalkPage/User:"]': /^Special:TalkPage\/User: ?(.+?)(?: ?\/.*)?$/,
 		};
 		
 		content.find('*').each((elementIndex, element) => {
@@ -168,21 +186,20 @@ mw.loader.using([
 				return;
 			}
 			
-			const userLinks = $(element).find(Object.keys(linkSelectors).join(', '));
 			const datetime = $($(element).contents().toArray().filter(node => node.nodeType === 3)).last();
+			const userLink = datetime.prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', ')).last();
 			const noTalk = datetime.parents(noTalkSelectors.join(', '));
 			
-			if (!userLinks.length || !tsRegExp.test(datetime.text()) || noTalk.length){
+			if (!userLink.length || !tsRegExp.test(datetime.text()) || noTalk.length){
 				return;
 			}
 			
-			const userLinkTitle = userLinks.last().attr('title');
 			const datetimeMw = datetime.text().replace(tsRegExp, '$2');
 			let datetimeIntl = datetimeMw.replaceAll(',', '').replace(tsOrderFix, '$2 $1$3');
 			let userRegExp;
 			
 			Object.keys(linkSelectors).forEach(selector => {
-				if (userLinks.last().is(selector)){
+				if (userLink.is(selector)){
 					userRegExp = linkSelectors[selector];
 				}
 			});
@@ -193,37 +210,70 @@ mw.loader.using([
 			
 			datetimeIntl = new Date(datetimeIntl).toISOString();
 			const index = content.find(`[data-datetime="${datetimeMw}"]`);
-			const timeTag = `$1${$('<time>', {
+			const timeElement = $('<time>', {
 				'datetime': datetimeIntl,
 				'class': 'js-comment-date-time',
-				'data-user': userLinkTitle.replace(userRegExp, '$1'),
+				'data-user': userLink.attr('title').replace(userRegExp, '$1'),
 				'data-topic': topic,
 				'data-section': section,
 				'data-datetime': datetimeMw,
 				'data-index': index.length,
 				'text': datetimeMw,
-			}).prop('outerHTML')}`;
+			});
+			timeElement.attr('title', age(timeIndex(timeElement), now));
+			const timeTag = `$1${timeElement.prop('outerHTML')}`;
 			datetime.replaceWith(datetime.text().replace(tsRegExp, timeTag));
 		});
 		
+		content.find('p:has(br:only-child)').remove();
+		content.find('dl + dl').each((dlIndex, dl) => {
+			$(dl).prepend($(dl).prev().html());
+			$(dl).prev().remove();
+		});
+		
+		while (content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
+			content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
+		}
+		
 		const comments = content.find('.js-comment-date-time');
+		const newSect = `Special:NewSection/${pageName.replaceAll('"', '\\"')}`;
 		addStats(content, comments);
 		
-		if (!config.wgArticleId && params.get('redlink') && !extraSigNs){
-			content.find(newSectionLinkSelectors.join(', ')).on('click', addTopic);
-			content.find('#editform').css('display', 'none');
+		if (newTalkPage || newSection || canEditFromReadView){
+			content.find(`a[title="${newSect}"]`).on('click', addTopic);
 		}
 		
 		if (
-			!archived &&
-			config.wgAction === 'view' &&
-			config.wgArticleId &&
-			config.wgIsProbablyEditable &&
-			config.wgRevisionId === config.wgCurRevisionId
+			archived ||
+			config.wgAction !== 'view' ||
+			!config.wgArticleId ||
+			!config.wgIsProbablyEditable ||
+			config.wgRevisionId !== config.wgCurRevisionId
 		){
-			content.find(newSectionLinkSelectors.join(', ')).on('click', addTopic);
-			addReplyButtons(content, comments);
+			return;
 		}
+		
+		comments.each((commentIndex, comment) => {
+			if ($(comment).parents('.mw-archivedtalk').length){
+				return;
+			}
+			let anchor = $(comment);
+			while (anchor.parent().css('display') === 'inline'){
+				anchor = anchor.parent();
+			}
+			anchor.after($('<button>', {
+				'class': 'reply-button-js',
+				'type': 'button',
+				'data-user': $(comment).data('user'),
+				'data-topic': $(comment).data('topic'),
+				'data-section': $(comment).data('section'),
+				'data-datetime': $(comment).data('datetime'),
+				'data-index': $(comment).data('index'),
+				'tabindex': 0,
+				'text': msg('replybutton').parse(),
+				'on': {'click': activateReplyButton},
+			}));
+		});
 	}
 	
 	function addStats(content, comments){
@@ -251,21 +301,19 @@ mw.loader.using([
 			topics[$(comment).data('topic')].datetimes.push(timeIndex($(comment)));
 		});
 		
-		const now = Date.now();
-		const agoText = age(timeIndex(latestComment), now);
 		let latestCommentTopText;
 		
 		if (latestComment.data('topic')){
 			latestCommentTopText = msg(
 				'pageframe-latestcomment',
-				agoText,
+				latestComment.attr('title'),
 				latestComment.data('user'),
 				latestComment.data('topic')
 			).parse();
 		} else {
 			latestCommentTopText = msg(
 				'pageframe-latestcomment-notopic',
-				agoText,
+				latestComment.attr('title'),
 				latestComment.data('user')
 			).parse();
 		}
@@ -285,59 +333,23 @@ mw.loader.using([
 			if (!topics[topic]){
 				return;
 			}
-			const latestCommentSect = Math.max(...topics[topic].datetimes);
-			const agoTextSect = age(latestCommentSect, now);
-			const commentCount = topics[topic].datetimes.length;
-			const userCount = topics[topic].users.length;
 			$(header).append($('<div>').addClass([
 				'talk-stats-js',
 				'talk-stats-section-js'
 			]).append(
 				$('<span>').text(msg(
 					'topicheader-latestcomment',
-					agoTextSect
+					age(Math.max(...topics[topic].datetimes), now)
 				).parse()),
 				$('<span>').text(msg(
 					'topicheader-commentcount',
-					commentCount
+					topics[topic].datetimes.length
 				).parse()),
 				$('<span>').text(msg(
 					'topicheader-authorcount',
-					userCount
+					topics[topic].users.length
 				).parse())
 			));
-		});
-	}
-	
-	function addReplyButtons(content, comments){
-		content.find('p:has(br:only-child)').remove();
-		content.find('dl + dl').each((dlIndex, dl) => {
-			$(dl).prepend($(dl).prev().html());
-			$(dl).prev().remove();
-		});
-		while(content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
-			content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
-		}
-		comments.each((commentIndex, comment) => {
-			if ($(comment).parents('.mw-archivedtalk').length){
-				return;
-			}
-			let anchor = $(comment);
-			while (anchor.parent().css('display') === 'inline'){
-				anchor = anchor.parent();
-			}
-			anchor.after($('<button>', {
-				'class': 'reply-button-js',
-				'type': 'button',
-				'data-user': $(comment).data('user'),
-				'data-topic': $(comment).data('topic'),
-				'data-section': $(comment).data('section'),
-				'data-datetime': $(comment).data('datetime'),
-				'data-index': $(comment).data('index'),
-				'tabindex': 0,
-				'text': msg('replybutton').parse(),
-				'on': {'click': activateReplyButton},
-			}));
 		});
 	}
 	
@@ -570,12 +582,14 @@ mw.loader.using([
 	}
 	
 	function addTopic(addTopicEvent){
-		if ((config.wgAction === 'view' || $('#editform').css('display') === 'none') && addTopicEvent){
+		if (addTopicEvent){
 			addTopicEvent.preventDefault();
-		} else if (addTopicEvent){
+		}
+		if (!newTopicToolAvailable){
+			$(`#${editorID} input`).get(0).focus();
 			return;
 		}
-		
+		newTopicToolAvailable = false;
 		$('.reply-button-js').attr({'tabindex': -1, 'disabled': true});
 		const newTopicBox = $('<form>', {
 			'id': editorID,
@@ -739,6 +753,7 @@ mw.loader.using([
 					}
 					mw.hook('wikipage.content').fire($('#mw-content-text'));
 					$(`#${editorID}`).remove();
+					newTopicToolAvailable = true;
 					mw.notify(
 						msg('postedit-confirmation-topicadded').parse(),
 						{type: 'success'}
@@ -763,6 +778,7 @@ mw.loader.using([
 	
 	function closeEditor(){
 		clearInterval(updatePreview);
+		newTopicToolAvailable = true;
 		$('.reply-button-js').attr('tabindex', 0).removeAttr('disabled');
 		$('#active-reply-button-js').removeAttr('id');
 		$(`#${editorID}`).remove();
@@ -774,7 +790,7 @@ function age(date, now){
 	let ageText;
 	
 	if (ageNum < 1000 * 60){
-		ageText = 'just now';
+		ageText = mw.message('just-now').text();
 	} else if (ageNum < 1000 * 60 * 60){
 		ageText = `${mw.message(
 			'minutes',

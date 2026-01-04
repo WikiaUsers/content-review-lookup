@@ -80,6 +80,7 @@ document.querySelectorAll('.page-header__title').forEach(h1 => {
 		.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>')
 		.replace(/ɵ/g, '<span data-letter="э">ɵ</span>')
 		.replace(/δ/g, '<span data-letter="o">δ</span>')
+		.replace(/Λ/g, '<span data-letter="V" style="rotate:180deg;translate:0 -1.4px;">Λ</span>')
 		.replace(/ɑ/g, '<span data-letter="d" style="overflow:hidden;height:20px;translate:0 .7px;">ɑ</span>')
 		.replace(/Ψ/g, '<span data-letter="I" style="margin:0 10px;">Ψ</span>')
 		.replace(/φ/g, '<span data-letter="e" φ style="rotate:270deg;translate:3.5px 1px;scale:1 -1;margin-right:2px;">φ</span>')

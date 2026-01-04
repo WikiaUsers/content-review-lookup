@@ -52,12 +52,3 @@ if(mw.config.values.wgPageName == 'Служебная:AchievementsCustomize' || 
 	for (var n = AchievList.length-1; n>=0; n--)
 		$('<li>' + AchievList[n] + '</li>').prependTo('#AchievList ol');
 }
-
-//Снег
-	
-importArticle({
-	
-type: "script",
-article: "MediaWiki:Snow.js"
-	
-});

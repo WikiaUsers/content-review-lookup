@@ -99,9 +99,9 @@ mw.hook('wikipage.content').add(() => {
 						'<div class="fl-toggle-label">'+
 							(curr.label ? (curr.label+':') :'')+
 							'<div class="fl-toggle-qa">'+
-								'<a class="fl-toggle-qa-all">ALL</a>'+
+								'<a class="fl-toggle-qa-all">WSZYSTKIE</a>'+
 								' &mdash; '+
-								'<a class="fl-toggle-qa-none">NONE</a>'+
+								'<a class="fl-toggle-qa-none">ŻADNE</a>'+
 							'</div>'+
 						'</div>'+
 					'</div>'

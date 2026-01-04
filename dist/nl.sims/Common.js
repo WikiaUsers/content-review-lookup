@@ -16,8 +16,8 @@ var hasClass = (function() {
 })();
 
 var autoCollapse = 2;
-var collapseCaption = "hide";
-var expandCaption = "show";
+var collapseCaption = "Opvouwen";
+var expandCaption = "Uitvouwen";
 
 function collapseTable(tableIndex) {
     var Button = document.getElementById("collapseButton" + tableIndex);
@@ -68,6 +68,8 @@ function createCollapseButtons() {
             Button.style.fontWeight = "normal";
             Button.style.textAlign = "right";
             Button.style.width = "3.5em";
+            Button.style.fontSize = "80%";
+            Button.style.width = "4em";
 
             ButtonLink.style.color = Header.style.color;
             ButtonLink.setAttribute("id", "collapseButton" + tableIndex);

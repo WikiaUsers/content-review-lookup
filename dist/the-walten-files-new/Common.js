@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-var wiki_names = ["Hello Children!", "Oh Christmas, What A Wonderful Holiday.", "Big And Small, Cheap And Expensive.", "You're Not Going To Pay Me, Sir.", "Merry Christmas To You Too, Jerk!", "I Don’t Want To Hear You Lie.", "So Let's Do Eachother A Favor And Accept Your REGRETS.", "The New Walten Files Wiki", "You've Done Bad Stuff, But There's Still Some Time To Fix Your Mistakes. Listen.", "I Don't Have To Fix Anything!", "Two More Ghosts Will Be Visiting You Tonight.", "Sometimes, Our Past Can Lead Up To Our Future Actions.", "You Still Have Time To Acknowledge Your Mistakes.", "Or Else, I'll See You In Hell, You Greedy And Selfish Old Man."];
+var wiki_names = ["Pick Up The Phone, Now.", "THEY'LL SEE YOU SOON, SOPHIE.", "Goodbye, Sophie.", "Safety in Pills, Sophie.", "The Blind Fortune Teller Is Filled With Knowledge...", "...But Never With Context.", "A Pretty Smart Plan, Right?", "Save, Restore, Secure!", "Let Us Edit The Wiki The Right Way...", "...The Bon's Burgers Way.", "07/14 MISSING.", "Am I Still Beautiful To You?", "The Rabbit Is Starving.", "Latern? Check!", "Snacks? Check!", "Or Else, I'll See You In Hell.", "Key? Check!", "Camera? Check!", "Turn On The Light.", "How Odd.", "You Can't Make An Omelette Without Breaking A Few Eggs.", "I Can't Feel Anything. He Thought I Was Her.", "Rose Broken. Will Fix You. You Will Beautiful.", "Sha Burger!", "I Like Apples Too.", "What Have You Done!?", "Mr. and Mrs. Waterman Were Very, Very Bad People.", "The New Walten Files Wiki", "The Walten Archiv.. Wrong One!", "I Can't Remember My Face", "I'm Still Here.", "Did You Forget About Me?", "Did You Miss Me?", "MAKE ME A SANDWICH!", "Take Care While You Care-Take", "Billy!...", "...WHAT!?", "Apples!", "Originality Created By: Rosemary Walten", "Oh Heavens.", "My Little Bunny.", "Polly Put The Kettle On", "Guilty.", "You Crashed The Car! You Killed Them!", "OH NO! YOU GOT THE BAD ENDING!", "What Happened To My Children?", "They Found A Way Out Eventually.", "E  N  J  O  Y    T  H  E    S  H  O  W .", "-Lighth0use- As SOPHIE WALTEN!", "Izzsplash As JENNY LETTERSON!", "CoralineHecc As SUSAN WOODINGS!", "Martin Walls As JACK WALTEN!", "Bravvy (Eva) As BON!", "Anastasia V. As SHA!", "Kyle Denigris As BOOZOO!", "Manny204553 As BILLY!", "Roob As MOLLY WALTEN!", "Petertriesricecakes As EDD WALTEN!", "Em C. As ASHLEY PARKS!", "Martin Walls As Rocket Bunny!", "NORMAN IS BON!", "My.. Name Is... Bon..", "CyberFun's Technology of the Future!", "Forget All Your Troubles, Forget All Your Cares.", "Watching You =) -Sy05.", "Be Patient And Be Honest. That Is All I Ask Of You. -Sy05", "Only As The Clock Continues To Tick -Sy05.", "I do.", "Missing.", "Welcome To The Team!", "LIVE CARLITOS WALTEN REACTION.", "Let Me Out Of Here.", "Lower Your Voice, A'ight!?", "So They're Gone? Molly and Edd?", "You Just Couldn't Stay Home, Could You?", "Then He Slithered And Slunk With A Smile Most Unpleasant...", "...Around The Whole Room And He Took Every Present.", "A Minor Setback?", "Home Sweet Home.", "Way Back Home.", "Are You Able To Remember?", "You Finally Start To Remember. That Old Day...", "Welcome to Bon's Burgers!", "...They Will Be Back For You Soon, Sophie.", "It's Too Late. It's Way Too Late. See You Tomorrow.", "I FEEL SO LUCKY!!!", "Say My Name...", "..We Haven't Met Before, Have We?...", "...Pleasure To Meet You, My Name Is Bon.", "SECTION 3: FOLLOW THE INSTRUCTIONS", "How Much Is That Doggie In The Window?", "Shadow Man Sees Me When Lights Go Off."];
 var wiki_name_number = -1;
 while (wiki_name_number < 0 || wiki_name_number > wiki_names.length) {
   wiki_name_number = Math.random().toFixed(2) * 100;
@@ -113,7 +113,7 @@ $(function () {
 
     function pickRandomTrack() {
         var pool = tracks.filter(t => t !== currentTrack);
-        return pool[Math.floor(Math.random() * Math.random() * pool.length)];
+        return pool[Math.floor(Math.random() * pool.length)];
     }
 
     function showGif(show) {
@@ -291,54 +291,5 @@ $(function () {
         }
         showGif(isPlaying);
         localStorage.setItem("radioPlaying", isPlaying);
-    });
-});
-
-
-
-$(function () {
-    var $toggleBtn = $('<div>', {
-        id: "radio-toggle",
-        text: "▼",
-        css: {
-            position: "fixed",
-            bottom: "212px",
-            right: "20px",
-            width: "26px",
-            height: "26px",
-            background: "#820f03",
-            color: "#fff",
-            borderRadius: "6px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-            zIndex: 10000,
-            userSelect: "none",
-            transition: "opacity 0.2s ease, transform 0.2s ease"
-        }
-    });
-
-    $('body').append($toggleBtn);
-
-    var radioVisible = true;
-
-    $toggleBtn.on("click", function () {
-        if (radioVisible) {
-            $("#radio-container").css({
-                transform: "scale(0.001)",
-                opacity: "0"
-            });
-            $(this).text("▲");
-            radioVisible = false;
-        } else {
-            $("#radio-container").css({
-                transform: "scale(1)",
-                opacity: "1"
-            });
-            $(this).text("▼");
-            radioVisible = true;
-        }
     });
 });

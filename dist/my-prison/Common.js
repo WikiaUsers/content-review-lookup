@@ -1,218 +1,104 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 mw.hook('wikipage.content').add(function ($content) {
-  var pageName = (mw.config.get('wgPageName') || '').toLowerCase();
-  if (!pageName.includes('change_log') && !pageName.includes('game_updates')) return;
+    var $placeholder = $('#search-placeholder');
+    if (!$placeholder.length || $('#inpage-search').length || window.location.href.includes('action=')) return;
 
-  // --- CONFIGURATION ---
-  var searchPlacement = "top"; // "top" | "bottom" | "afterH1" | "manual"
-  var debounceMs = 150;
-  var matchWholeWord = false; // set true to match whole words only
-  // ---------------------
+    var debounceTimer;
 
-  // avoid injecting twice
-  if ($content.find('#inpage-search').length) return;
+    // --- SEARCH BAR UI ---
+    var $container = $('<div id="inpage-search" style="margin: 15px 0; padding: 15px; background: var(--theme-page-background-color--secondary); border: 1px solid var(--theme-border-color); border-radius: 8px;"></div>');
+    var $input = $('<input type="search" id="pageSearchInput" placeholder="Filter Change Log (e.g., Winter, V74, Fixed)..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: var(--theme-page-background-color); color: var(--theme-page-text-color); box-sizing: border-box;">');
+    var $status = $('<div id="searchStatus" style="font-size: 12px; margin-top: 8px; color: var(--theme-page-text-color); opacity: 0.8; font-weight: bold;"></div>');
+    
+    $container.append($input, $status);
+    $placeholder.replaceWith($container);
 
-  // create search UI
-  var $container = $('<div id="inpage-search" style="margin:10px 0;text-align:left;"></div>');
-  var $input = $('<input id="pageSearchInput" type="search" placeholder="Search this page..." style="width:60%;padding:8px;border:1px solid #ccc;border-radius:6px;">');
-  var $clear = $('<button id="pageSearchClear" style="margin-left:6px;padding:6px 8px;border:1px solid #ccc;border-radius:4px;background:#f9f9f9;">Clear</button>');
-  var $meta = $('<span id="pageSearchMeta" style="margin-left:12px;font-size:0.95em;color:#444;"></span>');
-  $container.append($input).append($clear).append($meta);
-
-  // place according to configuration
-  if (searchPlacement === "bottom") {
-    $content.append($container);
-  } else if (searchPlacement === "afterH1" && $content.find('h1').length) {
-    $content.find('h1').first().after($container);
-  } else if (searchPlacement === "manual" && $('#search-placeholder').length) {
-    $('#search-placeholder').replaceWith($container);
-  } else {
-    $content.prepend($container);
-  }
-
-  // find update groups
-  var groups = [];
-  var $entries = $content.find('.log-entry');
-  if ($entries.length) {
-    $entries.each(function () { groups.push($(this)); });
-  } else {
-    $content.find('h2, h3, h4').each(function () {
-      var $h = $(this);
-      var $grp = $h.add($h.nextUntil('h2,h3,h4'));
-      groups.push($grp);
-    });
-    if (!groups.length) {
-      var $all = $content.find('.mw-parser-output').children();
-      if ($all.length) groups.push($all);
+    function getUpdateGroups() {
+        var groups = [];
+        // Map all H3 (versions)
+        $('.mw-parser-output > h3').each(function() {
+            var $header = $(this);
+            var $contentBetween = $header.nextUntil('h3');
+            groups.push({
+                header: $header,
+                content: $contentBetween,
+                fullText: ($header.text() + ' ' + $contentBetween.text()).toLowerCase()
+            });
+        });
+        return groups;
     }
-  }
 
-  // helper: debounce
-  function debounce(fn, wait) {
-    var t;
-    return function () {
-      var args = arguments, ctx = this;
-      clearTimeout(t);
-      t = setTimeout(function () { fn.apply(ctx, args); }, wait);
-    };
-  }
+    function clearHighlights() {
+        $('.page-search-highlight').each(function() {
+            var parent = this.parentNode;
+            $(this).replaceWith(this.textContent);
+            if (parent) parent.normalize();
+        });
+    }
 
-  // clear previous highlights
-  function clearHighlightsIn($group) {
-    $group.find('span.page-search-highlight').each(function () {
-      $(this).replaceWith($(this).text());
-    });
-  }
+    function applyHighlight($elements, term) {
+        var regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+        $elements.find('span, li, b, i, code, h3').addBack('h3').contents().filter(function() {
+            return this.nodeType === 3 && this.textContent.match(regex);
+        }).each(function() {
+            var span = document.createElement('span');
+            span.innerHTML = this.textContent.replace(regex, '<span class="page-search-highlight">$1</span>');
+            $(this).replaceWith(span.childNodes);
+        });
+    }
 
-  // normalize text: lowercase + remove diacritics
-  function normalizeText(s) {
-    if (!s) return '';
-    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
+    function executeSearch() {
+        var query = $input.val().trim().toLowerCase();
+        var groups = getUpdateGroups();
+        var matchCount = 0;
 
-  // highlight matching terms using an already-normalized term to avoid mismatch
-  function highlightIn($group, term, normTerm) {
-    if (!term) return;
-    var normTermLocal = typeof normTerm !== 'undefined' ? normTerm : normalizeText(term);
-    var termLen = normTermLocal.length;
-    if (!termLen) return;
+        clearHighlights();
 
-    var useWhole = !!matchWholeWord;
-
-    $group.find('h1,h2,h3,h4,h5,h6,p,li,td,th,div').each(function () {
-      // only process text nodes inside this element
-      $(this).contents().filter(function () { return this.nodeType === 3; }).each(function () {
-        var txt = this.nodeValue;
-        if (!txt) return;
-
-        // build mapping from normalized indices to original indices
-        var norm = '';
-        var map = [];
-        for (var i = 0; i < txt.length; i++) {
-          var ch = txt[i];
-          var nch = ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          if (nch.length === 0) continue;
-          for (var k = 0; k < nch.length; k++) {
-            norm += nch[k].toLowerCase();
-            map.push(i);
-          }
+        if (!query) {
+            // If empty, show everything on the page
+            $('.mw-parser-output > *').show();
+            $status.text('');
+            return;
         }
-        if (!norm) return;
 
-        var startIndex = 0;
-        var foundAny = false;
-        var frag = document.createDocumentFragment();
-        var lastOrig = 0;
+        // --- LOGIC OF CONCEALMENT  ---
+        // 1. Hide all direct children of the content area
+        var $allContent = $('.mw-parser-output > *');
+        $allContent.hide();
 
-        while (true) {
-          var pos = norm.indexOf(normTermLocal, startIndex);
-          if (pos === -1) break;
+        // 2. Ensure that the Header, Notice, and Search Bar REMAIN VISIBLE.
+        $('.log-header, .noprint, #inpage-search').show();
+        $('.mw-parser-output > h2').show(); 
 
-          // if whole-word required, check boundaries in the normalized string
-          if (useWhole) {
-            var before = pos - 1;
-            var after = pos + termLen;
-            var okBefore = before < 0 || !(/[a-z0-9_]/i).test(norm[before]);
-            var okAfter = after >= norm.length || !(/[a-z0-9_]/i).test(norm[after]);
-            if (!(okBefore && okAfter)) {
-              startIndex = pos + 1;
-              continue;
+        // 3. Only shows groups (H3 + content) that match the search
+        groups.forEach(function(group) {
+            if (group.fullText.indexOf(query) !== -1) {
+                group.header.show();
+                group.content.show();
+                applyHighlight(group.header.add(group.content), query);
+                matchCount++;
             }
-          }
+        });
 
-          foundAny = true;
-          var origStart = map[pos];
-          var origEnd = map[pos + termLen - 1] + 1; // slice end
-
-          // append text between lastOrig and origStart
-          if (origStart > lastOrig) {
-            frag.appendChild(document.createTextNode(txt.slice(lastOrig, origStart)));
-          }
-          // create highlight span for matched original substring
-          var span = document.createElement('span');
-          span.className = 'page-search-highlight';
-          span.textContent = txt.slice(origStart, origEnd);
-          frag.appendChild(span);
-
-          lastOrig = origEnd;
-          startIndex = pos + termLen;
-        }
-
-        if (!foundAny) return; // return from this text-node callback (equivalent to continue)
-
-        if (lastOrig < txt.length) frag.appendChild(document.createTextNode(txt.slice(lastOrig)));
-        this.parentNode.replaceChild(frag, this);
-      });
-    });
-  }
-
-  // perform search
-  function doSearch() {
-    var q = ($input.val() || '').trim();
-    var normQ = normalizeText(q);
-
-    // reset groups
-    groups.forEach(function ($g) {
-      clearHighlightsIn($g);
-      $g.each(function () { $(this).show(); });
-    });
-
-    if (!normQ) {
-      $meta.text('');
-      return;
+        $status.text(matchCount > 0 ? 'Found ' + matchCount + ' corresponding versions.' : 'No results found.');
     }
 
-    var totalMatches = 0;
-    var firstMatchedGroup = null;
-
-    groups.forEach(function ($g) {
-      var text = ($g.text() || '');
-      if (!text) {
-        $g.each(function () { $(this).hide(); });
-        return;
-      }
-      var normText = normalizeText(text);
-      if (normText.indexOf(normQ) !== -1) {
-        $g.each(function () { $(this).show(); });
-        highlightIn($g, q, normQ); // use same normalized query for highlighting
-        totalMatches++;
-        if (!firstMatchedGroup) firstMatchedGroup = $g;
-      } else {
-        $g.each(function () { $(this).hide(); });
-      }
+    $input.on('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(executeSearch, 250);
     });
 
-    $meta.text(totalMatches ? (totalMatches + ' group(s) matched') : 'No matches');
-
-    // scroll to first matched group only when query is at least 2 chars (avoids jumping on first letter)
-    if (firstMatchedGroup && normQ && normQ.length >= 2 && firstMatchedGroup.length) {
-      var el = firstMatchedGroup.first()[0];
-      if (el && el.scrollIntoView) {
-        try {
-          var y = $(el).offset().top - 80;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        } catch (e) {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+    if (!$('#page-search-highlight-style').length) {
+        $('<style id="page-search-highlight-style">')
+            .text('.page-search-highlight { background: #fff176 !important; color: #000 !important; border-radius: 2px; padding: 0 1px; }')
+            .appendTo('head');
     }
-  }
-
-  // events
-  $input.on('input', debounce(doSearch, debounceMs));
-  $input.on('keyup', function (e) {
-    if (e.key === 'Escape') { $input.val(''); doSearch(); }
-  });
-  $clear.on('click', function () {
-    $input.val(''); doSearch(); $input.focus();
-  });
-
-  // highlight CSS (only once)
-  if (!document.getElementById('page-search-highlight-style')) {
-    var css = '.page-search-highlight{background:#fff176;color:#000;padding:0 2px;border-radius:2px;}';
-    var style = document.createElement('style'); style.id = 'page-search-highlight-style';
-    style.appendChild(document.createTextNode(css));
-    document.head.appendChild(style);
-  }
 });
+
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{NewUser}}',
+    },
+    notify: true
+};
