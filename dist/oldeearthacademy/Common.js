@@ -8,5 +8,9 @@ window.UserTagsJS = {
 		impressor: { u: 'Impressor' },
 		bureaucat: { u: 'Magiquaine' },
 		kapjaine: { u: 'Kapjaine' }
-	}
+	},	
+	oasisPlaceBefore: '> h1'
+};
+UserTagsJS.modules.custom = {
+	'Niffleroddam': ['airine', 'bureaucat', 'Kapjain', 'Terraine', 'Aquine', 'impressor']
 };

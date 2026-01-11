@@ -29,17 +29,10 @@ function addMastheadTags() {
  
  
     rights["Ajax 013"] = ["Bureaucrat"];
-    rights["Brodie-001"] = ["Bureaucrat"];
-    rights["Actene"] = ["Admin"];
+    rights["Distant Tide"] = ["Bureaucrat"];
     rights["Ahalosniper"] = ["Admin"];
-    rights["Lordofmonsterisland"] = ["Admin"];
-    rights["Anonymous ONI agent"] = ["Site Patrol"];
-    rights["Lieutenant Davis"] = ["Site Patrol"];
-    rights["Revan180193"] = ["Site Patrol"];
-    rights["Minuteman 2492"] = ["Site Patrol"];
-    rights["Sev40"] = ["Site Patrol"];
-    rights["Distant Tide"] = ["Site Patrol"];
-    rights["S-D379"] = ["Site Patrol"]; 
+    rights["S-D379"] = ["Admin"];
+    rights["Spartan-D042"] = ["Site Patrol"];
  
   // END List of Accounts Given Extra User Rights Icons
  

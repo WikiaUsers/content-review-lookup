@@ -130,8 +130,10 @@ importArticle({
 				}
 				if (userData.fbPage) socialLinks.push('<a href="' + userData.fbPage + '" target="_blank" class="UserProfilePopup__socialLink">' + getSocialIconSvg('facebook') + '</a>');
 				if (userData.discordHandle) socialLinks.push('<div class="UserProfilePopup__socialLink">' + getSocialIconSvg('discord') + '<span class="UserProfilePopup__socialLink-discord">' + userData.discordHandle + '</span></div>');
-
-				var socialButtonHtml = socialLinks.length ? '<div class="UserProfilePopup__socialWrapper"><div class="UserProfilePopup__button UserProfilePopup__dots" tabindex="0"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="2.5"></circle><circle cx="19.5" cy="12" r="2.5"></circle><circle cx="4.5" cy="12" r="2.5"></circle></svg></div><div class="UserProfilePopup__socialPanel">' + socialLinks.join('') + '</div></div>' : '';
+				
+				var dotsIconSvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="2.5"></circle><circle cx="19.5" cy="12" r="2.5"></circle><circle cx="4.5" cy="12" r="2.5"></circle></svg>';
+				
+				var socialButtonHtml = socialLinks.length ? '<div class="UserProfilePopup__socialWrapper"><div class="UserProfilePopup__button UserProfilePopup__dots">' + dotsIconSvg + '</div><div class="UserProfilePopup__socialPanel">' + socialLinks.join('') + '</div></div>' : '';
 				
 				var popupClasses = 'UserProfilePopup__popup';
 				if (Array.isArray(userData.tags) && userData.tags.includes("Blocked")) {
@@ -151,7 +153,7 @@ importArticle({
 					'</div>' +
 					'<div class="UserProfilePopup__buttons">' +
 						'<a href="' + userData.userPage + '" class="UserProfilePopup__button">View</a>' +
-						'<a href="/wiki/User_talk:' + encodeURIComponent(username.replace(/ /g, '_')) + '" class="UserProfilePopup__button">Talk</a>' +
+						'<a href="' + mw.util.getUrl('User_talk:' + username) + '" class="UserProfilePopup__button">Talk</a>' +
 						'<a href="' + userData.contributionsUrl + '" class="UserProfilePopup__button">Contribs</a>' +
 						'<a href="' + userData.userProfileActivityUrl + '" class="UserProfilePopup__button">Posts</a>' +
 						socialButtonHtml +
@@ -175,10 +177,10 @@ importArticle({
 						if (!popup.is(':hover')) popup.fadeOut(300);
 					}, 100);
 				}
-
+				
 				$link.off('mouseenter mouseleave').on('mouseenter', showPopup).on('mouseleave', hidePopup);
 				popup.on('mouseenter', function() { popup.stop(true, true).show(); }).on('mouseleave', hidePopup);
-
+				
 				if ($link.is(':hover')) showPopup();
 			});
 		});

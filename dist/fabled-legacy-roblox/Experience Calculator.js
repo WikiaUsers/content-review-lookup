@@ -14,12 +14,12 @@
 
 /* --------- 1 --------- */
 /* Creating the exp calculator */
-const experienceCalculator = document.getElementById('experienceCalculator');
+const experienceCalculator = document.getElementById("experienceCalculator");
 
-function createRow(id = '', hidden = false) {
+function createRow(spaceID = '', hidden = false) {
   var rowSpacing = document.createElement('div');
   rowSpacing.className = 'exp-calculator-spacing';
-  if (id) rowSpacing.id = id;
+  if (spaceID) rowSpacing.id = spaceID;
   if (experienceCalculator.children.length == 0) {
     rowSpacing.style.marginTop = '15px';
   }
@@ -27,7 +27,7 @@ function createRow(id = '', hidden = false) {
   return rowSpacing;
 }
 
-function createInputField({ labelText, id, type = 'number', min = 1, max = 320, placeholder = '' }) {
+function createInputField({ labelText, inputFieldID, type = 'number', min = 1, max = 500, placeholder = '' }) {
   var rowSpacing = createRow();
   var label = document.createElement('label');
   label.textContent = `${labelText}: `;
@@ -35,7 +35,7 @@ function createInputField({ labelText, id, type = 'number', min = 1, max = 320, 
   var input = document.createElement('input');
   input.type = type;
   input.className = 'exp-calculator-inputField';
-  input.id = id;
+  input.id = inputFieldID;
   input.min = min;
   input.max = max;
   input.style.width = '70px';
@@ -45,14 +45,14 @@ function createInputField({ labelText, id, type = 'number', min = 1, max = 320, 
   experienceCalculator.append(rowSpacing);
 }
 
-function createSelectField({ labelText, id, options, nameKey = 'label', valueKey = 'value' }) {
+function createSelectField({ labelText, selectFieldID, options, nameKey = 'label', valueKey = 'value' }) {
   var rowSpacing = createRow();
   var label = document.createElement('label');
   label.textContent = `${labelText}: `;
 
   var select = document.createElement('select');
   select.className = 'exp-calculator-inputField';
-  select.id = id;
+  select.id = selectFieldID;
 
   options.forEach(opt => {
     var option = document.createElement('option');
@@ -65,18 +65,18 @@ function createSelectField({ labelText, id, options, nameKey = 'label', valueKey
   experienceCalculator.append(rowSpacing);
 }
 
-function createCheckbox({ labelText, id, boostValue, hidden = false }) {
-  var rowSpacing = createRow(`${id}-exp-calculator-spacing`, hidden);
+function createCheckbox({ labelText, checkboxID, boostValue, hidden = false }) {
+  var rowSpacing = createRow(`${checkboxID}-exp-calculator-spacing`, hidden);
   
   var checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
-  checkbox.id = id;
+  checkbox.id = checkboxID;
   checkbox.dataset.boost = boostValue;
   checkbox.style.width = 'auto';
   checkbox.style.marginRight = '8px';
 
   var label = document.createElement('label');
-  label.htmlFor = id;
+  label.htmlFor = checkboxID;
   label.innerHTML = `${labelText} (+${Math.round(boostValue * 100)}% EXP)`;
 
   rowSpacing.append(checkbox, label);
@@ -161,17 +161,12 @@ var friendBoosts = [
 
 var dungeonModifiers = [
   { dungeonModifier: "None", EXPmultiplier: "1" },
-  { dungeonModifier: "Swarming Grounds (1.25x EXP)", EXPmultiplier: "1.25" },
-  { dungeonModifier: "Stonehide (1.25x EXP)", EXPmultiplier: "1.25" },
-  { dungeonModifier: "Sharpened Blades (1.25x EXP)", EXPmultiplier: "1.25" },
-  { dungeonModifier: "Ironhide Horde (1.5x EXP)", EXPmultiplier: "1.5" },
-  { dungeonModifier: "Scholar's Resolve (1.5x EXP)", EXPmultiplier: "1.5" },
-  { dungeonModifier: "Trial of Endurance (1.5x EXP)", EXPmultiplier: "1.5" },
-  { dungeonModifier: "Merchant's Delight (0.5x EXP)", EXPmultiplier: "0.5" },
-  { dungeonModifier: "Wisdom's Favour (2x EXP)", EXPmultiplier: "2" },
-  { dungeonModifier: "Blades Drawn (1.5x EXP)", EXPmultiplier: "1.5" },
-  { dungeonModifier: "Wisdom's Overload (3x EXP)", EXPmultiplier: "3" },
-  { dungeonModifier: "Legacy's Zenith (4x EXP)", EXPmultiplier: "4" }
+  { dungeonModifier: "0.5x EXP", EXPmultiplier: "0.5" },
+  { dungeonModifier: "1.25x EXP", EXPmultiplier: "1.25" },
+  { dungeonModifier: "1.5x EXP", EXPmultiplier: "1.5" },
+  { dungeonModifier: "2x EXP", EXPmultiplier: "2" },
+  { dungeonModifier: "3x EXP", EXPmultiplier: "3" },
+  { dungeonModifier: "4x EXP", EXPmultiplier: "4" }
 ];
 
 
@@ -181,7 +176,7 @@ var dungeonModifiers = [
 // Dungeons
 createSelectField({
   labelText: "Select a Dungeon",
-  id: "dungeonExp",
+  selectFieldID: "dungeonExp",
   options: dungeonList,
   nameKey: "name",
   valueKey: "baseEXP"
@@ -203,26 +198,35 @@ document.getElementById('dungeonExp').onchange = function () {
 };
 
 // Current Level
-createInputField({ labelText: "Current Level", id: "currentLevel" });
+createInputField({ labelText: "Current Level", inputFieldID: "currentLevel" });
 
 // Goal Level
-createInputField({ labelText: "Goal Level", id: "goalLevel" });
+createInputField({ labelText: "Goal Level", inputFieldID: "goalLevel" });
+
+// Run Time
+createInputField({
+  labelText: "Average Run Time (seconds)",
+  inputFieldID: "avgTime",
+  min: 25,
+  max: 3600,
+  placeholder: 60
+});
 
 // Boosts
-createCheckbox({ labelText: '<span style="font-family: Verdana, Arial;" class="calamity">Calamity</span> Mode Enabled', id: 'calamityBoost', boostValue: 0.7, hidden: true });
-var boostOptions = [
-  { labelText: '<span style="font-family: Verdana, Arial;" class="hardcore">Hardcore</span> Mode Enabled', id: 'hardcoreBoost', boostValue: 0.4 },
-  { labelText: 'With VIP Gamepass', id: 'VIPGamepass', boostValue: 0.2 },
-  { labelText: 'EXP Boost Enabled', id: 'EXPBoost', boostValue: 0.5 },
-  { labelText: 'Weekend Boost Enabled', id: 'weekendBoost', boostValue: 0.5 }
-];
-boostOptions.forEach(boost => createCheckbox(boost));
+createCheckbox({ labelText: '<span style="font-family: Verdana, Arial;" class="calamity">Calamity</span> Mode Enabled', checkboxID: 'calamityBoost', boostValue: 0.7, hidden: true });
 
-createInputField({ labelText: "Bonus EXP on a Ring (%)", id: "ringSubstatBoost", min: 0, max: 18, placeholder: "0" });
+createCheckbox({ labelText: '<span style="font-family: Verdana, Arial;" class="hardcore">Hardcore</span> Mode Enabled', checkboxID: 'hardcoreBoost', boostValue: 0.4, hidden: false });
 
+createCheckbox({ labelText: 'With VIP Gamepass', checkboxID: 'VIPGamepass', boostValue: 0.2, hidden: false });
+
+createCheckbox({ labelText: 'EXP Boost Enabled', checkboxID: 'EXPBoost', boostValue: 0.5, hidden: false });
+
+createCheckbox({ labelText: 'Weekend Boost Enabled', checkboxID: 'weekendBoost', boostValue: 0.5, hidden: false });
+
+createInputField({ labelText: "Bonus EXP on a Ring (%)", inputFieldID: "ringSubstatBoost", min: 0, max: 18, placeholder: "0" });
 createSelectField({
   labelText: "Weapon Perk Bonus",
-  id: "weaponPerkBoost",
+  selectFieldID: "weaponPerkBoost",
   options: weaponPerks,
   nameKey: "perkName",
   valueKey: "perkBonus"
@@ -230,7 +234,7 @@ createSelectField({
 
 createSelectField({
   labelText: "Guild EXP Bonus",
-  id: "guildExpBoost",
+  selectFieldID: "guildExpBoost",
   options: guildLevels,
   nameKey: "guildLevel",
   valueKey: "guildBonus"
@@ -238,7 +242,7 @@ createSelectField({
 
 createSelectField({
   labelText: "Amount of Friends in-game",
-  id: "friendExpBoost",
+  selectFieldID: "friendExpBoost",
   options: friendBoosts,
   nameKey: "friendAmount",
   valueKey: "friendBonus"
@@ -247,7 +251,7 @@ createSelectField({
 // Dungeon Modifiers
 createSelectField({
   labelText: "Dungeon Modifier Bonus",
-  id: "dungeonModifierExpBoost",
+  selectFieldID: "dungeonModifierExpBoost",
   options: dungeonModifiers,
   nameKey: "dungeonModifier",
   valueKey: "EXPmultiplier"
@@ -278,6 +282,41 @@ function calculateExp(currentLevel, goalLevel) {
   return exp;
 }
 
+// Shorten long numbers and add suffixes
+function shortenNumber(num) {
+  if (!isFinite(num)) return "infinite";
+  if (num < 1e3) {
+    return num.toLocaleString();
+  }
+  var suffixes = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "De"];
+  var index = Math.floor(Math.log10(num) / 3);
+  var suffixIndex = Math.min(index, suffixes.length - 1);
+  var scaledNumber = num / Math.pow(10, suffixIndex * 3);
+  var finalNumber = Math.floor(scaledNumber * 100) / 100;
+  
+  return finalNumber.toFixed(2).replace(/\.?0+$/, "") + suffixes[suffixIndex];
+}
+
+// Time formatting
+function formatTime(time) {
+  var Days = Math.floor(time / 86400);
+  var Hours = Math.floor((time % 86400) / 3600);
+  var Minutes = Math.floor((time % 3600) / 60);
+  var Seconds = time % 60;
+
+  if (Days >= 1) {
+    averageTime = `${Days}d ${Hours}h ${Minutes}m ${Seconds}s`;
+  } else if (Hours >= 1) {
+    averageTime = `${Hours}h ${Minutes}m ${Seconds}s`;
+  } else if (Minutes >= 1) {
+    averageTime = `${Minutes}m ${Seconds}s`;
+  } else {
+    averageTime = `${Seconds}s`;
+  }
+
+  return averageTime;
+}
+
 // Show results by using the button
 calcBtn.onclick = function () {
   var currentLevel = parseInt(document.getElementById('currentLevel').value);
@@ -288,7 +327,9 @@ calcBtn.onclick = function () {
   var guildExpBoost = parseFloat(document.getElementById('guildExpBoost').value) || 0;
   var friendExpBoost = parseFloat(document.getElementById('friendExpBoost').value) || 0;
   var dungeonModifierExpBoost = parseFloat(document.getElementById('dungeonModifierExpBoost').value) || 0;
-
+  
+  var avgTime = parseInt(document.getElementById('avgTime').value || document.getElementById('avgTime').placeholder) || 0;
+  
   // Error messages
   if (isNaN(currentLevel) || isNaN(goalLevel)) {
     resultDiv.className = "exp-calculator-result-error";
@@ -298,13 +339,21 @@ calcBtn.onclick = function () {
     resultDiv.className = "exp-calculator-result-error";
     resultDiv.innerHTML = `<b>Error!</b> Levels cannot be lower than 1.`;
     return;
-  } else if (currentLevel > 320 || goalLevel > 320) {
+  } else if (currentLevel > 500 || goalLevel > 500) {
     resultDiv.className = "exp-calculator-result-error";
-    resultDiv.innerHTML = `<b>Error!</b> Exceeded level cap! Levels cannot be higher than 320.`;
+    resultDiv.innerHTML = `<b>Error!</b> Exceeded level cap! Levels cannot be higher than 500.`;
     return;
   } else if (currentLevel >= goalLevel) {
     resultDiv.className = "exp-calculator-result-error";
     resultDiv.innerHTML = `<b>Error!</b> Your goal level (${goalLevel}) cannot be equal or lower than your current level (${currentLevel}).`;
+    return;
+  } else if (avgTime < 25) {
+    resultDiv.className = "exp-calculator-result-error";
+    resultDiv.innerHTML = `<b>Error!</b> Average run time cannot be shorter than 25 seconds.`;
+    return;
+  } else if (avgTime > 3600) {
+    resultDiv.className = "exp-calculator-result-error";
+    resultDiv.innerHTML = `<b>Error!</b> Average run time cannot be longer than 1 hour.`;
     return;
   } else if (ringSubstatBoost > 18) {
     resultDiv.className = "exp-calculator-result-error";
@@ -317,8 +366,9 @@ calcBtn.onclick = function () {
   }
 
   var boostExp = 0;
+  var expBoostBonus = 0;
 
-  // Add calamity mode bonus to the Total Exp
+  // Calamity mode Bonus
   var dungeonName = document.getElementById('dungeonExp').options[document.getElementById('dungeonExp').selectedIndex].text;
   var calamityCheckbox = document.getElementById('calamityBoost');
   if (calamityCheckbox && calamityCheckbox.checked) {
@@ -329,28 +379,42 @@ calcBtn.onclick = function () {
     }
     boostExp += baseDungeonExp * parseFloat(calamityCheckbox.dataset.boost);
   }
-  // Add boost bonuses from each group to the Total Exp
-  boostOptions.forEach(boost => {
-    var checkbox = document.getElementById(boost.id);
+
+  // Other boost Bonuses
+  var boostCheckboxes = [
+    'hardcoreBoost',
+    'VIPGamepass',
+    'weekendBoost'
+  ];
+  boostCheckboxes.forEach(checkboxID => {
+    var checkbox = document.getElementById(checkboxID);
     if (checkbox && checkbox.checked) {
       boostExp += baseDungeonExp * parseFloat(checkbox.dataset.boost);
     }
   });
-  // Add ring substat, guild exp and weapon perk bonuses to the Total Exp
-  boostExp += baseDungeonExp * (ringSubstatBoost / 100);
+
+  // Experience Boost Bonus
+  var expBoostCheckbox = document.getElementById('EXPBoost');
+  if (expBoostCheckbox && expBoostCheckbox.checked) {
+    expBoostBonus = baseDungeonExp * parseFloat(expBoostCheckbox.dataset.boost);
+  }
+
+  // Guild and Friend Bonuses
   boostExp += baseDungeonExp * guildExpBoost;
-  boostExp += baseDungeonExp * weaponPerkBoost;
   boostExp += baseDungeonExp * friendExpBoost;
 
 
-  // Total Exp
-  var totalExp = (baseDungeonExp + boostExp) * dungeonModifierExpBoost;
+  /* Total Exp - Boosts stack like this:
+  Base > Calamity > VIP > Hardcore > Weekend > Guild > Friend > Ring Substats + Weapon Perk > Experience Boost > Dungeon Modifier */
+  var totalExp = ((baseDungeonExp + boostExp) * (1 + (ringSubstatBoost / 100) + weaponPerkBoost) + expBoostBonus) * dungeonModifierExpBoost;
   var requiredExp = calculateExp(currentLevel, goalLevel);
   var runsNeeded = Math.ceil(requiredExp / totalExp);
-
+  
+  // Total Required Time
+  var totalAvgTime = runsNeeded * avgTime;
 
   // Publish the results if the calculation is successful
   var runText = runsNeeded == 1 ? "run" : "runs"; // Change "runs" to "run" if there's only one run needed
   resultDiv.className = "exp-calculator-result-success";
-  resultDiv.innerHTML = `Experience needed from level ${currentLevel} to level ${goalLevel}: <b>${requiredExp.toLocaleString()}</b>.<br>The total experience gain from 1 run: <b>${Math.round(totalExp).toLocaleString()}</b>.<br>You will need to complete at least <b>${runsNeeded.toLocaleString()}</b> ${runText} to reach your goal level.`;
+  resultDiv.innerHTML = `Experience needed from level ${currentLevel} to level ${goalLevel}: <b>${shortenNumber(requiredExp)}</b>.<br>The total experience gain from 1 run: <b>${shortenNumber(totalExp)}</b>.<br>You will need to complete at least <b>${runsNeeded.toLocaleString()}</b> ${runText} to reach your goal level.<br>You will need to take an average of <b>${formatTime(totalAvgTime)}</b> to reach your goal level.`;
 };

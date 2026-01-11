@@ -2419,3 +2419,161 @@ $(document).ready(function(){$('head').append('<link href="https://fonts.googlea
 
 // blaze one
 $(document).ready(function(){$('head').append('<link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet"><style>@keyframes cameraShakeLight{0%,100%{transform:translateY(0)}25%{transform:translateY(-0.5px)}50%{transform:translateY(0.5px)}75%{transform:translateY(-0.25px)}}@keyframes cameraShakeMedium{0%,100%{transform:translateY(0)}25%{transform:translateY(-1px)}50%{transform:translateY(1px)}75%{transform:translateY(-0.75px)}}@keyframes cameraShakeHeavy{0%,100%{transform:translateY(0)}25%{transform:translateY(-1.5px)}50%{transform:translateY(1.5px)}75%{transform:translateY(-1px)}}@keyframes cameraShakeExtreme{0%,100%{transform:translateY(0)}20%{transform:translateY(-2px)}40%{transform:translateY(2px)}60%{transform:translateY(-1.5px)}80%{transform:translateY(1.5px)}}.shake-light{animation:cameraShakeLight 0.15s ease-out}.shake-medium{animation:cameraShakeMedium 0.15s ease-out}.shake-heavy{animation:cameraShakeHeavy 0.2s ease-out}.shake-extreme{animation:cameraShakeExtreme 0.25s ease-out}#start-button-container{position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);z-index:10003;text-align:center;opacity:0;transition:opacity 0.5s ease-in-out;pointer-events:none}#start-button-container.visible{opacity:1;pointer-events:all}#start-button-text{font-family:"Merriweather",serif;font-size:24px;color:#b388ff;text-shadow:0 0 10px rgba(179,136,255,0.8);margin-bottom:20px;font-weight:600}#start-button{font-family:"Merriweather",serif;font-size:32px;padding:20px 60px;background:linear-gradient(135deg,#6a1b9a,#9c27b0);border:3px solid #b388ff;border-radius:15px;color:#fff;cursor:pointer;font-weight:700;text-shadow:2px 2px 4px rgba(0,0,0,0.5);box-shadow:0 0 20px rgba(179,136,255,0.6),0 0 40px rgba(179,136,255,0.4);transition:all 0.3s ease}#start-button:hover{transform:scale(1.1);box-shadow:0 0 30px rgba(179,136,255,0.8),0 0 60px rgba(179,136,255,0.6)}</style>');var u='https://files.catbox.moe/gx065s.mpeg',C=null,A=null,S=null,D=null,B=0,W=$('<div>').attr('id','visualizer-shake-wrapper').css({position:'fixed',top:'0',left:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:9997});$('body').append(W);var SBC=$('<div>').attr('id','start-button-container'),SBT=$('<div>').attr('id','start-button-text').text('click 4 effects'),SB=$('<button>').attr('id','start-button').text('START');SBC.append(SBT).append(SB);$('body').append(SBC);var TC=$('<canvas>').attr('id','top-visualizer').css({position:'fixed',top:'80px',left:'0',width:'100%',height:'100px',zIndex:10000,opacity:'0',transition:'opacity 0.5s ease-in-out',pointerEvents:'none'}),BC=$('<canvas>').attr('id','bottom-visualizer').css({position:'fixed',bottom:'80px',left:'0',width:'100%',height:'100px',zIndex:10000,opacity:'0',transition:'opacity 0.5s ease-in-out',pointerEvents:'none'}),TB=$('<div>').attr('id','top-border').css({position:'fixed',top:'-100px',left:'0',width:'100%',height:'80px',backgroundColor:'rgba(0, 0, 0, 0.7)',zIndex:9999,transition:'top 0.5s ease-in-out',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Merriweather', serif",pointerEvents:'none'}),TW=$('<canvas>').attr('id','top-waveform').css({position:'absolute',top:'0',left:'0',width:'100%',height:'100%',zIndex:1,pointerEvents:'none'}),BB=$('<div>').attr('id','bottom-border').css({position:'fixed',bottom:'-100px',left:'0',width:'100%',height:'80px',backgroundColor:'rgba(0, 0, 0, 0.7)',zIndex:9999,transition:'bottom 0.5s ease-in-out',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Merriweather', serif",pointerEvents:'none'}),SC=$('<canvas>').attr('id','spectrum-canvas').css({position:'fixed',bottom:'80px',left:'0',width:'100%',height:'300px',zIndex:9998,pointerEvents:'none',opacity:'0.4'}),LD=$('<div>').attr('id','lyric-display').css({fontSize:'32px',fontWeight:'400',whiteSpace:'pre-wrap',textShadow:'0 1px 0 rgba(0,0,0,0.05)',background:'linear-gradient(#b388ff, #7b1fa2)','-webkit-background-clip':'text','-webkit-text-fill-color':'transparent','background-clip':'text',color:'transparent',padding:'0 20px',position:'relative',zIndex:2}).html(''),LD2=$('<div>').attr('id','lyric-display-2').css({position:'fixed',top:'50%',left:'50%',transform:'translate(-50%, -50%)',fontSize:'40px',fontWeight:'400',whiteSpace:'pre-wrap',textShadow:'0 1px 0 rgba(0,0,0,0.05)',background:'linear-gradient(#b388ff, #7b1fa2)','-webkit-background-clip':'text','-webkit-text-fill-color':'transparent','background-clip':'text',color:'transparent',padding:'0 20px',zIndex:9995,opacity:'0.6',pointerEvents:'none',textAlign:'center',fontFamily:"'Merriweather', serif",transition:'transform 0.1s ease-out'}).html(''),BI=$('<img>').attr('id','blaze-image').attr('src','https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/0/03/Blazethecat.png/revision/latest?cb=20250815054353').css({position:'fixed',bottom:'200px',left:'120px',width:'50px',height:'auto',zIndex:9998,pointerEvents:'none',transition:'transform 0.01s linear',opacity:'0'});TB.append(TW);BB.append(LD);W.append(TC).append(BC).append(TB).append(BB).append(SC).append(BI).append(LD2);var iD=false,sD=false,fC=0,bT=0.15,lBT=0,bC=150,fDA=null,rAE=new WeakSet(),iS=false,iT=null,btnTO=null,btnShown=false,checkTO=null,btnClicked=false,effectsEnabled=false;function sAC(a){if(sD)return;try{C=new(window.AudioContext||window.webkitAudioContext)();A=C.createAnalyser();A.fftSize=2048;A.smoothingTimeConstant=0.8;B=A.frequencyBinCount;D=new Uint8Array(B);fDA=new Uint8Array(B);S=C.createMediaElementSource(a);S.connect(A);A.connect(C.destination);sD=true}catch(e){}}function dS(){if(!iD||!A||!effectsEnabled)return;requestAnimationFrame(dS);var c=SC[0],x=c.getContext('2d'),w=c.width,h=c.height,f=new Uint8Array(A.frequencyBinCount);A.getByteFrequencyData(f);x.clearRect(0,0,w,h);var b=80,bW=(w/2)/b,cX=w/2;for(var i=0;i<b;i++){var fI=Math.floor(((b-1-i)/b)*(f.length*0.5)),v=f[fI],bH=(v/255)*h*1.2,g=x.createLinearGradient(0,h-bH,0,h);if(v>180){g.addColorStop(0,'rgba(220, 180, 255, 0.95)');g.addColorStop(0.5,'rgba(179, 136, 255, 0.9)');g.addColorStop(1,'rgba(142, 68, 173, 0.8)')}else if(v>100){g.addColorStop(0,'rgba(200, 160, 255, 0.8)');g.addColorStop(0.5,'rgba(171, 122, 255, 0.75)');g.addColorStop(1,'rgba(149, 96, 219, 0.7)')}else{g.addColorStop(0,'rgba(179, 136, 255, 0.6)');g.addColorStop(0.5,'rgba(142, 68, 173, 0.5)');g.addColorStop(1,'rgba(106, 27, 154, 0.4)')}x.fillStyle=g;x.fillRect(cX+(i*bW),h-bH,bW-0.5,bH);x.fillRect(cX-((i+1)*bW),h-bH,bW-0.5,bH)}}function dV(c,t){var x=c.getContext('2d'),w=c.width,h=c.height,b=100;function d(){if(!iD||!effectsEnabled)return;requestAnimationFrame(d);fC++;x.clearRect(0,0,w,h);if(A&&D){A.getByteTimeDomainData(D);A.getByteFrequencyData(fDA);var bS=0,bCt=10;for(var k=0;k<bCt;k++)bS+=fDA[k];var bA=bS/bCt,cT=Date.now();if(bA>80&&(cT-lBT)>bC){lBT=cT;var sC='';if(bA>180)sC='shake-extreme';else if(bA>140)sC='shake-heavy';else if(bA>110)sC='shake-medium';else sC='shake-light';var wr=document.getElementById('visualizer-shake-wrapper');wr.className='';void wr.offsetWidth;wr.classList.add(sC);var du=sC==='shake-extreme'?250:(sC==='shake-heavy'?200:150);setTimeout(function(){wr.classList.remove(sC)},du)}var bW=w/b,sS=Math.floor(B/b);for(var i=0;i<b;i++){var dI=i*sS,v=D[dI]/128.0,am=Math.abs(v-1),bH=am*h*0.8,g=x.createLinearGradient(0,0,0,h);if(am>0.3){g.addColorStop(0,'rgba(179, 136, 255, 1)');g.addColorStop(0.5,'rgba(142, 68, 173, 1)');g.addColorStop(1,'rgba(106, 27, 154, 0.8)')}else{g.addColorStop(0,'rgba(171, 122, 255, 0.7)');g.addColorStop(0.5,'rgba(149, 96, 219, 0.7)');g.addColorStop(1,'rgba(123, 31, 162, 0.5)')}x.fillStyle=g;var xx=i*bW;if(t)x.fillRect(xx,0,bW-1,bH);else x.fillRect(xx,h-bH,bW-1,bH)}x.lineWidth=2;x.strokeStyle='rgba(186, 152, 255, 0.9)';x.shadowBlur=8;x.shadowColor='rgba(179, 136, 255, 0.6)';x.beginPath();var sW=w/B,xx=0;for(var i=0;i<B;i++){var v=D[i]/128.0,y;if(t)y=(v-1)*h*0.4;else y=h-(v-1)*h*0.4;if(i===0)x.moveTo(xx,y);else x.lineTo(xx,y);xx+=sW}x.stroke()}}d()}function dTW(){var x=TW[0].getContext('2d'),w=TW[0].width,h=TW[0].height;function d(){if(!iD||!effectsEnabled)return;requestAnimationFrame(d);x.clearRect(0,0,w,h);if(A&&D){A.getByteTimeDomainData(D);x.lineWidth=2;x.strokeStyle='rgba(186, 152, 255, 0.9)';x.shadowBlur=8;x.shadowColor='rgba(179, 136, 255, 0.6)';x.beginPath();var sW=w/B,xx=0;for(var i=0;i<B;i++){var v=D[i]/128.0,y=h/2+(v-1)*h*0.4;if(i===0)x.moveTo(xx,y);else x.lineTo(xx,y);xx+=sW}x.stroke()}}d()}function rC(){TC[0].width=window.innerWidth;TC[0].height=100;BC[0].width=window.innerWidth;BC[0].height=100;SC[0].width=window.innerWidth;SC[0].height=300;TW[0].width=window.innerWidth;TW[0].height=80}$(window).resize(rC);rC();var r=`[00:00.00]Carrying on\n[00:01.24]my light\n[00:02.38]Was meant to last\n[00:04.06]To show that\n[00:05.42]To show that when\n[00:05.73]To show that when all\n[00:06.56]To show that when all the stars\n[00:06.91]To show that when all the stars have died\n[00:08.00]A lone flame\n[00:09.54]Can\n[00:09.96]Can burn\n[00:10.62]Can burn bright\n[00:34.22]And\n[00:34.86]the Sol still burns\n[00:35.57]the Sol still burns bright\n[00:36.25]You can't take what's\n[00:37.14]You can't take what's mine\n[00:37.73]My fire is a right\n[00:38.84]So div\n[00:39.55]So divine\n[00:39.98]And, I know I own\n[00:41.98]my own\n[00:42.78]spark\n[00:43.37]That flames\n[00:43.81]The Sol still\n[00:45.70]The Sol still burns\n[00:47.44]The Sol that\n[00:50.63]The Sol that still burns\n[00:55.54]Oh\n[00:57.10]Back to back\n[00:57.75]There's no one to hold\n[00:58.61]Back to back\n[00:59.10]My hands are so cold\n[01:00.00]Back to back\n[01:00.45]There's no one to hold\n[01:01.43]Back to back\n[01:01.91]My hands are so cold\n[01:02.87]Back to back\n[01:03.37]There's no one to hold\n[01:04.25]Back to back\n[01:04.75]My hands are so cold\n[01:05.71]Back to back\n[01:06.22]There's no one to hold\n[01:07.09]Back to back\n[01:07.50]Ba-\n[01:07.68]Buh-\n[01:07.86]Ba-\n[01:08.04]Buh-\n[01:08.20]Ba-\n[01:08.49]Bah-\n[01:08.61]Back to back\n[01:09.12]There's no one to hold\n[01:10.05]Back to back\n[01:10.50]My hands are so cold\n[01:11.51]Back to back\n[01:12.01]There's no one to hold\n[01:12.88]Back to back\n[01:13.43]My hands are\n[01:14.27]Back to back\n[01:14.83]There's no one to hold\n[01:15.72]Back to back\n[01:16.23]My hands are so cold\n[01:17.17]Back to back\n[01:17.75]There's no one to hold\n[01:18.54]Back to back\n[01:19.03]Ba-\n[01:19.13]Buh-\n[01:19.36]Ba-\n[01:19.56]Buh-\n[01:19.86]Ba-\n[01:19.92]Ba\n[01:19.99]Back!\n[01:42.76]Go! (1x)\n[01:44.30]Go! (2x)\n[01:45.76]Go! (3x)\n[01:47.07]Go! (4x)\n[01:48.45]Go! (5x)\n[01:49.95]Go! (6x)\n[01:51.36]Go! (7x)\n[01:52.78]Go! (8x)\n[01:54.18]Go! (9x)\n[01:55.64]Go! (10x)\n[01:57.06]Go! (11x)\n[01:58.61]Go! (12x)\n[01:59.97]Go! (13x)\n[02:01.39]Go! (14x)\n[02:02.84]Go! (15x)\n[02:04.18]Go! (16x)\n[02:09.50] `,r2=`[01:54.24]Back to back\n[01:54.65]Ba-\n[01:54.81]Buh-\n[01:54.96]Ba-\n[01:55.13]Buh-\n[01:55.28]Ba-\n[01:55.42]Bah-\n[01:55.65]Back to back\n[01:56.21]Ba-\n[01:56.46]Buh-\n[01:56.63]Ba-\n[01:56.77]Buh-\n[01:56.98]Ba-\n[01:57.04]Back to back\n[01:57.66]Ba-\n[01:57.84]Buh-\n[01:58.00]Ba-\n[01:58.11]Buh-\n[01:58.25]Ba-\n[01:58.37]Bah-\n[01:58.55]Back to back\n[01:59.11]Ba-\n[01:59.25]Buh-\n[01:59.38]Ba-\n[01:59.52]Buh-\n[01:59.63]Ba-\n[01:59.76]Bah-\n[01:59.95]Back to back\n[02:00.50]Ba-\n[02:00.64]Buh-\n[02:00.79]Ba-\n[02:00.92]Buh-\n[02:01.03]Ba-\n[02:01.15]Bah-\n[02:01.42]Back to back\n[02:02.05]Ba-\n[02:02.18]Buh-\n[02:02.29]Ba-\n[02:02.43]Buh-\n[02:02.54]Ba-\n[02:02.66]Bah-\n[02:02.78]Back to back\n[02:03.33]Ba-\n[02:03.46]Buh-\n[02:03.59]Ba-\n[02:03.72]Buh-\n[02:03.84]Ba-\n[02:03.95]Bah-\n[02:04.27]Back to back\n[02:04.84]Ba-\n[02:04.97]Buh-\n[02:05.14]Ba-\n[02:05.31]Buh-\n[02:05.47]Ba-\n[02:05.61]Bah-\n[02:09.50] `;function pR(t){var re=/\[(\d{2}):(\d{2}\.\d{2})\](.*)/g,m,a=[];while((m=re.exec(t))!==null){var mm=parseInt(m[1],10),ss=parseFloat(m[2]),tx=m[3].trim(),ms=mm*60000+Math.round(ss*1000);a.push({time:ms,text:tx})}a.sort(function(a,b){return a.time-b.time});return a}var L=pR(r),L2=pR(r2),cI=-1,cI2=-1,intID=null,aA=null;function rst(k){if(!k){LD.html('');LD2.html('');cI=-1;cI2=-1}if(intID){clearInterval(intID);intID=null}if(iT){clearTimeout(iT);iT=null}if(btnTO){clearTimeout(btnTO);btnTO=null}if(checkTO){clearInterval(checkTO);checkTO=null}SBC.removeClass('visible');btnShown=false;btnClicked=false;if(!k){aA=null;iD=false;effectsEnabled=false;iS=false;TB.css('top','-100px');BB.css('bottom','-100px');TC.css('opacity','0');BC.css('opacity','0');SC.css('opacity','0');BI.css('opacity','0')}var wr=document.getElementById('visualizer-shake-wrapper');if(wr)wr.className=''}function uL(ct){if(!effectsEnabled)return;var tm=Math.round(ct*1000),nI=-1,nI2=-1;for(var i=L.length-1;i>=0;i--){if(tm>=L[i].time){nI=i;break}}if(nI!==-1&&nI!==cI){cI=nI;LD.html(L[cI].text)}for(var i=L2.length-1;i>=0;i--){if(tm>=L2[i].time){nI2=i;break}}if(nI2!==-1&&nI2!==cI2){cI2=nI2;LD2.html(L2[cI2].text)}if(A&&fDA){A.getByteFrequencyData(fDA);var bS=0,bCt=150;for(var k=0;k<bCt;k++)bS+=fDA[k];var bA=bS/bCt;var scale=0.3+((bA/255)*12.0);BI.css('transform','scale('+scale+')');var textScale=1.0+((bA/255)*0.5);LD2.css('transform','translate(-50%, -50%) scale('+textScale+')')}if(ct>=5&&ct<12&&!btnShown&&!btnClicked){SBC.addClass('visible');btnShown=true;if(btnTO)clearTimeout(btnTO);btnTO=setTimeout(function(){SBC.removeClass('visible');btnShown=false},7000)}else if(btnShown&&(ct>=12||btnClicked)){SBC.removeClass('visible');btnShown=false}}function sM(a){if(!effectsEnabled)return;var k=(aA===a);if(intID){clearInterval(intID);intID=null}aA=a;if(!sD)sAC(a);if(C&&C.state==='suspended')C.resume();TB.css('top','0');BB.css('bottom','0');if(A){TC.css('opacity','1');BC.css('opacity','1');SC.css('opacity','0.4');BI.css('opacity','0.6')}iD=true;fC=0;if(A){dV(TC[0],true);dV(BC[0],false);dS();dTW()}intID=setInterval(function(){if(!a)return;uL(a.currentTime)},50);uL(a.currentTime)}function isDB(a){var s=(a&&(a.currentSrc||a.src||a.baseURI||'')+'').toString();return s&&(s.indexOf('SolStillBurnsV2.mp3')!==-1||s.indexOf('gx065s.mpeg')!==-1)}SB.on('click',function(){if(aA&&!btnClicked){btnClicked=true;effectsEnabled=true;SBC.removeClass('visible');btnShown=false;if(btnTO){clearTimeout(btnTO);btnTO=null}sM(aA)}});document.addEventListener('play',function(e){if(e.target&&e.target.tagName==='AUDIO'){var a=e.target;if(isDB(a)){if(!rAE.has(a)){rAE.add(a);var sT=a.currentTime||0;a.src=u;a.crossOrigin="anonymous";a.load();a.currentTime=sT;aA=a;if(!sD)sAC(a);if(checkTO)clearInterval(checkTO);checkTO=setInterval(function(){if(!aA)return;var ct=aA.currentTime;if(ct>=5&&ct<12&&!btnShown&&!btnClicked){SBC.addClass('visible');btnShown=true;if(btnTO)clearTimeout(btnTO);btnTO=setTimeout(function(){SBC.removeClass('visible');btnShown=false},7000)}else if(btnShown&&(ct>=12||btnClicked)){SBC.removeClass('visible');btnShown=false}},100);a.play()}else if(effectsEnabled){sM(a)}}}},true);document.addEventListener('pause',function(e){if(e.target===aA&&effectsEnabled){if(intID){clearInterval(intID);intID=null}}},true);document.addEventListener('ended',function(e){if(e.target===aA)rst(true)},true)});
+
+/* misc */
+$(function() {
+
+if (mw.config.get('wgPageName') === 'User:CapyBara143') {
+
+
+
+mw.util.addCSS(
+
+'#profile-intro-overlay {' +
+
+' position: fixed;' +
+
+' top: 0;' +
+
+' left: 0;' +
+
+' width: 100%;' +
+
+' height: 100%;' +
+
+' background: #000;' +
+
+' z-index: 99999;' +
+
+' display: flex;' +
+
+' justify-content: center;' +
+
+' align-items: center;' +
+
+' animation: fadeOut 0.5s ease-in-out 8.2s forwards;' +
+
+' pointer-events: none;' +
+
+'}' +
+
+'#profile-intro-overlay img {' +
+
+' width: 100%;' +
+
+' height: 100%;' +
+
+' object-fit: cover;' +
+
+'}' +
+
+'@keyframes fadeOut {' +
+
+' from { opacity: 1; }' +
+
+' to { opacity: 0; visibility: hidden; }' +
+
+'}' +
+
+'body.intro-playing {' +
+
+' overflow: hidden;' +
+
+'}'
+
+);
+
+
+
+var overlay = $('<div id="profile-intro-overlay">' +
+
+'<img src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/2/2f/OceanWave.gif/revision/latest?cb=20260105162912" alt="Intro">' +
+
+'<audio id="intro-audio" autoplay>' +
+
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/3/3b/Ocean.mp3/revision/latest?cb=20260105162815&format=original" type="audio/mpeg">' +
+
+'</audio>' +
+
+'<audio id="ambience-audio">' +
+
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/b/ba/" type="audio/mpeg">' +
+
+'</audio>' +
+
+'</div>');
+
+
+
+$('body').addClass('intro-playing').prepend(overlay);
+
+
+
+setTimeout(function() {
+
+$('body').removeClass('intro-playing');
+
+}, 3700);
+
+
+
+$('#intro-audio').on('ended', function() {
+
+$('body').removeClass('intro-playing');
+
+$('#ambience-audio')[0].play();
+
+});
+
+}
+
+});
+$(function() {
+if (mw.config.get('wgPageName') === 'User:BXSD') {
+mw.util.addCSS(
+'#profile-intro-overlay {' +
+' position: fixed;' +
+' top: 0;' +
+' left: 0;' +
+' width: 100%;' +
+' height: 100%;' +
+' background: #000;' +
+' z-index: 20;' +
+' display: flex;' +
+' justify-content: center;' +
+' align-items: center;' +
+' animation: fadeOut 0.5s ease-in-out 8.2s forwards;' +
+' pointer-events: none;' +
+'}' +
+'#profile-intro-overlay img {' +
+' width: 100%;' +
+' height: 100%;' +
+' object-fit: cover;' +
+'}' +
+'@keyframes fadeOut {' +
+' from { opacity: 1; }' +
+' to { opacity: 0; visibility: hidden; }' +
+'}' +
+'body.intro-playing {' +
+' overflow: hidden;' +
+'}'
+);
+var overlay = $('<div id="profile-intro-overlay">' +
+'<img src="https://static.wikia.nocookie.net/forsaken2024/images/2/26/PLSDONTBREAK.gif/revision/latest?cb=20251110011505" alt="Intro">' +
+'<audio id="intro-audio" autoplay>' +
+'<source src="https://static.wikia.nocookie.net/forsaken2024/images/c/c6/JX1DX1Intro1.mp3/revision/latest?cb=20251207083853" type="audio/mpeg">' +
+'</audio>' +
+'<audio id="ambience-audio">' +
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/b/ba/" type="audio/mpeg">' +
+'</audio>' +
+'</div>');
+$('body').addClass('intro-playing').prepend(overlay);
+setTimeout(function() {
+$('body').removeClass('intro-playing');
+}, 8700);
+$('#intro-audio').on('ended', function() {
+$('body').removeClass('intro-playing');
+$('#ambience-audio')[0].play();
+});
+}
+});

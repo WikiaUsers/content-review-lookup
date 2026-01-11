@@ -4,7 +4,7 @@
  * This script provides a new wgVariable that provides information on whether
  * or not the current wiki provides MessageWalls.
  * 
- * This is done by making an AJAX request to a Wikia controller or falling back
+ * This is done by making an cached API request of the extensions list or falling back
  * to selectors if that cannot be done.
  * 
  * @NOTE:
@@ -43,14 +43,16 @@ mw.loader.using([ 'mediawiki.util', 'mediawiki.user' ]).then(function() {
     }
     
     mw.config.set('wgMessageWallsExist', new Promise(function (resolve, reject) {
-        $.get(mw.util.wikiScript('wikia'), {
-            controller: 'UserProfile',
-            method: 'getUserData',
+        var api = new mw.Api();
+        api.get({
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'extensions',
+            maxage: 86400,
+            smaxage: 86400,
             format: 'json',
-            // We assume User:Fandom will continue to exist for some time.
-            userId: 4403388
         }).done(function (d) {
-            if (d && d.userData && d.userData.messageWallUrl) {
+            if (d && d.query && d.query.extensions && d.query.extensions.find(e => e.name === 'MessageWall')) {
                 resolve();
             } else {
                 reject();

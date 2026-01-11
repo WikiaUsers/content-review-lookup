@@ -2,7 +2,7 @@
 Title        :   BlockSummary
 Description  :   Displaying a summary of user's block on the blocked user's "User" Namespace pages
 Author       :   Vastmine1029
-Version      :   1.4.1
+Version      :   1.4.2
 *************/
 
 mw.loader.using('mediawiki.api', function() {
@@ -240,7 +240,7 @@ mw.loader.using('mediawiki.api', function() {
 				}
 				
 				// HTML design
-			textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\"><a href=\"" + wiki_url + "/wiki/User:" + url_user +"\">" + user + "</a> is currently blocked on <a href=\"\">" + wiki_name + "<span style=\"font-size: 8pt;\">" + lang_for_wiki_name + "</a></span> </div></center><a href=\"" + wiki_url + "/wiki/User:" + user + "\"></a><hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\"><span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + wiki_url + "/wiki/Special:Log?type=block&page=User:" + url_user + "\">Block Log</a></span><div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div><b><i>Username: </i></b>" + user + "<br/><b><i>Block ID: </b></i>" + blockID + "<br/><b><i>Block Performer: </b></i><a href=\"" + wiki_url + "/wiki/User:" + blockperformer_url + "\">" + blockperformer + "</a><br/><b><i>Block Type: </b></i>" + block_type + partial_block_details + "<br/><b><i>Block Start: </b></i>" + blockStartDateTime + "<br/><b><i>Block Expiry: </b></i>" + blockEndDateTime + "<br/><b><i>Block Reason: </b></i><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
+			textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\"><a href=\"" + wiki_url + "/wiki/User:" + url_user +"\">" + user + "</a> is currently blocked on <a href=\"\">" + wiki_name + "<span style=\"font-size: 8pt;\">" + lang_for_wiki_name + "</a></span> </div><a href=\"" + wiki_url + "/wiki/User:" + user + "\">" + wiki_url + "/wiki/User:" + user + "</a></center><hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\"><span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + wiki_url + "/wiki/Special:Log?type=block&page=User:" + url_user + "\">Block Log</a></span><div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div><b><i>Username: </i></b>" + user + "<br/><b><i>Block ID: </b></i>" + blockID + "<br/><b><i>Block Performer: </b></i><a href=\"" + wiki_url + "/wiki/User:" + blockperformer_url + "\">" + blockperformer + "</a><br/><b><i>Block Type: </b></i>" + block_type + partial_block_details + "<br/><b><i>Block Start: </b></i>" + blockStartDateTime + "<br/><b><i>Block Expiry: </b></i>" + blockEndDateTime + "<br/><b><i>Block Reason: </b></i><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
 				
 				Box.appendChild(textParagraph); // apply all text configurations into Box
 				

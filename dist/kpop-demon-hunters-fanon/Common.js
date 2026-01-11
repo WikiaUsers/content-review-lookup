@@ -1250,6 +1250,48 @@ mw.loader.using('mediawiki.api', function() {
 			stylesheet: stylesheetPrefix+"Import Themes/Jinu.css",
 			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/e/ea/Jinu_Background_Light.png/revision/latest?cb=20250928224207"
 		},
+		{
+			id: 'baby',
+			name: "Baby Saja",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"Import Themes/Baby Saja.css",
+			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/7/7d/Baby_Background_Dark.png/revision/latest?cb=20250929225520"
+		},
+		{
+			id: 'mystery',
+			name: "Mystery",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"Import Themes/Mystery Saja.css",
+			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/3/3c/Mystery_Dark_Background.jpg/revision/latest?cb=20251105015943"
+		},
+		{
+			id: 'derpy',
+			name: "Derpy",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"Import Themes/Derpy.css",
+			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/d/d4/Derpy_Background_Light.webp/revision/latest?cb=20251106231900"
+		},
+		{
+			id: 'sussie',
+			name: "Sussie",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"Import Themes/Sussie.css",
+			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/6/68/Sussie_Light.jpg/revision/latest?cb=20251122005003"
+		},
+		{
+			id: 'gwima',
+			name: "Gwi-Ma",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"Import Themes/Gwi-Ma.css",
+			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/0/0e/Gwi-Ma_Background_Light.png/revision/latest?cb=20251121012358"
+		},
+		{
+			id: 'saja',
+			name: "Saja Boys",
+			note: 'Light & Dark',
+			stylesheet: stylesheetPrefix+"Import Themes/Saja Boys.css",
+			image: "https://static.wikia.nocookie.net/kpop-demon-hunters-experimental/images/b/b5/Site-background-light/revision/latest?cb=20250922231334"
+		},
 	];
 	
 	// <a href="https://www.flaticon.com/free-icons/color-palette" title="color palette icons">Color palette icons created by Pixel perfect - Flaticon</a>

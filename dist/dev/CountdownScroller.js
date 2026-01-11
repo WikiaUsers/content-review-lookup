@@ -222,9 +222,13 @@ importArticle({
 		var setValue = function(value, animate) {
 			if (animate === undefined) animate = true;
 			
+			if (digitHeight === 0) {
+				digitHeight = container.clientHeight || (container.firstChild ? container.firstChild.offsetHeight : 0);
+			}
+			
 			var prevValue = currentValue;
 			// Only return if the value is the same supposed to animate
-			if (value === prevValue && animate) return;
+			if (value === prevValue && animate && !isTransitioning && digitHeight > 0) return;
 			
 			// Do not interrupt an active loop transition
 			if (isTransitioning) return;
@@ -237,7 +241,7 @@ importArticle({
 		};
 		
 		// Initial setup
-		calculateAndApplyPosition(0, false);
+		currentValue = null;
 		
 		return {
 			setValue: setValue,

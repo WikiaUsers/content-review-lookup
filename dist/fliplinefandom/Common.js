@@ -34,3 +34,5 @@ importArticles({
         'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
     ]
 });
+
+mw.config.set('UMFBypassLicenseCheck', true);

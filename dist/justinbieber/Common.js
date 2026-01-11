@@ -8,38 +8,37 @@ preloadTemplates_namespace = "Justin Bieber Wiki";
 window.BackToTopModern = true;
 
 /* Awards (gold, silver, bronze) */
-function applyAwardMasks() {
-    const imagePromises = Array.from(document.querySelectorAll('.award-tier img')).map(img => {
-        return new Promise((resolve, reject) => {
-            if (img.complete) {
-                resolve(img);  // Image is already loaded
-            } else {
-                img.onload = () => resolve(img);  // Resolve when the image is loaded
-                img.onerror = () => reject(img);  // Reject on error if the image fails to load
-            }
+function applyMaskToImage(img) {
+    const wrapper = img.closest('.award-tier');
+    if (!wrapper) return;
+
+    wrapper.style.webkitMaskImage = `url(${img.currentSrc || img.src})`;
+    wrapper.style.maskImage = `url(${img.currentSrc || img.src})`;
+}
+
+function initAwardMasks() {
+    document.querySelectorAll('.award-tier img').forEach(img => {
+        // Already loaded (cached or normal load)
+        if (img.complete && img.src) {
+            applyMaskToImage(img);
+        }
+
+        // Lazyloaded images
+        img.addEventListener('lazyloaded', () => {
+            applyMaskToImage(img);
+        });
+
+        // Fallback for non-lazysizes environments
+        img.addEventListener('load', () => {
+            applyMaskToImage(img);
         });
     });
-
-    // Wait for all images to load
-    Promise.all(imagePromises)
-        .then((images) => {
-            images.forEach(img => {
-                const wrapper = img.closest('.award-tier');
-                if (wrapper) {
-                    wrapper.style.webkitMaskImage = `url(${img.src})`;
-                    wrapper.style.maskImage = `url(${img.src})`;
-                }
-            });
-        })
-        .catch((error) => {
-            console.error("Error loading image:", error);
-        });
 }
 
 if (document.readyState === 'complete') {
-    applyAwardMasks();
+    initAwardMasks();
 } else {
-    window.addEventListener('load', applyAwardMasks);
+    window.addEventListener('load', initAwardMasks);
 }
 
 /* Calendar */

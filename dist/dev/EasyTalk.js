@@ -37,7 +37,7 @@ mw.loader.using([
 	let updatePreview;
 	let msg = () => {};
 	let newTopicToolAvailable = true;
-	const version = '2.1.2';
+	const version = '2.1.3';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -121,7 +121,7 @@ mw.loader.using([
 		
 		let topic = '';
 		let section = '';
-		const months = [
+		const monthNames = [
 			'January',
 			'February',
 			'March',
@@ -134,35 +134,12 @@ mw.loader.using([
 			'October',
 			'November',
 			'December',
-			'Jan',
-			'Feb',
-			'Mar',
-			'Apr',
-			'Jun',
-			'Jul',
-			'Aug',
-			'Sep',
-			'Oct',
-			'Nov',
-			'Dec',
 		];
-		const timeZoneConverter = {
-			'PST': 'UTC-8',
-			'EST': 'UTC-5',
-			'EDT': 'UTC-4',
-			'GMT': 'UTC+0',
-			'UTC': 'UTC+0',
-			'CET': 'UTC+1',
-			'CEST': 'UTC+2',
+		const linkSelectors = {
+			'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
+			'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
+			'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
 		};
-		const timeZones = Object.keys(timeZoneConverter);
-		const time = '[0-2]\\d:[0-5]\\d';
-		const day = ' [0-3]?\\d,?';
-		const month = ` (?:${months.join('|')})`;
-		const year = ' \\d\\d\\d\\d+';
-		const tZone = ` \\((?:${timeZones.join('|')})\\)`;
-		const tsRegExp = new RegExp(`^(.* )(${time},(?:${day}|${month}|${year})+${tZone})\\s*$`);
-		const tsOrderFix = new RegExp(`^(${time}) (.+)(${tZone})$`);
 		const noTalkSelectors = [
 			'.mw-notalk',
 			'blockquote',
@@ -170,12 +147,7 @@ mw.loader.using([
 			'q',
 			`#${editorID}`,
 		];
-		const linkSelectors = {
-			'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
-			'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
-			'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
-		};
-		
+		const datetimeRegExp = new RegExp(`^(.*)((\\d\\d:\\d\\d), (\\d?\\d (?:${monthNames.join('|')}) \\d\\d\\d\\d) \\((UTC)\\))(.*)\\s*$`);
 		content.find('*').each((elementIndex, element) => {
 			if ($(element).is('.mw-headline')){
 				section = $(element).attr('id').replaceAll('_', ' ');
@@ -190,12 +162,10 @@ mw.loader.using([
 			const userLink = datetime.prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', ')).last();
 			const noTalk = datetime.parents(noTalkSelectors.join(', '));
 			
-			if (!userLink.length || !tsRegExp.test(datetime.text()) || noTalk.length){
+			if (!datetimeRegExp.test(datetime.text()) || !userLink.length || noTalk.length){
 				return;
 			}
 			
-			const datetimeMw = datetime.text().replace(tsRegExp, '$2');
-			let datetimeIntl = datetimeMw.replaceAll(',', '').replace(tsOrderFix, '$2 $1$3');
 			let userRegExp;
 			
 			Object.keys(linkSelectors).forEach(selector => {
@@ -204,14 +174,11 @@ mw.loader.using([
 				}
 			});
 			
-			timeZones.forEach(timeZone => {
-				datetimeIntl = datetimeIntl.replace(`(${timeZone})`, timeZoneConverter[timeZone]);
-			});
-			
-			datetimeIntl = new Date(datetimeIntl).toISOString();
+			const datetimeMw = datetime.text().replace(datetimeRegExp, '$2');
+			const datetimeIntl = datetime.text().replace(datetimeRegExp, '$4 $3 $5');
 			const index = content.find(`[data-datetime="${datetimeMw}"]`);
 			const timeElement = $('<time>', {
-				'datetime': datetimeIntl,
+				'datetime': new Date(datetimeIntl).toISOString(),
 				'class': 'js-comment-date-time',
 				'data-user': userLink.attr('title').replace(userRegExp, '$1'),
 				'data-topic': topic,
@@ -221,8 +188,8 @@ mw.loader.using([
 				'text': datetimeMw,
 			});
 			timeElement.attr('title', age(timeIndex(timeElement), now));
-			const timeTag = `$1${timeElement.prop('outerHTML')}`;
-			datetime.replaceWith(datetime.text().replace(tsRegExp, timeTag));
+			const timeTag = `$1${timeElement.prop('outerHTML')}$6`;
+			datetime.replaceWith(datetime.text().replace(datetimeRegExp, timeTag));
 		});
 		
 		content.find('p:has(br:only-child)').remove();
@@ -260,6 +227,9 @@ mw.loader.using([
 			let anchor = $(comment);
 			while (anchor.parent().css('display') === 'inline'){
 				anchor = anchor.parent();
+			}
+			while (anchor.get(0).nextSibling && anchor.get(0).nextSibling.nodeType === 3){
+				anchor = $(anchor.get(0).nextSibling);
 			}
 			anchor.after($('<button>', {
 				'class': 'reply-button-js',

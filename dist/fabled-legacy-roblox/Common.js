@@ -96,8 +96,8 @@ mw.loader.using('mediawiki.util', function () { // Adding this method so both of
     /* -------- 4.1 -------- */
     /* Adding the input boxes on both elements */
     // Stat potential input
-    const statPotentialInputField = '<input type="number" id="statPotentialInput" min="-500" max="200" value="0" placeholder="0"><span style="user-select:none;" class="stat-potential-bar-right">%</span>';
-    $('#inputWrapper').html(statPotentialInputField);
+    const statPotentialInputField = '<input type="number" id="statPotentialInput" class="stat-potential-input-left" min="-500" max="200" value="0" step="0.1" placeholder="0"><span style="user-select:none;" class="stat-potential-input-right">%</span>';
+    $('#statPotentialInputWrapper').html(statPotentialInputField);
 
     // Guild color picker
     const guildColorPickerLoader = '<input type="color" id="guildColorPicker" value="#000000">';
@@ -119,7 +119,7 @@ mw.loader.using('mediawiki.util', function () { // Adding this method so both of
     // Stat potential bar
     if (statPotentialInput && statPotentialBar && statPotentialText) {
       statPotentialInput.oninput = function () {
-        var percentage_value = parseInt(statPotentialInput.value);
+        var percentage_value = parseFloat(statPotentialInput.value);
 
         if (isNaN(percentage_value)) percentage_value = 0;
         if (percentage_value < -500) percentage_value = -500; // Stops the user from going lower than -500

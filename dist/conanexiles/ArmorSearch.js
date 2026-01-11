@@ -4,7 +4,7 @@
 	function init() {
 		console.log("armor search: init");
 		
-		var limit = 200
+		var limit = 300
 		
 		var armorSearch = document.getElementById('conan-armor-search')
 		if(!armorSearch) return;
@@ -13,7 +13,8 @@
 		container.id = 'container-armor-search'
 		container.innerHTML =	
 			'<form id="armor-search-form" onkeydown="return event.key != \'Enter\';" style="width: 610px;">' +
-			'  <label for="name" style="display: inline-block; width: 50px;">Name:</label><input name="name" id="armor-search-name" maxlength="30"><br>' +
+			'  <label for="name" style="display: inline-block; width: 50px;">Name:</label><input name="name" id="armor-search-name" maxlength="30" style="margin-right: 105px;">' +
+			'  <label for="level" style="display: inline-block;width: 150px;">Max Level Requirement:</label><input name="level" id="armor-search-level" maxlength="3" style="width: 35px;"><br>' +
 			'  <fieldset style="width: 300px; margin-bottom: 0; float: left;">' +
 			'    <legend>Armor Type</legend>' +
 			'    <input type="checkbox" value="Light" id="armor-search-armortype-light"><label for="armor-search-armortype-light" style="display: inline-block; width: 65px;">Light</label>' +
@@ -91,6 +92,8 @@
 				armorSearchMessageContainer.style.display = 'unset'
 				return false
 			}
+			
+			console.log("armor search: limit = " + limit)
 
 			// https://conanexiles.fandom.com/wiki/Module:ItemSearch
 			new mw.Api().get({
@@ -146,6 +149,11 @@
 			var name = document.getElementById('armor-search-name')
 			if(name.value != null && name.value != '') {
 				params += '|name=' + name.value
+			}
+			
+			var level = document.getElementById('armor-search-level')
+			if(level.value != null && level.value != '') {
+				params += '|level=' + level.value
 			}
 			
 			var armorTypes = ''

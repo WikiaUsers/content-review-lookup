@@ -10,8 +10,13 @@
 	if (window.EditLeaderboardLoaded) return; // Double load protection
 	window.EditLeaderboardLoaded = true;
 
-	var page = mw.config.get('wgCanonicalSpecialPageName');
-	if (!['Leaderboard', 'Specialpages'].includes(page)) return; // Not Special:Leaderboard or Special:SpecialPages
+	var specialPage = mw.config.get('wgCanonicalSpecialPageName'),
+		page = mw.config.get('wgTitle'),
+		ns = mw.config.get('wgNamespaceNumber');
+	if (
+		!['Leaderboard', 'Specialpages'].includes(specialPage) &&
+		!(page === 'Leaderboard' && ns === 4)
+	) return; // Not Special:Leaderboard or Special:SpecialPages
 
 	mw.util.addCSS('\
 		#EditLeaderboard {\
@@ -36,7 +41,7 @@
 			return new mw.Api().loadMessagesIfMissing(['fandom-pagetitle', 'leaderboard-title', 'achievements-leaderboard-rank-label', 'listusers-username', 'listusersrev-cnt']);
 		})
 		.then(function() {
-			if (page === 'Specialpages') { // Add a link on Special:SpecialPages then exit
+			if (specialPage === 'Specialpages') { // Add a link on Special:SpecialPages then exit
 				var link = mw.config.get('wgFormattedNamespaces')[-1] + ':Leaderboard';
 				return $('<a>', {
 					text: mw.msg('leaderboard-title'),

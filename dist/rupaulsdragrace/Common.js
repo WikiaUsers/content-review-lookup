@@ -23,14 +23,14 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 */
 
-/* Fandom partnership discount code */
+/* WoW partnership discount code */
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Get 20% off tickets to the Werq The World Tour!')
+            .text('Get 20% off tickets to Drag Race: The Experience!')
         )
-        .attr('href', 'https://rupaulsdragrace.fandom.com/f/p/4400000000000201770')
+        .attr('href', 'https://rupaulsdragrace.fandom.com/f/p/4400000000000212495')
 );
 
 

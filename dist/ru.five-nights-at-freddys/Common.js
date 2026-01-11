@@ -163,7 +163,7 @@ $('.wds-avatar a[href$="Makeins"]').closest('.Reply, .Reply_body__PM9kM').addCla
 }, 500 );
 
 /* ========== Анимированный логотип ========== */
-{
+(function() {
     function startAnimationInterval() {
 	    return setInterval(function () {
 	        var frameOffset = (++frame % frames) * -frameHeight;
@@ -191,7 +191,26 @@ $('.wds-avatar a[href$="Makeins"]').closest('.Reply, .Reply_body__PM9kM').addCla
 		        }
 		    }
 	}
-}
+})();
+
+/* ===== Подсказки по расшифровке внутри заголовков табберов инфобоксов ===== */
+(function() {
+	var infoboxGaleryTabLabels = document.querySelectorAll(".portable-infobox .wds-tabs__tab-label");
+	for (var labelElement of infoboxGaleryTabLabels)
+	{
+    	var content = labelElement.innerHTML
+    	if (content.indexOf("--") !== -1)
+    	{
+        	var addition = content.match(/\s--\s.*/g).toString();
+        	var term = content.replace(addition, "").trim();
+        	var term_expansion = addition.replace(" -- ", "").trim();
+
+        	labelElement.classList.add("abbr-title");
+			labelElement.setAttribute("title", term_expansion);
+        	labelElement.innerHTML = term;
+    	}
+	}
+})();
 
 /* ========== MessageBlock ========== */
 window.MessageBlock = {

@@ -20,9 +20,9 @@ for (var e=0; e<elementsIT.length; e++){
 /************************************************************************/
 // Pour les images dans le carrousel des images récentes de la colonne de droite, ajouter un blur/flou pour éviter tous spoils
 function addBlurInCarousel(){
-    var elementRimg = document.getElementsByClassName("recentImage__image");
-	for (var e=0; e<elementRimg.length; e++)
-		elementRimg[e].classList.add("spoilManga");
+    var elements = document.querySelectorAll("#recent-images-module a.wds-card-vertical__image-container");
+	for (var e=0; e<elements.length; e++)
+		elements[e].classList.add("spoilManga");
 }
 /************************************************************************/
 // Ajout fonction qui permet d'integrer les sondages (https://www.radiant.fandom.com/fr/f?catId=3100000000000000032) sur la page d'accueil

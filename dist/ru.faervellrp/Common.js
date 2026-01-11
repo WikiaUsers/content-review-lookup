@@ -1,4 +1,8 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+// Добавляем виджет случайной статьи в правую колонку
+window.AddRailModule = [
+    {page: 'Template:RailModule_RandomArticle', prepend: true, maxAge: 0}
+];
 /*---UserTags---*/
 window.UserTagsJS = {
 	modules: {},
@@ -159,3 +163,275 @@ setTimeout(function() {
 		$('body').sakura();
 	});
 }, 30000);
+/* ================================================
+   ВИДЖЕТ СЛУЧАЙНОЙ СТАТЬИ FIREWELL
+   Версия 1.0 - Автоматическая загрузка
+================================================ */
+
+var FirewellRandom = {
+    
+    // Конфигурация
+    config: {
+        excludedCategories: [
+            'Шаблоны',
+            'Категории',
+            'Служебные_страницы',
+            'Обсуждения',
+            'Файлы'
+        ],
+        preferredCategories: [
+            'Персонажи',
+            'Локации',
+            'Фракции',
+            'Предметы',
+            'События'
+        ],
+        maxRetries: 3,
+        cacheTime: 5 * 60 * 1000 // 5 минут кэша
+    },
+    
+    // Кэш для статей
+    cache: {},
+    
+    // Инициализация
+    init: function() {
+        // Автоматически загружаем статью при загрузке страницы
+        if (document.getElementById('random-article-container')) {
+            // Ждем немного, чтобы страница полностью загрузилась
+            setTimeout(function() {
+                FirewellRandom.loadRandomArticle();
+            }, 1000);
+        }
+        
+        // Добавляем CSS для красивого отображения
+        this.addStyles();
+    },
+    
+    // Добавление CSS стилей
+    addStyles: function() {
+        var style = document.createElement('style');
+        style.textContent = `
+            .firewell-article-link {
+                color: #32CD32 !important;
+                text-decoration: none;
+                border-bottom: 1px dotted #32CD32;
+                transition: all 0.2s ease;
+            }
+            .firewell-article-link:hover {
+                color: #98FB98 !important;
+                border-bottom: 1px solid #98FB98;
+            }
+            .firewell-random-error {
+                color: #FF6B6B;
+                background: rgba(255, 107, 107, 0.1);
+                padding: 10px;
+                border-radius: 4px;
+                border-left: 4px solid #FF6B6B;
+            }
+        `;
+        document.head.appendChild(style);
+    },
+    
+    // Основная функция загрузки случайной статьи
+    loadRandomArticle: function() {
+        var container = document.getElementById('random-article-container');
+        var resultDiv = document.getElementById('random-article-result');
+        var loadingDiv = document.getElementById('random-article-loading');
+        var button = container ? container.querySelector('button') : null;
+        
+        if (!container || !resultDiv || !loadingDiv) return;
+        
+        // Показываем индикатор загрузки
+        loadingDiv.style.display = 'block';
+        resultDiv.style.display = 'none';
+        if (button) button.disabled = true;
+        
+        // Пробуем получить статью из предпочтительных категорий
+        this.getRandomArticleFromCategories(this.config.preferredCategories, 0);
+    },
+    
+    // Получение случайной статьи из указанных категорий
+    getRandomArticleFromCategories: function(categories, attempt) {
+        var resultDiv = document.getElementById('random-article-result');
+        var loadingDiv = document.getElementById('random-article-loading');
+        
+        if (attempt >= categories.length) {
+            // Если не нашли в предпочтительных, пробуем общую случайную
+            this.getGeneralRandomArticle();
+            return;
+        }
+        
+        var category = categories[attempt];
+        var apiUrl = wgScriptPath + '/api.php?action=query&list=categorymembers' +
+                    '&cmtitle=Category:' + encodeURIComponent(category) +
+                    '&cmlimit=100&format=json';
+        
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.query && data.query.categorymembers && data.query.categorymembers.length > 0) {
+                    // Фильтруем статьи, исключая служебные
+                    var articles = data.query.categorymembers.filter(function(article) {
+                        return !article.title.includes(':') && 
+                               !article.title.includes('/') &&
+                               article.ns === 0;
+                    });
+                    
+                    if (articles.length > 0) {
+                        var randomArticle = articles[Math.floor(Math.random() * articles.length)];
+                        this.displayArticle(randomArticle.title, category);
+                    } else {
+                        // Пробуем следующую категорию
+                        this.getRandomArticleFromCategories(categories, attempt + 1);
+                    }
+                } else {
+                    // Пробуем следующую категорию
+                    this.getRandomArticleFromCategories(categories, attempt + 1);
+                }
+            })
+            .catch(error => {
+                console.error('FirewellRandom: Ошибка загрузки категории', category, error);
+                this.getRandomArticleFromCategories(categories, attempt + 1);
+            }.bind(this));
+    },
+    
+    // Общая случайная статья (запасной вариант)
+    getGeneralRandomArticle: function() {
+        var apiUrl = wgScriptPath + '/api.php?action=query&list=random&rnnamespace=0&rnlimit=10&format=json';
+        
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.query && data.query.random && data.query.random.length > 0) {
+                    // Ищем статью без двоеточий (не служебную)
+                    var validArticles = data.query.random.filter(function(article) {
+                        return !article.title.includes(':');
+                    });
+                    
+                    if (validArticles.length > 0) {
+                        var randomArticle = validArticles[0];
+                        this.displayArticle(randomArticle.title, 'Общее');
+                    } else {
+                        this.showError('Не удалось найти подходящую статью');
+                    }
+                } else {
+                    this.showError('Не удалось загрузить случайную статью');
+                }
+            })
+            .catch(error => {
+                console.error('FirewellRandom: Ошибка API', error);
+                this.showError('Ошибка подключения к вики');
+            }.bind(this));
+    },
+    
+    // Отображение статьи
+    displayArticle: function(title, category) {
+        var resultDiv = document.getElementById('random-article-result');
+        var loadingDiv = document.getElementById('random-article-loading');
+        var container = document.getElementById('random-article-container');
+        var button = container ? container.querySelector('button') : null;
+        
+        // Получаем краткое описание
+        var apiUrl = wgScriptPath + '/api.php?action=query&prop=extracts|info' +
+                    '&exintro=true&explaintext=true&inprop=url' +
+                    '&titles=' + encodeURIComponent(title) + '&format=json';
+        
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.query && data.query.pages) {
+                    var pageId = Object.keys(data.query.pages)[0];
+                    var page = data.query.pages[pageId];
+                    
+                    var extract = page.extract || 'Описание отсутствует';
+                    var shortText = extract.substring(0, 180);
+                    if (extract.length > 180) shortText += '...';
+                    
+                    // Форматируем категорию
+                    var categoryHtml = '';
+                    if (category && category !== 'Общее') {
+                        categoryHtml = '<span class="article-category-badge">' + category + '</span>';
+                    }
+                    
+                    // Формируем HTML
+                    var html = '<div style="margin-bottom: 10px;">' +
+                               categoryHtml +
+                               '<strong style="color:#32CD32; font-size: 1.1em;">' + title + '</strong>' +
+                               '</div>' +
+                               '<div style="color:#CCC; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">' +
+                               shortText +
+                               '</div>' +
+                               '<div style="text-align: center;">' +
+                               '<a href="' + wgArticlePath.replace('$1', encodeURIComponent(title).replace(/ /g, '_')) + 
+                               '" class="firewell-article-link" style="margin-right: 15px;">📖 Читать полностью</a>' +
+                               '<a href="javascript:void(0)" onclick="FirewellRandom.loadRandomArticle()" style="color:#FFD700;">🎲 Другая статья</a>' +
+                               '</div>';
+                    
+                    resultDiv.innerHTML = html;
+                    resultDiv.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                    
+                    if (button) {
+                        button.disabled = false;
+                        button.innerHTML = '🎲 Другая статья';
+                    }
+                    
+                    // Сохраняем в кэш
+                    this.cache[title] = {
+                        html: html,
+                        timestamp: Date.now()
+                    };
+                    
+                } else {
+                    this.showError('Не удалось загрузить описание статьи');
+                }
+            })
+            .catch(error => {
+                console.error('FirewellRandom: Ошибка загрузки описания', error);
+                this.showError('Ошибка загрузки описания');
+            }.bind(this));
+    },
+    
+    // Показать ошибку
+    showError: function(message) {
+        var resultDiv = document.getElementById('random-article-result');
+        var loadingDiv = document.getElementById('random-article-loading');
+        var container = document.getElementById('random-article-container');
+        var button = container ? container.querySelector('button') : null;
+        
+        resultDiv.innerHTML = '<div class="firewell-random-error">' +
+                             '<strong>Ошибка:</strong> ' + message + '<br>' +
+                             '<small>Попробуйте нажать кнопку еще раз.</small>' +
+                             '</div>';
+        resultDiv.style.display = 'block';
+        loadingDiv.style.display = 'none';
+        
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = '🔄 Попробовать снова';
+        }
+    }
+};
+
+// Инициализируем виджет при загрузке страницы
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        FirewellRandom.init();
+    });
+} else {
+    FirewellRandom.init();
+}
+// Код для виджета случайной статьи
+mw.loader.using('mediawiki.api').then(function() {
+    // Этот код будет работать на всех страницах, но активируется только при наличии виджета
+    if (document.getElementById('random-article-widget')) {
+        // Инициализируем виджет
+        setTimeout(function() {
+            var button = document.getElementById('random-article-btn');
+            if (button && typeof button.onclick !== 'function') {
+                // Если виджет загружен через шаблон, но JS не сработал
+                location.reload();
+            }
+        }, 1000);
+    }
+});
