@@ -88,3 +88,6 @@ importArticles({
         'u:dev:MediaWiki:WallGreeting.js',
     ]
 });
+
+/* {{RailModule}}模板脚本 */
+window.AddRailModule = [{prepend: true, maxAge: 0}];

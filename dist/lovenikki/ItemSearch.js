@@ -14,6 +14,7 @@
 	$(function() {
 		let allItems = [];
 		let itemTypes = new Set();
+		let dataLoaded = false;
 		
 		const typeGroups = {
 			'Hair': ['Hair'],
@@ -59,7 +60,7 @@
 					'padding': '5px 10px',
 					'border': '1px solid var(--theme-border-color)'
 				});
-			
+
 			const typeButtons = $('<div>')
 				.attr('id', 'type-filter-buttons')
 				.css({
@@ -94,7 +95,20 @@
 					.text('All')
 					.addClass('color-filter-button active')
 				);
-				
+			
+			typeOrder.forEach(function(type) {
+				const iconFilename = typeIcons[type];
+				const iconUrl = mw.util.getUrl('Special:Redirect/file/' + iconFilename.replace(/^File:/i, '').replace(/ /g, '_'));
+				typeButtons.append(
+					$('<button>')
+						.attr('data-type', type)
+						.attr('title', type)
+						.html('<img src="' + iconUrl + '" alt="' + type + '" style="max-height: 40px; object-fit: contain;">')
+						.css({'margin': '0', 'padding': '0', 'background': 'none', 'border': 'none',})
+						.addClass('type-filter-button')
+				);
+			});
+			
 			const wholeWordCheckbox = $('<label>')
 				.css('margin-left', '0.5em')
 				.append($('<input>').attr({'type': 'checkbox', 'id': 'whole-word-check'}))
@@ -105,7 +119,18 @@
 				.append($('<input>').attr({'type': 'checkbox', 'id': 'regex-check'}))
 				.append(' Use regular expressions');
 			
-			searchBar.append(searchInput).append(wholeWordCheckbox).append(regexCheckbox).append(typeButtons).append(colorButtons);
+			const searchButton = $('<button>')
+				.attr('id', 'search-button')
+				.text('Search')
+				.css({
+					'width': '100%',
+					'margin-left': '10px',
+					'padding': '5px 15px',
+					'border': '1px solid var(--theme-border-color)',
+					'cursor': 'pointer'
+				});
+			
+			searchBar.append(searchInput).append(wholeWordCheckbox).append(regexCheckbox).append(typeButtons).append(colorButtons).append(searchButton);
 			
 			const resultCount = $('<div>')
 				.attr('id', 'item-result-count')
@@ -128,7 +153,7 @@
 				)
 				.append(
 					$('<tbody>').attr('id', 'item-results-body')
-						.append($('<tr>').append($('<td>').attr('colspan', '4').text('Loading...')))
+						.append($('<tr>').append($('<td>').attr('colspan', '4').text('...')))
 				);
 			
 			container.append(searchBar).append(resultCount).append(table);
@@ -142,88 +167,79 @@
 		}
 		
 		function loadData() {
+			if (dataLoaded) {
+				return Promise.resolve();
+			}
+			
+			$('#item-results-body').html('<tr><td colspan="4">Loading data...</td></tr>');
+			
 			const api = new mw.Api();
-			api.get({
+			return api.get({
 				action: 'query',
 				titles: 'Template:Item Search/Data.json|Template:Item Search/Data2.json|Template:Item Search/Data3.json|Template:Item Search/Data4.json',
 				prop: 'revisions',
 				rvprop: 'content',
 				rvslots: 'main',
 				formatversion: 2
-			}).done(function(data) {
-				try {
-					allItems = [];
-					data.query.pages.forEach(function(page) {
-						if (page.missing) {
-							console.warn('JSON page not found: ' + page.title);
-							return;
-						}
-						const content = page.revisions[0].slots.main.content;
-						const jsonData = JSON.parse(content);
-						allItems = allItems.concat(jsonData.items || []);
-					});
-					
-					typeOrder.forEach(function(type) {
-						const iconFilename = typeIcons[type];
-						const iconUrl = mw.util.getUrl('Special:Redirect/file/' + iconFilename.replace(/^File:/i, '').replace(/ /g, '_'));
-						$('#type-filter-buttons').append(
-							$('<button>')
-								.attr('data-type', type)
-								.attr('title', type)
-								.html('<img src="' + iconUrl + '" alt="' + type + '" style="max-height: 40px; object-fit: contain;">')
-								.css({'margin': '0', 'padding': '0', 'background': 'none', 'border': 'none',})
-								.addClass('type-filter-button')
-						);
-					});
-					
-					const primaryColors = new Set();
-					allItems.forEach(function(item) {
-						if (item.color1) {
-							const colors = item.color1.split('/');
-							colors.forEach(function(color) {
-								primaryColors.add(color.trim());
-							});
-						}
-					});
-					
-					const sortedColors = colorOrder.filter(function(color) {
-						return primaryColors.has(color);
-					});
-					sortedColors.forEach(function(color) {
-						const colorClass = 'custom-background-color-' + color.toLowerCase().replace(/\s+/g, '-');
-						$('#color-filter-buttons').append(
-							$('<button>')
-								.attr('data-color', color)
-								.text(color)
-								.addClass('color-filter-button ' + colorClass)
-						);
-					});
-					
-					renderResults(allItems);
-					
-				} catch (error) {
-					$('#item-results-body').html('<tr><td colspan="4">Error parsing JSON: ' + error.message + '</td></tr>');
-					console.error('Error loading data:', error);
-				}
+			}).then(function(data) {
+				allItems = [];
+				data.query.pages.forEach(function(page) {
+					if (page.missing) {
+						console.warn('JSON page not found: ' + page.title);
+						return;
+					}
+					const content = page.revisions[0].slots.main.content;
+					const jsonData = JSON.parse(content);
+					allItems = allItems.concat(jsonData.items || []);
+				});
+				
+				dataLoaded = true;
+				
+				const primaryColors = new Set();
+				allItems.forEach(function(item) {
+					if (item.color1) {
+						const colors = item.color1.split('/');
+						colors.forEach(function(color) {
+							primaryColors.add(color.trim());
+						});
+					}
+				});
+				
+				const sortedColors = colorOrder.filter(function(color) {
+					return primaryColors.has(color);
+				});
+				sortedColors.forEach(function(color) {
+					const colorClass = 'custom-background-color-' + color.toLowerCase().replace(/\s+/g, '-');
+					$('#color-filter-buttons').append(
+						$('<button>')
+							.attr('data-color', color)
+							.text(color)
+							.addClass('color-filter-button ' + colorClass)
+					);
+				});
+				
+				$('#item-results-body').html('<tr><td colspan="4">Please enter some search criteria first!</td></tr>');
 			}).fail(function(error) {
 				$('#item-results-body').html('<tr><td colspan="4">Error loading data</td></tr>');
 				console.error('API error:', error);
+				throw error;
 			});
 		}
 		
-		function debounce(func, wait) {
-			let timeout;
-			return function() {
-				const context = this;
-				const args = arguments;
-				clearTimeout(timeout);
-				timeout = setTimeout(function() {
-					func.apply(context, args);
-				}, wait);
-			};
+		function searchItems() {
+			// Load data if not already loaded
+			if (!dataLoaded) {
+				loadData().then(function() {
+					performSearch();
+				}).catch(function(error) {
+					console.error('Failed to load data:', error);
+				});
+			} else {
+				performSearch();
+			}
 		}
 		
-		function searchItems() {
+		function performSearch() {
 			const searchTerm = $('#item-search-input').val().toLowerCase();
 			const selectedTypes = $('.type-filter-button.active').not('#type-all').map(function() {
 				return $(this).attr('data-type');
@@ -270,7 +286,7 @@
 						const regex = new RegExp('\\b' + searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
 						return regex.test(desc);
 					} else {
-						return desc.indexOf(searchTerm) !== -1 || name.indexOf(searchTerm) !== -1;
+						return desc.indexOf(searchTerm) !== -1;
 					}
 				});
 			}
@@ -331,7 +347,7 @@
 					row.append($('<td>').text('-'));
 				}
 				
-				row.append($('<td>').html('<a href="' + mw.util.getUrl(item.name) + '">' + name + '</a>'));
+				row.append($('<td>').html('<a href="' + mw.util.getUrl(item.name) + '">' + mw.html.escape(name) + '</a>'));
 				row.append($('<td>').html(type));
 				row.append($('<td class="smalltext unsortable">').html(desc));
 				
@@ -340,9 +356,13 @@
 		}
 		
 		createSearchInterface();
-		loadData();
 		
-		$(document).on('input', '#item-search-input', debounce(searchItems, 300));
+		$(document).on('click', '#search-button', searchItems);
+		$(document).on('keypress', '#item-search-input', function(e) {
+			if (e.which === 13) {
+				searchItems();
+			}
+		});
 		$(document).on('click', '.type-filter-button', function() {
 			if ($(this).attr('id') === 'type-all') {
 				$('.type-filter-button').removeClass('active');
@@ -356,9 +376,7 @@
 					$('#type-all').addClass('active');
 				}
 			}
-			searchItems();
 		});
-		$(document).on('change', '#whole-word-check, #regex-check', searchItems);
 		$(document).on('click', '.color-filter-button', function() {
 			if ($(this).attr('id') === 'color-all') {
 				$('.color-filter-button').removeClass('active');
@@ -372,7 +390,6 @@
 					$('#color-all').addClass('active');
 				}
 			}
-			searchItems();
 		});
 	});
 })();

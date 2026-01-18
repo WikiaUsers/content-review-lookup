@@ -11,6 +11,7 @@ window.AutoCreateUserPagesConfig = {
 window.globalFileUsageConfig = {
 	'show_subdomain_if_different': true,
 	'lang': [
+		'ar',
 		'bg',
 		'cs',
 		'de',
@@ -25,6 +26,8 @@ window.globalFileUsageConfig = {
 		'ru',
 		'sr',
 		'sv',
+		'th',
+		'uk',
 		'zh',
 		'en:mu-memory-alpha',
 		'en:ma-test',

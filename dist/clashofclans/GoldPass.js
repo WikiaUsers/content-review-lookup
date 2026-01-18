@@ -36,7 +36,9 @@ $(document).ready(function() {
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6-7</option></select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option></select></div>');
-	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	// TH poison: Superseded by a toggle
+	// $("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">Toggle TH Poison Spell? <input type="checkbox" name="THpoisonSpellBoost" id="THpoisonSpellBoost"></input></div>');
 	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
 	$("span#PLpoisonSpellHarness").html('<div id="PLpoisonSpellInput">Poison Lizard Poison Level: <select name="PLpoisonSpellLevel" id="PLpoisonSpellLevel"> <option value="0">0</option> <option value="1">1-4</option> <option value="2">5-9</option> <option value="3">10-14</option> <option value="4">15</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
@@ -256,8 +258,8 @@ $(document).ready(function() {
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
-            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel").val("0").change();
-        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
+            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel").val("0").change();
+        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle, #THpoisonSpellBoost").prop("checked",false);
         	// Disable offense-only items
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
@@ -1117,8 +1119,8 @@ $(document).ready(function() {
 	  // Add an array for Wall damage
 	  var wallDamageArray = [];
 	  // Two lookup arrays for the GW's life aura ability
-	  var auraPercentIncrease = [0,400,500,600,700,800,900,1000];
-	  var auraMaxHPIncrease = [0,330,420,510,600,690,780,870];
+	  var auraPercentIncrease = [0,500,600,750,900,1000,1100,1200];
+	  var auraMaxHPIncrease = [0,640,750,830,930,1010,1120,1200];
 	  // Another one for GW's rage aura ability
 	  var rageAuraPercentIncrease = [0,15,20,25,30,35,45,50];
 	  // Lookup array for GW's heroic torch speed boost
@@ -1165,11 +1167,11 @@ $(document).ready(function() {
 			"Henchmen Puppet": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
 			"Dark Orb": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
 			"Meteor Staff": [13,17,21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,90,95,100,105,110,115,120,125],
-			"Life Gem": [11,13,16,18,20,22,24,26,31,35,42,46,51,55,59,64,68,73],
+			"Life Gem": [11,13,16,19,21,23,25,27,32,36,43,47,53,57,61,66,70,75],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Lavaloon Puppet": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
-			"Heroic Torch": [10,11,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45,48,51,54,57,60,63,66,69],
+			"Heroic Torch": [12,13,14,16,18,20,22,24,27,29,31,34,36,38,41,43,45,48,51,54,58,61,64,68,71,74,78],
 			"Royal Gem": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
 			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
@@ -1191,10 +1193,10 @@ $(document).ready(function() {
 			"Noble Iron": Array(18).fill(500),
 			"Dark Crown": [550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1025,1050,1075,1100,1125,1150,1175,1200],
 			"Meteor Staff": [558,587,615,644,673,702,730,759,788,817,845,874,903,932,960,989,1018,1047,1107,1139,1171,1205,1239,1273,1309,1345,1381],
-			"Life Gem": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
+			"Life Gem": [170,184,195,205,217,230,255,282,312,344,381,398,415,432,449,466,483,500],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
-			"Heroic Torch": [30,35,37,40,45,47,50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,125],
+			"Heroic Torch": [35,40,42,45,50,52,55,60,63,66,71,74,77,82,85,88,93,96,99,104,107,110,115,118,121,126,137],
 			"Royal Gem": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
@@ -1210,7 +1212,7 @@ $(document).ready(function() {
 			"Henchmen Puppet": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
 			"Metal Pants": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
-			"Heroic Torch": [100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360],
+			"Heroic Torch": [110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,285,295,305,320,330,340,355,365,375,390],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
 		};
@@ -1270,10 +1272,11 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
@@ -1289,6 +1292,7 @@ $(document).ready(function() {
 		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
 			
 			var firstGearASBoost = 0;
 			var secondGearASBoost = 0;
@@ -1331,8 +1335,14 @@ $(document).ready(function() {
 		    // Expand this part later to add support for poison, etc.
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
+			/* Superseded by toggle
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
+			} */
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonMultiplier = 50/100;
+            	}
 			}
 			var poisonTowerMultiplier = 1;
 			if (poisonTowerCheckBox != null) {
@@ -1762,10 +1772,11 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
@@ -1795,6 +1806,13 @@ $(document).ready(function() {
 					poisonTowerUsed = true;
 				}
 			}
+			var THpoisonUsed = false;
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+					THpoisonUsed = true;
+				}
+			}
 			// Hard mode toggle overrides all other CSS
 			var hardModeUsed = false;
 			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
@@ -1803,7 +1821,7 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
-			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			poisonUsed = ((poisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed || THpoisonUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
@@ -1839,10 +1857,11 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+			/* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
@@ -1872,6 +1891,13 @@ $(document).ready(function() {
 					poisonTowerUsed = true;
 				}
 			}
+			var THpoisonUsed = false;
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+					THpoisonUsed = true;
+				}
+			}
 			// Hard mode toggle overrides all other CSS
 			var hardModeUsed = false;
 			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
@@ -1880,7 +1906,7 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
-			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			poisonUsed = ((poisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed || THpoisonUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
@@ -1984,10 +2010,11 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
@@ -2008,6 +2035,7 @@ $(document).ready(function() {
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
 			var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
@@ -2136,10 +2164,16 @@ $(document).ready(function() {
 			}
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
-			var PLpoisonMultiplier = (100 - PLpoisonASMultiplier[PLpoisonSpellLevel])/100;
+			var PLpoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
+			/* Superseded by toggle
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
+			} */
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonMultiplier = 50/100;
+            	}
 			}
 			var poisonTowerMultiplier = 1;
 			if (poisonTowerCheckBox != null) {
@@ -2389,10 +2423,11 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
@@ -2414,6 +2449,7 @@ $(document).ready(function() {
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
 			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var rageBoost = 0;
 			var hasteBoost = 0;
@@ -2491,7 +2527,14 @@ $(document).ready(function() {
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
 			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50,51,52];
 			// Also a small lookup for TH poison
-			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
+			// Superseded by toggle
+			// var THpoisonSpeedDebuff = [0,30,35,40,45,50];
+			var THpoisonSpeedDebuff = 0;
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonSpeedDebuff = 50;
+            	}
+			}
 			// and PL poison
 			var PLpoisonSpeedDebuff = [0,26,34,38,42];
 			var poisonTowerDebuff = 0;
@@ -2500,7 +2543,7 @@ $(document).ready(function() {
                 poisonTowerDebuff = 35;
             	}
 			}
-			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff,PLpoisonSpeedDebuff[PLpoisonSpellLevel]);
+			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff,poisonTowerDebuff,PLpoisonSpeedDebuff[PLpoisonSpellLevel]);
 			poisonUsed = (poisonDebuff > 0);
 			
 			buffedSpeed = buffedSpeed * (100 - poisonDebuff) /100;
@@ -2823,9 +2866,9 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
         $(".changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #PLpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #heroBellDamageLevel, #heroBellHPLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #HHpoisonSpellLevel, #PLpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #heroBellDamageLevel, #heroBellHPLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
-		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #resourceBoost, #clockBoost").prop("checked",false);
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #THpoisonSpellBoost, #eventShowcaseBoost, #resourceBoost, #clockBoost").prop("checked",false);
 		// Reinitialise the choices
 		$("select#modifierMode").val("Attack").change();
     	// Only toggle modifier mode if it is on the page

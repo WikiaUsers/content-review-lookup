@@ -133,3 +133,25 @@ $(".game-box").each(function() {
     $(initIn);
   }
 })();
+
+/* MOBILE */
+
+mw.hook('wikipage.content').add(function () {
+
+  if (!document.body.classList.contains('page-Main_Page')) return;
+
+  const toggle = document.querySelector(
+    'h2.collapsible-section'
+  );
+
+  const hiddenSection = document.querySelector(
+    'section.mobile-hidden'
+  );
+
+  if (!toggle || !hiddenSection) return;
+
+  if (!toggle.classList.contains('open-section')) {
+    toggle.click();
+  }
+
+});

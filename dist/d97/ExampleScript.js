@@ -1,1 +1,0 @@
-alert("Hello world! I'm an example!");

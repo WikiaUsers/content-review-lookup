@@ -25,7 +25,7 @@ $( function($) {
 	        var lead = content.children().eq(0);
 	        lead.attr('id', 'lead');
 	        content.contents().each( function() {
-	            if(this.nodeName.toLowerCase() == 'h2') {
+	            if (this.nodeName.toLowerCase() == 'h2') {
 	                return false;
 	            }
 	            if($(this).attr('id') != 'lead') {
@@ -50,9 +50,9 @@ $( function($) {
 	        };
 	        // array to keep track of whether we've seen a link before
 	        var seen = [];
-	        mw.util.$content.find('p a').not('#lead *, .infobox *, .navbox *').each(finddups);
+	        mw.util.$content.find('p a').not('#lead *, .infobox *, .messagebox *, .disambig *, .navbox *').each(finddups);
 	        var seen = [];
-	        mw.util.$content.find('#lead p a').not('.infobox *, .navbox *').each(finddups);
+	        mw.util.$content.find('#lead p a').not('.infobox *, .messagebox *, .disambig *, .navbox *').each(finddups);
         }
     });
 } );

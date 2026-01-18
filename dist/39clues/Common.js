@@ -1,3 +1,10 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+
+/* Template:RailModule */
+window.AddRailModule = [{prepend: true}];
+/* BackToTopBtn */
+window.BackToTopModern = true;
+
 /* Some wiki wide js stuff. Everything's by Kangaroopower if not otherwise mentioned */
 $(document).ready(function () {
 	/* Allows selective CSS addition */

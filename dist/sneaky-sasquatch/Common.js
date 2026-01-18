@@ -28,7 +28,7 @@ mw.loader.using('mediawiki.user').then(function() {
                 </div>
                 <div id="mentor-window-content">
                     <p><strong>You have been assigned an experienced mentor for editing help: Tom Was Taken1</strong></p>
-                    <button id="ask-question-btn">Ask Question</button>
+                    <button id="ask-Tom-Was-Taken-a-question-btn">Ask Question</button>
                 </div>
             </div>
         `).css({

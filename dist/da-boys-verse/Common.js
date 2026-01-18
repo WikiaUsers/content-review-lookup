@@ -257,164 +257,7 @@ mw.loader.using('mediawiki.api').then(function () {
     loadFanfics();
 });
 
-
-
-
-
-
-
-
-
-
-( function () {
-  'use strict';
-
-  function initEntityViewers() {
-    var viewers = document.querySelectorAll('.entity-viewer-wrap');
-    if (!viewers.length) return;
-
-    viewers.forEach(function (view) {
-      var selectBox = view.querySelector('.ev-selectbox');
-      var selectedLabel = view.querySelector('.ev-selected');
-      var optionsList = view.querySelector('.ev-options');
-      var options = optionsList ? Array.from(optionsList.querySelectorAll('li[role="option"]')) : [];
-      var cardsWrap = view.querySelector('#ev-cards');
-      var cards = cardsWrap ? Array.from(cardsWrap.querySelectorAll('.entity-card')) : [];
-
-      function hideAllCards() {
-        cards.forEach(function (c) {
-          c.hidden = true;
-          c.setAttribute('aria-hidden', 'true');
-          c.classList.remove('active');
-        });
-      }
-
-      function showEntity(key) {
-        hideAllCards();
-        // clear selection state on options
-        options.forEach(function (o) { o.setAttribute('aria-selected', 'false'); });
-        if (!key) {
-          selectedLabel.textContent = '— Select —';
-          optionsList.setAttribute('aria-hidden', 'true');
-          selectBox.setAttribute('aria-expanded', 'false');
-          return;
-        }
-        var targetCard = cardsWrap.querySelector('.entity-card[data-entity="' + key + '"]');
-        var targetOption = optionsList.querySelector('li[data-entity="' + key + '"]');
-        if (targetCard) {
-          targetCard.hidden = false;
-          targetCard.setAttribute('aria-hidden', 'false');
-          targetCard.classList.add('active');
-          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        if (targetOption) {
-          targetOption.setAttribute('aria-selected', 'true');
-          selectedLabel.textContent = targetOption.textContent;
-        }
-        optionsList.setAttribute('aria-hidden', 'true');
-        selectBox.setAttribute('aria-expanded', 'false');
-      }
-
-      // toggle options
-      function toggleOptions(show) {
-        var expanded = !!show;
-        optionsList.setAttribute('aria-hidden', (!expanded).toString());
-        selectBox.setAttribute('aria-expanded', expanded.toString());
-        if (expanded) {
-          optionsList.style.display = 'block';
-          optionsList.focus();
-        } else {
-          optionsList.style.display = 'none';
-        }
-      }
-
-      // initial styles for non-js (hide the list)
-      optionsList.style.display = 'none';
-      optionsList.setAttribute('aria-hidden', 'true');
-
-      // click handler for the fake select
-      selectBox.addEventListener('click', function (e) {
-        var isOpen = selectBox.getAttribute('aria-expanded') === 'true';
-        toggleOptions(!isOpen);
-      });
-
-      // keyboard for the fake select
-      selectBox.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          var isOpen = selectBox.getAttribute('aria-expanded') === 'true';
-          toggleOptions(!isOpen);
-        } else if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          toggleOptions(true);
-          // focus first option
-          var first = optionsList.querySelector('li[role="option"]');
-          if (first) first.focus();
-        }
-      });
-
-      // option click & keyboard
-      options.forEach(function (opt) {
-        opt.tabIndex = 0;
-        opt.addEventListener('click', function () {
-          var key = this.getAttribute('data-entity');
-          showEntity(key);
-        });
-        opt.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            var key = this.getAttribute('data-entity');
-            showEntity(key);
-          } else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            var next = this.nextElementSibling || optionsList.querySelector('li[role="option"]:first-child');
-            if (next) next.focus();
-          } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            var prev = this.previousElementSibling || optionsList.querySelector('li[role="option"]:last-child');
-            if (prev) prev.focus();
-          } else if (e.key === 'Escape') {
-            toggleOptions(false);
-            selectBox.focus();
-          }
-        });
-      });
-
-      // click outside to close
-      document.addEventListener('click', function (e) {
-        if (!view.contains(e.target)) {
-          toggleOptions(false);
-        }
-      });
-
-      // If an initial selected option exists (data-entity on first card visible), show it:
-      var preselected = view.querySelector('.entity-card.active, .entity-card[aria-preselect="true"], .entity-card[data-default="true"]');
-      if (preselected) {
-        showEntity(preselected.getAttribute('data-entity'));
-      } else {
-        hideAllCards();
-      }
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initEntityViewers);
-  } else {
-    initEntityViewers();
-  }
-})();
-
-
-
-
-
-
-
-
-
-
-
-
+/* Template:Playlist*/
 $(function() {
     var audio = new Audio();
     var playlistDiv = $('.mp3-playlist .track-list');
@@ -490,4 +333,91 @@ $(function() {
     audio.addEventListener('ended', function() {
         playTrack((currentIndex + 1) % tracks.length);
     });
+});
+
+/* Template:CategoryScroller*/
+mw.hook('wikipage.content').add(function () {
+
+  $('.category-scroller').each(function () {
+    const box = $(this);
+    const rawCategories = box.data('categories');
+    const limit = box.data('limit') || 50;
+    const list = box.find('.category-list');
+
+    if (!rawCategories) {
+      list.html('<li class="category-error">No category specified.</li>');
+      return;
+    }
+
+    // Allow commas, "and", "&"
+    const categories = rawCategories
+      .replace(/\band\b/gi, ',')
+      .replace(/&/g, ',')
+      .split(',')
+      .map(c => c.trim())
+      .filter(Boolean);
+
+    list.empty();
+
+    const pageCounts = new Map(); // pageid → { title, count }
+    let completed = 0;
+
+    categories.forEach(category => fetchCategory(category));
+
+    function fetchCategory(category) {
+      const api = new mw.Api();
+
+      api.get({
+        action: 'query',
+        list: 'categorymembers',
+        cmtitle: 'Category:' + category,
+        cmlimit: limit,
+        cmnamespace: 0
+      }).done(data => {
+        if (data.query && data.query.categorymembers) {
+          data.query.categorymembers.forEach(page => {
+            if (!pageCounts.has(page.pageid)) {
+              pageCounts.set(page.pageid, {
+                title: page.title,
+                count: 1
+              });
+            } else {
+              pageCounts.get(page.pageid).count++;
+            }
+          });
+        }
+      }).always(() => {
+        completed++;
+        if (completed === categories.length) {
+          renderList();
+        }
+      });
+    }
+
+    function renderList() {
+      const requiredCount = categories.length;
+
+      const matchingPages = [...pageCounts.values()]
+        .filter(p => p.count === requiredCount)
+        .map(p => p.title)
+        .sort((a, b) => a.localeCompare(b));
+
+      if (matchingPages.length === 0) {
+        list.html('<li class="category-empty">No pages match all categories.</li>');
+        return;
+      }
+
+      matchingPages.forEach(title => {
+        list.append(
+          $('<li>').append(
+            $('<a>')
+              .attr('href', mw.util.getUrl(title))
+              .text(title)
+          )
+        );
+      });
+    }
+
+  });
+
 });

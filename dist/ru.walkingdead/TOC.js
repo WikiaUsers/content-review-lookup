@@ -41,10 +41,12 @@ mw.loader.using('jquery', function () {
           const anchor = getAnchor($link);
           const expanded = anchor && !!tocState[anchor];
           $sub.toggle(expanded);
-          const $toggle = $('<span class="toc-toggle" style="cursor:pointer; margin-left:auto; margin-right:4px;">' + (expanded ? '[–]' : '[+]') + '</span>');
-          const $wrapper = $('<span style="display:inline-flex; justify-content: space-between; align-items: center; width: 100%;"></span>');
-		  $link.wrap($wrapper);
-		  $link.parent().append($toggle);
+          const $toggle = $('<span class="toc-toggle">' + (expanded ? '[–]' : '[+]') + '</span>');
+          const $wrapper = $('<span class="toc-row"></span>');
+
+                $link.addClass('toc-link');
+                $link.wrap($wrapper);
+                $link.parent().append($toggle);
         }
       });
 

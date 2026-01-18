@@ -2,6 +2,6 @@
 // LinkPreview
 // ============================================================
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/nfs/images/a/aa/NFSHPR_Wordmark.png/revision/latest?cb=20210607205725&path-prefix=en';
-window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/nfs/images/a/aa/NFSHPR_Wordmark.png/revision/latest?cb=20210607205725&path-prefix=en';
-window.pPreview.RegExp.iparents = ['.mainpage-gallery', '#icons'];
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/nfs/images/e/e6/Site-logo.png/revision/latest/scale-to-width-down/200';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/nfs/images/e/e6/Site-logo.png/revision/latest/scale-to-width-down/200';
+window.pPreview.RegExp.iparents = ['.mainpage-gallery', '.icons', '.mainpage-gallery-item img', '.mainpage-gallery-caption a'];

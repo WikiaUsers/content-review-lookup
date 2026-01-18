@@ -126,3 +126,34 @@ document.querySelectorAll('.mw-default-size').forEach(span => {
 
 	main();
 })(jQuery);
+
+// Lightbox --------------------------------------------------------------------
+const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+        if (mutation.type === "childList") {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.classList.contains("lightboxContainer")) {
+						
+					setTimeout(() => {
+						// Link open in current tab by default
+						document.querySelectorAll('a[target="_blank"]').forEach(link => {
+						    link.removeAttribute('target');
+						});
+						// Image size change
+						document.querySelectorAll('.card-image img').forEach(img => {
+						    img.src = img.src.replace('width/300/height/168', 'width/300/height/300');
+						});
+						// Test for Recent Images
+						document.querySelectorAll('.LightboxCarouselContainer img').forEach(img => {
+						    img.src = img.src.replace('latest?', 'latest/scale-to-width-down/55?');
+						});
+					}, 1000);
+                }
+            });
+        }
+    }
+});
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});

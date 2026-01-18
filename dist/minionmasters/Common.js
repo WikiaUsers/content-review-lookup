@@ -1,6 +1,5 @@
-// Multi-category filter system
-$(function () {
-    var activeFilters = {
+// Filter States
+var activeFilters = {
         faction: ['all'],
         rarity: ['all'],
         manacost: ['all'],
@@ -8,50 +7,25 @@ $(function () {
         attacktype: ['all'],
         targets: ['all']
     };
-    
-    $(document).on('click', '.filter-btn', function () {
-        var $btn = $(this);
-        var $buttonGroup = $btn.closest('.filter-toggle-buttons');
-        var filterType = $buttonGroup.data('filter');
-        var value = String($btn.data('value'));
 
-        
-        if (value === 'all') {
-            $buttonGroup.find('.filter-btn').removeClass('active');
-            $btn.addClass('active');
-            activeFilters[filterType] = ['all'];
-        } else {
-            $btn.toggleClass('active');
-            
-            $buttonGroup.find('.filter-btn').filter(function() {
-                var btnVal = String($(this).data('value') || '');
-                return btnVal === 'all';
-            }).removeClass('active');
-            
-            var activeValues = [];
-            $buttonGroup.find('.filter-btn.active').each(function () {
-                var v = String($(this).data('value'));
+// Result Counter
+function updateResultCount() {
+    // Find the currently visible table
+    var $activeTable = $('.type-table:visible');
 
-                if (v !== 'all') {
-                    activeValues.push(v);
-                }
-            });
-            
-            if (activeValues.length === 0) {
-                $buttonGroup.find('.filter-btn').filter(function() {
-                    var btnVal = String($(this).data('value') || '');
-                    return btnVal === 'all';
-                }).addClass('active');
-                activeFilters[filterType] = ['all'];
-            } else {
-                activeFilters[filterType] = activeValues;
-            }
-        }
-        
-        applyFilters();
-    });
-    
-    function applyFilters() {
+    if ($activeTable.length === 0) {
+        $('#visible-count').text(0);
+        return;
+    }
+
+    var $rows = $activeTable.find('tbody tr');
+    var visibleRows = $rows.filter(':visible').length;
+
+    $('#visible-count').text(visibleRows);
+}
+
+//Apply Filters
+function applyFilters() {
     $('.cargoTable tbody tr').each(function () {
         var $row = $(this);
         var rowFaction = $row.find('td.field_Faction').text().trim();
@@ -118,7 +92,55 @@ $(function () {
             $row.hide();
         }
     });
-	}
+    updateResultCount();
+}
+	
+// Filter Buttons
+$(function () {
+    
+    
+    $(document).on('click', '.filter-btn:not(.type-switch .filter-btn)', function () {
+        var $btn = $(this);
+        var $buttonGroup = $btn.closest('.filter-toggle-buttons');
+        var filterType = $buttonGroup.data('filter');
+        var value = String($btn.data('value'));
+
+        
+        if (value === 'all') {
+            $buttonGroup.find('.filter-btn').removeClass('active');
+            $btn.addClass('active');
+            activeFilters[filterType] = ['all'];
+        } else {
+            $btn.toggleClass('active');
+            
+            $buttonGroup.find('.filter-btn').filter(function() {
+                var btnVal = String($(this).data('value') || '');
+                return btnVal === 'all';
+            }).removeClass('active');
+            
+            var activeValues = [];
+            $buttonGroup.find('.filter-btn.active').each(function () {
+                var v = String($(this).data('value'));
+
+                if (v !== 'all') {
+                    activeValues.push(v);
+                }
+            });
+            
+            if (activeValues.length === 0) {
+                $buttonGroup.find('.filter-btn').filter(function() {
+                    var btnVal = String($(this).data('value') || '');
+                    return btnVal === 'all';
+                }).addClass('active');
+                activeFilters[filterType] = ['all'];
+            } else {
+                activeFilters[filterType] = activeValues;
+            }
+        }
+        
+        applyFilters();
+    });
+    applyFilters();
 });
 
 // Switch table for type
@@ -149,6 +171,7 @@ $(function() {
             'field_dpsPerMana': function($td, name) { return name + ' - DPS per Mana: ' + $td.text().trim(); },
             'field_DPS': function($td, name) { return name + ' - DPS: ' + $td.text().trim(); },
             'field_Damage': function($td, name) { return name + ' - Damage per hit: ' + $td.text().trim(); },
+            'field_Master_Damage': function($td, name) { return name + ' - Master Damage: ' + $td.text().trim(); },
             'field_Attack_Speed': function($td, name) { return name + ' - Attack Speed: ' + $td.text().trim() + ' seconds'; },
             'field_attacksPerSecond': function($td, name) { return name + ' - Attacks per Second: ' + $td.text().trim(); },
             'field_Move_Speed': function($td, name) { return name + ' - Movement Speed: ' + $td.text().trim() + ' units/sec'; },
@@ -211,4 +234,84 @@ $(function() {
         });
         
     }, 500);
+});
+
+// ---------------------------
+// Activated State Toggle
+// ---------------------------
+$(function () {
+
+    const activatedEffects = {
+        "Dragon Whelp": {
+            damageMultiplier: 1.5
+        }
+    };
+
+    let activated = false;
+
+    $("#toggle-activated").on("click", function () {
+        activated = !activated;
+        $(this).toggleClass("active", activated);
+
+        $(".cargoTable tbody tr").each(function () {
+            const $row = $(this);
+            const name = $row.find("td:first-child").text().trim();
+
+            if (!activatedEffects[name]) return;
+
+            const effect = activatedEffects[name];
+
+            const dmgCell = $row.find("td.field_Damage");
+            const atkSpdCell = $row.find("td.field_Attack_Speed");
+            const dpsCell = $row.find("td.field_DPS");
+            const totalDpsCell = $row.find("td.field_totalDps");
+            const dpsPerManaCell = $row.find("td.field_dpsPerMana");
+            const countCell = $row.find("td.field_Count");
+            const manaCell = $row.find("td.field_Mana");
+
+            if (!dmgCell.length || !atkSpdCell.length) return;
+
+            const baseDamage = parseFloat(dmgCell.data("base") || dmgCell.text());
+            const attackSpeed = parseFloat(atkSpdCell.text());
+            const count = parseInt(countCell.text() || "1");
+            const mana = parseFloat(manaCell.text());
+
+            // Store base values once
+            if (!dmgCell.data("base")) {
+                dmgCell.data("base", baseDamage);
+                dpsCell.data("base", parseFloat(dpsCell.text()));
+                if (totalDpsCell.length) totalDpsCell.data("base", parseFloat(totalDpsCell.text()));
+                if (dpsPerManaCell.length) dpsPerManaCell.data("base", parseFloat(dpsPerManaCell.text()));
+            }
+
+            if (activated) {
+                const newDamage = baseDamage * effect.damageMultiplier;
+                const newDps = newDamage * attackSpeed;
+
+                dmgCell.text(newDamage.toFixed(1));
+                dpsCell.text(newDps.toFixed(1));
+
+                if (totalDpsCell.length) {
+                    totalDpsCell.text((newDps * count).toFixed(1));
+                }
+
+                if (dpsPerManaCell.length) {
+                    dpsPerManaCell.text((newDps / mana).toFixed(2));
+                }
+
+            } else {
+                // Restore base values
+                dmgCell.text(baseDamage);
+                dpsCell.text(dpsCell.data("base"));
+
+                if (totalDpsCell.length) {
+                    totalDpsCell.text(totalDpsCell.data("base"));
+                }
+
+                if (dpsPerManaCell.length) {
+                    dpsPerManaCell.text(dpsPerManaCell.data("base"));
+                }
+            }
+        });
+    });
 });

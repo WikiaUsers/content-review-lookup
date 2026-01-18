@@ -1,7 +1,8 @@
 'use strict';
-$(() => {
-	const userlang = mw.config.get('wgUserLanguage');
-	const sitelang = mw.config.get('wgContentLanguage');
+mw.loader.using('mediawiki.util', () => {
+	const config = mw.config.values;
+	const userlang = config.wgUserLanguage;
+	const sitelang = config.wgContentLanguage;
 	const validRoles = [
 		'bot',
 		'bureaucrat',
@@ -12,6 +13,7 @@ $(() => {
 	];
 	const langs = [
 		'en',
+		'ar',
 		'bg',
 		'ca',
 		'cs',
@@ -28,6 +30,7 @@ $(() => {
 		'ru',
 		'sr',
 		'sv',
+		'th',
 		'uk',
 		'zh',
 		'mu',
@@ -39,18 +42,18 @@ $(() => {
 	
 	function url(code){
 		if (code === 'en'){
-			return mw.config.get('wgServer');
+			return config.wgServer;
 		} else if (code === 'mu'){
 			return 'https://mu-memory-alpha.fandom.com';
 		} else {
-			return mw.config.get('wgServer') + '/' + code;
+			return `${config.wgServer}/${code}`;
 		}
 	}
 	
 	function link(page, text, lang){
 		const attributes = {
 			href: url(lang) + mw.util.getUrl(page),
-			title: lang + ':' + page,
+			title: `${lang}:${page}`,
 		};
 		return $('<a>').attr(attributes).html(text).prop('outerHTML');
 	}
@@ -62,7 +65,7 @@ $(() => {
 			return;
 		}
 		
-		const apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
+		const apiURL = (lang === 'mu') ? `${url(lang)}/api.php?callback=?` : `${url(lang)}/api.php`;
 		const params = {
 			action: 'listuserssearchuser',
 			groups: validRoles.join(','),
@@ -74,7 +77,7 @@ $(() => {
 			format: 'json',
 		};
 		
-		$.getJSON(apiURL, params).done((result) => {
+		$.getJSON(apiURL, params).done(result => {
 			const now = Date.now();
 			
 			for (let i = 0; i < result.listuserssearchuser.result_count; i++){
@@ -103,9 +106,9 @@ $(() => {
 	function processUser(result, i, lang){
 		const username = result.listuserssearchuser[i].username;
 		const numberOfEdits = result.listuserssearchuser[i].edit_count;
-		const id = lang + '__' + username.replace(/\s/g, '_');
-		const rClass = 'administration_table__' + lang;
-		const roles = validRoles.filter((role) => result.listuserssearchuser[i].groups.split(', ').indexOf(role) !== -1);
+		const id = `${lang}__${username.replace(/\s/g, '_')}`;
+		const rClass = `administration_table__${lang}`;
+		const roles = validRoles.filter(role => result.listuserssearchuser[i].groups.split(', ').includes(role));
 		const lastEdit = result.listuserssearchuser[i].last_edit_date;
 		const lastEditComp = lastEdit.split(/,* /);
 		const lastEditDate =
@@ -118,13 +121,14 @@ $(() => {
 			const row = $('<tr>').attr(attributes);
 			const langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
 			$('.administration .placeholder').before(row);
-			row
-				.append('<td>' + link('User:' + username, username, lang) + '</td>')
-				.append('<td>' + roles.join(', ') + '</td>')
-				.append('<td>' + numberOfEdits + '</td>')
-				.append('<td data-sort-value="' + lastEditDate + '">' + link('Special:Contributions/' + username, lastEdit, lang) + '</td>')
-				.append('<td>' + langLabel + '</td>')
-				.append('<td data-last-edit="' + lastEditDate + '" class="status"></td>');
+			row.append(
+				`<td>${link(`User:${username}`, username, lang)}</td>`,
+				`<td>${roles.join(', ')}</td>`,
+				`<td>${numberOfEdits}</td>`,
+				`<td data-sort-value="${lastEditDate}">${link(`Special:Contributions/${username}`, lastEdit, lang)}</td>`,
+				`<td>${langLabel}</td>`,
+				`<td data-last-edit="${lastEditDate}" class="status"></td>`
+			);
 		}
 	}
 	
@@ -135,10 +139,10 @@ $(() => {
 			return;
 		}
 		
-		const id = 'international-stats__' + lang;
+		const id = `international-stats__${lang}`;
 		const langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
-		const langCode = (lang === 'mu') ? 'mu' : link('Category:User ' + lang, lang, lang);
-		const apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
+		const langCode = (lang === 'mu') ? 'mu' : link(`Category:User ${lang}`, lang, lang);
+		const apiURL = (lang === 'mu') ? `${url(lang)}/api.php?callback=?` : `${url(lang)}/api.php`;
 		const params = {
 			action: 'query',
 			meta: 'siteinfo',
@@ -146,15 +150,15 @@ $(() => {
 			format: 'json',
 		};
 		
-		$.getJSON(apiURL, params).done((result) => {
-			$('.international-stats .placeholder').before($('<tr id="' + id + '">')
-				.append('<td>' + link('', langLabel, lang) + '</td>')
-				.append('<td>' + langCode + '</td>')
-				.append('<td>' + link('Special:AllPages', result.query.statistics.articles, lang) + '</td>')
-				.append('<td>' + link('Special:ListFiles', result.query.statistics.images, lang) + '</td>')
-				.append('<td>' + link('Special:ListUsers', result.query.statistics.activeusers, lang) + '</td>')
-				.append('<td>' + link('Special:ListUsers/sysop', result.query.statistics.admins, lang) + '</td>')
-			);
+		$.getJSON(apiURL, params).done(result => {
+			$('.international-stats .placeholder').before($(`<tr id="${id}">`).append(
+				`<td>${link('', langLabel, lang)}</td>`,
+				`<td>${langCode}</td>`,
+				`<td>${link('Special:AllPages', result.query.statistics.articles, lang)}</td>`,
+				`<td>${link('Special:ListFiles', result.query.statistics.images, lang)}</td>`,
+				`<td>${link('Special:ListUsers', result.query.statistics.activeusers, lang)}</td>`,
+				`<td>${link('Special:ListUsers/sysop', result.query.statistics.admins, lang)}</td>`
+			));
 			
 			if (langs.indexOf(lang) < langs.length - 1){
 				stats(langs[langs.indexOf(lang) + 1]);

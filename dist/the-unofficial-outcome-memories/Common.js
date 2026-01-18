@@ -2577,3 +2577,299 @@ $('#ambience-audio')[0].play();
 });
 }
 });
+$(function() {
+
+if (mw.config.get('wgPageName') === 'User:DartTheSpeed') {
+
+mw.util.addCSS(
+
+'#profile-intro-overlay {' +
+
+' position: fixed;' +
+
+' top: 0;' +
+
+' left: 0;' +
+
+' width: 100%;' +
+
+' height: 100%;' +
+
+' background: #000;' +
+
+' z-index: 20;' +
+
+' display: flex;' +
+
+' justify-content: center;' +
+
+' align-items: center;' +
+
+' animation: fadeOut 0.5s ease-in-out 2.2s forwards;' +
+
+' pointer-events: none;' +
+
+'}' +
+
+'#profile-intro-overlay img {' +
+
+' width: 100%;' +
+
+' height: 100%;' +
+
+' object-fit: cover;' +
+
+'}' +
+
+'@keyframes fadeOut {' +
+
+' from { opacity: 1; }' +
+
+' to { opacity: 0; visibility: hidden; }' +
+
+'}' +
+
+'body.intro-playing {' +
+
+' overflow: hidden;' +
+
+'}'
+
+);
+
+var overlay = $('<div id="profile-intro-overlay">' +
+
+'<img src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/3/31/DART_FINAL.gif/revision/latest?cb=20251222153600&format=original" alt="Intro">' +
+
+'<audio id="intro-audio" autoplay>' +
+
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/a/a8/ItsTooLate.mp3/revision/latest?cb=20260116064823&format=original" type="audio/mpeg">' +
+
+'</audio>' +
+
+'<audio id="ambience-audio">' +
+
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/a/a3/Crush_40_-_Live_and_Learn.mp3/revision/latest?cb=20251222152655&format=original" type="audio/mpeg">' +
+
+'</audio>' +
+
+'</div>');
+
+$('body').addClass('intro-playing').prepend(overlay);
+
+setTimeout(function() {
+
+$('body').removeClass('intro-playing');
+
+}, 100);
+
+$('#intro-audio').on('ended', function() {
+
+$('body').removeClass('intro-playing');
+
+$('#ambience-audio')[0].play();
+
+});
+
+}
+
+});
+
+
+$(function() {
+
+
+
+$(function() {
+
+
+
+if (mw.config.get('wgPageName') === 'User:I_like_chili_dogs') {
+
+
+
+mw.util.addCSS(
+
+
+
+'#profile-intro-overlay {' +
+
+
+
+' position: fixed;' +
+
+
+
+' top: 0;' +
+
+
+
+' left: 0;' +
+
+
+
+' width: 100%;' +
+
+
+
+' height: 100%;' +
+
+
+
+' background: #000;' +
+
+
+
+' z-index: 20;' +
+
+
+
+' display: flex;' +
+
+
+
+' justify-content: center;' +
+
+
+
+' align-items: center;' +
+
+
+
+' animation: fadeOut 0.5s ease-in-out 8.2s forwards;' +
+
+
+
+' pointer-events: none;' +
+
+
+
+'}' +
+
+
+
+'#profile-intro-overlay img {' +
+
+
+
+' width: 100%;' +
+
+
+
+' height: 100%;' +
+
+
+
+' object-fit: cover;' +
+
+
+
+'}' +
+
+
+
+'@keyframes fadeOut {' +
+
+
+
+' from { opacity: 1; }' +
+
+
+
+' to { opacity: 0; visibility: hidden; }' +
+
+
+
+'}' +
+
+
+
+'body.intro-playing {' +
+
+
+
+' overflow: hidden;' +
+
+
+
+'}'
+
+
+
+);
+
+
+
+var overlay = $('<div id="profile-intro-overlay">' +
+
+
+'<img src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/6/6b/Metalsonicintroangry.gif/revision/latest?cb=20251219033935&format=original" alt="Intro">' +
+
+
+
+'<audio id="intro-audio" autoplay>' +
+
+
+
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/8/82/BESTMETALLMS.mp3/revision/latest?cb=20251219034708" type="audio/mpeg">' +
+
+
+
+'</audio>' +
+
+
+
+'<audio id="ambience-audio">' +
+
+
+'<source src="https://static.wikia.nocookie.net/the-unofficial-outcome-memories/images/d/d9/DeadOrAliveNew.mp3/revision/latest?cb=20251024205224" type="audio/mpeg">' +
+
+
+
+'</audio>' +
+
+
+
+'</div>');
+
+
+
+$('body').addClass('intro-playing').prepend(overlay);
+
+
+
+setTimeout(function() {
+
+
+
+$('body').removeClass('intro-playing');
+
+
+
+}, 700);
+
+
+
+$('#intro-audio').on('ended', function() {
+
+
+
+$('body').removeClass('intro-playing');
+
+
+
+$('#ambience-audio')[0].play();
+
+
+
+});
+
+
+
+}
+
+
+
+});
+
+window.AddRailModule = [{prepend: true}];

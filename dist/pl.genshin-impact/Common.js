@@ -85,6 +85,9 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 			});
 			$wrapper.replaceWith(newWrap);
 			
+			// Preload
+			preloadTemplates_subpage = "Preload";
+			
 			// Functionality
 			let time = null;
 			$toggle.on('click', ()=> {

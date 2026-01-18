@@ -1,0 +1,1 @@
+/* Para importar scripts de Javascript desde dev.fandom ir a https://howtotrainyourdragon.fandom.com/es/wiki/MediaWiki:ImportJS */

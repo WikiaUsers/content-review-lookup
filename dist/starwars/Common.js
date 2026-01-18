@@ -881,7 +881,7 @@ function isMaintenanceCategory(t) {
 		return true;
 	}
 	
-	var middle = ["infoboxes", "missing permanent", "usages", "listed in", "stubs", "needing images", "category links", "of verification", "citations"];
+	var middle = ["infoboxes", "missing permanent", "usages", "listed in", "stubs", "needing images", "category links", "of verification", "citations", "plot summary"];
 	if (middle.some((v) => t.includes(' ' + v + ' ') || t.endsWith(' ' + v))) {
 		return true;
 	}
