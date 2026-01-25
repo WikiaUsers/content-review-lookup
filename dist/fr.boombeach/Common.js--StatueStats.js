@@ -231,9 +231,9 @@ $(document).ready(function() {
 		});
 		
 		// --- CALCULS AUTRES (SOINS ET GÉNÉRATEUR) ---
-		$(".Healing, .Gen").each(function() {
+		$(".Soin, .Gen").each(function() {
 		    var base = parseFloat($(this).attr("title")) || 0;
-		    var isHealing = $(this).hasClass("Healing");
+		    var isHealing = $(this).hasClass("Soin");
 		    var val = isHealing ? getSoin : getGen;
 		    var unit = isHealing ? " PV" : ""; // Adapte l'unité selon la statistique
 		    

@@ -83,6 +83,27 @@ $(function () {
     });
 });
 
+// Apply column hover highlighting for volume tables
+document.querySelectorAll('.volume-table').forEach(table => {
+    const cells = table.querySelectorAll('td, th');
+
+    cells.forEach(cell => {
+        cell.addEventListener('mouseenter', () => {
+            const colIndex = cell.cellIndex;
+            table.querySelectorAll('tr').forEach(row => {
+                const colCell = row.children[colIndex];
+                if (colCell) colCell.classList.add('hovered-column');
+            });
+        });
+
+        cell.addEventListener('mouseleave', () => {
+            table.querySelectorAll('.hovered-column').forEach(colCell => {
+                colCell.classList.remove('hovered-column');
+            });
+        });
+    });
+});
+
 /* Adds icons to page header */
 $(function() {
     if( $( '#PageHeader' ).length ) {

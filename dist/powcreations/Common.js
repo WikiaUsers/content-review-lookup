@@ -8,6 +8,7 @@ const WIKI_TOPICS = [
 	'Rats: In Paris',
 	'Cowboy SMP',
 	'Vampires SMP',
+	'Bannerfall SMP',
 	
 	// PowMinis
 	'A Wild Pig\'s Chase', 

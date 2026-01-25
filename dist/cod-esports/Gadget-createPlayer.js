@@ -105,6 +105,28 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 				makePage();
 			});
 		}
+		if (infoboxP) {
+			$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Create Caster', 'ca-create-player', 'Create player subpages')).click(function() {
+				clearDisplayColor();
+				if (!confirm('Create Player?')) {
+					return;
+				}
+				statuscolor = "gadget-action-success";
+				tag = "create_player"
+				i = 0;
+				a = new mw.Api();
+				thistitle = mw.config.get("wgTitle");
+				summary = "Automatically creating player subpages via CreateCaster";
+				titles = [ thistitle + '/Casting History', 
+					thistitle + '/Broadcast History',
+					'Tooltip:' + thistitle ];
+				texts = ["{{PlayerTabsHeader}}\n{{MatchHistoryCaster}}",
+					"{{PlayerTabsHeader}}\n{{TalentEventHistory}}",
+					"{{PlayerTooltip}}"
+				];
+				makePage();
+			});
+		}
 		if (infoboxT) {
 			$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Create Team', 'ca-create-team', 'Create team subpages')).click(function() {
 				clearDisplayColor();

@@ -1,3 +1,39 @@
+const Buffs = {
+    Rage: {
+        damageMultiplier: 1.5
+    },
+    
+    Haste: {
+        attackSpeedMultiplier: 0.67,
+        movementSpeedMultiplier: 1.33
+    },
+    
+    Spirit: {
+        healthMultiplier: 1.4,
+        minHealthBonus: 100,
+        maxHealthBonus: 350
+    },
+
+    BarrelShield: {
+        flatHealthBonus: 60,
+        movementSpeedFlat: -2
+    },
+
+    GiantGrowth: {
+        damageMultiplier: 1.2,
+        healthMultiplier: 1.2
+    },
+    
+    Marksmanship: {
+        flatRangeBonus: 2
+    },
+    
+    ManaSurge: {
+        attackSpeedMultiplier: 0.75
+    }
+};
+
+
 // Filter States
 var activeFilters = {
         faction: ['all'],
@@ -99,7 +135,10 @@ function applyFilters() {
 $(function () {
     
     
-    $(document).on('click', '.filter-btn:not(.type-switch .filter-btn)', function () {
+    $(document).on(
+	 'click',
+	 '.filter-toggle-buttons[data-filter] .filter-btn:not(.type-switch .filter-btn):not(#btn-base-stats):not(#btn-activated-stats)',
+	  function () {
         var $btn = $(this);
         var $buttonGroup = $btn.closest('.filter-toggle-buttons');
         var filterType = $buttonGroup.data('filter');
@@ -237,81 +276,170 @@ $(function() {
 });
 
 // ---------------------------
-// Activated State Toggle
+// Default Buffs per Unit
+// ---
+const innateEffects = {
+    "High-Mage Leiliel": [ Buffs.Marksmanship, { flatManaBonus: 2 }]
+};
+
+
+// ---------------------------
+// Activated Buffs per Unit
+// ---------------------------
+const activatedEffects = {
+	"High-Mage Leiliel": Buffs.ManaSurge,
+	"Boom Buggy": Buffs.Marksmanship,
+	"Skeleton Crew": { flatCountBonus: 2 },
+	"Lone Scout": { flatManaBonus: -1 },
+	"Spirit Vessel": Buffs.Spirit,
+	'"Armored" Scrats': Buffs.BarrelShield,
+    "Dragon Whelp": Buffs.Rage,
+    "Tantrum Throwers": Buffs.Rage,
+    "Sewer Scrat": Buffs.BarrelShield,
+    "Rocket Scrat": Buffs.BarrelShield,
+    "Ravenous Swarmers": [ Buffs.Rage, Buffs.Haste]
+};
+
+// ---------------------------
+// Unified Stat Recalculation System
 // ---------------------------
 $(function () {
 
-    const activatedEffects = {
-        "Dragon Whelp": {
-            damageMultiplier: 1.5
+    function storeRaw($cell) {
+        if ($cell.length && $cell.data("raw") === undefined) {
+            $cell.data("raw", parseFloat($cell.text()));
         }
-    };
+    }
 
-    let activated = false;
+    function recalcRow($row, includeActivated) {
+        const name = $row.find("td:first-child").text().trim();
 
-    $("#toggle-activated").on("click", function () {
-        activated = !activated;
-        $(this).toggleClass("active", activated);
+        // ---- Cells
+        const dmgCell   = $row.find(".field_Damage");
+        const atkCell   = $row.find(".field_Attack_Speed");
+        const hpCell    = $row.find(".field_Health");
+        const manaCell  = $row.find(".field_Mana");
+        const countCell = $row.find(".field_Count");
+        const rangeCell = $row.find(".field_Range");
+        const moveCell  = $row.find(".field_Move_Speed");
 
+        const dpsCell   = $row.find(".field_DPS");
+        const apsCell   = $row.find(".field_attacksPerSecond");
+
+        const totalDpsCell        = $row.find(".field_totalDps");
+        const dpsPerManaCell      = $row.find(".field_dpsPerMana");
+        const totalDpsPerManaCell = $row.find(".field_totalDpsPerMana");
+
+        const totalHpCell         = $row.find(".field_totalHp");
+        const hpPerManaCell       = $row.find(".field_hpPerMana");
+        const totalHpPerManaCell  = $row.find(".field_totalHpPerMana");
+
+        // ---- Store RAW values
+        [
+            dmgCell, atkCell, hpCell, manaCell, countCell, rangeCell, moveCell,
+            dpsCell, apsCell, totalDpsCell, dpsPerManaCell,
+            totalDpsPerManaCell, totalHpCell, hpPerManaCell, totalHpPerManaCell
+        ].forEach(storeRaw);
+
+        // ---- Pull RAW
+        let damage = dmgCell.data("raw");
+        let atk    = atkCell.data("raw");
+        let hp     = hpCell.data("raw");
+        let mana   = manaCell.data("raw");
+        let count  = countCell.data("raw");
+        let range  = rangeCell.length ? rangeCell.data("raw") : null;
+        let move   = moveCell.length ? moveCell.data("raw") : null;
+
+        // ---- Collect buffs
+        const innate = innateEffects[name]
+            ? (Array.isArray(innateEffects[name]) ? innateEffects[name] : [innateEffects[name]])
+            : [];
+
+        const activated = includeActivated && activatedEffects[name]
+            ? (Array.isArray(activatedEffects[name]) ? activatedEffects[name] : [activatedEffects[name]])
+            : [];
+
+        const effects = [...innate, ...activated];
+
+        // ---- Apply buffs
+        effects.forEach(buff => {
+            if (buff.damageMultiplier) damage *= buff.damageMultiplier;
+            if (buff.attackSpeedMultiplier) atk *= buff.attackSpeedMultiplier;
+
+            if (buff.healthMultiplier) {
+                let scaled = hp * buff.healthMultiplier;
+                if (buff.minHealthBonus || buff.maxHealthBonus) {
+                    let bonus = scaled - hp;
+                    if (buff.minHealthBonus) bonus = Math.max(bonus, buff.minHealthBonus);
+                    if (buff.maxHealthBonus) bonus = Math.min(bonus, buff.maxHealthBonus);
+                    hp += bonus;
+                } else {
+                    hp = scaled;
+                }
+            }
+
+            if (buff.flatHealthBonus) hp += buff.flatHealthBonus;
+            if (buff.flatManaBonus) mana += buff.flatManaBonus;
+            if (buff.flatCountBonus) count += buff.flatCountBonus;
+            if (buff.flatRangeBonus && range !== null) range += buff.flatRangeBonus;
+            if (buff.movementSpeedMultiplier && move !== null) move *= buff.movementSpeedMultiplier;
+            if (buff.movementSpeedFlat && move !== null) move += buff.movementSpeedFlat;
+        });
+
+        // ---- Safety clamps
+        damage = Math.round(damage);
+        atk    = Math.max(0.1, +atk.toFixed(2));
+        hp     = Math.max(1, Math.round(hp));
+        mana   = Math.max(1, Math.round(mana));
+        count  = Math.max(1, Math.round(count));
+        if (range !== null) range = Math.max(0, Math.round(range));
+        if (move !== null)  move  = Math.round(move);
+
+        // ---- Derived
+        const aps = 1 / atk;
+        const dps = damage / atk;
+
+        // ---- Write back
+        dmgCell.text(damage);
+        atkCell.text(atk.toFixed(2));
+        apsCell.text(aps.toFixed(2));
+        dpsCell.text(dps.toFixed(2));
+
+        hpCell.text(hp);
+        manaCell.text(mana);
+        countCell.text(count);
+        if (rangeCell.length) rangeCell.text(range);
+        if (moveCell.length)  moveCell.text(move);
+
+        if (totalDpsCell.length)        totalDpsCell.text((dps * count).toFixed(2));
+        if (dpsPerManaCell.length)      dpsPerManaCell.text((dps / mana).toFixed(2));
+        if (totalDpsPerManaCell.length) totalDpsPerManaCell.text(((dps * count) / mana).toFixed(2));
+
+        if (totalHpCell.length)         totalHpCell.text((hp * count).toFixed(0));
+        if (hpPerManaCell.length)       hpPerManaCell.text((hp / mana).toFixed(2));
+        if (totalHpPerManaCell.length)  totalHpPerManaCell.text(((hp * count) / mana).toFixed(2));
+    }
+
+    // ---- Buttons
+    $("#btn-base-stats").on("click", function () {
         $(".cargoTable tbody tr").each(function () {
-            const $row = $(this);
-            const name = $row.find("td:first-child").text().trim();
-
-            if (!activatedEffects[name]) return;
-
-            const effect = activatedEffects[name];
-
-            const dmgCell = $row.find("td.field_Damage");
-            const atkSpdCell = $row.find("td.field_Attack_Speed");
-            const dpsCell = $row.find("td.field_DPS");
-            const totalDpsCell = $row.find("td.field_totalDps");
-            const dpsPerManaCell = $row.find("td.field_dpsPerMana");
-            const countCell = $row.find("td.field_Count");
-            const manaCell = $row.find("td.field_Mana");
-
-            if (!dmgCell.length || !atkSpdCell.length) return;
-
-            const baseDamage = parseFloat(dmgCell.data("base") || dmgCell.text());
-            const attackSpeed = parseFloat(atkSpdCell.text());
-            const count = parseInt(countCell.text() || "1");
-            const mana = parseFloat(manaCell.text());
-
-            // Store base values once
-            if (!dmgCell.data("base")) {
-                dmgCell.data("base", baseDamage);
-                dpsCell.data("base", parseFloat(dpsCell.text()));
-                if (totalDpsCell.length) totalDpsCell.data("base", parseFloat(totalDpsCell.text()));
-                if (dpsPerManaCell.length) dpsPerManaCell.data("base", parseFloat(dpsPerManaCell.text()));
-            }
-
-            if (activated) {
-                const newDamage = baseDamage * effect.damageMultiplier;
-                const newDps = newDamage * attackSpeed;
-
-                dmgCell.text(newDamage.toFixed(1));
-                dpsCell.text(newDps.toFixed(1));
-
-                if (totalDpsCell.length) {
-                    totalDpsCell.text((newDps * count).toFixed(1));
-                }
-
-                if (dpsPerManaCell.length) {
-                    dpsPerManaCell.text((newDps / mana).toFixed(2));
-                }
-
-            } else {
-                // Restore base values
-                dmgCell.text(baseDamage);
-                dpsCell.text(dpsCell.data("base"));
-
-                if (totalDpsCell.length) {
-                    totalDpsCell.text(totalDpsCell.data("base"));
-                }
-
-                if (dpsPerManaCell.length) {
-                    dpsPerManaCell.text(dpsPerManaCell.data("base"));
-                }
-            }
+        	$("#btn-base-stats").addClass("active");
+    		$("#btn-activated-stats").removeClass("active");
+            recalcRow($(this), false); // raw + innate
         });
     });
-});
+
+    $("#btn-activated-stats").on("click", function () {
+        $(".cargoTable tbody tr").each(function () {
+        	$("#btn-activated-stats").addClass("active");
+			$("#btn-base-stats").removeClass("active");
+            recalcRow($(this), true); // raw + innate + activated
+        });
+    });
+
+    // ---- Initial load: show base stats WITH innate b
+	 $(".cargoTable tbody tr").each(function () {
+	        recalcRow($(this), false);
+	    });
+	
+	});

@@ -1,6 +1,5 @@
 /* Tout JavaScript ici sera chargé pour chaque page visitée par n’importe quel utilisateur. */
 
- 
 /*Import*/
 importArticles({
     type: 'script',
@@ -15,3 +14,17 @@ AjaxRCRefreshText = 'Auto-Refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages","Special:NewFiles"];
 importScriptPage('AjaxRC/code.js', 'dev');
+
+/* Traduction des 'Expand/Collapse' sur les collapsibles */
+mw.hook('wikipage.content').add(function ($content) {
+  $content.find('.mw-collapsible').each(function () {
+    const $el = $(this);
+
+    if (!$el.attr('data-expandtext')) {
+      $el.attr('data-expandtext', 'Développer');
+    }
+    if (!$el.attr('data-collapsetext')) {
+      $el.attr('data-collapsetext', 'Réduire');
+    }
+  });
+});

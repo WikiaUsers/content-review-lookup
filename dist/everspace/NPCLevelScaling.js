@@ -83,11 +83,16 @@
 			const $npcLevelDiv = section.find('[data-item-name="npc-level"] > .pi-data-value');
 			const $npcTierDiv  = section.find('[data-item-name="npc-tier"] > .pi-data-value');
 			const $npcDiffDiv  = section.find('[data-item-name="npc-difficulty"] > .pi-data-value');
-	
-			npc.append( $('<section>', { class: 'pi-item pi-group pi-border-color', "data-item-name": 'npc-info-message' } ) );
-	
-			// Add hidden section with save message, visibility is toggled to indicate saving
-			const saveNotice = npc.find('section[data-item-name="npc-info-message"]').hide().text('Settings Updated!');
+			
+			// Add hidden section with save message, visibility toggled to indicate saving
+			const saveNotice = $('<section>', {
+				class: 'pi-item pi-group pi-border-color',
+				'data-item-name': 'npc-info-message'
+			}).append(
+				$('<section>').text('Settings Updated!')
+			).hide();
+			
+			npc.append(saveNotice);
 	
 			const scaler = {};
 	
@@ -289,7 +294,7 @@
 	
 			scaler.bindLinkedInputs( scaler.levelRange.add( scaler.levelNumber ), 'level', 1, 30 );
 			scaler.bindRadioInputs( scaler.tierInputs, 'tier', 'normal' );
-			scaler.bindRadioInputs( scaler.diffInputs, 'difficulty', '1.0');
+			scaler.bindRadioInputs( scaler.diffInputs, 'difficulty', 'normal');
 			
 			scaler.update();
 		});

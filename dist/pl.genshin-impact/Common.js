@@ -86,7 +86,7 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 			$wrapper.replaceWith(newWrap);
 			
 			// Preload
-			preloadTemplates_subpage = "Preload";
+			preloadTemplates_subpage = "case-by-case";
 			
 			// Functionality
 			let time = null;

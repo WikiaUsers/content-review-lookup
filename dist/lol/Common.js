@@ -128,4 +128,14 @@ $(function() {
     $('.mw-special-CargoTables .cargoTable th.field_Page').html('_pageName');
 });
 
+/* fix "Redirected from" text */
+$(function() {
+    $('.mw-redirectedfrom a').each(function() {
+        var href = $(this).attr('href');
+        if (href) {
+            $(this).text(decodeURIComponent(href.split('/wiki/')[1].split('?')[0]).replaceAll('_', ' '));
+        }
+    });
+});
+
 // </nowiki>

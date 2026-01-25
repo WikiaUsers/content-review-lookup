@@ -20,7 +20,8 @@ mw.loader.using([
 	const config = mw.config.values;
 	const ns = config.wgNamespaceNumber;
 	const extraSigNs = config.wgExtraSignatureNamespaces.includes(ns);
-	const wrongNamespace = (ns % 2 === 0 && !extraSigNs) || ns < 0;
+	const talkPage = ns % 2;
+	const wrongNamespace = (!talkPage && !extraSigNs) || ns < 0;
 	const addTopicButton = $('#ca-addsection');
 	const noEasyTalk = wrongNamespace && !addTopicButton.length;
 	
@@ -37,7 +38,7 @@ mw.loader.using([
 	let updatePreview;
 	let msg = () => {};
 	let newTopicToolAvailable = true;
-	const version = '2.1.3';
+	const version = '2.1.5';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -192,16 +193,6 @@ mw.loader.using([
 			datetime.replaceWith(datetime.text().replace(datetimeRegExp, timeTag));
 		});
 		
-		content.find('p:has(br:only-child)').remove();
-		content.find('dl + dl').each((dlIndex, dl) => {
-			$(dl).prepend($(dl).prev().html());
-			$(dl).prev().remove();
-		});
-		
-		while (content.find('dd:has(dl:last-child) + dd > dl:first-child').length){
-			content.find('dd:has(dl:last-child) + dd > dl:first-child').each(mergeAdjacentDLs);
-		}
-		
 		const comments = content.find('.js-comment-date-time');
 		const newSect = `Special:NewSection/${pageName.replaceAll('"', '\\"')}`;
 		addStats(content, comments);
@@ -247,7 +238,7 @@ mw.loader.using([
 	}
 	
 	function addStats(content, comments){
-		if (!comments.length){
+		if (!comments.length || (!addTopicButton.length && !talkPage && !archived)){
 			return;
 		}
 		const topics = {};
@@ -478,7 +469,7 @@ mw.loader.using([
 			const index = Number(submitReplyEvent.data.index);
 			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${datetime}){${index}}`), '');
 			const iRegExp = new RegExp(`[^]*?^([:*#]*).+?${datetime} *$[^]*`, 'm');
-			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${datetime} *)$((?:\n+\\2[:*#]+.*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
+			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${datetime} *)$((?:\n+(?:\\2[:*#]+|[!|]).*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
 			const indent = mainText.replace(iRegExp, '$1');
 			const repliesWithIndent = new RegExp(`[^]*?^.+?${datetime} *$\n+:+[^]*`, 'm');
 			let finalText;
@@ -789,14 +780,6 @@ function age(date, now){
 	}
 	
 	return ageText;
-}
-
-function mergeAdjacentDLs(dlIndex, dl){
-	const prevDL = $(dl).parent().prev().children(':last-child');
-	$(dl).prepend(prevDL.html());
-	prevDL.remove();
-	$(dl).before($(dl).parent().prev().html());
-	$(dl).parent().prev().remove();
 }
 
 function errorNotice(message, type = 'error'){

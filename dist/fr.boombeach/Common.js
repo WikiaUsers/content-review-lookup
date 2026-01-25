@@ -1,6 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-importScript('MediaWiki:Common.js/StatueStats.js');
+$(function() {
+    var $protectionIcon = $('.protection-image.titleAlert');
+    if ($protectionIcon.length) {
+        // Déplace l'icône au début de la zone d'actions (à gauche du bouton modifier)
+        $('.page-header__actions').prepend($protectionIcon);
+        // On s'assure qu'elle est visible
+        $protectionIcon.removeClass('hidden').css('display', 'inline-block');
+    }
+});
 
+importScript('MediaWiki:Common.js/StatueStats.js');
 $(document).ready(function() {
 	
     // Change Random Page button to only go to pages in the mainspace

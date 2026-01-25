@@ -113,7 +113,7 @@ if (/sysop|content-moderator|rollback/.test(mw.config.get('wgUserGroups').join()
 	    type: 'script',
 	    articles: new Array(
 	    	"u:dev:MediaWiki:AjaxRedirect/code.js",
-	        "u:dev:MediaWiki:AjaxRename/code.js",
+	        //"u:dev:MediaWiki:AjaxRename/code.js",
 	        "u:dev:MediaWiki:AjaxUndo/code.js",
 			"u:dev:MediaWiki:FileUsageAuto-update/code.js",
 			"u:dev:MediaWiki:MassCategorization/code.js",

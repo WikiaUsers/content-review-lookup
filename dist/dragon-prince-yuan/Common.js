@@ -94,5 +94,25 @@ UserTagsJS.modules.mwGroups = [
     'bannedfromchat'
 ];
 
+/* ================================
+   MultiClock config (UTC+8)
+   ================================ */
+window.MultiClockConfig = {
+  interval: 500,
+  clocks: [
+    {
+      label: "UTC+8",
+      offset: 8,
+      color: "#ffffff",
+      format: "%H:%M:%S %d %b %Y"
+    }
+  ]
+};
+
 // BackToTopButton Config 
 window.BackToTopModern = true;
+
+// LockOldComments Config
+window.lockOldComments = window.lockOldComments || {};
+window.lockOldComments.limit = 365;
+window.lockOldComments.addNoteAbove = true;

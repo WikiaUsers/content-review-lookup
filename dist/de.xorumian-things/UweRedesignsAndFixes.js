@@ -8,12 +8,35 @@ document.querySelectorAll('li a[data-tracking="explore-images"]').forEach(link =
 	link.href = link.href.replace(':NewFiles', ':NewFiles?limit=500');
 });
 
-// Recent Images design --------------------------------------------------------
+// Recent Images ---------------------------------------------------------------
 setTimeout(() => {
     document.querySelectorAll('.card-image img').forEach(img => {
-        img.src = img.src.replace('width/300/height/168', 'width/300/height/300');
+        img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-width-down/200');
     });
 }, 3000);
+// Later added images
+setTimeout(() => {
+	const observerRecentIamges = new MutationObserver(mutations => {
+	    for (const mutation of mutations) {
+	        if (mutation.type === "childList") {
+	            mutation.addedNodes.forEach(node => {
+	                if (node.nodeType === 1 && node.classList.contains("alice-carousel__stage-item")) {
+
+					    setTimeout(() => {
+					    	document.querySelectorAll('.card-image img').forEach(img => {
+								img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-width-down/200');
+							});
+						}, 300);
+	                }
+	            });
+	        }
+	    }
+	});
+	observerRecentIamges.observe(document.body, {
+	    childList: true,
+	    subtree: true
+	});
+}, 500);
 
 // Replace letters with other letters that have the font-family ----------------
 $("head").append(`<style> 
@@ -140,14 +163,10 @@ const observer = new MutationObserver(mutations => {
 						    link.removeAttribute('target');
 						});
 						// Image size change
-						document.querySelectorAll('.card-image img').forEach(img => {
-						    img.src = img.src.replace('width/300/height/168', 'width/300/height/300');
-						});
-						// Test for Recent Images
 						document.querySelectorAll('.LightboxCarouselContainer img').forEach(img => {
 						    img.src = img.src.replace('latest?', 'latest/scale-to-width-down/55?');
 						});
-					}, 1000);
+					}, 800);
                 }
             });
         }
@@ -157,3 +176,32 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
 });
+
+// Infobox tab syncronization --------------------------------------------------
+setTimeout(() => {
+	const groups = [
+		{
+			buttons: [...document.querySelectorAll(".wds-tab__content.wds-is-current .pi-image-collection .wds-tabs__tab")],
+			images:  [...document.querySelectorAll(".wds-tab__content.wds-is-current .pi-image-collection .wds-tab__content:nth-child(n+2)")]
+		},
+		{
+			buttons: [...document.querySelectorAll(".wds-tab__content:not(.wds-is-current) .pi-image-collection .wds-tabs__tab")],
+			images:  [...document.querySelectorAll(".wds-tab__content:not(.wds-is-current) .pi-image-collection .wds-tab__content:nth-child(n+2)")]
+		}
+	];
+	
+	function activate(index, from, to) {
+		from.buttons.forEach((b,i) => b.classList.toggle("wds-is-current", i === index));
+		from.images.forEach((img,i) => img.classList.toggle("wds-is-current", i === index));
+		to.buttons.forEach((b,i) => b.classList.toggle("wds-is-current", i === index));
+		to.images.forEach((img,i) => img.classList.toggle("wds-is-current", i === index));
+	}
+	
+	groups.forEach((group, gIndex) => {
+		group.buttons.forEach((btn, i) => {
+			btn.addEventListener("click", () => {
+				activate(i, groups[gIndex], groups[1 - gIndex]);
+			});
+		});
+	});
+}, 500);

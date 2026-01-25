@@ -59,7 +59,7 @@ function arrayUnique(a) {
         if (p.indexOf(c) < 0) p.push(c);
         return p;
     }, []);
-};
+}
 function charLength(s){
 	return s.length+(encodeURI(s).split(/%..|./).length-1-s.length)/2;
 }

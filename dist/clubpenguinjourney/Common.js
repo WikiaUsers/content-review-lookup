@@ -13,7 +13,7 @@ window.UserTagsJS = {
 	oasisPlaceBefore: ''
 };
 UserTagsJS.modules.custom = {
-	'Tuna Takoyaki': ['topmonth'],
+	'MrEmote': ['topmonth'],
 };
 
 UserTagsJS.modules.mwGroups = ['content-moderator', 'threadmoderator'];
@@ -25,7 +25,7 @@ $(function() {
 	var years_div = document.querySelectorAll("div.tabber-years");
 	for (var i=0; i < years_div.length; i++) {
 	    if (years_div[i]) {
-	        var CURRENT_YEAR = 2025;
+	        var CURRENT_YEAR = new Date().getFullYear();
 			var tabber = years_div[i].querySelector("div.tabber.wds-tabber"); //tabber
 			var tabs = tabber.querySelectorAll("div.wds-tabs__wrapper ul.wds-tabs li"); //tabs
 	
@@ -61,7 +61,7 @@ $(function() {
 	        tabs[desired_idx].classList.add('wds-is-current');
 	
 	        if (default_idx != desired_idx) {
-	            var tabber_divs = tabber.querySelectorAll(":scope > div") // Only direct children
+	            var tabber_divs = tabber.querySelectorAll(":scope > div"); // Only direct children
 	            var default_table = tabber_divs[default_idx+1].innerHTML;
 	            var desired_table = tabber_divs[desired_idx+1].innerHTML;
 	
@@ -164,7 +164,7 @@ $(function() {
 		usernameInput.addEventListener("input", generateImageLink);
 		backgroundCheckbox.addEventListener("change", generateImageLink);
 		pinCheckbox.addEventListener("change", generateImageLink);
-		console.log("Listening")
+		console.log("Listening");
 
 		generateImageLink();
 	}

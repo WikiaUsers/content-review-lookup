@@ -5,3 +5,14 @@ window.SpoilerAlertJS = {
     no: 'Nay',
     fadeDelay: 500
 };
+
+// Add category-based classes to body for CSS targeting
+$(function() {
+    var categories = mw.config.get('wgCategories');
+    if (categories) {
+        categories.forEach(function(cat) {
+            var className = 'category-' + cat.replace(/ /g, '_').replace(/'/g, '_');
+            $('body').addClass(className);
+        });
+    }
+});

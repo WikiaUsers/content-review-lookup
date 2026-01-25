@@ -44,3 +44,33 @@
     setInterval(draw, 33);
 })();
 window.AddRailModule = [{prepend: true}];
+
+$(document).ready(function() {
+  if (!$('.lms-red-filter').length) {
+    $('body').append(
+      '<div class="lms-red-filter"></div>' +
+      '<div class="lms-siren-gif"></div>' +
+      '<div class="lms-flame-bar"></div>'
+    );
+  }
+
+  const specialTrack = "AshleSpecialLMS.mp3";
+
+  document.addEventListener('play', function(e) {
+    if (e.target.src && e.target.src.includes(specialTrack)) {
+      document.documentElement.classList.add('is-playing-special-track');
+    }
+  }, true);
+
+  document.addEventListener('pause', function(e) {
+    if (e.target.src && e.target.src.includes(specialTrack)) {
+      document.documentElement.classList.remove('is-playing-special-track');
+    }
+  }, true);
+
+  document.addEventListener('ended', function(e) {
+    if (e.target.src && e.target.src.includes(specialTrack)) {
+      document.documentElement.classList.remove('is-playing-special-track');
+    }
+  }, true);
+});

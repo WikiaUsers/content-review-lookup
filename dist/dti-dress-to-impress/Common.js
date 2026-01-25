@@ -1,25 +1,34 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/*VIP Tag Module */
+// NoLicenseWarning script
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop',
+    ]
+};
+
+// VIP Tag Module
 $(function() {
     if ($('.page-header__categories a[title="Category:VIP Items"]').length) {
         $('.page-header__title').append(' <img src="https://static.wikia.nocookie.net/dti-dress-to-impress/images/8/85/VIP_Display_Tag_-_Icon.png/revision/latest?cb=20251110180002&format=original" width="50" height="22" alt="VIP Item">');
     }
 });
 
-/*VIP Tag Module */
+// VIP Tag Module
 $(function() {
     if ($('.page-header__categories a[title="Category:WDFCD Items"]').length) {
         $('.page-header__title').append(' <img src="https://static.wikia.nocookie.net/dti-dress-to-impress/images/9/91/Cultural_Graphic_Hands_%28GLOW%29_-_Icon.png/revision/latest?cb=20250519021945&format=original" width="42" height="40" alt="VIP Item">');
     }
 });
 
+// Auto Message for Blocks
 window.MessageBlock = {
 	title: 'Blocked!',
 	message: 'Hello user, you have been blocked for the following reason:'
 };
 
-/*Welcome Module */
+// Welcome Module
 $(function() {
     var welcome;
     if (localStorage.getItem('welcome-' + mw.config.get('wgDBname'))) {
