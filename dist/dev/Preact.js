@@ -170,13 +170,14 @@
         exports.useCallback = hooks.useCallback;
         exports.useRef = hooks.useRef;
         exports.useLayoutEffect = hooks.useLayoutEffect;
-        // exports.useImperativeHandle = hooks.useImperativeHandle;
+        exports.useImperativeHandle = hooks.useImperativeHandle;
         // exports.useDebugValue = hooks.useDebugValue;
 
         // As well as these
         exports.render = preact.render;
         exports.Fragment = preact.Fragment;
         exports.createContext = preact.createContext;
+        exports.createRef = preact.createRef;
         exports.cloneElement = preact.cloneElement;
         exports.toChildArray = preact.toChildArray;
 

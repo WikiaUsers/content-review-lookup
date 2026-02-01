@@ -2,7 +2,7 @@
 function calculerCumul() {
     var currentTotalCumul = 0;
     var currentTotalBase = 0; 
-    var getRC = parseFloat($("#bonusInputRC").val()) || 0;
+    var getRC = parseFloat($("#IDInputCanoReduc").val()) || 0;
 
     $(".GBE_Cost").each(function() {
 	    var base = parseFloat($(this).attr("title")) || 0;
@@ -35,121 +35,118 @@ function calculerCumul() {
 	});
 }
 
+function formatTime(totalMinutes) {
+	if (totalMinutes <= 0 || isNaN(totalMinutes)) return "0s";
+	var days = Math.floor(totalMinutes / 1440);
+    var hours = Math.floor((totalMinutes % 1440) / 60);
+    var mins = totalMinutes % 60;
+    var result = "";
+    if (days > 0) result += days + "j ";
+    if (hours > 0) result += hours + "h ";
+    if (mins > 0 && days === 0) result += mins + "m";
+    return result.trim() || "0m";
+}
+
 // Template: StatueStatsForm
 $(document).ready(function() {
 	
 	var inputStyle = 'text-align: right; width: 40px;';
-    /* Fonction d'arrondi */
     function roundNum(digit, num) {
         return Math.round((num) * Math.pow(10, digit)) * Math.pow(10, -digit);
     }
 
-    /* 1. CRÉATION DES INPUTS UNIQUEMENT (TH, TD, TS + OB) */
-    $("span#bonusInputTHHarness").html('<input type="text" value="0" id="bonusInputTH" class="bonusInput" style="text-align: right; width: 40px;"></input>');
-    $("span#bonusInputTDHarness").html('<input type="text" value="0" id="bonusInputTD" class="bonusInput" style="text-align: right; width: 40px;"></input>');
-    $("span#bonusInputTSHarness").html('<input type="text" value="0" id="bonusInputTS" class="bonusInput" style="text-align: right; width: 40px;"></input>');
-    $("span#bonusadrenaline").html('<select id="bonusInputAdre" class="bonusInput"> \
-    	<option value="0" selected>Aucun</option> \
-        <option value="5">Niveau 1</option> \
-        <option value="6">Niveau 2</option> \
-        <option value="7">Niveau 3</option> \
-        <option value="8">Niveau 4</option> \
-        <option value="9">Niveau 5</option> \
-        <option value="10">Niveau 6</option> \
-        <option value="11">Niveau 7</option> \
-        <option value="12">Niveau 8</option> \
-        <option value="13">Niveau 9</option> \
-        <option value="14">Niveau 10</option> \
-        <option value="15">Niveau 11</option> \
-        <option value="16">Niveau 12</option> \
-        <option value="17">Niveau 13</option> \
-        <option value="18">Niveau 14</option> \
-        <option value="19">Niveau 15</option> \
-        <option value="20">Niveau 16</option> \
-    </select>');
-    
-    $("span#bonusOrdreBataille").html('<select id="battleOrdersLevel" class="bonusInput"> \
-        <option value="0">Aucun</option> \
-        <option value="1">Niveau 1</option> \
-        <option value="2">Niveau 2</option> \
-        <option value="3">Niveau 3</option> \
-        <option value="4">Niveau 4</option> \
-        <option value="5">Niveau 5</option> \
-        <option value="6">Niveau 6</option> \
-    </select>');
-    
-    $("span#bonusInputADHarness").html('<input type="text" value="0" id="bonusInputAD" class="bonusInput" style="' + inputStyle + '"></input>');
-	$("span#bonusInputRCHarness").html('<input type="text" value="0" id="bonusInputRC" class="bonusInput" style="' + inputStyle + '"></input>');
-    $("span#bonusInputDurHarness").html('<input type="text" value="0" id="bonusInputDur" class="bonusInput" style="' + inputStyle + '"></input>');
-    $("span#bonusInputSoinHarness").html('<input type="text" value="0" id="bonusInputSoin" class="bonusInput" style="' + inputStyle + '"></input>');
-    $("span#bonusInputGenHarness").html('<input type="text" value="0" id="bonusInputGen" class="bonusInput" style="' + inputStyle + '"></input>');
-    
-    $("span#bonusartilleur").html('<select id="bonusInputArti" class="bonusInput"> \
-        <option value="0" selected>Aucun</option>\
-        <option value="10">Niveau 1</option>\
-        <option value="11">Niveau 2</option>\
-        <option value="12">Niveau 3</option>\
-        <option value="13">Niveau 4</option>\
-        <option value="14">Niveau 5</option>\
-        <option value="15">Niveau 6</option>\
-        <option value="16">Niveau 7</option>\
-        <option value="17">Niveau 8</option>\
-        <option value="18">Niveau 9</option>\
-        <option value="19">Niveau 10</option>\
-        <option value="20">Niveau 11</option>\
-        <option value="21">Niveau 12</option>\
-        <option value="22">Niveau 13</option>\
-        <option value="23">Niveau 14</option>\
-        <option value="24">Niveau 15</option>\
-        <option value="25">Niveau 16</option>\
-        <option value="26">Niveau 17</option>\
-        <option value="27">Niveau 18</option>\
-        <option value="28">Niveau 19</option>\
-        <option value="29">Niveau 20</option>\
-        <option value="30">Niveau 21</option>\
-    </select>');
+    $("span#InputSanté").html('<input type="text" value="0" id="IDInputSanté" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputDégâts").html('<input type="text" value="0" id="IDInputDégâts" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputVitesse").html('<input type="text" value="0" id="IDInputVitesse" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputUpgrade").html('<input type="text" value="0" id="IDInputUpgrade" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputDégâtsCano").html('<input type="text" value="0" id="IDInputDégâtsCano" class="bonusInput" style="' + inputStyle + '"></input>');
+	$("span#InputCanoReduc").html('<input type="text" value="0" id="IDInputCanoReduc" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputDurée").html('<input type="text" value="0" id="IDInputDurée" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputSoin").html('<input type="text" value="0" id="IDInputSoin" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputGénération").html('<input type="text" value="0" id="IDInputGénération" class="bonusInput" style="' + inputStyle + '"></input>');
+    $("span#InputProduction").html('<input type="text" value="0" id="IDInputProduction" class="bonusInput" style="' + inputStyle + '"></input>');
+    $('#InputAmpli1').html(`<input type="number" id="IDInputAmpli1" class="bonusInput ampliInput" value="0" min="0" style="${inputStyle}">`);
+    $('#InputAmpli2').html(`<input type="number" id="IDInputAmpli2" class="bonusInput ampliInput" value="0" min="0" style="${inputStyle}">`);
+    $('#InputAmpli3').html(`<input type="number" id="IDInputAmpli3" class="bonusInput ampliInput" value="0" min="0" style="${inputStyle}">`);
+    // Gravure Adrénaline dans Artéfacts.js
+    // Gravure Artilleur dans Artéfacts.js
+    // Ordre de bataille dans Artéfacts.js
 
-    /* 2. INITIALISATION DES VALEURS DE BASE */
-    $(".StatueStat").each(function() {
-        var textValue = $(this).text().replace(/\s/g, "").replace(/,/g, ".");
-        var initialValue = parseFloat(textValue) || 0;
-        $(this).attr("title", initialValue);
-    });
-    calculerCumul();
+    $(".StatueStat, .TH, .TD, .TDA, .BD, .BDA, .AD, .Duration, .Soin, .Gen, .Production").each(function() {
+	    var textValue = $(this).text().replace(/\s/g, "").replace(/,/g, ".");
+	    var initialValue = parseFloat(textValue) || 0;
+	    $(this).attr("data-base", initialValue); 
+	    $(this).attr("title", initialValue);
+	});
+	calculerCumul();
 
-    /* 3. CALCULS AU CLIC SUR LE BOUTON UPDATE */
     $("#changeBonusButton").click(function() {
         $(this).text("Update");
 
-        // Récupération des valeurs
-        var getTH = parseFloat($("#bonusInputTH").val()) || 0;
-        var getTD = parseFloat($("#bonusInputTD").val()) || 0;
-        var getTS = parseFloat($("#bonusInputTS").val()) || 0;
-        var boLevel = $("#battleOrdersLevel").val();
-        var getADRE = parseFloat($("#bonusInputTS").val()) || 0;
-        var getAD = parseFloat($("#bonusInputAD").val()) || 0;
-        var getRC = parseFloat($("#bonusInputRC").val()) || 0;
-        var getDur = parseFloat($("#bonusInputDur").val()) || 0;
-        var getSoin = parseFloat($("#bonusInputSoin").val()) || 0;
-        var getGen = parseFloat($("#bonusInputGen").val()) || 0;
-        var getArti = parseFloat($("#bonusInputArti").val()) || 0;
-
-        // Table de correspondance Ordre de Bataille
+        var getTH = parseFloat($("#IDInputSanté").val()) || 0;
+        var getTD = parseFloat($("#IDInputDégâts").val()) || 0;
+        var getTS = parseFloat($("#IDInputVitesse").val()) || 0;
+        var boLevel = $("#IDInputOrdreBataille").val();
+        var getADRE = parseFloat($("#IDInputAdrenaline").val()) || 0;
+        var getAD = parseFloat($("#IDInputDégâtsCano").val()) || 0;
+        var getRC = parseFloat($("#IDInputCanoReduc").val()) || 0;
+        var getDur = parseFloat($("#IDInputDurée").val()) || 0;
+        var getSoin = parseFloat($("#IDInputSoin").val()) || 0;
+        var getGen = parseFloat($("#IDInputGénération").val()) || 0;
+        var getArti = parseFloat($("#IDInputArtilleur").val()) || 0;
+        var getRT = parseFloat($("#IDInputUpgrade").val()) || 0;
+        var getPR = parseFloat($("#IDInputProduction").val()) || 0;
+        var coeffRT = 1 + (getRT / 100);
+        var AmpliI = parseInt($('#IDInputAmpli1').val()) || 0;
+        var AmpliII = parseInt($('#IDInputAmpli2').val()) || 0;
+        var AmpliIII = parseInt($('#IDInputAmpli3').val()) || 0;
         var boDegats = 0; 
         var boVitesse = 0;
         if (boLevel == "1") { boDegats = 15; boVitesse = 40; }
-        else if (boLevel == "2") { boDegats = 17; boVitesse = 44; }
-        else if (boLevel == "3") { boDegats = 19; boVitesse = 48; }
-        else if (boLevel == "4") { boDegats = 22; boVitesse = 52; }
-        else if (boLevel == "5") { boDegats = 25; boVitesse = 56; }
+        else if (boLevel == "2") { boDegats = 17; boVitesse = 42; }
+        else if (boLevel == "3") { boDegats = 19; boVitesse = 45; }
+        else if (boLevel == "4") { boDegats = 22; boVitesse = 47; }
+        else if (boLevel == "5") { boDegats = 25; boVitesse = 50; }
         else if (boLevel == "6") { boDegats = 30; boVitesse = 60; }
+		var totalAmpliBonus = (AmpliI * 50) + (AmpliII * 75) + (AmpliIII * 100);
+		var totalBD = totalAmpliBonus + getTD;
+		
+		$('.BDA').each(function() {
+		    var baseValue = parseFloat($(this).attr('data-base'));
+		    if (!isNaN(baseValue)) {
+		        // Le calcul du DPS (BDA) prend en compte le bonus de dégâts (totalBD) 
+		        // ET le bonus de vitesse (getBS)
+		        var totalBD = totalAmpliBonus + getTD; // getTD étant votre variable pour les statues de glace Dégâts
+		        
+		        // Formule : Base * (1 + BonusDégâts) * (1 + BonusVitesse)
+		        var finalValue = Math.round(baseValue * (1 + totalBD / 100) * (1 + getTS / 100));
+		        var bonusTotalValue = finalValue - baseValue;
+		
+		        $(this).html(
+		            baseValue + 
+		            ' <span style="color: #ff00ff;">+ ' + bonusTotalValue + '</span><br>' +
+		            '<strong>' + finalValue + '</strong>'
+		        );
+		    }
+		});	
+		$('.BD').each(function() {
+		    var baseValue = parseFloat($(this).attr('data-base')); // Utilisation de .attr pour être sûr
+		    if (!isNaN(baseValue)) {
+		        var bonusValue = Math.round(baseValue * (totalBD / 100));
+		        var finalValue = baseValue + bonusValue;
+		
+		        $(this).html(
+		            baseValue + 
+		            ' <span style="color: #ff00ff;">+ ' + bonusValue + '</span><br>' +
+		            '<strong>' + finalValue + '</strong>'
+		        );
+		    }
+		});
         
-        // --- CALCUL TDA (Dégâts/sec) : Multiplicatif (Dégâts x Vitesse) ---
         $(".TDA").each(function() {
             var base = parseFloat($(this).attr("title")) || 0;
-            // Formule : Base * (1 + %Dégâts) * (1 + %Vitesse)
             var multDegats = 1 + (getTD + boDegats) / 100;
-            var multVitesse = 1 + (getTS + getADRE + boVitesse) / 100;
+            var multVitesse = 1 + (getADRE + boVitesse) / 100;
             var total = Math.round(base * multDegats * multVitesse);
             var bonus = total - base;
 
@@ -162,7 +159,6 @@ $(document).ready(function() {
             }
         });
 
-        // --- CALCUL TD (Dégâts par tir) : Statue + OB (SANS Vitesse) ---
         $(".TD").each(function() {
             var base = parseFloat($(this).attr("title")) || 0;
             var totalPercentTD = getTD + boDegats;
@@ -178,7 +174,6 @@ $(document).ready(function() {
             }
         });
 
-        // --- CALCUL TH (Santé) : Statue uniquement ---
         $(".TH").each(function() {
             var base = parseFloat($(this).attr("title")) || 0;
             var bonus = Math.round(base * (getTH / 100));
@@ -192,8 +187,70 @@ $(document).ready(function() {
                 $(this).removeClass("StatModified");
             }
         });
+
+        $(".TS").each(function() {
+		    var base = parseFloat($(this).attr("title")) || 0;
+		    
+		    var bonusVitesse = getADRE / 100;
+		    
+		    if (bonusVitesse > 0) {
+		        var total = base / (1 + bonusVitesse);
+		        var tion = base - total;
+		
+		        $(this).html(
+		            base.toLocaleString(undefined, {minimumFractionDigits: 1}) + 's' + 
+		            '<span style="color: #ff66cc;"> - ' + tion.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 2}) + 's</span><br><b>' + 
+		            total.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 2}) + 's</b>'
+		        );
+		        $(this).addClass("StatModified");
+		    } else {
+		        $(this).text(base.toLocaleString(undefined, {minimumFractionDigits: 1}) + 's');
+		        $(this).removeClass("StatModified");
+		    }
+		});
         
-        // --- CALCULS CAPACITÉS CANONNIÈRE ---
+        $(".StatueStat.Temps").each(function() {
+		    var self = $(this);
+		    
+		    var rawMinutes = self.attr("data-minutes"); 
+		    var minBase = parseInt(rawMinutes);
+		
+		    if (isNaN(minBase)) {
+		        console.error("Attribut data-minutes manquant sur cette ligne !");
+		        return;
+		    }
+		
+		    var getRT = parseFloat($("#IDInputUpgrade").val()) || 0;
+		    var coeff = 1 - (Math.abs(getRT) / 100);
+		    var nouvellesMinutes = Math.ceil(minBase * coeff);
+		
+		    if (typeof formatTime === "function") {
+		        self.text(formatTime(nouvellesMinutes));
+		    }
+		
+		    var instantCell = self.closest('tr').find('.StatueStat.Instant');
+		    var instantBase = parseInt(instantCell.attr("data-minutes")) || 0;
+		
+		    if (window.estimerDiamants && instantBase > 0) {
+		        
+		        var diamantsTempsOriginal = window.estimerDiamants(minBase);
+		        
+		        var tionDiamants = diamantsTempsOriginal * (Math.abs(getRT) / 100);
+		        
+		        var nouveauTotal = instantBase - tionDiamants;
+		
+		        if (getRT !== 0 && !isNaN(nouveauTotal)) {
+		            var htmlContent = '<span style="color: #999; font-size: 0.85em;"><s>' + instantBase.toLocaleString() + '</s></span><br>' +
+		                              '<b style="color: #ff66cc;">' + Math.ceil(nouveauTotal).toLocaleString() + '</b>';
+		            instantCell.html(htmlContent);
+		            instantCell.addClass("StatModified");
+		        } else {
+		            instantCell.text(instantBase.toLocaleString());
+		            instantCell.removeClass("StatModified");
+		        }
+		    }
+		});
+        
         $(".AD").each(function() {
             var base = parseFloat($(this).attr("title")) || 0;
             var totalGbeDmg = getAD + getArti; // bonus + Gravure Artilleur
@@ -202,21 +259,8 @@ $(document).ready(function() {
             $(this).html(base.toLocaleString() + (totalGbeDmg > 0 ? ' <span style="color: #ff66cc;">+' + bonus.toLocaleString() + '</span><br><b>' + total.toLocaleString() + '</b>' : ''));
         });
 	
-	    /* --- INITIALISATION AU CHARGEMENT DE LA PAGE --- */
-	    // On lance le calcul une première fois pour remplir le tableau de base
 	    calculerCumul();
-	
-	    /* --- CALCULS AU CLIC SUR LE BOUTON UPDATE --- */
-	    $("#changeBonusButton").click(function() {
-	        $(this).text("Update");
-	        
-	        // ... (tes autres calculs TH, TD, TDA ici) ...
-	
-	        // On appelle la fonction pour mettre à jour le cumul avec les nouveaux bonus
-	        calculerCumul(); 
-	    });
 
-		// --- CALCULS AUTRES (DURÉE) ---
 		$(".Duration").each(function() {
 		    var base = parseFloat($(this).attr("title")) || 0;
 		    var val = getDur; // Simplifié car on cible uniquement .Duration ici
@@ -230,35 +274,82 @@ $(document).ready(function() {
 		    }
 		});
 		
-		// --- CALCULS AUTRES (SOINS ET GÉNÉRATEUR) ---
-		$(".Soin, .Gen").each(function() {
+		$(".Soin").each(function() {
 		    var base = parseFloat($(this).attr("title")) || 0;
-		    var isHealing = $(this).hasClass("Soin");
-		    var val = isHealing ? getSoin : getGen;
-		    var unit = isHealing ? " PV" : ""; // Adapte l'unité selon la statistique
+		    var val = getSoin;
+		    var unit = " PV"; 
+		
+		    var bonusTotal = roundNum(1, base * (val / 100));
+		    var total = roundNum(1, base + bonusTotal);
+		
+		    if (val > 0) {
+		        $(this).html(base.toLocaleString() + '<span style="color: #ff66cc;"> +' + bonusTotal.toLocaleString() + '</span><br><b>' + total.toLocaleString() + unit + '</b>');
+		        $(this).addClass("StatModified");
+		    } else {
+		        $(this).text(base.toLocaleString() + unit);
+		        $(this).removeClass("StatModified");
+		    }
+		});
+		
+		$(".Gen").each(function() {
+		    var base = parseFloat($(this).attr("title")) || 0;
+		    var val = getGen;
 		    
 		    var bonusTotal = roundNum(1, base * (val / 100));
 		    var total = roundNum(1, base + bonusTotal);
-		    
+		
 		    if (val > 0) {
-		        $(this).html(base.toLocaleString() + ' <span style="color: #ff66cc;">+' + bonusTotal.toLocaleString() + '</span><br><b>' + total.toLocaleString() + unit + '</b>');
+		        $(this).html(base.toLocaleString() + '<span style="color: #ff66cc;"> +' + bonusTotal.toLocaleString() + '</span><br><b>' + total.toLocaleString() + '</b>');
+		        $(this).addClass("StatModified");
 		    } else {
-		        $(this).text(base.toLocaleString() + unit);
+		        $(this).text(base.toLocaleString());
+		        $(this).removeClass("StatModified");
+		    }
+		});
+		
+		$(".Production").each(function() {
+		    var base = parseFloat($(this).attr("data-base")) || 0;
+		    var bonus = Math.round(base * (getPR / 100));
+		    var total = base + bonus;
+		
+		    if (getPR > 0) {
+		        $(this).html(base.toLocaleString() + '<span style="color: #ff66cc;"> + ' + bonus.toLocaleString() + '</span><br><b>' + total.toLocaleString() + '</b>');
+		        $(this).addClass("StatModified");
+		    } else {
+		        $(this).text(base.toLocaleString());
+		        $(this).removeClass("StatModified");
 		    }
 		});
     });
+});
+    
 
     /* 4. BOUTON RESET */
-    $("#resetBonusButton").click(function() {
-        $(".bonusInput").val("0");
-        $("#battleOrdersLevel, #bonusInputAdre, #bonusInputArti").val("0");
-        $("#changeBonusButton").text("Appliquer");
-        $(".StatueStat").each(function() {
-            var base = parseFloat($(this).attr("title"));
-            $(this).text(base.toLocaleString());
-            $(this).removeClass("StatModified");
-            
-            setTimeout(calculerCumul, 50);
-        });
-    });
-});
+	$("#resetBonusButton").click(function() {
+	    $("#IDInputUpgrade, #IDInputVitesse, #IDInputSanté, #IDInputDégâts, #IDInputDégâtsCano, #IDInputCanoReduc, #IDInputDurée, #IDInputSoin, #IDInputGénération, #IDInputProduction").val(0);
+	
+	    $("#IDInputOrdreBataille, #IDInputAdrenaline, #IDInputArtilleur, #IDInputAmpli1, #IDInputAmpli2, #IDInputAmpli3").val("0");
+	
+	    $(".TH, .TD, .TDA, .TS, .AD, .BDA, .BD, .BH, .Duration, .Soin, .Gen, .Production").each(function() {
+	        var baseStat = $(this).attr("data-base");
+	        if (baseStat) {
+	            var unit = $(this).hasClass("Duration") ? " sec" : ($(this).hasClass("Soin") ? " PV" : "");
+	            $(this).text(parseFloat(baseStat).toLocaleString() + unit);
+	        }
+	        $(this).removeClass("StatModified");
+	    });
+	
+	    $(".StatueStat.Temps, .StatueStat.Instant").each(function() {
+	        var base = $(this).attr("data-minutes");
+	        if (base) {
+	            if ($(this).hasClass("Temps")) {
+	                $(this).text(formatTime(parseInt(base)));
+	            } else {
+	                $(this).text(parseInt(base).toLocaleString());
+	            }
+	        }
+	        $(this).removeClass("StatModified");
+	    });
+		
+	    calculerCumul();
+	});

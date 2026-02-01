@@ -5,20 +5,13 @@
  * Other: This script can not run on mobile site
 **/
 
+// IMPORT CSS
+importArticle({
+	type: 'style',
+	article: 'u:dev:MediaWiki:CountdownRegular.css',
+});
+
 (function () {
-	// UTILIZE CSS
-	mw.util.addCSS(`
-		.countdown-regular__complete-message {
-			opacity: 0;
-			animation: countdownMessageFadeIn 0.5s ease-in forwards;
-		}
-			
-		@keyframes countdownMessageFadeIn {
-			from { opacity: 0; }
-			to	 { opacity: 1; }
-		}
-	`);
-	
 	// PAD A NUMBER WITH A LEADING ZERO TO A LENGTH OF 2
 	function pad2(n) {
 		return String(n).padStart(2, "0");
@@ -47,23 +40,30 @@
 		var noDateLeadingZero = options.indexOf("no-date-leading-zero") !== -1;
 		var noTimeLeadingZero = options.indexOf("no-time-leading-zero") !== -1;
 		
-		var dayStr = noDateLeadingZero ? String(day) : pad3(day);
+		var config = window.CountdownRegular || {};
+		var padSize = config.dayPadding || 3;
+		var dayStr = noDateLeadingZero ? String(day) : String(day).padStart(padSize, "0");
 		var hourStr = noTimeLeadingZero ? String(hour) : pad2(hour);
 		var minStr  = noTimeLeadingZero ? String(minute) : pad2(minute);
 		var secStr  = noTimeLeadingZero ? String(second) : pad2(second);
+		
+		var alwaysShowDay = config.hideDay === false;
+		var separatorForDay = config.daySeparator || "-";
+		var separatorForHms = config.hmsSeparator || ":";
+		var showDay = (day > 0 || alwaysShowDay);
 		
 		// Display day number digit
 		if (displayOnlyDay) {
 			if (useTextDay) {
 				return escapeHtml(dayStr) + " " + buildLabel(day === 1 ? "day" : "days");
 			}
-			return escapeHtml(dayStr) + "-";
+			return escapeHtml(dayStr) + separatorForDay;
 		}
 		
 		// Display text separator
 		if (useTextDay && useTextHms) {
 			var parts = [];
-			if (day > 0) {
+			if (showDay) {
 				parts.push(escapeHtml(dayStr) + " " + buildLabel(day === 1 ? "day" : "days"));
 			}
 			parts.push(escapeHtml(hourStr) + " " + buildLabel(hour === 1 ? "hour" : "hours"));
@@ -73,16 +73,16 @@
 		}
 		
 		if (useTextDay && !useTextHms) {
-			if (day > 0) {
+			if (showDay) {
 				return escapeHtml(dayStr) + " " + buildLabel(day === 1 ? "day" : "days") + " " +
-					escapeHtml(hourStr) + ":" + escapeHtml(minStr) + ":" + escapeHtml(secStr);
+					escapeHtml(hourStr) + separatorForHms + escapeHtml(minStr) + separatorForHms + escapeHtml(secStr);
 			}
-			return escapeHtml(hourStr) + ":" + escapeHtml(minStr) + ":" + escapeHtml(secStr);
+			return escapeHtml(hourStr) + separatorForHms + escapeHtml(minStr) + separatorForHms + escapeHtml(secStr);
 		}
 		
 		if (useTextHms && !useTextDay) {
 			var out = [];
-			var prefix = (day > 0) ? (escapeHtml(dayStr) + "-") : "";
+			var prefix = showDay ? (escapeHtml(dayStr) + separatorForDay) : "";
 			out.push(prefix + escapeHtml(hourStr) + " " + buildLabel(hour === 1 ? "hour" : "hours"));
 			out.push(escapeHtml(minStr) + " " + buildLabel(minute === 1 ? "minute" : "minutes"));
 			out.push(escapeHtml(secStr) + " " + buildLabel(second === 1 ? "second" : "seconds"));
@@ -90,8 +90,18 @@
 		}
 		
 		// Default format
-		var numericPrefix = (day > 0) ? (escapeHtml(dayStr) + "-") : "";
-		return numericPrefix + escapeHtml(hourStr) + ":" + escapeHtml(minStr) + ":" + escapeHtml(secStr);
+		var numericPrefix = showDay ? (escapeHtml(dayStr) + separatorForDay) : "";
+		return numericPrefix + escapeHtml(hourStr) + separatorForHms + escapeHtml(minStr) + separatorForHms + escapeHtml(secStr);
+	}
+	
+	function getTextContainer(container) {
+		var el = container.querySelector('.countdown-regular__text');
+		if (!el) {
+			el = document.createElement('span');
+			el.className = 'countdown-regular__text';
+			container.appendChild(el);
+		}
+		return el;
 	}
 	
 	// UPDATE THE COUNTDOWN
@@ -111,7 +121,8 @@
 				var second = 0;
 				var displayOnlyDay = false;
 				
-				container.innerHTML = formatCountdownHtml(day, hour, minute, second, options, displayOnlyDay);
+				var textEl = getTextContainer(container);
+				textEl.innerHTML = formatCountdownHtml(day, hour, minute, second, options, displayOnlyDay);
 				
 				container._pending_completion = setTimeout(function() {
 					clearInterval(container._timer);
@@ -131,7 +142,8 @@
 						messageToShow = 'Countdown ended!'; 
 						consoleMessage = 'Countdown ended.';
 					}
-					container.innerHTML = '<span class="countdown-regular__complete-message">' + escapeHtml(messageToShow) + '</span>';
+					var textEl = getTextContainer(container);
+					textEl.innerHTML = '<span class="countdown-regular__complete-message">' + escapeHtml(messageToShow) + '</span>';
 					console.log(consoleMessage);
 				}, 100);
 			}
@@ -152,7 +164,70 @@
 		
 		var displayOnlyDay = (startDay !== null && day > startDay);
 		
-		container.innerHTML = formatCountdownHtml(day, hour, minute, second, options, displayOnlyDay);
+		var textEl = getTextContainer(container);
+		textEl.innerHTML = formatCountdownHtml(
+			day, hour, minute, second, options, displayOnlyDay
+		);
+		
+	}
+	
+	// INIT COUNTDOWN PROGRESS BAR
+	function initCountdownProgress(scrollerElement, targetTime) {
+		if (scrollerElement.dataset.countdownProgress !== 'true') return;
+		
+		var progressWrap = document.createElement('div');
+		progressWrap.className = 'countdown-regular__progress';
+		
+		var progressBar = document.createElement('div');
+		progressBar.className = 'countdown-regular__progress-bar';
+		
+		progressWrap.appendChild(progressBar);
+		
+		scrollerElement.prepend(progressWrap);
+		
+		var startAttr = scrollerElement.dataset.countdownStart;
+		var startTime = startAttr ? new Date(startAttr).getTime() : Date.now();
+		var totalDuration = targetTime - startTime;
+		
+		if (isNaN(startTime) || totalDuration <= 0) {
+			progressWrap.remove();
+			return;
+		}
+		
+		if (totalDuration <= 0) {
+			progressBar.style.width = '100%';
+			return;
+		}
+		
+		function updateCountdownProgress() {
+			var now = Date.now();
+			
+			if (now >= targetTime) {
+				progressBar.style.width = '100%';
+				progressWrap.remove();
+				return;
+			}
+			
+			if (now <= startTime) {
+				progressBar.style.width = '0%';
+				requestAnimationFrame(updateCountdownProgress);
+				return;
+			}
+			
+			var elapsed = now - startTime;
+			var ratio = Math.min(elapsed / totalDuration, 1);
+			var config = window.CountdownRegular || {};
+			var reverseProgress = config.reverseProgress === true;
+			
+			var finalRatio = 1 - ratio;
+			if (reverseProgress) {
+				finalRatio = ratio;
+			}
+			progressBar.style.width = (finalRatio * 100).toFixed(3) + '%';
+			
+			requestAnimationFrame(updateCountdownProgress);
+		}
+		updateCountdownProgress();
 	}
 	
 	// RUN THE COUNTDOWN
@@ -160,6 +235,7 @@
 		var items = $content.find(".countdown-regular");
 		Array.prototype.forEach.call(items, function (container) {
 			var dateStr = container.getAttribute("data-countdown");
+			container.textContent = '';
 			if (!dateStr) {
 				console.error("Missing [data-countdown]");
 				container.textContent = "Missing data-countdown";
@@ -173,6 +249,8 @@
 			}
 			// initial render
 			updateCountdown(container, target);
+			// initial countdown progress
+			initCountdownProgress(container, target.getTime());
 			// periodic update
 			container._timer = setInterval(function () {
 				updateCountdown(container, target);

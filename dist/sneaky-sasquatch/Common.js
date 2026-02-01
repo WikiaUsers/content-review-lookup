@@ -170,3 +170,16 @@ importArticles({
         'u:dev:MessageBlock/code.js'
     ]
 });
+mw.loader.using(['mediawiki.util'], function () {
+    $(document).on('click', '#cite-sneaky-sasquatch', function () {
+        mw.toolbar.insertTags(
+            '<ref>{{Cite game|title=Sneaky Sasquatch|developer=RAC7|platform=Apple Arcade}}</ref>',
+            '',
+            ''
+        );
+    });
+
+    $('#mw-content-text').prepend(
+        '<button id="cite-sneaky-sasquatch" class="sneaky-cite-btn">Cite Sneaky Sasquatch</button>'
+    );
+});

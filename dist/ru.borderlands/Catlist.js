@@ -6,7 +6,7 @@ $('body').hide();
 //результат кладёт в модуль module, оптимизированный для mw.loaddata
 
 (function($){
-    if (!['sysop', 'bureaucrat'].some(function(v){return window.wgUserGroups.includes(v)})) return;
+    if (!['sysop', 'bureaucrat'].some(function(v){return mw.config.get('wgUserGroups').includes(v)})) return;
     var cl = {};//main obj
     cl.module = 'module:nbigdatacat';
     cl.pages = [
@@ -68,7 +68,7 @@ $('body').hide();
     
     cl.hlpGet = function (item) {
         //get helper
-        var url = (new mw.Uri('/wiki/' + item.name)).extend({limit:5000});
+        var url = (new mw.Uri('/ru/wiki/' + item.name)).extend({limit:5000});
         $.get(url).done(function(data){
             $(data).find(item.selector).map(function(i, v){
                 cl.links.push($(v).text());
@@ -106,15 +106,15 @@ $('body').hide();
     cl.oncomplete = function () {
         console.log('cl.complete links', cl.links.length);
         cl.modulecontent = '';
-        var qurl = (new mw.Uri('/api.php')).extend({action: 'query', titles: cl.module,
-                prop: 'info', intoken: 'edit', format: 'json'});
+        var qurl = (new mw.Uri('/ru/api.php')).extend({action: 'query', titles: cl.module,
+                prop: 'info', meta: 'tokens', format: 'json'});
         //get edit token
         $.getJSON(qurl).done(function(data){
             console.log('cl. get token', qurl, data);
-            var etoken = cl.getVal(cl.getObj(data, 'pages'), 'edittoken')[0];
+            var etoken = cl.getVal(cl.getObj(data, 'tokens'), 'csrftoken')[0];
             console.log('cl. etoken', etoken);
             cl.modulecontent = cl.hlpContent();
-            var eurl = (new mw.Uri('/api.php'));
+            var eurl = (new mw.Uri('/ru/api.php'));
             var edata = {action: 'edit', title: cl.module,
                 text: cl.modulecontent, summary: 'catlist update',
                 minor: '', bot: '', format: 'json', token: etoken};

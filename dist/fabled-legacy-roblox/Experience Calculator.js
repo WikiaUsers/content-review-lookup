@@ -91,8 +91,8 @@ function createCheckbox({ labelText, checkboxID, boostValue, hidden = false }) {
 /* -------- 2.1 -------- */
 /* Options for the select input fields */
 var dungeonList = [
-  { name: "Raided Village: Normal", baseEXP: 183 },
-  { name: "Raided Village: Expert", baseEXP: 336 },
+  { name: "Raided Village: Normal", baseEXP: 283 },
+  { name: "Raided Village: Expert", baseEXP: 416 },
   { name: "Raided Village: Chaos", baseEXP: 672 },
   { name: "Sunken Fortress: Normal", baseEXP: 1923 },
   { name: "Sunken Fortress: Expert", baseEXP: 3390 },
@@ -187,7 +187,7 @@ document.getElementById('dungeonExp').onchange = function () {
   var selectedText = this.options[this.selectedIndex].text;
   var calamityRowSpacing = document.getElementById('calamityBoost-exp-calculator-spacing');
 
-  var supportedChaosDungeons = ["Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos"]; // Dungeons that support the calamity exp gain
+  var supportedChaosDungeons = ["Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos", "Neon District: Chaos"]; // Dungeons that support the calamity exp gain
 
   if (supportedChaosDungeons.includes(selectedText)) {
     calamityRowSpacing.style.display = 'block';

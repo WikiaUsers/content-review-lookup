@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://crazytesting.fandom.com/wiki/MediaWiki:T-CSS.js?action=raw&ctype=text/javascript");

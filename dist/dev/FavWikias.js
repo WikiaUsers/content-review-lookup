@@ -18,7 +18,7 @@ $(() => {
            language = '/' + window.favWikias[i].lang;
         }
       $('.wikiafavorites').append(
-        `<span data-fav="` + window.favWikias[i].name.toLowerCase() + `" data-lang="`+ window.favWikias[i].lang +`"><a href="https://`+window.favWikias[i].name.toLowerCase() + '.fandom.com' + language + '/wiki/' + window.favWikias[i].page + `" class="wds-button">` + window.favWikias[i].text + `</a></span>`
+        `<span data-fav="${window.favWikias[i].name.toLowerCase()}" data-lang="${window.favWikias[i].lang}"><a href="https://${window.favWikias[i].name.toLowerCase()}.fandom.com${language}/wiki/${window.favWikias[i].page}" class="wds-button">${window.favWikias[i].text}</a></span>`
       );
     }
     $('span[data-fav]').each(function() 
@@ -43,7 +43,6 @@ $(() => {
     top:0;
     left:0;
     zoom:0.8;
-    z-index:200;
 }
 
 [data-fav]>span.wds-button {

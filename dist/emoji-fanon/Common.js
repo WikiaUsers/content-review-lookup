@@ -45,9 +45,8 @@ function autoCollapseLongComments() {
 window.welcomeMessage = {
   enabled: true,
   adminUsername: 'Charata',     // $4
-  adminNickname: 'Charata',    // $3
   messageTitle: 'Hey there $1.',
-  messageText: 'I know what you are here to edit. Do you want to create the first edit or just be in forum? i hope this message finds you.',
+  messageText: 'Welcome to the Emoji Fanon Wiki! You can make new emojis using paint apps, talk on the forums and more. Please follow the Rules and Editor Guide, as seen on the homepage, thank you!',
   debug: false,
   testAllEdits: false,
   preferTalk: false,
@@ -74,3 +73,10 @@ importArticles({
         'u:dev:MediaWiki:ReferencePopups/code.js'
     ]
 });
+
+window.SpoilerAlertJS = {
+    question: 'This page may contain NSFW or fetish content, continue?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};

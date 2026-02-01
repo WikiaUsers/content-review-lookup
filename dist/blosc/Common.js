@@ -209,46 +209,14 @@ var hasClass = (function () {
   } 
   addOnloadHook( createNavigationBarToggleButton );
 
-/* TOP ICONS -- from tfwiki.net */ 
-function showTitles(className) { 
-     if(typeof(SKIP_ERAS) != 'undefined' && SKIP_ERAS) 
-          return; 
- 
-     var titleDiv = document.getElementById(className); 
- 
-     if(titleDiv == null || titleDiv == undefined) 
-          return; 
- 
-     var cloneNode = titleDiv.cloneNode(true); 
-     var firstHeading = getFirstHeading(); 
-     firstHeading.insertBefore(cloneNode, firstHeading.childNodes[0]); 
-     cloneNode.style.display = "block"; 
-}// END JavaScript title rewrite 
- 
-function getFirstHeading(){ 
-     var a = getElementsByClassName(document.getElementById('content'), 'h1', 'firstHeading'); 
-     return a[0]; 
-}
-
-/* Code for hiding segments */
-function hide_block(id) {
-     document.getElementById(id).style.display = "inline";
-     document.getElementById(id + "-link").style.display = "none";
-}
-
-function replace_hides() {
-     var hide_blocks = getElementsByClassName(document, "div", "hide");
-     for (var i=0;i<hide_blocks.length;i++) { 
-          var hide_link = document.createElement("div"); 
-          hide_link.innerHTML = "<a href='javascript:hide_block(\"" + hide_blocks[i].getAttribute("id") + "\");' id='" + hide_blocks[i].getAttribute("id") + "-link'><i>Show hidden content.</i></a>"; 
-          hide_blocks[i].parentNode.insertBefore(hide_link, hide_blocks[i]);
-          hide_blocks[i].style.display = "none";
-     }
-}
-
-function tfwiki_hooks() {
-     showTitles('title-topicons');
-     replace_hides();
-}
-
-addOnloadHook(tfwiki_hooks);
+/* TOP ICONS -- from avatar wiki */ 
+/* Adds icons to page header bottom border */
+/* by: [[User:The 888th Avatar]] */
+ /*
+$(document).ready(function() {
+	if (skin == "oasis" || skin == "wikia") {
+		$('.WikiaPageHeader').append($('#top'));
+		$('#top').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
+	}
+});
+*/

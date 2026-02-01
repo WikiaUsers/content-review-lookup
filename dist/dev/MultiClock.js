@@ -28,6 +28,27 @@ This script only renders the clocks and handles formatting.
 
     const cfg = window.MultiClockConfig || {};
 
+    // Determining the user's language
+    const lang = mw.config.get("wgUserLanguage") || "en";
+
+    // Months
+    const i18n = {
+        en: {
+            months: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+            separator: ":"
+        },
+        ru: {
+            months: ["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"],
+            separator: ":"
+        },
+        uk: {
+            months: ["Січ","Лют","Бер","Кві","Тра","Чер","Лип","Сер","Вер","Жов","Лис","Гру"],
+            separator: ":"
+        }
+    };
+
+    const L = i18n[lang] || i18n.en;
+
     // Target area inside the Fandom Community Header where clocks will be placed
     const $target = $(".fandom-community-header__local-navigation");
 
@@ -74,9 +95,6 @@ This script only renders the clocks and handles formatting.
     // Inject container into header
     $target.append($container);
 
-    // Month names
-    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
     // Create individual clock display elements
     const elements = (cfg.clocks || []).map(clock => {
         const $el = $("<div>")
@@ -98,7 +116,7 @@ This script only renders the clocks and handles formatting.
             .replace("%M", String(date.getMinutes()).padStart(2, "0"))
             .replace("%S", String(date.getSeconds()).padStart(2, "0"))
             .replace("%d", String(date.getDate()).padStart(2, "0"))
-            .replace("%b", monthNames[date.getMonth()])
+            .replace("%b", L.months[date.getMonth()])
             .replace("%Y", date.getFullYear());
     }
 
@@ -117,7 +135,14 @@ This script only renders the clocks and handles formatting.
                 offsetH * 60
             );
 
-            const text = `${clock.label}: ${formatDate(d, clock.format)}`;
+            // The label can be a string or a translation object.
+            let label = clock.label || "";
+
+            if (typeof label === "object") {
+                label = label[lang] || label.en || "";
+            }
+
+            const text = `${label}${L.separator} ${formatDate(d, clock.format)}`;
             $el.text(text);
         });
     }

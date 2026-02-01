@@ -56,3 +56,21 @@ $(document).ready(function () {
     });
 
 });
+
+function ordinal(n) {
+  if (n % 100 >= 11 && n % 100 <= 13) return "th";
+  return ["th","st","nd","rd"][n % 10] || "th";
+}
+
+document.querySelectorAll(".unix-time").forEach(el => {
+  const ts = Number(el.dataset.ts) * 1000;
+  const d = new Date(ts);
+
+  const day = d.getDate();
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+
+  const month = d.toLocaleString(undefined, { month: "long" });
+
+  el.textContent = `${month} ${day}${ordinal(day)}, ${hours}:${minutes}`;
+});

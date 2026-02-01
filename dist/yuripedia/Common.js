@@ -1,6 +1,15 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/*************************CONTENTS*************************/
+/* Episode Tables Class */
+/* Volume Tables Class */
+/* HD Gallery Class */
+/* Topic Block Log */
+/* Default File License */
+/* Page Icons */
+/**********************************************************/
 
-/* wikitable episode-table */
+/* ==================================================
+    Episode Tables
+================================================== */
 $(function () {
     $('.episode-table').each(function () {
         var $table = $(this);
@@ -83,6 +92,10 @@ $(function () {
     });
 });
 
+/* ==================================================
+    Volume Tables
+================================================== */
+
 // Apply column hover highlighting for volume tables
 document.querySelectorAll('.volume-table').forEach(table => {
     const cells = table.querySelectorAll('td, th');
@@ -104,34 +117,79 @@ document.querySelectorAll('.volume-table').forEach(table => {
     });
 });
 
-/* Adds icons to page header */
-$(function() {
-    if( $( '#PageHeader' ).length ) {
-        $( '#PageHeader' ).prepend(
-            $( '#icons' ).attr( 'style', 'position: absolute; right: 0px; bottom: 50px;' )
-        );
-    }
-});
+/* ==================================================
+    HD Gallery Class
+================================================== */
 
-/* Default Fairuse License When Uploading File */
-$(document).on("submit", function (e) {
-  if (e.target.id == "mw-upload-form") {
-    $(e.target)
-      .find('[name="wpLicense"] [value=""]:not([disabled])')
-      .attr("value", "Fairuse");
+(function () {
+  function buildGallery(gallery) {
+    if (gallery.dataset.built === '1') return;
+
+    const lines = gallery.textContent
+      .split('\n')
+      .map(l => l.trim())
+      .filter(Boolean);
+
+    if (!lines.length) return;
+
+    gallery.dataset.built = '1';
+    gallery.innerHTML = '';
+
+    const width = gallery.getBoundingClientRect().width || 600;
+    const minThumb = 120;
+    const gap = 8;
+
+    const cols = Math.max(1, Math.floor(width / (minThumb + gap)));
+    const scaleFactor = 1.5;
+    const thumb = Math.floor((width - gap * (cols - 1)) / cols * scaleFactor);
+    
+    gallery.style.setProperty('--thumb', thumb + 'px');
+
+    lines.forEach(line => {
+      let [fileLine, caption] = line.split('|');
+      const file = fileLine.replace(/^File:/i, '').trim();
+
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.style.width = thumb + 'px';
+
+      const link = document.createElement('a');
+      link.href = '/wiki/File:' + encodeURIComponent(file);
+      link.className = 'image';
+
+      const img = document.createElement('img');
+      img.src = '/wiki/Special:FilePath/' + encodeURIComponent(file);
+      img.alt = caption || '';
+      img.loading = 'lazy';
+
+      link.appendChild(img);
+      item.appendChild(link);
+
+      if (caption) {
+        const cap = document.createElement('div');
+        cap.className = 'gallery-caption';
+        cap.textContent = caption;
+        item.appendChild(cap);
+      }
+
+      gallery.appendChild(item);
+    });
   }
-});
 
-/* Configuration for NoLicenseWarning */
-window.NoLicenseWarning = {
-    forceLicense: true,
-    excludedGroups: [
-        'sysop',
-        'content-moderator'
-    ]
-};
+  function scan(root) {
+    (root || document).querySelectorAll('.hd-gallery').forEach(buildGallery);
+  }
 
-/* Topic Block Log */
+  scan();
+  if (window.mw && mw.hook) {
+    mw.hook('wikipage.content').add(scan);
+  }
+})();
+
+/* ==================================================
+    Topic Block Log
+================================================== */
+
 TBL_WIKIS = [
 	    "100kanojo",
 	    "aesthetics",
@@ -164,3 +222,67 @@ TBL_WIKIS = [
 		"yandere-simulator-fan-ocs",
 		"yuripedia"
 ];
+
+/* ==================================================
+    File License
+================================================== */
+
+/* ==================== Default Fairuse License ==================== */
+(function () {
+
+    const uploadForm = document.querySelector('#mw-upload-form');
+    if (!uploadForm) return;
+
+    // Function to set the license to Fairuse
+    function applyLicense(root = document) {
+        const license = root.querySelector('#wpLicense');
+        if (license && !license.value) {
+            for (const opt of license.options) {
+                if (opt.value === 'Fairuse') {
+                    license.value = opt.value;
+                    license.dispatchEvent(new Event('change'));
+                    break;
+                }
+            }
+        }
+    }
+
+    applyLicense();
+    const observer = new MutationObserver(mutations => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === 1) {
+                    applyLicense(node);
+                }
+            }
+        }
+    });
+
+    observer.observe(uploadForm, {
+        childList: true,
+        subtree: true
+    });
+
+})();
+
+/* ==================== NoLicenseWarning ==================== */
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop',
+        'content-moderator'
+    ]
+};
+
+/* ==================================================
+    Miscellaneous
+================================================== */
+
+/* Adds icons to page header */
+$(function() {
+    if( $( '#PageHeader' ).length ) {
+        $( '#PageHeader' ).prepend(
+            $( '#icons' ).attr( 'style', 'position: absolute; right: 0px; bottom: 50px;' )
+        );
+    }
+});

@@ -3,7 +3,6 @@
  * AJAX Configuration Block
  * These settings must stay ABOVE the importArticles section.
  */
-
 // 1. AjaxRC (Recent Changes) Configuration
 window.ajaxSpecialPages = [
     "Recentchanges", 
@@ -37,3 +36,5 @@ importArticles({
         'u:dev:MediaWiki:AjaxQuickDiff/code.js'
     ]
 });
+
+// Placeholder

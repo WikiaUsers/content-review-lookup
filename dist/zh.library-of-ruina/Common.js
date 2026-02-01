@@ -41,7 +41,6 @@ importArticles({
 	    'u:dev:MediaWiki:AddAnnouncement/code.js',//使用户可以直接从博客命名空间添加公告
         'u:dev:MediaWiki:WikiActivity.js',//在右下角添加“wiki活动”选项
         'u:dev:MediaWiki:MassRename/code.js',//添加一个批量移动工具
-        'u:dev:MediaWiki:TemplateTypeButtons/code.js',//在模板页添加模板类型按钮，可以直接点击以切换模板类型
         'u:dev:MediaWiki:MassPatrol/code.js',//在页面差异页能够批量回退
         'u:dev:MediaWiki:AdminDashboard_block/code.js',//在管理员面板添加封禁用户的入口
         'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js',//添加一个common.js入口于管理员面板

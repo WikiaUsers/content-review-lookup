@@ -18,7 +18,12 @@ window.UserTagsJS = {
 	tags: {
 		'founder': { u: 'Priestess of Origin', link:'Wiki of Ender:Administration#Founder' },
 		'bureaucrat': { u: 'Priestess of Sovereignty', link:'Wiki of Ender:Administration#Bureaucrat' },
-		'administrator': { u: 'Priestess of Principles', link:'Wiki of Ender:Administration#Administrator' }
+		'administrator': { u: 'Priestess of Principles', link:'Wiki of Ender:Administration#Administrator' },
+		'content-moderator': { u: 'Priestess of Curation', link:'Wiki of Ender:Administration#Content Moderator' },
+		'threadmoderator': { u: 'Priestess of Discourse', link:'Wiki of Ender:Administration#Discussions Moderator' },
+		'rollback': { u: 'Attuner of Revisions', link:'Wiki of Ender:Administration#Rollback' },
+		'bot': { u: 'Automaton of Rites', link:'Wiki of Ender:Administration#Bot Functionality' },
+		'bot-global': { u: 'Automaton of Rites', link:'Wiki of Ender:Administration#Bot Functionality' }
 	}
 };
 UserTagsJS.modules.custom = {

@@ -3,7 +3,7 @@
 /* MapsExtended global config */
 window.mapsExtendedConfig = {
     "minimalLayout": true,
-    "enableSidebar": true,
+    "enableSidebar": false,
     "iconAnchor": "center",
     "enableSearch": true,
     "openPopupsOnHover": false,
@@ -23,65 +23,6 @@ window.mapsExtendedConfig = {
                     []
                 ],
     "hiddenControls": ["edit"],
-    "collectibleCategories": ["quest"],
+    "collectibleCategories": ["contracts"],
     "collectibleCheckboxStyle": "fandom",
-    "sortMarkers": "category",
-    "categoryGroups": [
-        {
-            "label": "Extractions",
-            "children": [
-                "normal_extraction",
-                "guarded_extraction",
-                "special_extraction"
-            ]
-        },
-        {
-            "label": "Spawns",
-            "children": [
-                "runner",
-                "rook"
-            ]
-        },
-        {
-            "label": "Objectives",
-            "children": [
-                "locked_door",
-                "terminals",
-                "interactive_object",
-                "tad",
-                "quest"
-            ]
-        },
-        {
-            "label": "Items",
-            "children": [
-                "prestige_keys",
-                "superior_keys",
-                "deluxe_keys",
-                "enhanced_keys",
-                "standard_keys",
-                "valuables",
-                "loot",
-                {
-                    "label": "Containers",
-                    "children": [
-                        "container_arms_locker",
-						"container_bioprinter",
-						"container_cache_case",
-						"container_cache_duffel",
-						"container_coffer",
-						"container_core_storage",
-						"container_folio",
-						"container_lockbox",
-						"container_medical_cabinet",
-						"container_munitions_crate",
-						"container_strongbox",
-						"container_superior_strongbox",
-						"container_tool_cart",
-						"container_trunk"
-                    ]
-                }
-            ]
-        }
-    ]
 };

@@ -1,14 +1,45 @@
 
 /*********** 
 THE MAIN JS OF THE FANDOM WIKI LIES IN HERE. 
-CHANGING THE CODE WITHOUT ANY PERMISSION OR APPROVAL FROM THE WIKI'S CURRENT BUREAUCRAT WILL RESULT IN A TEMPORARY BAN of 1 - 2 weeks. 
+CHANGING THE CODE WITHOUT ANY PERMISSION OR APPROVAL FROM THE WIKI'S CURRENT BUREAUCRAT WILL RESULT IN A TEMPORARY BAN of 2 days. 
 PROCEED AT YOUR OWN RISK. 
 **********/
 
 mw.loader.using('mediawiki.util').then(function () {
   jQuery(function ($) {
+  //-------Text Sequence Animation STARTS HERE-------//
 
-    //-------Random Letter Reveal STARTS HERE-------//
+function advanceFrame() {
+  var $sequence = $(this),
+      $currentFrame = $sequence.children('.is-visible'),
+      $nextFrame = $currentFrame.next();
+
+  if ($nextFrame.length === 0) {
+    clearInterval($sequence.data('intervalId'));
+    return;
+  }
+
+  $currentFrame.removeClass('is-visible');
+  $nextFrame.addClass('is-visible');
+}
+
+$('.text-sequence').each(function () {
+  var $sequence = $(this),
+      delayMs = parseInt($sequence.data('delay-ms'), 10) || 2000;
+
+  $sequence.on('advanceFrame', advanceFrame);
+
+  var intervalId = setInterval(function () {
+    $sequence.trigger('advanceFrame');
+  }, delayMs);
+
+  $sequence.data('intervalId', intervalId);
+});
+
+//-------Text Sequence Animation ENDS HERE-------//
+
+
+//-------Random Letter Reveal STARTS HERE-------//
 
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*()_+`-=";
   const element = document.getElementById("scramble");

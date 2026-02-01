@@ -38,7 +38,7 @@ mw.loader.using([
 	let updatePreview;
 	let msg = () => {};
 	let newTopicToolAvailable = true;
-	const version = '2.1.5';
+	const version = '2.1.6';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -468,10 +468,10 @@ mw.loader.using([
 			const datetime = mw.util.escapeRegExp(submitReplyEvent.data.datetime);
 			const index = Number(submitReplyEvent.data.index);
 			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${datetime}){${index}}`), '');
-			const iRegExp = new RegExp(`[^]*?^([:*#]*).+?${datetime} *$[^]*`, 'm');
-			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${datetime} *)$((?:\n+(?:\\2[:*#]+|[!|]).*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
+			const iRegExp = new RegExp(`[^]*?^([:*#]*).+?${datetime}[^]*`, 'm');
+			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${datetime}.*)$((?:\n+(?:\\2[:*#]+|[!|]).*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
 			const indent = mainText.replace(iRegExp, '$1');
-			const repliesWithIndent = new RegExp(`[^]*?^.+?${datetime} *$\n+:+[^]*`, 'm');
+			const repliesWithIndent = new RegExp(`[^]*?^.+?${datetime}.*$\n+:+[^]*`, 'm');
 			let finalText;
 			let prefix = uneditedText.split(submitReplyEvent.data.datetime).splice(0, index).join(submitReplyEvent.data.datetime);
 			prefix = prefix ? prefix + submitReplyEvent.data.datetime : '';

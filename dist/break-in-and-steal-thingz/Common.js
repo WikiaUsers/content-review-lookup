@@ -45,32 +45,57 @@
 })();
 window.AddRailModule = [{prepend: true}];
 
-$(document).ready(function() {
-  if (!$('.lms-red-filter').length) {
-    $('body').append(
-      '<div class="lms-red-filter"></div>' +
-      '<div class="lms-siren-gif"></div>' +
-      '<div class="lms-flame-bar"></div>'
-    );
-  }
+(function () {
+'use strict'; 
+function tryToPlay(audioEl) {
+    if (!audioEl) return; 
 
-  const specialTrack = "AshleSpecialLMS.mp3";
-
-  document.addEventListener('play', function(e) {
-    if (e.target.src && e.target.src.includes(specialTrack)) {
-      document.documentElement.classList.add('is-playing-special-track');
+    var maybePromise = audioEl.play();
+    if (maybePromise && typeof maybePromise.catch === 'function') {
+        maybePromise.catch(function (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Audio play failed:', err);
+            }
+        });
     }
-  }, true);
+}
 
-  document.addEventListener('pause', function(e) {
-    if (e.target.src && e.target.src.includes(specialTrack)) {
-      document.documentElement.classList.remove('is-playing-special-track');
-    }
-  }, true);
+document.addEventListener('click', function (event) {
+    var targetEl = event.target;
+    var wrapper = targetEl.closest('.jumper-container');
 
-  document.addEventListener('ended', function(e) {
-    if (e.target.src && e.target.src.includes(specialTrack)) {
-      document.documentElement.classList.remove('is-playing-special-track');
+    if (!wrapper) {
+        return; 
     }
-  }, true);
+
+    var audioUrl = wrapper.getAttribute('data-audio-url');
+    if (!audioUrl) return;
+
+    if (!wrapper.audioTrack) {
+        var audio = new Audio(audioUrl);
+        wrapper.audioTrack = audio;
+
+        audio.addEventListener('ended', function () {
+            wrapper.classList.remove('is-jumping');
+        });
+    }
+
+    wrapper.audioTrack.currentTime = 0;
+
+    wrapper.classList.add('is-jumping');
+
+    tryToPlay(wrapper.audioTrack);
 });
+
+document.addEventListener('dblclick', function (event) {
+    var wrapper = event.target.closest('.jumper-container');
+
+    if (!wrapper) return;
+    if (!wrapper.audioTrack) return;
+
+    wrapper.audioTrack.pause();
+    wrapper.audioTrack.currentTime = 0;
+
+    wrapper.classList.remove('is-jumping');
+});
+})();

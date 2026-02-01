@@ -305,122 +305,147 @@ mw.loader.using(['jquery'], function () {
             "Mace": "Mace", "Axe": "Axe", "Spear": "Spears"
         };
         
+        // World 1 Odds (Stonewake)
         var weaponOdds = { "3":{"Dagger":1.0}, "4":{"Dagger":0.86,"Straight Sword":0.14}, "5":{"Dagger":0.35,"Straight Sword":0.65}, "6":{"Dagger":0.14,"Straight Sword":0.86}, "7":{"Dagger":0.06,"Straight Sword":0.74,"Gauntlet":0.20}, "8":{"Dagger":0.02,"Straight Sword":0.44,"Gauntlet":0.54}, "9":{"Dagger":0.01,"Straight Sword":0.24,"Gauntlet":0.65,"Katana":0.10}, "10":{"Straight Sword":0.11,"Gauntlet":0.47,"Katana":0.42}, "11":{"Straight Sword":0.05,"Gauntlet":0.32,"Katana":0.63}, "12":{"Straight Sword":0.03,"Gauntlet":0.22,"Katana":0.72,"Great Sword":0.03}, "13":{"Straight Sword":0.01,"Gauntlet":0.14,"Katana":0.62,"Great Sword":0.22}, "14":{"Straight Sword":0.01,"Gauntlet":0.08,"Katana":0.46,"Great Sword":0.45}, "15":{"Gauntlet":0.05,"Katana":0.34,"Great Sword":0.60}, "16":{"Gauntlet":0.03,"Katana":0.26,"Great Sword":0.69,"Great Axe":0.01}, "17":{"Gauntlet":0.02,"Katana":0.19,"Great Sword":0.68,"Great Axe":0.11}, "18":{"Gauntlet":0.01,"Katana":0.13,"Great Sword":0.57,"Great Axe":0.28}, "19":{"Gauntlet":0.01,"Katana":0.09,"Great Sword":0.46,"Great Axe":0.45}, "20":{"Gauntlet":0.01,"Katana":0.06,"Great Sword":0.36,"Great Axe":0.57}, "21":{"Katana":0.04,"Great Sword":0.29,"Great Axe":0.65,"Colossal Sword":0.02}, "22":{"Katana":0.03,"Great Sword":0.23,"Great Axe":0.67,"Colossal Sword":0.07}, "23":{"Katana":0.02,"Great Sword":0.18,"Great Axe":0.66,"Colossal Sword":0.13}, "24":{"Katana":0.02,"Great Sword":0.15,"Great Axe":0.64,"Colossal Sword":0.20}, "25":{"Katana":0.01,"Great Sword":0.12,"Great Axe":0.60,"Colossal Sword":0.26}, "26":{"Katana":0.01,"Great Sword":0.10,"Great Axe":0.56,"Colossal Sword":0.32}, "27":{"Katana":0.01,"Great Sword":0.09,"Great Axe":0.53,"Colossal Sword":0.37}, "28":{"Katana":0.01,"Great Sword":0.07,"Great Axe":0.50,"Colossal Sword":0.42}, "29":{"Katana":0.01,"Great Sword":0.07,"Great Axe":0.47,"Colossal Sword":0.46}, "30":{"Katana":0.01,"Great Sword":0.06,"Great Axe":0.45,"Colossal Sword":0.49}, "31":{"Great Sword":0.05,"Great Axe":0.43,"Colossal Sword":0.51}, "32":{"Great Sword":0.05,"Great Axe":0.41,"Colossal Sword":0.54}, "33":{"Great Sword":0.04,"Great Axe":0.39,"Colossal Sword":0.56}, "34":{"Great Sword":0.04,"Great Axe":0.38,"Colossal Sword":0.58}, "35":{"Great Sword":0.04,"Great Axe":0.37,"Colossal Sword":0.59}, "36":{"Great Sword":0.03,"Great Axe":0.36,"Colossal Sword":0.61}, "37":{"Great Sword":0.03,"Great Axe":0.35,"Colossal Sword":0.62}, "38":{"Great Sword":0.03,"Great Axe":0.34,"Colossal Sword":0.63}, "39":{"Great Sword":0.03,"Great Axe":0.33,"Colossal Sword":0.64}, "40":{"Great Sword":0.03,"Great Axe":0.32,"Colossal Sword":0.65}, "41":{"Great Sword":0.03,"Great Axe":0.32,"Colossal Sword":0.65}, "42":{"Great Sword":0.03,"Great Axe":0.31,"Colossal Sword":0.66}, "43":{"Great Sword":0.02,"Great Axe":0.31,"Colossal Sword":0.67}, "44":{"Great Sword":0.02,"Great Axe":0.30,"Colossal Sword":0.67}, "45":{"Great Sword":0.02,"Great Axe":0.30,"Colossal Sword":0.68}, "46":{"Great Sword":0.02,"Great Axe":0.29,"Colossal Sword":0.69}, "47":{"Great Sword":0.02,"Great Axe":0.29,"Colossal Sword":0.69}, "48":{"Great Sword":0.02,"Great Axe":0.28,"Colossal Sword":0.69}, "49":{"Great Sword":0.02,"Great Axe":0.28,"Colossal Sword":0.70}, "50":{"Great Sword":0.02,"Great Axe":0.28,"Colossal Sword":0.70}, "51":{"Great Sword":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "52":{"Great Sword":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "53":{"Great Sword":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "54":{"Great Sword":0.02,"Great Axe":0.27,"Colossal Sword":0.72}, "55":{"Great Sword":0.02,"Great Axe":0.26,"Colossal Sword":0.72}, "60":{"Great Sword":0.02,"Great Axe":0.25,"Colossal Sword":0.73}, "65":{"Great Sword":0.02,"Great Axe":0.25,"Colossal Sword":0.74}, "70":{"Great Sword":0.01,"Great Axe":0.24,"Colossal Sword":0.75} };
         
-		var weaponOdds2 = { "3":{"Dagger":1.0}, "4":{"Dagger":0.86,"Straight Sword":0.14}, "5":{"Dagger":0.35,"Straight Sword":0.65}, "6":{"Dagger":0.14,"Straight Sword":0.86}, "7":{"Dagger":0.06,"Straight Sword":0.74,"Mace":0.20}, "8":{"Dagger":0.02,"Straight Sword":0.44,"Mace":0.54}, "9":{"Dagger":0.01,"Straight Sword":0.24,"Mace":0.65,"Axe":0.10}, "10":{"Straight Sword":0.11,"Mace":0.47,"Axe":0.42}, "11":{"Straight Sword":0.05,"Mace":0.32,"Axe":0.63}, "12":{"Straight Sword":0.03,"Mace":0.22,"Axe":0.72,"Spear":0.03}, "13":{"Straight Sword":0.01,"Mace":0.14,"Axe":0.62,"Spear":0.22}, "14":{"Straight Sword":0.01,"Mace":0.08,"Axe":0.46,"Spear":0.45}, "15":{"Mace":0.05,"Axe":0.34,"Spear":0.60}, "16":{"Mace":0.03,"Axe":0.26,"Spear":0.69,"Great Axe":0.01}, "17":{"Mace":0.02,"Axe":0.19,"Spear":0.68,"Great Axe":0.11}, "18":{"Mace":0.01,"Axe":0.13,"Spear":0.57,"Great Axe":0.28}, "19":{"Mace":0.01,"Axe":0.09,"Spear":0.46,"Great Axe":0.45}, "20":{"Mace":0.01,"Axe":0.06,"Spear":0.36,"Great Axe":0.57}, "21":{"Axe":0.04,"Spear":0.29,"Great Axe":0.65,"Colossal Sword":0.02}, "22":{"Axe":0.03,"Spear":0.23,"Great Axe":0.67,"Colossal Sword":0.07}, "23":{"Axe":0.02,"Spear":0.18,"Great Axe":0.66,"Colossal Sword":0.13}, "24":{"Axe":0.02,"Spear":0.15,"Great Axe":0.64,"Colossal Sword":0.20}, "25":{"Axe":0.01,"Spear":0.12,"Great Axe":0.60,"Colossal Sword":0.26}, "26":{"Axe":0.01,"Spear":0.09,"Great Axe":0.53,"Colossal Sword":0.32}, "27":{"Axe":0.01,"Spear":0.10,"Great Axe":0.56,"Colossal Sword":0.37}, "28":{"Axe":0.01,"Spear":0.07,"Great Axe":0.50,"Colossal Sword":0.42}, "29":{"Axe":0.01,"Spear":0.07,"Great Axe":0.47,"Colossal Sword":0.46}, "30":{"Axe":0.01,"Spear":0.06,"Great Axe":0.45,"Colossal Sword":0.49}, "31":{"Spear":0.05,"Great Axe":0.43,"Colossal Sword":0.51}, "32":{"Spear":0.05,"Great Axe":0.41,"Colossal Sword":0.54}, "33":{"Spear":0.04,"Great Axe":0.39,"Colossal Sword":0.55}, "34":{"Spear":0.04,"Great Axe":0.38,"Colossal Sword":0.58}, "35":{"Spear":0.04,"Great Axe":0.37,"Colossal Sword":0.59}, "36":{"Spear":0.03,"Great Axe":0.36,"Colossal Sword":0.61}, "37":{"Spear":0.03,"Great Axe":0.35,"Colossal Sword":0.62}, "38":{"Spear":0.03,"Great Axe":0.34,"Colossal Sword":0.63}, "39":{"Spear":0.03,"Great Axe":0.33,"Colossal Sword":0.64}, "40":{"Spear":0.03,"Great Axe":0.32,"Colossal Sword":0.65}, "41":{"Spear":0.03,"Great Axe":0.32,"Colossal Sword":0.65}, "42":{"Spear":0.03,"Great Axe":0.31,"Colossal Sword":0.66}, "43":{"Spear":0.02,"Great Axe":0.31,"Colossal Sword":0.67}, "44":{"Spear":0.02,"Great Axe":0.30,"Colossal Sword":0.67}, "45":{"Spear":0.02,"Great Axe":0.30,"Colossal Sword":0.68}, "46":{"Spear":0.02,"Great Axe":0.29,"Colossal Sword":0.69}, "47":{"Spear":0.02,"Great Axe":0.29,"Colossal Sword":0.69}, "48":{"Spear":0.02,"Great Axe":0.28,"Colossal Sword":0.69}, "49":{"Spear":0.02,"Great Axe":0.28,"Colossal Sword":0.70}, "50":{"Spear":0.02,"Great Axe":0.28,"Colossal Sword":0.70}, "51":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "52":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "53":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "54":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.72}, "55":{"Spear":0.02,"Great Axe":0.26,"Colossal Sword":0.72}, "60":{"Spear":0.02,"Great Axe":0.25,"Colossal Sword":0.73}, "65":{"Spear":0.02,"Great Axe":0.25,"Colossal Sword":0.74}, "70":{"Spear":0.01,"Great Axe":0.24,"Colossal Sword":0.75} };
+        // World 3 Odds (Frostspire - High Tier)
+		var weaponOdds3 = { "3":{"Dagger":1.0}, "4":{"Dagger":0.86,"Straight Sword":0.14}, "5":{"Dagger":0.35,"Straight Sword":0.65}, "6":{"Dagger":0.14,"Straight Sword":0.86}, "7":{"Dagger":0.06,"Straight Sword":0.74,"Mace":0.20}, "8":{"Dagger":0.02,"Straight Sword":0.44,"Mace":0.54}, "9":{"Dagger":0.01,"Straight Sword":0.24,"Mace":0.65,"Axe":0.10}, "10":{"Straight Sword":0.11,"Mace":0.47,"Axe":0.42}, "11":{"Straight Sword":0.05,"Mace":0.32,"Axe":0.63}, "12":{"Straight Sword":0.03,"Mace":0.22,"Axe":0.72,"Spear":0.03}, "13":{"Straight Sword":0.01,"Mace":0.14,"Axe":0.62,"Spear":0.22}, "14":{"Straight Sword":0.01,"Mace":0.08,"Axe":0.46,"Spear":0.45}, "15":{"Mace":0.05,"Axe":0.34,"Spear":0.60}, "16":{"Mace":0.03,"Axe":0.26,"Spear":0.69,"Great Axe":0.01}, "17":{"Mace":0.02,"Axe":0.19,"Spear":0.68,"Great Axe":0.11}, "18":{"Mace":0.01,"Axe":0.13,"Spear":0.57,"Great Axe":0.28}, "19":{"Mace":0.01,"Axe":0.09,"Spear":0.46,"Great Axe":0.45}, "20":{"Mace":0.01,"Axe":0.06,"Spear":0.36,"Great Axe":0.57}, "21":{"Axe":0.04,"Spear":0.29,"Great Axe":0.65,"Colossal Sword":0.02}, "22":{"Axe":0.03,"Spear":0.23,"Great Axe":0.67,"Colossal Sword":0.07}, "23":{"Axe":0.02,"Spear":0.18,"Great Axe":0.66,"Colossal Sword":0.13}, "24":{"Axe":0.02,"Spear":0.15,"Great Axe":0.64,"Colossal Sword":0.20}, "25":{"Axe":0.01,"Spear":0.12,"Great Axe":0.60,"Colossal Sword":0.26}, "26":{"Axe":0.01,"Spear":0.09,"Great Axe":0.53,"Colossal Sword":0.32}, "27":{"Axe":0.01,"Spear":0.10,"Great Axe":0.56,"Colossal Sword":0.37}, "28":{"Axe":0.01,"Spear":0.07,"Great Axe":0.50,"Colossal Sword":0.42}, "29":{"Axe":0.01,"Spear":0.07,"Great Axe":0.47,"Colossal Sword":0.46}, "30":{"Axe":0.01,"Spear":0.06,"Great Axe":0.45,"Colossal Sword":0.49}, "31":{"Spear":0.05,"Great Axe":0.43,"Colossal Sword":0.51}, "32":{"Spear":0.05,"Great Axe":0.41,"Colossal Sword":0.54}, "33":{"Spear":0.04,"Great Axe":0.39,"Colossal Sword":0.55}, "34":{"Spear":0.04,"Great Axe":0.38,"Colossal Sword":0.58}, "35":{"Spear":0.04,"Great Axe":0.37,"Colossal Sword":0.59}, "36":{"Spear":0.03,"Great Axe":0.36,"Colossal Sword":0.61}, "37":{"Spear":0.03,"Great Axe":0.35,"Colossal Sword":0.62}, "38":{"Spear":0.03,"Great Axe":0.34,"Colossal Sword":0.63}, "39":{"Spear":0.03,"Great Axe":0.33,"Colossal Sword":0.64}, "40":{"Spear":0.03,"Great Axe":0.32,"Colossal Sword":0.65}, "41":{"Spear":0.03,"Great Axe":0.32,"Colossal Sword":0.65}, "42":{"Spear":0.03,"Great Axe":0.31,"Colossal Sword":0.66}, "43":{"Spear":0.02,"Great Axe":0.31,"Colossal Sword":0.67}, "44":{"Spear":0.02,"Great Axe":0.30,"Colossal Sword":0.67}, "45":{"Spear":0.02,"Great Axe":0.30,"Colossal Sword":0.68}, "46":{"Spear":0.02,"Great Axe":0.29,"Colossal Sword":0.69}, "47":{"Spear":0.02,"Great Axe":0.29,"Colossal Sword":0.69}, "48":{"Spear":0.02,"Great Axe":0.28,"Colossal Sword":0.69}, "49":{"Spear":0.02,"Great Axe":0.28,"Colossal Sword":0.70}, "50":{"Spear":0.02,"Great Axe":0.28,"Colossal Sword":0.70}, "51":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "52":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "53":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.71}, "54":{"Spear":0.02,"Great Axe":0.27,"Colossal Sword":0.72}, "55":{"Spear":0.02,"Great Axe":0.26,"Colossal Sword":0.72}, "60":{"Spear":0.02,"Great Axe":0.25,"Colossal Sword":0.73}, "65":{"Spear":0.02,"Great Axe":0.25,"Colossal Sword":0.74}, "70":{"Spear":0.01,"Great Axe":0.24,"Colossal Sword":0.75} };
+        
+        // World 2 Odds (Forgotten - Mixed)
+        var weaponOdds2 = JSON.parse(JSON.stringify(weaponOdds)); 
 
         var armorOdds = {"3":{"Light Helmet":1.0},"4":{"Light Helmet":1.0},"5":{"Light Helmet":0.89,"Light Leggings":0.11},"6":{"Light Helmet":0.56,"Light Leggings":0.44},"7":{"Light Helmet":0.32,"Light Leggings":0.67,"Light Chestplate":0.01},"8":{"Light Helmet":0.17,"Light Leggings":0.17,"Light Chestplate":0.17},"9":{"Light Helmet":0.08,"Light Leggings":0.51,"Light Chestplate":0.41},"10":{"Light Helmet":0.04,"Light Leggings":0.34,"Light Chestplate":0.53,"Medium Helmet":0.04},"11":{"Light Helmet":0.02,"Light Leggings":0.2,"Light Chestplate":0.47,"Medium Helmet":0.31},"12":{"Light Helmet":0.01,"Light Leggings":0.12,"Light Chestplate":0.37,"Medium Helmet":0.5},"13":{"Light Leggings":0.04,"Light Chestplate":0.28,"Medium Helmet":0.6,"Medium Leggings":0.04},"14":{"Light Leggings":0.04,"Light Chestplate":0.19,"Medium Helmet":0.55,"Medium Leggings":0.22},"15":{"Light Leggings":0.02,"Light Chestplate":0.12,"Medium Helmet":0.43,"Medium Leggings":0.43},"16":{"Light Leggings":0.01,"Light Chestplate":0.08,"Medium Helmet":0.32,"Medium Leggings":0.57,"Medium Chestplate":0.08},"17":{"Light Leggings":0.01,"Light Chestplate":0.05,"Medium Helmet":0.22,"Medium Leggings":0.57,"Medium Chestplate":0.16},"18":{"Light Chestplate":0.03,"Medium Helmet":0.14,"Medium Leggings":0.48,"Medium Chestplate":0.35},"19":{"Light Chestplate":0.02,"Medium Helmet":0.09,"Medium Leggings":0.39,"Medium Chestplate":0.5},"20":{"Light Chestplate":0.01,"Medium Helmet":0.06,"Medium Leggings":0.32,"Medium Chestplate":0.6,"Heavy Helmet":0.01},"21":{"Light Chestplate":0.01,"Medium Helmet":0.07,"Medium Leggings":0.25,"Medium Chestplate":0.63,"Heavy Helmet":0.07},"22":{"Medium Helmet":0.03,"Medium Leggings":0.19,"Medium Chestplate":0.59,"Heavy Helmet":0.19},"23":{"Medium Helmet":0.02,"Medium Leggings":0.14,"Medium Chestplate":0.52,"Heavy Helmet":0.32},"24":{"Medium Helmet":0.01,"Medium Leggings":0.1,"Medium Chestplate":0.44,"Heavy Helmet":0.44},"25":{"Medium Leggings":0.07,"Medium Chestplate":0.36,"Heavy Helmet":0.51,"Heavy Leggings":0.05},"26":{"Medium Leggings":0.05,"Medium Chestplate":0.28,"Heavy Helmet":0.51,"Heavy Leggings":0.15},"27":{"Medium Leggings":0.04,"Medium Chestplate":0.21,"Heavy Helmet":0.47,"Heavy Leggings":0.28,"Heavy Chestplate":0.21},"28":{"Medium Leggings":0.03,"Medium Chestplate":0.16,"Heavy Helmet":0.42,"Heavy Leggings":0.39},"29":{"Medium Leggings":0.02,"Medium Chestplate":0.11,"Heavy Helmet":0.35,"Heavy Leggings":0.47,"Heavy Chestplate":0.04},"30":{"Medium Leggings":0.01,"Medium Chestplate":0.08,"Heavy Helmet":0.28,"Heavy Leggings":0.49,"Heavy Chestplate":0.13},"31":{"Medium Leggings":0.01,"Medium Chestplate":0.06,"Heavy Helmet":0.22,"Heavy Leggings":0.46,"Heavy Chestplate":0.25},"32":{"Medium Leggings":0.01,"Medium Chestplate":0.04,"Heavy Helmet":0.17,"Heavy Leggings":0.42,"Heavy Chestplate":0.37},"33":{"Medium Chestplate":0.03,"Heavy Helmet":0.13,"Heavy Leggings":0.37,"Heavy Chestplate":0.47},"34":{"Medium Chestplate":0.02,"Heavy Helmet":0.1,"Heavy Leggings":0.33,"Heavy Chestplate":0.54},"35":{"Medium Chestplate":0.02,"Heavy Helmet":0.08,"Heavy Leggings":0.3,"Heavy Chestplate":0.6},"36":{"Medium Chestplate":0.01,"Heavy Helmet":0.07,"Heavy Leggings":0.27,"Heavy Chestplate":0.64},"37":{"Medium Chestplate":0.01,"Heavy Helmet":0.06,"Heavy Leggings":0.25,"Heavy Chestplate":0.68},"38":{"Medium Chestplate":0.01,"Heavy Helmet":0.05,"Heavy Leggings":0.23,"Heavy Chestplate":0.71},"39":{"Medium Chestplate":0.01,"Heavy Helmet":0.04,"Heavy Leggings":0.22,"Heavy Chestplate":0.73},"40":{"Medium Chestplate":0.01,"Heavy Helmet":0.04,"Heavy Leggings":0.2,"Heavy Chestplate":0.75},"41":{"Medium Chestplate":0.01,"Heavy Helmet":0.04,"Heavy Leggings":0.19,"Heavy Chestplate":0.77},"42":{"Heavy Helmet":0.03,"Heavy Leggings":0.18,"Heavy Chestplate":0.78},"43":{"Heavy Helmet":0.03,"Heavy Leggings":0.17,"Heavy Chestplate":0.79},"44":{"Heavy Helmet":0.03,"Heavy Leggings":0.17,"Heavy Chestplate":0.8},"45":{"Heavy Helmet":0.03,"Heavy Leggings":0.16,"Heavy Chestplate":0.81},"46":{"Heavy Helmet":0.02,"Heavy Leggings":0.16,"Heavy Chestplate":0.82},"47":{"Heavy Helmet":0.02,"Heavy Leggings":0.15,"Heavy Chestplate":0.82},"48":{"Heavy Helmet":0.02,"Heavy Leggings":0.15,"Heavy Chestplate":0.83},"49":{"Heavy Helmet":0.02,"Heavy Leggings":0.14,"Heavy Chestplate":0.83},"50":{"Heavy Helmet":0.02,"Heavy Leggings":0.14,"Heavy Chestplate":0.84},"51":{"Heavy Helmet":0.02,"Heavy Leggings":0.14,"Heavy Chestplate":0.84},"52":{"Heavy Helmet":0.02,"Heavy Leggings":0.13,"Heavy Chestplate":0.85},"53":{"Heavy Helmet":0.02,"Heavy Leggings":0.13,"Heavy Chestplate":0.85},"54":{"Heavy Helmet":0.02,"Heavy Leggings":0.13,"Heavy Chestplate":0.85},"55":{"Heavy Helmet":0.02,"Heavy Leggings":0.12,"Heavy Chestplate":0.86}};
 
-		let currentRegion = "Stonewake";
+        // --- DEFINE PLACEHOLDERS FOR ARMOR REGIONS 2 & 3 ---
+        var armorOdds2 = JSON.parse(JSON.stringify(armorOdds));
+        var armorOdds3 = JSON.parse(JSON.stringify(armorOdds));
 
-        // --- 3. WEAPON & ARMOR VARIANTS ---
+		let currentRegion = "1"; // Default to Stonewake (1)
+
+        // --- 3. WEAPON & ARMOR VARIANTS (UPDATED WITH REGIONS) ---
         var weaponVariants = {
             "Daggers": {
-                "Dagger": [{ chance: 1, dmg: 4.3, time: 0.35, image: "DaggerIcon.png" }],
-                "Falchion Knife": [{ chance: 0.5, dmg: 4.3, time: 0.35, image: "FalchionKnife.png" }],
-                "Gladius Daggers": [{ chance: 0.25, dmg: 4.3, time: 0.35, image: "GladiusDagger.png" }],
-                "Hook": [{ chance: 0.0625, dmg: 4.73, time: 0.39, image: "Hook.png" }]
+                "Dagger": [{ chance: 1, dmg: 4.3, time: 0.35, image: "DaggerIcon.png", minRegion: 1 }],
+                "Falchion Knife": [{ chance: 0.5, dmg: 4.3, time: 0.35, image: "FalchionKnife.png", minRegion: 1, maxRegion: 1 }],
+                "Gladius Daggers": [{ chance: 0.25, dmg: 4.3, time: 0.35, image: "GladiusDagger.png", minRegion: 1 }],
+                "Hook": [{ chance: 0.0625, dmg: 4.73, time: 0.39, image: "Hook.png", minRegion: 2 }],
+                "Cultist Dagger": [{ chance: 0, dmg: 5.25, time: 0.35, image: "CultistDagger.png", minRegion: 3 }],
+                "Shark's Fangs": [{ chance: 0.16, dmg: 3.87, time: 0.27, image: "Shark's_Fangs.webp", minRegion: 3 }],
+                "Curved Dagger": [{ chance: 0.125, dmg: 4.95, time: 0.3, image: "CurvedDagger.png", minRegion: 2 }]
             },
             "Straight Swords": {
-                "Falchion Sword": [{ chance: 1, dmg: 7.5, time: 0.59, image: "FalchionSword.png" }],
-                "Gladius Sword": [{ chance: 0.5, dmg: 7.5, time: 0.5, image: "GladiusSword.png" }],
-                "Cutlass": [{ chance: 0.5, dmg: 9.375, time: 0.66, image: "Cutlass.png" }],
-                "Rapier": [{ chance: 0.25, dmg: 7.5, time: 0.49, image: "Rapier.png" }],
-                "Chaos": [{ chance: 0.0625, dmg: 9.375, time: 0.59, image: "Chaos.png" }],
-                "Candy Cane": [{ chance: 0.125, dmg: 7.5, time: 0.44, image: "CandyCane.png" }],
-                "Hell Slayer": [{ chance: 0.1, dmg: 10.175, time: 0.59, image: "HellSlayer.png" }]
+                "Falchion Sword": [{ chance: 1, dmg: 7.5, time: 0.59, image: "FalchionSword.png", minRegion: 1 }],
+                "Gladius Sword": [{ chance: 0.5, dmg: 7.5, time: 0.5, image: "GladiusSword.png", minRegion: 1, maxRegion: 1 }],
+                "Cutlass": [{ chance: 0.5, dmg: 9.375, time: 0.66, image: "Cutlass.png", minRegion: 2 }],
+                "Rapier": [{ chance: 0.25, dmg: 7.5, time: 0.49, image: "Rapier.png", minRegion: 1 }],
+                "Chaos": [{ chance: 0.0625, dmg: 9.375, time: 0.59, image: "Chaos.png", minRegion: 2 }],
+                "Candy Cane": [{ chance: 0.125, dmg: 7.5, time: 0.44, image: "CandyCane.png", minRegion: 2 }],
+                "Hell Slayer": [{ chance: 0.1, dmg: 10.175, time: 0.59, image: "HellSlayer.png", minRegion: 3 }],
+                "Crystallized Broadsword": [{ chance: 0.16, dmg: 9.975, time: 0.62, image: "Crystallized Broadsword.png", minRegion: 3 }],
+                "Hook Blade": [{ chance: 0.2, dmg: 8.25, time: 0.44, image: "HookBlade.png", minRegion: 2 }]
             },
             "Great Swords": {
-                "Crusader Sword": [{ chance: 1, dmg: 12, time: 1, image: "CrusaderSword.png" }],
-                "Long Sword": [{ chance: 0.5, dmg: 12, time: 1.11, image: "LongSword.png" }]
+                "Crusader Sword": [{ chance: 1, dmg: 12, time: 1, image: "CrusaderSword.png", minRegion: 1 }],
+                "Long Sword": [{ chance: 0.5, dmg: 12, time: 1.11, image: "LongSword.png", minRegion: 2 }],
+                "Anchored Greatsword": [{ chance: 0.16, dmg: 13.8, time: 0.91, image: "Anchored Greatsword.png", minRegion: 2 }],
+                "Dark Knight's Greatsword": [{ chance: 0.25, dmg: 15, time: 1.11, image: "DarkKnightGreatsword.png", minRegion: 2 }]
             },
             "Gauntlets": {
-                "Ironhand": [{ chance: 1, dmg: 7.6, time: 0.51, image: "Ironhand.png" }],
-                "Boxing Gloves": [{ chance: 0.25, dmg: 8, time: 0.59, image: "Boxingglove.png" }],
-                "Relevator": [{ chance: 0.25, dmg: 9.6, time: 0.69, image: "Relevator.png" }],
-                "Savage Claws": [{ chance: 0.25, dmg: 8, time: 0.47, image: "SavageClaws.png" }]
+                "Ironhand": [{ chance: 1, dmg: 7.6, time: 0.51, image: "Ironhand.png", minRegion: 1 }],
+                "Boxing Gloves": [{ chance: 0.25, dmg: 8, time: 0.59, image: "Boxingglove.png", minRegion: 1 }],
+                "Relevator": [{ chance: 0.25, dmg: 9.6, time: 0.69, image: "Relevator.png", minRegion: 2 }],
+                "Savage Claws": [{ chance: 0.25, dmg: 8, time: 0.47, image: "SavageClaws.png", minRegion: 3 }],
+                "Dark Knight's Gauntlets": [{ chance: 0.16, dmg: 10, time: 0.47, image: "DarkKnightGauntlets.png", minRegion: 2 }]
             },
             "Katanas": {
-                "Uchigatana": [{ chance: 1, dmg: 8.5, time: 0.6, image: "Uchigatana.png" }],
-                "Tachi": [{ chance: 0.25, dmg: 8.925, time: 0.63, image: "Tachi.png" }]
+                "Uchigatana": [{ chance: 1, dmg: 8.5, time: 0.6, image: "Uchigatana.png", minRegion: 1 }],
+                "Tachi": [{ chance: 0.25, dmg: 8.925, time: 0.63, image: "Tachi.png", minRegion: 2 }],
+                "Straight Edge Katana": [{ chance: 0.16, dmg: 9.35, time: 0.6, image: "StraightEdgeKatana.png", minRegion: 2 }]
             },
             "Great Axes": {
-                "Double Battle Axe": [{ chance: 1, dmg: 15.75, time: 1.05, image: "DoubleBattleAxe.png" }],
-                "Scythe": [{ chance: 0.25, dmg: 14.25, time: 0.95, image: "Scythe.png" }],
-                "Greater Battle Axe": [{ chance: 0.25, dmg: 17.25, time: 1, image: "GreaterBattleAxe.png" }],
-                "Wyvern Axe": [{ chance: 0.25, dmg: 18.75, time: 0.91, image: "Wyvern Axe.png" }]
+                "Double Battle Axe": [{ chance: 1, dmg: 15.75, time: 1.05, image: "DoubleBattleAxe.png", minRegion: 1 }],
+                "Scythe": [{ chance: 0.25, dmg: 14.25, time: 0.95, image: "Scythe.png", minRegion: 2 }],
+                "Greater Battle Axe": [{ chance: 0.25, dmg: 17.25, time: 1, image: "GreaterBattleAxe.png", minRegion: 3 }],
+                "Wyvern Axe": [{ chance: 0.25, dmg: 18.75, time: 0.91, image: "Wyvern Axe.png", minRegion: 3 }],
+                "Anchored Straight Blade": [{ chance: 0.16, dmg: 18, time: 1, image: "Anchored Greatsword.png", minRegion: 3 }],
+                "Executioner's Greataxe": [{ chance: 0.2, dmg: 19.5, time: 1.05, image: "Executioner's Greataxe.png", minRegion: 3 }]
             },
             "Colossal Swords": {
-                "Great Sword": [{ chance: 1, dmg: 20, time: 1.12, image: "GreatSword.png" }],
-                "Hammer": [{ chance: 0.25, dmg: 22, time: 1.24, image: "Hammer.png" }],
-                "Skull Crusher": [{ chance: 0.125, dmg: 24, time: 1.4, image: "SkullCrusher.png" }],
-                "Dragon Slayer": [{ chance: 0.0625, dmg: 22, time: 1.12, image: "DragonSlayer.png" }],
-                "Comically Large Spoon": [{ chance: 0.0625, dmg: 18, time: 1.12, image: "ComicallyLargeSpoon.png" }],
-                "Excalibur": [{ chance: 0.001, dmg: 26, time: 1.12, image: "Excalibur.png" }]
+                "Great Sword": [{ chance: 1, dmg: 20, time: 1.12, image: "GreatSword.png", minRegion: 1 }],
+                "Hammer": [{ chance: 0.25, dmg: 22, time: 1.24, image: "Hammer.png", minRegion: 1 }],
+                "Comically Large Spoon": [{ chance: 0.0625, dmg: 18, time: 1.12, image: "ComicallyLargeSpoon.png", minRegion: 1, maxRegion: 1 }],
+                "Skull Crusher": [{ chance: 0.125, dmg: 24, time: 1.4, image: "SkullCrusher.png", minRegion: 2 }],
+                "Dragon Slayer": [{ chance: 0.0625, dmg: 22, time: 1.12, image: "DragonSlayer.png", minRegion: 2 }],
+                "Excalibur": [{ chance: 0.001, dmg: 26, time: 1.12, image: "Excalibur.png", minRegion: 3 }],
+                "Colossal TerrorBlade": [{ chance: 0.5, dmg: 22, time: 1.02, image: "ColossalTerrorBlade.png", minRegion: 3 }],
+                "Colossal Gemblade": [{ chance: 0.16, dmg: 23, time: 1.12, image: "ColossalGemblade.png", minRegion: 3 }]
             },
             "Mace": {
-                "Mace": [{ chance: 1, dmg: 6, time: 0.46, image: "Mace.png" }],
-                "Spiked Mace": [{ chance: 0.5, dmg: 6.3, time: 0.46, image: "Spiked Mace.png" }],
-                "Winged Mace": [{ chance: 0.25, dmg: 6.6, time: 0.46, image: "Winged Mace.png" }],
-                "Hammerhead Mace": [{ chance: 0.125, dmg: 6.9, time: 0.46, image: "HammerheadMace.png" }],
-                "Grave Maker": [{ chance: 0.0625, dmg: 7.8, time: 0.46, image: "Grave Maker.png" }]
+                "Mace": [{ chance: 1, dmg: 6, time: 0.46, image: "Mace.png", minRegion: 1 }],
+                "Spiked Mace": [{ chance: 0.5, dmg: 6.3, time: 0.46, image: "Spiked Mace.png", minRegion: 1 }],
+                "Winged Mace": [{ chance: 0.25, dmg: 6.6, time: 0.46, image: "Winged Mace.png", minRegion: 2 }],
+                "Hammerhead Mace": [{ chance: 0.125, dmg: 6.9, time: 0.46, image: "HammerheadMace.png", minRegion: 2 }],
+                "Grave Maker": [{ chance: 0.0625, dmg: 7.8, time: 0.46, image: "Grave Maker.png", minRegion: 3 }]
             },
             "Axe": {
-                "Axe": [{ chance: 1, dmg: 7, time: 0.48, image: "Axe.png" }],
-                "Battleaxe": [{ chance: 1, dmg: 7.35, time: 0.48, image: "Battleaxe.png" }],
-                "Curved Handle Axe": [{ chance: 0.25, dmg: 7.7, time: 0.48, image: "CurvedHandleAxe.png" }],
-                "Spade Armed Axe": [{ chance: 0.125, dmg: 8.05, time: 0.48, image: "Spade Armed Axe.png" }]
+                "Axe": [{ chance: 1, dmg: 7, time: 0.48, image: "Axe.png", minRegion: 1 }],
+                "Battleaxe": [{ chance: 1, dmg: 7.35, time: 0.48, image: "Battleaxe.png", minRegion: 1 }],
+                "Curved Handle Axe": [{ chance: 0.25, dmg: 7.7, time: 0.48, image: "CurvedHandleAxe.png", minRegion: 2 }],
+                "Spade Armed Axe": [{ chance: 0.125, dmg: 8.05, time: 0.48, image: "Spade Armed Axe.png", minRegion: 2 }],
+                "Ornate Short Axe": [{ chance: 0.16, dmg: 8.4, time: 0.48, image: "OrnateShortAxe.png", minRegion: 3 }]
             },
             "Spears": {
-                "Spear": [{ chance: 1, dmg: 7.5, time: 0.45, image: "Spear.png" }],
-                "Trident": [{ chance: 0.5, dmg: 7.5, time: 0.45, image: "Trident.png" }],
-                "Angelic Spear": [{ chance: 0.125, dmg: 9.75, time: 0.41, image: "AngelicSpear.png" }]
+                "Spear": [{ chance: 1, dmg: 7.5, time: 0.45, image: "Spear.png", minRegion: 1 }],
+                "Trident": [{ chance: 0.5, dmg: 7.5, time: 0.45, image: "Trident.png", minRegion: 1 }],
+                "Angelic Spear": [{ chance: 0.125, dmg: 9.75, time: 0.41, image: "AngelicSpear.png", minRegion: 2 }],
+                "Knight Spear": [{ chance: 0.25, dmg: 10.125, time: 0.38, image: "Knight Spear.png", minRegion: 2 }],
+                "Compass Spear": [{ chance: 0.16, dmg: 10.5, time: 0.47, image: "CompassSpear.png", minRegion: 3 }]
             }
         };
 
         var armorVariants = {
             "Light Helmet": [
-                { name: "Light Helmet", image: "LightHelmet.png", chance: 1, baseDef: 3.75 }
+                { name: "Light Helmet", image: "LightHelmet.png", chance: 1, baseDef: 3.75, minRegion: 1 }
             ],
             "Light Chestplate": [
-                { name: "Light Chestplate", image: "LightChestplate.png", chance: 1, baseDef: 5 }
+                { name: "Light Chestplate", image: "LightChestplate.png", chance: 1, baseDef: 5, minRegion: 1 }
             ],
             "Light Leggings": [
-                { name: "Light Leggings", image: "LightLeggings.png", chance: 1, baseDef: 4.375 }
+                { name: "Light Leggings", image: "LightLeggings.png", chance: 1, baseDef: 4.375, minRegion: 1 }
             ],
             "Medium Helmet": [
-                { name: "Medium Helmet", image: "MediumHelmet.png", chance: 1, baseDef: 6.25 },
-                { name: "Samurai Helmet", image: "SamuraiHelmet.png", chance: 0.5, baseDef: 8 },
-                { name: "Viking Helmet", image: "VikingHelmet.png", chance: 0.25, baseDef: 10.5 }
+                { name: "Medium Helmet", image: "MediumHelmet.png", chance: 1, baseDef: 6.25, minRegion: 1 },
+                { name: "Samurai Helmet", image: "SamuraiHelmet.png", chance: 0.5, baseDef: 8, minRegion: 2 },
+                { name: "Viking Helmet", image: "VikingHelmet.png", chance: 0.25, baseDef: 10.5, minRegion: 3 }
             ],
             "Medium Chestplate": [
-                { name: "Medium Chestplate", image: "MediumChestplate.png", chance: 1, baseDef: 8.75 },
-                { name: "Samurai Chestplate", image: "SamuraiChestplate.png", chance: 0.5, baseDef: 12.75 },
-                { name: "Viking Chestplate", image: "VikingChestplate.png", chance: 0.25, baseDef: 15 }
+                { name: "Medium Chestplate", image: "MediumChestplate.png", chance: 1, baseDef: 8.75, minRegion: 1 },
+                { name: "Samurai Chestplate", image: "SamuraiChestplate.png", chance: 0.5, baseDef: 12.75, minRegion: 2 },
+                { name: "Viking Chestplate", image: "VikingChestplate.png", chance: 0.25, baseDef: 15, minRegion: 3 }
             ],
             "Medium Leggings": [
-                { name: "Medium Leggings", image: "MediumLeggings.png", chance: 1, baseDef: 7.5 },
-                { name: "Samurai Leggings", image: "SamuraiLeggings.png", chance: 0.5, baseDef: 9 },
-                { name: "Viking Leggings", image: "VikingLeggings.png", chance: 0.25, baseDef: 11 }
+                { name: "Medium Leggings", image: "MediumLeggings.png", chance: 1, baseDef: 7.5, minRegion: 1 },
+                { name: "Samurai Leggings", image: "SamuraiLeggings.png", chance: 0.5, baseDef: 9, minRegion: 2 },
+                { name: "Viking Leggings", image: "VikingLeggings.png", chance: 0.25, baseDef: 11, minRegion: 3 }
             ],
             "Heavy Helmet": [
-                { name: "Knight Helmet", image: "KnightHelmet.png", chance: 1, baseDef: 12.5 },
-                { name: "Dark Knight Helmet", image: "DarkKnightHelmet.png", chance: 0.5, baseDef: 18.75 },
-                { name: "Wolf Helmet", image: "WolfHelmet.png", chance: 0.25, baseDef: 25 },
-                { name: "Raven's Helmet", image: "RavenHelmet.png", chance: 0.125, baseDef: 26.5 },
-                { name: "Goblin's Crown", image: "GoblinCrown.png", chance: 0.16, baseDef: 26 }
+                { name: "Knight Helmet", image: "KnightHelmet.png", chance: 1, baseDef: 12.5, minRegion: 1 },
+                { name: "Dark Knight Helmet", image: "DarkKnightHelmet.png", chance: 0.5, baseDef: 18.75, minRegion: 2 },
+                { name: "Wolf Helmet", image: "WolfHelmet.png", chance: 0.25, baseDef: 25, minRegion: 3 },
+                { name: "Raven's Helmet", image: "RavenHelmet.png", chance: 0.125, baseDef: 26.5, minRegion: 3 },
+                { name: "Goblin's Crown", image: "GoblinCrown.png", chance: 0.16, baseDef: 26, minRegion: 3 }
             ],
             "Heavy Chestplate": [
-                { name: "Knight Chestplate", image: "KnightChestplate.png", chance: 1, baseDef: 16.25 },
-                { name: "Dark Knight Chestplate", image: "DarkKnightChestplate.png", chance: 0.5, baseDef: 25 },
-                { name: "Wolf Chestplate", image: "WolfChestPlate.png", chance: 0.25, baseDef: 35 },
-                { name: "Raven's Chestplate", image: "RavenChestPlate.png", chance: 0.125, baseDef: 37 }
+                { name: "Knight Chestplate", image: "KnightChestplate.png", chance: 1, baseDef: 16.25, minRegion: 1 },
+                { name: "Dark Knight Chestplate", image: "DarkKnightChestplate.png", chance: 0.5, baseDef: 25, minRegion: 2 },
+                { name: "Wolf Chestplate", image: "WolfChestPlate.png", chance: 0.25, baseDef: 35, minRegion: 3 },
+                { name: "Raven's Chestplate", image: "RavenChestplate.png", chance: 0.125, baseDef: 37, minRegion: 3 }
             ],
             "Heavy Leggings": [
-                { name: "Knight Leggings", image: "KnightLeggings.png", chance: 1, baseDef: 13.75 },
-                { name: "Dark Knight Leggings", image: "DarkKnightLeggings.png", chance: 0.5, baseDef: 21.875 },
-                { name: "Wolf Leggings", image: "WolfLeggings.png", chance: 0.25, baseDef: 28 },
-                { name: "Raven's Leggings", image: "RavenLeggings.png", chance: 0.125, baseDef: 29.25 }
+                { name: "Knight Leggings", image: "KnightLeggings.png", chance: 1, baseDef: 13.75, minRegion: 1 },
+                { name: "Dark Knight Leggings", image: "DarkKnightLeggings.png", chance: 0.5, baseDef: 21.875, minRegion: 2 },
+                { name: "Wolf Leggings", image: "WolfLeggings.png", chance: 0.25, baseDef: 28, minRegion: 3 },
+                { name: "Raven's Leggings", image: "RavenLeggings.png", chance: 0.125, baseDef: 29.25, minRegion: 3 }
             ]
         };
 
@@ -478,15 +503,14 @@ mw.loader.using(['jquery'], function () {
                     <div class="panel-inner">
 						<div class="region-field">
 						  <div class="card-header">REGION</div>
-						
 						  <div class="region-dropdown" id="regionDropdown">
-						    <span id="regionValue">Stonewake's Cross / Forgotten Kingdom</span>
+						    <span id="regionValue">Stonewake's Cross</span>
 						    <span class="region-arrow">▾</span>
 						  </div>
-						
 						  <div class="region-options" id="regionOptions">
-						    <div data-value="Stonewake">Stonewake's Cross / Forgotten Kingdom</div>
-						    <div data-value="Frostspire">Frostspire Expanse</div>
+						    <div data-value="1">Stonewake's Cross</div>
+						    <div data-value="2">Forgotten Kingdom</div>
+                            <div data-value="3">Frostspire Expanse</div>
 						  </div>
 						</div>
                         <div class="card-header">Composition</div><div id="composition-area" class="result-card"></div>
@@ -665,9 +689,11 @@ mw.loader.using(['jquery'], function () {
         }
 
         function simpleFraction(decimal) {
+        	if(decimal === 0) return "N/A";
             if(decimal === 1) return "1/1";
             if(decimal === 0.5) return "1/2";
             if(decimal === 0.25) return "1/4";
+            if(decimal === 0.2) return "1/5";
             if (decimal > 0.15 && decimal < 0.18) return "1/6";
             if(decimal === 0.125) return "1/8";
             if(decimal === 0.1) return "1/10";
@@ -767,16 +793,25 @@ mw.loader.using(['jquery'], function () {
             if(!traitsHTML) traitsHTML = '<div style="color:#666; font-style:italic;">No active traits</div>';
             $('#traits-area').html(traitsHTML);
 
-            // --- ODDS ---
+            // --- ODDS CALCULATION START ---
+            
             // Use exact total ore count, clamped to valid table range
             let totalOres = total;
-            
-            // Clamp to valid range (3-55 for armor, weapons have similar range)
             if (totalOres < 3) totalOres = 3;
             if (totalOres > 55) totalOres = 55;
             
-            let activeWeaponOdds = (currentRegion === "Frostspire") ? weaponOdds2 : weaponOdds;
-            let dict = currentCraftType === 'Weapon' ? activeWeaponOdds : armorOdds;
+            // --- SELECT ODDS TABLE BASED ON REGION & TYPE ---
+            let dict;
+            
+            if (currentCraftType === 'Weapon') {
+                 if (currentRegion === "3") dict = weaponOdds3; // Frostspire Weapon
+                 else if (currentRegion === "2") dict = weaponOdds2; // Forgotten Kingdom Weapon
+                 else dict = weaponOdds; // Stonewake Weapon (Default)
+            } else {
+                 if (currentRegion === "3") dict = armorOdds3; // Frostspire Armor
+                 else if (currentRegion === "2") dict = armorOdds2; // Forgotten Kingdom Armor
+                 else dict = armorOdds; // Stonewake Armor (Default)
+            }
             
             // Use exact total as string key, with fallback for missing keys
             let oddsKey = String(totalOres);
@@ -790,14 +825,26 @@ mw.loader.using(['jquery'], function () {
             let odds = dict[oddsKey] || {};
 
             let oddsHTML = '';
+            
+            // Get current region integer for filtering
+            let regionInt = parseInt(currentRegion) || 1;
+            
             Object.entries(odds).sort((a,b)=>b[1]-a[1]).forEach(([categoryName, probability]) => {
-                oddsHTML += `<div class="odds-type-card"><div class="odds-type-header"><span>${categoryName}</span><span style="color:var(--fc-accent-gold-light)">${(probability*100).toFixed(1)}%</span></div>`;
+                
+                // Temp buffer for rows so we only show header if rows exist after filtering
+                let rowsHTML = '';
                 
                 if(currentCraftType === 'Weapon') {
                     let variantCategory = categoryMap[categoryName];
                     if(variantCategory && weaponVariants[variantCategory]) {
                         Object.keys(weaponVariants[variantCategory]).forEach(vName => {
                             weaponVariants[variantCategory][vName].forEach(v => {
+                                // --- FILTER: Region Lock (Min Region) ---
+                                if ((v.minRegion || 1) > regionInt) return;
+
+                                // --- FILTER: Region Lock (Max Region - e.g. Spoon is World 1 Only) ---
+                                if (v.maxRegion && regionInt > v.maxRegion) return;
+                                
                                 let base = Number(v.dmg);
 								let quality = Number($('#quality-amt').val()) / 100 || 0;
 								let enhancementFactor = 1 + ((Number($('#enhAmt').val()) || 0) * 0.05);
@@ -810,7 +857,7 @@ mw.loader.using(['jquery'], function () {
                                 
                                 let dmgText = isFinite(finalDmg) ? finalDmg.toFixed(2) : '—';
 
-                                oddsHTML += `<div class="odds-grid-row"><div class="col-img" style="${imgStyle}"></div><div class="col-name">${vName}</div><div class="col-chance">${simpleFraction(v.chance)}</div><div class="col-dmg">${dmgText}</div><div class="col-dps">${dpsText}</div></div>`;
+                                rowsHTML += `<div class="odds-grid-row"><div class="col-img" style="${imgStyle}"></div><div class="col-name">${vName}</div><div class="col-chance">${simpleFraction(v.chance)}</div><div class="col-dmg">${dmgText}</div><div class="col-dps">${dpsText}</div></div>`;
                             });
                         });
                     }
@@ -818,6 +865,12 @@ mw.loader.using(['jquery'], function () {
                     // RENDER ARMOR VARIANTS
                     if(armorVariants[categoryName]) {
                         armorVariants[categoryName].forEach(v => {
+                             // --- FILTER: Region Lock (Min Region) ---
+                             if ((v.minRegion || 1) > regionInt) return;
+
+                             // --- FILTER: Region Lock (Max Region) ---
+                             if (v.maxRegion && regionInt > v.maxRegion) return;
+
                             let quality = (parseInt($('#quality-amt').val()) || 100) / 100;
 							let enh = parseInt($('#enhAmt').val()) || 0;
 							let enhancementFactor = 1 + (enh * 0.05);
@@ -827,11 +880,15 @@ mw.loader.using(['jquery'], function () {
                             
                             let imgStyle = v.image ? `background-image:url('${getImg(v.image)}')` : '';
                             // Show Calculated Defense in "Damage" col
-                            oddsHTML += `<div class="odds-grid-row"><div class="col-img" style="${imgStyle}"></div><div class="col-name">${v.name}</div><div class="col-chance">${simpleFraction(v.chance)}</div><div class="col-dmg" style="color:#88ff88;">${defText} Def</div><div class="col-dps"></div></div>`;
+                            rowsHTML += `<div class="odds-grid-row"><div class="col-img" style="${imgStyle}"></div><div class="col-name">${v.name}</div><div class="col-chance">${simpleFraction(v.chance)}</div><div class="col-dmg" style="color:#88ff88;">${defText} Def</div><div class="col-dps"></div></div>`;
                         });
                     }
                 }
-                oddsHTML += `</div>`;
+                
+                // Only append the category header if there are valid items to show
+                if (rowsHTML) {
+                    oddsHTML += `<div class="odds-type-card"><div class="odds-type-header"><span>${categoryName}</span><span style="color:var(--fc-accent-gold-light)">${(probability*100).toFixed(1)}%</span></div>` + rowsHTML + `</div>`;
+                }
             });
             $('#odds-area').html(oddsHTML);
         }

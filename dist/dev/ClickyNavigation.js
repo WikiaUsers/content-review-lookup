@@ -25,14 +25,17 @@
 
     $(/* Oasis */ '.wds-community-header__local-navigation .wds-dropdown' + ', ' +
       /* FandomDesktop */ '.fandom-community-header__local-navigation .wds-dropdown')
-        .click(function(e) {
+    	.each(function() {
             var $this = $(this);
-            if ($this.hasClass('hovered')) return;
-            e.preventDefault();
-            $this.addClass('hovered');
-        }).mouseleave(function() {
-            $(this).removeClass('hovered');
-        });
+    		this.addEventListener('click', function(e) {
+	            if ($this.hasClass('hovered')) return;
+	            e.preventDefault();
+	            $this.addClass('hovered');
+    		}, { capture: true });
+    		this.addEventListener('mouseleave', function(e) {
+	            $this.removeClass('hovered');
+    		});
+    	});
 
     mw.util.addCSS([
         makeStyle(

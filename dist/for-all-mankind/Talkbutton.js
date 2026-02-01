@@ -1,10 +1,17 @@
-// –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-// Custom version of [[w:c:dev:DedicatedTalkButton]] - move talk page link from dropdown to beside edit button
-// –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-// Changes:
-// - Only run on main namespace
-// - Don't remove it from dropdown for consistency
-// –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+// ┌─────────────────────┬───────────────────────────────────┬───────────┐
+// │ FAM Wiki javascript │  Talkbutton.js                    │ {{jscat}} │
+// ├─────────────────────┴───────────────────────────────────┴───────────┤
+// │ Custom version of [[w:c:dev:DedicatedTalkButton]]                   │
+// │ Add a talk page button beside the edit button                       │
+// │                                                                     │
+// │ Changes from original:                                              │
+// │ > Only run on main namespace                                        │
+// │ > Don't remove it from dropdown for consistency                     │
+// ├─–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––───────┤
+// │ This page is imported in [[MediaWiki:ImportJS]]                     │
+// │                                                                     │
+// │ Main FAM Wiki JS page:   [[MediaWiki:Fandomdesktop.js]]             │
+// └─────────────────────────────────────────────────────────────────────┘
 
 $(function () {
     'use strict';

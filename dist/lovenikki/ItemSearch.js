@@ -77,8 +77,6 @@
 					.css({'margin': '4px 0.5em', 'padding': '0', 'background': 'white', 'border': '1px solid #e2e4d2', 'box-shadow': '0px 0px 2px 2px rgba(226,228,210,0.5)', 'width': '60px', 'height': '30px', 'border-radius': '20px'})
 					.addClass('type-filter-button active')
 				);
-				
-			const br = $('<br />');
 			
 			const colorButtons = $('<div>')
 				.attr('id', 'color-filter-buttons')
@@ -109,6 +107,16 @@
 				);
 			});
 			
+			colorOrder.forEach(function(color) {
+				const colorClass = 'custom-background-color-' + color.toLowerCase().replace(/\s+/g, '-');
+				colorButtons.append(
+					$('<button>')
+						.attr('data-color', color)
+						.text(color)
+						.addClass('color-filter-button ' + colorClass)
+				);
+			});
+			
 			const wholeWordCheckbox = $('<label>')
 				.css('margin-left', '0.5em')
 				.append($('<input>').attr({'type': 'checkbox', 'id': 'whole-word-check'}))
@@ -121,16 +129,14 @@
 			
 			const searchButton = $('<button>')
 				.attr('id', 'search-button')
+				.attr('class', 'wds-button')
 				.text('Search')
 				.css({
 					'width': '100%',
-					'margin-left': '10px',
-					'padding': '5px 15px',
-					'border': '1px solid var(--theme-border-color)',
 					'cursor': 'pointer'
 				});
 			
-			searchBar.append(searchInput).append(wholeWordCheckbox).append(regexCheckbox).append(typeButtons).append(colorButtons).append(searchButton);
+			searchBar.append(searchInput).append(wholeWordCheckbox).append(regexCheckbox);
 			
 			const resultCount = $('<div>')
 				.attr('id', 'item-result-count')
@@ -153,10 +159,10 @@
 				)
 				.append(
 					$('<tbody>').attr('id', 'item-results-body')
-						.append($('<tr>').append($('<td>').attr('colspan', '4').text('...')))
+						.append($('<tr>').append($('<td>').attr('colspan', '4').text('Enter search criteria and click Search')))
 				);
 			
-			container.append(searchBar).append(resultCount).append(table);
+			container.append(searchBar).append(typeButtons).append(colorButtons).append(searchButton).append(resultCount).append(table);
 			
 			const contentDiv = $('#mw-content-text');
 			if (contentDiv.find('h2').length > 0) {
@@ -194,31 +200,7 @@
 				});
 				
 				dataLoaded = true;
-				
-				const primaryColors = new Set();
-				allItems.forEach(function(item) {
-					if (item.color1) {
-						const colors = item.color1.split('/');
-						colors.forEach(function(color) {
-							primaryColors.add(color.trim());
-						});
-					}
-				});
-				
-				const sortedColors = colorOrder.filter(function(color) {
-					return primaryColors.has(color);
-				});
-				sortedColors.forEach(function(color) {
-					const colorClass = 'custom-background-color-' + color.toLowerCase().replace(/\s+/g, '-');
-					$('#color-filter-buttons').append(
-						$('<button>')
-							.attr('data-color', color)
-							.text(color)
-							.addClass('color-filter-button ' + colorClass)
-					);
-				});
-				
-				$('#item-results-body').html('<tr><td colspan="4">Please enter some search criteria first!</td></tr>');
+				$('#item-results-body').html('<tr><td colspan="4">Data loaded. Enter search criteria and click Search.</td></tr>');
 			}).fail(function(error) {
 				$('#item-results-body').html('<tr><td colspan="4">Error loading data</td></tr>');
 				console.error('API error:', error);
@@ -227,7 +209,6 @@
 		}
 		
 		function searchItems() {
-			// Load data if not already loaded
 			if (!dataLoaded) {
 				loadData().then(function() {
 					performSearch();
@@ -371,7 +352,6 @@
 				$('#type-all').removeClass('active');
 				$(this).toggleClass('active');
 				
-				// If no types selected, activate "All"
 				if ($('.type-filter-button.active').length === 0) {
 					$('#type-all').addClass('active');
 				}
@@ -385,7 +365,6 @@
 				$('#color-all').removeClass('active');
 				$(this).toggleClass('active');
 				
-				// If no colors selected, activate "All"
 				if ($('.color-filter-button.active').length === 0) {
 					$('#color-all').addClass('active');
 				}

@@ -1219,7 +1219,7 @@ $(document).ready(function() {
 		var dictASBonus = {
 			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Snake Bracelet": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
-			"Noble Iron": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,17],
+			"Noble Iron": [6,7,7,8,9,9,10,11,11,12,13,13,14,15,15,16,17,18],
 			"Dark Crown": [1,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11],
 			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Haste Vial": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
@@ -1246,8 +1246,8 @@ $(document).ready(function() {
 		// Lookup for the Dark Crown's boosts
 		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
 		// Difficulty lookups
-		var difficultyAttackPenalty = [0,3,6,10,10];
-		var difficultyDefenseBoost = [0,7,14,20,20];
+		var difficultyAttackPenalty = [0,0,0,5,10];
+		var difficultyDefenseBoost = [0,5,10,15,20];
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
 		// This is to be compatible with the dictionaries, which are also zero-indexed

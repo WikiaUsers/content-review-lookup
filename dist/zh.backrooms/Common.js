@@ -676,16 +676,13 @@ mw.hook("wikipage.content").add(function () {
 });
 
 mw.hook("wikipage.content").add(function () {
-    // 处理JS脚本导入
-    $("span.import-script").each(function () {
+    $('span.import-script').each(function () {
         var $this = $(this);
-        var scriptContent = $this.attr("data-script");
+        var scriptContent = $this.attr('data-script');
         var pageName = $this.attr("data-page");
-        
         if (scriptContent) {
             try {
-                // 执行脚本内容
-                (new Function(scriptContent))();
+                new Function(scriptContent)();
                 console.log("JS加载成功: " + pageName);
             } catch (error) {
                 console.error("JS执行错误 (" + pageName + "):", error);

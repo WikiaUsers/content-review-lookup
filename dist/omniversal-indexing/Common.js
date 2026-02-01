@@ -1,0 +1,1 @@
+alert('Common.js is running');
