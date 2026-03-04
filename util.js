@@ -7,15 +7,17 @@ import {readFile, writeFile} from 'fs/promises';
 import {CookieJar} from 'tough-cookie';
 import got from 'got';
 
+const USER_AGENT = 'Fandom Global Content Review Lookup, contact ' +
+                   'KockaAdmiralac through git@kocka.tech for specific ' +
+                   'information.';
+
 /**
  * HTTP client.
  */
 const http = got.extend({
     cookieJar: new CookieJar(),
     headers: {
-        'User-Agent': 'Fandom Global Content Review Lookup, ' +
-                      'contact KockaAdmiralac through git@kocka.tech ' +
-                      'for specific information.'
+        'User-Agent': USER_AGENT
     },
     resolveBodyOnly: true,
     retry: {
@@ -28,7 +30,7 @@ const http = got.extend({
 
 /**
  * Makes a GET request to a JSON endpoint.
- * @param {String} url URL to query
+ * @param {string} url URL to query
  * @param {Object} searchParams Query string parameters
  * @returns {Promise} Promise to listen on for response
  */
@@ -41,7 +43,7 @@ export function getJSON(url, searchParams) {
 
 /**
  * Queries the MediaWiki API.
- * @param {String} url Wiki URL
+ * @param {string} url Wiki URL
  * @param {Object} params Parameters to supply in the query
  * @returns {Promise} Promise to listen on for response
  */
@@ -49,6 +51,25 @@ export function apiQuery(url, params) {
     params.action = 'query';
     params.format = 'json';
     return getJSON(`${url}/api.php`, params);
+}
+
+/**
+ * Retrieves wiki information from DWDimensionApi after a certain wiki ID.
+ * @param {number} after Which wiki ID to start from (exclusive)
+ * @returns {Promise<object[]>} List of wikis fetched
+ */
+export function fetchWikis(after) {
+    return got.get('https://community.fandom.com/api/v1/DWDimension/Wikis', {
+        headers: {
+            'User-Agent': USER_AGENT
+        },
+        searchParams: {
+            // eslint-disable-next-line camelcase
+            after_wiki_id: after,
+            controller: 'DWDimensionApi',
+            limit: 20000
+        }
+    }).json();
 }
 
 /**

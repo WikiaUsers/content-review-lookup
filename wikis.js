@@ -3,10 +3,7 @@
  *
  * Fetches a list of all wikis on Fandom.
  */
-import {notify, writeJSON} from './util.js';
-import got from 'got';
-
-const WIKI_REQUEST_LIMIT = 20000;
+import {fetchWikis, notify, writeJSON} from './util.js';
 
 const WIKI_BLACKLIST = [
     // Private wikis
@@ -80,22 +77,6 @@ const WIKI_BLACKLIST = [
     'https://republic-of-cyberia-.fandom.com',
     'https://roblox-slashers-arena-.fandom.com'
 ];
-
-/**
- * Retrieves wiki information from DWDimensionApi after a certain wiki ID.
- * @param {number} after Which wiki ID to start from (exclusive)
- * @returns {Promise<object[]>} List of wikis fetched
- */
-function fetchWikis(after) {
-    return got.get('https://community.fandom.com/api/v1/DWDimension/Wikis', {
-        searchParams: {
-            // eslint-disable-next-line camelcase
-            after_wiki_id: after,
-            controller: 'DWDimensionApi',
-            limit: WIKI_REQUEST_LIMIT
-        }
-    }).json();
-}
 
 /**
  * Retrieves all wikis from DWDimensionApi.
