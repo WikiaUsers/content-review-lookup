@@ -7,8 +7,8 @@ function createFormula(containerId, formulaNumber) {
     var inputRange = document.createElement('input');
     inputRange.type = 'number';
     inputRange.min = '0';
-    inputRange.max = '2750';
-    inputRange.value = '50'; 
+    inputRange.max = '2800';
+    inputRange.value = '50';
     inputRange.placeholder = 'Player Level';
 
     var resultDiv = document.createElement('div');
@@ -23,12 +23,10 @@ function createFormula(containerId, formulaNumber) {
 
     inputRange.addEventListener('input', function() {
         var value = parseInt(inputRange.value);
-        if (isNaN(value)) {
+        if (isNaN(value) || value < 0) {
             value = 0;
-        } else if (value < 0) {
-            value = 0;
-        } else if (value > 2750) {
-            value = 2750;
+        } else if (value > 2800) {
+            value = 2800;
         }
         inputRange.value = value;
         calculateResult(value, resultDiv, formulaNumber);
@@ -41,19 +39,18 @@ function calculateResult(value, resultDiv, formulaNumber) {
         result = 0;
         resultDiv.textContent = 'Level is too low!';
     }
-    if (value >= 50 && value <= 2750) {
+    if (value >= 50 && value <= 2800) {
         if (formulaNumber === 1) {
             result = (value - 1) * 150 + 25000;
         } else if (formulaNumber === 2) {
             result = (value - 1) * 120 + 20000;
         }
-    resultDiv.textContent = 'Cost: ';
-    var spanElement = document.createElement('span');
-    spanElement.textContent = "$ " + result.toLocaleString('en-US');
-    spanElement.classList.add("Currency_Money");
-    resultDiv.appendChild(spanElement);
+	    resultDiv.textContent = 'Cost: ';
+	    var spanElement = document.createElement('span');
+	    spanElement.textContent = "$ " + result.toLocaleString('en-US');
+	    spanElement.classList.add("Currency_Money");
+	    resultDiv.appendChild(spanElement);
     }
-
 }
 
 if (document.getElementById('gachaNormal')) {

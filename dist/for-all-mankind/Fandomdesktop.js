@@ -20,6 +20,8 @@ var pageName = mw.config.get('wgPageName');
 var targetPages = [
     "Season_5",
     "For_All_Mankind",
+    "Star_City",
+    "Star_City_season_1",
     "Template:Countdown",
     "Template:Countdown/doc",
     "Template:Countdown/testcases",
@@ -41,14 +43,14 @@ if (targetPages.includes(pageName)) {
 
 
 // ------------------------------------------------------- //
-//   M-7 text behind community header                      //
+//   M-6 text behind community header                      //
 // ------------------------------------------------------- //
 
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Proud Partner of the M-7 Alliance')
+            .text('Proud Partner of the M-6 Alliance')
         )
-        .attr('href', 'https://for-all-mankind.fandom.com/wiki/Mars-7_Alliance')
+        .attr('href', 'https://for-all-mankind.fandom.com/wiki/Mars-6_Alliance')
 );

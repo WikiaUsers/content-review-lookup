@@ -41,52 +41,52 @@ setTimeout(() => {
 // Replace letters with other letters that have the font-family ----------------
 $("head").append(`<style> 
 	span[data-letter] {
-	    font-size: 0;
-	    display: inline-block;
+		font-size: 0;
+		display: inline-block;
 	}
 	span[data-letter]::after {
-	    content: attr(data-letter);
-	    font-size: 36px;
-    	display: inline-block;
+		content: attr(data-letter);
+		font-size: 36px;
+		display: inline-block;
 	} 
 	span[data-letter="d"]::after {
-    	translate: 0 -15px;
+		translate: 0 -15px;
 	}
 	span[data-letter="n"]::after {
-	    translate: -10px -15px;
+		translate: -10px -15px;
 	}
 	span:is([data-letter="Э"],[data-letter="э"]):before {
-	    content: attr(data-letter);
-	    font-size: 36px;
-	    scale: -1 1;
-	    margin-left: -1.2px;
-	    position: absolute;
+		content: attr(data-letter);
+		font-size: 36px;
+		scale: -1 1;
+		margin-left: -1.2px;
+		position: absolute;
 	}
 	span[data-letter="э"]:before {
-	    margin-left: -0.6px;
+		margin-left: -0.6px;
 	}
 	span[data-letter="o"]::before {
-	    content: "1";
-	    font-size: 36px;
-	    position: absolute;
-	    translate: 0 -2px;
-	    scale: -1 1;
-	    rotate: 323deg;
-	    overflow: hidden;
-	    height: 18px;
+		content: "1";
+		font-size: 36px;
+		position: absolute;
+		translate: 0 -2px;
+		scale: -1 1;
+		rotate: 323deg;
+		overflow: hidden;
+		height: 18px;
 	}
 	span[data-letter=e][φ]::before {
-	    content: "-";
-	    font-size: 36px;
-	    position: absolute;
-	    translate: -12px 1.5px;
+		content: "-";
+		font-size: 36px;
+		position: absolute;
+		translate: -12px 1.5px;
 	}
 	span[data-letter="I"]::before {
-	    content: "C";
-	    font-size: 36px;
-	    position: absolute;
-	    rotate: 270deg;
-	    translate: -6.3px -4px;
+		content: "C";
+		font-size: 36px;
+		position: absolute;
+		rotate: 270deg;
+		translate: -6.3px -4px;
 	}
 	</style>`
 );
@@ -98,6 +98,8 @@ document.querySelectorAll('.page-header__title').forEach(h1 => {
 		.replace(/ɛ/g, '<span data-letter="з" style="scale:-1 1">ɛ</span>')
 		.replace(/Ǝ/g, '<span data-letter="E" style="scale:-1 1">Ǝ</span>')
 		.replace(/ǝ/g, '<span data-letter="e" style="scale:-1 1">ǝ</span>')
+		.replace(/ꟼ/g, '<span data-letter="P" style="scale:-1 1">ꟼ</span>')
+		.replace(/ɥ/g, '<span data-letter="µ" style="scale:-1 1">ɥ</span>')
 		.replace(/Ʒ/g, '<span data-letter="3">Ʒ</span>')
 		.replace(/ʒ/g, '<span data-letter="3" style="translate:0 6px">ʒ</span>')
 		.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>')

@@ -73,10 +73,3 @@ importArticles({
         'u:dev:MediaWiki:ReferencePopups/code.js'
     ]
 });
-
-window.SpoilerAlertJS = {
-    question: 'This page may contain NSFW or fetish content, continue?',
-    yes: 'Yes',
-    no: 'No',
-    fadeDelay: 1600
-};

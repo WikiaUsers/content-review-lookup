@@ -284,23 +284,23 @@ registerEffectLevelDropdowns();
 function registerEffectLevelDropdowns() {
   var bound = new WeakSet();
 
-  function parseMaxLevel(th) {
-    for (var i = 0; i < th.classList.length; i++) {
-      var m = th.classList[i].match(/^maxLevel-(\d+)$/);
-      if (m) return parseInt(m[1], 10);
-    }
-    return null;
-  }
-
   function updateEvolutiveStats(table, level) {
     var evolutiveElems = table.querySelectorAll('.evolutiveEffect');
     evolutiveElems.forEach(function (el) {
-      var levelValue = Math.floor(parseFloat(el.dataset.minValue) + (parseFloat(el.dataset.progression) * level));
-      el.textContent = levelValue;
+      var currentLevel = el.dataset.minLevel ? parseInt(el.dataset.minLevel) : 0;
+      var progressions = el.dataset.progression.split(",");
+      var maxLevels = el.dataset.maxLevel.split(",");
+      var evolutiveValue = parseInt(el.dataset.minValue, 10);
+      for (var i = 0; i < progressions.length; i++) {
+          var nextLevel = Math.min(parseInt(maxLevels[i], 10), level);
+          evolutiveValue += Math.floor(parseFloat(progressions[i]) * (nextLevel - currentLevel));
+          currentLevel = nextLevel;
+      }
+      el.textContent = evolutiveValue;
     });
   }
 
-  function buildDropdown(max, onChange) {
+  function buildDropdown(min, max, onChange) {
     var wrap = document.createElement('span');
     wrap.style.marginLeft = '0.5em';
     var label = document.createElement('label');
@@ -308,7 +308,7 @@ function registerEffectLevelDropdowns() {
     label.style.fontWeight = 'normal';
     label.style.marginRight = '0.25em';
     var sel = document.createElement('select');
-    for (var i = max; i >= 0; i--) {
+    for (var i = max; i >= min; i--) {
       var opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = String(i);
@@ -323,11 +323,12 @@ function registerEffectLevelDropdowns() {
 
   function bind(th) {
     if (bound.has(th)) return;
-    var max = parseMaxLevel(th);
+    var max = th.dataset.maxLevel ? parseInt(th.dataset.maxLevel) : null;
     if (!max) return;
+    var min = th.dataset.minLevel ? parseInt(th.dataset.minLevel) : 0;
     var table = th.closest('.infobox-subtable') || th.closest('table') || th.parentElement;
     if (!table) return;
-    var built = buildDropdown(max, function (lvl) { updateEvolutiveStats(table, lvl); });
+    var built = buildDropdown(min, max, function (lvl) { updateEvolutiveStats(table, lvl); });
     th.appendChild(built.wrap);
     updateEvolutiveStats(table, max);
     bound.add(th);

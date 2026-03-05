@@ -37,13 +37,13 @@ var wiki_names = [
   "The servers are the seven Chaos.", "It all starts with this...",
   "Watch out! You're gonna crash! Ahhh!", "Come on, ya big drip! Where ya goin'?",
   "Long time no see.", "Look! It's a giant talking egg!", "Tougher than leather.",
-  "Unlike Sonic, I don't chuckle", "I promise you... REVENGE!",
+  "Unlike Sonic, I don't chuckle.", "I promise you... REVENGE!",
   "I'm the world's ultimate life form.", "That blue hedgehog again, of all places.",
   "Konichi-waaaaaa?", "Determination of the strong...", "All hail Shadow.",
   "Can't hold on much longer...", "I know it's a one way track...",
   "I'm not gonna think this way...", "Close my eyes and feel it burn...",
   "Nor will I count on others!", "Thunder, rain, and lightning.",
-  "I hate that hedgehog!", "Oh no.", "Watch out! You're gonna crash! Ahhh!",
+  "I hate that hedgehog!", "Oh no.",
   "Where's that DAMN fourth Chaos Emerald!?", "This is like taking candy from a baby, which is fine by me!",
   "I have no master, except the wind that blows free!", "I just gotta do what I gotta do, that's all!",
   "It was never about chivalry to me.", "Faker!? I think you're the fake hedgehog around here.",
@@ -55,7 +55,7 @@ var wiki_names = [
   "Well, this is new. Showing remorse, Eggman?", "If you played nice, I wouldn't have to break all your toys!",
   "Do I need a reason to want to help out a friend?", "We gotta live life to the fullest in the time we have.",
   "Bounce pad!", "“Baldy Nosehair?!” That's the best thing that I've heard all day!",
-  "Too bad it’s all over, for you!", "I won't let him down, I won't give up!",
+  "Too bad it's all over, for you!", "I won't let him down, I won't give up!",
   "I told you I'm not a rat! I'm a hedgehog.", "You can do anything!",
   "Ask not what others can do for you, but what you can do for others.",
   "When you want to do something, do it right away.",
@@ -71,7 +71,16 @@ var wiki_names = [
   "My... That's a pretty snazzy performance there.", "Your smile... That's all I need.",
   "Just raise your head and run!", "Nothing starts until you take action.",
   "I finally found him... the Iblis Trigger!", "Yeah, this is the real me! Pretty cool, huh?",
-  "Thanks for that little skydiving adventure the other day!", "Some things never change, do they?"
+  "Thanks for that little skydiving adventure the other day!", "Some things never change, do they?",
+  "All's well that ends well, right?", "'Limit'? I've got your limit right here!",
+  "The light shines, even though the star is gone.", "No food or movies? I'm outta here!",
+  "When we lose ourselves, that's when we lose our dreams.", "I've got to fly higher!",
+  "I am the Eggman, I got the master plan.", "Rolling around at the speed of sound.",
+  "Got places to go, gotta follow my rainbow", "Can't stick around, have to keep moving on",
+  "Guess what lies ahead, only one way to find out!", "Trust me and we will escape from the city.",
+  "What goes up must come down.", "Like a laser beam, my eye's on you!", "Watch me rule the night away. Watch me save the day.",
+  "I see no, hear no evil. Black writings on the wall.", "Unleashed a million faces And one by one they fall.",
+  "Black-hearted evil. Brave-hearted hero.", "One step forward, two steps back.", "Can you see all of me?"
 ];
 
 var wiki_name_number = Math.floor(Math.random() * wiki_names.length);

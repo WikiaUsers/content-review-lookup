@@ -753,7 +753,7 @@ $.when(
 });
 
 try {
-	mw.config.set("wgMediaViewerOnClick", false);
+	// mw.config.set("wgMediaViewerOnClick", false);
 } catch (e) {
 	// console.error(e);
 }

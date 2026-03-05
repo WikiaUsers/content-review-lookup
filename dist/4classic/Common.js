@@ -857,3 +857,18 @@ CASTLE WAR - STATUE SIMULATOR
 mw.loader.load(
     '/wiki/MediaWiki:Common.js/CastleWar.js?action=raw&ctype=text/javascript'
 );
+
+/* =================================================
+LEVELING SIMULATOR
+================================================= */
+mw.loader.load(
+    '/wiki/MediaWiki:Common.js/Leveling.js?action=raw&ctype=text/javascript'
+);
+
+
+/* =================================================
+TOOLTIP
+================================================= */
+mw.loader.load(
+    '/wiki/MediaWiki:Common.js/Tooltip.js?action=raw&ctype=text/javascript'
+);

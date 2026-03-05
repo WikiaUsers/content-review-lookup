@@ -28,9 +28,9 @@ importArticles({
 window.AutoCreateUserPagesConfig = {
     content: {
         2: '{{:w:User:User1}}',
-        3: '{{:w:User:User1/talk}}'
     },
     summary: 'Création de la page Utilisateur',
+    notify: '<a href="/wiki/User:$2">Voici un lien vers ta page Utilisateur, $1!</a>'
 };
 
 // Modèle:Onglet
@@ -50,3 +50,32 @@ $(function() {
     });
 });
 // Fin de Modèle:Onglet
+
+// Intégration d'un Google Doc
+mw.hook('wikipage.content').add(function ($content) {
+
+	$content.find('[data-widget-id]:not(.loaded)').each(function () {
+
+		const $container = $(this);
+		const rawId = $container.attr('data-widget-id');
+
+		if (!rawId) {
+			return;
+		}
+		const id = encodeURIComponent(rawId);
+
+		if ($container.hasClass('EmbeddedGoogleDoc')) {
+			const $iframe = $('<iframe>', {
+				src: 'https://docs.google.com/document/d/e/' + id + '/pub?embedded=true',
+				allowfullscreen: true
+			}).css({
+				width: 'inherit',
+				height: 'inherit',
+				border: '0'
+			});
+			$container.empty().append($iframe);
+		}
+		$container.addClass('loaded');
+	});
+});
+// Fin d'Intégration d'un Google Doc

@@ -127,10 +127,17 @@
         var expectedDamagePerHit = attacker.numHits === 1
             ? (shieldCount > 0 ? expectedPerHit_Shielded : expectedPerHit_Unshielded)
             : (expectedPerHit_Shielded * shieldedHits + expectedPerHit_Unshielded * unshieldedHits) / attacker.numHits;
-        var minPerHit_Shielded = Math.max(1, (preBlockDamageNoCrit_Shielded * 0.8 - defender.bDmg) * oppositeClassAdv * allyProtectionMult);
-        var minPerHit_Unshielded = Math.max(1, (preBlockDamageNoCrit_Unshielded * 0.8 - defender.bDmg) * oppositeClassAdv * allyProtectionMult);
-        var maxPerHit_Shielded = Math.max(1, (preBlockDamageWithCrit_Shielded * 1.2) * oppositeClassAdv * allyProtectionMult);
-        var maxPerHit_Unshielded = Math.max(1, (preBlockDamageWithCrit_Unshielded * 1.2) * oppositeClassAdv * allyProtectionMult);
+        // When crit rate >= 100%, crit always procs, so min damage must use crit values
+        var guaranteedCrit = critRateDecimal >= 1.0;
+        var minPreBlockDamage_Shielded = guaranteedCrit ? preBlockDamageWithCrit_Shielded : preBlockDamageNoCrit_Shielded;
+        var minPreBlockDamage_Unshielded = guaranteedCrit ? preBlockDamageWithCrit_Unshielded : preBlockDamageNoCrit_Unshielded;
+        var minPerHit_Shielded = Math.max(1, (minPreBlockDamage_Shielded * 0.8 - defender.bDmg) * oppositeClassAdv * allyProtectionMult);
+        var minPerHit_Unshielded = Math.max(1, (minPreBlockDamage_Unshielded * 0.8 - defender.bDmg) * oppositeClassAdv * allyProtectionMult);
+        // When block rate >= 100%, block always procs, so max damage must also subtract bDmg
+        var guaranteedBlock = blockRateDecimal >= 1.0;
+        var maxBlockReduction = guaranteedBlock ? defender.bDmg : 0;
+        var maxPerHit_Shielded = Math.max(1, (preBlockDamageWithCrit_Shielded * 1.2 - maxBlockReduction) * oppositeClassAdv * allyProtectionMult);
+        var maxPerHit_Unshielded = Math.max(1, (preBlockDamageWithCrit_Unshielded * 1.2 - maxBlockReduction) * oppositeClassAdv * allyProtectionMult);
         var minDamagePerHit = shieldCount > 0 ? minPerHit_Shielded : minPerHit_Unshielded;
         var maxDamagePerHit = shieldCount > 0 ? maxPerHit_Shielded : maxPerHit_Unshielded;
         var totalMinDamage = minPerHit_Shielded * shieldedHits + minPerHit_Unshielded * unshieldedHits;
@@ -171,6 +178,7 @@
             maxPerHit_Shielded: maxPerHit_Shielded, maxPerHit_Unshielded: maxPerHit_Unshielded,
             preShieldDamageWithCrit: preShieldDamageWithCrit, preShieldDamageNoCrit: preShieldDamageNoCrit,
             giantSlayerBonus: giantSlayerBonus,
+            guaranteedCrit: guaranteedCrit, guaranteedBlock: guaranteedBlock,
             inputs: { attacker: attacker, defender: defender, modifiers: modifiers, talents: talents, attackerTalents: attackerTalents }
         };
     }

@@ -6,5 +6,14 @@ mw.loader.using(['mediawiki.util'], function () {
     	if (timerDiv) {
     	    importArticles({ type: 'script', article: 'MediaWiki:Timer.js' });
     	}
+    	if(pageName === "news") {
+    		importArticles({ type: 'script', article: 'MediaWiki:NewsN.js' });
+    	}
+    	if(pageName === "news panel") {
+    		importArticles({ type: 'script', article: 'MediaWiki:NewsAdmin.js' });
+    	}
+    	if(pageName === "empire clash official wiki") {
+    		importArticles({ type: 'script', article: 'MediaWiki:NewsHP.js' });
+    	}
 	})
 });

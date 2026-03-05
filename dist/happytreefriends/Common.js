@@ -100,6 +100,7 @@ UserTagsJS.modules.custom = {
     'THeWarioChanNEL8752': ['pop', 'lifty', 'mole'],
     'Tabletstoons123': ['rollback'],
     'BarelyGonnaDoAnything': ['cuddles']
+    'FúriaVelha09': ['sysop', 'disco bear']
 };
 
 window.MessageWallUserTags = {
@@ -122,7 +123,7 @@ window.MessageWallUserTags = {
 	    'Marblyn': '♍',
 	    'THeWarioChanNEL8752': 'Admin • Pop • Lifty • The Mole',
 	    'Tabletstoons123': 'Rollback',
-	    'BarelyGonnaDoAnything': 'Admin • Cuddles',
+	    'FúriaVelha09': 'Admin • Disco Bear',
 	    'TravellingEye': 'Admin',
     }
 };

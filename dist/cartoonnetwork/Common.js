@@ -14,3 +14,10 @@ importArticles({
         'u:dev:MediaWiki:MassRename/code.js',
     ]
 });
+        'u:dev:Reconstitution/code.js'
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Reconstitution.js',
+    ]
+});

@@ -11,7 +11,7 @@ function createPrompt() {
     prompt.className = 'inactivity-prompt';
 
     let img = document.createElement('img');
-    img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest/scale-to-width-down/1000?path-prefix=de';
+    img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/d/d4/Hairyn.png/revision/latest/scale-to-width-down/1000?path-prefix=de';
 
     let text1 = document.createElement('span');
     text1.innerText = 'You haven\'t moved your mouse for at least fifteen minutes. That got us wondering:';
@@ -70,7 +70,7 @@ function hidePrompt() {
 
 function resetTimer() {
     clearTimeout(timeout);
-    timeout = setTimeout(showPrompt, 900000); // 15 minutes till summoning of Heinrych
+    timeout = setTimeout(showPrompt, 900000); // 15 minutes till summoning of Hairyn
 }
 
 document.onmousemove = resetTimer; // Reset timer on mouse movement

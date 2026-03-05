@@ -145,3 +145,117 @@ sliderImages[currentImgIndex].style.display = 'block';
 }, 300);
 }, 5000); // 切换间隔改为5秒（5000毫秒）
 });
+
+// 确保DOM加载完成后执行
+$(document).ready(function() {
+// 获取核心元素
+const carouselItems = document.querySelectorAll('.carousel-item');
+const leftBtn = document.querySelector('.carousel-btn-left');
+const rightBtn = document.querySelector('.carousel-btn-right');
+let currentIndex = 0; // 初始显示第一组（索引0）
+const totalItems = carouselItems.length; // 总组数（固定3组）
+
+// 轮播切换核心函数
+function switchCarouselItem(direction) {
+// 1. 获取当前项，添加对应滑动动画
+const currentItem = carouselItems[currentIndex];
+if (direction === 'right') {
+currentItem.classList.add('carousel-item-slide-left'); // 右按钮→左滑
+} else {
+currentItem.classList.add('carousel-item-slide-right'); // 左按钮→右滑
+}
+
+// 2. 动画结束后（0.5s，与CSS动画时长一致）切换新项
+setTimeout(() => {
+// 重置当前项样式
+currentItem.classList.remove('carousel-item-active', 'carousel-item-slide-left', 'carousel-item-slide-right');
+
+// 3. 更新索引（循环逻辑）
+if (direction === 'right') {
+currentIndex = (currentIndex + 1) % totalItems; // 右切：0→1→2→0
+} else {
+currentIndex = (currentIndex - 1 + totalItems) % totalItems; // 左切：0→2→1→0
+}
+
+// 4. 激活新项
+carouselItems[currentIndex].classList.add('carousel-item-active');
+}, 500);
+}
+
+// 绑定按钮点击事件
+rightBtn.addEventListener('click', () => switchCarouselItem('right'));
+leftBtn.addEventListener('click', () => switchCarouselItem('left'));
+});
+
+// 群星
+$(document).ready(function() {
+const CORRECT_PASSWORD = "THEMOONISMURKY";
+const inputBox = $('#password-input-box');
+let isInputActive = false;
+let inputPassword = '';
+
+inputBox.click(function() {
+isInputActive = true;
+$(this).addClass('active'); 
+$(this).css('caret-color', '#000');
+});
+
+$(document).click(function(e) {
+if (!$(e.target).is(inputBox) && !inputBox.has(e.target).length) {
+isInputActive = false;
+inputBox.removeClass('active');
+}
+});
+
+$(document).keydown(function(e) {
+if (!isInputActive) return;
+
+switch(e.key) {
+case 'Backspace': // 回退键
+inputPassword = inputPassword.slice(0, -1);
+break;
+case 'Space': // 空格键
+inputPassword += ' ';
+break;
+case 'Enter': // 回车键（触发验证）
+e.preventDefault();
+$('.decrypt-btn').click();
+return;
+default: // 普通字符（数字/字母/符号）
+if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+inputPassword += e.key;
+}
+}
+
+inputBox.text(inputPassword);
+
+e.preventDefault();
+});
+
+$('.decrypt-btn').click(function() {
+const errorArea = $(this).siblings('.decrypt-error');
+const starsImg = $('.stars-hover');
+const groupImg = $('.stars-bg');
+const starsText = $('.stars-text');
+const groupText = $('.group-text');
+
+errorArea.removeClass('show');
+
+if (inputPassword === CORRECT_PASSWORD) {
+
+starsImg.css('opacity', 0);
+groupImg.css('opacity', 1);
+starsText.css('opacity', 0);
+groupText.css('opacity', 1);
+
+inputPassword = '';
+inputBox.text('');
+} else {
+
+errorArea.addClass('show');
+setTimeout(() => {
+errorArea.removeClass('show');
+}, 3000);
+}
+});
+});

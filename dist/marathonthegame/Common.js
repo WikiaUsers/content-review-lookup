@@ -5,7 +5,7 @@ window.mapsExtendedConfig = {
     "minimalLayout": true,
     "enableSidebar": false,
     "iconAnchor": "center",
-    "enableSearch": true,
+    "enableSearch": false,
     "openPopupsOnHover": false,
     "useCustomPopups": true,
     "enableTooltips": true,

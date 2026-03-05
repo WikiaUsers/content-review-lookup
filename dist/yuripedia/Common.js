@@ -1,9 +1,10 @@
 /*************************CONTENTS*************************/
 /* Episode Tables Class */
 /* Volume Tables Class */
+/* Article Ratings */
 /* HD Gallery Class */
-/* Topic Block Log */
 /* Default File License */
+/* Topic Block Log */
 /* Page Icons */
 /**********************************************************/
 
@@ -118,6 +119,32 @@ document.querySelectorAll('.volume-table').forEach(table => {
 });
 
 /* ==================================================
+    MediaWiki:ArticleRates.js
+================================================== */
+
+/* Pages to exclude from article ratings (use underscores for spaces) */
+window.ArticleRatesExcludePages = [
+    "Class_S",
+    "Girls'_Love",
+    "Home",
+    "Yuri_(genre)",
+    "Yuri_Wiki",
+];
+
+$(function() {
+    // Release table click handler
+    $(".release-table-caption-mid a").click(function() {
+        var release_date = $(this).attr("href");
+
+        if ($(release_date).html()) {
+            console.log(release_date + ": exists");
+        } else {
+            alert("No books released on this date or no data available");
+        }
+    });
+});
+
+/* ==================================================
     HD Gallery Class
 ================================================== */
 
@@ -187,43 +214,6 @@ document.querySelectorAll('.volume-table').forEach(table => {
 })();
 
 /* ==================================================
-    Topic Block Log
-================================================== */
-
-TBL_WIKIS = [
-	    "100kanojo",
-	    "aesthetics",
-        "animanga",
-        "bleach",
-        "bokuyaba",
-		"community",
-		"dragonball",
-		"fairytail",
-		"futurediary",
-		"horimiya",
-		"kanojo-okarishimasu",
-		"japanese",
-		"manga",
-		"nagatoro",
-		"naruto",
-		"onepiece",
-		"oshinoko",
-		"otaku",
-		"otonari-no-tenshi",
-		"the-dere-types",
-		"tonikaku-kawaii",
-		"tora-dora",
-		"tropedia",
-		"tsundere",
-		"yandere",
-		"yandere-girls",
-		"yandere-simulator",
-		"yandere-simulator-fan",
-		"yandere-simulator-fan-ocs",
-		"yuripedia"
-];
-
-/* ==================================================
     File License
 ================================================== */
 
@@ -273,6 +263,44 @@ window.NoLicenseWarning = {
         'content-moderator'
     ]
 };
+
+l
+/* ==================================================
+    Topic Block Log
+================================================== */
+
+TBL_WIKIS = [
+	    "100kanojo",
+	    "aesthetics",
+        "animanga",
+        "bleach",
+        "bokuyaba",
+		"community",
+		"dragonball",
+		"fairytail",
+		"futurediary",
+		"horimiya",
+		"kanojo-okarishimasu",
+		"japanese",
+		"manga",
+		"nagatoro",
+		"naruto",
+		"onepiece",
+		"oshinoko",
+		"otaku",
+		"otonari-no-tenshi",
+		"the-dere-types",
+		"tonikaku-kawaii",
+		"tora-dora",
+		"tropedia",
+		"tsundere",
+		"yandere",
+		"yandere-girls",
+		"yandere-simulator",
+		"yandere-simulator-fan",
+		"yandere-simulator-fan-ocs",
+		"yuripedia"
+];
 
 /* ==================================================
     Miscellaneous

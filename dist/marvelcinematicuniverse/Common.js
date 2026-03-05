@@ -1,3 +1,5 @@
+window.WikiForumNS = [4, 110];
+
 importScriptPage('Countdown/code.js', 'dev');
 importScriptPage('ShowHide/code.js', 'dev');
 importScriptPage('PreloadFileDescription/code.js', 'dev');

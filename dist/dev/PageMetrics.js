@@ -126,6 +126,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title', 'mediawik
 	}
 	  
 	function renderMetrics(pageName, pageMetrics, ul) {
+		var formatter = Intl.NumberFormat(mw.config.get('wgUserLanguage'));
 	    for(var specialPage in pageMetrics) {
 	      if (!pageMetrics.hasOwnProperty(specialPage)) continue;
 	      var li, link;
@@ -143,14 +144,14 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title', 'mediawik
 	      }
 	      var metricValue = pageMetric[metricValueProp];
 	      if (typeof queryPagesData[specialPage].textMsg !== 'undefined') {
-	      	metricValue = mw.message(queryPagesData[specialPage].textMsg, pageMetric.value).text();
+	      	metricValue = mw.message(queryPagesData[specialPage].textMsg, formatter.format(pageMetric.value)).text();
 	      }
 	      if (typeof queryPagesData[specialPage].linkMsgText !== 'undefined') {
 	        li.append(Object.assign(document.createElement('span'), {
-	          innerHTML: ': ' + mw.message(specialPage + '-link', pageMetric.value).text(),
+	          innerHTML: ': ' + mw.message(specialPage + '-link', formatter.format(pageMetric.value)).text(),
 	        }));
 	      } else {
-	        li.append(Object.assign(document.createTextNode(': ' + metricValue)));
+	        li.append(Object.assign(document.createTextNode(': ' + formatter.format(metricValue))));
 	      }
 	      if (typeof queryPagesData[specialPage].descriptionMsg !== 'undefined') {
 	      	li.append(Object.assign(document.createTextNode(' (' + mw.message(queryPagesData[specialPage].descriptionMsg, pageName).text() + ')')));

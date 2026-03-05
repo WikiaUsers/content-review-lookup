@@ -101,7 +101,7 @@ mw.hook('wikipage.content').add(function () {
         $links.append($btn);
 
         $btn.on('click', function () {
-            var $row = $links.closest('li');
+            var $row = $links.closest('li');a
             var revId = $row.data('mw-revid');
             var user = $row.find('.mw-userlink').text();
 
@@ -170,16 +170,122 @@ importArticles({
         'u:dev:MessageBlock/code.js'
     ]
 });
-mw.loader.using(['mediawiki.util'], function () {
-    $(document).on('click', '#cite-sneaky-sasquatch', function () {
-        mw.toolbar.insertTags(
-            '<ref>{{Cite game|title=Sneaky Sasquatch|developer=RAC7|platform=Apple Arcade}}</ref>',
-            '',
-            ''
-        );
-    });
+mw.loader.using
 
-    $('#mw-content-text').prepend(
-        '<button id="cite-sneaky-sasquatch" class="sneaky-cite-btn">Cite Sneaky Sasquatch</button>'
-    );
-});
+
+
+/* $(function () {
+
+  const btn = $('<div id="wikiAI">Wiki AI</div>');
+  const box = $(`
+    <div id="wikiAIBox">
+      <div id="chat"></div>
+      <input id="input" placeholder="Ask Sneakypedia AI..." />
+    </div>
+  `);
+
+  $("body").append(btn, box);
+
+  btn.click(() => box.toggle());
+
+  $("#input").keypress(function (e) {
+    if (e.which === 13) {
+      const msg = $(this).val();
+      if (!msg) return;
+
+      $("#chat").append("<div><b>You:</b> " + msg + "</div>");
+      $(this).val("");
+
+      fetch("https://llm-chat-app-sneakypedia.lidocrum117.workers.dev/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      })
+      .then(res => res.json())
+      .then(data => {
+        $("#chat").append("<div><b>AI:</b> " + data.response + "</div>");
+        $("#chat").scrollTop($("#chat")[0].scrollHeight);
+      })
+      .catch(() => {
+        $("#chat").append("<div><b>AI:</b> Error connecting.</div>");
+        alert("Wiki AI Loaded");
+
+      });
+    }
+  });
+
+}); */
+
+
+
+//=========
+//Editathan leaderboard
+// -Twineee
+//=========
+
+try {
+    if (window.location.href === "https://sneaky-sasquatch.fandom.com/wiki/Special:BlankPage/1000thPLB") { //Leaderboard page URL
+    	document.title = "Sneakypedia 1000 pages Leaderboard"; //naming browser tab
+    	function Main(){
+    		mw.loader.using('mediawiki.api').then(function () { // we need the API to be loaded
+	            var api = new mw.Api(); // make the API accessible.
+	            api.get({ /// make the request
+	                action: "query",
+	                list: "recentchanges", 
+	                rcend: "2026-03-04T02:42:07Z",
+	                rclimit: "max",
+	                rcshow: "!bot", // Bots shouldn't be able to play
+	                rcprop: ["user", "sizes"], // What's a leaderboard without players and scores?
+	                rcnamespace: 0, // only mainspace edits
+	                rctype: "edit", // only edits :P
+	            }).done(function (e) {
+	                data  = e.query.recentchanges; // making it accessible
+	                let lb = {}; // emplty leaderboard object
+	                data.forEach(function(el, i){
+	                	const score = Math.abs(el.oldlen - el.newlen); // calculate diff
+	                	if (!(el.user in lb)) {
+	                		lb[el.user] = score; // adding user
+	                	} else {
+	                		lb[el.user] += score; // adding score to preexisting user
+	                	}
+	                });
+	                let rank = [];
+	                Object.entries(lb).sort((a, b) => b[1] - a[1]).forEach(function(el, i){
+	                	rank[i] = el[0];
+	                }); //thx u/4548826 on Stack Overflow. This sorts the scores and returns users in the rank array
+	                let res = "<p>The edit-a-than started on March 4th and will end on March 11th. Please review the <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_pages_announcement\">announcment</a>. The leaderboard is updated every 30 seconds.</p><table><thead><tr><td>User</td><td>Score (bytes changed)</td></tr></thead><tbody>"; // result var to be put inside table
+	                rank.forEach(function(el, i) { // add the user and score to the table
+	                	res += "<tr><td><a href=\"https://sneaky-sasquatch.fandom.com/wiki/User:" + el + "\">" + el + "</a></td><td>" + lb[el] + "</td></tr>";
+	                });
+	                document.body.innerHTML = res + `<tbody></table><style>
+	                thead {
+	                	font-weight: bold;
+	                }
+	                body {
+	                	font-size: 20px;
+	                	padding: 16px;
+	                	background-color: white;
+	 	 	 	 	 	justify-content: center;
+	 	 	 	 	 	align-items: center;
+	                }
+	                p {
+	                	display: block;
+	                	font-size: 18px;
+	                }
+	                td {
+	                	border-width: 0;
+	                	padding-left: 3px !important; 
+	                }
+	                tr {
+	                	border-raius: 20px !important;
+	                }
+	                </style>`; //close the table and add CSS
+	            });
+	        });
+    	}
+    	Main();
+        setInterval(Main, 30000); //run Main every 30 seconds for live-ish updates
+    }
+} catch (err) {
+    alert("Error! " + err + " (please message Twineee to fix this with the message)"); // moar debugz
+}

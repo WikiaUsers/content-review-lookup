@@ -7,6 +7,12 @@ $(function() {
 	//immediately hide native theme button if so configured
 	if (window.ThemeSelector.hideBuiltIn) mw.util.addCSS(':root .mediawiki .wiki-tools__theme-switch{display:none;}');
 	
+	// inject ThemeApi link if wiki does not provide one
+	// idk what fandom did but it omits it nowadays
+	if (!$('link[href*="controller=ThemeApi"]').length)
+	$('<link rel="stylesheet">').attr('href', mw.config.get('wgScriptPath') + '/wikia.php?controller=ThemeApi&method=themeVariables'
+		+ (mw.config.get('isDarkTheme') ? '&variant=dark' : '')).appendTo('head');
+	
 	//initialize script-wide variables
 	var paramRegExp = /(\?|&)variant(?:=[^&]*)?(&|$)/g,
 		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.GlobalComponents\\.(?:GlobalComponentsTheme|GlobalNavigationTheme)\\.)'

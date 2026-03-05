@@ -55,7 +55,8 @@ $(function() {
 // Auto Message for Blocks
 window.MessageBlock = {
 	title: 'Blocked!',
-	message: 'Hello user, you have been blocked for the following reason:'
+	message: 'Hello user, you have been blocked for $2 from the Dress To Impress Wiki the following reason: $1'
+	autocheck : true
 };
 
 // Welcome Module

@@ -217,7 +217,7 @@ hotcat.init = function() {
 	hctmp.e.onoff = document.createElement( 'span' );
 	hctmp.e.onoff.className = 'mw-hotcat';
 	hctmp.e.helplink = document.createElement( 'a' );
-	hctmp.e.helplink.href = 'https://starwars.fandom.com/wiki/Wookieepedia_Help:HotCat';
+	hctmp.e.helplink.href = 'https://starwars.fandom.com/wiki/Wookieepedia:HotCat';
 	hctmp.e.helplink.target = '_blank';
 	hctmp.e.helplink.appendChild( document.createTextNode( hotcat.i18n.msg( 'help' ).plain() ) );
 	hctmp.e.closelink = document.createElement( 'a' );

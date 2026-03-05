@@ -1,0 +1,1 @@
+mw.loader.load('https://www.mediawiki.org/w/load.php?modules=ext.gadget.Global-Calculator');

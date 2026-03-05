@@ -55,7 +55,7 @@ mw.loader.using('mediawiki.util').done(function() {
         } else {
             var $gallery = $el.find('.gallerytext a:first, .gallery-image-wrapper a:first');
             if ($gallery.length) {
-                if ($gallery.find('img')) {
+                if ($gallery.find('img, audio')) {
                     // The link is actually on the image.
                     $el.remove();
                 } else {
@@ -222,7 +222,7 @@ mw.loader.using('mediawiki.util').done(function() {
             var $this = $(this);
             if (isgallery) {
                 // Uncategorizedimages, Unusedimages
-                if ($this.find('img').length) {
+                if ($this.find('img, audio').length) {
                     $.getJSON(getQS($this), function(data) {
                         data = getData(data);
                         if (data.length !== 0) {

@@ -1,5 +1,5 @@
 'use strict';
-$(() => {
+mw.hook('gadget.skinSetup').add(data => {
 	// Setup
 	$('.mediawiki').prepend($('<div id="page-grid">'));
 	$('#page-grid')
@@ -84,33 +84,15 @@ $(() => {
 	$('.notifications__toggle').attr('title', 'Your notifications');
 	
 	// Page actions
-	const subjectNamespaceName = {
-		'-1': 'Special page',
-		'0': 'Article',
-		'2': 'User page',
-		'4': 'Project page',
-		'6': 'File',
-		'8': 'Interface page',
-		'10': 'Template',
-		'14': 'Category',
-		'102': 'Portal',
-		'110': 'Forum',
-		'112': 'Help page',
-		'828': 'Module',
-		'2900': 'Map',
-	};
-	
-	const pageName = mw.config.get('wgPageName').replace(/^Special:MovePage\//, '').replace(/_/g, ' ');
+	const pageName = mw.config.get('wgRelevantPageName').replaceAll('_', ' ');
 	const subjectPageName = new mw.Title(pageName).getSubjectPage();
 	const talkPageName = new mw.Title(pageName).getTalkPage() ? new mw.Title(pageName).getTalkPage() : subjectPageName;
-	
 	const subjectNamespace = subjectPageName.getNamespaceId();
-	const tabLabel = (subjectPageName.getPrefixedText() === 'Portal:Main') ? 'Main Page' : subjectNamespaceName[subjectNamespace];
 	
 	$('#page-actions').append($('<ul id="left-navigation">'));
 	$('#left-navigation')
-		.append($(`<li id="ca-nstab-main-li"><a id="ca-nstab-main" href="${mw.util.getUrl(subjectPageName.getPrefixedText())}" title="View the content page">${tabLabel}</a></li>`))
-		.append($(`<li id="ca-talk-li"><a id="ca-talk" href="${mw.util.getUrl(talkPageName.getPrefixedText())}" title="Discuss improvements to the content page">Talk</a></li>`));
+		.append($(`<li id="ca-nstab-main-li"><a id="ca-nstab-main" href="${mw.util.getUrl(subjectPageName.getPrefixedText())}" title="View the content page">${data.nstab}</a></li>`))
+		.append($(`<li id="ca-talk-li"><a id="ca-talk" href="${mw.util.getUrl(talkPageName.getPrefixedText())}" title="Discuss improvements to the content page">${data.nstabTalk}</a></li>`));
 	
 	$('#page-actions').append($('<ul id="right-navigation">'));
 	$('#right-navigation')

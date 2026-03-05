@@ -1,118 +1,188 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* global $, mw */
+
 // <syntax type="javascript">
- 
-    /** 
-        Toggles the display of elements on a page 
-        Author/contact: Austin Che http://openwetware.org/wiki/User:Austin_J._Che
-        See http://openwetware.org/wiki/OpenWetWare:Toggle for examples and documentation
-     */
- 
-// indexed array of toggler ids to array of associated toggle operations
-// each operation is a two element array, the first being the type, the second a class name or array of elements
-// operation types are strings like "_reset" or "" for the default toggle operation
-var togglers = new Array();     
-var allClasses = new Object(); // associative map of class names to page elements
- 
- function preloadUploadDesc() {
-    if (wgPageName.toLowerCase() != 'special:upload') {
-    return;
-}
- 
-document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Fair use rationale\r| Description       = \r| Source            = \r| Portion           = \r| Purpose           = \r| Resolution        = \r| Replaceability    = \r| Other Information = \r}}"));
- 
-}
-addOnloadHook (preloadUploadDesc);
 
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page'; 
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"]; 
+// ---------------------------------------------------------------------
+//       CONFIG SHORTCUT
+// ---------------------------------------------------------------------
 
-PurgeButtonText = 'Purge';
+var config = mw.config.get.bind(mw.config);
+
+// ---------------------------------------------------------------------
+// UPLOAD PAGE: PRELOAD FAIR USE RATIONALE
+// ---------------------------------------------------------------------
+
+function preloadUploadDesc() {
+    if (config('wgCanonicalSpecialPageName') !== 'Upload') return;
+
+    var desc = document.getElementById('wpUploadDescription');
+    if (!desc) return;
+
+    var text = [
+        '{{Fair use rationale',
+        '| Description       = ',
+        '| Source            = ',
+        '| Portion           = ',
+        '| Purpose           = ',
+        '| Resolution        = ',
+        '| Replaceability    = ',
+        '| Other Information = ',
+        '}}'
+    ].join('\r');
+
+    desc.appendChild(document.createTextNode(text));
+}
+
+// ---------------------------------------------------------------------
+//       AJAXRC / AUTO-REFRESH CONFIG
+// ---------------------------------------------------------------------
+
+window.AjaxRCRefreshText = 'Auto-refresh';
+window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+window.ajaxPages = ['Special:RecentChanges', 'Special:WikiActivity'];
+
+// ---------------------------------------------------------------------
+//          PURGE BUTTON CONFIG
+// ---------------------------------------------------------------------
+
+window.PurgeButtonText = 'Purge';
+
+// ---------------------------------------------------------------------
+//        IMPORTED SCRIPTS & STYLES
+// ---------------------------------------------------------------------
 
 /* importScriptPages-start */
-importArticles({
-    type: 'script',
-    articles: [
-        'MediaWiki:Common.js/Toggler.js',
+importArticles(
+    {
+        type: 'script',
+        articles: [
+            // Local placeholder (empty but harmless)
+            'MediaWiki:Common.js/Toggler.js',
+            /* Load custom link preview script */
+            'MediaWiki:LinkPreview.js',
 
-        'u:dev:AjaxBatchDelete/code.2.js',
-        'u:dev:AjaxRC/code.js',
-        'u:dev:AllPagesHideRedirect/code.js',
-        'u:dev:AutoEditDropdown/code.js',
-        'u:dev:BackToTopButton/code.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:ExternalImageLoader/code.js',
-        'u:dev:ListFiles/code.js', // ListFiles from Dev Wiki
-        'u:dev:PurgeButton/code.js',
-        'u:dev:ReferencePopups/code.js',
-        'u:dev:SignatureCheck/code.js',
-        'u:dev:ShowHide/code.js',
-    ]
-}, {
-    type: 'style',
-    article: 'u:dev:Highlight/code.css'
-});
+            // Dev Wiki tools
+            'u:dev:AjaxBatchDelete/code.2.js',
+            'u:dev:AjaxRC/code.js',
+            'u:dev:AllPagesHideRedirect/code.js',
+            'u:dev:AutoEditDropdown/code.js',
+            'u:dev:BackToTopButton/code.js',
+            'u:dev:Countdown/code.js',
+            'u:dev:ExternalImageLoader/code.js',
+            'u:dev:ListFiles/code.js',
+            'u:dev:PurgeButton/code.js',
+            'u:dev:ReferencePopups/code.js',
+            'u:dev:SignatureCheck/code.js',
+            'u:dev:ShowHide/code.js',
+            'u:dev:MediaWiki:AbuseLogRC.js',
+            'u:dev:FileUsageAuto-update/code.js'
+        ]
+    },
+    {
+        type: 'style',
+        article: 'u:dev:Highlight/code.css'
+    }
+);
 /* importScriptPages-end */
 
-/* Replaces {{USERNAME}} with the name of the user browsing the page.
-   Requires copying Template:USERNAME. */
+// ---------------------------------------------------------------------
+//            USERNAME REPLACEMENT
+// Replaces {{USERNAME}} with the name of the user browsing the page.
+// Requires Template:USERNAME.
+// ---------------------------------------------------------------------
 
-function UserNameReplace() {
-    if (typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").text(wgUserName);
+function userNameReplace() {
+    if (window.disableUsernameReplace) return;
+
+    var userName = config('wgUserName');
+    if (!userName) return;
+
+    $('span.insertusername').text(userName);
 }
-addOnloadHook(UserNameReplace);
 
-/* End of the {{USERNAME}} replacement */
- 
-// Fix search result links - taken from pokemon.wikia.com
+// ---------------------------------------------------------------------
+//            FIX SEARCH RESULT LINKS
+// (Kept for compatibility with older search behavior)
+// ---------------------------------------------------------------------
+
 function fixSearchResultLinks() {
-	$('ul.mw-search-results').find('a').each(function() {
-		var a = $(this);
-		a.attr('href', wgArticlePath.replace('$1', encodeURIComponent(a.text().replace(new RegExp(' ', 'g'), '_')).replace(new RegExp('%3A','g'),':')));
-	});
+    $('ul.mw-search-results a').each(function () {
+        var $a = $(this);
+        var title = $a.text().replace(/ /g, '_');
+        var encoded = encodeURIComponent(title).replace(/%3A/g, ':');
+        var path = config('wgArticlePath').replace('$1', encoded);
+        $a.attr('href', path);
+    });
 }
- 
-if (window.wgNamespaceNumber == -1 && window.wgCanonicalSpecialPageName == 'Search') {
-	$(fixSearchResultLinks);
-}
- 
+
+// ---------------------------------------------------------------------
+//          MOBILE / HANDHELD DETECTION
+// Shows spans with class "tt_for_handy" on handheld devices.
+// ---------------------------------------------------------------------
+
 function ttforhandy() {
-  var doo = false;
-  var agents = new Array(
-    'Windows CE', 'Pocket', 'Mobile',
-    'Portable', 'Smartphone', 'SDA',
-    'PDA', 'Handheld', 'Symbian',
-    'WAP', 'Palm', 'Avantgo',
-    'cHTML', 'BlackBerry', 'Opera Mini',
-    'Nokia', 'Android','Nintendo DSi'
-  );
-for (var i = 0; !doo && i<agents.length; i++) {
-  if(navigator.userAgent.indexOf(agents[i]) > -1){
-    doo = true;
-  }
-}
-if(doo){
-  var spans = document.getElementsByTagName("span");
-   {
-    if(spans[i].className == "tt_for_handy"){
-      spans[i].style.display = "inline";
+    var agents = [
+        'Windows CE', 'Pocket', 'Mobile',
+        'Portable', 'Smartphone', 'SDA',
+        'PDA', 'Handheld', 'Symbian',
+        'WAP', 'Palm', 'Avantgo',
+        'cHTML', 'BlackBerry', 'Opera Mini',
+        'Nokia', 'Android', 'Nintendo DSi'
+    ];
+
+    var ua = navigator.userAgent;
+    var isHandheld = agents.some(function (agent) {
+        return ua.indexOf(agent) > -1;
+    });
+
+    if (!isHandheld) return;
+
+    var spans = document.getElementsByTagName('span');
+    for (var i = 0; i < spans.length; i++) {
+        if (spans[i].className === 'tt_for_handy') {
+            spans[i].style.display = 'inline';
+        }
     }
-  }
-}
-}
-addOnloadHook(ttforhandy);
-
-
-/* FileLinksAutoUpdate */
-if (wgPageName.indexOf("Special:MovePage/File:") != -1 || (wgCanonicalNamespace == "File" && Storage)) {
-   importScriptPage("FileUsageAuto-update/code.js/min.js", "dev");
 }
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AbuseLogRC.js',
-    ]
+// ---------------------------------------------------------------------
+//          FILE LINKS AUTO UPDATE
+// (FileUsageAuto-update is already imported above)
+// ---------------------------------------------------------------------
+
+function fileLinksAutoUpdate() {
+    var pageName = config('wgPageName') || '';
+    var ns = config('wgCanonicalNamespace');
+
+    if (
+        pageName.indexOf('Special:MovePage/File:') !== -1 ||
+        (ns === 'File' && window.Storage)
+    ) {
+        // Script already loaded via importArticles
+    }
+}
+
+// ---------------------------------------------------------------------
+//          MAIN INITIALIZATION
+// ---------------------------------------------------------------------
+
+mw.loader.using(['mediawiki.util', 'jquery'], function () {
+    $(function () {
+        preloadUploadDesc();
+        userNameReplace();
+
+        if (
+            config('wgNamespaceNumber') === -1 &&
+            config('wgCanonicalSpecialPageName') === 'Search'
+        ) {
+            fixSearchResultLinks();
+        }
+
+        ttforhandy();
+        fileLinksAutoUpdate();
+    });
 });
+
+// </syntax type="javascript">

@@ -9,6 +9,7 @@ mw.loader.using('mediawiki.api').then(function () {
 function handleStatCalculator() {
 	// constants
 	const CAT_RELEASE_ORDER_PAGENAME = "Cat_Release_Order";
+	const TALENTS_PAGENAME = "Talents";
 	const STAT_HP = 0;
 	const STAT_ATK = 3;
 	const STAT_ATK_2 = 59;
@@ -18,32 +19,43 @@ function handleStatCalculator() {
 	// decorate input
 	$("#search_form").append(`<table>
 <tr>
-<td><b><a href='/` + CAT_RELEASE_ORDER_PAGENAME + `'>CRO</a></b></td>
-<td><input type="number" id="cro" min="0" value="0"></td>
-<td><sup>(value >= 0)</sup></td>
+	<td><b><a href='/` + CAT_RELEASE_ORDER_PAGENAME + `'>CRO</a></b></td>
+	<td><input type="number" id="cro" min="0" value="0"></td>
+	<td><sup>(value >= 0)</sup></td>
 </tr>
 <tr>
-<td><b>Form</b></td>
-<td colspan=2><select id="cat_form">
-	<option value="0">Normal</option>
-	<option value="1">Evolved</option>
-	<option value="2">True</option>
-	<option value="3">Ultra</option>
-</select></td>
+	<td><b>Form</b></td>
+	<td colspan=2><select id="cat_form">
+		<option value="0">Normal</option>
+		<option value="1">Evolved</option>
+		<option value="2">True</option>
+		<option value="3">Ultra</option>
+	</select></td>
 </tr>
 <tr>
-<td><b>Level</b></td>
-<td><input type="number" id="cat_level" min="1" value="30"></td>
-<td><sup>(1 <= value <= 200)</sup></td>
+	<td><b>Level</b></td>
+	<td><input type="number" id="cat_level" min="1" value="30"></td>
+	<td><sup>(1 <= value <= 200)</sup></td>
 </tr>
 <tr>
-<td><b>EoC Treasure</b></td>
-<td><input type="number" id="eoc_treasure" min="0" max="300" value="300">%</td>
-<td><sup>(0 <= value <= 300)</sup></td>
+	<td><b>EoC Treasure</b></td>
+	<td><input type="number" id="eoc_treasure" min="0" max="300" value="300">%</td>
+	<td><sup>(0 <= value <= 300)</sup></td>
+</tr>
+<tr><td colspan=3 style="text-align: center"><b><a href='/` + TALENTS_PAGENAME + `'>Talents</a></b></td></tr>
+<tr>
+	<td><img style='width:25px' src='/Special:Redirect/file/Defense_Up.png' /> <b>HP Up</b></td>
+	<td><input type="number" id="hp_up_talent" min="0" value="0">%</td>
+	<td></td>
 </tr>
 <tr>
-<td></td>
-<td colspan=2><button id="btnCalculate" type="button">Display</button></td>
+	<td><img style='width:25px' src='/Special:Redirect/file/Attack_Up.png' /> <b>ATK Up</b></td>
+	<td><input type="number" id="atk_up_talent" min="0" value="0">%</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td colspan=2><button id="btnCalculate" type="button">Display</button></td>
 </tr>
 </table>`);
 
@@ -129,6 +141,9 @@ function handleStatCalculator() {
 		let cro = parseInt($("#cro").val()).toString();
 		let form = parseInt($("#cat_form").val());
 		let eoc_treasure = (parseInt($("#eoc_treasure").val()) / 100) * 0.5 + 1;
+		// multiplicative with eoc_treasure (from my testing)
+		let atk_up_talent = 1 + (parseInt($("#atk_up_talent").val()) / 100);
+		let hp_up_talent = 1 + (parseInt($("#hp_up_talent").val()) / 100);
 		// validating
 		if (stats[form][cro] === undefined) {
 			$("#result").html(ERROR_INVALID_INPUT);
@@ -143,6 +158,7 @@ function handleStatCalculator() {
 		let result_atk = stats[form][cro][STAT_ATK];
 		let result_atk_2 = stats[form][cro][STAT_ATK_2] === undefined ? 0 : stats[form][cro][STAT_ATK_2];
 		let result_atk_3 = stats[form][cro][STAT_ATK_3] === undefined ? 0 : stats[form][cro][STAT_ATK_3];
+		// O(n) complexity, scales with the inputted level
 		for (let i = 1; i < level; i++) {
 			if (growth_curve[cro][Math.floor(i / 10)] === undefined)
 				break;
@@ -154,10 +170,10 @@ function handleStatCalculator() {
 				result_atk_3 += stats[form][cro][STAT_ATK_3] * growth_curve[cro][Math.floor(i / 10)] / 100;
 		}
 	
-		result_hp = Math.round(result_hp * eoc_treasure);
-		result_atk = Math.round(result_atk * eoc_treasure);
-		result_atk_2 = Math.round(result_atk_2 * eoc_treasure);
-		result_atk_3 = Math.round(result_atk_3 * eoc_treasure);
+		result_hp = Math.round(result_hp * eoc_treasure * hp_up_talent);
+		result_atk = Math.round(result_atk * eoc_treasure * atk_up_talent);
+		result_atk_2 = Math.round(result_atk_2 * eoc_treasure * atk_up_talent);
+		result_atk_3 = Math.round(result_atk_3 * eoc_treasure * atk_up_talent);
 		// displaying
 		$("#result").html(
 			"<div style='overflow-x: auto'>" + 
@@ -173,7 +189,7 @@ function handleStatCalculator() {
 				stats[form][cro][STAT_ATK_2] === undefined ? 0 : stats[form][cro][STAT_ATK_2], 
 				stats[form][cro][STAT_ATK_3] === undefined ? 0 : stats[form][cro][STAT_ATK_3]) + 
 			"</td></tr>" +
-			"<th colspan=2 style='background:#00000037'>At level " + level + " and " + $("#eoc_treasure").val() + "% EoC treasure</th>" + 
+			"<th colspan=2 style='background:#00000037'>At level " + level + "; " + $("#eoc_treasure").val() + "% EoC treasure & Talents</th>" + 
 			"<tr><td style='background:#00000006'><b>HP</b></td>" + 
 			"<td>" + result_hp + "</td></tr>" +
 			"<tr><td style='background:#00000006'><b>ATK</b></td>" + 

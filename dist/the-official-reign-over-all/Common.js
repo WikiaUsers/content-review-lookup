@@ -903,3 +903,294 @@ $(function(){
     }, DURATION);
   });
 })();
+
+
+
+
+$(function(){
+
+  /* ================= CONFIG ================= */
+
+  const TARGET_MP3 = 'BLACK_KNIFE_SIGMA_RIZZ.mp3';
+  const AUDIO_URL  = 'https://files.catbox.moe/0p8rjg.mp3';
+  const VIDEO_URL  = 'https://files.catbox.moe/putwqj.mp4';
+
+  const FLASH_START = 15.8;
+  const FLASH_END   = 16.6;
+  const VIDEO_TIME  = 16.6;
+
+  /* ================= VIDEO ================= */
+
+  const video = $('<video>').attr({
+    src: VIDEO_URL,
+    muted: true,
+    playsinline: true,
+    preload: 'auto',
+    loop: true
+  }).css({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    zIndex: 9996,
+    pointerEvents: 'none',
+    opacity: 0,
+    transition: 'opacity .6s ease'
+  }).appendTo('body')[0];
+
+  video.volume = 0;
+
+  function showVideo(){
+    video.play().catch(()=>{});
+    video.style.opacity = 0.5;
+  }
+
+  function hideVideo(){
+    video.style.opacity = 0;
+    video.pause();
+  }
+
+  /* ================= TEXT OVERLAY ================= */
+
+  const topText = $('<div>').html(`
+    Music by: th3reckoning<br>
+    Video by: Celi
+  `).css(textStyle(28, '40px')).appendTo('body')[0];
+
+  const bottomText = $('<div>')
+  .text('THIS HAS A 1% CHANCE TO APPEAR!!')
+  .css(textStyle(30, null, '40px'))
+  .appendTo('body')[0];
+
+  /* ================= CONTROLS TEXT ================= */
+
+  const controlText = $('<div>')
+  .text('Press P to stop the music and video.')
+  .css(textStyle(22, null, '80px'))
+  .appendTo('body')[0];
+
+  function textStyle(size, top=null, bottom=null){
+    return {
+      position: 'fixed',
+      top: top,
+      bottom: bottom,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      color: '#000',
+      fontSize: size + 'px',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      zIndex: 9999,
+      pointerEvents: 'none',
+      textShadow: `
+        -2px -2px 0 #fff,
+         2px -2px 0 #fff,
+        -2px  2px 0 #fff,
+         2px  2px 0 #fff
+      `,
+      opacity: 0,
+      transition: 'opacity .6s ease'
+    };
+  }
+
+  function hideAllText(){
+    topText.style.opacity = 0;
+    bottomText.style.opacity = 0;
+    controlText.style.opacity = 0;
+  }
+
+  function updateText(current, duration){
+    if(current < 6 || duration - current < 6){
+      topText.style.opacity = 1;
+      bottomText.style.opacity = 1;
+      controlText.style.opacity = 0;
+    } else {
+      topText.style.opacity = 0;
+      bottomText.style.opacity = 0;
+      controlText.style.opacity = 1;
+    }
+  }
+
+  /* ================= FLASH ================= */
+
+  const flash = $('<div>').css({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: '#ffffff',
+    zIndex: 9998,
+    pointerEvents: 'none',
+    opacity: 0
+  }).appendTo('body')[0];
+
+  function updateFlash(current){
+    if(current >= FLASH_START && current <= FLASH_END){
+      const progress = (current - FLASH_START) / (FLASH_END - FLASH_START);
+      flash.style.opacity = 1 - progress;
+    } else {
+      flash.style.opacity = 0;
+    }
+  }
+
+  /* ================= CANVAS ================= */
+
+  function makeCanvas(side){
+    return $('<canvas>').css({
+      position:'fixed',
+      top:0,
+      bottom:0,
+      width:'120px',
+      height:'100%',
+      left: side === 'left' ? 0 : 'auto',
+      right: side === 'right' ? 0 : 'auto',
+      zIndex:9997,
+      pointerEvents:'none'
+    }).appendTo('body')[0];
+  }
+
+  const cLeft  = makeCanvas('left');
+  const cRight = makeCanvas('right');
+  const ctxL = cLeft.getContext('2d');
+  const ctxR = cRight.getContext('2d');
+
+  function resize(){
+    [cLeft, cRight].forEach(c=>{
+      c.width = 120;
+      c.height = innerHeight;
+    });
+  }
+  resize();
+  $(window).on('resize', resize);
+
+  /* ================= AUDIO CORE ================= */
+
+  let audio = null;
+  let audioCtx = null;
+  let analyser = null;
+  let data = null;
+  let initialized = false;
+
+  function setupAudio(a){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0.85;
+
+    data = new Uint8Array(analyser.frequencyBinCount);
+
+    const src = audioCtx.createMediaElementSource(a);
+    src.connect(analyser);
+    analyser.connect(audioCtx.destination);
+  }
+
+  /* ================= VISUALIZER ================= */
+
+  function drawSide(ctx, arr, invert){
+    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
+    const bars = 64;
+    const bh = ctx.canvas.height / bars;
+
+    for(let i=0;i<bars;i++){
+      const v = arr[i] || 0;
+      const w = (v / 255) * ctx.canvas.width * 0.9;
+
+      const grad = ctx.createLinearGradient(
+        invert ? ctx.canvas.width : 0,
+        0,
+        invert ? ctx.canvas.width - w : w,
+        0
+      );
+
+      grad.addColorStop(0, '#000000');
+      grad.addColorStop(1, '#ffffff');
+
+      ctx.fillStyle = grad;
+
+      ctx.fillRect(
+        invert ? ctx.canvas.width - w : 0,
+        ctx.canvas.height - (i+1)*bh,
+        w,
+        bh - 2
+      );
+    }
+  }
+
+  /* ================= LOOP ================= */
+
+  function loop(){
+    requestAnimationFrame(loop);
+
+    if(!audio || !analyser || audio.paused || audio.ended){
+      drawSide(ctxL, [], false);
+      drawSide(ctxR, [], true);
+      hideVideo();
+      hideAllText();
+      return;
+    }
+
+    analyser.getByteFrequencyData(data);
+    drawSide(ctxL, data, false);
+    drawSide(ctxR, data, true);
+
+    const current = audio.currentTime;
+    const duration = audio.duration || 0;
+
+    updateFlash(current);
+    updateText(current, duration);
+
+    if(current >= VIDEO_TIME){
+      showVideo();
+    } else {
+      hideVideo();
+    }
+  }
+
+  loop();
+
+  /* ================= KEY CONTROL ================= */
+
+  document.addEventListener('keydown', function(e){
+    if(e.key.toLowerCase() === 'p'){
+      if(!audio) return;
+
+      if(audio.paused){
+        audio.play();
+        video.play().catch(()=>{});
+      } else {
+        audio.pause();
+        video.pause();
+      }
+    }
+  });
+
+  /* ================= AUDIO DETECTION ================= */
+
+  document.addEventListener('play', e=>{
+    if(e.target.tagName !== 'AUDIO') return;
+    if(!e.target.src.includes(TARGET_MP3)) return;
+
+    audio = e.target;
+
+    if(!initialized){
+      audio.pause();
+      audio.src = AUDIO_URL;
+      audio.crossOrigin = 'anonymous';
+      audio.load();
+      audio.play();
+
+      setupAudio(audio);
+      initialized = true;
+    }
+
+    if(audioCtx && audioCtx.state === 'suspended'){
+      audioCtx.resume();
+    }
+
+  }, true);
+
+});

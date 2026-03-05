@@ -13,6 +13,7 @@ mw.loader.using([
 */
 mw.loader.using([
 	'mediawiki.api',
+	'mediawiki.jqueryMsg',
 	'mediawiki.Title',
 	'mediawiki.util',
 	'oojs-ui',
@@ -36,9 +37,9 @@ mw.loader.using([
 	
 	let revid = config.wgCurRevisionId;
 	let updatePreview;
-	let msg = () => {};
+	let msg;
 	let newTopicToolAvailable = true;
-	const version = '2.1.6';
+	const version = '2.1.9';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -51,6 +52,7 @@ mw.loader.using([
 	const archived = $(`#${window.dev.DisableArchivedPages.id}`).length;
 	const previewDelay = 1000;
 	const now = Date.now();
+	const postDatetimeChars = '[}\\s\\w().!?;,]*?$';
 	const editorID = 'easy-talk-editor-js';
 	const docRef = `[[${helpPage}|${toolName}]] v${version}`;
 	const fatalErrors = [
@@ -68,6 +70,7 @@ mw.loader.using([
 		'days',
 		'months',
 		'years',
+		'ago',
 	];
 	const newTalkPage =
 		config.wgIsProbablyEditable &&
@@ -148,7 +151,7 @@ mw.loader.using([
 			'q',
 			`#${editorID}`,
 		];
-		const datetimeRegExp = new RegExp(`^(.*)((\\d\\d:\\d\\d), (\\d?\\d (?:${monthNames.join('|')}) \\d\\d\\d\\d) \\((UTC)\\))(.*)\\s*$`);
+		const datetimeRegExp = new RegExp(`^(.*)((\\d\\d:\\d\\d), (\\d?\\d (?:${monthNames.join('|')}) \\d\\d\\d\\d) \\((UTC)\\))(${postDatetimeChars})`);
 		content.find('*').each((elementIndex, element) => {
 			if ($(element).is('.mw-headline')){
 				section = $(element).attr('id').replaceAll('_', ' ');
@@ -159,11 +162,18 @@ mw.loader.using([
 				return;
 			}
 			
-			const datetime = $($(element).contents().toArray().filter(node => node.nodeType === 3)).last();
-			const userLink = datetime.prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', ')).last();
-			const noTalk = datetime.parents(noTalkSelectors.join(', '));
+			const finalNode = $($(element).contents().toArray().filter(node => node.tagName !== 'DL')).last();
 			
-			if (!datetimeRegExp.test(datetime.text()) || !userLink.length || noTalk.length){
+			if (!finalNode.length){
+				return;
+			}
+			
+			const nodeType = finalNode.get(0).nodeType;
+			const validDatetime = datetimeRegExp.test(finalNode.text());
+			const userLink = finalNode.prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', ')).last();
+			const noTalk = finalNode.parents(noTalkSelectors.join(', ')).length;
+			
+			if (nodeType !== 3 || !validDatetime || !userLink.length || noTalk){
 				return;
 			}
 			
@@ -175,8 +185,8 @@ mw.loader.using([
 				}
 			});
 			
-			const datetimeMw = datetime.text().replace(datetimeRegExp, '$2');
-			const datetimeIntl = datetime.text().replace(datetimeRegExp, '$4 $3 $5');
+			const datetimeMw = finalNode.text().replace(datetimeRegExp, '$2');
+			const datetimeIntl = finalNode.text().replace(datetimeRegExp, '$4 $3 $5');
 			const index = content.find(`[data-datetime="${datetimeMw}"]`);
 			const timeElement = $('<time>', {
 				'datetime': new Date(datetimeIntl).toISOString(),
@@ -190,7 +200,7 @@ mw.loader.using([
 			});
 			timeElement.attr('title', age(timeIndex(timeElement), now));
 			const timeTag = `$1${timeElement.prop('outerHTML')}$6`;
-			datetime.replaceWith(datetime.text().replace(datetimeRegExp, timeTag));
+			finalNode.replaceWith(finalNode.text().replace(datetimeRegExp, timeTag));
 		});
 		
 		const comments = content.find('.js-comment-date-time');
@@ -464,29 +474,18 @@ mw.loader.using([
 		};
 		
 		api.post(fetchParams).then(result => {
-			const uneditedText = result.query.pages[0].revisions[0].slots.main.content;
+			let finalText = result.query.pages[0].revisions[0].slots.main.content;
 			const datetime = mw.util.escapeRegExp(submitReplyEvent.data.datetime);
 			const index = Number(submitReplyEvent.data.index);
-			const mainText = uneditedText.replace(new RegExp(`^(?:[^]+?${datetime}){${index}}`), '');
-			const iRegExp = new RegExp(`[^]*?^([:*#]*).+?${datetime}[^]*`, 'm');
-			const rRegExp = new RegExp(`([^]*?)^([:*#]*)(.+?${datetime}.*)$((?:\n+(?:\\2[:*#]+|[!|]).*)*)\n*?((?:\n:.*(?:\n+:.*)*)*)\n*([^:\n][^]*)?`, 'm');
-			const indent = mainText.replace(iRegExp, '$1');
-			const repliesWithIndent = new RegExp(`[^]*?^.+?${datetime}.*$\n+:+[^]*`, 'm');
-			let finalText;
-			let prefix = uneditedText.split(submitReplyEvent.data.datetime).splice(0, index).join(submitReplyEvent.data.datetime);
-			prefix = prefix ? prefix + submitReplyEvent.data.datetime : '';
+			const r = new RegExp(`((?:[^]+?${datetime}${postDatetimeChars}){${index}}[^]*?^([:*#]*).+?${datetime}${postDatetimeChars}(\n+\\2[:*#]+.*(?:\n+(?:\\2[:*#]+|[!|]).*)*)?)([^]*)`, 'm');
+			const indent = finalText.replace(r, '$2');
+			const replies = finalText.replace(r, '$3');
 			comment = parseReplyText(comment, indent);
 			
-			if (!indent.length && !repliesWithIndent.test(mainText)){
-				finalText = prefix + mainText.replace(
-					rRegExp,
-					`$1$2$3$4\n\n${comment}$5\n\n$6`
-				);
+			if (!indent.length && !replies.length){
+				finalText = finalText.replace(r, `$1\n\n${comment}$4`);
 			} else {
-				finalText = prefix + mainText.replace(
-					rRegExp,
-					`$1$2$3$4\n${comment}$5\n\n$6`
-				);
+				finalText = finalText.replace(r, `$1\n${comment}$4`);
 			}
 			
 			let editSummary = `Reply (${docRef})`;
@@ -753,30 +752,30 @@ function age(date, now){
 	if (ageNum < 1000 * 60){
 		ageText = mw.message('just-now').text();
 	} else if (ageNum < 1000 * 60 * 60){
-		ageText = `${mw.message(
+		ageText = mw.message('ago', mw.message(
 			'minutes',
 			Math.floor(ageNum / 1000 / 60)
-		).text()} ago`;
+		).text()).text();
 	} else if (ageNum < 1000 * 60 * 60 * 24){
-		ageText = `${mw.message(
+		ageText = mw.message('ago', mw.message(
 			'hours',
 			Math.floor(ageNum / 1000 / 60 / 60)
-		).text()} ago`;
+		).text()).text();
 	} else if (ageNum < 1000 * 60 * 60 * 24 * 30.436875){
-		ageText = `${mw.message(
+		ageText = mw.message('ago', mw.message(
 			'days',
 			Math.floor(ageNum / 1000 / 60 / 60 / 24)
-		).text()} ago`;
+		).text()).text();
 	} else if (ageNum < 1000 * 60 * 60 * 24 * 30.436875 * 12){
-		ageText = `${mw.message(
+		ageText = mw.message('ago', mw.message(
 			'months',
 			Math.floor(ageNum / 1000 / 60 / 60 / 24 / 30.436875)
-		).text()} ago`;
+		).text()).text();
 	} else {
-		ageText = `${mw.message(
+		ageText = mw.message('ago', mw.message(
 			'years',
 			Math.floor(ageNum / 1000 / 60 / 60 / 24 / 30.436875 / 12)
-		).text()} ago`;
+		).text()).text();
 	}
 	
 	return ageText;
@@ -807,7 +806,6 @@ function parseHeadingText(headingText){
 function parseTopicText(topicText){
 	topicText = topicText.replace(/^\s+/, '');
 	topicText = topicText.replace(/\s+$/, '');
-	topicText = topicText.replace(/ +$/gm, '');
 	if (topicText){
 		topicText = addSig(topicText);
 	}
@@ -817,7 +815,6 @@ function parseTopicText(topicText){
 function parseReplyText(replyText, indent = ''){
 	replyText = replyText.replace(/^\s+/, '');
 	replyText = replyText.replace(/\s+$/, '');
-	replyText = replyText.replace(/ +$/gm, '');
 	if (replyText){
 		replyText = addSig(replyText);
 		replyText = replyText.replace(/\n\n+/g, '\n');

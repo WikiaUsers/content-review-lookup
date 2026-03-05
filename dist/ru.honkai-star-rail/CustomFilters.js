@@ -33,9 +33,12 @@ mw.hook('wikipage.content').add(() => {
 		.fl-checkbox-label {
 			display: inline;
 			border-radius: 8px;
-			padding: 3px;
+			padding: 2px;
 			cursor: pointer;
 			user-select: none;
+		}
+		.fl-checkbox-label img {
+			display: flex;
 		}
 		.fl-search {
 			background: var(--theme-color-6);

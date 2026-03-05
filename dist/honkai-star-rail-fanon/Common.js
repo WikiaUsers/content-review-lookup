@@ -48,4 +48,6 @@ window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulat
 window.globalFileUsageConfig = {
     'lang': ['th', 'vi', 'es'],
     'auto_show': false
-}
+};
+/* for Rail Module */
+window.AddRailModule = [{prepend: true}];

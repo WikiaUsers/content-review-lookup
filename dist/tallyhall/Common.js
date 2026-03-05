@@ -7,3 +7,6 @@ window.lockOldComments = (window.lockOldComments || {});
 
 window.lockOldComments.limit = 62;
 window.lockOldComments.addNoteAbove = true;
+
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.RegExp.ilinks = [RegExp('.*(Special|MediaWiki|Template|User|File|Talk|Help|Forum|GeoJson|Blog|User_blog|Module|Message_Wall|Map)\:.*'), RegExp('.*(Gallery|talk).*')];

@@ -40,3 +40,9 @@ var ShowHideConfig = {
         }
     });
     });
+function setLinkPreview() {
+    window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+    window.pPreview.dock = '#mw-content-text';
+    window.pPreview.RegExp.noinclude = ['.nolinkpreview', '.infobox', '#toc', '.mw-headline', '.reference', '.mw-references-wrap',  'li', 'pre'];
+}
+setLinkPreview();

@@ -1,3 +1,32 @@
+mw.hook('wikipage.content').add(function() {
+  document.querySelectorAll('.sprite-container').forEach(container => {
+    const spriteSheet = container.getAttribute('data-sprite-sheet');
+    const totalFrames = parseInt(container.getAttribute('data-total-frames'), 10);
+    
+    const spriteHeight = 420;
+    let currentFrame = 0;
+    const spriteFrame = container.querySelector('.sprite-frame');
+    const prevBtn = container.querySelector('.prev-btn');
+    const nextBtn = container.querySelector('.next-btn');
+
+    function updateSpritePosition() {
+      spriteFrame.style.backgroundImage = `url('${spriteSheet}')`;
+      spriteFrame.style.backgroundPosition = `center -${currentFrame * spriteHeight}px`;
+    }
+
+    prevBtn.onclick = function() {
+      currentFrame = (currentFrame - 1 + totalFrames) % totalFrames;
+      updateSpritePosition();
+    };
+
+    nextBtn.onclick = function() {
+      currentFrame = (currentFrame + 1) % totalFrames;
+      updateSpritePosition();
+    };
+
+    updateSpritePosition();
+  });
+});
 
 /*Mainpages tuff*/
 document.addEventListener("DOMContentLoaded", () => {

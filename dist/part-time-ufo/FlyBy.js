@@ -15,7 +15,6 @@ window.jobski              = {
       jobski.pos.y=(window.innerHeight/2)+(50*Math.sin(Date.now()/500));
       if(jobski.pos.x < -200) {
         jobski.started = false;
-        jobski.pos.x = window.innerWidth;
       }
     }
     jobski.elem.style.position = "fixed";

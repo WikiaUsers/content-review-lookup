@@ -1261,7 +1261,7 @@ JWB.init = function() {
 					'<input type="checkbox" id="autosave">'+
 					'<label for="autosave">' + JWB.msg('auto-save').escape()+
 						'<span title="' + JWB.msg('tip-save-interval').escape() + '" class="divisor">'+
-							JWB.msg('save-interval', '<input type="number" min="0" value="0" id="throttle" disabled>').escape()+
+							JWB.msg('save-interval', '<input type="number" min="0" value="1" id="throttle">').plain() +
 						'</span>'+
 					'</label>'+
 				'</div>'+

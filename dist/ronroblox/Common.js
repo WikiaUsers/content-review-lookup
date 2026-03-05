@@ -86,13 +86,12 @@ UserTagsJS.modules.custom = {
 	'Quinncm': ['content-moderator','Wiki-Contributor'],
 	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
-	// Junior Content Moderators
 	'Sorayaann': ['content-moderator','Wiki-Contributor'],
     'Silkened': ['content-moderator','Wiki-Contributor'],
-    'Therealusman': ['content-moderator','Wiki-Contributor'],
     'DarkTonics': ['content-moderator','Wiki-Contributor'],
     'DragooNit': ['content-moderator','Wiki-Contributor'],
-    'Penguinz12': ['content-moderator'],
+  	// Junior Content Moderators
+    
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
 	'Noidtouse': ['threadmoderator'],
@@ -153,7 +152,6 @@ UserTagsJS.modules.custom = {
     'HaHaBlah': ['Wiki-Contributor','retired-staff'],
 	// Guide Makers 
 	'CookieDogAJ': ['Guide-Maker'],
-	'Slabx3': ['Guide-Maker'],
 	'BungoJungo': ['Guide-Maker'],
 };
 window.lockOldComments.limit = 14;

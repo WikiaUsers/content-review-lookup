@@ -464,7 +464,7 @@ if (mw.config.get('mwCustomEditButtons'))
     };
     
         mw.config.get('mwCustomEditButtons')[mw.config.get('mwCustomEditButtons').length] = {
-        'imageFile': 'https://vignette.fandom.nocookie.net/sfj/images/f/f7/Twitter.png/revision/latest?cb=20170122231631',
+        'imageFile': 'https://vignette.fandom.nocookie.net/sml/images/f/f7/Twitter.png/revision/latest?cb=20170122231631',
         'speedTip': 'Add a Twitter follow button',
         'tagOpen': '<div class="twitter-follow-button" data-href="https://twitter.com/username" data-show-count="false">Follow @username',
         'tagClose': '</div>',
@@ -472,7 +472,7 @@ if (mw.config.get('mwCustomEditButtons'))
     };
     
         mw.config.get('mwCustomEditButtons')[mw.config.get('mwCustomEditButtons').length] = {
-        'imageFile': 'https://vignette.fandom.nocookie.net/sfj/images/f/f7/Twitter.png/revision/latest?cb=20170122231631',
+        'imageFile': 'https://vignette.fandom.nocookie.net/sml/images/f/f7/Twitter.png/revision/latest?cb=20170122231631',
         'speedTip': 'Add a Twitter tweet button',
         'tagOpen': '<span id="twitter-tweet-button">',
         'tagClose': '</span>',
@@ -517,8 +517,57 @@ AjaxRCRefreshText = 'Auto-Refresh';
 $('.username').text(mw.config.get('wgUserName'));
 */
 
+/* The SML Quiz, edited but not updated! */
+
+var quizName = "The SuperMarioLogan Quiz";
+var quizLang = "en";
+var resultsTextArray = [
+      "Don't be such a Jeffy!",
+      "Not bad and not perfect, right in the middle!",
+      "You have a great SML memory!"
+       ];
+var questions = [
+ 
+       ["How old is Jeffy?",
+       "14",
+       "12",
+       "13",
+       "15"],
+ 
+       ["Who is Bowser's ex-wife",
+       "Sheila Perkins",
+       "Flandre Scarlet",
+       "Mary Poppins",
+       "Miss Finch"],
+ 
+       ["What channel was Schizophrenia Case Study uploaded on",
+       "SuperLuigiLogan",
+       "SuperMarioLogan",
+       "SuperPeachLogan",
+       "SuperBowserLogan"],
+ 
+       ["Who created the term 'Chef Pee Pee's Torture Porn'",
+       "Dabhdude",
+       "Yoshi Player",
+       "SML Reviewer",
+       "Draco Lumina"],
+ 
+       ["How many times have the SML Crew moved?",
+       "2",
+       "1",
+       "4",
+       "3"],
+       
+       ["What date did `Jeffy's Parents!` take place?",
+       "January 24, 2017",
+       "April 12, 2016",
+       "January 24, 2016",
+       "December 26, 2007"],
+ 
+        ];
+
 function addTwitterFollowButton() {
-   $('#twitter-follow-button').append('<a href="http://twitter.com/SuperFoxJoseph" class="twitter-follow-button" data-show-count="false">Follow @SuperFoxJospeh</a><script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>');
+   $('#twitter-follow-button').append('<a href="http://twitter.com/SuperMarioLoga3" class="twitter-follow-button" data-show-count="false">Follow @SuperMarioLoga3</a><script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>');
 }
 $(addTwitterFollowButton);
 
@@ -553,7 +602,7 @@ $('#sinaweibo-button').append('<html xmlns:wb="http://open.weibo.com/wb"><script
 $(addSinaWeiboButton);
 
 function addTwitterMessageButton() {
-$('#twitter-message-button').append('<a href="https://twitter.com/messages/compose?recipient_id=3805104374" class="twitter-dm-button" data-screen-name="@superfoxjoseph">Message</a><script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>');
+$('#twitter-message-button').append('<a href="https://twitter.com/messages/compose?recipient_id=3805104374" class="twitter-dm-button" data-screen-name="@FlandrTakane333">Message</a><script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>');
 }
 $(addTwitterMessageButton);
 
@@ -562,9 +611,9 @@ $('#flipboard-flip-button').append('<a data-flip-widget="flipit" href="https://f
 }
 $(addFlipboardFlipButton);
 
-// Add Twitter timeline to sidebar by GTR19Hoody from psychodreams.fandom.com
+// Add Twitter timeline to sidebar by King Dragonhoff from boombeach.fandom.com
 $(window).load(function() {
-     $('.ChatModule').after('<section class="module" id="twittermodule"><a class="twitter-timeline" data-height="380" href="https://twitter.com/SFJWiki">Tweets by SFJWiki</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>');
+     $('.ChatModule').after('<section class="module" id="twittermodule"><a class="twitter-timeline" data-height="380" href="https://twitter.com/SMLWiki">Tweets by SMLWiki</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>');
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 });
 

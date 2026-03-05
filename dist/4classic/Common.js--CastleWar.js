@@ -1,4 +1,4 @@
-// https://operation-markut.fandom.com/wiki/Guilds/Castle_War
+// https://4classic.fandom.com/wiki/Guilds/Castle_War
 
 (function() {
 

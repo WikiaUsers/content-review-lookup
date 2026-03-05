@@ -1,4 +1,7 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Filtrage de la grille de monstres (grid-filtering).
+   Ajoute des menus déroulants (espèce, taille) et un champ de recherche
+   pour filtrer dynamiquement les icônes de monstres sur les pages de type
+   « Liste des monstres ». Fonctionne avec le CSS « .grid-filter-container ». */
 $('.grid-filter-container li a').attr('title', '');
 
 // Filtre par taille

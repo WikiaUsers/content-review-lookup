@@ -25,7 +25,7 @@
                  mw.util.getParamValue('cb') !== window.localStorage.getItem('SOAPReported') &&
                  $('.gran-bn.boton-solicitud').length,
         onContribs = config.wgCanonicalSpecialPageName === 'Contributions',
-        onSelf = $('.UserProfileMasthead .masthead-info h1').text() === config.wgUserName;
+        onSelf = mw.config.get('profileUserName') === config.wgUserName;
     if (!onSOAP && !onContribs || onSelf || window.SOAPReportLoaded) {
         return;
     }

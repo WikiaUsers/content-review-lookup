@@ -1,137 +1,412 @@
-/* * Coaster Operator Wiki - Master Interactive Engine v19.0
- * Features: Typewriter Wiki Header, Victory Easter Egg (10s CD), 
- * Global Goal, Terminal, Digital Bits, and Code Tab.
+/* * Coaster Operator Wiki - v1.7.1 "Awards Fix"
+ * Features: Fixed Button Layouts, Gold Award Style, Classic Manifest, Auto-Image Loader.
  */
 
 $(function() {
-    // 1. CONFIGURATION (Target: Feb 1, 2026, 11:00 PM CET)
-    const releaseDate = new Date("2026-02-01T23:00:00+01:00").getTime();
-    const username = mw.config.get('wgUserName') || "Guest Operator";
-    const sessionStart = Date.now();
-    
-    // LIKE GOAL SETTINGS
-    const targetLikes = 9000;
-    const currentLikes = 8912; 
-    const likePercent = Math.min((currentLikes / targetLikes) * 100, 100).toFixed(1);
-    const isGoalMet = currentLikes >= targetLikes;
+    // --- CONFIGURATION ---
+    const fileNameToFind = "File:RealisticDarKoaster.png"; 
+    const awardFileName = "File:CS win.png"; 
+    const gameLink = "https://www.roblox.com/games/17152219682/Coaster-Operator";
 
-    let canTriggerVictory = true;
-
-    // 2. INJECT DYNAMIC STYLES
+    // 1. INJECT STYLES
     const style = document.createElement('style');
     style.innerHTML = `
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes digitalRise { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 0.3; } 100% { transform: translateY(-100px); opacity: 0; } }
-        @keyframes headerShine { 0% { left: -100%; } 100% { left: 200%; } }
-        @keyframes headerFlicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.95; transform: scale(1); }
-            51% { opacity: 0.8; transform: scale(1.002); }
-            52% { opacity: 1; transform: scale(1); }
+        /* --- ANIMATIONS --- */
+        @keyframes pulseGlow { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: 0.7; filter: brightness(1.4); } }
+        @keyframes dataRise { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-45px); opacity: 0; } }
+        @keyframes slideInHUD { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes statusPulse { 0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.7); } 100% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } }
+        @keyframes hintBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+        @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+        @keyframes recFlash { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes shimmer { 0% { background-position: -100% 0; } 100% { background-position: 100% 0; } }
+
+        /* --- UTILS --- */
+        .terminal-cursor { font-weight: bold; color: #38bdf8; animation: pulseGlow 0.8s infinite; }
+        .dynamic-bit { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1; filter: blur(1px); animation: dataRise linear infinite; }
+        .button-underglow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: inherit; opacity: 0; transition: opacity 0.3s ease; z-index: -1; pointer-events: none; }
+
+        /* --- HUD MODULES --- */
+        .hud-module { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-left: 3px solid #38bdf8; border-radius: 8px; padding: 12px; margin-bottom: 8px; backdrop-filter: blur(4px); animation: slideInHUD 0.5s ease-out forwards; transition: all 0.3s ease; cursor: pointer; position: relative; }
+        .hud-module:hover { background: rgba(30, 41, 59, 0.8); border-color: #38bdf8; }
+        .hud-module:hover .hud-title { color: #fff; }
+        .hud-title { color: #38bdf8; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; transition: color 0.2s ease; }
+        .expand-icon { font-size: 10px; margin-left: auto; opacity: 0.5; transition: transform 0.3s ease; }
+        .hud-module.active .expand-icon { transform: rotate(180deg); opacity: 1; color: #fcd34d; }
+        .expand-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s; opacity: 0; }
+        .hud-module.active .expand-content { max-height: 800px; opacity: 1; margin-top: 10px; }
+        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: statusPulse 2s infinite; }
+        .interactive-btn { position: relative; z-index: 5; overflow: hidden !important; cursor: pointer !important; user-select: none; transition: transform 0.2s ease; }
+        .interactive-btn a { pointer-events: none; text-decoration: none !important; }
+        .changelog-list { margin: 0; padding-left: 18px; color: #e2e8f0; font-size: 11px; line-height: 1.5; list-style-type: square; }
+        .changelog-list li { margin-bottom: 4px; }
+        .ride-sub-title { color: #fcd34d; font-weight: bold; margin-top: 10px; display: block; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid rgba(252, 211, 77, 0.2); padding-bottom: 2px; margin-bottom: 5px; }
+
+        /* --- GAME MANIFEST (ABOUT) STYLES --- */
+        .manifest-container {
+            display: flex; gap: 20px;
+            background: linear-gradient(180deg, #141a36, #11162d);
+            border: 1px solid #323d6a;
+            border-radius: 14px; padding: 20px;
+            color: #d0d7f0; box-shadow: 0 8px 20px rgba(0,0,0,.3);
+            margin-bottom: 24px; align-items: center; flex-wrap: wrap;
+        }
+        .manifest-visual {
+            flex: 1 1 300px; position: relative;
+            border-radius: 12px; overflow: hidden;
+            border: 2px solid #323d6a; box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            line-height: 0;
+        }
+        .manifest-img { width: 100%; height: auto; display: block; filter: contrast(1.1) brightness(0.9); transition: transform 0.5s ease; }
+        .manifest-visual:hover .manifest-img { transform: scale(1.02); }
+        .scanline-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px; pointer-events: none; z-index: 2; opacity: 0.6;
+        }
+        .scan-beam {
+            position: absolute; top:0; left:0; width:100%; height: 30%;
+            background: linear-gradient(to bottom, transparent, rgba(205, 208, 255, 0.1), transparent);
+            animation: scanline 4s linear infinite; z-index: 3; pointer-events: none;
+        }
+        .rec-tag {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(220, 38, 38, 0.9); color: white; font-weight: bold; font-size: 10px;
+            padding: 3px 8px; border-radius: 4px; display: flex; align-items: center; gap: 6px;
+            z-index: 4; font-family: 'Segoe UI', sans-serif; letter-spacing: 0.5px; line-height: normal;
+        }
+        .rec-dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: recFlash 1s infinite; }
+        .manifest-data { flex: 1 1 300px; display: flex; flex-direction: column; justify-content: space-between; }
+        .manifest-header {
+            font-size: 18px; font-weight: 900; color: #cdd0ff; text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid rgba(50, 61, 106, 0.8); padding-bottom: 10px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .manifest-desc { font-size: 14px; color: #d0d7f0; line-height: 1.6; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box {
+            background: #0f1329; border: 1px solid #2c355a; padding: 10px; border-radius: 10px; transition: all 0.2s;
+        }
+        .stat-box:hover { border-color: #60a5fa; background: #1b2246; }
+        .stat-label { font-size: 11px; color: #94a3b8; margin-bottom: 4px; display: block; }
+        .stat-value { font-size: 13px; color: #fff; font-weight: bold; }
+        .launch-btn {
+            background: linear-gradient(to right, #7c3aed, #6d28d9); border: 1px solid #8b5cf6; color: #fff;
+            text-align: center; padding: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            border-radius: 10px; text-decoration: none !important; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); display: block;
+        }
+        .launch-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(124, 58, 237, 0.3); filter: brightness(1.1); color: #fff; }
+
+        /* --- RAAPA AWARDS (FIXED BUTTONS) --- */
+        .raapa-container {
+            background: linear-gradient(135deg, #111, #222); /* Dark Premium Background */
+            border: 2px solid #DAA520; /* Gold Border */
+            border-radius: 16px; padding: 30px;
+            display: flex; gap: 40px; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            flex-wrap: wrap; margin-bottom: 24px;
+            position: relative; overflow: hidden;
+        }
+        .raapa-container::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent 40%, rgba(218, 165, 32, 0.1) 45%, transparent 50%);
+            background-size: 200% 100%; animation: shimmer 5s infinite linear; pointer-events: none;
+        }
+        .raapa-left { flex: 1 1 350px; display: flex; flex-direction: column; justify-content: center; z-index: 2; }
+        .raapa-right { flex: 1 1 300px; position: relative; z-index: 2; }
+        .raapa-title { 
+            font-size: 28px; font-weight: 900; color: #DAA520; /* Gold Title */
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; line-height: 1.2; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .raapa-text { color: #ccc; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        
+        .raapa-btn-row { 
+            display: flex; gap: 15px; flex-wrap: wrap; 
+        }
+        /* FIXED BUTTON CSS */
+        .raapa-btn {
+            background: linear-gradient(to bottom, #333, #111);
+            border: 1px solid #DAA520; /* Gold Border */
+            border-radius: 10px; 
+            padding: 15px; /* More padding */
+            display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            flex: 1 1 160px; /* FIXED: Increased base width so Hospitality fits */
+            min-width: 160px; /* FIXED: Prevents squishing */
+            cursor: default;
+            position: relative;
+        }
+        .raapa-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 15px rgba(218, 165, 32, 0.25);
+            border-color: #FFD700; background: linear-gradient(to bottom, #444, #222);
+        }
+        .raapa-icon { 
+            font-size: 28px; /* Larger icon */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); 
+            flex-shrink: 0; /* Prevents icon from shrinking */
+        }
+        .raapa-label { 
+            display: flex; flex-direction: column; 
+            white-space: nowrap; /* FIXED: Prevents text wrapping awkwardly */
+        }
+        .raapa-lbl-top { 
+            font-size: 10px; color: #DAA520; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .raapa-lbl-main { 
+            font-size: 13px; color: #fff; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; 
+            margin-top: 2px;
         }
         
-        .terminal-cursor { font-weight: bold; color: #38bdf8; animation: blink 1s infinite; }
-        .progress-fill { height: 100%; border-radius: 10px; transition: width 2s cubic-bezier(0.4, 0, 0.2, 1); background: ${isGoalMet ? 'linear-gradient(90deg, #fcd34d, #fbbf24)' : 'linear-gradient(90deg, #38bdf8, #818cf8)'}; box-shadow: 0 0 15px ${isGoalMet ? '#fcd34d' : '#38bdf8'}; }
-        
-        /* Wiki Header Animation Classes */
-        .wiki-header-animated { position: relative; display: inline-block; overflow: hidden; animation: headerFlicker 8s infinite; }
-        .header-shine {
-            position: absolute; top: 0; left: -100%; width: 40%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transform: skewX(-25deg); animation: headerShine 5s infinite;
+        .raapa-img-wrapper {
+            width: 100%; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            border: 2px solid #DAA520; line-height: 0;
         }
-        
-        .confetti { position: fixed; width: 8px; height: 8px; z-index: 10001; pointer-events: none; animation: trophyConfetti 4s ease-out forwards; }
-        .victory-msg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fcd34d; font-size: clamp(24px, 5vw, 48px); font-weight: 900; z-index: 10002; text-shadow: 0 0 30px rgba(252, 211, 77, 0.9); pointer-events: none; animation: victoryText 3s ease-in-out forwards; text-transform: uppercase; width: 100%; text-align: center; }
-        #code-tab-shortcut:hover { right: 0px !important; background: #fcd34d !important; color: #000 !important; }
+        .raapa-img { width: 100%; height: auto; display: block; }
     `;
     document.head.appendChild(style);
 
-    // 3. WIKI TITLE TYPEWRITER ENGINE
-    function initTitleTypewriter() {
-        const titleEl = document.querySelector('div[style*="font-size:48px"]');
-        if (!titleEl) return;
+    // 2. CHANGELOG HUD DATA
+    const changelogHUD = `
+        <div style="display:flex; flex-direction:column; gap:5px; text-align: left;">
+            <div style="font-size: 9px; color: #38bdf8; opacity: 0.6; margin-bottom: 5px; font-family: monospace; animation: hintBounce 2s infinite;">
+                ▼ CLICK SECTIONS TO VIEW DETAILS
+            </div>
+            <div class="hud-module active">
+                <div class="hud-title"><span>📡</span> FEATURES & CONTENT <div class="expand-icon">▽</div></div>
+                <div class="expand-content">
+                    <ul class="changelog-list">
+                        <li>New mesh panels, buttons and / or screens on all rides</li>
+                        <li>New maintenance cabinet system & model</li>
+                        <li>Interactive checklist & choice between procedures</li>
+                        <li>Visual check step added to all start up procedures</li>
+                        <li>Ride shutdown ability added to all rides</li>
+                        <li>Camera system POV feature</li>
+                        <li>New interactive tutorial system</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="hud-module">
+                <div class="hud-title"><span>🎢</span> RIDE SPECIFIC UPDATES <div class="expand-icon">▽</div></div>
+                <div class="expand-content">
+                    <span class="ride-sub-title">Giant Drop</span>
+                    <ul class="changelog-list">
+                        <li>More advanced operations</li>
+                        <li>Added sync & operation mode feature</li>
+                    </ul>
+                    <span class="ride-sub-title">Cobra's Curse</span>
+                    <ul class="changelog-list">
+                        <li>More unique & realistic operations</li>
+                        <li>Replaced dispatch button with RFID scanning</li>
+                    </ul>
+                    <span class="ride-sub-title">Phoenix Rising</span>
+                    <ul class="changelog-list">
+                        <li>Extended start-up procedure</li>
+                        <li>Dispatch from the side / host panel</li>
+                    </ul>
+                    <span class="ride-sub-title">Red Arrows</span>
+                    <ul class="changelog-list">
+                        <li>More advanced operations & operation mode</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="hud-module" style="border-left-color: #10b981;">
+                <div class="hud-title" style="color:#10b981;"><span>🛠️</span> FIXES & CHANGES <div class="expand-icon">▽</div></div>
+                <div class="expand-content">
+                    <ul class="changelog-list" style="font-size: 10px;">
+                        <li>Various minor bug fixes</li>
+                        <li>Server system V2 (Fixing server sys bugs)</li>
+                        <li>New NPC sys implemented into most rides</li>
+                        <li>New in-game changelog</li>
+                        <li>Improved back-end systems & general scripts</li>
+                        <li>Optimisation & performance improvements</li>
+                        <li>New trash / rubbish models</li>
+                        <li>More posters added to store</li>
+                        <li>New intercom & pinboard model on several rides</li>
+                        <li>Bonus coins & XP for start up & shutdown</li>
+                        <li>Smoother hinge & button animations</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="margin: 4px 2px 2px 2px; padding: 8px; background: rgba(252, 211, 77, 0.05); border: 1px dashed rgba(252, 211, 77, 0.3); border-radius: 4px; display:flex; align-items:start; gap:8px;">
+                <span style="font-size:12px; margin-top: -2px;">⚠️</span>
+                <span style="font-size: 9px; color: #fcd34d; font-family: monospace; letter-spacing: 0.5px; line-height: 1.3;">
+                    <strong>LIVE PATCHING ACTIVE:</strong><br>
+                    We are continuously releasing patches to fix emerging bugs in this update.
+                </span>
+            </div>
+            <div style="padding: 10px 10px 5px; font-family:monospace; font-size:9px; color:#38bdf8; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <div class="status-dot"></div>
+                    <span>V1.4.7_ENCRYPTED</span>
+                </div>
+                <span id="live-timer">00:00:00</span>
+            </div>
+        </div>
+    `;
 
-        const fullText = "COASTER OPERATOR WIKI";
-        titleEl.innerHTML = ""; // Clear for typing
-        titleEl.classList.add('wiki-header-animated');
-        
-        // Add shine
-        const shine = document.createElement('div');
-        shine.className = 'header-shine';
-        titleEl.appendChild(shine);
-
-        // Add text container
-        const textSpan = document.createElement('span');
-        titleEl.appendChild(textSpan);
-
+    // 3. LOGIC: TERMINAL HUD
+    function initTerminalHUD() {
+        const target = document.getElementById("update-status-text");
+        if (!target) return;
+        let bootLines = [`> INITIALIZING DIAGNOSTICS...`, `> LOADING V1.4.7 MANIFEST...`, `> ANALYZING RIDE DATA...`, `> INTERFACE DEPLOYED.`];
         let i = 0;
-        function type() {
-            if (i < fullText.length) {
-                textSpan.innerHTML += fullText.charAt(i);
+        function playBoot() {
+            if (i < bootLines.length) {
+                target.innerHTML = `<div style="font-family:monospace; color:#38bdf8; font-size:12px;">${bootLines[i]}<span class="terminal-cursor">_</span></div>`;
                 i++;
-                setTimeout(type, 100);
+                setTimeout(playBoot, 300);
+            } else {
+                target.style.opacity = 0;
+                setTimeout(() => {
+                    target.innerHTML = changelogHUD;
+                    target.style.opacity = 1;
+                    setupExpandableLogic();
+                    startLiveTimer();
+                }, 300);
             }
         }
-        type();
+        playBoot();
     }
 
-    // 4. TERMINAL ENGINE
-    const messages = [`Welcome, ${username}.`, "Systems check: NOMINAL.", () => `Session: ${Math.floor((Date.now() - sessionStart)/1000)}s`, "Release: Feb 1, 11PM CET."];
-    let msgIndex = 0, charIndex = 0, isDeleting = false;
-    function typeTerminal() {
-        const statusText = document.getElementById("update-status-text");
-        if (!statusText || !canTriggerVictory) return setTimeout(typeTerminal, 100); 
-        const dist = releaseDate - Date.now();
-        if (dist < 0) { statusText.innerHTML = `> [ RELEASE INITIATED ]`; return; }
-        let currentMsg = messages[msgIndex];
-        if (typeof currentMsg === 'function') currentMsg = currentMsg();
-        statusText.innerHTML = `<span style="font-family:monospace; color:#7dd3fc;">> ${currentMsg.substring(0, charIndex)}<span class="terminal-cursor">|</span></span>`;
-        if (isDeleting) charIndex--; else charIndex++;
-        if (!isDeleting && charIndex === currentMsg.length + 1) { isDeleting = true; setTimeout(typeTerminal, 2500); } 
-        else if (isDeleting && charIndex === 0) { isDeleting = false; msgIndex = (msgIndex + 1) % messages.length; setTimeout(typeTerminal, 500); }
-        else setTimeout(typeTerminal, isDeleting ? 40 : 80);
-    }
-
-    // 5. INITIALIZE SYSTEMS
-    if (document.getElementById("update-status-text")) {
-        typeTerminal();
-        initTitleTypewriter();
-        
-        // Countdown
-        setInterval(() => {
-            const d = document.getElementById("c-days"), h = document.getElementById("c-hrs"), m = document.getElementById("c-min"), s = document.getElementById("c-sec");
-            const dist = releaseDate - Date.now();
-            if (d && dist > 0) {
-                d.innerHTML = Math.floor(dist/86400000).toString().padStart(2,'0');
-                h.innerHTML = Math.floor((dist%86400000)/3600000).toString().padStart(2,'0');
-                m.innerHTML = Math.floor((dist%3600000)/60000).toString().padStart(2,'0');
-                s.innerHTML = Math.floor((dist%60000)/1000).toString().padStart(2,'0');
-            }
-        }, 1000);
-
-        // Community Goal
-        const header = document.querySelector('div[style*="text-align:center;margin-bottom:24px;"]');
-        if (header) {
-            const goalBox = document.createElement('div');
-            goalBox.style = `margin: 20px 0; background: rgba(22, 28, 52, 0.8); border: 1px solid ${isGoalMet ? '#fcd34d' : '#2c355a'}; border-radius: 14px; padding: 18px;`;
-            goalBox.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><span style="font-weight:900; font-size:14px; color:#fff;">ROAD TO 9,000 LIKES</span><span style="font-family:monospace; color:#7dd3fc;">${currentLikes.toLocaleString()} / 9,000</span></div><div style="height:10px; width:100%; background:#000; border-radius:10px; overflow:hidden;"><div class="progress-fill" style="width:${likePercent}%;"></div></div>`;
-            header.parentNode.insertBefore(goalBox, header.nextSibling);
-        }
-
-        // Buttons
-        document.querySelectorAll('.interactive-btn').forEach(btn => {
-            btn.onmouseenter = () => { const acc = window.getComputedStyle(btn).borderLeftColor; btn.style.transform = "translateY(-6px) scale(1.02)"; btn.style.boxShadow = `0 12px 25px ${acc.replace('rgb', 'rgba').replace(')', ', 0.3)')}`; };
-            btn.onmouseleave = () => { btn.style.transform = "translateY(0) scale(1)"; btn.style.boxShadow = "none"; };
-            btn.onclick = () => { if (btn.innerText.includes("🥇")) triggerVictory(); const link = btn.querySelector('a'); if (link) setTimeout(() => link.click(), 500); };
+    function setupExpandableLogic() {
+        document.querySelectorAll('.hud-module').forEach(mod => {
+            mod.addEventListener('click', function() { this.classList.toggle('active'); });
         });
-
-        // Code Tab
-        const tab = document.createElement('div');
-        tab.id = "code-tab-shortcut";
-        tab.innerHTML = "<span style='writing-mode: vertical-rl; text-orientation: mixed; padding: 10px 0;'>🎁 CODES</span>";
-        tab.style = "position: fixed; right: -5px; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.9); color: #fcd34d; border: 1px solid #fcd34d; border-right: none; border-radius: 8px 0 0 8px; font-weight: 900; cursor: pointer; z-index: 10000; transition: 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: -5px 0 15px rgba(0,0,0,0.5);";
-        tab.onclick = () => { window.location.href = "/wiki/Codes"; };
-        document.body.appendChild(tab);
     }
+    function startLiveTimer() {
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
+            const timerEl = document.getElementById('live-timer');
+            if(timerEl) timerEl.innerText = timeStr;
+        }, 1000);
+    }
+
+    // 4. LOGIC: GAME MANIFEST & AWARDS (API LOADER)
+    function loadAndRender(fileName, targetId, renderFn) {
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        new mw.Api().get({
+            action: 'query', titles: fileName, prop: 'imageinfo', iiprop: 'url', format: 'json'
+        }).done(function(data) {
+            let imgUrl = "https://placehold.co/600x400/141a36/FFF?text=Image+Not+Found";
+            const pages = data.query.pages;
+            for (const key in pages) {
+                if (pages[key].imageinfo && pages[key].imageinfo[0]) {
+                    imgUrl = pages[key].imageinfo[0].url;
+                }
+            }
+            renderFn(target, imgUrl);
+        }).fail(function() {
+            renderFn(target, "https://placehold.co/600x400/141a36/FFF?text=API+Error");
+        });
+    }
+
+    // ORIGINAL MANIFEST RENDERER
+    function renderManifest(target, imgUrl) {
+        target.innerHTML = `
+            <div class="manifest-container">
+                <div class="manifest-visual">
+                    <div class="rec-tag"><div class="rec-dot"></div> LIVE FEED</div>
+                    <div class="scanline-overlay"></div>
+                    <div class="scan-beam"></div>
+                    <img src="${imgUrl}" class="manifest-img" alt="Coaster Operator Gameplay">
+                </div>
+                <div class="manifest-data">
+                    <div>
+                        <div class="manifest-header">
+                            <span>OUR GAME</span>
+                            <span style="font-size:11px; opacity:0.6; align-self:center; font-family:monospace;">COASTER STUDIO 2026</span>
+                        </div>
+                        <p class="manifest-desc">
+                            Coaster Operator is a fun, interactive simulation where you manage your own rides. 
+                            Join thousands of players in 2026 to reach new heights. 
+                            <span style="color:#10b981; font-weight:bold;">[PUBLIC]</span>
+                        </p>
+                        <div class="stats-grid">
+                            <div class="stat-box"><span class="stat-label">Developer</span><span class="stat-value">Coaster Studio</span></div>
+                            <div class="stat-box"><span class="stat-label">Platform</span><span class="stat-value">Roblox</span></div>
+                            <div class="stat-box"><span class="stat-label">Established</span><span class="stat-value">04/14/2024</span></div>
+                            <div class="stat-box"><span class="stat-label">Servers Status</span><span class="stat-value" style="color:#10b981;">ONLINE</span></div>
+                        </div>
+                    </div>
+                    <a href="${gameLink}" class="launch-btn" target="_blank">▶ LAUNCH GAME</a>
+                </div>
+            </div>
+        `;
+    }
+
+    // NEW RAAPA RENDERER (FIXED BUTTONS)
+    function renderAwards(target, imgUrl) {
+        target.innerHTML = `
+            <div class="raapa-container">
+                <div class="raapa-left">
+                    <div class="raapa-title">A LEGACY OF EXCELLENCE</div>
+                    <div class="raapa-text">As we enter 2026, Coaster Studio continues to build on our success from the <b>RAAPA Winter Edition 2025!</b></div>
+                    <div class="raapa-btn-row">
+                        <div class="raapa-btn">
+                            <span class="raapa-icon">🏆</span>
+                            <div class="raapa-label"><span class="raapa-lbl-top">Winner</span><span class="raapa-lbl-main">Best Group</span></div>
+                        </div>
+                        <div class="raapa-btn">
+                            <span class="raapa-icon">⭐</span>
+                            <div class="raapa-label"><span class="raapa-lbl-top">Winner</span><span class="raapa-lbl-main">Best Hospitality</span></div>
+                        </div>
+                        <div class="raapa-btn">
+                            <span class="raapa-icon">🎪</span>
+                            <div class="raapa-label"><span class="raapa-lbl-top">Winner</span><span class="raapa-lbl-main">Best Booth</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="raapa-right">
+                    <div class="raapa-img-wrapper">
+                        <img src="${imgUrl}" class="raapa-img" alt="RAAPA Awards Graphic">
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 5. INTERACTIVE BUTTONS
+    function createStreamBit(el, color) {
+        const bit = document.createElement('div');
+        bit.className = 'dynamic-bit';
+        bit.style.width = "2px"; bit.style.height = "2px";
+        bit.style.background = color; bit.style.boxShadow = `0 0 5px ${color}`;
+        bit.style.left = Math.random() * 90 + 5 + "%";
+        bit.style.bottom = "-5px";
+        bit.style.animationDuration = "0.6s";
+        el.appendChild(bit);
+        setTimeout(() => bit.remove(), 800);
+    }
+    function initInteractions() {
+        document.querySelectorAll('.interactive-btn').forEach(btn => {
+            const btnStyle = window.getComputedStyle(btn);
+            let accentColor = btnStyle.borderLeftColor || btnStyle.backgroundColor || "#38bdf8";
+            const glow = document.createElement('div');
+            glow.className = 'button-underglow';
+            glow.style.background = `radial-gradient(circle at center, ${accentColor} 0%, transparent 80%)`;
+            btn.appendChild(glow);
+            let streamInterval;
+            btn.addEventListener('click', function() { const link = this.querySelector('a'); if (link) window.location.href = link.href; });
+            btn.addEventListener('mouseenter', function() {
+                glow.style.opacity = "0.5"; this.style.transform = "translateY(-2px)";
+                streamInterval = setInterval(() => createStreamBit(this, accentColor), 120);
+            });
+            btn.addEventListener('mouseleave', function() {
+                glow.style.opacity = "0"; this.style.transform = "translateY(0)"; clearInterval(streamInterval);
+            });
+        });
+    }
+
+    // 6. INIT
+    if (document.getElementById("update-status-text")) initTerminalHUD();
+    loadAndRender(fileNameToFind, "game-manifest-target", renderManifest);
+    loadAndRender(awardFileName, "raapa-awards-target", renderAwards);
+    initInteractions();
 });

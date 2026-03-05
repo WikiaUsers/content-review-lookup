@@ -12,6 +12,7 @@ $(function() {
 importScript('MediaWiki:Common.js/CorrespondanceDiamant.js'); // Ajout de cette ligne
 importScript('MediaWiki:Common.js/StatueStats.js');
 importScript('MediaWiki:Common.js/Artéfacts.js');
+importScript('MediaWiki:Common.js/SquadLeaders.js');
 $(document).ready(function() {
 
 	    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/fr/wiki/Special:Random/main");
@@ -38,4 +39,22 @@ $(document).ready(function() {
         $(this).hide();
     });
     
+});
+
+$(function() {
+    $('body').on('click', '.wds-tabs__tab', function() {
+        var $tab = $(this);
+        var $tabber = $tab.closest('.wds-tabber');
+        var index = $tab.index();
+        
+        console.log('Onglet cliqué : ' + index); // Pour debug
+
+        // Désactive l'ancien onglet et active le nouveau
+        $tabber.find('.wds-tabs__tab').removeClass('wds-is-current');
+        $tab.addClass('wds-is-current');
+
+        // Cache toutes les images et montre la bonne
+        $tabber.find('.wds-tabs__content').removeClass('wds-is-current').hide();
+        $tabber.find('.wds-tabs__content').eq(index).addClass('wds-is-current').show();
+    });
 });

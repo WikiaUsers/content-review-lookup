@@ -1,0 +1,3 @@
+autoconfirmed-only;{
+  display:initial;
+}

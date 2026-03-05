@@ -1,24 +1,19 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// accurate item names for links
-  // [[Pumpkin_placeholder]]
-  // please ai pleaseeee
-$(function() {
-    // 1. Select the specific <a> element using the CSS selector:
-    //    Selects <a> elements whose 'href' attribute ends with "Pumpkin placeholder"
+// turns out jQuery and JavaScript are two very different things, good job old me, please never speak of that again... and also fix this out of rage
+/* (function() {
     var $link = $('a[href$="Pumpkin placeholder"], a[href$="Pumpkin_placeholder"]');
+    
+    var link = documnet.querySelectorAll('a[href$="Pumpking placeholder", a[href$="')
 
-    // 2. Check if the link was found
     if ($link.length) {
-        var newText = "Pumpkin&#x5Fplaceholder"; // The desired encoded text
+        var newText = "Pumpkin&#x5Fplaceholder";
 
-        // 3. Replace the link's inner text (what the user sees)
         $link.text(newText);
 
-        // 4. Replace the link's 'title' attribute (what appears on hover)
         $link.attr('title', newText);
     }
-});
+}); */
 
 window.MessageBlock = {
 	title : 'Blocked',

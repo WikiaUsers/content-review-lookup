@@ -219,8 +219,9 @@ $(function() {
 }());
 
 /************************************************************************/
-// Partie pour customiser la barre latérale droite en ajoutant d'une image aléatoire en fond :
+// Partie pour customiser la barre latérale droite.
 $(function () {
+	// 1] Ajouter d'une image aléatoire en fond :
 	// Tableau d'images de personnages de Radiant (provenant du site de la NHK, et d'une archive du site de l'animé Radiant)
     var imageArray = [
         'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/rizerotte.png")',
@@ -239,6 +240,18 @@ $(function () {
 
     var index = Math.round(Math.random() * (imageArray.length - 1));
     $('.page__right-rail').css("background-image", imageArray[index]);
+    
+    
+ 	// 2] Integrer un script qui y insère un modèle
+    window.importArticles({
+	    type: 'script',
+	    articles: [
+	        'u:dev:MediaWiki:AddRailModule/code.js'
+	    ]
+	});
+	// Liste des modèle à insérer
+	window.AddRailModule = ['Modèle:SideRail'];
+
 });
 /************************************************************************/
 // S'execute si c'est sur la page d'accueil (ou les modèles qui composent la page d'accueil)

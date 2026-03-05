@@ -32,6 +32,10 @@ importArticles({
         {
             id: 'discord-header-btn',
             url: 'https://discord.com/channels/974263216186212422/974263216651763738'
+        },
+        {
+            id: 'x-btn',
+            url: 'https://x.com/WanderingSwordG'
         }
     ];
 

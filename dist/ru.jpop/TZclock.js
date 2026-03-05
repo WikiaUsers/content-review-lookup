@@ -189,9 +189,10 @@
                 thetime = (new Date(time * 1000)).toLocaleDateString('ru-RU', options)
                     .replace(/ 0/g, ' ')                    // no leading zero on date/hour
                     .replace(/\s*г\.?/g, '')
+                    .replace(' в ', ', ')
                     .replace(/UT|GMT/, '(' + c.zone + ')') // "local" zone designation
                     .replace(/\)C/, ')')
-                    .replace(/(.+\d\d\d\d)\s(.+\d:\d\d)/g, '$2 $1')
+                    //.replace(/(.+\d\d\d\d)\s(.+\d:\d\d)/g, '$2 $1')
             }
             
             $('.js-tzclock-time', c.e).text(thetime);

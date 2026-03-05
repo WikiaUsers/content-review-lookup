@@ -11,3 +11,10 @@ window.lockOldComments.limit = 90;
 window.DisplayClockJS = {
 	format: '%I:%2M:%2S %p, %b %d, %Y (UTC)'
 };
+
+importArticles({
+    type: "script",
+    articles: [
+        "u:dev:Countdown/code.js" // This imports the script from the Dev wiki
+    ]
+});

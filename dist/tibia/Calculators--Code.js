@@ -1239,7 +1239,7 @@ $(function() {
             },
             calculator_loot_process = function() {
                 if ($.trim($('#calculator_loot_dpl').text()) === '') {
-                    if (!$('#calculator_loot_blackout').size()) {
+                    if (!$('#calculator_loot_blackout').length) {
                         $('body:first').append(
                             $('<div>Loading items data</div>').attr('id', 'calculator_loot_blackout').css({
                                 'position': 'absolute',

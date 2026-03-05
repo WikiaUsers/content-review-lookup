@@ -1,335 +1,273 @@
-/* ============================================================================
-   SOURCE COMICS WIKI - COMMUNITYHEADER.JS
-   Add to MediaWiki:Common.js
-   ============================================================================
-   JavaScript for Community Header Custom Elements
-   - Live Clock
-   - Page Counter
-   - Custom Tool Icons
+/* ============================================================
+   SOURCEVERSE WIKI - MASTER JAVASCRIPT
+   MediaWiki:Common.js
+   
+   This is the master JavaScript file that loads all modular JS.
+   
    Project: Source Comics / SourceVerse
-   ============================================================================ */
+   Theme: Art Deco / Retro
+   
+   Last Updated: February 2026
+   ============================================================ */
+
+/* ============================================================
+   INITIALIZATION
+   Wait for DOM to be ready before executing scripts
+   ============================================================ */
 
 (function() {
     'use strict';
     
-    /* ========================================================================
+    /* --------------------------------------------------------
        CONFIGURATION
-       ======================================================================== */
+       Global settings for SourceVerse Wiki scripts
+       -------------------------------------------------------- */
     
-    var config = {
-        // Clock settings
-        clockFormat: '24h', // '12h' or '24h'
-        showSeconds: true,
-        showDate: true,
-        showTimezone: false,
-        timezone: 'local', // 'local' or specific timezone like 'America/New_York'
-        
-        // In-universe year offset (2050 - current year)
-        // Set to 0 to show real date, or calculate offset for in-universe time
-        yearOffset: 0, // Change to show in-universe year (e.g., 24 for 2050 if current is 2026)
-        
-        // Tool links
-        createPageUrl: '/wiki/Special:CreatePage',
-        adminDashboardUrl: '/wiki/Special:AdminDashboard',
-        uploadUrl: '/wiki/Special:Upload',
-        
-        // Selectors
-        headerTopSelector: '.fandom-community-header__top',
-        wikiToolsSelector: '.wiki-tools.wds-button-group'
+    window.SourceVerseWiki = window.SourceVerseWiki || {};
+    
+    window.SourceVerseWiki.config = {
+        wikiName: 'Source Comics Wiki',
+        projectName: 'SourceVerse',
+        currentYear: 2050,
+        divergenceYear: 2025,
+        theme: 'Art Deco / Retro',
+        version: '1.0.0',
+        debug: false
     };
     
-    /* ========================================================================
+    /* --------------------------------------------------------
        UTILITY FUNCTIONS
-       ======================================================================== */
+       Reusable helper functions for all scripts
+       -------------------------------------------------------- */
     
-    // Check if user is admin
-    function isAdmin() {
-        var body = document.body;
-        return body.classList.contains('admin') ||
-               body.className.indexOf('group-sysop') !== -1 ||
-               body.className.indexOf('group-bureaucrat') !== -1 ||
-               body.className.indexOf('group-content-moderator') !== -1;
-    }
-    
-    // Pad number with leading zero
-    function padZero(num) {
-        return num < 10 ? '0' + num : num.toString();
-    }
-    
-    // Format time
-    function formatTime(date) {
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var seconds = date.getSeconds();
-        var ampm = '';
+    window.SourceVerseWiki.utils = {
         
-        if (config.clockFormat === '12h') {
-            ampm = hours >= 12 ? ' PM' : ' AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // 0 should be 12
-        }
-        
-        var timeStr = padZero(hours) + 
-                      '<span class="clock-colon">:</span>' + 
-                      padZero(minutes);
-        
-        if (config.showSeconds) {
-            timeStr += '<span class="clock-colon">:</span>' + padZero(seconds);
-        }
-        
-        timeStr += ampm;
-        
-        return timeStr;
-    }
-    
-    // Format date
-    function formatDate(date) {
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        
-        var dayName = days[date.getDay()];
-        var month = months[date.getMonth()];
-        var day = date.getDate();
-        var year = date.getFullYear() + config.yearOffset;
-        
-        return dayName + ', ' + month + ' ' + day + ', ' + year;
-    }
-    
-    // Get timezone abbreviation
-    function getTimezone(date) {
-        var tzString = date.toLocaleTimeString('en-US', { timeZoneName: 'short' });
-        var match = tzString.match(/[A-Z]{2,5}$/);
-        return match ? match[0] : '';
-    }
-    
-    /* ========================================================================
-       CREATE CUSTOM TOOLS HTML
-       ======================================================================== */
-    
-    function createToolsHTML() {
-        var html = '<div class="source-wiki-tools">';
-        
-        // Page Counter
-        html += '<div class="source-page-counter">';
-        html += '<span class="source-page-counter__value" id="source-page-count">--</span>';
-        html += '<span class="source-page-counter__label">Pages</span>';
-        html += '</div>';
-        
-        // Separator
-        html += '<div class="source-tools-separator"></div>';
-        
-        // Create Page Icon
-        html += '<a href="' + config.createPageUrl + '" class="source-tool-icon source-tool-icon--create" data-tooltip="Create Page" title="Create New Page">';
-        html += '<span class="source-sr-only">Create New Page</span>';
-        html += '➕';
-        html += '</a>';
-        
-        // Admin Dashboard Icon (only for admins)
-        if (isAdmin()) {
-            html += '<a href="' + config.adminDashboardUrl + '" class="source-tool-icon source-tool-icon--admin" data-tooltip="Admin Dashboard" title="Admin Dashboard">';
-            html += '<span class="source-sr-only">Admin Dashboard</span>';
-            html += '⚙️';
-            html += '</a>';
-        }
-        
-        // Upload Icon
-        html += '<a href="' + config.uploadUrl + '" class="source-tool-icon source-tool-icon--upload" data-tooltip="Upload File" title="Upload File">';
-        html += '<span class="source-sr-only">Upload File</span>';
-        html += '📤';
-        html += '</a>';
-        
-        // Separator
-        html += '<div class="source-tools-separator"></div>';
-        
-        // Clock
-        html += '<div class="source-wiki-clock">';
-        html += '<span class="source-wiki-clock__time" id="source-clock-time">--:--:--</span>';
-        if (config.showDate) {
-            html += '<span class="source-wiki-clock__date" id="source-clock-date">Loading...</span>';
-        }
-        if (config.showTimezone) {
-            html += '<span class="source-wiki-clock__timezone" id="source-clock-timezone"></span>';
-        }
-        html += '</div>';
-        
-        html += '</div>';
-        
-        return html;
-    }
-    
-    /* ========================================================================
-       CLOCK UPDATE FUNCTION
-       ======================================================================== */
-    
-    function updateClock() {
-        var now = new Date();
-        
-        // Update time
-        var timeEl = document.getElementById('source-clock-time');
-        if (timeEl) {
-            timeEl.innerHTML = formatTime(now);
-        }
-        
-        // Update date
-        if (config.showDate) {
-            var dateEl = document.getElementById('source-clock-date');
-            if (dateEl) {
-                dateEl.textContent = formatDate(now);
+        /**
+         * Log messages to console (only in debug mode)
+         */
+        log: function(message, type) {
+            if (window.SourceVerseWiki.config.debug) {
+                type = type || 'log';
+                console[type]('[SourceVerse] ' + message);
             }
-        }
+        },
         
-        // Update timezone
-        if (config.showTimezone) {
-            var tzEl = document.getElementById('source-clock-timezone');
-            if (tzEl) {
-                tzEl.textContent = getTimezone(now);
-            }
-        }
-    }
-    
-    /* ========================================================================
-       PAGE COUNT FETCHER
-       ======================================================================== */
-    
-    function fetchPageCount() {
-        // Method 1: Try to get from existing page counter if available
-        var existingCounter = document.querySelector('.page-counter__value');
-        if (existingCounter) {
-            var count = existingCounter.textContent.trim();
-            updatePageCount(count);
-            return;
-        }
+        /**
+         * Check if an element exists in the DOM
+         */
+        elementExists: function(selector) {
+            return document.querySelector(selector) !== null;
+        },
         
-        // Method 2: Try to fetch from API
-        var apiUrl = '/api.php?action=query&meta=siteinfo&siprop=statistics&format=json';
-        
-        fetch(apiUrl)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                if (data && data.query && data.query.statistics) {
-                    var articles = data.query.statistics.articles;
-                    updatePageCount(articles);
+        /**
+         * Wait for an element to exist in the DOM
+         */
+        waitForElement: function(selector, timeout) {
+            timeout = timeout || 5000;
+            return new Promise(function(resolve, reject) {
+                var element = document.querySelector(selector);
+                if (element) {
+                    resolve(element);
+                    return;
                 }
-            })
-            .catch(function(error) {
-                console.log('Source Comics: Could not fetch page count', error);
-                // Fallback - try to find it in the page
-                var pageCountText = document.body.textContent.match(/(\d+)\s*pages?/i);
-                if (pageCountText) {
-                    updatePageCount(pageCountText[1]);
-                }
+                
+                var observer = new MutationObserver(function(mutations) {
+                    var element = document.querySelector(selector);
+                    if (element) {
+                        observer.disconnect();
+                        resolve(element);
+                    }
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+                
+                setTimeout(function() {
+                    observer.disconnect();
+                    reject(new Error('Element not found: ' + selector));
+                }, timeout);
             });
-    }
-    
-    function updatePageCount(count) {
-        var countEl = document.getElementById('source-page-count');
-        if (countEl) {
-            // Animate the number
-            countEl.style.opacity = '0';
-            setTimeout(function() {
-                countEl.textContent = count;
-                countEl.style.opacity = '1';
-            }, 150);
+        },
+        
+        /**
+         * Create an element with attributes and content
+         */
+        createElement: function(tag, attributes, content) {
+            var element = document.createElement(tag);
+            
+            if (attributes) {
+                for (var key in attributes) {
+                    if (attributes.hasOwnProperty(key)) {
+                        if (key === 'className') {
+                            element.className = attributes[key];
+                        } else if (key === 'style' && typeof attributes[key] === 'object') {
+                            for (var styleKey in attributes[key]) {
+                                element.style[styleKey] = attributes[key][styleKey];
+                            }
+                        } else {
+                            element.setAttribute(key, attributes[key]);
+                        }
+                    }
+                }
+            }
+            
+            if (content) {
+                if (typeof content === 'string') {
+                    element.innerHTML = content;
+                } else {
+                    element.appendChild(content);
+                }
+            }
+            
+            return element;
+        },
+        
+        /**
+         * Throttle function execution
+         */
+        throttle: function(func, limit) {
+            var inThrottle;
+            return function() {
+                var args = arguments;
+                var context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(function() {
+                        inThrottle = false;
+                    }, limit);
+                }
+            };
+        },
+        
+        /**
+         * Debounce function execution
+         */
+        debounce: function(func, wait) {
+            var timeout;
+            return function() {
+                var context = this;
+                var args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    func.apply(context, args);
+                }, wait);
+            };
+        },
+        
+        /**
+         * Get current theme (light or dark)
+         */
+        getCurrentTheme: function() {
+            return document.body.classList.contains('theme-fandomdesktop-dark') ? 'dark' : 'light';
+        },
+        
+        /**
+         * Check if user is logged in
+         */
+        isLoggedIn: function() {
+            return document.body.classList.contains('is-user-logged-in');
+        },
+        
+        /**
+         * Check if current page is main page
+         */
+        isMainPage: function() {
+            return document.body.classList.contains('mainpage');
+        },
+        
+        /**
+         * Get current page name
+         */
+        getPageName: function() {
+            var config = mw.config.get('wgPageName');
+            return config ? config.replace(/_/g, ' ') : '';
         }
-    }
+    };
     
-    /* ========================================================================
-       INITIALIZATION
-       ======================================================================== */
+    /* --------------------------------------------------------
+       INITIALIZATION HANDLER
+       -------------------------------------------------------- */
     
     function init() {
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initTools);
-        } else {
-            initTools();
-        }
-    }
-    
-    function initTools() {
-        // Find the header top section
-        var headerTop = document.querySelector(config.headerTopSelector);
+        window.SourceVerseWiki.utils.log('SourceVerse Wiki initialized');
+        window.SourceVerseWiki.utils.log('Theme: ' + window.SourceVerseWiki.utils.getCurrentTheme());
+        window.SourceVerseWiki.utils.log('Page: ' + window.SourceVerseWiki.utils.getPageName());
         
-        if (!headerTop) {
-            console.log('Source Comics: Header top section not found');
-            return;
-        }
+        // Add initialized class to body
+        document.body.classList.add('sourceverse-initialized');
         
-        // Hide existing wiki tools
-        var existingTools = document.querySelector(config.wikiToolsSelector);
-        if (existingTools) {
-            existingTools.style.display = 'none';
-        }
-        
-        // Check if our tools already exist
-        if (document.querySelector('.source-wiki-tools')) {
-            console.log('Source Comics: Custom tools already exist');
-            return;
-        }
-        
-        // Create and insert custom tools
-        var toolsContainer = document.createElement('div');
-        toolsContainer.innerHTML = createToolsHTML();
-        var toolsElement = toolsContainer.firstChild;
-        
-        // Insert at the end of header top
-        headerTop.appendChild(toolsElement);
-        
-        // Initialize clock
-        updateClock();
-        setInterval(updateClock, 1000);
-        
-        // Fetch page count
-        fetchPageCount();
-        
-        console.log('Source Comics: Custom header tools initialized');
-    }
-    
-    // Start initialization
-    init();
-    
-})();
-
-/* ============================================================================
-   ALTERNATIVE: SIMPLER CLOCK-ONLY VERSION
-   ============================================================================
-   If you only want the clock without replacing the entire tools area,
-   uncomment and use this simpler version instead:
-   ============================================================================
-
-(function() {
-    'use strict';
-    
-    function updateSimpleClock() {
-        var now = new Date();
-        var hours = now.getHours();
-        var minutes = now.getMinutes();
-        var seconds = now.getSeconds();
-        
-        var timeString = 
-            (hours < 10 ? '0' : '') + hours + ':' +
-            (minutes < 10 ? '0' : '') + minutes + ':' +
-            (seconds < 10 ? '0' : '') + seconds;
-        
-        var clockEl = document.getElementById('source-clock-time');
-        if (clockEl) {
-            clockEl.textContent = timeString;
-        }
-    }
-    
-    // Initialize when ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            setInterval(updateSimpleClock, 1000);
-            updateSimpleClock();
+        // Dispatch custom event for other scripts
+        var event = new CustomEvent('sourceverse:ready', {
+            detail: {
+                config: window.SourceVerseWiki.config
+            }
         });
-    } else {
-        setInterval(updateSimpleClock, 1000);
-        updateSimpleClock();
+        document.dispatchEvent(event);
     }
+    
+    /* --------------------------------------------------------
+       RUN INITIALIZATION
+       -------------------------------------------------------- */
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
 })();
 
-============================================================================ */
+/* ============================================================
+   MODULE IMPORTS
+   Import additional JavaScript modules
+   ============================================================ */
+
+/* Phase 2: Wiki Tools */
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Wiki-tools.js'
+    ]
+});
+
+/* Phase 3: Local Navigation */
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Local-navigation.js'
+    ]
+});
+
+/* Phase 18: Transitions (To be added)
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Transitions.js'
+    ]
+});
+*/
+
+/* Phase 19: Back to Top (To be added)
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Back-to-top.js'
+    ]
+});
+*/
+
+/* Phase 20: Timeline (To be added)
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Timeline.js'
+    ]
+});
+*/
+
+/* ============================================================
+   END OF MASTER JAVASCRIPT
+   ============================================================ */

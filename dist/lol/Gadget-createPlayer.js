@@ -166,7 +166,7 @@ $( function () {
 		});
 		$(document.getElementById('create-tournament-submit')).click(function(e) {
 			e.preventDefault();
-			var tabsText = tabsField.value ? tabsField.value.replace(/\|.*/, '}}') : undefined;
+			var tabsText = tabsField.value ? tabsField.value : undefined;
 			var nameText = nameField.value;
 			console.log('Tabs template: ' + tabsText);
 			if ( tabsText == '[Loading]' || nameText == '[Loading]' ) {
@@ -176,7 +176,7 @@ $( function () {
 			function getSBPages(title, check, tabs) {
 				console.log('getting contents of tabs template');
 				if (!check.checked) return $.Deferred().resolve();
-				var template = tabs.replace(/[\{\}]/g,'');
+				var template = tabs.replace(/\|.*/, '}}').replace(/[\{\}]/g,'');
 				console.log(template);
 				return a.get({
 					action: 'query',

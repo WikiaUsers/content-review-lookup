@@ -119,7 +119,7 @@ const activatedEffects = {
 	"Crystal Construct": { flatManaBonus: -1 },
 	"Lord-Sentinel Thelec": { flatManaBonus: 2 },
 	"Armored Escort": { flatManaBonus: 3 },
-	"Arcane Barrage": { damageMultiplier: 3.33 },
+	"Arcane Barrage": { damageMultiplier: 3.3333334 },
 	"Arcane Bolt": { flatManaBonus: 2 },
 	"Resonating Blast Crystal": { damageMultiplier: 3 },
 	//Empyrean
@@ -207,13 +207,16 @@ const baseMultiUnits = {
         { unit: "Slitherbound Lancer", count: 1 },
         { unit: "Slitherbound Darter", count: 1 }
     ],
+    "Lord-Sentinel Thelec": [
+        { unit: "Crystal Archers", count: 1 }
+    ],
 
     
 };
 
 const activatedMultiUnits = {
     "Lord-Sentinel Thelec": [
-        { unit: "Crystal Archers", count: 6 }
+        { unit: "Crystal Archers", count: 5 }
     ],
     "City Watch": [
         { unit: "Legionnaires", count: 3 }

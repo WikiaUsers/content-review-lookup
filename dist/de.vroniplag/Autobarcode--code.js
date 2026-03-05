@@ -14,7 +14,7 @@
 
 var DEBUGLEVEL = 0; 
 
-var API = 'https://vroniplag.wikia.org/de/api.php';
+var API = 'https://vroniplag.fandom.com/de/api.php';
 var PARAMETER = '/AutoBarcodeParameter';
 var WIDTH = 624;
 var LEFTRIGHTMARGIN = 8;

@@ -137,3 +137,22 @@ $(function() {
         });
     }
 });
+
+/* MultiClock Philippines Configuration */
+window.MultiClockConfig = {
+    interval: 500, 
+    clocks: [
+        {
+            label: "Philippines",
+            offset: 8,
+            color: "#FFFFFF",
+            format: "%H:%M:%S %b %d %Y"
+        },
+        {
+            label: "UTC",
+            offset: 0,
+            color: "#FFFFFF",
+            format: "%H:%M:%S %b %d %Y"
+        }
+    ]
+};

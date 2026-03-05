@@ -35,17 +35,18 @@ $(function() {
         active: true
     }, window.listUsers),
         gmgroups = ['bot', 'sysop', 'bureaucrat', 'staff', 'soap', 'rollback'];
+    var articlePath = mw.config.get('wgArticlePath');
     function createList (group, au) {
         var html = '';
         for (var i in au) {
             var user = au[i].name,
                 enc = encodeURIComponent(user);
-            html += '<li><a href="/wiki/User:' + enc + '">' + user + '</a>';
+            html += '<li><a href="' + articlePath.replace('$1', 'User:' + enc) + '">' + user + '</a>';
             if (listUsers.talk) {
-                html += ' <a href="/wiki/User_talk:' + enc + '">(talk)</a>';
+                html += ' <a href="' + articlePath.replace('$1', 'User_talk:' + enc) + '">(talk)</a>';
             }
             if (listUsers.contribs) {
-                html += ' <a href="/wiki/Special:Contributions/' + enc + '">(contribs)</a>';
+                html += ' <a href="' + articlePath.replace('$1', 'Special:Contributions/' + enc) + '">(contribs)</a>';
             }
             if (listUsers.editcount) {
                 html += ' ' + au[i].editcount + ' edits.';

@@ -962,6 +962,50 @@ $(function () {
                 }
             }
 
+			// === Фильтр по типу умения ===
+			if (config.hasPowers) {
+			    const $bonusSlotRow = $('<div>', { class: 'dt-power-row' }).appendTo($table.find('.dt-controls').first());
+			    const $dropdown = $('<div>', {
+			        class: 'dt-dropdown',
+			        'data-type': 'filter',
+			        'data-field': 'bonus_slot'
+			    }).appendTo($bonusSlotRow);
+			
+			    $('<span>', { class: 'dt-dropdown-input', text: 'Тип умения' }).appendTo($dropdown);
+			    const $list = $('<div>', { class: 'dt-dropdown-list' }).appendTo($dropdown);
+			
+			    [
+			        { value: '',           label: 'Любой тип' },
+			        { value: 'Атака',      label: 'Атака' },
+			        { value: 'Оборона',    label: 'Оборона' },
+			        { value: 'Полезность', label: 'Полезное' },
+			    ].forEach(opt => {
+			        $('<span>', {
+			            class: 'dt-dropdown-item',
+			            'data-value': opt.value,
+			            role: 'radio',
+			            'aria-checked': 'false',
+			            tabindex: '0',
+			            text: opt.label
+			        }).appendTo($list);
+			    });
+			
+			    activeFilters['bonus_slot'] = [];
+			
+			    initDropdown($dropdown, $item => {
+			        const val = $item.data('value') || '';
+			        $list.find('.dt-dropdown-item').removeClass('selected').attr('aria-checked', 'false');
+			        if (val) {
+			            $item.addClass('selected').attr('aria-checked', 'true');
+			            activeFilters['bonus_slot'] = [val];
+			        } else {
+			            activeFilters['bonus_slot'] = [];
+			        }
+			        $dropdown.find('.dt-dropdown-input').text($item.text());
+			        applyAllFilters();
+			    });
+			}
+
             $searchInput.on('input', rateLimit(applyAllFilters, 150, 'debounce'));
             $table.on('input', '.dt-slot-input', updateSlotFilters);
 

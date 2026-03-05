@@ -87,3 +87,51 @@ mw.hook('wikipage.content').add(function($content){
     $(function () { wireToggles($(document)); });
   });
 })();
+
+(function () {
+  function makeSpan(cls, txt) {
+    var s = document.createElement('span');
+    s.className = cls;
+    s.textContent = txt;
+    return s;
+  }
+
+  function splitOne(el) {
+    if (!el || el.dataset.dkSplitDone === '1') return;
+
+    var t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    if (t.length < 2) return;
+
+    var left = t.slice(0, 1);
+    var right = t.slice(-1);
+    var mid = t.slice(1, -1);
+
+    el.textContent = '';
+    el.appendChild(makeSpan('dk-split-left', left));
+    el.appendChild(makeSpan('dk-split-mid', mid));
+    el.appendChild(makeSpan('dk-split-right', right));
+    el.dataset.dkSplitDone = '1';
+  }
+
+  function splitAll(root) {
+    root = root || document;
+    var nodes = root.querySelectorAll ? root.querySelectorAll('.dk-split-auto') : [];
+    for (var i = 0; i < nodes.length; i++) splitOne(nodes[i]);
+  }
+
+  function run() { splitAll(document); }
+
+  // 1) load normal
+  document.addEventListener('DOMContentLoaded', run);
+
+  // 2) quando o navegador restaura a página do cache (sem recarregar)
+  window.addEventListener('pageshow', run);
+
+  // 3) quando o Fandom/MediaWiki injeta conteúdo (troca de página interna, etc.)
+  if (window.mw && mw.hook) {
+    mw.hook('wikipage.content').add(function ($content) {
+      // $content é jQuery; pegamos o nó raiz
+      splitAll($content && $content[0] ? $content[0] : document);
+    });
+  }
+})();

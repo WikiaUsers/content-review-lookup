@@ -21,5 +21,6 @@ window.UserTagsJS.modules.custom = {
     'Mrdoctorwho61': ['episodepageseditor'],
     'CoasterKing2020': ['episodepageseditor'],
     'Meowkins63': ['episodepageseditor'],
-    'Grandpa Lo70': ['episodepageseditor']
+    'Grandpa Lo70': ['episodepageseditor'],
+    'Joshua5680': ['episodepageseditor']
 };

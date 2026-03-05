@@ -1065,7 +1065,9 @@
         html += '<div class="formula-section-header">Damage Variance</div>';
         html += '<div class="formula-section-desc">';
         html += 'The game applies a random ±20% variance to damage (independent of crit). ';
-        html += 'Min = worst case (no crit + low roll + block). Max = best case (crit + high roll + no block).';
+        var minCritText = result.guaranteedCrit ? 'guaranteed crit' : 'no crit';
+        var maxBlockText = result.guaranteedBlock ? 'guaranteed block' : 'no block';
+        html += 'Min = worst case (' + minCritText + ' + low roll + block). Max = best case (crit + high roll + ' + maxBlockText + ').';
         html += '</div>';
 
         // Use the actual pre-block values from the calculation engine
@@ -1091,12 +1093,18 @@
             html += '</div>';
         }
 
-        // Min path (0.8x, no crit) - worst case for attacker
-        var varianceMin = preVarianceNoCrit * 0.8;
+        // Min path (0.8x, no crit unless guaranteed) - worst case for attacker
+        var minPreVariance = result.guaranteedCrit ? preVarianceWithCrit : preVarianceNoCrit;
+        var varianceMin = minPreVariance * 0.8;
         html += '<div class="formula-line formula-sub">';
         if (hasCrit) {
-            html += '<span class="formula-label">Min (no crit × 0.8):</span>';
-            html += createHoverValue(formatNumber(preVarianceNoCrit), 'dmg-normal', 'No Crit Damage', 'Damage without crit bonus');
+            if (result.guaranteedCrit) {
+                html += '<span class="formula-label">Min (guaranteed crit × 0.8):</span>';
+                html += createHoverValue(formatNumber(preVarianceWithCrit), 'dmg-crit', 'Guaranteed Crit', 'Crit always triggers at 100% crit rate');
+            } else {
+                html += '<span class="formula-label">Min (no crit × 0.8):</span>';
+                html += createHoverValue(formatNumber(preVarianceNoCrit), 'dmg-normal', 'No Crit Damage', 'Damage without crit bonus');
+            }
         } else {
             html += '<span class="formula-label">Min (× 0.8):</span>';
             html += createHoverValue(formatNumber(preVarianceNoCrit), 'preblock', 'Pre-Variance', 'Damage before variance');
@@ -1157,7 +1165,11 @@
         if (hasBlock) {
             html += '<div class="formula-section-desc">';
             html += 'Block Rate: ' + (result.blockRateDecimal * 100).toFixed(0) + '% chance to reduce damage by ' + formatNumber(inputs.defender.bDmg) + '. ';
-            html += 'Min path assumes block triggers (worst case). Max path assumes no block (best case). Expected uses average reduction.';
+            if (result.guaranteedBlock) {
+                html += 'Block always triggers at 100% block rate. All paths subtract full block damage.';
+            } else {
+                html += 'Min path assumes block triggers (worst case). Max path assumes no block (best case). Expected uses average reduction.';
+            }
             html += '</div>';
         } else {
             html += '<div class="formula-section-desc">No block reduction (block rate is 0% or block damage is 0)</div>';
@@ -1166,7 +1178,9 @@
         // Calculate post-block values for each path
         var postBlockMin = varianceMin - inputs.defender.bDmg; // Min: low roll + full block
         var postBlockExpected = varianceExpected - result.avgBlockReduction; // Expected: avg roll + avg block
-        var postBlockMax = varianceMax; // Max: high roll + no block
+        // Max: high roll + no block, unless block is guaranteed (100% block rate)
+        var maxBlockReduction = result.guaranteedBlock ? inputs.defender.bDmg : 0;
+        var postBlockMax = varianceMax - maxBlockReduction;
 
         // Min path
         html += '<div class="formula-line formula-sub">';
@@ -1199,7 +1213,11 @@
         html += createHoverValue(formatNumber(varianceMax), 'buff', 'After Variance (Max)', 'Damage after +20% variance roll');
         if (hasBlock) {
             html += '<span class="formula-op">−</span>';
-            html += createHoverValue('0', 'block', 'No Block', 'Block does not trigger (best case): no reduction');
+            if (result.guaranteedBlock) {
+                html += createHoverValue(formatNumber(inputs.defender.bDmg), 'block', 'Guaranteed Block', 'Block always triggers at 100% block rate: full ' + formatNumber(inputs.defender.bDmg) + ' reduction');
+            } else {
+                html += createHoverValue('0', 'block', 'No Block', 'Block does not trigger (best case): no reduction');
+            }
         }
         html += '<span class="formula-op">=</span>';
         html += '<span class="formula-result cat-buff">' + formatNumber(Math.max(1, postBlockMax)) + '</span>';
@@ -1360,7 +1378,8 @@
                 // Min total
                 html += '<div class="formula-line formula-sub">';
                 html += '<span class="formula-label">Min Total:</span>';
-                html += createHoverValue(formatNumber(minPerHit), 'debuff', 'Min Per Hit', 'Minimum damage per hit (no crit + low roll + block)');
+                var minCritTooltip = result.guaranteedCrit ? 'guaranteed crit' : 'no crit';
+                html += createHoverValue(formatNumber(minPerHit), 'debuff', 'Min Per Hit', 'Minimum damage per hit (' + minCritTooltip + ' + low roll + block)');
                 html += '<span class="formula-op">×</span>';
                 html += createHoverValue(numHits, 'mult', 'Hits', 'Number of hits');
                 html += '<span class="formula-op">=</span>';
@@ -1380,7 +1399,8 @@
                 // Max total
                 html += '<div class="formula-line formula-sub">';
                 html += '<span class="formula-label">Max Total:</span>';
-                html += createHoverValue(formatNumber(maxPerHit), 'buff', 'Max Per Hit', 'Maximum damage per hit (crit + high roll + no block)');
+                var maxBlockTooltip = result.guaranteedBlock ? 'guaranteed block' : 'no block';
+                html += createHoverValue(formatNumber(maxPerHit), 'buff', 'Max Per Hit', 'Maximum damage per hit (crit + high roll + ' + maxBlockTooltip + ')');
                 html += '<span class="formula-op">×</span>';
                 html += createHoverValue(numHits, 'mult', 'Hits', 'Number of hits');
                 html += '<span class="formula-op">=</span>';
@@ -1532,19 +1552,34 @@
             mods.push({ value: '0.50', category: 'def', label: 'Hidden', tooltip: 'Hidden status reduces incoming damage by 50%' });
         }
 
-        // Defensive talents
-        if (inputs.talents && inputs.talents.survivalInstincts) {
-            mods.push({ value: '0.90', category: 'talent', label: 'Survival Instincts', tooltip: 'Defensive talent: -10% damage taken' });
-        }
-        if (inputs.talents && inputs.talents.healthyDefender) {
-            mods.push({ value: '0.90', category: 'talent', label: 'Healthy Defender', tooltip: '-10% damage taken when above 50% HP' });
-        }
-        if (inputs.talents && inputs.talents.vengefulResilience && inputs.talents.vengefulResilienceDeadAllies > 0) {
-            var mult = (1 - 0.05 * inputs.talents.vengefulResilienceDeadAllies).toFixed(2);
-            mods.push({ value: mult, category: 'talent', label: 'Vengeful Resilience', tooltip: '-5% damage per dead ally (' + inputs.talents.vengefulResilienceDeadAllies + ' dead)' });
-        }
-        if (inputs.talents && inputs.talents.giantsGuard) {
-            mods.push({ value: '0.95', category: 'talent', label: "Giant's Guard", tooltip: 'Defensive talent: -5% damage taken' });
+        // Defensive talents - dynamically derived from DEFENSIVE_TALENTS config
+        if (inputs.talents) {
+            var talentMap = {};
+            Object.keys(DEFENSIVE_TALENTS).forEach(function(role) {
+                DEFENSIVE_TALENTS[role].forEach(function(talent) {
+                    if (!talentMap[talent.id]) talentMap[talent.id] = talent;
+                });
+            });
+            Object.keys(talentMap).forEach(function(id) {
+                var talent = talentMap[id];
+                if (!inputs.talents[id]) return;
+                var mult, tooltip;
+                if (talent.condition === 'perDead') {
+                    var count = inputs.talents[id + 'DeadAllies'] || 0;
+                    if (count <= 0) return;
+                    mult = (1 - talent.value / 100 * count).toFixed(2);
+                    tooltip = talent.name + ': -' + talent.value + '% per dead ally (' + count + ' dead)';
+                } else if (talent.condition === 'perAlly') {
+                    var count = inputs.talents[id + 'Allies'] || 0;
+                    if (count <= 0) return;
+                    mult = (1 - talent.value / 100 * count).toFixed(2);
+                    tooltip = talent.name + ': -' + talent.value + '% per ally (' + count + ' allies)';
+                } else {
+                    mult = (1 - talent.value / 100).toFixed(2);
+                    tooltip = talent.description;
+                }
+                mods.push({ value: mult, category: 'talent', label: talent.name, tooltip: tooltip });
+            });
         }
 
         // Positional effects (high ground only - opposite class adv and ally protection come after block)

@@ -134,3 +134,8 @@ importArticles({
         'u:dev:AjaxPoll/code.js'
     ]
 });
+
+mw.loader.load(
+    '/load.php?mode=articles&articles=u:dev:MediaWiki:InterlanguageFlags.css&only=styles',
+    'text/css'
+);

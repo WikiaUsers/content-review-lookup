@@ -1,3 +1,11 @@
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js',
+        'MediaWiki:Custom-ImprovedProfileTags.js'
+    ]
+});
+
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -31,8 +39,7 @@ mw.hook("wikipage.content").add(function () {
         
         if (scriptContent) {
             try {
-                // 执行脚本内容
-                /*(new Function(scriptContent))();*/
+                // 导入JS代码
                 var script_element = document.createElement('script');
             	script_element.type = 'text/javascript';
             	script_element.textContent = scriptContent;
@@ -104,14 +111,6 @@ $.getJSON(mw.util.wikiScript("index"), {
 		});
 	}
 })(mediaWiki, jQuery);
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WallGreeting.js',
-    ]
-});
-
 
 //New JS 4 Wordrain
 /* Word Rain System v2.1 - Fandom Optimized */
@@ -468,6 +467,8 @@ $(document).ready(function() {
                 isDragging: false,
                 progress: $player.find('.progress'),
                 playBtn: $player.find('.play-btn'),
+                timeCurrent: $player.find('.current-time'),
+                timeRemain: $player.find('.remain-time'),
                 audio: new Audio($player.data('audio-src')),
                 volumeControl: $player.find('.volume-control'),
                 volumeContainer: $player.find('.volume-slider-container'),
@@ -495,6 +496,14 @@ $(document).ready(function() {
             $(playerState.audio).on('timeupdate', function() {
                 const percentage = (this.currentTime / this.duration) * 100;
                 playerState.progress.css('width', percentage + '%');
+                var cur_sec = this.currentTime % 60, 
+                    cur_min = (this.currentTime - cur_sec) / 60, 
+                    rem_sec = (this.duration - this.currentTime) % 60, 
+                    rem_min = (this.duration - this.currentTime - rem_sec) /60;
+                var cur_time = Math.floor(cur_min).toString(10).padStart(2, "0") + ":" + Math.floor(cur_sec).toString(10).padStart(2, "0"),
+                    rem_time = Math.floor(rem_min).toString(10).padStart(2, "0") + ":" + Math.floor(rem_sec).toString(10).padStart(2, "0");
+                playerState.timeCurrent.text(cur_time);
+                playerState.timeRemain.text(rem_time);
             });
             // 进度条点击
             $player.find('.progress-bar').on('click', function(e) {

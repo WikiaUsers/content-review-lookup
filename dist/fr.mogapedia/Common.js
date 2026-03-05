@@ -47,6 +47,10 @@ UserTagsJS.modules.custom = {
 };
 
 /****************************** MonsterNavigationTabs *************************/
+/* Système d'onglets pour les pages de monstres multi-jeux.
+   Déplace le contenu de la page dans l'onglet sélectionné par défaut,
+   puis charge dynamiquement (via AJAX) le contenu des autres onglets
+   au clic. */
 
 var tabId = $('.monster-tabs li.selected').attr('data-tab');
 console.log(tabId);
@@ -90,6 +94,9 @@ $('.monster-tabs li').click( function () {
 });
 
 /****************************** CollapsibleRow ********************************/
+/* Lignes de tableau repliables (quêtes, compétences, etc.).
+   Un clic sur une ligne « .show-collapsible-row » masque ou affiche
+   la ligne suivante en basculant la classe « collapsed-row ». */
 
 mw.hook('wikipage.content').add(function() {
     $('.show-collapsible-row').off( "click" );
@@ -106,13 +113,21 @@ mw.hook('wikipage.content').add(function() {
 });
 
 /****************************** Thème de tableau ******************************/
+/* Ajoute un overlay semi-transparent sur les cellules interactives
+   (« .hovered-cell ») pour l'effet d'assombrissement au survol. */
 
 var wikiaPath = 'http://fr.mogapedia.wikia.com/wiki/';
 var overlay = '<div class="overlay"></div>';
- 
+
 $('.hovered-cell td a').append(overlay);
  
 /***************************** Compte à rebours *******************************/
+/* Widget de compte à rebours animé (style « panneau d'affichage »).
+   Utilise une image sprite (Countdown-MH.png) où chaque chiffre est
+   découpé en panneaux de 77px de haut. L'objet « hutsku » contient :
+   - init_cd   : initialise les compteurs depuis les éléments .countdown
+   - countdown  : décrémente chaque seconde et met à jour l'affichage
+   - CDStep     : anime le déroulement d'un chiffre individuel */
  var hutsku = {
     'init_cd':
     function () {
@@ -149,6 +164,7 @@ $('.hovered-cell td a').append(overlay);
         }
     },
 /*********************** Fonctions déroulement des chiffres *******************/
+    /* Décompte : appelé chaque seconde pour décrémenter et animer */
     'countdown':
     function () {
         $(".countdown").each(function() {
@@ -175,6 +191,7 @@ $('.hovered-cell td a').append(overlay);
         });
     },
 
+    /* Anime le déroulement d'un seul chiffre (sprite vertical) */
     'CDStep':
     function (obj, max) {
         var ypos = parseInt($(obj).css("background-position").split(" ")[1], 10);
@@ -190,15 +207,17 @@ $('.hovered-cell td a').append(overlay);
 hutsku.init_cd();
 
 /******************************** TabView event hook ***************************/
-// Permet d'activer un code après le chargement d'un tabview
+/* Permet d'activer un script JS après le chargement d'un onglet TabView.
+   Si l'onglet contient un élément « .tabview-script-indic », son attribut
+   title est utilisé comme chemin vers le script à charger dynamiquement. */
 mw.hook("wikipage.content").add(function(content) {
     if ($(content).is('.tabBody')) {
         var isTabviewScript = $(content).find('.tabview-script-indic').length;
         if (isTabviewScript) {
-            // We load TabView Script
+            // Chargement du script associé au TabView
             var scriptPath = $(content).find('.tabview-script-indic').attr('title');
             $.getScript(scriptPath).fail(function( qxhr, settings, exception) {
-                console.error( "Impossible to load tabview", exception );
+                console.error( "Impossible de charger le script tabview", exception );
             });
         }
     }
@@ -242,7 +261,7 @@ var monsterList = {
 			'<input type="search" name="q" placeholder="Rechercher..."></input>'
 		);
 		
-		// Add event hook
+		// Écouteurs d'événements pour le filtrage
 		$('.monster-filter-search input').keyup(monsterList.listFiltering);
 		$('.monster-filter-select select').mouseup(monsterList.listFiltering);
 	}),

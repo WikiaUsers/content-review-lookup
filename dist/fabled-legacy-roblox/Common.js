@@ -26,7 +26,10 @@
 /* Importing the external JavaScript files */
 importArticles({
     type: "script",
-    article: "MediaWiki:Experience_Calculator.js"
+    articles: [
+        "MediaWiki:Experience_Calculator.js",
+        "MediaWiki:Slider.js"
+    ]
 });
 
 
@@ -171,9 +174,10 @@ mw.loader.using('mediawiki.util', function () { // Adding this method so both of
 });
 
 
-/* --------- 5 --------- */
-/* Countdowns */
 mw.hook('wikipage.content').add(function ($content) {
+   /* --------- 5 --------- */
+   /* Countdowns */
+
    /* -------- 5.1 -------- */
    /* Global Boss */
    function globalBossCountdown() {

@@ -31,6 +31,9 @@
     } else if ( typeof document.webkitHidden !== 'undefined' ) {
         hidden = 'webkitHidden';
     }
+    
+    // Set duration based on page class -- longer on Item Shop pages!
+    var duration = document.body.classList.contains('rootpage-Item_Shop_History') ? 3000 : 2000;
 
     setInterval( function() {
         if ( hidden && document[hidden] ) {
@@ -46,7 +49,7 @@
                 advanceFrame( $nextFrame[0], '.animated-subframe' );
             }
         } );
-    }, 2000 );
+    }, duration );
 }() );
 
 } );

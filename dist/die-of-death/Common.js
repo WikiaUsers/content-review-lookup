@@ -1,66 +1,263 @@
-window.UserTagsJS = {
-    modules: {
-        mwGroups: [],
 
-        implode: {
-            'admincrat': ['bureaucrat', 'sysop'],
-            'all-access': ['rollbacker', 'thread-moderator', 'content-moderator', 'dual-moderator', 'bureaucrat', 'sysop'],
-            'mega-moderator': ['dual-moderator', 'thread-moderator', 'content-moderator', 'rollbacker']
-        },
+(function lockOldComments(window, $, mw) {
 
-        order: {
-            'all-access': 1,
-            'admincrat': 2,
-            'wiki-owner': 3,
-            'wiki-co-owner': 4,
-            'bureaucrat': 5,
-            'sysop': 6,
-            'content-moderator': 7,
-            'thread-moderator': 8,
-            'dual-moderator': 9,
-            'rollbacker': 10,
-            'contributor': 11
+	"use strict";
+
+	window.lockOldComments = window.lockOldComments || {};
+	if (window.lockOldComments.loaded) return;
+	window.lockOldComments.loaded = true;
+
+	var config = mw.config.get([
+		'wgTitle',
+		'wgNamespaceNumber'
+		]);
+
+	var namespaces = window.lockOldComments.namespaceNumbers;
+	if ( namespaces && namespaces.indexOf(config.wgNamespaceNumber) < 0 ) return;
+
+	// A careful selector instead of document.getElementById which can be
+	// fooled with an id in the page content.
+	// The element matching this selector is part of the original HTML,
+	// so it should be safe to check for it just once.
+	var commentSection = document.querySelector(
+		'.page-footer > #mw-data-after-content > #articleComments');
+
+	if (!commentSection) return;
+
+	var apiURL, // = mw.util.wikiScript('wikia'), once mw.util is loaded
+		apiParams = {
+	        controller: 'ArticleCommentsController',
+	        method: 'getComments',
+	        title: config.wgTitle,
+	        namespace: config.wgNamespaceNumber,
+	        page: 0
+	    },
+		apiParamsOneThread = {
+	        controller: 'ArticleCommentsController',
+	        method: 'getThread',
+	        title: config.wgTitle,
+	        namespace: config.wgNamespaceNumber,
+	    },
+	    threads = {},
+	    // Default is 60 days old
+	    daysLimit = window.lockOldComments.limit || 60,
+	    limit = (new Date()).valueOf() - (daysLimit * 86400000), // ms in a day
+	    addNoteAbove = window.lockOldComments.addNoteAbove,
+		observer,
+		getComments,
+		i18n,
+		waitingMessages = [];
+
+	function addMsg(e, msg, arg) {
+		var $e = $(e);
+
+		if (i18n) {
+			$e.text(i18n.msg(msg, arg).parse());
+		} else {
+			waitingMessages.push( {e: e, msg: msg, arg: arg} );
+		}
+
+		return e; // returning the element to allow easier further actions
+	}
+
+	function init_i18n(ref) {
+		var i, m;
+
+		i18n = ref;
+
+		for (i = 0; i < waitingMessages.length; i++) {
+			m = waitingMessages[i];
+			addMsg(m.e, m.msg, m.arg);
+		}
+	}
+
+	// Gets a comment wrapper
+	// Locks the reply box, adds a locking message and a class
+	// On first call adds an above-note unless above-note is cancelled
+	// Does not check the comment age - this have to be checked before calling
+	function lockBox(target) {
+		$(target)
+		.addClass('LockOldComments-locked')
+		.find('[class*="FormEntryPoint_form-entry-point__"]')
+			.after(
+				addMsg(
+					$('<div>'),
+					'locked-reply-box',
+					[daysLimit])
+				)
+			.css("display", "none");
+
+		if (addNoteAbove) {
+			$(target).before(
+				($('<div>')
+					.addClass('LockOldComments-above')
+					.css({
+						padding: '12px',
+						'text-align': 'center',
+						color: 'var(--theme-alert-color)'
+					})
+					.append(addMsg(
+						$('<strong>'),
+						'above-first-locked-comment',
+						daysLimit)
+					)
+				)
+			);
+			addNoteAbove = false;
+		}
+	}
+
+	// Gets a collection of comment wrappers
+	// Checks the comments' age and locks the old ones
+	function lock(target) {
+
+		$(target).each(function() {
+
+			var $this = $(this), // Also used to preserve "this"
+			    id = $this.attr('data-thread-id'),
+			    time;
+
+			if (!id) return;
+			time = threads[id];
+			if (time) {
+				if ( time < limit ) {
+					lockBox($this);
+				}
+			} else {
+				apiParamsOneThread.threadId = id;
+				$.getJSON(apiURL, apiParamsOneThread, function(data) {
+					try {
+						if (data.thread.creationDate.epochSecond * 1000 < limit) {
+							lockBox($this);
+						}
+					} catch (e) {
+						// Failed to check this thread, just continue
+					}
+				});
+			}
+		});
+	}
+
+	// A callback function for the mutations observer
+	// Checks for new comment wrappers and send them to lock()
+	function checkAddedNodes(mutations) {
+		var i,
+		    addedComments = [],
+		    a, b, c, d;
+
+		function findComments()  {
+
+			// (No strict mode violation here, 'this' is passed by .each() )
+			var $this = $(this);
+
+            if (($this.attr('class') || '').indexOf('Comment_wrapper__') !== -1) {
+                addedComments.push(this);
+            } else if ($this.is(
+            	'.article-comments-app, [class*="CommentList_comment-list__"]')) {
+                addedComments = addedComments.concat(
+                	$this.find('[class*="Comment_wrapper__"]').toArray());
+            }
         }
-    },
 
-    tags: {
-        /* STAFF ROLES */
-        'wiki-owner': { title: 'This user is a Die of Death wiki owner.' },
-        'wiki-co-owner': { title: 'This user is a Die of Death wiki co-owner.' },
-        'bureaucrat': { title: 'This user is a Die of Death wiki bureaucrat.' },
-        'sysop': { title: 'This user is a Die of Death wiki administrator.' },
-        'content-moderator': { title: 'This user is a Die of Death wiki content moderator.' },
-        'thread-moderator': { title: 'This user is a Die of Death wiki thread moderator.' },
-        'dual-moderator': { title: 'This user is a Die of Death wiki dual moderator.' },
-        'rollbacker': { title: 'This user is a Die of Death wiki rollbacker.' },
-        'contributor': { title: 'This user is a Die of Death wiki contributor.' },
-        
-        /* BAN ROLES */
-        'blocked': { title: 'This user is blocked on the Die of Death Wiki.' },
-        'admin-blacklisted': { title: 'This user is blacklisted by administrators on the Die of Death Wiki.' },
+        for (i = 0; i < mutations.length; i++) {
+            $(mutations[i].addedNodes).each(findComments);
+        }
 
-        /* COMBINED ROLES */
-        'all-access': { title: 'This user has all staff privileges on the Die of Death wiki.' },
-        'admincrat': { title: 'This user is both an administrator and a bureaucrat on the Die of Death wiki.' },
-        'mega-moderator': { title: 'This user is a Die of Death wiki mega moderator.' }
-    },
+        a = addedComments.length;
 
-    oasisPlaceBefore: ''
-};
+        if (a === 1) { // Probably a one-thread view
+        	lock(addedComments);
+        } else if (a) { // Retrive more comment threads if needed
+        	b = Object.keys(threads).length;
+        	c = b + a; // max amount of comment threads we need for now
 
-// Custom user tags
-UserTagsJS.modules.custom = {
-    'Roboticpie': ['wiki-owner', 'all-access'],
-    'Frogt007': ['wiki-co-owner', 'all-access'],
-    'OGMelodii': ['wiki-co-owner', 'all-access'],
-    '226w6Reborn': ['admincrat'],
-    'Jackisdev': ['admincrat'],
-    'Xx.S0LAS.xX': ['dual-moderator'],
-    '.Lotux.Eternum.': ['dual-moderator', 'content-moderator', 'thread-moderator', 'rollbacker'],
-    'ScrewchGuy': ['content-moderator'],
-    'TerragonArtOriginal': ['content-moderator'],
-    'Slippiki': ['thread-moderator'],
-    'Derpzzz': ['thread-moderator'],
-    'NetTheIdiot': ['thread-moderator'],
-    'The Floor with Boards': ['rollbacker']
-};
+        	getComments().done(function more() {
+        		d = b;
+        		b = Object.keys(threads).length;
+
+        		// If new information has been successfully loaded, and it is
+        		// still less than the number needed, get more.
+        		if (b > d && b < c) {
+        			getComments().done(more).fail(function() { lock(addedComments); });
+        		} else {
+        			lock(addedComments);
+        		}
+        	}).fail(function() { lock(addedComments); });
+        }
+	}
+
+	function init() {
+
+		apiURL = mw.util.wikiScript('wikia');
+
+		// (No strict mode violation here because 'this' is only needed to make
+		// the .bind() method happy)
+		getComments = $.getJSON.bind(this, apiURL, apiParams, function(data) {
+		    var i;
+
+		    apiParams.page = apiParams.page + 1;
+
+		    if (!data.threads) return NaN;
+		    for (i = 0; i < data.threads.length; i++) {
+		        try {
+		            threads[data.threads[i].id] = data.threads[i].creationDate.epochSecond * 1000;
+		        } catch(e) {
+		            // Just continue
+		        }
+		    }
+		});
+
+		// Get one bunch of comments information - same as is supposed to load
+		// on the page.
+		// Then start observing for new comments and call lock() for any
+		// comments that are already laoded.
+		getComments().done(function() {
+			observer = new MutationObserver(checkAddedNodes);
+			observer.observe(commentSection, { childList: true, subtree: true });
+
+			lock($(commentSection).find('[class*="Comment_wrapper__"]'));
+		});
+
+	}
+
+	importArticle({type: 'script', article: 'u:dev:MediaWiki:i18n-js/code.js'});
+	mw.hook('dev.i18n').add(function(ref) {
+		ref.loadMessages('LockOldComments').done(init_i18n);
+	});
+	mw.loader.using('mediawiki.util').then(init);
+
+})(window, jQuery, mediaWiki);
+
+
+
+
+
+mw.hook('wikipage.content').add(function() {
+  document.querySelectorAll('.sprite-container').forEach(container => {
+    const spriteSheet = container.getAttribute('data-sprite-sheet');
+    const totalFrames = parseInt(container.getAttribute('data-total-frames'), 10);
+    
+    const spriteHeight = 420;
+    let currentFrame = 0;
+    const spriteFrame = container.querySelector('.sprite-frame');
+    const prevBtn = container.querySelector('.prev-btn');
+    const nextBtn = container.querySelector('.next-btn');
+
+    function updateSpritePosition() {
+      spriteFrame.style.backgroundImage = `url('${spriteSheet}')`;
+      spriteFrame.style.backgroundPosition = `center -${currentFrame * spriteHeight}px`;
+    }
+
+    prevBtn.onclick = function() {
+      currentFrame = (currentFrame - 1 + totalFrames) % totalFrames;
+      updateSpritePosition();
+    };
+
+    nextBtn.onclick = function() {
+      currentFrame = (currentFrame + 1) % totalFrames;
+      updateSpritePosition();
+    };
+
+    updateSpritePosition();
+  });
+});

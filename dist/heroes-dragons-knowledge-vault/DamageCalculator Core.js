@@ -1558,10 +1558,36 @@
         // NOTE: Observers and initial width check are set up at the end of this function
         // after the UI is fully built, so we can find the correct parent elements
 
-        // Title
+        // Title with action buttons
+        var titleRow = document.createElement('div');
+        titleRow.className = 'calc-title-row';
+
         var title = document.createElement('h2');
         title.textContent = 'Damage Calculator';
-        container.appendChild(title);
+        titleRow.appendChild(title);
+
+        // Action buttons (Share / Reset)
+        var actionButtons = document.createElement('div');
+        actionButtons.className = 'calc-action-buttons';
+
+        var shareBtn = document.createElement('button');
+        shareBtn.type = 'button';
+        shareBtn.className = 'calc-action-btn calc-share-btn';
+        shareBtn.textContent = 'Share';
+        shareBtn.title = 'Copy a shareable link to clipboard';
+        shareBtn.onclick = handleShare;
+        actionButtons.appendChild(shareBtn);
+
+        var resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.className = 'calc-action-btn calc-reset-btn';
+        resetBtn.textContent = 'Reset';
+        resetBtn.title = 'Clear saved state and reset calculator';
+        resetBtn.onclick = handleReset;
+        actionButtons.appendChild(resetBtn);
+
+        titleRow.appendChild(actionButtons);
+        container.appendChild(titleRow);
 
         // Expand tip (shown when content area is constrained)
         var expandTip = document.createElement('div');
@@ -1874,6 +1900,9 @@
         loadHeroData(function() {
             populateHeroDropdown('attacker-hero', 'attacker');
             populateHeroDropdown('defender-hero', 'defender');
+
+            // Initialize state management after hero data is loaded
+            initStateManagement(true);
         });
 
         // Initialize equipment slots
@@ -1962,6 +1991,499 @@
     }
 
 
+    // ============================================
+    // STATE MANAGEMENT (localStorage + URL sharing)
+    // ============================================
+
+    var STORAGE_KEY = 'hnd_damage_calc_state';
+    var URL_PARAM = 's';
+
+    /**
+     * Collect all calculator state into a compact object
+     * Uses short keys to minimize URL/storage size
+     */
+    function collectState() {
+        var state = {};
+
+        // Hero selections
+        var ah = document.getElementById('attacker-hero');
+        var dh = document.getElementById('defender-hero');
+        if (ah && ah.value) state.ah = ah.value;
+        if (dh && dh.value) state.dh = dh.value;
+
+        // Class selections
+        var ac = document.getElementById('attacker-class');
+        var dc = document.getElementById('defender-class');
+        if (ac && ac.value) state.ac = ac.value;
+        if (dc && dc.value) state.dc = dc.value;
+
+        // Role selections
+        var ar = document.getElementById('attacker-role');
+        var dr = document.getElementById('defender-role');
+        if (ar && ar.value) state.ar = ar.value;
+        if (dr && dr.value) state.dr = dr.value;
+
+        // Skill settings
+        var skill = document.getElementById('attacker-skill');
+        var ratio = document.getElementById('attacker-atkDmgRatio');
+        var hits = document.getElementById('attacker-numHits');
+        var mult = document.getElementById('attacker-skillMult');
+        if (skill && skill.value) state.sk = skill.value;
+        if (ratio && ratio.value != 100) state.rt = ratio.value;
+        if (hits && hits.value != 1) state.ht = hits.value;
+        if (mult && mult.value != 0) state.ml = mult.value;
+
+        // Attacker bonus stats (only non-zero)
+        var atkBonusStats = ['atk', 'pierce', 'cDmg', 'cRate'];
+        atkBonusStats.forEach(function(stat) {
+            var el = document.getElementById('attacker-' + stat + '-bonus');
+            if (el && parseFloat(el.value)) state['ab_' + stat] = el.value;
+        });
+
+        // Attacker base stats (custom mode)
+        atkBonusStats.forEach(function(stat) {
+            var el = document.getElementById('attacker-' + stat + '-base');
+            if (el && el.tagName === 'INPUT' && parseFloat(el.value)) state['ax_' + stat] = el.value;
+        });
+
+        // Defender bonus stats (only non-zero)
+        var defBonusStats = ['hp', 'def', 'bDmg', 'bRate', 'shield'];
+        defBonusStats.forEach(function(stat) {
+            var el = document.getElementById('defender-' + stat + '-bonus');
+            if (el && parseFloat(el.value)) state['db_' + stat] = el.value;
+        });
+
+        // Defender base stats (custom mode)
+        defBonusStats.forEach(function(stat) {
+            var el = document.getElementById('defender-' + stat + '-base');
+            if (el && el.tagName === 'INPUT' && parseFloat(el.value)) state['dx_' + stat] = el.value;
+        });
+
+        // Equipment sets (only non-zero)
+        Object.keys(EQUIPMENT_SETS).forEach(function(setKey) {
+            var set = EQUIPMENT_SETS[setKey];
+            var dropdown = document.getElementById(set.side + '-set-' + setKey);
+            if (dropdown && parseInt(dropdown.value) > 0) {
+                state['es_' + setKey] = dropdown.value;
+            }
+        });
+
+        // Active buffs/debuffs (compact: collect all active IDs)
+        var activeBuffs = [];
+        document.querySelectorAll('.calc-buff-icon[data-active="true"]').forEach(function(btn) {
+            activeBuffs.push(btn.id);
+        });
+        if (activeBuffs.length > 0) state.bf = activeBuffs;
+
+        // Active talents (compact: collect all checked IDs)
+        var activeTalents = [];
+        document.querySelectorAll('.calc-talent-item input[type="checkbox"]:checked').forEach(function(cb) {
+            activeTalents.push(cb.id);
+            // Also save count if present
+            var countInput = document.getElementById(cb.id + '-count');
+            if (countInput && parseInt(countInput.value) > 0) {
+                state['tc_' + cb.id.replace(/^(attacker|defender)-talent-/, '')] = countInput.value;
+            }
+        });
+        if (activeTalents.length > 0) state.tl = activeTalents;
+
+        // Modifiers
+        var goblinSkin = document.getElementById('mod-goblinSkin');
+        var highGround = document.getElementById('mod-highGround');
+        var adjacentAttack = document.getElementById('mod-adjacentAttack');
+        var shieldCount = document.getElementById('mod-shieldCount');
+        if (goblinSkin && goblinSkin.checked) state.gs = 1;
+        if (highGround && highGround.checked) state.hg = 1;
+        if (adjacentAttack && adjacentAttack.checked) state.aa = 1;
+        if (shieldCount && parseInt(shieldCount.value) > 0) state.sc = shieldCount.value;
+
+        return state;
+    }
+
+    /**
+     * Restore calculator state from an object
+     */
+    function restoreState(state) {
+        if (!state || typeof state !== 'object') return;
+
+        // Helper to safely set select value
+        function setSelect(id, value) {
+            var el = document.getElementById(id);
+            if (el && value !== undefined) {
+                el.value = value;
+                el.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Helper to safely set input value
+        function setInput(id, value) {
+            var el = document.getElementById(id);
+            if (el && value !== undefined) {
+                el.value = value;
+            }
+        }
+
+        // Helper to safely set checkbox
+        function setCheckbox(id, checked) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.checked = !!checked;
+            }
+        }
+
+        // Hero selections - need to wait for hero data to load
+        if (state.ah) setSelect('attacker-hero', state.ah);
+        if (state.dh) setSelect('defender-hero', state.dh);
+
+        // Class selections
+        if (state.ac) setSelect('attacker-class', state.ac);
+        if (state.dc) setSelect('defender-class', state.dc);
+
+        // Role selections
+        if (state.ar) setSelect('attacker-role', state.ar);
+        if (state.dr) setSelect('defender-role', state.dr);
+
+        // Skill settings
+        if (state.sk) setSelect('attacker-skill', state.sk);
+        if (state.rt) setInput('attacker-atkDmgRatio', state.rt);
+        if (state.ht) setInput('attacker-numHits', state.ht);
+        if (state.ml) setInput('attacker-skillMult', state.ml);
+
+        // Attacker bonus stats
+        ['atk', 'pierce', 'cDmg', 'cRate'].forEach(function(stat) {
+            if (state['ab_' + stat]) setInput('attacker-' + stat + '-bonus', state['ab_' + stat]);
+        });
+
+        // Attacker base stats (for custom mode) - need to enable custom mode first
+        var hasAttackerCustom = ['atk', 'pierce', 'cDmg', 'cRate'].some(function(stat) {
+            return state['ax_' + stat];
+        });
+        if (hasAttackerCustom && state.ah === '--custom--') {
+            // Custom mode will be enabled when hero select fires
+            setTimeout(function() {
+                ['atk', 'pierce', 'cDmg', 'cRate'].forEach(function(stat) {
+                    if (state['ax_' + stat]) setInput('attacker-' + stat + '-base', state['ax_' + stat]);
+                });
+                triggerCalculate();
+            }, 100);
+        }
+
+        // Defender bonus stats
+        ['hp', 'def', 'bDmg', 'bRate', 'shield'].forEach(function(stat) {
+            if (state['db_' + stat]) setInput('defender-' + stat + '-bonus', state['db_' + stat]);
+        });
+
+        // Defender base stats (for custom mode)
+        var hasDefenderCustom = ['hp', 'def', 'bDmg', 'bRate', 'shield'].some(function(stat) {
+            return state['dx_' + stat];
+        });
+        if (hasDefenderCustom && state.dh === '--custom--') {
+            setTimeout(function() {
+                ['hp', 'def', 'bDmg', 'bRate', 'shield'].forEach(function(stat) {
+                    if (state['dx_' + stat]) setInput('defender-' + stat + '-base', state['dx_' + stat]);
+                });
+                triggerCalculate();
+            }, 100);
+        }
+
+        // Equipment sets
+        Object.keys(EQUIPMENT_SETS).forEach(function(setKey) {
+            var set = EQUIPMENT_SETS[setKey];
+            if (state['es_' + setKey]) {
+                setSelect(set.side + '-set-' + setKey, state['es_' + setKey]);
+            }
+        });
+
+        // Buffs/debuffs
+        if (state.bf && Array.isArray(state.bf)) {
+            state.bf.forEach(function(buffId) {
+                var btn = document.getElementById(buffId);
+                if (btn) {
+                    btn.dataset.active = 'true';
+                    btn.classList.add('calc-buff-icon-active');
+                }
+            });
+        }
+
+        // Talents
+        if (state.tl && Array.isArray(state.tl)) {
+            state.tl.forEach(function(talentId) {
+                setCheckbox(talentId, true);
+            });
+        }
+
+        // Talent counts
+        Object.keys(state).forEach(function(key) {
+            if (key.startsWith('tc_')) {
+                var talentName = key.substring(3);
+                // Try both attacker and defender prefixes
+                var countInput = document.getElementById('attacker-talent-' + talentName + '-count') ||
+                                document.getElementById('defender-talent-' + talentName + '-count');
+                if (countInput) {
+                    countInput.value = state[key];
+                }
+            }
+        });
+
+        // Modifiers
+        if (state.gs) setCheckbox('mod-goblinSkin', true);
+        if (state.hg) setCheckbox('mod-highGround', true);
+        if (state.aa) setCheckbox('mod-adjacentAttack', true);
+        if (state.sc) setInput('mod-shieldCount', state.sc);
+    }
+
+    /**
+     * Safe localStorage access (handles private browsing, etc.)
+     */
+    function safeStorage() {
+        try {
+            var test = '__storage_test__';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            return localStorage;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Save state to localStorage
+     */
+    function saveToStorage() {
+        var storage = safeStorage();
+        if (!storage) return false;
+
+        try {
+            var state = collectState();
+            storage.setItem(STORAGE_KEY, JSON.stringify(state));
+            return true;
+        } catch (e) {
+            console.warn('Failed to save calculator state:', e);
+            return false;
+        }
+    }
+
+    /**
+     * Load state from localStorage
+     */
+    function loadFromStorage() {
+        var storage = safeStorage();
+        if (!storage) return null;
+
+        try {
+            var stored = storage.getItem(STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+        } catch (e) {
+            console.warn('Failed to load calculator state:', e);
+        }
+        return null;
+    }
+
+    /**
+     * Clear saved state from localStorage
+     */
+    function clearStorage() {
+        var storage = safeStorage();
+        if (storage) {
+            storage.removeItem(STORAGE_KEY);
+        }
+    }
+
+    /**
+     * Encode state to compressed Base64 for URL
+     */
+    function encodeStateForUrl(state) {
+        try {
+            var json = JSON.stringify(state);
+            // Use built-in btoa for Base64 encoding
+            // Handle Unicode by encoding to UTF-8 first
+            var encoded = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+            return encoded;
+        } catch (e) {
+            console.warn('Failed to encode state:', e);
+            return null;
+        }
+    }
+
+    /**
+     * Decode state from URL Base64
+     */
+    function decodeStateFromUrl(encoded) {
+        try {
+            // Decode Base64 and handle UTF-8
+            var json = decodeURIComponent(atob(encoded).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(json);
+        } catch (e) {
+            console.warn('Failed to decode state from URL:', e);
+            return null;
+        }
+    }
+
+    /**
+     * Generate shareable URL with current state
+     */
+    function generateShareUrl() {
+        var state = collectState();
+        var encoded = encodeStateForUrl(state);
+        if (!encoded) return null;
+
+        var url = new URL(window.location.href);
+        url.searchParams.set(URL_PARAM, encoded);
+        return url.toString();
+    }
+
+    /**
+     * Check URL for shared state and load if present
+     */
+    function loadFromUrl() {
+        try {
+            var url = new URL(window.location.href);
+            var encoded = url.searchParams.get(URL_PARAM);
+            if (encoded) {
+                return decodeStateFromUrl(encoded);
+            }
+        } catch (e) {
+            console.warn('Failed to parse URL:', e);
+        }
+        return null;
+    }
+
+    /**
+     * Copy text to clipboard with fallback
+     */
+    function copyToClipboard(text, callback) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                if (callback) callback(true);
+            }).catch(function() {
+                fallbackCopy(text, callback);
+            });
+        } else {
+            fallbackCopy(text, callback);
+        }
+    }
+
+    function fallbackCopy(text, callback) {
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            if (callback) callback(true);
+        } catch (e) {
+            if (callback) callback(false);
+        }
+        document.body.removeChild(textarea);
+    }
+
+    /**
+     * Show a toast notification
+     */
+    function showToast(message, isError) {
+        // Remove existing toast if any
+        var existing = document.querySelector('.calc-toast');
+        if (existing) existing.remove();
+
+        var toast = document.createElement('div');
+        toast.className = 'calc-toast' + (isError ? ' calc-toast-error' : '');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        // Trigger animation
+        requestAnimationFrame(function() {
+            toast.classList.add('calc-toast-visible');
+        });
+
+        // Auto-remove after 2.5 seconds
+        setTimeout(function() {
+            toast.classList.remove('calc-toast-visible');
+            setTimeout(function() {
+                if (toast.parentNode) toast.remove();
+            }, 300);
+        }, 2500);
+    }
+
+    /**
+     * Handle share button click - copy URL to clipboard
+     */
+    function handleShare() {
+        var url = generateShareUrl();
+        if (url) {
+            copyToClipboard(url, function(success) {
+                if (success) {
+                    showToast('Link copied to clipboard!');
+                } else {
+                    showToast('Failed to copy link', true);
+                }
+            });
+        }
+    }
+
+    /**
+     * Handle reset button click
+     */
+    function handleReset() {
+        clearStorage();
+        // Remove URL param and reload
+        var url = new URL(window.location.href);
+        url.searchParams.delete(URL_PARAM);
+        window.location.href = url.toString();
+    }
+
+    /**
+     * Debounce helper for auto-save
+     */
+    function debounce(func, wait) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
+
+    // Debounced save function (save 500ms after last change)
+    var debouncedSave = debounce(saveToStorage, 500);
+
+    /**
+     * Initialize state management (called after UI is built)
+     */
+    function initStateManagement(afterHeroDataLoaded) {
+        // Check URL first, then localStorage
+        var urlState = loadFromUrl();
+        var storageState = loadFromStorage();
+        var stateToRestore = urlState || storageState;
+
+        if (stateToRestore) {
+            // Restore state after hero data is loaded
+            if (afterHeroDataLoaded) {
+                restoreState(stateToRestore);
+                triggerCalculate();
+            }
+        }
+
+        // Set up auto-save on changes (debounced)
+        document.getElementById('damage-calculator').addEventListener('change', debouncedSave);
+        document.getElementById('damage-calculator').addEventListener('input', debouncedSave);
+        document.getElementById('damage-calculator').addEventListener('click', function(e) {
+            // Save on buff icon clicks
+            if (e.target.closest('.calc-buff-icon')) {
+                debouncedSave();
+            }
+        });
+    }
+
     // Export to window for Part 2
     window.DamageCalcCore = {
         EQUIPMENT_SETS: EQUIPMENT_SETS,
@@ -1993,6 +2515,17 @@
         createCheckbox: createCheckbox,
         createTalentCheckbox: createTalentCheckbox,
         isTalentActive: isTalentActive,
-        triggerCalculate: triggerCalculate
+        triggerCalculate: triggerCalculate,
+        // State management
+        collectState: collectState,
+        restoreState: restoreState,
+        saveToStorage: saveToStorage,
+        loadFromStorage: loadFromStorage,
+        clearStorage: clearStorage,
+        generateShareUrl: generateShareUrl,
+        loadFromUrl: loadFromUrl,
+        handleShare: handleShare,
+        handleReset: handleReset,
+        initStateManagement: initStateManagement
     };
 })();

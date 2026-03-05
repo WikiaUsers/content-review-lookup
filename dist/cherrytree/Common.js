@@ -214,3 +214,104 @@ mw.loader.using('mediawiki.util', function () {
     }
 
 });
+mw.loader.using(['mediawiki.util'], function () {
+
+    const markers = document.querySelectorAll('.clue-search-tool');
+    if (!markers.length) return;
+
+    const clueData = [
+        { clue: "A bustling waterway amidst stone and steel, where the flow never sleeps.", skill: "Fishing", task: "City River" },
+        { clue: "A great place to find a Ferris Wheel, or an Arcade. Omg Donuts and Slush!", skill: "Fishing", task: "Beach Pier" },
+        { clue: "A hidden paradise among trees, where the waters reflect the canopy above.", skill: "Fishing", task: "The Grove" },
+        { clue: "A peaceful place filled with birds chirping, the beating heart of the earth", skill: "Fishing", task: "Woodland Lake" },
+        { clue: "As strong as they come, very reliable", skill: "Forestry", task: "Oak Tree" },
+        { clue: "Can't beat a good old Bacon Butty!", skill: "Combat", task: "Pig" },
+        { clue: "Can't touch this", skill: "Alchemy", task: "Invincibility Potion" },
+        { clue: "Contains information about things, well, technically this one doesn't, but usually they do", skill: "Crafting", task: "Bestiary" },
+        { clue: "Despite the name, I would not recommend giving this guy a cuddle.", skill: "Combat", task: "Fluffy" },
+        { clue: "Did I get this one right? It is blue, right?", skill: "Combat", task: "Baby Blue Dragon" },
+        { clue: "Do these even work? Well, only one way to find out", skill: "Alchemy", task: "Luck Potion" },
+        { clue: "Do we really know more about space?", skill: "Fishing", task: "Open Ocean" },
+        { clue: "Don't hit me on the head", skill: "Crafting", task: "Nails" },
+        { clue: "Don't touch the but!", skill: "Cooking", task: "Clownfish" },
+        { clue: "Evergreen Tree, often red in colour", skill: "Forestry", task: "Cedar Tree" },
+        { clue: "Fair enough, I'm partially colourblind, so yes, I got this one a little off.", skill: "Combat", task: "Green Dragon" },
+        { clue: "For Cognium!", skill: "Combat", task: "Crocodile" },
+        { clue: "Give a man a fish, feed him for a day. Teach a man to fish, feed him for a lifetime.", skill: "Crafting", task: "Fishing Net" },
+        { clue: "He can help me practice my bow skills, or just show off with his.", skill: "Combat", task: "Elven Archer" },
+        { clue: "How did I even catch this?", skill: "Cooking", task: "Octopus" },
+        { clue: "How on earth did a trolley get in there?", skill: "Fishing", task: "Small Pond" },
+        { clue: "How on earth does this not make me rich behind my wildest dreams", skill: "Mining", task: "Gold Ore" },
+        { clue: "I aint eating that, looks like it's still on fire!", skill: "Cooking", task: "Dragon Platter" },
+        { clue: "I am found in all kinds of plants and animals across the earth and used as a defence mechanism", skill: "Alchemy", task: "Poison Potion" },
+        { clue: "I am found in the darkness and have many eyes", skill: "Combat", task: "Giant Cave Spider" },
+        { clue: "I am the King of the greatly feared creatures, fire is my breath", skill: "Combat", task: "King Dragon" },
+        { clue: "I am the Queen of a newly discovered realm", skill: "Combat", task: "Elven Queen" },
+        { clue: "I come in many types, King is my most well known", skill: "Combat", task: "Cobra" },
+        { clue: "I could make some syrup, well, not on this game, but maybe one day?", skill: "Forestry", task: "Maple Tree" },
+        { clue: "I feel harsh pickpocketing him, but I need money too you know!", skill: "Thieving", task: "Bard" },
+        { clue: "I gotta go, we got cows", skill: "Alchemy", task: "Cyclone Potion" },
+        { clue: "I lead an ancient forgotten tribe", skill: "Combat", task: "Ancient Tribal Leader" },
+        { clue: "I must be aware of all the needles", skill: "Forestry", task: "Pine Tree" },
+        { clue: "I prefer nice dreams", skill: "Combat", task: "Nightmare" },
+        { clue: "I shall rise from the ashes and become reborn", skill: "Combat", task: "Phoenix" },
+        { clue: "I think we have a slight problem, that my friend is what we call a lot of snow!", skill: "Alchemy", task: "Avalanche Potion" },
+        { clue: "I wonder if that's where the name comes from?", skill: "Forestry", task: "Cherry Blossom Tree" },
+        { clue: "I'm gonna take this night, and make it…", skill: "Forestry", task: "Evergreen Tree" },
+        { clue: "I'm smart so I wish people would acknowledge that", skill: "Combat", task: "Dummy Queen" },
+        { clue: "I'm sorry, but I'm on Team Egg", skill: "Combat", task: "Chicken" },
+        { clue: "If I get caught, he better not give me a job to do", skill: "Thieving", task: "Taskmaster" },
+        { clue: "Is this even edible?", skill: "Cooking", task: "Bone Stew" },
+        { clue: "It's not real, I mean, if it was it would be cool though right?", skill: "Mining", task: "Dragon Ore" },
+        { clue: "Karen, activate insta kill!", skill: "Alchemy", task: "Liquid Death Potion" },
+        { clue: "Named after a place near where I grew up. Quite a few things are actually.", skill: "Fishing", task: "Livingstone Island" },
+        { clue: "Not very comfortable to lie on", skill: "Combat", task: "Lion" },
+        { clue: "Now I know how Midas felt", skill: "Alchemy", task: "Golden Touch Potion" },
+        { clue: "On a diet? Nope, but this makes for some good healing", skill: "Cooking", task: "Fruit Salad" },
+        { clue: "Poor Cow", skill: "Crafting", task: "Leather" },
+        { clue: "Seriously though, who comes up with these names?", skill: "Discovery", task: "Mount Kwaya" },
+        { clue: "Some people say I'm your best friend. Others just see money.", skill: "Mining", task: "Diamond" },
+        { clue: "Think of the amount of Fish I can catch with this beast!", skill: "Crafting", task: "Large Fishing Net" },
+        { clue: "This tree is a living fossil and has fan shaped leaves", skill: "Forestry", task: "Ginkgo Tree" },
+        { clue: "Up in the clouds. I'm the king of the World!", skill: "Discovery", task: "Rocky Peaks" },
+        { clue: "Wana bet?", skill: "Discovery", task: "Lake Wana" },
+        { clue: "Wood!", skill: "Combat", task: "Training Dummy" },
+        { clue: "Wouldn't these be like, really heavy?", skill: "Crafting", task: "Iron Boots" },
+        { clue: "Yeah no thanks, I don't like the dark.", skill: "Fishing", task: "Cave" },
+        { clue: "You may need to wrap up warm for this one", skill: "Discovery", task: "Frozen Wasteland" }
+    ];
+
+    markers.forEach(marker => {
+
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <input type="text" placeholder="Search clue..." style="width:100%;padding:8px;margin-bottom:10px;">
+            <div class="results"></div>
+        `;
+
+        const input = container.querySelector('input');
+        const results = container.querySelector('.results');
+
+        function render(filter = "") {
+            const filtered = clueData.filter(item =>
+                item.clue.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            results.innerHTML = filtered.map(item =>
+                `<div style="margin-bottom:8px;">
+                    <strong>${item.clue}</strong><br>
+                    Skill: ${item.skill}<br>
+                    Task: ${item.task}
+                </div>`
+            ).join("");
+        }
+
+        input.addEventListener('input', e => {
+            render(e.target.value);
+        });
+
+        render();
+        marker.appendChild(container);
+    });
+
+});

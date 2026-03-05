@@ -11,7 +11,7 @@ var IsUserAdmin = ArrayIncludesAny(userGroups,['sysop','bureaucrat','interface-a
 var IsUserMod = IsUserAdmin || ArrayIncludesAny(userGroups,['content-moderator']);
 
 var RATING = {
-	StoringPage: "Закулисье_Майнкрафта_вики:Оценки_статей",
+	StoringPage: "Project:Оценки_статей",
 	MinEdits: 50,
 	NeededGroups: ["autoconfirmed","emailconfirmed"],
 	TimeDelaySeconds: 120,
@@ -113,6 +113,9 @@ function ArrayIncludesAny(arr, included) {
 	}
 	return false;
 }
+
+var overflow_clamp = (x, minimum, maximum) => x > maximum ? minimum : x < minimum ? maximum : x;
+var clamp = (x, minimum, maximum) => Math.min(Math.max(x, minimum), maximum);
 
 // Кастомные лого и заголовок вики
 mw.hook("wikipage.content").add( () => {
@@ -375,6 +378,23 @@ mw.hook("wikipage.content").add( () => {
         });
 	
 });
+
+// Анимация картинок
+(($, mw) => {
+	Array.from(document.getElementsByClassName('animated-images')).forEach((pack) => {
+		var images = Array.from(pack.getElementsByClassName('animated-images-object'));
+		var images_len = images.length;
+		var interval;
+		var i = 0;
+		if (images_len <= 1) return;
+		interval = setInterval(() => {
+			i = overflow_clamp(++i, 0, images_len-1);
+			for (let n = 0; n < images_len; n++) {
+				images[n].style.setProperty('display', n == i ? 'inherit' : 'none');
+			}
+		}, 1000*pack.getAttribute('data-delay'));
+	});
+})(this.jQuery,this.mediaWiki);
 
 // ;( () => {
 	

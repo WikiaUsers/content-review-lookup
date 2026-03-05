@@ -56,6 +56,9 @@ if(mwCustomEditButtons)
 		"tagClose": "]][[Категория:Перенаправления]]",
 		"sampleText": "Статья"
 	};
+	
+/*Дополнительные виджеты*/
+window.AddRailModule = [{page: 'Template:RailModule', prepend: true}];
 /**
  * Auto Update *
  **/

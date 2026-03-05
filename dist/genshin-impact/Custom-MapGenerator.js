@@ -80,7 +80,7 @@ mw.loader.using('mediawiki.api', () => {
 				</div>
 			`);
 			$('#mw-content-text.mw-body-content').append(build);
-			if (mode === 'full') { mapGenerator.loadTemplates(mapRefs[sett.r]); }
+			if (mode === 'full') { mapGenerator.loadTemplates(mapRefs[sett.r], sett.r); }
 			document.addEventListener('dblclick', (event) => {
 				$('.markerSettings').remove();
 				if (event.target && event.target.classList.contains('templateImage')) {
@@ -172,7 +172,7 @@ mw.loader.using('mediawiki.api', () => {
 					
 					// Looad new region
 					mapGenerator.loadImages(mapRefs[sett.r]);
-					mapGenerator.loadTemplates(mapRefs[sett.r]);
+					mapGenerator.loadTemplates(mapRefs[sett.r], sett.r);
 					
 					// Update tabs
 					let curr = $('.regionSelect > .active-tab');
@@ -267,17 +267,17 @@ mw.loader.using('mediawiki.api', () => {
 				};
 			} else { alert ('No map available for the marker'); }
 		},
-		loadTemplates: (templates) => {
+		loadTemplates: (templates, region) => {
 			let container = $('.Templates-list');
 			let loading = document.querySelector('.Templates-loading');
-			if (loadedTemplates[sett.r]) {
+			if (loadedTemplates[region]) {
 				loading.style.setProperty('display', 'none');
-				container.html(loadedTemplates[sett.r]);
+				container.html(loadedTemplates[region]);
 				mapGenerator.filterMapTemplates();
 			} else {
 				loading.style.setProperty('display', '');
 				container.html('');
-				mapGenerator.loadImages(templates);
+				mapGenerator.loadImages(templates, region);
 				let waitForTemplates = () => {
 					let finished = true;
 					templates.forEach((template) => {
@@ -302,7 +302,7 @@ mw.loader.using('mediawiki.api', () => {
 								mapGenerator.selectTemplate(template);
 							}
 						});
-						loadedTemplates[sett.r] = gallery;
+						loadedTemplates[region] = gallery;
 						loading.style.setProperty('display', 'none');
 						container.html(gallery);
 						mapGenerator.filterMapTemplates();

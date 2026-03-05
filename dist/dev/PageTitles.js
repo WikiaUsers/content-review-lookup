@@ -1,74 +1,85 @@
 'use strict';
 (($, mw) => {
 	const config = mw.config.values;
-	const ns = config.wgNamespaceNumber;
-	if (window.PageTitlesScriptLoaded || ns === -1){
+	const namespaceNumber = config.wgNamespaceNumber;
+	if (window.PageTitlesScriptLoaded || namespaceNumber === -1){
 		return;
 	}
 	window.PageTitlesScriptLoaded = true;
-	const action = config.wgAction;
-	const activeEdit = ['edit', 'submit'].indexOf(action) !== -1;
-	const articleId = config.wgArticleId;
-	const id = !articleId ? -1 : articleId;
-	const mainPage = config.wgIsMainPage;
-	const nsFormatted = config.wgFormattedNamespaces[ns];
-	const f = new RegExp(`^ *(${nsFormatted}) *: *(.+) *$`, 'i');
-	const nsString = '<span class="mw-page-title-namespace">$1</span>';
-	const sepString = '<span class="mw-page-title-separator">:</span>';
-	const tString = '<span class="mw-page-title-main">$2</span>';
-	const messages = [
-		'creating',
-		'delete-confirm',
-		'difference-title',
-		'editing',
-		'editingcomment',
-		'editingsection',
-		'history-title',
-		'pageinfo-title',
-		'protect-title',
-	];
+	const searchParams = new URLSearchParams(location.search);
+	const isDiffView = searchParams.has('diff');
+	const isRevView = searchParams.has('oldid');
+	const isFile = namespaceNumber === 6;
+	const titleRegExp = /^\(pagetitle = fandom-pagetitle: (.+)\)$/;
+	const pageName = config.wgPageName.replaceAll('_', ' ');
+	const namespaceName = config.wgFormattedNamespaces[namespaceNumber];
+	const ns = `<span class="mw-page-title-namespace">${namespaceName}</span>`;
+	const sep = '<span class="mw-page-title-separator">:</span>';
+	const title = `<span class="mw-page-title-main">${config.wgTitle}</span>`;
+	const talkPage = namespaceNumber % 2;
+	const unprefixedNamespace = [
+		6,
+		8,
+		10,
+		14,
+		502,
+		2000,
+	].includes(namespaceNumber);
 	
-	mw.loader.using(['mediawiki.api'], () => {
-		const api = new mw.Api();
-		api.loadMessagesIfMissing(messages).done(() => {
-			api.get({
-				prop: 'info',
-				titles: config.wgPageName,
-				inprop: 'displaytitle',
-			}).done(data => {
-				const title = data.query.pages[id].title;
-				const dt = data.query.pages[id].displaytitle;
-				const htmlTitle = dt.replace(f, nsString + sepString + tString);
-				const searchParams = new URLSearchParams(location.search);
-				
-				mw.hook('wikipage.content').add(() => {
-					if (activeEdit && id === -1){
-						setHeading(title, 'creating');
-					} else if (activeEdit && searchParams.get('section') === 'new'){
-						setHeading(title, 'editingcomment');
-					} else if (activeEdit && searchParams.has('section')){
-						setHeading(title, 'editingsection');
-					} else if (activeEdit){
-						setHeading(title, 'editing');
-					} else if (action === 'history'){
-						setHeading(title, 'history-title');
-					} else if (action === 'info'){
-						setHeading(title, 'pageinfo-title');
-					} else if (action === 'protect' || action === 'unprotect'){
-						setHeading(title, 'protect-title');
-					} else if (action === 'delete'){
-						setHeading(title, 'delete-confirm');
-					} else if (searchParams.has('diff')){
-						setHeading(title, 'difference-title');
-					} else if (!mainPage && nsFormatted){
-						$('#firstHeading').html(htmlTitle);
-					}
-				});
+	if (config.wgAction !== 'view' || ((isDiffView || isRevView) && !isFile)){
+		if (config.wgUserLanguage === 'qqx'){
+			$('#firstHeading').html(document.title.replace(titleRegExp, '$1'));
+		} else {
+			$('#firstHeading').html(document.title.split(' | ')[0]);
+		}
+		return;
+	}
+	
+	if ((!talkPage && !unprefixedNamespace) || config.wgIsMainPage){
+		return;
+	}
+	
+	if (!isDiffView && !isRevView){
+		$('#firstHeading').html(ns + sep + title);
+	}
+	
+	mw.loader.using(['mediawiki.api', 'mediawiki.jqueryMsg'], () => {
+		const api = new mw.Api({'parameters': {
+			'action': 'query',
+			'format': 'json',
+			'formatversion': 2,
+			'errorformat': 'plaintext',
+			'uselang': config.wgUserLanguage,
+		}});
+		
+		if (isFile){
+			api.loadMessagesIfMissing([
+				'pagetitle',
+				'difference-title',
+			]).done(() => {
+				let titleText = pageName;
+				if (isDiffView){
+					titleText = mw.message('difference-title', pageName).text();
+				}
+				document.title = mw.message('pagetitle', titleText).text();
+				if (isDiffView || isRevView){
+					$('#firstHeading').html(titleText);
+				}
 			});
+		}
+		
+		if (isDiffView || isRevView){
+			return;
+		}
+		
+		api.get({
+			'prop': 'info',
+			'titles': pageName,
+			'inprop': 'displaytitle',
+		}).done(data => {
+			if (data.query.pages[0].displaytitle !== pageName){
+				$('#firstHeading').html(data.query.pages[0].displaytitle);
+			}
 		});
 	});
-	
-	function setHeading(param, msg){
-		$('#firstHeading').html(mw.message(msg, param).text());
-	}
 })(jQuery, mediaWiki);

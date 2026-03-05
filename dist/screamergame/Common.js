@@ -1,5 +1,832 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* modal logic - core, manager, gallery, front page */
+
+window.screamerParseStrict = function(val) {
+    val = (val || '').toString().trim();
+    if (val === '0') return 0;
+    if (val === '-1') return -1;
+    if (/^-?[1-9]\d*$/.test(val)) return parseInt(val, 10);
+    return 0;
+};
+
+window.screamerParseSchedule = function(scheduleStr, targetPage) {
+    if (!scheduleStr) return 0;
+    if (scheduleStr.indexOf(':') === -1) {
+        return window.screamerParseStrict(scheduleStr);
+    }
+    var parts = scheduleStr.split(',');
+    for (var i = 0; i < parts.length; i++) {
+        var pair = parts[i].split(':');
+        if (pair.length === 2) {
+            var pName = pair[0].trim();
+            var pVal = pair[1].trim();
+            if (pName === targetPage) return window.screamerParseStrict(pVal);
+        }
+    }
+    return 0; 
+};
+
+window.screamerGetStatusText = function(scheduleVal, revStr, now) {
+    if (scheduleVal === -1) return 'Inactive';
+    if (scheduleVal === 0) return 'Active (Immediate)';
+
+    if (revStr.length >= 14) {
+        var rY = parseInt(revStr.substring(0,4), 10);
+        var rM = parseInt(revStr.substring(4,6), 10) - 1;
+        var rD = parseInt(revStr.substring(6,8), 10);
+        var rH = parseInt(revStr.substring(8,10), 10);
+        var rMin = parseInt(revStr.substring(10,12), 10);
+        var rS = parseInt(revStr.substring(12,14), 10);
+
+        var targetTime = Date.UTC(rY, rM, rD, rH, rMin, rS) + (scheduleVal * 1000);
+        var diff = targetTime - now;
+
+        if (diff <= 0) {
+            return 'Active';
+        } else {
+            var d = Math.floor(diff / 86400000);
+            var h = Math.floor((diff % 86400000) / 3600000);
+            var m = Math.floor((diff % 3600000) / 60000);
+            var s = Math.floor((diff % 60000) / 1000);
+            return 'Scheduled: ' + d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
+        }
+    }
+    return 'Invalid Revision';
+};
+
+window.triggerScreamerModal = function(options) {
+    var defaults = {
+        title: '',
+        bodyText: '',
+        duration: null, 
+        showConfirm: true,
+        buttonText: 'Understood!', 
+        modalId: null,
+        timerPrefix: 'Auto-closing in',
+        onClose: null,
+        backgroundColor: null,
+        textColor: null,
+        accentColor: null,
+        fadeInDuration: 0.5,
+        fadeOutDuration: 0.5,
+        pages: [],
+        requireAllPages: false,
+        autoClose: true
+    };
+
+    var config = $.extend({}, defaults, options);
+    var inputPages = config.pages.length > 0 ? config.pages : [];
+    
+    if (inputPages.length === 0 && (config.bodyText || config.title)) {
+        inputPages.push({
+            modalId: config.modalId,
+            title: config.title,
+            bodyText: config.bodyText,
+            autoClose: config.autoClose 
+        });
+    }
+
+    if (inputPages.length > 999) {
+        inputPages = inputPages.slice(0, 999);
+    }
+
+    var unseenPages = [];
+    for (var i = 0; i < inputPages.length; i++) {
+        var key = 'screamer_modal_seen_' + inputPages[i].modalId;
+        if (!inputPages[i].modalId || !localStorage.getItem(key)) {
+            unseenPages.push(inputPages[i]);
+        }
+    }
+
+    if (unseenPages.length === 0) {
+        if (typeof config.onClose === 'function') {
+            config.onClose();
+        }
+        return;
+    }
+
+    var currentIndex = 0;
+    var maxViewedIndex = 0;
+
+    var $backdrop = $('<div>').addClass('screamer-modal-backdrop');
+    var $modal = $('<div>').addClass('screamer-modal-container');
+    
+    if (config.backgroundColor) {
+        $modal.css('background-color', config.backgroundColor);
+    }
+    if (config.textColor) {
+        $modal.css('color', config.textColor);
+    }
+
+    var transitionString = 'opacity ' + config.fadeInDuration + 's ease';
+    $backdrop.css('transition', transitionString);
+    $modal.css('transition', transitionString);
+
+    var $header = $('<div>').addClass('screamer-modal-header');
+    var $title = $('<div>').addClass('screamer-modal-title');
+    $header.append($title);
+
+    var $pagination = $('<div>').addClass('screamer-modal-pagination').hide();
+    var $prevBtn = $('<button>').addClass('screamer-modal-page-btn').text('<');
+    var $nextBtn = $('<button>').addClass('screamer-modal-page-btn').text('>');
+    var $pageInput = $('<input>').attr('type', 'number').attr('min', 1).addClass('screamer-modal-page-input');
+    var $pageTotal = $('<span>').addClass('screamer-modal-page-total');
+    
+    $pagination.append($prevBtn, $pageInput, $pageTotal, $nextBtn);
+    $header.append($pagination);
+
+    $modal.append($header);
+
+    var $body = $('<div>').addClass('screamer-modal-body');
+    $modal.append($body);
+
+    var isClosing = false;
+
+    function performClose() {
+        if (isClosing) return;
+        isClosing = true;
+
+        for (var j = 0; j < unseenPages.length; j++) {
+            if (unseenPages[j].modalId) {
+                localStorage.setItem('screamer_modal_seen_' + unseenPages[j].modalId, 'true');
+            }
+        }
+        
+        $backdrop.css('transition', 'opacity ' + config.fadeOutDuration + 's ease');
+        $modal.css('transition', 'opacity ' + config.fadeOutDuration + 's ease');
+        
+        $backdrop.removeClass('active');
+        $modal.removeClass('active');
+
+        setTimeout(function() {
+            $backdrop.remove();
+            $modal.remove();
+            if (typeof config.onClose === 'function') {
+                config.onClose();
+            }
+        }, config.fadeOutDuration * 1000);
+    }
+
+    var $btn;
+    if (config.showConfirm) {
+        $btn = $('<button>')
+            .addClass('screamer-modal-confirm')
+            .text(config.buttonText);
+        
+        if (config.accentColor) {
+            $btn.css('background-color', config.accentColor);
+        }
+        
+        $btn.on('click', function() {
+            if ($(this).prop('disabled')) return;
+            performClose();
+        });
+        $modal.append($btn);
+    }
+
+    var timerInterval;
+    var durationMs = config.duration ? config.duration * 1000 : 0;
+    var fadeOutMs = config.fadeOutDuration * 1000;
+    var startTime, endTime, fadeStartTime;
+    var hasTriggeredFade = false;
+    var timerActive = false;
+    var startTimeSet = false;
+    var isPaused = false;
+
+    var $timerContainer, $timerText, $pauseBtn, $progressTrack, $progressFill;
+
+    if (config.duration) {
+        $timerContainer = $('<div>').addClass('screamer-modal-timer-container');
+        $timerText = $('<span>').addClass('screamer-modal-timer-text');
+        
+        $pauseBtn = $('<button>').addClass('screamer-modal-pause-btn').html(
+            '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
+        );
+        
+        $timerContainer.append($timerText, $pauseBtn);
+
+        $progressTrack = $('<div>').addClass('screamer-modal-progress-track');
+        $progressFill = $('<div>').addClass('screamer-modal-progress-fill');
+
+        if (config.accentColor) {
+            $progressFill.css('background-color', config.accentColor);
+        }
+
+        $progressTrack.append($progressFill);
+        $modal.append($timerContainer, $progressTrack);
+
+        $pauseBtn.on('click', function() {
+            isPaused = !isPaused;
+            if (isPaused) {
+                $pauseBtn.html('<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>');
+                $timerText.css('opacity', '0.5');
+                $pauseBtn.data('pauseStart', Date.now());
+            } else {
+                $pauseBtn.html('<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>');
+                $timerText.css('opacity', '1');
+                
+                var pauseStart = $pauseBtn.data('pauseStart');
+                var pauseDuration = Date.now() - pauseStart;
+                startTime += pauseDuration;
+                endTime += pauseDuration;
+                fadeStartTime += pauseDuration;
+            }
+        });
+
+        var updateTimer = function() {
+            if (isClosing || !timerActive || isPaused) return;
+
+            var now = Date.now();
+            var remaining = endTime - now;
+            
+            if (now >= fadeStartTime && !hasTriggeredFade) {
+                hasTriggeredFade = true;
+                $backdrop.css('transition', 'opacity ' + config.fadeOutDuration + 's ease');
+                $modal.css('transition', 'opacity ' + config.fadeOutDuration + 's ease');
+                $backdrop.removeClass('active');
+                $modal.removeClass('active');
+            }
+
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                $backdrop.remove();
+                $modal.remove();
+                for (var k = 0; k < unseenPages.length; k++) {
+                    if (unseenPages[k].modalId) {
+                        localStorage.setItem('screamer_modal_seen_' + unseenPages[k].modalId, 'true');
+                    }
+                }
+                if (typeof config.onClose === 'function') {
+                    config.onClose();
+                }
+                return;
+            }
+
+            if (remaining < 1000) {
+                 $timerText.text(config.timerPrefix + ' < 1 second...');
+            } else {
+                 var secondsLeft = Math.ceil(remaining / 1000);
+                 var timeString = secondsLeft === 1 ? 'second' : 'seconds';
+                 $timerText.text(config.timerPrefix + ' ' + secondsLeft + ' ' + timeString + '...');
+            }
+
+            var percentage = Math.max(0, (remaining / durationMs) * 100);
+            $progressFill.css('width', percentage + '%');
+        };
+
+        timerInterval = setInterval(updateTimer, 30);
+    }
+
+    function adjustInputFontSize(el) {
+        var val = $(el).val().toString();
+        if (val.length >= 3) {
+            $(el).css('font-size', '10px');
+        } else if (val.length === 2) {
+            $(el).css('font-size', '12px');
+        } else {
+            $(el).css('font-size', '14px');
+        }
+    }
+
+    function renderPage(index, isInitialLoad) {
+        if (index > maxViewedIndex) {
+            maxViewedIndex = index;
+        }
+
+        var page = unseenPages[index];
+        
+        if (isInitialLoad) {
+            $title.html(page.title || '');
+            if (!page.title && unseenPages.length === 1 && !config.title) {
+                $title.hide();
+            } else {
+                $title.show();
+            }
+            $body.html(page.bodyText || '');
+        } else {
+            $title.addClass('fading');
+            $body.addClass('fading');
+            
+            setTimeout(function() {
+                $title.html(page.title || '');
+                if (!page.title && unseenPages.length === 1 && !config.title) {
+                    $title.hide();
+                } else {
+                    $title.show();
+                }
+
+                $body.html(page.bodyText || '');
+                
+                $title.removeClass('fading');
+                $body.removeClass('fading');
+            }, 200);
+        }
+
+        if (unseenPages.length > 1) {
+            $pagination.show();
+            $pageInput.val(index + 1);
+            adjustInputFontSize($pageInput);
+            $pageTotal.text('/ ' + unseenPages.length);
+            
+            $prevBtn.prop('disabled', index === 0);
+            $nextBtn.prop('disabled', index === unseenPages.length - 1);
+        }
+
+        var allPagesViewed = (maxViewedIndex >= unseenPages.length - 1);
+        var isLastPage = (index === unseenPages.length - 1);
+
+        var shouldShowTimer = true;
+        
+        if (config.autoClose === false && isLastPage) {
+            shouldShowTimer = false;
+        } else if (config.autoClose === false && unseenPages.length === 1) {
+             shouldShowTimer = false;
+        }
+
+        if (shouldShowTimer) {
+             if ($timerContainer) $timerContainer.show();
+             if ($progressTrack) $progressTrack.show();
+        } else {
+             if ($timerContainer) $timerContainer.hide();
+             if ($progressTrack) $progressTrack.hide();
+        }
+
+        if (config.requireAllPages && !allPagesViewed) {
+            if ($btn) $btn.prop('disabled', true);
+            timerActive = false;
+            if ($timerText) $timerText.text('Please review all notices to continue.');
+            if ($progressFill) $progressFill.css('width', '100%');
+        } else {
+            if ($btn) $btn.prop('disabled', false);
+            
+            if (shouldShowTimer) {
+                if (config.duration && !startTimeSet) {
+                    startTime = Date.now();
+                    endTime = startTime + durationMs;
+                    fadeStartTime = endTime - fadeOutMs;
+                    startTimeSet = true;
+                    timerActive = true;
+                    isPaused = false; 
+                } else if (config.duration) {
+                    timerActive = true;
+                }
+            } else {
+                timerActive = false;
+            }
+        }
+    }
+
+    $prevBtn.on('click', function() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderPage(currentIndex, false);
+        }
+    });
+
+    $nextBtn.on('click', function() {
+        if (currentIndex < unseenPages.length - 1) {
+            currentIndex++;
+            renderPage(currentIndex, false);
+        }
+    });
+
+    $pageInput.on('keydown', function(e) {
+        if (e.key === 'Enter') {
+            $(this).trigger('change');
+            $(this).blur();
+            return;
+        }
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    $pageInput.on('input', function() {
+        var valStr = $(this).val();
+        if (valStr !== '') {
+            var val = parseInt(valStr, 10);
+            if (val > unseenPages.length) {
+                $(this).val(unseenPages.length);
+            }
+        }
+        adjustInputFontSize(this);
+    });
+
+    $pageInput.on('change', function() {
+        var val = parseInt($(this).val(), 10);
+        if (isNaN(val) || val < 1) val = 1;
+        if (val > unseenPages.length) val = unseenPages.length;
+        $(this).val(val);
+        currentIndex = val - 1;
+        renderPage(currentIndex, false);
+    });
+
+    renderPage(currentIndex, true);
+
+    $('body').append($backdrop, $modal);
+
+    setTimeout(function() {
+        $backdrop.addClass('active');
+        $modal.addClass('active');
+    }, 10);
+};
+
+mw.loader.using('mediawiki.api').then(function() {
+    var wgPageName = mw.config.get('wgPageName').replace(/_/g, ' ');
+    var api = new mw.Api();
+
+    // schedule time is in seconds
+    api.get({
+        action: 'parse',
+        page: 'Template:NoticeImportant/List',
+        prop: 'text',
+        format: 'json'
+    }).done(function(data) {
+        if (!data || !data.parse || !data.parse.text) return;
+
+        var $content = $('<div>').html(data.parse.text['*']);
+        var $notices = $content.find('.screamer-notice-config');
+
+        if ($notices.length > 0) {
+            var validPages = [];
+            var requireAll = false;
+            var globalAutoClose = true;
+            var globalDuration = 8;
+            var globalPrefix = 'Auto-closing in';
+            var globalButtonText = 'Understood!';
+            var now = Date.now();
+
+            $notices.each(function() {
+                var $this = $(this);
+                var scheduleStr = $this.attr('data-schedule') || '0';
+                var revStr = $this.attr('data-revision') || '';
+                var targetPages = ($this.attr('data-target-pages') || '').split(',');
+                var isTarget = false;
+                var applicableScheduleVal = 0;
+
+                for (var i = 0; i < targetPages.length; i++) {
+                    var trimmedPage = targetPages[i].trim();
+                    if (trimmedPage === wgPageName) {
+                        isTarget = true;
+                        applicableScheduleVal = window.screamerParseSchedule(scheduleStr, trimmedPage);
+                        break;
+                    }
+                }
+
+                if (!isTarget) return;
+
+                var isScheduled = true;
+                if (applicableScheduleVal === -1) {
+                    isScheduled = false;
+                } else if (applicableScheduleVal > 0) {
+                    if (revStr.length >= 14) {
+                        var rY = parseInt(revStr.substring(0,4), 10);
+                        var rM = parseInt(revStr.substring(4,6), 10) - 1;
+                        var rD = parseInt(revStr.substring(6,8), 10);
+                        var rH = parseInt(revStr.substring(8,10), 10);
+                        var rMin = parseInt(revStr.substring(10,12), 10);
+                        var rS = parseInt(revStr.substring(12,14), 10);
+                        var revTime = Date.UTC(rY, rM, rD, rH, rMin, rS);
+                        var targetTime = revTime + (applicableScheduleVal * 1000);
+                        
+                        if (now < targetTime) {
+                            isScheduled = false;
+                        }
+                    }
+                }
+
+                if (isScheduled) {
+                    validPages.push({
+                        modalId: $this.attr('data-modal-id'),
+                        title: $this.find('.notice-title').html(),
+                        bodyText: $this.find('.notice-body').html()
+                    });
+
+                    if ($this.attr('data-require-all') === 'true') {
+                        requireAll = true;
+                    }
+                    if ($this.attr('data-auto-close') === 'false') {
+                        globalAutoClose = false;
+                    }
+                    if ($this.attr('data-duration')) {
+                        globalDuration = parseFloat($this.attr('data-duration'));
+                    }
+                    if ($this.attr('data-timer-prefix')) {
+                        globalPrefix = $this.attr('data-timer-prefix');
+                    }
+                    if ($this.attr('data-button-text')) {
+                        globalButtonText = $this.attr('data-button-text');
+                    }
+                }
+            });
+
+            if (validPages.length > 0 && window.triggerScreamerModal) {
+                window.triggerScreamerModal({
+                    pages: validPages,
+                    requireAllPages: requireAll,
+                    autoClose: globalAutoClose,
+                    duration: globalDuration,
+                    timerPrefix: globalPrefix,
+                    buttonText: globalButtonText
+                });
+            }
+        }
+    });
+});
+
+$(function() {
+    var $localNotices = $('.screamer-notice-config');
+    if ($localNotices.length > 0) {
+        setInterval(function() {
+            var now = Date.now();
+            $localNotices.each(function() {
+                var $this = $(this);
+                var $ticker = $this.find('.notice-ticker');
+                var scheduleStr = $this.attr('data-schedule') || '0';
+                var revStr = $this.attr('data-revision') || '';
+                var pagesStr = $this.attr('data-target-pages') || '';
+                var targetPagesArr = pagesStr.split(',');
+
+                if (pagesStr.indexOf(',') !== -1) {
+                    $this.find('.notice-target-label').text('Pages:');
+                } else {
+                    $this.find('.notice-target-label').text('Page:');
+                }
+
+                if (scheduleStr.indexOf(':') !== -1) {
+                    var htmlParts = [];
+                    for(var i=0; i<targetPagesArr.length; i++) {
+                        var p = targetPagesArr[i].trim();
+                        var sVal = window.screamerParseSchedule(scheduleStr, p);
+                        var sText = window.screamerGetStatusText(sVal, revStr, now);
+                        var colorClass = (sText === 'Active' || sText === 'Active (Immediate)') ? 'notice-ticker-active' : 'notice-ticker-wait';
+                        htmlParts.push('<div style="margin-bottom:2px;"><span style="color:#aaa;">' + p + ':</span> <span class="' + colorClass + '">' + sText + '</span></div>');
+                    }
+                    $ticker.html('<div style="display:inline-block; vertical-align:top; margin-top:-2px;">' + htmlParts.join('') + '</div>');
+                } else {
+                    var sVal = window.screamerParseStrict(scheduleStr);
+                    var sText = window.screamerGetStatusText(sVal, revStr, now);
+                    var colorClass = (sText === 'Active' || sText === 'Active (Immediate)') ? 'notice-ticker-active' : 'notice-ticker-wait';
+                    $ticker.html('<span class="' + colorClass + '">' + sText + '</span>');
+                }
+            });
+        }, 1000);
+    }
+});
+
+(function(window, $, mw) {
+    'use strict';
+
+    mw.hook('wikipage.content').add(function($content) {
+
+        var $selectorArea = $content.find('.front-page-selector');
+
+        if ($selectorArea.length) {
+            var modalId = 'fp_game_select_tip';
+
+            $selectorArea.off('click.gameSelector').on('click.gameSelector', 'a', function(e) {
+                var $link = $(this);
+                var targetUrl = $link.attr('href');
+                
+                var isImageLink = $link.find('img').length > 0 || $link.hasClass('image');
+
+                if (isImageLink) {
+                    localStorage.setItem('screamer_modal_seen_' + modalId, 'true');
+                    return;
+                }
+
+                if (targetUrl && window.triggerScreamerModal) {
+                    e.preventDefault();
+                    
+                    var linkText = $link.text().trim() || 'the game';
+
+                    window.triggerScreamerModal({
+                        title: 'By the way...',
+                        duration: 8,
+                        bodyText: "You can also tap the game's cover to visit its page.",
+                        showConfirm: true,
+                        buttonText: 'Understood!',
+                        modalId: modalId,
+                        timerPrefix: 'Redirecting to ' + linkText + ' in',
+                        onClose: function() {
+                            window.location.href = targetUrl;
+                        }
+                    });
+                }
+            });
+        }
+
+        var carousels = $content.find('.gallery-carousel');
+        carousels.each(function() {
+            initCarousel(this);
+        });
+
+        function initCarousel(carousel) {
+            if (carousel.dataset.loaded === 'true') return;
+            carousel.dataset.loaded = 'true';
+
+            var slides = carousel.querySelectorAll('.carousel-slide');
+            var defaultCaption = carousel.getAttribute('data-default-caption') || '';
+            var captionDisplay = carousel.querySelector('.carousel-caption');
+            var slidesContainer = carousel.querySelector('.carousel-slides');
+
+            if (!slidesContainer) return;
+
+            var currentIndex = 0;
+            var isAnimating = false;
+            var currentCaptionText = '';
+
+            var touchStartX = 0;
+            var touchEndX = 0;
+            var isMultiTouch = false;
+            var hasScrolled = false;
+            var swipeCount = 0;
+
+            if (slides.length === 0) return;
+
+            var captionText = document.createElement('span');
+            captionText.className = 'carousel-text';
+            if (captionDisplay) captionDisplay.appendChild(captionText);
+
+            if (slides.length > 1) {
+                if (captionDisplay) {
+                    var prevBtn = document.createElement('button');
+                    prevBtn.className = 'carousel-btn prev';
+                    prevBtn.innerHTML = '&#9664;';
+
+                    var nextBtn = document.createElement('button');
+                    nextBtn.className = 'carousel-btn next';
+                    nextBtn.innerHTML = '&#9654;';
+
+                    captionDisplay.insertBefore(prevBtn, captionText);
+                    captionDisplay.appendChild(nextBtn);
+
+                    var touchFlag = false;
+
+                    var setTouchFlag = function() {
+                        touchFlag = true;
+                    };
+
+                    var handleInteraction = function(direction) {
+                        if (!isAnimating) {
+                            if (direction === 'prev') {
+                                changeSlide(currentIndex > 0 ? currentIndex - 1 : slides.length - 1);
+                            } else {
+                                changeSlide(currentIndex < slides.length - 1 ? currentIndex + 1 : 0);
+                            }
+                        }
+
+                        if (touchFlag) {
+                            if (window.triggerScreamerModal) {
+                                window.triggerScreamerModal({
+                                    title: 'By the way...',
+                                    duration: 8,
+                                    bodyText: 'You can also swipe left or right on mobile to cycle photos in a gallery carousel.',
+                                    showConfirm: true,
+                                    buttonText: 'Understood!',
+                                    modalId: 'gallery_swipe_tip'
+                                });
+                            }
+                            touchFlag = false;
+                        }
+                    };
+
+                    prevBtn.addEventListener('touchstart', setTouchFlag, {passive: true});
+                    nextBtn.addEventListener('touchstart', setTouchFlag, {passive: true});
+
+                    prevBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        handleInteraction('prev');
+                    });
+
+                    nextBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        handleInteraction('next');
+                    });
+                }
+
+                var onWindowScroll = function() {
+                    hasScrolled = true;
+                };
+
+                carousel.addEventListener('touchstart', function(e) {
+                    if (e.touches.length > 1) {
+                        isMultiTouch = true;
+                        return; 
+                    }
+                    
+                    isMultiTouch = false;
+                    hasScrolled = false;
+                    touchStartX = e.touches[0].clientX;
+                    
+                    window.addEventListener('scroll', onWindowScroll);
+                }, {passive: false});
+
+                carousel.addEventListener('touchmove', function(e) {
+                    if (e.touches.length > 1 || isMultiTouch) {
+                        isMultiTouch = true;
+                        return;
+                    }
+
+                    if (e.cancelable) e.preventDefault();
+                    
+                    touchEndX = e.touches[0].clientX;
+                }, {passive: false});
+
+                carousel.addEventListener('touchend', function(e) {
+                    window.removeEventListener('scroll', onWindowScroll);
+
+                    if (isMultiTouch) return;
+
+                    if (hasScrolled) return;
+
+                    if (touchEndX === 0) {
+                        touchEndX = touchStartX;
+                    }
+
+                    handleSwipe();
+                    
+                    touchStartX = 0;
+                    touchEndX = 0;
+                }, {passive: false});
+            }
+
+            updateSlideContent(0);
+
+            function handleSwipe() {
+                if (isAnimating) return;
+                
+                var diffX = touchEndX - touchStartX;
+
+                if (Math.abs(diffX) < 50) return;
+
+                if (diffX > 0) {
+                    changeSlide(currentIndex > 0 ? currentIndex - 1 : slides.length - 1);
+                }
+                
+                if (diffX < 0) {
+                    changeSlide(currentIndex < slides.length - 1 ? currentIndex + 1 : 0);
+                }
+
+                swipeCount++;
+                if (swipeCount >= 2) {
+                    localStorage.setItem('screamer_modal_seen_gallery_swipe_tip', 'true');
+                }
+            }
+
+            function changeSlide(newIndex) {
+                var nextSlide = slides[newIndex];
+                var specificCaption = nextSlide.getAttribute('data-caption');
+                var nextCaptionText = specificCaption ? specificCaption : defaultCaption;
+                var textChanging = (nextCaptionText !== currentCaptionText);
+
+                isAnimating = true;
+
+                slidesContainer.classList.add('is-fading');
+                if (textChanging && captionText) {
+                    captionText.classList.add('is-fading');
+                }
+
+                setTimeout(function() {
+                    updateSlideContent(newIndex);
+
+                    slidesContainer.classList.remove('is-fading');
+                    if (textChanging && captionText) {
+                        captionText.classList.remove('is-fading');
+                    }
+
+                    setTimeout(function() {
+                        isAnimating = false;
+                    }, 300);
+                }, 300);
+            }
+
+            function updateSlideContent(index) {
+                for (var i = 0; i < slides.length; i++) {
+                    slides[i].style.display = 'none';
+                    slides[i].classList.remove('active');
+                }
+
+                slides[index].style.display = 'block';
+                slides[index].classList.add('active');
+
+                var currentSlide = slides[index];
+                var specificCaption = currentSlide.getAttribute('data-caption');
+                var newText = specificCaption ? specificCaption : defaultCaption;
+
+                if (captionText) {
+                    captionText.innerHTML = newText;
+                }
+                currentCaptionText = newText;
+                currentIndex = index;
+            }
+        }
+    });
+
+}(window, jQuery, mediaWiki));
+
 /* countdown */
 
 (function() {
@@ -382,7 +1209,8 @@
                                     var currentGear = App.state.modelGearState[App.state.activeModelId] || 'n';
                                     if (model.interiorGears && model.interiorGears[currentGear]) {
                                         var $view = $(selector); $view.find('img').remove();
-                                        $view.append($('<img>', { src: model.interiorGears[currentGear], alt: model.name + ' interior' }));
+
+                                        $view.append($('<img>', { src: model.interiorGears[currentGear], 'data-src': model.interiorGears[currentGear], loading: 'eager', alt: model.name + ' interior' }));
                                         $('.vva-interior-gear-controls .vva-gear-button').removeClass('vva-active');
                                         $('.vva-interior-gear-controls .vva-gear-button[data-gear="' + currentGear + '"]').addClass('vva-active');
                                         
@@ -396,7 +1224,8 @@
                             case 'info':
                                 $activeView = $('.vva-view[data-view-type="info"]').empty();
                                 var infoMediaData = model.liveries[activeLiveryId].display;
-                                var infoMediaTag = infoMediaData.type === 'video' ? '<video src="' + infoMediaData.src + '" autoplay loop muted playsinline ondragstart="return false;"></video>' : '<img src="' + infoMediaData.src + '" />';
+
+                                var infoMediaTag = infoMediaData.type === 'video' ? '<video src="' + infoMediaData.src + '" autoplay loop muted playsinline ondragstart="return false;"></video>' : '<img src="' + infoMediaData.src + '" data-src="' + infoMediaData.src + '" loading="eager" />';
                                 var statsHtml = '';
                                 if (model.stats) {
                                     $.each(model.stats, function(key, value) {
@@ -635,11 +1464,11 @@
                         if (App.state.modelLiveryState[modelId] === liveryId) return;
                         App.state.isTransitioning = true;
                         App.state.modelLiveryState[modelId] = liveryId;
-                           
+                            
                         App.updateVehiclePreviewIcon();
                         App.updateLiveryToggleButtonIcon(liveryId);
                         App.updateLiveryUI(modelId);
-                           
+                            
                         var model = App.vehicleData[modelId];
                         if (model && model.liveries && model.liveries[liveryId]) {
                              var newIconSrc = model.liveries[liveryId].carouselIcon;
@@ -665,8 +1494,9 @@
                     if (livery) iconSrc = livery.navIcon || livery.carouselIcon;
                     var $iconImg = $('.vva-nav-icon-vp-vehicle-preview img');
                     if ($iconImg.attr('src') !== iconSrc) {
-                        if (App.state.isInitializing) { $iconImg.attr('src', iconSrc).show(); return; }
-                        $iconImg.stop(true, true).fadeOut(200, function() { $(this).attr('src', iconSrc).fadeIn(200); });
+
+                        if (App.state.isInitializing) { $iconImg.attr('src', iconSrc).attr('data-src', iconSrc).show(); return; }
+                        $iconImg.stop(true, true).fadeOut(200, function() { $(this).attr('src', iconSrc).attr('data-src', iconSrc).fadeIn(200); });
                     }
                 },
                 setGear: function(gear) {
@@ -694,16 +1524,12 @@
 
                             var $oldImg = $activeInteriorView.find('img');
                             
-
-                            var $newImg = $('<img>', { src: newImgSrc, alt: model.name + ' interior ' + gear, });
+                            var $newImg = $('<img>', { src: newImgSrc, 'data-src': newImgSrc, loading: 'eager', alt: model.name + ' interior ' + gear, });
                             
-
                             $newImg.css({ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 2 });
                             
-
                             $activeInteriorView.append($newImg);
                             
-
                             $newImg.animate({ opacity: 1 }, 200, function() {
 
                                 if ($oldImg.length) {
@@ -831,7 +1657,8 @@
                     $app.html(appHtml);
                     App.elements.videoPlayerForward = $app.find('.vva-video-forward');
                     var $liveryButton = $app.find('.vva-nav-icon-ls-livery-select');
-                    $.each(App.teamData, function(teamId, team) { $liveryButton.append($('<img>', { src: team.teamLogo, 'data-team-id': teamId, style: 'display: none;' })); });
+
+                    $.each(App.teamData, function(teamId, team) { $liveryButton.append($('<img>', { src: team.teamLogo, 'data-src': team.teamLogo, loading: 'eager', 'data-team-id': teamId, style: 'display: none;' })); });
                 },
                 finishLoading: function() {
                     App.state.isInitializing = true;
@@ -1139,8 +1966,8 @@
                         if (item.dataAttrs) {
                             $.each(item.dataAttrs, function(key, val) { $btn.attr('data-' + key, val); });
                         }
-                        
-                        $btn.append($('<img>', { src: item.icon }));
+
+                        $btn.append($('<img>', { src: item.icon, 'data-src': item.icon, loading: 'eager' }));
                         $btn.append($('<div>', { class: 'vva-item-label', text: item.label }));
                         $track.append($btn);
                     });
@@ -1333,183 +2160,218 @@
 
 /* structured quote */
 
-$(function() {
-    function setupQuoteSync(wrapper) {
-        var $lines = wrapper.find('.quote-line');
-        var $audio = wrapper.find('audio');
+(function(window, $) {
+    'use strict';
 
-        if ($lines.length === 0 || $audio.length === 0) {
-            return;
-        }
+    $(function() {
+        function setupQuoteSync(wrapper) {
+            var $lines = wrapper.find('.quote-line');
+            var $audio = wrapper.find('audio');
 
-        var audio = $audio[0];
-
-        function updateLineVisibility() {
-            var currentTimeMs = audio.currentTime * 1000;
-            
-            var $activeLines = wrapper.find('.quote-page.is-active .quote-line');
-            if ($activeLines.length === 0) {
-                $activeLines = $lines;
-            }
-
-            $activeLines.each(function() {
-                var $line = $(this);
-                var lineTime = parseInt($line.data('time'), 10);
-
-                if (isNaN(lineTime)) {
-                    return;
-                }
-
-                if (currentTimeMs >= lineTime) {
-                    if (!$line.hasClass('is-visible')) {
-                        var fadeDuration = $line.data('fade');
-                        if (fadeDuration) {
-                            $line.css('transition-duration', parseInt(fadeDuration, 10) + 'ms');
-                        } else {
-                            $line.css('transition-duration', '');
-                        }
-                        $line.addClass('is-visible');
-                    }
-                } else {
-                    if ($line.hasClass('is-visible')) {
-                        $line.removeClass('is-visible');
-                    }
-                }
-            });
-        }
-        
-        wrapper.data('updateVisibilityFunc', updateLineVisibility);
-
-        $audio.on('play', function() {
-            wrapper.addClass('quote-is-playing');
-            updateLineVisibility();
-        });
-
-        $audio.on('pause', function() {
-            if (audio.currentTime === 0) {
-                wrapper.removeClass('quote-is-playing');
-            }
-        });
-
-        $audio.on('ended', function() {
-            wrapper.removeClass('quote-is-playing');
-        });
-
-        $audio.on('timeupdate', updateLineVisibility);
-        $audio.on('seeked', updateLineVisibility);
-
-        updateLineVisibility();
-    }
-
-    function setupQuotePagination(wrapper) {
-        var $pages = wrapper.find('.quote-page');
-        var $quoteBelow = wrapper.find('.structured-quote-below');
-        var totalPages = $pages.length;
-
-        if (totalPages <= 1) {
-            if (totalPages === 1) {
-                 $pages.addClass('is-active');
-            }
-            return;
-        }
-
-        var paginationHTML =
-            '<div class="structured-quote-pagination">' +
-            '<button class="page-prev" title="Previous page">&lt;</button>' +
-            '<div class="page-display">' +
-            '<input type="number" class="page-input" value="1" min="1" max="' + totalPages + '">' +
-            '<span>/ ' + totalPages + '</span>' +
-            '</div>' +
-            '<button class="page-next" title="Next page">&gt;</button>' +
-            '</div>';
-
-        var $soundDiv = $quoteBelow.find('.structured-quote-sound');
-        if ($soundDiv.length > 0) {
-            $soundDiv.before(paginationHTML);
-        } else {
-            $quoteBelow.append(paginationHTML);
-        }
-
-        var $pagination = $quoteBelow.find('.structured-quote-pagination');
-        var $prevBtn = $pagination.find('.page-prev');
-        var $nextBtn = $pagination.find('.page-next');
-        var $input = $pagination.find('.page-input');
-        var currentPage = 0;
-
-        function goToPage(pageIndex) {
-            if (pageIndex < 0 || pageIndex >= totalPages) {
+            if ($lines.length === 0 || $audio.length === 0) {
                 return;
             }
-            currentPage = pageIndex;
 
-            $pages.removeClass('is-active');
-            $pages.eq(currentPage).addClass('is-active');
+            var audio = $audio[0];
 
-            $input.val(currentPage + 1);
-            $prevBtn.prop('disabled', currentPage === 0);
-            $nextBtn.prop('disabled', currentPage === totalPages - 1);
+            function updateLineVisibility() {
+                var currentTimeMs = audio.currentTime * 1000;
+                
+                var $activeLines = wrapper.find('.quote-page.is-active .quote-line');
+                if ($activeLines.length === 0) {
+                    $activeLines = $lines;
+                }
+
+                $activeLines.each(function() {
+                    var $line = $(this);
+                    var lineTime = parseInt($line.data('time'), 10);
+
+                    if (isNaN(lineTime)) {
+                        return;
+                    }
+
+                    if (currentTimeMs >= lineTime) {
+                        if (!$line.hasClass('is-visible')) {
+                            var fadeDuration = $line.data('fade');
+                            if (fadeDuration) {
+                                $line.css('transition-duration', parseInt(fadeDuration, 10) + 'ms');
+                            } else {
+                                $line.css('transition-duration', '');
+                            }
+                            $line.addClass('is-visible');
+                        }
+                    } else {
+                        if ($line.hasClass('is-visible')) {
+                            $line.removeClass('is-visible');
+                        }
+                    }
+                });
+            }
             
-            var updateFunc = wrapper.data('updateVisibilityFunc');
-            if (updateFunc) {
-                updateFunc();
-            }
+            wrapper.data('updateVisibilityFunc', updateLineVisibility);
+
+            $audio.on('play', function() {
+                wrapper.addClass('quote-is-playing');
+                updateLineVisibility();
+            });
+
+            $audio.on('pause', function() {
+                if (audio.currentTime === 0) {
+                    wrapper.removeClass('quote-is-playing');
+                }
+            });
+
+            $audio.on('ended', function() {
+                wrapper.removeClass('quote-is-playing');
+            });
+
+            $audio.on('timeupdate', updateLineVisibility);
+            $audio.on('seeked', updateLineVisibility);
+
+            updateLineVisibility();
         }
 
-        $prevBtn.on('click', function() {
-            goToPage(currentPage - 1);
-        });
-
-        $nextBtn.on('click', function() {
-            goToPage(currentPage + 1);
-        });
-
-        $input.on('change', function() {
-            var newPage = parseInt($(this).val(), 10) - 1;
-            if (isNaN(newPage) || newPage < 0 || newPage >= totalPages) {
-                $(this).val(currentPage + 1);
+        function adjustInputFontSize(el) {
+            var val = $(el).val().toString();
+            if (val.length >= 3) {
+                $(el).css('font-size', '10px');
+            } else if (val.length === 2) {
+                $(el).css('font-size', '12px');
             } else {
-                goToPage(newPage);
+                $(el).css('font-size', '14px');
             }
-        });
-        
-        $input.on('keydown', function(e) {
-             if (e.key === 'Enter') {
-                 $(this).trigger('change');
-                 $(this).blur();
-             }
-        });
-
-        goToPage(0);
-    }
-
-    $('.structured-quote-wrapper').each(function() {
-        var $wrapper = $(this);
-        
-        setupQuotePagination($wrapper);
-        
-        var $soundDiv = $wrapper.find('.structured-quote-sound');
-
-        if ($soundDiv.length === 0) {
-            var $pages = $wrapper.find('.quote-page');
-            if ($pages.length > 0 && !$pages.hasClass('is-active')) {
-                 $pages.eq(0).addClass('is-active');
-            }
-            return;
         }
 
-        if ($soundDiv.find('audio').length > 0) {
-            setupQuoteSync($wrapper);
-            return;
+        function setupQuotePagination(wrapper) {
+            var $pages = wrapper.find('.quote-page');
+            var $quoteBelow = wrapper.find('.structured-quote-below');
+            var totalPages = $pages.length;
+
+            if (totalPages > 999) {
+                totalPages = 999;
+            }
+
+            if (totalPages <= 1) {
+                if (totalPages === 1) {
+                     $pages.addClass('is-active');
+                }
+                return;
+            }
+
+            var paginationHTML =
+                '<div class="structured-quote-pagination">' +
+                '<button class="page-prev" title="Previous page">&lt;</button>' +
+                '<div class="page-display">' +
+                '<input type="number" class="page-input" value="1" min="1" max="' + totalPages + '">' +
+                '<span>/ ' + totalPages + '</span>' +
+                '</div>' +
+                '<button class="page-next" title="Next page">&gt;</button>' +
+                '</div>';
+
+            var $soundDiv = $quoteBelow.find('.structured-quote-sound');
+            if ($soundDiv.length > 0) {
+                $soundDiv.before(paginationHTML);
+            } else {
+                $quoteBelow.append(paginationHTML);
+            }
+
+            var $pagination = $quoteBelow.find('.structured-quote-pagination');
+            var $prevBtn = $pagination.find('.page-prev');
+            var $nextBtn = $pagination.find('.page-next');
+            var $input = $pagination.find('.page-input');
+            var currentPage = 0;
+
+            function goToPage(pageIndex) {
+                if (pageIndex < 0 || pageIndex >= totalPages) {
+                    return;
+                }
+                currentPage = pageIndex;
+
+                $pages.removeClass('is-active');
+                $pages.eq(currentPage).addClass('is-active');
+
+                $input.val(currentPage + 1);
+                adjustInputFontSize($input);
+                $prevBtn.prop('disabled', currentPage === 0);
+                $nextBtn.prop('disabled', currentPage === totalPages - 1);
+                
+                var updateFunc = wrapper.data('updateVisibilityFunc');
+                if (updateFunc) {
+                    updateFunc();
+                }
+            }
+
+            $prevBtn.on('click', function() {
+                goToPage(currentPage - 1);
+            });
+
+            $nextBtn.on('click', function() {
+                goToPage(currentPage + 1);
+            });
+
+            $input.on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    $(this).trigger('change');
+                    $(this).blur();
+                    return;
+                }
+                if (e.ctrlKey || e.metaKey || e.altKey) return;
+                if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            $input.on('input', function() {
+                var valStr = $(this).val();
+                if (valStr !== '') {
+                    var val = parseInt(valStr, 10);
+                    if (val > totalPages) {
+                        $(this).val(totalPages);
+                    }
+                }
+                adjustInputFontSize(this);
+            });
+
+            $input.on('change', function() {
+                var val = parseInt($(this).val(), 10);
+                if (isNaN(val) || val < 1) val = 1;
+                if (val > totalPages) val = totalPages;
+                $(this).val(val);
+                goToPage(val - 1);
+            });
+
+            goToPage(0);
         }
 
-        var checkInterval = setInterval(function() {
+        $('.structured-quote-wrapper').each(function() {
+            var $wrapper = $(this);
+            
+            setupQuotePagination($wrapper);
+            
+            var $soundDiv = $wrapper.find('.structured-quote-sound');
+
+            if ($soundDiv.length === 0) {
+                var $pages = $wrapper.find('.quote-page');
+                if ($pages.length > 0 && !$pages.hasClass('is-active')) {
+                     $pages.eq(0).addClass('is-active');
+                }
+                return;
+            }
+
             if ($soundDiv.find('audio').length > 0) {
-                clearInterval(checkInterval);
                 setupQuoteSync($wrapper);
+                return;
             }
-        }, 100);
+
+            var checkInterval = setInterval(function() {
+                if ($soundDiv.find('audio').length > 0) {
+                    clearInterval(checkInterval);
+                    setupQuoteSync($wrapper);
+                }
+            }, 100);
+        });
     });
-});
+}(window, jQuery));
 
 /* notification panel */
 
@@ -1520,7 +2382,7 @@ $(function() {
     const App = {
         config: {
             title: "Notification Panel",
-            version: "v1.07",
+            version: "v1.09",
             tabNames: {
                 'sn-page-news': 'News',
                 'sn-page-menu': 'Menu',
@@ -1914,8 +2776,17 @@ $(function() {
 
             const $snippetClone = $content.find('.sn-snippet-content').clone();
             const $expandedClone = $content.find('.sn-expanded-content').clone();
+            
+            // Remove control elements
             $expandedClone.find('#sn-read-more-visibility, #sn-live-mode, #sn-notify-on-change').remove();
-            App.state.currentContentHash = App.simpleHash($snippetClone.html() + $expandedClone.html());
+            
+            // Normalize whitespace AND STRIP COMMENTS
+           const rawContent = ($snippetClone.html() + $expandedClone.html())
+           .replace(new RegExp("\\x3C!--[\\s\\S]*?-->", "g"), "")
+           .replace(/\s+/g, ' ')
+           .trim();
+                
+            App.state.currentContentHash = App.simpleHash(rawContent);
 
             const editorModeIndicatorHTML = (App.state.isEditor && !App.state.currentLiveStatus) ? `<span class="sn-editor-mode">(Editor Mode)</span>` : '';
             const readMoreButtonHTML = $content.find('#sn-read-more-visibility').text().trim().toLowerCase() !== 'n' ? `<div id="sn-read-more" class="sn-nav-button">Read More</div>` : '';

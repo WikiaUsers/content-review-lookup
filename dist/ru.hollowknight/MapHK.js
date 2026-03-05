@@ -762,7 +762,7 @@ mw.hook('wikipage.content').add(function() {
         L.marker([1169.0, 1583.0], {icon: imantisclaw}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Клешня богомола">Клешня богомола</a>').openPopup().addTo(gSpos);
         L.marker([2181.0, 3183.0], {icon: icrystalheart}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Кристальное сердце">Кристальное сердце</a>').openPopup().addTo(gSpos);
         L.marker([550.0, 1630.0], {icon: imonarchwings}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Монаршие крылья">Монаршие крылья</a>').openPopup().addTo(gSpos);
-        L.marker([924.0, 3170.0], {icon: iismatear}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Слеза Измы">Слеза Измы</a>').openPopup().addTo(gSpos);
+        L.marker([866.0, 3149.0], {icon: iismatear}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Слеза Измы">Слеза Измы</a>').openPopup().addTo(gSpos);
         L.marker([70.0, 3415.0], {icon: ishadecloak}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Теневая накидка">Теневая накидка</a>').openPopup().addTo(gSpos);
         L.marker([1076.0, 3997.0], {icon: ikingbrand}).bindPopup('<a href="https://hollowknight.fandom.com/ru/wiki/Тавро Короля">Тавро Короля</a>').openPopup().addTo(gSpos);
        }

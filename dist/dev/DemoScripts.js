@@ -40,10 +40,10 @@
             styles: 'MediaWiki:ActivityFeedMimic.css'
         },
 
-		AddSocialActivityButton: {
-			page: 'AddSocialActivityButton',
-			scripts: 'MediaWiki:AddSocialActivityButton.js'
-		},
+        AddSocialActivityButton: {
+            page: 'AddSocialActivityButton',
+            scripts: 'MediaWiki:AddSocialActivityButton.js'
+        },
 
         BackToTopButton: {
             page: 'BackToTopButton',
@@ -94,8 +94,8 @@
         },
 
         CheapTooltip: {
-        	page: 'CheapTooltip',
-        	styles: 'MediaWiki:CheapTooltip.css'
+            page: 'CheapTooltip',
+            styles: 'MediaWiki:CheapTooltip.css'
         },
 
         CodeblockLineNumbers: {
@@ -111,6 +111,11 @@
         Contextlink: {
             selector: '.context-link',
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
+        },
+        
+        Converse: {
+            page: 'Global_Lua_Modules/Converse',
+            styles: 'MediaWiki:Global_Lua_Modules/Converse.css'
         },
 
         CountdownRegular: {
@@ -301,8 +306,8 @@
         },
 
         GlitchText: {
-        	page: 'GlitchText',
-        	styles: 'MediaWiki:GlitchText.css'
+            page: 'GlitchText',
+            styles: 'MediaWiki:GlitchText.css'
         },
 
         GlobalNavDarkTheme: {
@@ -328,11 +333,6 @@
         Heimu: {
             page: 'Heimu',
             styles: 'MediaWiki:Heimu.css'
-        },
-
-        HorizontalMCF: {
-            page: 'HorizontalMCF',
-            styles: 'MediaWiki:HorizontalMCF.css'
         },
 
         HydraRevived: {
@@ -598,8 +598,8 @@
         },
         
         RelevantPrint: {
-        	page: 'RelevantPrint',
-        	styles: 'MediaWiki:RelevantPrint.css'
+            page: 'RelevantPrint',
+            styles: 'MediaWiki:RelevantPrint.css'
         },
 
         ResponsiveMobile: {
@@ -753,11 +753,6 @@
             styles: 'MediaWiki:TopGlobalNav.css'
         },
 
-        TransparentGlobalNav: {
-            page: "TransparentGlobalNav",
-            styles: "MediaWiki:TransparentGlobalNav.css"
-        },
-
         TZclock: {
             page: 'TZclock',
             scripts: 'MediaWiki:TZclock.js',
@@ -784,10 +779,10 @@
             scripts: ['MediaWiki:UserAvatarLink.js', 'MediaWiki:User_Avatar_Finder/code.js']
         },
 
-		UserProfilePopup: {
-			page: 'UserProfilePopup',
-			scripts: 'MediaWiki:UserProfilePopup.js'
-		},
+        UserProfilePopup: {
+            page: 'UserProfilePopup',
+            scripts: 'MediaWiki:UserProfilePopup.js'
+        },
 
         UserStatus: {
             page: 'User:SapphireSonata',
@@ -813,7 +808,6 @@
             page: 'GoogleDocsIntegrator',
             scripts: 'MediaWiki:GoogleDocsIntegrator.js'
         },
-        
 
         /* // Disabled in Favour of ProfileTags
         UserTags: {

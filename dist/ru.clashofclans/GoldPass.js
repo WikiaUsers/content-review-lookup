@@ -4,7 +4,7 @@
    * MagmaHound is one of the latest developers
    * 
    * Translated to RU by Flotiliya
-   * Last update 15.10.2025
+   * Last update 01.03.2026
 */
 
 $(document).ready(function() {
@@ -42,9 +42,12 @@ $(document).ready(function() {
 	$("span#valkRageHarness").html('<div id="valkRageInput">Вкл. ярость супервальк.? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Ур. спешного заклинания: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option></select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Ур. спешного заклинания: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Уровень яда: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option></select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Уровень яда: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option></select></div>');
+	// TH poison: Superseded by a toggle
+	// $("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">Ур. яда ратуши: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Ур. яда охотницы: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	$("span#PLpoisonSpellHarness").html('<div id="PLpoisonSpellInput">Ур. яда ядов. ящера: <select name="PLpoisonSpellLevel" id="PLpoisonSpellLevel"> <option value="0">0</option> <option value="1">1-4</option> <option value="2">5-9</option> <option value="3">10-14</option> <option value="4">15</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Ур. кристалла жизни: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#rageAuraHarness").html('<div id="rageAuraInput">Ур. кристалла ярости: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
@@ -131,6 +134,9 @@ $(document).ready(function() {
 	'</table></div>');
 	// Equipment-specific modifiers
 	$("span#darkCrownHarness").html('<div id="darkCrownInput" style="display:none;">Заряды темной короны: <select name="darkCrownStackLevel" id="darkCrownStackLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	// Crafted Defense-specific modifiers
+	$("span#heroBellDamageHarness").html('<div id="heroBellDamageInput">Ур. увел. урона колокола героев: <select name="heroBellDamageLevel" id="heroBellDamageLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
+	$("span#heroBellHPHarness").html('<div id="heroBellHPInput">Ур. увел. здоровья колокола героев: <select name="heroBellHPLevel" id="heroBellHPLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    // Auxillary array for wall HTKs
@@ -249,21 +255,21 @@ $(document).ready(function() {
         if (mode == "Attack") {
         	// Reset the values of defense-only items
             $("#rageTowerBoost, #valkRageBoost").prop("checked",false);
-            $("#poisonSpellLevel, #frostPotencyLevel").val("0").change();
+            $("#poisonSpellLevel, #frostPotencyLevel, #PLpoisonSpellLevel, #heroBellDamageLevel, #heroBellHPLevel").val("0").change();
         	// Disable defense-only items
-        	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
+        	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #PLpoisonSpellHarness, #heroBellDamageHarness, #heroBellHPHarness, #defenseModsOnly").css("display","none");
             // Enable all disabled items (except for hero gear inputs and hero ability toggle)
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
             // Re-initialize hero gear options
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
-            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel").val("0").change();
-        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
+            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel").val("0").change();
+        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle, #THpoisonSpellBoost").prop("checked",false);
         	// Disable offense-only items
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #torchAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
-            $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","block");
+            $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #PLpoisonSpellHarness, #heroBellDamageHarness, #heroBellHPHarness, #defenseModsOnly").css("display","block");
         }
     }
     function refreshHeroGear() {
@@ -353,6 +359,7 @@ $(document).ready(function() {
         "Перчатка гиганта": {level: 27, type: 1},
         "Мяч с шипами": {level: 27, type: 1},
         "Змеиный браслет": {level: 27, type: 1},
+        "Лошадка на палке": {level: 27, type: 1},
     	"Кукла-лучница": {level: 18, type: 0},
     	"Фиал невидимости": {level: 18, type: 0},
     	"Гигантская стрела": {level: 18, type: 0},
@@ -365,6 +372,7 @@ $(document).ready(function() {
     	"Железные штаны": {level: 18, type: 0},
         "Королевская гантель": {level: 18, type: 0},
         "Темная корона": {level: 27, type: 1},
+        "Метеоритный посох": {level: 27, type: 1},
     	"Книга вечности": {level: 1, type: 0}, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Кристалл жизни": {level: 18, type: 0},
     	"Кристалл ярости": {level: 18, type: 0},
@@ -378,6 +386,10 @@ $(document).ready(function() {
     	"Фиал спешки": {level: 18, type: 0},
     	"Копье-ракета": {level: 27, type: 1},
     	"Электросапоги": {level: 27, type: 1},
+    	"Снежинка": {level: 27, type: 1},
+    	"Огненное сердце": {level: 18, type: 0},
+    	"Огнедув": {level: 18, type: 0},
+    	"Шоковый бластер": {level: 18, type: 0},
     };
     // Equipment level penalty is a 2D array - first entry is for Common equipment, second entry for Epic equipment
 		var difficultyEquipLevelPenalty = [[0,0,0,0,3],[0,0,0,0,6]];
@@ -386,22 +398,25 @@ $(document).ready(function() {
     var heroGearOptions = [];
     switch (pageName) {
     	case ("Король варваров"):
-    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет"];
+    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Лошадка на палке"];
     		break;
     	case ("Королева лучниц"):
     		heroGearOptions = ["Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик"];
     		break;
     	case ("Принц миньонов"):
-    		heroGearOptions = ["Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона"];
+    		heroGearOptions = ["Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона", "Метеоритный посох"];
     		break;
      	case ("Хранитель"):
     		heroGearOptions = ["Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Факел героев"];
     		break;
     	case ("Королевский чемпион"):
-    		heroGearOptions = ["Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
+    		heroGearOptions = ["Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги", "Снежинка"];
+    		break;
+    	case ("Герцог Дракон"):
+    		heroGearOptions = ["Огненное сердце", "Огнедув", "Шоковый бластер"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Факел героев", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги"];
+    		heroGearOptions = ["Кукла-варвар", "Фиал ярости", "Землетрясущие ботинки", "Вампирские усы", "Перчатка гиганта", "Мяч с шипами", "Змеиный браслет", "Лошадка на палке", "Кукла-лучница", "Фиал невидимости", "Гигантская стрела", "Кукла-целительница", "Ледяная стрела", "Волшебное зеркало", "Солдатик", "Кукольные приспешники", "Сфера тьмы", "Железные штаны", "Королевская гантель", "Темная корона", "Метеоритный посох", "Книга вечности", "Кристалл жизни", "Кристалл ярости", "Книга исцеления", "Огненный шар", "Кукла-лавашар", "Факел героев", "Королевский кристалл", "Щит-искатель", "Кукла-всадник на кабане", "Фиал спешки", "Копье-ракета", "Электросапоги", "Снежинка", "Огненное сердце", "Огнедув", "Шоковый бластер"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -421,7 +436,7 @@ $(document).ready(function() {
 		toggleModifierMode();
  	});
 	// The below two functions disable the option for the other choice that the changed choice is picking
-    $("select#firstHeroGearChoice").change(function() {
+	$("select#firstHeroGearChoice").change(function() {
    		// Identify the choice to disable, and enable all other choices
   		var firstChoice = $("select#firstHeroGearChoice").val();
     	var choiceToDisable = $("select#secondHeroGearChoice option[value=" + firstChoice + "]");
@@ -480,7 +495,7 @@ $(document).ready(function() {
 	  $(this).attr("title", initialStr);
    });
    $(".AttackSpeed").each(function() {
-      var initialSpeed = $(this).text().replace(/с/g,"") * 1;
+      var initialSpeed = $(this).text().replace(/s/g,"") * 1;
       $(this).attr("title", initialSpeed);
    });
 	// I could reuse the GoldPass class for this one, but the modifier should deal entirely in numbers
@@ -541,8 +556,8 @@ $(document).ready(function() {
    function readTime(str) {
    		/* Check if the string contains "d" for days. If so,
        	set the days parameter equal to the number preceding it. */
-		if (str.includes("д") === true) {
-  			var daysIndex = str.indexOf("д");
+		if (str.includes("d") === true) {
+  			var daysIndex = str.indexOf("d");
   			var days = str.slice(0,daysIndex) * 1;
 		// Discard the string corresponding to days
   			var strHours = str.slice(daysIndex+1).trim();
@@ -553,24 +568,24 @@ $(document).ready(function() {
   		}
 		/* Check similarly if the string contains "h" for hours.
        	Similarly also for "m" (for minutes), "s" (for seconds). */
-  		if (strHours.includes("ч") === true) {
-  			var hoursIndex = strHours.indexOf("ч");
+  		if (strHours.includes("h") === true) {
+  			var hoursIndex = strHours.indexOf("h");
   			var hours = strHours.slice(0,hoursIndex) * 1;
   			var strMinutes = strHours.slice(hoursIndex+1).trim();
   		} else {
   			var hours = 0;
   			var strMinutes = strHours;
   		}
-  		if (strMinutes.includes("м") === true) {
-  			var minutesIndex = strMinutes.indexOf("м");
+  		if (strMinutes.includes("m") === true) {
+  			var minutesIndex = strMinutes.indexOf("m");
   			var minutes = strMinutes.slice(0,minutesIndex) * 1;
   			var strSeconds = strMinutes.slice(minutesIndex+1).trim();
   		} else {
   			var minutes = 0;
   			var strSeconds = strMinutes;
   		}
-  		if (strSeconds.includes("с") === true) {
-  			var secondsIndex = strSeconds.indexOf("с");
+  		if (strSeconds.includes("s") === true) {
+  			var secondsIndex = strSeconds.indexOf("s");
   			var seconds = strSeconds.slice(0,secondsIndex) * 1;
 		// no need to cut the string any more
   		} else {
@@ -599,22 +614,22 @@ $(document).ready(function() {
   		var seconds = time - 86400*days - 3600*hours - 60*minutes;
  
   		if (days != 0) {
-  			var outputDay = days + "д ";
+  			var outputDay = days + "d ";
   		} else {
   			var outputDay = "";
   		}
   		if (hours != 0) {
-  			var outputHour = hours + "ч ";
+  			var outputHour = hours + "h ";
   		} else {
   			var outputHour = "";
   		}
   		if (minutes != 0) {
-  			var outputMinute = minutes + "м ";
+  			var outputMinute = minutes + "m ";
   		} else {
   			var outputMinute = "";
   		}
   		if (seconds != 0) {
-  			var outputSecond = seconds + "с ";
+  			var outputSecond = seconds + "s ";
   		} else {
   			var outputSecond = "";
   		}
@@ -687,7 +702,7 @@ $(document).ready(function() {
    // When Submit button is pressed...
    $(".changeBonusButton").click(function() {
        // Change its text to "Update"
-      $(".changeBonusButton").text("Обновить");
+      $(".changeBonusButton").text("Update");
 	  // Create arrays for EXP gains to unload later if required
 	  var xpArray = [];
 	  // Catch-up times (for collectors) are based on the ratio of new build time to old build time.
@@ -1117,8 +1132,8 @@ $(document).ready(function() {
 	  // Add an array for Wall damage
 	  var wallDamageArray = [];
 	  // Two lookup arrays for the GW's life aura ability
-	  var auraPercentIncrease = [0,400,500,600,700,800,900,1000];
-	  var auraMaxHPIncrease = [0,330,420,510,600,690,780,870];
+	  var auraPercentIncrease = [0,500,600,750,900,1000,1100,1200];
+	  var auraMaxHPIncrease = [0,640,750,830,930,1010,1120,1200];
 	  // Another one for GW's rage aura ability
 	  var rageAuraPercentIncrease = [0,15,20,25,30,35,45,50];
 	  // Lookup array for GW's heroic torch speed boost
@@ -1129,9 +1144,15 @@ $(document).ready(function() {
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
 	  var apprenticeAuraPercentIncrease = [0,200,220,240,260];
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
-	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72,73];
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72,73,74];
+	  // Lookup for Poison Lizard attack rate decrease
+	  var plPoisonASMultiplier = [0,35,45,50,55];
 	  // And a lookup for haste speed increase
+	  // Level 7, which has no stat boosts, shares with level 6
 	  var hasteSpeedIncrease = [0,28,34,40,46,52,56];
+	  // Two lookup arrays for Hero Bell boosts
+	  var heroBellDPSIncrease = [0,4,5,7,8,10,11,13,14,16,17];
+	  var heroBellHPIncrease = [0,8,11,14,17,20,23,26,29,32,35];
 	  /* Hero Equipment stat dictionaries. We include one for each of the following:
 			1. DPS bonus (effectively adds to DPH, but we'll add raw DPS)
 			2. HP bonus
@@ -1153,43 +1174,55 @@ $(document).ready(function() {
 			"Перчатка гиганта": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,137,140,142,145,147,150,152,155,160],
 			"Мяч с шипами": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Змеиный браслет": [10,11,12,14,16,18,20,22,24,26,28,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75],
+			"Лошадка на палке": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Кукла-лучница": [28,37,46,54,61,68,78,88,99,110,120,127,134,140,145,150,154,159],
 			"Гигантская стрела": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Солдатик": [28,32,36,40,44,48,53,58,63,68,74,80,84,89,94,98,102,106,109,112,116,119,122,125,128,132,135],
 			"Кукольные приспешники": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
 			"Сфера тьмы": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
-			"Кристалл жизни": [11,13,16,18,20,22,24,26,31,35,42,46,51,55,59,64,68,73],
+			"Метеоритный посох": [13,17,21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,90,95,100,105,110,115,120,125],
+			"Кристалл жизни": [11,13,16,19,21,23,25,27,32,36,43,47,53,57,61,66,70,75],
 			"Кристалл ярости": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Огненный шар": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Кукла-лавашар": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
-			"Факел героев": [10,11,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45,48,51,54,57,60,63,66,69],
+			"Факел героев": [12,13,14,16,18,20,22,24,27,29,31,34,36,38,41,43,45,48,51,54,58,61,64,68,71,74,78],
 			"Королевский кристалл": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
 			"Ледяная стрела": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Фиал спешки": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
-			"Копье-ракета": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
+			"Копье-ракета": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
+			"Огненное сердце": [10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45],
+			"Шоковый бластер": [40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,90]
 		};
 		var dictHPBonus = {
 			"Кукла-варвар": [309,385,467,564,649,734,836,940,1045,1155,1265,1445,1755,2087,2444,2703,3093,3366],
 			"Землетрясущие ботинки": [209,244,278,313,348,383,418,452,522,677,831,986,1200,1500,1800,2100,2300,2500],
 			"Мяч с шипами": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
 			"Змеиный браслет": [150,300,450,600,750,900,1050,1200,1350,1500,1650,1800,1950,2100,2250,2400,2550,2700,2850,3000,3150,3300,3450,3600,3750,3900,4050],
+			"Лошадка на палке": [311,482,653,824,994,1165,1336,1507,1678,1849,2020,2191,2361,2532,2703,2874,3031,3189,3346,3504,3661,3819,3976,4134,4291,4449,4606],
 			"Фиал невидимости": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
 			"Гигантская стрела": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
 			"Кукла-целительница": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
 			"Волшебное зеркало": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
 			"Солдатик": [159,184,200,217,236,254,276,298,318,339,359,380,399,424,448,473,498,522,544,565,586,608,628,649,671,692,713],
-			"Сфера тьмы": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
-			"Железные штаны": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
-			"Темная корона": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
-			"Кристалл жизни": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
+			"Henchmen Puppet": Array(18).fill(500),
+			"Сфера тьмы": [588,603,617,631,647,661,675,690,719,766,813,859,906,953,1000,1046,1093,1140],
+			"Железные штаны": [850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550,1600,1650,1700],
+			"Королевская гантель": Array(18).fill(500),
+			"Темная корона": [550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1025,1050,1075,1100,1125,1150,1175,1200],
+			"Метеоритный посох": [558,587,615,644,673,702,730,759,788,817,845,874,903,932,960,989,1018,1047,1107,1139,1171,1205,1239,1273,1309,1345,1381],
+			"Кристалл жизни": [170,184,195,205,217,230,255,282,312,344,381,398,415,432,449,466,483,500],
 			"Книга исцеления": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Кукла-лавашар": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
-			"Факел героев": [30,35,37,40,45,47,50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,125],
+			"Факел героев": [35,40,42,45,50,52,55,60,63,66,71,74,77,82,85,88,93,96,99,104,107,110,115,118,121,126,137],
 			"Королевский кристалл": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Щит-искатель": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Кукла-всадник на кабане": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Копье-ракета": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
-			"Электросапоги": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
+			"Электросапоги": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
+			"Снежинка": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
+			"Огненное сердце": [900,1200,1450,1750,2000,2300,2600,2850,3150,3400,3700,4000,4250,4550,4800,5100,5450,5600],
+			"Огнедув": [500,700,900,1100,1300,1500,1700,1850,2000,2150,2300,2450,2600,2750,2900,3000,3050,3100],
+			"Шоковый бластер": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400]
 		};
 		var dictHPRecoveryBonus = {
 			"Кукла-варвар": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
@@ -1199,14 +1232,16 @@ $(document).ready(function() {
 			"Кукольные приспешники": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
 			"Железные штаны": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
 			"Книга исцеления": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
-			"Факел героев": [100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360],
+			"Факел героев": [110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,285,295,305,320,330,340,355,365,375,390],
 			"Королевский кристалл": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
-			"Кукла-всадник на кабане": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
+			"Кукла-всадник на кабане": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000],
+			"Огнедув": [150,250,350,450,550,650,750,850,950,1050,1150,1250,1300,1350,1400,1450,1500,1500],
+			"Шоковый бластер": [150,250,350,450,550,650,750,850,950,1050,1100,1150,1180,1210,1240,1270,1290,1300]
 		};
 		var dictASBonus = {
 			"Вампирские усы": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Змеиный браслет": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
-            "Королевская гантель": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,17],
+            "Королевская гантель": [6,7,7,8,9,9,10,11,11,12,13,13,14,15,15,16,17,18],
             "Темная корона": [1,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,11],
 			"Кристалл ярости": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Фиал спешки": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
@@ -1220,21 +1255,23 @@ $(document).ready(function() {
 		};
 		var dictAbilitySpeedBonus = { //Written in number of tenths
 			"Фиал ярости": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
+			"Лошадка на палке": [95,95,111,111,111,127,127,127,143,143,143,160,160,160,175,175,175,191,191,191,207,207,207,223,223,223,240],
 			"Фиал спешки": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
 			"Факел героев": [25,25,30,30,30,30,30,30,35,35,35,35,35,35,35,35,35,40,40,40,40,40,40,40,40,40,45] // Since the aura acts on GW himself, this is for all intents and purposes identical to an ability speed boost
 		};
 		var dictAbilityASBonus = { //Written in percent
+			"Лошадка на палке": [2,2,5,5,5,8,8,8,11,11,11,14,14,14,17,17,17,21,21,21,25,25,25,29,29,29,33],
 			"Фиал спешки": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
 		};
 		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)
 			"Перчатка гиганта": Array(27).fill("По площади (радиус 2.5 клетки)"),
-			"Копье-ракета": Array(27).fill("По площади (клетки 0.8 клетки)")
+			"Копье-ракета": Array(27).fill("По площади (радиус 0.8 клетки)")
 		};
 		// Lookup for the Dark Crown's boosts
 		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
 		// Difficulty lookups
-		var difficultyAttackPenalty = [0,3,6,10,10];
-		var difficultyDefenseBoost = [0,7,14,20,20];
+		var difficultyAttackPenalty = [0,0,0,5,10];
+		var difficultyDefenseBoost = [0,5,10,15,20];
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
 		// This is to be compatible with the dictionaries, which are also zero-indexed
@@ -1244,7 +1281,7 @@ $(document).ready(function() {
     		firstHeroGearLvl = $("select#firstHeroGearLevel").val();
       		secondHeroGearName = $("select#secondHeroGearChoice option:selected").text();
     		secondHeroGearLvl = $("select#secondHeroGearLevel").val();
-    		    		
+    		
     		// Modify by difficulty
     		firstHeroGearLvl = getEffectiveLevel(firstHeroGearName, firstHeroGearLvl);
     		secondHeroGearLvl = getEffectiveLevel(secondHeroGearName, secondHeroGearLvl);
@@ -1259,13 +1296,18 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
+		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
 		    }
 		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
 		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
@@ -1274,6 +1316,7 @@ $(document).ready(function() {
 		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
 			
 			var firstGearASBoost = 0;
 			var secondGearASBoost = 0;
@@ -1316,8 +1359,14 @@ $(document).ready(function() {
 		    // Expand this part later to add support for poison, etc.
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
+			/* Superseded by toggle
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
+			} */
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonMultiplier = 50/100;
+            	}
 			}
 			var poisonTowerMultiplier = 1;
 			if (poisonTowerCheckBox != null) {
@@ -1325,12 +1374,13 @@ $(document).ready(function() {
                 poisonTowerMultiplier = 75/100;
             	}
 			}
+			var plPoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100;
 			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
-				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier) < 1) {
+				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,plPoisonMultiplier) < 1) {
 					poisonUsed = true;
 				}
-				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
+				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,plPoisonMultiplier);
 			}
 			
 			// Frost: Compare the toggle (50%) and potency multipliers
@@ -1393,7 +1443,7 @@ $(document).ready(function() {
 				i++;
 				displaySpeed = newSpeed.toFixed(i) * 1;
 			}
-			$(this).text(displaySpeed + "с");
+			$(this).text(displaySpeed + "s");
 			if (initialSpeed == displaySpeed) {
 				$(this).removeClass("StatModified");
 				$(this).removeClass("StatPoisoned");
@@ -1416,11 +1466,12 @@ $(document).ready(function() {
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
 			var rageAuraLevel = $("#rageAuraLevel").val() * 1;
+			var heroBellDPSLevel = $("#heroBellDamageLevel").val() * 1;
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			var difficultyLevel = $("#difficultyModeBoost").val() * 1;
 			var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
-			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
+			var darkCrownLevel = getSpecialChoiceLevel("Dark Crown");
 			var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
@@ -1433,6 +1484,9 @@ $(document).ready(function() {
 		    }
 		    if (isNaN(rageAuraLevel) === true) {
 		    	rageAuraLevel = 0;
+		    }
+		    if (isNaN(heroBellDPSLevel) === true) {
+		    	heroBellDPSLevel = 0;
 		    }
 		    // Set the rage level to 4 if using Super Valkyrie Rage checkbox
 		    if (valkRageCheckBox != null) {
@@ -1451,6 +1505,7 @@ $(document).ready(function() {
 			var towerRageMultiplier = 1;
 			var auraRageMultiplier = 1;
 			var darkCrownMultiplier = 1;
+			var heroBellMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if (isBuilding === true) {
@@ -1482,11 +1537,14 @@ $(document).ready(function() {
 					auraRageMultiplier = (100 + auraBoost) / 100;
 				}
 			}
+			if (heroBellDPSLevel > 0) {
+				heroBellMultiplier = (100 + heroBellDPSIncrease[heroBellDPSLevel]) / 100;
+			}
 			// Dark crown boost
 			if (darkCrownLevel > -1) {
 				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
 			}
-			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier, darkCrownMultiplier);
+			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier,darkCrownMultiplier, heroBellMultiplier);
 			
 			// For hero ability damage increase, look it up from dictionary
 			var firstGearAbilityDI = 0;
@@ -1738,13 +1796,18 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
+		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
 		    }
 		    var freezeUsed = false;
 			var freezeCheckBox = document.getElementById("freezeBoost");
@@ -1767,6 +1830,13 @@ $(document).ready(function() {
 					poisonTowerUsed = true;
 				}
 			}
+			var THpoisonUsed = false;
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+					THpoisonUsed = true;
+				}
+			}
 			// Hard mode toggle overrides all other CSS
 			var hardModeUsed = false;
 			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
@@ -1775,7 +1845,7 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
-			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			poisonUsed = ((poisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed || THpoisonUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
@@ -1811,13 +1881,18 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+			/* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
+		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
 		    }
 		    var freezeUsed = false;
 			var freezeCheckBox = document.getElementById("freezeBoost");
@@ -1840,6 +1915,13 @@ $(document).ready(function() {
 					poisonTowerUsed = true;
 				}
 			}
+			var THpoisonUsed = false;
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+					THpoisonUsed = true;
+				}
+			}
 			// Hard mode toggle overrides all other CSS
 			var hardModeUsed = false;
 			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
@@ -1848,7 +1930,7 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
-			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			poisonUsed = ((poisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed || THpoisonUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
@@ -1940,21 +2022,30 @@ $(document).ready(function() {
 		    	rageAuraLevel = 0;
 		    }
 		    var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
-			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
+			var darkCrownLevel = getSpecialChoiceLevel("Dark Crown");
 			if (isNaN(darkCrownStacks) === true) {
 		    	darkCrownStacks = 0;
+		    }
+		    var heroBellDPSLevel = $("#heroBellDamageLevel").val() * 1;
+		    if (isNaN(heroBellDPSLevel) === true) {
+		    	heroBellDPSLevel = 0;
 		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
+		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
 		    }
 		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
 		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
@@ -1968,6 +2059,7 @@ $(document).ready(function() {
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
 			var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
@@ -1981,6 +2073,7 @@ $(document).ready(function() {
 			var towerRageMultiplier = 1;
 			var auraRageMultiplier = 1;
 			var darkCrownMultiplier = 1;
+			var heroBellMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if ($(this).hasClass("Building") === true) {
@@ -2012,11 +2105,14 @@ $(document).ready(function() {
 					auraRageMultiplier = (100 + auraBoost) / 100;
 				}
 			}
-            // Dark crown boost
+			// Dark crown boost
 			if (darkCrownLevel > -1) {
 				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
 			}
-            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier,darkCrownMultiplier);
+			if (heroBellDPSLevel > 0) {
+				heroBellMultiplier = (100 + heroBellDPSIncrease[heroBellDPSLevel]) / 100;
+			}
+            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier,darkCrownMultiplier,heroBellMultiplier);
 			// Now we adjust for hero abilities
 			var firstGearAbilityDI = 0;
 			var secondGearAbilityDI = 0;
@@ -2092,9 +2188,16 @@ $(document).ready(function() {
 			}
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
+			var PLpoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
+			/* Superseded by toggle
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
+			} */
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonMultiplier = 50/100;
+            	}
 			}
 			var poisonTowerMultiplier = 1;
 			if (poisonTowerCheckBox != null) {
@@ -2103,10 +2206,10 @@ $(document).ready(function() {
             	}
 			}
 			if ($(this).hasClass("Building") === false) {
-				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier) < 1) {
+				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,PLpoisonMultiplier) < 1) {
 					poisonUsed = true;
 				}
-				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
+				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,PLpoisonMultiplier);
 			}
 			var freezeMultiplier = 1;
 			var frostMultiplier = 1;
@@ -2221,9 +2324,14 @@ $(document).ready(function() {
 				apprenticePercent = 0;
 			}
 			var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
-			var darkCrownLevel = getSpecialChoiceLevel("Темная корона");
+			var darkCrownLevel = getSpecialChoiceLevel("Dark Crown");
 			if (isNaN(darkCrownStacks) === true) {
 		    	darkCrownStacks = 0;
+		    }
+		    var heroBellHPLevel = $("#heroBellHPLevel").val() * 1;
+		    var heroBellPercent = heroBellHPIncrease[heroBellHPLevel];
+		    if (isNaN(heroBellPercent) === true) {
+		    	heroBellPercent = 0;
 		    }
 			var calcPercentHP = baseHP * (1000 + auraPercent)/1000;
 			var calcMaxHP = baseHP + auraMaxHP;
@@ -2233,7 +2341,8 @@ $(document).ready(function() {
 			if (darkCrownLevel > -1) {
 				calcDarkCrownHP = baseHP * (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
 			}
-			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP,calcDarkCrownHP);
+			var calcHeroBellHP = baseHP * (100 + heroBellPercent)/100;
+			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP,calcDarkCrownHP,calcHeroBellHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
 			// Add the final value to HP array if required
 			if ($(this).hasClass("Decay")) {
@@ -2338,13 +2447,18 @@ $(document).ready(function() {
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
 		    }
+		    /* Superseded by toggle
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }
+		    } */
 		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
 		    if (isNaN(HHpoisonSpellLevel) === true) {
 		    	HHpoisonSpellLevel = 0;
+		    }
+		    var PLpoisonSpellLevel = $("#PLpoisonSpellLevel").val() * 1;
+		    if (isNaN(PLpoisonSpellLevel) === true) {
+		    	PLpoisonSpellLevel = 0;
 		    }
 		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
 		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
@@ -2359,6 +2473,7 @@ $(document).ready(function() {
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var THpoisonCheckBox = document.getElementById("THpoisonSpellBoost");
 			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var rageBoost = 0;
 			var hasteBoost = 0;
@@ -2434,16 +2549,25 @@ $(document).ready(function() {
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
-			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50,51];
+			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50,51,52];
 			// Also a small lookup for TH poison
-			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
+			// Superseded by toggle
+			// var THpoisonSpeedDebuff = [0,30,35,40,45,50];
+			var THpoisonSpeedDebuff = 0;
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonSpeedDebuff = 50;
+            	}
+			}
+			// and PL poison
+			var PLpoisonSpeedDebuff = [0,26,34,38,42];
 			var poisonTowerDebuff = 0;
 			if (poisonTowerCheckBox != null) {
 				if (poisonTowerCheckBox.checked === true) {
                 poisonTowerDebuff = 35;
             	}
 			}
-			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff);
+			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff,poisonTowerDebuff,PLpoisonSpeedDebuff[PLpoisonSpellLevel]);
 			poisonUsed = (poisonDebuff > 0);
 			
 			buffedSpeed = buffedSpeed * (100 - poisonDebuff) /100;
@@ -2520,7 +2644,7 @@ $(document).ready(function() {
             }
 		});
 		//Add a look-up array for wall HTK. Also define two variables to be used inside the loop here, and reset them afterwards
-		var wallHP = [100,200,400,800,1200,1800,2400,3000,3500,4000,5000,7000,8000,9000,10000,11000,12000,13000];
+		var wallHP = [100,200,400,800,1200,1800,2400,3000,3500,4000,5000,7000,8000,9000,10000,11000,12000,13000,14000];
 		var currentWallLevel = 0;
 		var currentWBLevel = 0;
 		$(".HTK").each(function() {
@@ -2765,10 +2889,10 @@ $(document).ready(function() {
     });
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
-        $(".changeBonusButton").text("Применить");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
+        $(".changeBonusButton").text("Apply");
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #torchAuraLevel, #poisonSpellLevel, #HHpoisonSpellLevel, #PLpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #heroBellDamageLevel, #heroBellHPLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost, #difficultyModeBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
-		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #resourceBoost, #clockBoost").prop("checked",false);
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #THpoisonSpellBoost, #eventShowcaseBoost, #resourceBoost, #clockBoost").prop("checked",false);
 		// Reinitialise the choices
 		$("select#modifierMode").val("Attack").change();
     	// Only toggle modifier mode if it is on the page
@@ -2788,7 +2912,7 @@ $(document).ready(function() {
 		});
 		$(".AttackSpeed").each(function() {
 			var returnInitial = $(this).attr("title");
-			$(this).text(returnInitial + "с");
+			$(this).text(returnInitial + "s");
 			$(this).removeClass("StatModified");
 			$(this).removeClass("StatFrozen");
             $(this).removeClass("StatPoisoned");

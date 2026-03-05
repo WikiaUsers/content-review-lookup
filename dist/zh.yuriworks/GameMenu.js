@@ -16,12 +16,6 @@ var GameMenuConfig = {
             elementType: 'li',
             displayText: '<a href="#">小游戏</a>',
             imageSelector: '.fullImageLink img'
-        },
-        {
-            appendTo: '.toolbar',
-            elementType: 'li',
-            displayText: '<a href="#">小游戏</a>',
-            imageSelector: '.modalContent img'
         }
     ],
     

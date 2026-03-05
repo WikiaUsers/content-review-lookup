@@ -33,6 +33,17 @@ mw.hook('wikipage.content').add(function($content) {
                     })
                  );
                 break;
+case 'PenginmodEmbeddedProject':
+                $this.html(
+                    $('<iframe>', {
+                        src: 'https://penguinmod' + '.com/' + id +'/embed?settings-button&addons=pause',
+                        css: css,
+                        frameborder: 0,
+                        scrolling: 'no',
+                        allowfullscreen: true
+                    })
+                 );
+                break;
         }
         $this.addClass('loaded');
     });

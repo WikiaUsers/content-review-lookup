@@ -46,56 +46,53 @@
 window.AddRailModule = [{prepend: true}];
 
 (function () {
-'use strict'; 
-function tryToPlay(audioEl) {
-    if (!audioEl) return; 
+    'use strict';
 
-    var maybePromise = audioEl.play();
-    if (maybePromise && typeof maybePromise.catch === 'function') {
-        maybePromise.catch(function (err) {
-            if (err.name !== 'AbortError') {
-                console.error('Audio play failed:', err);
-            }
-        });
-    }
-}
-
-document.addEventListener('click', function (event) {
-    var targetEl = event.target;
-    var wrapper = targetEl.closest('.jumper-container');
-
-    if (!wrapper) {
-        return; 
+    function tryToPlay(audioEl) {
+        if (!audioEl) return;
+        var maybePromise = audioEl.play();
+        if (maybePromise && typeof maybePromise.catch === 'function') {
+            maybePromise.catch(function (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Audio play failed:', err);
+                }
+            });
+        }
     }
 
-    var audioUrl = wrapper.getAttribute('data-audio-url');
-    if (!audioUrl) return;
+    document.addEventListener('click', function (event) {
+        var targetEl = event.target;
+        var wrapper = targetEl.closest('.jumper-container');
+        if (!wrapper) return;
 
-    if (!wrapper.audioTrack) {
-        var audio = new Audio(audioUrl);
-        wrapper.audioTrack = audio;
+        var audioUrl = wrapper.getAttribute('data-audio-url');
+        var jumpSpeed = wrapper.getAttribute('data-jump-speed') || '1s';
 
-        audio.addEventListener('ended', function () {
-            wrapper.classList.remove('is-jumping');
-        });
-    }
+        if (!audioUrl) return;
 
-    wrapper.audioTrack.currentTime = 0;
+        if (!wrapper.audioTrack) {
+            var audio = new Audio(audioUrl);
+            wrapper.audioTrack = audio;
+            audio.addEventListener('ended', function () {
+                wrapper.classList.remove('is-jumping');
+            });
+        }
 
-    wrapper.classList.add('is-jumping');
+        wrapper.audioTrack.currentTime = 0;
+        
+        wrapper.style.setProperty('--jump-duration', jumpSpeed);
+        wrapper.classList.add('is-jumping');
+        
+        tryToPlay(wrapper.audioTrack);
+    });
 
-    tryToPlay(wrapper.audioTrack);
-});
+    document.addEventListener('dblclick', function (event) {
+        var wrapper = event.target.closest('.jumper-container');
+        if (!wrapper) return;
+        if (!wrapper.audioTrack) return;
 
-document.addEventListener('dblclick', function (event) {
-    var wrapper = event.target.closest('.jumper-container');
-
-    if (!wrapper) return;
-    if (!wrapper.audioTrack) return;
-
-    wrapper.audioTrack.pause();
-    wrapper.audioTrack.currentTime = 0;
-
-    wrapper.classList.remove('is-jumping');
-});
+        wrapper.audioTrack.pause();
+        wrapper.audioTrack.currentTime = 0;
+        wrapper.classList.remove('is-jumping');
+    });
 })();

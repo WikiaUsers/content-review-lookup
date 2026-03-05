@@ -413,3 +413,38 @@ $(function() {
         }
     );
 });
+
+
+// Lockbox Spoiler Toggle Function
+window.toggleLockbox = function (header) {
+  var content = header.nextElementSibling;
+  var padlock = header.querySelector('.lockbox-padlock');
+  var icon = header.querySelector('.lockbox-icon');
+  if (!content || !padlock || !icon) return;
+
+  if (content.classList.contains('open')) {
+    content.classList.remove('open');
+    padlock.classList.remove('unlocked');
+    padlock.style.display = 'block';
+    icon.textContent = '🔒';
+  } else {
+    content.classList.add('open');
+    padlock.classList.add('unlocked');
+    icon.textContent = '🔓';
+    setTimeout(() => padlock.style.display = 'none', 600);
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-lockbox]').forEach(header => {
+    header.addEventListener('click', () => toggleLockbox(header));
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.lockbox-header').forEach(function (header) {
+    header.addEventListener('click', function () {
+      toggleLockbox(header.id);
+    });
+  });
+});

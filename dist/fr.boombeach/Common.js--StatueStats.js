@@ -72,7 +72,7 @@ $(document).ready(function() {
     // Gravure Artilleur dans Artéfacts.js
     // Ordre de bataille dans Artéfacts.js
 
-    $(".StatueStat, .TH, .TD, .TDA, .BD, .BDA, .AD, .Duration, .Soin, .Gen, .Production").each(function() {
+    $(".StatueStat, .Santé, .TD, .TDA, .BD, .BDA, .AD, .Duration, .Soin, .Gen, .Production").each(function() {
 	    var textValue = $(this).text().replace(/\s/g, "").replace(/,/g, ".");
 	    var initialValue = parseFloat(textValue) || 0;
 	    $(this).attr("data-base", initialValue); 
@@ -174,7 +174,7 @@ $(document).ready(function() {
             }
         });
 
-        $(".TH").each(function() {
+        $(".Santé").each(function() {
             var base = parseFloat($(this).attr("title")) || 0;
             var bonus = Math.round(base * (getTH / 100));
             var total = base + bonus;
@@ -295,8 +295,8 @@ $(document).ready(function() {
 		    var base = parseFloat($(this).attr("title")) || 0;
 		    var val = getGen;
 		    
-		    var bonusTotal = roundNum(1, base * (val / 100));
-		    var total = roundNum(1, base + bonusTotal);
+		    var bonusTotal = Math.floor(base * (val / 100));
+		    var total = Math.floor(base + bonusTotal);
 		
 		    if (val > 0) {
 		        $(this).html(base.toLocaleString() + '<span style="color: #ff66cc;"> +' + bonusTotal.toLocaleString() + '</span><br><b>' + total.toLocaleString() + '</b>');
@@ -330,7 +330,7 @@ $(document).ready(function() {
 	
 	    $("#IDInputOrdreBataille, #IDInputAdrenaline, #IDInputArtilleur, #IDInputAmpli1, #IDInputAmpli2, #IDInputAmpli3").val("0");
 	
-	    $(".TH, .TD, .TDA, .TS, .AD, .BDA, .BD, .BH, .Duration, .Soin, .Gen, .Production").each(function() {
+	    $(".Santé, .TD, .TDA, .TS, .AD, .BDA, .BD, .BH, .Duration, .Soin, .Gen, .Production").each(function() {
 	        var baseStat = $(this).attr("data-base");
 	        if (baseStat) {
 	            var unit = $(this).hasClass("Duration") ? " sec" : ($(this).hasClass("Soin") ? " PV" : "");

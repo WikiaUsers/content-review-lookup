@@ -11,9 +11,9 @@
     });
     function awaitElement() {
         return new Promise(function(resolve) {
-            const container = document.getElementById('user-tab__content');
+            const container = document.getElementById('user-panel__content');
             function callback() {
-                const match = container.querySelector('ul.user-tab__list');
+                const match = container.querySelector('ul.user-panel__list');
                 if (match !== null) {
                     observer.disconnect();
                     resolve(match);
@@ -39,10 +39,9 @@
             ]);
             $(element).append(
                 $('<li>', {
-                    class: 'user-tab__list-item',
+                    class: 'user-panel__list-item',
                     dir: 'auto',
                     html: $('<a>', {
-                        'class': 'wds-global-navigation__dropdown-link',
                         'data-label': 'account.sandbox',
                         href: mw.util.getUrl(conf.wgFormattedNamespaces[2] + ':' + conf.wgUserName + '/' + i18n.inContentLang().msg('sandbox-subpage').plain()),
                         text: i18n.msg('sandbox').plain()

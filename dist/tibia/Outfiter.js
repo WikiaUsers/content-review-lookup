@@ -111,7 +111,7 @@ $(function () {
       //245
       'Death_Phoenix', 'Soul_Phoenix', 'Gloom_Maw_(Mount)', 'Battle_Werewolf', 'Battlefrazzle',
       //250
-      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear'
+      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear', 'Guardian_Lion'
       //255
       
     ],
@@ -216,7 +216,7 @@ $(function () {
       //225
       'Martial_Artist', 'Necromancer', 'Illuminator', 'Bat_Knight', 'Feral_Trapper',
       //230
-      'Phoenix_Evoker'
+      'Phoenix_Evoker', 'Aerial_Disciple'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -257,7 +257,8 @@ $(function () {
 	  Winged_Druid: 8,
 	  Necromancer: 8,
 	  Bat_Knight: 8,
-      Phoenix_Evoker: 8
+      Phoenix_Evoker: 8,
+      Aerial_Disciple: 8
     },
     outfiter_sprites_walking = {
       //None: 2,
@@ -278,7 +279,8 @@ $(function () {
       Hireling_Trader: [1000, 100, 300, 100, 100, 100, 100, 100, 1000, 100, 100],
       Hireling_Cook: [2000, 100, 300, 100, 100, 100, 100, 100, 100, 200, 100],
       Hireling_Steward: [1000, 100, 100, 100, 200, 100, 100, 100, 1000, 100, 300, 100],
-      Hireling_Servant: [2000, 100, 100, 100, 2000, 100, 100, 100] //pingpong
+      Hireling_Servant: [2000, 100, 100, 100, 2000, 100, 100, 100], //pingpong
+      Aerial_Disciple: [500, 200, 200, 200, 200, 200, 200, 200]
     },
     outfiter_special_delays_moving = {
       Hireling_Banker: [2000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -386,7 +388,8 @@ $(function () {
 	  Primal_Demonosaur: true,
 	  Hell_Demonosaur: true,
 	  Alpha_Demonosaur: true,
-	  'Gloom_Maw_(Mount)': true
+	  'Gloom_Maw_(Mount)': true,
+	  Guardian_Lion: true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

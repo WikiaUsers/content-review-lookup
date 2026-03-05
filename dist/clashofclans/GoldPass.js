@@ -353,6 +353,7 @@ $(document).ready(function() {
         "Giant Gauntlet": {level: 27, type: 1},
         "Spiky Ball": {level: 27, type: 1},
         "Snake Bracelet": {level: 27, type: 1},
+        "Stick Horse": {level: 27, type: 1},
     	"Archer Puppet": {level: 18, type: 0},
     	"Invisibility Vial": {level: 18, type: 0},
     	"Giant Arrow": {level: 18, type: 0},
@@ -380,6 +381,9 @@ $(document).ready(function() {
     	"Rocket Spear": {level: 27, type: 1},
     	"Electro Boots": {level: 27, type: 1},
     	"Frost Flake": {level: 27, type: 1},
+    	"Fire Heart": {level: 18, type: 0},
+    	"Flame Blower": {level: 18, type: 0},
+    	"Stun Blaster": {level: 18, type: 0},
     };
     // Equipment level penalty is a 2D array - first entry is for Common equipment, second entry for Epic equipment
 		var difficultyEquipLevelPenalty = [[0,0,0,0,3],[0,0,0,0,6]];
@@ -388,7 +392,7 @@ $(document).ready(function() {
     var heroGearOptions = [];
     switch (pageName) {
     	case ("Barbarian King"):
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse"];
     		break;
     	case ("Archer Queen"):
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure"];
@@ -402,8 +406,11 @@ $(document).ready(function() {
     	case ("Royal Champion"):
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots", "Frost Flake"];
     		break;
+    	case ("Dragon Duke"):
+    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster"];
+    		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1161,6 +1168,7 @@ $(document).ready(function() {
 			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,137,140,142,145,147,150,152,155,160],
 			"Spiky Ball": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Snake Bracelet": [10,11,12,14,16,18,20,22,24,26,28,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75],
+			"Stick Horse": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Archer Puppet": [28,37,46,54,61,68,78,88,99,110,120,127,134,140,145,150,154,159],
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Action Figure": [28,32,36,40,44,48,53,58,63,68,74,80,84,89,94,98,102,106,109,112,116,119,122,125,128,132,135],
@@ -1175,13 +1183,16 @@ $(document).ready(function() {
 			"Royal Gem": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
 			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
-			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
+			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
+			"Fire Heart": [10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45],
+			"Stun Blaster": [40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,90]
 		};
 		var dictHPBonus = {
 			"Barbarian Puppet": [309,385,467,564,649,734,836,940,1045,1155,1265,1445,1755,2087,2444,2703,3093,3366],
 			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1200,1500,1800,2100,2300,2500],
 			"Spiky Ball": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
 			"Snake Bracelet": [150,300,450,600,750,900,1050,1200,1350,1500,1650,1800,1950,2100,2250,2400,2550,2700,2850,3000,3150,3300,3450,3600,3750,3900,4050],
+			"Stick Horse": [311,482,653,824,994,1165,1336,1507,1678,1849,2020,2191,2361,2532,2703,2874,3031,3189,3346,3504,3661,3819,3976,4134,4291,4449,4606],
 			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
 			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
@@ -1202,7 +1213,10 @@ $(document).ready(function() {
 			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
 			"Electro Boots": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
-			"Frost Flake": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
+			"Frost Flake": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
+			"Fire Heart": [900,1200,1450,1750,2000,2300,2600,2850,3150,3400,3700,4000,4250,4550,4800,5100,5450,5600],
+			"Flame Blower": [500,700,900,1100,1300,1500,1700,1850,2000,2150,2300,2450,2600,2750,2900,3000,3050,3100],
+			"Stun Blaster": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400]
 		};
 		var dictHPRecoveryBonus = {
 			"Barbarian Puppet": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
@@ -1214,7 +1228,9 @@ $(document).ready(function() {
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
 			"Heroic Torch": [110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,285,295,305,320,330,340,355,365,375,390],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
-			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
+			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000],
+			"Flame Blower": [150,250,350,450,550,650,750,850,950,1050,1150,1250,1300,1350,1400,1450,1500,1500],
+			"Stun Blaster": [150,250,350,450,550,650,750,850,950,1050,1100,1150,1180,1210,1240,1270,1290,1300]
 		};
 		var dictASBonus = {
 			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
@@ -1233,10 +1249,12 @@ $(document).ready(function() {
 		};
 		var dictAbilitySpeedBonus = { //Written in number of tenths
 			"Rage Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
+			"Stick Horse": [95,95,111,111,111,127,127,127,143,143,143,160,160,160,175,175,175,191,191,191,207,207,207,223,223,223,240],
 			"Haste Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
 			"Heroic Torch": [25,25,30,30,30,30,30,30,35,35,35,35,35,35,35,35,35,40,40,40,40,40,40,40,40,40,45] // Since the aura acts on GW himself, this is for all intents and purposes identical to an ability speed boost
 		};
 		var dictAbilityASBonus = { //Written in percent
+			"Stick Horse": [2,2,5,5,5,8,8,8,11,11,11,14,14,14,17,17,17,21,21,21,25,25,25,29,29,29,33],
 			"Haste Vial": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
 		};
 		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)

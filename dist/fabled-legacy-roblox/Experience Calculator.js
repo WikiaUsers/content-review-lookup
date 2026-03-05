@@ -100,9 +100,9 @@ var dungeonList = [
   { name: "Cursed Marshes: Normal", baseEXP: 23275 },
   { name: "Cursed Marshes: Expert", baseEXP: 46550 },
   { name: "Cursed Marshes: Chaos", baseEXP: 119000 },
-  { name: "Ragnarök's Descent: Normal", baseEXP: 341000 },
-  { name: "Ragnarök's Descent: Expert", baseEXP: 682000 },
-  { name: "Ragnarök's Descent: Chaos", baseEXP: 1820000 },
+  { name: "Ragnarök's Descent: Normal", baseEXP: 327000 },
+  { name: "Ragnarök's Descent: Expert", baseEXP: 654000 },
+  { name: "Ragnarök's Descent: Chaos", baseEXP: 1740000 },
   { name: "Thundering Peaks: Normal", baseEXP: 5120000 },
   { name: "Thundering Peaks: Expert", baseEXP: 10240000 },
   { name: "Thundering Peaks: Chaos", baseEXP: 30100000 },
@@ -213,15 +213,15 @@ createInputField({
 });
 
 // Boosts
-createCheckbox({ labelText: '<span style="font-family: Verdana, Arial;" class="calamity">Calamity</span> Mode Enabled', checkboxID: 'calamityBoost', boostValue: 0.7, hidden: true });
+createCheckbox({ labelText: 'Increase dungeon difficulty to <span class="calamity">Calamity</span>', checkboxID: 'calamityBoost', boostValue: 0.7, hidden: true });
 
-createCheckbox({ labelText: '<span style="font-family: Verdana, Arial;" class="hardcore">Hardcore</span> Mode Enabled', checkboxID: 'hardcoreBoost', boostValue: 0.4, hidden: false });
+createCheckbox({ labelText: 'Hardcore Mode activated', checkboxID: 'hardcoreBoost', boostValue: 0.4, hidden: false });
 
-createCheckbox({ labelText: 'With VIP Gamepass', checkboxID: 'VIPGamepass', boostValue: 0.2, hidden: false });
+createCheckbox({ labelText: 'VIP Gamepass activated', checkboxID: 'VIPGamepass', boostValue: 0.2, hidden: false });
 
-createCheckbox({ labelText: 'EXP Boost Enabled', checkboxID: 'EXPBoost', boostValue: 0.5, hidden: false });
+createCheckbox({ labelText: 'EXP Boost activated', checkboxID: 'EXPBoost', boostValue: 0.5, hidden: false });
 
-createCheckbox({ labelText: 'Weekend Boost Enabled', checkboxID: 'weekendBoost', boostValue: 0.5, hidden: false });
+createCheckbox({ labelText: 'Weekend Boost activated', checkboxID: 'weekendBoost', boostValue: 0.5, hidden: false });
 
 createInputField({ labelText: "Bonus EXP on a Ring (%)", inputFieldID: "ringSubstatBoost", min: 0, max: 18, placeholder: "0" });
 createSelectField({

@@ -45,6 +45,17 @@ mw.hook("wikipage.content").add(function() {
 			}
 		});
 	});
+	
+	// Template:Audio toggle
+	$(".t-audio").each(function() {
+		var toggle = $(this).attr("data-toggle");
+		if (toggle != "none") {
+			$(".t-audio-toggle-" + toggle).click(function () {
+				var audio = $(`.t-audio-toggle-${toggle} audio`)[0];
+				audio.paused ? audio.play() : audio.pause();
+			});
+		}
+	});
 });
 
 

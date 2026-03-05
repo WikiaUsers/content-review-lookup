@@ -27,11 +27,78 @@ window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExten
    using the word "collected" makes little sense.
    instead, we can use "found"
 */
-window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 found";
-window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You found all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
+window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "Đã tìm thấy $1/$2";
+window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Chúc mừng! Bạn đã tìm thấy toàn bộ <b>$1</b>/<b>$2</b> đánh dấu \"$3\" trên $4.";
 
 /* for [[dev:GlobalFileUsage]] */
 window.globalFileUsageConfig = {
     'lang': ['th', 'en', 'es'],
     'auto_show': false
 }
+
+/* for [[dev:LinkPreview]] */
+window.pPreview = $.extend(true, window.pPreview, {
+    RegExp: (window.pPreview || {}).RegExp || {},
+    tlen: 1000 
+});
+
+window.pPreview.RegExp.noinclude = [
+    ".NoLinkPreview", 
+    ".LinkPreview-ignore", 
+    ".quote", 
+    ".mw-ext-cite-error", 
+    ".error", 
+    ".references", 
+    ".reference", 
+    ".sup.reference", 
+    ".mw-countdown",
+    "blockquote"
+];
+
+mw.hook('wikipage.content').add(function() {
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1 && node.classList.contains('npage-preview')) {
+                    const img = node.querySelector('img');
+                    
+                    if (img) {
+                        const adjustImageSize = function() {
+                        	const ratio = img.naturalHeight / img.naturalWidth;
+                            const width = img.naturalWidth;
+                            //lightcone
+                            if (img.naturalHeight > img.naturalWidth) {
+                                img.style.width = 'auto'; 
+                                img.style.maxHeight = '185px'; 
+                                img.style.objectFit = 'contain'; 
+                                img.style.display = 'block';
+                                img.style.margin = '0 auto'; 
+                            }
+                            //item
+                            else if (ratio >= 0.8 && ratio <= 1.2) {
+                                img.style.width = 'auto';
+                                img.style.height = '140px';
+                                img.style.objectFit = 'contain';
+                                img.style.display = 'block';
+                                img.style.margin = '0 auto'; 
+                            }
+                            //banner
+                            else {
+                                img.style.width = '95%';
+                                img.style.height = 'auto';
+                            }
+                        };
+
+                        if (img.complete) {
+                            adjustImageSize();
+                        } else {
+                            img.onload = adjustImageSize;
+                        }
+                    }
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+});

@@ -91,3 +91,10 @@ addOnloadHook(checktimers);
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:RemoveLegacyThreads.js',
+    ]
+});
