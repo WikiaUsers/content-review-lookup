@@ -91,7 +91,7 @@ document.getElementsByClassName("fandom-community-header__background")[0].style.
 	'丛林':'url(https://static.wikia.nocookie.net/florrio/images/4/49/JungleBG1.svg/revision/latest/scale-to-width-down/185?cb=20240903143456&path-prefix=zh)',
 	'中心':'url(https://static.wikia.nocookie.net/florrio/images/5/5d/CentraliaBG.svg/revision/latest/scale-to-width-down/185?cb=20240903143806&path-prefix=zh)'
 	'蠕虫（地图）':'url(https://static.wikia.nocookie.net/florrio/images/3/3b/Wormmap.svg/revision/latest?cb=20250111063116&path-prefix=zh)'
-}[scene];
+}[scene];//此处有BUG
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -164,3 +164,23 @@ $.getJSON(mw.util.wikiScript("index"), {
 		if (w.light || w.dark) $(background).css('background-image', 'url(' + (mw.config.get('isDarkTheme') ? w.dark || w.light: w.light || w.dark) + ')');
 	}
 })();
+
+// 可选配置 — 留空则使用默认值 （AI代码，用于给每个新编辑的用户发规则）
+window.welcomeMessage = {
+  enabled: true,                  // 启用脚本
+  adminUsername: 'ExampleAdmin',  // 管理员用户名（对应 $4）
+  adminNickname: 'Example Admin', // 管理员展示名（对应 $3）
+  messageTitle: 'Welcome, $1!',   // 消息标题
+  // 消息正文（支持HTML和变量）
+  messageText: '$1 ，欢迎加入florr.io中文维基！\n在您开始编辑前，请认真阅读主页中的 Help:新人编辑者 与 Florr.io_中文维基:封禁标准。前者是对于新用户的建议与指引，后者是本维基的规则。感谢您的理解与支持，现在可以开始您的编辑了！',
+  debug: false,                   // 关闭调试日志
+  testAllEdits: false,            // 关闭测试模式（仅首次编辑触发）
+  preferTalk: false               // 优先使用消息墙
+};
+// 从dev服务器导入脚本
+importArticles({
+  type: 'script',
+  articles: [
+    'dev:MediaWiki:WelcomeMessage.js'
+  ]
+});

@@ -235,17 +235,22 @@
 mw.hook('wikipage.content').add(function() {
   document.querySelectorAll('.sprite-container').forEach(container => {
     const spriteSheet = container.getAttribute('data-sprite-sheet');
-    const totalFrames = parseInt(container.getAttribute('data-total-frames'), 10);
-    
-    const spriteHeight = 420;
-    let currentFrame = 0;
     const spriteFrame = container.querySelector('.sprite-frame');
     const prevBtn = container.querySelector('.prev-btn');
     const nextBtn = container.querySelector('.next-btn');
+    const totalFrames = parseInt(container.getAttribute('data-total-frames'), 10);
+
+    let currentFrame = 0;
+
+    // Use the width of the sprite-frame container as the frame width
+    const frameWidth = spriteFrame.offsetWidth;
+
+    spriteFrame.style.backgroundImage = `url('${spriteSheet}')`;
+    spriteFrame.style.backgroundRepeat = "no-repeat";
+    spriteFrame.style.backgroundPosition = "0 0";
 
     function updateSpritePosition() {
-      spriteFrame.style.backgroundImage = `url('${spriteSheet}')`;
-      spriteFrame.style.backgroundPosition = `center -${currentFrame * spriteHeight}px`;
+      spriteFrame.style.backgroundPosition = `-${currentFrame * frameWidth}px 0px`;
     }
 
     prevBtn.onclick = function() {

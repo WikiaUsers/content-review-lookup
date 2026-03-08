@@ -50,44 +50,6 @@ window.ajaxPages = ['Special:RecentChanges', 'Special:WikiActivity'];
 window.PurgeButtonText = 'Purge';
 
 // ---------------------------------------------------------------------
-//        IMPORTED SCRIPTS & STYLES
-// ---------------------------------------------------------------------
-
-/* importScriptPages-start */
-importArticles(
-    {
-        type: 'script',
-        articles: [
-            // Local placeholder (empty but harmless)
-            'MediaWiki:Common.js/Toggler.js',
-            /* Load custom link preview script */
-            'MediaWiki:LinkPreview.js',
-
-            // Dev Wiki tools
-            'u:dev:AjaxBatchDelete/code.2.js',
-            'u:dev:AjaxRC/code.js',
-            'u:dev:AllPagesHideRedirect/code.js',
-            'u:dev:AutoEditDropdown/code.js',
-            'u:dev:BackToTopButton/code.js',
-            'u:dev:Countdown/code.js',
-            'u:dev:ExternalImageLoader/code.js',
-            'u:dev:ListFiles/code.js',
-            'u:dev:PurgeButton/code.js',
-            'u:dev:ReferencePopups/code.js',
-            'u:dev:SignatureCheck/code.js',
-            'u:dev:ShowHide/code.js',
-            'u:dev:MediaWiki:AbuseLogRC.js',
-            'u:dev:FileUsageAuto-update/code.js'
-        ]
-    },
-    {
-        type: 'style',
-        article: 'u:dev:Highlight/code.css'
-    }
-);
-/* importScriptPages-end */
-
-// ---------------------------------------------------------------------
 //            USERNAME REPLACEMENT
 // Replaces {{USERNAME}} with the name of the user browsing the page.
 // Requires Template:USERNAME.
@@ -184,5 +146,16 @@ mw.loader.using(['mediawiki.util', 'jquery'], function () {
         fileLinksAutoUpdate();
     });
 });
+
+// ---------------------------------------------------------------------
+//          RIGHT RAIL MODULE
+// ---------------------------------------------------------------------
+
+window.AddRailModule = [
+    {
+        module: 'Template:RailModule',
+        prepend: true
+    }
+];
 
 // </syntax type="javascript">

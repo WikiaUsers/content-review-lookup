@@ -1264,7 +1264,7 @@ $(document).ready(function() {
 		// Lookup for the Dark Crown's boosts
 		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
 		// Difficulty lookups
-		var difficultyAttackPenalty = [0,0,0,5,10];
+		var difficultyAttackPenalty = [0,0,0,5,20];
 		var difficultyDefenseBoost = [0,5,10,15,20];
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1

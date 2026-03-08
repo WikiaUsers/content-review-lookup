@@ -331,7 +331,7 @@ function applyColorsToTableCells() {
 	        // assume this will be on the second part of the split (e.g. votechart-season-15)
 	        
 	        const season = parseInt(match[1], 10);
-	        const currentSeason = seasonInfo[season];
+	        const currentSeason = seasonsInfo[season];
 	        const currentPlayers = playersBySeason[season];
 	        var playerInfo = {};
 	        
@@ -362,19 +362,23 @@ function applyColorsToTableCells() {
                                 const matchedPlayer = currentPlayers.find(player => cellText.includes(player));
                                 // get team color
                                 if (matchedPlayer) {
-                                    if (!playerInfo.keys().contains(matchedPlayer)) {
+                                    // if player not in player info, add for reuse elsewhere
+                                    if (!(matchedPlayer in playerInfo)) {
                                         playerInfo[matchedPlayer] = {};
-                                        for (const [phase, teams] of currentSeason) {
-                                            for (const [team, teamInfo] of teams) {
+                                        for (const [phase, teams] of Object.entries(currentSeason)) {
+                                            for (const [team, teamInfo] of Object.entries(teams)) {
                                                 teamPlayers = teamInfo.players;
-                                                if (teamPlayers.includes(matchedPlayer)) {
+                                                teamColor = teamInfo.color;
+                                                if (matchedPlayer in teamPlayers) {
                                                     playerInfo[matchedPlayer].finalPhase = phase;
                                                     playerInfo[matchedPlayer].finalTeam = team;
-                                                    playerInfo[matchedPlayer].finalColorcolor;
+                                                    playerInfo[matchedPlayer].finalColor = teamColor;
                                                 }
                                             }
                                         }
+                                        console.log("color: ", teamColor);
                                     }
+                                    cell.style.color = playerInfo[matchedPlayer].finalColor;
                                 }
                             }
                         }

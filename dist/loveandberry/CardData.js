@@ -1,11 +1,11 @@
 window.cardList = [
   { "name": "Classic Cleopatra", 
-	"desc": "is a Hair & Makeup Card available during the Location Test and 2006 Autumn Collection circulation. Although it was excluded from the overseas roster, the Japanese-equivalent card can be used to scan due to its barcode series being particularly fixed among all localised versions.", 
+	"desc": "is a Hair & Makeup Card available during the location test and 2006 Autumn Collection circulation. Although it was excluded from the overseas roster, the Japanese-equivalent card can be used to scan due to its barcode series being particularly fixed among all localised versions.", 
 	"image": "https://static.wikia.nocookie.net/loveandberry/images/1/14/HL_003_SLTC.jpg",
 	"link": "https://loveandberry.fandom.com/wiki/Classic_Cleopatra"
   },	
   { "name": "Hat Of Grace", 
-	"desc": "is a Hair & Makeup Card available during the Location Test and 2006 Autumn Collection circulation. It is the only hair & makeup card that is best compatible with the Idol Stage as a hat-based type. Although it was excluded from the overseas roster, the Japanese-equivalent card can be used to scan due to its barcode series being particularly fixed among all localised versions.", 
+	"desc": "is a Hair & Makeup Card available during the location test and 2006 Autumn Collection circulation. It is the only hair & makeup card that is best compatible with the Idol Stage as a hat-based type. Although it was excluded from the overseas roster, the Japanese-equivalent card can be used to scan due to its barcode series being particularly fixed among all localised versions.", 
 	"image": "https://static.wikia.nocookie.net/loveandberry/images/e/e9/HL_005_SLTC.jpg",
 	"link": "https://loveandberry.fandom.com/wiki/Hat_Of_Grace"
   },
@@ -35,15 +35,25 @@ window.cardList = [
 	"link": "https://loveandberry.fandom.com/wiki/Marine_Hair"
   },
   { "name": "Ojouhin Check", 
-	"desc": "is a Dress Up Card available during the Location Test period, and is also included in the DS Collection set. It was never released outside of Japan, leaving its card call-out undubbed. The card is mostly versatile in three of the stages: Street Court, Fashion Street, and Disco.", 
+	"desc": "is a Dress Up Card available during the location test period, and is also included in the DS Collection set. It was never released outside of Japan, leaving its card call-out undubbed. The card is mostly versatile in three of the stages: Street Court, Fashion Street, and Disco.", 
 	"image": "https://static.wikia.nocookie.net/loveandberry/images/0/09/LD-002_SLTC.jpg",
 	"link": "https://loveandberry.fandom.com/wiki/Ojouhin_Check"
   },
   { "name": "Elegant Dress", 
-	"desc": "is a Dress Up Card available during the Location Test period, and as a secret card on the Finale Collection. It was never released outside of Japan, leaving its card call-out undubbed. This card is also Berry's gown at the Ball if she is the rival, albeit re-colored to blue. It has a perfect stage chemistry with the Ball, making it the best card to use for black and purple lucky colors among other ball cards.", 
+	"desc": "is a Dress Up Card available during the location test period, and as a secret card on the Finale Collection. It was never released outside of Japan, leaving its card call-out undubbed. This card is also Berry's gown at the Ball if she is the rival, albeit re-colored to blue. It has a perfect stage chemistry with the Ball, making it the best card to use for black and purple lucky colors among other ball cards.", 
 	"image": "https://static.wikia.nocookie.net/loveandberry/images/b/b6/ElegantDress_2008FC.jpg",
 	"link": "https://loveandberry.fandom.com/wiki/Elegant_Dress"
-  }, 
+  },
+  { "name": "Paradise Girl", 
+	"desc": "is a Dress Up Card available during the location test period. It was never released outside of Japan, leaving its card call-out undubbed. Another card with the same design, Vitamin Girl, presumably replaces this card.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/8/8e/Kamui_Kynn_LD023_SLTC.JPG",
+	"link": "https://loveandberry.fandom.com/wiki/Paradise_Girl"
+  },
+  { "name": "Dabokawa Overall", 
+	"desc": "is a Dress Up Card available during the location test period. It was never released outside of Japan, leaving its card call-out undubbed. The card is mostly versatile in either Street Court or Fashion Street. It has a great stage chemistry in both of those stages but this can be countered by stacking other perfect chemistry cards that matches the yellow lucky color given in the round.",
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/d/d8/Kamui_Kynn_LD010_SLTC.JPG",
+	"link": "https://loveandberry.fandom.com/wiki/Dabokawa_Overall"
+  },  
   { "name": "Lovely Strawberry", 
 	"desc": "is the first Dress Up Card released on the 2004 Autumn-Winter Collection. This card is primarily known to be associated with Love for the Idol Stage, paired up with Frilled Socks Low Heels. It is a strong card for Love as it can be used in many situations such as not having enough matching lucky color cards.", 
 	"image": "https://static.wikia.nocookie.net/loveandberry/images/e/e8/D001_2004AWC.jpg",
@@ -73,6 +83,161 @@ window.cardList = [
 	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This card is also known as Love's signature outfit. Its circulation spanned from 2004 to 2006, though it would return in Best Collection for its popularity.", 
 	"image": "https://static.wikia.nocookie.net/loveandberry/images/d/d8/D006_2004AWC.jpg",
 	"link": "https://loveandberry.fandom.com/wiki/Fitted_Tee_Girl"
+  },
+  { "name": "Metallic Down", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. A bold and spicy look with hints of staf motif, specifically designed for Berry. It is meant for the Street Court but it could be used at the Disco due to its great stage chemistry.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/f/f8/D007_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Metallic_Down"
+  },
+  { "name": "Fairy Leaf", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Another signature outfit for Berry at the Seaside Stage. It is often paired with Green Fairy Heels for their matching style brand and color.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/5/5c/D008_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Fairy_Leaf"
+  },  
+  { "name": "Sparkly Pearl Dress", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This card is well-known for being Berry's signature ball gown and paired with Jewelry Heels, an effective outfit combination that guarantees you a perfect score regardless of the chosen lucky color.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/7/7d/D009_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Sparkly_Pearl_Dress"
+  },
+  { "name": "Petite Parka Knit", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. A grown-up style featuring cyan parka and black denim shorts, with knitted sleeves as the main design point.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/2/29/D010_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Petite_Parka_Knit"
+  },
+  { "name": "Floral Hoop Dress", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Love can be seen wearing an orange recolor of this card at the Ball, if she is the rival.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/1/10/D011_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Floral_Hoop_Dress"
+  },
+  { "name": "Moon China", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. A Cheongsam-inspired dress with moon and star motifs. Cutie Red, an Appendix card, shares the same model as this card but recolored to red.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/6/67/D012_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Moon_China"
+  },
+  { "name": "Cool Rainbow", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Its' halter neck top and baggy pants combo seems to fit for both Street Court and Disco.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/1/12/D013_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Cool_Rainbow"
+  },
+  { "name": "Comfy Sweater", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Gal style completed with purple bordered off-shoulder knit and blue pleated skirt. Berry wears a recolored version of this at the Fashion Street if she is the rival.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/1/17/D014_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Comfy_Sweater"
+  },
+  { "name": "Candy Casual", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. It shines in its own stage - Fashion Street - and by pairing with Platform Pink Sneakers would create a solid coordination.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/7/78/D015_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Candy_Casual"
+  },
+  { "name": "Baggy Overall", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. An outfit meant for Love at the Street Court. Did you know that there's a recolored version of this card that goes unused in the game?", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/5/52/D016_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Baggy_Overall"
+  },
+  { "name": "Sporty Mix Jumper", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Stadium jumper for a sporty outwear, and a pair of velour pants for hard dance. Worn by Love in promotional images.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/2/25/D017_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Sporty_Mix_Jumper"
+  },
+  { "name": "Pineapple Summer", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. A tropical beachwear look to send you off to an island! Love wears a recolored version of this at the Seaside Stage if she is the rival.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/c/c9/D018_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Pineapple_Summer"
+  },
+  { "name": "Casual Pop", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Only appearing in its own debut collection, but comes back later in the 2006 Autumn Collection. The location test render of the card is missing a pair of heart sleeves.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/b/bc/D019_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Casual_Pop"
+  },
+  { "name": "Military Girl", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Only appearing in its own debut collection, but comes back later in the 2006 Autumn Collection. Remarkably, it made its way into the ranks of Best Collection.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/4/48/D020_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Military_Girl"
+  },
+  { "name": "Fancy Margaret", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. A flouncy dress in Oxeye daisy and polka dot motif. At the Idol Stage, match it with a yellow frilled socks low heels for additional dress up points.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/d/d9/D021_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Fancy_Margaret"
+  },
+  { "name": "Cutie Pink Dress", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Best known for Love's signature ball gown at the ball. Pink Ribbon Heels is the ideal footwear card to go with for the perfect dress up power.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/c/cf/D022_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Cutie_Pink_Dress"
+  },
+  { "name": "Active Parka", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Pretty basic, yet effective coordination with uniform colors. Add a pair of baggy half pants for a good balance between cute and tomboyish look.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/0/0e/D023_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Active_Parka"
+  },
+  { "name": "Sky Blue Dress", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This gown looks like the dresses you see in Western and historical films for outing. This is the card for Berry and matches in style with Love's Cutie Pink Dress.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/9/92/D024_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Sky_Blue_Dress"
+  },
+  { "name": "Sparkly Purple", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This two-piece outfit draws inspiration from Lolita fashion and spun into a popular Japanese idol outfit. This card is known to be paired up with Cross Ribbon.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/f/ff/D025_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Sparkly_Purple"
+  },
+  { "name": "Tropical Snow", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Berry wears a blue recolored version of this card at the seaside stage when she is the rival.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/9/91/D026_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Tropical_Snow"
+  },
+  { "name": "Refreshing Tiered Cami", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. The blue casual outfit look makes it an effective day wear at the mall and beach walk. Best known as Berry's signature outfit at the fashion street.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/0/09/D027_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Refreshing_Tiered_Cami"
+  },
+  { "name": "Lacy Frill", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Intricate lace and small ribbons as the design point to make the dress known that it's meant for the princess. Use Frilled Socks Low Heels with Miracle Foot Color for a baby doll princess look.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/3/31/D028_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Lacy_Frill"
+  },
+  { "name": "Honey Drape", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Draped gown, full of yellow and orange accent colors that remind you of sweet honey. It is a daring choice of the two colors.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/e/e5/D029_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Honey_Drape"
+  },
+  { "name": "Baby Baggy Style", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This style incorporates a baby tee and baggy pants, which is where the name of the style came from. Not too tight nor too loose, the heaviness of the outfit is balanced.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/8/82/D030_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Baby_Baggy_Style"
+  },
+  { "name": "Vitamin Girl", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. The strawberry patches on top of the yellow camisole are a nice touch for a bit of contrast. Did you know that there's a colorful version of this card?", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/0/04/D031_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Vitamin_Girl"
+  },
+  { "name": "Dolphin Queen", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This intertwining blue and white number has an unusual trait for having black as its' second lucky color. It is also Berry's first signature outfit at the seaside stage.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/c/c7/D032_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Dolphin_Queen"
+  },
+  { "name": "Kimono Flower", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. Get a lot of happiness flavor from this cheerleading outfit, derived from the Japanese and traditional Kimono wear. Match the card with a pair of Nadeshiko Thong Sandals for a full Japanese look.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/7/7e/D033_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Kimono_Flower"
+  },
+  { "name": "Baby Black Tee", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This card is also known as Love's signature outfit. Its circulation spanned from 2004 to 2006, though it would return in Best Collection for its popularity.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/8/88/D034_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Baby_Black_Tee"
+  },
+  { "name": "Sweet Apron", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. You can't deny the love that is happening all over this apron dress so go full out with this card when the chosen lucky color is pink or blue!", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/d/dc/D035_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Sweet_Apron"
+  },
+  { "name": "Pastel Logo One-Piece", 
+	"desc": "is a Dress Up Card released on the 2004 Autumn-Winter Collection. This card keeps it all simple with a white jacket, a black mini-dress and a pair of capri jeans mix for grown-up girls. Add a colorful pattern of letters to keep this mature-coordinated look from being boring.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/8/81/D036_2004AWC.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Pastel_Logo_One-Piece"
+  },
+  { "name": "Flowy Angel", 
+	"desc": "is a Dress Up Card that was released as an Appendix Card in May 2005 and February 2006 issue of Shogakukan. Prior to its appendix status, it was a location test card. It would eventually appear in the Best Collection roster due to its popularity.", 
+	"image": "https://static.wikia.nocookie.net/loveandberry/images/3/36/Shogakkukan_First_Grade_Flowy_Angel_2005.jpg",
+	"link": "https://loveandberry.fandom.com/wiki/Flowy_Angel"
   },
   { "name": "Pretty Pink Devil", 
 	"desc": "is a Dress Up Card released on the 2005 Autumn Collection. It was the only card in the main roster that was never released outside of Japan (presumably religious reason) and got replaced with a Shogakukan Appendix Card, Cutie Red.", 

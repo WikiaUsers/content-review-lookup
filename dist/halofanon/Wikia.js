@@ -33,6 +33,11 @@ function addMastheadTags() {
     rights["Ahalosniper"] = ["Admin"];
     rights["S-D379"] = ["Admin"];
     rights["Spartan-D042"] = ["Site Patrol"];
+    rights["UnggoyZealot"] = ["Site Patrol"];
+    rights["EvenManatee887"] = ["Site Patrol"];
+    rights["Delta Pistol"] = ["Site Patrol"];
+    rights["TheAussie1417"] = ["Site Patrol"];
+
  
   // END List of Accounts Given Extra User Rights Icons
  

@@ -17,6 +17,8 @@ window.AutoCreateUserPagesConfig = {
     notify: true
 };
 
+ /* == See others Gadgets: [[Special:Gadgets]] */
+
   /* ==== Search Bar for Change Log ==== */
 
 // Moved to [[MediaWiki:Gadget-ChangeLogFilter.js]].

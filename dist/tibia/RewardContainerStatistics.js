@@ -157,7 +157,7 @@ var reward_container_statistics_upload = function (success_callback) {
       data: {
         action: 'edit', title: 'TibiaWiki:Reward_Container_Statistics/Statistics', format: 'json',
         summary: 'merging/compressing', text: reward_container_statistics_string_comp,
-        token: mw.user.tokens.get('editToken'), basetimestamp: reward_container_statistics_basetimestamp, minor: 'minor'
+        token: mw.user.tokens.get('csrfToken'), basetimestamp: reward_container_statistics_basetimestamp, minor: 'minor'
       },
       error: function () { reward_container_statistics_end(errort, 2); },
       success: function (obj) {

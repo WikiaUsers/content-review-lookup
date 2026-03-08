@@ -1796,6 +1796,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"bondfire": {
+				"name": "Bondfire",
+				"colors": [
+					"elemental",
+					"valentine",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"bone": {
 				"name": "Bone",
 				"colors": [
@@ -5369,6 +5378,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"emberheart": {
+				"name": "Emberheart",
+				"colors": [
+					"elemental",
+					"valentine",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"emberruby": {
 				"name": "Ember Ruby",
 				"colors": [
@@ -6655,6 +6673,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"frankenplush": {
+				"name": "Frankenplush",
+				"colors": [
+					"spooky",
+					"purple",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"freesia": {
 				"name": "Freesia",
 				"colors": [
@@ -7628,6 +7655,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"stone"
 				],
 				"rarity": "rare"
+			},
+			"gong": {
+				"name": "Gong",
+				"colors": [
+					"music",
+					"yellow",
+					"black"
+				],
+				"rarity": "unbreedable"
 			},
 			"goodluck": {
 				"name": "Good Luck",
@@ -10446,6 +10482,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"loveelemental": {
+				"name": "Love Elemental",
+				"colors": [
+					"elemental",
+					"valentine",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"loveletter": {
 				"name": "Love Letter",
 				"colors": [
@@ -10510,6 +10555,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Loveshot",
 				"colors": [
 					"valentine",
+					"red",
+					"pink"
+				],
+				"rarity": "common"
+			},
+			"lovespark": {
+				"name": "Lovespark",
+				"colors": [
+					"elemental",
 					"red",
 					"pink"
 				],
@@ -15563,6 +15617,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"samba": {
+				"name": "Samba",
+				"colors": [
+					"elemental",
+					"rainbow",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"samurai": {
 				"name": "Samurai",
 				"colors": [
@@ -19026,6 +19089,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "super"
+			},
+			"tutu": {
+				"name": "Tutu",
+				"colors": [
+					"spooky",
+					"fey",
+					"pink"
+				],
+				"rarity": "unbreedable"
 			},
 			"twilight": {
 				"name": "Twilight",

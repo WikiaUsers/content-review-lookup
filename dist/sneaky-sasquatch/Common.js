@@ -241,21 +241,24 @@ try {
 	            }).done(function (e) {
 	                data  = e.query.recentchanges; // making it accessible
 	                let lb = {}; // emplty leaderboard object
+	                let edits = {}; //exmpty eobject for edit counts
 	                data.forEach(function(el, i){
 	                	const score = Math.abs(el.oldlen - el.newlen); // calculate diff
 	                	if (!(el.user in lb)) {
 	                		lb[el.user] = score; // adding user
+	                		edits[el.user] = 1;
 	                	} else {
 	                		lb[el.user] += score; // adding score to preexisting user
+	                		edits[el.user]++;
 	                	}
 	                });
 	                let rank = [];
 	                Object.entries(lb).sort((a, b) => b[1] - a[1]).forEach(function(el, i){
 	                	rank[i] = el[0];
 	                }); //thx u/4548826 on Stack Overflow. This sorts the scores and returns users in the rank array
-	                let res = "<p>The edit-a-than started on March 4th and will end on March 11th. Please review the <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_pages_announcement\">announcment</a>. The leaderboard is updated every 30 seconds.</p><table><thead><tr><td>User</td><td>Score (bytes changed)</td></tr></thead><tbody>"; // result var to be put inside table
+	                let res = "<p>The edit-a-than started on March 4th and will end on March 11th. Please review the <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_pages_announcement\">announcment</a>. The leaderboard is updated every 30 seconds.</p><table><thead><tr><td>User</td><td>Score (bytes changed)</td><td>Edits</td><td>Average edit size</td></tr></thead><tbody>"; // result var to be put inside table
 	                rank.forEach(function(el, i) { // add the user and score to the table
-	                	res += "<tr><td><a href=\"https://sneaky-sasquatch.fandom.com/wiki/User:" + el + "\">" + el + "</a></td><td>" + lb[el] + "</td></tr>";
+	                	res += "<tr><td><a href=\"https://sneaky-sasquatch.fandom.com/wiki/User:" + el + "\">" + el + "</a></td><td>" + lb[el] + "</td><td>" + edits[el] + "</td><td>" + Math.floor(lb[el] / edits[el]) + "</td></tr>";
 	                });
 	                document.body.innerHTML = res + `<tbody></table><style>
 	                thead {
@@ -274,10 +277,10 @@ try {
 	                }
 	                td {
 	                	border-width: 0;
-	                	padding-left: 3px !important; 
+	                	padding-left: 9px !important; 
 	                }
 	                tr {
-	                	border-raius: 20px !important;
+	                	border-radius: 20px !important;
 	                }
 	                </style>`; //close the table and add CSS
 	            });
