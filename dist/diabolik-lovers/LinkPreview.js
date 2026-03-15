@@ -6,7 +6,6 @@
 (function () {
     const api = new mw.Api();
     let popup = null;
-    let hideTimeout = null;
 
     function createPopup() {
         popup = document.createElement("div");
@@ -15,9 +14,9 @@
         popup.style.zIndex = "99999";
         popup.style.display = "none";
 
-        popup.addEventListener("mouseenter", () => clearTimeout(hideTimeout));
-        popup.addEventListener("mouseleave", () => {
-            hideTimeout = setTimeout(hidePopup, 150);
+        // Prevent closing when clicking inside popup
+        popup.addEventListener("click", event => {
+            event.stopPropagation();
         });
 
         document.body.appendChild(popup);
@@ -34,7 +33,7 @@
     }
 
     /* ------------------------------
-       Parse template from target page
+       Parse template
     ------------------------------ */
     function fetchTemplateData(title) {
         return api.get({
@@ -61,42 +60,41 @@
         if (popup) popup.style.display = "none";
     }
 
-    function showPopup(link, page, templateData) {
+    function showPopup(link, templateData) {
         if (!popup) createPopup();
 
-        const fallbackParagraph = page.extract || page.description || null;
-        const fallbackInfoboxImage = page.thumbnail ? page.thumbnail.source : null;
-
-        const title =
-            templateData.customTitle ||
-            page.title ||
-            link.textContent;
-
-        const extract =
-            templateData.customText ||
-            fallbackParagraph ||
-            "No preview available.";
-
-        const thumbnail =
-            (templateData.customImage ? `/wiki/Special:FilePath/${templateData.customImage}` : null) ||
-            fallbackInfoboxImage ||
-            null;
-
-        popup.innerHTML = `
-            <div class="mwe-popups-container">
-                ${thumbnail ? `
-                <div class="mwe-popups-thumbnail">
-                    <img src="${thumbnail}" />
-                </div>` : ""}
-                <div class="mwe-popups-content">
-                    <div class="mwe-popups-title"><strong>${title}</strong></div>
-                    <div class="mwe-popups-extract"><small>${extract}</small></div>
+        // No template fallback
+        if (!templateData || !templateData.customText) {
+            popup.innerHTML = `
+                <div class="mwe-popups-container">
+                    <div class="mwe-popups-content">
+                        <div class="mwe-popups-title"><strong>No preview available.</strong></div>
+                    </div>
                 </div>
-            </div>
-            <div class="mwe-popups-footer">
-                <a href="${link.href}" class="mwe-popups-readmore">Read more</a>
-            </div>
-        `;
+            `;
+        } else {
+            const title = templateData.customTitle;
+            const extract = templateData.customText;
+            const thumbnail = templateData.customImage
+                ? `/wiki/Special:FilePath/${templateData.customImage}`
+                : null;
+
+            popup.innerHTML = `
+                <div class="mwe-popups-container">
+                    ${thumbnail ? `
+                    <div class="mwe-popups-thumbnail">
+                        <img src="${thumbnail}" />
+                    </div>` : ""}
+                    <div class="mwe-popups-content">
+                        <div class="mwe-popups-title"><strong>${title}</strong></div>
+                        <div class="mwe-popups-extract"><small>${extract}</small></div>
+                    </div>
+                </div>
+                <div class="mwe-popups-footer">
+                    <a href="${link.href}" class="mwe-popups-readmore">Read more</a>
+                </div>
+            `;
+        }
 
         popup.style.display = "block";
 
@@ -112,22 +110,8 @@
     }
 
     function fetchPreview(title, link) {
-        Promise.all([
-            api.get({
-                action: "query",
-                prop: "extracts|pageimages|description",
-                exintro: 1,
-                explaintext: 1,
-                piprop: "thumbnail",
-                pithumbsize: 200,
-                titles: title,
-                format: "json"
-            }),
-            fetchTemplateData(title)
-        ]).then(([apiData, templateData]) => {
-            const pages = apiData.query.pages;
-            const page = pages[Object.keys(pages)[0]];
-            showPopup(link, page, templateData);
+        fetchTemplateData(title).then(templateData => {
+            showPopup(link, templateData);
         });
     }
 
@@ -137,15 +121,18 @@
         );
 
         links.forEach(link => {
-            link.addEventListener("mouseenter", () => {
-                clearTimeout(hideTimeout);
+            link.addEventListener("click", event => {
+                event.preventDefault();      // stop navigation
+                event.stopPropagation();     // prevent closing immediately
+
                 const title = getPageTitleFromLink(link);
                 if (title) fetchPreview(title, link);
             });
+        });
 
-            link.addEventListener("mouseleave", () => {
-                hideTimeout = setTimeout(hidePopup, 150);
-            });
+        // Clicking anywhere else closes the popup
+        document.addEventListener("click", () => {
+            hidePopup();
         });
     }
 

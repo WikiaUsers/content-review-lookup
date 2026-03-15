@@ -35,6 +35,33 @@
                 data: [
                     { title: "NICOZZ06", loc: "LOGISTICS", status: "WIKI MANAGER", desc: "Project Imperial Dawn Wiki Manager." }
                 ]
+            },
+            "Patreon": {
+                type: "pd_document", 
+                title: "PATREON & SUBSCRIPTIONS",
+                subtitle: "SUPPORT THE PROJECT // PRIORITY ACCESS",
+                sections: [
+                    { 
+                        header: "OVERVIEW", 
+                        content: "<strong>Hello!</strong> Thank you for exploring how you can support Project: Imperial Dawn.<br><br>We invite you to join us as a donor to help ensure the continued success of our mission.<br><br><strong>Where are the subscriptions located?</strong><br>• <strong>Tier I</strong> can be purchased in the main game store.<br>• <strong>Tier II+</strong> should be purchased on our official Patreon.<br><br><a href=\"https://www.patreon.com/6093610/join\" target=\"_blank\" style=\"display:inline-block; margin-top:10px; padding:12px 24px; background:rgba(0,229,255,0.1); border:1px solid var(--imp-blue); color:var(--imp-blue); text-decoration:none; font-weight:900; letter-spacing:2px; text-transform:uppercase; box-shadow:0 0 15px rgba(0,229,255,0.2);\">ACCESS PATREON PORTAL</a>" 
+                    },
+                    { 
+                        header: "TIER I - $4.99/MONTH", 
+                        content: "• Priority placement in wave review queue<br>• Earlier review window (different wave request channel access)<br>• Subscriber applicant role" 
+                    },
+                    { 
+                        header: "TIER II - $15.99/MONTH", 
+                        content: "• All Tier I benefits<br>• Placement on purge trooper waitlist<br>• Access to closed game testing<br>• Pre-development sneak peaks" 
+                    },
+                    { 
+                        header: "TIER III - $25.99/MONTH", 
+                        content: "• All Tier II benefits<br>• Access to senate building (when applicable)<br>• Participating in senate hearing and observations (non voting)<br>• Lore influence visibility (feedback considered)" 
+                    },
+                    { 
+                        header: "TIER IV - $49.99/MONTH", 
+                        content: "• All Tier III benefits<br>• Guaranteed placement on inquisitor waitlist<br>• Command visibility for force sensitive arcs" 
+                    }
+                ]
             }
         },
         "LORE": {
@@ -148,14 +175,16 @@
             "Locations": { 
                 type: "holomap", 
                 data: [
-                    { name: "UNKNOWN REGIONS", startAngle: 240, endAngle: 300, desc: "Uncharted Space // Galactic West", sub: [ { title: "UNKNOWN SIGNAL", image: "https://placehold.co/300x150/000/555?text=No+Data", status: "UNEXPLORED", stats: {"TERRAIN":"UNKNOWN", "SECTOR":"Unknown"}, bio: "No navigational data available. Long-range sensors detect anomalies. This sector has not yet been charted." } ] },
-                    { name: "BRAK SECTOR", startAngle: 300, endAngle: 330, desc: "Outer Rim // Brakespan", sub: [ { title: "EADU", image: "https://project-imperial-dawn.fandom.com/special:filepath/Eadu.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"STORMY MOUNTAINS", "SECTOR":"Brak"}, bio: "A storm-lashed world characterized by jagged peaks. Site of the Tarkin Initiative's Kyber research facility." } ] },
-                    { name: "CIRCUMTORE SECTOR", startAngle: 330, endAngle: 360, desc: "Expansion Region // Strategic Mining", sub: [ { title: "MIMBAN", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mimban.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"SWAMP/MUD FLATS", "SECTOR":"Circumtore"}, bio: "A dark, mineral-rich world perpetually shrouded in fog. Critical mining infrastructure for the Imperial war machine." } ] },
-                    { name: "MANDALA SECTOR", startAngle: 0, endAngle: 45, desc: "Outer Rim // Lothal System", sub: [ { title: "LOTHAL", image: "https://project-imperial-dawn.fandom.com/special:filepath/Lothal.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"PLAINS/SPIRES", "SECTOR":"Mandala"}, bio: "A peaceful Outer Rim world heavily industrialized by the Empire. Key manufacturing hub for TIE Defenders." } ] },
+                    { name: "MANDALA SECTOR", startAngle: 0, endAngle: 45, desc: "Outer Rim // Lothal System", sub: [ { title: "LOTHAL", image: "https://project-imperial-dawn.fandom.com/special:filepath/Lothal.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"PLAINS/SPIRES", "SECTOR":"Mandala"}, bio: "A peaceful Outer Rim world heavily industrialized by the Empire. Now serving as the new Cadet Academy." } ] },
                     { name: "MYTARANOR SECTOR", startAngle: 45, endAngle: 90, desc: "Mid Rim // Wookiee Homeworlds", sub: [ { title: "KASHYYYK", image: "https://project-imperial-dawn.fandom.com/special:filepath/Kashyyyk.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"JUNGLE/WROSHYR FORESTS", "SECTOR":"Mytaranor"}, bio: "A lush, forest-covered world and home to the Wookiees. Currently under heavy Imperial blockade and resource extraction." } ] },
                     { name: "ARKANIS SECTOR", startAngle: 90, endAngle: 150, desc: "Outer Rim // Tatoo System", sub: [ { title: "TATOOINE", image: "https://project-imperial-dawn.fandom.com/special:filepath/Tatooine.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"ARID DESERT", "SECTOR":"Arkanis"}, bio: "A harsh, sun-scorched world orbiting a binary star system. A haven for smugglers and the Hutt Cartel." } ] },
                     { name: "ANOAT SECTOR", startAngle: 150, endAngle: 200, desc: "Outer Rim // Ison Corridor", sub: [ { title: "HOTH", image: "https://project-imperial-dawn.fandom.com/special:filepath/Hoth.png", status: "HELD BY THE REBEL ALLIANCE", stats: {"TERRAIN":"FROZEN TUNDRA", "SECTOR":"Anoat"}, bio: "A remote, ice-covered world. Scans indicate negligible life forms, making it an ideal hideout for terrorist cells." } ] },
-                    { name: "ATRAVIS SECTOR", startAngle: 200, endAngle: 240, desc: "Outer Rim // Mustafar System", sub: [ { title: "MUSTAFAR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mustafar.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"VOLCANIC HELLSCAPE", "SECTOR":"Atravis"}, bio: "A volatile, fire-scorched world rich in minerals and dark side energy. Personal sanctum of Lord Vader." }, { title: "NUR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Nur.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"OCEANIC MOON", "SECTOR":"Atravis"}, bio: "A water-rich moon housing the Fortress Inquisitorius. A secure black-site for the detention of Force-sensitives." } ] }
+                    { name: "ATRAVIS SECTOR", startAngle: 200, endAngle: 240, desc: "Outer Rim // Mustafar System", sub: [ { title: "MUSTAFAR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mustafar.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"VOLCANIC HELLSCAPE", "SECTOR":"Atravis"}, bio: "A volatile, fire-scorched world rich in minerals and dark side energy. Personal sanctum of Lord Vader." }, { title: "NUR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Nur.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"OCEANIC MOON", "SECTOR":"Atravis"}, bio: "A water-rich moon housing the Fortress Inquisitorius. A secure black-site for the detention of Force-sensitives." } ] },
+                    { name: "UNKNOWN REGIONS", startAngle: 240, endAngle: 260, desc: "Uncharted Space // Galactic West", sub: [ { title: "UNKNOWN SIGNAL", image: "https://placehold.co/300x150/000/555?text=No+Data", status: "UNEXPLORED", stats: {"TERRAIN":"UNKNOWN", "SECTOR":"Unknown"}, bio: "No navigational data available. Long-range sensors detect anomalies. This sector has not yet been charted." } ] },
+                    { name: "OJOSTER SECTOR", startAngle: 260, endAngle: 280, desc: "Outer Rim // Wayland System", sub: [ { title: "WAYLAND", image: "https://project-imperial-dawn.fandom.com/special:filepath/Wayland.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"MOUNTAIN FACILITY", "SECTOR":"Ojoster"}, bio: "A highly classified Imperial mountain facility. It serves as the official academy for the Stormtrooper Corps." } ] },
+                    { name: "CHOMMELL SECTOR", startAngle: 280, endAngle: 300, desc: "Mid Rim // Naboo System", sub: [ { title: "NABOO", image: "https://project-imperial-dawn.fandom.com/special:filepath/Naboo.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"LUSH PLANET", "SECTOR":"Chommell"}, bio: "A beautiful, pastoral world and the homeworld of Emperor Sheev Palpatine." } ] },
+                    { name: "CORUSCA SECTOR", startAngle: 300, endAngle: 330, desc: "Core Worlds // Capital System", sub: [ { title: "CORUSCANT", image: "https://project-imperial-dawn.fandom.com/special:filepath/Coruscant.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"ECUMENOPOLIS", "SECTOR":"Corusca"}, bio: "The ecumenopolis capital of the Galactic Empire. The seat of Emperor Palpatine's power and the central hub of galactic governance." } ] },
+                    { name: "CIRCUMTORE SECTOR", startAngle: 330, endAngle: 360, desc: "Expansion Region // Strategic Mining", sub: [ { title: "MIMBAN", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mimban.png", status: "WAR", stats: {"TERRAIN":"SWAMP/MUD FLATS", "SECTOR":"Circumtore"}, bio: "A dark, mineral-rich world perpetually shrouded in fog. Critical mining infrastructure for the Imperial war machine." } ] }
                 ]
             }
         }
@@ -555,6 +584,14 @@
             .dossier-box.hostile .dossier-rank { color: var(--imp-red); }
             .dossier-box.hostile .dossier-stats-grid { background: rgba(255,51,51,0.08); border-color: rgba(255,51,51,0.2); }
             .dossier-box.hostile .stat-row span:last-child { color: #fff; }
+
+            /* DOSSIER WAR THEME */
+            .dossier-box.war-theme { border-color: var(--imp-gold); box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 50px rgba(255, 204, 0, 0.2); }
+            .dossier-box.war-theme .dossier-close:hover { background: var(--imp-gold); color: #000; box-shadow: 0 0 15px var(--imp-gold); }
+            .dossier-box.war-theme .dossier-header { border-bottom-color: var(--imp-gold); }
+            .dossier-box.war-theme .dossier-rank { color: var(--imp-gold); }
+            .dossier-box.war-theme .dossier-stats-grid { background: rgba(255, 204, 0, 0.08); border-color: rgba(255, 204, 0, 0.2); }
+            .dossier-box.war-theme .stat-row span:last-child { color: #fff; }
             
             .dossier-box.no-img { width: 650px; }
             .dossier-box.no-img .dossier-img { display: none; }
@@ -642,63 +679,59 @@
             .code-box { background: #000; border: 1px solid var(--imp-border); padding: 20px; font-family: monospace; font-size: 12px; color: #0f0; white-space: pre-wrap; word-break: break-all; height: 120px; overflow-y: auto; margin-bottom: 15px; user-select: all; box-shadow: inset 0 0 10px rgba(0,255,0,0.2); }
             .status-msg { font-size: 12px; text-align: center; margin-bottom: 12px; font-weight: bold; color: var(--imp-suc); letter-spacing: 1px; }
 
-            /* --- PREMIUM HOLOMAP v6.1 --- */
+            /* --- PREMIUM HOLOMAP (CONCENTRIC RINGS REWORK) --- */
             .holomap-wrapper { position: relative; width: 100%; flex: 1; min-height: 800px; overflow: hidden; background: radial-gradient(circle at center, #00101c 0%, #000000 100%); display: flex; align-items: center; justify-content: center; perspective: 1200px; z-index: 1; border-top: 1px solid var(--imp-border); box-shadow: inset 0 0 150px rgba(0,229,255,0.05); }
+            
+            /* NEBULA BACKGROUND */
+            .nebula-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 30% 40%, rgba(120, 40, 180, 0.25) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(40, 120, 200, 0.2) 0%, transparent 40%), radial-gradient(circle at 40% 70%, rgba(200, 50, 80, 0.15) 0%, transparent 40%); mix-blend-mode: screen; pointer-events: none; z-index: 0; }
+            
+            /* MAP LEGEND */
+            .map-legend { position: absolute; top: 20px; left: 20px; background: rgba(0,10,20,0.8); border: 1px solid rgba(0,229,255,0.4); padding: 15px 20px; border-radius: 6px; z-index: 600; backdrop-filter: blur(12px); color: #fff; font-size: 11px; font-weight: bold; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none; }
+            .map-legend div { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+            .map-legend div:last-child { margin-bottom: 0; }
+
             .holo-projector-beam { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 50%; background: linear-gradient(to top, rgba(0,229,255,0.08) 0%, transparent 100%); clip-path: polygon(30% 100%, 70% 100%, 100% 0, 0 0); pointer-events: none; z-index: 0; }
-            .holo-stage { position: relative; width: 800px; height: 800px; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2; }
+            .holo-stage { position: relative; width: 800px; height: 800px; transform-style: preserve-3d; transition: transform 0.1s linear; z-index: 2; }
             
-            /* Organic Sectors & Galaxy Core */
-            .holo-base { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(0,229,255,0.3); background: conic-gradient(from 0deg at 50% 50%, rgba(0,229,255,0) 0%, rgba(0,229,255,0.05) 15%, rgba(0,229,255,0) 30%, rgba(0,229,255,0) 45%, rgba(0,229,255,0.05) 60%, rgba(0,229,255,0) 75%), radial-gradient(circle at center, rgba(0,20,40,0.8) 0%, rgba(0,5,15,0.95) 60%, rgba(0,0,0,1) 100%); box-shadow: inset 0 0 80px rgba(0,229,255,0.2), 0 0 40px rgba(0,229,255,0.2); z-index: 1; transform-style: preserve-3d; }
-            .holo-grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 229, 255, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, 0.15) 1px, transparent 1px); background-size: 40px 40px; border-radius: 50%; pointer-events: none; mask-image: radial-gradient(circle, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle, black 0%, transparent 70%); }
+            /* Enhanced Galaxy Core */
+            .holo-base { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(0,229,255,0.3); background: radial-gradient(circle at center, rgba(30, 40, 60, 0.6) 0%, rgba(10, 15, 25, 0.8) 40%, rgba(0, 0, 0, 0.9) 70%); box-shadow: inset 0 0 80px rgba(0,229,255,0.2), 0 0 40px rgba(0,229,255,0.2); z-index: 1; transform-style: preserve-3d; }
             
-            /* Realistic Core */
+            /* Realistic Core Light */
             .holo-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 250px; height: 250px; border-radius: 50%; background: radial-gradient(circle, #ffffff 0%, rgba(0,229,255,0.8) 15%, rgba(0,229,255,0.2) 50%, transparent 100%); z-index: 2; pointer-events: none; }
             
-            .holo-ring-1 { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; border-radius: 50%; border: 1px dashed rgba(0,229,255,0.4); animation: spin 60s linear infinite; pointer-events: none; }
-            .holo-ring-2 { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; border-radius: 50%; border: 2px solid rgba(0,229,255,0.05); border-top-color: var(--imp-blue); border-bottom-color: var(--imp-blue); animation: spin 40s linear infinite reverse; pointer-events: none; }
-            
-            /* New Orbital Rings */
-            .holo-orbit { position: absolute; top: 10%; left: 10%; width: 80%; height: 80%; border-radius: 50%; border: 1px solid rgba(0, 229, 255, 0.15); transform-style: preserve-3d; animation: orbit-spin 120s linear infinite; pointer-events: none; z-index: 10;}
-            .holo-orbit::before { content: ''; position: absolute; top: 0; left: 50%; width: 6px; height: 6px; background: var(--imp-blue); border-radius: 50%; box-shadow: 0 0 15px var(--imp-blue), 0 0 30px #fff; transform: translate(-50%, -50%); }
-            @keyframes orbit-spin { 100% { transform: rotateZ(360deg); } }
-            @keyframes spin { 100% { transform: rotate(360deg); } }
-
-            .holo-scanner { position: absolute; top: 50%; left: 50%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.8), #fff); transform-origin: left center; animation: scanner 8s infinite linear; pointer-events: none; box-shadow: 0 0 15px var(--imp-blue); z-index: 5; }
-            @keyframes scanner { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
-
             /* Volumetric Holographic Depth */
             .holo-svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-            .layer-bottom { transform: translateZ(3px); filter: blur(6px); opacity: 0.4; }
-            .layer-mid { transform: translateZ(8px); filter: blur(3px); opacity: 0.6; }
-            .layer-top { transform: translateZ(12px); pointer-events: visiblePainted; z-index: 10; filter: drop-shadow(0 0 5px rgba(0,229,255,0.5)); }
+            .layer-bottom { transform: translateZ(3px); filter: blur(4px); opacity: 0.5; }
+            .layer-top { transform: translateZ(8px); pointer-events: visiblePainted; z-index: 10; }
 
-            .sector-poly { fill: rgba(0, 229, 255, 0.05); stroke: rgba(0, 229, 255, 0.4); stroke-width: 1px; stroke-linejoin: round; transition: all 0.3s ease-out; cursor: pointer; pointer-events: all; vector-effect: non-scaling-stroke; }
-            /* FIXED: Removed drop-shadow to fix the visual artifact on hover */
-            .sector-poly.hovered { fill: rgba(0, 229, 255, 0.35); stroke: rgba(0, 229, 255, 1); stroke-width: 2px; }
+            /* --- CONCENTRIC GRID & COLORS REWORK --- */
+            .sector-poly { 
+                fill: rgba(255, 255, 255, 0.02); 
+                stroke: rgba(255, 255, 255, 0.2); 
+                stroke-width: 0.5px; 
+                stroke-linejoin: round; 
+                transition: all 0.3s ease-out; 
+                vector-effect: non-scaling-stroke; 
+            }
             
-            .sector-poly.rebel-held { fill: rgba(255, 51, 51, 0.05); stroke: rgba(255, 51, 51, 0.4); }
-            /* FIXED: Removed drop-shadow to fix the visual artifact on hover */
-            .sector-poly.rebel-held.hovered { fill: rgba(255, 51, 51, 0.35); stroke: rgba(255, 51, 51, 1); stroke-width: 2px; }
+            /* Grid Fillers */
+            .sector-poly.grid-filler { fill: rgba(255,255,255,0.01); stroke: rgba(255,255,255,0.15); stroke-width: 1px; pointer-events: none; }
+            
+            /* Unknown Sectors (White) */
+            .sector-poly.unknown-sector { fill: rgba(255,255,255,0.03); stroke: rgba(255,255,255,0.3); stroke-width: 0.5px; }
+            .sector-poly.unknown-sector.hovered { fill: rgba(255,255,255,0.15); stroke: rgba(255,255,255,0.8); stroke-width: 1.5px; }
 
-            .sector-poly.neutral-sector { fill: rgba(255, 255, 255, 0.05); stroke: rgba(255, 255, 255, 0.4); }
-            /* FIXED: Removed drop-shadow to fix the visual artifact on hover */
-            .sector-poly.neutral-sector.hovered { fill: rgba(255, 255, 255, 0.25); stroke: rgba(255, 255, 255, 1); stroke-width: 2px; }
+            /* Empire Sectors (Blue) - Single stroke outer boundary */
+            .sector-poly.empire-held { fill: rgba(0, 150, 255, 0.15); stroke: rgba(0, 180, 255, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(0, 180, 255, 0.5)); }
+            .sector-poly.empire-held.hovered { fill: rgba(0, 150, 255, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.8)); }
 
-            /* --- STARFIGHTERS COMBAT REWORK CSS --- */
-            .dynamic-ship { position: absolute; left: 0; top: 0; width: 24px; height: 24px; margin-left: -12px; margin-top: -12px; transform-style: preserve-3d; z-index: 25; pointer-events: none; will-change: transform; }
-            .dynamic-ship .ship-icon { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); transform: rotateZ(0deg); }
-            .dynamic-ship.rebel-ship .ship-icon { animation: engine-throb-reb 0.15s infinite alternate; }
-            .dynamic-ship.empire-ship .ship-icon { animation: engine-throb-imp 0.15s infinite alternate; }
-            
-            @keyframes engine-throb-imp { from { filter: brightness(0) invert(1) drop-shadow(0 0 3px var(--imp-blue)); } to { filter: brightness(0) invert(1) drop-shadow(0 0 10px var(--imp-blue)); } }
-            @keyframes engine-throb-reb { from { filter: brightness(0) invert(1) drop-shadow(0 0 3px var(--imp-red)); } to { filter: brightness(0) invert(1) drop-shadow(0 0 10px var(--imp-red)); } }
-            
-            .laser-blast { position: absolute; left: 0; top: 0; width: 16px; height: 3px; border-radius: 3px; z-index: 24; pointer-events: none; margin-left:-8px; margin-top:-1.5px; transform-style: preserve-3d; will-change: transform; }
-            .laser-blast.imp { background: #00ffa6; box-shadow: 0 0 10px #00ffa6, 0 0 3px #fff; }
-            .laser-blast.reb { background: #ff3333; box-shadow: 0 0 10px #ff3333, 0 0 3px #fff; }
-            
-            .fx-explosion { width: 35px; height: 35px; background: radial-gradient(circle, #fff 10%, #ff8800 40%, transparent 80%); border-radius: 50%; animation: popFx 0.4s ease-out forwards; pointer-events: none; mix-blend-mode: screen; margin-left:-17.5px; margin-top:-17.5px; }
-            @keyframes popFx { 0% { transform: scale(0.2); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+            /* Rebel Sectors (Red) - Single stroke outer boundary */
+            .sector-poly.rebel-held { fill: rgba(255, 50, 50, 0.15); stroke: rgba(255, 50, 50, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(255, 50, 50, 0.5)); }
+            .sector-poly.rebel-held.hovered { fill: rgba(255, 50, 50, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(255, 50, 50, 0.8)); }
+
+            /* War / Contested Sectors (Yellow) - Single stroke outer boundary */
+            .sector-poly.war-held { fill: rgba(255, 204, 0, 0.15); stroke: rgba(255, 204, 0, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5)); }
+            .sector-poly.war-held.hovered { fill: rgba(255, 204, 0, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.8)); }
 
             /* Clean Sci-Fi HUD Pins */
             .holo-pin { position: absolute; width: 0; height: 0; z-index: 30; pointer-events: none; transform-style: preserve-3d; }
@@ -710,14 +743,27 @@
             .holo-pin.rebel .pin-label { border-color: rgba(255, 51, 51, 0.8); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(255,51,51,0.5); }
             .holo-pin.rebel .pin-stem { background: linear-gradient(to top, rgba(255,51,51,0.9), transparent); }
 
+            .holo-pin.empire .pin-label { border-color: rgba(0, 180, 255, 0.8); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(0,180,255,0.5); }
+            .holo-pin.empire .pin-stem { background: linear-gradient(to top, rgba(0,180,255,0.9), transparent); }
+
+            .holo-pin.war .pin-label { border-color: rgba(255, 204, 0, 0.8); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(255,204,0,0.5); }
+            .holo-pin.war .pin-stem { background: linear-gradient(to top, rgba(255,204,0,0.9), transparent); }
+
             .holo-pin.neutral .pin-label { border-color: rgba(255, 255, 255, 0.6); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(255,255,255,0.4); }
             .holo-pin.neutral .pin-stem { background: linear-gradient(to top, rgba(255,255,255,0.7), transparent); }
 
             @keyframes text-flicker { 0%, 100% { opacity: 1; text-shadow: none; } 50% { opacity: 0.6; text-shadow: 0 0 10px rgba(255,51,51,0.8); } 52% { opacity: 1; } 54% { opacity: 0.4; } 56% { opacity: 1; } }
-            .holo-pin.rebel .pin-label { animation: text-flicker 4s infinite; }
+            .holo-pin.rebel .pin-label, .holo-pin.war .pin-label { animation: text-flicker 4s infinite; }
 
             .star-field { position: absolute; top: -500px; left: -500px; width: 2000px; height: 2000px; pointer-events: none; transform-style: preserve-3d; z-index: 0; }
             .h-star { position: absolute; background: #fff; width: 2px; height: 2px; opacity: 0.6; border-radius: 50%; box-shadow: 0 0 4px #fff; }
+
+            /* YELLOW PLANET FIX FOR WAR SECTORS */
+            .planet-sphere { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-blue) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-blue); margin-bottom: 6px; animation: planet-pulse 4s infinite alternate; }
+            .holo-pin.rebel .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-red) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-red); }
+            .holo-pin.war .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, #ffcc00 40%, #000 90%); box-shadow: 0 0 20px #ffcc00; }
+            .holo-pin.neutral .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, #aaaaaa 40%, #000 90%); box-shadow: 0 0 20px #fff; }
+            @keyframes planet-pulse { 0% { box-shadow: 0 0 8px currentColor; } 100% { box-shadow: 0 0 25px currentColor; } }
 
             .map-controls-panel { position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 600; background: rgba(0,10,20,0.8); padding: 12px 25px; border: 1px solid rgba(0,229,255,0.4); border-radius: 6px; box-shadow: 0 15px 40px rgba(0,0,0,0.9), inset 0 0 25px rgba(0,229,255,0.15); backdrop-filter: blur(12px); }
             .mc-group { display: flex; gap: 12px; align-items: center; }
@@ -737,15 +783,23 @@
             .hs-body::-webkit-scrollbar-thumb { background: var(--imp-blue); }
             
             .hs-card { display: flex; gap: 15px; margin-bottom: 18px; background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), rgba(255,255,255,0.02)); padding: 15px; border: 1px solid rgba(0, 229, 255, 0.3); border-left: 5px solid var(--imp-blue); cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+            .hs-card:hover:not(.hostile-rebel):not(.war-theme) { border-color: var(--imp-blue); background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); transform: translateX(5px); }
+            .hs-card img { width: 55px; height: 55px; object-fit: cover; border: 1px solid var(--imp-blue); border-radius: 4px; box-shadow: 0 0 12px rgba(0,229,255,0.4); }
+
+            /* REBEL CARD THEME */
             .hs-card.hostile-rebel { background: linear-gradient(90deg, rgba(255, 51, 51, 0.15), rgba(30, 0, 0, 0.6)); border: 1px solid rgba(255, 51, 51, 0.5); border-left: 5px solid var(--imp-red); }
             .hs-card.hostile-rebel .hs-name { color: #ffcccc; }
             .hs-card.hostile-rebel .hs-meta { color: var(--imp-red); opacity: 1; }
             .hs-card.hostile-rebel:hover { border-color: var(--imp-red); background: rgba(255, 51, 51, 0.25); box-shadow: 0 0 20px rgba(255, 51, 51, 0.4); transform: translateX(5px); }
-            .hs-card:hover:not(.hostile-rebel) { border-color: var(--imp-blue); background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); transform: translateX(5px); }
-            
-            .hs-card img { width: 55px; height: 55px; object-fit: cover; border: 1px solid var(--imp-blue); border-radius: 4px; box-shadow: 0 0 12px rgba(0,229,255,0.4); }
             .hs-card.hostile-rebel img { border-color: var(--imp-red); box-shadow: 0 0 12px rgba(255, 51, 51, 0.5); }
-            
+
+            /* WAR CARD THEME */
+            .hs-card.war-theme { background: linear-gradient(90deg, rgba(255, 204, 0, 0.15), rgba(30, 25, 0, 0.6)); border: 1px solid rgba(255, 204, 0, 0.5); border-left: 5px solid var(--imp-gold); }
+            .hs-card.war-theme .hs-name { color: #ffe680; }
+            .hs-card.war-theme .hs-meta { color: var(--imp-gold); opacity: 1; }
+            .hs-card.war-theme:hover { border-color: var(--imp-gold); background: rgba(255, 204, 0, 0.25); box-shadow: 0 0 20px rgba(255, 204, 0, 0.4); transform: translateX(5px); }
+            .hs-card.war-theme img { border-color: var(--imp-gold); box-shadow: 0 0 12px rgba(255, 204, 0, 0.5); }
+
             .hs-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
             .hs-name { color: #fff; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; }
             .hs-meta { color: var(--imp-blue); font-size: 11px; text-transform: uppercase; font-weight: bold; opacity: 0.8; letter-spacing: 1.5px; }
@@ -770,28 +824,6 @@
             
             @keyframes slide-in { 0% {opacity:0; transform:translateX(30px);} 100% {opacity:1; transform:translateX(0);} }
             @keyframes fade-in { 0% {opacity:0} 100% {opacity:1} }
-
-            /* --- NEW MAP UPGRADES --- */
-            .holo-interference { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.04) 3px, rgba(0,229,255,0.04) 4px); pointer-events: none; z-index: 999; mix-blend-mode: screen; animation: holo-flicker 10s infinite; }
-            @keyframes holo-flicker { 0%, 95%, 100% { opacity: 1; } 96% { opacity: 0.8; transform: skewX(1deg); } 97% { opacity: 0.3; transform: skewX(-2deg); } 98% { opacity: 1; transform: skewX(0); } }
-
-            .holo-coord-ring { position: absolute; top: 50%; left: 50%; width: 850px; height: 850px; transform: translate(-50%, -50%); border: 1px dashed rgba(0,229,255,0.25); border-radius: 50%; pointer-events: none; z-index: 0; box-shadow: 0 0 40px rgba(0,229,255,0.08); }
-            .coord-marker { position: absolute; font-size: 11px; color: rgba(0,229,255,0.7); font-family: monospace; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px var(--imp-blue); pointer-events: none; }
-
-            .hyperlane { fill: none; stroke: rgba(0,229,255,0.4); stroke-width: 2px; stroke-dasharray: 8 8; animation: hyperlane-flow 20s linear infinite; pointer-events: none; filter: drop-shadow(0 0 8px var(--imp-blue)); }
-            .hyperlane.rebel-lane { stroke: rgba(255,51,51,0.4); filter: drop-shadow(0 0 8px var(--imp-red)); animation: hyperlane-flow 15s linear infinite reverse; }
-            @keyframes hyperlane-flow { 100% { stroke-dashoffset: 1000; } }
-
-            .planet-sphere { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-blue) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-blue); margin-bottom: 6px; animation: planet-pulse 4s infinite alternate; }
-            .holo-pin.rebel .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-red) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-red); }
-            .holo-pin.neutral .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, #aaaaaa 40%, #000 90%); box-shadow: 0 0 20px #fff; }
-            @keyframes planet-pulse { 0% { box-shadow: 0 0 8px currentColor; } 100% { box-shadow: 0 0 25px currentColor; } }
-
-            /* Fixed Hyperspace Stretch animations */
-            .jump-wrapper { width: 100%; height: 100%; transform-origin: center; animation: hyperspace-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-            .jumping-out .jump-wrapper { animation: hyperspace-out 0.5s cubic-bezier(0.5, 0, 1, 0.5) forwards; }
-            @keyframes hyperspace-in { 0% { transform: scaleX(15) translateX(200px); opacity: 0; filter: blur(5px); } 50% { opacity: 1; filter: blur(2px); } 100% { transform: scaleX(1) translateX(0); opacity: 1; filter: none; } }
-            @keyframes hyperspace-out { 0% { transform: scaleX(1) translateX(0); opacity: 1; filter: none; } 100% { transform: scaleX(20) translateX(-200px); opacity: 0; filter: blur(5px); } }
         `;
         document.head.appendChild(style);
 
@@ -953,7 +985,11 @@
                 if(data.stats) { for (const [key, value] of Object.entries(data.stats)) { statsHTML += `<div class="stat-row"><span>${key}:</span> <span>${value}</span></div>`; } }
                 const hasImg = data.image && data.image !== "";
                 let boxClass = "dossier-box";
-                if(data.status && data.status.includes("REBEL")) boxClass += " hostile"; 
+                
+                // Add themes to dossier popup
+                if(data.status && (data.status.includes("WAR") || data.status.includes("CONTESTED"))) boxClass += " war-theme";
+                else if(data.status && data.status.includes("REBEL")) boxClass += " hostile"; 
+                
                 if(!hasImg) boxClass += " no-img";
                 const imgHtml = hasImg ? `<div class="dossier-img"><img src="${data.image}"></div>` : '';
 
@@ -992,15 +1028,11 @@
         }
 
         function renderContent() {
-            // Memory Cleanup & Prevent Leaks when swapping tabs
+            // Memory Cleanup
             if (window.holomapAnimFrame) {
                 cancelAnimationFrame(window.holomapAnimFrame);
             }
-            if (window.activeShips) window.activeShips.forEach(s => { if(s.el) s.el.remove(); });
-            if (window.activeLasers) window.activeLasers.forEach(l => { if(l.el) l.el.remove(); });
-            window.activeShips = [];
-            window.activeLasers = [];
-
+            
             screenEl.innerHTML = '';
             screenEl.style.height = 'auto'; 
             screenEl.style.overflow = 'visible'; 
@@ -1186,29 +1218,27 @@
                 
                 screenEl.innerHTML = `
                     <div class="holomap-wrapper" id="holomap-wrapper">
-                        <div class="holo-interference"></div>
+                        <div class="nebula-bg"></div>
+                        <div class="map-legend">
+                            <div style="color:var(--imp-blue);">■ EMPIRE</div>
+                            <div style="color:var(--imp-red);">■ REBELLION</div>
+                            <div style="color:var(--imp-gold);">■ WAR IN PROGRESS</div>
+                            <div style="color:#888;">■ UNKNOWN</div>
+                        </div>
                         <div class="holo-projector-beam"></div>
                         <div class="holo-stage" id="holo-stage">
-                            <div class="holo-coord-ring" id="coord-ring"></div>
-                            <div class="holo-orbit"></div>
-                            <div class="holo-orbit" style="width: 50%; height: 50%; top: 25%; left: 25%; animation-direction: reverse; animation-duration: 80s;"></div>
                             
-                            <div class="holo-ring-1"></div>
-                            <div class="holo-ring-2"></div>
-                            <div class="holo-base">
-                                <div class="holo-grid-overlay"></div>
-                            </div>
+                            <div class="holo-base"></div>
                             <div class="holo-core"></div>
-                            <div class="holo-scanner"></div>
                             <div class="star-field"></div>
                             <svg class="holo-svg-layer layer-bottom" id="svg-bot" viewBox="-50 -50 100 100" preserveAspectRatio="xMidYMid meet"></svg>
-                            <svg class="holo-svg-layer layer-mid" id="svg-mid" viewBox="-50 -50 100 100" preserveAspectRatio="xMidYMid meet"></svg>
                             <svg class="holo-svg-layer layer-top" id="holo-svg-layer" viewBox="-50 -50 100 100" preserveAspectRatio="xMidYMid meet"></svg>
                         </div>
                         <div class="map-controls-panel">
                             <div class="mc-group">
                                 <div class="z-btn" id="btn-rot-l">◄</div>
                                 <div class="z-btn" id="btn-rot-r">►</div>
+                                <div class="z-btn" id="btn-reset" style="font-size:14px;">↺</div>
                             </div>
                             <div class="mc-divider"></div>
                             <div class="mc-group">
@@ -1228,276 +1258,16 @@
 
                 const stage = document.getElementById('holo-stage');
                 const svgLayerBot = document.getElementById('svg-bot');
-                const svgLayerMid = document.getElementById('svg-mid');
                 const svgLayerTop = document.getElementById('holo-svg-layer');
                 const sidebar = document.getElementById('holo-sidebar');
                 const hsBody = document.getElementById('hs-body');
                 const starField = document.querySelector('.star-field');
                 
-                let currentRotX = 50; 
-                let currentRotZ = 0;
-                let currentScale = 1.0;
-
-                // --- ADVANCED TACTICAL AI FIX: STRICT STARFIGHTER DOGFIGHTING ---
-                const impLogo = "https://project-imperial-dawn.fandom.com/special:filepath/TIE.png"; 
-                const rebLogo = "https://project-imperial-dawn.fandom.com/special:filepath/X-Wing3.png";
+                let currentRotX = 35; 
+                let currentRotZ = 0.15;
+                let currentScale = 0.75;
                 
-                const STAGE_SIZE = 800;
-                const CENTER = STAGE_SIZE / 2;
-                const BOUNDARY_RADIUS = 350; 
-                
-                // Fixed image offset for standard Fandom up-facing ship sprites
-                const IMAGE_OFFSET = Math.PI;
-                
-                class Starfighter {
-                    constructor(faction, x, y) {
-                        this.faction = faction;
-                        this.pos = { x, y, z: 20 + Math.random() * 40 }; 
-                        this.isAlive = true;
-                        this.state = 'combat'; 
-                        this.lifeTime = 0;
-                        this.idleTime = 0; // Tracks how long the ship has been without a target
-                        this.maxLife = 20000 + Math.random() * 20000; 
-
-                        this.maxSpeed = faction === 'imp' ? 1.0 : 0.8;
-                        this.turnRate = faction === 'imp' ? 0.04 : 0.03;
-                        this.hp = faction === 'imp' ? 40 : 60;
-                        this.weapons = { 
-                            damage: faction === 'imp' ? 15 : 15, 
-                            fireRate: faction === 'imp' ? 300 : 550, 
-                            lastFired: 0, 
-                            range: 280 
-                        };
-
-                        this.target = null;
-                        this.angle = Math.atan2(CENTER - y, CENTER - x);
-
-                        this.el = document.createElement('div');
-                        this.el.className = `dynamic-ship ${faction === 'imp' ? 'empire-ship' : 'rebel-ship'}`;
-
-                        const imgUrl = faction === 'reb' ? rebLogo : impLogo;
-                        this.el.innerHTML = `<div class="jump-wrapper"><img src="${imgUrl}" class="ship-icon"></div>`;
-                        this.el.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, ${this.pos.z}px) rotateZ(${this.angle + IMAGE_OFFSET}rad)`;
-                        stage.appendChild(this.el);
-                    }
-
-                    takeDamage(amt) {
-                        if(!this.isAlive || this.state !== 'combat') return;
-                        this.hp -= amt;
-                        this.el.style.filter = 'brightness(2) drop-shadow(0 0 10px white)';
-                        setTimeout(() => { if(this.el) this.el.style.filter = 'none'; }, 50);
-                        if(this.hp <= 0) this.destroy(true);
-                    }
-
-                    destroy(exploded = true) {
-                        this.isAlive = false;
-                        if (exploded) {
-                            const fxWrapper = document.createElement('div');
-                            fxWrapper.style.position = 'absolute';
-                            fxWrapper.style.left = '0';
-                            fxWrapper.style.top = '0';
-                            fxWrapper.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, ${this.pos.z}px)`;
-                            
-                            const fx = document.createElement('div');
-                            fx.className = 'fx-explosion';
-                            fxWrapper.appendChild(fx);
-                            
-                            stage.appendChild(fxWrapper);
-                            setTimeout(() => fxWrapper.remove(), 800);
-                        }
-                        this.el.remove();
-                    }
-
-                    update(dt, currentTime) {
-                        if (!this.isAlive) return;
-                        const dtScale = Math.min(dt / 16, 2); 
-
-                        // If exiting, fly straight out rapidly
-                        if (this.state === 'exiting') {
-                            this.pos.x += Math.cos(this.angle) * this.maxSpeed * 4 * dtScale;
-                            this.pos.y += Math.sin(this.angle) * this.maxSpeed * 4 * dtScale;
-                            this.el.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, ${this.pos.z}px) rotateZ(${this.angle + IMAGE_OFFSET}rad)`;
-                            return;
-                        }
-
-                        // Target Acquisition
-                        if (this.target && (!this.target.isAlive || this.target.state !== 'combat')) {
-                            this.target = null;
-                        }
-
-                        if (!this.target) {
-                            let closestDist = Infinity;
-                            window.activeShips.forEach(enemy => {
-                                if (enemy.faction !== this.faction && enemy.isAlive && enemy.state === 'combat') {
-                                    const dist = Math.hypot(enemy.pos.x - this.pos.x, enemy.pos.y - this.pos.y);
-                                    if (dist < 450) {
-                                        closestDist = dist;
-                                        this.target = enemy;
-                                    }
-                                }
-                            });
-                        }
-
-                        // Track Idle Time vs Combat Time
-                        if (!this.target) {
-                            this.idleTime += dt;
-                        } else {
-                            this.idleTime = 0;
-                        }
-                        this.lifeTime += dt;
-
-                        // RETREAT MECHANIC: Jump away if map is empty for 8 SECONDS OR fuel/time runs out
-                        if (this.state === 'combat' && (this.lifeTime > this.maxLife || this.idleTime > 10000)) {
-                            this.state = 'exiting';
-                            // Snap nose to face outwards towards the edge of the galaxy
-                            this.angle = Math.atan2(this.pos.y - CENTER, this.pos.x - CENTER);
-                            this.el.classList.add('jumping-out');
-                            // Let the visual hyperspace stretch play before deleting
-                            setTimeout(() => this.destroy(false), 500); 
-                            return;
-                        }
-
-                        let desiredAngle = this.angle;
-
-                        if (this.target) {
-                            let dx = this.target.pos.x - this.pos.x;
-                            let dy = this.target.pos.y - this.pos.y;
-                            desiredAngle = Math.atan2(dy, dx);
-                            let targetDist = Math.hypot(dx, dy);
-
-                            let aimDiff = Math.abs(this.angle - desiredAngle);
-                            while(aimDiff > Math.PI) aimDiff -= Math.PI * 2;
-                            aimDiff = Math.abs(aimDiff);
-
-                            if (targetDist < this.weapons.range && aimDiff < 0.3) {
-                                if (currentTime - this.weapons.lastFired > this.weapons.fireRate) {
-                                    this.weapons.lastFired = currentTime;
-                                    window.activeLasers.push(new Laser(this.faction, this.pos.x, this.pos.y, this.pos.z, this.angle, this.weapons.damage));
-                                }
-                            }
-                        } else {
-                            // If no targets, smoothly orbit the center
-                            let cx = CENTER - this.pos.x;
-                            let cy = CENTER - this.pos.y;
-                            if (Math.hypot(cx, cy) > 100) desiredAngle = Math.atan2(cy, cx);
-                        }
-
-                        // Separation Algorithm
-                        let sepX = 0, sepY = 0;
-                        window.activeShips.forEach(other => {
-                            if (other !== this && other.isAlive) {
-                                let dx = this.pos.x - other.pos.x;
-                                let dy = this.pos.y - other.pos.y;
-                                let d = Math.hypot(dx, dy);
-                                if (d > 0 && d < 40) { 
-                                    sepX += (dx / d) * 2;
-                                    sepY += (dy / d) * 2;
-                                }
-                            }
-                        });
-
-                        if (sepX !== 0 || sepY !== 0) {
-                            desiredAngle = Math.atan2(Math.sin(desiredAngle) + sepY, Math.cos(desiredAngle) + sepX);
-                        }
-
-                        let distFromCenter = Math.hypot(this.pos.x - CENTER, this.pos.y - CENTER);
-                        if (distFromCenter > BOUNDARY_RADIUS) {
-                            desiredAngle = Math.atan2(CENTER - this.pos.y, CENTER - this.pos.x);
-                        }
-
-                        let angleDiff = desiredAngle - this.angle;
-                        while (angleDiff <= -Math.PI) angleDiff += Math.PI * 2;
-                        while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-                        this.angle += angleDiff * this.turnRate * dtScale;
-
-                        this.pos.x += Math.cos(this.angle) * this.maxSpeed * dtScale;
-                        this.pos.y += Math.sin(this.angle) * this.maxSpeed * dtScale;
-
-                        if (isNaN(this.pos.x) || this.pos.x < -200 || this.pos.x > STAGE_SIZE + 200) this.pos.x = CENTER;
-                        if (isNaN(this.pos.y) || this.pos.y < -200 || this.pos.y > STAGE_SIZE + 200) this.pos.y = CENTER;
-
-                        this.el.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, ${this.pos.z}px) rotateZ(${this.angle + IMAGE_OFFSET}rad)`;
-                    }
-                }
-                
-                class Laser {
-                    constructor(faction, x, y, z, angle, damage) {
-                        this.faction = faction;
-                        this.pos = { x: x + Math.cos(angle)*15, y: y + Math.sin(angle)*15, z: z };
-                        this.angle = angle;
-                        this.damage = damage;
-                        this.speed = faction === 'imp' ? 14 : 12; 
-                        this.active = true;
-                        this.life = 60; 
-
-                        this.el = document.createElement('div');
-                        this.el.className = `laser-blast ${faction}`;
-                        this.el.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, ${this.pos.z}px) rotateZ(${this.angle}rad)`;
-                        stage.appendChild(this.el);
-                    }
-
-                    update(dt) {
-                        const dtScale = Math.min(dt / 16, 2);
-                        this.pos.x += Math.cos(this.angle) * this.speed * dtScale;
-                        this.pos.y += Math.sin(this.angle) * this.speed * dtScale;
-                        this.life -= dtScale;
-
-                        this.el.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, ${this.pos.z}px) rotateZ(${this.angle}rad)`;
-
-                        for (let ship of window.activeShips) {
-                            if (ship.isAlive && ship.faction !== this.faction && ship.state === 'combat') {
-                                const dist = Math.hypot(ship.pos.x - this.pos.x, ship.pos.y - this.pos.y);
-                                if (dist < 20) { 
-                                    ship.takeDamage(this.damage);
-                                    this.active = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        let distFromCenter = Math.hypot(this.pos.x - CENTER, this.pos.y - CENTER);
-                        if (this.life <= 0 || distFromCenter > BOUNDARY_RADIUS + 50) {
-                            this.active = false;
-                        }
-
-                        if (!this.active) this.el.remove();
-                    }
-                }
-
-                function spawnShip(faction) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const dist = BOUNDARY_RADIUS + Math.random() * 40; 
-                    const x = CENTER + Math.cos(angle) * dist;
-                    const y = CENTER + Math.sin(angle) * dist;
-                    
-                    window.activeShips.push(new Starfighter(faction, x, y));
-                }
-
-                let lastTime = performance.now();
-                function mapLoop(currentTime) {
-                    let dt = currentTime - lastTime; 
-                    if (dt > 100) dt = 16; 
-                    lastTime = currentTime;
-
-                    const imps = window.activeShips.filter(s => s.faction === 'imp' && s.isAlive && s.state !== 'exiting').length;
-                    const rebs = window.activeShips.filter(s => s.faction === 'reb' && s.isAlive && s.state !== 'exiting').length;
-                    
-                    // Lowered the max ships to 3 and 2, and drastically slowed down the spawn rate
-                    if (imps < 5 && Math.random() < 0.004) spawnShip('imp');
-                    if (rebs < 3 && Math.random() < 0.0045) spawnShip('reb');
-
-                    window.activeShips.forEach(ship => ship.update(dt, currentTime));
-                    window.activeShips = window.activeShips.filter(ship => ship.isAlive);
-
-                    window.activeLasers.forEach(laser => laser.update(dt));
-                    window.activeLasers = window.activeLasers.filter(laser => laser.active);
-
-                    window.holomapAnimFrame = requestAnimationFrame(mapLoop);
-                }
-                
-                window.holomapAnimFrame = requestAnimationFrame(mapLoop);
-
-                // --- MAP STARS & PIN RENDERING ---
+                // --- MAP STARS RENDERING ---
                 for(let i=0; i<400; i++){
                     const s = document.createElement('div');
                     s.className = 'h-star';
@@ -1505,31 +1275,6 @@
                     s.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
                     starField.appendChild(s);
                 }
-                
-                // Add Coordinate Edge Ring
-                const coordRing = document.getElementById('coord-ring');
-                for (let i=0; i<12; i++) {
-                    const marker = document.createElement('div');
-                    marker.className = 'coord-marker';
-                    const a = (i * 30) * Math.PI / 180;
-                    const r = 415; 
-                    marker.style.left = (CENTER + Math.cos(a)*r) + 'px';
-                    marker.style.top = (CENTER + Math.sin(a)*r) + 'px';
-                    marker.style.transform = `translate(-50%, -50%) rotate(${i * 30 + 90}deg)`;
-                    marker.innerText = `SEC-${(i+1).toString().padStart(2, '0')}`;
-                    coordRing.appendChild(marker);
-                }
-
-                // Add Animated Hyperspace Trade Routes
-                const hyperlane1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                hyperlane1.setAttribute("d", "M 100 400 Q 400 350 700 400");
-                hyperlane1.setAttribute("class", "hyperlane");
-                svgLayerMid.appendChild(hyperlane1);
-
-                const hyperlane2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                hyperlane2.setAttribute("d", "M 400 100 Q 450 400 400 700");
-                hyperlane2.setAttribute("class", "hyperlane rebel-lane");
-                svgLayerMid.appendChild(hyperlane2);
 
                 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
                     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -1539,6 +1284,7 @@
                     };
                 }
 
+                // Helper to create simple standard arc slice
                 function describeArc(x, y, innerRadius, outerRadius, startAngle, endAngle){
                     var startOuter = polarToCartesian(x, y, outerRadius, endAngle);
                     var endOuter = polarToCartesian(x, y, outerRadius, startAngle);
@@ -1556,50 +1302,159 @@
                     return d;
                 }
 
+                // Helper to create UNIFIED continuous perimeter path for L/T-shapes
+                function generateCompoundArc(rIn, rOut, rExt, s, mid, e, type) {
+                    const pt = (r, a) => polarToCartesian(0, 0, r, a);
+                    // Sweep flag is 1 for positive angle direction, 0 for reverse.
+                    const arc = (r, aStart, aEnd, reverse) => {
+                        const pEnd = pt(r, aEnd);
+                        const sweep = reverse ? 0 : 1;
+                        return `A ${r} ${r} 0 0 ${sweep} ${pEnd.x} ${pEnd.y}`;
+                    };
+
+                    if (type === 'outer') {
+                        // Outward extension: (s to mid) is rOut, (mid to e) is rExt
+                        const p1 = pt(rOut, s);
+                        const p3 = pt(rExt, mid);
+                        const p5 = pt(rIn, e);
+                        
+                        return [
+                            `M ${p1.x} ${p1.y}`,
+                            arc(rOut, s, mid, false),
+                            `L ${p3.x} ${p3.y}`,
+                            arc(rExt, mid, e, false),
+                            `L ${p5.x} ${p5.y}`,
+                            arc(rIn, e, s, true),
+                            `Z`
+                        ].join(" ");
+                    } else if (type === 'inner') {
+                        // Inward extension: (s to e) is rOut, (e to mid) is rExt, (mid to s) is rIn
+                        const p1 = pt(rOut, s);
+                        const p3 = pt(rExt, e);
+                        const p5 = pt(rIn, mid);
+                        
+                        return [
+                            `M ${p1.x} ${p1.y}`,
+                            arc(rOut, s, e, false),
+                            `L ${p3.x} ${p3.y}`,
+                            arc(rExt, e, mid, true),
+                            `L ${p5.x} ${p5.y}`,
+                            arc(rIn, mid, s, true),
+                            `Z`
+                        ].join(" ");
+                    }
+                }
+
+                // --- DYNAMIC RINGS & GRID LOGIC ---
+                // We define 4 concentric rings to act as the base grid
+                const RINGS = [
+                    { inner: 8, outer: 18, name: "Core" },
+                    { inner: 18, outer: 28, name: "Expansion" },
+                    { inner: 28, outer: 38, name: "Mid" },
+                    { inner: 38, outer: 48, name: "Outer" }
+                ];
+
+                // 1. GENERATE BACKGROUND STAGGERED GRID (Unknown Sectors)
+                const SLICE_ANGLE = 15;
+                for (let i = 0; i < RINGS.length; i++) {
+                    let offset = (i % 2 === 0) ? 0 : (SLICE_ANGLE / 2);
+                    for (let a = 0; a < 360; a += SLICE_ANGLE) {
+                        let start = a + offset;
+                        let end = start + SLICE_ANGLE;
+                        const pathString = describeArc(0, 0, RINGS[i].inner, RINGS[i].outer, start, end);
+                        
+                        const bgBot = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        const bgTop = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        
+                        let cssClass = "sector-poly grid-filler";
+                        bgBot.setAttribute("class", cssClass);
+                        bgBot.setAttribute("d", pathString);
+                        bgTop.setAttribute("class", cssClass);
+                        bgTop.setAttribute("d", pathString);
+                        
+                        svgLayerBot.appendChild(bgBot);
+                        svgLayerTop.appendChild(bgTop);
+                    }
+                }
+
+                // 2. GENERATE ACTIVE SECTORS OVER THE GRID (Contiguous Unbroken Shapes)
                 data.data.forEach(sector => {
                     if (sector.startAngle !== undefined) {
-                        const pathString = describeArc(0, 0, 15, 48, sector.startAngle, sector.endAngle);
                         
-                        const pathBot = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                        const pathMid = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                        const pathTop = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                        
-                        [pathBot, pathMid, pathTop].forEach(path => path.setAttribute("d", pathString));
+                        let targetRing = 3; 
+                        const descUpper = sector.desc.toUpperCase();
+                        if (descUpper.includes("CORE")) targetRing = 0;
+                        else if (descUpper.includes("EXPANSION") || descUpper.includes("COLONIES")) targetRing = 1;
+                        else if (descUpper.includes("MID")) targetRing = 2;
+                        else if (descUpper.includes("OUTER") || descUpper.includes("UNCHARTED")) targetRing = 3;
+
+                        const isRebel = sector.sub.some(p => p.status.includes("REBEL"));
+                        const isEmpire = sector.sub.some(p => p.status.includes("EMPIRE"));
+                        const isWar = sector.sub.some(p => p.status.includes("WAR") || p.status.includes("CONTESTED"));
                         
                         let cssClass = "sector-poly";
                         let pinClass = "holo-pin";
                         
-                        const isRebel = sector.sub.some(p => p.status.includes("REBEL"));
-                        const isNeutral = sector.sub.some(p => p.status.includes("UNEXPLORED") || p.status.includes("NEUTRAL"));
-
-                        if (isRebel) {
-                            cssClass += " rebel-held";
-                            pinClass += " rebel";
-                        } else if (isNeutral) {
-                            cssClass += " neutral-sector";
-                            pinClass += " neutral";
+                        if (isWar) {
+                            cssClass += " war-held"; pinClass += " war";
+                        } else if (isRebel) {
+                            cssClass += " rebel-held"; pinClass += " rebel";
+                        } else if (isEmpire) {
+                            cssClass += " empire-held"; pinClass += " empire";
+                        } else {
+                            cssClass += " unknown-sector"; pinClass += " neutral";
                         }
 
-                        [pathBot, pathMid, pathTop].forEach(path => path.setAttribute("class", cssClass));
+                        let span = sector.endAngle - sector.startAngle;
+                        let rIn = RINGS[targetRing].inner;
+                        let rOut = RINGS[targetRing].outer;
+                        let s = sector.startAngle;
+                        let e = sector.endAngle;
 
-                        pathTop.onmouseenter = () => { pathBot.classList.add('hovered'); pathMid.classList.add('hovered'); pathTop.classList.add('hovered'); };
-                        pathTop.onmouseleave = () => { pathBot.classList.remove('hovered'); pathMid.classList.remove('hovered'); pathTop.classList.remove('hovered'); };
+                        let pathString = "";
+                        let pinRad = (rIn + rOut) / 2; 
+                        let pinAngle = (s + e) / 2;
+
+                        // Generating a single, continuous path to prevent internal dividing lines
+                        if (span >= 30 && targetRing < 3) {
+                            // L-Shape extending OUTWARDS
+                            let mid = s + (span * 0.4);
+                            let rExt = RINGS[targetRing + 1].outer;
+                            pathString = generateCompoundArc(rIn, rOut, rExt, s, mid, e, 'outer');
+                            pinAngle = (s + mid) / 2; // Keep pin centered on the main chunk
+                        } 
+                        else if (span >= 20 && targetRing > 0) {
+                            // L-Shape extending INWARDS
+                            let mid = s + (span * 0.6);
+                            let rExt = RINGS[targetRing - 1].inner;
+                            pathString = generateCompoundArc(rIn, rOut, rExt, s, mid, e, 'inner');
+                            pinAngle = (mid + e) / 2; // Keep pin centered on the main chunk
+                        } 
+                        else {
+                            // Normal standard pie-slice block
+                            pathString = describeArc(0, 0, rIn, rOut, s, e);
+                        }
+
+                        const pathBot = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        const pathTop = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        
+                        pathBot.setAttribute("d", pathString);
+                        pathTop.setAttribute("d", pathString);
+                        pathBot.setAttribute("class", cssClass);
+                        pathTop.setAttribute("class", cssClass);
+
+                        pathTop.onmouseenter = () => { pathBot.classList.add('hovered'); pathTop.classList.add('hovered'); };
+                        pathTop.onmouseleave = () => { pathBot.classList.remove('hovered'); pathTop.classList.remove('hovered'); };
                         pathTop.onclick = (e) => { e.stopPropagation(); openSector(sector); };
                         
                         svgLayerBot.appendChild(pathBot);
-                        svgLayerMid.appendChild(pathMid);
                         svgLayerTop.appendChild(pathTop);
 
-                        const midAngle = (sector.startAngle + sector.endAngle) / 2;
-                        const pinRad = 40;
-                        const pinPos = polarToCartesian(0, 0, pinRad, midAngle);
-                        const pinLeft = (pinPos.x + 50) + "%";
-                        const pinTop = (pinPos.y + 50) + "%";
-
+                        const pinPos = polarToCartesian(0, 0, pinRad, pinAngle);
                         const pin = document.createElement('div');
                         pin.className = pinClass;
-                        pin.style.left = pinLeft;
-                        pin.style.top = pinTop;
+                        pin.style.left = (pinPos.x + 50) + "%";
+                        pin.style.top = (pinPos.y + 50) + "%";
                         pin.innerHTML = `
                             <div class="pin-wrapper">
                                 <div class="pin-label">${sector.name}</div>
@@ -1625,6 +1480,7 @@
                 document.getElementById('btn-rot-r').onclick = () => { currentRotZ += 20; updateTransform(); };
                 document.getElementById('btn-zoom-in').onclick = () => { currentScale = Math.min(currentScale + 0.15, 2.5); updateTransform(); };
                 document.getElementById('btn-zoom-out').onclick = () => { currentScale = Math.max(currentScale - 0.15, 0.4); updateTransform(); };
+                document.getElementById('btn-reset').onclick = () => { currentRotX = 35; currentRotZ = 0.15; currentScale = 0.75; updateTransform(); };
 
                 function openSector(data) {
                     sidebar.classList.add('active');
@@ -1635,8 +1491,16 @@
                     } else {
                         data.sub.forEach(planet => {
                             const div = document.createElement('div');
-                            const isRebelHeld = planet.status.includes("REBEL");
-                            div.className = `hs-card ${isRebelHeld ? 'hostile-rebel' : ''}`;
+                            
+                            // Determine the card theme
+                            let themeClass = '';
+                            if (planet.status.includes("WAR") || planet.status.includes("CONTESTED")) {
+                                themeClass = 'war-theme';
+                            } else if (planet.status.includes("REBEL")) {
+                                themeClass = 'hostile-rebel';
+                            }
+                            
+                            div.className = `hs-card ${themeClass}`;
                             div.innerHTML = `<img src="${planet.image}"><div class="hs-info"><div class="hs-name">${planet.title}</div><div class="hs-meta">${planet.stats.TERRAIN || 'Unknown'}</div></div>`;
                             div.onclick = () => openDossier(planet);
                             hsBody.appendChild(div);

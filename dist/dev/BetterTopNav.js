@@ -332,6 +332,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 			bTN.waitFor('#global-top-navigation .global-action__user .navigation-panel ul>li>a', () => {
 				
 				// Avoid initalization defaults
+				const hasMW = $('#global-top-navigation .global-action__user .navigation-panel ul > li > a[data-label="account.message-wall"]').length > 0;
 				$('#global-top-navigation .global-action__user > button').click();
 				$('#global-top-navigation .global-action__user .navigation-panel ul').empty();
 				document.body.classList.remove('btn-noflash');
@@ -339,7 +340,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 				// Render new list
 				let links = [
 					{href: new mw.Title('User:'+mw.user.getName()).getUrl(), text: mw.msg('fd-global-navigation-user-view-profile')},
-					{href: new mw.Title('Message_Wall:'+mw.user.getName()).getUrl(), text: mw.msg('fd-global-navigation-user-message-wall')},
+					hasMW
+						? {href: new mw.Title('Message_Wall:'+mw.user.getName()).getUrl(), text: mw.msg('fd-global-navigation-user-message-wall')}
+						: {href: new mw.Title('User_talk:'+mw.user.getName()).getUrl(), text: mw.msg('fd-global-navigation-user-my-talk')},
 					{href: new mw.Title('Special:Contributions/'+mw.user.getName()).getUrl(), text: mw.msg('mycontributions')},
 					{href: new mw.Title('Special:Preferences').getUrl(), text: mw.msg('fd-global-navigation-user-my-preferences')},
 					{href: 'https://www.fandom.com/my-fandom', text: mw.msg('fd-global-navigation-link-my-fandom-label')},
@@ -394,6 +397,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 		'fd-global-top-navigation-no-search-results',
 		'fd-global-navigation-user-view-profile',
 		'fd-global-navigation-user-message-wall',
+		'fd-global-navigation-user-my-talk',
 		'mycontributions',
 		'fd-global-navigation-user-my-preferences',
 		'fd-global-navigation-link-my-fandom-label',

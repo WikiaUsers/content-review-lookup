@@ -70,3 +70,27 @@ $(document).ready(function() {
   });
 });
 } );
+
+$(document).ready(function() {
+    // Only show on content pages, not special pages
+    if (mw.config.get('wgIsArticle')) {
+        var pageName = mw.config.get('wgPageName');
+        var talkPageUrl = mw.util.getUrl('Talk:' + pageName);
+        
+        var $button = $('<a>')
+            .attr('href', talkPageUrl)
+            .attr('class', 'custom-discussion-button')
+            .text('DISCUSSION');
+            
+        $('body').append($button);
+    }
+});
+
+$(function() {
+    if ($('#WikiaRail').length) {
+        $('<section class="rail-module discussion-module">' +
+          '<h2>Discussion</h2>' +
+          '<a href="/f" class="wds-button">Go to Forum</a>' +
+          '</section>').prependTo('#WikiaRail');
+    }
+});

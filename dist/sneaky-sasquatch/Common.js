@@ -233,6 +233,7 @@ try {
 	                action: "query",
 	                list: "recentchanges", 
 	                rcend: "2026-03-04T02:42:07Z",
+	                rcstart: "2026-011-04T02:42:07Z", // ENDED!
 	                rclimit: "max",
 	                rcshow: "!bot", // Bots shouldn't be able to play
 	                rcprop: ["user", "sizes"], // What's a leaderboard without players and scores?
@@ -256,7 +257,7 @@ try {
 	                Object.entries(lb).sort((a, b) => b[1] - a[1]).forEach(function(el, i){
 	                	rank[i] = el[0];
 	                }); //thx u/4548826 on Stack Overflow. This sorts the scores and returns users in the rank array
-	                let res = "<p>The edit-a-than started on March 4th and will end on March 11th. Please review the <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_pages_announcement\">announcment</a>. The leaderboard is updated every 30 seconds.</p><table><thead><tr><td>User</td><td>Score (bytes changed)</td><td>Edits</td><td>Average edit size</td></tr></thead><tbody>"; // result var to be put inside table
+	                let res = "<p><s>The edit-a-than started on March 4th and will end on March 11th. Please review the <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_pages_announcement\">announcment</a>. The leaderboard is updated every 30 seconds.</s> The edit-a-than has <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_Pages_Edit-a-Thon_End\">ended</a> (These are the results as of the end)!</p><table><thead><tr><td>User</td><td>Score (bytes changed)</td><td>Edits</td><td>Average edit size</td></tr></thead><tbody>"; // result var to be put inside table
 	                rank.forEach(function(el, i) { // add the user and score to the table
 	                	res += "<tr><td><a href=\"https://sneaky-sasquatch.fandom.com/wiki/User:" + el + "\">" + el + "</a></td><td>" + lb[el] + "</td><td>" + edits[el] + "</td><td>" + Math.floor(lb[el] / edits[el]) + "</td></tr>";
 	                });
@@ -287,7 +288,7 @@ try {
 	        });
     	}
     	Main();
-        setInterval(Main, 30000); //run Main every 30 seconds for live-ish updates
+        //setInterval(Main, 30000); //run Main every 30 seconds for live-ish updates (commented since archive does not need live refreshing and wasting server CPU IDK LOL)
     }
 } catch (err) {
     alert("Error! " + err + " (please message Twineee to fix this with the message)"); // moar debugz

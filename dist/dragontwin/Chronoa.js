@@ -1,90 +1,87 @@
 /**
- * @name:        Chronoa
- * @author:      [[User:ClodaghelmC]]
- * @description: Creates live, relative timestamps
+ * @name               Chronoa
+ * @author             [[User:ClodaghelmC]]
+ * @description        Creates Live, relative timestamps
  */
- 
-(function (window, $, mw) {
+
+(function(window, $, mw) {
     'use strict';
     
-    // prevent double loading
-    if (window.chronoaLoaded) {
-        return;
-    }
+    if (window.chronoaLoaded) return;
     window.chronoaLoaded = true;
 
     let chronoaTimer = null;
+    const rtf = new Intl.RelativeTimeFormat(mw.config.get('wgUserLanguage') || 'en', { 
+        numeric: 'auto'
+    });
 
-    // --- Main function to find and update timestamps
-    function chronoa() {
+    const units = [
+        { name: 'year',   seconds: 31536000 },
+        { name: 'month',  seconds: 2592000 },
+        { name: 'day',    seconds: 86400 },
+        { name: 'hour',   seconds: 3600 },
+        { name: 'minute', seconds: 60 },
+        { name: 'second', seconds: 1 }
+    ];
+
+    function updateTimestamps() {
         const now = Math.floor(Date.now() / 1000);
         
-        document.querySelectorAll('[data-timestamp]').forEach(el => {
-            const rawValue = el.getAttribute('data-timestamp');
+        // Scope to main content and the right rail only
+        const targetContainers = '#mw-content-text, .right-rail-wrapper';
+        const elements = document.querySelectorAll(`${targetContainers}`);
+        
+        if (elements.length === 0) return;
 
-            // checks if the string contains only digits (\d) and is exactly 10 characters long ({10})
-            if (!/^\d{10}$/.test(rawValue)) return;
+        // Find all data-timestamp elements within those specific containers
+        document.querySelectorAll(`${targetContainers} [data-timestamp]:not(.no-chronoa)`).forEach(el => {
+            const rawValue = el.getAttribute('data-timestamp');
+            if (!/^\d{10}$/.test(rawValue)) return; // r
 
             const unix = parseInt(rawValue);
-            
             const diff = unix - now;
             const absDiff = Math.abs(diff);
             
-            const units = [
-                { n: 'year', s: 31536000 }, { n: 'month', s: 2592000 },
-                { n: 'day', s: 86400 }, { n: 'hour', s: 3600 }, 
-                { n: 'minute', s: 60 }, { n: 'second', s: 1 }
-            ];
-            
             let output = 'just now';
-            for (let u of units) {
-                if (absDiff >= u.s) {
-                    const count = Math.floor(absDiff / u.s);
-                    let unitStr = u.n;
-                    let countStr = count;
-                    
-                    // apply natural phrasing for single units
-                    if (count === 1) {
-                        countStr = (u.n === 'hour') ? 'an' : 'a';
-                    } else {
-                        unitStr += 's'; // pluralize if count > 1
-                    }
-                    
-                    output = `${countStr} ${unitStr}`;
-                    output = diff > 0 ? `in ${output}` : `${output} ago`;
+
+            for (const u of units) {
+                if (absDiff >= u.seconds) {
+                    const count = Math.floor(absDiff / u.seconds);
+                    output = rtf.format(diff > 0 ? count : -count, u.name);
                     break;
                 }
             }
             
-            // only update the DOM if the text has actually changed
             if (el.textContent !== output) {
                 el.textContent = output;
-                // push the live string to an attribute for CSS to read
                 el.setAttribute('data-live', output);
             }
         });
     }
 
-    function chronoaVis() {
+    function manageTimer() {
         if (document.hidden) {
-            // stop the timer when the tab is hidden
             clearInterval(chronoaTimer);
             chronoaTimer = null;
         } else {
-            // snap to the correct live time immediately on tab return
-            chronoa();
+            updateTimestamps();
             if (!chronoaTimer) {
-                chronoaTimer = setInterval(chronoa, 1000);
+                chronoaTimer = setInterval(updateTimestamps, 1000);
             }
         }
     }
-    
-    // Initialize the script and listen for tab focus changes
-    document.addEventListener('visibilitychange', chronoaVis);
-    chronoaVis();
 
-    mw.loader.using(['mediawiki.util'], function () {
-        importArticle({
+    document.addEventListener('visibilitychange', manageTimer);
+    
+    // Tracks both page content and potential rail refreshes
+    mw.hook('wikipage.content').add(function() {
+        if (typeof manageTimer === 'function') {
+            manageTimer();
+        }
+    });
+
+    mw.loader.using(['mediawiki.util'], function() {
+        importArticles({
             type: 'style',
             article: 'MediaWiki:Chronoa.css'
         });

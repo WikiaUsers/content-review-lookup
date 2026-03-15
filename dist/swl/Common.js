@@ -767,12 +767,12 @@ function isMaintenanceCategory(t) {
 		return true;
 	}
 	
-	var start = ["articles", "pages", "infoboxes", "stub", "usages", "unrecognized", "invalid", "media without", "Imagecat", "Legacy Wiki", "incomplete"];
+	var start = ["articles", "pages", "infoboxes", "stub", "usages", "unrecognized", "invalid", "media without", "Imagecat", "wookieepedia", "incomplete"];
 	if (start.some((v) => t.startsWith(v + ' '))) {
 		return true;
 	}
 	
-	var middle = ["infoboxes", "missing permanent", "usages", "listed in", "stubs", "needing images", "category links", "of verification", "citations"];
+	var middle = ["infoboxes", "missing permanent", "usages", "listed in", "stubs", "needing images", "category links", "of verification", "citations", "plot summary"];
 	if (middle.some((v) => t.includes(' ' + v + ' ') || t.endsWith(' ' + v))) {
 		return true;
 	}
@@ -847,7 +847,6 @@ function rearrangeCategories() {
 	}
 }
 
-
 /* Disable rollback script */
 window.RollbackWikiDisable = true;
 
@@ -908,3 +907,12 @@ $(document).ready(function() {
 
 // Rail module
 window.AddRailModule = [{prepend: true}];
+
+/* * TRIGGER: This fires the category split logic 
+ * when the page has finished loading.
+ */
+$(function() {
+    if (typeof rearrangeCategories === "function") {
+        rearrangeCategories();
+    }
+});

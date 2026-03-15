@@ -26,7 +26,7 @@ PROCEED AT YOUR OWN RISK.
 
   window.DisplayClockJS = {
     format:
-      "%2H : %2M : %2S | %{Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday}w | %B, %2d %Y",
+      "%2H : %2M : %2S | %{Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday}w | %B %2d, %Y",
 
     hoverText:
       `In this town, timing is everything. Miss it, and you’re yesterday’s news. ` +

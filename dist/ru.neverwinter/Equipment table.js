@@ -364,8 +364,8 @@ $(function () {
     /**
      * Пересчитывает числовые значения в таблице под выбранное качество и укрепление.
      * @param {jQuery} $tableElement — контейнер таблицы
-     * @param {string} quality — выбранное качество ('mythic', 'default' и т.д.)
-     * @param {number} bolster — значение укрепления (0–100)
+     * @param {string} quality — выбранное качество ('celestial', 'default' и т.д.)
+     * @param {number} bolster — значение укрепления (0–125)
      * @param {Object} config — конфигурация категории
      */
     function recalcQualityValues($tableElement, quality = 'default', bolster = 0, config = {}) {
@@ -373,11 +373,11 @@ $(function () {
 
         const qualityLevels = config.qualityLevels || {};
         const selected = (quality === 'default'
-            ? ($tableElement.data('active-quality') || config.defaultQuality || 'mythic')
+            ? ($tableElement.data('active-quality') || config.defaultQuality || 'celestial')
             : quality);
 
         const bolsterPercent = config.hasBolster
-            ? Math.min(Math.max(+bolster || 0, 0), 100)
+            ? Math.min(Math.max(+bolster || 0, 0), 125)
             : 0;
 
         const makeFactor = (multiplier, base) => {
@@ -399,11 +399,11 @@ $(function () {
             let baseQuality;
 
             if (baseAttr === 'item') {
-                baseQuality = ($tableElement.data('active-quality') || config.defaultQuality || 'mythic');
+                baseQuality = ($tableElement.data('active-quality') || config.defaultQuality || 'celestial');
             } else if (baseAttr) {
                 baseQuality = baseAttr;
             } else {
-                baseQuality = (config.calculateBase || config.defaultQuality || 'mythic');
+                baseQuality = (config.calculateBase || config.defaultQuality || 'celestial');
             }
 
             const baseMul = qualityLevels[baseQuality] || 1;

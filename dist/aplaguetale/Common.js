@@ -1,0 +1,1 @@
+/* Moved to [[MediaWiki:Fandomdesktop.js]] */

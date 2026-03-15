@@ -84,6 +84,8 @@ $(document).ready(function() {
   });
 });
 
+/* Custom Tabber*/
+
 document.querySelectorAll('.custom-tabber').forEach(function(tabber) {
     var tabs = tabber.querySelectorAll('.ct-tab');
     var panels = tabber.querySelectorAll('.ct-panel');
@@ -107,3 +109,72 @@ document.querySelectorAll('.custom-tabber').forEach(function(tabber) {
       });
     });
   });
+
+/* Custom Scrolling */
+function initKomixArrows() {
+    const rowWrappers = document.querySelectorAll('.komix-editions-row-wrapper');
+    
+    if (rowWrappers.length === 0) return false; // No rows found
+    
+    rowWrappers.forEach(function(wrapper) {
+        if (wrapper.dataset.arrowsInitialized) return; // Already done
+        wrapper.dataset.arrowsInitialized = 'true';
+        
+        const row = wrapper.querySelector('.komix-editions-row');
+        if (!row) return;
+        
+        const itemWidth = 120; // Item + gap
+        const scrollAmount = itemWidth * 3;
+        
+        // Create arrows
+        const leftArrow = document.createElement('div');
+        leftArrow.className = 'komix-arrow komix-arrow-left';
+        leftArrow.innerHTML = '◀';
+        
+        const rightArrow = document.createElement('div');
+        rightArrow.className = 'komix-arrow komix-arrow-right';
+        rightArrow.innerHTML = '▶';
+        
+        wrapper.appendChild(leftArrow);
+        wrapper.appendChild(rightArrow);
+        
+        // Arrow click handlers
+        leftArrow.addEventListener('click', function(e) {
+            e.preventDefault();
+            row.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+        
+        rightArrow.addEventListener('click', function(e) {
+            e.preventDefault();
+            row.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+        
+        // Arrow visibility
+        const checkArrows = () => {
+            const maxScroll = row.scrollWidth - row.clientWidth;
+            const currentScroll = row.scrollLeft;
+            
+            leftArrow.style.opacity = currentScroll > 10 ? '1' : '0.3';
+            rightArrow.style.opacity = currentScroll < maxScroll - 10 ? '1' : '0.3';
+        };
+        
+        row.addEventListener('scroll', checkArrows);
+        checkArrows();
+    });
+    
+    return true; // Success
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initKomixArrows);
+} else {
+    // DOM already loaded
+    if (!initKomixArrows()) {
+        // Retry after short delay
+        setTimeout(initKomixArrows, 100);
+    }
+}
+
+
+$(document).on('articlesChanged', initKomixArrows);
+window.addEventListener('load', initKomixArrows);

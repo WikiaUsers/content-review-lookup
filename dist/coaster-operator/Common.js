@@ -1,5 +1,5 @@
-/* * Coaster Operator Wiki - v16 "The WOW Experience (Refined UI)"
- * Features: Fixed Sidebar Spacing, Image-Accurate Headers, 100% Content.
+/* * Coaster Operator Wiki - v19 "The Perfect Layout"
+ * Features: Horizontal Network Hub (Top), Fixed Spacing, Removed Status Badge, 100% Content.
  */
 
 $(function() {
@@ -24,11 +24,6 @@ $(function() {
             <div class="os-ambient-secondary pulse-ambient"></div>
 
             <header class="os-hero os-reveal">
-                <div class="hero-status">
-                    <div class="status-dot"></div>
-                    <span>COASTER STUDIO // ONLINE</span>
-                </div>
-
                 <div class="hero-logo-box">
                     <img src="/Special:FilePath/Image.png" class="hero-logo" alt="Logo" />
                 </div>
@@ -43,7 +38,7 @@ $(function() {
                 <div class="hero-action">
                     <a href="${gameLink}" target="_blank" class="os-btn-launch hover-glow">
                         <span class="btn-glow"></span>
-                        <span class="btn-text">INITIALIZE GAME <span class="arr">→</span></span>
+                        <span class="btn-text">PLAY NOW<span class="arr">→</span></span>
                     </a>
                 </div>
             </header>
@@ -52,177 +47,168 @@ $(function() {
                 <div class="os-dock hover-glow">
                     <a href="/wiki/Gameplay" class="dock-item">
                         <span class="di-icon" style="color: #38bdf8;">🎮</span>
-                        <span class="di-label">Gameplay</span>
+                        <span class="di-label">GAMEPLAY</span>
                     </a>
                     <div class="dock-divider"></div>
                     <a href="/wiki/Codes" class="dock-item">
                         <span class="di-icon" style="color: #10b981;">🎟️</span>
-                        <span class="di-label">Codes</span>
+                        <span class="di-label">CODES</span>
                     </a>
                     <div class="dock-divider"></div>
                     <a href="/wiki/Rides" class="dock-item">
                         <span class="di-icon" style="color: #f59e0b;">🎢</span>
-                        <span class="di-label">Rides</span>
+                        <span class="di-label">RIDES</span>
                     </a>
                     <div class="dock-divider"></div>
                     <a href="/wiki/Ranks" class="dock-item">
                         <span class="di-icon" style="color: #ec4899;">⭐</span>
-                        <span class="di-label">Ranks</span>
+                        <span class="di-label">RANKS</span>
                     </a>
                     <div class="dock-divider"></div>
                     <a href="/wiki/Achievements" class="dock-item">
                         <span class="di-icon" style="color: #a855f7;">🏆</span>
-                        <span class="di-label">Badges</span>
+                        <span class="di-label">ACHIEVEMENTS</span>
                     </a>
                 </div>
             </nav>
 
-            <div class="os-layout">
+            <div class="os-layout-single">
                 
-                <div class="os-col-main os-reveal" style="transition-delay: 0.2s;">
-                    <div class="os-module hover-glow">
-                        <div class="module-content-wrapper">
-                            <div class="module-header">
-                                <div class="mh-title">
-                                    <span class="mh-icon">⚡</span> UPDATE MANIFEST
-                                </div>
-                                <div class="mh-tag">VERSION 1.4.7</div>
-                            </div>
-
-                            <div class="os-update-graphic">
-                                <img src="/Special:FilePath/Screenshot_2026-01-11_224226.png" alt="Update Cover" />
-                                <div class="ug-overlay">
-                                    <h2>INTERACTIVITY UPDATE</h2>
-                                </div>
-                            </div>
-
-                            <div class="os-warning-strip hover-glow">
-                                <div class="ws-icon">⚠️</div>
-                                <div class="ws-content">
-                                    <strong>LIVE PATCHING ACTIVE</strong>
-                                    <span>Deploying continuous hotfixes to resolve emerging anomalies.</span>
-                                </div>
-                            </div>
-
-                            <div class="os-data-accordions">
-                                
-                                <div class="data-accordion hover-glow active">
-                                    <div class="da-header">
-                                        <div class="da-title-group">
-                                            <span class="da-icon" style="color:#38bdf8;">📡</span>
-                                            <span class="da-title">Features & Content</span>
-                                            <span class="da-badge" style="color:#38bdf8; background:rgba(56,189,248,0.1);">INTEGRATED</span>
-                                        </div>
-                                        <div class="da-toggle">▼</div>
-                                    </div>
-                                    <div class="da-content">
-                                        <ul class="dc-list">
-                                            <li>New mesh panels, buttons and / or screens on all rides</li>
-                                            <li>New maintenance cabinet system & model</li>
-                                            <li>Interactive checklist & choice between procedures</li>
-                                            <li>Visual check step added to all start up procedures</li>
-                                            <li>Ride shutdown ability added to all rides</li>
-                                            <li>Camera system POV feature & interactive tutorial system</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="data-accordion hover-glow">
-                                    <div class="da-header">
-                                        <div class="da-title-group">
-                                            <span class="da-icon" style="color:#f59e0b;">🎢</span>
-                                            <span class="da-title">Ride Calibration</span>
-                                            <span class="da-badge" style="color:#f59e0b; background:rgba(245,158,11,0.1);">MODIFIED</span>
-                                        </div>
-                                        <div class="da-toggle">▼</div>
-                                    </div>
-                                    <div class="da-content">
-                                        <div class="dc-grid">
-                                            <div class="dc-grid-item">
-                                                <span class="dgi-title">Giant Drop</span>
-                                                <span class="dgi-desc">Advanced ops, sync & op mode.</span>
-                                            </div>
-                                            <div class="dc-grid-item">
-                                                <span class="dgi-title">Cobra's Curse</span>
-                                                <span class="dgi-desc">Unique ops, RFID dispatch.</span>
-                                            </div>
-                                            <div class="dc-grid-item">
-                                                <span class="dgi-title">Phoenix Rising</span>
-                                                <span class="dgi-desc">Extended start-up, host panel.</span>
-                                            </div>
-                                            <div class="dc-grid-item">
-                                                <span class="dgi-title">Red Arrows</span>
-                                                <span class="dgi-desc">Advanced ops & op mode.</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="data-accordion hover-glow">
-                                    <div class="da-header">
-                                        <div class="da-title-group">
-                                            <span class="da-icon" style="color:#10b981;">🛠️</span>
-                                            <span class="da-title">Maintenance Logs</span>
-                                            <span class="da-badge" style="color:#10b981; background:rgba(16,185,129,0.1);">RESOLVED</span>
-                                        </div>
-                                        <div class="da-toggle">▼</div>
-                                    </div>
-                                    <div class="da-content">
-                                        <ul class="dc-list">
-                                            <li>Various minor bug fixes & Optimisation</li>
-                                            <li>Server system V2 & improved back-end scripts</li>
-                                            <li>New NPC sys implemented into most rides</li>
-                                            <li>New in-game changelog, trash/rubbish models & store posters</li>
-                                            <li>New intercom & pinboard model on several rides</li>
-                                            <li>Bonus coins & XP for start up & shutdown</li>
-                                            <li>Smoother hinge & button animations</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                            </div>
-                            
-                            <div class="module-footer">
-                                <div class="mf-status">ENCRYPTED_V1.4.7</div>
-                                <div class="mf-time">
-                                    <span>LIVE: FEB 2026</span>
-                                    <span id="os-clock" class="digital-clock">00:00:00</span>
-                                </div>
+                <div class="os-module hover-glow os-reveal" style="transition-delay: 0.2s;">
+                    <div class="module-content-wrapper">
+                        <div class="module-header">
+                            <div class="mh-title"><span class="mh-icon" style="opacity: 0.6; font-size: 14px; margin-right: 6px;">🔗</span> QUICK LINKS</div>
+                        </div>
+                        <div class="module-body-wide">
+                            <div class="os-links-grid-4">
+                                <a href="${gameLink}" target="_blank" class="osl-card hover-glow">
+                                    <div class="osl-icon" style="color: #a855f7;">🎮</div>
+                                    <div class="osl-data"><strong>OUR GAME</strong><span>Roblox Client</span></div>
+                                </a>
+                                <a href="https://discord.gg/Gq4mhYdKWC" target="_blank" class="osl-card hover-glow">
+                                    <div class="osl-icon" style="color: #e4e4e7;">💬</div>
+                                    <div class="osl-data"><strong>COMMUNICATIONS</strong><span>Discord Server</span></div>
+                                </a>
+                                <a href="https://www.roblox.com/communities/34173405/Coaster-Studio" target="_blank" class="osl-card hover-glow">
+                                    <div class="osl-icon" style="color: #9ca3af;">💼</div>
+                                    <div class="osl-data"><strong>OUR COMMUNITY</strong><span>Roblox Group</span></div>
+                                </a>
+                                <a href="https://coasterstudiorblx.com/" target="_blank" class="osl-card hover-glow">
+                                    <div class="osl-icon" style="color: #38bdf8;">🌐</div>
+                                    <div class="osl-data"><strong>OUR WEBSITE</strong><span>Official Website</span></div>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="os-col-side os-reveal" style="transition-delay: 0.3s;">
-                    
-                    <div class="os-module hover-glow">
-                        <div class="module-content-wrapper">
-                            <div class="module-header">
-                                <div class="mh-title"><span class="mh-icon" style="opacity: 0.6; font-size: 12px; margin-right: 4px;">🔗</span> NETWORK HUB</div>
+                <div class="os-module hover-glow os-reveal" style="transition-delay: 0.3s;">
+                    <div class="module-content-wrapper">
+                        <div class="module-header">
+                            <div class="mh-title">
+                                <span class="mh-icon">⚡</span> UPDATE CHANGELOG
                             </div>
-                            <div class="module-body">
-                                <div class="os-links">
-                                    <a href="${gameLink}" target="_blank" class="osl-item hover-glow">
-                                        <div class="osl-icon">🎮</div>
-                                        <div class="osl-data"><strong>Play Instance</strong><span>Roblox Client</span></div>
-                                        <div class="osl-arr">↗</div>
-                                    </a>
-                                    <a href="https://www.roblox.com/communities/34173405/Coaster-Studio" target="_blank" class="osl-item hover-glow">
-                                        <div class="osl-icon">💼</div>
-                                        <div class="osl-data"><strong>Staff Group</strong><span>Join Roster</span></div>
-                                        <div class="osl-arr">↗</div>
-                                    </a>
-                                    <a href="https://discord.gg/Gq4mhYdKWC" target="_blank" class="osl-item hover-glow">
-                                        <div class="osl-icon">💬</div>
-                                        <div class="osl-data"><strong>Comms</strong><span>Discord Server</span></div>
-                                        <div class="osl-arr">↗</div>
-                                    </a>
-                                    <a href="https://coasterstudiorblx.com/" target="_blank" class="osl-item hover-glow">
-                                        <div class="osl-icon">🌐</div>
-                                        <div class="osl-data"><strong>Mainframe</strong><span>Official Website</span></div>
-                                        <div class="osl-arr">↗</div>
-                                    </a>
+                            <div class="mh-tag">VERSION 1.4.7</div>
+                        </div>
+
+                        <div class="os-update-graphic">
+                            <img src="/Special:FilePath/Screenshot_2026-01-11_224226.png" alt="Update Cover" />
+                            <div class="ug-overlay">
+                                <h2>INTERACTIVITY UPDATE</h2>
+                            </div>
+                        </div>
+
+                        <div class="os-warning-strip hover-glow">
+                            <div class="ws-icon">⚠️</div>
+                            <div class="ws-content">
+                                <strong>LIVE PATCHING ACTIVE</strong>
+                                <span>Deploying continuous hotfixes to resolve emerging anomalies.</span>
+                            </div>
+                        </div>
+
+                        <div class="os-data-accordions">
+                            
+                            <div class="data-accordion hover-glow active">
+                                <div class="da-header">
+                                    <div class="da-title-group">
+                                        <span class="da-icon" style="color:#38bdf8;">📡</span>
+                                        <span class="da-title">Features & Content</span>
+                                        <span class="da-badge" style="color:#38bdf8; background:rgba(56,189,248,0.1);">INTEGRATED</span>
+                                    </div>
+                                    <div class="da-toggle">▼</div>
                                 </div>
+                                <div class="da-content">
+                                    <ul class="dc-list">
+                                        <li>New mesh panels, buttons and / or screens on all rides</li>
+                                        <li>New maintenance cabinet system & model</li>
+                                        <li>Interactive checklist & choice between procedures</li>
+                                        <li>Visual check step added to all start up procedures</li>
+                                        <li>Ride shutdown ability added to all rides</li>
+                                        <li>Camera system POV feature & interactive tutorial system</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="data-accordion hover-glow">
+                                <div class="da-header">
+                                    <div class="da-title-group">
+                                        <span class="da-icon" style="color:#f59e0b;">🎢</span>
+                                        <span class="da-title">Ride Calibration</span>
+                                        <span class="da-badge" style="color:#f59e0b; background:rgba(245,158,11,0.1);">MODIFIED</span>
+                                    </div>
+                                    <div class="da-toggle">▼</div>
+                                </div>
+                                <div class="da-content">
+                                    <div class="dc-grid">
+                                        <div class="dc-grid-item">
+                                            <span class="dgi-title">Giant Drop</span>
+                                            <span class="dgi-desc">Advanced ops, sync & op mode.</span>
+                                        </div>
+                                        <div class="dc-grid-item">
+                                            <span class="dgi-title">Cobra's Curse</span>
+                                            <span class="dgi-desc">Unique ops, RFID dispatch.</span>
+                                        </div>
+                                        <div class="dc-grid-item">
+                                            <span class="dgi-title">Phoenix Rising</span>
+                                            <span class="dgi-desc">Extended start-up, host panel.</span>
+                                        </div>
+                                        <div class="dc-grid-item">
+                                            <span class="dgi-title">Red Arrows</span>
+                                            <span class="dgi-desc">Advanced ops & op mode.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-accordion hover-glow">
+                                <div class="da-header">
+                                    <div class="da-title-group">
+                                        <span class="da-icon" style="color:#10b981;">🛠️</span>
+                                        <span class="da-title">Maintenance Logs</span>
+                                        <span class="da-badge" style="color:#10b981; background:rgba(16,185,129,0.1);">RESOLVED</span>
+                                    </div>
+                                    <div class="da-toggle">▼</div>
+                                </div>
+                                <div class="da-content">
+                                    <ul class="dc-list">
+                                        <li>Various minor bug fixes & Optimisation</li>
+                                        <li>Server system V2 & improved back-end scripts</li>
+                                        <li>New NPC sys implemented into most rides</li>
+                                        <li>New in-game changelog, trash/rubbish models & store posters</li>
+                                        <li>New intercom & pinboard model on several rides</li>
+                                        <li>Bonus coins & XP for start up & shutdown</li>
+                                        <li>Smoother hinge & button animations</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <div class="module-footer">
+                            <div class="mf-status">ENCRYPTED_V1.4.7</div>
+                            <div class="mf-time">
+                                <span>LIVE: FEB 2026</span>
+                                <span id="os-clock" class="digital-clock">00:00:00</span>
                             </div>
                         </div>
                     </div>
@@ -234,7 +220,7 @@ $(function() {
                 <div class="os-module hover-glow os-reveal" style="transition-delay: 0.4s;">
                     <div class="module-content-wrapper">
                         <div class="module-header">
-                            <div class="mh-title"><span class="mh-icon" style="color:#fbbf24;">🏆</span> ACCOLADES & RECOGNITION</div>
+                            <div class="mh-title"><span class="mh-icon" style="color:#fbbf24;">🏆</span> RECOGNITIONS</div>
                         </div>
                         <div id="raapa-awards-target" class="module-body-wide"></div>
                     </div>
@@ -243,7 +229,7 @@ $(function() {
                 <div class="os-module hover-glow os-reveal" style="transition-delay: 0.5s;">
                     <div class="module-content-wrapper">
                         <div class="module-header">
-                            <div class="mh-title"><span class="mh-icon" style="color:#a855f7;">ℹ️</span> SYSTEM MANIFEST</div>
+                            <div class="mh-title"><span class="mh-icon" style="color:#a855f7;">ℹ️</span> COASTER STUDIO MANIFEST</div>
                         </div>
                         <div id="game-manifest-target" class="module-body-wide"></div>
                     </div>
@@ -276,7 +262,7 @@ $(function() {
             --os-muted: #94a3b8;
             --os-dark: #475569;
             
-            --os-magenta: #ec4899;
+            --os-magenta: #e84797;
             --os-purple: #a855f7;
             --os-cyan: #38bdf8;
             --os-gold: #fbbf24;
@@ -307,7 +293,7 @@ $(function() {
         /* Breathing Ambient Core */
         .os-ambient-core {
             position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
-            width: 800px; height: 600px; background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(236,72,153,0.1) 40%, transparent 70%);
+            width: 800px; height: 600px; background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(232,71,151,0.1) 40%, transparent 70%);
             z-index: -1; pointer-events: none; filter: blur(60px);
         }
         .os-ambient-secondary {
@@ -331,42 +317,29 @@ $(function() {
         }
         .hover-glow::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(600px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(255,255,255,0.05), transparent 40%);
+            background: radial-gradient(600px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(255,255,255,0.06), transparent 40%);
             z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s;
         }
         .hover-glow:hover::before { opacity: 1; }
-        .module-content-wrapper { position: relative; z-index: 1; }
+        .module-content-wrapper { position: relative; z-index: 1; height: 100%; }
 
         /* --- HERO SECTION --- */
         .os-hero { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 40px; padding-top: 20px; }
-
-        /* Image-Accurate Status Badge */
-        .hero-status { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: #a1a1aa; letter-spacing: 1.5px; border: 1px solid var(--os-border); padding: 8px 18px; border-radius: 20px; margin-bottom: 32px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-        .status-dot { width: 8px; height: 8px; background: var(--os-green); border-radius: 50%; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
 
         .hero-logo-box { position: relative; width: 88px; height: 88px; margin-bottom: 24px; }
         .hero-logo-box::before { content: ''; position: absolute; inset: -4px; border-radius: 24px; background: linear-gradient(135deg, var(--os-purple), var(--os-magenta)); filter: blur(12px); opacity: 0.6; z-index: 0; animation: spinGlow 4s linear infinite; }
         @keyframes spinGlow { 100% { filter: hue-rotate(360deg) blur(12px); } }
         .hero-logo { position: relative; width: 100%; height: 100%; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); z-index: 1; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         
-        /* Animated Gradient Title */
+        /* Animated Gradient Title - PURPLE TO ORANGE SWEEP */
         .hero-title-wrapper { display: flex; align-items: center; gap: 20px; margin-bottom: 8px; width: 100%; justify-content: center; }
         .ht-accent-line { height: 1px; flex-grow: 1; max-width: 80px; background: linear-gradient(90deg, transparent, rgba(232,71,151,0.5)); }
         .ht-accent-line.left { background: linear-gradient(270deg, transparent, rgba(232,71,151,0.5)); }
-        
-        /* Magenta to Orange gradient */
         .hero-title { 
-            font-size: 54px; 
-            font-weight: 900; 
-            letter-spacing: 4px; 
+            font-size: 54px; font-weight: 900; letter-spacing: 4px; 
             background: linear-gradient(to right, #e84797 0%, #e84797 35%, #ff8800 50%, #e84797 65%, #e84797 100%); 
-            background-size: 200% auto; 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            line-height: 1.1; 
-            text-shadow: 0 0 40px rgba(232,71,151,0.3); 
-            text-transform: uppercase; 
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            line-height: 1.1; text-shadow: 0 0 40px rgba(232,71,151,0.3); text-transform: uppercase; 
             animation: shineText 5s linear infinite; 
         }
         @keyframes shineText { to { background-position: 200% center; } }
@@ -395,11 +368,10 @@ $(function() {
         .dock-divider { width: 1px; height: 20px; background: var(--os-border); }
 
         /* --- LAYOUT GRIDS --- */
-        .os-layout { display: grid; grid-template-columns: 1.8fr 1fr; gap: 24px; margin-bottom: 24px; align-items: start; }
+        .os-layout-single { display: flex; flex-direction: column; gap: 24px; margin-bottom: 24px; align-items: stretch; }
         .os-stacked-modules { display: flex; flex-direction: column; gap: 24px; }
         
         @media (max-width: 900px) { 
-            .os-layout { grid-template-columns: 1fr; } 
             .hero-title { font-size: 32px; }
         }
         
@@ -412,6 +384,15 @@ $(function() {
         .mh-icon { font-size: 14px; }
         .mh-tag { font-size: 10px; font-weight: 700; color: var(--os-muted); border: 1px solid var(--os-border); padding: 4px 10px; border-radius: 12px; letter-spacing: 1px; }
         
+        /* --- HORIZONTAL NETWORK HUB --- */
+        .os-links-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .osl-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: var(--os-bg); border: 1px solid var(--os-border); border-radius: 12px; transition: var(--os-trans); }
+        .osl-card:hover { background: rgba(30, 30, 35, 0.6); border-color: var(--os-border-light); transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .osl-icon { font-size: 22px; width: 32px; text-align: center; }
+        .osl-data { flex-grow: 1; display: flex; flex-direction: column; position: relative; z-index: 1; }
+        .osl-data strong { font-size: 13px; color: var(--os-text); }
+        .osl-data span { font-size: 11px; color: var(--os-muted); }
+
         /* --- UPDATE CONTENT --- */
         .os-update-graphic { position: relative; width: 100%; height: 180px; border-bottom: 1px solid var(--os-border); }
         .os-update-graphic img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
@@ -457,19 +438,6 @@ $(function() {
         .mf-status { font-size: 10px; font-weight: 700; color: var(--os-dark); letter-spacing: 1px; }
         .mf-time { display: flex; align-items: center; gap: 16px; font-size: 10px; font-weight: 700; color: var(--os-dark); letter-spacing: 1px; }
         .digital-clock { font-family: monospace; font-size: 14px; color: var(--os-text); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--os-border); }
-
-        /* --- SIDEBAR LINKS --- */
-        .module-body { padding: 20px; position: relative; z-index: 1; }
-        
-        .os-links { display: flex; flex-direction: column; gap: 8px; }
-        .osl-item { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: var(--os-card); border: 1px solid var(--os-border); border-radius: 12px; transition: var(--os-trans); }
-        .osl-item:hover { background: rgba(30, 30, 35, 0.6); border-color: var(--os-border-light); transform: translateX(4px); }
-        .osl-icon { font-size: 18px; width: 24px; text-align: center; }
-        .osl-data { flex-grow: 1; display: flex; flex-direction: column; position: relative; z-index: 1; }
-        .osl-data strong { font-size: 13px; color: var(--os-text); }
-        .osl-data span { font-size: 11px; color: var(--os-muted); }
-        .osl-arr { color: var(--os-dark); font-size: 14px; transition: var(--os-trans); opacity: 0; position: relative; z-index: 1; }
-        .osl-item:hover .osl-arr { opacity: 1; color: var(--os-text); transform: translateX(2px); }
 
         /* --- WIDE STACKED MODULES (AWARDS & MANIFEST) --- */
         .module-body-wide { padding: 24px; position: relative; z-index: 1; }

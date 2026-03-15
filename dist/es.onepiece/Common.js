@@ -67,3 +67,9 @@ $(function UserNameReplace() {
     }
 });
 window.MassCategorizationGroups = ['sysop', 'moderador de contenido'];
+
+// =====================================
+//                Asistente
+// =====================================
+
+importScript('Usuario:El Principe/Pythagoras.js');

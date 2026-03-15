@@ -241,7 +241,47 @@ mw.loader.using('mediawiki.api', function() {
 				}
 				
 				// HTML design
-			textParagraph.innerHTML = "<img src='https://static.wikia.nocookie.net/happytreefriends/images/6/62/FlakyZ.png/revision/latest' width='50px' /><center><div style=\"font-size: 15pt; line-height: 1em\"><a href=\"" + wiki_url + "/wiki/User:" + url_user +"\">" + user + "</a> was blocked by an Administrator.<hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\"><span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + wiki_url + "/wiki/Special:Log?type=block&page=User:" + url_user + "\">Block Log</a></span><div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div><b><i>Username: </i></b>" + user + "<br/><b><i>Block ID: </b></i>" + blockID + "<br/><b><i>Block Performer: </b></i><a href=\"" + wiki_url + "/wiki/User:" + blockperformer_url + "\">" + blockperformer + "</a><br/><b><i>Block Type: </b></i>" + block_type + partial_block_details + "<br/><b><i>Block Start: </b></i>" + blockStartDateTime + "<br/><b><i>Block Expiry: </b></i>" + blockEndDateTime + "<br/><b><i>Block Reason: </b></i><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
+			textParagraph.innerHTML =
+"<center><div style='margin-top:2%;margin-bottom:2%;position:relative;border:5px solid #ffd700;padding:20px;width:85%;border-radius:25px;background-color:#fffacd;'>" +
+
+"<div style='position:absolute;top:-20px;right:-20px'>" +
+"<img src='https://static.wikia.nocookie.net/happytreefriends/images/5/56/Popcorn_acorn.png/revision/latest' width='50px' />" +
+"</div>" +
+
+"<div style='text-align:left;padding-right:40px;padding-left:40px'>" +
+"<div style='display:flex;max-width:980px;margin:auto;align-items:center'>" +
+
+"<img src='https://static.wikia.nocookie.net/happytreefriends/images/6/62/FlakyZ.png/revision/latest' width='150px' />" +
+
+"<div style='padding:10px'>" +
+"<div style='font-size:120%;font-weight:bold;color:black'>" +
+"This user was blocked by an Administrator and Flaky got all quills." +
+"</div>" +
+
+"This user was banned for violating the " +
+"<a href='https://happytreefriends.fandom.com/wiki/Happy_Tree_Friends_Wiki:Policy'>wiki policy</a>.<br/>" +
+
+"</div></div></div><hr>" +
+
+"<div style='text-align:left'>" +
+"<h3>Block Information</h3>" +
+
+"<b><i>Username:</i></b> " + user + "<br/>" +
+"<b><i>Block ID:</i></b> " + blockID + "<br/>" +
+
+"<b><i>Block Performer:</i></b> " +
+"<a href='" + wiki_url + "/wiki/User:" + blockperformer_url + "'>" + blockperformer + "</a><br/>" +
+
+"<b><i>Block Type:</i></b> " + block_type + partial_block_details + "<br/>" +
+"<b><i>Block Start:</i></b> " + blockStartDateTime + "<br/>" +
+"<b><i>Block Expiry:</i></b> " + blockEndDateTime + "<br/>" +
+
+"<b><i>Block Reason:</i></b>" +
+"<blockquote style='border-left:5px solid rgba(var(--theme-alert-color--rgb),0.5);padding-left:0.5em;'>" +
+parsedBlockReason +
+"</blockquote>" +
+
+"</div></div></center>";
 				
 				Box.appendChild(textParagraph); // apply all text configurations into Box
 				

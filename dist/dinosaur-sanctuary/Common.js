@@ -280,35 +280,96 @@ document.addEventListener("click", function (e) {
   const target = document.getElementById(hash);
   if (!target) return;
 
-  // Which tab content contains the target?
-  const tabContent = target.closest(".wds-tab__content");
+  const tabContent = target.closest(".wds-tab__content.miniwiki-tab__content");
   if (!tabContent) return;
 
-  // Which miniwiki/tabber are we inside?
   const tabber = tabContent.closest(".wds-tabber");
   if (!tabber) return;
 
-  const contents = Array.from(
-    tabber.querySelectorAll(".wds-tab__content")
-  );
+  const miniwiki = tabber.closest(".miniwiki");
+  if (!miniwiki) return;
 
-  const tabs = Array.from(
-    tabber.querySelectorAll(".wds-tabs__tab")
-  );
-
-  const index = contents.indexOf(tabContent);
-  if (index === -1 || !tabs[index]) return;
-
-  // Already active?
-  if (!tabs[index].classList.contains("wds-is-current")) {
-    // Deactivate only inside this tabber
-    tabs.forEach(tab => tab.classList.remove("wds-is-current"));
-    contents.forEach(content => content.classList.remove("wds-is-current"));
-
-    // Activate matching pair
-    tabs[index].classList.add("wds-is-current");
-    contents[index].classList.add("wds-is-current");
+  // If already active, just scroll
+  if (tabContent.classList.contains("wds-is-current")) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
   }
 
+  // Deactivate contents in this miniwiki
+  miniwiki
+    .querySelectorAll(".wds-tab__content.miniwiki-tab__content")
+    .forEach(c => c.classList.remove("wds-is-current"));
+
+  // Activate the correct content
+  tabContent.classList.add("wds-is-current");
+
+  // Sync tab buttons
+  const activeHash = tabContent.dataset.hash;
+  let activeTab = null;
+
+  miniwiki
+    .querySelectorAll(".wds-tabs__tab.miniwiki-tabs__tab")
+    .forEach(tab => {
+      const isCurrent = activeHash && tab.dataset.hash === activeHash;
+      tab.classList.toggle("wds-is-current", isCurrent);
+      if (isCurrent) activeTab = tab;
+    });
+
+  // Ensure active tab is visible
+  if (activeTab) {
+    activeTab.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center"
+    });
+  }
+
+  // Ensure tab bar itself is visible
+  const tabBar = miniwiki.querySelector(".miniwiki_tabs");
+  if (tabBar) {
+    tabBar.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // Scroll to the anchor target
   target.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+function initVisibleInfoboxTabs() {
+  document.querySelectorAll(".portable-infobox .wds-tabs").forEach(tab => {
+
+    if (tab.dataset.wdsReady) return; // already initialized
+    if (!tab.offsetParent) return;    // still hidden
+
+    tab.dataset.wdsReady = "true";
+
+    // trigger WDS measurement
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+  });
+}
+
+function initVisibleInfoboxTabs() {
+  document.querySelectorAll(".portable-infobox .wds-tabs").forEach(tab => {
+
+    if (tab.dataset.wdsReady) return; // already initialized
+    if (!tab.offsetParent) return;    // still hidden
+
+    tab.dataset.wdsReady = "true";
+
+    // trigger WDS measurement
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+  });
+}
+
+// run once
+window.addEventListener("load", initVisibleInfoboxTabs);
+
+// run whenever user interacts (opening tabbers etc.)
+document.addEventListener("click", () => {
+  setTimeout(initVisibleInfoboxTabs, 120);
 });

@@ -1,1 +1,0 @@
-<span style"border:medium solid blue;">TEXT</span>

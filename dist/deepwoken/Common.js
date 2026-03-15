@@ -1,7 +1,8 @@
 /* jshint esversion: 6 */
 
 $( document ).ready(function() {
-    importScriptPage('MediaWiki:Tippy.js');
+    mw.loader.load("/wiki/MediaWiki:Tippy.js?action=raw&ctype=text/javascript");
+    mw.loader.load("/wiki/MediaWiki:Gadget-flashAnchored.js?action=raw&ctype=text/javascript");
 });
 
 // Prevents ProfileTags extension to overwrite default user tags.

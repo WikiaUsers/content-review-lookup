@@ -40,3 +40,37 @@ document.addEventListener('mouseout', function(e) {
         content.style.display = 'none';
     }
 });
+
+document.querySelectorAll('.criatura-titulo').forEach(function(container) {
+    const link = container.querySelector('a');
+    if (!link) return;
+
+    let fontSize = 28; 
+    const maxHeight = 48;
+
+    link.style.fontSize = fontSize + 'px';
+    link.style.display = 'block';
+    link.style.lineHeight = '0.9';
+
+    while (link.offsetHeight > maxHeight && fontSize > 8) {
+        fontSize--;
+        link.style.fontSize = fontSize + 'px';
+    }
+});
+
+document.querySelectorAll('.criatura-linha').forEach(function(container) {
+    const conteudo = container.querySelector('.conteudo');
+    if (!conteudo) return;
+
+    let fontSize = 13; 
+    const maxHeight = 23;
+
+    conteudo.style.fontSize = fontSize + 'px';
+    conteudo.style.display = 'block';
+
+    while (conteudo.offsetHeight > maxHeight && fontSize > 8) {
+        fontSize--;
+        conteudo.style.fontSize = fontSize + 'px';
+        conteudo.style.lineHeight = '0.9';
+    }
+});

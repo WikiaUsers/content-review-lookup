@@ -86,14 +86,23 @@ $(function () {
         alignItems: "center",
         gap: "6px"
     } });
-    var $progressBar = $('<input>', { type: "range", min: 0, max: 100, value: 0, css: { flex: 1, appearance: "none", height: "6px", background: "#333", borderRadius: "4px", cursor: "pointer", "accent-color": "#f5a200" } });
-    var $skipButton = $('<button>', { text: "⏭", css: { background: "#820f03", border: "none", borderRadius: "6px", padding: "2px 6px", cursor: "pointer", color: "#fff", fontWeight: "bold" } });
-    $controls.append($progressBar).append($skipButton);
 
+    var $progressBar = $('<input>', { type: "range", min: 0, max: 100, value: 0, css: { flex: 1, appearance: "none", height: "6px", background: "#333", borderRadius: "4px", cursor: "pointer", "accent-color": "#f5a200" } });
+
+    var $skipButton = $('<button>', { text: "⏭", css: { background: "#820f03", border: "none", borderRadius: "6px", padding: "2px 6px", cursor: "pointer", color: "#fff", fontWeight: "bold" } });
+
+    $controls.append($progressBar).append($skipButton);
     $radioContainer.append($radio).append($radioGif).append($controls);
     $('body').append($radioContainer);
 
     var audio = new Audio();
+
+    audio.addEventListener("ended", function(){
+        if(!introPlaying && !interactionLocked){
+            loadTrack(pickRandomTrack());
+        }
+    });
+
     var isPlaying = false;
     var hasStarted = false;
     var currentTrack = null;
@@ -113,7 +122,7 @@ $(function () {
 
     function pickRandomTrack() {
         var pool = tracks.filter(t => t !== currentTrack);
-        return pool[Math.floor(Math.random() * Math.random() * pool.length)];
+        return pool[Math.floor(Math.random() * pool.length)];
     }
 
     function showGif(show) {
@@ -129,14 +138,22 @@ $(function () {
     function loadTrack(src, startTime=0, autoplay=true) {
         audio.pause();
         audio.src = src;
-        audio.currentTime = startTime;
-        if(autoplay) audio.play();
+
+        audio.onloadedmetadata = function(){
+            audio.currentTime = startTime;
+            if(autoplay){
+                audio.play().catch(()=>{});
+            }
+        };
+
         currentTrack = src;
         isPlaying = autoplay;
+
         showGif(isPlaying);
         $controls.show();
+
         localStorage.setItem("radioTrack", currentTrack);
-        localStorage.setItem("radioTime", audio.currentTime);
+        localStorage.setItem("radioTime", startTime);
         localStorage.setItem("radioPlaying", isPlaying);
     }
 
@@ -153,12 +170,14 @@ $(function () {
         e.stopPropagation();
         if(!hasStarted) return;
         if(interactionLocked || introPlaying) return;
+
         skipSound.currentTime = 0;
         skipSound.play();
 
         skipCount++;
         clearTimeout(resetTimers.skip);
         resetTimers.skip = setTimeout(function(){ skipCount = 0; }, 4000);
+
         if(skipCount >= 13){
             skipCount = 0;
             triggerHallucination();
@@ -171,8 +190,10 @@ $(function () {
     $progressBar.on("input", function(){
         if(audio.duration) audio.currentTime = (this.value/100)*audio.duration;
     });
+
     $progressBar.on("mousedown touchstart", ()=>{ seeking=true; });
     $progressBar.on("mouseup touchend", ()=>{ seeking=false; });
+
     setInterval(updateProgress, 200);
 
     if(savedTrack){
@@ -180,104 +201,45 @@ $(function () {
         loadTrack(savedTrack, savedTime, savedPlaying);
     }
 
-    function triggerGhost(){
-        interactionLocked = true;
-        var offset = $radioContainer.offset();
-        var w = $radioContainer.outerWidth();
-        var h = $radioContainer.outerHeight();
-        var $ghost = $('<img>').attr('src', ghostImage).css({
-            position: 'absolute',
-            top: offset.top,
-            left: offset.left,
-            width: w,
-            height: h,
-            zIndex: 9998,
-            opacity: 0,
-            pointerEvents: 'none'
-        }).appendTo('body');
-        $ghost.animate({ opacity: 0.60 }, 1500, function(){
-            setTimeout(function(){
-                $ghost.animate({ opacity: 0 }, 1500, function(){
-                    $ghost.remove();
-                    interactionLocked = false;
-                });
-            }, 6000);
-        });
-    }
-
-    function triggerHallucination(){
-        interactionLocked = true;
-        $('body').css('overflow', 'hidden');
-        $radioContainer.css({ visibility: "hidden" });
-        var offset = $radioContainer.offset();
-        var w = $radioContainer.outerWidth();
-        var h = $radioContainer.outerHeight();
-        var $hall = $('<img>').attr('src', hallucinationGif).css({
-            position: 'absolute',
-            top: offset.top,
-            left: offset.left,
-            width: w,
-            height: h,
-            zIndex: 99999,
-            opacity: 0,
-            pointerEvents: 'none'
-        }).appendTo('body');
-        $hall.animate({ opacity: 1 }, 2000);
-        audio.pause();
-        var hallAudio = new Audio(hallucinationTrack);
-        hallAudio.play();
-        hallAudio.onended = function(){
-            $hall.remove();
-            $radioContainer.css({ visibility: "visible" });
-            $('body').css('overflow', '');
-            loadTrack(pickRandomTrack());
-            triggerGhost();
-        };
-    }
-
     $radio.add($radioGif).on("click", function(e){
         e.stopPropagation();
         if(interactionLocked) return;
+
         if(!hasStarted){
             hasStarted = true;
             introPlaying = true;
+
             unpauseSound.currentTime = 0;
             unpauseSound.play();
+
             audio.src = introTrack;
-            audio.volume = 0;
+            audio.volume = 1;
+            audio.currentTime = 0;
             audio.play();
-            showGif(true);
+
+            showGif(false);
             isPlaying = true;
-            var fadeInDuration = 0.2;
-            var fadeOutDuration = 0.2;
-            var fadeInterval = 0.02;
-            var volumeStepIn = fadeInterval / fadeInDuration;
-            var volumeStepOut = fadeInterval / fadeOutDuration;
-            var fadeInTimer = setInterval(function(){
-                audio.volume = Math.min(audio.volume + volumeStepIn, 1);
-                if(audio.volume >= 1) clearInterval(fadeInTimer);
-            }, fadeInterval * 1000);
+
             audio.onended = function(){
-                var fadeOutTimer = setInterval(function(){
-                    audio.volume = Math.max(audio.volume - volumeStepOut, 0);
-                    if(audio.volume <= 0){
-                        clearInterval(fadeOutTimer);
-                        introPlaying = false;
-                        loadTrack(pickRandomTrack());
-                    }
-                }, fadeInterval * 1000);
+                introPlaying = false;
+                loadTrack(pickRandomTrack());
             };
+
             return;
         }
+
         if(introPlaying) return;
+
         pauseUnpauseCount++;
         clearTimeout(resetTimers.pause);
         resetTimers.pause = setTimeout(function(){ pauseUnpauseCount = 0; }, 4000);
+
         if(pauseUnpauseCount >= 5){
             pauseUnpauseCount = 0;
             triggerHallucination();
             return;
         }
+
         if(isPlaying){
             pauseSound.currentTime = 0;
             pauseSound.play();
@@ -289,17 +251,19 @@ $(function () {
             audio.play();
             isPlaying = true;
         }
+
         showGif(isPlaying);
         localStorage.setItem("radioPlaying", isPlaying);
     });
 });
 
-
-
 $(function () {
+
+    var radioVisible = localStorage.getItem("radioVisible") !== "false";
+
     var $toggleBtn = $('<div>', {
         id: "radio-toggle",
-        text: "▼",
+        text: radioVisible ? "▲" : "▼",
         css: {
             position: "fixed",
             bottom: "212px",
@@ -322,23 +286,38 @@ $(function () {
 
     $('body').append($toggleBtn);
 
-    var radioVisible = true;
+    if(!radioVisible){
+        $("#radio-container").css({
+            transform:"scale(0.001)",
+            opacity:"0"
+        });
+    }
 
     $toggleBtn.on("click", function () {
+
         if (radioVisible) {
+
             $("#radio-container").css({
                 transform: "scale(0.001)",
                 opacity: "0"
             });
-            $(this).text("▲");
+
+            $(this).text("▼");
             radioVisible = false;
+
         } else {
+
             $("#radio-container").css({
                 transform: "scale(1)",
                 opacity: "1"
             });
-            $(this).text("▼");
+
+            $(this).text("▲");
             radioVisible = true;
         }
+
+        localStorage.setItem("radioVisible", radioVisible);
+
     });
+
 });

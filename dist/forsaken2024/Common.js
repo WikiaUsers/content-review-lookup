@@ -1,27 +1,17 @@
 mw.hook('wikipage.content').add(function() {
   document.querySelectorAll('.sprite-container').forEach(container => {
-
     const spriteSheet = container.getAttribute('data-sprite-sheet');
     const totalFrames = parseInt(container.getAttribute('data-total-frames'), 10);
-
-    const frameWidth = 128;
-    const frameHeight = 128;
-    const columns = 10;
-
+    
+    const spriteHeight = 420;
     let currentFrame = 0;
-
     const spriteFrame = container.querySelector('.sprite-frame');
     const prevBtn = container.querySelector('.prev-btn');
     const nextBtn = container.querySelector('.next-btn');
 
     function updateSpritePosition() {
-
-      const col = currentFrame % columns;
-      const row = Math.floor(currentFrame / columns);
-
       spriteFrame.style.backgroundImage = `url('${spriteSheet}')`;
-      spriteFrame.style.backgroundPosition = `-${col * frameWidth}px -${row * frameHeight}px`;
-
+      spriteFrame.style.backgroundPosition = `center -${currentFrame * spriteHeight}px`;
     }
 
     prevBtn.onclick = function() {
@@ -35,7 +25,6 @@ mw.hook('wikipage.content').add(function() {
     };
 
     updateSpritePosition();
-
   });
 });
 

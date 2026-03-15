@@ -15,6 +15,13 @@
     }
 }); */
 
+
+// ts better work (it wont)
+var pumpkinPlaceholder = document.querySelectorAll('a[href="/wiki/Pumpkin_placeholder"]');
+for (var a of pumpkinPlaceholder) {
+	a.textContent = "Pumpkin_placeholder";
+}
+
 window.MessageBlock = {
 	title : 'Blocked',
 	message : 'You have received a block because you were $1. If you have any questions, please message the administrators.',

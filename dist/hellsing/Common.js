@@ -1,7 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Back to the Top Button */
-window.BackToTopModern = true;
-}
-/* Link preview Image */
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.noimage = "https://static.wikia.nocookie.net/hellsing/images/8/8a/Alucardsigil.png/revision/latest?cb=20230109172829";
+/* add class to custom tabs when sticky
+   author = 919dd
+*/
+let stickyElm = document.querySelector('.custom-tabs')
+let observer = new IntersectionObserver( 
+  ([e]) => e.target.classList.toggle('isSticky', e.intersectionRatio < 1),
+  {threshold: [1], rootMargin: "-47px 0px 0px 0px"}
+);
+observer.observe(stickyElm)

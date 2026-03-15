@@ -140,6 +140,32 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 				titles = [ thistitle + '/Tournament Results',
 					thistitle + '/Tournament Results/Online',
 					thistitle + '/Tournament Results/Offline',
+					thistitle + '/Match History',
+					'Tooltip:' + thistitle ];
+				texts = [ "{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything}}",
+					"{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything|type=online}}",
+					"{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything|type=offline}}",
+					"{{TeamTabsHeader}}\n{{TeamMatchHistoryPage|%s}}",
+					"{{RosterTooltip}}"
+				];
+				if (!confirm("Create team?")) {
+					return;
+				}
+				makePage();
+			});
+		}if (infoboxT) {
+			$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Create Team (Legacy)', 'ca-create-team', 'Create team subpages')).click(function() {
+				clearDisplayColor();
+				statuscolor = "gadget-action-success";
+				tag = "create_team"
+				i = 0;
+				a = new mw.Api();
+				thistitle = mw.config.get("wgTitle");
+				summary = "Automatically creating player subpages via CreateTeam";
+				tag = "create_team"
+				titles = [ thistitle + '/Tournament Results',
+					thistitle + '/Tournament Results/Online',
+					thistitle + '/Tournament Results/Offline',
 					thistitle + '/Schedule History',
 					'Tooltip:' + thistitle ];
 				texts = [ "{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything}}",

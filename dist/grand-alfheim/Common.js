@@ -22,7 +22,9 @@ mw.hook('wikipage.content').add(function () {
     const d = now.getDate();
     const windows = [
       new Date(y, m, d, 0, 0, 0),
-      new Date(y, m, d, 12, 0, 0)
+      new Date(y, m, d, 6, 0, 0),
+      new Date(y, m, d, 12, 0, 0),
+      new Date(y, m, d, 18, 0, 0)
     ];
     let start, end;
     for (const w of windows) {
@@ -57,45 +59,8 @@ mw.hook('wikipage.content').add(function () {
       updateTimer(box);
     }, 1000);
   });
-  
-  /* CATEGORY BOX EXPAND/COLLAPSE FUNCTIONALITY */
-  
-  (function() {
-    'use strict';
-    
-    function initCategoryExpand() {
-      var categoryBox = document.querySelector('.page-header__categories');
-      
-      if (!categoryBox) {
-        return;
-      }
-      
-      var categoryLinks = categoryBox.querySelectorAll('a:not(.wds-dropdown__toggle)');
-      
-      if (categoryLinks.length > 3) {
-        categoryBox.classList.add('has-more');
-        
-        categoryBox.addEventListener('click', function(e) {
-          if (e.target === categoryBox || 
-              e.target.classList.contains('page-header__categories')) {
-            categoryBox.classList.toggle('expanded');
-          }
-        });
-        
-        categoryLinks.forEach(function(link) {
-          link.addEventListener('click', function(e) {
-            e.stopPropagation();
-          });
-        });
-      }
-    }
 
-    initCategoryExpand();
-    
-  })();
-  
 });
-
 
 // COLLAPSE TOGGLE
 (function () {

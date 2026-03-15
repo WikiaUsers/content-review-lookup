@@ -362,23 +362,29 @@ function applyColorsToTableCells() {
                                 const matchedPlayer = currentPlayers.find(player => cellText.includes(player));
                                 // get team color
                                 if (matchedPlayer) {
-                                    // if player not in player info, add for reuse elsewhere
+                                    // if player not in player info, add to cache
                                     if (!(matchedPlayer in playerInfo)) {
                                         playerInfo[matchedPlayer] = {};
                                         for (const [phase, teams] of Object.entries(currentSeason)) {
                                             for (const [team, teamInfo] of Object.entries(teams)) {
-                                                teamPlayers = teamInfo.players;
-                                                teamColor = teamInfo.color;
-                                                if (matchedPlayer in teamPlayers) {
+                                                const teamPlayers = teamInfo.players;
+                                                const teamColor = teamInfo.color;
+                                                
+                                                const playerInTeam = Array.isArray(teamPlayers)
+                                                    ? teamPlayers.includes(matchedPlayer)
+                                                    : matchedPlayer in teamPlayers;
+                                                
+                                                if (playerInTeam) {
                                                     playerInfo[matchedPlayer].finalPhase = phase;
                                                     playerInfo[matchedPlayer].finalTeam = team;
                                                     playerInfo[matchedPlayer].finalColor = teamColor;
                                                 }
                                             }
                                         }
-                                        console.log("color: ", teamColor);
+                                        console.log("player color: ", playerInfo[matchedPlayer].finalColor);
                                     }
                                     cell.style.color = playerInfo[matchedPlayer].finalColor;
+                                    console.log("cell style", cell.style);
                                 }
                             }
                         }

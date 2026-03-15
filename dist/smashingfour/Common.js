@@ -1,259 +1,448 @@
-/* WinCalc UI (site install) */
 (function () {
-var page = mw.config.get("wgPageName");
-var allowedPages = {
-"Tools:S4ProbCalc": true,
-"User:Jericho792/sandbox": true // keep this if you want to keep testing
-};
-if (!allowedPages[page]) return;
+  "use strict";
 
-mw.loader.using("mediawiki.api", function () {
-function init() {
-var mount = document.getElementById("wincalc-ui");
-if (!mount) return;
+  function onReady(fn) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fn);
+    } else {
+      fn();
+    }
+  }
 
-var api = new mw.Api();
+  onReady(function () {
 
-var HEROES = [
-"Archer","Archon","Armadillo","Arrowheart","Assassin","Avenger","Banshee","Barbarian",
-"Berserker","Blacksmith","Blaze","Bloodbite","Bomber","Catomancer","Champion","Cultist",
-"Dancing Dragon","Dionel","Drakeling","Druid","Enchantress","Farmer","Frog Mystic","Frost Fox",
-"Gargoyle","Genie","Giant","Glacyo","Goblin","Golem","Griffin","Huntress","Ice Queen","Jaguar",
-"Jawsome","Klausy","Knight","Kong","Mice Bandits","Monkey King","Mummy","Naga","Orc","Paladin",
-"Phoenix","Pirate","Priest","Puppet Master","Ragnar","Robot","Rocketeer","Satyr","Scarecrow",
-"Sentinel","Shadow Cleric","Shaman","Skeleton","Slime","Sorceress","Spellwing","Striker",
-"Thunder Idol","Thunderpaws","Treant","Vampire","Warlord","Warrior","Werewolf","Wizard",
-"Wraith","Yeti","Zombie"
-];
+    var mount = document.getElementById("wincalc-ui");
+    if (!mount || typeof mw === "undefined" || !mw.Api) return;
 
-function el(tag, attrs, children) {
-var node = document.createElement(tag);
-attrs = attrs || {};
-children = children || [];
+    var api = new mw.Api();
+    var pageName = mw.config.get("wgPageName") || "";
+    var IS_LIVE_TOOLS_PAGE = pageName === "Tools:S4ProbCalc";
+    var DEFAULT_DEBUG = IS_LIVE_TOOLS_PAGE ? 0 : 1;
 
-Object.keys(attrs).forEach(function (k) {
-var v = attrs[k];
-if (k === "class") node.className = v;
-else if (k === "html") node.innerHTML = v;
-else node.setAttribute(k, v);
+    var HEROES = [];
+    var LEVEL_MIN = 1;
+    var LEVEL_MAX = 25;
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function fetchHeroList() {
+      return api.parse("{{#invoke:HeroData|heroList}}").then(function (res) {
+
+        var html = "";
+
+        if (typeof res === "string") {
+          html = res;
+        } else if (res && res.text && typeof res.text["*"] === "string") {
+          html = res.text["*"];
+        } else if (res && typeof res.parsedtext === "string") {
+          html = res.parsedtext;
+        }
+
+        var text = String(html)
+          .replace(/<[^>]*>/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        HEROES = text
+          .split("|")
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean)
+          .sort(function (a, b) { return a.localeCompare(b); });
+
+        if (!HEROES.length) {
+          throw new Error("Hero list came back empty.");
+        }
+
+      });
+    }
+
+    function levelOptions() {
+
+      var out = "";
+
+      for (var i = LEVEL_MIN; i <= LEVEL_MAX; i++) {
+        out += '<option value="' + i + '"' + (i === 25 ? " selected" : "") + ">" + i + "</option>";
+      }
+
+      return out;
+    }
+
+    function heroOptions() {
+
+      var out = '<option value="">Select hero</option>';
+
+      HEROES.forEach(function (hero) {
+        out += '<option value="' + escapeHtml(hero) + '">' + escapeHtml(hero) + "</option>";
+      });
+
+      return out;
+    }
+
+    function renderUI() {
+
+      var heroOpts = heroOptions();
+      var lvlOpts = levelOptions();
+
+      function teamRows(prefix, title) {
+
+        var rows = "";
+
+        for (var i = 1; i <= 4; i++) {
+
+          rows += '' +
+            '<div class="s4wc-row">' +
+              '<div class="s4wc-turn">' + i + '</div>' +
+              '<div class="s4wc-hero">' +
+                '<select id="' + prefix + i + '" class="s4wc-select hero-select">' + heroOpts + '</select>' +
+              '</div>' +
+              '<div class="s4wc-level">' +
+                '<select id="' + prefix + "l" + i + '" class="s4wc-select level-select">' + lvlOpts + '</select>' +
+              '</div>' +
+            '</div>';
+        }
+
+        return '' +
+          '<div class="s4wc-team">' +
+            '<div class="s4wc-team-title">' + title + "</div>" +
+            '<div class="s4wc-head">' +
+              '<div class="s4wc-turn">Turn</div>' +
+              '<div class="s4wc-hero">Hero</div>' +
+              '<div class="s4wc-level">Lv</div>' +
+            "</div>" +
+            rows +
+          "</div>";
+      }
+
+      mount.innerHTML = '' +
+
+        '<div class="s4wc-wrap">' +
+
+          '<div class="s4wc-controls">' +
+
+            teamRows("a", "Your Team") +
+            teamRows("b", "Enemy Team") +
+
+          "</div>" +
+
+          '<div class="s4wc-settings">' +
+
+            '<div class="s4wc-settings-title">Settings</div>' +
+
+            '<label class="s4wc-setting">' +
+              '<span>dmgW</span>' +
+              '<input id="s4wc-dmgw" type="number" min="1" step="0.1" value="4">' +
+            '</label>' +
+
+            '<label class="s4wc-setting">' +
+              '<span>scale</span>' +
+              '<input id="s4wc-scale" type="number" min="1" step="1" value="1800">' +
+            '</label>' +
+
+            '<label class="s4wc-setting">' +
+              '<span>model</span>' +
+              '<select id="s4wc-model">' +
+                '<option value="ability" selected>ability</option>' +
+                '<option value="base">base</option>' +
+              '</select>' +
+            '</label>' +
+
+            '<label class="s4wc-setting">' +
+              '<span>first</span>' +
+              '<select id="s4wc-first">' +
+                '<option value="random" selected>random</option>' +
+                '<option value="A">Team A</option>' +
+                '<option value="B">Team B</option>' +
+              '</select>' +
+            '</label>' +
+
+            '<div class="s4wc-actions">' +
+              '<button id="s4wc-calc" class="s4wc-btn">Calculate</button>' +
+              '<button id="s4wc-reset" class="s4wc-btn s4wc-btn-secondary">Reset</button>' +
+            '</div>' +
+
+            '<div id="s4wc-status" class="s4wc-status"></div>' +
+
+          "</div>" +
+
+          '<div id="s4wc-output" class="s4wc-output"></div>' +
+
+        "</div>" +
+
+        '<style>' +
+
+          '.s4wc-wrap{border:1px solid #a2a9b1;background:#f8f9fa;padding:12px;border-radius:6px;max-width:980px;margin:12px 0;font-size:14px;}' +
+          '.s4wc-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}' +
+          '.s4wc-team{border:1px solid #c8ccd1;background:#fff;border-radius:4px;padding:10px;}' +
+          '.s4wc-team-title{font-weight:bold;margin-bottom:8px;}' +
+          '.s4wc-head,.s4wc-row{display:grid;grid-template-columns:56px 1fr 76px;gap:8px;align-items:center;}' +
+          '.s4wc-head{font-weight:bold;color:#54595d;border-bottom:1px solid #eaecf0;padding-bottom:6px;margin-bottom:6px;}' +
+          '.s4wc-row{margin-bottom:6px;}' +
+          '.s4wc-turn{text-align:center;}' +
+          '.s4wc-select,.s4wc-settings input{width:100%;box-sizing:border-box;padding:6px;border:1px solid #a2a9b1;border-radius:4px;background:#fff;}' +
+          '.s4wc-settings{border:1px solid #c8ccd1;background:#fff;border-radius:4px;padding:10px;margin-bottom:16px;display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:12px;align-items:end;}' +
+          '.s4wc-settings-title{grid-column:1/-1;font-weight:bold;margin-bottom:2px;}' +
+          '.s4wc-setting{display:flex;flex-direction:column;gap:4px;}' +
+          '.s4wc-actions{display:flex;gap:8px;align-items:end;}' +
+          '.s4wc-btn{padding:8px 12px;border:1px solid #3366cc;background:#3366cc;color:#fff;border-radius:4px;cursor:pointer;font-weight:bold;}' +
+          '.s4wc-btn:hover{background:#2a4b8d;border-color:#2a4b8d;}' +
+          '.s4wc-btn-secondary{background:#fff;color:#202122;border-color:#a2a9b1;}' +
+          '.s4wc-btn-secondary:hover{background:#f8f9fa;border-color:#72777d;}' +
+          '.s4wc-status{grid-column:1/-1;color:#54595d;font-size:12px;min-height:16px;}' +
+          '.s4wc-output{margin-top:10px;}' +
+          '.s4wc-error{color:#b32424;font-weight:bold;}' +
+
+        '</style>';
+
+      bindUI();
+    }
+
+    function getVal(id) {
+      var el = document.getElementById(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+
+    function setStatus(msg, isError) {
+      var el = document.getElementById("s4wc-status");
+      if (!el) return;
+      el.className = "s4wc-status" + (isError ? " s4wc-error" : "");
+      el.innerHTML = msg || "";
+    }
+
+    function selectedHeroes(prefix) {
+
+      var vals = [];
+
+      for (var i = 1; i <= 4; i++) {
+        var v = getVal(prefix + i);
+        if (v) vals.push(v);
+      }
+
+      return vals;
+    }
+
+    function findDuplicates(arr) {
+
+      var seen = Object.create(null);
+      var dupes = [];
+
+      arr.forEach(function (v) {
+
+        if (seen[v]) {
+          if (dupes.indexOf(v) === -1) dupes.push(v);
+        } else {
+          seen[v] = true;
+        }
+
+      });
+
+      return dupes;
+    }
+
+    function enforceUniqueHeroSelection(changedSelect) {
+
+  var changedVal = String(changedSelect.value || "").trim();
+  if (!changedVal) return;
+
+  var prevVal = changedSelect.dataset.prev || "";
+  var teamPrefix = changedSelect.id.charAt(0);
+
+  var teamSelects = mount.querySelectorAll(
+    'select.hero-select[id^="' + teamPrefix + '"]'
+  );
+
+  teamSelects.forEach(function (el) {
+    if (el !== changedSelect && String(el.value || "").trim() === changedVal) {
+      el.value = prevVal;
+    }
+  });
+
+  changedSelect.dataset.prev = changedVal;
+}
+
+    function bindUI() {
+
+      var calcBtn = document.getElementById("s4wc-calc");
+      var resetBtn = document.getElementById("s4wc-reset");
+      var heroSelects = mount.querySelectorAll(".hero-select");
+
+      heroSelects.forEach(function (el) {
+
+  el.addEventListener("focus", function () {
+    el.dataset.prev = el.value || "";
+  });
+
+  el.addEventListener("change", function () {
+    enforceUniqueHeroSelection(el);
+  });
+
 });
 
-children.forEach(function (c) {
-node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
-});
+      if (calcBtn) {
 
-return node;
-}
+        calcBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          runCalc();
+        });
 
-function heroSelect(id) {
-var s = el("select", { id: id, class: "wincalc-select" });
-s.appendChild(new Option("— Select —", ""));
-HEROES.forEach(function (h) { s.appendChild(new Option(h, h)); });
-return s;
-}
+      }
 
-function levelSelect(id) {
-var s = el("select", { id: id, class: "wincalc-level" });
-for (var lv = 1; lv <= 25; lv++) s.appendChild(new Option(String(lv), String(lv)));
-s.value = "10";
-return s;
-}
+      if (resetBtn) {
 
-function buildTemplateCall(state) {
-var lines = [
-"WinCalc",
-"|a1=" + state.a1 + "|al1=" + state.al1,
-"|a2=" + state.a2 + "|al2=" + state.al2,
-"|a3=" + state.a3 + "|al3=" + state.al3,
-"|a4=" + state.a4 + "|al4=" + state.al4,
-"|b1=" + state.b1 + "|bl1=" + state.bl1,
-"|b2=" + state.b2 + "|bl2=" + state.bl2,
-"|b3=" + state.b3 + "|bl3=" + state.bl3,
-"|b4=" + state.b4 + "|bl4=" + state.bl4,
-"|dmgW=" + state.dmgW,
-"|scale=" + state.scale,
-"|model=ability",
-"|debug=0", // <-- production default
-""
-];
-return lines.join("\n");
-}
+        resetBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          resetUI();
+        });
 
-var state = {
-a1:"",al1:"10",a2:"",al2:"10",a3:"",al3:"10",a4:"",al4:"10",
-b1:"",bl1:"10",b2:"",bl2:"10",b3:"",bl3:"10",b4:"",bl4:"10",
-dmgW:"4", scale:"1800"
-};
+      }
 
-var ui = el("div", {
-class: "wincalc-ui",
-style: "border:1px solid #ddd; padding:12px; border-radius:10px; max-width:760px;"
-});
+    }
 
-var title = el("div", { style: "font-weight:700; margin-bottom:8px;" },
-["Smashing Four Win Probability Calculator"]);
+    function buildTemplateWikitext() {
 
-var hint = el("div", { style: "color:#666; font-size:12px; margin-bottom:10px;" },
-["Select heroes & levels. When all 8 heroes are selected, results render below."]);
+      var aHeroes = selectedHeroes("a");
+      var bHeroes = selectedHeroes("b");
 
-var preview = el("div",{style:"margin-top:12px;"});
-var status = el("div",{style:"color:#666;font-size:12px;margin-top:6px;"});
+      if (aHeroes.length !== 4 || bHeroes.length !== 4) {
+        throw new Error("Please select all 8 heroes.");
+      }
 
-function enforceUniqueOnTeam(teamLabel, changedId) {
-var ids = [teamLabel + "1", teamLabel + "2", teamLabel + "3", teamLabel + "4"];
-var seen = Object.create(null);
+      var dupA = findDuplicates(aHeroes);
+      var dupB = findDuplicates(bHeroes);
 
-for (var i = 0; i < ids.length; i++) {
-var id = ids[i];
-var val = state[id];
-if (!val) continue;
+      if (dupA.length) {
+        throw new Error("Your Team has duplicate hero selections: " + dupA.join(", "));
+      }
 
-if (seen[val]) {
-state[changedId] = "";
-var sel = document.getElementById(changedId);
-if (sel) sel.value = "";
-status.textContent = "Duplicate hero on the same team is not allowed.";
-return false;
-}
-seen[val] = true;
-}
-return true;
-}
+      if (dupB.length) {
+        throw new Error("Enemy Team has duplicate hero selections: " + dupB.join(", "));
+      }
 
-function row(teamLabel, idx) {
-var hId = teamLabel + idx;
-var lId = teamLabel + "l" + idx;
+      var params = [];
 
-var h = heroSelect(hId);
-var l = levelSelect(lId);
+      for (var i = 1; i <= 4; i++) {
 
-h.addEventListener("change", function () {
-state[hId] = h.value;
-if (!enforceUniqueOnTeam(teamLabel, hId)) return;
-refresh();
-});
+        params.push("a" + i + "=" + getVal("a" + i));
+        params.push("al" + i + "=" + getVal("al" + i));
 
-l.addEventListener("change", function () { state[lId] = l.value; refresh(); });
+      }
 
-var ord = ["1st","2nd","3rd","4th"];
-var label = el("div", { style: "width:90px; font-weight:600;" }, [ord[idx-1]]);
+      for (var j = 1; j <= 4; j++) {
 
-return el("div", { style: "display:flex; gap:10px; align-items:center; margin:6px 0;" }, [
-label,
-el("div", { style: "flex:1;" }, [h]),
-el("div", { style: "width:120px; display:flex; gap:8px; align-items:center;" }, [
-el("span", { style: "color:#666; font-size:12px;" }, ["Lv"]),
-l
-])
-]);
-}
+        params.push("b" + j + "=" + getVal("b" + j));
+        params.push("bl" + j + "=" + getVal("bl" + j));
 
-var controls = el("div", { style: "display:flex; gap:24px; flex-wrap:wrap;" }, [
-el("div", { style: "min-width:320px; flex:1;" }, [
-el("div", { style: "font-weight:700; margin:6px 0;" }, ["Your Team"]),
-row("a",1),row("a",2),row("a",3),row("a",4)
-]),
-el("div", { style: "min-width:320px; flex:1;" }, [
-el("div", { style: "font-weight:700; margin:6px 0;" }, ["Enemy Team"]),
-row("b",1),row("b",2),row("b",3),row("b",4)
-])
-]);
+      }
 
-var dmgW = el("input", { type:"number", value:state.dmgW, min:"0", step:"0.5", style:"width:90px;" });
-var scale = el("input", { type:"number", value:state.scale, min:"100", step:"50", style:"width:110px;" });
+      params.push("dmgW=" + getVal("s4wc-dmgw"));
+      params.push("scale=" + getVal("s4wc-scale"));
+      params.push("model=" + getVal("s4wc-model"));
+      params.push("first=" + getVal("s4wc-first"));
+      params.push("debug=" + DEFAULT_DEBUG);
 
-dmgW.addEventListener("input",function(){ state.dmgW=dmgW.value; refresh(); });
-scale.addEventListener("input",function(){ state.scale=scale.value; refresh(); });
+      return "{{WinCalc|" + params.join("|") + "}}";
+    }
 
-var settings = el("div", { style:"margin-top:10px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;" }, [
-el("div", { style:"display:flex; gap:8px; align-items:center;" }, [
-el("span", { style:"color:#666; font-size:12px;" }, ["dmgW"]),
-dmgW
-]),
-el("div", { style:"display:flex; gap:8px; align-items:center;" }, [
-el("span", { style:"color:#666; font-size:12px;" }, ["scale"]),
-scale
-])
-]);
+    function runCalc() {
 
-ui.appendChild(title);
-ui.appendChild(hint);
-ui.appendChild(controls);
-ui.appendChild(settings);
-ui.appendChild(preview);
-ui.appendChild(status);
-mount.appendChild(ui);
+      var output = document.getElementById("s4wc-output");
 
-var lastReq = 0;
+      setStatus("Calculating...", false);
+      output.innerHTML = "";
 
-function refresh() {
-var wt = buildTemplateCall(state);
+      var wikitext;
 
-var required = ["a1","a2","a3","a4","b1","b2","b3","b4"];
-for (var i=0;i<required.length;i++) {
-if(!state[required[i]]) {
-preview.innerHTML="";
-status.textContent="Select all 8 heroes to render the result.";
-return;
-}
-}
+      try {
 
-status.textContent="Rendering…";
-var myReq=++lastReq;
+        wikitext = buildTemplateWikitext();
 
-api.post({
-action:"parse",
-format:"json",
-contentmodel:"wikitext",
-text:wt,
-disablelimitreport:1
-}).done(function(data){
-if(myReq!==lastReq) return;
-var html="";
-if(data && data.parse && data.parse.text && data.parse.text["*"]) {
-html=data.parse.text["*"];
-}
-preview.innerHTML=html;
-status.textContent="";
-}).fail(function(){
-if(myReq!==lastReq) return;
-status.textContent="Render failed.";
-});
-}
+      } catch (err) {
 
-status.textContent = "Select all 8 heroes to render the result.";
+        setStatus(err.message || String(err), true);
+        return;
 
-// Optional: pull hero list from Lua (your original behavior)
-api.post({
-action: "parse",
-format: "json",
-contentmodel: "wikitext",
-text: "#invoke:HeroData|heroList",
-disablelimitreport: 1
-}).done(function (data) {
-try {
-var html = data.parse.text["*"];
-var list = html.replace(/<[^>]+>/g, "").trim();
-var dyn = list.split("|");
-if (dyn && dyn.length > 0) HEROES = dyn;
-} catch (e) {}
-// repopulate
-var selects = ui.querySelectorAll("select.wincalc-select");
-selects.forEach(function (s) {
-var current = s.value;
-while (s.options.length) s.remove(0);
-s.appendChild(new Option("— Select —", ""));
-HEROES.forEach(function (h) { s.appendChild(new Option(h, h)); });
-if (current && HEROES.indexOf(current) !== -1) s.value = current;
-});
-});
-}
+      }
 
-// ensure DOM is ready (Common.js can run early)
-if (document.readyState === "loading") {
-document.addEventListener("DOMContentLoaded", init);
-} else {
-init();
-}
-});
+      api.parse(wikitext).then(function (res) {
+
+        var html = "";
+
+        if (typeof res === "string") {
+          html = res;
+        } else if (res && res.text && typeof res.text["*"] === "string") {
+          html = res.text["*"];
+        } else if (res && typeof res.parsedtext === "string") {
+          html = res.parsedtext;
+        }
+
+        output.innerHTML = html || '<div class="s4wc-error">No output returned.</div>';
+        setStatus("Done.", false);
+
+      }).catch(function (err) {
+
+        output.innerHTML = "";
+        setStatus("Calculation failed: " + (err && err.message ? err.message : String(err)), true);
+
+      });
+
+    }
+
+    function resetUI() {
+
+      var selects = mount.querySelectorAll("select");
+      var inputs = mount.querySelectorAll("input");
+
+      selects.forEach(function (el) {
+
+        if (el.classList.contains("hero-select")) {
+          el.value = "";
+        } else if (el.classList.contains("level-select")) {
+          el.value = "25";
+        } else if (el.id === "s4wc-model") {
+          el.value = "ability";
+        } else if (el.id === "s4wc-first") {
+          el.value = "random";
+        }
+
+      });
+
+      inputs.forEach(function (el) {
+
+        if (el.id === "s4wc-dmgw") el.value = "4";
+        if (el.id === "s4wc-scale") el.value = "1800";
+
+      });
+
+      var output = document.getElementById("s4wc-output");
+      if (output) output.innerHTML = "";
+
+      setStatus("", false);
+
+    }
+
+    setStatus("Loading hero list...", false);
+
+    fetchHeroList()
+      .then(function () {
+
+        renderUI();
+        setStatus("Ready.", false);
+
+      })
+      .catch(function (err) {
+
+        mount.innerHTML = '<div class="s4wc-error">Failed to load hero list: ' +
+          escapeHtml(err && err.message ? err.message : String(err)) +
+          "</div>";
+
+      });
+
+  });
+
 })();

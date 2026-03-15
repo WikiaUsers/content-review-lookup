@@ -1,4 +1,16 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+// NoLicenseWarning script by Roblox Wiki (Credits to them)
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop']}
+    
+window.MedalsPage = 'Theme Park Tycoon 2 Wiki:Medals';
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Medals.js'
+    ]
+});
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires Template:USERNAME. USE APPROPRIATELY!!*/
 function UserNameReplace() {
