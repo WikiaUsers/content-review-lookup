@@ -75,7 +75,6 @@ mw.hook("wikipage.content").add(function(){
     mainTab = "Chests";
   }
 
-  /* Step 1: switch main tab */
   if(mainTab){
 
     const mainButton = document.querySelector(
@@ -88,7 +87,6 @@ mw.hook("wikipage.content").add(function(){
 
   }
 
-  /* Step 2: switch inner tab (after main tab loads) */
   setTimeout(function(){
 
     const innerTab = document.querySelector(
@@ -100,5 +98,35 @@ mw.hook("wikipage.content").add(function(){
     }
 
   },300);
+
+});
+//Making Buttons Clickable
+mw.hook("wikipage.content").add(function () {
+
+  // Homepage boxes
+  document.querySelectorAll(".homepage-nav-box").forEach(function(box){
+
+    const link = box.querySelector("a");
+    if (!link) return;
+
+    box.addEventListener("click", function(e){
+      if (e.target.tagName.toLowerCase() === "a") return;
+      window.location.href = link.href;
+    });
+
+  });
+
+  // Area page boxes
+  document.querySelectorAll(".area-box").forEach(function(box){
+
+    const link = box.querySelector(".area-title a");
+    if (!link) return;
+
+    box.addEventListener("click", function(e){
+      if (e.target.tagName.toLowerCase() === "a") return;
+      window.location.href = link.href;
+    });
+
+  });
 
 });

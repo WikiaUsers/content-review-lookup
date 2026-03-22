@@ -333,7 +333,7 @@ function applyColorsToTableCells() {
 	        const season = parseInt(match[1], 10);
 	        const currentSeason = seasonsInfo[season];
 	        const currentPlayers = playersBySeason[season];
-	        var playerInfo = {};
+	        var playerInfo = {"playerByRow": []};
 	        
 	        const tables = this.querySelectorAll("table.sub-table");
         
@@ -349,10 +349,10 @@ function applyColorsToTableCells() {
                 
                 if (rows.length === 0) return;
                 
-                rows.forEach(row => {
+                rows.forEach((row, row_index) => {
                     
                     const cells = row.querySelectorAll("td");
-                    cells.forEach(cell => {
+                    cells.forEach((cell, cell_index) => {
                         // we need to write code for each type of subtable
                         if (subtableClass == "players") {
                             // check if cell has a player
@@ -364,7 +364,7 @@ function applyColorsToTableCells() {
                                 if (matchedPlayer) {
                                     // if player not in player info, add to cache
                                     if (!(matchedPlayer in playerInfo)) {
-                                        playerInfo[matchedPlayer] = {};
+                                        playerInfo[matchedPlayer] = {"teamByPhase": {}, "colorByPhase": {}};
                                         for (const [phase, teams] of Object.entries(currentSeason)) {
                                             for (const [team, teamInfo] of Object.entries(teams)) {
                                                 const teamPlayers = teamInfo.players;
@@ -374,28 +374,38 @@ function applyColorsToTableCells() {
                                                     ? teamPlayers.includes(matchedPlayer)
                                                     : matchedPlayer in teamPlayers;
                                                 
+                                                // store player info
                                                 if (playerInTeam) {
+                                                    playerInfo.playerByRow[row_index] = matchedPlayer;
+                                                    playerInfo[matchedPlayer].teamByPhase[phase] = team;
+                                                    playerInfo[matchedPlayer].colorByPhase[phase] = teamColor;
                                                     playerInfo[matchedPlayer].finalPhase = phase;
                                                     playerInfo[matchedPlayer].finalTeam = team;
                                                     playerInfo[matchedPlayer].finalColor = teamColor;
                                                 }
                                             }
                                         }
-                                        console.log("player color: ", playerInfo[matchedPlayer].finalColor);
+                                        // console.log("player color: ", playerInfo[matchedPlayer].finalColor);
                                     }
                                     cell.style.color = playerInfo[matchedPlayer].finalColor;
-                                    console.log("cell style", cell.style);
+                                    // console.log("cell style", cell.style);
                                 }
+                                
+                                playerInfo.playerByRow[row_index] = null;
+                            }
+                        }
+                        
+                        // requires playerInfo
+                        if (subtableClass == "player-summary") {
+                            
+                            const player = playerInfo.playerByRow[row_index];
+                            if (player) {
+	                            const color = playerInfo[player].colorByPhase[cell_index+1];
+	                            cell.style.backgroundColor = color;
                             }
                         }
                         
                     });
-                    
-                    // fill with coloring logic
-                    // find cells with player
-                    // figure out season and section of composite table
-                    // find team for player
-                    // get color
                     
                 }); 
                 

@@ -79,3 +79,17 @@ mw.hook('wikipage.content').add(function ($content) {
 	});
 });
 // Fin d'Intégration d'un Google Doc
+
+// ----- Modèle Pseudo3D ------
+// px of drag required to advance one frame (higher = slower).
+window.PseudoSpeed = 7 // default: 10
+
+// enable skybox background parallax on the parent .pi-item.
+window.PseudoSkybox = true // default: false
+
+// skybox pan multiplier (higher = faster).
+window.PseudoSkyboxSpeed = 0.07 // default: 0.01
+
+// if you have your own css and want to avoid the split
+// second of unstyled css when js is still loading.
+window.PseudoImportCSS = false // default: true

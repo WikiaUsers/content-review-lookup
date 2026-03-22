@@ -18,3 +18,10 @@ $('.fandom-community-header__community-name-wrapper').append(
 		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/a/a7/A%2BWiki.webp/revision/latest?cb=20230828211532&path-prefix=de')
 	)
 );
+
+importArticles ({
+    tipo : 'script' , 
+    artículos : [ 
+        'u:dev:MediaWiki:AjaxBatchDelete.js' ,
+    ]
+});

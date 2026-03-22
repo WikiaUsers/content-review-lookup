@@ -62,8 +62,8 @@ $(document).ready(function () {
 	
 	    // URL du fichier via Fandom
 	    var imgUrl = mw.config.get('wgServer') + mw.config.get('wgScriptPath') +
-	        "/images/thumb/" + encodeURIComponent("Compétence passive - Niveau " + lvl + ".png") +
-	        "/16px-" + encodeURIComponent("Compétence passive - Niveau " + lvl + ".png");
+	        "/images/thumb/" + encodeURIComponent("Compétence passive - Niveau " + lvl + ".png");
+//	        + "/16px-" + encodeURIComponent("Compétence passive - Niveau " + lvl + ".png");
 	
 	    // Checkbox cachée
 	    var checkbox = $('<input>', {

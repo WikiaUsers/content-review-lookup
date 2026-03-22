@@ -9,21 +9,20 @@ $(document).ready(function () {
         if (isNaN(value)) return;
 
         // Apply rarity classes based on your ranges
-        if (value >= 30 && value <= 50) {
+        if (value >= 3000 && value <= 5000) {
             elem.classList.add("rarity-common");
-        } else if (value >= 11 && value < 30) {
+        } else if (value >= 1100 && value < 3000) {
             elem.classList.add("rarity-uncommon");
-        } else if (value >= 2 && value < 11) {
+        } else if (value >= 200 && value < 1100) {
             elem.classList.add("rarity-rare");
-        } else if (value >= 0.5 && value < 2) {
+        } else if (value >= 50 && value < 200) {
             elem.classList.add("rarity-veryrare");
-        } else if (value >= 0.1 && value < 0.5) {
+        } else if (value >= 10 && value < 50) {
             elem.classList.add("rarity-superrare");
-        } else if (value >= 0.02 && value < 0.1) {
+        } else if (value >= 1 && value < 10) {
             elem.classList.add("rarity-ultrarare");
         }
     }
-
     function classifyPrice(elem) {
         const price = elem.getAttribute("data-price");
         if (!price) return;

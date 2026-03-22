@@ -1,10 +1,8 @@
-/* Imports */
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:ExtendedNavigation/code.js', // Add 4th & 5th sections in navigation
-        'MediaWiki:Wikia.js/editCount.js',
-        'u:dev:TopEditors/code.js',
-    ]
-});
+if (!window.andrewds1021) {
+    window.andrewds1021 = {
+        user_last_activity: {}
+    };
+} else if (!window.andrewds1021.user_last_activity) {
+    window.andrewds1021.user_last_activity = {};
+}
+window.andrewds1021.user_last_activity.edits = false;

@@ -1,78 +1,97 @@
 $(function() {
-    $('.skin-container:not([data-mode])').attr('data-mode', 'preview').find('.models > div:first-child').addClass('active').end().attr('data-mode', 'description').find('.skin-description > div:first-child').addClass('active');
-    
-    $('.skin-icon').click(function() {
-        var skin = $(this).attr('data-name');
-        var container = $(this).closest('.skin-container');
-        container.find('.skin-icon, .preview, .description').removeClass('active');
-        container.find('.preview[data-name="' + skin + '"], .description[data-name="' + skin + '"]').addClass('active');
-        $(this).addClass('active');
-        container.find('.skin-title').text(skin);
-    });
-    
-    // Ocultar el botón "Mostrar Todos" al principio
-    var showAllButton = $('#showAllButton').hide(), groupsShown = {};
-    
-    // Mostrar solo los iconos sin grupo y el primer de cada grupo al principio
-    $('.skin-icon').hide().each(function() {
-        var group = $(this).attr('data-group');
-        if (!group || !(group in groupsShown)) {
-            $(this).show();
-            if (group) groupsShown[group] = true;
-        }
-    });
-    
-    // Función para mostrar iconos por grupo o todos
-    function showIcons(group) {
-        $('.skin-icon').hide();
-        if (!group) {
-            $('.skin-icon:not([data-group])').show();
-            groupsShown = {};
-            $('.skin-icon[data-group]').each(function() {
+
+    $('.skin-container').each(function() {
+        var container = $(this);
+
+        container.attr('data-mode', 'preview')
+            .find('.models > div:first-child').addClass('active');
+
+        container.attr('data-mode', 'description')
+            .find('.skin-description > div:first-child').addClass('active');
+
+        var showAllButton = container.find('.showAllButton').hide();
+        var groupsShown = {};
+
+        container.find('.skin-icon').click(function() {
+            var skin = $(this).attr('data-name');
+
+            container.find('.skin-icon, .preview, .description').removeClass('active');
+
+            container.find('.preview[data-name="' + skin + '"], .description[data-name="' + skin + '"]')
+                .addClass('active');
+
+            $(this).addClass('active');
+            container.find('.skin-title').text(skin);
+        });
+
+        container.find('.skin-icon').hide().each(function() {
+            var group = $(this).attr('data-group');
+
+            if (!group || !(group in groupsShown)) {
+                $(this).show();
+                if (group) groupsShown[group] = true;
+            }
+        });
+
+        function applyGroupFirst() {
+            var groupsSeen = {};
+
+            container.find('.skin-icon[data-group]').removeClass('group-first');
+
+            container.find('.skin-icon[data-group]').each(function() {
                 var group = $(this).attr('data-group');
-                if (!(group in groupsShown)) {
-                    $(this).show();
-                    groupsShown[group] = true;
+
+                if (!(group in groupsSeen)) {
+                    $(this).addClass('group-first')
+                        .attr('data-content', group);
+
+                    groupsSeen[group] = true;
                 }
             });
-            showAllButton.hide();
-        } else {
-            $('.skin-icon[data-group="' + group + '"]').show();
-            showAllButton.show();
         }
-    }
-    
-    // Función para manejar clics en iconos de grupo
-    $('.skin-icon[data-group]').click(function() {
-    	showIcons($(this).attr('data-group')); 
-    });
-    
-    // Función para manejar clics en el botón "Mostrar Todos"
-    showAllButton.click(function() { 
-    	showIcons(null); 
-    });
-	
-    // Manejar clics en iconos de grupo
-    $('.skin-icon[data-group]').click(function() {
-        var group = $(this).attr('data-group');
-        // Remover la clase 'group-first' de todos los elementos del grupo
-        $('.skin-icon[data-group="' + group + '"]').removeClass('group-first');
-    });
-    
-    // Manejar clics en el botón "Mostrar Todos"
-    $('#showAllButton').click(function() {
-        // Agregar la clase 'group-first' a todos los primeros elementos de cada grupo
-        $('.skin-icon[data-group]').addClass('group-first');
+
+        applyGroupFirst();
+
+        function showIcons(group) {
+            container.find('.skin-icon').hide();
+
+            if (!group) {
+                groupsShown = {};
+
+                container.find('.skin-icon').each(function() {
+                    var g = $(this).attr('data-group');
+
+                    if (!g || !(g in groupsShown)) {
+                        $(this).show();
+                        if (g) groupsShown[g] = true;
+                    }
+                });
+
+                showAllButton.hide();
+                applyGroupFirst();
+            } else {
+                container.find('.skin-icon[data-group="' + group + '"]').show();
+                showAllButton.show();
+
+                container.find('.skin-icon[data-group="' + group + '"]')
+                    .removeClass('group-first');
+            }
+        }
+
+        container.find('.skin-icon[data-group]').click(function() {
+            var group = $(this).attr('data-group');
+            showIcons(group);
+        });
+
+        showAllButton.click(function() {
+            showIcons(null);
+        });
+
     });
 
-    // Agregar contenido de data-group a todos los primeros elementos de cada grupo
-    $('.skin-icon[data-group]').each(function() {
-        var group = $(this).attr('data-group');
-        $(this).addClass('group-first').attr('data-content', group);
-    });
-    
-     importArticle({
+    importArticle({
         type: 'style',
         article: 'MediaWiki:Skins.css'
     });
+
 });

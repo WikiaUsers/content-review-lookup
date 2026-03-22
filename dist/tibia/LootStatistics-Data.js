@@ -18,6 +18,14 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Targuna update
+'Stone Devourer':'15.24.95dcf3',
+'Armadile':'15.24.95dcf3',
+'Spellreaper Inferniarch':'15.24.95dcf3',
+'Hellhunter Inferniarch':'15.24.95dcf3',
+'Brinebrute Inferniarch':'15.24.95dcf3',
+'Malvaroth':'15.24.95dcf3',
+'Wiggler':'15.24.95dcf3',
 //
 'Vexclaw':'15.23.fb0341',
 'Rhindeer':'15.23.fb0341',
@@ -67,7 +75,7 @@ window.loot_parser_data = {
 'Cursed Prospector': '15.03.afe753',
 'Evil Prospector': '15.03.afe753',
 // Monk Vocation Update
-'Armadile': '15.00.249ccc',
+//'Armadile': '15.00.249ccc',
 'Barbarian Skullhunter': '15.00.249ccc',
 'Brain Squid': '15.00.249ccc',
 'Breach Brood': '15.00.249ccc',
@@ -808,7 +816,7 @@ window.loot_parser_data = {
 //'Crazed Summer Rearguard': '12.31',
 //'Crazed Summer Vanguard': '12.31',
 //'Insane Siren': '12.31',
-'Wiggler': '12.30.9391',
+//'Wiggler': '12.30.9391',
 'Mutated Bat': '12.15.8659',
 //'Hellspawn': '12.15.8659',
 'Young Sea Serpent': '12.15.8659',
@@ -1215,7 +1223,7 @@ window.loot_parser_data = {
 'Modified Gnarlhound': '9.6',
 'Mushroom Sniffer': '9.6',
 'Orewalker': '9.6',
-'Stone Devourer': '9.6',
+//'Stone Devourer': '9.6',
 'Versperoth': '9.6',
 'Vesperoth': '9.6',
 'Vulcongra': '9.6',

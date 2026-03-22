@@ -829,80 +829,190 @@ $(function() {
 
 /* countdown */
 
-(function() {
-    function initScreamerCountdown() {
+(function ($) {
+    if (!$ || !document.getElementById('screamer-countdown-root')) return;
+
+    var WEEK_MS      = 7 * 24 * 60 * 60 * 1000;
+    var tickInterval = null;
+    
+    var AUTO_HIDE_AFTER_7_DAYS = true;     
+    
+    var tValidEA = new Date('March 23, 2026 08:00:00 UTC').getTime();
+    var tValidGL = new Date('March 26, 2026 08:00:00 UTC').getTime();
+
+    if (isNaN(tValidEA) || isNaN(tValidGL)) {
+        console.error('Screamer Countdown: Configuration Dates Invalid.');
+        return;
+    }
+
+    var nowInit = new Date().getTime();
+    if (AUTO_HIDE_AFTER_7_DAYS && (nowInit - tValidGL >= WEEK_MS)) {
+        var preRoot = document.getElementById('screamer-countdown-root');
+        if (preRoot) preRoot.style.display = 'none';
+        return;
+    }
+
+    function buildSkeleton() {
         var root = document.getElementById('screamer-countdown-root');
         if (!root) return;
-
-        root.innerHTML = 
+        
+        root.classList.remove('hidden');
+        root.style.maxHeight = 'none'; 
+        
+        root.innerHTML =
             '<div class="screamer-widget-header">' +
-                '<img src="https://static.wikia.nocookie.net/screamergame/images/e/e6/Site-logo.png/revision/latest?cb=20250605040708" class="screamer-logo" alt="Screamer Logo" />' +
+                '<img src="https://static.wikia.nocookie.net/screamergame/images/e/e6/Site-logo.png/revision/latest?cb=20250605040708" class="screamer-logo" alt="Screamer Logo" referrerpolicy="no-referrer" />' +
                 '<div class="screamer-date-sub">2026-03-26 @ 08:00 UTC</div>' +
             '</div>' +
-            '<div class="screamer-timer-grid">' +
-
-                '<div class="screamer-timer-box">' +
-                    '<h3 class="screamer-timer-title text-purple">Early Access // Deluxe</h3>' +
+            '<div class="screamer-timer-grid" id="screamer-timer-grid" style="height: auto;">' +
+                '<div class="screamer-timer-box" id="box-early" style="display: flex;">' +
+                    '<h3 class="screamer-timer-title text-purple" style="visibility: visible;">Early Access // Deluxe</h3>' +
                     '<div class="screamer-time-display" id="timer-early">Loading...</div>' +
                 '</div>' +
-
-                '<div class="screamer-timer-box">' +
-                    '<h3 class="screamer-timer-title text-red">Global Launch // Standard</h3>' +
+                '<div class="screamer-timer-box" id="box-global">' +
+                    '<h3 class="screamer-timer-title text-red" style="visibility: visible;">Global Launch // Standard</h3>' +
                     '<div class="screamer-time-display" id="timer-global">Loading...</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="screamer-footer">' +
-                '<div style="width:50%; background-color: rgba(188, 157, 214, 0.5);"></div>' +
-                '<div style="width:50%; background-color: rgba(253, 58, 100, 0.5);"></div>' +
+            '<div class="screamer-footer" style="position:relative;">' +
+                '<div id="footer-early" style="width:50%; background-color: rgba(188, 157, 214, 0.5); transition: opacity 0.5s ease; opacity: 1;"></div>' +
+                '<div id="footer-global" style="width:50%; background-color: rgba(253, 58, 100, 0.5); transition: opacity 0.5s ease; opacity: 1;"></div>' +
+                '<div id="footer-final" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity: 0; transition: opacity 0.5s ease;"></div>' +
             '</div>';
+    }
 
-        var earlyAccessDate = new Date("March 23, 2026 08:00:00 UTC").getTime();
-        var releaseDate = new Date("March 26, 2026 08:00:00 UTC").getTime();
+    window.screamerCountdownStart = function() {
+        if (tickInterval) clearInterval(tickInterval);
+        
+        buildSkeleton();
+        
+        var earlyState = false;
+        var globalState = false;
+        var mergedState = false;
+        var hidePending = false;
+        
+        function p(n) { return String(n).padStart ? String(n).padStart(2, '0') : (n < 10 ? '0' + n : '' + n); }
 
-        function p(n) { return String(n).padStart(2, '0'); }
+        function makeTimerHtml(distance, colorClass) {
+            var padDistance = distance <= 0 ? 0 : distance + 999;
+            var days    = Math.floor(padDistance / (1000 * 60 * 60 * 24));
+            var hours   = Math.floor((padDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((padDistance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((padDistance % (1000 * 60)) / 1000);
 
-        function updateTimer(targetDate, elementId, colorClass) {
-            var now = new Date().getTime();
-            var distance = targetDate - now;
-            var el = document.getElementById(elementId);
-            
-            if (!el) return;
-
-            if (distance < 0) {
-                el.innerHTML = "LAUNCHED";
-                return;
-            }
-
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            var html = 
+            return (
                 '<div class="screamer-time-unit"><span class="screamer-digit">' + p(days) + '</span><span class="screamer-label">Days</span></div>' +
                 '<span class="screamer-colon">:</span>' +
                 '<div class="screamer-time-unit"><span class="screamer-digit">' + p(hours) + '</span><span class="screamer-label">Hrs</span></div>' +
                 '<span class="screamer-colon">:</span>' +
                 '<div class="screamer-time-unit"><span class="screamer-digit">' + p(minutes) + '</span><span class="screamer-label">Min</span></div>' +
                 '<span class="screamer-colon">:</span>' +
-                '<div class="screamer-time-unit"><span class="screamer-digit ' + colorClass + '">' + p(seconds) + '</span><span class="screamer-label">Sec</span></div>';
-
-            el.innerHTML = html;
+                '<div class="screamer-time-unit"><span class="screamer-digit ' + colorClass + '">' + p(seconds) + '</span><span class="screamer-label">Sec</span></div>'
+            );
         }
 
-        setInterval(function() {
-            updateTimer(earlyAccessDate, 'timer-early', 'text-purple');
-            updateTimer(releaseDate, 'timer-global', 'text-red');
-        }, 1000);
+        function schedulePanelHide(delayMs) {
+            if (!AUTO_HIDE_AFTER_7_DAYS) return;
+            if (hidePending) return;
+            hidePending = true;
+            setTimeout(function () {
+                var container = document.getElementById('screamer-countdown-root');
+                if (container) {
+                    container.style.maxHeight = container.offsetHeight + 'px';
+                    setTimeout(function () {
+                        container.classList.add('hidden');
+                        if (tickInterval) clearInterval(tickInterval);
+                    }, 50);
+                }
+            }, delayMs);
+        }
 
-        updateTimer(earlyAccessDate, 'timer-early', 'text-purple');
-        updateTimer(releaseDate, 'timer-global', 'text-red');
+        function tick() {
+            var now = new Date().getTime();
+            
+            var earlyDist   = tValidEA - now;
+            var globalDist  = tValidGL - now;
+
+            var earlyDone = earlyDist <= 0;
+            var globalDone = globalDist <= 0;
+
+            var grid     = document.getElementById('screamer-timer-grid');
+            var elEarly  = document.getElementById('timer-early');
+            var elGlobal = document.getElementById('timer-global');
+            var boxEarly = document.getElementById('box-early');
+            var boxGlobal = document.getElementById('box-global');
+
+            if (!grid || !elEarly || !elGlobal || !boxEarly || !boxGlobal) return;
+
+            if (earlyDone && globalDone) {
+                if (!mergedState) {
+                    mergedState = true;
+                    grid.style.height = grid.offsetHeight + 'px';
+                    grid.classList.add('fade-out');
+
+                    setTimeout(function() {
+                        boxEarly.style.display = 'none';
+                        boxGlobal.classList.add('full-width');
+                        var title = boxGlobal.querySelector('.screamer-timer-title');
+                        if (title) title.style.display = 'none';
+                        
+                        elGlobal.innerHTML = '<span class="screamer-out-now" style="color: white;">OUT NOW</span>';
+                        
+                        var fEarly = document.getElementById('footer-early');
+                        var fGlobal = document.getElementById('footer-global');
+                        var fFinal = document.getElementById('footer-final');
+                        if (fEarly) fEarly.style.opacity = '0';
+                        if (fGlobal) fGlobal.style.opacity = '0';
+                        if (fFinal) {
+                            fFinal.style.opacity = '1';
+                            fFinal.classList.add('footer-alternator');
+                            fFinal.style.animationDuration = '60s';
+                        }
+                        grid.classList.remove('fade-out');
+                    }, 500);
+
+                    var passedMs = now - tValidGL;
+                    var hideDelay = Math.max(0, WEEK_MS - passedMs);
+                    schedulePanelHide(hideDelay);
+                }
+            } else {
+                if (earlyDone) {
+                    if (!earlyState) {
+                        earlyState = true;
+                        elEarly.classList.add('fade-out');
+                        setTimeout(function() {
+                            elEarly.innerHTML = '<span class="screamer-out-now text-purple">OUT NOW</span>';
+                            elEarly.classList.remove('fade-out');
+                        }, 500);
+                    }
+                } else {
+                    elEarly.innerHTML = makeTimerHtml(earlyDist, 'text-purple');
+                }
+
+                if (globalDone) {
+                    if (!globalState) {
+                        globalState = true;
+                        elGlobal.classList.add('fade-out');
+                        setTimeout(function() {
+                            elGlobal.innerHTML = '<span class="screamer-out-now text-red">OUT NOW</span>';
+                            elGlobal.classList.remove('fade-out');
+                        }, 500);
+                    }
+                } else {
+                    elGlobal.innerHTML = makeTimerHtml(globalDist, 'text-red');
+                }
+            }
+        }
+        
+        tick();
+        tickInterval = setInterval(tick, 1000);
     }
 
-    $(function() {
-        initScreamerCountdown();
+    $(function () {
+        window.screamerCountdownStart();
     });
-})();
+
+})(window.jQuery || window.$);
 
 /* vehicle viewer */
 

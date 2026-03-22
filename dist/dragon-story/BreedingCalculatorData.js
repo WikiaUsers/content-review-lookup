@@ -6642,6 +6642,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "clover": {
+            	"name": "Clover",
+            	"types": [
+            		"fey",
+            		"green",
+            		"black"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "15_hours_15",
+            	"rarity": 3,
+            	"offspringeligibility": "worldevent",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "clown": {
                 "name": "Clown",
                 "types": [
@@ -16526,6 +16543,7 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             		"dragon_islands"
             	],
             	"incubation": "21_hours_21",
+            	"rarity": 4,
             	"offspringeligibility": "dragontales",
             	"notes": [
             		"feature"
@@ -17528,6 +17546,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "hibernatinghedgehog": {
+            	"name": "Hibernating Hedgehog",
+            	"types": [
+            		"fey",
+            		"beast",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "8_hours_8",
+            	"rarity": 2,
+            	"offspringeligibility": "dragontales",
+            	"notes": [
+            		"feature"
+            	]
             },
             "hibernation": {
                 "name": "Hibernation",
@@ -19610,6 +19645,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "jollygreen": {
+            	"name": "Jolly Green",
+            	"types": [
+            		"fey",
+            		"green",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "20_hours_20",
+            	"rarity": 4,
+            	"offspringeligibility": "worldevent",
+            	"notes": [
+            		"feature"
+            	]
             },
             "joy": {
                 "name": "Joy",
@@ -25082,6 +25134,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ],
                 "offspringeligibility": "expired"
+            },
+            "neoleprechaun": {
+            	"name": "Neo Leprechaun",
+            	"types": [
+            		"fey",
+            		"green",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "neolibra": {
                 "name": "Neo Libra",
@@ -40363,6 +40442,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "verdant": {
+            	"name": "Verdant",
+            	"types": [
+            		"fey",
+            		"green",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "15_hours_15",
+            	"rarity": 3,
+            	"offspringeligibility": "tournament",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "verse": {
                 "name": "Verse",
                 "types": [
@@ -40629,6 +40725,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "4_hours_4",
                 "rarity": 1
+            },
+            "viridis": {
+            	"name": "Viridis",
+            	"types": [
+            		"rainbow",
+            		"green",
+            		"blue"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "virtue": {
                 "name": "Virtue",
@@ -42376,6 +42499,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "woodland": {
+            	"name": "Woodland",
+            	"types": [
+            		"fey",
+            		"green",
+            		"black"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "15_hours_15",
+            	"rarity": 3,
+            	"offspringeligibility": "crafting",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "woodnymph": {
                 "name": "Wood Nymph",
                 "types": [
@@ -43001,7 +43141,7 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "green": "//images.wikia.nocookie.net/dragon-story/images/3/3d/Green30px.png",
             "yellow": "//images.wikia.nocookie.net/dragon-story/images/7/70/Yellow30px.png",
             "blue": "//images.wikia.nocookie.net/dragon-story/images/f/f1/Blue30px.png",
-            "purple": "//images.wikia.nocookie.net/dragon-story/images/3/3c/Purple30px.png",
+            "purple": "//static.wikia.nocookie.net/dragon-story/images/3/3c/Purple30px.png",
             "diamond": "//images.wikia.nocookie.net/dragon-story/images/1/14/Diamond30px.png",
             "white": "//images.wikia.nocookie.net/dragon-story/images/8/80/White.png",
             "pink": "//images.wikia.nocookie.net/dragon-story/images/5/51/Pink30px.png",

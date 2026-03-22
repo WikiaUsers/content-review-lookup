@@ -22,6 +22,42 @@ $(document).ready(function() {
   });
 });
 
+/* ===== ALL FICTION ===== */
+(function waitForAllFiction(){
+  var trigger=document.getElementById("all-fiction-trigger");
+  var line=document.getElementById("all-fiction-line");
+  if(!trigger||!line){setTimeout(waitForAllFiction,300);return;}
+  var clone=trigger.cloneNode(true);
+  trigger.parentNode.replaceChild(clone,trigger);
+  trigger=clone;
+  var erased=false;
+  trigger.addEventListener("click",function(){
+    if(erased)return;
+    erased=true;
+    trigger.classList.add("af-hovered");
+    line.classList.add("af-expanded");
+    setTimeout(function(){document.body.classList.add("af-active");},500);
+  });
+  trigger.addEventListener("touchend",function(e){
+    e.preventDefault();
+    if(erased)return;
+    erased=true;
+    trigger.classList.add("af-hovered");
+    line.classList.add("af-expanded");
+    setTimeout(function(){document.body.classList.add("af-active");},500);
+  },{passive:false});
+  trigger.addEventListener("mouseenter",function(){
+    trigger.classList.add("af-hovered");
+    line.classList.add("af-expanded");
+  });
+  trigger.addEventListener("mouseleave",function(){
+    if(erased)return;
+    trigger.classList.remove("af-hovered");
+    line.classList.remove("af-expanded");
+  });
+})();
+/* ===== FIM ALL FICTION ===== */
+
 function getpar(object)
 {
 var par = $(object)[0].parentNode;
@@ -155,4 +191,41 @@ document.addEventListener("DOMContentLoaded", function() {
         el.innerText = upsideDownText(el.innerText);
     });
 });
+
+/* ===== LAZY LOAD KUMAGAWA ===== */
+(function(){
+  if(document.body.className.indexOf('kumagawarework') === -1) return;
+
+  /* pausa todas as animações CSS imediatamente */
+  var style = document.createElement('style');
+  style.textContent = '* { animation-play-state: paused !important; }';
+  document.head.appendChild(style);
+
+  /* só retoma animações quando elemento entra na tela */
+  if(!('IntersectionObserver' in window)){
+    style.textContent = '';
+    return;
+  }
+
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.style.animationPlayState = 'running';
+        entry.target.querySelectorAll('*').forEach(function(el){
+          el.style.animationPlayState = 'running';
+        });
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {rootMargin: '150px'});
+
+  setTimeout(function(){
+    document.querySelectorAll(
+      '.scrollable-animated-screw, .scrollable-static, .wds-tab__content'
+    ).forEach(function(el){ obs.observe(el); });
+  }, 200);
+
+})();
+/* ===== FIM LAZY LOAD KUMAGAWA ===== */
+
 // Importação do script (se já tiver no ImportJS, não precisa repetir aqui)

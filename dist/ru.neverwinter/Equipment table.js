@@ -1,249 +1,251 @@
 /* This JavaScript code is responsible for the dynamic rendering of an equipment items table on the wiki platform, using data retrieved from the server via a Lua module call. */
-$(function() {
-  if (!$('#equipment-table').length) return;
+$(function () {
+    var $equipmentTable = $('#equipment-table-main');
+    if (!$equipmentTable.length) return;
 
-  const itemsPerPage = 20;
-  let currentPage = 1;
-  let currentSearch = '';
-  let currentCategory = '';
-  let currentQuality = '';
-  let currentAttributes = [];
-  let currentClass = '';
-  let currentSort = 'name_asc';
+    // --- 1. Конфигурация и состояние ---
 
-  const categories = ["", "Голова", "Доспехи", "Руки", "Ноги", "Рубаха", "Пояс", "Штаны", "Шея", "Кольцо", "Правая рука", "Левая рука", "Только для спутников"];
+    var categoryAttribute = ($equipmentTable.attr('data-category') || '').trim();
 
-  const qualityLabels = {
-    "": "Любое качество",
-    "common": "Обычное",
-    "uncommon": "Необычное",
-    "rare": "Редкое",
-    "epic": "Эпическое",
-    "legendary": "Легендарное",
-    "mythic": "Мифическое",
-    "celestial": "Небесное"
-  };
+    // Лимит страницы берётся из data-атрибута, который выставляет Lua-модуль,
+    // чтобы оба модуля всегда работали с одним значением.
+    var PAGE_LIMIT = parseInt($equipmentTable.attr('data-limit'), 10) || 15;
 
-  const classes = ["", "Бард", "Волшебник", "Клирик", "Варвар", "Воин", "Следопыт", "Плут", "Чернокнижник", "Паладин"];
-
-  const attributeGroups = {
-    "Параметры атаки": [
-      { key: "hit_points", label: "Максимум хитов" },
-      { key: "power", label: "Могущество" },
-      { key: "accuracy", label: "Точность" },
-      { key: "combat_advantage", label: "Боевое преимущество" },
-      { key: "critical_strike", label: "Вероятность критического удара" },
-      { key: "critical_severity", label: "Критический урон" }
-    ],
-    "Параметры обороны": [
-      { key: "defense", label: "Оборона" },
-      { key: "awareness", label: "Осведомленность" },
-      { key: "critical_avoidance", label: "Критическое уклонение" },
-      { key: "deflect", label: "Парирование" },
-      { key: "deflect_severity", label: "Сила парирования" }
-    ],
-    "Полезные параметры": [
-      { key: "forte", label: "Сильная сторона" },
-      { key: "control_bonus", label: "Бонус к контролю" },
-      { key: "control_resist", label: "Сопротивляемость контролю" },
-      { key: "incoming_healing", label: "Принимаемое лечение" },
-      { key: "outgoing_healing", label: "Исходящее лечение" }
-    ]
-  };
-
-  const styleSelect = 'padding:5px; border-radius:4px; border:1px solid #ccc; background:#fff; font-size:14px; margin-bottom:10px; cursor:pointer; width:100%; box-sizing: border-box;';
-
-  const createOptions = (options, labels = null) => options.map(v => `<option value="${v}">${labels ? labels[v] : v}</option>`).join('');
-
-  // ---------- Чтение начальных параметров из div ----------
-  const $tableDiv = $('#equipment-table');
-  currentClass = $tableDiv.data('class') || '';
-  currentCategory = $tableDiv.data('category') || '';
-  currentQuality = $tableDiv.data('quality') || '';
-  currentAttributes = $tableDiv.data('attributes') ? $tableDiv.data('attributes').split(',') : [];
-  currentSort = $tableDiv.data('sort') || 'name_asc';
-
-  // ---------- Создание фильтров ----------
-  function buildSelectors() {
-    const $container = $('#filter-controls');
-    if (!$container.length) $('#equipment-table').before('<div id="filter-controls" style="margin-bottom:15px;"></div>');
-    const $filters = $('#filter-controls').empty().css({
-      padding: '10px',
-      background: '#f5f5f5',
-      borderRadius: '5px',
-      border: '1px solid #ddd',
-      display: 'flex',
-      gap: '15px',
-      minHeight: '350px',
-      height: '350px',
-      boxSizing: 'border-box',
-    });
-
-    const htmlLeft = $(
-      `<div style="flex:1 1 300px; display:flex; flex-direction: column;">
-        <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:6px 8px; border-radius:4px; border:1px solid #ccc; font-size:14px; margin-bottom:15px;">
-
-        <div style="margin-bottom:5px;">Сортировка по</div>
-        <select id="sort-select" style="${styleSelect}">
-          <option value="name_asc">По названию (А–Я)</option>
-          <option value="name_desc">По названию (Я–А)</option>
-          <option value="item_level_asc">По уровню предмета (по возрастанию)</option>
-          <option value="item_level_desc">По уровню предмета (по убыванию)</option>
-        </select>
-
-         <div style="margin-bottom:5px;">Класс</div>
-        <select id="class-select" style="${styleSelect}">
-          <option value="">Любой класс</option>
-          ${createOptions(classes.filter(c => c))}
-        </select>
-
-         <div style="margin-bottom:5px;">Категория</div>
-        <select id="category-select" style="${styleSelect}">
-          <option value="">Любая категория</option>
-          ${createOptions(categories.filter(c => c))}
-        </select>
-
-         <div style="margin-bottom:5px;">Качество</div>
-        <select id="quality-select" style="${styleSelect}">
-          ${createOptions(Object.keys(qualityLabels), qualityLabels)}
-        </select>
-      </div>`
-    );
-
-    const htmlRight = $('<div style="flex:1 1 300px; display:flex; flex-direction: column;"></div>')
-      .append('<div style="margin-bottom:8px;">Параметры (можно выбрать макс. три параметра)</div>')
-      .append(
-        $('<div id="attributes-scroll" style="border:1px solid #919191; border-radius:5px; flex-grow:1; overflow-y:auto; background:#fafafa; padding:10px;"></div>')
-          .append(Object.entries(attributeGroups).flatMap(([group, attrs]) => [
-            `<strong style="display:block;">${group}</strong>`,
-            ...attrs.map(({ key, label }) =>
-              `<label style="display:block; margin-bottom:6px; cursor:pointer; user-select:none;">
-                <input type="checkbox" class="attribute-checkbox" value="${key}" style="margin-right:8px;">${label}
-              </label>`)
-          ]))
-      );
-
-    $filters.append(htmlLeft, htmlRight);
-
-    // ---------- Навешивание событий ----------
-    $('#search-input').on('input', () => updateState('search'));
-    $('#sort-select, #class-select, #category-select, #quality-select').on('change', function () {
-      updateState($(this).attr('id').replace('-select', ''));
-    });
-    $filters.on('change', '.attribute-checkbox', function () {
-      const checked = $('.attribute-checkbox:checked').map((_, el) => el.value).get();
-      if (checked.length > 3) {
-        $(this).prop('checked', false);
-        return alert('Можно выбрать максимум 3 параметра');
-      }
-      currentAttributes = checked;
-      currentPage = 1;
-      loadPage();
-    });
-
-    // ---------- Установка начальных значений фильтров ----------
-    $('#class-select').val(currentClass);
-    $('#category-select').val(currentCategory);
-    $('#quality-select').val(currentQuality);
-    $('#sort-select').val(currentSort);
-    $('.attribute-checkbox').each(function() {
-      $(this).prop('checked', currentAttributes.includes($(this).val()));
-    });
-  }
-
-  // ---------- Обновление состояния ----------
-  function updateState(type) {
-    const map = {
-      search: () => currentSearch = $('#search-input').val().trim(),
-      sort: () => currentSort = $('#sort-select').val(),
-      class: () => currentClass = $('#class-select').val(),
-      category: () => currentCategory = $('#category-select').val(),
-      quality: () => currentQuality = $('#quality-select').val()
+    var config = {
+        category:    categoryAttribute,
+        subcatList:  ($equipmentTable.attr('data-subcat-list')  || '').split(',').filter(Boolean),
+        classList:   ($equipmentTable.attr('data-class-list')   || '').split(',').filter(Boolean),
+        qualityList: ($equipmentTable.attr('data-quality-list') || '').split(',').filter(Boolean),
+        attrGroups:  $equipmentTable.attr('data-attr-groups') || '',
+        isStyle:     categoryAttribute === 'Стиль'
     };
-    map[type]();
-    currentPage = 1;
-    loadPage();
-  }
 
-  // ---------- Пагинация ----------
-  function insertPaginationRows() {
-    const $table = $('#equipment-table table.wikitable');
-    if (!$table.length) return;
+    var currentPage = 0;
+    var currentRequest = null;
+    var selectedAttributes = [];
+    var searchDebounceTimer = null;
 
-    function createPaginationRow() {
-      return $(`
-        <tr class="pagination-row">
-          <td colspan="5" style="text-align:center; padding:6px;">
-            <button class="prev-page" style="margin-right:12px;">Предыдущая</button>
-            <span class="current-page">Страница ${currentPage}</span>
-            <button class="next-page" style="margin-left:12px;">Следующая</button>
-          </td>
-        </tr>
-      `);
+    // --- 2. Построение интерфейса ---
+
+    // Создаёт HTML-строку тега <select> с переданным списком опций.
+    // Элементы списка имеют формат "value:Метка" или просто "value".
+    function createSelectElement(id, defaultText, list) {
+        var options = '<option value="">' + defaultText + '</option>';
+        list.forEach(function (item) {
+            var parts = item.split(':');
+            var value = parts[0];
+            var label = parts[1] || value;
+            options += '<option value="' + value + '">' + label + '</option>';
+        });
+        return '<select id="' + id + '">' + options + '</select>';
     }
 
-    $table.find('tr.pagination-row').remove();
-    $table.append(createPaginationRow());
+    // Строит панель управления (поиск, фильтры, сортировка, пагинация, кнопки атрибутов)
+    // и вставляет её перед таблицей. Таблицу оборачивает в #eq-wrap вместе с лоадером.
+    function initializeUI() {
+        var displayCategory = config.category.charAt(0).toUpperCase() + config.category.slice(1);
 
-    $table.find('button.prev-page').off('click').on('click', () => {
-      if (currentPage > 1) {
-        currentPage--;
-        loadPage();
-      }
+        var sortOptions = '<option value="name_asc">А-Я</option>'
+            + '<option value="name_desc">Я-А</option>'
+            + (config.isStyle ? '' : '<option value="level_desc">Уровень ↓</option><option value="level_asc">Уровень ↑</option>');
+
+        var html = '<div id="eq-controls">'
+            + '<div class="eq-top-bar">'
+                + '<input id="eq-search" type="text" placeholder="Поиск по названию..." autocomplete="off">'
+                + (config.subcatList.length ? createSelectElement('eq-subcat', 'Все: ' + displayCategory, config.subcatList) : '')
+                + createSelectElement('eq-quality', 'Любое качество', config.qualityList)
+                + (config.classList.length ? createSelectElement('eq-class', 'Любой класс', config.classList) : '')
+                + '<select id="eq-sort">' + sortOptions + '</select>'
+                + '<button id="eq-reset">Очистить</button>'
+                + '<div class="eq-pagination">'
+                    + '<button id="eq-prev" class="eq-nav-btn" disabled>&lt;</button>'
+                    + '<span id="eq-page-num">Стр. 1</span>'
+                    + '<button id="eq-next" class="eq-nav-btn">&gt;</button>'
+                + '</div>'
+            + '</div>';
+
+        if (config.attrGroups) {
+            html += '<div id="eq-attrs">';
+            config.attrGroups.split(';').forEach(function (group) {
+                var groupParts = group.split('|');
+                var slotName = groupParts[0];
+                var attributes = groupParts[1];
+                html += '<div class="eq-attr-row"><small>' + slotName + ':</small>';
+                attributes.split(',').forEach(function (param) {
+                    var paramParts = param.split(':');
+                    var key = paramParts[0];
+                    var label = paramParts[1];
+                    html += '<button class="eq-attr-btn" data-key="' + key + '">' + label + '</button>';
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+
+        html += '</div>';
+
+        $equipmentTable.wrap('<div id="eq-wrap"></div>');
+        $('<div id="eq-loader" style="display:none;">Загрузка...</div>').appendTo('#eq-wrap');
+        $('#eq-wrap').before(html);
+    }
+
+    // Выполняет fn() только если нет активного запроса.
+    // Используется там, где прерывать текущий запрос нежелательно (пагинация, сброс).
+    function guardedAction(fn) {
+        if (currentRequest) return;
+        fn();
+    }
+
+    // --- 3. Запрос и обновление таблицы ---
+
+    // Собирает параметры фильтров, отправляет запрос к Lua через mw.Api
+    // и заменяет содержимое таблицы полученным HTML.
+    // Если shouldResetPage = true — сбрасывает пагинацию на первую страницу.
+    // Прерывает предыдущий запрос через abort(), чтобы не было гонки ответов.
+    function updateTableContent(shouldResetPage) {
+        if (shouldResetPage) currentPage = 0;
+
+        if (currentRequest) {
+            currentRequest.abort();
+        }
+
+        var $loader = $('#eq-loader');
+        $loader.fadeIn(150).css('display', 'flex');
+        $equipmentTable.css('opacity', 0.4);
+        $('.eq-nav-btn').prop('disabled', true);
+
+        // Экранируем wildcards LIKE, чтобы % и _ в поиске не ломали SQL-запрос.
+        // Полная кодировка через encodeURIComponent защищает разделители | и =
+        // в query-строке, которую Lua разбирает на стороне сервера.
+        var rawSearch = $('#eq-search').val() || '';
+        var safeSearch = rawSearch.replace(/%/g, '\\%').replace(/_/g, '\\_');
+
+        var params = {
+            category: config.category,
+            search:   safeSearch,
+            subcat:   $('#eq-subcat').val()  || '',
+            quality:  $('#eq-quality').val() || '',
+            class:    $('#eq-class').val()   || '',
+            sort:     $('#eq-sort').val()    || 'name_asc',
+            attrs:    selectedAttributes.join(','),
+            limit:    PAGE_LIMIT,
+            offset:   currentPage * PAGE_LIMIT
+        };
+
+        var queryArray = [];
+        for (var key in params) {
+            if (params[key] !== '') {
+                queryArray.push(key + '=' + encodeURIComponent(params[key]));
+            }
+        }
+        var cargoQueryString = queryArray.join('|');
+
+        currentRequest = new mw.Api().post({
+            action: 'parse',
+            prop: 'text',
+            text: '{{#invoke:EquipmentTable|drawTable|' + cargoQueryString + '}}'
+        })
+        .done(function (response) {
+            var rawHtml = (response && response.parse && response.parse.text)
+                ? response.parse.text['*']
+                : null;
+
+            // Ищем таблицу и как вложенный элемент, и как корневой —
+            // mw.Api оборачивает результат по-разному в зависимости от контента.
+            var $parsed = rawHtml ? $(rawHtml) : $();
+            var $newTableData = $parsed.find('table#equipment-table-main');
+            if (!$newTableData.length) {
+                $newTableData = $parsed.filter('table#equipment-table-main');
+            }
+
+            if (!$newTableData.length || $newTableData.find('tr').length < 2) {
+                $equipmentTable.html('<tr><td colspan="10" style="padding:40px; text-align:center;">Ничего не найдено. Попробуйте изменить фильтры.</td></tr>');
+                $('#eq-page-num').text('Стр. 1');
+                $('#eq-prev, #eq-next').prop('disabled', true);
+                return;
+            }
+
+            $equipmentTable.html($newTableData.html());
+
+            var hasNextPage = $newTableData.attr('data-has-next') === '1';
+            $('#eq-page-num').text('Стр. ' + (currentPage + 1));
+            $('#eq-prev').prop('disabled', currentPage === 0);
+            $('#eq-next').prop('disabled', !hasNextPage);
+
+            mw.hook('wikipage.content').fire($equipmentTable);
+        })
+        .fail(function (_, status) {
+            if (status !== 'abort') {
+                $equipmentTable.html('<tr><td colspan="10" style="padding:40px; text-align:center; color:red;">Ошибка загрузки. Обновите страницу.</td></tr>');
+            }
+        })
+        .always(function () {
+            $loader.fadeOut(150);
+            $equipmentTable.css('opacity', 1);
+            currentRequest = null;
+        });
+    }
+
+    // --- 4. Обработчики событий ---
+
+    initializeUI();
+
+    // Присваиваем после initializeUI(), чтобы элемент гарантированно был в DOM.
+    var $controlsContainer = $('#eq-controls');
+
+    // Поиск: запрос отправляется с задержкой 400мс после последнего ввода.
+    $controlsContainer.on('input', '#eq-search', function () {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(function () {
+            updateTableContent(true);
+        }, 400);
     });
 
-    $table.find('button.next-page').off('click').on('click', () => {
-      if (!$('.next-page').prop('disabled')) {
-        currentPage++;
-        loadPage();
-      }
+    // Смена любого селекта немедленно обновляет таблицу.
+    $controlsContainer.on('change', 'select', function () {
+        updateTableContent(true);
     });
-  }
 
-  // ---------- Загрузка страницы ----------
-  function loadPage() {
-    const offset = (currentPage - 1) * itemsPerPage;
-    const api = new mw.Api();
-    const attrs = currentAttributes.length ? currentAttributes.map(a => a.replace(/"/g, '\\"')).join(",") : "";
-
-    const wikitext = `{{#invoke:Equipment table|getItemsHtml|offset=${offset}|limit=${itemsPerPage}|search=${currentSearch}|category=${currentCategory}|quality=${currentQuality}|attributes=${attrs}|class=${currentClass}|sort=${currentSort}}}`;
-
-    api.post({ action: 'parse', format: 'json', text: wikitext, disablelimitreport: true }).done(response => {
-      const html = response && response.parse && response.parse.text && response.parse.text['*'];
-      if (!html) return $('#equipment-table').html('<p>Ошибка загрузки данных</p>');
-      $('#equipment-table').html(html);
-
-      insertPaginationRows();
-
-      checkHasNextPage().then(hasNext => {
-        $('#equipment-table table.wikitable tr.pagination-row button.prev-page').prop('disabled', currentPage === 1);
-        $('#equipment-table table.wikitable tr.pagination-row button.next-page').prop('disabled', !hasNext);
-        $('#equipment-table table.wikitable tr.pagination-row span.current-page').text(`Страница ${currentPage}`);
-      });
+    // Переключение фильтра по атрибуту: обновляет список активных ключей и перезапрашивает таблицу.
+    $controlsContainer.on('click', '.eq-attr-btn', function () {
+        $(this).toggleClass('active');
+        selectedAttributes = $('.eq-attr-btn.active').map(function () {
+            return $(this).data('key');
+        }).get();
+        updateTableContent(true);
     });
-  }
 
-  function checkHasNextPage() {
-    const offset = currentPage * itemsPerPage;
-    const attrs = currentAttributes.length ? currentAttributes.map(a => a.replace(/"/g, '\\"')).join(",") : "";
+    // Сброс всех фильтров в начальное состояние.
+    $controlsContainer.on('click', '#eq-reset', function () {
+        guardedAction(function () {
+            $('#eq-search').val('');
+            $('#eq-subcat, #eq-quality, #eq-class').val('');
+            $('#eq-sort').val('name_asc');
+            $controlsContainer.find('.eq-attr-btn').removeClass('active');
+            selectedAttributes = [];
+            updateTableContent(true);
+        });
+    });
 
-    const wikitext = `{{#invoke:Equipment table|getItemsHtml|offset=${offset}|limit=1|search=${currentSearch}|category=${currentCategory}|quality=${currentQuality}|attributes=${attrs}|class=${currentClass}|sort=${currentSort}}}`;
+    // Пагинация: переход на следующую страницу.
+    $controlsContainer.on('click', '#eq-next', function () {
+        if (!$(this).prop('disabled')) {
+            guardedAction(function () {
+                currentPage++;
+                updateTableContent(false);
+            });
+        }
+    });
 
-    return new mw.Api().post({
-      action: 'parse',
-      format: 'json',
-      text: wikitext,
-      disablelimitreport: true
-    }).then(res => {
-      if (res && res.parse && res.parse.text && res.parse.text['*']) {
-        return res.parse.text['*'].includes('<tr');
-      }
-      return false;
-    }).catch(() => false);
-  }
-
-  buildSelectors();
-  loadPage();
+    // Пагинация: переход на предыдущую страницу.
+    $controlsContainer.on('click', '#eq-prev', function () {
+        if (currentPage > 0) {
+            guardedAction(function () {
+                currentPage--;
+                updateTableContent(false);
+            });
+        }
+    });
 });
 
 /**

@@ -118,3 +118,11 @@ mw.hook('dev.ct').add(function(addButtons) {
         }
     ]);
 });
+
+
+importArticles ({
+    tipo : 'script' , 
+    artículos : [ 
+        'u:dev:MediaWiki:AjaxBatchDelete.js' ,
+    ]
+});

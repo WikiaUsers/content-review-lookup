@@ -96,3 +96,18 @@ window.AddRailModule = [{prepend: true}];
         wrapper.classList.remove('is-jumping');
     });
 })();
+
+mw.hook('wikipage.content').add(function() {
+    var btn = document.getElementById('adversary-proceed-btn');
+    var overlay = document.getElementById('adversary-warning-overlay');
+    
+    if (btn && overlay) {
+        btn.addEventListener('click', function() {
+            overlay.style.opacity = '0';
+            
+            setTimeout(function() {
+                overlay.style.display = 'none';
+            }, 400);
+        });
+    }
+});

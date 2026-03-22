@@ -25,5 +25,11 @@ window.AutoCreateUserPagesConfig = {
 
 
   /* ==== Resource Calculator ==== */
+(function() {
+    var pageName = mw.config.get('wgPageName');
+        if (pageName === 'Calculator') {
+            mw.loader.load('ext.gadget.PrisonManager');
+        }
+})();
 
 // Moved to [[MediaWiki:Gadget-PrisonManager.js]].

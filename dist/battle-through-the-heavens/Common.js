@@ -67,15 +67,16 @@ window.pPreview.RegExp.noinclude.push('.source-notice');
 function updateGreeting() {
     const span = document.querySelector('.InputUsername');
     const username = mw.config.get('wgUserName');
-    if (!span || !username) {
+    if (!span) return;
+
+    if (!username) {
+        span.textContent = 'Hi there,';
         return;
     }
 
     if (span.textContent.trim() === username) {
-
         span.textContent = `Hi ${username},`;
     } else {
-
         setTimeout(updateGreeting, 100);
     }
 }
@@ -321,12 +322,13 @@ UserTagsJS.modules.metafilter = {
  
 // Username script // 
 (function () { 
-if (wgUserName != null) $('span.insertusername').text(wgUserName);
+const user = mw.config.get("wgUserName");
+if (user) $('span.insertusername').text(user);
 })();
  
 // Bureaucrat promotion warning message //
 !function() {
-    if (wgCanonicalSpecialPageName !== 'Userrights') return;
+    if (mw.config.get("wgCanonicalSpecialPageName") !== 'Userrights') return;
     $('#mw-content-text').on('change', '#wpGroup-bureaucrat', function() {
     if ($('#wpGroup-bureaucrat').attr('checked') && !confirm('Do you truly want to appoint a bureaucrat?')) $('#wpGroup-bureaucrat').attr('checked', null);
     });

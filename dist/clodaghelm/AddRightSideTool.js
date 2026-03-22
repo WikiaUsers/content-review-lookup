@@ -51,16 +51,23 @@
 		var $tooltip = $('<div>', {
 			'class': 'wds-tooltip is-left',
 			'text': options.tooltipText
-		});
+		}).hide(); // Hide the tooltip initially
 		
 		$tool.append($tooltip)
-			.on('mouseenter', function () { $tooltip.show(); })
-			.on('mouseleave', function () { $tooltip.hide(); });
+			.on('mouseenter', function () {
+				$tooltip.show();
+			})
+			.on('mouseleave', function () {
+				$tooltip.hide();
+			});
 			
 		$rightRail.append($tool);
 	};
 	
 	window.dev.addRightSideTool = addRightSideTool;
+	
+	// Fire the hook
+    mw.hook('dev.addRightSideTool').fire(addRightSideTool);
 	
 	mw.loader.using(['mediawiki.util']).then(function () {
 		importArticle({

@@ -1,1 +1,0 @@
-{{delete|Only css page used now}}

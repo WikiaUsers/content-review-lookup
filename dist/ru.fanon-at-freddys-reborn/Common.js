@@ -1,6 +1,6 @@
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.tlen = 300;
-window.pPreview.RegExp.noinclude = [".inftemplate", ".quote", ".mw-ext-cite-error", ".error", ".references", ".reference", ".sup.reference"];
+window.pPreview.RegExp.noinclude = [".inftemplate", "preview-ignore", ".quote", ".mw-ext-cite-error", ".error", ".references", ".reference", ".sup.reference"];
 window.pPreview.RegExp.iimages = ['Non-Canon_TRTF-Alt.png'];
 
 mw.hook('ppreview.show').add(function(pp) {

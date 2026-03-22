@@ -9,7 +9,8 @@ $(function() {
   $('head').append('<style>'+css+'</style>');
 
   /********** ACCESSORY FILTER **********/
-      $('#accessorySearch').html('<input id="accessorySearchInput" placeholder="Search accessories…" style="background: var(--bfw-table-cell-bg);color: var(--bfw-table-cell-c);border: none;border-radius: 4px;font-weight: normal;margin-left: 1px;font-size: 14px;padding: 4px 6px;font-family: Traffic-03;transition: .3s;width:100%;margin-bottom: 5px;">');
+    $('#accessorySearch').html('<input id="accessorySearchInput" placeholder="Search accessories…" style="background: var(--bfw-table-cell-bg);color: var(--bfw-table-cell-c);border: none;border-radius: 4px;font-weight: normal;margin-left: 1px;font-size: 14px;padding: 4px 6px;font-family: Traffic-03;transition: .3s;width:100%;margin-bottom: 5px;">');
+
 
   var accessorySections = [
       { title: "🗡️ Combat Stats", container:"#combatStatsFilter", options:[
@@ -63,8 +64,7 @@ $(function() {
           {label:"Uncommon", value:"Uncommon"},
           {label:"Rare", value:"Rare"},
           {label:"Legendary", value:"Legendary"},
-          {label:"Mythical", value:"Mythical"},
-          {label:"Premium", value:"Premium"}
+          {label:"Mythical", value:"Mythical"}
       ]}
   ];
 

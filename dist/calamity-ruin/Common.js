@@ -13,7 +13,7 @@ $(function(){
   const FLASH_END   = 16.6;
   const VIDEO_TIME  = 16.6;
 
-  const CHANCE = 0.001; // 0.1%
+  const CHANCE = 0.01; // 1%
 
   /* ================= 1% CHANCE CHECK ================= */
 
@@ -92,7 +92,7 @@ $(function(){
   `).css(textStyle(28, '40px')).appendTo('body')[0];
 
   const bottomText = $('<div>')
-    .text('THIS HAS A 0.1% CHANCE TO APPEAR!!')
+    .text('THIS HAS A 1% CHANCE TO APPEAR!!')
     .css(textStyle(30, null, '40px'))
     .appendTo('body')[0];
 

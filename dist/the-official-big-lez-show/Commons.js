@@ -21,7 +21,16 @@ function loadFunc() {
 
 	if( document.getElementById('mp3-navlink') !== null ) {
 		document.getElementById('mp3-navlink').onclick = onArticleNavClick;
-		document.getElementById('mp3-navlink').getElementsByTagName('a')[0].href = 'javascript:void(0)';
+		var link = document
+  .getElementById('mp3-navlink')
+  .getElementsByTagName('a')[0];
+
+link.href = '#'; // or keep original URL if needed
+
+link.addEventListener('click', function (e) {
+  e.preventDefault();
+  onArticleNavClick();
+});
 	}
 
 	if( window.storagePresent ) {
@@ -65,31 +74,21 @@ function initVisibility() {
 		infoboxToggle();
 	}
 
-	var hidables = getElementsByClass('hidable');
+	for (var i = 0; i < hidables.length; i++) {
+    var box = hidables[i];
+    var content = box.getElementsByClassName('hidable-content');
+    var button = box.getElementsByClassName('hidable-button');
 
-	for(var i = 0; i < hidables.length; i++) {
-		show = localStorage.getItem('hidableshow-' + i  + '_' + page);
+    show = localStorage.getItem('hidableshow-' + i + '_' + page);
 
-		if( show == 'false' ) {
-			var content = getElementsByClass('hidable-content', hidables[i]);
-			var button = getElementsByClass('hidable-button', hidables[i]);
-
-			if( content != null && content.length > 0 &&
-				button != null && button.length > 0 && content[0].style.display != 'none' )
-			{
-				button[0].onclick('bypass');
-			}
-		} else if( show == 'true' ) {
-			var content = getElementsByClass('hidable-content', hidables[i]);
-			var button = getElementsByClass('hidable-button', hidables[i]);
-
-			if( content != null && content.length > 0 &&
-				button != null && button.length > 0 && content[0].style.display == 'none' )
-			{
-				button[0].onclick('bypass');
-			}
-		}
-	}
+    if (content && content.length > 0 && button && button.length > 0) {
+        if (show == 'false' && content[0].style.display != 'none') {
+            toggleHidable.call(button[0], 'bypass');
+        } else if (show == 'true' && content[0].style.display == 'none') {
+            toggleHidable.call(button[0], 'bypass');
+        }
+    }
+}
 }
 
 function onArticleNavClick() {
@@ -102,27 +101,28 @@ function onArticleNavClick() {
 }
 
 function addHideButtons() {
-	var hidables = getElementsByClass('hidable');
+	var hidables = document.getElementsByClassName('hidable');
 
-	for( var i = 0; i < hidables.length; i++ ) {
-		var box = hidables[i];
-		var button = getElementsByClass('hidable-button', box, 'span');
+for (var i = 0; i < hidables.length; i++) {
+    var box = hidables[i];
+    var button = box.getElementsByClassName('hidable-button');
 
-		if( button != null && button.length > 0 ) {
-			button = button[0];
+    if (button && button.length > 0) {
+        button = button[0];
 
-			button.onclick = toggleHidable;
-			button.appendChild( document.createTextNode('[Hide]') );
+        button.onclick = toggleHidable;
+        button.appendChild(document.createTextNode('[Hide]'));
 
-			if( new ClassTester('start-hidden').isMatch(box) )
-				button.onclick('bypass');
-		}
-	}
+        if (box.classList.contains('start-hidden')) {
+            toggleHidable.call(button, 'bypass');
+        }
+    }
+}
 }
 
 function toggleHidable(bypassStorage) {
-	var parent = getParentByClass('hidable', this);
-	var content = getElementsByClass('hidable-content', parent);
+	var parent = closest('hidable', this);
+	var content = parent.getElementsByClassName('hidable-content');
 	var nowShown;
 
 	if( content != null && content.length > 0 ) {
@@ -133,7 +133,7 @@ function toggleHidable(bypassStorage) {
 			this.firstChild.nodeValue = '[Hide]';
 			nowShown = true;
 		} else {
-			content.oldDisplayStyle = content.style.display;
+			content.oldDisplayStyle = content.style.display || '';
 			content.style.display = 'none';
 			this.firstChild.nodeValue = '[Show]';
 			nowShown = false;
@@ -141,7 +141,7 @@ function toggleHidable(bypassStorage) {
 
 		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
 			var page = window.pageName.replace(/\W/g, '_');
-			var items = getElementsByClass('hidable');
+			var items = document.getElementsByClassName('hidable');
 			var item = -1;
 
 			for( var i = 0; i < items.length; i++ ) {
@@ -238,7 +238,7 @@ function setupUploadForm(){
 			$('#wpUploadDescription').val('==Summary==\r\n{{Information\r\n|attention=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
 
 			// Add link to guided form
-			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//c" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Switch to guided upload form</a></div>');
+			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="/wiki/Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Switch to guided upload form</a></div>');
 			
 			$('#mw-upload-form').bind('submit', verifyName);
 		}

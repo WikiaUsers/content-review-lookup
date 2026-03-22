@@ -343,3 +343,9 @@ addOnloadHook(function(){
 PurgeButtonText = '清除伺服器快取';
 
 //</source>
+
+/* 當檢測到用戶試圖使用視覺化編輯時，強制重導向至原始碼編輯 */
+if ( mw.config.get( 'wgAction' ) === 'view' && ( mw.util.getParamValue( 'veaction' ) === 'edit' || mw.util.getParamValue( 'veaction' ) === 'editsource' ) ) {
+    var url = window.location.href.replace( /veaction=(edit|editsource)/, 'action=edit' );
+    window.location.href = url;
+}

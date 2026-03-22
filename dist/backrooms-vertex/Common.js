@@ -3,7 +3,8 @@
 // For [[Module:CSS]]; [[T:CSS]] dependency
 mw.hook("wikipage.content").add(function () {
 	$("span.import-css").each(function () {
-		mw.util.addCSS($(this).attr("data-css"));
+		var css = mw.util.addCSS($(this).attr("data-css"));
+		$(css.ownerNode).addClass("import-css").attr("data-css-hash", $("span.import-css").attr("data-css-hash")).attr("data-from", $("span.import-css").attr("data-from"));
 	});
 });
 
@@ -13,31 +14,43 @@ window.UserTagsJS = {
 	tags: {
 		inactive: { order: -2 },
 		bot: { link:'Help:Bots', order: -1 },
-		bureaucrat: { order: 0 }, // <- lower order value = will be placed before other tags (in space, not as of which loads first)
+		bureaucrat: { order: 0 },
 		sysop: { order: 1 },
 		'content-moderator': { order: 2 },
 		threadmoderator: { order: 3 }
 	}
-	
-	
 };
 
-UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // no edits for 90 days and/or no edits at all = inactive
+UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true };
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
 
-// Fade-in
-var fadeinclass = document.getElementsByClassName("fadeintext");
-    for(var i = 0; i < fadeinclass.length; i++) {
-        var sec = (i/4).toString();
-        fadeinclass[i].style.animation = "fadeInAnimation ease 1.5s";
-        fadeinclass[i].style.animationDelay = sec.concat("s");
-        fadeinclass[i].style.animationIterationCount = "1";
-        fadeinclass[i].style.animationFillMode = "forwards";
+//badge leaderboard url fix
+const leaderboard = "?safemode=1";
+$('.data-details.ranking a').attr("href", "/wiki/Special:Leaderboard" + leaderboard);
+
+// Fix odd browser behavior when clicking the discussion link on the community navigation
+if (window.location.pathname === '/wiki/F' && !window.location.search.includes('redirect=no'))
+{
+	document.querySelector('.page__main').textContent = '';
+	window.location.pathname = '/f';
 }
 
-// interwiki template 
-	$('.page-header__languages .wds-dropdown__toggle ').append('<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>');
+window.welcomeMessage = {
+  enabled: true,
+  adminUsername: 'BackroomsFW',     
+  adminNickname: 'Backrooms FW Team',    
+  messageTitle: 'Welcome to the Backrooms Freewriting wiki, $1!',
+  messageText: 'Hey $1 — \nThanks for your first edit on <a href="wikiurl.fandom.com/wiki/$2">$2</a>!\n\n— $3',
+  debug: false,
+  testAllEdits: false,
+  preferTalk: false,
+};
 
-// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
+importArticles({
+  type: 'script',
+  articles: [
+    'dev:MediaWiki:WelcomeMessage.js'
+  ]
+});

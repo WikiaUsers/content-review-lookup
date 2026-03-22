@@ -1,4 +1,11 @@
 /* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+window.onload=function() {
+	if (document.querySelector('.ht-clock-number')) {
+        updateHeartopiaClocks();
+        setInterval(updateHeartopiaClocks, 10000); // Checa a cada 10 segundos (leve)
+    }
+}
+
 document.addEventListener('mouseover', function(e) {
     const wrapper = e.target.closest('.detalhes-wrapper');
     if (!wrapper) return;
@@ -74,3 +81,50 @@ document.querySelectorAll('.criatura-linha').forEach(function(container) {
         conteudo.style.lineHeight = '0.9';
     }
 });
+
+
+/** * Relógio Heartopia - Versão Otimizada
+ * Atualiza apenas os elementos necessários sem sobrecarregar a página.
+ */
+
+function updateHeartopiaClocks() {
+    const clocks = document.querySelectorAll('.ht-clock-number');
+    if (clocks.length === 0) {
+    	return;
+    }
+
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+
+    clocks.forEach(clock => {
+        const offset = parseInt(clock.getAttribute('data-offset'));
+        const serverTime = new Date(utc + (3600000 * offset));
+        
+        const h = serverTime.getHours();
+        const m = serverTime.getMinutes();
+        const timeStr = h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
+        
+        // Atualiza o horário
+        if (clock.textContent !== timeStr) {
+            clock.textContent = timeStr;
+            
+            // Atualiza o período e ícone apenas se a hora mudar
+            const parent = clock.parentElement;
+            let periodo = "";
+            if (h >= 2 && h < 8) periodo = "Noite";
+            else if (h >= 8 && h < 14) periodo = "Amanhecer";
+            else if (h >= 14 && h < 20) periodo = "Dia";
+            else periodo = "Crepúsculo";
+
+            const textSpan = parent.querySelector('.ht-text');
+            const iconSpan = parent.querySelector('.ht-icon');
+            
+            if (textSpan && textSpan.textContent !== periodo) {
+                textSpan.textContent = periodo;
+                // Ajuste o nome do arquivo exatamente como está na sua wiki (com ou sem espaço)
+                const fileName = periodo + " Icone.png";
+                iconSpan.innerHTML = '<img src="/pt-br/wiki/Especial:Redirecionar/file/' + encodeURIComponent(fileName) + '" style="width:16px; height:16px; vertical-align:middle;">';
+            }
+        }
+    });
+}

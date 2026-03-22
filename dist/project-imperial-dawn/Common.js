@@ -125,12 +125,12 @@
             "Main Characters": { 
                 type: "cards", 
                 data: [
-                    { title: "GALACTIC EMPEROR", sub: "Galactic Ruler", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/EmperorTest1.webp", stats: { "HOME": "NABOO", "SPECIES": "HUMAN" }, bio: "Sheev Palpatine restored the galaxy to order." },
-                    { title: "LORD VADER", sub: "Supereme Commander", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/Lordvader.png", stats: { "HOME": "TATOOINE", "SPECIES": "HUMAN (CYBORG)" }, bio: "The Chosen One and the iron fist of the Empire, tasked with hunting down the last of the Jedi." },
-                    { title: "GRAND VIZIER", sub: "Mas Amedda", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/GrandVizier.webp", stats: { "HOME": "CHAMPALA", "SPECIES": "CHAGRIAN" }, bio: "The chief administrator of the Galactic Empire and one of the few who knew the Emperor’s darkest secrets." },
-                    { title: "LORD COMMANDANT", sub: "Head of the Imperial Royal Guards", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/Sover.png", stats: { "HOME": "YINCHORR", "SPECIES": "HUMAN" }, bio: "The silent sentinel charged with the personal safety of the Emperor." },
-                    { title: "GRAND MOFF", sub: "Wilhuff Tarkin", status: "IMPERIAL GOVERNMENT", image: "https://project-imperial-dawn.fandom.com/special:filepath/Tarkin.png", stats: { "HOME": "ERIADU", "SPECIES": "HUMAN" }, bio: "Architect of the Tarkin Doctrine, he rules through the fear of force rather than force itself." },
-                    { title: "GRAND INQUISITOR", sub: "Head of the inquisition", status: "IMPERIAL INQUISITION", image: "https://project-imperial-dawn.fandom.com/special:filepath/GrandInquisitor.png", stats: { "HOME": "UTAPAU", "SPECIES": "PA'AN" }, bio: "A former Jedi Temple Guard turned dark side hunter." }
+                    { title: "GALACTIC EMPEROR", sub: "LORDNUEHL", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/EmperorTest1.webp", stats: { "HOME": "NABOO", "SPECIES": "HUMAN" }, bio: "Sheev Palpatine restored the galaxy to order." },
+                    { title: "LORD VADER", sub: "Hatterbyte", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/Lordvader.png", stats: { "HOME": "TATOOINE", "SPECIES": "HUMAN (CYBORG)" }, bio: "The Chosen One and the iron fist of the Empire, tasked with hunting down the last of the Jedi." },
+                    { title: "GRAND VIZIER", sub: "risingkalevos", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/GrandVizier.webp", stats: { "HOME": "CHAMPALA", "SPECIES": "CHAGRIAN" }, bio: "The chief administrator of the Galactic Empire and one of the few who knew the Emperor’s darkest secrets." },
+                    { title: "LORD COMMANDANT", sub: "skyrider05", status: "IMPERIAL THRONE", image: "https://project-imperial-dawn.fandom.com/special:filepath/Sover.png", stats: { "HOME": "YINCHORR", "SPECIES": "HUMAN" }, bio: "The silent sentinel charged with the personal safety of the Emperor." },
+                    { title: "GRAND MOFF", sub: "UmbraVokrium", status: "IMPERIAL GOVERNMENT", image: "https://project-imperial-dawn.fandom.com/special:filepath/Tarkin.png", stats: { "HOME": "ERIADU", "SPECIES": "HUMAN" }, bio: "Architect of the Tarkin Doctrine, he rules through the fear of force rather than force itself." },
+                    { title: "GRAND INQUISITOR", sub: "IcarusApeiros", status: "IMPERIAL INQUISITION", image: "https://project-imperial-dawn.fandom.com/special:filepath/GrandInquisitor.png", stats: { "HOME": "UTAPAU", "SPECIES": "PA'AN" }, bio: "A former Jedi Temple Guard turned dark side hunter." }
                 ]
             },
             "Lore Characters": { 
@@ -138,7 +138,7 @@
                 categories: ["EMPIRE", "REBEL", "OTHERS"],
                 data: [
                     { category: "EMPIRE", header: "IMPERIAL SECURITY BUREAU", items: [ { title: "DIRECTOR/COLONEL", sub: "Wullf Yularen", status: "IMPERIAL SECURITY BUREAU", stats: { "HOME": "ANAXES", "SPECIES": "HUMAN" }, bio: "The person behind the imperial intelligence." } ] },
-                    { category: "EMPIRE", header: "IMPERIAL ARMY", items: [ { title: "GRAND GENERAL", sub: "Cassio Tagge", status: "IMPERIAL ARMY", stats: { "HOME": "TEPANI SECTOR", "SPECIES": "HUMAN" }, bio: "A pragmatic military strategist that leads the Imperial Army branch." }, { title: "COLONEL", sub: "Vanis Tigo", status: "IMPERIAL ARMY", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN" }, bio: "A rigid Imperial officer that leads the 14th Security Division." }, { title: "COLONEL", sub: "Iree Falk", status: "IMPERIAL ARMY", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN" }, bio: "An Imperial officer that leads the 224th Imperial Armored Division." } ] },
+                    { category: "EMPIRE", header: "IMPERIAL ARMY", items: [ { title: "GRAND GENERAL", sub: "Cassio Tagge", status: "IMPERIAL ARMY", stats: { "HOME": "TEPANI SECTOR", "SPECIES": "HUMAN" }, bio: "A pragmatic military strategist that leads the Imperial Army branch." }, { title: "COLONEL", sub: "Vanis Tigo // NICOZZ06", status: "IMPERIAL ARMY", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN" }, bio: "A rigid Imperial officer that leads the 14th Security Division." }, { title: "COLONEL", sub: "Iree Falk", status: "IMPERIAL ARMY", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN" }, bio: "An Imperial officer that leads the 224th Imperial Armored Division." } ] },
                     { category: "EMPIRE", header: "IMPERIAL NAVY", items: [ { title: "GRAND ADMIRAL", sub: "Conan Motti", status: "IMPERIAL NAVY", stats: { "HOME": "SESWENNA SECTOR", "SPECIES": "HUMAN" }, bio: "Chief of the Imperial Navy." }, { title: "ADMIRAL", sub: "Jok Donassius", status: "IMPERIAL NAVY", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN" }, bio: "Decorated naval strategist in charge of a sector." }, { title: "VICE ADMIRAL", sub: "Gilad Pallaeon", status: "IMPERIAL NAVY", stats: { "HOME": "CORELLIA", "SPECIES": "HUMAN" }, bio: "A veteran that is the right hand of the Fleet Admiral." }, { title: "COMMODORE", sub: "Mitth'raw'nuruodo", status: "IMPERIAL NAVY", stats: { "HOME": "CSILLA", "SPECIES": "CHISS" }, bio: "A brilliant military polymath who studies the art of his adversaries, in charge of a fleet." }, { title: "CAPTAIN", sub: "UNKNOWN", status: "IMPERIAL NAVY", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "An Imperial officer that leads the first fleet." }, { title: "CAPTAIN", sub: "UNKNOWN", status: "IMPERIAL NAVY", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "An Imperial officer in charge of an ISD." }, { title: "CAPTAIN", sub: "UNKNOWN", status: "IMPERIAL NAVY", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "An Imperial officer in charge of an ISD." } ] },
                     { category: "EMPIRE", header: "STORMTROOPER CORPS", items: [ { title: "CORPS-GENERAL", sub: "Trech Molock", status: "STORMTROOPER CORPS", stats: { "HOME": "CORELLIA", "SPECIES": "HUMAN" }, bio: "The person in charge of the stormtrooper corps/TK program." }, { title: "COLONEL", sub: "Cody", status: "STORMTROOPER CORPS", stats: { "HOME": "KAMINO", "SPECIES": "HUMAN (CLONE)" }, bio: "The person in charge of the First Legion, Vader's personal." }, { title: "COLONEL", sub: "UNKNOWN", status: "STORMTROOPER CORPS", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "The person in charge of the Scout troopers." }, { title: "COLONEL", sub: "UNKNOWN", status: "STORMTROOPER CORPS", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "The person in charge of the Shock troopers." }, { title: "COLONEL", sub: "UNKNOWN", status: "STORMTROOPER CORPS", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "The person in charge of the Death troopers." }, { title: "CAPTAIN", sub: "UNKNOWN", status: "STORMTROOPER CORPS", stats: { "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "The person in charge of the EVO Troopers." }, { title: "LEAD INSTRUCTOR", sub: "IC-1262", status: "STORMTROOPER CORPS", stats: { "HOME": "KAMINO", "SPECIES": "HUMAN (CLONE)" }, bio: "The person in charge of the STC trainings." }, { title: "INSTRUCTOR", sub: "IC-6214", status: "STORMTROOPER CORPS", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN (CLONE)" }, bio: "Program instructor for the STC trainings." } ] },
                     { category: "EMPIRE", header: "IMPERIAL ACADEMY", items: [ { title: "COMMANDANT", sub: "Cumberlayne Aresko", status: "IMPERIAL ACADEMY", stats: { "HOME": "UNKNOWN", "SPECIES": "HUMAN" }, bio: "The person in charge of the cadet and army academy." } ] },
@@ -150,7 +150,7 @@
             "Custom Characters": { 
                 type: "cards", 
                 data: [
-                    { title: "YOUR NAME", sub: "Citizen", status: "PENDING", stats: { "ID": "UNKNOWN", "HOME": "UNKNOWN", "SPECIES": "UNKNOWN" }, bio: "Register at ISB." }
+                    { title: "Enter Full Name", sub: "Janitor", status: "APPROVED", stats: { "SPECIES": "Human", "HOMEWORLD": "Coruscant", "ROBLOX PROFILE LINK": "https://www.roblox.com/users/" }, bio: "Service history..." }
                 ]
             }
         },
@@ -1019,7 +1019,7 @@
             const codeBox = document.getElementById('c-code-box');
             btn.innerText = "ENCRYPTING...";
             setTimeout(() => {
-                const dbCode = `{ title: "${data.name}", sub: "${data.rank}", status: "PENDING", stats: { "ID": "${data.roblox}", "HOMEWORLD": "${data.home}", "SPECIES": "${data.species}" }, bio: "${data.bio.replace(/"/g, '\\"')}" }`;
+                const dbCode = `{ title: "${data.name}", sub: "${data.rank}", status: "PENDING", stats: { "SPECIES": "${data.species}", "HOMEWORLD": "${data.home}", "ROBLOX PROFILE LINK": "${data.roblox}" }, bio: "${data.bio.replace(/"/g, '\\"')}" }`;
                 statusMsg.innerText = ">> ENCRYPTION COMPLETE. READY FOR TRANSMISSION.";
                 codeBox.innerText = dbCode;
                 resultArea.classList.add('active');
@@ -1144,7 +1144,15 @@
                             if (group.category === 'OTHERS') themeClass = 'neutral-theme';
                             card.className = `data-card text-only ${themeClass}`;
                             let statsHtml = '';
-                            if(item.stats) { statsHtml = '<div class="card-stats">'; Object.keys(item.stats).forEach(key => { statsHtml += `<div class="c-stat">${key}: ${item.stats[key]}</div>`; }); statsHtml += '</div>'; }
+                            if(item.stats) { 
+                                statsHtml = '<div class="card-stats">'; 
+                                Object.keys(item.stats).forEach(key => { 
+                                    if (key !== "ROBLOX PROFILE LINK") {
+                                        statsHtml += `<div class="c-stat">${key}: ${item.stats[key]}</div>`; 
+                                    }
+                                }); 
+                                statsHtml += '</div>'; 
+                            }
                             card.innerHTML = `<div class="card-content"><div><div class="card-title">${item.title}</div><div class="card-sub">${item.sub}</div></div><div style="font-size:13px; color:#b0d0e0; margin-bottom:15px; line-height:1.6;">${item.bio}</div>${statsHtml}</div>`;
                             card.onclick = () => openDossier(item);
                             grid.appendChild(card);
@@ -1197,8 +1205,18 @@
                     const card = document.createElement('div'); card.className = cardClass;
                     const img = hasImage ? `<div class="card-img-box"><img src="${item.image}"><div class="status-badge">${item.status}</div></div>` : '';
                     let statsHtml = '';
-                    if(item.stats) { statsHtml = '<div class="card-stats">'; Object.keys(item.stats).forEach(key => { statsHtml += `<div class="c-stat">${key}: ${item.stats[key]}</div>`; }); statsHtml += '</div>'; }
-                    card.innerHTML = `${img}<div class="card-content"><div><div class="card-title">${item.title}</div><div class="card-sub">${item.sub}</div></div>${!hasImage && item.bio ? `<div style="font-size:13px; color:#cceeff; margin-bottom:15px; line-height:1.6;">${item.bio}</div>` : ''}${statsHtml}</div>`;
+                    if(item.stats) { 
+                        statsHtml = '<div class="card-stats">'; 
+                        Object.keys(item.stats).forEach(key => { 
+                            // Hides the profile link from the outer grid card
+                            if (key !== "ROBLOX PROFILE LINK") {
+                                statsHtml += `<div class="c-stat">${key}: ${item.stats[key]}</div>`; 
+                            }
+                        }); 
+                        statsHtml += '</div>'; 
+                    }
+                    // Bio HTML has been removed entirely from the outer card layout
+                    card.innerHTML = `${img}<div class="card-content"><div><div class="card-title">${item.title}</div><div class="card-sub">${item.sub}</div></div>${statsHtml}</div>`;
                     card.onclick = () => openDossier(item);
                     grid.appendChild(card);
                 });

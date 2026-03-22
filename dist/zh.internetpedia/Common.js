@@ -366,3 +366,54 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
         }
     });
 });
+
+(function() {
+    // 1. 定義要插入的容器 (通常是底欄的 bottom-bar)
+    var $footerBar = $('.wds-global-footer__bottom-bar');
+    
+    if ($footerBar.length > 0 && $('#custom-footer-icons').length === 0) {
+        // 2. 建立存放標籤的容器
+        var $iconsContainer = $('<div id="custom-footer-icons" style="display: flex; gap: 15px; align-items: center;"></div>');
+
+        // --- A. CC BY-SA 標誌 ---
+        var ccIcon = 
+            '<a href="https://creativecommons.org/licenses/by-sa/3.0/deed.zh_TW" target="_blank">' +
+                '<img src="https://www.mediawiki.org/static/images/footer/creative-commons-88x31.png" alt="知識共享署名-相同方式共享" width="88" height="31">' +
+            '</a>';
+
+        // --- B. Powered by Fandom 標誌 ---
+        var fandomIcon = 
+            '<a href="https://www.fandom.com" target="_blank">' +
+                '<img src="https://static.wikia.nocookie.net/central/images/c/c5/Fandom_logo.png" alt="Fandom" width="88" height="31" style="background: #002a32; padding: 2px; border-radius: 3px;">' +
+            '</a>';
+
+        // --- C. Powered by MediaWiki 標誌 ---
+        var mwIcon = 
+            '<a href="https://www.mediawiki.org/" target="_blank">' +
+                '<img src="https://www.mediawiki.org/static/images/footer/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31">' +
+            '</a>';
+
+        // 3. 將按鈕組合起來並放入頁面
+        $iconsContainer.append(ccIcon, fandomIcon, mwIcon);
+        $footerBar.append($iconsContainer);
+    }
+})();
+
+mw.loader.using('mediawiki.api').then(function () {
+    var api = new mw.Api();
+
+    api.get({
+        action: 'query',
+        meta: 'siteinfo',
+        siprop: 'statistics'
+    }).done(function (data) {
+        var pages = data.query.statistics.pages;
+
+        // 找 Fandom 搜尋框
+        var $search = $('#searchInput, .searchInput, input[type="search"]');
+
+        if ($search.length) {
+            $search.attr('placeholder', '搜尋 ' + pages.toLocaleString() + ' 個條目');
+        }
+    });
+});

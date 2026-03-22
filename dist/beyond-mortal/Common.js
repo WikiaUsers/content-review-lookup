@@ -249,3 +249,162 @@
     boot();
   }
 })();
+
+document.addEventListener("DOMContentLoaded", function () {
+	var carousels = document.querySelectorAll('[data-bm-carousel="featuredcast"]');
+
+	carousels.forEach(function (carousel) {
+		var track = carousel.querySelector(".bm-featuredcast-track");
+		if (!track) return;
+
+		var step = 157; // card width + gap
+		var intervalTime = 2800;
+		var autoScroll;
+
+		function startAutoScroll() {
+			autoScroll = setInterval(function () {
+				var maxScroll = track.scrollWidth - track.clientWidth;
+
+				if (track.scrollLeft + step >= maxScroll) {
+					track.scrollTo({ left: 0, behavior: "smooth" });
+				} else {
+					track.scrollBy({ left: step, behavior: "smooth" });
+				}
+			}, intervalTime);
+		}
+
+		function stopAutoScroll() {
+			clearInterval(autoScroll);
+		}
+
+		startAutoScroll();
+
+		carousel.addEventListener("mouseenter", stopAutoScroll);
+		carousel.addEventListener("mouseleave", startAutoScroll);
+		carousel.addEventListener("focusin", stopAutoScroll);
+		carousel.addEventListener("focusout", startAutoScroll);
+	});
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+	function escapeHtml(text) {
+		var div = document.createElement("div");
+		div.textContent = text;
+		return div.innerHTML;
+	}
+
+	function formatTimeStamp(ts) {
+		if (!ts) return "";
+		var d = new Date(ts);
+		if (isNaN(d.getTime())) return "";
+		return d.toLocaleDateString(undefined, {
+			year: "numeric",
+			month: "short",
+			day: "numeric"
+		});
+	}
+
+	function buildBadge(type) {
+		if (type === "created") {
+			return '<span class="bm-main-update-badge bm-main-update-badge-new">New</span>';
+		}
+		return '<span class="bm-main-update-badge bm-main-update-badge-edited">Updated</span>';
+	}
+
+	function renderList(containerId, items, type) {
+		var container = document.getElementById(containerId);
+		if (!container) return;
+
+		if (!items || !items.length) {
+			container.innerHTML = '<li class="bm-main-update-empty">Nothing to show yet.</li>';
+			return;
+		}
+
+		container.innerHTML = items.map(function (item) {
+			var title = escapeHtml(item.title || "Untitled");
+			var urlTitle = encodeURIComponent((item.title || "").replace(/ /g, "_"));
+			var label = type === "created" ? "Created " : "Updated ";
+			var meta = item.timestamp
+				? '<span class="bm-main-update-meta">' + label + escapeHtml(formatTimeStamp(item.timestamp)) + '</span>'
+				: "";
+
+			return (
+				'<li>' +
+					'<div class="bm-main-updates-mainline">' +
+						buildBadge(type) +
+						'<a href="/wiki/' + urlTitle + '">' + title + '</a>' +
+					'</div>' +
+					meta +
+				'</li>'
+			);
+		}).join("");
+	}
+
+	function fetchRecentPages() {
+		var url = mw.util.wikiScript("api") +
+			"?action=query&format=json&origin=*&list=recentchanges" +
+			"&rcnamespace=0" +
+			"&rctype=new" +
+			"&rclimit=5" +
+			"&rcprop=title|timestamp";
+
+		fetch(url)
+			.then(function (r) { return r.json(); })
+			.then(function (data) {
+				var items = data && data.query && data.query.recentchanges ? data.query.recentchanges : [];
+				renderList("bm-recent-pages", items, "created");
+			})
+			.catch(function () {
+				var container = document.getElementById("bm-recent-pages");
+				if (container) container.innerHTML = '<li class="bm-main-update-empty">Could not load recent pages.</li>';
+			});
+	}
+
+	function fetchRecentEdits() {
+		var url = mw.util.wikiScript("api") +
+			"?action=query&format=json&origin=*&list=recentchanges" +
+			"&rcnamespace=0" +
+			"&rctype=edit" +
+			"&rclimit=10" +
+			"&rcprop=title|timestamp";
+
+		fetch(url)
+			.then(function (r) { return r.json(); })
+			.then(function (data) {
+				var raw = data && data.query && data.query.recentchanges ? data.query.recentchanges : [];
+				var seen = {};
+				var items = raw.filter(function (item) {
+					if (!item.title || seen[item.title]) return false;
+					seen[item.title] = true;
+					return true;
+				}).slice(0, 5);
+
+				renderList("bm-recent-edits", items, "edited");
+			})
+			.catch(function () {
+				var container = document.getElementById("bm-recent-edits");
+				if (container) container.innerHTML = '<li class="bm-main-update-empty">Could not load recent edits.</li>';
+			});
+	}
+
+	fetchRecentPages();
+	fetchRecentEdits();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+	var seasonsScroll = document.querySelector(".bm-rail-seasons-scroll");
+	var currentSeason = seasonsScroll ? seasonsScroll.querySelector(".bm-rail-season-card.is-current") : null;
+
+	if (seasonsScroll && currentSeason) {
+		var cardTop = currentSeason.offsetTop;
+		var cardHeight = currentSeason.offsetHeight;
+		var containerHeight = seasonsScroll.clientHeight;
+
+		var targetScroll = cardTop - (containerHeight / 2) + (cardHeight / 2);
+
+		seasonsScroll.scrollTo({
+			top: Math.max(targetScroll, 0),
+			behavior: "smooth"
+		});
+	}
+});

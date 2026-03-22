@@ -313,15 +313,12 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		bureaucrat: { u: 'Bureaucrat' },
-		Sk: { u: 'Skype Host' },
 		Founder: { u: 'Founder' },
 		TM: { u: 'Twitter Manager' }
 	}
 };
 UserTagsJS.modules.custom = {
-	'Auron~Guardian': ['Sk', 'TM'],
-	'SpongeFreddy777': ['Sk'],
-	'Nicko756': ['Sk']
+	'Auron~Guardian': ['TM']
 };
 
 
@@ -335,7 +332,6 @@ window.MessageWallUserTags = {
     users: {
         'SpongeFreddy777': 'Wiki Founder • Bureaucrat • Administrator',
         'AW10': 'Administrator',
-        'Nicko756': 'Bureaucrat • Administrator',
         'Auron%7EGuardian': 'Bureaucrat • Administrator',
         'Dragonballgtgoku': 'Administrator',
         

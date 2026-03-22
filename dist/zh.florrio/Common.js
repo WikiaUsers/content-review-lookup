@@ -1,4 +1,5 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
+
 var sceneList = [ '花园', '蚁穴', '沙漠', '蚂蚁地狱', '沼泽', '海洋', '海洋（滤镜）', 'PvP' ,'下水道','地狱','丛林','中心','蠕虫（地图）'];
 
 var map = 
@@ -91,7 +92,8 @@ document.getElementsByClassName("fandom-community-header__background")[0].style.
 	'丛林':'url(https://static.wikia.nocookie.net/florrio/images/4/49/JungleBG1.svg/revision/latest/scale-to-width-down/185?cb=20240903143456&path-prefix=zh)',
 	'中心':'url(https://static.wikia.nocookie.net/florrio/images/5/5d/CentraliaBG.svg/revision/latest/scale-to-width-down/185?cb=20240903143806&path-prefix=zh)'
 	'蠕虫（地图）':'url(https://static.wikia.nocookie.net/florrio/images/3/3b/Wormmap.svg/revision/latest?cb=20250111063116&path-prefix=zh)'
-}[scene];//此处有BUG
+}[scene]; // 此处有BUG
+
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -177,10 +179,3 @@ window.welcomeMessage = {
   testAllEdits: false,            // 关闭测试模式（仅首次编辑触发）
   preferTalk: false               // 优先使用消息墙
 };
-// 从dev服务器导入脚本
-importArticles({
-  type: 'script',
-  articles: [
-    'dev:MediaWiki:WelcomeMessage.js'
-  ]
-});

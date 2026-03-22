@@ -274,50 +274,99 @@ $(() => {
 $(function(){
   var resultCountInput = '<input type="text" size="4" maxlength="4"/>';
   $(".simpleCraftCalcResultCount").empty().append(resultCountInput);
+
   var craftCountSpans = ' (<span class="simpleCraftCalcCraftCount">1</span> &times; ' +
       '<span class="simpleCraftCalcInitialCount">1</span> = <span class="simpleCraftCalcProduct">1</span>) <sup>' +
       '<abbr title="Кол-во крафтов &times; кол-во предметов, изготавливаемых за 1 крафт = получаемое кол-во предметов в результате">?</abbr></sup>';
+
   $(".simpleCraftCalcResultCount").append(craftCountSpans);
+
   $(".simpleCraftCalcResultCount").each(function(index, element)
   {
     var resultEl = $(element);
     var countInput = resultEl.find("input");
     var initialCount = parseInt(resultEl.data("initial-count"));
+
     countInput.val(initialCount);
-    if(initialCount > 1) countInput.attr("title", "Округляется вверх до ближайшего кратного " + initialCount);
+
+    if(initialCount > 1) {
+      countInput.attr("title", "Округляется вверх до ближайшего кратного " + initialCount);
+    }
+
     countInput.change(valueChanged);
     countInput.keyup(valueChanged);
 
     resultEl.find(".simpleCraftCalcInitialCount").text(initialCount);
     resultEl.find(".simpleCraftCalcProduct").text(initialCount);
+    
+    // 🔥 ВОТ ЭТА СТРОКА ВАЖНА:
+    valueChanged.call(countInput);
   });
 
-  function valueChanged(event)
-  {
+  function valueChanged(event) {
     var countInput = $(this);
     var count = parseInt(countInput.val());
-    if(isFinite(count) && count > 0)
-    {
-      var initialCount = parseInt(countInput.parents(".simpleCraftCalcResultCount").data("initial-count"));
-      var crafts = craftCount(count, initialCount);
-      var recipeBase = countInput.parents(".simpleCraftCalcRecipeBase");
-      var craftCountSpan = recipeBase.find(".simpleCraftCalcCraftCount");
-      craftCountSpan.text(crafts);
-      var productSpan = recipeBase.find(".simpleCraftCalcProduct");
-      productSpan.text(crafts * initialCount);
+    
+    // 🔥 Получаем initialCount ВСЕГДА (нужен для сброса)
+    var initialCount = parseInt(countInput.parents(".simpleCraftCalcResultCount").data("initial-count"));
 
-      recipeBase.find(".simpleCraftCalcIngredientCount").each(function(index, element)
-      {
-        var ingSpan = $(this);
-        var ingInitialCount = parseInt(ingSpan.data("initial-count"));
-        ingSpan.text(crafts * ingInitialCount);
-      });
+    // 🔥 Если пусто или не число — возвращаем дефолт
+    if(!isFinite(count) || count <= 0)
+    {
+      countInput.val(initialCount);
+      count = initialCount;
     }
+
+    // Дальше расчёт как обычно
+    var crafts = craftCount(count, initialCount);
+
+    var recipeBase = countInput.parents(".simpleCraftCalcRecipeBase");
+
+    var craftCountSpan = recipeBase.find(".simpleCraftCalcCraftCount");
+    craftCountSpan.text(crafts);
+
+    var productSpan = recipeBase.find(".simpleCraftCalcProduct");
+    productSpan.text(crafts * initialCount);
+
+    recipeBase.find(".simpleCraftCalcIngredientCount").each(function(index, element)
+    {
+      var ingSpan = $(this);
+      var ingInitialCount = parseInt(ingSpan.data("initial-count")) || 0;
+      var value = crafts * ingInitialCount;
+
+      if (ingSpan.hasClass("currency")) {
+          ingSpan.html(formatCurrency(value));
+      } else {
+        ingSpan.text(value);
+      }
+    });
   }
 
   function craftCount(resultCount, initialCount)
   {
     return Math.ceil(resultCount / initialCount);
+  }
+
+  function formatCurrency(val) {
+      var gold = Math.floor(val / 10000);
+      var silver = Math.floor((val % 10000) / 100);
+      var copper = val % 100;
+      
+      var parts = [];
+      
+      if (gold > 0) {
+          parts.push('<img src="/images/4/4c/Currency_Icon_Tiny_Gold.png"> ' + gold);
+      }
+      
+      if (silver > 0) {
+          parts.push('<img src="/images/4/41/Currency_Icon_Tiny_Silver.png"> ' + silver);
+      }
+      
+      if (copper > 0 || parts.length === 0) {
+          parts.push('<img src="/images/4/49/Currency_Icon_Tiny_Copper.png"> ' + copper);
+      }
+      
+      return parts.join('&nbsp;');
   }
 });
 

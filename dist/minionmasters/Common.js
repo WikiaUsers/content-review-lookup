@@ -59,7 +59,7 @@ const innateEffects = {
     "Resonating Construct": { flatManaBonus: 2 },
     "Crystal Construct": Buffs.Haste,
     "Leiliel's Vortex": { flatManaBonus: 1 },
-    "Arcane Barrage": [{ flatManaBonus: 1 }, { damageMultiplier: 3 }],
+    "Arcane Barrage": [{ flatManaBonus: 1 }, { damageMultiplier: 2 }],
     "Resonating Blast Crystal": { flatManaBonus: 2 },
     "Mana Puff Madness": { flatManaBonus: 1 },
     "Border Patrol": { flatManaBonus: 2 },
@@ -119,7 +119,7 @@ const activatedEffects = {
 	"Crystal Construct": { flatManaBonus: -1 },
 	"Lord-Sentinel Thelec": { flatManaBonus: 2 },
 	"Armored Escort": { flatManaBonus: 3 },
-	"Arcane Barrage": { damageMultiplier: 3.3333334 },
+	"Arcane Barrage": { damageMultiplier: 5 },
 	"Arcane Bolt": { flatManaBonus: 2 },
 	"Resonating Blast Crystal": { damageMultiplier: 3 },
 	//Empyrean

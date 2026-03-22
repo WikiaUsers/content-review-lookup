@@ -46,3 +46,29 @@ window.mapsExtendedConfig = {
         }
     ]
 };
+
+/* Страницы обучения */
+$(function() {
+    $('.tutorial-slider-container').each(function() {
+        var $container = $(this);
+        var $slides = $container.find('.tutorial-slide');
+        var current = 0;
+
+        if ($slides.length <= 1) {
+            $container.find('.tutorial-slider-btn').hide();
+            return;
+        }
+
+        $container.find('.next').on('click', function() {
+            $slides.eq(current).hide();
+            current = (current + 1) % $slides.length;
+            $slides.eq(current).fadeIn(300);
+        });
+
+        $container.find('.prev').on('click', function() {
+            $slides.eq(current).hide();
+            current = (current - 1 + $slides.length) % $slides.length;
+            $slides.eq(current).fadeIn(300);
+        });
+    });
+});

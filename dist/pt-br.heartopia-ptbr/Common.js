@@ -1,6 +1,6 @@
 /**
  * MediaWiki:Common.js para Heartopia Wiki
- * Versão: 2.1 (Pop-up por sessão, sem trava persistente)
+ * Versão: 2.2 (Suporte para exibição na Página Inicial)
  */
 
 $(function() {
@@ -10,19 +10,26 @@ $(function() {
     }
 
     /* 2. MÓDULO DA BARRA LATERAL */
+    // Define o HTML do módulo uma única vez
+    var socialModule = 
+        '<section class="rail-module" id="heartopia-social-module" style="background:#ffffff; border:1px solid #eee; border-radius:20px; padding:20px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.03); font-family:\'Segoe UI\', Roboto, sans-serif; text-align:center;">' +
+            '<div style="font-size:18px; font-weight:bold; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:8px;">🌐 Nossas Comunidades</div>' +
+            '<div style="display:flex; flex-direction:column; gap:12px;">' +
+                '<a href="https://discord.gg/heartopia" target="_blank" style="background:#f0f7ff; border:1px solid #d0e4ff; color:#2a5a8a; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Icondiscord.png') + '" style="width:28px; height:28px; object-fit:contain;"> Discord Oficial</a>' +
+                '<a href="https://discord.gg/Qkye3PsK" target="_blank" style="background:#f3fcf3; border:1px solid #dcf0dc; color:#2d5a2d; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Icondiscordazul.png') + '" style="width:28px; height:28px; object-fit:contain;"> Discord BR-PT</a>' +
+                '<a href="https://heartopia.xd.com/pt/" target="_blank" style="background:#fffdf2; border:1px solid #f9f2d0; color:#7d6608; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Jogoicon.png') + '" style="width:28px; height:28px; object-fit:contain;"> Página do Jogo</a>' +
+                '<a href="https://www.instagram.com/myheartopia/?hl=pt" target="_blank" style="background:#fff2f9; border:1px solid #fde0f0; color:#a33b73; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Instagramicon.png') + '" style="width:28px; height:28px; object-fit:contain;"> Instagram</a>' +
+                '<a href="https://x.com/i/communities/2031141468723724347" target="_blank" style="background:#f0faff; border:1px solid #d0f0ff; color:#1da1f2; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Icontwitter.png') + '" style="width:28px; height:28px; object-fit:contain;"> Twitter</a>' +
+            '</div>' +
+        '</section>';
+
+    // Lógica de inserção:
     if ($('#WikiaRail').length) {
-        var socialModule = 
-            '<section class="rail-module" id="heartopia-social-module" style="background:#ffffff; border:1px solid #eee; border-radius:20px; padding:20px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.03); font-family:\'Segoe UI\', Roboto, sans-serif; text-align:center;">' +
-                '<div style="font-size:18px; font-weight:bold; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:8px;">🌐 Nossas Comunidades</div>' +
-                '<div style="display:flex; flex-direction:column; gap:12px;">' +
-                    '<a href="https://discord.gg/heartopia" target="_blank" style="background:#f0f7ff; border:1px solid #d0e4ff; color:#2a5a8a; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Icondiscord.png') + '" style="width:28px; height:28px; object-fit:contain;"> Discord Oficial</a>' +
-                    '<a href="https://discord.gg/Qkye3PsK" target="_blank" style="background:#f3fcf3; border:1px solid #dcf0dc; color:#2d5a2d; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Icondiscordazul.png') + '" style="width:28px; height:28px; object-fit:contain;"> Discord BR-PT</a>' +
-                    '<a href="https://heartopia.xd.com/pt/" target="_blank" style="background:#fffdf2; border:1px solid #f9f2d0; color:#7d6608; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Jogoicon.png') + '" style="width:28px; height:28px; object-fit:contain;"> Página do Jogo</a>' +
-                    '<a href="https://www.instagram.com/myheartopia/?hl=pt" target="_blank" style="background:#fff2f9; border:1px solid #fde0f0; color:#a33b73; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Instagramicon.png') + '" style="width:28px; height:28px; object-fit:contain;"> Instagram</a>' +
-                    '<a href="https://x.com/i/communities/2031141468723724347" target="_blank" style="background:#f0faff; border:1px solid #d0f0ff; color:#1da1f2; padding:12px; border-radius:15px; font-weight:bold; text-decoration:none; font-size:14px; display:flex; align-items:center; justify-content:center; gap:12px;"><img src="' + getFileUrl('Icontwitter.png') + '" style="width:28px; height:28px; object-fit:contain;"> Twitter</a>' +
-                '</div>' +
-            '</section>';
+        // Se a barra lateral padrão existe (páginas comuns), insere nela
         $('#WikiaRail').prepend(socialModule);
+    } else if ($('#heartopia-custom-sidebar').length) {
+        // Se existe um alvo manual (útil para a Página Inicial), insere nele
+        $('#heartopia-custom-sidebar').html(socialModule);
     }
 
     /* 3. BOTÃO VOLTAR AO TOPO */
@@ -35,8 +42,7 @@ $(function() {
         $backToTop.click(function() { $('html, body').animate({ scrollTop: 0 }, 600); });
     }
 
-    /* 4. POP-UP FLUTUANTE (CORREÇÃO DE EXIBIÇÃO) */
-    // Removemos qualquer trava de localStorage para garantir que apareça ao recarregar
+    /* 4. POP-UP FLUTUANTE */
     var sessionPopupHTML = 
         '<div id="heartopia-session-popup" style="position:fixed; bottom:20px; left:20px; width:350px; background:rgba(255, 255, 255, 0.9); border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); z-index:99999; font-family:\'Segoe UI\', Roboto, sans-serif; overflow:hidden; border:1px solid #eee; backdrop-filter:blur(10px); display:none;">' +
             '<div style="position:absolute; left:0; top:0; bottom:0; width:8px; display:flex; flex-direction:column;">' +
@@ -57,15 +63,12 @@ $(function() {
             '</div>' +
         '</div>';
 
-    // Adiciona ao corpo da página
     $('body').prepend(sessionPopupHTML);
     
-    // Mostra após 1.5 segundos
     setTimeout(function() {
         $('#heartopia-session-popup').fadeIn(500);
     }, 1500);
 
-    // Fecha o pop-up
     $(document).on('click', '#close-session-popup, #btn-later-session', function() {
         $('#heartopia-session-popup').fadeOut(300);
     });
