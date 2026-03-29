@@ -19,3 +19,10 @@ $(function () {
 
 	button.click(toggleText);
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ExploreMenuIcons.js',
+    ]
+});

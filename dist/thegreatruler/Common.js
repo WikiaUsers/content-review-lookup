@@ -1,5 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* enable the modern button */
+window.BackToTopModern = true;
+
 $(document).ready(function() {
   $('.tabbed-box').each(function() {
     var $box = $(this);

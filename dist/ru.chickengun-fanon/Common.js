@@ -1,236 +1,634 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-
-
-(function($, mw) {
+(function ($, mw) {
   'use strict';
 
   // =========================
   // === КОНФИГУРАЦИЯ ===
   // =========================
   var config = {
-    storePage:      'Chicken_Gun_Fanon_Wiki:_Оценки_статей',
+    storePage: 'Chicken_Gun_Fanon_Wiki:_Оценки_статей',
+    topListPage: 'Chicken_Gun_Fanon_Wiki:_Список_оценок',
     minEditsToVote: 50,
-    // BERTRAND: используем wgScriptPath + index.php?title=...&action=raw
-    buttonGifLike:
-      mw.config.get('wgScriptPath') +
+    checkBatchSize: 20,
+
+    buttonGifLike: mw.config.get('wgScriptPath') +
       '/index.php?title=Special:FilePath/Crazy_Like_Button.gif&action=raw',
-    buttonGifDislike:
-      mw.config.get('wgScriptPath') +
+
+    buttonGifDislike: mw.config.get('wgScriptPath') +
       '/index.php?title=Special:FilePath/Bad_Dislike_Button.gif&action=raw'
   };
+
+  // =========================
+  // === УТИЛИТЫ ===
+  // =========================
+  function normalizeTitle(title) {
+    return String(title || '').replace(/ /g, '_');
+  }
+
+  function denormalizeTitle(title) {
+    return String(title || '').replace(/_/g, ' ');
+  }
+
+  function escapeHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function chunkArray(arr, size) {
+    var out = [];
+    for (var i = 0; i < arr.length; i += size) {
+      out.push(arr.slice(i, i + size));
+    }
+    return out;
+  }
+
+  function safeJsonParse(text) {
+    try {
+      return text ? JSON.parse(text) : {};
+    } catch (e) {
+      console.error('[Rating] JSON parse error:', e);
+      return {};
+    }
+  }
+
+  function isPlainObject(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
+  }
+
+  function normalizeRecord(rec) {
+    rec = rec && isPlainObject(rec) ? rec : {};
+    return {
+      up: Number(rec.up || 0),
+      down: Number(rec.down || 0),
+      voters: (rec.voters && isPlainObject(rec.voters)) ? rec.voters : {}
+    };
+  }
+
+  function canonicalizeStoreData(data) {
+    var out = {};
+    if (!data || !isPlainObject(data)) return out;
+
+    for (var key in data) {
+      if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
+      if (key.indexOf('__') === 0) continue;
+      out[normalizeTitle(key)] = normalizeRecord(data[key]);
+    }
+
+    return out;
+  }
+
+  function getRevisionContent(pageData) {
+    var revs = pageData && pageData.revisions ? pageData.revisions : [];
+    if (!revs.length) return '';
+
+    var rev = revs[0];
+
+    if (rev.slots && rev.slots.main && typeof rev.slots.main.content === 'string') {
+      return rev.slots.main.content;
+    }
+
+    if (typeof rev['*'] === 'string') {
+      return rev['*'];
+    }
+
+    return '';
+  }
+
+  function getStoreData(api) {
+    return api.get({
+      action: 'query',
+      prop: 'revisions',
+      titles: config.storePage,
+      rvprop: 'content',
+      rvslots: 'main',
+      formatversion: 2,
+      format: 'json'
+    }).then(function (res) {
+      var pages = (res && res.query && res.query.pages) ? res.query.pages : [];
+      var raw = '';
+
+      if (pages.length) {
+        raw = getRevisionContent(pages[0]);
+      }
+
+      return canonicalizeStoreData(safeJsonParse(raw));
+    });
+  }
+
+  function saveStoreData(api, data, summary) {
+    return api.postWithToken('csrf', {
+      action: 'edit',
+      title: config.storePage,
+      summary: summary || 'Обновление оценок',
+      text: JSON.stringify(canonicalizeStoreData(data), null, 2)
+    });
+  }
+
+  function getUserInfo(api) {
+    return api.get({
+      action: 'query',
+      meta: 'userinfo',
+      uiprop: 'groups|editcount|name',
+      formatversion: 2,
+      format: 'json'
+    }).then(function (res) {
+      var info = (res && res.query && res.query.userinfo) ? res.query.userinfo : {};
+      return {
+        name: info.name || mw.config.get('wgUserName') || '',
+        editcount: Number(info.editcount || 0),
+        groups: info.groups || []
+      };
+    }, function () {
+      return {
+        name: mw.config.get('wgUserName') || '',
+        editcount: Number(mw.config.get('wgUserEditCount') || 0),
+        groups: mw.config.get('wgUserGroups') || []
+      };
+    });
+  }
+
+  function renderRatingUI($cont, info, canVote, userName) {
+    var likes = Number(info.likes || 0);
+    var dislikes = Number(info.dislikes || 0);
+    var total = likes + dislikes;
+    var pct = total ? Math.round((likes / total) * 100) : 0;
+
+    var $stats = $cont.find('.article-rating-stats');
+    var $userMsg = $cont.find('.article-rating-user');
+    var $like = $cont.find('.article-rating-btn.like');
+    var $dislike = $cont.find('.article-rating-btn.dislike');
+
+    $stats.text('Всего: ' + total + ' (👍 ' + likes + ', 👎 ' + dislikes + ') — ' + pct + '% 👍');
+
+    $like.removeClass('voted');
+    $dislike.removeClass('voted');
+
+    if (!userName) {
+      $userMsg.text('Войдите для голосования');
+      $like.prop('disabled', true);
+      $dislike.prop('disabled', true);
+      return;
+    }
+
+    if (!canVote) {
+      $userMsg.text('Нужно ≥' + config.minEditsToVote + ' правок и автоподтверждение');
+      $like.prop('disabled', true);
+      $dislike.prop('disabled', true);
+      return;
+    }
+
+    if (info.voters && Object.prototype.hasOwnProperty.call(info.voters, userName)) {
+      if (info.voters[userName] === 1) {
+        $userMsg.text('Вы уже ставили 👍');
+        $like.addClass('voted');
+      } else if (info.voters[userName] === -1) {
+        $userMsg.text('Вы уже ставили 👎');
+        $dislike.addClass('voted');
+      } else {
+        $userMsg.text('Ваш голос уже учтён');
+      }
+
+      $like.prop('disabled', true);
+      $dislike.prop('disabled', true);
+    } else {
+      $userMsg.text('Ваш голос ещё не учтён');
+      $like.prop('disabled', false);
+      $dislike.prop('disabled', false);
+    }
+  }
+
+  function renderTopList($output, pageList) {
+    if (!pageList.length) {
+      $output.text('Нет доступных страниц для отображения.');
+      return;
+    }
+
+    var html = '<ul>';
+    for (var i = 0; i < pageList.length; i++) {
+      var item = pageList[i];
+      var display = escapeHtml(denormalizeTitle(item.key));
+      var sign = item.score > 0 ? '+' : '';
+
+      html +=
+        '<li>' +
+          '<a href="' + mw.util.getUrl(item.key) + '">' + display + '</a>' +
+          ' — ' + sign + item.score +
+        '</li>';
+    }
+    html += '</ul>';
+
+    $output.html(html);
+  }
+
+  function checkExistingPages(api, titles) {
+    var deferred = $.Deferred();
+    var existing = Object.create(null);
+    var batches = chunkArray(titles, config.checkBatchSize);
+    var idx = 0;
+
+    function processNext() {
+      if (idx >= batches.length) {
+        deferred.resolve(existing);
+        return;
+      }
+
+      api.post({
+        action: 'query',
+        titles: batches[idx].join('|'),
+        formatversion: 2,
+        format: 'json',
+        redirects: 1
+      }).done(function (res) {
+        var pages = (res && res.query && res.query.pages) ? res.query.pages : [];
+
+        for (var i = 0; i < pages.length; i++) {
+          var p = pages[i];
+          if (!p.missing && !p.invalid && p.title) {
+            existing[normalizeTitle(p.title)] = true;
+          }
+        }
+
+        idx++;
+        processNext();
+      }).fail(function (xhr) {
+        console.error('[TopList] Ошибка проверки страниц:', xhr);
+        idx++;
+        processNext();
+      });
+    }
+
+    processNext();
+    return deferred.promise();
+  }
+
+  function cleanupDeletedPages(api, data) {
+    var deferred = $.Deferred();
+    var keys = [];
+
+    data = canonicalizeStoreData(data);
+
+    for (var key in data) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        keys.push(key);
+      }
+    }
+
+    if (!keys.length) {
+      deferred.resolve({
+        data: data,
+        removed: 0
+      });
+      return deferred.promise();
+    }
+
+    var batches = chunkArray(keys, config.checkBatchSize);
+    var existing = Object.create(null);
+    var idx = 0;
+
+    function processNext() {
+      if (idx >= batches.length) {
+        var cleaned = {};
+        var removed = 0;
+
+        for (var i = 0; i < keys.length; i++) {
+          var title = keys[i];
+          if (existing[title]) {
+            cleaned[title] = data[title];
+          } else {
+            removed++;
+          }
+        }
+
+        deferred.resolve({
+          data: cleaned,
+          removed: removed
+        });
+        return;
+      }
+
+      api.post({
+        action: 'query',
+        titles: batches[idx].join('|'),
+        formatversion: 2,
+        format: 'json',
+        redirects: 1
+      }).done(function (res) {
+        var pages = (res && res.query && res.query.pages) ? res.query.pages : [];
+
+        for (var i = 0; i < pages.length; i++) {
+          var p = pages[i];
+          if (!p.missing && !p.invalid && p.title) {
+            existing[normalizeTitle(p.title)] = true;
+          }
+        }
+
+        idx++;
+        processNext();
+      }).fail(function () {
+        idx++;
+        processNext();
+      });
+    }
+
+    processNext();
+    return deferred.promise();
+  }
 
   // =========================
   // === БЛОК 1: Голосование ===
   // =========================
   (function initRatingBlock() {
-    // Только основное неймспейс и режим просмотра
     if (mw.config.get('wgNamespaceNumber') !== 0 || mw.config.get('wgAction') !== 'view') return;
-    if ($('.article-rating-container').length) return; // не дублируем
+    if ($('.article-rating-container').length) return;
 
-    console.log('[Rating] Инициализация');
+    mw.loader.using('mediawiki.api').then(function () {
+      var api = new mw.Api();
 
-    mw.loader.using('mediawiki.api').then(function() {
-      var page    = mw.config.get('wgPageName'),
-          user    = mw.config.get('wgUserName') || '',
-          edits   = mw.config.get('wgUserEditCount') || 0,
-          groups  = mw.config.get('wgUserGroups') || [],
-          canVote = user && groups.includes('autoconfirmed') && edits >= config.minEditsToVote,
-          api     = new mw.Api();
+      getUserInfo(api).then(function (userInfo) {
+        var page = normalizeTitle(mw.config.get('wgPageName'));
+        var user = userInfo.name || '';
+        var edits = Number(userInfo.editcount || 0);
+        var groups = userInfo.groups || [];
+        var canVote = !!user &&
+          edits >= config.minEditsToVote &&
+          groups.indexOf('autoconfirmed') !== -1;
 
-      // --- Создаём контейнер ---
-      var $cont = $('<div>', { class: 'article-rating-container' }).css({
-        border: '1px solid #888', padding: '1em', borderRadius: '0.4em',
-        background: '#F5F5DC', color: '#333', margin: '1em 0',
-        boxShadow: '0 0.2em 0.5em rgba(0,0,0,0.1)'
-      });
-      var $title = $('<div>', { text: 'Оценка статьи', class: 'article-rating-title' }).css({
-        fontWeight: 'bold', marginBottom: '0.5em'
-      });
-
-      // --- Кнопки с GIF ---
-      var $likeImg    = $('<img>', { src: config.buttonGifLike,    alt: '👍' });
-      var $dislikeImg = $('<img>', { src: config.buttonGifDislike, alt: '👎' });
-      var $like    = $('<button>', { class: 'article-rating-btn like'    }).append($likeImg);
-      var $dislike = $('<button>', { class: 'article-rating-btn dislike' }).append($dislikeImg);
-
-      // --- Статистика и подсказка ---
-      var $stats   = $('<span>', { class: 'article-rating-stats', text: 'Загрузка…' });
-      var $userMsg = $('<span>', { class: 'article-rating-user' }).css({ marginLeft: '1em' });
-
-      // Вставляем всё в статью
-      $('.mw-parser-output').first().prepend($cont.append($title, $like, $dislike, $stats, $userMsg));
-
-      // Функция обновления UI
-      function updateUI(info) {
-        var likes    = info.likes    || 0;
-        var dislikes = info.dislikes || 0;
-        var total    = likes + dislikes;
-        var pct      = total ? Math.round(likes / total * 100) : 0;
-        $stats.text(`Всего: ${total} (👍 ${likes}, 👎 ${dislikes}) — ${pct}% 👍`);
-
-        if (!user) {
-          $userMsg.text('Войдите для голосования');
-        } else if (!canVote) {
-          $userMsg.text(`Нужно ≥${config.minEditsToVote} правок и автоподтверждение`);
-        } else if (info.voters[user]) {
-          $userMsg.text(info.voters[user] === 1 ? 'Вы уже ставили 👍' : 'Вы уже ставили 👎');
-          (info.voters[user] === 1 ? $like : $dislike).addClass('voted');
-        } else {
-          $userMsg.text('Ваш голос ещё не учтён');
-        }
-      }
-
-      // Загрузка данных
-      api.get({
-        action: 'query',
-        prop:   'revisions',
-        titles: config.storePage,
-        rvprop: 'content',
-        format: 'json'
-      }).done(function(res) {
-        console.log('[Rating] Данные загружены');
-        var pages = res.query.pages, raw = '', data = {};
-        for (var id in pages) {
-          raw = (pages[id].revisions||[])[0]['*'] || '';
-          break;
-        }
-        try {
-          data = raw ? JSON.parse(raw) : {};
-        } catch(e) {
-          data = {};
-        }
-        if (!data[page]) data[page] = { up:0, down:0, voters:{} };
-        var info = {
-          likes:    data[page].up   || 0,
-          dislikes: data[page].down || 0,
-          voters:   data[page].voters || {}
-        };
-        updateUI(info);
-
-        // Обработчики кликов
-        $like.on('click', function() {
-          if (!canVote || info.voters[user]) return;
-          info.likes++; info.voters[user] = 1; saveAll();
-        });
-        $dislike.on('click', function() {
-          if (!canVote || info.voters[user]) return;
-          info.dislikes++; info.voters[user] = -1; saveAll();
+        var $cont = $('<div>', { class: 'article-rating-container' }).css({
+          border: '1px solid #888',
+          padding: '1em',
+          borderRadius: '0.4em',
+          background: '#F5F5DC',
+          color: '#333',
+          margin: '1em 0',
+          boxShadow: '0 0.2em 0.5em rgba(0,0,0,0.1)'
         });
 
-        function saveAll() {
-          data[page] = { up: info.likes, down: info.dislikes, voters: info.voters };
-          api.postWithToken('csrf', {
-            action: 'edit',
-            title:  config.storePage,
-            summary:`Обновление оценок для «${page}»`,
-            text:   JSON.stringify(data, null, 2)
-          }).done(function() {
-            location.reload();
+        var $title = $('<div>', {
+          text: 'Оценка статьи',
+          class: 'article-rating-title'
+        }).css({
+          fontWeight: 'bold',
+          marginBottom: '0.5em'
+        });
+
+        var $likeImg = $('<img>', { src: config.buttonGifLike, alt: '👍' });
+        var $dislikeImg = $('<img>', { src: config.buttonGifDislike, alt: '👎' });
+
+        var $like = $('<button>', {
+          class: 'article-rating-btn like',
+          type: 'button'
+        }).append($likeImg);
+
+        var $dislike = $('<button>', {
+          class: 'article-rating-btn dislike',
+          type: 'button'
+        }).append($dislikeImg);
+
+        var $stats = $('<span>', {
+          class: 'article-rating-stats',
+          text: 'Загрузка…'
+        });
+
+        var $userMsg = $('<span>', {
+          class: 'article-rating-user'
+        }).css({
+          marginLeft: '1em'
+        });
+
+        $like.css({ marginRight: '0.5em' });
+        $dislike.css({ marginRight: '0.5em' });
+
+        $like.prop('disabled', true);
+        $dislike.prop('disabled', true);
+
+        $('.mw-parser-output').first().prepend(
+          $cont.append($title, $like, $dislike, $stats, $userMsg)
+        );
+
+        getStoreData(api).then(function (data) {
+          if (!data[page]) {
+            data[page] = { up: 0, down: 0, voters: {} };
+          }
+
+          var info = {
+            likes: Number(data[page].up || 0),
+            dislikes: Number(data[page].down || 0),
+            voters: data[page].voters || {}
+          };
+
+          renderRatingUI($cont, info, canVote, user);
+
+          $like.on('click', function () {
+            if (!canVote || (info.voters && info.voters[user])) return;
+
+            info.likes++;
+            info.voters[user] = 1;
+
+            data[page] = {
+              up: info.likes,
+              down: info.dislikes,
+              voters: info.voters
+            };
+
+            $stats.text('Сохранение…');
+
+            saveStoreData(api, data, 'Обновление оценок для «' + denormalizeTitle(page) + '»')
+              .done(function () {
+                location.reload();
+              })
+              .fail(function (xhr) {
+                console.error('[Rating] Ошибка сохранения:', xhr);
+                $stats.text('Ошибка сохранения');
+              });
           });
-        }
-      }).fail(function() {
-        console.error('[Rating] Ошибка загрузки данных');
-        $stats.text('Ошибка загрузки');
-      });
 
-    }); // mw.loader
+          $dislike.on('click', function () {
+            if (!canVote || (info.voters && info.voters[user])) return;
+
+            info.dislikes++;
+            info.voters[user] = -1;
+
+            data[page] = {
+              up: info.likes,
+              down: info.dislikes,
+              voters: info.voters
+            };
+
+            $stats.text('Сохранение…');
+
+            saveStoreData(api, data, 'Обновление оценок для «' + denormalizeTitle(page) + '»')
+              .done(function () {
+                location.reload();
+              })
+              .fail(function (xhr) {
+                console.error('[Rating] Ошибка сохранения:', xhr);
+                $stats.text('Ошибка сохранения');
+              });
+          });
+        }, function (xhr) {
+          console.error('[Rating] Ошибка загрузки данных:', xhr);
+          $stats.text('Ошибка загрузки');
+        });
+      });
+    });
   })();
 
   // ======================================
-  // === БЛОК 2: Топ‑лист статей по рейтингу ===
+  // === БЛОК 2: Топ-лист статей по рейтингу ===
   // ======================================
   (function initTopList() {
-    $(function() {
-      if (mw.config.get('wgPageName') !== 'Chicken_Gun_Fanon_Wiki:_Список_оценок') return;
-      console.log('[TopList] Инициализация');
+    $(function () {
+      if (normalizeTitle(mw.config.get('wgPageName')) !== normalizeTitle(config.topListPage)) return;
 
-      mw.loader.using('mediawiki.api').then(function() {
-        var api      = new mw.Api();
-        var pageList = [];
+      mw.loader.using('mediawiki.api').then(function () {
+        var api = new mw.Api();
+        var $container = $('.mw-parser-output').first();
 
-        // Вставляем контейнер и назначаем $output
-        var $container = $('.mw-parser-output');
         $container.html(
           '<h2>Список статей по рейтингу</h2>' +
+          '<div id="rating-tools" style="margin:0.75em 0;"></div>' +
           '<div id="rating-list">Загрузка…</div>'
         );
+
+        var $tools = $container.find('#rating-tools');
         var $output = $container.find('#rating-list');
 
-        // Шаг 1: получаем JSON
-        api.get({
-          action: 'query',
-          prop:   'revisions',
-          titles: config.storePage,
-          rvprop: 'content',
-          format: 'json'
-        }).done(function(res) {
-          console.log('[TopList] Рейтинги получены');
-          var pages = res.query.pages, raw = '';
-          for (var k in pages) {
-            raw = (pages[k].revisions||[])[0]['*'] || '';
-            break;
-          }
-          var data = {};
-          try {
-            data = raw ? JSON.parse(raw) : {};
-          } catch(e) {
-            console.error('[TopList] Ошибка парсинга JSON', e);
-          }
+        function loadAndRender() {
+          $output.text('Загрузка…');
 
-          Object.keys(data).forEach(function(titleKey) {
-            var rec   = data[titleKey],
-                score = (rec.up||0) - (rec.down||0);
-            pageList.push({ key: titleKey, score: score });
+          getStoreData(api).then(function (data) {
+            var pageList = [];
+            var titles = [];
+
+            for (var titleKey in data) {
+              if (!Object.prototype.hasOwnProperty.call(data, titleKey)) continue;
+              if (titleKey.indexOf('__') === 0) continue;
+
+              var rec = data[titleKey] || {};
+              var score = Number(rec.up || 0) - Number(rec.down || 0);
+
+              pageList.push({
+                key: normalizeTitle(titleKey),
+                score: score
+              });
+
+              titles.push(normalizeTitle(titleKey));
+            }
+
+            pageList.sort(function (a, b) {
+              return b.score - a.score;
+            });
+
+            if (!pageList.length) {
+              $output.text('Список пуст.');
+              return;
+            }
+
+            checkExistingPages(api, titles).then(function (existing) {
+              var filtered = [];
+
+              for (var i = 0; i < pageList.length; i++) {
+                var item = pageList[i];
+                if (existing[normalizeTitle(item.key)]) {
+                  filtered.push(item);
+                }
+              }
+
+              renderTopList($output, filtered.length ? filtered : pageList);
+
+              if (!filtered.length) {
+                $output.prepend(
+                  '<div style="margin-bottom:0.75em; color:#666;">' +
+                    'Не удалось подтвердить наличие страниц, показан общий список.' +
+                  '</div>'
+                );
+              }
+            });
+          }).fail(function (xhr) {
+            console.error('[TopList] Ошибка загрузки рейтингов:', xhr);
+            $output.text('Не удалось загрузить список.');
           });
-          pageList.sort(function(a,b){ return b.score - a.score; });
+        }
 
-          // Шаг 2: проверяем существование
-         var allTitles = pageList.map(o=>o.key).join('|');
-api.get({
-  action: 'query',
-  titles: allTitles,
-  format: 'json'
-}).done(function(res2) {
-  var existing = {};
-  Object.values(res2.query.pages).forEach(function(p) {
-    if (!p.missing && !p.invalid) {
-      var key = p.title.replace(/ /g, '_');
-      existing[key] = true;
-    }
-  });
+        function cleanupNow() {
+          $output.text('Очистка удалённых страниц…');
 
-  var filtered = pageList.filter(function(item) {
-    return existing[item.key];
-  });
+          getStoreData(api).then(function (data) {
+            cleanupDeletedPages(api, data).then(function (result) {
+              var cleaned = result.data || {};
+              var removed = Number(result.removed || 0);
 
-  if (!filtered.length) {
-    $output.text('Нет доступных страниц для отображения.');
-    return;
-  }
-  var html = '<ul>';
-  filtered.forEach(function(item) {
-    var display = item.key.replace(/_/g, ' ');
-    var sign = item.score > 0 ? '+' : '';
-    html +=
-      '<li>' +
-        '<a href="' + mw.util.getUrl(item.key) + '">' + display + '</a>' +
-        ' — ' + sign + item.score +
-      '</li>';
-  });
-  html += '</ul>';
-  $output.html(html);
-          }).fail(function() {
-            console.error('[TopList] Ошибка проверки страниц');
-            $output.text('Ошибка при проверке наличия страниц.');
+              if (!removed) {
+                $output.text('Удалённых записей не найдено.');
+                loadAndRender();
+                return;
+              }
+
+              saveStoreData(api, cleaned, 'Очистка удалённых страниц (' + removed + ')')
+                .done(function () {
+                  loadAndRender();
+                })
+                .fail(function (xhr) {
+                  console.error('[Cleanup] Ошибка сохранения очищенных данных:', xhr);
+                  $output.text('Очищенный список не удалось сохранить.');
+                  loadAndRender();
+                });
+            });
+          }).fail(function (xhr) {
+            console.error('[Cleanup] Ошибка загрузки данных:', xhr);
+            $output.text('Не удалось загрузить данные для очистки.');
           });
+        }
 
-        }).fail(function() {
-          console.error('[TopList] Ошибка загрузки рейтингов');
-          $output.text('Не удалось загрузить список.');
+        var userGroups = mw.config.get('wgUserGroups') || [];
+        var isSysop = userGroups.indexOf('sysop') !== -1;
+
+        var $btnReload = $('<button>', {
+          type: 'button',
+          text: 'Обновить список'
+        }).css({
+          padding: '0.5em 0.8em',
+          cursor: 'pointer'
         });
 
-      }); // mw.loader
-    }); // jQuery ready
+        $btnReload.on('click', function () {
+          loadAndRender();
+        });
+
+        $tools.append($btnReload);
+
+        if (isSysop) {
+          var $btnCleanup = $('<button>', {
+            type: 'button',
+            text: '🧹 Очистить удалённые записи'
+          }).css({
+            padding: '0.5em 0.8em',
+            cursor: 'pointer',
+            marginRight: '0.5em'
+          });
+
+          $tools.prepend($btnCleanup);
+
+          $btnCleanup.on('click', function () {
+            $btnCleanup.prop('disabled', true);
+            $btnReload.prop('disabled', true);
+
+            cleanupNow();
+
+            setTimeout(function () {
+              $btnCleanup.prop('disabled', false);
+              $btnReload.prop('disabled', false);
+            }, 2000);
+          });
+        }
+
+        loadAndRender();
+      });
+    });
   })();
 
 })(jQuery, mediaWiki);

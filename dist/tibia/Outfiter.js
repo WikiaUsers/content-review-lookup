@@ -111,9 +111,9 @@ $(function () {
       //245
       'Death_Phoenix', 'Soul_Phoenix', 'Gloom_Maw_(Mount)', 'Battle_Werewolf', 'Battlefrazzle',
       //250
-      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear', 'Guardian_Lion'
+      'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear', 'Guardian_Lion',
       //255
-      
+      'Reliable_Ram'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink (https://tibia.fandom.com/wiki/Template:OutfiterLink)
@@ -1619,7 +1619,7 @@ $(function () {
           char_name = decodeURIComponent(outfiter_GET.charn).split(''),
           lastpos,
           //floor
-          floor_offset = {x: 0, y: 0},
+          floor_offset = {x: 1, y: 1},
           floor_move = outfiter_GET.animate && !outfiter_GET.sanim && outfiter_no_floor_move_names[outfit_n] !== true,
           floor_x,
           floor_y,

@@ -2311,6 +2311,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"bumblebee": {
+				"name": "Bumblebee",
+				"colors": [
+					"fey",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"bundle": {
 				"name": "Bundle",
 				"colors": [
@@ -8684,6 +8693,24 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"hibernatingbat": {
+				"name": "Hibernating Bat",
+				"colors": [
+					"fey",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"hibernatingbear": {
+				"name": "Hibernating Bear",
+				"colors": [
+					"fey",
+					"beast",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"hibernatinghedgehog": {
 				"name": "Hibernating Hedgehog",
 				"colors": [
@@ -10320,6 +10347,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "super"
+			},
+			"leppaluthi": {
+				"name": "Leppaluthi",
+				"colors": [
+					"holiday",
+					"yellow",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"leprechaun": {
 				"name": "Leprechaun",
@@ -15086,6 +15122,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"raindrop": {
+				"name": "Raindrop",
+				"colors": [
+					"fey",
+					"blue",
+					"white"
+				],
+				"rarity": "common"
+			},
 			"rainghost": {
 				"name": "Rainghost",
 				"colors": [
@@ -18782,6 +18827,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fey",
 					"white",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"thornflare": {
+				"name": "Thornflare",
+				"colors": [
+					"fey",
+					"black",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},

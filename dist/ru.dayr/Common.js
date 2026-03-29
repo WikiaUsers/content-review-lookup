@@ -17,3 +17,13 @@ importArticles({
 		"MediaWiki:HideRowsTable.js"
 	]
 });
+
+// Подключение расширенного таймера
+$(function() {
+    importArticles({
+        type: "script",
+        articles: [
+            "dev:Countdown.js"
+        ]
+    });
+});

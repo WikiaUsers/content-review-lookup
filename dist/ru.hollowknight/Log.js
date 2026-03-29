@@ -178,7 +178,7 @@
         ],
         [
             'https://vignette.wikia.nocookie.net/hollowknight/images/a/a0/HJ_Uoma.png',
-            'Юма'
+            'Юма (Hollow Knight)'
         ],
         [
             'https://vignette.wikia.nocookie.net/hollowknight/images/d/dd/HJ_Ooma.png',
@@ -634,7 +634,7 @@
         ],
         [
             'https://vignette.wikia.nocookie.net/hollowknight/images/c/c4/HJ_Wingmould.png',
-            'Крылень'
+            'Крылень (Hollow Knight)'
         ],
         [
             'https://vignette.wikia.nocookie.net/hollowknight/images/f/fd/HJ_Royal_Retainer.png',

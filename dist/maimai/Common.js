@@ -1,9 +1,9 @@
 /* IMPORTANT: Any JavaScript here will be loaded for all users on every page load. */
-/* ==================== Pre-importing configuration ==================== */
+/* ==================== Configuration ==================== */
 // Use [[MediaWiki:Custom-PreloaderList]] as the preloader list which will be loaded by 'PreloadTemplates.js'.
 window.preloadTemplates_list = 'MediaWiki:Custom-PreloaderList';
 
-/* ==================== Script imports ==================== */
+/* ==================== Imports ==================== */
 importArticles({
     type: 'script',
     articles: [
@@ -21,6 +21,9 @@ importArticles({
         'u:dev:MediaWiki:SandboxTab/code.js',
         
         /** ========== Extra ========== **/
+        'u:dev:MediaWiki:TemplateData Documentation.js',
+        'u:dev:MediaWiki:EasyTalk.js',
         'u:dev:MediaWiki:Charts.js',
+        'u:dev:MediaWiki:YouTubeModal/code.js',
     ]
 });

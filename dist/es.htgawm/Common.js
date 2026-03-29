@@ -1,42 +1,4 @@
 
-if (mwCustomEditButtons) {
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-"imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
-"speedTip": "Redirect",
-"tagOpen": "#REDIRECT [[",
-"tagClose": "]]",
-"sampleText": "Insert text"};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-"imageFile": "https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png",
-"speedTip": "Strike",
-"tagOpen": "<s>",
-"tagClose": "</s>",
-"sampleText": "Strike-through text"};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-"imageFile": "https://images.wikia.nocookie.net/central/images/1/13/Button_enter.png",
-"speedTip": "Line break",
-"tagOpen": "<br />",
-"tagClose": "",
-"sampleText": ""};
- 
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-"imageFile": "https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png",
-"speedTip": "Comment visible only for editors",
-"tagOpen": "<!-- ",
-"tagClose": " -->",
-"SampleText": "Inserta el enlace aqui"};
-
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-"imageFile": "https://vignette.wikia.nocookie.net/how-to-get-away-with-murder/images/e/e1/Refbutton.png/revision/latest?cb=20170202075355&path-prefix=es",
-"speedTip": "Referencias",
-"tagOpen": "<ref>",
-"tagClose": "</ref>",
-"SampleText": "Inserta el enlace aqui"};
-}
-
-<!-- ------------------------------------------------------------------ -->
 // Any JavaScript here will be loaded for all users on every page load.
 $(function () {
     var conf = mw.config.get([
@@ -63,26 +25,22 @@ $(function () {
 });
 
 
-// Image carousel
-document.addEventListener("DOMContentLoaded", function() {
-    var images = document.querySelectorAll(".carousel-item"); // Get all images
-    var currentIndex = 0;
 
-    // Initially hide all images
-    images.forEach(function(image) {
-        image.style.display = "none";
-    });
-
-    // Show the first image
-    images[currentIndex].style.display = "block";
-
-    // Function to change the image
-    function changeImage() {
-        images[currentIndex].style.display = "none"; // Hide current image
-        currentIndex = (currentIndex + 1) % images.length; // Loop to first image after last
-        images[currentIndex].style.display = "block"; // Show next image
-    }
-
-    // Change image every 3 seconds
-    setInterval(changeImage, 3000);
+/* --- SCRIPT PARA CARRUSEL AUTOMÁTICO --- */
+/* --- AUTO-PLAY PARA TABBER --- */
+/* Empujoncito para el CustomSlider */
+$(window).on('load', function() {
+    setTimeout(function() {
+        if ($('.custom-slider').length && !$('.custom-slider').hasClass('initialized')) {
+            // Forzar disparo del evento de redimensionado para que el slider despierte
+            window.dispatchEvent(new Event('resize'));
+        }
+    }, 5000);
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:CustomSlider.js',
+    ]
+})

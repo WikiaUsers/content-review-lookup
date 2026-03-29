@@ -61,22 +61,21 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
     $(document).ready(function () {
         if (!$('#custom-map').length) return;
 
-        // Load Leaflet
         $.getScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', function () {
-             delete L.Icon.Default.prototype._getIconUrl;
-             L.Icon.Default.mergeOptions({
-             iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-             iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-             shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
-       });   
+            delete L.Icon.Default.prototype._getIconUrl;
+            L.Icon.Default.mergeOptions({
+                iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+            });
+
             $.getScript('https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js', function () {
                 mw.util.addCSS(`
                     @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
                     @import url('https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css');
-                    #custom-map { height: 600px; width: 100%; }
+                    @import url('https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css');
                 `);
 
-                // Fetch map data directly via API
                 new mw.Api().get({
                     action: 'query',
                     titles: 'Map:World_Map',
@@ -85,134 +84,257 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
                     format: 'json'
                 }).done(function (res) {
                     const page = Object.values(res.query.pages)[0];
-                    if (!page.revisions) {
-                        console.error('No revision found for Map:World_Map');
-                        return;
-                    }
-                    const raw = page.revisions[0]['*'];
-                    const mapData = JSON.parse(raw);
-                    createLeafletMap(mapData);
-                }).fail(function (err) {
-                    console.error('API fetch failed:', err);
+                    if (!page.revisions || !page.revisions[0]) return;
+                    const mapData = JSON.parse(page.revisions[0]['*']);
+                    initCustomMap(mapData);
                 });
             });
         });
     });
 });
 
-function createLeafletMap(mapData) {
+function initCustomMap(mapData) {
     const map = L.map('custom-map', {
         crs: L.CRS.Simple,
         minZoom: 0,
-        maxZoom: 3,
+        maxZoom: 4,
         maxBoundsViscosity: 1.0
     });
 
-    const bounds = mapData.mapBounds;
-    L.imageOverlay(mapData.mapImage, bounds).addTo(map);
+    const imageUrl = 'https://static.wikia.nocookie.net/wandering-sword/images/2/2d/World_Map_2.png/revision/latest';
+    const bounds = [[0, 0], [1187, 2113]];
+
+    L.imageOverlay(imageUrl, bounds).addTo(map);
     map.fitBounds(bounds);
-    map.setMinZoom(map.getZoom());
     map.setMaxBounds(bounds);
-    map.on('dragend', () => map.panInsideBounds(bounds));
 
-    const imageHeight = bounds[1][1];
-
-    function getIcon(url) {
-        return L.icon({
-            iconUrl: url,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32]
-        });
-    }
-
-    const markersCluster = L.markerClusterGroup();
+    const markersCluster = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        maxClusterRadius: 50
+    });
     map.addLayer(markersCluster);
 
-    const sidebar = document.getElementById("sidebar");
+    const api = new mw.Api();
+    const imageCache = {};
+    const allMarkers = [];
+    let completedMarkers = JSON.parse(localStorage.getItem('wanderingSword_completed') || '[]');
 
-    function createChecklist(id, items) {
-        let saved = JSON.parse(localStorage.getItem(id) || "[]");
-        return `
-            <ul class="checklist" data-id="${id}">
-                ${items.map((item, i) => `
-                    <li data-index="${i}" class="${saved.includes(i) ? 'checked' : ''}">
-                        ☐ ${item}
-                    </li>
-                `).join('')}
-            </ul>
-        `;
+    function updateFilterCounts() {
+        const total = mapData.markers.length;
+        const completed = completedMarkers.length;
+        const incomplete = total - completed;
+
+        const completeEl = document.querySelector('.interactive-maps__filter-progress--disabled .interactive-maps__filter-value');
+        const incompleteEl = document.querySelector('.interactive-maps__filter-progress[data-testid="marker-progress-filter-incomplete"] .interactive-maps__filter-value');
+
+        if (completeEl) completeEl.textContent = completed;
+        if (incompleteEl) incompleteEl.textContent = incomplete;
     }
 
-    function renderMarkers(filterIds = null) {
+    function applyFilters() {
+        const checkedInputs = document.querySelectorAll('.interactive-maps__filter input[type="checkbox"]:checked');
+        const checkedCategories = Array.from(checkedInputs)
+            .map(el => el.value)
+            .filter(val => !isNaN(val));
+
+        const incompleteCheckbox = document.querySelector('#wds-checkbox-2');
+        const showIncomplete = incompleteCheckbox ? incompleteCheckbox.checked : false;
+
         markersCluster.clearLayers();
-        if (sidebar) sidebar.innerHTML = "";
+        let visibleCompleted = 0;
+        let visibleIncomplete = 0;
 
-        mapData.markers.forEach(m => {
-            if (filterIds && !filterIds.includes(m.categoryId)) return;
-            const cat = mapData.categories.find(c => c.id === m.categoryId);
-            if (!cat) return;
+        allMarkers.forEach(obj => {
+            const isCompleted = completedMarkers.includes(obj.markerId);
+            const categoryMatch = checkedCategories.length === 0 ||
+                checkedCategories.includes(String(obj.categoryId));
+            const progressMatch = isCompleted ? true : showIncomplete;
 
-            const icon = getIcon(cat.icon);
-            const flippedY = imageHeight - m.position[1];
-            const marker = L.marker([flippedY, m.position[0]], { icon });
-
-            marker.bindPopup(`
-                <b>${m.title}</b><br>
-                ${createChecklist(m.id, m.checklist)}
-            `);
-
-            markersCluster.addLayer(marker);
-
-            if (sidebar) {
-                const item = document.createElement("div");
-                item.innerText = m.title;
-                item.onclick = () => {
-                    map.setView([flippedY, m.position[0]], map.getMaxZoom());
-                    marker.openPopup();
-                };
-                sidebar.appendChild(item);
+            if (categoryMatch && progressMatch) {
+                markersCluster.addLayer(obj.marker);
+                if (isCompleted) visibleCompleted++;
+                else visibleIncomplete++;
             }
         });
+
+        const completeEl = document.querySelector('.interactive-maps__filter-progress--disabled .interactive-maps__filter-value');
+        const incompleteEl = document.querySelector('[data-testid="marker-progress-filter-incomplete"] .interactive-maps__filter-value');
+        if (completeEl) completeEl.textContent = visibleCompleted;
+        if (incompleteEl) incompleteEl.textContent = visibleIncomplete;
     }
 
-    renderMarkers();
-
-    const filterPanel = document.getElementById("filters");
-    if (filterPanel && mapData.categories) {
-        mapData.categories.forEach(cat => {
-            const label = document.createElement("label");
-            label.innerHTML = `<input type="checkbox" checked value="${cat.id}"> ${cat.name}`;
-            filterPanel.appendChild(label);
-        });
-
-        document.querySelector(".filter-btn").onclick = () => {
-            filterPanel.style.display = filterPanel.style.display === "block" ? "none" : "block";
-        };
-
-        filterPanel.addEventListener("change", () => {
-            const active = [...filterPanel.querySelectorAll("input:checked")].map(i => i.value);
-            renderMarkers(active);
+    function resolveImage(fileName) {
+        return new Promise(resolve => {
+            if (!fileName) return resolve('');
+            const clean = fileName.replace(/^File:/i, '').trim();
+            if (imageCache[clean]) return resolve(imageCache[clean]);
+            api.get({
+                action: 'query',
+                titles: 'File:' + clean,
+                prop: 'imageinfo',
+                iiprop: 'url',
+                format: 'json'
+            }).done(res => {
+                const page = Object.values(res.query.pages)[0];
+                if (page.imageinfo && page.imageinfo[0]) {
+                    const url = page.imageinfo[0].url;
+                    imageCache[clean] = url;
+                    resolve(url);
+                } else {
+                    resolve('');
+                }
+            }).fail(() => resolve(''));
         });
     }
 
-    document.addEventListener("click", e => {
-        const li = e.target.closest(".checklist li");
-        if (!li) return;
-        const ul = li.parentElement;
-        const id = ul.dataset.id;
-        const index = parseInt(li.dataset.index);
-        let saved = JSON.parse(localStorage.getItem(id) || "[]");
+    function resolveIcon(fileName) {
+        return new Promise(resolve => {
+            if (!fileName) return resolve(null);
+            const clean = fileName.replace(/^File:/i, '').trim();
+            if (imageCache[clean]) {
+                return resolve(L.icon({
+                    iconUrl: imageCache[clean],
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                }));
+            }
+            api.get({
+                action: 'query',
+                titles: 'File:' + clean,
+                prop: 'imageinfo',
+                iiprop: 'url',
+                format: 'json'
+            }).done(res => {
+                const page = Object.values(res.query.pages)[0];
+                if (page.imageinfo && page.imageinfo[0]) {
+                    const url = page.imageinfo[0].url;
+                    imageCache[clean] = url;
+                    resolve(L.icon({
+                        iconUrl: url,
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 32]
+                    }));
+                } else {
+                    resolve(null);
+                }
+            }).fail(() => resolve(null));
+        });
+    }
 
-        if (saved.includes(index)) {
-            saved = saved.filter(i => i !== index);
-            li.classList.remove("checked");
-        } else {
-            saved.push(index);
-            li.classList.add("checked");
-        }
-        localStorage.setItem(id, JSON.stringify(saved));
+    mapData.markers.forEach(m => {
+        const cat = mapData.categories.find(c => c.id === m.categoryId);
+        if (!cat) return;
+
+        const p = m.popup || {};
+        const title = p.title || cat.name || 'Location';
+        const markerId = m.id || `marker-${Math.floor(m.position[0])}-${Math.floor(m.position[1])}`;
+
+        Promise.all([resolveIcon(cat.icon), resolveImage(p.image)]).then(([icon, imgSrc]) => {
+            if (!icon) return;
+
+            const marker = L.marker([m.position[1], m.position[0]], { icon });
+            allMarkers.push({ marker, categoryId: m.categoryId, markerId });
+
+            const linkHref = p.link && p.link.url
+                ? `https://wandering-sword.fandom.com/wiki/${encodeURIComponent(p.link.url)}`
+                : '#';
+            const linkText = (p.link && p.link.label) ? p.link.label : title;
+
+            const popupHTML = `
+<div style="width:300px;">
+  <div class="MarkerPopup-module_popup__eNi--">
+    <div class="MarkerPopup-module_content__9zoQq">
+      <div class="MarkerPopup-module_contentTopContainer__qgen9">
+        <div class="MarkerPopup-module_title__7ziRt">${title}</div>
+      </div>
+      <div class="MarkerPopup-module_scrollableContent__0N5PS">
+        ${imgSrc ? `<div class="MarkerPopup-module_descriptionImageContent__j88zb"><img class="MarkerPopup-module_image__7I5s4" src="${imgSrc}" style="width:100%;margin-top:8px;"></div>` : ''}
+        ${linkHref !== '#' ? `
+          <div class="MarkerPopup-module_link__f59Lh">
+            <svg class="wds-icon wds-icon-tiny MarkerPopup-module_linkIcon__q3Rbd"><use xlink:href="#wds-icons-link-tiny"></use></svg>
+            <a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>
+          </div>` : ''}
+        <div>
+          <button class="wds-button wds-button MarkerProgressButtons-module_progressMarkerButton__hX8bo wds-is-full-width"
+                  data-testid="marker-progress-tracking-button-complete"
+                  type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="18" height="18" style="margin-right:8px;">
+              <defs>
+                <path id="IconCheckboxEmpty__a" d="M3 21h18V3H3v18zM22 1H2a1 1 0 00-1 1v20a1 1 0 001 1h20a1 1 0 001-1V2a1 1 0 00-1-1z"></path>
+                <path id="IconCheckbox__a" d="M3 21h18V3H3v18zM22 1H2a1 1 0 00-1 1v20a1 1 0 001 1h20a1 1 0 001-1V2a1 1 0 00-1-1zM10 17l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+              </defs>
+              <use xlink:href="#IconCheckboxEmpty__a" fill-rule="evenodd"></use>
+            </svg>
+            Mark as complete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+            marker.bindPopup(popupHTML, { maxWidth: 320, className: 'wandering-sword-popup' });
+            markersCluster.addLayer(marker);
+
+            // ─────────────────────────────────────────────────────────────
+            // FIXED POPUP HANDLER — no more random button, no popup close
+            // ─────────────────────────────────────────────────────────────
+            marker.on('popupopen', function () {
+                let btn = document.querySelector('button[data-testid="marker-progress-tracking-button-complete"]');
+                if (!btn) return;
+
+                // Clone + remove Fandom's data-testid so it stops hijacking
+                const newBtn = btn.cloneNode(true);
+                newBtn.removeAttribute('data-testid');   // ← prevents Fandom from touching it again
+                btn.parentNode.replaceChild(newBtn, btn);
+
+                // Force correct initial state (native map = everything incomplete)
+                const isCompleted = completedMarkers.includes(markerId);
+                const useEl = newBtn.querySelector('use');
+                if (isCompleted) {
+                    useEl.setAttribute('xlink:href', '#IconCheckbox__a');
+                    newBtn.lastChild.nodeValue = ' Completed';
+                } else {
+                    useEl.setAttribute('xlink:href', '#IconCheckboxEmpty__a');
+                    newBtn.lastChild.nodeValue = ' Mark as complete';
+                }
+
+                newBtn.addEventListener('click', function (e) {
+                    e.stopImmediatePropagation();   // stop Fandom from interfering
+
+                    let completed = JSON.parse(localStorage.getItem('wanderingSword_completed') || '[]');
+                    const wasCompleted = completed.includes(markerId);
+
+                    if (wasCompleted) {
+                        completed = completed.filter(id => id !== markerId);
+                        useEl.setAttribute('xlink:href', '#IconCheckboxEmpty__a');
+                        newBtn.lastChild.nodeValue = ' Mark as complete';
+                    } else {
+                        completed.push(markerId);
+                        useEl.setAttribute('xlink:href', '#IconCheckbox__a');
+                        newBtn.lastChild.nodeValue = ' Completed';
+                    }
+
+                    localStorage.setItem('wanderingSword_completed', JSON.stringify(completed));
+                    completedMarkers = completed;
+
+                    updateFilterCounts();
+                    applyFilters();
+                });
+            });
+        });
     });
-}   
+
+    document.addEventListener('change', function (e) {
+        if (e.target.matches('.interactive-maps__filters-dropdown input[type="checkbox"]')) {
+            applyFilters();
+        }
+    });
+
+    setTimeout(updateFilterCounts, 800);
+    setTimeout(applyFilters, 900);
+    console.log('✅ Clean progress button — fixed click + filter sync');
+}
 
 // --------------------------------------------------------------------------------------------
 //
@@ -251,8 +373,6 @@ document.getElementById('Edit').innerHTML = `
   </div>
 </div>
 `;
-
-
 
 document.querySelector('.filter-btn').innerHTML = `
 <div class="interactive-maps__filters-list">

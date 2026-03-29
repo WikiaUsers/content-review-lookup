@@ -20,3 +20,7 @@ mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:Dail
 mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
 
 // -- [ Other code ] --
+window.BackToTopModern = true;
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;

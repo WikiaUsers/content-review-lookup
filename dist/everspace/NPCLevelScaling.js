@@ -3,17 +3,18 @@
  * Original script by [[User:Slin277]]
  */
 ;(function(window, $, mw){
+	'use strict';
 
-	$(function() {
-	
+	mw.hook('wikipage.content').add(function($content) {
+
 		window.everspacewiki = window.everspacewiki || {};
 		if( window.everspacewiki.npcScaling && window.everspacewiki.npcScaling.hasRun ) return;
 		window.everspacewiki.npcScaling = { hasRun: true };
-	
-		const npcs = $('aside.pi-theme-es2-npc');
-	
+
+		const npcs = $content.find('.portable-infobox.type-npc');
+
 		if( !npcs.length ) return;
-	
+
 		const scalingConfig = {
 			key: 'everspacewiki-npcScaling-settings',
 			defaults: { level: 1, tier: 'normal', difficulty: 'normal' },
@@ -28,9 +29,15 @@
 				nightmare: 3.45
 			}
 		};
-	
+		const factionFactors = {
+			'Okkar': 1.6,
+			'Okkar Prime': 1.6,
+			'Redeemer': 1.6,
+			'default': 1.8
+		};
+
 		scalingConfig.save = function(settings) {
-			mw.storage.set( scalingConfig.key ,JSON.stringify( settings ) );
+			mw.storage.set(scalingConfig.key,JSON.stringify(settings));
 		};
 		scalingConfig.update = function(updates) {
 			const settings = scalingConfig.load();
@@ -49,13 +56,13 @@
 			}
 			// Validate retrieved values
 			settings.level = scalingConfig.clamp( 1, 30, settings.level );
-	
+
 			if( !scalingConfig.isWhitelisted( 'tiers', settings.tier ) )
 				settings.tier = scalingConfig.defaults.tier;
-	
+
 			if( !scalingConfig.isWhitelisted( 'diff', settings.difficulty ) )
 				settings.difficulty = scalingConfig.defaults.difficulty;
-	
+
 			return settings;
 		};
 		scalingConfig.isWhitelisted = function( type, value ) {
@@ -66,117 +73,107 @@
 					return scalingConfig.difficulties.includes( value );
 			}
 		};
-		scalingConfig.clamp = function( min, max, value ) { return Math.min( Math.max( min, value ), max ) };
-	
+		scalingConfig.clamp = function( min, max, value ) {
+			return Math.min( Math.max( min, value ), max );
+		};
+
 		const wikiUserScalingConfig = scalingConfig.load();
-	
+
 		$(npcs).each(function(i) {
-	
+
 			const npc = $(this);
-	
+
 			const section = npc.find('[data-item-name="npc-scaling"]');
-	
+
 			if( !section.length )
 				return true;
-	
+
 			const $headerDiv   = section.find('> .pi-header');
 			const $npcLevelDiv = section.find('[data-item-name="npc-level"] > .pi-data-value');
 			const $npcTierDiv  = section.find('[data-item-name="npc-tier"] > .pi-data-value');
 			const $npcDiffDiv  = section.find('[data-item-name="npc-difficulty"] > .pi-data-value');
-			
-			// Add hidden section with save message, visibility toggled to indicate saving
-			const saveNotice = $('<section>', {
-				class: 'pi-item pi-group pi-border-color',
-				'data-item-name': 'npc-info-message'
-			}).append(
-				$('<section>').text('Settings Updated!')
-			).hide();
-			
-			npc.append(saveNotice);
-	
+
 			const scaler = {};
-	
+
 			scaler.elements = {
 				levelRange: 'npc-level-slider-' + i,
 				levelNumber: 'npc-level-number-' + i,
 				tierGroup: 'npc-tier-group' + i,
 				diffGroup: 'npc-difficulty-group' + i
 			};
-	
+
 			scaler.init = function() {
-	
-				this.level       = npc.find(".header-level");
+
+				this.level       = npc.find('.header-level');
 				this.npcStatVals = npc.find('.npc-stat-value');
-	
+
 				this.baseStats = [];
-	
-				this.npcStatVals.each(function(i) {
+
+				this.npcStatVals.each(function() {
 					let value = parseFloat($(this).text().trim());
 					if (Number.isNaN(value)) value = 0;
 					scaler.baseStats.push(value);
 				});
-	
+
 				this.canBeElite = npc.find('[data-source="elite"]').length > 0;
 				if( !this.canBeElite )
 					npc.find('[data-item-name="npc-tier"]').remove();
-	
-	
+
 				// Faction dependant elite scaling
 				const factionEl = npc.find('[data-source="factionname"] > .pi-data-value');
-				const factionName = factionEl.length ? factionEl.text().trim() : "default";
-	
-				const factionFactors = {
-					"Okkar": 1.6,
-					"Okkar Prime": 1.6,
-					"Redeemer": 1.6,
-					"default": 1.8
-				};
-	
-				this.factionFactor = factionFactors[factionName] !== undefined ? factionFactors[factionName] : factionFactors["default"];
-	
-				npc.find(".header-level-container").removeClass("stats-hidden");
-				//console.log(this.baseStats);
-	
+				const factionName = factionEl.length ? factionEl.text().trim() : 'default';
+
+				this.factionFactor = factionFactors[factionName] !== undefined ? factionFactors[factionName] : factionFactors['default'];
+
+				npc.find('.header-level-container').removeClass('stats-hidden');
 			};
-	
+
 			scaler.calc = function (baseValue, level, difficultyFactor, eliteFactor) {
 				return Math.floor((baseValue + (Math.pow(level-1, 3) * baseValue * 0.004)) * difficultyFactor * eliteFactor);
 			};
-	
+
 			scaler.update = function() {
-	
+
 				this.selectedLevel = this.levelRange ? +this.levelRange.val() : 1;
-	
+
 				const diffKey = this.diffInputs.filter(':checked').val();
 				this.difficultyFactor = scalingConfig.diffMap[diffKey] || 1.0;
-	
-				const isElite = 'elite' == this.tierInputs.filter(":checked").val();
-	
-				// Show or hide the elite badge
+
+				const isElite = 'elite' == this.tierInputs.filter(':checked').val();
 				const eliteFactor = isElite ? this.factionFactor : 1.0;
-	
+
+				// Show or hide the elite badge
 				if (this.canBeElite && isElite) {
-					npc.find(".header-elite-container").removeClass("stats-hidden");
+					npc.find('.header-elite-container').removeClass('stats-hidden');
 				}
 				else {
-					npc.find(".header-elite-container").addClass("stats-hidden");
+					npc.find('.header-elite-container').addClass('stats-hidden');
 				}
-	
+
 				// Calculate and set the scaled values
-				for (let i = 0; i < this.npcStatVals.length; i++) {
-					var value = this.calc(this.baseStats[i], this.selectedLevel, this.difficultyFactor, eliteFactor);
+				for (let ii = 0; ii < this.npcStatVals.length; ii++) {
+					var value = this.calc(this.baseStats[ii], this.selectedLevel, this.difficultyFactor, eliteFactor);
 					if (value > 10000) value = (value / 1000).toFixed(1) + 'k';
-					this.npcStatVals.eq(i).text(value);
+					this.npcStatVals.eq(ii).text(value);
 				}
-	
+
 				this.level.text(this.selectedLevel);
 			};
-	
+
 			scaler.addScalingElements = function() {
-	
-				const levelRange = $('<input>', { class: 'level-input',type: 'range',min: 1,max: 30,value: wikiUserScalingConfig.level,name: scaler.elements.levelRange,id: scaler.elements.levelRange });
-				const levelNumber = $('<input>', { class: 'level-input',type: 'number',min: 1,max: 30,value: wikiUserScalingConfig.level,name: scaler.elements.levelNumber,id: scaler.elements.levelNumber });
-	
+
+				const inputProps = {
+					class: 'level-input',
+					min: 1,
+					max: 30,
+					value: wikiUserScalingConfig.level
+				};
+				const inputRange  = scaler.elements.levelRange;
+				const inputNumber = scaler.elements.levelNumber;
+
+				const levelRange  = $('<input>',Object.assign({type:'range',name:inputRange,id:inputRange},inputProps));
+				const levelNumber = $('<input>',Object.assign({type:'number',name:inputNumber,id:inputNumber},inputProps));
+
 				$npcLevelDiv.empty().append(
 					$('<div>', { class: 'pi-scaling-group' })
 					.append($('<div>').text(1))
@@ -184,30 +181,25 @@
 					.append($('<div>').text(30))
 					.append(levelNumber)
 				);
-	
+
 				if (this.canBeElite) {
-	
+
 					const savedTier = wikiUserScalingConfig.tier;
-	
+
 					// Tiers selectors
 					$npcTierDiv.empty().append(
 						$('<div>', { class: 'pi-scaling-group' }).append(
 							$('<input>', { class: 'scaling-radio', type: 'radio', name: scaler.elements.tierGroup, id: 'tier-normal-' + i, value: 'normal', checked: savedTier == 'normal' }),
 							$('<label>', { for: 'tier-normal-' + i }).text('Normal'),
-							$('<img>', {
-								src: 'https://static.wikia.nocookie.net/everspace_gamepedia/images/4/4a/ES2-Icon-EliteSkull.png',
-								width: 16,
-								height: 16,
-								alt: 'Elite'
-							}),
+							$('<img>', { src: '/wiki/Special:FilePath/ES2-Icon-EliteSkull.png', width: 16, height: 16, alt: 'Elite' }),
 							$('<input>', { class: 'scaling-radio', type: 'radio', name: scaler.elements.tierGroup, id: 'tier-elite-' + i, value: 'elite', checked: savedTier == 'elite' }),
 							$('<label>', { for: 'tier-elite-' + i, title: 'Hitpoints are increased by 60% - 80%' }).text('Elite')
 						)
 					);
 				}
-	
+
 				const savedDiff = wikiUserScalingConfig.difficulty;
-	
+
 				// Difficulty selectors
 				$npcDiffDiv.empty().append(
 					$('<div>', { class: 'pi-scaling-group' }).append(
@@ -225,77 +217,92 @@
 						$('<label>', { for: 'difficulty-nightmare-' + i, title: 'Hitpoints are at 345%' }).text('Nightmare')
 					)
 				);
-	
+
 				// Store references
 				this.levelRange  = levelRange;
 				this.levelNumber = levelNumber;
-				this.tierInputs  = $npcTierDiv.find(".scaling-radio");
-				this.diffInputs = $npcDiffDiv.find(".scaling-radio");
-	
-			};
-			scaler.bindLinkedInputs = function( $inputs, settingsKey, minVal, maxVal ) {
-	
-				if (!$inputs || !$inputs.length)
+				this.tierInputs  = $npcTierDiv.find('.scaling-radio');
+				this.diffInputs  = $npcDiffDiv.find('.scaling-radio');
+
+				if( !$headerDiv.length )
 					return;
-	
-				$inputs.on('input change', function () {
+
+				$headerDiv.append(
+					$('<button>', { text: 'Save', class: 'floatright', click: scaler.updateFromButton } )
+				);
+
+			};
+
+			scaler.bindLinkedInputs = function($inputs, settingsKey, minVal, maxVal) {
+
+				if (!$inputs || !$inputs.length) return;
+
+				$inputs.on('input change', function() {
 					const raw = Number( this.value );
 					const val = Math.min( maxVal, Math.max( minVal, raw ) );
-	
+
 					if( settingsKey )
 						wikiUserScalingConfig[settingsKey] = val;
-	
+
 					$inputs.val(val);
 					scaler.update();
 				});
 			};
-	
+
 			scaler.bindRadioInputs = function($inputs, settingsKey, defaultVal) {
+
 				if (!$inputs || !$inputs.length) return;
-	
+
 				$inputs.on('change', function(e) {
-					e.stopImmediatePropagation(); // prevent the original script from hijacking
+					e.stopImmediatePropagation();
 					const val = $inputs.filter(':checked').val() || defaultVal;
-	
+
 					if( settingsKey )
 						wikiUserScalingConfig[settingsKey] = val;
-	
+
 					scaler.update();
 				});
 			};
-	
-			scaler.addSaveButton = function() {
-				if( !$headerDiv.length )
-					return;
-				$headerDiv.append(
-					$('<button>', { text: 'Save', class: 'floatright', style: 'margin:0', name: scaler.elements.button, id: scaler.elements.button, click: scaler.updateFromButton } )
-				);
-			};
-	
+
 			scaler.updateFromButton = function() {
-	
+
 				const settings = {
 					level: wikiUserScalingConfig.level,
 					tier: wikiUserScalingConfig.tier,
 					difficulty: wikiUserScalingConfig.difficulty
 				};
-	
+
 				scalingConfig.update(settings);
-				saveNotice.stop( true, true )
-					.fadeIn(500)
-					.delay(100)
-					.fadeOut(2000);
+
+				const notifContent = $(`
+				<span>Configuration saved</span>
+				<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">
+					<use xlink:href="#wds-icons-gear-small"></use>
+				</svg>
+				<ul>
+					<li><strong>Level: </strong><span>${settings.level}</span></li>
+					<li><strong>Tier: </strong><span class="capitalize">${settings.tier}</span></li>
+					<li><strong>Difficulty: </strong><span class="capitalize">${settings.difficulty}</span></li>
+				</ul>`);
+
+				const notifOptions = {
+					title: 'NPC Infobox',
+					//autoHide: false, // visible until clicked
+					//autoHideSeconds: 'long', // short(default) or long (hide after 5 or 30 secs)
+					tag: 'infobox-config',
+					classes: 'postedit', // Required class to match fandom notification styling
+				};
+
+				mw.notify(notifContent, notifOptions);
 			};
-	
-	
+
 			scaler.init();
 			scaler.addScalingElements(); // Add the scaling elements
-			scaler.addSaveButton();
-	
+
 			scaler.bindLinkedInputs( scaler.levelRange.add( scaler.levelNumber ), 'level', 1, 30 );
 			scaler.bindRadioInputs( scaler.tierInputs, 'tier', 'normal' );
-			scaler.bindRadioInputs( scaler.diffInputs, 'difficulty', 'normal');
-			
+			scaler.bindRadioInputs( scaler.diffInputs, 'difficulty', '1.0');
+
 			scaler.update();
 		});
 	});

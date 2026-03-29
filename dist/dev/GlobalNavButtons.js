@@ -14,7 +14,7 @@ mw.loader.using(['mediawiki.template.mustache']).then(function () {
 
 	glnbutt.init = function () {
 		if (window.globalNavButtons) {
-			$nav = $('.global-explore-navigation__nav');
+			$nav = $('.global-explore-navigation__nav').first();
 			var keptLinks = false;
 			$('.global-explore-navigation__nav > *').each(function () { // Remove Fandom links
 				if (!glnbutt.config.keepLinks.includes(

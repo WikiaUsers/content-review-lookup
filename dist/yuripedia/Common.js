@@ -2,6 +2,8 @@
 /* Episode Tables Class */
 /* Volume Tables Class */
 /* Article Ratings */
+/* Currently Airing */
+/* Red Links */
 /* HD Gallery Class */
 /* Default File License */
 /* Topic Block Log */
@@ -143,6 +145,67 @@ $(function() {
         }
     });
 });
+
+/* ==================================================
+   Currently Airing Class
+   Fix countdown not loading if ImportJS is late
+================================================== */
+
+(function () {
+    function runCountdown($content) {
+        if (typeof window.dev === 'object' && typeof window.dev.countdown === 'function') {
+            window.dev.countdown($content);
+            $content.find('.countdowndate').css('visibility', 'visible');
+            return true;
+        }
+        return false;
+    }
+
+    // Run when MediaWiki loads page content normally
+    mw.hook('wikipage.content').add(function ($content) {
+        if (!runCountdown($content)) {
+            // Retry a few times if ImportJS hasn't loaded yet
+            var attempts = 0;
+            var retry = setInterval(function () {
+                attempts++;
+                if (runCountdown($content) || attempts > 5) {
+                    clearInterval(retry);
+                }
+            }, 500);
+        }
+    });
+
+})();
+
+/* ==================================================
+    Red Links
+================================================== */
+(function() {
+    const wikiBase = window.location.origin + '/wiki/';
+
+    function fixRedLink(link) {
+        if (!link.hasAttribute('href')) {
+            const page = link.getAttribute('title') || link.textContent.trim();
+            link.setAttribute('href', wikiBase + encodeURIComponent(page));
+            link.setAttribute('rel', 'nofollow');
+        }
+    }
+
+    document.querySelectorAll('a.new').forEach(fixRedLink);
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(m => {
+            m.addedNodes.forEach(node => {
+                if (node.nodeType === 1) { // element
+                    if (node.matches('a.new')) fixRedLink(node);
+                    node.querySelectorAll && node.querySelectorAll('a.new').forEach(fixRedLink);
+                }
+            });
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
 
 /* ==================================================
     HD Gallery Class

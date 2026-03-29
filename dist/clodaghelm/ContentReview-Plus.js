@@ -4,92 +4,101 @@
  * @description     Adds native styling and a set of quick access tools to a
  *                  script's sidebar
  */
- 
-(function(window, $, mw) {
-	'use strict';
-	
-	if (window.contentReviewPlusLoaded) return;
-	window.contentReviewPlusLoaded = true;
-	
-	var init = function() {
-		var $title = $('.content-review__widget h2'),
-			$table = $('.content-review__table'),
-			$oldHelp = $('.content-review__widget__help'),
-			conf = mw.config.get([
-				'wgNamespaceNumber',
-				'wgTitle',
-				'wgPageName'
-			]);
-			
-		// Re-class the table on [[Special:JSPages]]
-		if ($table.length) {
-			$table.addClass('wikitable');
-		}
-		
-		if ($title.length && !$title.find('.wds-icon').length) {
-			$title.prepend('<svg class="wds-icon wds-icon-small" style="margin-right: 6px; opacity: 0.75; vertical-align: middle;"><use xlink:href="#wds-icons-review-requests"></use></svg>');
-		}
-		
-		/**
-		 * [[MediaWiki:AddRightSideTool]]
-		 * Check if the utility is available. If not, wait.
-		 */
-		if (window.dev && window.dev.addRightSideTool) {
-			// Always trigger to ensure the rail toggle is standardized
-			window.dev.addRightSideTool();
-			
-			// Only inject tools if the help link is found
-			if ($oldHelp.length || isJSPage) {
-				if ($oldHelp.length) $oldHelp.remove();
-				
-				var tools = [
-					{
-						id: 'bcr-tool-jspages',
-						icon: 'preformat-small',
-						text: 'JavaScript pages',
-						link: 'Special:JSPages'
-					},
-					{
-						id: 'bcr-tool-importjs',
-						icon: 'gear-small',
-						text: 'ImportJS',
-						link: 'MediaWiki:ImportJS'
-					},
-					{
-						id: 'bcr-tool-help',
-						icon: 'question-small',
-						text: 'Help',
-						href: 'https://community.fandom.com/wiki/Help:CSS_and_JS_customization'
-					}
-				];
-				
-				tools.forEach(function(tool) {
-					window.dev.addRightSideTool({
-						id: tool.id,
-						icon: tool.icon,
-						tooltipText: tool.text,
-						href: tool.href || mw.util.getUrl(tool.link)
-					});
-				});
-			}
-		} else {
-			// If utility isn't loaded yet, retry in 2s
-			setTimeout(init, 200);
-		}
-	};
-	
-	mw.loader.using(['mediawiki.util']).then(function() {
-		importArticle({
-			type: 'style',
-			article: 'u:clodaghelm:MediaWiki:ContentReview-Plus.css'
-		});
-		
-		// Initialize on content load and rail ready
-		mw.hook('wikipage.content').add(init);
-		mw.hook('wikia.rail.ready').add(init);
-		
-		// Safety execution
-		init();
-	});
+(function (window, $, mw) {
+    'use strict';
+    
+    // Prevent double load
+    if (window.contentReviewPlusLoaded) {
+        return;
+    }
+    window.contentReviewPlusLoaded = true;
+    
+    // Initialize tool array
+    window.addRightSideTool = window.addRightSideTool || [];
+    
+    /**
+     * Style widget elements and populates the tools array
+     */
+    var init = function () {
+        var conf = mw.config.get([
+            'wgNamespaceNumber',
+            'wgCanonicalSpecialPageName',
+            'wgPageContentModel'
+        ]);
+        var $title = $('.content-review__widget h2');
+        var $table = $('.content-review__table');
+        var $oldHelp = $('.content-review__widget__help');
 
-}(this, jQuery, mediaWiki));
+        var isJSPage = (conf.wgNamespaceNumber === -1 && conf.wgCanonicalSpecialPageName === 'JSPages') ||
+                       (conf.wgPageContentModel === 'javascript');
+                       
+        // Re-class the widget table
+        if ($table.length) {
+            $table.addClass('wikitable');
+        }
+        
+        if ($title.length) {
+            $title.addClass('rail-module__header has-icon');
+            if (!$title.find('.wds-icon').length) {
+                $title.prepend(
+                    '<svg class="wds-icon wds-icon-small" style="margin-right: 6px; opacity: 0.75; vertical-align: middle;">' +
+                        '<use xlink:href="#wds-icons-review-requests"></use>' +
+                    '</svg>'
+                );
+            }
+        }
+        
+        // Populate tools array for script-related pages
+        if (($oldHelp.length || isJSPage) && !window.crpToolsAdded) {
+            if ($oldHelp.length) {
+                $oldHelp.remove();
+            }
+            
+            window.addRightSideTool.push(
+                {
+                    id:   'crp-tool-jspages',
+                    icon: 'preformat-small',
+                    text: 'JavaScript pages',
+                    link: 'Special:JSPages'
+                },
+                {
+                    id:   'crp-tool-importjs',
+                    icon: 'gear-small',
+                    text: 'ImportJS',
+                    link: 'MediaWiki:ImportJS'
+                },
+                {
+                    id:   'crp-tool-help',
+                    icon: 'question-small',
+                    text: 'Help',
+                    href: 'https://community.fandom.com/wiki/Help:CSS_and_JS_customization'
+                }
+            );
+            
+            window.crpToolsAdded = true;
+            
+            // Notify AddRightSideTool to refresh
+            mw.hook('dev.addRightSideTool').add(function (manager) {
+                if (manager && typeof manager.init === 'function') {
+                    manager.init();
+                }
+            });
+        }
+    };
+    
+    mw.loader.using(['mediawiki.util', 'mediawiki.base']).then(function () {
+        importArticles({
+            type:     'script',
+            articles: ['u:clodaghelm:MediaWiki:AddRightSideTool.js']
+        }, {
+            type:     'style',
+            articles: ['u:clodaghelm:MediaWiki:ContentReview-Plus.css']
+        });
+        
+        mw.hook('wikipage.content').add(init);
+        mw.hook('wikia.rail.ready').add(init);
+        
+        init();
+    });
+
+}(window, jQuery, mediaWiki));

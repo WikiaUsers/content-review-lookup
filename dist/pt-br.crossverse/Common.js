@@ -23,39 +23,7 @@ $(document).ready(function() {
 });
 
 /* ===== ALL FICTION ===== */
-(function waitForAllFiction(){
-  var trigger=document.getElementById("all-fiction-trigger");
-  var line=document.getElementById("all-fiction-line");
-  if(!trigger||!line){setTimeout(waitForAllFiction,300);return;}
-  var clone=trigger.cloneNode(true);
-  trigger.parentNode.replaceChild(clone,trigger);
-  trigger=clone;
-  var erased=false;
-  trigger.addEventListener("click",function(){
-    if(erased)return;
-    erased=true;
-    trigger.classList.add("af-hovered");
-    line.classList.add("af-expanded");
-    setTimeout(function(){document.body.classList.add("af-active");},500);
-  });
-  trigger.addEventListener("touchend",function(e){
-    e.preventDefault();
-    if(erased)return;
-    erased=true;
-    trigger.classList.add("af-hovered");
-    line.classList.add("af-expanded");
-    setTimeout(function(){document.body.classList.add("af-active");},500);
-  },{passive:false});
-  trigger.addEventListener("mouseenter",function(){
-    trigger.classList.add("af-hovered");
-    line.classList.add("af-expanded");
-  });
-  trigger.addEventListener("mouseleave",function(){
-    if(erased)return;
-    trigger.classList.remove("af-hovered");
-    line.classList.remove("af-expanded");
-  });
-})();
+(function retry(){var trigger=document.getElementById("all-fiction-trigger");var line=document.getElementById("all-fiction-line");if(!trigger||!line){setTimeout(retry,200);return;}if(trigger.dataset.afInit)return;trigger.dataset.afInit="1";var AUDIO_URL="https://static.wikia.nocookie.net/animeverso/images/5/50/All..._Fiction..._-_Armando_%28youtube%29.mp3/revision/latest?cb=20260316004755&format=original&path-prefix=pt-br";var erased=false;function activate(){if(erased)return;erased=true;try{new Audio(AUDIO_URL).play();}catch(e){}trigger.classList.add("af-hovered");line.classList.add("af-expanded");setTimeout(function(){document.body.classList.add("af-active");},500);}trigger.addEventListener("click",activate);trigger.addEventListener("touchend",activate);trigger.addEventListener("mouseenter",function(){trigger.classList.add("af-hovered");line.classList.add("af-expanded");});trigger.addEventListener("mouseleave",function(){if(erased)return;trigger.classList.remove("af-hovered");line.classList.remove("af-expanded");});})();
 /* ===== FIM ALL FICTION ===== */
 
 function getpar(object)

@@ -1,5 +1,5 @@
 mw.hook('wikipage.content').add(function ($content) {
-  $content.find('.wds-tabs').each(function () {
+  $content.find('.portable-infobox .wds-tabs').each(function () {
     const el = this;
 
     if (el.scrollHeight > 40) {

@@ -111,10 +111,10 @@ function updateHeartopiaClocks() {
             // Atualiza o período e ícone apenas se a hora mudar
             const parent = clock.parentElement;
             let periodo = "";
-            if (h >= 2 && h < 8) periodo = "Noite";
-            else if (h >= 8 && h < 14) periodo = "Amanhecer";
-            else if (h >= 14 && h < 20) periodo = "Dia";
-            else periodo = "Crepúsculo";
+        	if (h >= 0 && h < 6) periodo = "Noite";
+        	else if (h >= 6 && h < 12) periodo = "Amanhecer";
+        	else if (h >= 12 && h < 18) periodo = "Dia";
+        	else periodo = "Crepúsculo"; // 18h às 23h59
 
             const textSpan = parent.querySelector('.ht-text');
             const iconSpan = parent.querySelector('.ht-icon');

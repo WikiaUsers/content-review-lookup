@@ -83,3 +83,19 @@ mw.hook('wikipage.content').add(function () {
   var obs = new MutationObserver(initCollapses);
   obs.observe(document.body, { childList: true, subtree: true });
 })();
+
+// Category expand/collapse
+$(function() {
+  var $categories = $('.page-header__categories');
+  var totalCategories = $categories.children('a').length;
+  
+  if (totalCategories > 3) {
+    $categories.addClass('has-more');
+    
+    $categories.on('click', function(e) {
+      if ($(e.target).is('.page-header__categories') || $(e.target).is('.page-header__categories::before')) {
+        $(this).toggleClass('expanded');
+      }
+    });
+  }
+});

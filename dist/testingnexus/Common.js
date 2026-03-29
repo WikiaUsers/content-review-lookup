@@ -359,7 +359,8 @@ function applyColorsToTableCells() {
                             const cellText = cell.textContent.trim();
                             if (cellText) {
                                 // find players final team
-                                const matchedPlayer = currentPlayers.find(player => cellText.includes(player));
+                                const words = cellText.split(" ");
+                                const matchedPlayer = currentPlayers.find(player => words.includes(player));
                                 // get team color
                                 if (matchedPlayer) {
                                     // if player not in player info, add to cache
@@ -389,9 +390,9 @@ function applyColorsToTableCells() {
                                     }
                                     cell.style.color = playerInfo[matchedPlayer].finalColor;
                                     // console.log("cell style", cell.style);
+                                } else {
+                                    playerInfo.playerByRow[row_index] = null;
                                 }
-                                
-                                playerInfo.playerByRow[row_index] = null;
                             }
                         }
                         
@@ -401,6 +402,7 @@ function applyColorsToTableCells() {
                             const player = playerInfo.playerByRow[row_index];
                             if (player) {
 	                            const color = playerInfo[player].colorByPhase[cell_index+1];
+	                            console.log("color: ", color);
 	                            cell.style.backgroundColor = color;
                             }
                         }

@@ -19,3 +19,33 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+/* Licznik do przeceny */
+$(document).ready(function() {
+
+  $('.countdown').each(function() {
+    var el = this;
+    var targetDate = new Date($(el).data('date'));
+
+    function updateTimer() {
+      var now = new Date();
+      var diff = targetDate - now;
+
+      if (diff <= 0) {
+        el.innerHTML = "Koniec promocji";
+        return;
+      }
+
+      var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      var h = Math.floor(diff / (1000 * 60 * 60) % 24);
+      var m = Math.floor(diff / (1000 * 60) % 60);
+      var s = Math.floor(diff / 1000 % 60);
+
+      el.innerHTML = d + "d " + h + "g " + m + "m " + s + "s";
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  });
+
+});

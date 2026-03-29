@@ -9,7 +9,9 @@ mw.loader.using(['mediawiki.util', 'ext.fandom.ContentReview.legacyLoaders.js'],
 
   if (
     mw.user.options.get('gadget-SnowStorm') &&
-    coldPages.some(cls => classList.contains(cls))
+    coldPages.some(cls =>
+        Array.from(classList).some(bodyCls => bodyCls.startsWith(cls))
+    )
   ) {
     importArticles({
       type: 'script',
@@ -21,14 +23,14 @@ mw.loader.using(['mediawiki.util', 'ext.fandom.ContentReview.legacyLoaders.js'],
 /* Config */
 window.snowStorm = { 
 	excludeMobile: true,
-	flakesMax: 32,
-	flakesMaxActive: 32,
+	flakesMax: 36,
+	flakesMaxActive: 36,
 	animationInterval: 100,
 	followMouse: false,
 	snowColor: '#fff',
-	snowStick: false,
-	useMeltEffect: false,
-	usePositionFixed: false,
+	snowStick: true,
+	useMeltEffect: true,
+	usePositionFixed: true,
 	vMaxX: 4,
 	vMaxY: 3,
 	zIndex: -2, /* Behind everything except the background, including ads. */

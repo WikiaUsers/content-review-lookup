@@ -73,6 +73,7 @@ window.UserTagsJS = {
 		contentmod: { u: 'Content Moderator', order: 4},
 		formerstaff: { u: 'Former Staff', order: 4},
 		inactive: { u: 'Inactive', order: 4},
+		experienced: { u: 'Experienced Editor', order: 1 }
 	}
 };
 
@@ -99,7 +100,7 @@ UserTagsJS.modules.custom = {
     'Marblyn': ['sysop', 'flaky', 'marbles'],
     'THeWarioChanNEL8752': ['pop', 'lifty', 'mole'],
     'Tabletstoons123': ['rollback'],
-    'BarelyGonnaDoAnything': ['cuddles']
+    'BarelyGonnaDoAnything': ['cuddles'],
     'FúriaVelha09': ['sysop', 'disco bear']
 };
 

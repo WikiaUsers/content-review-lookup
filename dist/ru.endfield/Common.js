@@ -52,23 +52,59 @@ $(function() {
     $('.tutorial-slider-container').each(function() {
         var $container = $(this);
         var $slides = $container.find('.tutorial-slide');
+        var $btnNext = $container.find('.next');
+        var $btnPrev = $container.find('.prev');
         var current = 0;
-
-        if ($slides.length <= 1) {
-            $container.find('.tutorial-slider-btn').hide();
-            return;
+        var total = $slides.length;
+        
+        if (total <= 1) {
+            $btnNext.hide();
+            $btnPrev.hide();
+            return; 
         }
-
-        $container.find('.next').on('click', function() {
-            $slides.eq(current).hide();
-            current = (current + 1) % $slides.length;
-            $slides.eq(current).fadeIn(300);
+        
+        function updateButtons() {
+            if (current === 0) {
+                $btnPrev.addClass('disabled').css({
+                    'opacity': '0.3',
+                    'pointer-events': 'none'
+                });
+            } else {
+                $btnPrev.removeClass('disabled').css({
+                    'opacity': '1',
+                    'pointer-events': 'auto'
+                });
+            }
+            if (current === total - 1) {
+                $btnNext.addClass('disabled').css({
+                    'opacity': '0.3',
+                    'pointer-events': 'none'
+                });
+            } else {
+                $btnNext.removeClass('disabled').css({
+                    'opacity': '1',
+                    'pointer-events': 'auto'
+                });
+            }
+        }
+        
+        updateButtons();
+        
+        $btnNext.on('click', function() {
+            if (current < total - 1) {
+                $slides.eq(current).hide();
+                current++;
+                $slides.eq(current).fadeIn(300);
+                updateButtons();
+            }
         });
-
-        $container.find('.prev').on('click', function() {
-            $slides.eq(current).hide();
-            current = (current - 1 + $slides.length) % $slides.length;
-            $slides.eq(current).fadeIn(300);
+        $btnPrev.on('click', function() {
+            if (current > 0) {
+                $slides.eq(current).hide();
+                current--;
+                $slides.eq(current).fadeIn(300);
+                updateButtons();
+            }
         });
     });
 });

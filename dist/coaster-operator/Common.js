@@ -6,7 +6,6 @@ $(function() {
     // --- CONFIGURATION ---
     const rootId = "coaster-wiki-root";
     const fileNameToFind = "File:RealisticDarKoaster.png"; 
-    const awardFileName = "File:CS win.png"; 
     const gameLink = "https://www.roblox.com/games/17152219682/Coaster-Operator";
 
     const targetRoot = document.getElementById(rootId);
@@ -108,13 +107,13 @@ $(function() {
                             <div class="mh-title">
                                 <span class="mh-icon">⚡</span> UPDATE CHANGELOG
                             </div>
-                            <div class="mh-tag">VERSION 1.4.7</div>
+                            <div class="mh-tag">VERSION 1.4.8</div>
                         </div>
 
                         <div class="os-update-graphic">
-                            <img src="/Special:FilePath/Screenshot_2026-01-11_224226.png" alt="Update Cover" />
+                            <img src="/Special:FilePath/MiniUpdate.png" alt="Update Cover" style="object-position: center 95%;" />
                             <div class="ug-overlay">
-                                <h2>INTERACTIVITY UPDATE</h2>
+                                <h2>MINI UPDATE</h2>
                             </div>
                         </div>
 
@@ -132,19 +131,17 @@ $(function() {
                                 <div class="da-header">
                                     <div class="da-title-group">
                                         <span class="da-icon" style="color:#38bdf8;">📡</span>
-                                        <span class="da-title">Features & Content</span>
+                                        <span class="da-title">Features & UI</span>
                                         <span class="da-badge" style="color:#38bdf8; background:rgba(56,189,248,0.1);">INTEGRATED</span>
                                     </div>
                                     <div class="da-toggle">▼</div>
                                 </div>
                                 <div class="da-content">
                                     <ul class="dc-list">
-                                        <li>New mesh panels, buttons and / or screens on all rides</li>
-                                        <li>New maintenance cabinet system & model</li>
-                                        <li>Interactive checklist & choice between procedures</li>
-                                        <li>Visual check step added to all start up procedures</li>
-                                        <li>Ride shutdown ability added to all rides</li>
-                                        <li>Camera system POV feature & interactive tutorial system</li>
+                                        <li>Revamped all settings, settings UI & added some new settings</li>
+                                        <li>Added Move Icon to tutorial UI (moveable beforehand as well)</li>
+                                        <li>Small improvements to procedures UI</li>
+                                        <li>Added new promo code: "thanksfor7mil"</li>
                                     </ul>
                                 </div>
                             </div>
@@ -153,7 +150,7 @@ $(function() {
                                 <div class="da-header">
                                     <div class="da-title-group">
                                         <span class="da-icon" style="color:#f59e0b;">🎢</span>
-                                        <span class="da-title">Ride Calibration</span>
+                                        <span class="da-title">Ride Calibrations</span>
                                         <span class="da-badge" style="color:#f59e0b; background:rgba(245,158,11,0.1);">MODIFIED</span>
                                     </div>
                                     <div class="da-toggle">▼</div>
@@ -161,20 +158,16 @@ $(function() {
                                 <div class="da-content">
                                     <div class="dc-grid">
                                         <div class="dc-grid-item">
+                                            <span class="dgi-title">Phoenix & DarKoaster</span>
+                                            <span class="dgi-desc">Added test dummies stage.</span>
+                                        </div>
+                                        <div class="dc-grid-item">
                                             <span class="dgi-title">Giant Drop</span>
-                                            <span class="dgi-desc">Advanced ops, sync & op mode.</span>
+                                            <span class="dgi-desc">Added option to disable side panel (disabled by default).</span>
                                         </div>
                                         <div class="dc-grid-item">
-                                            <span class="dgi-title">Cobra's Curse</span>
-                                            <span class="dgi-desc">Unique ops, RFID dispatch.</span>
-                                        </div>
-                                        <div class="dc-grid-item">
-                                            <span class="dgi-title">Phoenix Rising</span>
-                                            <span class="dgi-desc">Extended start-up, host panel.</span>
-                                        </div>
-                                        <div class="dc-grid-item">
-                                            <span class="dgi-title">Red Arrows</span>
-                                            <span class="dgi-desc">Advanced ops & op mode.</span>
+                                            <span class="dgi-title">Cobra's Curse & Phoenix</span>
+                                            <span class="dgi-desc">Fixed minor soft lock that forced a full shutdown.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -191,13 +184,10 @@ $(function() {
                                 </div>
                                 <div class="da-content">
                                     <ul class="dc-list">
-                                        <li>Various minor bug fixes & Optimisation</li>
-                                        <li>Server system V2 & improved back-end scripts</li>
-                                        <li>New NPC sys implemented into most rides</li>
-                                        <li>New in-game changelog, trash/rubbish models & store posters</li>
-                                        <li>New intercom & pinboard model on several rides</li>
-                                        <li>Bonus coins & XP for start up & shutdown</li>
-                                        <li>Smoother hinge & button animations</li>
+                                        <li>Fixed some scrolling UI scaling & elasticity</li>
+                                        <li>Fixed decorations system bugs & 'points eaters'</li>
+                                        <li>Scenery optimisation improvements</li>
+                                        <li>Various other minor bug fixes</li>
                                     </ul>
                                 </div>
                             </div>
@@ -205,9 +195,9 @@ $(function() {
                         </div>
                         
                         <div class="module-footer">
-                            <div class="mf-status">ENCRYPTED_V1.4.7</div>
+                            <div class="mf-status">ENCRYPTED_V1.4.8</div>
                             <div class="mf-time">
-                                <span>LIVE: FEB 2026</span>
+                                <span>LIVE: MAR 2026</span>
                                 <span id="os-clock" class="digital-clock">00:00:00</span>
                             </div>
                         </div>
@@ -220,15 +210,6 @@ $(function() {
                 <div class="os-module hover-glow os-reveal" style="transition-delay: 0.4s;">
                     <div class="module-content-wrapper">
                         <div class="module-header">
-                            <div class="mh-title"><span class="mh-icon" style="color:#fbbf24;">🏆</span> RECOGNITIONS</div>
-                        </div>
-                        <div id="raapa-awards-target" class="module-body-wide"></div>
-                    </div>
-                </div>
-
-                <div class="os-module hover-glow os-reveal" style="transition-delay: 0.5s;">
-                    <div class="module-content-wrapper">
-                        <div class="module-header">
                             <div class="mh-title"><span class="mh-icon" style="color:#a855f7;">ℹ️</span> COASTER STUDIO MANIFEST</div>
                         </div>
                         <div id="game-manifest-target" class="module-body-wide"></div>
@@ -237,7 +218,7 @@ $(function() {
 
             </div>
 
-            <footer class="os-footer os-reveal" style="transition-delay: 0.6s;">
+            <footer class="os-footer os-reveal" style="transition-delay: 0.5s;">
                 <div class="osf-text">All <b>Coaster Studio</b> trademarks, logos, and original game media are protected by copyright.</div>
                 <div class="osf-copy">© 2026 COASTER STUDIO. ALL RIGHTS RESERVED.</div>
             </footer>
@@ -581,35 +562,6 @@ $(function() {
         `;
     }
 
-    // RENDER: AWARDS WIDGET (Wide Format)
-    function renderAwards(target, imgUrl) {
-        target.innerHTML = `
-            <div class="api-flex">
-                <div class="api-content-wrapper">
-                    <p class="api-desc">Building on our immense success from the <b>RAAPA Winter Edition 2025</b>, Coaster Studio continues to set the benchmark for simulation experiences in the genre.</p>
-                    <div class="api-aw-grid">
-                        <div class="aw-card hover-glow">
-                            <span class="aw-icon">🏆</span>
-                            <div class="aw-data"><span class="aw-top">Winner</span><span class="aw-main">Best Group</span></div>
-                        </div>
-                        <div class="aw-card hover-glow">
-                            <span class="aw-icon">⭐</span>
-                            <div class="aw-data"><span class="aw-top">Winner</span><span class="aw-main">Best Hospitality</span></div>
-                        </div>
-                        <div class="aw-card hover-glow">
-                            <span class="aw-icon">🎪</span>
-                            <div class="aw-data"><span class="aw-top">Winner</span><span class="aw-main">Best Booth</span></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="api-img-wrapper">
-                    <img src="${imgUrl}" alt="Awards Graphic" style="max-height:220px; object-fit:cover;">
-                </div>
-            </div>
-        `;
-    }
-
     // 8. INIT API FETCHES
     loadAndRender(fileNameToFind, "game-manifest-target", renderManifest);
-    loadAndRender(awardFileName, "raapa-awards-target", renderAwards);
 });

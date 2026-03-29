@@ -1,4 +1,4 @@
-// This applies to ALL maps
+/* This applies to ALL maps
 window.mapsExtendedConfig =
 {
 	sortMarkers: "unsorted",
@@ -65,3 +65,4 @@ window.mapsExtendedConfigs =
     	]
     }
 }
+*/

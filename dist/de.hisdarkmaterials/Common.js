@@ -7,6 +7,14 @@ window.railWAM = {
     lang: 'en'
 };
 
+/* Message Wall Greeting */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js',
+    ]
+});
+
 /* Resolves conflict between icons and page header bottom border
  * by: [[User:The 888th Avatar]]
  */

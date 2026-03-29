@@ -2270,201 +2270,275 @@ $(function() {
 
 /* structured quote */
 
-(function(window, $) {
+(function(window, $, mw) {
     'use strict';
 
-    $(function() {
-        function setupQuoteSync(wrapper) {
-            var $lines = wrapper.find('.quote-line');
-            var $audio = wrapper.find('audio');
-
-            if ($lines.length === 0 || $audio.length === 0) {
-                return;
-            }
-
-            var audio = $audio[0];
-
-            function updateLineVisibility() {
-                var currentTimeMs = audio.currentTime * 1000;
-                
-                var $activeLines = wrapper.find('.quote-page.is-active .quote-line');
-                if ($activeLines.length === 0) {
-                    $activeLines = $lines;
-                }
-
-                $activeLines.each(function() {
-                    var $line = $(this);
-                    var lineTime = parseInt($line.data('time'), 10);
-
-                    if (isNaN(lineTime)) {
-                        return;
-                    }
-
-                    if (currentTimeMs >= lineTime) {
-                        if (!$line.hasClass('is-visible')) {
-                            var fadeDuration = $line.data('fade');
-                            if (fadeDuration) {
-                                $line.css('transition-duration', parseInt(fadeDuration, 10) + 'ms');
-                            } else {
-                                $line.css('transition-duration', '');
-                            }
-                            $line.addClass('is-visible');
-                        }
-                    } else {
-                        if ($line.hasClass('is-visible')) {
-                            $line.removeClass('is-visible');
-                        }
-                    }
-                });
-            }
-            
-            wrapper.data('updateVisibilityFunc', updateLineVisibility);
-
-            $audio.on('play', function() {
-                wrapper.addClass('quote-is-playing');
-                updateLineVisibility();
-            });
-
-            $audio.on('pause', function() {
-                if (audio.currentTime === 0) {
-                    wrapper.removeClass('quote-is-playing');
-                }
-            });
-
-            $audio.on('ended', function() {
-                wrapper.removeClass('quote-is-playing');
-            });
-
-            $audio.on('timeupdate', updateLineVisibility);
-            $audio.on('seeked', updateLineVisibility);
-
-            updateLineVisibility();
+    function formatTime(seconds) {
+        var minutes = Math.floor(seconds / 60);
+        var secs = Math.floor(seconds % 60);
+        if (isNaN(secs) || isNaN(minutes)) {
+            return '0:00';
         }
+        return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    function setupCustomAudioPlayer($content) {
+        $content.find('.structured-quote-sound .mw-file-element').each(function() {
+            var originalPlayer = $(this).get(0);
+            var soundContainer = $(this).parent();
+            if (soundContainer.find('.cap-player').length > 0) return;
+            
+            $(this).hide();
+
+            var customPlayerHTML = `
+                <div class="cap-player">
+                    <button class="cap-play-pause">
+                        <svg class="play-icon" viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <div class="cap-time">
+                        <span class="cap-current-time">0:00</span>
+                        <span class="cap-separator"> / </span>
+                        <span class="cap-duration">0:00</span>
+                    </div>
+                    <div class="cap-progress-wrap">
+                        <div class="cap-progress-bar"></div>
+                    </div>
+                    <div class="cap-volume-wrap">
+                        <button class="cap-volume-btn">
+                            <svg class="vol-icon-high" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                            <svg class="vol-icon-muted" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                        </button>
+                        <div class="cap-volume-slider-wrap">
+                            <input type="range" class="cap-volume-slider" min="0" max="1" step="0.05" value="1">
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            var customPlayer = $(customPlayerHTML).appendTo(soundContainer);
+            var playPauseBtn = customPlayer.find('.cap-play-pause');
+            var currentTimeEl = customPlayer.find('.cap-current-time');
+            var durationEl = customPlayer.find('.cap-duration');
+            var progressWrap = customPlayer.find('.cap-progress-wrap');
+            var progressBar = customPlayer.find('.cap-progress-bar');
+            var volumeBtn = customPlayer.find('.cap-volume-btn');
+            var volumeSlider = customPlayer.find('.cap-volume-slider');
+            var volIconHigh = customPlayer.find('.vol-icon-high');
+            var volIconMuted = customPlayer.find('.vol-icon-muted');
+            var lastVolume = 1;
+            
+            var savedVolume = localStorage.getItem('customAudioPlayerVolume');
+            if (savedVolume !== null) {
+                var newVolume = parseFloat(savedVolume);
+                originalPlayer.volume = newVolume;
+                originalPlayer.muted = newVolume === 0;
+                lastVolume = newVolume > 0 ? newVolume : 1;
+            }
+
+            var setDuration = function() {
+                durationEl.text(formatTime(originalPlayer.duration));
+            };
+
+            if (originalPlayer.readyState > 0) {
+                setDuration();
+            } else {
+                originalPlayer.addEventListener('loadedmetadata', setDuration);
+            }
+
+            originalPlayer.addEventListener('timeupdate', function() {
+                currentTimeEl.text(formatTime(originalPlayer.currentTime));
+                var progress = (originalPlayer.currentTime / originalPlayer.duration) * 100;
+                progressBar.css('width', progress + '%');
+            });
+
+            originalPlayer.addEventListener('ended', function() {
+                playPauseBtn.find('.pause-icon').hide();
+                playPauseBtn.find('.play-icon').show();
+                progressBar.css('width', '0%');
+                currentTimeEl.text(formatTime(0));
+            });
+
+            playPauseBtn.on('click', function() {
+                if (originalPlayer.paused) {
+                    originalPlayer.play();
+                    playPauseBtn.find('.play-icon').hide();
+                    playPauseBtn.find('.pause-icon').show();
+                } else {
+                    originalPlayer.pause();
+                    playPauseBtn.find('.pause-icon').hide();
+                    playPauseBtn.find('.play-icon').show();
+                }
+            });
+            
+            progressWrap.on('click', function(e) {
+                var rect = this.getBoundingClientRect();
+                var clickX = e.clientX - rect.left;
+                var newTime = (clickX / rect.width) * originalPlayer.duration;
+                originalPlayer.currentTime = newTime;
+            });
+
+            volumeSlider.on('input', function() {
+                var newVolume = parseFloat(this.value);
+                originalPlayer.volume = newVolume;
+                originalPlayer.muted = newVolume === 0;
+                localStorage.setItem('customAudioPlayerVolume', newVolume);
+            });
+            
+            originalPlayer.addEventListener('volumechange', function() {
+                var currentVolume = originalPlayer.muted ? 0 : originalPlayer.volume;
+                volumeSlider.val(currentVolume);
+                if (currentVolume > 0) {
+                    lastVolume = currentVolume;
+                    volIconMuted.hide();
+                    volIconHigh.show();
+                } else {
+                    volIconHigh.hide();
+                    volIconMuted.show();
+                }
+            });
+            
+            volumeBtn.on('click', function() {
+               if (originalPlayer.muted || originalPlayer.volume === 0) {
+                   var volumeToRestore = lastVolume > 0 ? lastVolume : 1;
+                   originalPlayer.muted = false;
+                   originalPlayer.volume = volumeToRestore;
+                   localStorage.setItem('customAudioPlayerVolume', volumeToRestore);
+               } else {
+                   originalPlayer.muted = true;
+                   localStorage.setItem('customAudioPlayerVolume', 0);
+               }
+            });
+        });
+    }
+
+    function setupQuoteSync(wrapper) {
+        var $lines = wrapper.find('.quote-line');
+        var $audio = wrapper.find('audio');
+
+        if ($lines.length === 0 || $audio.length === 0) return;
+        var audio = $audio[0];
+
+        function updateLineVisibility() {
+            var currentTimeMs = audio.currentTime * 1000;
+            var $activeLines = wrapper.find('.quote-page.is-active .quote-line');
+            if ($activeLines.length === 0) $activeLines = $lines;
+
+            $activeLines.each(function() {
+                var $line = $(this);
+                var lineTime = parseInt($line.data('time'), 10);
+                if (isNaN(lineTime)) return;
+
+                if (currentTimeMs >= lineTime) {
+                    if (!$line.hasClass('is-visible')) {
+                        var fadeDuration = $line.data('fade');
+                        $line.css('transition-duration', fadeDuration ? parseInt(fadeDuration, 10) + 'ms' : '');
+                        $line.addClass('is-visible');
+                    }
+                } else {
+                    if ($line.hasClass('is-visible')) {
+                        $line.removeClass('is-visible');
+                    }
+                }
+            });
+        }
+        
+        wrapper.data('updateVisibilityFunc', updateLineVisibility);
+        $audio.on('play', function() {
+            wrapper.addClass('quote-is-playing');
+            updateLineVisibility();
+        });
+        $audio.on('pause', function() {
+            if (audio.currentTime === 0) wrapper.removeClass('quote-is-playing');
+        });
+        $audio.on('ended', function() { wrapper.removeClass('quote-is-playing'); });
+        $audio.on('timeupdate seeked', updateLineVisibility);
+        updateLineVisibility();
+    }
+
+    function setupQuotePagination(wrapper) {
+        var $pages = wrapper.find('.quote-page');
+        var $quoteBelow = wrapper.find('.structured-quote-below');
+        var totalPages = Math.min($pages.length, 999);
+
+        if (totalPages <= 1) {
+            if (totalPages === 1) $pages.addClass('is-active');
+            return;
+        }
+
+        var paginationHTML = `
+            <div class="structured-quote-pagination">
+                <button class="page-prev" title="Previous page">&lt;</button>
+                <div class="page-display">
+                    <input type="number" class="page-input" value="1" min="1" max="${totalPages}">
+                    <span>/ ${totalPages}</span>
+                </div>
+                <button class="page-next" title="Next page">&gt;</button>
+            </div>
+        `;
+
+        var $soundDiv = $quoteBelow.find('.structured-quote-sound');
+        if ($soundDiv.length > 0) { $soundDiv.before(paginationHTML); } 
+        else { $quoteBelow.append(paginationHTML); }
+
+        var $pagination = $quoteBelow.find('.structured-quote-pagination');
+        var $prevBtn = $pagination.find('.page-prev');
+        var $nextBtn = $pagination.find('.page-next');
+        var $input = $pagination.find('.page-input');
+        var currentPage = 0;
 
         function adjustInputFontSize(el) {
             var val = $(el).val().toString();
-            if (val.length >= 3) {
-                $(el).css('font-size', '10px');
-            } else if (val.length === 2) {
-                $(el).css('font-size', '12px');
-            } else {
-                $(el).css('font-size', '14px');
-            }
+            var size = val.length >= 3 ? '10px' : (val.length === 2 ? '12px' : '14px');
+            $(el).css('font-size', size);
         }
 
-        function setupQuotePagination(wrapper) {
-            var $pages = wrapper.find('.quote-page');
-            var $quoteBelow = wrapper.find('.structured-quote-below');
-            var totalPages = $pages.length;
-
-            if (totalPages > 999) {
-                totalPages = 999;
-            }
-
-            if (totalPages <= 1) {
-                if (totalPages === 1) {
-                     $pages.addClass('is-active');
-                }
-                return;
-            }
-
-            var paginationHTML =
-                '<div class="structured-quote-pagination">' +
-                '<button class="page-prev" title="Previous page">&lt;</button>' +
-                '<div class="page-display">' +
-                '<input type="number" class="page-input" value="1" min="1" max="' + totalPages + '">' +
-                '<span>/ ' + totalPages + '</span>' +
-                '</div>' +
-                '<button class="page-next" title="Next page">&gt;</button>' +
-                '</div>';
-
-            var $soundDiv = $quoteBelow.find('.structured-quote-sound');
-            if ($soundDiv.length > 0) {
-                $soundDiv.before(paginationHTML);
-            } else {
-                $quoteBelow.append(paginationHTML);
-            }
-
-            var $pagination = $quoteBelow.find('.structured-quote-pagination');
-            var $prevBtn = $pagination.find('.page-prev');
-            var $nextBtn = $pagination.find('.page-next');
-            var $input = $pagination.find('.page-input');
-            var currentPage = 0;
-
-            function goToPage(pageIndex) {
-                if (pageIndex < 0 || pageIndex >= totalPages) {
-                    return;
-                }
-                currentPage = pageIndex;
-
-                $pages.removeClass('is-active');
-                $pages.eq(currentPage).addClass('is-active');
-
-                $input.val(currentPage + 1);
-                adjustInputFontSize($input);
-                $prevBtn.prop('disabled', currentPage === 0);
-                $nextBtn.prop('disabled', currentPage === totalPages - 1);
-                
-                var updateFunc = wrapper.data('updateVisibilityFunc');
-                if (updateFunc) {
-                    updateFunc();
-                }
-            }
-
-            $prevBtn.on('click', function() {
-                goToPage(currentPage - 1);
-            });
-
-            $nextBtn.on('click', function() {
-                goToPage(currentPage + 1);
-            });
-
-            $input.on('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    $(this).trigger('change');
-                    $(this).blur();
-                    return;
-                }
-                if (e.ctrlKey || e.metaKey || e.altKey) return;
-                if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
-                    e.preventDefault();
-                }
-            });
-
-            $input.on('input', function() {
-                var valStr = $(this).val();
-                if (valStr !== '') {
-                    var val = parseInt(valStr, 10);
-                    if (val > totalPages) {
-                        $(this).val(totalPages);
-                    }
-                }
-                adjustInputFontSize(this);
-            });
-
-            $input.on('change', function() {
-                var val = parseInt($(this).val(), 10);
-                if (isNaN(val) || val < 1) val = 1;
-                if (val > totalPages) val = totalPages;
-                $(this).val(val);
-                goToPage(val - 1);
-            });
-
-            goToPage(0);
+        function goToPage(pageIndex) {
+            if (pageIndex < 0 || pageIndex >= totalPages) return;
+            currentPage = pageIndex;
+            $pages.removeClass('is-active').eq(currentPage).addClass('is-active');
+            $input.val(currentPage + 1);
+            adjustInputFontSize($input);
+            $prevBtn.prop('disabled', currentPage === 0);
+            $nextBtn.prop('disabled', currentPage === totalPages - 1);
+            var updateFunc = wrapper.data('updateVisibilityFunc');
+            if (updateFunc) updateFunc();
         }
 
-        $('.structured-quote-wrapper').each(function() {
+        $prevBtn.on('click', function() { goToPage(currentPage - 1); });
+        $nextBtn.on('click', function() { goToPage(currentPage + 1); });
+        $input.on('keydown', function(e) {
+            if (e.key === 'Enter') { $(this).trigger('change').blur(); return; }
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) e.preventDefault();
+        });
+        $input.on('input', function() {
+            var valStr = $(this).val();
+            if (valStr !== '' && parseInt(valStr, 10) > totalPages) $(this).val(totalPages);
+            adjustInputFontSize(this);
+        });
+        $input.on('change', function() {
+            var val = parseInt($(this).val(), 10);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > totalPages) val = totalPages;
+            $(this).val(val);
+            goToPage(val - 1);
+        });
+
+        goToPage(0);
+    }
+
+    mw.hook('wikipage.content').add(function($content) {
+        setupCustomAudioPlayer($content);
+
+        $content.find('.structured-quote-wrapper').each(function() {
             var $wrapper = $(this);
-            
             setupQuotePagination($wrapper);
-            
             var $soundDiv = $wrapper.find('.structured-quote-sound');
 
             if ($soundDiv.length === 0) {
                 var $pages = $wrapper.find('.quote-page');
-                if ($pages.length > 0 && !$pages.hasClass('is-active')) {
-                     $pages.eq(0).addClass('is-active');
-                }
+                if ($pages.length > 0 && !$pages.hasClass('is-active')) $pages.eq(0).addClass('is-active');
                 return;
             }
 
@@ -2481,7 +2555,8 @@ $(function() {
             }, 100);
         });
     });
-}(window, jQuery));
+
+}(window, jQuery, mediaWiki));
 
 /* notification panel */
 
@@ -3158,146 +3233,6 @@ $(function() {
 
 })(window, jQuery, mediaWiki);
 
-/* audio player */
-
-$(function() {
-    function formatTime(seconds) {
-        var minutes = Math.floor(seconds / 60);
-        var secs = Math.floor(seconds % 60);
-        if (isNaN(secs) || isNaN(minutes)) {
-            return '0:00';
-        }
-        return minutes + ':' + (secs < 10 ? '0' : '') + secs;
-    }
-
-    $('.structured-quote-sound .mw-file-element').each(function() {
-        var originalPlayer = $(this).get(0);
-        var soundContainer = $(this).parent();
-        
-        $(this).hide();
-
-        var customPlayerHTML = `
-            <div class="cap-player">
-                <button class="cap-play-pause">
-                    <svg class="play-icon" viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z"/></svg>
-                    <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                </button>
-                <div class="cap-time">
-                    <span class="cap-current-time">0:00</span>
-                    <span class="cap-separator"> / </span>
-                    <span class="cap-duration">0:00</span>
-                </div>
-                <div class="cap-progress-wrap">
-                    <div class="cap-progress-bar"></div>
-                </div>
-                <div class="cap-volume-wrap">
-                    <button class="cap-volume-btn">
-                        <svg class="vol-icon-high" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                        <svg class="vol-icon-muted" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-                    </button>
-                    <div class="cap-volume-slider-wrap">
-                        <input type="range" class="cap-volume-slider" min="0" max="1" step="0.05" value="1">
-                    </div>
-                </div>
-            </div>
-        `;
-
-        var customPlayer = $(customPlayerHTML).appendTo(soundContainer);
-        var playPauseBtn = customPlayer.find('.cap-play-pause');
-        var currentTimeEl = customPlayer.find('.cap-current-time');
-        var durationEl = customPlayer.find('.cap-duration');
-        var progressWrap = customPlayer.find('.cap-progress-wrap');
-        var progressBar = customPlayer.find('.cap-progress-bar');
-        var volumeBtn = customPlayer.find('.cap-volume-btn');
-        var volumeSlider = customPlayer.find('.cap-volume-slider');
-        var volIconHigh = customPlayer.find('.vol-icon-high');
-        var volIconMuted = customPlayer.find('.vol-icon-muted');
-        var lastVolume = 1;
-        
-        var savedVolume = localStorage.getItem('customAudioPlayerVolume');
-        if (savedVolume !== null) {
-            var newVolume = parseFloat(savedVolume);
-            originalPlayer.volume = newVolume;
-            originalPlayer.muted = newVolume === 0;
-            lastVolume = newVolume > 0 ? newVolume : 1;
-        }
-
-        var setDuration = function() {
-            durationEl.text(formatTime(originalPlayer.duration));
-        };
-
-        if (originalPlayer.readyState > 0) {
-            setDuration();
-        } else {
-            originalPlayer.addEventListener('loadedmetadata', setDuration);
-        }
-
-        originalPlayer.addEventListener('timeupdate', function() {
-            currentTimeEl.text(formatTime(originalPlayer.currentTime));
-            var progress = (originalPlayer.currentTime / originalPlayer.duration) * 100;
-            progressBar.css('width', progress + '%');
-        });
-
-        originalPlayer.addEventListener('ended', function() {
-            playPauseBtn.find('.pause-icon').hide();
-            playPauseBtn.find('.play-icon').show();
-            progressBar.css('width', '0%');
-            currentTimeEl.text(formatTime(0));
-        });
-
-        playPauseBtn.on('click', function() {
-            if (originalPlayer.paused) {
-                originalPlayer.play();
-                playPauseBtn.find('.play-icon').hide();
-                playPauseBtn.find('.pause-icon').show();
-            } else {
-                originalPlayer.pause();
-                playPauseBtn.find('.pause-icon').hide();
-                playPauseBtn.find('.play-icon').show();
-            }
-        });
-        
-        progressWrap.on('click', function(e) {
-            var rect = this.getBoundingClientRect();
-            var clickX = e.clientX - rect.left;
-            var newTime = (clickX / rect.width) * originalPlayer.duration;
-            originalPlayer.currentTime = newTime;
-        });
-
-        volumeSlider.on('input', function() {
-            var newVolume = parseFloat(this.value);
-            originalPlayer.volume = newVolume;
-            originalPlayer.muted = newVolume === 0;
-            localStorage.setItem('customAudioPlayerVolume', newVolume);
-        });
-        
-        originalPlayer.addEventListener('volumechange', function() {
-            var currentVolume = originalPlayer.muted ? 0 : originalPlayer.volume;
-            volumeSlider.val(currentVolume);
-            if (currentVolume > 0) {
-                lastVolume = currentVolume;
-                volIconMuted.hide();
-                volIconHigh.show();
-            } else {
-                volIconHigh.hide();
-                volIconMuted.show();
-            }
-        });
-        
-        volumeBtn.on('click', function() {
-           if (originalPlayer.muted || originalPlayer.volume === 0) {
-               var volumeToRestore = lastVolume > 0 ? lastVolume : 1;
-               originalPlayer.muted = false;
-               originalPlayer.volume = volumeToRestore;
-               localStorage.setItem('customAudioPlayerVolume', volumeToRestore);
-           } else {
-               originalPlayer.muted = true;
-               localStorage.setItem('customAudioPlayerVolume', 0);
-           }
-        });
-    });
-});
-
 /* importarticles */
 
 importArticles({
@@ -3310,3 +3245,10 @@ importArticles({
         'u:dev:MediaWiki:DiscordIntegrator/code.js'
     ]
 });
+
+/* load navbox only on pages that call it */
+
+if ($('.screamer-navbox').length > 0) {
+    importArticle({ type: 'style', article: 'MediaWiki:Navbox Screamer.css' });
+    importArticle({ type: 'script', article: 'MediaWiki:Navbox Screamer.js' });
+}

@@ -126,7 +126,7 @@ $(function () {
     if (!conf.wgUserName) return;
 
     var groups = conf.wgUserGroups || [];
-    var isStaff = groups.indexOf('sysop') !== -1 || groups.indexOf('bureaucrat') !== -1;
+    var isStaff = groups.indexOf('sysop') !== -1 ||groups.indexOf('bureaucrat') !== -1 ||groups.indexOf('threadmoderator') !== -1 ||groups.indexOf('content-moderator') !== -1;
     if (!isStaff) return;
 
     if (conf.wgNamespaceNumber !== 1200) return;

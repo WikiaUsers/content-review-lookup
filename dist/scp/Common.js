@@ -5,7 +5,7 @@ window.UserTagsJS = {
 	tags: {
 
 		// former staff
-		formerbureaucrat: { u:'Former Bereaucrat', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 100 },
+		formerbureaucrat: { u:'Former Bureaucrat', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 100 },
 		formersysop: { u:'Former Administrator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 101 },
 		formermod: { u:'Former Moderator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff',  order: 102 },
 
@@ -14,7 +14,7 @@ window.UserTagsJS = {
 		fired: { u:'Hall of Shame', order: 104 },
 
 		// other
-		inactive: {u:'Dormant', order: 1001 },
+		inactive: {u:'Inactive', order: 1001 },
 	}
 };
 
@@ -47,7 +47,7 @@ mw.hook("wikipage.content").add(function () {
 // License thing for creative commons
 $(function() {
     // Custom license text (modify as needed)
-    var customText = 'Unless otherwise stated, the content of this page is licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Creative Commons Attribution-ShareAlike 3.0 License</a>.';
+    var customText = 'Unless otherwise stated, the content of this page is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 License</a>, excluding other content such as images, code, additional information, etc., which are licensed under the same licenses determined by their respective authors, meaning you may or may not include them in your own work. Others may share and adapt the work (e.g. translations), though it is required to credit all of the authors above including applying the same license to your derivative work.';
 
     // Set up a MutationObserver to detect changes in the footer
     var observer = new MutationObserver(function(mutations) {

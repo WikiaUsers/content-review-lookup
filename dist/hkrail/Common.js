@@ -344,8 +344,31 @@ PurgeButtonText = '清除伺服器快取';
 
 //</source>
 
-/* 當檢測到用戶試圖使用視覺化編輯時，強制重導向至原始碼編輯 */
-if ( mw.config.get( 'wgAction' ) === 'view' && ( mw.util.getParamValue( 'veaction' ) === 'edit' || mw.util.getParamValue( 'veaction' ) === 'editsource' ) ) {
-    var url = window.location.href.replace( /veaction=(edit|editsource)/, 'action=edit' );
-    window.location.href = url;
-}
+// 強制將所有編輯連結導向原始碼編輯 (Action=edit)
+$(function() {
+    function redirectiPadEditLinks() {
+        // 尋找所有包含 veaction 的編輯連結
+        $('a[href*="veaction="], .mw-editsection a').each(function() {
+            var $el = $(this);
+            var href = $el.attr('href');
+            
+            if (href && (href.indexOf('veaction=') !== -1)) {
+                // 將 veaction 參數替換為 action=edit (原始碼模式)
+                var newHref = href.replace(/veaction=[^&]+/, 'action=edit');
+                $el.attr('href', newHref);
+                
+                // 移除會觸發視覺化編輯器啟動的 Class，確保點擊是直接跳轉頁面
+                $el.removeClass('mw-editsection-visualeditor ve-init-mw-desktopArticleTarget-editableContent');
+                
+                // 如果是 Fandom 的按鈕組，確保它顯示為「編輯原始碼」的行為
+                $el.text($el.text().replace('視覺化編輯', '編輯原始碼'));
+            }
+        });
+    }
+
+    // 頁面載入後執行
+    redirectiPadEditLinks();
+    
+    // 針對 Fandom 異步加載的內容（例如 iPad 滾動加載），每隔 1.5 秒檢查一次
+    setInterval(redirectiPadEditLinks, 1500);
+});

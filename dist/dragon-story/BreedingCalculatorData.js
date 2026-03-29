@@ -4646,6 +4646,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "bumblebee": {
+            	"name": "Bumblebee",
+            	"types": [
+            		"fey",
+            		"black",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "18_hours_18",
+            	"rarity": 3,
+            	"offspringeligibility": "wheel",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "bundle": {
                 "name": "Bundle",
                 "types": [
@@ -17547,6 +17564,40 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "hibernatingbat": {
+            	"name": "Hibernating Bat",
+            	"types": [
+            		"fey",
+            		"beast",
+            		"red"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "22_hours_22",
+            	"rarity": 4,
+            	"offspringeligibility": "dragontales",
+            	"notes": [
+            		"feature"
+            	]
+            },
+            "hibernatingbear": {
+            	"name": "Hibernating Bear",
+            	"types": [
+            		"fey",
+            		"beast",
+            		"black"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "6_hours_6",
+            	"rarity": 3,
+            	"offspringeligibility": "dragontales",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "hibernatinghedgehog": {
             	"name": "Hibernating Hedgehog",
             	"types": [
@@ -20818,6 +20869,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "14_hours_14",
                 "rarity": 3
+            },
+            "leppaluthi": {
+            	"name": "Leppaluthi",
+            	"types": [
+            		"holiday",
+            		"yellow",
+            		"green"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "leprechaun": {
                 "name": "Leprechaun",
@@ -30742,6 +30820,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "offspringeligibility": "expired"
             },
+            "raindrop": {
+            	"name": "Raindrop",
+            	"types": [
+            		"fey",
+            		"blue",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "rainghost": {
                 "name": "Rainghost",
                 "types": [
@@ -38382,6 +38487,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "thornflare": {
+            	"name": "Thornflare",
+            	"types": [
+            		"fey",
+            		"black",
+            		"green"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "15_hours_15",
+            	"rarity": 3,
+            	"offspringeligibility": "tournament",
+            	"notes": [
+            		"feature"
+            	]
             },
             "thornwilde": {
                 "name": "Thornwilde",

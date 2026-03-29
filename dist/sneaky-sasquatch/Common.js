@@ -1,3 +1,35 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+  const selectors = [
+    'a[href*="User:"]',
+    '.user-identity-header__attributes h1[itemprop="name"]',
+    '.wds-global-navigation__user-menu__username',
+    '.page-header__title'
+  ];
+
+  document.querySelectorAll(selectors.join(",")).forEach(el => {
+    let name = "";
+
+    if (el.tagName === "A") {
+      const href = decodeURIComponent(el.getAttribute("href") || "");
+      if (href.includes("User:")) {
+        name = href.split("User:").pop();
+      }
+    } else {
+      name = el.textContent.trim();
+    }
+
+    if (name) {
+      el.setAttribute("data-username", name);
+    }
+  });
+
+});
+
+
+
+
+
 mw.loader.using('mediawiki.user').then(function () {
     // Only run for logged-in users
     if (!mw.config.get('wgUserName')) return;
