@@ -36,6 +36,10 @@ mw.hook('wikipage.content').add(function () {
   	{ico: '🎂', txt: 'Feliz aniversário, <b>Carina Castellani</b>!' },
   	{ico: '🎮', txt: 'Feliz aniversário, <b>bellsvsg_</b>!' },
   	],
+  	'02-16': [
+  	{ico: '🎂', txt: 'Feliz aniversário, <b>Melina Caspel</b>!' }, 
+  	{ico: '🎮', txt: 'Feliz aniversário, <b>Giully Senna</b>!' },
+  	],
   	'03-05': [
   	  {ico: '⭐', txt: 'Há ' + anosDesdeTexto(2026)+ ', <b>Kate Higanbana</b> virou 01 da <b>Meraki</b>!' },
     ],
@@ -48,6 +52,7 @@ mw.hook('wikipage.content').add(function () {
     ],
      '03-29': [
     	{ ico: '🎂', txt: 'Feliz aniversário, <b>Akira Higanbana</b>!' },
+    		{ ico: '🎮', txt: 'Feliz aniversário, <b>Akiranve</b>!' },
     ],
       '04-09': [
       { ico: '🎂', txt: 'Feliz aniversário, <b>Manuela Ferrari</b>!' },
@@ -72,6 +77,10 @@ mw.hook('wikipage.content').add(function () {
     '07-16': [
     	{ ico: '🎂', txt: 'Feliz aniversário, <b>Zack Vecchi</b>!' },
     	{ ico: '🎂', txt: 'Feliz aniversário, <b>Elisangela Bueno</b>!' },
+    	],
+    '07-21': [
+    	{ ico: '🎂', txt: 'Feliz aniversário, <b>Antoine Giroud</b>!' }, 
+    	{ ico: '🎮', txt: 'Feliz aniversário, <b>YogiOh</b>!' },
     	],
     '07-24': [
        { ico: '🎂', txt: 'Feliz aniversário, <b>Mai Suzuki</b>!' },

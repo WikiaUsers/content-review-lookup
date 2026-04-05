@@ -146,8 +146,7 @@ function initCustomMap(mapData) {
 
         allMarkers.forEach(obj => {
             const isCompleted = completedMarkers.includes(obj.markerId);
-            const categoryMatch = checkedCategories.length === 0 ||
-                checkedCategories.includes(String(obj.categoryId));
+            const categoryMatch = checkedCategories.length === 0 || checkedCategories.includes(String(obj.categoryId));
             const progressMatch = isCompleted ? true : showIncomplete;
 
             if (categoryMatch && progressMatch) {
@@ -276,21 +275,17 @@ function initCustomMap(mapData) {
             marker.bindPopup(popupHTML, { maxWidth: 320, className: 'wandering-sword-popup' });
             markersCluster.addLayer(marker);
 
-            // ─────────────────────────────────────────────────────────────
-            // FIXED POPUP HANDLER — no more random button, no popup close
-            // ─────────────────────────────────────────────────────────────
             marker.on('popupopen', function () {
                 let btn = document.querySelector('button[data-testid="marker-progress-tracking-button-complete"]');
                 if (!btn) return;
 
-                // Clone + remove Fandom's data-testid so it stops hijacking
                 const newBtn = btn.cloneNode(true);
-                newBtn.removeAttribute('data-testid');   // ← prevents Fandom from touching it again
+                newBtn.removeAttribute('data-testid');
                 btn.parentNode.replaceChild(newBtn, btn);
 
-                // Force correct initial state (native map = everything incomplete)
-                const isCompleted = completedMarkers.includes(markerId);
                 const useEl = newBtn.querySelector('use');
+                const isCompleted = completedMarkers.includes(markerId);
+
                 if (isCompleted) {
                     useEl.setAttribute('xlink:href', '#IconCheckbox__a');
                     newBtn.lastChild.nodeValue = ' Completed';
@@ -300,7 +295,7 @@ function initCustomMap(mapData) {
                 }
 
                 newBtn.addEventListener('click', function (e) {
-                    e.stopImmediatePropagation();   // stop Fandom from interfering
+                    e.stopImmediatePropagation();
 
                     let completed = JSON.parse(localStorage.getItem('wanderingSword_completed') || '[]');
                     const wasCompleted = completed.includes(markerId);
@@ -331,9 +326,25 @@ function initCustomMap(mapData) {
         }
     });
 
-    setTimeout(updateFilterCounts, 800);
-    setTimeout(applyFilters, 900);
-    console.log('✅ Clean progress button — fixed click + filter sync');
+    // === FIXED INITIAL COUNT ===
+    const waitForMarkers = setInterval(() => {
+        if (allMarkers.length === mapData.markers.length) {
+            clearInterval(waitForMarkers);
+            console.log('✅ All markers loaded - updating initial counts');
+            updateFilterCounts();
+            applyFilters();
+        }
+    }, 300);
+
+    // Safety fallback
+    setTimeout(() => {
+        if (allMarkers.length > 0) {
+            updateFilterCounts();
+            applyFilters();
+        }
+    }, 4000);
+
+    console.log('✅ Custom map initialized with fixed initial counts');
 }
 
 // --------------------------------------------------------------------------------------------

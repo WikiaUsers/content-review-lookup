@@ -18,7 +18,7 @@ $(function() {
 			'\t</div>\n' +
 		'</nav>'
 	);
-	plok = $('<img src="https://images.wikia.com/clubpenguin/images/thumb/c/c7/Plok_Box_Dimension.png/170px-Plok_Box_Dimension.png" width="120" />');
+	plok = $('<img src="https://static.wikia.nocookie.net/clubpenguin/images/thumb/c/c7/Plok_Box_Dimension.png/170px-Plok_Box_Dimension.png" width="120" />');
 
 
 	function onTrigger() {

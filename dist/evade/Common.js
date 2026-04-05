@@ -1,0 +1,1 @@
+window.AddRailModule = [{ page: 'Template:Announcements', prepend: true }];

@@ -18,6 +18,8 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// 
+'Sea Captain':'15.24.c50b3f',
 // Targuna update
 'Stone Devourer':'15.24.95dcf3',
 'Armadile':'15.24.95dcf3',

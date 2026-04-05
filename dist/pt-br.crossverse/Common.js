@@ -196,4 +196,73 @@ document.addEventListener("DOMContentLoaded", function() {
 })();
 /* ===== FIM LAZY LOAD KUMAGAWA ===== */
 
+/*Ofuscator*/
+function initObfuscator() {
+    const elements = document.querySelectorAll('.obfu-text');
+    elements.forEach(function(el) {
+        const data = {
+            delay: parseInt(el.dataset.delay) || 0,
+            startTime: parseInt(el.dataset.start) || 40,
+            endTime: parseInt(el.dataset.end) || 40,
+            dispTime: parseInt(el.dataset.disp) || 2000,
+            loop: true,
+            chars: "░▒▓▖▗▘▙▚▛▜▝▞▟",
+            phrases: el.dataset.phrases.split('|')
+        };
+
+        let phraseIndex = 0;
+        let frame = 0;
+        let phase = 'scramble_in';
+        let displayed = '';
+
+        function scramble(target, progress) {
+            return target.split('').map(function(ch, i) {
+                if (ch === ' ') return ' ';
+                if (i < Math.floor(progress * target.length)) return ch;
+                return data.chars[Math.floor(Math.random() * data.chars.length)];
+            }).join('');
+        }
+
+        function tick() {
+            const target = data.phrases[phraseIndex];
+
+            if (phase === 'scramble_in') {
+                frame++;
+                const progress = frame / data.startTime;
+                el.textContent = scramble(target, progress);
+                if (frame >= data.startTime) {
+                    frame = 0;
+                    phase = 'display';
+                    el.textContent = target;
+                }
+            } else if (phase === 'display') {
+                setTimeout(function() {
+                    frame = 0;
+                    phase = 'scramble_out';
+                }, data.dispTime);
+                return;
+            } else if (phase === 'scramble_out') {
+                frame++;
+                const progress = 1 - frame / data.endTime;
+                el.textContent = scramble(target, progress);
+                if (frame >= data.endTime) {
+                    frame = 0;
+                    phase = 'scramble_in';
+                    phraseIndex = (phraseIndex + 1) % data.phrases.length;
+                }
+            }
+
+            setTimeout(tick, 1000 / 30);
+        }
+
+        setTimeout(tick, data.delay);
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initObfuscator);
+} else {
+    initObfuscator();
+}
+
 // Importação do script (se já tiver no ImportJS, não precisa repetir aqui)

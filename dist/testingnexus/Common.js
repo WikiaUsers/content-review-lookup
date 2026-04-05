@@ -115,7 +115,7 @@ function applyColorsToTableCells() {
                 "The Wicked": {
                     color: "#69a18d",
                     players: [
-                        "Aydan", "Bagel", "Conyycal", "Dylan", "Hanza", "Kai", "Ramond", "Sylvan"
+                        "Aydan", "Bagel", "Conyycal", "Dylan", "Hanza", "Kai", "Raymond", "Sylvan"
                     ],
                 },
                 "The Sinful": {
@@ -179,7 +179,7 @@ function applyColorsToTableCells() {
                 "Olive": {
                     color: "#7e8e00",
                     players: [
-                       "Aslan", "Dani", "Indigo", "Internte", "Kai", "Lycan/Oran", "Nate", "Sylvan"
+                       "Aslan", "Dani", "Indigo", "Internet", "Kai", "Lycan/Oran", "Nate", "Sylvan"
                     ],
                 },
                 "Forest": {
@@ -204,27 +204,39 @@ function applyColorsToTableCells() {
 	        5: {
 	            "Red": {
                     color: "#e51212",
-                    players: ["someplayer"],
+                    players: [
+                        "Birdie", "Clover", "Jojo", "Lag", "Nina"
+                    ],
                 },
                 "Orange": {
                     color: "#ff9900",
-                    players: ["someplayer"],
+                    players: [
+                        "Conut", "Mike Guy", "Pinguins", "Togepi", "Tyson"
+                        ],
                 },
                 "Yellow": {
                     color: "#ffec00",
-                    players: ["someplayer"],
+                    players: [
+                        "Alatus", "Etmikarily", "George", "Internet", "Inisra"
+                        ],
                 },
                 "Green": {
                     color: "#10ff00",
-                    players: ["someplayer"],
+                    players: [
+                        "Bagel", "Cupid", "Kai", "Nate", "Spec"
+                        ],
                 },
                 "Blue": {
                     color: "#0027ff",
-                    players: ["someplayer"],
+                    players: [
+                        "Chezmai", "Conyycal", "Dani", "Dylan", "Lycan/Oran"
+                        ],
                 },
                 "Purple": {
                     color: "#8000ff",
-                    players: ["someplayer"],
+                    players: [
+                        "Bryce", "Commit", "Hanza", "Ryan", "Sylvan"
+                        ],
                 },
                 "Immune": {
                     color: "#00ffff",
@@ -234,31 +246,45 @@ function applyColorsToTableCells() {
 	        6: {
 	            "Red": {
                     color: "#e51212",
-                    players: ["someplayer"],
+                    players: [
+                        "Dani", "George", "Kai", "Tyson"
+                        ],
                 },
                 "Orange": {
                     color: "#ff9900",
-                    players: ["someplayer"],
+                    players: [
+                        "Bagel", "Cupid", "Lycan/Oran", "Ryan"
+                        ],
                 },
                 "Yellow": {
                     color: "#ffec00",
-                    players: ["someplayer"],
+                    players: [
+                        "Hanza", "Internet", "Pinguins", "Spec"
+                        ],
                 },
                 "Green": {
                     color: "#10ff00",
-                    players: ["someplayer"],
+                    players: [
+                        "Bryce", "Dylan", "Mike Guy", "Sylvan"
+                        ],
                 },
                 "Blue": {
                     color: "#0027ff",
-                    players: ["someplayer"],
+                    players: [
+                        "Birdie", "Commit", "Conut", "Etmikarily"
+                        ],
                 },
                 "Purple": {
                     color: "#8000ff",
-                    players: ["someplayer"],
+                    players: [
+                        "Jojo", "Lag", "Nina", "Togepi"
+                        ],
                 },
                 "Brown": {
                     color: "#7f3a00",
-                    players: ["someplayer"],
+                    players: [
+                        "Alatus", "Clover", "Inisra", "Nate"
+                        ],
                 },
                 "Immune": {
                     color: "#00ffff",
@@ -358,9 +384,18 @@ function applyColorsToTableCells() {
                             // check if cell has a player
                             const cellText = cell.textContent.trim();
                             if (cellText) {
-                                // find players final team
+                                // find players info
                                 const words = cellText.split(" ");
-                                const matchedPlayer = currentPlayers.find(player => words.includes(player));
+                                let matchedPlayer = null;
+                                for (const player of currentPlayers) {
+                                    const player_words = player.split(" ");
+                                    if (player_words.length > 1 && cellText.includes(player)) {
+                                        matchedPlayer = player;
+                                    } else if (words.includes(player)) {
+                                        matchedPlayer = player;
+                                    }
+                                }
+                                // const matchedPlayer = currentPlayers.find(player => words.includes(player));
                                 // get team color
                                 if (matchedPlayer) {
                                     // if player not in player info, add to cache

@@ -34,65 +34,65 @@ $(() => {
     });
     $('[data-fav]').children(':not(.currentwikia)').first().find('a').addClass('first');
     mw.loader.addStyleTag( `
-        .wikiafavorites {
-    display:flex;
-    flex-wrap:nowrap;
-    max-width:60vw;
-    height:30px;
-    position:absolute;
-    top:0;
-    left:0;
-    zoom:0.8;
+.wikiafavorites {
+	display: flex;
+	flex-wrap: nowrap;
+	max-width: 60vw;
+	height: 30px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	zoom: 0.8;
 }
 
 [data-fav]>span.wds-button {
-    cursor:default;
-    filter:brightness(1);
-    border-color:var(--theme-page-background-color--secondary);
-    color:white !important;
+	cursor: default;
+	filter: brightness(1);
+	border-color: var(--theme-page-background-color--secondary);
+	color: white;
 }
 
 .wikiafavorites .wds-button {
-    background:transparent;
-    color:var(--theme-link-color);
-    border-left:0;
-    border-right:0;
-    border-top:0;
-    padding:5px;
-    font-size:0.7rem !important;
-    border-color:var(--theme-page-background-color--secondary);
-    border-radius:0 !important;
+	background: transparent;
+	color: var(--theme-link-color);
+	border-left: 0;
+	border-right: 0;
+	border-top: 0;
+	padding: 5px;
+	font-size: 0.7rem;
+	border-color: var(--theme-page-background-color--secondary);
+	border-radius: 0;
 }
 
 .wikiafavorites .wds-button:not(:last-child) {
-    border-right:0;
+	border-right: 0;
 }
 
 .wikiafavorites > span:last-child > .wds-button {
-    border-right:0.5px solid var(--theme-page-background-color--secondary);
+	border-right: 0.5px solid var(--theme-page-background-color--secondary);
 } 
 
 .currentwikia>.wds-button {
-    border-bottom:transparent;
-    border-right: 0.5px solid var(--theme-page-background-color--secondary) !important;
+	border-bottom: transparent;
+	border-right: 0.5px solid var(--theme-page-background-color--secondary);
 }
 
 .currentwikia p {
-zoom:120%;
+	zoom: 120%;
 }
 
 .currentwikia {
-pointer-events:none;
-background: rgba(var(--theme-accent-color--rgb), 0.6);
+	pointer-events: none;
+	background: rgba(var(--theme-accent-color--rgb), 0.6);
 }
 
 .wikiafavorites {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 ` );
 window.favWikiaLoaded = true;

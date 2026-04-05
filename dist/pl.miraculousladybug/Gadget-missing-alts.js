@@ -56,11 +56,17 @@ mw.loader.using( 'mediawiki.api', function () {
 				// Osobne zmienne na samą treść artykułu i na treść rozdzieloną według linijek
 				pageContent=contentresult.query.pages[0].revisions[0].content;
 				pageContentSplit=pageContent.split('\n');
+				
+				// Przygotowanie zmiennej z kopią treści, która ignoruje zawartość tagów pre i nowiki
+				regexPre=/<pre(.*?)>[\s\S]*?<\/pre>/gi;
+				regexNowiki=/<nowiki(.*?)>[\s\S]*?<\/nowiki>/gi;
+				
+				pageContentCopy=pageContent.replace(regexPre,"").replace(regexNowiki,"");
 
 				// Wyszukiwanie altów dla [[Plik:]]
 				regexFiles=/\[\[(Plik|File):(.*?)\]\]/gi;
 				regexFilesAlt=/\|(\s*?)alt(\s*?)=(\s*?)\S(.*?)(\||\]\])/;
-				normalFiles=pageContent.match(regexFiles);
+				normalFiles=pageContentCopy.match(regexFiles);
 				normalFilesWithoutAlt=[];
 				
 				if (!(normalFiles===null)) {
@@ -75,13 +81,13 @@ mw.loader.using( 'mediawiki.api', function () {
 				regexInfobox=/\{\{Infoboks([\s\S]*?)\}\}/gi;
 				
 				regexInfoboxImageParameters=/\|\s*?obraz(\S*?)\s*?=\s*?\S[\S\s]*?(\||\}\})/gi;
-				infoboxes=pageContent.match(regexInfobox);
+				infoboxes=pageContentCopy.match(regexInfobox);
 				
 				infoboxFilesWithoutAlt=[]
 				
 				if (!(infoboxes===null)) {
 					infoboxes.forEach(function(i) {
-						imageParameters=pageContent.match(regexInfoboxImageParameters);
+						imageParameters=pageContentCopy.match(regexInfoboxImageParameters);
 
 						imageParameters.forEach(function(x) {
 							if (!x.includes('<gallery>')) {
@@ -91,10 +97,15 @@ mw.loader.using( 'mediawiki.api', function () {
 								editedStringSplit=editedString.split("+");
 								editedString=editedStringSplit.join("\\+");
 								
-								altRegex=new RegExp("\\s*?\\|\\s*?alt"+editedString+"\\s*?=\\s*?\\S[\\S\\s]*?\\|");
+								altRegex=new RegExp("\\s*?\\|\\s*?alt"+editedString+"\\s*?=\\s*?\\S[\\S\\s]*?\(\||\}\})");
+								
 								if (i.match(altRegex)===null) {
-									console.log('nie ma alta');
-									infoboxFilesWithoutAlt.push(x.substring(0, x.length - 1).replace("\n",""));
+									if (x[x.length-1]=="|") {
+										numSubstring=1;
+									} else {
+										numSubstring=2;
+									}
+									infoboxFilesWithoutAlt.push(x.substring(0, x.length - numSubstring).replace("\n",""));
 								}
 							}
 						});
@@ -102,20 +113,22 @@ mw.loader.using( 'mediawiki.api', function () {
 				}
 				
 				//Wyszukiwanie altów dla <gallery>
-				regexGallery=/<gallery>[\s\S]*?<\/gallery>/gi;
+				regexGallery=/<gallery(.*?)>[\s\S]*?<\/gallery>/gi;
 				regexGalleryAlt=/\|(\s*?)alt(\s*?)=(\s*?)\S(.*?)(\||$)/;
 				galleryFilesWithoutAlt=[];
-				galleries=pageContent.match(regexGallery);
+				galleries=pageContentCopy.match(regexGallery);
 
 				if (!(galleries===null)) {
 					galleries.forEach(function(g){
-						gCopy=g.replace("<gallery>","").replace("</gallery>","").trim(2,-2);
-						gItems=gCopy.split("\n");
-						gItems.forEach(function(gi){
-							if (!regexGalleryAlt.test(gi)) {
-								galleryFilesWithoutAlt.push(gi);
-							}
-						});
+						gCopy=g.replace(/<gallery(.*?)>/,"").replace("</gallery>","").trim(2,-2);
+						if (gCopy!="") {
+							gItems=gCopy.split("\n");
+							gItems.forEach(function(gi){
+								if (!regexGalleryAlt.test(gi)) {
+									galleryFilesWithoutAlt.push(gi);
+								}
+							});
+						}
 					});
 				}
 
@@ -137,8 +150,8 @@ mw.loader.using( 'mediawiki.api', function () {
 					});
 					
 					// Posortowanie indeksów
-					linesWithoutAlts.sort();
-					altSearchResult.innerHTML+='<h3><a href="/pl/wiki/'+encodeURIComponent(contentresult.query.pages[0].title)+'">'+contentresult.query.pages[0].title+'</a> – obrazy bez altów:</h3><ul>';
+					linesWithoutAlts.sort(function(a, b){return a-b});
+					altSearchResult.innerHTML+='<h3><a href="/pl/wiki/'+encodeURIComponent(contentresult.query.pages[0].title)+'">'+contentresult.query.pages[0].title+'</a> – obrazy bez altów ('+allImagesWithoutAlts.length+'):</h3><ul>';
 					for (var k=0; k<linesWithoutAlts.length; k++) {
 						altSearchResult.innerHTML+='<li>Linia '+(linesWithoutAlts[k]+1)+": "+pageContentSplit[linesWithoutAlts[k]]+'</li>';
 					}

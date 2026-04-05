@@ -409,6 +409,43 @@ $(function() {
 		});
 	}
 	
+	function refreshExternalContentDataPages(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var $container = $(this).closest('.external-content-data-ro');
+		var $inner = $(this).closest('.popup-content-inner-action');
+		
+		// get list of pages to touch
+		var pageListTouch = [];
+		if ($container.attr('data-to-touch')) {
+			pageListTouch = $container.attr('data-to-touch').split(',');
+		}
+
+		// construct full list of pages to purge
+		var pageListPurge = $container.attr('data-to-refresh').split(',');
+
+		return getPlayerRedirects(pageListTouch)
+		.then(function(redirects) {
+			redirects.forEach(function(e) {
+				pageListTouch.push(e);
+				pageListPurge.push(e);
+			});
+	
+			var touches = pageListTouch.map(window.blankEdit);
+	
+			var purges = pageListPurge.map(window.purgeTitle);
+	
+			return Promise.all(touches).then(function() {
+				return Promise.all(purges);
+			}).then(function() {
+				console.log(pageListTouch);
+				console.log(pageListPurge);
+				console.log('done!');
+				displayResultStatus('gadget-action-success', $inner);
+			});
+		});
+	}
+	
 	$('.news-data-ro').off('click');
 	$('.roster-change-data .news-data-ro').click(function(e) {
 		e.stopPropagation();
@@ -416,6 +453,19 @@ $(function() {
 		$inner.click(function(e) { e.stopPropagation(); });
 		$inner.html(getRegionsText() + '<button class="submit-ro">RO!</button>');
 		$inner.find('.submit-ro').click(refreshNewsDataPages);
+		$(this).off('click');
+		$(this).click(window.popupButton);
+		
+		window.popupButton.bind(this)(e);
+	});
+	
+	$('.external-content-data-ro').off('click');
+	$('.external-content-data-ro').click(function(e) {
+		e.stopPropagation();
+		var $inner = $(this).find('.popup-content-inner-action');
+		$inner.click(function(e) { e.stopPropagation(); });
+		$inner.html('<button class="submit-ro">RO!</button>');
+		$inner.find('.submit-ro').click(refreshExternalContentDataPages);
 		$(this).off('click');
 		$(this).click(window.popupButton);
 		

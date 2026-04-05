@@ -47,7 +47,6 @@ window.UserTagsJS = {
 		'retired-staff': {u:'Former Wiki Staff', order:9e9},
 		'ron-hos': {u:'RON Head of Staff', order:9e9},
 		'ron-senior-administrator': {u:'RON Senior Administrator', order:9e9},
-		'Guide-Maker': {u:'Guide Maker', order:9e9}
 	}
 };
 
@@ -72,29 +71,23 @@ UserTagsJS.modules.custom = {
 	/* 'user': [groups] */
 	// Current Staff: Edited.
 	// Bureaucrats
-	'HolyMoa': ['head-of-wiki','bureaucrat'],
+	'SuperGlitchyTheo': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
 	'Standoffiish': ['bureaucrat'],
 	// Administrators
 	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
-	'SuperGlitchyTheo': ['content-administrator','Wiki-Contributor'],
 	// Moderators
 	// Dual Moderators
 	'Dxrknrg': ['content-moderator','threadmoderator','Wiki-Contributor'],
 	// Content Moderators
-	'RyeThePies': ['content-moderator','Wiki-Contributor'],
-	'Quinncm': ['content-moderator','Wiki-Contributor'],
-	'Zarc.0724': ['content-moderator','Wiki-Contributor'],
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
 	'Sorayaann': ['content-moderator','Wiki-Contributor'],
     'Silkened': ['content-moderator','Wiki-Contributor'],
-    'DarkTonics': ['content-moderator','Wiki-Contributor'],
     'DragooNit': ['content-moderator','Wiki-Contributor'],
   	// Junior Content Moderators
     
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
-	'Noidtouse': ['threadmoderator'],
 	'Kaiyie': ['threadmoderator'],
 	'The Shashophille': ['threadmoderator'],
 	'RXRunner27': ['threadmoderator'],
@@ -105,6 +98,7 @@ UserTagsJS.modules.custom = {
 	'TheRichSeries': ['retired-staff'],
 	'ZackRoN00': ['retired-staff'],
 	'MP1Player': ['retired-staff'],
+	'HolyMoa': ['retired-staff'],
 	// Retired Administrators
 	'GrayshaValor': ['retired-staff'],
 	'Man with no name or life': ['retired-staff'],
@@ -149,10 +143,7 @@ UserTagsJS.modules.custom = {
 	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
 	// Wiki Contributors
     'Cipherusxzy': ['Wiki-Contributor'],
-    'HaHaBlah': ['Wiki-Contributor','retired-staff'],
-	// Guide Makers 
-	'CookieDogAJ': ['Guide-Maker'],
-	'BungoJungo': ['Guide-Maker'],
+    'HaHaBlah': ['Wiki-Contributor'],
 };
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

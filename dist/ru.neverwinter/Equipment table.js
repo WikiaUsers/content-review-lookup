@@ -6,6 +6,8 @@ $(function () {
     // --- 1. Конфигурация и состояние ---
 
     var categoryAttribute = ($equipmentTable.attr('data-category') || '').trim();
+    var itemTypeAttribute = ($equipmentTable.attr('data-item-type') || '').trim();
+    var isConsumableAttribute = ($equipmentTable.attr('data-is-consumable') || '0') === '1';
 
     // Лимит страницы берётся из data-атрибута, который выставляет Lua-модуль,
     // чтобы оба модуля всегда работали с одним значением.
@@ -13,6 +15,8 @@ $(function () {
 
     var config = {
         category:    categoryAttribute,
+        itemType:    itemTypeAttribute,
+        isConsumable:      isConsumableAttribute,
         subcatList:  ($equipmentTable.attr('data-subcat-list')  || '').split(',').filter(Boolean),
         classList:   ($equipmentTable.attr('data-class-list')   || '').split(',').filter(Boolean),
         qualityList: ($equipmentTable.attr('data-quality-list') || '').split(',').filter(Boolean),
@@ -47,13 +51,13 @@ $(function () {
 
         var sortOptions = '<option value="name_asc">А-Я</option>'
             + '<option value="name_desc">Я-А</option>'
-            + (config.isStyle ? '' : '<option value="level_desc">Уровень ↓</option><option value="level_asc">Уровень ↑</option>');
+            + (config.isStyle || config.isConsumable ? '' : '<option value="level_desc">Уровень ↓</option><option value="level_asc">Уровень ↑</option>');
 
         var html = '<div id="eq-controls">'
             + '<div class="eq-top-bar">'
                 + '<input id="eq-search" type="text" placeholder="Поиск по названию..." autocomplete="off">'
                 + (config.subcatList.length ? createSelectElement('eq-subcat', 'Все: ' + displayCategory, config.subcatList) : '')
-                + createSelectElement('eq-quality', 'Любое качество', config.qualityList)
+                + (config.isConsumable ? '' : createSelectElement('eq-quality', 'Любое качество', config.qualityList))
                 + (config.classList.length ? createSelectElement('eq-class', 'Любой класс', config.classList) : '')
                 + '<select id="eq-sort">' + sortOptions + '</select>'
                 + '<button id="eq-reset">Очистить</button>'
@@ -128,6 +132,7 @@ $(function () {
             class:    $('#eq-class').val()   || '',
             sort:     $('#eq-sort').val()    || 'name_asc',
             attrs:    selectedAttributes.join(','),
+            item_type: config.itemType || '',
             limit:    PAGE_LIMIT,
             offset:   currentPage * PAGE_LIMIT
         };

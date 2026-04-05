@@ -4647,6 +4647,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"dedicated": {
+				"name": "Dedicated",
+				"colors": [
+					"valentine",
+					"purple",
+					"white"
+				],
+				"rarity": "common"
+			},
 			"deep": {
 				"name": "Deep",
 				"colors": [
@@ -10846,6 +10855,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"lovesight": {
+				"name": "Lovesight",
+				"colors": [
+					"valentine",
+					"white",
+					"pink"
+				],
+				"rarity": "common"
+			},
 			"lovespark": {
 				"name": "Lovespark",
 				"colors": [
@@ -12075,6 +12093,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "rare"
+			},
+			"musical": {
+				"name": "Musical",
+				"colors": [
+					"music",
+					"rainbow",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"musketeer": {
 				"name": "Musketeer",
@@ -13993,6 +14020,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"flower",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"petalstorm": {
+				"name": "Petalstorm",
+				"colors": [
+					"fey",
+					"pink",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -17499,6 +17535,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"spawn": {
+				"name": "Spawn",
+				"colors": [
+					"spooky",
+					"white",
+					"red"
+				],
+				"rarity": "common"
+			},
 			"speaker": {
 				"name": "Speaker",
 				"colors": [
@@ -18109,6 +18154,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "unbreedable"
+			},
+			"strawberry": {
+				"name": "Strawberry",
+				"colors": [
+					"tropic",
+					"red",
+					"yellow"
+				],
+				"rarity": "common"
 			},
 			"streamer": {
 				"name": "Streamer",
@@ -18991,6 +19045,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"purple",
 					"blue",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"timpani": {
+				"name": "Timpani",
+				"colors": [
+					"music",
+					"white",
 					"yellow"
 				],
 				"rarity": "unbreedable"
@@ -20853,6 +20916,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink"
 				],
 				"rarity": "rare"
+			},
+			"xylophone": {
+				"name": "Xylophone",
+				"colors": [
+					"music",
+					"rainbow",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"yeti": {
 				"name": "Yeti",

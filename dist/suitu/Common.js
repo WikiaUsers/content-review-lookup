@@ -65,3 +65,11 @@
         attributeFilter: ['src']
     });
 })();
+
+/********/
+window.DisplayClockJS = {
+	format: "%2I:%2M:%2S %p, %B %1d, %Y (Server time)",    
+    monofonts: 'Archivo Narrow, sans-serif',
+    offset: -480
+};
+importArticle({type:'script', article:'u:dev:MediaWiki:UTCClock/code.js'});

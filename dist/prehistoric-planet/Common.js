@@ -2,6 +2,8 @@ window.lockOldComments = (window.lockOldComments || {});
 
 window.lockOldComments.limit = 28;
 
+window.enableReadProgressBarOnArticles = true;
+
 (function ($, mw) {
   'use strict';
 

@@ -589,12 +589,13 @@ $(document).ready(function() {
    }
    // here, time is in seconds (not minutes, hours or days)
    function discountTime(time, percent) {
-   		if (time < 1800 || percent === 0) /* no rounding if percent is 0 */ {
-  			return Math.ceil(time * (1 - percent/100));
-  		} else if (time <= 86400) {
-  			return Math.floor((time * (1 - percent/100))/600) * 600;
+   		var discountedTime = Math.ceil(time * (1-percent/100));
+   		if (discountedTime < 1800 || percent === 0) /* no rounding if percent is 0 */ {
+  			return discountedTime;
+  		} else if (discountedTime <= 86400) {
+  			return Math.floor(discountedTime / 600) * 600;
   		} else {
-  			return Math.floor((time * (1 - percent/100))/3600) * 3600;
+  			return Math.floor(discountedTime / 3600) * 3600;
  		}
    }
    function discountTrainTime(time, percent) {

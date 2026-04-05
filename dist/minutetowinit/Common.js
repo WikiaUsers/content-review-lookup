@@ -4,30 +4,40 @@
    ============================================================= */
 /* -------------------------------------------------------------
    OPEN LINKS IN A NEW TAB
-   Opens all links in a new tab except redirects and table of content links (sections)
-   Includes noopener noreferrer for security and an aria-label
-   so screen readers can announce the behavior.
+Opens some links in a new tab except redirects, table of content links (sections), templates (navbox/infobox), tables, top nav
+Includes noopener noreferrer for security and an aria-label.
+so screen readers can announce the behavior.
    ------------------------------------------------------------- */
 $(function() {
-	"use strict"; // safe mode
-	
+    "use strict"; // safe mode
+
     $('a').each(function() {
         const $link = $(this);
         const href = $link.attr('href');
-        // Skip links inside infobox episode template
-		if ($link.closest('.episode-infobox').length) return;
-		// Skip anchor links
-        if (!href) return; // no href
-        if (href.startsWith('#')) return; // Skip anchors (same-page section jumps)
-        if (/^(javascript:|mailto:|tel:)/i.test(href)) return; // Skip non-page links
-        if ($link.closest('.fandom-navbar, .fandom-community-header').length) return; // Skip top nav links
-        if ($link.hasClass('redirect')) return; // Skip redirects
+
+        // Skip missing hrefs
+        if (!href) return;
+
+        // Skip anchor links (same-page section jumps)
+        if (href.startsWith('#')) return;
+
+        // Skip non-page links ()
+        if (/^(javascript:|mailto:|tel:)/i.test(href)) return;
+
+        // Skip wiki action and navigation links
+        if (/\/(Talk:|Special:|Template:)|(action=(edit|history|logout|login))/.test(href)) return;
+
+        // Skip links inside navboxes, infoboxes and top nav
+        if ($link.closest('.navbox, .infobox, .portable-infobox, .wikia-infobox, .fandom-table, .fandom-navbar, .fandom-community-header').length) return;
+
+        // Skip redirects
+        if ($link.hasClass('redirect')) return;
 
         // Apply target="_blank"
         $link.attr('target', '_blank')
              .attr('rel', 'noopener noreferrer');
 
-        // Accessibility: don't overwrite an existing aria-label if one is already set
+        // Accessibility: don't overwrite an existing aria-label
         if (!$link.attr('aria-label')) {
             $link.attr('aria-label', ($link.text().trim() || 'Link') + ' (opens in new tab)');
         }

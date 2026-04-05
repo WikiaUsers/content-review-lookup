@@ -56,6 +56,7 @@ $(document).ready(function () {
 
 });
 
+// Logic for date and time shown at /Car_Values
 function ordinal(n) {
   if (n % 100 >= 11 && n % 100 <= 13) return "th";
   return ["th","st","nd","rd"][n % 10] || "th";
@@ -73,3 +74,64 @@ document.querySelectorAll(".unix-time").forEach(el => {
 
   el.textContent = `${month} ${day}${ordinal(day)}, ${hours}:${minutes}`;
 });
+
+// Logic for retrieving and showing data from the game
+(function () {
+  var API_BASE = "https://project-fezug.vercel.app/api/gamestats";
+  var REFRESH_INTERVAL = 5000;
+
+  function formatNumber(num) {
+    if (num === undefined || num === null) return "0";
+      return num.toLocaleString("en-US");
+  }
+
+  function loadGameStats(container, universeId) {
+    if (!universeId) return;
+
+    fetch(API_BASE + "?universeId=" + universeId)
+      .then(function (res) {
+        if (!res.ok) {
+          console.error("Failed to fetch game stats");
+          return;
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data) return;
+
+        var mapping = {
+          players: data.playing,
+          visits: data.visits,
+          favorites: data.favorites
+        };
+
+        for (var key in mapping) {
+          var el = container.querySelector("#" + key);
+          if (el) {
+            el.innerText = formatNumber(mapping[key]);
+          }
+        }
+      })
+      .catch(function (err) {
+        console.error("Error loading Roblox stats:", err);
+      });
+  }
+
+  function startAutoRefresh(container, universeId) {
+    loadGameStats(container, universeId);
+    setInterval(function () {
+      loadGameStats(container, universeId);
+    }, REFRESH_INTERVAL);
+  }
+
+  function initGameStatsContainers() {
+    var containers = document.querySelectorAll("[data-universeid]");
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var universeId = container.getAttribute("data-universeid");
+      startAutoRefresh(container, universeId);
+    }
+  }
+
+  mw.hook("wikipage.content").add(initGameStatsContainers);
+})();

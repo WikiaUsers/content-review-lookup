@@ -7077,6 +7077,9 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ],
+                "notes": [
+                	"hidden"
                 ]
             },
             "confounded": {
@@ -7623,6 +7626,9 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ],
+                "notes": [
+                	"hidden"
                 ]
             },
             "creation": {
@@ -9318,6 +9324,36 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
+                ]
+            },
+            "dedicated": {
+            	"name": "Dedicated",
+            	"types": [
+            		"valentine",
+            		"purple",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "purple"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ],
+                "notes": [
+                	"hidden"
                 ]
             },
             "deep": {
@@ -21850,6 +21886,36 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "hidden"
                 ]
             },
+            "lovesight": {
+            	"name": "Lovesight",
+            	"types": [
+            		"valentine",
+            		"white",
+            		"pink"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "pink"
+                            ]
+                        ]
+                    ]
+                ],
+                "notes": [
+                	"hidden"
+                ]
+            },
             "lovespark": {
             	"name": "Lovespark",
             	"types": [
@@ -24405,6 +24471,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "10_hours_10",
                 "rarity": 2
+            },
+            "musical": {
+            	"name": "Musical",
+            	"types": [
+            		"music",
+            		"rainbow",
+            		"purple"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "25_hours_25",
+            	"rarity": 4,
+            	"offspringeligibility": "crafted",
+            	"notes": [
+            		"feature"
+            	]
             },
             "musketeer": {
                 "name": "Musketeer",
@@ -28525,6 +28608,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "petalstorm": {
+            	"name": "Petalstorm",
+            	"types": [
+            		"fey",
+            		"pink",
+            		"green"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "25_hours_25",
+            	"rarity": 4,
+            	"offspringeligibility": "crafted",
+            	"notes": [
+            		"feature"
+            	]
             },
             "petalthorn": {
                 "name": "Petalthorn",
@@ -35820,6 +35920,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "spawn": {
+            	"name": "Spawn",
+            	"types": [
+            		"spooky",
+            		"white",
+            		"red"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "speaker": {
                 "name": "Speaker",
                 "types": [
@@ -37043,6 +37170,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
+                ]
+            },
+            "strawberry": {
+            	"name": "Strawberry",
+            	"types": [
+            		"tropic",
+            		"red",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "streamer": {
@@ -38812,6 +38966,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "timpani": {
+            	"name": "Timpani",
+            	"types": [
+            		"music",
+            		"white",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "8_hours_8",
+            	"rarity": 2,
+            	"offspringeligibility": "dragontales",
+            	"notes": [
+            		"feature"
+            	]
             },
             "tinkerer": {
                 "name": "Tinkerer",
@@ -42762,6 +42933,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "hidden"
                 ],
                 "offspringeligibility": "expired"
+            },
+            "xylophone": {
+            	"name": "Xylophone",
+            	"types": [
+            		"music",
+            		"rainbow",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "6_hours_6",
+            	"rarity": 3,
+            	"offspringeligibility": "dragontales",
+            	"notes": [
+            		"feature"
+            	]
             },
             "yeti": {
                 "name": "Yeti",

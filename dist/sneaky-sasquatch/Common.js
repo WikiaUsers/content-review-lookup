@@ -1,327 +1,140 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-  const selectors = [
-    'a[href*="User:"]',
-    '.user-identity-header__attributes h1[itemprop="name"]',
-    '.wds-global-navigation__user-menu__username',
-    '.page-header__title'
-  ];
-
-  document.querySelectorAll(selectors.join(",")).forEach(el => {
-    let name = "";
-
-    if (el.tagName === "A") {
-      const href = decodeURIComponent(el.getAttribute("href") || "");
-      if (href.includes("User:")) {
-        name = href.split("User:").pop();
-      }
-    } else {
-      name = el.textContent.trim();
-    }
-
-    if (name) {
-      el.setAttribute("data-username", name);
-    }
-  });
-
-});
-
-
-
-
-
-mw.loader.using('mediawiki.user').then(function () {
+//potential mentorship window improvements, original code by @itsLido
+mw.loader.using('mediawiki.user').then(function() {
     // Only run for logged-in users
-    if (!mw.config.get('wgUserName')) return;
-
-    // 1. Create the floating question mark button
-    var $mentorBtn = $('<div id="mentor-btn">?</div>').css({
-        position: 'fixed',
-        bottom: '20px',
-        left: '20px',
-        width: '40px',
-        height: '40px',
-        backgroundColor: '#0078D7',
-        color: 'white',
-        textAlign: 'center',
-        lineHeight: '40px',
-        borderRadius: '50%',
-        fontSize: '24px',
-        cursor: 'pointer',
-        zIndex: '9999',
-        boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
-    });
-
-    $('body').append($mentorBtn);
-
-    // 2. Create the mentor popup window (hidden by default)
-    var $mentorWindow = $(`
-        <div id="mentor-window">
-            <div id="mentor-window-title">
-                Mentor Assigned
-                <span id="close-window" style="float:right; cursor:pointer;">✖</span>
-            </div>
-            <div id="mentor-window-content">
-                <p><strong>You have been assigned an experienced mentor for editing help: Tom Was Taken1</strong></p>
-                <button id="ask-Tom-Was-Taken-a-question-btn">Ask Question</button>
-            </div>
-        </div>
-    `).css({
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '350px',
-        backgroundColor: 'white',
-        border: '2px solid #0078D7',
-        borderRadius: '5px',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
-        textAlign: 'center',
-        padding: '15px',
-        zIndex: '10000',
-        display: 'none'
-    });
-
-    $mentorWindow.find('#mentor-window-title').css({
-        backgroundColor: '#0078D7',
-        color: 'white',
-        padding: '10px',
-        fontWeight: 'bold',
-        borderTopLeftRadius: '3px',
-        borderTopRightRadius: '3px',
-        marginBottom: '10px'
-    });
-
-    $mentorWindow.find('#mentor-window-content').css({
-        padding: '15px',
-        textAlign: 'center'
-    });
-
-    $('body').append($mentorWindow);
-
-    // 3. Show mentor window
-    $mentorBtn.on('click', function () {
-        $mentorWindow.show();
-    });
-
-    // 4. Close mentor window
-    $(document).on('click', '#close-window', function () {
-        $mentorWindow.hide();
-    });
-
-    // 5. Ask Question button (FIXED)
-    $(document).on('click', '#ask-Tom-Was-Taken-a-question-btn', function () {
-        window.location.href = '/wiki/Message_Wall:Tom_Was_Taken1';
-    });
-});
-
-mw.hook('wikipage.content').add(function () {
-    if (mw.config.get('wgAction') !== 'history') return;
-    if (!mw.user.isLoggedIn()) return;
-
-    var api = new mw.Api();
-
-    $('.mw-history-histlinks').each(function () {
-        var $links = $(this);
-        if ($links.find('.revert-alert-btn').length) return;
-
-        var $btn = $('<span>')
-            .addClass('revert-alert-btn')
-            .css({ marginLeft: '8px', cursor: 'pointer', color: '#0645ad' })
-            .text('[Revert & Alert]');
-
-        $links.append($btn);
-
-        $btn.on('click', function () {
-            var $row = $links.closest('li');a
-            var revId = $row.data('mw-revid');
-            var user = $row.find('.mw-userlink').text();
-
-            if (!revId || !user) {
-                alert('Unable to detect revision or user.');
-                return;
-            }
-
-            if (!confirm('Revert this edit and notify ' + user + '?')) return;
-
-            api.postWithToken('csrf', {
-                action: 'edit',
-                title: mw.config.get('wgPageName'),
-                undo: revId,
-                summary: 'Reverted unconstructive edit'
-            }).done(function () {
-                api.postWithToken('csrf', {
-                    action: 'messagewallthread',
-                    wall: 'Message_Wall:' + user,
-                    title: 'Edit reverted',
-                    message: 'Hello, I reverted your edit because I considered it unconstructive.'
-                }).done(function () {
-                    alert('Edit reverted and message sent.');
-                    location.reload();
-                }).fail(function () {
-                    alert('Edit reverted, but message could not be sent.');
-                });
-            }).fail(function () {
-                alert('Revert failed.');
-            });
+    if (mw.config.get('wgUserName')) { // Returns the username if logged in
+        // 1. Create the floating question mark button
+        var $mentorBtn = $('<div id="mentor-btn">?</div>').css({
+            position: 'fixed',
+            bottom: '20px',
+            left: '80px',
+            width: '40px',
+            height: '40px',
+            'background-color': '#00BA18',
+            color: 'white',
+            'text-align': 'center',
+            'line-height': '40px',
+            'border-radius': '50%',
+            'font-size': '24px',
+            'cursor': 'pointer',
+            'z-index': '9999',
+            'box-shadow': '0 2px 6px rgba(0,0,0,0.3)'
         });
-    });
+        $('body').append($mentorBtn);
+
+        // 2. Create the mentor popup window (hidden by default)
+        var $mentorWindow = $(`
+            <div id="mentor-window">
+                <div id="mentor-window-title">Mentor Assigned
+                    <span id="close-window" style="float:right; cursor:pointer;">✖</span>
+                </div>
+                <div id="mentor-window-content">
+                    <p>You have been assigned an experienced mentor for editing help: Tom Was Taken1</p>
+                    <div id="ask-question-btn" style= "border: 2px solid #00BA18; margin-top: 20px; border-radius: 3px;">Ask Question</div>
+                </div>
+            </div>
+        `).css({
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '350px',
+            'background-color': 'white',
+            color: 'black',
+            border: '2px solid #00BA18',
+            'border-radius': '5px',
+            'box-shadow': '0 4px 15px rgba(0,0,0,0.5)',
+            'text-align': 'center',
+            padding: '15px',
+            'z-index': '10000',
+            display: 'none'
+        });
+
+        $mentorWindow.find('#mentor-window-title').css({
+            'background-color': '#00BA18',
+            color: 'white',
+            padding: '10px',
+            'font-weight': 'bold',
+            'border-top-left-radius': '3px',
+            'border-top-right-radius': '3px',
+            'margin-bottom': '10px'
+        });
+
+        $mentorWindow.find('#mentor-window-content').css({
+            padding: '15px',
+            'text-align': 'center'
+        });
+
+        $('body').append($mentorWindow);
+
+        // 3. Show the mentor window when the question mark is clicked
+        $mentorBtn.on('click', function() {
+            $mentorWindow.show();
+        });
+
+        // 4. Close the window when the ✖ is clicked
+        $('#close-window').on('click', function() {
+            $mentorWindow.hide();
+        });
+
+        // 5. Ask Question button redirects to Tom Was Taken1's message wall
+        $('#ask-question-btn').on('click', function() {
+            window.location.href = '/wiki/Message_Wall:Tom_Was_Taken1';
+        });
+    }
 });
 
+(function () {
+  if (!mw.config.get('profileUserId') || mw.config.get('profileUserId') === '0') {
+    return;
+  }
 
-// Optional config — leave blank to use defaults
-window.welcomeMessage = {
-  enabled: true,
-  adminUsername: 'ItsLido',     // $4
-  adminNickname: 'ItsLido Bot',    // $3
-  messageTitle: 'Welcome, $1!',
-  messageText: 'Welcome $1 — I\'m ItsLido.\n\n if you need any help please ask your mentor. Also, Thanks for your first edit on <a href="wikiurl.fandom.com/wiki/$2">$2</a>.\n\n— $3',
-  debug: false,
-  testAllEdits: false,
-  preferTalk: false,
-};
+  var userId = mw.config.get('profileUserId');
+  var types = ['WALL', 'FORUM', 'ARTICLE_COMMENT'];
+  var now = Math.floor(Date.now() / 1000);
+  var THIRTY_DAYS = 30 * 24 * 60 * 60;
 
-// Import from dev
-importArticles({
-  type: 'script',
-  articles: [
-    'dev:MediaWiki:WelcomeMessage.js'
-  ]
-});
-
-
-window.MessageBlock = {
-    title: 'Blocked',
-    message: 'You have received a $2 block because you have $1. If you wish to appeal please see the following page: Help:I am Blocked.',
-    autocheck: true
-};
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MessageBlock/code.js'
-    ]
-});
-mw.loader.using
-
-
-
-/* $(function () {
-
-  const btn = $('<div id="wikiAI">Wiki AI</div>');
-  const box = $(`
-    <div id="wikiAIBox">
-      <div id="chat"></div>
-      <input id="input" placeholder="Ask Sneakypedia AI..." />
-    </div>
-  `);
-
-  $("body").append(btn, box);
-
-  btn.click(() => box.toggle());
-
-  $("#input").keypress(function (e) {
-    if (e.which === 13) {
-      const msg = $(this).val();
-      if (!msg) return;
-
-      $("#chat").append("<div><b>You:</b> " + msg + "</div>");
-      $(this).val("");
-
-      fetch("https://llm-chat-app-sneakypedia.lidocrum117.workers.dev/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg })
-      })
-      .then(res => res.json())
-      .then(data => {
-        $("#chat").append("<div><b>AI:</b> " + data.response + "</div>");
-        $("#chat").scrollTop($("#chat")[0].scrollHeight);
-      })
-      .catch(() => {
-        $("#chat").append("<div><b>AI:</b> Error connecting.</div>");
-        alert("Wiki AI Loaded");
-
+  function checkActivity() {
+    return Promise.all(types.map(function (type) {
+      return $.get(mw.util.wikiScript('wikia'), {
+        controller: 'DiscussionContribution',
+        method: 'getPosts',
+        userId: userId,
+        responseGroup: 'full',
+        limit: 25,
+        containerType: type
+      }).then(function (res) {
+        return (res._embedded && res._embedded['doc:posts']) || [];
+      }).catch(function () {
+        return [];
       });
+    }));
+  }
+
+  function removeInactiveTag() {
+    var tag = document.querySelector('.user-identity-header__tag.usergroup-inactive.inactive-user');
+    if (tag) {
+      tag.remove();
     }
-  });
+  }
 
-}); */
+  function init() {
+    checkActivity().then(function (results) {
+      var isActive = results.some(function (posts) {
+        return posts.some(function (post) {
+          return (now - post.creationDate.epochSecond) <= THIRTY_DAYS;
+        });
+      });
 
+      if (isActive) {
+        removeInactiveTag();
+      }
+    });
+  }
 
-
-//=========
-//Editathan leaderboard
-// -Twineee
-//=========
-
-try {
-    if (window.location.href === "https://sneaky-sasquatch.fandom.com/wiki/Special:BlankPage/1000thPLB") { //Leaderboard page URL
-    	document.title = "Sneakypedia 1000 pages Leaderboard"; //naming browser tab
-    	function Main(){
-    		mw.loader.using('mediawiki.api').then(function () { // we need the API to be loaded
-	            var api = new mw.Api(); // make the API accessible.
-	            api.get({ /// make the request
-	                action: "query",
-	                list: "recentchanges", 
-	                rcend: "2026-03-04T02:42:07Z",
-	                rcstart: "2026-011-04T02:42:07Z", // ENDED!
-	                rclimit: "max",
-	                rcshow: "!bot", // Bots shouldn't be able to play
-	                rcprop: ["user", "sizes"], // What's a leaderboard without players and scores?
-	                rcnamespace: 0, // only mainspace edits
-	                rctype: "edit", // only edits :P
-	            }).done(function (e) {
-	                data  = e.query.recentchanges; // making it accessible
-	                let lb = {}; // emplty leaderboard object
-	                let edits = {}; //exmpty eobject for edit counts
-	                data.forEach(function(el, i){
-	                	const score = Math.abs(el.oldlen - el.newlen); // calculate diff
-	                	if (!(el.user in lb)) {
-	                		lb[el.user] = score; // adding user
-	                		edits[el.user] = 1;
-	                	} else {
-	                		lb[el.user] += score; // adding score to preexisting user
-	                		edits[el.user]++;
-	                	}
-	                });
-	                let rank = [];
-	                Object.entries(lb).sort((a, b) => b[1] - a[1]).forEach(function(el, i){
-	                	rank[i] = el[0];
-	                }); //thx u/4548826 on Stack Overflow. This sorts the scores and returns users in the rank array
-	                let res = "<p><s>The edit-a-than started on March 4th and will end on March 11th. Please review the <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_pages_announcement\">announcment</a>. The leaderboard is updated every 30 seconds.</s> The edit-a-than has <a href=\"https://sneaky-sasquatch.fandom.com/wiki/User_blog:ProfitableOranges/1000_Pages_Edit-a-Thon_End\">ended</a> (These are the results as of the end)!</p><table><thead><tr><td>User</td><td>Score (bytes changed)</td><td>Edits</td><td>Average edit size</td></tr></thead><tbody>"; // result var to be put inside table
-	                rank.forEach(function(el, i) { // add the user and score to the table
-	                	res += "<tr><td><a href=\"https://sneaky-sasquatch.fandom.com/wiki/User:" + el + "\">" + el + "</a></td><td>" + lb[el] + "</td><td>" + edits[el] + "</td><td>" + Math.floor(lb[el] / edits[el]) + "</td></tr>";
-	                });
-	                document.body.innerHTML = res + `<tbody></table><style>
-	                thead {
-	                	font-weight: bold;
-	                }
-	                body {
-	                	font-size: 20px;
-	                	padding: 16px;
-	                	background-color: white;
-	 	 	 	 	 	justify-content: center;
-	 	 	 	 	 	align-items: center;
-	                }
-	                p {
-	                	display: block;
-	                	font-size: 18px;
-	                }
-	                td {
-	                	border-width: 0;
-	                	padding-left: 9px !important; 
-	                }
-	                tr {
-	                	border-radius: 20px !important;
-	                }
-	                </style>`; //close the table and add CSS
-	            });
-	        });
-    	}
-    	Main();
-        //setInterval(Main, 30000); //run Main every 30 seconds for live-ish updates (commented since archive does not need live refreshing and wasting server CPU IDK LOL)
+  var interval = setInterval(function () {
+    if (document.querySelector('.user-identity-header')) {
+      clearInterval(interval);
+      init();
     }
-} catch (err) {
-    alert("Error! " + err + " (please message Twineee to fix this with the message)"); // moar debugz
-}
+  }, 100);
+})();

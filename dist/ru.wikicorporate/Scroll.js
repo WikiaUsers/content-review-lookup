@@ -1,20 +1,39 @@
-const handleScrollTo = (e) => {
-    const breakY = ($(document).height() - $(window).height()) * 50 / 100;
+const $window = $(window);
+const $document = $(document);
+const $html = $('html');
 
-    e.preventDefault();
-    const reachHalf = $(window).scrollTop() > breakY;
-    $('html').animate({ scrollTop: reachHalf ? 0 : $(document).height() }, '10');
+const isPastHalfway = () => {
+    const breakY = ($document.height() - $window.height()) * 0.5;
+    return $window.scrollTop() > breakY;
 };
 
 const scrollButton = $('<a>', {
     class: 'scroll-button scroll-button--bottom',
-})
-    .appendTo('#WikiaBar')
-    .on('click', handleScrollTo);
+}).appendTo('#WikiaBar');
 
-$(window).on('scroll', () => {
-    const breakY = ($(document).height() - $(window).height()) * 50 / 100;
+const handleScrollTo = (e) => {
+    e.preventDefault();
+    const reachHalf = isPastHalfway();
+    $html.animate({ scrollTop: reachHalf ? 0 : $document.height() }, 10);
+};
 
-    const reachHalf = $(window).scrollTop() > breakY;
-    scrollButton.attr('class', `scroll-button scroll-button--${reachHalf ? 'top' : 'bottom'}`);
+scrollButton.on('click', handleScrollTo);
+
+let ticking = false;
+
+$window.on('scroll', () => {
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            const reachHalf = isPastHalfway();
+            
+            if (reachHalf) {
+                scrollButton.removeClass('scroll-button--bottom').addClass('scroll-button--top');
+            } else {
+                scrollButton.removeClass('scroll-button--top').addClass('scroll-button--bottom');
+            }
+            
+            ticking = false;
+        });
+        ticking = true;
+    }
 });

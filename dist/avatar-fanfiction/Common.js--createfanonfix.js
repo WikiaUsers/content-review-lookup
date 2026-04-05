@@ -1,0 +1,14 @@
+ /*
+  * Used to fix the "create a fanon mainpage" inputbox for [[Avatar Fanfiction Wiki:Create fanfiction page]]
+  * By [[User:KettleMeetPot|KettleMeetPot]]
+  */
+
+// <nowiki>
+
+$(document).ready(function createMainPage() {
+  if ( window.location.search == "?action=edit&preload=Avatar%20Fanfiction%20Wiki:Create%20fanfiction%20page/Main%20page&editintro=&section=" ) {
+    $("#wpTextbox1").append("[[Category:" + mw.config.get('wgUserName') + " (fanfiction)]]");
+  }
+});
+
+//</nowiki>

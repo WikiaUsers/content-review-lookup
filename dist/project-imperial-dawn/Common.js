@@ -163,16 +163,6 @@
                     { title: "REBEL ALLIANCE", sub: "Terrorist Organization", status: "REBELLION", alignment: "rebel", image: "https://static.wikia.nocookie.net/project-imperial-dawn/images/3/37/Rebels.webp/revision/latest?cb=20260215164349", stats: { "Base": "Hidden", "Threat": "High", "Influence": "Outer Rim" }, bio: "An illegal insurgency operating in the Outer Rim, seeking to destabilize Galactic peace through sabotage and guerilla warfare.", divisions: ["HIDDEN"] }
                 ]
             },
-            "Armory": {
-                type: "armory_split",
-                sections: [
-                    { header: "IMPERIAL WEAPONS", theme: "empire", items: [ { title: "E-11 BLASTER", sub: "Rifle", status: "STANDARD", image: "https://placehold.co/300x300/000/00ccff?text=E-11", stats: { "RANGE": "Medium", "DAMAGE": "High", "USE": "Stormtroopers" }, bio: "The standard issue blaster rifle for the Imperial Stormtrooper Corps. Rugged and reliable." }, { title: "T-21 REPEATER", sub: "Heavy Blaster", status: "SUPPORT", image: "https://placehold.co/300x300/000/00ccff?text=T-21", stats: { "RANGE": "Long", "DAMAGE": "Heavy", "USE": "Shock Troopers" }, bio: "A high-capacity repeating blaster used for suppression fire." } ] },
-                    { header: "IMPERIAL VEHICLES", theme: "empire", items: [ { title: "AT-ST", sub: "Walker", status: "VEHICLE", image: "https://placehold.co/300x300/000/00ccff?text=AT-ST", stats: { "SPEED": "90 km/h", "CREW": "2", "ARMOR": "Medium" }, bio: "All Terrain Scout Transport. A bipedal walker used for reconnaissance and anti-infantry." }, { title: "TIE FIGHTER", sub: "Starfighter", status: "VEHICLE", image: "https://placehold.co/300x300/000/00ccff?text=TIE+Fighter", stats: { "SPEED": "1200 km/h", "CREW": "1", "SHIELDS": "None" }, bio: "The primary space superiority fighter of the Imperial Navy." } ] },
-                    { header: "REBEL WEAPONS", theme: "rebel", items: [ { title: "DL-44", sub: "Heavy Pistol", status: "ILLEGAL", image: "https://placehold.co/300x300/300/aa0000?text=DL-44", stats: { "RANGE": "Short", "DAMAGE": "Very High", "USE": "Smugglers" }, bio: "A powerful, modifiable blaster pistol favored by Rebel officers and smugglers." }, { title: "A280 RIFLE", sub: "Rifle", status: "RESTRICTED", image: "https://placehold.co/300x300/300/aa0000?text=A280", stats: { "RANGE": "Long", "DAMAGE": "Medium", "USE": "Rebel Commandos" }, bio: "A durable blaster rifle with excellent range, commonly used by Alliance ground forces." } ] },
-                    { header: "REBEL VEHICLES", theme: "rebel", items: [ { title: "X-WING", sub: "Starfighter", status: "VEHICLE", image: "https://placehold.co/300x300/300/aa0000?text=X-Wing", stats: { "SPEED": "1050 km/h", "CREW": "1+Droid", "SHIELDS": "Equipped" }, bio: "The T-65B X-wing starfighter is the backbone of the Rebel Alliance Starfighter Corps." } ] },
-                    { header: "OTHERS", theme: "neutral", items: [ { title: "THERMAL DETONATOR", sub: "Explosive", status: "CONTRABAND", image: "https://placehold.co/300x300/555/999?text=Detonator", stats: { "BLAST": "6m", "TYPE": "Baradium", "USE": "Demolition" }, bio: "A highly unstable baradium-core explosive device. Possession is a Class A felony." } ] }
-                ]
-            },
             "Locations": { 
                 type: "holomap", 
                 data: [
@@ -875,30 +865,40 @@
         let curCat = "HOME"; 
         let curSub = "Briefing";
 
+        // --- OPTIMIZATION: Use DocumentFragment for generating links
+        const linkFrag = document.createDocumentFragment();
         QUICK_LINKS.forEach(link => {
             const a = document.createElement('a');
             a.className = 'ql-btn'; a.innerText = link.label; a.href = link.url;
-            linksEl.appendChild(a);
+            linkFrag.appendChild(a);
         });
+        linksEl.appendChild(linkFrag);
 
         function render() {
+            // Build Side Navigation
             navEl.innerHTML = '<div class="nav-header">DIRECTORY</div>';
+            const navFrag = document.createDocumentFragment();
             Object.keys(DB).forEach(key => {
                 const btn = document.createElement('div');
                 btn.className = `nav-btn ${key === curCat ? 'active' : ''}`;
                 btn.innerText = key;
                 btn.onclick = () => { curCat = key; curSub = Object.keys(DB[key])[0]; render(); };
-                navEl.appendChild(btn);
+                navFrag.appendChild(btn);
             });
+            navEl.appendChild(navFrag);
 
+            // Build Top Tabs
             tabsEl.innerHTML = '';
+            const tabFrag = document.createDocumentFragment();
             Object.keys(DB[curCat]).forEach(key => {
                 const btn = document.createElement('div');
                 btn.className = `tab-btn ${key.toUpperCase() === curSub.toUpperCase() ? 'active' : ''}`;
                 btn.innerText = key;
                 btn.onclick = () => { curSub = key; renderContent(); updateTabs(); };
-                tabsEl.appendChild(btn);
+                tabFrag.appendChild(btn);
             });
+            tabsEl.appendChild(tabFrag);
+            
             renderContent();
         }
 
@@ -909,6 +909,7 @@
             });
         }
 
+        // Keep popup logic consistent
         function openFactionBriefing(data) {
             const old = document.querySelector('.dossier-overlay');
             if(old) old.remove();
@@ -987,7 +988,6 @@
                 const hasImg = data.image && data.image !== "";
                 let boxClass = "dossier-box";
                 
-                // Add themes to dossier popup
                 if(data.status && (data.status.includes("WAR") || data.status.includes("CONTESTED"))) boxClass += " war-theme";
                 else if(data.status && data.status.includes("REBEL")) boxClass += " hostile"; 
                 
@@ -1028,86 +1028,91 @@
             }, 800);
         }
 
-        function renderContent() {
-            // Memory Cleanup
-            if (window.holomapAnimFrame) {
-                cancelAnimationFrame(window.holomapAnimFrame);
-            }
-            
-            screenEl.innerHTML = '';
-            screenEl.style.height = 'auto'; 
-            screenEl.style.overflow = 'visible'; 
-            screenEl.style.padding = '40px'; 
-            const data = DB[curCat][curSub];
-
-            if (data.type === "welcome") {
-                if(data.image) screenEl.innerHTML += `<div class="welcome-hero"><img src="${data.image}"><div class="welcome-overlay">${data.title}</div></div>`;
-                screenEl.innerHTML += `<div class="briefing-meta-bar"><span>// ENCRYPTION: NONE</span><span>// DATE: UNKNOWN</span><span>// SOURCE: HOLONET NEWS</span></div>`;
+        // --- OPTIMIZATION: MODULAR RENDERING ENGINE ---
+        // This splits the gigantic monolith into clean, single-purpose functions
+        const ViewRenderers = {
+            "welcome": (data) => {
+                let html = '';
+                if(data.image) html += `<div class="welcome-hero"><img src="${data.image}"><div class="welcome-overlay">${data.title}</div></div>`;
+                html += `<div class="briefing-meta-bar"><span>// ENCRYPTION: NONE</span><span>// DATE: UNKNOWN</span><span>// SOURCE: HOLONET NEWS</span></div>`;
+                screenEl.innerHTML = html;
+                
                 const div = document.createElement('div'); div.className = 'text-block'; screenEl.appendChild(div);
                 let i = 0; const txt = data.content;
                 const type = () => { if(i < txt.length){ div.innerHTML += txt.charAt(i); i++; setTimeout(type, 10); } else { div.innerHTML += "<br><br>>> TRANSMISSION END."; } };
                 type();
-            }
-            else if (data.type === "news_feed") {
-                let html = `<div class="news-container"><div class="news-header-box"><h2 class="news-maintitle">${data.title}</h2></div>`;
+            },
+            
+            "news_feed": (data) => {
+                const frag = document.createDocumentFragment();
+                const container = document.createElement('div'); container.className = "news-container";
+                container.innerHTML = `<div class="news-header-box"><h2 class="news-maintitle">${data.title}</h2></div>`;
+                
                 data.data.forEach(item => {
-                    html += `
-                        <div class="news-card">
-                            <div class="news-img-box"><img src="${item.image}"></div>
-                            <div class="news-content">
-                                <div class="news-meta">
-                                    <span>// ${item.date}</span>
-                                    <span class="news-tag">${item.tag}</span>
-                                </div>
-                                <div class="news-title">${item.title}</div>
-                                <div class="news-text">${item.content}</div>
+                    const card = document.createElement('div'); card.className = "news-card";
+                    card.innerHTML = `
+                        <div class="news-img-box"><img src="${item.image}"></div>
+                        <div class="news-content">
+                            <div class="news-meta">
+                                <span>// ${item.date}</span>
+                                <span class="news-tag">${item.tag}</span>
                             </div>
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-text">${item.content}</div>
                         </div>
                     `;
+                    container.appendChild(card);
                 });
-                html += `</div>`;
-                screenEl.innerHTML = html;
-            }
-            else if (data.type === "record_list") {
-                let html = `<div class="record-wrapper">`;
+                frag.appendChild(container);
+                screenEl.appendChild(frag);
+            },
+            
+            "record_list": (data) => {
+                const frag = document.createDocumentFragment();
+                const wrapper = document.createElement('div'); wrapper.className = 'record-wrapper';
                 data.data.forEach(item => {
                     const imgHtml = item.image ? `<div class="record-img-box"><img src="${item.image}"></div>` : '';
                     const themeClass = item.theme ? `theme-${item.theme}` : 'theme-normal';
-                    html += `
-                        <div class="record-card ${themeClass}">
-                            ${imgHtml}
-                            <div class="record-content">
-                                <div class="record-top">
-                                    <div>
-                                        <div class="record-title">${item.title}</div>
-                                        <div class="record-meta"><span>LOC: ${item.loc}</span><span>DATE: ${item.date}</span></div>
-                                    </div>
-                                    <div class="record-status">${item.status}</div>
+                    const card = document.createElement('div'); card.className = `record-card ${themeClass}`;
+                    card.innerHTML = `
+                        ${imgHtml}
+                        <div class="record-content">
+                            <div class="record-top">
+                                <div>
+                                    <div class="record-title">${item.title}</div>
+                                    <div class="record-meta"><span>LOC: ${item.loc}</span><span>DATE: ${item.date}</span></div>
                                 </div>
-                                <div class="record-desc">${item.desc}</div>
+                                <div class="record-status">${item.status}</div>
                             </div>
+                            <div class="record-desc">${item.desc}</div>
                         </div>
                     `;
+                    wrapper.appendChild(card);
                 });
-                html += `</div>`;
-                screenEl.innerHTML = html;
-            }
-            else if (data.type === "pd_document") {
+                frag.appendChild(wrapper);
+                screenEl.appendChild(frag);
+            },
+            
+            "pd_document": (data) => {
                 const container = document.createElement('div'); container.className = 'pd-layout';
                 let html = `<div class="pd-content"><h1 class="pd-title">${data.title}</h1><div class="pd-subtitle">${data.subtitle}</div>`;
                 data.sections.forEach(sec => { html += `<div class="pd-section"><div class="pd-sec-header">${sec.header}</div><div class="pd-text">${sec.content}</div></div>`; });
                 html += `</div>`;
                 container.innerHTML = html;
                 screenEl.appendChild(container);
-            }
-            else if (data.type === "armory_split") {
+            },
+            
+            "armory_split": (data) => {
+                const frag = document.createDocumentFragment();
                 data.sections.forEach(section => {
                     let themeClass = '';
                     if (section.theme === 'rebel') themeClass = 'rebel-theme';
                     if (section.theme === 'neutral') themeClass = 'neutral-theme';
+                    
                     const wrapper = document.createElement('div'); wrapper.className = `armory-section ${themeClass}`;
                     wrapper.innerHTML = `<div class="armory-header">// ${section.header}</div>`;
                     const grid = document.createElement('div'); grid.className = 'ac-grid';
+                    
                     section.items.forEach(item => {
                         const card = document.createElement('div'); card.className = 'ac-card';
                         let statsHTML = '';
@@ -1117,10 +1122,12 @@
                         grid.appendChild(card);
                     });
                     wrapper.appendChild(grid);
-                    screenEl.appendChild(wrapper);
+                    frag.appendChild(wrapper);
                 });
-            }
-            else if (data.type === "cards_filter") {
+                screenEl.appendChild(frag);
+            },
+            
+            "cards_filter": (data) => {
                 const filterContainer = document.createElement('div'); filterContainer.className = 'filter-bar';
                 data.categories.forEach(cat => {
                     const btn = document.createElement('div'); btn.className = 'filter-btn'; btn.innerText = cat;
@@ -1128,22 +1135,30 @@
                     filterContainer.appendChild(btn);
                 });
                 screenEl.appendChild(filterContainer);
-                const contentContainer = document.createElement('div'); contentContainer.id = 'filter-content'; screenEl.appendChild(contentContainer);
+                
+                const contentContainer = document.createElement('div'); contentContainer.id = 'filter-content'; 
+                screenEl.appendChild(contentContainer);
+                
                 function renderFiltered(category, activeBtn) {
                     const buttons = filterContainer.querySelectorAll('.filter-btn');
                     buttons.forEach(b => b.classList.remove('active'));
                     if (activeBtn) activeBtn.classList.add('active'); else buttons[0].classList.add('active');
+                    
                     contentContainer.innerHTML = ''; 
+                    const frag = document.createDocumentFragment();
                     const filteredGroups = data.data.filter(group => group.category === category);
+                    
                     filteredGroups.forEach(group => {
-                        if (group.header) { const header = document.createElement('h3'); header.className = 'brief-section-title'; header.style.marginTop = '20px'; header.innerText = group.header; contentContainer.appendChild(header); }
+                        if (group.header) { const header = document.createElement('h3'); header.className = 'brief-section-title'; header.style.marginTop = '20px'; header.innerText = group.header; frag.appendChild(header); }
                         const grid = document.createElement('div'); grid.className = 'card-grid';
+                        
                         group.items.forEach(item => {
                             const card = document.createElement('div'); 
                             let themeClass = 'empire-theme';
                             if (group.category === 'REBEL') themeClass = 'rebel-theme';
                             if (group.category === 'OTHERS') themeClass = 'neutral-theme';
                             card.className = `data-card text-only ${themeClass}`;
+                            
                             let statsHtml = '';
                             if(item.stats) { 
                                 statsHtml = '<div class="card-stats">'; 
@@ -1158,13 +1173,16 @@
                             card.onclick = () => openDossier(item);
                             grid.appendChild(card);
                         });
-                        contentContainer.appendChild(grid);
+                        frag.appendChild(grid);
                     });
+                    contentContainer.appendChild(frag);
                 }
                 renderFiltered(data.categories[0], filterContainer.children[0]);
-            }
-            else if (data.type === "tactical") {
+            },
+            
+            "tactical": (data) => {
                 const grid = document.createElement('div'); grid.className = 'tac-grid';
+                const frag = document.createDocumentFragment();
                 data.data.forEach(item => {
                     const card = document.createElement('div'); 
                     let alignClass = "";
@@ -1172,66 +1190,77 @@
                     if(item.align === "gold") alignClass = "align-gold";
                     card.className = `tac-card ${alignClass}`;
                     card.innerHTML = `<div class="tac-info"><div class="tac-title">${item.title}</div><div class="tac-loc">${item.loc}</div><div class="tac-desc">${item.desc}</div></div><div class="tac-status">${item.status}</div>`;
-                    grid.appendChild(card);
+                    frag.appendChild(card);
                 });
+                grid.appendChild(frag);
                 screenEl.appendChild(grid);
-            }
-            else if (data.type === "list") {
+            },
+            
+            "list": (data) => {
                 const wrapper = document.createElement('div'); wrapper.className = 'timeline-box';
+                const frag = document.createDocumentFragment();
                 data.data.forEach((item, index) => {
                     const el = document.createElement('div'); el.className = 't-item'; el.style.animationDelay = `${index * 0.1}s`;
                     el.innerHTML = `<div class="t-node"></div><div class="t-card"><div class="t-date">${item.left}</div><div class="t-title">${item.right}</div>${item.tag ? `<div class="t-tag">${item.tag}</div>` : ''}</div>`;
-                    wrapper.appendChild(el);
+                    frag.appendChild(el);
                 });
+                wrapper.appendChild(frag);
                 screenEl.appendChild(wrapper);
-            }
-            else if (data.type === "factions") {
+            },
+            
+            "factions": (data) => {
                 const grid = document.createElement('div'); grid.className = 'fac-grid'; 
+                const frag = document.createDocumentFragment();
                 data.data.forEach(item => {
                     const card = document.createElement('div'); card.className = `faction-card ${item.alignment || 'neutral'}`;
                     let divs = '';
                     if(item.divisions) { divs = '<div class="fac-tags">'; item.divisions.forEach(d => divs += `<div class="f-tag">${d}</div>`); divs += '</div>'; }
                     card.innerHTML = `<div class="fac-logo-box"><img src="${item.image}"></div><div class="fac-info-area"><div class="fac-name">${item.title}</div><div class="fac-role">${item.sub}</div><div class="fac-stats-row"><div class="fac-stat"><span>LOC:</span> ${item.stats.Capital || item.stats.Base}</div></div><div style="font-size:13px; color:#cceeff; line-height:1.6; margin-bottom:20px;">${item.bio}</div>${divs}</div>`;
                     card.onclick = () => openFactionBriefing(item);
-                    grid.appendChild(card);
+                    frag.appendChild(card);
                 });
+                grid.appendChild(frag);
                 screenEl.appendChild(grid);
-            }
-            else if (data.type === "cards") {
+            },
+            
+            "cards": (data) => {
                 const grid = document.createElement('div'); grid.className = 'card-grid';
+                const frag = document.createDocumentFragment();
                 data.data.forEach(item => {
                     const hasImage = item.image && item.image !== "";
                     let cardClass = 'data-card';
                     if (!hasImage) cardClass += ' text-only neutral-theme';
+                    
                     const card = document.createElement('div'); card.className = cardClass;
                     const img = hasImage ? `<div class="card-img-box"><img src="${item.image}"><div class="status-badge">${item.status}</div></div>` : '';
                     let statsHtml = '';
                     if(item.stats) { 
                         statsHtml = '<div class="card-stats">'; 
                         Object.keys(item.stats).forEach(key => { 
-                            // Hides the profile link from the outer grid card
                             if (key !== "ROBLOX PROFILE LINK") {
                                 statsHtml += `<div class="c-stat">${key}: ${item.stats[key]}</div>`; 
                             }
                         }); 
                         statsHtml += '</div>'; 
                     }
-                    // Bio HTML has been removed entirely from the outer card layout
                     card.innerHTML = `${img}<div class="card-content"><div><div class="card-title">${item.title}</div><div class="card-sub">${item.sub}</div></div>${statsHtml}</div>`;
                     card.onclick = () => openDossier(item);
-                    grid.appendChild(card);
+                    frag.appendChild(card);
                 });
+                grid.appendChild(frag);
                 screenEl.appendChild(grid);
-            }
-            else if (data.type === "form") {
+            },
+            
+            "form": (data) => {
                 screenEl.innerHTML = `<h2 style="color:#fff; border-bottom:1px solid var(--imp-blue); padding-bottom:15px; text-shadow: 0 0 10px rgba(0,229,255,0.4); letter-spacing: 2px;">${data.title}</h2><p style="color:#cceeff; font-size:14px; margin-bottom:25px; line-height: 1.6;">${data.desc}</p><div class="imp-form"><div class="form-group"><label class="form-label">CHARACTER NAME</label><input type="text" class="imp-input" id="c-name" placeholder="Enter Full Name"></div><div class="form-group"><label class="form-label">EMPLOYMENT</label><input type="text" class="imp-input" id="c-rank" placeholder="e.g. Janitor"></div><div class="form-group"><label class="form-label">SPECIES</label><input type="text" class="imp-input" id="c-species" placeholder="e.g. Human"></div><div class="form-group"><label class="form-label">HOMEWORLD</label><input type="text" class="imp-input" id="c-home" placeholder="e.g. Coruscant"></div><div class="form-group"><label class="form-label">ROBLOX PROFILE LINK</label><input type="text" class="imp-input" id="c-roblox" placeholder="https://www.roblox.com/users/..."></div><div class="form-group form-full"><label class="form-label">BIOGRAPHY</label><textarea class="imp-textarea" id="c-bio" placeholder="Service history..."></textarea></div><button class="submit-btn" id="gen-btn">ENCRYPT & GENERATE</button><div class="code-result-area" id="c-result-area"><div class="status-msg" id="c-status"></div><div class="code-box" id="c-code-box"></div><div style="font-size:11px; color:#aaa; text-align:center; letter-spacing:1px; font-weight:bold;">>> COPY THE CODE ABOVE AND SUBMIT VIA DISCORD TICKET</div></div></div>`;
                 document.getElementById('gen-btn').onclick = () => {
                     const d = { name: document.getElementById('c-name').value, rank: document.getElementById('c-rank').value, species: document.getElementById('c-species').value, home: document.getElementById('c-home').value, roblox: document.getElementById('c-roblox').value, bio: document.getElementById('c-bio').value };
                     if(!d.name || !d.rank) { alert("NAME AND EMPLOYMENT REQUIRED FOR PROTOCOL"); return; }
                     generateCode(d);
                 };
-            }
-            else if (data.type === "holomap") {
+            },
+            
+            "holomap": (data) => {
                 screenEl.style.height = 'auto'; 
                 screenEl.style.padding = '0';
                 
@@ -1286,14 +1315,16 @@
                 let currentRotZ = 0.15;
                 let currentScale = 0.75;
                 
-                // --- MAP STARS RENDERING ---
+                // --- OPTIMIZATION: Fragment for Stars ---
+                const starFrag = document.createDocumentFragment();
                 for(let i=0; i<400; i++){
                     const s = document.createElement('div');
                     s.className = 'h-star';
                     const x = Math.random() * 2000, y = Math.random() * 2000, z = Math.random() * 500 - 250;
                     s.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
-                    starField.appendChild(s);
+                    starFrag.appendChild(s);
                 }
+                starField.appendChild(starFrag);
 
                 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
                     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -1303,7 +1334,6 @@
                     };
                 }
 
-                // Helper to create simple standard arc slice
                 function describeArc(x, y, innerRadius, outerRadius, startAngle, endAngle){
                     var startOuter = polarToCartesian(x, y, outerRadius, endAngle);
                     var endOuter = polarToCartesian(x, y, outerRadius, startAngle);
@@ -1321,10 +1351,8 @@
                     return d;
                 }
 
-                // Helper to create UNIFIED continuous perimeter path for L/T-shapes
                 function generateCompoundArc(rIn, rOut, rExt, s, mid, e, type) {
                     const pt = (r, a) => polarToCartesian(0, 0, r, a);
-                    // Sweep flag is 1 for positive angle direction, 0 for reverse.
                     const arc = (r, aStart, aEnd, reverse) => {
                         const pEnd = pt(r, aEnd);
                         const sweep = reverse ? 0 : 1;
@@ -1332,11 +1360,9 @@
                     };
 
                     if (type === 'outer') {
-                        // Outward extension: (s to mid) is rOut, (mid to e) is rExt
                         const p1 = pt(rOut, s);
                         const p3 = pt(rExt, mid);
                         const p5 = pt(rIn, e);
-                        
                         return [
                             `M ${p1.x} ${p1.y}`,
                             arc(rOut, s, mid, false),
@@ -1347,11 +1373,9 @@
                             `Z`
                         ].join(" ");
                     } else if (type === 'inner') {
-                        // Inward extension: (s to e) is rOut, (e to mid) is rExt, (mid to s) is rIn
                         const p1 = pt(rOut, s);
                         const p3 = pt(rExt, e);
                         const p5 = pt(rIn, mid);
-                        
                         return [
                             `M ${p1.x} ${p1.y}`,
                             arc(rOut, s, e, false),
@@ -1364,8 +1388,6 @@
                     }
                 }
 
-                // --- DYNAMIC RINGS & GRID LOGIC ---
-                // We define 4 concentric rings to act as the base grid
                 const RINGS = [
                     { inner: 8, outer: 18, name: "Core" },
                     { inner: 18, outer: 28, name: "Expansion" },
@@ -1373,8 +1395,10 @@
                     { inner: 38, outer: 48, name: "Outer" }
                 ];
 
-                // 1. GENERATE BACKGROUND STAGGERED GRID (Unknown Sectors)
                 const SLICE_ANGLE = 15;
+                const bgBotFrag = document.createDocumentFragment();
+                const bgTopFrag = document.createDocumentFragment();
+
                 for (let i = 0; i < RINGS.length; i++) {
                     let offset = (i % 2 === 0) ? 0 : (SLICE_ANGLE / 2);
                     for (let a = 0; a < 360; a += SLICE_ANGLE) {
@@ -1391,12 +1415,17 @@
                         bgTop.setAttribute("class", cssClass);
                         bgTop.setAttribute("d", pathString);
                         
-                        svgLayerBot.appendChild(bgBot);
-                        svgLayerTop.appendChild(bgTop);
+                        bgBotFrag.appendChild(bgBot);
+                        bgTopFrag.appendChild(bgTop);
                     }
                 }
+                svgLayerBot.appendChild(bgBotFrag);
+                svgLayerTop.appendChild(bgTopFrag);
 
-                // 2. GENERATE ACTIVE SECTORS OVER THE GRID (Contiguous Unbroken Shapes)
+                const polyBotFrag = document.createDocumentFragment();
+                const polyTopFrag = document.createDocumentFragment();
+                const pinsFrag = document.createDocumentFragment();
+
                 data.data.forEach(sector => {
                     if (sector.startAngle !== undefined) {
                         
@@ -1434,23 +1463,19 @@
                         let pinRad = (rIn + rOut) / 2; 
                         let pinAngle = (s + e) / 2;
 
-                        // Generating a single, continuous path to prevent internal dividing lines
                         if (span >= 30 && targetRing < 3) {
-                            // L-Shape extending OUTWARDS
                             let mid = s + (span * 0.4);
                             let rExt = RINGS[targetRing + 1].outer;
                             pathString = generateCompoundArc(rIn, rOut, rExt, s, mid, e, 'outer');
-                            pinAngle = (s + mid) / 2; // Keep pin centered on the main chunk
+                            pinAngle = (s + mid) / 2;
                         } 
                         else if (span >= 20 && targetRing > 0) {
-                            // L-Shape extending INWARDS
                             let mid = s + (span * 0.6);
                             let rExt = RINGS[targetRing - 1].inner;
                             pathString = generateCompoundArc(rIn, rOut, rExt, s, mid, e, 'inner');
-                            pinAngle = (mid + e) / 2; // Keep pin centered on the main chunk
+                            pinAngle = (mid + e) / 2;
                         } 
                         else {
-                            // Normal standard pie-slice block
                             pathString = describeArc(0, 0, rIn, rOut, s, e);
                         }
 
@@ -1466,8 +1491,8 @@
                         pathTop.onmouseleave = () => { pathBot.classList.remove('hovered'); pathTop.classList.remove('hovered'); };
                         pathTop.onclick = (e) => { e.stopPropagation(); openSector(sector); };
                         
-                        svgLayerBot.appendChild(pathBot);
-                        svgLayerTop.appendChild(pathTop);
+                        polyBotFrag.appendChild(pathBot);
+                        polyTopFrag.appendChild(pathTop);
 
                         const pinPos = polarToCartesian(0, 0, pinRad, pinAngle);
                         const pin = document.createElement('div');
@@ -1481,18 +1506,20 @@
                                 <div class="planet-sphere"></div>
                             </div>
                         `;
-                        stage.appendChild(pin);
+                        pinsFrag.appendChild(pin);
                     }
                 });
+                
+                svgLayerBot.appendChild(polyBotFrag);
+                svgLayerTop.appendChild(polyTopFrag);
+                stage.appendChild(pinsFrag);
 
                 function updateTransform() {
                     stage.style.transform = `scale(${currentScale}) rotateX(${currentRotX}deg) rotateZ(${currentRotZ}deg)`;
-                    
                     document.querySelectorAll('.pin-wrapper').forEach(lbl => {
                         lbl.style.transform = `translateZ(25px) rotateZ(${-currentRotZ}deg) rotateX(${-currentRotX}deg)`;
                     });
                 }
-                
                 updateTransform();
 
                 document.getElementById('btn-rot-l').onclick = () => { currentRotZ -= 20; updateTransform(); };
@@ -1508,10 +1535,9 @@
                     if(data.sub.length === 0) {
                         hsBody.innerHTML = '<div style="color:#666; font-size:11px;">NO DATA</div>';
                     } else {
+                        const frag = document.createDocumentFragment();
                         data.sub.forEach(planet => {
                             const div = document.createElement('div');
-                            
-                            // Determine the card theme
                             let themeClass = '';
                             if (planet.status.includes("WAR") || planet.status.includes("CONTESTED")) {
                                 themeClass = 'war-theme';
@@ -1522,13 +1548,36 @@
                             div.className = `hs-card ${themeClass}`;
                             div.innerHTML = `<img src="${planet.image}"><div class="hs-info"><div class="hs-name">${planet.title}</div><div class="hs-meta">${planet.stats.TERRAIN || 'Unknown'}</div></div>`;
                             div.onclick = () => openDossier(planet);
-                            hsBody.appendChild(div);
+                            frag.appendChild(div);
                         });
+                        hsBody.appendChild(frag);
                     }
                 }
                 document.getElementById('hs-close').onclick = () => sidebar.classList.remove('active');
             }
+        };
+
+        // --- Core Render Router ---
+        function renderContent() {
+            if (window.holomapAnimFrame) {
+                cancelAnimationFrame(window.holomapAnimFrame);
+            }
+            
+            screenEl.innerHTML = '';
+            screenEl.style.height = 'auto'; 
+            screenEl.style.overflow = 'visible'; 
+            screenEl.style.padding = '40px'; 
+            
+            const data = DB[curCat][curSub];
+
+            if (ViewRenderers[data.type]) {
+                ViewRenderers[data.type](data);
+            } else {
+                console.error("No renderer found for type:", data.type);
+            }
         }
+
+        // Initialize!
         render();
     }
 })();

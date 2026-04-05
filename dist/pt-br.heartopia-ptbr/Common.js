@@ -1,6 +1,6 @@
 /**
  * MediaWiki:Common.js para Heartopia Wiki
- * Versão: 2.2 (Suporte para exibição na Página Inicial)
+ * Versão: 2.3 (Suporte para Pop-up, Barra e Relógios em Tempo Real)
  */
 
 $(function() {
@@ -10,7 +10,6 @@ $(function() {
     }
 
     /* 2. MÓDULO DA BARRA LATERAL */
-    // Define o HTML do módulo uma única vez
     var socialModule = 
         '<section class="rail-module" id="heartopia-social-module" style="background:#ffffff; border:1px solid #eee; border-radius:20px; padding:20px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.03); font-family:\'Segoe UI\', Roboto, sans-serif; text-align:center;">' +
             '<div style="font-size:18px; font-weight:bold; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:8px;">🌐 Nossas Comunidades</div>' +
@@ -23,12 +22,9 @@ $(function() {
             '</div>' +
         '</section>';
 
-    // Lógica de inserção:
     if ($('#WikiaRail').length) {
-        // Se a barra lateral padrão existe (páginas comuns), insere nela
         $('#WikiaRail').prepend(socialModule);
     } else if ($('#heartopia-custom-sidebar').length) {
-        // Se existe um alvo manual (útil para a Página Inicial), insere nele
         $('#heartopia-custom-sidebar').html(socialModule);
     }
 
@@ -72,4 +68,43 @@ $(function() {
     $(document).on('click', '#close-session-popup, #btn-later-session', function() {
         $('#heartopia-session-popup').fadeOut(300);
     });
+});
+
+/* 5. RELÓGIOS DOS SERVIDORES EM TEMPO REAL */
+mw.hook('wikipage.content').add(function($content) {
+    if (!$('#heartopia-clocks').length) return;
+
+    function updateClocks() {
+        var d = new Date();
+        var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+        var offsets = {
+            'america': -5, // UTC-5
+            'global': 1,   // UTC+1
+            'sea': 7       // UTC+7
+        };
+
+        for (var region in offsets) {
+            var nd = new Date(utc + (3600000 * offsets[region]));
+            var h = nd.getHours();
+            var m = nd.getMinutes();
+            var timeStr = (h < 10 ? '0'+h : h) + ':' + (m < 10 ? '0'+m : m);
+
+            var phase = "DIA";
+            var icon = "☀️";
+            var color = "#cf8a29";
+
+            if (h >= 0 && h < 5) { phase = "NOITE"; icon = "🌙"; color = "#3b6b9e"; }
+            else if (h >= 5 && h < 8) { phase = "AMANHECER"; icon = "🌅"; color = "#cf8a29"; }
+            else if (h >= 8 && h < 17) { phase = "DIA"; icon = "☀️"; color = "#cf8a29"; }
+            else if (h >= 17 && h < 20) { phase = "CREPÚSCULO"; icon = "🌙"; color = "#cf8a29"; }
+            else { phase = "NOITE"; icon = "🌙"; color = "#3b6b9e"; }
+
+            $('#clock-' + region + '-time').text(timeStr);
+            $('#clock-' + region + '-phase').html('<span style="color:' + color + '; display:flex; align-items:center; gap:5px;">' + icon + ' ' + phase + '</span>');
+        }
+    }
+    
+    setInterval(updateClocks, 1000);
+    updateClocks();
 });

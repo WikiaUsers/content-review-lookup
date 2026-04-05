@@ -5,7 +5,7 @@
 $(document).on('click', '.pi-header', function() {
   setTimeout(function() {
     if (window.echarts) {
-      document.querySelectorAll('div').forEach(function(el) {
+      document.querySelectorAll('.pi-group .echarts').forEach(function(el) {
         let chart = echarts.getInstanceByDom(el);
         if (chart) {
           chart.resize();

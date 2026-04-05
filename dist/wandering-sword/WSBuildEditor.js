@@ -1,5 +1,61 @@
 // --------------------------------------------------------------------------------------------
 //
+$(function () {
+
+    const emulatorURL = 'https://vik22.altervista.org/WS_Builds/index.php';
+
+    function loadFrame(el) {
+
+        if (el.classList.contains('loaded')) return;
+
+        const iframe = document.createElement('iframe');
+        iframe.src = emulatorURL;
+        iframe.width = "100%";
+        iframe.height = "600";
+        iframe.loading = "lazy";
+        iframe.sandbox = "allow-scripts allow-same-origin";
+
+        el.classList.add('loaded');
+        el.innerHTML = "";
+        el.appendChild(iframe);
+    }
+
+    mw.hook('wikipage.content').add(function ($content) {
+
+        const frames = $content.find('.EmulatorFrame:not(.observer-set)');
+
+        frames.each(function () {
+
+            const el = this;
+            el.classList.add('observer-set');
+
+            const observer = new IntersectionObserver((entries, obs) => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        loadFrame(el);
+                        obs.disconnect();
+
+                    }
+
+                });
+
+            }, {
+                rootMargin: "200px"
+            });
+
+            observer.observe(el);
+
+        });
+
+    });
+
+});
+
+// --------------------------------------------------------------------------------------------
+//
 const statsData={
 yin:{STR:2,CON:3,AGI:1,HP:20,MP:10,ATK:2,DEF:4,CRIT:1},
 yang:{STR:5,CON:2,AGI:2,HP:15,MP:5,ATK:5,DEF:1,CRIT:2},
@@ -72,59 +128,3 @@ document.getElementById("mapScreen").style.display="none";
 document.getElementById("wheel").style.display="block";
 
 };
-
-// --------------------------------------------------------------------------------------------
-//
-$(function () {
-
-    const emulatorURL = 'https://vik22.altervista.org/WS_Builds/index.php';
-
-    function loadFrame(el) {
-
-        if (el.classList.contains('loaded')) return;
-
-        const iframe = document.createElement('iframe');
-        iframe.src = emulatorURL;
-        iframe.width = "100%";
-        iframe.height = "600";
-        iframe.loading = "lazy";
-        iframe.sandbox = "allow-scripts allow-same-origin";
-
-        el.classList.add('loaded');
-        el.innerHTML = "";
-        el.appendChild(iframe);
-    }
-
-    mw.hook('wikipage.content').add(function ($content) {
-
-        const frames = $content.find('.EmulatorFrame:not(.observer-set)');
-
-        frames.each(function () {
-
-            const el = this;
-            el.classList.add('observer-set');
-
-            const observer = new IntersectionObserver((entries, obs) => {
-
-                entries.forEach(entry => {
-
-                    if (entry.isIntersecting) {
-
-                        loadFrame(el);
-                        obs.disconnect();
-
-                    }
-
-                });
-
-            }, {
-                rootMargin: "200px"
-            });
-
-            observer.observe(el);
-
-        });
-
-    });
-
-});

@@ -23,17 +23,19 @@ $(document).ready(function () {
 
         <select id="filtroTipo" style="padding:8px; border-radius:5px; background:#1e1e1e; color:white;">
           <option value="">Todos los tipos</option>
-          <option>Bestia</option>
-          <option>Humanoide</option>
-          <option>No muerto</option>
-          <option>Gigante</option>
-          <option>Elemental</option>
-          <option>Monstruosidad</option>
-          <option>Fata</option>
-          <option>Demonio</option>
           <option>Aberración</option>
-          <option>Dragón</option>
+          <option>Bestia</option>
           <option>Celestial</option>
+          <option>Constructo</option>
+          <option>Demonio</option>
+          <option>Dragón</option>
+          <option>Elemental</option>
+          <option>Feérico</option>
+           <option>Gigante</option>
+          <option>Humanoide</option>
+          <option>Monstruosidad</option>
+          <option>No muerto</option>
+          <option>Planta</option>
         </select>
 
         <select id="filtroAlineamiento" style="padding:8px; border-radius:5px; background:#1e1e1e; color:white;">

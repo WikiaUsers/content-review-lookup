@@ -107,3 +107,10 @@ preloadTemplates_subpage =  "case-by-case" ;
 // 		}
 //     }
 // });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:BackToTopButton/code.js',
+    ]
+});

@@ -111,3 +111,7 @@ mw.hook('wikipage.content').add(function() {
         });
     }
 });
+
+document.getElementById('mirror-proceed-btn').addEventListener('click', function () {
+    document.getElementById('mirror-warning-overlay').style.display = 'none';
+});

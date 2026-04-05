@@ -21,3 +21,10 @@ importArticles({
         'u:dev:MediaWiki:Reconstitution.js',
     ]
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchUndelete.js',
+    ]
+});

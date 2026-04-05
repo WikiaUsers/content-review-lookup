@@ -128,3 +128,25 @@ function updateHeartopiaClocks() {
         }
     });
 }
+
+
+/* Preenchimento automático do código-fonte da Licença em Imagens */
+mw.hook('wikipage.content').add(function() {
+    // Verifica se estamos no modo de edição de um arquivo
+    if (mw.config.get('wgNamespaceNumber') === 6 && $.inArray(mw.config.get('wgAction'), ['edit', 'submit']) !== -1) {
+        var $editor = $('#wpTextbox1');
+        
+        // Só age se o editor estiver completamente vazio (página nova)
+        if ($editor.length && $editor.val().trim() === "") {
+            $editor.val("== LICENÇA ==\n{{Uso justo}}");
+        }
+    }
+    
+    // Suporte extra para a página de upload clássica
+    if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
+        var $uploadDesc = $('#wpUploadDescription');
+        if ($uploadDesc.length && $uploadDesc.val().trim() === "") {
+            $uploadDesc.val("== LICENÇA ==\n{{Uso justo}}");
+        }
+    }
+});

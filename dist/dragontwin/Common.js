@@ -5,9 +5,7 @@
 /* [[w:c:dev:AddRailModule]]
  * Ensure the latest content is displayed immediately
  */
-window.AddRailModule = [
-    { page: 'Template:RailModule/news', maxAge: 0 },    // [[Template:RailModule/news]]
-    { page: 'Template:RailModule/releases', maxAge: 0 } // [[Template:RailModule/releases]]
+window.AddRailModule = [{ page: 'Template:RailModule', maxAge: 0 } // [[Template:RailModule]]
 ];
 
 /* [[w:c:dev:WelcomeMessage]]

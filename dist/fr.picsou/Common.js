@@ -583,3 +583,46 @@ importArticles({
 
     ]
 });
+
+// Version compacte pour colorer pseudos et ajouter badge
+
+// Définition des pseudos et leurs styles
+const pseudos = {
+    "FantoDuck": { badge: { text: "Administrateur", color: "white", backgroundColor: "#FF4500" } },
+    "Quinquagésime McPicsou": { color: "#DAA520" }
+};
+
+// Fonction pour appliquer les styles
+function styliserPseudos() {
+    document.querySelectorAll('a.EntityHeader_name__2oRXg, .post__username').forEach(el => {
+        const nom = el.textContent.trim();
+        if (pseudos[nom]) {
+            const style = pseudos[nom];
+
+            // Couleur et texte en gras si défini
+            if (style.color) el.style.color = style.color;
+            el.style.fontWeight = "bold";
+
+            // Badge si défini
+            if (style.badge && !el.querySelector('.custom-role-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'custom-role-badge';
+                badge.textContent = style.badge.text;
+                badge.style.color = style.badge.color;
+                badge.style.backgroundColor = style.badge.backgroundColor;
+                badge.style.borderRadius = "5px";
+                badge.style.padding = "0 5px";
+                badge.style.marginLeft = "3px";
+                badge.style.fontWeight = "bold";
+                el.appendChild(badge);
+            }
+        }
+    });
+}
+
+// Observer pour détecter les ajouts dynamiques
+const observer = new MutationObserver(styliserPseudos);
+observer.observe(document.body, { childList: true, subtree: true });
+
+// Application immédiate au chargement
+styliserPseudos();

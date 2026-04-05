@@ -1,5 +1,6 @@
 // Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:AstralCalculator.js
 // [WIP] To-do: (1) Fix inaccuracies caused by a lower max time name amount. (2) Fix issues resulting from numbers >=1e1e3 with the time output.
+// Author note (2026-04-01 UTC): "i refuse to believe i wrote this. 💀 if there's going to be any changes to this script, it'll be a complete rewrite rather than deal with this atrocious abomination that's years behind what i know now"
 function addAstralCalculator() { // Function for ensuring all the calculator's variables and functions stay within.
     if (document.getElementById("AstralCalculator") !== null && document.getElementById("AstralCalculatorContainer") === null) {
         console.log("[Astral Calculator] [LOG]: ID located. Running script.");

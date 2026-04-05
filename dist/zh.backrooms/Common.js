@@ -1,12 +1,13 @@
+// 比[[MediaWiki:ImportJS]]更优先被加载
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:WallGreeting.js', // 留言墙问候语
-        'MediaWiki:Custom-ImprovedProfileTags.js' // 用户头衔
+        'MediaWiki:Custom-ImprovedProfileTags.js' // 用户样式化头衔
     ]
 });
 
-// 点击播放
+// 点击播放或暂停音频
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -31,13 +32,35 @@ importArticles({
     });
 })();
 
-// 内联CSS与Sitenotice切换
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 mw.hook("wikipage.content").add(function () {
+    // 单页内联CSS与CSS触发器
     $("span.import-css").each(function () {
-        mw.util.addCSS($(this).attr("data-css"));
+        var css = mw.util.addCSS($(this).attr("data-css"));
+        $(css.ownerNode).addClass("import-css")
+            .attr("data-css-hash", $(this).attr("data-css-hash"))
+            .attr("data-from", $(this).attr("data-from"))
+            .attr("data-trigger", $(this).attr("data-trigger"));
+        var trigger = $(this).attr("data-trigger");
+        var triggerOpened = false;
+        if (trigger != "none") {
+            css.disabled = true;
+            $(".csstrigger-" + trigger).click(function () {
+                css.disabled = !css.disabled;
+                triggerOpened = true;
+            });
+        }
+        $(".css-toggler").click(function () {
+            if ((trigger != "none" && triggerOpened) || (trigger == "none")) css.disabled = !css.disabled;
+        });
     });
 
+    // 播放或暂停所有音频
+    $(".audio-toggler").click(function () {
+        $("audio").get().forEach(function (audio) { if (audio.paused || audio.ended) { audio.play(); } else { audio.pause(); } });
+    });
+
+    // 站点公告切换
     $(".sitenotice-tab-container").each(function () {
         var container = $(this);
         function switchTab(offset) {
@@ -59,7 +82,7 @@ mw.hook("wikipage.content").add(function () {
 
 // 联立JS脚本页
 $.getJSON(mw.util.wikiScript("index"), {
-    title: "MediaWiki:Custom-import-scripts.json",
+    title: "MediaWiki:Custom-ImportScripts.json",
     action: "raw"
 }).done(function (result, status) {
     if (status != "success" || typeof (result) != "object") return;
@@ -764,12 +787,3 @@ mw.hook("wikipage.content").add(function () {
         $("table.interlang").makeCollapsible();
     });
 })();
-
-// 链入页面删除
-mw.hook("wikipage.content").add(function () {
-    if (config.wgCanonicalSpecialPageName != "Whatlinkshere") return;
-    $(".mw-whatlinkshere-tools a.mw-redirect").each(function () {
-        var url = mw.util.getUrl($(this)[0].title, { action: "delete" });
-        $(this).after(' | <a href="' + url + '">删除</a>');
-    });
-});

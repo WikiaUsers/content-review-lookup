@@ -1,3 +1,72 @@
+mw.loader.using(['jquery']).then(function () {
+    if (mw.config.get('wgAction') !== 'view') return;
+
+    // SFX remains in JS, as requested!
+    const sfxUrl = 'https://static.wikitide.net/animeoverloadwiki/images/d/dd/SFX.mp3'; 
+
+    // Pure HTML Skeleton. NO TEXT. NO IMAGES.
+    const loadingHTML = `
+        <div id="custom-loading-screen">
+            <div class="loading-logo"></div>
+            <div class="loading-text-wrapper">
+                <span class="base-text"></span><span class="overload-highlight"></span>
+            </div>
+            <div class="icon-container">
+                <div class="wave-icon icon-1"></div>
+                <div class="wave-icon icon-2"></div>
+                <div class="wave-icon icon-3"></div>
+                <div class="wave-icon icon-4"></div>
+                <div class="wave-icon icon-5"></div>
+                <div class="wave-icon icon-6"></div>
+                <div class="wave-icon icon-7"></div>
+                <div class="wave-icon icon-8"></div>
+                <div class="wave-icon icon-9"></div>
+                <div class="wave-icon icon-10"></div>
+                <div class="wave-icon icon-11"></div>
+            </div>
+        </div>
+    `;
+
+    $('body').append(loadingHTML);
+
+    const popSound = new Audio(sfxUrl);
+    popSound.volume = 0.5;
+
+    // Nuclear Click Interceptor
+    document.addEventListener('click', function(e) {
+        
+        const link = e.target.closest('a');
+        if (!link) return;
+
+        console.log("RADAR TRIGGERED! A link was clicked.");
+
+        const targetUrl = link.getAttribute('href');
+        const targetAttr = link.getAttribute('target');
+        if (!targetUrl) return;
+
+        const currentDomain = window.location.hostname;
+        const isInternalLink = targetUrl.startsWith('/') || targetUrl.includes(currentDomain);
+        const isAnchor = targetUrl.startsWith('#') || targetUrl.includes('javascript:');
+        const isEditAction = targetUrl.includes('action=') || targetUrl.includes('diff=');
+        const isNewTab = (targetAttr === '_blank');
+
+        if (isInternalLink && !isAnchor && !isEditAction && !isNewTab) {
+            
+            console.log("CHECKS PASSED! Firing loading screen for URL: " + targetUrl);
+            e.preventDefault(); 
+
+            popSound.currentTime = 0; 
+            popSound.play().catch(err => console.log("Audio blocked by browser restrictions"));
+
+            $('#custom-loading-screen').addClass('show-loading'); 
+
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 2000); 
+        }
+    }, true); 
+});
+
 /* Any JavaScript here will be loaded for all users on every page load */
 $(function () {
   // 1. Build the Search Box

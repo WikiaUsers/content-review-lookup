@@ -17,24 +17,24 @@ setTimeout(() => {
 // Later added images
 setTimeout(() => {
 	const observerRecentIamges = new MutationObserver(mutations => {
-	    for (const mutation of mutations) {
-	        if (mutation.type === "childList") {
-	            mutation.addedNodes.forEach(node => {
-	                if (node.nodeType === 1 && node.classList.contains("alice-carousel__stage-item")) {
+		for (const mutation of mutations) {
+			if (mutation.type === "childList") {
+				mutation.addedNodes.forEach(node => {
+					if (node.nodeType === 1 && node.classList.contains("alice-carousel__stage-item")) {
 
-					    setTimeout(() => {
-					    	document.querySelectorAll('.card-image img').forEach(img => {
+						setTimeout(() => {
+							document.querySelectorAll('.card-image img').forEach(img => {
 								img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-width-down/200');
 							});
 						}, 300);
-	                }
-	            });
-	        }
-	    }
+					}
+				});
+			}
+		}
 	});
 	observerRecentIamges.observe(document.body, {
-	    childList: true,
-	    subtree: true
+		childList: true,
+		subtree: true
 	});
 }, 500);
 
@@ -154,25 +154,25 @@ document.querySelectorAll('.mw-default-size').forEach(span => {
 
 // Lightbox --------------------------------------------------------------------
 const observer = new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-        if (mutation.type === "childList") {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === 1 && node.classList.contains("lightboxContainer")) {
-						
+	for (const mutation of mutations) {
+		if (mutation.type === "childList") {
+			mutation.addedNodes.forEach(node => {
+				if (node.nodeType === 1 && node.classList.contains("lightboxContainer")) {
+
 					setTimeout(() => {
 						// Link open in current tab by default
 						document.querySelectorAll('a[target="_blank"]').forEach(link => {
-						    link.removeAttribute('target');
+							link.removeAttribute('target');
 						});
 						// Image size change
 						document.querySelectorAll('.LightboxCarouselContainer img').forEach(img => {
-						    img.src = img.src.replace('latest?', 'latest/scale-to-width-down/55?');
+							img.src = img.src.replace('latest?', 'latest/scale-to-width-down/55?');
 						});
 					}, 800);
-                }
-            });
-        }
-    }
+				}
+			});
+		}
+	}
 });
 observer.observe(document.body, {
     childList: true,

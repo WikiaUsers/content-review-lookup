@@ -421,3 +421,17 @@ mw.hook('wikipage.content').add(function () {
   });
 
 });
+
+/* Template:Sailorverse*/
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", function () {
+      const link = this.getAttribute("data-link");
+      if (link) {
+        window.location.href = link;
+      }
+    });
+  });
+
+});

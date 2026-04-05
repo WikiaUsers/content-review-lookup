@@ -72,4 +72,4 @@ window.MassCategorizationGroups = ['sysop', 'moderador de contenido'];
 //                Asistente
 // =====================================
 
-importScript('Usuario:El Principe/Pythagoras.js');
+importScript('Usuario:El Principe/common.js');

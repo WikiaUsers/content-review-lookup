@@ -2,37 +2,20 @@
  * 所有用戶在加載任何頁面時，這裡的JavaScript都會加載
  */
 
-mw.log.deprecate(window, 'JSConfig', {});
+mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util', 'mediawiki.api']).then(function() {
 
-mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util']).then(function() {
-
-
+    // 1. 編輯頁面相關腳本加載
     if (mw.config.get('wgAction') === 'edit' || mw.config.get('wgAction') === 'submit' || mw.config.get('wgCanonicalSpecialPageName') === 'Search') {
-        /* scripts specific to editing pages */
-        importScript('MediaWiki:Common.js\/edit.js');
+        importScript('MediaWiki:Common.js/edit.js');
     } else {
         mw.loader.using('ext.visualEditor.desktopArticleTarget.init', function() {
             mw.libs.ve.addPlugin(function() {
-                importScript('MediaWiki:Common.js\/edit.js');
+                importScript('MediaWiki:Common.js/edit.js');
             });
         });
     }
 
-    /**
-     * Helper script for .hlist class in Common.css
-     * Add pseudo-selector class to last-child list items in IE8
-     * @source mediawiki.org/wiki/Snippets/Horizontal_lists
-     * @revision 6 (2014-08-23)
-     * @author [[User:Edokter]]
-     */
-    var profile = $.client.profile();
-    if (profile.name === 'msie' && profile.versionNumber === 8) {
-        mw.hook('wikipage.content').add(function($content) {
-            $content.find('.hlist').find('dd:last-child, dt:last-child, li:last-child').addClass('hlist-last-child');
-        });
-    }
-
-    /* 避免在主條目的註腳中出現捲軸框 */
+    // 2. 註腳捲軸優化
     if (!mw.config.get('wgCanonicalNamespace')) {
         $(function() {
             $('div#mw-content-text ol.references').each(function() {
@@ -42,378 +25,124 @@ mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util']).then(function() {
                     if (!$curobj) break;
                     if ($curobj.attr('id') === 'mw-content-text' || $curobj.prop('tagName').toLowerCase() === 'body') break;
                     if ($curobj.css('overflow').match(/(?: auto|scroll)/i) || $curobj.css('overflow-x').match(/(?:auto|scroll)/i) || $curobj.css('overflow-y').match(/(?:auto|scroll)/i)) {
-                        /* null */
                     } else continue;
                     if ((''+$curobj.attr('class')).split(' ').indexOf('noprint') >= 0) return;
                     needobjs.push($curobj.get(0));
                 } while (true);
-                $(needobjs)
-                    .css('overflow', 'visible')
-                    .css('overflow-x', 'visible')
-                    .css('overflow-y', 'visible')
-                    .css('border', '')
-                    .css('height', '')
-                    .css('max-height', '');
+                $(needobjs).css({'overflow': 'visible', 'overflow-x': 'visible', 'overflow-y': 'visible', 'border': '', 'height': '', 'max-height': ''});
             });
         });
     }
 
-    /**
-     * metaBox
-     * Funcionament de la Plantilla:Metacaixa
-     * Implementat per: Usuari:Peleguer.
-     * Actualitzat per Joanjoc seguint les indicacions d'en Martorell
-     */
-    function MetaCaixaInit() {
-        // S'executa al carregar-se la pàgina, si hi ha metacaixes,
-        // s'assignen els esdeveniments als botons
-        //alert('MetaCaixaInit');
-        var i = 0; // Inicialitzem comptador de caixes
-        for (i = 0; i <= 9; i++) {
-            var vMc = document.getElementById('mc' + i);
-            if (!vMc) break;
-            //alert('MetaCaixaInit, trobada Metacaixa mc' + i);
-            var j = 1, // Inicialitzem comptador de botons dins de la caixa
-                vPsIni = 0; // Pestanya visible inicial
-            for (j = 1; j <= 9; j++) {
-                var vBt = document.getElementById('mc' + i + 'bt' + j);
-                if (!vBt) break;
-                //alert('MetaCaixaInit, trobat botó mc' + i + 'bt' + j);
-                vBt.onclick = MetaCaixaMostraPestanya; // A cada botó assignem l'esdeveniment onclick
-                //alert(vBt.className);
-                if (vBt.className === 'mcBotoSel') vPsIni = j; // Si tenim un botó seleccionat, en guardem l'index
-            }
-            //alert('mc=' + i + ', ps=' + j + ', psini=' + vPsIni);
-            if (vPsIni === 0) { // Si no tenim cap botó seleccionat, n'agafem un aleatòriament
-                vPsIni = 1 + Math.floor((j - 1) * Math.random());
-                //alert('Activant Pestanya a l\'atzar; _mc' + i + 'bt' + vPsIni + '_');
-                try {
-                	document.getElementById('mc' + i + 'ps' + vPsIni).style.display = 'block';
-            		document.getElementById('mc' + i + 'ps' + vPsIni).style.visibility = 'visible';
-            		document.getElementById('mc' + i + 'bt' + vPsIni).className = 'mcBotoSel';
-                } catch(e) {
-                	// TypeError: null is not an object (evaluating 'document.getElementById('mc'+i+'ps'+vPsIni).style') 
+    // 3. 自訂 Wiki 導航側欄
+    $(function() {
+        if ($('#p-custom-navigation').length === 0) {
+            $.get(mw.util.wikiScript('api'), {
+                action: 'parse',
+                page: 'MediaWiki:Wiki-navigation',
+                format: 'json'
+            }, function (data) {
+                if (data.parse && data.parse.text) {
+                    var html = data.parse.text['*'];
+                    var $newBox = $('<section>')
+                        .addClass('portal portlet')
+                        .attr('id', 'p-custom-navigation')
+                        .append($('<h2>').text('自訂導航'))
+                        .append($('<div>').addClass('body').html(html));
+                    $('#WikiaRail, #mw-panel').append($newBox);
                 }
-            }
-        }
-    }
-$(function() {
-  if ($('#p-wiki-navigation-adjacent').length === 0) { // 檢查是否已存在
-    var $newNav = $('<div id="p-wiki-navigation-adjacent" class="portlet"><h3>Wiki 導航</h3><div class="pBody"><ul></ul></div></div>');
-    var $fandomSidebar = $('#WikiaRail'); // **請務必檢查 Fandom 左側欄的實際 ID，並在此處更正**
-
-    if ($fandomSidebar.length) {
-      $newNav.insertAfter($fandomSidebar); // 將新的導航容器插入到 Fandom 左側欄之後
-
-      // 獲取 MediaWiki:Wiki-navigation 的內容
-      $.get('/api.php?action=parse&page=MediaWiki:Wiki-navigation&format=json&prop=text', function(data) {
-        if (data && data.parse && data.parse.text && data.parse.text['*']) {
-          var content = data.parse.text['*'];
-          $newNav.find('.pBody ul').html(content);
-          // **您可能需要進一步處理 content 中的 Wiki 連結，使其成為可點擊的連結。
-          // 這可能需要使用 jQuery 遍歷連結並進行調整。**
-        } else {
-          console.log('無法獲取 MediaWiki:Wiki-navigation 的內容');
-        }
-      });
-    } else {
-      console.log('找不到 Fandom 的左側欄元素，請檢查 #WikiaRail 是否正確');
-    }
-  }
-});
-
-    function MetaCaixaMostraPestanya() {
-        // S'executa al clicar una pestanya,
-        // aquella es fa visible i les altres s'oculten
-        var vMcNom = this.id.substr(0, 3), // A partir del nom del botó, deduïm el nom de la caixa
-            vIndex = this.id.substr(5, 1), // I l'index
-            i = 1;
-        for (i = 1; i <= 9; i++) { // busquem totes les pestanyes d'aquella caixa
-            //alert(vMcNom + 'ps' + i);
-            var vPsElem = document.getElementById(vMcNom + 'ps' + i);
-            if (!vPsElem) break;
-            if (vIndex == i) { // Si és la pestanya bona la mostrem i canviem la classe de botó
-                vPsElem.style.display = 'block';
-                vPsElem.style.visibility = 'visible';
-                document.getElementById(vMcNom + 'bt' + i).className = 'mcBotoSel';
-            } else { // Sinó, l'ocultem i canviem la classe de botó
-                vPsElem.style.display = 'none';
-                vPsElem.style.visibility = 'hidden';
-                document.getElementById(vMcNom + 'bt' + i).className = 'mcBoto';
-            }
-        }
-        return false; // evitem la recàrrega de la pàgina
-    }
-    $(MetaCaixaInit);
-
-    if (!+mw.user.options.get('discussiontools-newtopictool') || !+mw.user.options.get('discussiontools-betaenable')) {
-        /* 智能讨论页编辑（新建） */
-        $(function() {
-            var catalk = $('#ca-talk');
-            if (catalk.hasClass('new') && mw.config.get('wgNamespaceNumber') != 2) {
-                var a = $('a:first', catalk);
-                a.attr('href', a.attr('href') + '&section=new');
-            }
-        });
-    }
-
-    /**
-     * Magic editintros
-     * Description: Adds editintros on disambiguation pages, BLP pages, policy pages and guidlines.
-     * Maintainers: [[User:RockMFR]]
-     */
-    function addEditIntro(name) {
-        $('.mw-editsection, #ca-edit').find('a').each(function(i, el) {
-            el.href = $(this).attr('href') + '&editintro=' + name;
-        });
-    }
-    if (mw.config.get('wgNamespaceNumber') === 0) {
-        $(function() {
-            if (document.getElementById('disambigbox')) addEditIntro('Template:Disambig_editintro');
-        });
-        $(function() {
-            var cats = mw.config.get('wgCategories');
-            if (!cats) return;
-            if ($.inArray('在世人物', cats) !== -1) addEditIntro('Template:BLP_editintro');
-            if (cats.some(function(cat){return /\d{4}年台灣電視劇集/.test(cat)})) addEditIntro('Template:TVdrama_editintro');
-        });
-    } else if (mw.config.get('wgNamespaceNumber') === 4) {
-        $(function() {
-            var cats = mw.config.get('wgCategories');
-            if (!cats) return;
-            if ($.inArray('維基百科方針與指引完整列表', cats) !== -1) addEditIntro('Template:Policy editintro');
-        });
-    }
-
-    /**
-     * &withCSS= and &withJS= URL parameters
-     * Allow to try custom scripts from MediaWiki space
-     * without editing personal .css or .js files
-     * @source www.mediawiki.org/wiki/Snippets/Load_JS_and_CSS_by_URL
-     * @rev 6
-     */
-    var extraCSS = mw.util.getParamValue('withCSS'),
-        extraJS = mw.util.getParamValue('withJS');
-    if (extraCSS) {
-        if (extraCSS.match(/^MediaWiki:[^&<>=%#]*\.css$/)) {
-            importStylesheet(extraCSS);
-        } else {
-            mw.notify('只允许从MediaWiki命名空间加载。', {title: '无效的withCSS值'});
-        }
-    }
-    if (extraJS) {
-        if (extraJS.match(/^MediaWiki:[^&<>=%#]*\.js$/)) {
-            importScript(extraJS);
-        } else {
-            mw.notify('只允许从MediaWiki命名空间加载。', {title: '无效的withJS值'});
-        }
-    }
-
-    /* 页面历史加&hilight=高亮 */
-    var hilight = mw.util.getParamValue('hilight');
-    if (mw.config.get('wgAction') === 'history' && hilight) {
-        $.each(hilight.split(','), function(_, v) {
-            $('input[name=oldid][value=' + v + ']').parent().addClass('not-patrolled');
-        });
-    }
-
-    /* Main page hacks */
-    if (mw.config.get('wgIsMainPage') && mw.config.get('wgAction') === 'view') {
-        /* Remove red links */
-        $('#mw-content-text a.new').contents().unwrap();
-    }
-});
-
-$(function() {
-    /* 修正摺疊後定位變化 */
-    if (location.hash) location.href = location.hash;
-
-    /* 引用錯誤標籤名字解碼 */
-    $('.anchordecodeme').each(function() {
-        $(this).text(decodeURIComponent($(this).text().replace(/\.([0-9A-F]{2})/g, '%$1')));
-     });
-
-    /* Check for any client-side simplified/traditional Chinese conversion */
-    /* This routine must be placed here to make sure the field is inserted in time */
-    $('#antispam-container').append(
-        $('<input type="text" />').attr({
-            id: 'wpAntiConv',
-            value: '\u6c49\u6f22'
-        })
-    );
-
-});
-
-// per [[Special:Diff/64919534/64925950]]，展开折叠按钮的颜色
-$(function collapseButtonColor() {
-    var $toggle = $('.mw-collapsible-toggle');
-    if ($toggle.length > 0) {
-        if ($toggle.parent()[0].style.color) $toggle.find('a').css('color', 'inherit');
-    }
-});
-
-if (mw.config.get('wgUserName') === null) {
-	mw.loader.load('ext.gadget.preserve-variant');
-}
-// 將所有時間轉換為 CST（台灣時間）
-function convertToCST() {
-  const times = document.querySelectorAll('span[class*="timestamp"], .mw-changeslist-date, .mw-logevent-date');
-
-  times.forEach(el => {
-    // 嘗試將內容當作 UTC 時間處理
-    const utcTime = new Date(el.textContent + ' UTC');
-    if (!isNaN(utcTime)) {
-      const options = {
-        timeZone: 'Asia/Taipei',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      };
-      // 格式化為台灣時間顯示
-      el.textContent = new Intl.DateTimeFormat('zh-TW', options).format(utcTime) + '（台北時間）';
-    }
-  });
-}
-
-// 等待頁面載入完成後執行
-mw.loader.using('mediawiki.util', function () {
-  $(convertToCST);
-});
-$(function () {
-    // 確保網頁載入後才執行
-    if (mw.config.get('wgNamespaceNumber') < 0) return; // 排除特殊頁面
-
-    // 從 MediaWiki:Wiki-navigation 載入內容
-    $.get(mw.util.wikiScript('api'), {
-        action: 'parse',
-        page: 'MediaWiki:Wiki-navigation',
-        format: 'json'
-    }, function (data) {
-        if (data.parse && data.parse.text) {
-            var html = data.parse.text['*'];
-
-            // 創建新側欄區塊並插入內容
-            var $newBox = $('<section>')
-                .addClass('portal portlet') // Fandom 有可能使用不同 class，可依照實際調整
-                .attr('id', 'p-custom-navigation')
-                .append($('<h2>').text('自訂導航'))
-                .append($('<div>').addClass('body').html(html));
-
-            // 插入到右側欄（視 Fandom 結構而定）
-            $('#WikiaRail, #mw-panel').append($newBox);
+            });
         }
     });
-});
-// 僅保留「簡體中文」與「繁體中文」語言選項
-$(function () {
-    // 確保語言選單存在
-    var $langDropdown = $('.wds-dropdown__content');
-    if ($langDropdown.length) {
-        $langDropdown.find('a').each(function () {
-            var text = $(this).text().trim();
-            if (text !== '簡體' && text !== '繁體') {
-                $(this).remove(); // 移除非簡中或繁中的語言
+
+    // 4. 僅保留「簡体」與「繁體」語言選項
+    $(function () {
+        var filterLang = function() {
+            var $langDropdown = $('.wds-dropdown__content');
+            if ($langDropdown.length) {
+                $langDropdown.find('a').each(function () {
+                    var text = $(this).text().trim();
+                    if (text !== '簡体' && text !== '繁體' && text !== '簡體') {
+                        $(this).remove(); 
+                    }
+                });
             }
-        });
-    }
-});
+        };
+        filterLang();
+        setTimeout(filterLang, 1000);
+    });
 
-
-
-
-/* MEDIAWIKI JQUERY FUNCTION */
-(function ($, mw) {
-////////////////////////////////
-// MEDIAWIKI JQUERY FUNCTION
-
-/** FANDOM SVG logo **/
-$('.wds-community-header__wordmark').html(
-  $('<a>',{
-    'accesskey':'z',
-    'href':'/zh/wiki/%E7%A4%BE%E5%8C%BA%E4%B8%AD%E5%BF%83'
-  })
-  .append(
-    $('<img>',{
-      'src':'https://vignette.wikia.nocookie.net/central/images/8/8f/FANDOM-logo.svg',
-      'width':'250',
-      'height':'57',
-      'alt':'社区中心'
-    })
-  )
-);
-
-/* Discussion Icon */
-$('nav > ul > li:nth-child(3) > div > ul > li:nth-child(1) > a > span').prepend('<svg class="wds-icon-tiny wds-icon navigation-item-icon" id="wds-icons-discussions-tiny" viewBox="0 0 12 12"><path d="M1,12c-0.13,0-0.26-0.02-0.38-0.08C0.24,11.77,0,11.4,0,11V4c0-0.55,0.45-1,1-1s1,0.45,1,1v4.59l0.29-0.29 C2.48,8.11,2.73,8,3,8h4c0.55,0,1,0.45,1,1s-0.45,1-1,1H3.41l-1.71,1.71C1.52,11.9,1.26,12,1,12z M11.38,8.92 C11.76,8.77,12,8.4,12,8V2c0-1.1-0.9-2-2-2H5C3.9,0,3,0.9,3,2v3c0,1.1,0.9,2,2,2h3.59l1.71,1.71C10.48,8.9,10.74,9,11,9 C11.13,9,11.26,8.98,11.38,8.92z M10,2v3.59L9.71,5.29C9.52,5.11,9.27,5,9,5H5V2H10z"></path></svg> '); // too lazy to jQuery-ize this
-
-////////////////////////////////
-// END
-} (jQuery, mediaWiki) );
-mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
-    // 呼叫 API 取得條目數
+    // 5. 搜尋框條目數顯示
     new mw.Api().get({
         action: 'query',
         meta: 'siteinfo',
         siprop: 'statistics'
     }).done(function (data) {
         var articles = data.query.statistics.articles.toLocaleString();
-        var input = document.querySelector('#p-search input[type="search"], #searchInput');
-        if (input) {
-            input.placeholder = '搜尋 ' + articles + ' 個條目';
-        }
-    });
-});
-
-(function() {
-    // 1. 定義要插入的容器 (通常是底欄的 bottom-bar)
-    var $footerBar = $('.wds-global-footer__bottom-bar');
-    
-    if ($footerBar.length > 0 && $('#custom-footer-icons').length === 0) {
-        // 2. 建立存放標籤的容器
-        var $iconsContainer = $('<div id="custom-footer-icons" style="display: flex; gap: 15px; align-items: center;"></div>');
-
-        // --- A. CC BY-SA 標誌 ---
-        var ccIcon = 
-            '<a href="https://creativecommons.org/licenses/by-sa/3.0/deed.zh_TW" target="_blank">' +
-                '<img src="https://www.mediawiki.org/static/images/footer/creative-commons-88x31.png" alt="知識共享署名-相同方式共享" width="88" height="31">' +
-            '</a>';
-
-        // --- B. Powered by Fandom 標誌 ---
-        var fandomIcon = 
-            '<a href="https://www.fandom.com" target="_blank">' +
-                '<img src="https://static.wikia.nocookie.net/central/images/c/c5/Fandom_logo.png" alt="Fandom" width="88" height="31" style="background: #002a32; padding: 2px; border-radius: 3px;">' +
-            '</a>';
-
-        // --- C. Powered by MediaWiki 標誌 ---
-        var mwIcon = 
-            '<a href="https://www.mediawiki.org/" target="_blank">' +
-                '<img src="https://www.mediawiki.org/static/images/footer/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31">' +
-            '</a>';
-
-        // 3. 將按鈕組合起來並放入頁面
-        $iconsContainer.append(ccIcon, fandomIcon, mwIcon);
-        $footerBar.append($iconsContainer);
-    }
-})();
-
-mw.loader.using('mediawiki.api').then(function () {
-    var api = new mw.Api();
-
-    api.get({
-        action: 'query',
-        meta: 'siteinfo',
-        siprop: 'statistics'
-    }).done(function (data) {
-        var pages = data.query.statistics.pages;
-
-        // 找 Fandom 搜尋框
         var $search = $('#searchInput, .searchInput, input[type="search"]');
-
         if ($search.length) {
-            $search.attr('placeholder', '搜尋 ' + pages.toLocaleString() + ' 個條目');
+            $search.attr('placeholder', '搜尋 ' + articles + ' 個條目');
         }
     });
+
+    // 6. 自訂底欄圖標
+    (function() {
+        var $footerBar = $('.wds-global-footer__bottom-bar');
+        if ($footerBar.length > 0 && $('#custom-footer-icons').length === 0) {
+            var $iconsContainer = $('<div id="custom-footer-icons" style="display: flex; gap: 15px; align-items: center;"></div>');
+            var ccIcon = '<a href="https://creativecommons.org/licenses/by-sa/3.0/deed.zh_TW" target="_blank"><img src="https://www.mediawiki.org/static/images/footer/creative-commons-88x31.png" alt="CC" width="88" height="31"></a>';
+            var fandomIcon = '<a href="https://www.fandom.com" target="_blank"><img src="https://static.wikia.nocookie.net/central/images/c/c5/Fandom_logo.png" alt="Fandom" width="88" height="31" style="background: #002a32; padding: 2px; border-radius: 3px;"></a>';
+            var mwIcon = '<a href="https://www.mediawiki.org/" target="_blank"><img src="https://www.mediawiki.org/static/images/footer/poweredby_mediawiki_88x31.png" alt="MW" width="88" height="31"></a>';
+            $iconsContainer.append(ccIcon, fandomIcon, mwIcon);
+            $footerBar.append($iconsContainer);
+        }
+    })();
+
+    // 7. 時間轉換為 CST (台灣時間)
+    $(function() {
+        $('.timestamp, .mw-changeslist-date, .mw-logevent-date').each(function() {
+            var text = $(this).text();
+            if (text.indexOf('（台北時間）') === -1) {
+                var utcTime = new Date(text + ' UTC');
+                if (!isNaN(utcTime)) {
+                    var options = { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                    $(this).text(new Intl.DateTimeFormat('zh-TW', options).format(utcTime) + '（台北時間）');
+                }
+            }
+        });
+    });
+
+    /* ============================================================
+       8. 終極解決方案：強制修正「紅鏈」顏色 (DOM 監聽模式)
+       ============================================================ */
+    function applyRedColor() {
+        // 1. 強制讓所有 class="new" 的連結變紅
+        $('a.new').attr('style', 'color: #cc0000 !important;');
+        
+        // 2. 針對搜尋結果頁面中「在本wiki建立頁面」的提示區
+        $('.mw-search-createlink a').each(function() {
+            var href = $(this).attr('href') || '';
+            // 判斷是否為紅鏈或含有 redlink 參數
+            if (href.indexOf('redlink=1') !== -1 || $(this).hasClass('new')) {
+                $(this).attr('style', 'color: #cc0000 !important; font-weight: bold; text-decoration: underline;');
+            }
+        });
+    }
+
+    // 啟動監聽器，應對 Fandom 的非同步(AJAX)載入內容
+    var observer = new MutationObserver(function(mutations) {
+        applyRedColor();
+    });
+
+    // 開始監控整張網頁的變化
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // 初始執行一次
+    $(function() {
+        applyRedColor();
+    });
+
 });
