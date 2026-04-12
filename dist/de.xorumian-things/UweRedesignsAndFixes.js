@@ -88,6 +88,21 @@ $("head").append(`<style>
 		rotate: 270deg;
 		translate: -6.3px -4px;
 	}
+	span[data-letter="7"][Σ]::after,
+	span[data-letter="7"][Σ]::before {
+		overflow: hidden;
+		height: 22px;
+	}
+	span[data-letter="7"][Σ]::after {
+		translate: 0 -12px;
+	}
+	span[data-letter="7"][Σ]::before {
+		content: attr(data-letter);
+		font-size: 36px;
+		position: absolute;
+		scale: 1 -1;
+		translate: 0 10px;
+	}
 	</style>`
 );
 document.querySelectorAll('.page-header__title').forEach(h1 => {
@@ -101,7 +116,7 @@ document.querySelectorAll('.page-header__title').forEach(h1 => {
 		.replace(/ꟼ/g, '<span data-letter="P" style="scale:-1 1">ꟼ</span>')
 		.replace(/ɥ/g, '<span data-letter="µ" style="scale:-1 1">ɥ</span>')
 		.replace(/Ʒ/g, '<span data-letter="3">Ʒ</span>')
-		.replace(/ʒ/g, '<span data-letter="3" style="translate:0 6px">ʒ</span>')
+		.replace(/ȝ/g, '<span data-letter="3" style="translate:0 6px">ȝ</span>')
 		.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>')
 		.replace(/ɵ/g, '<span data-letter="э">ɵ</span>')
 		.replace(/δ/g, '<span data-letter="o">δ</span>')
@@ -109,7 +124,8 @@ document.querySelectorAll('.page-header__title').forEach(h1 => {
 		.replace(/ɑ/g, '<span data-letter="d" style="overflow:hidden;height:20px;translate:0 .7px;">ɑ</span>')
 		.replace(/Ψ/g, '<span data-letter="I" style="margin:0 10px;">Ψ</span>')
 		.replace(/φ/g, '<span data-letter="e" φ style="rotate:270deg;translate:3.5px 1px;scale:1 -1;margin-right:2px;">φ</span>')
-		.replace(/ɾ/g, '<span data-letter="n" style="overflow:hidden;height:20px;scale:-1 1;translate:0 .7px;width:11px;margin-right:1px;">ɾ</span>');
+		.replace(/ɾ/g, '<span data-letter="n" style="overflow:hidden;height:20px;scale:-1 1;translate:0 .7px;width:11px;margin-right:1px;">ɾ</span>')
+		.replace(/Σ/g, '<span data-letter="7" Σ style="scale:-1 1;">Σ</span>');
 		/*.replace(/ɽ/g, 'r<span data-letter="j" style="scale:-1 1">ɽ</span>');*/
 });
 

@@ -91,6 +91,8 @@ UserTagsJS.modules.custom = {
 	'Kaiyie': ['threadmoderator'],
 	'The Shashophille': ['threadmoderator'],
 	'RXRunner27': ['threadmoderator'],
+	// Junior Discussion Moderators
+	
 	// Retired Wiki Staff 
 	// Retired Bureaucrats
 	'RabbyDevs': ['retired-staff'],

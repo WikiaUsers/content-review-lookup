@@ -165,17 +165,84 @@ $.getJSON(mw.util.wikiScript("index"), {
 		if (w.logo) $(logo).children().attr('src', w.logo);
 		if (w.light || w.dark) $(background).css('background-image', 'url(' + (mw.config.get('isDarkTheme') ? w.dark || w.light: w.light || w.dark) + ')');
 	}
-})();
+})();{{史诗|}}
 
 // 可选配置 — 留空则使用默认值 （AI代码，用于给每个新编辑的用户发规则）
 window.welcomeMessage = {
   enabled: true,                  // 启用脚本
-  adminUsername: 'ExampleAdmin',  // 管理员用户名（对应 $4）
-  adminNickname: 'Example Admin', // 管理员展示名（对应 $3）
-  messageTitle: 'Welcome, $1!',   // 消息标题
+  adminUsername: '维基管理员',  // 管理员用户名（对应 $4）
+  adminNickname: '维基管理员', // 管理员展示名（对应 $3）
+  messageTitle: '欢迎加入我们, $1!',   // 消息标题
   // 消息正文（支持HTML和变量）
   messageText: '$1 ，欢迎加入florr.io中文维基！\n在您开始编辑前，请认真阅读主页中的 Help:新人编辑者 与 Florr.io_中文维基:封禁标准。前者是对于新用户的建议与指引，后者是本维基的规则。感谢您的理解与支持，现在可以开始您的编辑了！',
   debug: false,                   // 关闭调试日志
-  testAllEdits: false,            // 关闭测试模式（仅首次编辑触发）
+  testAllEdits: true,            // 关闭测试模式（仅首次编辑触发）
   preferTalk: false               // 优先使用消息墙
 };
+
+// ====== 全局随机数生成器 ======(AI代码)
+window.Random = function(min, max, isInteger) {
+  // 参数处理（支持单参数/多参数调用）
+  const hasMin = (typeof min === 'number');
+  const hasMax = (typeof max === 'number');
+  const toInteger = (typeof isInteger === 'boolean') ? isInteger : false;
+  
+  // 范围校验与默认值
+  const realMin = hasMin ? min : 0;
+  const realMax = hasMax ? max : (hasMin ? min : 1);
+  const [finalMin, finalMax] = realMin > realMax ? [realMax, realMin] : [realMin, realMax];
+  
+  // 核心算法（梅森旋转）
+  const value = _mersenneTwister();
+  
+  // 结果转换
+  if (toInteger) {
+    return Math.floor(value * (finalMax - finalMin + 1)) + finalMin;
+  }
+  return value * (finalMax - finalMin) + finalMin;
+};
+
+// ====== 梅森旋转算法实现 ======
+(function() {
+  // 初始化状态（单例模式）
+  if (window._mtState) return;
+  
+  const N = 624, M = 397;
+  const state = new Array(N);
+  let index = N + 1;
+  const seed = new Date().getTime();
+
+  // 初始化状态数组
+  state = seed >>> 0;
+  for (let i = 1; i < N; i++) {
+    const s = state[i - 1] ^ (state[i - 1] >>> 30);
+    state[i] = ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + 
+               (s & 0x0000ffff) * 1812433253 + i;
+    state[i] >>>= 0;
+  }
+
+  // 生成随机数（私有函数）
+  window._mersenneTwister = function() {
+    if (index >= N) {
+      for (let k = 0; k < N - M; k++) {
+        const y = (state[k] & 0x80000000) | (state[k + 1] & 0x7fffffff);
+        state[k] = state[k + M] ^ (y >>> 1)^ ((y & 1) ? 0x9908b0df : 0);
+      }
+      for (let k = N - M; k < N - 1; k++) {
+        const y = (state[k] & 0x80000000) | (state[k + 1] & 0x7fffffff);
+        state[k] = state[k + M - N] ^ (y >>> 1)^ ((y & 1) ? 0x9908b0df : 0);
+      }
+      const y = (state[N - 1] & 0x80000000) | (state & 0x7fffffff);
+      state[N - 1] = state[M - 1] ^ (y >>> 1)^ ((y & 1) ? 0x9908b0df : 0);
+      index = 0;
+    }
+
+    let y = state[index++];
+    y ^= y >>> 11;
+    y^= (y << 7) & 0x9d2c5680;
+    y^= (y << 15) & 0xefc60000;
+    y^= y >>> 18;
+    
+    return (y >>> 0) / 4294967296; // 转换为[0,1)区间
+  };
+})();

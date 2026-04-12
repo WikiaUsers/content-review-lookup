@@ -73,6 +73,7 @@ $(function() {
        ----------------------------------------------------------- */
     $('.mw-parser-output a[title]')
         .not('[href*="/File:"], [href*="/Image:"]')
+        .not(':has(img)')
         .each(function() {
             $(this).data('title', $(this).attr('title'))
                    .removeAttr('title')
@@ -95,6 +96,7 @@ $(function() {
 }
     // This is just calling the function above
     stripImageTitles();
+    stripImageTitles('.portable-infobox');
 
     // Re-apply for dynamically loaded content (Fandom lazy/AJAX content) -
     const observer = new MutationObserver(function(mutations) {

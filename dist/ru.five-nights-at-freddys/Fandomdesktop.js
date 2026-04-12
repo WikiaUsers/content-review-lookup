@@ -23,7 +23,7 @@ if (mw.config.get("wgCanonicalNamespace") == "") {
     var BGcategories = mw.config.get("wgCategories");
         for (var ct = 0; ct < BGcategories.length; ct++) {
         if (BGcategories[ct] == "Five Nights at Freddy's") {
-            BGbackgroundD = BG('FNaF 1 BG.png');
+            BGbackgroundD = BG('FNaF 1 BG.jpg');
             BGbackgroundL = BG('FNaF 1 BG L.png');
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's 2") {

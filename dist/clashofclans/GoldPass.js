@@ -384,6 +384,7 @@ $(document).ready(function() {
     	"Fire Heart": {level: 18, type: 0},
     	"Flame Blower": {level: 18, type: 0},
     	"Stun Blaster": {level: 18, type: 0},
+    	"Rocket Backpack": {level: 27, type: 1},
     };
     // Equipment level penalty is a 2D array - first entry is for Common equipment, second entry for Epic equipment
 		var difficultyEquipLevelPenalty = [[0,0,0,0,3],[0,0,0,0,6]];
@@ -407,10 +408,10 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots", "Frost Flake"];
     		break;
     	case ("Dragon Duke"):
-    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster"];
+    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster", "Rocket Backpack"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Rocket Backpack"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1186,7 +1187,8 @@ $(document).ready(function() {
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
 			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Fire Heart": [10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,45],
-			"Stun Blaster": [40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,90]
+			"Stun Blaster": [40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,90],
+			"Rocket Backpack": [20,23,26,29,32,35,38,41,44,47,50,53,56,59,62,64,66,68,70,72,74,76,78,80,82,84,86],
 		};
 		var dictHPBonus = {
 			"Barbarian Puppet": [309,385,467,564,649,734,836,940,1045,1155,1265,1445,1755,2087,2444,2703,3093,3366],
@@ -1217,7 +1219,8 @@ $(document).ready(function() {
 			"Frost Flake": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
 			"Fire Heart": [900,1200,1450,1750,2000,2300,2600,2850,3150,3400,3700,4000,4250,4550,4800,5100,5450,5600],
 			"Flame Blower": [500,700,900,1100,1300,1500,1700,1850,2000,2150,2300,2450,2600,2750,2900,3000,3050,3100],
-			"Stun Blaster": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400]
+			"Stun Blaster": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],
+			"Rocket Backpack": [900,988,1077,1165,1254,1342,1431,1519,1608,1696,1785,1873,1962,2050,2139,2227,2316,2404,2493,2581,2670,2758,2847,2935,3024,3112,3200],
 		};
 		var dictHPRecoveryBonus = {
 			"Barbarian Puppet": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
@@ -1231,7 +1234,8 @@ $(document).ready(function() {
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000],
 			"Flame Blower": [150,250,350,450,550,650,750,850,950,1050,1150,1250,1300,1350,1400,1450,1500,1500],
-			"Stun Blaster": [150,250,350,450,550,650,750,850,950,1050,1100,1150,1180,1210,1240,1270,1290,1300]
+			"Stun Blaster": [150,250,350,450,550,650,750,850,950,1050,1100,1150,1180,1210,1240,1270,1290,1300],
+			"Rocket Backpack": [300,380,460,540,620,700,780,860,940,1020,1100,1180,1260,1340,1420,1500,1580,1660,1740,1800,1860,1910,1950,1975,1990,1995,2000],
 		};
 		var dictASBonus = {
 			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],

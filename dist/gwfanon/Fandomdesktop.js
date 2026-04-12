@@ -57,8 +57,21 @@ $( function eraIconsOasis() {
 
 $(function eraIconsOasis() {
     if ($('.tagfanonu').length) {
+
+        var seen = new Set();
+
         $('.tagfanonu').each(function() {
-            var $marker = $(this).show();
+            var $marker = $(this);
+            var text = $marker.text().trim();
+
+            if (seen.has(text)) {
+                $marker.remove(); // or .hide()
+                return;
+            }
+
+            seen.add(text);
+            $marker.show();
+
             if (mw.config.get('skin') == 'fandomdesktop') {
                 $('.page-header__actions').first().prepend($marker);
             } else {

@@ -44,6 +44,9 @@ window.UserTagsJS = {
             Blupo: ["cookie"],
             Pyrixil: ["trusted-market-editor"],
             "Mustache.17": ["trusted-market-editor"],
+            BGMMasterYT: ["Game-Developer"],
+            "1pinto": ["Game-Contributor"],
+            AtomicStriker3: ["Game-Contributor"],
         },
         
         userfilter: {
@@ -62,6 +65,8 @@ window.UserTagsJS = {
         
         "wiki-committee": { u: "Wiki Committee", link: "Project:Staff#Wiki Committee", order: 4 },
         "trusted-market-editor": { u: "Trusted Market Editor", link: "Project:Staff#Market Editor", order: 1/0 },
+        "Game-Contributor": { u: "Game Contributor", link: "Developers", order: 1/0 },
+        "Game-Developer": { u: "Game Developer", link: "Developers", order: 1/0 },
         
         cookie: { u: "Cookie", link: "User:Blupo" }
     },

@@ -15,7 +15,6 @@
         // Configuration options
         options: $.extend({
             threshold: 200,
-            slideWidth: 300,
             duration: 400
         }, window.railCarousel || {}),
         
@@ -193,8 +192,8 @@
          * Updates the visual position of the carousel
          */
         position: function($wrapper, current, total, $stage) {
-            var offset = current * this.options.slideWidth;
-            $stage.css('transform', 'translate3d(-' + offset + 'px, 0, 0)');
+            var offset = current * 100;
+            $stage.css('transform', 'translate3d(-' + offset + '%, 0, 0)');
             $wrapper.find('.arrow-prev').prop('disabled', current === 0).toggleClass('disabled', current === 0);
             $wrapper.find('.arrow-next').prop('disabled', current === total - 1).toggleClass('disabled', current === total - 1);
         }

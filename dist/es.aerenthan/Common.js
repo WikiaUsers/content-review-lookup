@@ -27,12 +27,12 @@ $(document).ready(function () {
           <option>Bestia</option>
           <option>Celestial</option>
           <option>Constructo</option>
-          <option>Demonio</option>
           <option>Dragón</option>
           <option>Elemental</option>
           <option>Feérico</option>
            <option>Gigante</option>
           <option>Humanoide</option>
+          <option>Infernal</option>
           <option>Monstruosidad</option>
           <option>No muerto</option>
           <option>Planta</option>
@@ -189,4 +189,82 @@ $(document).ready(function () {
 
 });
 
+});
+//TABLA DOTES
+mw.hook('wikipage.content').add(function () {
+	const contenedor = document.getElementById("contenedorBuscadorDotes");
+	const tabla = document.getElementById("tablaDotes");
+	if (!contenedor || !tabla) return;
+	// Evitar duplicar el buscador si la página se re-renderiza
+	if (contenedor.dataset.init === "true") return;
+	contenedor.dataset.init = "true";
+	contenedor.innerHTML = `
+		<div class="buscador-container" style="background:#1e1e1e; padding:15px; border-radius:10px; margin-bottom:15px; color:white;">
+			<input type="text" id="busquedaNombreDotes" placeholder="🔍 Buscar dote..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:none; background:#1e1e1e; color:white;">
+			<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+				<select id="filtroTipoDotes" style="padding:8px; border-radius:5px; background:#1e1e1e; color:white;">
+					<option value="">Todos los tipos</option>
+					<option value="Combate">Combate</option>
+					<option value="Mágica">Mágica</option>
+					<option value="Defensa">Defensa</option>
+					<option value="Utilidad">Utilidad</option>
+					<option value="Social">Social</option>
+					<option value="Exploración">Exploración</option>
+				</select>
+				<select id="filtroTierDotes" style="padding:8px; border-radius:5px; background:#1e1e1e; color:white;">
+								<option value="">Todos los tiers</option>
+								<option value="S">S</option>
+								<option value="A">A</option>
+								<option value="B">B</option>
+								<option value="C">C</option>
+								<option value="D">D</option>
+				</select>
+				<button id="btnBuscarDotes" style="padding:10px 15px; border:none; border-radius:5px; background:#4CAF50; color:white; cursor:pointer;">Buscar</button>
+				<button id="btnResetDotes" style="padding:10px 15px; border:none; border-radius:5px; background:#777; color:white; cursor:pointer; margin-left:10px;">Reset</button>
+			</div>
+		</div>
+	`;
+	const inputNombre = document.getElementById("busquedaNombreDotes");
+	const filtroTipo = document.getElementById("filtroTipoDotes");
+	const filtroTier = document.getElementById("filtroTierDotes");
+	const btnBuscar = document.getElementById("btnBuscarDotes");
+	const btnReset = document.getElementById("btnResetDotes");
+	function normalizarTexto(texto) {
+		return texto
+		.toLowerCase()
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "");
+	}
+	function filtrarTabla() {
+		const texto = normalizarTexto(inputNombre.value);
+		const tipo = filtroTipo.value;
+		const tier = filtroTier.value;
+		const filas = tabla.querySelectorAll("tr");
+		filas.forEach((fila, index) => {
+			if (index === 0) return; // cabecera
+			const celdas = fila.querySelectorAll("td");
+			if (!celdas.length) return;
+			const nombre = normalizarTexto(celdas[0].innerText);
+			const tipoCelda = celdas[1].innerText.trim();
+			const tierCelda = celdas[4].innerText.trim();
+			let mostrar = true;
+			if (texto && !nombre.includes(texto)) {
+				mostrar = false;
+			}
+			if (tipo && tipoCelda !== tipo) {
+				mostrar = false;
+			}
+			if (tier && tierCelda !== tier) {
+				mostrar = false;
+			}
+			fila.style.display = mostrar ? "" : "none";
+		});
+	}
+	btnBuscar.addEventListener("click", filtrarTabla);
+	btnReset.addEventListener("click", function () {
+		inputNombre.value = "";
+		filtroTipo.value = "";
+		filtroTier.value = "";
+		filtrarTabla();
+	});
 });

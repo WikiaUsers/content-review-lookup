@@ -104,3 +104,73 @@ $(document).ready(function() {
 		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
 	}
 });
+
+// Randomises a daily character
+//*Code by:[[User:Urexill]]
+//
+ (function() {
+     // console log errors. if things fail, check the console //
+     window.handleIconError = function(img) {
+        const fallback = img.getAttribute('data-fallback');
+        const final = img.getAttribute('data-final');
+
+        if (fallback) {
+            console.log("First name icon failed, trying full name...");
+            img.src = fallback;
+            img.removeAttribute('data-fallback');
+        } else if (img.src !== final) {
+            console.log("Full name icon failed, using Unknown Person.png fallback...");
+            img.src = final;
+        }
+    };
+
+    mw.hook('wikipage.content').add(function() {
+        var display = document.getElementById('daily-spotlight-display');
+        if (!display) {
+            return;
+        }
+        var apiParams = "/api.php?action=query&list=categorymembers&cmtitle=Category:Fan_Characters&cmlimit=500&format=json";
+        
+        fetch(apiParams)
+        .then (res => res.json())
+        .then (data => {
+            var pages = data.query.categorymembers;
+            if (!pages || pages.length === 0) {
+                display.innerHTML = "No characters found in Category:Fan Characters...";
+                return;
+            
+            }
+            
+            var now = new Date();
+            var seed = (now.getFullYear() * 10000) + ((now.getMonth() + 1) * 100) + now.getDate();
+            var chosenPage = pages[seed % pages.length];
+            
+            var fullName = chosenPage.title; //looks for Lastname Firstname only//
+            var nameParts = fullName.split(' ');
+            var firstName = nameParts[nameParts.length - 1]; //lets the script use the Name (icon).png variable alongside Full Name (icon).png)//
+ 
+            var firstNameIcon = "/wiki/Special:FilePath/" + encodeURIComponent(firstName + " (icon).png");
+            var fullNameIcon = "/wiki/Special:FilePath/" + encodeURIComponent(fullName + " (icon).png");
+            var finalFallback = "/wiki/Special:FilePath/Unknown_Person.png"; //uses the unknown person.png for fallback in case it cannot find anything using the two previous variables//
+             
+            display.innerHTML = `
+            <div class="char-daily-box">
+            <div class="char-daily-header">🔥Fansekai OC of the Day🔥</div>
+            <a href="/wiki/${encodeURIComponent(fullName)}">
+            <div class="char-icon-wrapper">
+            <img id="daily-char-img"
+            src="${firstNameIcon}"
+            data-fallback="${fullNameIcon}"
+            data-final="${finalFallback}"
+            onerror="handleIconError(this)">
+            </div>
+            <div class="char-daily-name">${fullName}</div>
+            </a>
+            </div>`;
+        })
+        .catch(err => {
+            console.error("Spotlight Error:", err);
+            display.innerHTML = "Error loading character.";
+        });
+    });
+})();

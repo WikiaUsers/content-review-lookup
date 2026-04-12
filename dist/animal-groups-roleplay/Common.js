@@ -23,8 +23,6 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'AJCW Archive': ['archive'],
-    'Pastelfeathers': ['art'],
-    'Lilacquil': ['art'],
 };
 
 

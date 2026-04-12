@@ -3,9 +3,7 @@ importArticles({
 	    type: 'script',
 	    articles: [
 	        "u:ru.wikicorporate:MediaWiki:Fixes.js",
-	        "u:ru.wikicorporate:MediaWiki:Scroll.js"
+	        "u:ru.wikicorporate:MediaWiki:Scroll.js",
+	        "u:ru.wikicorporate:MediaWiki:Wikificator.js"
 	    ]
 	});
-
-/* Конфигурация для dev:AddRailModule */
-window.AddRailModule = [{page: 'Template:CodeRail', maxAge: 0}];

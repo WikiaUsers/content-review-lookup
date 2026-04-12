@@ -17,20 +17,21 @@ PROCEED AT YOUR OWN RISK.
     hour12: false
   });
 
+  const weekday = now.toLocaleDateString(undefined, {
+    weekday: "long"
+  });
+
   const localDate = now.toLocaleDateString(undefined, {
-    weekday: "long",
     day: "2-digit",
     month: "short",
     year: "numeric"
   });
 
   window.DisplayClockJS = {
-    format:
-      "%2H : %2M : %2S | %{Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday}w | %B %2d, %Y",
-
+    format: `%2H : %2M : %2S | ${weekday} | %B %2d, %Y`,
     hoverText:
       `In this town, timing is everything. Miss it, and you’re yesterday’s news. ` +
-      `Local time: ${localTime} | ${localDate}`
+      `Local time: ${localTime} | ${weekday}, ${localDate}`
   };
 })();
 /********* UTC Clock Format Ends HERE **********/

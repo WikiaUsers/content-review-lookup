@@ -1,6 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 console.log("COMMON.JS Executed");
 importScript('MediaWiki:DynamicRemainingItemsTable.js');
+importScript('MediaWiki:TaskTableFeatures.js');
 
 (function () {
   console.log("Searching for Checkbox tracker (robust v2)");

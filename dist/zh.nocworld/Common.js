@@ -1,6 +1,25 @@
-/* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
-/* 来自Back Rooms 中文 Wiki */
+/**
+ * 以下代码借鉴自 Backrooms 中文 Wiki
+ * 来源：https://backrooms.fandom.com/zh/wiki/MediaWiki:Common.js
+ * 
+ * 包含功能：
+ * 1. 音频播放控制器（单个 + 全部）
+ * 2. 动态 CSS 导入（import-css）
+ * 3. WallGreeting（留言墙问候语）
+ * 4. 用户样式化头衔
+ */
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js'           // 留言墙问候语
+    ]
+});
+
+// ==================== 单个音频播放控制 ====================
 (function () {
+    'use strict';
+    
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
         const targetId = e.getAttribute('data-media-id');
@@ -8,11 +27,19 @@
             console.error('No data-media-id present on element', e);
             return;
         }
-        const target = document.getElementsByClassName('media-id-' + targetId)[0];
-        if (!target) {
+        
+        const container = document.getElementsByClassName('media-id-' + targetId)[0];
+        if (!container) {
             console.error('No element found with .media-id-' + targetId, e);
             return;
         }
+        
+        const target = container.getElementsByClassName('mw-file-element')[0];
+        if (!target) {
+            console.error('No audio element found within .media-id-' + targetId, e);
+            return;
+        }
+        
         e.addEventListener('click', function () {
             console.log(target);
             if (target.paused || target.ended) {
@@ -24,73 +51,24 @@
     });
 })();
 
-mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
-mw.hook("wikipage.content").add(function () {
-    $("span.import-css").each(function () {
-    	mw.util.addCSS($(this).attr("data-css"));
+mw.loader.load(['mediawiki.util', 'mediawiki.Title']);
+
+mw.hook('wikipage.content').add(function () {
+    'use strict';
+    
+    // 动态 CSS 导入（基础版，无触发器功能）
+    $('span.import-css').each(function () {
+        mw.util.addCSS($(this).attr('data-css'));
     });
     
-    $(".sitenotice-tab-container").each(function() {
-		var container = $(this);
-		function switchTab(offset) {
-			return function() {
-				var tabs = container.children(".sitenotice-tab").toArray();
-				var no = Number(container.find(".sitenotice-tab-no")[0].innerText) + offset;
-				var count = tabs.length;
-				if (no < 1) no = count;
-				else if (no > count) no = 1;
-				for (var i = 0; i < count; i++)
-					tabs[i].style.display = (i + 1 == no ? null : "none");
-				container.find(".sitenotice-tab-no")[0].innerText = no;
-			};
-		}
-		container.find(".sitenotice-tab-arrow.prev").click(switchTab(-1));
-		container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
-	});
-});
-
-$.getJSON(mw.util.wikiScript("index"), {
-    title: "MediaWiki:Custom-import-scripts.json",
-    action: "raw"
-}).done(function (result, status) {
-    if (status != "success" || typeof (result) != "object") return;
-    var scripts = result[mw.config.get("wgPageName")];
-    if (scripts) {
-        if (typeof (scripts) == "string") scripts = [scripts];
-        importArticles({ type: "script", articles: scripts });
-    }
-});
-
-(function (mw, $) {
-	"use strict";
-	if (mw.config.get('wgPageName').toLowerCase().endsWith('.css')) {
-		$.ajax({
-			url: mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName')) + '?action=raw&text/css',
-			dataType: 'text',
-			success: function (cssContent) {
-				var styleElement = document.createElement('style');
-				styleElement.type = 'text/css';
-				styleElement.textContent = cssContent;
-				document.head.appendChild(styleElement);
-				console.log('CSS已成功加载。');
-			},
-			error: function () {
-				console.error('CSS加载失败，请尝试刷新或检查CSS页面。');
-			}
-		});
-	}
-})(mediaWiki, jQuery);
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WallGreeting.js',
-    ]
-});
-// [[Template:连接点]]非管理员设置type=0时弹出警告
-$(document).on('click', '#wpSave', function() {
-    var text = $('#wpTextbox1').val();
-    if (text.includes('|type=0') && !mw.config.get('wgUserGroups').includes('sysop')) {
-        return confirm('注意：非管理员强制跳过分类需经管理员审核，滥用将导致封禁！');
-    }
+    // 播放或暂停所有音频
+    $('.audio-toggler').click(function () {
+        $('audio').get().forEach(function (audio) {
+            if (audio.paused || audio.ended) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        });
+    });
 });

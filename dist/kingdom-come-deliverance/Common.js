@@ -17,3 +17,41 @@
     importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
 }(this, mediaWiki));
 /* </nowiki> */
+
+/* for true toggle */
+
+document.addEventListener("click", function (e) {
+  const el = e.target.closest(".swap");
+  if (!el) return;
+
+  el.classList.toggle("active");
+});
+
+/**********************************/
+/* code wrap */
+function applyWrap(el) {
+  if (el.dataset.wrapped) return;
+  el.dataset.wrapped = "1";
+
+  el.innerHTML = el.textContent.replace(/([_-])/g, "$1<wbr>");
+}
+
+function scan() {
+  const isMobile = document.body.classList.contains("skin-minerva");
+
+  document.querySelectorAll(".wrap-id").forEach(applyWrap);
+
+  if (isMobile) {
+    document.querySelectorAll(".wrap-id-mobile").forEach(applyWrap);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", scan);
+
+const observer = new MutationObserver(scan);
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+/**********************************/

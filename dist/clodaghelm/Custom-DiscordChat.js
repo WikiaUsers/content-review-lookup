@@ -151,7 +151,7 @@
                 i++;
             }
             
-            var headerLabel = window.DiscordChat.messages['Custom-DiscordChat-header-label'] || 'Community Chat';
+            var headerLabel = ' ' + (window.DiscordChat.messages['Custom-DiscordChat-header-label'] || 'Community Chat').trim();
             var joinLabel = window.DiscordChat.messages['Custom-DiscordChat-join-label'] || 'Join';
             
             var element = $('<section class="rail-module DiscordChat">' +

@@ -28,6 +28,7 @@
 		// Due to load order differences between site and personal JS, the usage of looped intervals are used here to ensure an event listener is added to the proper file input.
 		// Delay is reasonable to have minimal performance impact. The code safely ignores the lack of the MultiUpload script, while accommodating users who choose to use said personal-only script.
 		function createInterval(searchingID, intervalName, delay = 200, msCap = 120e3) {
+			intervalName ??= `Interval${Object.keys(intervals).length + 1}`;
 			intervals[intervalName] = setInterval(function() {
 				const elem = document.getElementById(searchingID);
 				if (elem) {
@@ -39,7 +40,7 @@
 			}, delay);
 		}
 		const intervals = {};
-		createInterval('wpUploadFile', 'uploadInterval');
+		createInterval('wpUploadFile', 'upload');
 		createInterval('multiupload', 'multiupload');
 		
 		input.value = summaryText;

@@ -23,22 +23,24 @@ PFD_templates = [
     {
         label:   'Gameplay screenshot',
         desc:    '{{File\n| desc = \n| type = screenshot \n| uploader = \n}}',
+        license: 'Gameplay',
     },
     'Group header',
     {
         label:   'Asset (game files)',
         desc:    '{{File\n| desc = \n| type = asset \n| source = \n| archive = \n}}\n',
+        license: 'GameFiles',
     },
     {
         label:   'Reconstructed asset',
         desc:    '{{File\n| desc = \n| type = reconstructed \n| designer = \n| Author = \n|  Other versions = \n}}\n',
+        license: 'Reconstructed',
     },
     {
         label:   'Other',
         desc:    '{{File\n| desc = \n| type = \n}}\n',
     },
 ];
-PFD_license = 'Nolicense';
 PFD_requireLicense = true;
 
 /* AutoCreateUserPages */
@@ -56,7 +58,7 @@ window.welcomeMessage = {
   adminUsername: 'Gaia94',  // $4
   adminNickname: '$4',  // $3
   messageTitle: 'Welcome to the Mope.io Wiki!',
-  messageText: 'Hey there $1 — I\'m $4, an admin of the Mope.io Wiki. Welcome, and thank you for your contribution: We hope you continue editing with us! We are a wiki dedicated to documenting all things <a href="https://mopeio.fandom.com/wiki/Mope.io">Mope.io</a>. \n\n \n\nPlease be sure to read and follow the <a href="https://mopeio.fandom.com/wiki/Project:Rules">general rules</a> of the wiki. In addition, note the <a href="https://mopeio.fandom.com/wiki/Help:Manual_of_Style">Manual of Style</a> and <a href="https://mopeio.fandom.com/wiki/Help:Layout_Guide">Layout Guide</a> when editing, and the <a href="https://mopeio.fandom.com/wiki/Help:Files">file policy</a> when uploading images. A full list of local wiki policies can be viewed <a href="https://mopeio.fandom.com/wiki/Category:Policies">here</a>. \n\n \n\nVisit <a href="https://mopeio.fandom.com/wiki/Forum:Index">the forums</a> to stay up-to-date on wiki-related discussions, consensus, votes, and make suggestions. If you want to talk about Mope.io and share gameplay screenshots, fanart, or fanon ideas, check out <a href="https://mopeio.fandom.com/f">the discussions</a>! \n\n \n\nIf you have any questions or concerns, you can make a post in the <a href="https://mopeio.fandom.com/wiki/Forum:Help">help forum</a>, or reply to this message. Thanks, and once again, welcome to the Mope.io Wiki!',
+  messageText: 'Greetings $1, and welcome to the Mope.io Wiki! Thank you for your contribution: We hope you continue editing with us! We are a wiki dedicated to documenting all things <a href="https://mopeio.fandom.com/wiki/Mope.io">Mope.io</a>. \n\n \n\nPlease be sure to read and follow the <a href="https://mopeio.fandom.com/wiki/Project:Rules">general rules</a> of the wiki. In addition, note the <a href="https://mopeio.fandom.com/wiki/Help:Manual_of_Style">Manual of Style</a> and <a href="https://mopeio.fandom.com/wiki/Help:Layout_Guide">Layout Guide</a> when editing, and the <a href="https://mopeio.fandom.com/wiki/Help:Files">file policy</a> when uploading images. A full list of local wiki policies can be viewed <a href="https://mopeio.fandom.com/wiki/Category:Policies">here</a>. \n\n \n\nVisit <a href="https://mopeio.fandom.com/wiki/Forum:Index">the forums</a> to stay up-to-date on wiki-related discussions, consensus, votes, and make suggestions. If you want to talk about Mope.io and share gameplay screenshots, fanart, or fanon ideas, check out <a href="https://mopeio.fandom.com/f">the discussions</a>! \n\n \n\nIf you have any questions or concerns, you can make a post in the <a href="https://mopeio.fandom.com/wiki/Forum:Help">help forum</a>, or reply to this message. Thanks, and once again, welcome to the Mope.io Wiki!',
   debug: false,
   testAllEdits: false,
   preferTalk: false,
@@ -144,6 +146,5 @@ importArticles({
     type: 'script',
     articles: [
         'u:diepio:Miscellaneous.js',
-        'u:dev:MediaWiki:WelcomeMessage.js',
     ]
 });//End SI*/

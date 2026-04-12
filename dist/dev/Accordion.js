@@ -1,247 +1,253 @@
-/*
- * @module        Accordion.js
- * @description   Adds collapsible accordion component into pages.
- * @author        Polymeric
- * @license       CC-BY-SA 3.0
- * @notes         Please install accordion.css for complete functionality.
-*/
+/**
+ * @module			Accordion
+ * @description		Adds collapsible accordion components into pages.
+ * @author			[[User:Polymeric]]
+ * @license			CC-BY-SA 3.0
+ * @notes			Please install accordion.css for complete functionality.
+ */
 
-mw.hook('wikipage.content').add(function() {
-  'use strict';
+(function() {
+	'use strict';
 
-  // Double run protection.
-  //if (window.accordionLoaded) return;
+	const devAccordion = {
+		shouldAttachEvents: true,
+		types: ['text', 'links'],
+		controls: ['Space', 'Enter', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'Home', 'End'],
+		classNames: {
+			wrapper: 'accordions__wrapper',
+			upgraded: 'upgraded__accordion',
+			nested: 'nested__accordion',
+			animated: 'is-animated',
+			panelHiding: 'is-hiding',
+			panelShowing: 'is-showing',
+			accordion: 'accordion',
+			textAccordion: 'accordion__text',
+			linksAccordion: 'accordion__links',
+			header: 'accordion--header',
+			panel: 'accordion--panel',
+			icon: 'accordion__icon',
+			iconArrow: 'accordion__icon--arrow',
+			iconPlus: 'accordion__icon--plus',
+			iconPlusH: 'accordion__icon--plus-h',
+			iconPlusV: 'accordion__icon--plus-v',
+		},
+		ids: {
+			wrapper: 'accordion-$1',
+			accordion: 'accordion-$1-$2',
+			header: 'accordion-$1-$2--header',
+			panel: 'accordion-$1-$2--panel',
+		},
 
-  window.accordionLoaded = true;
+		icons: function() {
+			return {
+				'arrow': '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#000" class="' + this.classNames.icon + ' ' + this.classNames.iconArrow + '" aria-hidden="true"><path d="M14.83 16.42L24 25.59l9.17-9.17L36 19.25l-12 12-12-12z"/></svg>',
+				'plus': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="#000" class="' + this.classNames.icon + ' ' + this.classNames.iconPlus + '" aria-hidden="true"><path d="M 19 12.994 L 5 12.994 L 5 10.994 L 19 10.994 L 19 12.994 Z" class="' + this.classNames.iconPlusH + '"></path><path d="M 5 -13 L 19 -13 L 19 -11 L 5 -11 L 5 -13 Z" class="' + this.classNames.iconPlusV + '" style="transform: rotate(90deg);"></path></svg>',
+			};
+		},
 
-  importArticle({ article: 'u:dev:MediaWiki:Accordion.css' });
+		removeDataset: function(target) {
+			for (var key in target.dataset) {
+				delete target.dataset[key];
+			}
+		},
 
-  var accordionWrapper = document.querySelectorAll('.accordions__wrapper');
-  var icons = {
-    'arrow':  '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#000" class="accordion__icon accordion__icon--arrow" aria-hidden="true"><path d="M14.83 16.42L24 25.59l9.17-9.17L36 19.25l-12 12-12-12z"/></svg>',
-    'plus': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="#000" class="accordion__icon accordion__icon--plus" aria-hidden="true"><path d="M 19 12.994 L 5 12.994 L 5 10.994 L 19 10.994 L 19 12.994 Z" class="accordion__icon--plus-h"></path><path d="M 5 -13 L 19 -13 L 19 -11 L 5 -11 L 5 -13 Z" class="accordion__icon--plus-v" style="transform: rotate(90deg);"></path></svg>'
-  };
+		setAttributes: function(el, attrs) {
+			for (var key in attrs) {
+				el.setAttribute(key, attrs[key]);
+			}
+		},
 
-  // Upgrade each first-level accordion.
-  accordionWrapper.forEach(function(elem) {
-    upgradeAccordionDOM(elem);
-  });
+		keyboardControls: function(target, code) {
+			const prevAccordion = target.parentNode.previousElementSibling;
+			const nextAccordion = target.parentNode.nextElementSibling;
+			const accordionWrapper = target.parentNode.parentNode;
 
-  // Re-selecting accordion wrappers with upgraded content so we can also
-  // upgrade nested accordions.
-  accordionWrapper = document.querySelectorAll('.accordions__wrapper.upgraded__accordion');
+			switch (code) {
+				case 'Space':
+				case 'Enter':
+					target.click();
+					break;
 
-  accordionWrapper.forEach(function(elem) {
-    var nestedAccordion = elem.querySelectorAll('.accordions__wrapper');
+				case 'ArrowUp':
+				case 'ArrowLeft':
+					if (prevAccordion !== null) {
+						prevAccordion.querySelector('.' + this.classNames.header).focus();
+					}
+					break;
 
-    if (nestedAccordion.length > 0) {
-      nestedAccordion.forEach(function(elem) {
-        upgradeAccordionDOM(elem);
+				case 'ArrowDown':
+				case 'ArrowRight':
+					if (nextAccordion !== null) {
+						nextAccordion.querySelector('.' + this.classNames.header).focus();
+					}
+					break;
 
-        nestedAccordion = elem.querySelectorAll('.accordions__wrapper .accordion');
+				case 'Home':
+					accordionWrapper.firstElementChild.querySelector('.' + this.classNames.header).focus();
+					break;
 
-        nestedAccordion.forEach(function(elem) {
-          elem.classList.add('nested-accordion');
-        });
-      });
-    }
+				case 'End':
+					accordionWrapper.lastElementChild.querySelector('.' + this.classNames.header).focus();
+					break;
+			}
+		},
 
-    elem.removeAttribute('data-accordions-type');
-    elem.removeAttribute('data-animation-duration');
-  });
+		toggleAccordion: function(header) {
+			const panel = header.nextElementSibling;
+			const listItemsCount = header.parentElement._devAccordionData.listItems;
+			const headerAriaLabel = header.hasAttribute('aria-expanded') ? header.innerText : header.innerText.concat('; Expanded list with ').concat(listItemsCount).concat(' element').concat(listItemsCount > 1 ? 's' : '');
 
-  function upgradeAccordionDOM(elem) {
-    var accordions = elem.querySelectorAll('.accordion');
-    var type = elem.getAttribute('data-accordions-type');
-    var classes = {
-      'main': 'accordion__' + type,
-      'header': 'accordion__' + type + '--header',
-      'panel': 'accordion__' + type + '--panel'
-    };
+			header.toggleAttribute('aria-expanded');
+			panel.toggleAttribute('aria-hidden');
 
-    elem.classList.add('upgraded__accordion');
+			if (header.hasAttribute('aria-label')) header.setAttribute('aria-label', headerAriaLabel);
+		},
 
-    accordions.forEach(function(elem) {
-      // Change .accordion's tag from <div> to <section>.
-      var section = document.createElement('section');
-      section.innerHTML = elem.innerHTML;
-      elem.replaceWith(section);
+		manageAnimationStates: function(accordion, eventType) {
+			const isHiding = accordion.lastElementChild.hasAttribute('aria-hidden');
 
-      // Update header and panel classes.
-      var nestedAccordion = section.querySelectorAll('.accordions__wrapper');
-      var accordionHeader = section.querySelector('.accordion--header');
-      var accordionPanel = section.querySelector('.accordion--panel');
+			if (eventType === 'transitionstart') {
+				if (isHiding) {
+					accordion.classList.add(this.classNames.panelHiding);
+				} else {
+					accordion.classList.add(this.classNames.panelShowing);
+				}
+			} else if (eventType === 'transitionend') {
+				accordion.classList.remove(this.classNames.panelHiding, this.classNames.panelShowing);
+			}
+		},
 
-      section.classList.add('accordion', classes.main);
-      accordionHeader.classList.add(classes.header);
-      accordionPanel.classList.add(classes.panel);
+		upgradeAccordion: function(accordion, data, wrapperIndex, accordionIndex) {
+			const header = accordion.querySelector('.' + this.classNames.header);
+			const panel = accordion.querySelector('.' + this.classNames.panel);
+			const isNested = accordion.parentElement.closest('.' + this.classNames.accordion);
+			const nestedAccordions = accordion.querySelectorAll('.' + this.classNames.accordion);
+			const hasNested = nestedAccordions.length > 0;
+			const isExpanded = header.dataset.ariaExpanded === 'true';
+			const headerId = this.ids.header.replace('$1', wrapperIndex).replace('$2', accordionIndex);
+			const panelId = this.ids.panel.replace('$1', wrapperIndex).replace('$2', accordionIndex);
+			const listItemsCount = panel.querySelectorAll('li').length || 0;
+			const headerAriaLabel = header.dataset.ariaExpanded ? header.innerText : header.innerText.concat('; Expanded list with ').concat(listItemsCount).concat(' element').concat(listItemsCount > 1 ? 's' : '');
 
-      // Adds header icon.
-      if (nestedAccordion.length > 0) {
-        accordionHeader.insertAdjacentHTML('afterbegin', icons.plus);
-      } else {
-        accordionHeader.insertAdjacentHTML('afterbegin', icons.arrow);
-      }
+			header.insertAdjacentHTML('afterbegin', hasNested ? this.icons().plus : this.icons().arrow);
 
-      // Accordion a11y: respond to clicks and keyboard buttons as well.
-      // 
-      // SPACE/ENTER: Open selected accordion.
-      // ARROW UP/ARROW LEFT: Go to the previous accordion of the list.
-      // ARROW DOWN/ARROW RIGHT: Go to the next accordion of the list.
-      // HOME: Go to the first accordion of the list.
-      // END: Go to the last accordion of the list.
-      accordionHeader.addEventListener('click', function() {
-        var ariaState = accordionHeader.getAttribute('aria-expanded');
+			if (isExpanded) header.toggleAttribute('aria-expanded');
+			if (!isExpanded) panel.toggleAttribute('aria-hidden');
 
-        if (ariaState === 'true') {
-          collapseAccordion();
-        } else {
-          expandAccordion();
-        }
-      });
+			if (data.type === 'links') header.setAttribute('aria-label', headerAriaLabel);
 
-      window.addEventListener('keydown', function(event) {
-        if (event.target === accordionHeader) keyboardControls(event.code);
-      });
+			this.setAttributes(header, {
+				'tabIndex': 0,
+				'role': 'button',
+				'id': headerId,
+				'aria-controls': panelId,
+			});
 
-      function keyboardControls(code) {
-        var prevAccordion = accordionHeader.parentNode.previousElementSibling,
-            nextAccordion = accordionHeader.parentNode.nextElementSibling,
-            accordionWrapper = accordionHeader.parentNode.parentNode;
+			this.setAttributes(panel, {
+				'role': 'region',
+				'id': panelId,
+				'aria-labelledby': headerId,
+			});
 
-        switch(code) {
-          case 'Space':
-          case 'Enter':
-            event.preventDefault();
-            accordionHeader.click();
-          break;
+			this.removeDataset(header);
 
-          case 'ArrowUp':
-          case 'ArrowLeft':
-            if (prevAccordion !== null) {
-              event.preventDefault();
-              prevAccordion.querySelector('.accordion--header').focus();
-            }
-          break;
+			accordion.classList.add(data.type === 'text' ? this.classNames.textAccordion : this.classNames.linksAccordion);
+			if (isNested) accordion.classList.add(this.classNames.nested);
+			accordion.setAttribute('id', this.ids.accordion.replace('$1', wrapperIndex).replace('$2', accordionIndex));
 
-          case 'ArrowDown':
-          case 'ArrowRight':
-            if (nextAccordion !== null) {
-              event.preventDefault();
-              nextAccordion.querySelector('.accordion--header').focus();
-            }
-          break;
+			accordion._devAccordionData = {
+				listItems: listItemsCount,
+			};
+		},
 
-          case 'Home':
-            event.preventDefault();
-            accordionWrapper.querySelector('.accordion:first-child > .accordion--header').focus();
-          break;
+		getAccordionData: function(accordionWrapper) {
+			const type = accordionWrapper.dataset.accordionsType;
+			const animationDuration = Number(accordionWrapper.dataset.animationDuration);
 
-          case 'End':
-            event.preventDefault();
-            accordionWrapper.querySelector('.accordion:last-child > .accordion--header').focus();
-          break;
-        }
-      }
+			return {
+				type: this.types.includes(type) ? type : 'text',
+				animationDuration: !isNaN(animationDuration) ? animationDuration : 0,
+			};
+		},
 
-      // We use a data-type attribute so editors can specify the initial
-      // state of the accordion component. Then we make it into an actual
-      // aria-attribute that also shows/hides it from assistive technologies.
-      // Once the aria-attribute has been created with it's respective value,
-      // we remove the data-type one as we don't need it anymore.
-      var ariaExpandVal = accordionHeader.getAttribute('data-aria-expanded');
-      // @todo: Add proper support for animations (like animating closing/
-      // opening a panel). Currently only icons are animated.
-      var animationDuration = section.parentNode.getAttribute('data-animation-duration');
+		getAccordionWrappers: function() {
+			if (!this.pageContent) return;
 
-      if (animationDuration !== null) {
-        section.parentNode.style.setProperty('--accordion-animation-duration', ' ' + animationDuration + 'ms');
-        section.parentNode.classList.add('is-animated');
-      }
-      /* var contentsHeight = accordionPanel.offsetHeight; */
+			const wrappers = this.pageContent.querySelectorAll('.' + this.classNames.wrapper);
 
-      accordionHeader.setAttribute('aria-expanded', ariaExpandVal);
+			if (wrappers.length === 0) return;
 
-      ariaExpandVal === 'true' ? expandAccordion() : collapseAccordion();
-      accordionHeader.removeAttribute('data-aria-expanded');
+			for (var i = 0; i < wrappers.length; i++) {
+				const data = this.getAccordionData(wrappers[i]);
+				const accordions = wrappers[i].children;
 
-      function expandAccordion() {
-        accordionHeader.setAttribute('aria-expanded', 'true');
-        accordionPanel.setAttribute('aria-hidden', 'false');
-      }
-    
-      function collapseAccordion() {
-        accordionHeader.setAttribute('aria-expanded', 'false');
-        accordionPanel.setAttribute('aria-hidden', 'true');
-      }
+				wrappers[i].setAttribute('id', this.ids.wrapper.replace('$1', i));
 
-      // Adds the amount of list elements into the aria-label when the user expands
-      // a link accordion. This way the user is always contextualized with the
-      // accordion's contents and can determine beforehand wether it's worth
-      // navigating through it or not.
-      if (section.classList.contains('accordion__links')) {
-        var listItems = section.querySelectorAll('.accordion--panel li');
-        var header = section.querySelector('.accordion--header');
+				for (var j = 0; j < accordions.length; j++) {
+					this.upgradeAccordion(accordions[j], data, i, j);
+				}
 
-        header.addEventListener('click', function() {
-          var listItemsCount = listItems.length;
-          var headerLabel = header.textContent;
-          // @todo: i18n these strings.
-          // I feel like there's a simpler way to do this but I'm just too
-          // dumb/lazy to figure it out. :^)
-          var updatedHeaderLabel = {
-            'singular': headerLabel + '; Expanded list with ' + listItemsCount + ' element',
-            'plural': headerLabel + '; Expanded list with ' + listItemsCount + ' elements'
-          };
+				this.removeDataset(wrappers[i]);
 
-          if (header.getAttribute('aria-expanded') === 'true' && listItemsCount === 1) {
-            // The .replace() method removes a newline generated the
-            // "headerLabel" variable.
-            header.setAttribute('aria-label', updatedHeaderLabel.singular.replace(/(\r\n|\n|\r)/gm, ''));
-          } else if (header.getAttribute('aria-expanded') === 'true' && listItemsCount !== 1) {
-            header.setAttribute('aria-label', updatedHeaderLabel.plural.replace(/(\r\n|\n|\r)/gm, ''));
-          } else {
-            // We remove the "aria-label" attribute if the accordion is collapsed
-            // because it should *not* match the element's visible text. 
-            header.removeAttribute('aria-label');
-          }
-        });
-      }
-    });
-  }
+				wrappers[i].classList.add(this.classNames.upgraded);
 
-  // Give an id to each accordion and update classes based off of it.
-  var accordions = document.querySelectorAll('.accordion');
+				if (data.animationDuration <= 0) continue;
 
-  for (var i = 0; i < accordions.length; i++) {
-    accordions[i].id = 'accordion-' + (i + 1);
-  }
+				wrappers[i].classList.add(this.classNames.animated);
+				wrappers[i].style.setProperty('--accordion-animation-duration', data.animationDuration + 'ms');
+			}
+		},
 
-  accordions.forEach(function(elem) {
-    var accordionHeader = elem.querySelector('.accordion--header');
-    var accordionPanel = elem.querySelector('.accordion--panel');
+		shouldRun() {
+			return this.pageContent.querySelectorAll('.' + this.classNames.accordion).length > 0;
+		},
 
-    setAttributes(accordionHeader, {
-      'id': elem.id + '--header',
-      'tabindex': '0',
-      'role': 'button'
-    });
+		init: function() {
+			importArticle({ article: 'u:dev:MediaWiki:Accordion.css' });
 
-    setAttributes(accordionPanel, {
-      'id': elem.id + '--panel',
-      'role': 'region',
-      'aria-labelledby': accordionHeader.id
-    });
+			this.getAccordionWrappers();
 
-    // Adding this attribute after the rest as it needs to wait for
-    // accordionPanel's id to exist before it's value can be applied.
-    accordionHeader.setAttribute('aria-controls', accordionPanel.id);
-  });
+			if (!this.shouldAttachEvents) return;
 
-  // Helper function (allows to set multiple attributes at once).
-  function setAttributes(el, attrs) {
-    for(var key in attrs) {
-      el.setAttribute(key, attrs[key]);
-    }
-  }
-});
+			this.shouldAttachEvents = false;
+
+			document.addEventListener('click', function handleAccordionClick(event) {
+				const isAccordionHeader = event.target.classList.contains(this.classNames.header);
+
+				if (!isAccordionHeader) return;
+
+				this.toggleAccordion(event.target);
+			}.bind(this));
+
+			document.addEventListener('keydown', function(event) {
+				const isAccordionHeader = event.target.classList.contains(this.classNames.header);
+				
+				if (!isAccordionHeader || !this.controls.includes(event.code)) return;
+
+				event.preventDefault();
+
+				this.keyboardControls(event.target, event.code);
+			}.bind(this));
+
+			['transitionstart', 'transitionend'].forEach(function(eventType) {
+				document.addEventListener(eventType, function(event) {
+					const isAccordion = event.target.classList.contains(this.classNames.accordion);
+
+					if (!isAccordion) return;
+
+					this.manageAnimationStates(event.target, event.type);
+				}.bind(this));
+			}.bind(this));
+		},
+	};
+
+	mw.hook('wikipage.content').add(function(content) {
+		const pageContent = content[0];
+
+		devAccordion.pageContent = pageContent;
+
+		if (!devAccordion.shouldRun()) return;
+
+		devAccordion.init();
+	});
+}());

@@ -1,19 +1,19 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
 window.ajaxRefresh = 30000;
 
+// Cartes Interactives
+window.mapsExtendedConfig = {
+    "minimalLayout": true,
+    "enableSearch": true,
+    "enableSidebar": true,
+    "sidebarInitialState": "hide",
+    "openPopupsOnHover": false,
+    "enableFullscreen": true,
+    "fullscreenMode": "window"
+};
+
 /*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
 window.BackToTopModern = true;
-
-/*Modèles Préchargés*/
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:PreloadTemplates.js'
-    ]
-});
-preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
-preloadTemplates_namespace = 'Modèle';
-preloadTemplates_subpage = "case-by-case";
 
 // Modèle:EditConflictAlert
 window.EditConflictAlertInterval = 5000;
@@ -82,14 +82,14 @@ mw.hook('wikipage.content').add(function ($content) {
 
 // ----- Modèle Pseudo3D ------
 // px of drag required to advance one frame (higher = slower).
-window.PseudoSpeed = 7 // default: 10
+window.PseudoSpeed = 7; // default: 10
 
 // enable skybox background parallax on the parent .pi-item.
-window.PseudoSkybox = true // default: false
+window.PseudoSkybox = true; // default: false
 
 // skybox pan multiplier (higher = faster).
-window.PseudoSkyboxSpeed = 0.07 // default: 0.01
+window.PseudoSkyboxSpeed = 0.07; // default: 0.01
 
 // if you have your own css and want to avoid the split
 // second of unstyled css when js is still loading.
-window.PseudoImportCSS = false // default: true
+window.PseudoImportCSS = false; // default: true

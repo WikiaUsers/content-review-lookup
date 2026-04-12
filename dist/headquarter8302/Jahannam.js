@@ -4,41 +4,39 @@
  * @description	Library for interacting with the Nirvana backend, a.k.a `wikia.php`
  * @license	MIT
  * @license	CC-BY-SA-3.0 Caburum for the Nirvana docs (https://caburum.fandom.com/wiki/Nirvana)
- * @version	v0
  * <nowiki>
  */
 
 ; ((window, mw) => {
 	/** @type {Version} */
-	const version = "v0";
+	const version = "v0"
 
 	/** @param {any} msg */
 	function debug(msg) {
-		console.debug(`[Jahannam] ${msg}`);
+		console.debug(`[Jahannam] ${msg}`)
 	}
 
 	/**
 	 * @param {any} msg
-	 * @param {any} [data]
+	 * @param {any} data
 	 * @returns {false}
 	*/
 	function error(msg, ...data) {
-		console.error(`[Jahannam] ${msg}`, ...data);
-		return false;
+		console.error(`[Jahannam] ${msg}`, ...data)
+		return false
 	}
 
 	// @ts-expect-error
-	(window.dev = window.dev || {}).jahannam = {};
-	// @ts-expect-error
-	window.dev.jahannam.cfg = window.dev.jahannam.cfg || {};
+	(window.dev = window.dev || {}).jahannam = {}
+	window.dev.jahannam.cfg = window.dev.jahannam.cfg || {}
 
-	debug(version);
+	debug(version)
 
 	class Jahannam {
 		/**
 		 * @param {import('./index.d.ts').Jahannam.Config} cfgInput
 		*/
-		constructor (cfgInput) {
+		constructor(cfgInput) {
 			/**
 			 * Holds the configuration for the script. Will be overwritten by the class config input
 			 * @type {import('./index.d.ts').Jahannam['cfg']}
@@ -53,20 +51,16 @@
 					service: new URL(mw.config.get('wgServicesExternalDomain')),
 				},
 				version: version
-			};
+			}
 
 			// what's optional chaining?
 			if (cfgInput) {
-				if (cfgInput.cityId) this.cfg.cityId = cfgInput.cityId;
+				if (cfgInput.cityId) this.cfg.cityId = cfgInput.cityId
 				if (cfgInput.endpoints) {
-					if (cfgInput.endpoints.wikia) this.cfg.endpoints.wikia = cfgInput.endpoints.wikia;
-					if (cfgInput.endpoints.service) this.cfg.endpoints.service = cfgInput.endpoints.service;
+					if (cfgInput.endpoints.wikia) this.cfg.endpoints.wikia = cfgInput.endpoints.wikia
+					if (cfgInput.endpoints.service) this.cfg.endpoints.service = cfgInput.endpoints.service
 				}
 			}
-
-			// readonly
-			Object.freeze(this.cfg);
-			Object.freeze(this.cfg.endpoints);
 
 			/**
 			 * @type {import('./index.d.ts').Jahannam['util']}
@@ -78,43 +72,42 @@
 				 * @async
 				 * @method get
 				 */
-				get: (opts) => {
+				get: ({
+					url = this.cfg.endpoints.wikia,
+					controller,
+					method,
+					format = 'json',
+					parameters = {}
+				}) => {
 					if (
-						!opts
-						|| !opts.controller
-						|| !opts.method
-					) return Promise.resolve(error("Invalid parameter on 'get()'"));
-
-					const url = opts.url || this.cfg.endpoints.wikia;
-					const controller = opts.controller;
-					const method = opts.method;
-					const format = opts.format || 'json';
-					const parameters = opts.parameters || {};
+						!controller
+						|| !method
+					) return Promise.resolve(error("Invalid parameter on 'get()'"))
 
 					const fullURL = this.util.createURL(url, {
 						controller,
 						method,
 						format,
 						parameters
-					});
+					})
 
-					const isCors = url.origin !== window.location.origin;
+					const isCors = url.origin !== window.location.origin
 
 					/** @type {RequestInit} */
 					const fetchParams = {
 						cache: 'no-cache',
 						method: 'GET',
 						mode: isCors ? 'cors' : 'same-origin'
-					};
+					}
 
 					return fetch(fullURL, fetchParams)
 						.then(response => {
-							if (!response.ok) return error("Request error:", response.statusText, response.status);
-							return response.json();
+							if (!response.ok) return error("Request error:", response.statusText, response.status)
+							return response.json()
 						})
 						.catch(reason => {
-							return error("Request error", reason.message);
-						});
+							return error("Request error", reason.message)
+						})
 				},
 
 				/**
@@ -122,56 +115,18 @@
 				 * @method createURL
 				 */
 				createURL(baseURL, paramPair = {}) {
-					const url = new URL(baseURL);
+					const url = new URL(baseURL)
 					for (const [k, v] of Object.entries(paramPair)) {
 						if (v && typeof v === "object") {
 							for (const [param, paramV] of Object.entries(v))
-								url.searchParams.append(param, paramV);
-							continue;
+								url.searchParams.append(param, paramV)
+							continue
 						}
-						if (typeof v === "string") url.searchParams.append(k, v);
+						if (typeof v === "string") url.searchParams.append(k, v)
 					}
-					return url;
+					return url
 				}
-			};
-
-			/**
-			 * UserProfile
-			 * @type {import('./index.d.ts').Jahannam['UserProfile']}
-			 * @namespace
-			 */
-			this.UserProfile = {
-				/**
-				 * A user's special pages on the wiki, their avatar, their edit and post count, whether they are blocked
-				 * @method getUserData
-				 */
-				getUserData: (userId) => {
-					return this.util.get({
-						controller: 'UserProfile',
-						method: 'getUserData',
-						parameters: { 'userId': userId.toString() }
-					});
-				}
-			};
-
-			/**
-			 * Fandom\FeedsAndPosts\Discussion\DiscussionPost
-			 * @type {import('./index.d.ts').Jahannam['DiscussionPost']}
-			 * @namespace
-			 */
-			this.DiscussionPost = {
-				/**
-				 * Gets information of a specific post by its ID
-				 * @method getPost
-				 */
-				getPost: (postId) => {
-					return this.util.get({
-						controller: 'DiscussionPost',
-						method: 'getPost',
-						parameters: { 'postId': postId.toString() }
-					});
-				},
-			};
+			}
 
 			/**
 			 * DWDimensionApi
@@ -183,41 +138,218 @@
 				 * Returns wiki metadata
 				 * @method getWikis
 				 */
-				getWikis: (limit = 100, after_wiki_id) => {
+				getWikis: ({
+					limit = 100,
+					after_wiki_id
+				}) => {
 					/** @type {Record<string, string>} */
 					const params = {
 						'limit': limit.toString(),
-					};
-					if (after_wiki_id) params['after_wiki_id'] = after_wiki_id.toString();
+					}
+					if (after_wiki_id) params['after_wiki_id'] = after_wiki_id.toString()
 					return this.util.get({
 						controller: 'DWDimensionApi',
 						method: 'getWikis',
 						parameters: params
-					});
+					})
+				},
+
+				/**
+				 * Returns basic article metadata
+				 * @method getAllArticles
+				 */
+				getAllArticles: ({
+					limit = 100,
+					starting_wiki_id
+				}) => {
+					/** @type {Record<string, string>} */
+					const params = {
+						'limit': limit.toString(),
+					}
+					if (starting_wiki_id) params['starting_wiki_id'] = starting_wiki_id.toString()
+					return this.util.get({
+						controller: 'DWDimensionApi',
+						method: 'getAllArticles',
+						parameters: params
+					})
 				},
 
 				/**
 				 * Returns user data
 				 * @method getUsers
 				 */
-				getUsers: (limit = 100, after_user_id) => {
+				getUsers: ({
+					limit = 100,
+					after_user_id
+				}) => {
 					/** @type {Record<string, string>} */
 					const params = {
 						'limit': limit.toString(),
-					};
-					if (after_user_id) params['after_user_id'] = after_user_id.toString();
+					}
+					if (after_user_id) params['after_user_id'] = after_user_id.toString()
 					return this.util.get({
 						controller: 'DWDimensionApi',
 						method: 'getUsers',
 						parameters: params
-					});
+					})
 				},
-			};
+			}
 
-			debug("Instanced");
+			/**
+			 * UserProfile
+			 * @type {import('./index.d.ts').Jahannam['UserProfile']}
+			 * @namespace
+			 */
+			this.UserProfile = {
+				/**
+				 * A user's special pages on the wiki, their avatar, their edit and post count, whether they are blocked
+				 * @method getUserData
+				 */
+				getUserData: ({
+					userId
+				}) => {
+					return this.util.get({
+						controller: 'UserProfile',
+						method: 'getUserData',
+						parameters: { 'userId': userId.toString() }
+					})
+				},
+
+				getDefaultAvatars: () => {
+					return this.util.get({
+						controller: 'UserProfile',
+						method: 'getDefaultAvatars'
+					})
+				},
+			}
+
+			/**
+			 * Fandom\CommunityPage\CommunityPage
+			 * @type {import('./index.d.ts').Jahannam['CommunityPage']}
+			 * @namespace
+			 */
+			this.CommunityPage = {
+				/**
+				 * 	Gets a list of the wiki admins
+				 * @method getAllAdminsData
+				 */
+				getAllAdminsData: ({ uselang }) => {
+					return this.util.get({
+						controller: 'CommunityPage',
+						method: 'getAllAdminsData',
+						parameters: { 'uselang': uselang }
+					})
+				},
+				getAllMembersData: ({ uselang }) => {
+					return this.util.get({
+						controller: 'CommunityPage',
+						method: 'getAllMembersData',
+						parameters: { 'uselang': uselang }
+					})
+				},
+				getTopContributorsData: ({ uselang }) => {
+					return this.util.get({
+						controller: 'CommunityPage',
+						method: 'getTopContributorsData',
+						parameters: { 'uselang': uselang }
+					})
+				}
+			}
+
+			/**
+			 * Fandom\FeedsAndPosts\Discussion\DiscussionPost
+			 * @type {import('./index.d.ts').Jahannam['DiscussionPost']}
+			 * @namespace
+			 */
+			this.DiscussionPost = {
+				/**
+				 * Gets information of a specific post by its ID
+				 * @method getPost
+				 */
+				getPost: ({
+					postId
+				}) => {
+					return this.util.get({
+						controller: 'DiscussionPost',
+						method: 'getPost',
+						parameters: { 'postId': postId.toString() }
+					})
+				},
+
+				/**
+				 * Gets post history
+				 * @method getPostHistory
+				 */
+				getPostHistory: ({
+					postId
+				}) => {
+					return this.util.get({
+						controller: 'DiscussionPost',
+						method: 'getPostHistory',
+						parameters: { 'postId': postId.toString() }
+					})
+				},
+			}
+
+			/**
+			 * Fandom\ArticleComments\Api\ArticleComments
+			 * @type {import('./index.d.ts').Jahannam['ArticleComments']}
+			 * @namespace
+			 */
+			this.ArticleComments = {
+				getCommentCount: ({
+					namespace,
+					title,
+					hideDeleted
+				}) => {
+					return this.util.get({
+						controller: 'ArticleComments',
+						method: 'getCommentCount',
+						parameters: {
+							'namespace': namespace.toString(),
+							'title': title,
+							'hideDeleted': hideDeleted.toString()
+						}
+					})
+				},
+
+				getThread: ({
+					threadId,
+					namespace,
+					title
+				}) => {
+					return this.util.get({
+						controller: 'ArticleComments',
+						method: 'getThread',
+						parameters: {
+							'threadId': threadId.toString(),
+							'namespace': namespace.toString(),
+							'title': title
+						}
+					})
+				},
+
+				getComments: ({
+					namespace,
+					title,
+					hideDeleted
+				}) => {
+					return this.util.get({
+						controller: 'ArticleComments',
+						method: 'getComments',
+						parameters: {
+							'namespace': namespace.toString(),
+							'title': title,
+							'hideDeleted': hideDeleted.toString()
+						}
+					})
+				}
+			}
+
+			debug("Instanced")
 		}
 	}
 
-	mw.hook('dev.jahannam').fire(window.dev.jahannam.class = Jahannam);
-	return;
-})(window, mediaWiki);
+	mw.hook('dev.jahannam').fire(window.dev.jahannam.class = Jahannam)
+	return
+})(window, mediaWiki)

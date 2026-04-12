@@ -1,1 +1,0 @@
-/* See [[MediaWiki:Common.js]] */

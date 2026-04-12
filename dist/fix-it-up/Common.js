@@ -36,11 +36,15 @@ $(document).ready(function () {
         } else if (text.includes("moderator")) {
             elem.classList.add("rarity-staff")
         } else if (text.includes("hr")) {
-        	elem.classList.add("rarity-staff")
+        	elem.classList.add("rarity-hr")
         } else if (text.includes("offsale")) {
         	elem.classList.add("offsale-txt")
         } else if (text.includes("auction")) {
         	elem.classList.add("auction")
+        } else if (text.includes("market")) {
+        	elem.classList.add("market")
+        } else if (text.includes("barnfind")) {
+        	elem.classList.add("rarity-barnfind")
         }
     }
 

@@ -52,8 +52,90 @@ $(function() {
   setInterval(updateCountdown, 60000); // Refresh every minute to handle weekly reset
 });
 
-// For filtering source material template's gif
+//For DonghuaEpisode Template
+(function ($, mw) {
+    'use strict';
 
+    function buildNav(el) {
+        var $el   = $(el);
+        var total = parseInt($el.data('eps'), 10) || 209;
+        var base  = $el.data('base') || 'Donghua Season 5/Episode';
+
+        var $head = $('<div class="dh-head"></div>');
+        var $hl   = $('<div class="dh-head-left"></div>');
+        $hl.append('<span class="dh-eyebrow">Donghua</span>');
+        $hl.append('<span class="dh-label">Season 5 &mdash; Episodes</span>');
+        var $pill = $('<span class="dh-pill"></span>').text(total + ' Episodes');
+        $head.append($hl).append($pill);
+
+        var $bar  = $('<div class="dh-bar"></div>');
+        var $sw   = $('<div class="dh-sw"></div>');
+        $sw.append('<span class="dh-si">&#9906;</span>');
+        var $inp  = $('<input class="dh-search" type="text" autocomplete="off" spellcheck="false">').attr('placeholder', 'Search episode…');
+        $sw.append($inp);
+        var $cnt  = $('<span class="dh-count-bar">Showing <b class="dh-shown">' + total + '</b> / ' + total + '</span>');
+        $bar.append($sw).append($cnt);
+
+        var $body  = $('<div class="dh-body"></div>');
+        var $grid  = $('<div class="dh-grid"></div>');
+        var $none  = $('<div class="dh-none">No episodes match.</div>');
+
+        var anchors = [];
+        for (var i = 1; i <= total; i++) {
+            var href = mw.util.getUrl(base + ' ' + i);
+            var $a   = $('<a class="dh-ep"></a>').attr('href', href).attr('title', base + ' ' + i);
+            $a.append('<span class="dh-ep-tag">EP</span>');
+            $a.append($('<span class="dh-ep-num"></span>').text(i));
+            $a.data('n', i);
+            $grid.append($a);
+            anchors.push($a);
+        }
+        $body.append($grid).append($none);
+
+        var $foot = $('<div class="dh-foot"></div>');
+        $foot.append('<span class="dh-foot-line"></span>');
+        $foot.append('<span class="dh-foot-text">Donghua &bull; Season 5</span>');
+        $foot.append('<span class="dh-foot-line"></span>');
+
+        $el.empty().append($head).append($bar).append($body).append($foot);
+
+        var $shown = $cnt.find('.dh-shown');
+
+        $inp.on('input', function () {
+            var q = $.trim($(this).val());
+            var n = 0;
+            $.each(anchors, function (_, $a) {
+                var match = !q || String($a.data('n')).indexOf(q) !== -1;
+                $a.toggleClass('dh-off', !match);
+                if (match) { n++; }
+            });
+            $shown.text(n);
+            $none.toggleClass('dh-show', n === 0);
+        });
+
+        $inp.on('keydown', function (e) {
+            if (e.key === 'Escape') {
+                $(this).val('').trigger('input').blur();
+            }
+        });
+
+        $(document).on('keydown.dhNav', function (e) {
+            if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                $inp.focus();
+            }
+        });
+    }
+
+    $(function () {
+        $('.dh-nav').each(function () {
+            buildNav(this);
+        });
+    });
+
+}(jQuery, mediaWiki));
+
+// For filtering source material template's gif
 window.pPreview = window.pPreview || {};
 window.pPreview.RegExp = window.pPreview.RegExp || {};
 

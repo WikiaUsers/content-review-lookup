@@ -435,3 +435,23 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+/* Template:NavigationTalesBackroomsverse */
+(function() {
+  const navs = document.querySelectorAll('.backrooms-nav');
+
+  navs.forEach(nav => {
+    // hover open
+    nav.addEventListener('mouseenter', () => nav.classList.add('open'));
+    nav.addEventListener('mouseleave', () => nav.classList.remove('open'));
+
+    // optional click toggle for mobile
+    const toggle = nav.querySelector('.nav-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        nav.classList.toggle('open');
+      });
+    }
+  });
+})();
+</script>

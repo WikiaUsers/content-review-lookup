@@ -37,20 +37,4 @@ if (window.location.pathname === '/wiki/F' && !window.location.search.includes('
 	window.location.pathname = '/f';
 }
 
-window.welcomeMessage = {
-  enabled: true,
-  adminUsername: 'BackroomsFW',     
-  adminNickname: 'Backrooms FW Team',    
-  messageTitle: 'Welcome to the Backrooms Freewriting wiki, $1!',
-  messageText: 'Hey $1 — \nThanks for your first edit on <a href="wikiurl.fandom.com/wiki/$2">$2</a>!\n\n— $3',
-  debug: false,
-  testAllEdits: false,
-  preferTalk: false,
-};
-
-importArticles({
-  type: 'script',
-  articles: [
-    'dev:MediaWiki:WelcomeMessage.js'
-  ]
-});
+$(':is(.editableelement>pre, .editableelement:not(.mw-highlight:has(pre)))').each(function() {$(this).attr('contenteditable', 'true');});

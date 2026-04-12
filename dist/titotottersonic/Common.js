@@ -319,6 +319,7 @@ window.MessageWallUserTags = {
         
         'W0T3H': 'Content Moderator',
         'UsingTheBowserLauncher': 'Content Moderator',
+        'SuperLuigiClay': 'Content Moderator',
         
         'JohnTheBiggestToadFan': 'Discussion Moderator',
         

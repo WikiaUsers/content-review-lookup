@@ -2,10 +2,12 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:WallGreeting.js',
-        'MediaWiki:Custom-ImprovedProfileTags.js'
+        'MediaWiki:Custom-ImprovedProfileTags.js',
+        'MediaWiki:Custom-Vote.js'
     ]
 });
 
+// 点击播放或暂停音频
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -30,8 +32,9 @@ importArticles({
     });
 })();
 
+// 处理JS脚本导入
+// 注意本站对JS的政策与主站不同，不要直接用主站代码覆盖了
 mw.hook("wikipage.content").add(function () {
-    // 处理JS脚本导入
     $("span.import-script").each(function () {
         var $this = $(this);
         var scriptContent = $this.attr("data-script");
@@ -56,61 +59,75 @@ mw.hook("wikipage.content").add(function () {
 
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 mw.hook("wikipage.content").add(function () {
+    // 单页内联CSS与CSS触发器
     $("span.import-css").each(function () {
-    	mw.util.addCSS($(this).attr("data-css"));
+        var css = mw.util.addCSS($(this).attr("data-css"));
+        $(css.ownerNode).addClass("import-css")
+            .attr("data-css-hash", $(this).attr("data-css-hash"))
+            .attr("data-from", $(this).attr("data-from"))
+            .attr("data-trigger", $(this).attr("data-trigger"));
+        var trigger = $(this).attr("data-trigger");
+        var triggerOpened = false;
+        if (trigger != "none") {
+            css.disabled = true;
+            $(".csstrigger-" + trigger).click(function () {
+                css.disabled = !css.disabled;
+                triggerOpened = true;
+            });
+        }
+        $(".css-toggler").click(function () {
+            if ((trigger != "none" && triggerOpened) || (trigger == "none")) css.disabled = !css.disabled;
+        });
     });
-    
-    $(".sitenotice-tab-container").each(function() {
-		var container = $(this);
-		function switchTab(offset) {
-			return function() {
-				var tabs = container.children(".sitenotice-tab").toArray();
-				var no = Number(container.find(".sitenotice-tab-no")[0].innerText) + offset;
-				var count = tabs.length;
-				if (no < 1) no = count;
-				else if (no > count) no = 1;
-				for (var i = 0; i < count; i++)
-					tabs[i].style.display = (i + 1 == no ? null : "none");
-				container.find(".sitenotice-tab-no")[0].innerText = no;
-			};
-		}
-		container.find(".sitenotice-tab-arrow.prev").click(switchTab(-1));
-		container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
-	});
+
+    // 播放或暂停所有音频
+    $(".audio-toggler").click(function () {
+        $("audio").get().forEach(function (audio) { if (audio.paused || audio.ended) { audio.play(); } else { audio.pause(); } });
+    });
+
+    // 站点公告切换
+    $(".sitenotice-tab-container").each(function () {
+        var container = $(this);
+        function switchTab(offset) {
+            return function () {
+                var tabs = container.children(".sitenotice-tab").toArray();
+                var no = Number(container.find(".sitenotice-tab-no")[0].innerText) + offset;
+                var count = tabs.length;
+                if (no < 1) no = count;
+                else if (no > count) no = 1;
+                for (var i = 0; i < count; i++)
+                    tabs[i].style.display = (i + 1 == no ? null : "none");
+                container.find(".sitenotice-tab-no")[0].innerText = no;
+            };
+        }
+        container.find(".sitenotice-tab-arrow.prev").click(switchTab(-1));
+        container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
+    });
 });
 
-$.getJSON(mw.util.wikiScript("index"), {
-    title: "MediaWiki:Custom-import-scripts.json",
-    action: "raw"
-}).done(function (result, status) {
-    if (status != "success" || typeof (result) != "object") return;
-    var scripts = result[mw.config.get("wgPageName")];
-    if (scripts) {
-        if (typeof (scripts) == "string") scripts = [scripts];
-        importArticles({ type: "script", articles: scripts });
-    }
-});
-
-//处理CSS导入
-(function (mw, $) {
-	"use strict";
-	if (mw.config.get('wgPageName').toLowerCase().endsWith('.css')) {
-		$.ajax({
-			url: mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName')) + '?action=raw&text/css',
-			dataType: 'text',
-			success: function (cssContent) {
-				var styleElement = document.createElement('style');
-				styleElement.type = 'text/css';
-				styleElement.textContent = cssContent;
-				document.head.appendChild(styleElement);
-				console.log('CSS已成功加载。');
-			},
-			error: function () {
-				console.error('CSS加载失败，请尝试刷新或检查CSS页面。');
-			}
-		});
-	}
-})(mediaWiki, jQuery);
+//CSS页面预览
+(function () {
+    var page = mw.config.get('wgPageName') || '';
+    var model = mw.config.get('wgPageContentModel');
+    if (!page || model !== 'css') return;
+    var rawUrl = mw.util.getUrl(page, { action: 'raw', ctype: 'text/css' });
+    fetch(rawUrl, { credentials: 'same-origin' })
+        .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.text();
+        })
+        .then(function (cssText) {
+            if (!cssText) return;
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.setAttribute('data-injected-from', page);
+            style.appendChild(document.createTextNode(cssText));
+            document.head.appendChild(style);
+        })
+        .catch(function (err) {
+            console.error('加载CSS源失败: ', page, err);
+        });
+}());
 
 //New JS 4 Wordrain
 /* Word Rain System v2.1 - Fandom Optimized */
@@ -451,12 +468,15 @@ mw.loader.using('mediawiki.util').then(function() {
     image3DSystem.init();
 });
 
+
 $('.fandom-community-header__community-name-wrapper').append(
 	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
 		$('<img/>').css('height', '70px').css('position', 'relative').css('top', '20px')
 		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/c/ca/Fandom_Compass_dark.png/revision/latest?cb=20250412193710&format=original&path-prefix=zh').attr('title', '本站点已是Fandom Compass计划的成员之一。')
 ));
 
+//音乐播放器
+//与主站不同，不要直接覆盖
 $(document).ready(function() {
     mw.hook('wikipage.content').add(function($content) {
         // 为每个播放器创建独立的控制器
@@ -561,148 +581,6 @@ $(document).ready(function() {
         });
     });
 });
-
-
-var config = config || mw.config.get();
-
-//竞赛投票相关
-mw.hook("wikipage.content").add(function () {
-	if (!["view", "edit", "submit"].includes(config.wgAction)) return;
-	if (window.NervieJS) return;
-	window.NervieJS = true;
-	mw.loader.load("mediawiki.util");
-	
-	$(".talescon-table tbody tr").each(function() {
-		var thisElement = this;
-		$.getJSON(mw.util.wikiScript("wikia"), {
-            controller: "DiscussionThread",
-            method: "getThread",
-            format: "json",
-            threadId: this.getAttribute("data-vote-id")
-        }).done(function(result) {
-        	thisElement.children[2].textContent = result.poll.answers[0].votes;
-        	thisElement.children[3].textContent = result.poll.answers[1].votes;
-        	thisElement.children[4].textContent = result.poll.answers[2].votes;
-        	thisElement.children[5].textContent = ((result.poll.answers[0].votes - result.poll.answers[2].votes) / result.poll.totalVotes).toFixed(4);
-        });
-	});
-	
-	$(".themedcon4-table tbody tr").each(function() {
-		var cells = this.children;
-		$.getJSON(mw.util.wikiScript("wikia"), {
-            controller: "DiscussionThread",
-            method: "getThread",
-            format: "json",
-            threadId: this.getAttribute("data-vote-id")
-        }).done(function(result) {
-        	cells[3].textContent = result.poll.answers[0].votes;
-        	cells[4].textContent = result.poll.answers[1].votes;
-        	cells[5].textContent = result.poll.answers[2].votes;
-        	cells[6].textContent = result.poll.answers[3].votes;
-        	cells[7].textContent = result.poll.answers[4].votes;
-        	cells[8].textContent = (
-        		(result.poll.answers[0].votes
-        		+ result.poll.answers[1].votes / 2
-        		- result.poll.answers[3].votes / 2
-        		- result.poll.answers[4].votes) / result.poll.totalVotes
-        	).toFixed(4);
-        });
-	});
-	
-    $.getJSON(mw.util.wikiScript("index"), {
-        title: "User:HyperNervie/竞赛2.json",
-        action: "raw",
-        ctype: "application/json"
-    }).done(function (result, status) {
-        if (status != "success" || typeof (result) != "object") return;
-        var entries_loaded = 0;
-        mw.hook("pollLoader.loaded").add(function() {
-            if (++entries_loaded < result.length) return;
-            result.sort(function (a, b) { return b.rating - a.rating; });
-            $("table.contest-results tbody").empty();
-            result.forEach(function (entry, place) {
-                $("table.contest-results tbody").append(
-                    "<tr>" +
-                        "<td>" + (place + 1) + "</td>" +
-                        "<td>" +
-                            '<a href="' + mw.util.getUrl(entry.name) + '" ' +
-                                'title="' + entry.name + '">' +
-                                (entry.title || entry.name) +
-                            "</a>" +
-                        "</td>" +
-                        "<td>" +
-                            '<a href="' + mw.util.getUrl("User:" + entry.author) + '" ' +
-                                'title="User:' + entry.author + '">' +
-                                entry.author +
-                            "</a>" +
-                        "</td>" +
-                        "<td>" + entry.upvote + "</td>" +
-                        "<td>" + entry.novote + "</td>" +
-                        "<td>" + entry.downvote + "</td>" +
-                        "<td>" + entry.rating.toFixed(4) + "</td>" +
-                    "</tr>"
-                );
-            });
-            $("table.contest-results").makeCollapsible();
-        });
-        result.forEach(function (entry) {
-            $.getJSON(mw.util.wikiScript("wikia"), {
-                controller: "DiscussionThread",
-                method: "getThread",
-                format: "json",
-                threadId: entry.poll_id
-            }).done(function (result, status) {
-                if (status != "success" || typeof (result) != "object") return;
-                entry.upvote = result.poll.answers[0].votes;
-                entry.novote = result.poll.answers[1].votes;
-                entry.downvote = result.poll.answers[2].votes;
-                entry.rating = (entry.upvote - entry.downvote) / result.poll.totalVotes;
-                mw.hook("pollLoader.loaded").fire();
-            });
-        });
-	});
-	
-	$.getJSON(mw.util.wikiScript("api"), {
-		action: "query",
-		formatversion: 2,
-		format: "json",
-		meta: "siteinfo",
-		siprop: "interwikimap",
-		siinlanguagecode: config.wgUserVariant
-	}, function (result, status) {
-		if (status != "success" || typeof (result) != "object" || !result.batchcomplete) return;
-		$("table.global-interwiki tbody").empty();
-		$("table.local-interwiki tbody").empty();
-		$("table.interlang tbody").empty();
-		result.query.interwikimap.forEach(function (obj) {
-			if (!obj.local)
-				$("table.global-interwiki tbody").append(
-					"<tr>" +
-						"<td>" + obj.prefix.toLowerCase() + "</td>" +
-						"<td>" + obj.url + "</td>" +
-					"</tr>"
-				);
-			else if (obj.language)
-				$("table.interlang tbody").append(
-					"<tr>" +
-						"<td>" + obj.prefix + "</td>" +
-						"<td>" + obj.language + "</td>" +
-						"<td>" + obj.url + "</td>" +
-					"</tr>"
-				);
-			else
-				$("table.local-interwiki tbody").append(
-					"<tr>" +
-						"<td>" + obj.prefix.toLowerCase() + "</td>" +
-						"<td>" + obj.url + "</td>" +
-					"</tr>"
-				);
-		});
-		$("table.global-interwiki").makeCollapsible();
-		$("table.local-interwiki").makeCollapsible();
-		$("table.interlang").makeCollapsible();
-	});
-})();
 
 mw.hook("wikipage.content").add(function () {
 	if (config.wgCanonicalSpecialPageName != "Whatlinkshere") return;
