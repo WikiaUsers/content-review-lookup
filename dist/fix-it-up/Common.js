@@ -82,7 +82,7 @@ document.querySelectorAll(".unix-time").forEach(el => {
 // Logic for retrieving and showing data from the game
 (function () {
   var API_BASE = "https://project-fezug.vercel.app/api/gamestats";
-  var REFRESH_INTERVAL = 5000;
+  var REFRESH_INTERVAL = 300000;
 
   function formatNumber(num) {
     if (num === undefined || num === null) return "0";

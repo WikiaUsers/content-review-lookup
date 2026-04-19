@@ -18,13 +18,29 @@ function BG(file) {
     }
 }
 
+// Have to be only path, without query string
+// Example: https://static.wikia.nocookie.net/five-nights-at-freddys-rus/images/f/fe/FNaF_1_BG.jpg
+function ChangeBG(filePath) {
+    if (filePath) {
+        document.documentElement.style.setProperty("--theme-body-background-image-full", "url("+filePath+"/revision/latest?path-prefix=ru)");
+        document.documentElement.style.setProperty("--theme-body-background-image-desktop", "url("+filePath+"/revision/latest/scale-to-width-down/1280?path-prefix=ru)");
+        document.documentElement.style.setProperty("--theme-body-background-image-large-desktop", "url("+filePath+"/revision/latest/scale-to-width-down/1500?path-prefix=ru)");
+        document.documentElement.style.setProperty("--theme-body-background-image-mobile", "url("+filePath+"/revision/latest/scale-to-width-down/600?path-prefix=ru)");
+        document.documentElement.style.setProperty("--theme-body-background-image-tablets", "url("+filePath+"/revision/latest/scale-to-width-down/1024?path-prefix=ru)");
+        document.documentElement.style.setProperty("--theme-body-background-image-tablets-2x", "url("+filePath+"/revision/latest/scale-to-width-down/2048?path-prefix=ru)");
+    } else {
+        return null;
+    }
+}
+
+// TODO: Change BGbackgroundD and BGbackgroundL to newer ChangeBG, add integrated theme checks
 if (mw.config.get("wgCanonicalNamespace") == "") {
     var BGbackground;
     var BGcategories = mw.config.get("wgCategories");
         for (var ct = 0; ct < BGcategories.length; ct++) {
         if (BGcategories[ct] == "Five Nights at Freddy's") {
-            BGbackgroundD = BG('FNaF 1 BG.jpg');
-            BGbackgroundL = BG('FNaF 1 BG L.png');
+            ChangeBG("https://static.wikia.nocookie.net/five-nights-at-freddys-rus/images/f/fe/FNaF_1_BG.jpg");
+            BGbackgroundL = BG('FNaF 1 BG L.png'); // May not be applied, since there mixed types of changing background
             break;
         } else if (BGcategories[ct] == "Five Nights at Freddy's 2") {
             BGbackgroundD = BG('FNaF 2 BG.png');

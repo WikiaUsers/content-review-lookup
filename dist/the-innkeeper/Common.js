@@ -1,0 +1,1 @@
+mw.loader.load('/index.php?title=MediaWiki:Quiz.js&action=raw&ctype=text/javascript');

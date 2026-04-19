@@ -50,14 +50,14 @@
                 window.fireworkShow.start();
             });
         },
-        EasterAddons: function () {
+        easterAddons: function () {
             loadScript("EasterAddons", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-Events/EasterAddons.js");
             $.when(window.EasterAddonsConfig.optionalDeferredRegister).then(function () {
                 window.EasterAddons.start();
             });
 
         },
-        HalloweenEffects: function () {
+        halloweenEffects: function () {
             loadScript("HalloweenEffects", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-Events/HalloweenEffects.js");
             $.when(window.HalloweenEffectsConfig.optionalDeferredRegister).then(function () {
                 window.HalloweenEffects.start();
@@ -137,7 +137,7 @@
     }
 
     function getFireworkDates(year) {
-        var cny_lookup = {
+        var cnyLookup = {
             2021: "12 Feb 2021",
             2022: "1 Feb 2022",
             2023: "22 Jan 2023",
@@ -153,13 +153,13 @@
         };
         return [
             new Date("1 January " + year), // new year (Gregorian calendar)
-            new Date(cny_lookup[year]) // new year (Chinese calendar)
+            new Date(cnyLookup[year]) // new year (Chinese calendar)
         ];
     }
 
     function getEasterDates(year) {
         // this list records Easter Sundays for each year
-        var easter_lookup = {
+        var easterLookup = {
             2021: "4 Apr 2021",
             2022: "17 Apr 2022",
             2023: "9 Apr 2023",
@@ -173,9 +173,9 @@
             2031: "13 Apr 2031",
             2032: "28 Mar 2032"
         };
-        var d = new Date(easter_lookup[year]);
-        d.setDate(d.getDate() - 3); // should start on Good Fridays
-        return Array(14).fill().map(function () { // should run for 14 days
+        var d = new Date(easterLookup[year]);
+        d.setDate(d.getDate() - 3); // should start on Good Friday
+        return Array(4).fill().map(function () { // should run for 4 days (Good Friday till Easter Monday)
             return new Date(d.setDate(d.getDate() + 1));
         });
     }
@@ -215,29 +215,29 @@
 
     if (!(window.EasterAddonsConfig.onlyStartOnViewMode && conf.wgAction !== "view")) {
         if (window.EasterAddonsConfig.autoStart) {
-            loadAndRun.fireworkShow();
+            loadAndRun.easterAddons();
         } else if (window.EasterAddonsConfig.startOnEvent) {
             waitTill(getEasterDates, "date", "EasterAddons").then(function (toStart) {
                 if (toStart)
-                    loadAndRun.EasterAddons();
+                    loadAndRun.easterAddons();
             });
         }
     }
 
     if (!(window.HalloweenEffectsConfig.onlyStartOnViewMode && conf.wgAction !== "view")) {
         if (window.HalloweenEffectsConfig.autoStart) {
-            loadAndRun.fireworkShow();
+            loadAndRun.halloweenEffects();
         } else if (window.HalloweenEffectsConfig.startOnEvent) {
             waitTill([10], "month", "HalloweenEffects").then(function (toStart) {
                 if (toStart)
-                    loadAndRun.HalloweenEffects();
+                    loadAndRun.halloweenEffects();
             });
         }
     }
 
     if (!(window.snowStorm.onlyStartOnViewMode && conf.wgAction !== "view")) {
         if (window.snowStorm.autoStart) {
-            loadAndRun.fireworkShow();
+            loadAndRun.snowStorm();
         } else if (window.snowStorm.startOnEvent) {
             waitTill([12], "month", "SnowStorm").then(function (toStart) {
                 if (toStart)

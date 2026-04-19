@@ -83,7 +83,6 @@ UserTagsJS.modules.custom = {
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
 	'Sorayaann': ['content-moderator','Wiki-Contributor'],
     'Silkened': ['content-moderator','Wiki-Contributor'],
-    'DragooNit': ['content-moderator','Wiki-Contributor'],
   	// Junior Content Moderators
     
 	// Discussions Moderators
@@ -146,6 +145,7 @@ UserTagsJS.modules.custom = {
 	// Wiki Contributors
     'Cipherusxzy': ['Wiki-Contributor'],
     'HaHaBlah': ['Wiki-Contributor'],
+    'RyeThePies': ['Wiki-Contributor'],
 };
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

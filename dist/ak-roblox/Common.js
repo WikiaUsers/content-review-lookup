@@ -50,4 +50,6 @@ UserTagsJS.modules.mwGroups = ['sysop', 'council', 'rollback', 'chatmoderator', 
 UserTagsJS.modules.custom = {
 	//Staff
 	'774POPS': ['Bureaucrat', 'Media Supervisor']
+	
+	Still a work in progress
 };

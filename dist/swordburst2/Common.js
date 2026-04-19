@@ -42,11 +42,12 @@ window.UserTagsJS = {
         
         custom: {
             Blupo: ["cookie"],
-            Pyrixil: ["trusted-market-editor"],
-            "Mustache.17": ["trusted-market-editor"],
+            Pyrixil: ["trusted-market-editor", "Price Sheet Owner"],
+            "Mustache.17": ["trusted-market-editor", "Price Sheet Co-Owner"],
             BGMMasterYT: ["Game-Developer"],
             "1pinto": ["Game-Contributor"],
-            AtomicStriker3: ["Game-Contributor"],
+            AtomicStriker3: ["Game-Contributor", "trusted-market-editor"],
+            P47TB: ["trusted-market-editor"],
         },
         
         userfilter: {
@@ -67,6 +68,9 @@ window.UserTagsJS = {
         "trusted-market-editor": { u: "Trusted Market Editor", link: "Project:Staff#Market Editor", order: 1/0 },
         "Game-Contributor": { u: "Game Contributor", link: "Developers", order: 1/0 },
         "Game-Developer": { u: "Game Developer", link: "Developers", order: 1/0 },
+        "Price Sheet Owner": { u: "Price Sheet Owner", link: "Project:Staff#Market Editor", order: 1/0 },
+        "Price Sheet Co-Owner": { u: "Price Sheet Co-Owner", link: "Project:Staff#Market Editor", order: 1/0 },
+
         
         cookie: { u: "Cookie", link: "User:Blupo" }
     },

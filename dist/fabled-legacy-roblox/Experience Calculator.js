@@ -124,9 +124,9 @@ var dungeonList = [
   { name: "Forsaken Limbo: Normal", baseEXP: 39300000000000 },
   { name: "Forsaken Limbo: Expert", baseEXP: 78600000000000 },
   { name: "Forsaken Limbo: Chaos", baseEXP: 143000000000000 },
-  { name: "Neon District: Normal", baseEXP: 399000000000000 },
-  { name: "Neon District: Expert", baseEXP: 798000000000000 },
-  { name: "Neon District: Chaos", baseEXP: 1104000000000000 }
+  { name: "Neon District: Normal", baseEXP: 395000000000000 },
+  { name: "Neon District: Expert", baseEXP: 790000000000000 },
+  { name: "Neon District: Chaos", baseEXP: 1092000000000000 }
 ];
   
 var weaponPerks = [
@@ -330,6 +330,11 @@ calcBtn.onclick = function () {
   
   var avgTime = parseInt(document.getElementById('avgTime').value || document.getElementById('avgTime').placeholder) || 0;
   
+  var modifierExceptionText = document.getElementById('dungeonExp');
+  var selectedText = modifierExceptionText.options[modifierExceptionText.selectedIndex].text;
+  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
+
+
   // Error messages
   if (isNaN(currentLevel) || isNaN(goalLevel)) {
     resultDiv.className = "exp-calculator-result-error";
@@ -362,6 +367,10 @@ calcBtn.onclick = function () {
   } else if (ringSubstatBoost < 0) {
     resultDiv.className = "exp-calculator-result-error";
     resultDiv.innerHTML = `<b>Error!</b> The Bonus EXP cannot be lower than 0%.`;
+    return;
+  } else if ((modifierExceptions.includes(selectedText)) && dungeonModifierExpBoost != 1) {
+    resultDiv.className = "exp-calculator-result-error";
+    resultDiv.innerHTML = `<b>Error!</b> This dungeon does not have dungeon modifiers.`;
     return;
   }
 

@@ -11,6 +11,7 @@ $(function() {
 
         var showAllButton = container.find('.showAllButton').hide();
         var groupsShown = {};
+        var menuTitle = container.find('.menu-title');
 
         container.find('.skin-icon').click(function() {
             var skin = $(this).attr('data-name');
@@ -67,11 +68,14 @@ $(function() {
                     }
                 });
 
+                menuTitle.contents().first()[0].textContent = 'Aspectos';
                 showAllButton.hide();
                 applyGroupFirst();
             } else {
                 container.find('.skin-icon[data-group="' + group + '"]').show();
                 showAllButton.show();
+
+                menuTitle.contents().first()[0].textContent = group;
 
                 container.find('.skin-icon[data-group="' + group + '"]')
                     .removeClass('group-first');

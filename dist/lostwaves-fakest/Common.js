@@ -5,3 +5,10 @@ window.pPreview.defimage = 'https://static.wikia.nocookie.net/lostwaves-fakest/i
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/lostwaves-fakest/images/8/85/Noimagehelper.png/revision/latest?cb=20251003184442';
 window.pPreview.tlen = 1000;
 window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]'];
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SandboxLink/code.js',
+    ]
+});

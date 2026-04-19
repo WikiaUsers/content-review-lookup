@@ -3,7 +3,7 @@ preloadTemplates_subpage = "case-by-case";
 
 /* Toggle spolier button text */
 $(function () {
-    var button = $('.mw-customtoggle-ShowSpoiler');
+    var button = $('.mw-customtoggle-PreSpoiler');
     if (button.length !== 1) {
         return;
     }
@@ -11,10 +11,10 @@ $(function () {
     function toggleText () {
         if ($(this).hasClass('shown')) {
             $(this).removeClass('shown');
-            $(this).text('Hide spoilers');
+            $(this).text('Show spoilers');
         } else {
             $(this).addClass('shown');
-            $(this).text('Show spoilers');
+            $(this).text('Hide spoilers');
         }
     }
 

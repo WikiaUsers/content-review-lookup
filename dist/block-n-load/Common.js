@@ -1,10 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Start CountDown Timer */
+/* Start CountUp Timer */
 (function () {
 
 	let nodes = [];
 	let timerId = null;
+	let observer = null;
 
 	function refreshNodes(root) {
 		const scope = root || document;
@@ -57,7 +58,7 @@
 
 	function computeNextDelay() {
 		const now = Math.floor(Date.now() / 1000);
-		let nextDelay = 60 * 60 * 1000; // default 1 hour
+		let nextDelay = 60 * 60 * 1000; // 1 hour default
 
 		nodes.forEach(el => {
 			const target = Number(el.dataset.target);
@@ -67,7 +68,7 @@
 			if (elapsed <= 0) return;
 
 			if (elapsed <= 3600) {
-				nextDelay = 1000; // ≤ 1 hour old
+				nextDelay = 1000;
 			} else if (elapsed <= 6 * 3600) {
 				nextDelay = Math.min(nextDelay, 60 * 1000);
 			} else {
@@ -84,17 +85,43 @@
 		timerId = setTimeout(tick, computeNextDelay());
 	}
 
-	function init(root) {
-		refreshNodes(root);
+	function start() {
+		clearTimeout(timerId);
+		timerId = null;
+
+		refreshNodes(document);
+
 		if (nodes.length) {
 			tick();
 		}
 	}
 
+	function observeChanges() {
+		if (observer) return;
+
+		observer = new MutationObserver(() => {
+			refreshNodes(document);
+			if (!timerId && nodes.length) {
+				tick();
+			}
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true
+		});
+	}
+
+	function init() {
+		start();
+		observeChanges();
+	}
+
+	// MediaWiki hooks
 	if (window.mw && mw.hook) {
 		mw.hook("wikipage.content").add(init);
 	} else {
-		document.addEventListener("DOMContentLoaded", () => init());
+		document.addEventListener("DOMContentLoaded", init);
 	}
 
 })();

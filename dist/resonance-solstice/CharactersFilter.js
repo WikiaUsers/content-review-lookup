@@ -87,35 +87,21 @@
       });
     });
 
-const ctagToggle = page.querySelector('.rs-ctag-toggle');
-const ctagList = page.querySelector('.rs-ctag-list');
-
-function syncCtagToggle() {
-  if (!ctagToggle || !ctagList) return;
-  const collapsed = ctagList.classList.contains('is-collapsed');
-  ctagToggle.textContent = collapsed ? '[Expand]' : '[Collapse]';
-  ctagToggle.setAttribute('aria-expanded', String(!collapsed));
-}
-
-function toggleCtagList() {
-  if (!ctagList) return;
-  ctagList.classList.toggle('is-collapsed');
-  syncCtagToggle();
-}
-
-if (ctagToggle && ctagList) {
-  syncCtagToggle();
-
-  ctagToggle.addEventListener('click', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleCtagList();
-  });
-
-  ctagToggle.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleCtagList();
+    if (tagToggle && tagList) {
+      tagToggle.addEventListener('click', function () {
+        const collapsed = tagList.classList.toggle('is-collapsed');
+        tagToggle.textContent = collapsed ? '[Expand]' : '[Collapse]';
+        tagToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      });
     }
-  });
-}
+
+    updateButtons();
+    applyFilters();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCharacterFilters);
+  } else {
+    initCharacterFilters();
+  }
+})();

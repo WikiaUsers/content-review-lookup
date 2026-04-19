@@ -31,6 +31,7 @@
             // global template in the configuration
             // This also prevents a 404 error since Community
             // Central doesn't have WikiFeatures enabled.
+            
                 this.mwconfig.wgCityId === '177' ||
             // When you try creating your userpage/talkpage
             // on VSTF Wiki the abuse filter prevents you

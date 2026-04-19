@@ -15,7 +15,9 @@ importArticles({
         'u:dev:MediaWiki:ListFiles/code.js',
 		'u:dev:MediaWiki:MultiUpload.js',
         
-        /** ========== User page features ========== **/
+        /** ========== User management ========== **/
+        'u:dev:MediaWiki:MassUserRights/code.js',
+        'u:dev:MediaWiki:MassBlock/code.js',
         'u:dev:MediaWiki:SandboxTab/code.js',
         
         /** ========== Extra ========== **/

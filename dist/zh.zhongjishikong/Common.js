@@ -89,6 +89,9 @@ window.PFD_templates = [
 
             clockDiv.textContent = y + '年' + m + '月' + d + '日 ' + hh + ':' + mm + ':' + ss + ' (CST)';
         }, 1000);
+        // 尋找原有的 UTC 時鐘元素並隱藏 (根據常見 ID)
+			var originalClock = document.getElementById('displayTimer') || document.getElementById('utcdate');
+			if (originalClock) originalClock.style.display = 'none';
     }
 
     // 只要 body 出現就執行

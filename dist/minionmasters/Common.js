@@ -142,10 +142,10 @@ const activatedEffects = {
 	"Wartrack Dreadnaught": [{ flatManaBonus: 4 }, { damageMultiplier: 2 }, { flatHealthBonus: 350}],
 	//Slither
 	"Taloc, the Vessel": { damageMultiplier: 1.5 },
-	"Soul Stealer": {attackSpeedMultiplier: 0.197},
+	"Soul Stealer": {attackSpeedMultiplier: 0.4},
 	"Rabid Prowler": Buffs.Haste,
 	"Impatient Statue": Buffs.Haste,
-	"Empowered Soul Stealer": {attackSpeedMultiplier: 0.197},
+	"Empowered Soul Stealer": {attackSpeedMultiplier: 0.4},
 	"Poison Strike": { poisonDuration: 8, poisonTickDamage: 10 },
 	//Stoutheart
 	"Woodsman": Buffs.Haste,

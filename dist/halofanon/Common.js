@@ -2,6 +2,15 @@
 // JavaScript here will be loaded for all users on every page load.
 // ================================================================
 
+/* SpoilerAlert feature customisation imported from dev.wikia.com */
+
+window.SpoilerAlertJS = {
+    question: 'Warning! This section contains spoiler, are you sure you want to proceed?',
+    yes: 'Sure',
+    no: 'No',
+    fadeDelay: 1600
+};
+
 /* Username replace feature
  * Inserts viewing user's name into <span class="insertusername"></span>
  * Put text inside the spans to be viewed by logged out users

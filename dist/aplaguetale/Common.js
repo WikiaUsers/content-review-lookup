@@ -7,6 +7,18 @@
  */
 window.AddRailModule = [{ page: 'Template:RailModule', maxAge: 0 }]; // [[Template:RailModule]]
 
+/* [[w:c:dev:WelcomeMessage]]
+ * Welcome automation for this site
+ */
+window.welcomeMessage = {
+    enabled: true,
+    preferTalk: true,
+    adminUsername: 'ClodaghelmC',
+    adminNickname: 'Clodaghelm',
+    messageTitle: 'Welcome to A Plague Tale Wiki, $1!',
+    messageText: '{{' + 'subst:WelcomeMessage|$1|$2|$3|$4|' + '{{' + 'subst:CURRENTTIME}}, {{' + 'subst:CURRENTDAY}} {{' + 'subst:CURRENTMONTHNAME}} {{' + 'subst:CURRENTYEAR}} (UTC)}}' // [[Template:WelcomeMessage]]
+};
+
 /* [[w:c:dev:WDSIcons]]
  * Help the script render on the rail and dynamic containers
  */
@@ -31,6 +43,7 @@ window.AddRailModule = [{ page: 'Template:RailModule', maxAge: 0 }]; // [[Templa
 importArticles({
 	type: 'script',
     articles: [
+    	'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
         'u:clodaghelm:MediaWiki:RailCarousel.js',
         'u:clodaghelm:MediaWiki:PageFooterPanel.js'
     ]

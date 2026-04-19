@@ -34,15 +34,6 @@ $('.fandom-community-header__community-name-wrapper').append(
         .attr('href', '')
 );*/
 
-/* To replace the now dead "welcome bot" */
-window.AutoCreateUserPagesConfig = {
-    content: {
-        2: '{{sub'+'st:New user}}',
-        3: false
-    },
-    summary: 'Script: Creating user profile'
-};
-
 /* "Temporary" fix for {{#dpl:execandexit=geturlargs}} by User:MarkusRost */
 $( function() {
 	/* Make the confirmation on action=purge keep DPL arguments */

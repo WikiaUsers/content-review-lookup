@@ -14,12 +14,12 @@ mw.loader.using('mediawiki.util').then(function() {
 });
 
 ;(function($,mw) {
-	importArticle({
-    	type: 'script',
-    	article: 'u:dev:MediaWiki:ShowCustomModal.js'
-	});
-	var showCustomModal;
-	
+    importArticle({
+        type: 'script',
+        article: 'u:dev:MediaWiki:ShowCustomModal.js'
+    });
+    var showCustomModal;
+    
     var namespace = mw.config.get('wgNamespaceNumber');
     
     if (namespace !== 2 && namespace !== 1200 && namespace !== 500 && 
@@ -30,21 +30,21 @@ mw.loader.using('mediawiki.util').then(function() {
     medalFunctions = {
 
 // Forked from w:c:dev:MediaWiki:QuickPurge.js
-    	quickPurge: function() {
-	    	new mw.Api().post({
-	    		action: 'purge',
-	    		titles: mw.config.get('wgPageName'),
-	    	}).always(function() {
-	        	if (typeof(res) !== "object") {
-	        		console.warn('API Error in purging the Medals page \"' + mw.config.get('wgPageName') + '\":', res);
-	        	}
-	        });
-	        window.location.reload();
-	    },
+        quickPurge: function() {
+            new mw.Api().post({
+                action: 'purge',
+                titles: mw.config.get('wgPageName'),
+            }).always(function() {
+                if (typeof(res) !== "object") {
+                    console.warn('API Error in purging the Medals page \"' + mw.config.get('wgPageName') + '\":', res);
+                }
+            });
+            window.location.reload();
+        },
 
 // Default settings
         medalDefaultSettings: function() {
-            default_cfg = JSON.stringify({dataUser:{}, dataMedal: {}, module_title: 'User\'s reward', module_more: 'Show more', module_count_info: 'Amounts of this achievement', module_info: '', module_info_title: '', border: { top_left: 'https://images.wikia.nocookie.net/siegenax/ru/images/1/13/Medal_Border_corner.png', top_right: 'https://images.wikia.nocookie.net/siegenax/ru/images/d/de/Medal_Border_corner_right.png' }});
+            default_cfg = JSON.stringify({dataUser:{}, dataMedal: {}, module_title: 'User\'s reward', module_more: 'Show more', module_count_info: 'Amounts of this achievement', module_info: '', module_info_title: '', border: { top_left: 'https://static.wikia.nocookie.net/siegenax/images/1/13/Medal_Border_corner.png', top_right: 'https://static.wikia.nocookie.net/siegenax/images/d/de/Medal_Border_corner_right.png' }});
             
             $('#mw-content-text').prepend('<div style="width:100%; text-aling:center; padding:20px;">Settings not exist or broken.&nbsp;<button id="MedalResetSettings">Reset them?</button></div>');
             $('#MedalResetSettings').click(function() {
@@ -82,8 +82,8 @@ mw.loader.using('mediawiki.util').then(function() {
                     '</div>' +
                     '<div style="display:inline-block; width:475px;">' +
                         '<div style="margin-top:5px;">' + 
-                            '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;" title="Submit changes">✓</button>' +
-                            '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
+                            '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;" title="Submit changes">✔</button>' +
+                            '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✘</button>' +
                             'Medal name : ' + 
                             '<input class="MedalListName" style="float:right; width:324px; margin-right:5px;" data-prev="undefined"/>' +
                         '</div>' +
@@ -105,7 +105,7 @@ mw.loader.using('mediawiki.util').then(function() {
             $('.MedalUser').append(
                 '<div class="UserForm CustomForm" style="text-align:center; margin-top:5px; border-bottom:1px solid black; padding-bottom:5px;">' +
                     '<input class="MedalUserName" style="float:left; width:40%; margin-left:5px;" />' +
-                    '<button onclick="$(this).parents(\'.CustomForm\').remove()" style="padding:0 0 0 3px; margin:0 5px; float:left;">' + medalDeleteImg + '</button>' +
+                    '<button onclick="$(this).parents(\'.CustomForm\').remove()" style="padding:0 4px; margin:0 6px; float:left;">✘</button>' +
                     '<button onclick="$(this).parents(\'.UserForm\').find(\'.medalCollectForm\').toggle()" style="padding:0 0 0 3px; margin:0 5px; width:100px;">Medals</button>' +
                     '<br />' +
                     medalCollectForm +
@@ -243,9 +243,9 @@ mw.loader.using('mediawiki.util').then(function() {
                     format: 'json'
                 },
                 success: function(d) {
-                	if (d.error && d.error.info) {
-                		alert(d.error.info);
-                	} else if (d.edit && d.edit.result == 'Success') {
+                    if (d.error && d.error.info) {
+                        alert(d.error.info);
+                    } else if (d.edit && d.edit.result == 'Success') {
                         medalFunctions.quickPurge();
                     }
                 }
@@ -392,7 +392,6 @@ mw.loader.using('mediawiki.util').then(function() {
             
             // Variables for this function
             medalCollect = [];
-            medalDeleteImg = '<img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="sprite trash" />';
             medalCollectForm = $('<div class="medalCollectForm" style="display:none; text-align:left; margin-top:5px; border-top:1px solid black;">');
         
             if (typeof MedalSettings === "undefined") {
@@ -456,8 +455,8 @@ mw.loader.using('mediawiki.util').then(function() {
                         '</div>' +
                         '<div style="display:inline-block; width:475px;">' +
                             '<div style="margin-top:5px;">' + 
-                                '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✓</button>' +
-                                '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
+                                '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✔</button>' +
+                                '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✘</button>' +
                                 'Medal name : ' + 
                                 $('<input class="MedalListName" style="float:right; width:324px; margin-right:5px;" />').attr('value', k).attr('data-prev', k).prop('outerHTML') +
                             '</div>' +
@@ -507,7 +506,7 @@ mw.loader.using('mediawiki.util').then(function() {
                 medalModalForm.find('.MedalUser').append(
                     '<div class="UserForm CustomForm" style="text-align:center; margin-top:5px; border-bottom:1px solid black; padding-bottom:5px;">' +
                         $('<input class="MedalUserName" style="float:left; width:40%; margin-left:5px;" />').attr('value', k).prop('outerHTML') +
-                        '<button onclick="$(this).parents(\'.CustomForm\').remove()" style="padding:0 0 0 3px; margin:0 5px; float:left;">' + medalDeleteImg + '</button>' +
+                        '<button onclick="$(this).parents(\'.CustomForm\').remove()" style="padding:0 4px; margin:0 6px; float:left;">✘</button>' +
                         '<button onclick="$(this).parents(\'.UserForm\').find(\'.medalCollectForm\').toggle()" style="padding:0 0 0 3px; margin:0 5px; width:100px;"> Medals</button>' +
                         '<br />' +
                         medalCollectFormNew.prop('outerHTML') +
@@ -549,8 +548,8 @@ mw.loader.using('mediawiki.util').then(function() {
         
 // Launch function
         init: function(modalScript) {
-        	showCustomModal = modalScript;
-        	
+            showCustomModal = modalScript;
+            
             $.ajax({
                 url: mw.util.wikiScript(),
                 type: 'GET',

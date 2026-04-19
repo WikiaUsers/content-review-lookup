@@ -141,6 +141,9 @@
 
     /**
      * Get the user tag configuration for a user.
+     * Syntax:
+     * - username | tag1, tag2, tag3, ...
+     * - @tag     | username1, username2, username3, ...
      */
     function getUserTags() {
         var params = {
@@ -155,7 +158,6 @@
         }
 
         $.get(mw.util.wikiScript(), params, function(data) {
-
             if (!data.length) {
                 return;
             }
@@ -164,23 +166,44 @@
                 noHideTags = true;
             }
 
-            // syntax:
-            // $username | $tag1, $tag2, $tag3
+            var lines = data.split(/\r?\n/);
+            var userTags = [];
+            var currentUser = conf.profileUserName;
 
-            var escapeRegExp = mw.util.escapeRegExp||(mw.RegExp||{}).escape,
-                user = escapeRegExp(conf.profileUserName),
-                re = new RegExp('(?:^|\\n)\\s*' + user + '\\s*\\|\\s*(.*?)\\s*(?:\\n|$)'),
-                match = re.exec(data),
-                tags;
+            lines.forEach(function (line) {
+                var trimmed = line.trim();
+                if (!trimmed || trimmed[0] === '!') {
+                    return;
+                }
 
-            if (match === null) {
-                return;
-            }
+                var parts = trimmed.split(/\s*\|\s*/);
+                if (parts.length !== 2) {
+                    return;
+                }
 
-            tags = match[1].split(/\s*,\s*/);
+                var left = parts[0];
+                var right = parts[1];
 
-            if (tags.length) {
-                addProfileTags(tags);
+                if (left.startsWith('@')) {
+                    // @tag      | username1, username2, username3, ...
+                    var tag = left.slice(1).trim();
+                    var users = right.split(/\s*,\s*/).filter(function (u) {
+                        return u.length > 0;
+                    });
+                    if (users.includes(currentUser)) {
+                        userTags.push(tag);
+                    }
+                } else if (left === currentUser) {
+                    // username | tag1, tag2, tag3, ...
+                    var tags = right.split(/\s*,\s*/).filter(function (tag) {
+                        return tag.length > 0;
+                    });
+                    userTags = userTags.concat(tags);
+                }
+            });
+
+            if (userTags.length > 0) {
+                addProfileTags(userTags);
             }
         });
     }

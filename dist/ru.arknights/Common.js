@@ -1,5 +1,11 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
  
+ $('.loop-video video').each(function() {
+    this.loop = true;
+    this.muted = true;
+    this.play();
+});
+ 
 /* TOOLTIPS 
 ----первое число представляет описание; пусто = нет описания, 2 = есть описание----
 ----второе число представляет количество эффектов
@@ -7,9 +13,9 @@
 
 window.tooltips_list = [
         {
-        classname: 'item-tooltip',
-        parse: '{' + '{Template:Item tip|1=<#name#>|2=<#color#>|3=<#text#>|4=<#text2#>|5=<#text2b#>|6=<#text2c#>|o=<#obtain#>|o1=<#obtain1#>|o1a=<#a#>|o1b=<#b#>|o1c=<#c#>|o1d=<#d#>|o2=<#obtain2#>|title=<#title#>|link=<#link#>}}',
-    },  {
+		classname: 'item-tooltip',
+		parse: '{' + '{Template:Item tip|1=<#name#>|2=<#title#>|3=<#tier#>|4=<#use#>|5=<#desc#>|6=<#obtain#>|7=<#firstdrop#>|8=<#regdrop#>|9=<#specdrop#>|10=<#base#>|11=<#cond#>}}',
+	},  {
         classname: 'enemy-tooltip',
         parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#codename#>|3=<#hp#>|4=<#atk#>|5=<#def#>|6=<#res#>|race=<#race#>|type=<#type#>|title=<#title#>|link=<#link#>}}',
     },  {
@@ -33,45 +39,3 @@ window.tooltips_list = [
     }
 ];
 var oggPlayerButtonOnly = false;
-// Данные для примера (замените на свои)
-const operators = [
-  { name: "Экзусiai", tags: ["Медуй", "ДПС", "Выносливость"] },
-  { name: "SilverAsh", tags: ["Лидер", "ДПС", "Выживание"] }
-];
-
-const tags = ["Медуй", "ДПС", "Лидер", "Выносливость", "Выживание"];
-
-// Инициализация тегов
-function initTags() {
-  const container = document.getElementById("tag-buttons");
-  tags.forEach(tag => {
-    const btn = document.createElement("div");
-    btn.className = "tag-button";
-    btn.textContent = tag;
-    btn.onclick = () => btn.classList.toggle("selected");
-    container.appendChild(btn);
-  });
-}
-
-// Расчет результатов
-function calculate() {
-  const selectedTags = Array.from(document.querySelectorAll(".tag-button.selected"))
-    .map(btn => btn.textContent);
-
-  const filtered = operators.filter(op => 
-    selectedTags.every(tag => op.tags.includes(tag))
-  );
-
-  displayResults(filtered);
-}
-
-// Отображение результатов
-function displayResults(data) {
-  const results = document.getElementById("results");
-  results.innerHTML = data.map(op => 
-    `<div class="result-item">${op.name} (${op.tags.join(", ")})</div>`
-  ).join("");
-}
-
-// Запуск при загрузке
-window.onload = initTags;

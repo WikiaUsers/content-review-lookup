@@ -1,6 +1,25 @@
 // Template: StatueStatsForm
 
 $(document).ready(function() {
+	    /* === Light mode change === */
+    $("<style>")
+    .prop("type", "text/css")
+    .html(`
+        /* White Text */
+        #ampOptions,
+        #generatorOptions,
+        #ampOptionsInner,
+        #generatorOptionsInner {
+            color: white !important;
+        }
+
+        /* Blue (Link like) Text for Show/Hide Trigger */
+        .ampOptionsTrigger,
+        .generatorOptionsTrigger {
+            color: #9CB6D6 !important;
+        }
+    `)
+    .appendTo("head");
 	/* Function to round a number to a certain digit. */
 	function roundNum(digit, num) {
 	    return Math.round((num) * Math.pow(10, digit)) * Math.pow(10, -digit);

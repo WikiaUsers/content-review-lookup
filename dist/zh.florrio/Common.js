@@ -246,3 +246,61 @@ window.Random = function(min, max, isInteger) {
     return (y >>> 0) / 4294967296; // 转换为[0,1)区间
   };
 })();
+
+importArticles({
+  type: 'script',
+  articles: ['MediaWiki:SaveToast.js']
+});
+
+// JS部分 - 添加到Common.js
+$(function() {
+    if (mw.config.get('wgCanonicalNamespace') !== 'User') return;
+    
+    // 创建举报按钮
+    const reportBtn = $('<button>')
+        .addClass('report-user-btn')
+        .text('举报该用户');
+    
+    // 创建列表项并添加到社交媒体区域
+    const listItem = $('<li>')
+        .addClass('report-button-item')
+        .append(reportBtn);
+    
+    $('ul.user-identity-social').append(listItem);
+    
+    // 举报功能
+    reportBtn.on('click', function() {
+        const targetUser = mw.config.get('wgTitle');
+        const reporter = mw.config.get('wgUserName');
+        
+        if (!reporter) {
+            alert('请先登录再举报');
+            return;
+        }
+        
+        if (!confirm(`确定要举报用户 ${targetUser} 吗？\n该操作会通知所有管理员`)) return;
+        
+        new mw.Api().post({
+            action: 'query',
+            list: 'allusers',
+            augroup: 'sysop',
+            aulimit: 'max'
+        }).done(function(data) {
+            const admins = data.query.allusers.map(u => u.name);
+            const message = `用户举报：${reporter} 举报了 ${targetUser}，请管理员核查`;
+            
+            admins.forEach(admin => {
+                new mw.Api().postWithEditToken({
+                    action: 'edit',
+                    title: `Message Wall:${admin}`,
+                    section: 'new',
+                    text: message
+                });
+            });
+            
+            alert(`举报已发送给 ${admins.length} 位管理员`);
+        }).fail(function() {
+            alert('获取管理员列表失败，请重试');
+        });
+    });
+});

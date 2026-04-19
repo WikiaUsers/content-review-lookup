@@ -2,8 +2,8 @@
  * Скрипт для создания эффекта Pseudo-3D (вращение при перетаскивании)
  */
 (() => {
-    // WeakMap — это современное и безопасное хранилище. 
-    // В нём мы будем держать текущий кадр для каждого конкретного блока (viewport), 
+    // WeakMap — это современное и безопасное хранилище.
+    // В нём мы будем держать текущий кадр для каждого конкретного блока (viewport),
     // не "пачкая" сам HTML-элемент лишними свойствами.
     const viewportStates = new WeakMap();
 
@@ -30,7 +30,7 @@
     const drag = (e, isTouch = false) => {
         // Находим блок, внутри которого произошло нажатие
         const viewport = e.target.closest('.pseudo-3d-viewport');
-        const sprite = viewport?.querySelector('img'); // "?." защитит от ошибки, если img нет
+        const sprite = viewport && viewport.querySelector('img'); 
         
         if (!sprite) return;
         
@@ -47,7 +47,9 @@
         
         // Настройки для фона (Skybox)
         const piItem = window.PseudoSkybox ? viewport.closest('.pi-item') : null;
-        const currentBgX = parseFloat(piItem?.style.backgroundPositionX) || 50;
+        const currentBgX = (piItem && piItem.style && piItem.style.backgroundPositionX) 
+            ? parseFloat(piItem.style.backgroundPositionX) 
+            : 50;
         
         // 3. Логика, которая срабатывает при каждом движении
         const move = ev => {
