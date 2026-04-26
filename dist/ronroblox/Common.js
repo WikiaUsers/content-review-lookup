@@ -82,7 +82,6 @@ UserTagsJS.modules.custom = {
 	// Content Moderators
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
 	'Sorayaann': ['content-moderator','Wiki-Contributor'],
-    'Silkened': ['content-moderator','Wiki-Contributor'],
   	// Junior Content Moderators
     
 	// Discussions Moderators
@@ -133,6 +132,9 @@ UserTagsJS.modules.custom = {
 	'The Ukulele Man': ['retired-staff'],
 	'Alan Builder': ['retired-staff'],
 	'Kaisergluck': ['retired-staff'],
+	'Therealusman': ['retired-staff'],
+	'DragooNit': ['retired-staff'],
+	'Silkened': ['retired-staff'],
 	// Retired Discussions Moderator
 	'CreeperSPG': ['retired-staff'],
 	'CrunchMCMunch': ['retired-staff'],
@@ -146,6 +148,9 @@ UserTagsJS.modules.custom = {
     'Cipherusxzy': ['Wiki-Contributor'],
     'HaHaBlah': ['Wiki-Contributor'],
     'RyeThePies': ['Wiki-Contributor'],
+    'Thethingiforgor': ['Wiki-Contributor'],
+    'Pro10boy2228': ['Wiki-Contributor'],
+    'FourCer5': ['Wiki-Contributor'],
 };
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

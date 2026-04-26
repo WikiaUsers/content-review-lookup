@@ -2,6 +2,7 @@
 console.log("COMMON.JS Executed");
 importScript('MediaWiki:DynamicRemainingItemsTable.js');
 importScript('MediaWiki:TaskTableFeatures.js');
+importScript('MediaWiki:UsesTableFeatures.js');
 
 (function () {
   console.log("Searching for Checkbox tracker (robust v2)");

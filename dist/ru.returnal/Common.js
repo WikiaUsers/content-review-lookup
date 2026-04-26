@@ -6,7 +6,6 @@ importArticles({
 	        "u:ru.wikicorporate:MediaWiki:Scroll.js",
 	        "u:ru.wikicorporate:MediaWiki:Wikificator.js",
 	        "u:ru.wikicorporate:MediaWiki:FanFeed.js",
-	        "u:ru.wikicorporate:MediaWiki:RelatedDiscussions.js",
 	        "u:ru.wikicorporate:MediaWiki:ThemeToggler.js",
 	        "u:ru.wikicorporate:MediaWiki:Rail.js",
 	        "u:ru.wikicorporate:MediaWiki:Pseudo3D.js"

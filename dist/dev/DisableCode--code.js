@@ -118,17 +118,17 @@
    * determining the display text by means of I18n-js.
    *
    * @function
-   * @param {string} message - The name of the I18n-js message to display
-   * @param {string} href - The link location to which the button points
+   * @param {string} paramMessage - The name of the I18n-js message to display
+   * @param {string} paramHref - The link location to which the button points
    * @returns {string} - The assembled <code>string</code> HTML output
    */
-  this.assembleLink = function (message, href) {
+  this.assembleLink = function (paramMessage, paramHref) {
     return mw.html.element("a", {
-      "id": this.Selectors.ID_LINK_PREFIX + message.toLowerCase(),
+      "id": this.Selectors.ID_LINK_PREFIX + paramMessage.toLowerCase(),
       "class": this.Selectors.CLASS_LINK,
-      "href": href,
-      "title": this.i18n.msg(message).plain()
-    }, this.i18n.msg(message).plain());
+      "href": paramHref,
+      "title": this.i18n.msg(paramMessage).plain()
+    }, this.i18n.msg(paramMessage).plain());
   };
 
   /**
@@ -172,7 +172,7 @@
   this.init = function (paramLang) {
 
     // Declarations
-    var content, target, search;
+    var content, target, search, link, resetLink, resetItem, listItems;
 
     // Add i18n data as local property
     (this.i18n = paramLang).useContentLang();
@@ -188,22 +188,24 @@
     search = (window.location.search.length) ? "&" : "?";
 
     // Build tools list element and populate with buttons
-    content = mw.html.element("li", {
-      "id": this.Selectors.ID_LIST,
-      "class": [
-        this.Selectors.CLASS_OVERFLOW,
-        this.Selectors.CLASS_LIST
-      ].join(" ")
-    }, new mw.html.Raw(
-      this.assembleLink("reset", this.defineResetLocation()) +
-      Object.values(this.Params).map(function (entry) {
-        return this.assembleLink(
-          entry.MESSAGE,
-          this.config.wgArticlePath.replace("$1", this.config.wgPageName +
-            window.location.search + search + entry.QUERY + "=" + entry.VALUE)
-        );
-      }.bind(this)).join("")
-    ));
+    resetLink = this.assembleLink("reset", this.defineResetLocation());
+    resetItem = mw.html.element("li", {
+      "class": this.Selectors.CLASS_OVERFLOW + " " + this.Selectors.CLASS_LIST
+    }, new mw.html.Raw(resetLink));
+
+    // Map params to individual li
+    listItems = Object.values(this.Params).map(function (paramEntry) {
+      link = this.assembleLink(paramEntry.MESSAGE,
+        this.config.wgArticlePath.replace("$1", this.config.wgPageName +
+          window.location.search + search + paramEntry.QUERY + "=" +
+            paramEntry.VALUE));
+
+      return mw.html.element("li", {
+        "class": this.Selectors.CLASS_OVERFLOW + " " + this.Selectors.CLASS_LIST
+      }, new mw.html.Raw(link));
+    }.bind(this)).join("");
+
+    content = resetItem + listItems;
 
     // Add to "My Tools" menu
     $(target).prepend(content);

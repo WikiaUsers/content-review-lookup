@@ -1,35 +1,31 @@
+
+/* Be careful when editing this as it may end up messing with the entire wiki. */
+
 /* Modifying redirect button from WikiEditor's source mode to automatically include the category */
 $('#wpTextbox1').on('wikiEditor-toolbar-buildSection-advanced', function(event, section) {
     // The exact paths are available in jquery.wikiEditor.toolbar.config.js file of the extension
     section.groups.insert.tools.redirect.action.options.pre = '#REDIRECT [[';
     section.groups.insert.tools.redirect.action.options.post = ']]\n\n[[Category:Redirect Pages]]';
 });
+
+
+/* UserTags Configuration */
 window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		montheditor: { u:'Editor of the Month' },
-	}
-};
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		pagecleaner: { u:'Page Cleaner' },
-	}
+    modules: {
+        inactive: {
+            days: 30,
+            namespaces: [0],
+            zeroIsInactive: true
+        }
+    },
+    tags: {
+        montheditor: { u: 'Editor of the Month' },
+        pagecleaner: { u: 'Page Cleaner' },
+        inactive: { u: 'Inactive (Has not edited recently)' },
+        elation: { u: 'The Elation' }
+    }
 };
 
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		inactive: { u: 'Inactive (Has not edited recently)' }
-	}
-};
-UserTagsJS.modules.inactive = {
-	days: 30,
-	namespaces: [0],
-	zeroIsInactive: true // 0 article edits = inactive
-};
 /* overrides certain i18n strings for MapsExtended */
 window.dev = window.dev || {};
 window.dev.i18n = window.dev.i18n || {};
@@ -51,3 +47,11 @@ window.globalFileUsageConfig = {
 };
 /* for Rail Module */
 window.AddRailModule = [{prepend: true}];
+
+/*for mass renaming*/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassRename/code.js',
+    ]
+});

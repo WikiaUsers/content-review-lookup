@@ -4,7 +4,8 @@
 		console.log("[User Page Notice] [LOG]: Script activation conditions met. Running script...");
 		let str = "<div class='templatedesktop AlertNotice' id='UserPageNotice'><span style='font-weight:bold;font-size:20px'>"
 		+ "<span style='color:var(--saktkia51-js-userpagenotice-hazard-color)'>⚠</span> Unofficial Content <span style='color:var(--saktkia51-js-userpagenotice-hazard-color)'>⚠</span></span><br>"
-		+ `<span style='font-weight:bold'>${mw.config.get('wgPageName').replace(/_/g, ' ')}</span> is a personal user page. It is not a main wiki article, and as such, any information contained on this page is not official.</div>`;
+		+ `<p><span style='font-weight:bold'>${mw.config.get('wgPageName').replace(/_/g, ' ')}</span> is a personal user page. It is not a main wiki article, and as such, any information contained on this page is not official.</p>`
+		+ `<p>Only the page owner may edit this page, except in cases of removing rule violations, fixing formatting issues like broken links or double redirects or if the page owner has explicitly granted permission for others to edit it.</p>`;
 		document.getElementById('content').insertAdjacentHTML('beforebegin', str);
 	} else {
 		console.log("[User Page Notice] [LOG]: Script activation conditions not met. Exiting...");

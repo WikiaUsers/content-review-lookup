@@ -2,7 +2,7 @@
 window.ajaxRefresh = 30000;
 
 // Cartes Interactives
-window.mapsExtendedConfig = {
+/* window.mapsExtendedConfig = {
     "minimalLayout": true,
     "enableSearch": true,
     "enableSidebar": true,
@@ -10,7 +10,7 @@ window.mapsExtendedConfig = {
     "openPopupsOnHover": false,
     "enableFullscreen": true,
     "fullscreenMode": "window"
-};
+}; */
 
 /*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
 window.BackToTopModern = true;

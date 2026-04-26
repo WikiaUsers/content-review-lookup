@@ -1,3 +1,7 @@
+
+importScript('MediaWiki:List.js');
+
+
 mw.loader.using(['jquery']).then(function () {
     if (mw.config.get('wgAction') !== 'view') return;
 

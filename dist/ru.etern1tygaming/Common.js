@@ -1,1 +1,1 @@
-importScriptPage('MediaWiki:MapScript.js', 'ru');
+mw.loader.load('https://etern1tygaming.fandom.com/ru/wiki/MediaWiki:MapScript.js?action=raw&ctype=text/javascript');

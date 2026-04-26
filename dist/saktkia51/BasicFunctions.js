@@ -105,3 +105,55 @@ function formatDate(date, format, utc) {
 
     return format;
 };
+
+function removeAllKeys() {
+	if (this !== undefined) {
+		const outputObj = {
+			count:0,
+			keys:[],
+		};
+		for (let key in this) {
+			if (delete this[key]) {
+				outputObj.keys.push(key);
+				outputObj.count++;
+			}
+		}
+		return outputObj;
+	}
+}
+
+function hasTheseItems(targetArr, sourceArr = []) {
+	return targetArr.every(function(item) {
+		return sourceArr.includes(item);
+	});
+}
+
+function isNullish(input) {
+	return input === undefined || input === null;
+}
+function isNotNullish(input) {
+	return !(input === undefined || input === null);
+}
+
+function isBetween(input, start, end) {
+	return input >= start && input <= end;
+}
+
+function convertToBinary(input) {
+	input = input.toString();
+	const output = [];
+	const l = input.length;
+	for (let j = 0; j < l; j++) {
+		output.push(input[j].charCodeAt(0).toString(2));
+	}
+	return output.join(' ');
+}
+function convertFromBinary(input) {
+	input = input.split(' ');
+	let output = '';
+	const l = input.length;
+	for (let j = 0; j < l; j++) {
+		output += String.fromCharCode(parseInt(input[j], 2));
+	}
+	return output;
+}

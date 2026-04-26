@@ -9,6 +9,45 @@ $( function eraIconsFandomdesktop() {
     }
 } );
 
+/* შესავალი რედაქტირებისას / Edit intros
+ */
+function addEditIntro(name) {
+	// ბმული თავში
+	$('.page-header #ca-edit').attr('href', $('.page-header #ca-edit').attr('href') + '&editintro=' + name);
+	$('.page-side-tools #ca-edit').attr('href', $('.page-side-tools #ca-edit').attr('href') + '&editintro=' + name);
+	$('span.mw-editsection > a').each( function () {
+		$(this).attr('href', $(this).attr('href') + '&editintro=' + name);
+	} );
+}
+
+$( function () {
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 ) {
+		var cats = document.getElementById( 'articleCategories' );
+		if ( !cats ) {
+			return;
+		}
+		cats = cats.getElementsByTagName( 'a' );
+		for ( var i = 0; i < cats.length; i++ ) {
+			if ( cats[i].title === 'Category:ჰოლოპედიის რჩეული სტატიები' ) {
+				addEditIntro( 'Template:Featured_editintro' );
+				break;
+			} else if ( cats[i].title === 'Category:ჰოლოპედიის კარგი სტატიები' ) {
+				addEditIntro( 'Template:Good_editintro' );
+				break;
+			} else if ( cats[i].title === 'Category:ჰოლოპედიის ვრცელი სტატიები' ) {
+				addEditIntro( 'Template:Comprehensive_editintro' );
+				break;
+                        } else if ( cats[i].title === 'Category:ლეგენდების სტატიები კანონიკური ანალოგებით' ) {
+				addEditIntro( 'Template:Legends_editintro' );
+				break;
+			} else if ( cats[i].title === 'Category:კანონიკური სტატიები ლეგენდების ანალოგებით' ) {
+				addEditIntro( 'Template:Canon_editintro' );
+				break;
+			}
+		}
+	} 
+} );
+
 // Hotcat script for adding interlang links
 
 mw.loader.load('https://starwars.fandom.com/load.php?mode=articles&articles=MediaWiki:HotCat.js&only=scripts');

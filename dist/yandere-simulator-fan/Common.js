@@ -33,22 +33,14 @@ window.UserTagsJS = {
 		'headpro-admin': { u:'Head Admin Pro tempore', order:1 },
 		//Interim Heads
 		interim: { u:'Interim Head', order:-1/0 },
-		'headint-helper': { u:'Interim Head Helper', order:-1/0 },
-		'headint-rollback': { u:'Interim Head Rollback', order:-1/0 },
-		'headint-chatmod': { u:'Interim Head Chat Mod', order:-1/0 },
-		'headint-contentmod': { u:'Interim Head Content Mod', order:-1/0 },
-		'headint-discussionmod': { u:'Interim Head Discussion Mod', order:-1/0 },
-		'headint-miniadmin': { u:'Interim Head Mini-Admin', order:-1/0 },
-		'headint-admin': { u:'Interim Head Admin', order:-1/0 },
-		'headint-bureaucrat': { u:'Interim Head Bureaucrat', order:-1/0 },
-		//Head Pro tempore elect
-		'headpro-elect-helper': { u:'Head Helper Pro tempore elect', order:1 },
-		'headpro-elect-rollback': { u:'Head Rollback Pro tempore elect', order:1 },
-		'headpro-elect-chatmod': { u:'Head Chat Mod Pro tempore elect', order:1 },
-		'headpro-elect-contentmod': { u:'Head Content Mod Pro tempore elect', order:1 },
-		'headpro-elect-discussionmod': { u:'Head Discussion Mod Pro tempore elect', order:1 },
-		'headpro-elect-miniadmin': { u:'Head Mini-Admin Pro tempore elect', order:1 },
-		'headpro-elect-admin': { u:'Head Admin Pro tempore elect', order:1 },
+		'headint-helper': { u:'Acting Head Helper', order:-1/0 },
+		'headint-rollback': { u:'Acting Head Rollback', order:-1/0 },
+		'headint-chatmod': { u:'Acting Head Chat Mod', order:-1/0 },
+		'headint-contentmod': { u:'Acting Head Content Mod', order:-1/0 },
+		'headint-discussionmod': { u:'Acting Head Discussion Mod', order:-1/0 },
+		'headint-miniadmin': { u:'Acting Head Mini-Admin', order:-1/0 },
+		'headint-admin': { u:'Acting Head Admin', order:-1/0 },
+		'headint-bureaucrat': { u:'Acting Head Bureaucrat', order:-1/0 },
 		//Deputies
 		deputy: { u:'Deputy', order:-1/0 },
 		'deputy-helper': { u:'Deputy Helper', order:-1/0 },
@@ -62,14 +54,11 @@ window.UserTagsJS = {
 		//Chairmen
 		'hc-sc': { u:'Historical Cmte (Sr Chmn)', order:2 },
 		'hc-jc': { u:'Historical Cmte (Jr Chmn)', order:2 },
-		'vc-sc': { u:'Volunteer Cmte (Sr Chmn)', order:2 },
-		'vc-jc': { u:'Volunteer Cmte (Jr Chmn)', order:2 },
-		'ec-sc': { u:'Events Cmte (Sr Chmn)', order:2 },
-		'ec-jc': { u:'Events Cmte (Jr Chmn)', order:2 },
+		'ec-sc': { u:'Activities Cmte (Sr Chmn)', order:2 },
+		'ec-jc': { u:'Activities Cmte (Jr Chmn)', order:2 },
 		//Committees
 		'hc-member': { u:'Historical Cmte', order:3 },
-		'vc-member': { u:'Volunteer Cmte', order:3 },
-		'ec-member': { u:'Events Cmte', order:3 },
+		'ec-member': { u:'Activities Cmte', order:3 },
 		//Former
 		'former-intern': { u:'Former Intern', order:-1/0 },
 		'former-helper': { u:'Former Helper', order:-1/0 },
@@ -93,7 +82,7 @@ UserTagsJS.modules.custom = {
 	'Jackboog21': ['head'],
 	/* Admins */
 	/* Mini-Admins */
-	'LenLawliet': ['head'],
+	'LenLawliet': ['head']
 	/* Content Mods */
 	/* Discussion Mods */
 	/* Rollbacks */
@@ -188,6 +177,13 @@ window.MastheadRightsBadgeSettings = {
     iconSize: '25px',
 };
 
+window.MessageWallUserTags = {
+    users: {
+        'Jackboog21': 'Head Bureaucrat',
+        'LenLawliet': 'Head Mini-Admin'
+    }
+};
+
 //TopicBlockList
 TBL_WIKIS = [ "community", "yandere-simulator", "yandere-simulator-fan"];
  
@@ -200,14 +196,6 @@ window.MarkForDeletion = {
     replace: true
 };
 
-//RailWAM
-window.railWAM = {
-     logPage: 'Project:WAM Log',
-     loadOnPage: ['Special:WikiActivity', 'Project:WAM Log'],
-     showToAnons: 'false',
-     loadOnNamespace: 4
-};
-
 //Import for Content Staff
 if (mw.config.get('wgUserGroups').includes('rollback') || 
     mw.config.get('wgUserGroups').includes('content-moderator') || 
@@ -216,8 +204,7 @@ if (mw.config.get('wgUserGroups').includes('rollback') ||
     importArticles({
         type: 'script',
         articles: [
-            'u:dev:MediaWiki:MarkForDeletion/code.js',
-            'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
+            'u:dev:MediaWiki:MarkForDeletion/code.js'
         ]
     });
 }
@@ -249,17 +236,17 @@ if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ ||
     importArticles({
         type: 'script',
         articles: [
-            'u:dev:MediaWiki:RCStats.js',
-            'u:dev:MediaWiki:RailWAM/code.js',
+            //'u:dev:MediaWiki:RCStats.js',
+            //'u:dev:MediaWiki:RailWAM/code.js',
         ]
     });
 }
 
 //AjaxRC
 window.ajaxSpecialPages = [
-    "Recentchanges", 
-    "WikiActivity", 
-    "Watchlist", 
+    //"Recentchanges", 
+    //"WikiActivity", 
+    //"Watchlist", 
     "Log", 
     "Contributions"
     ];
@@ -269,7 +256,7 @@ window.ajaxRefresh = 60000;
 window.BackToTopModern = true;
 
 //Refresh Live! Chat every 30 seconds
-window.chatReloadTime = 30000;
+//window.chatReloadTime = 30000;
 
 //DPLforums
 window.dplforumBoards = [

@@ -68,8 +68,8 @@ window.UserTagsJS = {
 		bot: { link:'Help:Bots', order: -1 },
 		bureaucrat: { order: 0 },
 		sysop: { order: 1 },
-		'content-moderator': { order: 2 },
-		threadmoderator: { order: 3 }
+		'content-moderator': { order: 3 },
+		threadmoderator: { order: 2 }
 	}
 };
 

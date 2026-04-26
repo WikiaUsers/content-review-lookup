@@ -246,3 +246,116 @@ jQuery(function($) {
 /* Autolock Comments */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 14;
+
+/* Autoload Brainrots */
+(function () {
+    'use strict';
+
+    console.log("Brainrot JS loaded");
+
+    var TTL = 5 * 60 * 1000; 
+
+    function fetchCategoryPages(category) {
+
+        var cacheKey = "brainrot_cat_" + category;
+        var raw = mw.storage.get(cacheKey);
+
+        var cache = null;
+
+        if (raw) {
+            try {
+                cache = JSON.parse(raw);
+            } catch (e) {
+                mw.storage.remove(cacheKey);
+            }
+        }
+
+        if (cache && (Date.now() - cache.time < TTL)) {
+            console.log("Cache hit (fresh):", category);
+            return Promise.resolve(cache.data);
+        }
+
+        console.log("Cache miss:", category);
+
+        var url = mw.util.wikiScript('api') + '?' + new URLSearchParams({
+            action: 'query',
+            list: 'categorymembers',
+            cmtitle: 'Category:' + category,
+            cmlimit: 'max',
+            format: 'json'
+        });
+
+        return fetch(url)
+            .then(function (res) {
+                return res.json();
+            })
+            .then(function (data) {
+
+                var members =
+                    (data && data.query && data.query.categorymembers)
+                        ? data.query.categorymembers
+                        : [];
+
+                var pages = members
+                    .filter(function (p) {
+                        return p.ns === 0;
+                    })
+                    .map(function (p) {
+                        return p.title;
+                    });
+
+                mw.storage.set(cacheKey, JSON.stringify({
+                    time: Date.now(),
+                    data: pages
+                }));
+
+                console.log("Cache stored:", category);
+
+                return pages;
+            })
+            .catch(function (err) {
+                console.error("Category fetch failed:", err);
+                return [];
+            });
+    }
+
+    function renderTabs() {
+        console.log("renderTabs fired");
+
+        var tabs = document.querySelectorAll('.BrainrotTab');
+        console.log("Tabs found:", tabs.length);
+
+        if (!tabs.length) return;
+
+        var cache = {};
+
+        tabs.forEach(function (tab) {
+
+            var category = tab.dataset.category;
+            console.log("Processing category:", category);
+
+            if (!category) return;
+
+            if (!cache[category]) {
+                cache[category] = fetchCategoryPages(category);
+            }
+
+            cache[category].then(function (pages) {
+
+                if (!pages || !pages.length) {
+                    tab.innerHTML = "<i>No pages found</i>";
+                    return;
+                }
+
+                tab.innerHTML = pages
+                    .map(function (name) {
+                        return '<div class="BrainrotBox">' + name + '</div>';
+                    })
+                    .join('');
+            });
+        });
+    }
+
+    $(renderTabs);
+
+})();

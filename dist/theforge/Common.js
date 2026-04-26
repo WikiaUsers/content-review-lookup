@@ -1,3 +1,53 @@
+/* ========================================= */
+/* AO CODES CLICK-TO-COPY FUNCTIONALITY      */
+/* ========================================= */
+
+mw.hook('wikipage.content').add(function($content) {
+    $content.find('.ao-copy-pill').each(function() {
+        // Prevent multiple bindings
+        if ($(this).data('copy-bound')) return;
+        $(this).data('copy-bound', true);
+
+        $(this).on('click', function() {
+            var codeToCopy = $(this).attr('data-code');
+            var $icon = $(this).find('.ao-copy-icon');
+            var originalIcon = $icon.text();
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(codeToCopy).then(function() {
+                    showSuccess($icon, originalIcon);
+                });
+            } else {
+                var textArea = document.createElement("textarea");
+                textArea.value = codeToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showSuccess($icon, originalIcon);
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        });
+    });
+
+    function showSuccess($iconElement, originalText) {
+        $iconElement.text('✅');
+        $iconElement.css('color', '#66fcf1');
+        setTimeout(function() {
+            $iconElement.text(originalText);
+            $iconElement.css('color', '');
+        }, 1500);
+    }
+});
+
+
+
 mw.loader.using(['jquery'], function () {
     $(function () {
         if (!$('#forge-calculator-app').length) return;

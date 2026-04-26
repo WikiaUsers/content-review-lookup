@@ -23,12 +23,15 @@
     // Staff (ONLY used to assign .is-prime)
     const staff = [
         'a[href$=":DrippedChonk" i]',
-        'a[href$=":SomeRandomLuckyGuy" i]',
         'a[href$=":Curtis_2012_OP" i]',
         'a[href$=":Curtis%202012%20OP" i]',
         'a[href$=":YeetusMcCleetus1" i]',
         'a[href$=":Magmapro" i]',
-        'a[href$=":LeeBi2000_TW" i]'
+        'a[href$=":LeeBi2000_TW" i]',
+        'a[href$=":Edward1237" i]',
+        'a[href$=":DumplingOnRIVALS" i]',
+        'a[href$=":Daveyalt" i]',
+        'a[href$=":MaxGOAT" i]'
     ];
 
     // ==================== PRIME SYSTEM ====================
@@ -148,3 +151,5 @@
         mw.hook('wikipage.content').add(initializeAll);
 
 })();
+
+mw.loader.load('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');

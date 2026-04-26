@@ -1,11 +1,86 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
  
- $('.loop-video video').each(function() {
-    this.loop = true;
-    this.muted = true;
-    this.play();
+/* Исправление для отображения .webm в галереях как гифок (скрытие интерфейса и зацикливание) */
+$(function() {
+    'use strict';
+    
+    function processWebmAsGif() {
+        $('video').each(function() {
+            var video = this;
+            
+            // Проверяем, не обработано ли уже это видео
+            if (video.classList.contains('webm-gif-processed')) return;
+            
+            // Ищем источник видео (прямой src или внутри <source>)
+            var src = video.src || (video.querySelector('source') ? video.querySelector('source').src : '');
+            
+            // Если это .webm файл
+            if (src && src.indexOf('.webm') > -1) {
+                // Убираем панель управления
+                video.controls = false;
+                // Зацикливаем
+                video.loop = true;
+                // Mute обязателен для автоплея
+                video.muted = true;
+                // Отключаем предзагрузку метаданных (опционально, убирает черный фон)
+                video.preload = 'auto';
+                
+                // Функция для запуска воспроизведения
+                function tryPlay() {
+                    var playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(function() {
+                            // Браузер заблокировал автоплей, пробуем позже при взаимодействии
+                            $(document).one('click touchstart', function() {
+                                video.play();
+                            });
+                        });
+                    }
+                }
+                
+                tryPlay();
+                
+                // Гарантированно скрываем контролы даже после событий плеера
+                video.addEventListener('loadedmetadata', function() {
+                    video.controls = false;
+                });
+                
+                video.addEventListener('play', function() {
+                    video.controls = false;
+                });
+                
+                video.addEventListener('pause', function() {
+                    // Если видео поставили на паузу (например, кликнули), перезапускаем
+                    if (!video.ended) {
+                        video.play();
+                    }
+                });
+                
+                // Помечаем как обработанное
+                video.classList.add('webm-gif-processed');
+            }
+        });
+    }
+    
+    // Запускаем при загрузке страницы
+    processWebmAsGif();
+    
+    // Наблюдаем за изменениями DOM (для динамически подгружаемых галерей и лайтбокса)
+    var observer = new MutationObserver(function(mutations) {
+        processWebmAsGif();
+    });
+    
+    observer.observe(document.body, { 
+        childList: true, 
+        subtree: true 
+    });
+    
+    // Дополнительно: повторная обработка при изменении хэша (открытие лайтбокса)
+    $(window).on('hashchange', function() {
+        setTimeout(processWebmAsGif, 100);
+    });
 });
- 
+
 /* TOOLTIPS 
 ----первое число представляет описание; пусто = нет описания, 2 = есть описание----
 ----второе число представляет количество эффектов

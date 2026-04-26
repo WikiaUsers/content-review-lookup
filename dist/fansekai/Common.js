@@ -1,5 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 window.BackToTopModern = true;
+
+/* Replaces {{USERNAME}} with the name of the user browsing the page.
+   Requires copying Template:USERNAME. */
+$(function() {
+    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) { return; }
+    $('span.insertusername').text(mw.config.get('wgUserName'));
+});
+ 
+/* End of the {{USERNAME}} replacement */
+
 /* to convert a date/time in one timezone to user's local time, code copied from u:valkyriecrusade:MediaWiki:Common.js */
 function jstzConvertAll() {
     var l = document.querySelectorAll("[data-jstz]");

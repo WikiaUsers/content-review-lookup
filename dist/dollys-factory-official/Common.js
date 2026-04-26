@@ -51,3 +51,18 @@ importArticles({
         'u:dev:MediaWiki:ListFiles/code.js',
     ]
 });
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		// Define your custom tags here
+		roleName: { u: 'Tag Display Text', order: 100 },
+		coder: { u: 'Wiki Coder', order: 101 },
+		chatmod: { u: 'Chat Mod', order: 102 }
+	}
+};
+// Apply tags to specific users
+UserTagsJS.modules.custom = {
+	'Username': ['roleName', 'coder'], // Add multiple tags
+	'AnotherUser': ['chatmod']
+};

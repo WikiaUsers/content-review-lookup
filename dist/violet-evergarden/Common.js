@@ -34,6 +34,9 @@ importArticles({
         'u:dev:ReferencePopups/code.js',
         'u:dev:SignatureCheck/code.js',
         'u:dev:ShowHide/code.js',
+        'u:dev:MediaWiki:MassRollback.js',
+        'u:dev:MediaWiki:AnchoredRollback/code.js',
+        'u:dev:MediaWiki:Rollback/code.js',
     ]
 }, {
     type: 'style',

@@ -67,11 +67,48 @@ window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-Refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
-/* Tooltips Configuration */
-window.tooltips_config = {
-    offsetX: 5,
-    offsetY: 10,
-    waitForImages: true,
-    events: ['CustomEvent'],
-    noCSS: true,
-};
+/* Tooltips Configuration - FIXED */
+(function () {
+    function initTooltips() {
+        document.querySelectorAll('.advanced-tooltip').forEach(function (tooltip) {
+            var contents = tooltip.querySelector('.tooltip-contents');
+            if (!contents) return;
+
+            tooltip.addEventListener('mouseenter', function () {
+                contents.style.display = 'block';
+            });
+
+            tooltip.addEventListener('mousemove', function (e) {
+                var x = e.clientX;
+                var y = e.clientY;
+                var boxW = contents.offsetWidth;
+                var boxH = contents.offsetHeight;
+                var vw = window.innerWidth; document.documentElement.clientWidth;
+                var vh = window.innerHeight; document.documentElement.clientHeight;
+                var left = - 135;
+                var top =  - 33;
+
+                if (left + boxW > vw) {
+                    left = x - boxW;
+                }
+
+                if (top + boxH > vh) {
+                    top = y - boxH;
+                }
+
+                contents.style.left = left + 'px';
+                contents.style.top  = top  + 'px';
+            });
+
+            tooltip.addEventListener('mouseleave', function () {
+                contents.style.display = 'none';
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTooltips);
+    } else {
+        initTooltips();
+    }
+})();

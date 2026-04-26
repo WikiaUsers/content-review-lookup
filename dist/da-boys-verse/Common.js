@@ -455,3 +455,39 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 })();
 </script>
+
+/* Template:VN */
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".vn-container");
+  const scenes = container.querySelectorAll(".vn-scene");
+
+  const bg = document.querySelector(".vn-background");
+  const sprite = document.querySelector(".vn-sprite");
+  const speaker = document.querySelector(".vn-speaker");
+  const text = document.querySelector(".vn-text");
+  const nextBtn = document.querySelector(".vn-next");
+
+  let index = 0;
+
+  function loadScene(i) {
+    const scene = scenes[i];
+    if (!scene) return;
+
+    speaker.textContent = scene.dataset.speaker;
+    text.textContent = scene.dataset.text;
+
+    bg.style.backgroundImage = `url(${scene.dataset.bg})`;
+    sprite.src = scene.dataset.sprite;
+  }
+
+  nextBtn.addEventListener("click", function () {
+    index++;
+    if (index < scenes.length) {
+      loadScene(index);
+    } else {
+      nextBtn.textContent = "End";
+    }
+  });
+
+  loadScene(index);
+});

@@ -18,7 +18,8 @@ window.initializeMountPower = function() {
         rare: 0.2,         // 20%
         epic: 0.4,         // 40%
         legendary: 0.6667, // 66,67%
-        mythic: 1.0        // 100%
+        mythic: 1.0,       // 100%
+        celestial: 1.3123     // 125%
     };
 
     // Функция форматирования числа с запятой
@@ -42,7 +43,7 @@ window.initializeMountPower = function() {
     };
 
     // Глобальные переменные
-    var globalQuality = 'mythic';
+    var globalQuality = 'celestial';
     var globalBolster = 0;
 
     // Основной контейнер
@@ -81,7 +82,8 @@ window.initializeMountPower = function() {
             rare: 'Редкий',
             epic: 'Эпический',
             legendary: 'Легендарный',
-            mythic: 'Мифический'
+            mythic: 'Мифический',
+            celestial: 'Небесный'
         }[key] || key);
 
         if (key === globalQuality) {
@@ -95,9 +97,9 @@ window.initializeMountPower = function() {
         type: 'number',
         id: 'bolster-input',
         min: 0,
-        max: 100,
+        max: 125,
         value: 0,
-        title: 'Введите процент общего уровня предметов (0-100%)'
+        title: 'Введите процент общего уровня предметов (0-125%)'
     }).css({
         width: '60px',
         padding: '5px',
@@ -161,11 +163,11 @@ window.initializeMountPower = function() {
 
     // Функция обновления расчётов
     function updateAllTargets() {
-        globalQuality = $('#quality-select').val() || 'mythic';
+        globalQuality = $('#quality-select').val() || 'celestial';
         globalBolster = parseFloat($('#bolster-input').val()) || 0;
 
-        if (isNaN(globalBolster) || globalBolster < 0 || globalBolster > 100) {
-            $('.calculate-mount-power-target').html('Ошибка: Bolster должен быть числом от 0 до 100');
+        if (isNaN(globalBolster) || globalBolster < 0 || globalBolster > 125) {
+            $('.calculate-mount-power-target').html('Ошибка: Bolster должен быть числом от 0 до 125');
             return;
         }
 
@@ -197,11 +199,11 @@ window.initializeMountPower = function() {
 
                 if (hasComma) {
                     var tempValue = parseFloat(original.replace(',', ''));
-                    finalValue = tempValue * qualityLevels[globalQuality] * (1 + globalBolster / 100);
+                    finalValue = tempValue * qualityLevels[globalQuality] * (1 + globalBolster / 125);
                     var rounded = Math.round(finalValue);
                     formattedValue = rounded.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
                 } else {
-                    finalValue = maxValue * qualityLevels[globalQuality] * (1 + globalBolster / 100);
+                    finalValue = maxValue * qualityLevels[globalQuality] * (1 + globalBolster / 125);
                     formattedValue = finalValue.toFixed(1);
                 }
 

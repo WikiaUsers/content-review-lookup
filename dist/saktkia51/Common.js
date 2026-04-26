@@ -19,6 +19,11 @@ mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:Dail
 // Adds a search box to the main page to aid unfamiliar users with the usage of the function.
 mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
 
+// [Exclusive Skins Daily Logger]
+// Displays the current exclusive daily skin's various info according to the browser's detected time zone.
+// See https://saktkia51.fandom.com/wiki/Weapon_Skins
+mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:ExclusiveSkinsDailyLogger.js&action=raw&ctype=text/javascript');
+
 // -- [ Other code ] --
 window.BackToTopModern = true;
 

@@ -28,7 +28,7 @@ $(document).ready(function() {
 		'</select> %</div>');
 	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
-	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
+	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option></select></div>');
 	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
 	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
@@ -39,7 +39,7 @@ $(document).ready(function() {
 	// TH poison: Superseded by a toggle
 	// $("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">Toggle TH Poison Spell? <input type="checkbox" name="THpoisonSpellBoost" id="THpoisonSpellBoost"></input></div>');
-	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
 	$("span#PLpoisonSpellHarness").html('<div id="PLpoisonSpellInput">Poison Lizard Poison Level: <select name="PLpoisonSpellLevel" id="PLpoisonSpellLevel"> <option value="0">0</option> <option value="1">1-4</option> <option value="2">5-9</option> <option value="3">10-14</option> <option value="4">15</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Gem Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
@@ -49,9 +49,9 @@ $(document).ready(function() {
 	// $("span#hardModeHarness").html('<div id="hardModeInput">Toggle Hard Mode? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');	Superseded by the new difficulty modifier
 	$("span#difficultyModeHarness").html('<div id="difficultyModeInput">Difficulty Modifier: <select name="difficultyModeBoost" id="difficultyModeBoost">' +
 		'<option value="0">None</option>' +
-	    '<option value="1">Expert</option>' +
-	    '<option value="2">Master</option>' +
-	    '<option value="3">Legend</option>' +
+	    '<option value="1">Legend III</option>' + //Formerly "Expert"
+	    '<option value="2">Legend II</option>' + //Formerly "Master"
+	    '<option value="3">Legend I</option>' + //Formerly "Legend"
 	    '<option value="4">Esports</option>' +
 		'</select></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
@@ -126,8 +126,10 @@ $(document).ready(function() {
     	'<tr><td><span id="darkCrownHarness"></span></td></tr>' +
 	'</table></div>');
 	// Equipment-specific modifiers
+	// Dark Crown
 	$("span#darkCrownHarness").html('<div id="darkCrownInput" style="display:none;">Dark Crown Stacks: <select name="darkCrownStackLevel" id="darkCrownStackLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
 	// Crafted Defense-specific modifiers
+	// Hero Bell (defense inactive but modifier is left in to reserve functionality)
 	$("span#heroBellDamageHarness").html('<div id="heroBellDamageInput">Hero Bell DPS Level: <select name="heroBellDamageLevel" id="heroBellDamageLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
 	$("span#heroBellHPHarness").html('<div id="heroBellHPInput">Hero Bell HP Level: <select name="heroBellHPLevel" id="heroBellHPLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
     /* Get the initial cell values, remove commas, and 
@@ -1269,8 +1271,10 @@ $(document).ready(function() {
 		// Lookup for the Dark Crown's boosts
 		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
 		// Difficulty lookups
-		var difficultyAttackPenalty = [0,0,0,5,20];
-		var difficultyDefenseBoost = [0,5,10,15,20];
+		var difficultyAttackHeroPenalty = [0,5,10,20,20];
+		var difficultyDefenseBuildingBoost = [0,10,15,20,25];
+		var difficultyDefenseHeroBoost = [0,10,15,20,25];
+		var difficultyDefenseGuardianBoost = [0,5,10,20,20];
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
 		// This is to be compatible with the dictionaries, which are also zero-indexed
@@ -1461,7 +1465,8 @@ $(document).ready(function() {
 		});
 		// Make a function for calculating DPH, since some different classes (DPH and DPHRange) call on it
 		// Note: DPH increase from passives or ability will be handled before feeding that DPH into here (it is observed to stack multiplicatively)
-		function calcDPH(initialDPH,isHero,isBuilding,isStatue) {
+		
+		function calcDPH(initialDPH,isHero,isBuilding,isGuardian) { //Repurposed the now unused "Statue" boolean for Guardians
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
 			var rageAuraLevel = $("#rageAuraLevel").val() * 1;
@@ -1519,8 +1524,7 @@ $(document).ready(function() {
 			}
 			if (rageTowerCheckBox != null) {
 				if (rageTowerCheckBox.checked === true) {
-					// Grand Warden statue (has Statue class) is not a building and so gains full buff
-					if (isHero === true && isStatue === false) {
+					if (isHero === true) {
 						towerRageMultiplier = 13/10;
 					} else {
 						towerRageMultiplier = 16/10;
@@ -1618,15 +1622,18 @@ $(document).ready(function() {
 			if (!isNaN(diff)) {
 				if (diff > 0) {
 					if (modifierMode == "Attack") { // Hero in attack mode gets less damage
-						calcNewDPH *= (100 - difficultyAttackPenalty[diff])/100;
+					// Note: Non-hero units typically do not use modifier mode, so will be addressed below.in "else"
+						calcNewDPH *= (100 - difficultyAttackHeroPenalty[diff])/100;
 					} else if (modifierMode == "Defense") { // Hero in defense mode gets more damage
-						calcNewDPH *= (100 + difficultyDefenseBoost[diff])/100;
+						calcNewDPH *= (100 + difficultyDefenseHeroBoost[diff])/100;
 					} else {
 						if (isHero === true) { // For heroes when modifier mode is ignored
 							// (example: Hero equipments)
-							calcNewDPH *= (100 - difficultyAttackPenalty[diff])/100;
-						} else if (isBuilding === true || isStatue === true) { // For buildings or "statues"
-							calcNewDPH *= (100 + difficultyDefenseBoost[diff])/100;
+							calcNewDPH *= (100 - difficultyAttackHeroPenalty[diff])/100;
+						} else if (isBuilding === true) { // For buildings
+							calcNewDPH *= (100 + difficultyDefenseBuildingBoost[diff])/100;
+						} else if (isGuardian === true) { // For Guardians
+							calcNewDPH *= (100 + difficultyDefenseGuardianBoost[diff])/100;
 						}
 					}
 				}
@@ -1693,13 +1700,11 @@ $(document).ready(function() {
 			
 			// Now begin work on the base DPH
 			if ($(this).hasClass("Hero") === true) {
-				if ($(this).hasClass("Statue") === true) {
-					calcNewDPH = calcDPH(baseDPH,true,false,true);
-				} else {
-					calcNewDPH = calcDPH(baseDPH,true,false,false);
-				}
+				calcNewDPH = calcDPH(baseDPH,true,false,false);
 			} else if ($(this).hasClass("Building") === true) {
 				calcNewDPH = calcDPH(baseDPH,false,true,false);
+			} else if ($(this).hasClass("Guardian") === true) {
+				calcNewDPH = calcDPH(baseDPH,false,false,true);
 			} else {
 				calcNewDPH = calcDPH(baseDPH,false,false,false);
 			}
@@ -1744,13 +1749,11 @@ $(document).ready(function() {
 			var moddedFormatArray = [];
 			for (x in initArray) { //Use calcDPH with parameters depending on the class
 				if ($(this).hasClass("Hero") === true) {
-					if ($(this).hasClass("Statue") === true) {
-						moddedArray.push(calcDPH(initArray[x],true,false,true));
-					} else {
-						moddedArray.push(calcDPH(initArray[x],true,false,false));
-					}
+					moddedArray.push(calcDPH(initArray[x],true,false,false));
 				} else if ($(this).hasClass("Building") === true) {
-					moddedArray.push(calcDPH(initArray[x],false,true,true));
+					moddedArray.push(calcDPH(initArray[x],false,true,false));
+				} else if ($(this).hasClass("Guardian") === true) {
+					moddedArray.push(calcDPH(initArray[x],false,false,true));
 				} else {
 					moddedArray.push(calcDPH(initArray[x],false,false,false));
 				}
@@ -2087,8 +2090,7 @@ $(document).ready(function() {
 			}
 			if (rageTowerCheckBox != null) {
 				if (rageTowerCheckBox.checked === true) {
-					// Grand Warden statue (has Statue class) is not a building and so gains full buff
-					if ($(this).hasClass("Hero") === true && $(this).hasClass("Statue") === false) {
+					if ($(this).hasClass("Hero") === true) {
 						towerRageMultiplier = 13/10;
 					} else {
 						towerRageMultiplier = 16/10;
@@ -2232,14 +2234,16 @@ $(document).ready(function() {
 				if (diff > 0) {
 					hardModeUsed = true;
 					if (modifierMode == "Attack") { // Hero in attack mode gets 10% less damage
-						buffedDPS *= (100 - difficultyAttackPenalty[diff])/100;
+						buffedDPS *= (100 - difficultyAttackHeroPenalty[diff])/100;
 					} else if (modifierMode == "Defense") { // Hero in defense mode gets 20% more damage
-						buffedDPS *= (100 + difficultyDefenseBoost[diff])/100;
+						buffedDPS *= (100 + difficultyDefenseHeroBoost[diff])/100;
 					} else {
 						if ($(this).hasClass("Hero") === true) { // For heroes when modifier mode is ignored (e.g. Hero equipment)
-							buffedDPS *= (100 - difficultyAttackPenalty[diff])/100;
-						} else if ($(this).hasClass("Building") === true || $(this).hasClass("Statue") === true) { // For buildings or "statues"
-							buffedDPS *= (100 + difficultyDefenseBoost[diff])/100;
+							buffedDPS *= (100 - difficultyAttackHeroPenalty[diff])/100;
+						} else if ($(this).hasClass("Building") === true) { // For buildings
+							buffedDPS *= (100 + difficultyDefenseBuildingBoost[diff])/100;
+						} else if ($(this).hasClass("Guardian") === true) { // For Guardians
+							buffedDPS *= (100 + difficultyDefenseGuardianBoost[diff])/100;
 						}
 					}
 				}
@@ -2295,15 +2299,20 @@ $(document).ready(function() {
 			if ($("select#modifierMode").val() != undefined) {
 				modifierMode = $("select#modifierMode").val();
 			}
-			// Hard mode modifiers only apply to Heroes
-			// The Hero class check is redundant currently but useful if troops get modified in hard mode
+			// Hard mode modifiers only apply to Heroes and Guardians
 			if (!isNaN(diff)) {
-				if (diff > 0 && $(this).hasClass("Hero") === true) {
-					hardModeUsed = true; // This flag is used for aesthetics
-					if (modifierMode == "" || modifierMode == "Attack") {
-						baseHP *= (100 - difficultyAttackPenalty[diff])/100; // 10% nerf to base HP
-					} else if (modifierMode == "Defense") {
-						baseHP *= (100 + difficultyDefenseBoost[diff])/100; // 20% buff to base HP
+				if (diff > 0) {
+					if ($(this).hasClass("Hero") === true) {
+						hardModeUsed = true; // This flag is used for aesthetics but only proc it if modifying anything
+						// (So do not enable the flag for defenses, for example)
+						if (modifierMode == "" || modifierMode == "Attack") { //Neutral for Hero Equipment
+							baseHP *= (100 - difficultyAttackHeroPenalty[diff])/100; // Nerf base HP
+						} else if (modifierMode == "Defense") {
+							baseHP *= (100 + difficultyDefenseHeroBoost[diff])/100; // Buff base HP
+						}
+					} else if ($(this).hasClass("Guardian") === true) {
+						hardModeUsed = true;
+						baseHP *= (100 + difficultyDefenseGuardianBoost[diff])/100; // Buff base HP
 					}
 				}
 			}

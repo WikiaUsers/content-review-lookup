@@ -99,11 +99,17 @@ mw.loader.using('jquery').then(function () {
     hideDot(container);
   });
 
+  /* =========================
+     ZOOM WHEEL (процентный, к курсору)
+     ========================= */
   $(document).on("wheel", ".map-view", function (e) {
     e.preventDefault();
 
     const delta = e.originalEvent.deltaY > 0 ? -0.1 : 0.1;
-    const newScale = Math.max(0.5, Math.min(8, scale + delta));
+    const zoomFactor = 1 + delta;
+    let newScale = scale * zoomFactor;
+
+    newScale = Math.max(0.5, Math.min(8, newScale));
 
     if (newScale === scale) return;
 
@@ -150,20 +156,58 @@ mw.loader.using('jquery').then(function () {
     $(".map-stage").css("cursor", "");
   });
 
+  /* =========================
+     ZOOM IN (процентный, к центру экрана)
+     ========================= */
   $(document).on("click", ".zoom-in", function () {
     const container = $(this).closest(".map-container");
     const stage = container.find(".map-stage");
+    const view = container.find(".map-view");
 
-    scale = Math.min(8, scale + 0.2);
+    const rect = view[0].getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const targetX = (centerX - x) / scale;
+    const targetY = (centerY - y) / scale;
+
+    let newScale = scale * 1.2;
+    newScale = Math.min(8, newScale);
+
+    if (newScale === scale) return;
+
+    scale = newScale;
+    x = centerX - targetX * scale;
+    y = centerY - targetY * scale;
+
     clampPan();
     apply(stage);
   });
 
+  /* =========================
+     ZOOM OUT (процентный, к центру экрана)
+     ========================= */
   $(document).on("click", ".zoom-out", function () {
     const container = $(this).closest(".map-container");
     const stage = container.find(".map-stage");
+    const view = container.find(".map-view");
 
-    scale = Math.max(0.5, scale - 0.2);
+    const rect = view[0].getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const targetX = (centerX - x) / scale;
+    const targetY = (centerY - y) / scale;
+
+    let newScale = scale * 0.8;
+    newScale = Math.max(0.5, newScale);
+
+    if (newScale === scale) return;
+
+    scale = newScale;
+    x = centerX - targetX * scale;
+    y = centerY - targetY * scale;
+
     clampPan();
     apply(stage);
   });
@@ -211,10 +255,10 @@ mw.loader.using('jquery').then(function () {
     VIEW_BOUNDS.width = view.width();
     VIEW_BOUNDS.height = view.height();
 
-	scale = zoom;
-	
-	x = -(posX * scale) + VIEW_BOUNDS.width / 2;
-	y = -(posY * scale) + VIEW_BOUNDS.height / 2;
+    scale = zoom;
+    
+    x = -(posX * scale) + VIEW_BOUNDS.width / 2;
+    y = -(posY * scale) + VIEW_BOUNDS.height / 2;
 
     clampPan();
 
@@ -277,15 +321,15 @@ mw.loader.using('jquery').then(function () {
       if (match) floor = match[1];
     }
     
-	const x = Math.round(mapX);
-	const y = Math.round(mapY);
-	
-	const result = `data-x="${x}" data-y="${y}"`;
-	
-	navigator.clipboard.writeText(result);
-	
-	alert(result);
-	console.log(result);
+    const xCoord = Math.round(mapX);
+    const yCoord = Math.round(mapY);
+    
+    const result = `data-x="${xCoord}" data-y="${yCoord}"`;
+    
+    navigator.clipboard.writeText(result);
+    
+    alert(result);
+    console.log(result);
   });
 
 });

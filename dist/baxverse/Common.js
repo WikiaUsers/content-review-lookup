@@ -48,6 +48,8 @@ $(function() {
                     		media_type_class = 'category-link-media-game';
                     	} else if (media_type[1] == 'Novel') {
                     		media_type_class = 'category-link-media-novel';
+                    	} else if (media_type[1] == 'Sourcebook') {
+                    		media_type_class = 'category-link-media-sourcebook'
                     	}
                     	document.querySelector('[title="' + title + '"]').classList.add(media_type_class);
                     }
@@ -150,10 +152,10 @@ $(function() {
 
 /* 
 ////////////////////////////////////////////////////////////////////
-// THE BELOW CODE randomly changes text above top navigation from "Baxverse" to one from the list
+// THE BELOW CODE randomly changes text above top navigation from "Baxverse" to one from the list. All Copied from the Marvel Database Wiki!
 //////////////////////////////////////////////////////////////////// */
 
-var wiki_names = ["Time to Flame On!!!", "It’s Zapping Time!", "Red Belt!", "This is Emphasis! Ready to Go!", "NEKOKEN!", "CATYUKEN!", "Let's Blast through at the Speed of THUNDER!", "Don't expect me to go easy on you!", "You want it? Come and get it!", "Ready for a 'Jolt' of Action?!", "This looks like a job for Firstman!", "I’m good at this kind of thing.", "LET'S SEE WHO'S TALKING AFTER THIS!", "Fair warning. These claws will hurt.", "I am Leviathan!", "I'm ready for ya! Bring it on!", "I AM NOT SHAPED LIKE A FERRIS WHEEL!!!", "AIR LUNAR GUST!!", "My journey starts now", "A-Girls, fire at will!", "Good grief...people like you are always a problem!", "You will explode in any second!", "Man- How long has it been?"];
+var wiki_names = ["Time to Flame On!!!", "It’s Zapping Time!", "Red Belt!", "This is Emphasis! Ready to Go!", "NEKOKEN!", "CATYUKEN!", "Let's Blast through at the Speed of THUNDER!", "Don't expect me to go easy on you!", "You want it? Come and get it!", "Ready for a 'Jolt' of Action?!", "This looks like a job for Firstman!", "I’m good at this kind of thing.", "LET'S SEE WHO'S TALKING AFTER THIS!", "Fair warning. These claws will hurt.", "I am Leviathan!", "I'm ready for ya! Bring it on!", "I AM NOT SHAPED LIKE A FERRIS WHEEL!!!", "AIR LUNAR GUST!!", "My journey starts now", "A-Girls, fire at will!", "Good grief...people like you are always a problem!", "You will explode in any second!", "Man- How long has it been?", "Dork!", "Face the carnage. Become the memory.", "Alright! Duty calls for a platformer hero!", "We’re here to bash you in the head!", "Think you’re the first person that’s tried to kill me?", "Alright, let’s make this quick—I got a stream waiting!", "Are you here to steal from me? I cannot allow that sugar.", "Guess I’m not in Salem anymore.", "Name’s Parker. Parker Mayson!", "It’s me, Waxter!", "I am Doctor Logotto! Your genius ruler!", "If this is a game, then you play by MY rules!"];
 var wiki_name_number = -1;
 while (wiki_name_number < 0 || wiki_name_number > wiki_names.length) {
   wiki_name_number = Math.random().toFixed(2) * 100;
@@ -216,7 +218,7 @@ var customizeToolbar2 = function () {
 					type: 'encapsulate',
 					options: {
 						pre: "{{subst:Move\n|page_name     = ",
-						post: "\n|reason        = \n|move_variants = Yes\n}}"
+						post: "\n|reason        = \n}}"
 					}
 				}
 			},
@@ -387,7 +389,7 @@ var customizeToolbar2 = function () {
 					type: 'encapsulate',
 					options: {
 						pre: "{{Comic Template\n| Image1              = ",
-						post: "\n| Image1_Artist1      = \n| Image2              = \n| Image2_Text         = \n| Image2_Artist1      = \n\n| ReleaseDate         = \n| Month               = \n| Year                = \n\n| Editor-in-Chief     = \n| Pages               = \n| Rating              = \n| OriginalPrice       = \n\n| Quotation           = \n| Speaker             = \n\n| StoryTitle1         = \n| Writer1_1           = \n| Penciler1_1         = \n| Inker1_1            = \n| Colorist1_1         = \n| Letterer1_1         = \n| Editor1_1           = \n\n|  Appearing1         = \n'''Featured Characters:'''\n* <br/>\n'''Supporting Characters:'''\n* <br/>\n'''Antagonists:'''\n* <br/>\n'''Other Characters:'''\n* <br/>\n'''Races and Species:'''\n* <br/>\n'''Locations:'''\n* <br/>\n'''Items:'''\n* <br/>\n'''Vehicles:'''\n* <br/>\n\n| Synopsis1           = \n\n| Solicit             = \n\n| Notes               = \n| Trivia              = \n| Recommended         = \n| Links               = \n}}"
+						post: "\n| Image1_Artist1      = \n| Image2              = \n| Image2_Text         = \n| Image2_Artist1      = \n\n| ReleaseDate         = \n| Month               = \n| Year                = \n| BaxverseID   = \n\n| Editor-in-Chief     = \n| Pages               = \n| Rating              = \n| OriginalPrice       = \n\n| Quotation           = \n| Speaker             = \n\n| StoryTitle1         = \n| Writer1_1           = \n| Penciler1_1         = \n| Inker1_1            = \n| Colorist1_1         = \n| Letterer1_1         = \n| Editor1_1           = \n\n|  Appearing1         = \n'''Featured Characters:'''\n* <br/>\n'''Supporting Characters:'''\n* <br/>\n'''Antagonists:'''\n* <br/>\n'''Other Characters:'''\n* <br/>\n'''Races and Species:'''\n* <br/>\n'''Realities:'''\n* <br/>\n'''Locations:'''\n* <br/>\n'''Items:'''\n* <br/>\n'''Vehicles:'''\n* <br/>\n\n| Synopsis1           = \n\n| Solicit             = \n\n| Notes               = \n| Trivia              = \n| Recommended         = \n| Links               = \n}}"
 					}
 				}
 			},
