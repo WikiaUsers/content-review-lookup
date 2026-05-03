@@ -43,19 +43,23 @@ importArticles({
     ]
 });}
 
+/* ================================ 
+   UserTags Config
+   Displays custom titles
+================================ */
 window.UserTagsJS = {
     modules: {},
     tags: {
         founder: { u: 'Founder', order: 1 },
-        bureaucrat: { u: 'God', order: 2 },
+        bureaucrat: { u: 'Supreme God', order: 2 },
         'former-bureaucrat': { u: 'Retired Bureaucrat', order: 3 },
-        sysop: { u: 'Saint', order: 4 },
+        sysop: { u: 'God', order: 4 },
         'former-sysop': { u: 'Retired Administrator', order: 5 },
         'bot-global': { u: 'Global Bot', order: 6 },
         bot: { u: 'Bot', order: 7 },
-        'content-moderator': { u: 'Law Domain', order: 10 },
-        threadmoderator: { u: 'Nascent Source', order: 11 },
-        rollback: { u: 'Rollback', order: 13 },
+        'content-moderator': { u: 'Saint', order: 10 },
+        threadmoderator: { u: 'Law Domain', order: 11 },
+        rollback: { u: 'Nascent Source', order: 13 },
         bannedfromchat: { u: 'Banned from Chat', order: 20 },
         inactive: { u: 'Inactive', order: Infinity } 
     }

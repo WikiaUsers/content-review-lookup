@@ -25,3 +25,10 @@ window.BackToTopModern = true;
 window.NoLicenseWarning = {
     forceLicense: true,
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassRename/code.js',
+    ]
+});

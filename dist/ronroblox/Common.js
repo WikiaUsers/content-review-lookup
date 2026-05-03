@@ -75,10 +75,10 @@ UserTagsJS.modules.custom = {
 	'3meraldKv': ['founder'],
 	'Standoffiish': ['bureaucrat'],
 	// Administrators
+	'Dxrknrg': ['content-administrator','discussions-administrator','Wiki-Contributor'],
 	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
 	// Moderators
 	// Dual Moderators
-	'Dxrknrg': ['content-moderator','threadmoderator','Wiki-Contributor'],
 	// Content Moderators
 	'Mysþıc': ['content-moderator','Wiki-Contributor'],
 	'Sorayaann': ['content-moderator','Wiki-Contributor'],

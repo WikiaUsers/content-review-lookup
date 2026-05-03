@@ -3,8 +3,8 @@
 
     const CONFIG = {
         prime: {
-            swipeSpeed: 2500,
-            swipeGap: 2000,
+			swipeSpeed: 10000,
+			swipeGap: 3000,
             starSpawnRate: 1250,
             starLifespan: 2000,
             starRounds: 1.5

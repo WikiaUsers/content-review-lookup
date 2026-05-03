@@ -16,7 +16,7 @@ mw.hook('wikipage.content').add(function($content) {
     var color      = getProp('--ch-color', defaultColor);
     var arrow      = getProp('--ch-arrow', '▼');
     var duration   = getProp('--ch-animation-duration', '0s');
-    var easing     = getProp('--ch-easing-style', 'ease');
+    var easing     = getProp('--ch-easing-style', 'linear');
     var durationMs = parseFloat(duration) * 1000;
 
     if (!window.CollapsibleHeadersCSSLoaded) {
@@ -26,23 +26,17 @@ mw.hook('wikipage.content').add(function($content) {
             '.ch-toggle {',
             '    cursor: pointer;',
             '    font-size: var(--ch-size, 12px);',
-            '    color: ' + color + ';',
             '    float: right;',
             '    margin-right: 8px;',
             '    user-select: none;',
             '    display: inline-block;',
-            '    transition: transform ' + duration + ' ' + easing + ';',
-            '    transform: rotate(0deg);',
             '}',
             '.ch-toggle--collapsed {',
             '    transform: rotate(-90deg);',
             '}',
             '.ch-outer-wrapper {',
             '    overflow: hidden;',
-            '    transition: height ' + duration + ' ' + easing + ';',
-            '}',
-            '.ch-inner-wrapper {',
-            '    transition: transform ' + duration + ' ' + easing + ';',
+            '    display: flow-root;',
             '}'
         ].join('\n'));
     }
@@ -54,6 +48,18 @@ mw.hook('wikipage.content').add(function($content) {
         var headline = $(this);
         var header = headline.parent();
         if (!header.is('h2, h3, h4, h5, h6')) return;
+
+        var customEl = headline.find('.ch-custom')[0];
+        var customData = customEl ? customEl.dataset : {};
+
+        if (customData.chCollapse === 'false') return;
+
+        var headerColor        = customData.chColor              || color;
+        var headerArrow        = customData.chArrow              || arrow;
+        var headerDuration     = customData.chAnimationDuration  || duration;
+        var headerEasing       = customData.chEasingStyle        || easing;
+        var headerDurationMs   = parseFloat(headerDuration) * 1000;
+        var startCollapsed     = customData.chStartCollapsed === 'true';
 
         var level = parseInt(header.prop('tagName').substring(1));
         var contentEls = [];
@@ -81,21 +87,25 @@ mw.hook('wikipage.content').add(function($content) {
         contentEls.forEach(function(el) { inner.appendChild(el); });
         outer.appendChild(inner);
 
-        outer.style.height = 'auto';
-
         var animating = false;
 
         var toggle = $('<span>')
             .addClass('ch-toggle')
-            .text(arrow)
+            .text(headerArrow)
             .attr('role', 'button')
             .attr('tabindex', '0')
-            .attr('aria-expanded', 'true')
+            .css({
+                'color':      headerColor,
+                'transition': 'transform ' + headerDuration + ' ' + headerEasing
+            })
             .on('click', function() {
                 if (animating) return;
 
                 var collapsed = $(this).data('collapsed');
                 animating = true;
+
+                outer.style.transition  = 'height ' + headerDuration + ' ' + headerEasing;
+                inner.style.transition  = 'transform ' + headerDuration + ' ' + headerEasing;
 
                 if (collapsed) {
                     var expandHeight = outer.scrollHeight;
@@ -107,7 +117,7 @@ mw.hook('wikipage.content').add(function($content) {
                     setTimeout(function() {
                         outer.style.height = 'auto';
                         animating = false;
-                    }, durationMs);
+                    }, headerDurationMs);
 
                 } else {
                     var currentHeight = outer.scrollHeight;
@@ -120,7 +130,7 @@ mw.hook('wikipage.content').add(function($content) {
 
                     setTimeout(function() {
                         animating = false;
-                    }, durationMs);
+                    }, headerDurationMs);
                 }
 
                 $(this).data('collapsed', !collapsed);
@@ -128,5 +138,16 @@ mw.hook('wikipage.content').add(function($content) {
             .data('collapsed', false);
 
         header.prepend(toggle);
+
+        if (startCollapsed) {
+            var currentHeight = outer.scrollHeight;
+            outer.style.height = '0px';
+            inner.style.transform = 'translateY(-' + currentHeight + 'px)';
+            toggle.addClass('ch-toggle--collapsed');
+            toggle.attr('aria-expanded', 'false');
+            toggle.data('collapsed', true);
+        } else {
+            outer.style.height = 'auto';
+        }
     });
 });

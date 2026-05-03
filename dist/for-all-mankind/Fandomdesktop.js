@@ -18,8 +18,6 @@ var pageName = mw.config.get('wgPageName');
 
 // Specific pages to target
 var targetPages = [
-    "Season_5",
-    "For_All_Mankind",
     "Star_City",
     "Star_City_season_1",
     "Template:Countdown",
@@ -45,7 +43,7 @@ if (targetPages.includes(pageName)) {
 // ------------------------------------------------------- //
 //   M-6 text behind community header                      //
 // ------------------------------------------------------- //
-
+/*
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
@@ -54,3 +52,4 @@ $('.fandom-community-header__community-name-wrapper').append(
         )
         .attr('href', 'https://for-all-mankind.fandom.com/wiki/Mars-6_Alliance')
 );
+*/

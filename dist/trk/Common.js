@@ -1,3 +1,4 @@
+console.log("TRK JS LOADED");
 // MediaWiki:Common.js
 importArticle({ type: 'script', article: 'u:dev:Tabber/code.js' });
 importScriptPage('Countdown/code.js', 'dev');
@@ -66,3 +67,53 @@ window.NoLicenseWarning = {
         'rollback'
     ]
 };
+// Countdown template
+mw.loader.using(['mediawiki.util']).then(function () {
+
+    function runCountdown() {
+        const elements = document.querySelectorAll('.trk-countdown');
+
+        if (!elements.length) return;
+
+        elements.forEach(function (el) {
+            const targetAttr = el.getAttribute('data-target');
+            if (!targetAttr) return;
+
+            const target = parseInt(targetAttr) * 1000;
+            const textEl = el.querySelector('.trk-countdown-text');
+
+            function update() {
+                const now = Date.now();
+                let diff = target - now;
+
+                if (diff <= 0) {
+                    textEl.innerHTML = "RELEASED";
+                    return;
+                }
+
+                const days = Math.floor(diff / 86400000);
+                diff %= 86400000;
+
+                const hours = Math.floor(diff / 3600000);
+                diff %= 3600000;
+
+                const mins = Math.floor(diff / 60000);
+                diff %= 60000;
+
+                const secs = Math.floor(diff / 1000);
+
+                textEl.innerHTML =
+                    days + " DAYS, " +
+                    hours + " HOURS, " +
+                    mins + " MIN, " +
+                    ("0" + secs).slice(-2) + " SEC";
+            }
+
+            update();
+            setInterval(update, 1000);
+        });
+    }
+
+    // 🔥 THIS is the important part (Fandom-safe hook)
+    $(runCountdown);
+});

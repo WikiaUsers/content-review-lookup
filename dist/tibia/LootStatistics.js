@@ -139,6 +139,7 @@
     'Memory of an Elf': {'Candy Floss': 'Candy Floss (Large)'},
     'Memory of an Insectoid': {'Candy Floss': 'Candy Floss (Large)'},
     'Memory of an Ogre': {'Candy Floss': 'Candy Floss (Large)'},
+    'Michael the Stalwart': {'Personal Letter of Michael The Stalwart I': 'Personal Letter of Michael the Stalwart I', 'Personal Letter of Michael The Stalwart II': 'Personal Letter of Michael the Stalwart II', 'Personal Letter of Michael The Stalwart III': 'Personal Letter of Michael the Stalwart III'},
     'Mindmasher': {'Dung Ball': 'Dung Ball (Quest)'},
     'Night Harpy': {'Night Harpy Featherse': 'Night Harpy Feathers'},
     'Novice of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (First Verse)'},

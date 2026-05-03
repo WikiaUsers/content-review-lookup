@@ -147,6 +147,13 @@ $(function () {
 					defaultWidth = 325;
 					defaultHeight = 750;
 					break;
+					
+				// Reddit
+               case 'reddit':
+					iframe.src = 'https://www.reddit.com/r/' + data[0] + '/comments/' + data[1] + '/?ref_source=embed&ref=share&embed=true';
+					defaultWidth = 640;
+					defaultHeight = 460;
+					break;
 			}
 
 			if (!iframe.width) iframe.width = (element.data('width') || defaultWidth) + 'px';

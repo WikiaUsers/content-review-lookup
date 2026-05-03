@@ -304,3 +304,79 @@ $(function() {
         });
     });
 });
+
+// 豪看的文字粒子效果
+$(function() {
+  if ($('#particle-title').length === 0) return;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const title = document.getElementById('particle-title');
+  
+  title.style.position = 'relative';
+  canvas.style.position = 'absolute';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.pointerEvents = 'none'; 
+  title.appendChild(canvas);
+
+
+  function resize() {
+    canvas.width = title.offsetWidth;
+    canvas.height = title.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  
+  function getTextPixels() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = window.getComputedStyle(title).font;
+    ctx.fillStyle = 'white';
+    ctx.fillText(title.textContent, 0, canvas.height * 0.8);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const particles = [];
+    for (let y = 0; y < canvas.height; y += 4) { 
+      for (let x = 0; x < canvas.width; x += 4) {
+        const index = (y * canvas.width + x) * 4;
+        if (imageData[index] > 128) { 
+          particles.push({
+            x: x,
+            y: y,
+            originX: x,
+            originY: y,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+          });
+        }
+      }
+    }
+    return particles;
+  }
+
+  let particles = getTextParticles();
+  window.addEventListener('resize', () => {
+    resize();
+    particles = getTextParticles();
+  });
+
+  
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let p of particles) {
+      
+      p.x += p.vx;
+      p.y += p.vy;
+      
+      if (Math.abs(p.x - p.originX) > 2) p.vx *= -1;
+      if (Math.abs(p.y - p.originY) > 2) p.vy *= -1;
+      
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.fill();
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+});

@@ -10,6 +10,13 @@
 		const _ = undefined;
 		const gameVersion = "V17.0";
 		const weaponsCount = 21;
+		function checkPlural(input, config = {}) {
+			if (input === 1) {
+				return config.singular;
+			} else {
+				return config.plural ?? config.singular;
+			}
+		}
 		
 		const materialFiles = {
 			antenna:"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/20/Craft_Antenna.png/revision/latest?cb=20250828210204&format=original",
@@ -180,7 +187,7 @@
 				'redox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/ba/Gun_Skins_-_P90_-_Redox.png/revision/latest?cb=20260321063307&format=original",
 				'equinox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/cc/Weapon_Skins_-_P90_-_Equinox.png/revision/latest?cb=20260412100738&format=original",
 			};
-			const elem = `<div class='exampleImage'><img src='${obj[id] ?? placeholderImage}'></img><div class='caption'>In-game appearance</div></div>`;
+			const elem = `<div class='exampleImageContainer hoverimg'><img class='image' src='${obj[id] ?? placeholderImage}'></img><div class='caption'>In-game appearance</div></div>`;
 			return elem;
 		}
 		function formatRarityName(id) {
@@ -386,6 +393,15 @@
 			overflow:auto;
 			margin:auto;
 			
+			.hoverimg {
+				& img {
+					transition:0.5s;
+				}
+				& img:hover {
+					opacity:50%;
+				}
+			}
+			
 			& .title {
 				font-size:150%;
 				font-weight:bold;
@@ -398,13 +414,14 @@
 			
 			& .body {
 				overflow:auto;
-				& .exampleImage {
+				& .exampleImageContainer {
 					float:left;
 					margin-right:1em;
 					max-width:150px;
 					& img {
 						width:150px;
 						border:4px solid var(--saktkia51-border-color);
+						cursor:pointer;
 					}
 					& .caption {
 						max-height:10em;
@@ -436,8 +453,6 @@
 		body.classList.add('body');
 		const closingNotes = mainContainer.appendChild(document.createElement('div'));
 		closingNotes.classList.add('closingNotes');
-		closingNotes.innerHTML = "(Based on your local time zone, accounting for all " + skins.length.toLocaleString()
-		+ " exclusive daily skins. Only updated on refreshing the page.)";
 		
 		const pickedSkin = {};
 		function updateInternalData(specificIndex) {
@@ -458,9 +473,7 @@
 			const indexPicked = specificIndex ?? getArrIndex();
 			pickedSkin.dailyNumber = indexPicked + 1;
 			pickedSkin.whichSkin = skins[indexPicked];
-			
 		}
-		updateInternalData();
 		function updateTitle() {
 			const s = pickedSkin.whichSkin;
 			let str = `Today's exclusive daily skin:<br/>`
@@ -468,18 +481,49 @@
 			+ ` (#${pickedSkin.dailyNumber.toLocaleString()}/${skins.length.toLocaleString()})</span>`;
 			title.innerHTML = str;
 		}
-		updateTitle();
 		function updateBody() {
 			const s = pickedSkin.whichSkin;
 			let str = '';
 			str += getExampleImage(s.id);
 			if (s.otherDetails.craftable) {
 				str += `Crafting Requirements (single craft): ${s.formatCraftingReqs()}`;
-				str += `<br/>Crafting Requirements (all weapons): ${s.formatCraftingReqs(21)}`;
+				str += `<br/>Crafting Requirements (all weapons): ${s.formatCraftingReqs(weaponsCount)}`;
 			}
 			body.innerHTML = str;
+			body.querySelector('.exampleImageContainer img').addEventListener('click', function() {
+				window.open(this.src);
+			});
 		}
-		updateBody();
+		function updateClosingNotes() {
+			const count = skins.length;
+			let dateFormat = mw.user.options.get('date');
+			switch (dateFormat) {
+				case 'dmy':
+				dateFormat = 'd/M/yyyy HH:mm:ss';
+				break;
+				case 'mdy':
+				dateFormat = 'M/d/yyyy HH:mm:ss';
+				break;
+				case 'ymd':
+				dateFormat = 'yyyy/M/d HH:mm:ss';
+				break;
+				default:
+				dateFormat = 'yyyy-MM-dd HH:mm:ss';
+				break;
+			}
+			let str = "(Based on your local time zone, accounting for all " + count.toLocaleString()
+			+ ` exclusive daily ${checkPlural(count, {singular:'skin', plural:'skins'})}.`
+			+ ` Auto updates every 15 seconds, and the last update was at ${formatDate(new Date(), dateFormat)}.`;
+			closingNotes.innerHTML = str;
+		}
+		function updateAll() {
+			updateInternalData();
+			updateTitle();
+			updateBody();
+			updateClosingNotes();
+		};
+		updateAll();
+		setInterval(updateAll, 15e3);
 		
 	} else {
 		console.log("[Exclusive Skins Daily Logger] [LOG]: Script activation conditions not met. Exiting...");

@@ -1,14 +1,21 @@
-/* Фикс фона изображений */
+/* Фикс фона изображений и загрузка оригиналов */
 (() => {
+	
+    if (window.imagesReplacedOriginal) return;
+    window.imagesReplacedOriginal = true;
 
     const imageConfigs = [
         {
             selector: ".category-page__member-thumbnail",
-            attributes: { src: /(\/smart\/width\/[\d]*\/height\/[\d]*)/g }
+            attributes: {
+                src: /(\/smart\/width\/[\d]*\/height\/[\d]*)/g
+            }
         },
         {
             selector: ".card-image img",
-            attributes: { src: /(\/top-crop\/width\/300\/height\/[\d]*)/g }
+            attributes: {
+                src: /(\/top-crop\/width\/300\/height\/[\d]*)/g
+            }
         },
         {
             selector: ".category-page__trending-page img",
@@ -19,78 +26,67 @@
         }
     ];
 
-    // Паттерн для поиска ссылок Wikia
-    const wikiaPattern = /(?:static|vignette|images)\.wikia\.nocookie\.net/;
-
-    const processImages = () => {
+    const fixElement = (el) => {
+        if (el.nodeType !== 1) return;
 
         imageConfigs.forEach(config => {
-            const elements = document.querySelectorAll(config.selector);
-            elements.forEach(image => {
+            if (el.matches(config.selector)) {
                 for (const [attrName, regex] of Object.entries(config.attributes)) {
-                    const originalValue = image.getAttribute(attrName);
+                    const originalValue = el.getAttribute(attrName);
                     if (originalValue) {
                         const newValue = originalValue.replace(regex, "");
                         if (originalValue !== newValue) {
-                            image.setAttribute(attrName, newValue);
+                            el.setAttribute(attrName, newValue);
                         }
                     }
                 }
-            });
-        });
-
-        document.querySelectorAll(".pi-image-thumbnail").forEach(img => {
-            const srcset = img.getAttribute("srcset");
-            // Проверяем, чтобы не добавлять параметр повторно
-            if (srcset && !srcset.includes("format=original")) {
-                const [firstSrc] = srcset.split(" ");
-                const separator = firstSrc.includes("?") ? "&" : "?";
-                img.setAttribute("srcset", `${firstSrc}${separator}format=original`);
             }
         });
 
-        document.querySelectorAll(".page__main img").forEach(img => {
-            const src = img.getAttribute("src");
-            // Проверяем, чтобы не добавлять параметр повторно и что домен совпадает
-            if (src && !src.includes("format=original") && wikiaPattern.test(src)) {
-                const separator = src.includes("?") ? "&" : "?";
-                img.setAttribute("src", `${src}${separator}format=original`);
-            }
-        });
-    };
+        if (el.matches('.pi-image-thumbnail')) {
+            const srcset = el.getAttribute('srcset');
 
-    // Оптимизированный Observer с защитой от спама вызовов
-    let isUpdating = false;
-
-    const observer = new MutationObserver(mutations => {
-        let shouldUpdate = false;
-
-        for (const mutation of mutations) {
-            if (mutation.type === "childList" || mutation.type === "attributes") {
-                shouldUpdate = true;
-                break; 
+            if (srcset && !srcset.includes('format=original')) {
+                const firstSrc = srcset.split(' ')[0];
+                const separator = firstSrc.includes('?') ? '&' : '?';
+                el.setAttribute('srcset', `${firstSrc}${separator}format=original`);
             }
         }
+    };
 
-        // Если нужно обновить и мы еще не находимся в процессе обновления
-        if (shouldUpdate && !isUpdating) {
-            isUpdating = true;
-            // requestAnimationFrame группирует изменения DOM, предотвращая зависания
-            requestAnimationFrame(() => {
-                processImages();
-                isUpdating = false;
-            });
+    const processNode = (node) => {
+        if (node.nodeType !== 1) return;
+        
+        fixElement(node);
+        
+        const allSelectors = imageConfigs.map(c => c.selector).join(', ') + ', .pi-image-thumbnail';
+        const innerImages = node.querySelectorAll(allSelectors);
+        innerImages.forEach(fixElement);
+    };
+
+    const processImages = () => {
+        processNode(document.body);
+    };
+
+    const observer = new MutationObserver(mutations => {
+        for (const mutation of mutations) {
+
+            if (mutation.type === "childList") {
+                mutation.addedNodes.forEach(processNode);
+            } else if (mutation.type === "attributes") {
+                fixElement(mutation.target);
+            }
         }
     });
 
-    const observerConfig = {
+    const config = {
         childList: true,
         subtree: true,
         attributes: true, 
         attributeFilter: ['src', 'srcset']
     };
 
-    observer.observe(document.body, observerConfig);
+    observer.observe(document.body, config);
     
     processImages();
 })();

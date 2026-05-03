@@ -16,7 +16,7 @@ importArticles({
             console.error('No data-media-id present on element', e);
             return;
         }
-        const target = document.getElementsByClassName('media-id-' + targetId)[0];
+        const target = document.getElementsByClassName('media-id-' + targetId)[0].childNodes[0];
         if (!target) {
             console.error('No element found with .media-id-' + targetId, e);
             return;
@@ -46,7 +46,8 @@ mw.hook("wikipage.content").add(function () {
                 var script_element = document.createElement('script');
             	script_element.type = 'text/javascript';
             	script_element.textContent = scriptContent;
-            	this.parentNode.appendChild(script_element);
+            	script_element.className += 'import-js';
+            	document.head.appendChild(script_element);
                 console.log("JS加载成功: " + pageName);
             } catch (error) {
                 console.error("JS加载错误 (" + pageName + "):", error);

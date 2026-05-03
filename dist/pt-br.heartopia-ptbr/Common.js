@@ -70,7 +70,7 @@ $(function() {
     });
 });
 
-/* 5. RELÓGIOS DOS SERVIDORES EM TEMPO REAL */
+/* RELÓGIOS COM SEGUNDOS EM TEMPO REAL */
 mw.hook('wikipage.content').add(function($content) {
     if (!$('#heartopia-clocks').length) return;
 
@@ -79,16 +79,19 @@ mw.hook('wikipage.content').add(function($content) {
         var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
 
         var offsets = {
-            'america': -5, // UTC-5
-            'global': 1,   // UTC+1
-            'sea': 7       // UTC+7
+            'america': -5, 
+            'global': 1,   
+            'sea': 7       
         };
 
         for (var region in offsets) {
             var nd = new Date(utc + (3600000 * offsets[region]));
             var h = nd.getHours();
             var m = nd.getMinutes();
+            var s = nd.getSeconds();
+
             var timeStr = (h < 10 ? '0'+h : h) + ':' + (m < 10 ? '0'+m : m);
+            var secStr = ':' + (s < 10 ? '0'+s : s);
 
             var phase = "DIA";
             var icon = "☀️";
@@ -101,6 +104,7 @@ mw.hook('wikipage.content').add(function($content) {
             else { phase = "NOITE"; icon = "🌙"; color = "#3b6b9e"; }
 
             $('#clock-' + region + '-time').text(timeStr);
+            $('#clock-' + region + '-sec').text(secStr);
             $('#clock-' + region + '-phase').html('<span style="color:' + color + '; display:flex; align-items:center; gap:5px;">' + icon + ' ' + phase + '</span>');
         }
     }

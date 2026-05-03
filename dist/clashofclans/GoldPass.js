@@ -386,6 +386,7 @@ $(document).ready(function() {
     	"Fire Heart": {level: 18, type: 0},
     	"Flame Blower": {level: 18, type: 0},
     	"Stun Blaster": {level: 18, type: 0},
+    	"Electro Fangs": {level: 18, type: 0},
     	"Rocket Backpack": {level: 27, type: 1},
     };
     // Equipment level penalty is a 2D array - first entry is for Common equipment, second entry for Epic equipment
@@ -410,10 +411,10 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots", "Frost Flake"];
     		break;
     	case ("Dragon Duke"):
-    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster", "Rocket Backpack"];
+    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Rocket Backpack"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1222,6 +1223,7 @@ $(document).ready(function() {
 			"Fire Heart": [900,1200,1450,1750,2000,2300,2600,2850,3150,3400,3700,4000,4250,4550,4800,5100,5450,5600],
 			"Flame Blower": [500,700,900,1100,1300,1500,1700,1850,2000,2150,2300,2450,2600,2750,2900,3000,3050,3100],
 			"Stun Blaster": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],
+			"Electro Fangs": [400,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],
 			"Rocket Backpack": [900,988,1077,1165,1254,1342,1431,1519,1608,1696,1785,1873,1962,2050,2139,2227,2316,2404,2493,2581,2670,2758,2847,2935,3024,3112,3200],
 		};
 		var dictHPRecoveryBonus = {
@@ -1360,12 +1362,13 @@ $(document).ready(function() {
 			// Now it's the attack frequency we want to modify, so modify away!
 			
 		    // Expand this part later to add support for poison, etc.
+		    /* Rework the poison debuff: calculate the debuff percentage to be applied first, then modify as necessary
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
 			/* Superseded by toggle
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
-			} */
+			}
 			if (THpoisonCheckBox != null) {
 				if (THpoisonCheckBox.checked === true) {
                 THpoisonMultiplier = 50/100;
@@ -1377,13 +1380,32 @@ $(document).ready(function() {
                 poisonTowerMultiplier = 75/100;
             	}
 			}
-			var plPoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100;
+			var plPoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100; */
+			var poisonDebuff = poisonASMultiplier[poisonSpellLevel];
+			var THpoisonDebuff = 0;
+			var poisonTowerDebuff = 0;
+			var plPoisonDebuff = plPoisonASMultiplier[PLpoisonSpellLevel];
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonDebuff = 50;
+            	}
+			}
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerDebuff = 25;
+            	}
+			}
+			var maxPoisonDebuff = Math.max(poisonDebuff,THpoisonDebuff,poisonTowerDebuff,plPoisonDebuff);
+			// Modify the debuff if target unit is a Guardian (has Guardian class)
+			if ($(this).hasClass("Guardian") === true) {
+				maxPoisonDebuff = Math.floor(maxPoisonDebuff * 30 / 100);
+			}
 			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
-				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,plPoisonMultiplier) < 1) {
+				if (maxPoisonDebuff > 0) {
 					poisonUsed = true;
 				}
-				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,plPoisonMultiplier);
+				attackFreq *= (100 - maxPoisonDebuff)/100;
 			}
 			
 			// Frost: Compare the toggle (50%) and potency multipliers
@@ -2188,13 +2210,14 @@ $(document).ready(function() {
 				}
 			}
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
+			/* Rework poison to accommodate reduced effects on Guardians
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var PLpoisonMultiplier = (100 - plPoisonASMultiplier[PLpoisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
 			/* Superseded by toggle
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
-			} */
+			}
 			if (THpoisonCheckBox != null) {
 				if (THpoisonCheckBox.checked === true) {
                 THpoisonMultiplier = 50/100;
@@ -2204,13 +2227,33 @@ $(document).ready(function() {
 			if (poisonTowerCheckBox != null) {
 				if (poisonTowerCheckBox.checked === true) {
                 poisonTowerMultiplier = 75/100;
+				}
+			} */
+			var poisonDebuff = poisonASMultiplier[poisonSpellLevel];
+			var THpoisonDebuff = 0;
+			var poisonTowerDebuff = 0;
+			var plPoisonDebuff = plPoisonASMultiplier[PLpoisonSpellLevel];
+			if (THpoisonCheckBox != null) {
+				if (THpoisonCheckBox.checked === true) {
+                THpoisonDebuff = 50;
             	}
 			}
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerDebuff = 25;
+            	}
+			}
+			var maxPoisonDebuff = Math.max(poisonDebuff,THpoisonDebuff,poisonTowerDebuff,plPoisonDebuff);
+			// Modify the debuff if target unit is a Guardian (has Guardian class)
+			if ($(this).hasClass("Guardian") === true) {
+				maxPoisonDebuff = Math.floor(maxPoisonDebuff * 30 / 100);
+			}
+			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
-				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,PLpoisonMultiplier) < 1) {
+				if (maxPoisonDebuff > 0) {
 					poisonUsed = true;
 				}
-				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier,PLpoisonMultiplier);
+				buffedDPS *= (100 - maxPoisonDebuff)/100;
 			}
 			var freezeMultiplier = 1;
 			var frostMultiplier = 1;
@@ -2577,7 +2620,10 @@ $(document).ready(function() {
 			}
 			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff,poisonTowerDebuff,PLpoisonSpeedDebuff[PLpoisonSpellLevel]);
 			poisonUsed = (poisonDebuff > 0);
-			
+			// Reduce the debuff if a Guardian
+			if ($(this).hasClass("Guardian") === true) {
+				poisonDebuff = Math.floor(poisonDebuff * 30 / 100);
+			}
 			buffedSpeed = buffedSpeed * (100 - poisonDebuff) /100;
 			
 			var freezeDebuff = 0;

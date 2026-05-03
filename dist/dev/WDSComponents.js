@@ -72,25 +72,30 @@
 	};
 	
 	const cx = (...tokens) => {
-		const mapped = tokens.map((token) => {
-			if (token == null || token === false) return [];
+		const objectToClasses = (token) => {
+			if (typeof token !== "object") return token;
 			
-			if (Array.isArray(token)) return token;
-			
-			if (typeof token === "object")
-				return Object.entries(token).reduce((classes, [key, value]) => {
+			return Object
+				.entries(token)
+				.reduce((classes, [key, value]) => {
 					return value ? classes.concat(key) : classes;	
 				}, []);
-				
+		};
+		
+		const mapped = tokens.map((token) => {
+			if (token == null || token === false) return [];
+			if (Array.isArray(token)) return token;
+			if (typeof token === "object") return objectToClasses(token);
 			if (typeof token === "number") return String(token);
 			
 			return token;
 		});
 		
 		const flattened = flattenChildren(mapped);
-		const classNames = new Set(flattened);
+		const parsed = flattened.map(objectToClasses);
+		const classNames = new Set(parsed);
 		
-		return [...classNames].join(" ");
+		return [...classNames].join(" ").trim();
 	};
 	
 	class WDSComponent {
@@ -208,6 +213,10 @@
 			return toNode(child);
 		}
 		
+		render() {
+			return this.element;
+		}
+		
 		update(props = {}) {
 			return this._applyProps($.extend({}, this.props, props));
 		}
@@ -237,6 +246,9 @@
 				g.setAttribute("transform", "translate(22.5, 22.5)");
 				
 				return spinner;
+			}
+			_getIgnoredAttributekeys() {
+				return ["size", "strokeWidth", "isBlock"];
 			}
 			
 			_getBaseClassNames() {
@@ -299,6 +311,10 @@
 				return document.createElement("div");
 			}
 			
+			_getIgnoredAttributeKeys() {
+				return ["isVertical"];
+			}
+			
 			_getBaseClassNames() {
 				const {
 					isVertical = false
@@ -315,6 +331,10 @@
 		List: class extends WDSComponent {
 			_createElement() {
 				return document.createElement("ul");
+			}
+			
+			_getIgnoredAttributeKeys() {
+				return ["hasBigItems", "hasBoldedItems", "isLinked"];
 			}
 			
 			_getBaseClassNames() {
@@ -342,11 +362,38 @@
 			_getBaseClassNames() {
 				return ["wds-dropdown"];
 			}
+		},
+		Tabs: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-tabber"];
+			}
+		},
+		Pagination: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getBaseClassNames() {
+				return "wds-pagination";
+			}
+		},
+		StepPagination: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getBaseClassNames() {
+				return "wds-step-pagination";
+			}
 		}
 	};
 	
 	Object.assign(window.dev.wdsc.Dropdown, {
-		Toggle: class extends WDSContent {
+		Toggle: class extends WDSComponent {
 			_createElement() {
 				return document.createElement("div");
 			}
@@ -360,6 +407,10 @@
 				return document.createElement("div");
 			}
 			
+			_getIgnoredAttributeKeys() {
+				return ["isScrollable"];
+			}
+			
 			_getBaseClassNames() {
 				const {
 					isScrollable = false
@@ -371,6 +422,211 @@
 						"wds-is-not-scrollable": !isScrollable
 					}
 				];
+			}
+		}
+	});
+	
+	Object.assign(window.dev.wdsc.Tabs, {
+		Wrapper: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getIgnoredAttributeKeys() {
+				return ["withBottomBorder"];
+			}
+			
+			_getBaseClassNames() {
+				const {
+					withBottomBorder = true
+				} = this.props;
+				
+				return [
+					"wds-tabs__wrapper",
+					{
+						"with-bottom-border": withBottomBorder
+					}
+				];
+			}
+		},
+		ArrowLeft: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-tabs__arrow-left"];
+			}
+		},
+		ArrowRight: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-tabs__arrow-right"];
+			}
+		},
+		List: class extends WDSComponent {
+			_createElement() {
+				const element = document.createElement("ul");
+				element.setAttribute("role", "tablist");
+				return element;
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-tabs"];
+			}
+		},
+		Tab: class extends WDSComponent {
+			_createElement(props = {}) {
+				const { 
+					selected = false,
+					hash = ""
+				} = props;
+				
+				const element = document.createElement("li");
+				element.setAttribute("aria-selected", selected);
+				if (hash) element.setAttribute("data-hash", hash);
+				return element;
+			}
+			
+			_getIgnoredAttributeKeys() {
+				return ["selected", "hash", "isCurrent"];
+			}
+			
+			_getBaseClassNames() {
+				const {
+					isCurrent = false
+				} = this.props;
+				
+				return [
+					"wds-tabs__tab",
+					{
+						"wds-is-current": isCurrent
+					}
+				];
+			}
+		},
+		Label: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("div");
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-tabs__tab-label"];
+			}
+			
+			_mountChildren() {
+				const link = document.createElement("a");
+				link.setAttribute("href", "#");
+				
+				this.props.children.forEach((child) => {
+					const node = this._renderNode(child);
+					if (node) link.appendChild(node);
+				});
+				
+				return this.element.appendChild(link);
+			}
+		},
+	});
+	
+	Object.assign(window.dev.wdsc.Pagination, {
+		LinkButton: class extends WDSComponent {
+			_createElement() {
+				const link = document.createElement("a");
+				link.setAttribute("href", "#");
+				return link;
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-pagination__link-button"];
+			}
+		},
+		Pages: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("ul");
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-pagination__pages"];
+			}
+		},
+		PageNumber: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("li");
+			}
+			
+			_getIgnoredAttributeKeys() {
+				return ["isActive"];
+			}
+			
+			_getBaseClassNames() {
+				const { isActive = false } = this.props;
+				
+				return [
+					"wds-pagination__page-number",
+					{
+						"wds-pagination__page-number--active": isActive
+					}
+				];
+			}
+		},
+		PageLink: class extends WDSComponent {
+			_createElement(props = {}) {
+				let { number = 1 } = props;
+				
+				number = (isNaN(number) || !isFinite(number) || number < 0) ? 1 : parseInt(number);
+				
+				const element = document.createElement("a");
+				element.setAttribute("href", `#${number}`);
+				return element;
+			}
+			
+			_getIgnoredAttributeKeys() {
+				return ["number"];
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-pagination__page-link"];
+			}
+		},
+		Separator: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("li");
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-pagination__page-number-separator"];
+			}
+		}
+	});
+	
+	Object.assign(window.dev.wdsc.StepPagination, {
+		Step: class extends WDSComponent {
+			_createElement() {
+				const link = document.createElement("a");
+				link.setAttribute("href", "#");
+				return link;
+			}
+			
+			_getBaseClassNames() {
+				return ["wds-step-pagination__step"];
+			}
+		},
+		StepLabel: class extends WDSComponent {
+			_createElement() {
+				return document.createElement("span");
+			}
+			
+			_getIgnoredAttributeKeys() {
+				return ["isActive"];
+			}
+			
+			_getBaseClassNames() {
+				const { isActive = false } = this.props;
+				
+				return ["wds-step-pagination__step-label"];
 			}
 		}
 	});

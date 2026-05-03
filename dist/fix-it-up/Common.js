@@ -79,14 +79,17 @@ document.querySelectorAll(".unix-time").forEach(el => {
   el.textContent = `${month} ${day}${ordinal(day)}, ${hours}:${minutes}`;
 });
 
-// Logic for retrieving and showing data from the game
+
+// Function for showing game stats on the main page
+
 (function () {
   var API_BASE = "https://project-fezug.vercel.app/api/gamestats";
-  var REFRESH_INTERVAL = 300000;
+
+  var REFRESH_INTERVAL = 300000; // 5 minutes
 
   function formatNumber(num) {
     if (num === undefined || num === null) return "0";
-      return num.toLocaleString("en-US");
+    return num.toLocaleString("en-US");
   }
 
   function loadGameStats(container, universeId) {
@@ -121,21 +124,30 @@ document.querySelectorAll(".unix-time").forEach(el => {
       });
   }
 
-  function startAutoRefresh(container, universeId) {
+  function start(container, universeId) {
     loadGameStats(container, universeId);
-    setInterval(function () {
-      loadGameStats(container, universeId);
-    }, REFRESH_INTERVAL);
-  }
 
-  function initGameStatsContainers() {
-    var containers = document.querySelectorAll("[data-universeid]");
-    for (var i = 0; i < containers.length; i++) {
-      var container = containers[i];
-      var universeId = container.getAttribute("data-universeid");
-      startAutoRefresh(container, universeId);
+    if (REFRESH_INTERVAL) {
+      setTimeout(function () {
+        loadGameStats(container, universeId);
+
+        setInterval(function () {
+          loadGameStats(container, universeId);
+        }, REFRESH_INTERVAL);
+
+      }, Math.random() * REFRESH_INTERVAL);
     }
   }
 
-  mw.hook("wikipage.content").add(initGameStatsContainers);
+  function init() {
+    var containers = document.querySelectorAll("[data-universeid]");
+
+    for (var i = 0; i < containers.length; i++) {
+      var container = containers[i];
+      var universeId = container.getAttribute("data-universeid");
+      start(container, universeId);
+    }
+  }
+
+  mw.hook("wikipage.content").add(init);
 })();

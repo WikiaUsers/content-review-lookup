@@ -92,7 +92,7 @@ window.tooltips_list = [
 		parse: '{' + '{Template:Item tip|1=<#name#>|2=<#title#>|3=<#tier#>|4=<#use#>|5=<#desc#>|6=<#obtain#>|7=<#firstdrop#>|8=<#regdrop#>|9=<#specdrop#>|10=<#base#>|11=<#cond#>}}',
 	},  {
         classname: 'enemy-tooltip',
-        parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#codename#>|3=<#hp#>|4=<#atk#>|5=<#def#>|6=<#res#>|race=<#race#>|type=<#type#>|title=<#title#>|link=<#link#>}}',
+        parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#title#>|3=<#code#>|4=<#race#>|5=<#type#>}}',
     },  {
         classname: 'character-tooltip',
         parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#rarity#>|4=<#faction#>|5=<#left#>|6=<#top#>|title=<#title#>|link=<#link#>}}',

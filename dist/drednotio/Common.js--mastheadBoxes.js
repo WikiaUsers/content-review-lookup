@@ -2,7 +2,7 @@
 
 
 
-/* DISABLED FOR NOW!
+
 var rights = {},
     icons = {},
     user = wgTitle;
@@ -26,5 +26,3 @@ $('.tag').each(function() {
         $(this).prepend("<img src='https://vignette.wikia.nocookie.net/drednotio/images/" + icons[$(this).html()] + "' />");
     }
 });
-
-*/

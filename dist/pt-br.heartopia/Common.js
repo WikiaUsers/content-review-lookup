@@ -150,3 +150,52 @@ mw.hook('wikipage.content').add(function() {
         }
     }
 });
+
+(function($) {
+    $(function() {
+        var $anchor = $('#heartopia-search-anchor');
+        if (!$anchor.length) return;
+
+        // Inserindo a barra de pesquisa com a sua imagem personalizada
+        $anchor.html('<div class="search-wrapper-heartopia">' +
+                     '<img src="https://static.wikia.nocookie.net/heartopia/images/f/f9/Lupa.png/revision/latest?cb=20260430044427&path-prefix=pt-br" class="search-icon-img">' +
+                     '<input type="text" id="wiki-fish-search" placeholder="PESQUISAR...">' +
+                     '</div>');
+
+        function filtrar() {
+    var busca = $('#wiki-fish-search').val().toLowerCase();
+    
+    // Verifica se existem botões de nível na página
+    var $botoesNivel = $('.filter-btn');
+    var nivel = $botoesNivel.length > 0 ? $('.filter-btn.active').data('lvl') : 'all';
+
+    // Seleciona os cards (Certifique-se que a classe da grid é a mesma)
+    $('.lista-criaturas-grid > div, .lista-recursos-grid > div').each(function() {
+        var $card = $(this);
+        var texto = $card.text().toLowerCase();
+        
+        var matchesBusca = texto.indexOf(busca) > -1;
+        
+        // Se for 'all', matchesNivel é sempre true. 
+        // Se houver botões, ele checa o texto do card.
+        var matchesNivel = (nivel === 'all' || 
+                            texto.indexOf('nv. ' + nivel) > -1 || 
+                            texto.indexOf('lv. ' + nivel) > -1);
+
+        if (matchesBusca && matchesNivel) { 
+            $card.show(); 
+        } else { 
+            $card.hide(); 
+        }
+    });
+}
+
+        // Eventos
+        $(document).on('input', '#wiki-fish-search', filtrar);
+        $(document).on('click', '.filter-btn', function() {
+            $('.filter-btn').removeClass('active');
+            $(this).addClass('active');
+            filtrar();
+        });
+    });
+})(jQuery);

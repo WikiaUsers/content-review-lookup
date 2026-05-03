@@ -46,6 +46,12 @@ $(document).ready(function(){
 		'<button id="enableSkinsRC" class="enableSkins">Select All</button>'+
 		'<button id="disableSkinsRC" class="disableSkins">Unselect All</button><br>'+
 		'</div></td>'+
+		/* Reserved for future appearance of Dragon Duke skins
+		'<td><div id="heroSkinListDD" style="border: 1px solid;">'+
+		'<b>Dragon Duke Skins:</b><br>'+
+		'<button id="enableSkinsDD" class="enableSkins">Select All</button>'+
+		'<button id="disableSkinsDD" class="disableSkins">Unselect All</button><br>'+
+		'</div></td>'+ */
 		'</tr>'+
 		'<tr style="vertical-align:top;">'+
 		'<td><div id="heroSkinListBM" style="border: 1px solid;">'+
@@ -75,28 +81,28 @@ $(document).ready(function(){
 	var maxTHLevel = 18;
     var maxBHLevel = 10;
     // Create a list of available decorations
-    var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue","Goblin Dragon Statue","Sour Elixir Cauldron","World Finals 23 Statue","Cozy Clam","Hog Pen","Duck Bath","Gingerbread Bakery","Jingle Bell","Dragon Pinata", "Goblin Explorer", "Baby Ptah", "Crown Sword", "Surprising Squad", "Celebration Cup", "Haaland Statue", "Football Camp", "Cowboy Skeleton", "Wizard Vendor", "Hydra Headstone"];
+    var decorationsList = ["Pirate Flag", "Mighty Statue", "Mighty Hero Statue", "Archer Queen Statue", "Ancient Barbarian Statue", "Anniversary Fountain", "\"A Piece of Birthday Cake\"", "Storied Statue", "Logmas Tree", "Flowing Fountain","Fiery Figure","Wizard Statue","Goblin King Tribute","Eternal Flame","Clashmas Sleigh","Decorated Dragon Statue","Books of Clash Statue","Goblin Dragon Statue","Sour Elixir Cauldron","World Finals 23 Statue","Cozy Clam","Hog Pen","Duck Bath","Gingerbread Bakery","Jingle Bell","Dragon Pinata", "Goblin Explorer", "Baby Ptah", "Crown Sword", "Surprising Squad", "Celebration Cup", "Haaland Statue", "Football Camp", "Cowboy Skeleton", "Wizard Vendor", "Hydra Headstone", "Gift Bag", "Snake Shrine", "Rumbling Goblins", "Looter Wagon", "Justice Crown", "Party Bench", "Boom Box", "Electro Skull", "Smoky Stove", "Meteor Observer", "Handsome Scroll"];
     // Similar for houses
     var housesList = ["Brown Tent Roof", "Red Tent Roof", "Yellow Tent Roof", "Blue Tent Roof", "Blue Cross Roof", "Green Cross Roof", "Red Cross Roof", "Orange Castle Roof", "Blue Castle Roof", "Black Castle Roof", "Red Castle Roof", "Yellow Castle Roof", "Red Pagoda Roof", "Blue Pagoda Roof", "Black Pagoda Roof", "Green Pagoda Roof", "White Pagoda Roof", "Stone Roof", "Grass Roof (Type 1)", "Grass Roof (Type 2)", "White Windmill Roof", "Blue Windmill Roof", "Orange Windmill Roof", "Red Windmill Roof", "Green Windmill Roof", "Winter Roof", "Igloo Roof", "Gingerbread Roof",
-    "Dark Stone Walls", "Stilt Walls", "Grass Walls", "Winter Walls", "Igloo Walls", "Gingerbread Walls",
-    "Checkered Floor", "Grass Floor", "White Fence Floor", "Gold Floor", "Snow Floor", "Gingerbread Floor",
-    "Tree Decoration", "Flamingo Decoration", "Stone Decoration", "Snowman Decoration", "Candy Cane Decoration", "Gingerbread Decoration"];
+    "Dark Stone Walls", "Stilt Walls", "Grass Walls", "Winter Walls", "Igloo Walls", "Gingerbread Walls", "Dark Days Walls",
+    "Checkered Floor", "Grass Floor", "White Fence Floor", "Gold Floor", "Snow Floor", "Gingerbread Floor", "Sports Track Floor", "Dark Days Floor",
+    "Tree Decoration", "Flamingo Decoration", "Stone Decoration", "Snowman Decoration", "Candy Cane Decoration", "Gingerbread Decoration", "Torch Decoration"];
     // Create a list of available equipment
     // This is split into different pools for each Hero,
     // which is needed to individually show/hide options
     var equipmentList = {
-    	"BK": ["Giant Gauntlet", "Spiky Ball", "Snake Bracelet"],
+    	"BK": ["Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse"],
         "AQ": ["Frozen Arrow", "Magic Mirror", "Action Figure"],
-        "MP": ["Dark Crown"],
+        "MP": ["Dark Crown", "Meteor Staff"],
         "GW": ["Fireball", "Lavaloon Puppet", "Heroic Torch"],
-        "RC": ["Rocket Spear", "Electro Boots"],
+        "RC": ["Rocket Spear", "Electro Boots", "Frost Flake"],
     };
     // Do the same for hero skins
     var heroSkinList = {
-    	"BK": ["Gladiator King", "P.E.K.K.A King", "Skeleton King", "Jolly King", "Primal King", "Clockwork King", "Party King", "Pirate King", "Rogue King", "Jungle King", "Golem King", "Shadow King", "Clash Fest King", "Beast King", "Dark Ages King", "Goblin King", "King of the North", "Clash Games King"],
-        "AQ": ["Gladiator Queen", "Valkyrie Queen", "Autumn Queen", "Ice Queen", "Primal Queen", "Clockwork Queen", "Pirate Queen", "Rogue Queen", "Jungle Queen", "Party Queen", "Shadow Queen", "Miner Queen", "Summer Queen", "Spooky Queen", "Jolly Queen", "Goblin Queen", "Chess Queen", "Space Queen", "Dark Minion Queen"],
-        "GW": ["Party Warden", "Primal Warden", "Clockwork Warden", "Gladiator Warden", "Pirate Warden", "Warden of the North", "Jungle Warden", "Warden Master", "Jolly Warden", "Warrior Warden", "Summer Warden", "Dark Ages Warden", "Future Warden", "Gingerbread Warden", "Egypt Warden", "Wild West Warden"],
-        "RC": ["Winter Champion", "Rogue Champion", "Gladiator Champion", "Shadow Champion", "Party Champion", "Pirate Champion", "Warrior Champion", "Ghost Champion", "Champions' Champion", "Dragon Champion", "Football Champion", "Anime Champion"],
+    	"BK": ["Gladiator King", "P.E.K.K.A King", "Skeleton King", "Jolly King", "Primal King", "Clockwork King", "Party King", "Pirate King", "Rogue King", "Jungle King", "Golem King", "Shadow King", "Clash Fest King", "Beast King", "Dark Ages King", "Goblin King", "King of the North", "Clash Games King", "Judgment King", "Combat King"],
+        "AQ": ["Gladiator Queen", "Valkyrie Queen", "Autumn Queen", "Ice Queen", "Primal Queen", "Clockwork Queen", "Pirate Queen", "Rogue Queen", "Jungle Queen", "Party Queen", "Shadow Queen", "Miner Queen", "Summer Queen", "Spooky Queen", "Jolly Queen", "Goblin Queen", "Chess Queen", "Space Queen", "Dark Minion Queen", "Puppet Queen", "Kyudo Queen"],
+        "GW": ["Party Warden", "Primal Warden", "Clockwork Warden", "Gladiator Warden", "Pirate Warden", "Warden of the North", "Jungle Warden", "Warden Master", "Jolly Warden", "Warrior Warden", "Summer Warden", "Dark Ages Warden", "Future Warden", "Gingerbread Warden", "Egypt Warden", "Wild West Warden", "Snake Warden"],
+        "RC": ["Winter Champion", "Rogue Champion", "Gladiator Champion", "Shadow Champion", "Party Champion", "Pirate Champion", "Warrior Champion", "Ghost Champion", "Champions' Champion", "Dragon Champion", "Football Champion", "Anime Champion", "Ice Champion"],
         "BM": ["Armored Machine"]
     };
     // Add booleans for the status of checklist toggles (used for flavor text)
@@ -691,6 +697,7 @@ $(document).ready(function(){
             // "MP": countHeroSkins("MP"), Reserved
             "GW": countHeroSkins("GW"),
             "RC": countHeroSkins("RC"),
+            // "DD": countHeroSkins("DD"), Reserved
             "BM": countHeroSkins("BM"),
            	// "BC": countHeroSkins("BC"), Reserved
             countHeroes: function() {
@@ -700,6 +707,7 @@ $(document).ready(function(){
                 // heroCount += (this.MP > 0); Reserved
                 heroCount += (this.GW > 0);
                 heroCount += (this.RC > 0);
+                // heroCount += (this.DD > 0); Reserved
                 heroCount += (this.BM > 0);
                 // heroCount += (this.BC > 0); Reserved
                 return heroCount;
@@ -743,6 +751,9 @@ $(document).ready(function(){
                 break;
             case "RC":
             	heroFullName = "Royal Champion";
+                break;
+            case "DD": // Should be unused for now, but reserved
+            	heroFullName = "Dragon Duke";
                 break;
             case "BM":
             	heroFullName = "Battle Machine";
@@ -898,6 +909,15 @@ $(document).ready(function(){
         	$("span.itemRC").each(enableCheckBox);
             $("div#heroSkinListRC").show();
         }
+        /* Reserved behavior for Dragon Duke items
+        if (THL < 15) {
+        	$("span.itemDD").each(disableCheckBox);
+            // $("div#heroSkinListDD").hide();
+        } else {
+        	$("span.itemDD").each(enableCheckBox);
+            // $("div#heroSkinListDD").show();
+        }
+        */
         // We need to duplicate these checks to disable Builder Base skins on the first use
         if (BHL < 5) {
         	$("span.itemBM").each(disableCheckBox);

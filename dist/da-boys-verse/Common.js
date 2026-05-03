@@ -336,92 +336,50 @@ $(function() {
 });
 
 /* Template:CategoryScroller*/
-mw.hook('wikipage.content').add(function () {
+document.addEventListener("DOMContentLoaded", function () {
+  const galleries = document.querySelectorAll(".category-gallery");
 
-  $('.category-scroller').each(function () {
-    const box = $(this);
-    const rawCategories = box.data('categories');
-    const limit = box.data('limit') || 50;
-    const list = box.find('.category-list');
+  galleries.forEach(function (gallery) {
+    const category = gallery.dataset.category;
 
-    if (!rawCategories) {
-      list.html('<li class="category-error">No category specified.</li>');
-      return;
-    }
+    if (!category) return;
 
-    // Allow commas, "and", "&"
-    const categories = rawCategories
-      .replace(/\band\b/gi, ',')
-      .replace(/&/g, ',')
-      .split(',')
-      .map(c => c.trim())
-      .filter(Boolean);
+    fetch(`/api.php?action=query&list=categorymembers&cmtitle=Category:${encodeURIComponent(category)}&cmlimit=500&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        gallery.innerHTML = "";
 
-    list.empty();
+        const pages = data.query.categorymembers;
 
-    const pageCounts = new Map(); // pageid → { title, count }
-    let completed = 0;
-
-    categories.forEach(category => fetchCategory(category));
-
-    function fetchCategory(category) {
-      const api = new mw.Api();
-
-      api.get({
-        action: 'query',
-        list: 'categorymembers',
-        cmtitle: 'Category:' + category,
-        cmlimit: limit,
-        cmnamespace: 0
-      }).done(data => {
-        if (data.query && data.query.categorymembers) {
-          data.query.categorymembers.forEach(page => {
-            if (!pageCounts.has(page.pageid)) {
-              pageCounts.set(page.pageid, {
-                title: page.title,
-                count: 1
-              });
-            } else {
-              pageCounts.get(page.pageid).count++;
-            }
-          });
+        if (!pages.length) {
+          gallery.innerHTML =
+            '<div class="category-gallery-empty">No pages found.</div>';
+          return;
         }
-      }).always(() => {
-        completed++;
-        if (completed === categories.length) {
-          renderList();
-        }
+
+        pages.forEach((page, index) => {
+          const card = document.createElement("div");
+          card.className = "category-gallery-card";
+          card.style.animationDelay = `${index * 0.06}s`;
+
+          card.innerHTML = `
+            <a href="/wiki/${encodeURIComponent(page.title)}">
+              <div class="category-gallery-title">${page.title}</div>
+              <div class="category-gallery-badge">${category}</div>
+            </a>
+          `;
+
+          gallery.appendChild(card);
+        });
+      })
+      .catch(() => {
+        gallery.innerHTML =
+          '<div class="category-gallery-empty">Failed to load pages.</div>';
       });
-    }
-
-    function renderList() {
-      const requiredCount = categories.length;
-
-      const matchingPages = [...pageCounts.values()]
-        .filter(p => p.count === requiredCount)
-        .map(p => p.title)
-        .sort((a, b) => a.localeCompare(b));
-
-      if (matchingPages.length === 0) {
-        list.html('<li class="category-empty">No pages match all categories.</li>');
-        return;
-      }
-
-      matchingPages.forEach(title => {
-        list.append(
-          $('<li>').append(
-            $('<a>')
-              .attr('href', mw.util.getUrl(title))
-              .text(title)
-          )
-        );
-      });
-    }
-
   });
-
 });
 
+/* END OF TEMPLATE:CATEGORYSCROLLER */
 /* Template:Sailorverse*/
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -455,39 +413,3 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 })();
 </script>
-
-/* Template:VN */
-document.addEventListener("DOMContentLoaded", function () {
-  const container = document.querySelector(".vn-container");
-  const scenes = container.querySelectorAll(".vn-scene");
-
-  const bg = document.querySelector(".vn-background");
-  const sprite = document.querySelector(".vn-sprite");
-  const speaker = document.querySelector(".vn-speaker");
-  const text = document.querySelector(".vn-text");
-  const nextBtn = document.querySelector(".vn-next");
-
-  let index = 0;
-
-  function loadScene(i) {
-    const scene = scenes[i];
-    if (!scene) return;
-
-    speaker.textContent = scene.dataset.speaker;
-    text.textContent = scene.dataset.text;
-
-    bg.style.backgroundImage = `url(${scene.dataset.bg})`;
-    sprite.src = scene.dataset.sprite;
-  }
-
-  nextBtn.addEventListener("click", function () {
-    index++;
-    if (index < scenes.length) {
-      loadScene(index);
-    } else {
-      nextBtn.textContent = "End";
-    }
-  });
-
-  loadScene(index);
-});

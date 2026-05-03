@@ -162,7 +162,9 @@ $(function () {
 	    });
 	}
 	/* End of Test Mapper */
-	/* Loot Statistics data + LootPercentages + LootValue */
+	
+	/* deprecated : Loot Statistics data + LootPercentages + LootValue */
+	
 	importArticles({
 	    type: 'script',
 	    articles: [
@@ -171,7 +173,11 @@ $(function () {
 	    	'MediaWiki:LootValue.js'
 	    ]
 	});
+
 	/* End of Loot Statistics data + LootPercentages */
+	
+	
+	
 	/* Show/hide Template:Scene when inside Template:Ability */
 	$('.creatureAbility').mouseover(function() {
 		if ($(this).find(".abilityScene").length > 0) {
@@ -195,7 +201,10 @@ $(function () {
 	if (mw.config.get('wgPageName') === 'Loot_Statistics') {
 	    importArticles({
 	        type: 'script',
-	        article: 'MediaWiki:LootStatistics.js'
+	        articles: [
+	        	'MediaWiki:LootStatistics-Data.js', 
+	        	'MediaWiki:LootStatistics.js'
+	        ]
 	    });
 	}
 	/* End of Loot Statistics */

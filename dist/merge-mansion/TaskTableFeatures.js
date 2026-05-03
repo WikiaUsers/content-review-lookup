@@ -1,5 +1,5 @@
 /* MediaWiki:TaskTableFeatures.js
- * Three independent task-table features. Each is its own IIFE so they share no
+ * Four independent task-table features. Each is its own IIFE so they share no
  * state and can be reasoned about / debugged in isolation.
  *
  *  1. Hide Tokens column   — controlled by feature checkbox "Hide Tokens column".
@@ -13,6 +13,20 @@
  *                            column) for every uncompleted task. A dotted gap
  *                            divider with hover-count is inserted between
  *                            visible rows separated by hidden ones.
+ *  4. Active Tasks table   — controlled by feature checkbox "Show Table of
+ *                            Active Tasks". Renders a small dynamic table
+ *                            directly above each main task table containing the
+ *                            currently-actionable tasks (uncompleted AND all
+ *                            their Needs are completed; entry tasks with empty
+ *                            Needs always qualify). Header is cloned from the
+ *                            main table; rows are cloned with the checkbox cell
+ *                            re-wired to proxy clicks to the original Tracker-
+ *                            bound input. Heading shows live progress pill
+ *                            "X/Y (Z%)" with a pulse animation on change. Rows
+ *                            that just completed get a strikethrough + fade-out
+ *                            before being removed. Whole wrapper disappears at
+ *                            100 %. A spinner placeholder shows during the
+ *                            initial Tracker grace period.
  *
  * Robustness notes:
  *  - Fandom Tracker populates / enables the checkbox cells asynchronously,
@@ -845,6 +859,675 @@
 				setupTableMutationListener(featureCell);
 				if (featureCell.getAttribute('data-sort-value') === '1') applyAll(true);
 			}
+		}).observe(document.documentElement || document.body, { childList: true, subtree: true });
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+})();
+
+
+/* ============================================================================
+ * #4 — Show Table of Active Tasks
+ * Feature checkbox-driven. Renders a dynamic table directly above each main
+ * task table. Active = uncompleted AND (Needs empty OR all Needs completed).
+ * Mockup checkboxes proxy clicks to the original Tracker-bound inputs so the
+ * server-side state stays canonical.
+ * ========================================================================== */
+(function () {
+	'use strict';
+
+	var FEATURE_ROW_ID = 'Show Table of Active Tasks';
+	var WRAPPER_CLASS = 'mmwt-active-tasks-wrapper';
+	var TABLE_CLASS = 'mmwt-active-tasks-table';
+	var HEADING_CLASS = 'mmwt-active-heading';
+	var TITLE_CLASS = 'mmwt-active-title';
+	var PILL_CLASS = 'mmwt-active-pill';
+	var PILL_PULSE_CLASS = 'mmwt-active-pill-pulse';
+	var SPINNER_CLASS = 'mmwt-active-spinner';
+	var FADE_OUT_CLASS = 'mmwt-active-row-fading';
+	var SWAP_OUT_CLASS = 'mmwt-active-row-swapping';
+	var SWAP_IN_CLASS = 'mmwt-active-row-swapped-in';
+	var STYLE_ID = 'mmwt-active-tasks-style';
+	var INIT_GRACE_MS = 2000;   // Tracker async populate window
+	var FADE_TOTAL_MS = 700;    // strikethrough + fade-out total duration
+	var SWAP_HALF_MS = 150;     // fade-out / fade-in halves of the in-place swap
+	var TASK_ATTR = 'data-mmwt-task';
+
+	var FEATURE_INIT_TIME = 0;
+	var GRACE_RENDER_SCHEDULED = false;
+
+	function injectStyle() {
+		if (document.getElementById(STYLE_ID)) return;
+		var s = document.createElement('style');
+		s.id = STYLE_ID;
+		s.textContent = [
+			// ── wrapper + heading ────────────────────────────────────────────
+			'.' + WRAPPER_CLASS + '{margin:18px 0 24px 0;}',
+			'.' + HEADING_CLASS + '{',
+			'  display:flex;align-items:center;gap:10px;',
+			'  margin:0 0 8px 0;',
+			'  font-family:"Tisa Sans Pro","Trebuchet MS",sans-serif;',
+			'}',
+			'.' + TITLE_CLASS + '{',
+			'  font-weight:bold;font-size:1.3em;color:#ffd479;',
+			'  letter-spacing:0.4px;',
+			'}',
+			'.' + TITLE_CLASS + '::after{',
+			'  content:"\\00b7";margin-left:10px;color:rgba(255,212,121,0.55);',
+			'}',
+			'.' + PILL_CLASS + '{',
+			'  display:inline-flex;align-items:center;justify-content:center;',
+			'  min-width:84px;min-height:18px;',
+			'  padding:5px 14px;border-radius:999px;',
+			'  background:linear-gradient(135deg,rgba(34,28,18,0.96),rgba(20,16,10,0.96));',
+			'  color:#ffd479;font-weight:bold;font-size:0.95em;letter-spacing:0.4px;',
+			'  line-height:1;',
+			'  box-shadow:0 2px 8px rgba(0,0,0,0.45),',
+			'             0 0 0 1px rgba(255,212,121,0.3),',
+			'             inset 0 1px 0 rgba(255,212,121,0.18);',
+			'  white-space:nowrap;',
+			'  transition:transform 200ms ease-out;',
+			'}',
+			'.' + PILL_PULSE_CLASS + '{',
+			'  animation:mmwt-active-pill-pulse 600ms ease-out;',
+			'}',
+			'@keyframes mmwt-active-pill-pulse{',
+			'  0%{transform:scale(1);box-shadow:0 2px 8px rgba(0,0,0,0.45),0 0 0 1px rgba(255,212,121,0.3),inset 0 1px 0 rgba(255,212,121,0.18);}',
+			'  35%{transform:scale(1.18);box-shadow:0 4px 14px rgba(255,180,40,0.6),0 0 0 2px rgba(255,212,121,0.6),inset 0 1px 0 rgba(255,212,121,0.35);}',
+			'  100%{transform:scale(1);box-shadow:0 2px 8px rgba(0,0,0,0.45),0 0 0 1px rgba(255,212,121,0.3),inset 0 1px 0 rgba(255,212,121,0.18);}',
+			'}',
+			// ── spinner inside pill (initial Tracker grace) ──────────────────
+			'.' + SPINNER_CLASS + '{',
+			'  display:inline-block;width:13px;height:13px;',
+			'  border:2px solid rgba(255,212,121,0.28);',
+			'  border-top-color:rgba(255,212,121,0.9);',
+			'  border-radius:50%;',
+			'  animation:mmwt-active-spin 0.8s linear infinite;',
+			'}',
+			'@keyframes mmwt-active-spin{to{transform:rotate(360deg);}}',
+			// ── row fade-out (strikethrough + collapse) ──────────────────────
+			'.' + FADE_OUT_CLASS + ' td{',
+			'  text-decoration:line-through !important;',
+			'  text-decoration-color:rgba(255,212,121,0.85) !important;',
+			'  text-decoration-thickness:2px !important;',
+			'}',
+			'.' + FADE_OUT_CLASS + '{',
+			'  animation:mmwt-active-row-fade 700ms ease-out forwards;',
+			'  pointer-events:none;',
+			'}',
+			'@keyframes mmwt-active-row-fade{',
+			'  0%{opacity:1;}',
+			'  45%{opacity:1;}',  // hold strikethrough
+			'  100%{opacity:0;transform:translateY(-4px);}',
+			'}',
+			// ── linear-progression in-place swap (same <tr> stays, content cross-fades) ─
+			'.' + SWAP_OUT_CLASS + '{',
+			'  animation:mmwt-active-row-swap-out 150ms ease-out forwards;',
+			'  pointer-events:none;',
+			'}',
+			'@keyframes mmwt-active-row-swap-out{',
+			'  to{opacity:0;}',
+			'}',
+			'.' + SWAP_IN_CLASS + '{',
+			'  animation:mmwt-active-row-swap-in 150ms ease-in;',
+			'}',
+			'@keyframes mmwt-active-row-swap-in{',
+			'  from{opacity:0;}',
+			'  to{opacity:1;}',
+			'}',
+			// ── disable sortable affordance on cloned thead ──────────────────
+			'.' + TABLE_CLASS + ' thead th{cursor:default !important;}',
+			'.' + TABLE_CLASS + ' thead th.headerSort,',
+			'.' + TABLE_CLASS + ' thead th.headerSortUp,',
+			'.' + TABLE_CLASS + ' thead th.headerSortDown{',
+			'  background-image:none !important;',
+			'}'
+		].join('');
+		document.head.appendChild(s);
+	}
+
+	// ── Helpers (kept local to this IIFE for isolation) ─────────────────────
+
+	function findColumnIndex(table, headerText) {
+		var headerRow = table.querySelector('thead tr, tbody > tr, tr');
+		if (!headerRow) return -1;
+		var ths = headerRow.querySelectorAll('th');
+		for (var i = 0; i < ths.length; i++) {
+			if ((ths[i].textContent || '').trim() === headerText) return i;
+		}
+		return -1;
+	}
+
+	function rowTaskId(tr) {
+		var span = tr.querySelector('span[id^="T"]');
+		if (!span) return null;
+		return (span.textContent || '').trim() || null;
+	}
+
+	function parseRefCell(td) {
+		if (!td) return [];
+		var ids = [];
+		var seen = {};
+		td.querySelectorAll('a[href^="#T"]').forEach(function (a) {
+			var id = a.getAttribute('href').slice(2);
+			if (id && !seen[id]) { seen[id] = 1; ids.push(id); }
+		});
+		if (!ids.length) {
+			var text = (td.textContent || '');
+			var re = /#(\d+)/g, m;
+			while ((m = re.exec(text)) !== null) {
+				if (!seen[m[1]]) { seen[m[1]] = 1; ids.push(m[1]); }
+			}
+		}
+		return ids;
+	}
+
+	function buildModel(table) {
+		var needsIdx = findColumnIndex(table, 'Needs');
+		var rows = [];
+		var byId = {};
+		table.querySelectorAll('tbody > tr').forEach(function (tr) {
+			var checkbox = tr.querySelector('.table-progress-checkbox-cell');
+			if (!checkbox) return;
+			var taskId = rowTaskId(tr);
+			if (!taskId) return;
+			var tds = tr.querySelectorAll(':scope > td');
+			var needsTd = needsIdx >= 0 ? tds[needsIdx] : null;
+			var entry = {
+				taskId: taskId,
+				rowEl: tr,
+				checkboxCell: checkbox,
+				needs: parseRefCell(needsTd),
+				completed: checkbox.getAttribute('data-sort-value') === '1'
+			};
+			rows.push(entry);
+			byId[taskId] = entry;
+		});
+		return { rows: rows, byId: byId };
+	}
+
+	// Active = uncompleted AND (no Needs OR all Needs completed)
+	function computeActiveTasks(model) {
+		var completedIds = {};
+		model.rows.forEach(function (r) {
+			if (r.completed) completedIds[r.taskId] = 1;
+		});
+		return model.rows.filter(function (r) {
+			if (r.completed) return false;
+			if (r.needs.length === 0) return true;
+			for (var i = 0; i < r.needs.length; i++) {
+				if (!completedIds[r.needs[i]]) return false;
+			}
+			return true;
+		});
+	}
+
+	// ── Hide Tokens column sync ─────────────────────────────────────────────
+	function isHideTokensEnabled() {
+		var input = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="Hide Tokens column"]'
+		);
+		var cell = input && input.closest('.table-progress-checkbox-cell');
+		return !!(cell && cell.getAttribute('data-sort-value') === '1');
+	}
+
+	function applyTokenColumnSync(activeTable) {
+		var hide = isHideTokensEnabled();
+		activeTable.querySelectorAll('.tokensColumn').forEach(function (cell) {
+			cell.style.display = hide ? 'none' : '';
+		});
+	}
+
+	// ── Wrapper / heading ───────────────────────────────────────────────────
+
+	function findExistingWrapper(mainTable) {
+		var existing = mainTable.previousElementSibling;
+		if (existing && existing.classList && existing.classList.contains(WRAPPER_CLASS)
+			&& existing._mmwtMainTable === mainTable) {
+			return existing;
+		}
+		return null;
+	}
+
+	function ensureWrapper(mainTable) {
+		var existing = findExistingWrapper(mainTable);
+		if (existing) return existing;
+
+		injectStyle();
+		var wrapper = document.createElement('div');
+		wrapper.className = WRAPPER_CLASS;
+		wrapper._mmwtMainTable = mainTable;
+
+		var heading = document.createElement('div');
+		heading.className = HEADING_CLASS;
+		var title = document.createElement('span');
+		title.className = TITLE_CLASS;
+		title.textContent = 'Active Tasks';
+		heading.appendChild(title);
+		var pill = document.createElement('span');
+		pill.className = PILL_CLASS;
+		pill.textContent = '…'; // initial: ellipsis until first render
+		heading.appendChild(pill);
+		wrapper.appendChild(heading);
+
+		// Clone the main table's structure (header only — tbody is dynamic)
+		var newTable = document.createElement('table');
+		newTable.className = mainTable.className + ' ' + TABLE_CLASS;
+		// Strip sortable behaviour from the clone — it's a small dynamic list
+		newTable.classList.remove('sortable', 'jquery-tablesorter');
+
+		var origThead = mainTable.querySelector('thead');
+		if (origThead) {
+			var clonedThead = origThead.cloneNode(true);
+			// Remove tablesorter affordances on cloned headers
+			clonedThead.querySelectorAll('th').forEach(function (th) {
+				th.classList.remove('headerSort', 'headerSortUp', 'headerSortDown');
+				th.removeAttribute('aria-sort');
+				th.removeAttribute('tabindex');
+			});
+			newTable.appendChild(clonedThead);
+		}
+		var tbody = document.createElement('tbody');
+		newTable.appendChild(tbody);
+		wrapper.appendChild(newTable);
+
+		mainTable.parentNode.insertBefore(wrapper, mainTable);
+		return wrapper;
+	}
+
+	function removeWrapper(mainTable) {
+		var existing = findExistingWrapper(mainTable);
+		if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+	}
+
+	function updatePill(pill, completedCount, totalCount) {
+		var pct = totalCount > 0 ? Math.round(100 * completedCount / totalCount) : 0;
+		var newText = completedCount + '/' + totalCount + ' (' + pct + '%)';
+		if (pill.textContent === newText) return;
+		pill.textContent = newText;
+		// Re-trigger pulse animation (reflow trick)
+		pill.classList.remove(PILL_PULSE_CLASS);
+		void pill.offsetWidth;
+		pill.classList.add(PILL_PULSE_CLASS);
+	}
+
+	function showLoadingPill(pill) {
+		pill.textContent = '';
+		pill.classList.remove(PILL_PULSE_CLASS);
+		var spinner = document.createElement('span');
+		spinner.className = SPINNER_CLASS;
+		pill.appendChild(spinner);
+	}
+
+	// ── Mockup checkbox proxying ────────────────────────────────────────────
+	// Cloned cell HTML keeps the visual styling. We intercept clicks at the
+	// cloned-cell level, prevent default, and forward to the original input
+	// (which Tracker has wired up to the persistence backend).
+	function proxyCheckboxCell(clonedCell, originalCell) {
+		// Strip identifiers Tracker may use to bind to the cell
+		clonedCell.removeAttribute('data-tpt-row-id');
+		clonedCell.removeAttribute('id');
+		// Mirror state attribute so any CSS selecting on it still works
+		clonedCell.setAttribute('data-sort-value',
+			originalCell.getAttribute('data-sort-value') || '0');
+
+		// Disconnect any cloned input from form / Tracker plumbing
+		clonedCell.querySelectorAll('input').forEach(function (input) {
+			input.removeAttribute('name');
+			input.removeAttribute('id');
+			if (input.type === 'checkbox') {
+				input.checked = originalCell.getAttribute('data-sort-value') === '1';
+				// Disable native interaction — outer click handler forwards
+				input.addEventListener('click', function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+					var orig = originalCell.querySelector('input[type="checkbox"]');
+					if (orig) orig.click();
+				}, true);
+			}
+		});
+
+		// Capture-phase click forwarder for clicks on label / span surrounding the input
+		clonedCell.addEventListener('click', function (e) {
+			// If click bubbled from the input we already handled, skip
+			if (e.target && e.target.tagName === 'INPUT') return;
+			e.preventDefault();
+			e.stopPropagation();
+			var orig = originalCell.querySelector('input[type="checkbox"]');
+			if (orig) orig.click();
+		}, true);
+	}
+
+	// ── Render ──────────────────────────────────────────────────────────────
+
+	function buildActiveRow(task) {
+		var clonedRow = task.rowEl.cloneNode(true);
+		clonedRow.setAttribute(TASK_ATTR, task.taskId);
+		clonedRow.removeAttribute('id');
+		// Strip any embedded <span id="T#"> id so the clone's anchor doesn't shadow original
+		clonedRow.querySelectorAll('span[id^="T"]').forEach(function (sp) {
+			sp.removeAttribute('id');
+		});
+		var clonedCell = clonedRow.querySelector('.table-progress-checkbox-cell');
+		if (clonedCell) proxyCheckboxCell(clonedCell, task.checkboxCell);
+		return clonedRow;
+	}
+
+	// Linear-progression swap: 1 outgoing + 1 incoming → fade old content,
+	// replace the <tr> in place at the same position, fade new content in.
+	// User perceives "row stays, content changes" instead of "row gone, new row appears".
+	// Re-entry safe: idempotent on same target (Tracker may double-write data-sort-value
+	// per click → two observer fires per logical change), redirects on different target.
+	function swapRowInPlace(oldRow, newTask) {
+		// Idempotency: if already swapping to this exact target, let the in-flight
+		// animation continue undisturbed. Without this guard a duplicate render
+		// would restart the fade-out from opacity 1, producing a visible double-flash.
+		if (oldRow._mmwtSwapTarget === newTask.taskId) return;
+
+		if (oldRow._mmwtSwapTimer) {
+			clearTimeout(oldRow._mmwtSwapTimer);
+			oldRow._mmwtSwapTimer = null;
+		}
+		oldRow._mmwtSwapTarget = newTask.taskId;
+
+		// Clear any leftover animation classes (e.g. SWAP_IN from previous swap completion)
+		// before starting the new fade-out — leftover SWAP_IN would override the animation
+		// property since it's later in stylesheet order.
+		oldRow.classList.remove(SWAP_OUT_CLASS, SWAP_IN_CLASS, FADE_OUT_CLASS);
+		void oldRow.offsetWidth;
+		oldRow.classList.add(SWAP_OUT_CLASS);
+
+		oldRow._mmwtSwapTimer = setTimeout(function () {
+			oldRow._mmwtSwapTimer = null;
+			if (!oldRow.parentNode) return;
+			var newRow = buildActiveRow(newTask);
+			newRow.classList.add(SWAP_IN_CLASS);
+			oldRow.parentNode.replaceChild(newRow, oldRow);
+			// Clean up SWAP_IN_CLASS exactly when the animation ends, NOT via fixed setTimeout.
+			// A fixed timeout can drift into the still-running animation under load, which
+			// causes the browser to recompute style and effectively re-trigger the animation
+			// (visible as a second fade-in flash near the end). animationend is precise.
+			var onEnd = function (e) {
+				if (e.animationName !== 'mmwt-active-row-swap-in') return;
+				newRow.classList.remove(SWAP_IN_CLASS);
+				newRow.removeEventListener('animationend', onEnd);
+			};
+			newRow.addEventListener('animationend', onEnd);
+		}, SWAP_HALF_MS);
+	}
+
+	// Cancel an in-flight swap (state changed such that the swap target is no longer
+	// the right answer). Resets row visual state so the regular diff can take over.
+	function abortSwap(tr) {
+		if (tr._mmwtSwapTimer) {
+			clearTimeout(tr._mmwtSwapTimer);
+			tr._mmwtSwapTimer = null;
+		}
+		tr._mmwtSwapTarget = null;
+		tr.classList.remove(SWAP_OUT_CLASS);
+		// Animation `forwards` may leave a computed opacity. Force a reflow so the
+		// row resumes its default fully-opaque appearance.
+		void tr.offsetWidth;
+	}
+
+	function renderActiveTable(mainTable) {
+		var model = buildModel(mainTable);
+		var totalCount = model.rows.length;
+		var completedCount = 0;
+		for (var i = 0; i < model.rows.length; i++) {
+			if (model.rows[i].completed) completedCount++;
+		}
+
+		// All completed → remove wrapper entirely
+		if (totalCount > 0 && completedCount === totalCount) {
+			removeWrapper(mainTable);
+			return;
+		}
+
+		var wrapper = ensureWrapper(mainTable);
+		var table = wrapper.querySelector('table.' + TABLE_CLASS);
+		var tbody = table.querySelector('tbody');
+		var pill = wrapper.querySelector('.' + PILL_CLASS);
+
+		updatePill(pill, completedCount, totalCount);
+
+		var activeTasks = computeActiveTasks(model);
+		var newTaskIds = {};
+		activeTasks.forEach(function (t) { newTaskIds[t.taskId] = 1; });
+
+		// Diff vs current tbody children
+		var existingRows = {};
+		Array.prototype.forEach.call(tbody.children, function (tr) {
+			var id = tr.getAttribute(TASK_ATTR);
+			if (id) existingRows[id] = tr;
+		});
+
+		// Pre-pass: abort stale in-flight swaps. If a row is mid-swap towards a
+		// target that's no longer in the active set (state changed during swap),
+		// cancel the swap and let the regular diff handle it as outgoing.
+		Array.prototype.forEach.call(tbody.children, function (tr) {
+			if (tr._mmwtSwapTarget && !newTaskIds[tr._mmwtSwapTarget]) {
+				abortSwap(tr);
+			}
+		});
+
+		// Restoring: row is fading but task became active again → cancel fade
+		activeTasks.forEach(function (task) {
+			var tr = existingRows[task.taskId];
+			if (tr && tr.classList.contains(FADE_OUT_CLASS)) {
+				tr.classList.remove(FADE_OUT_CLASS);
+			}
+		});
+
+		// Compute outgoing (rows that no longer belong, not yet animating).
+		// Skip rows mid-swap (SWAP_OUT_CLASS) — their target is still valid (stale
+		// targets were aborted in the pre-pass), the swap will resolve them.
+		var outgoing = [];
+		Object.keys(existingRows).forEach(function (id) {
+			if (newTaskIds[id]) return;
+			var tr = existingRows[id];
+			if (tr.classList.contains(FADE_OUT_CLASS)) return; // already fading
+			if (tr.classList.contains(SWAP_OUT_CLASS)) return; // mid-swap, valid target
+			outgoing.push(tr);
+		});
+
+		// Build set of pending swap targets so we don't double-add an incoming row
+		// for a task that's already being swapped in.
+		var pendingSwapTargets = {};
+		Array.prototype.forEach.call(tbody.children, function (tr) {
+			if (tr._mmwtSwapTarget) pendingSwapTargets[tr._mmwtSwapTarget] = 1;
+		});
+		// Compute incoming (active tasks not currently in tbody and not pending swap targets)
+		var incoming = activeTasks.filter(function (t) {
+			if (existingRows[t.taskId]) return false;
+			if (pendingSwapTargets[t.taskId]) return false;
+			return true;
+		});
+
+		// Linear progression: exactly 1 in / 1 out → in-place content swap (same <tr>).
+		// User perceives "row stays, content changes" rather than "fade out + new row appears".
+		var linearSwap = (outgoing.length === 1 && incoming.length === 1);
+
+		if (linearSwap) {
+			swapRowInPlace(outgoing[0], incoming[0]);
+		} else {
+			// Regular outgoing: strikethrough + fade-out + remove
+			outgoing.forEach(function (tr) {
+				tr.classList.add(FADE_OUT_CLASS);
+				setTimeout(function () {
+					if (tr.parentNode && tr.classList.contains(FADE_OUT_CLASS)) {
+						tr.parentNode.removeChild(tr);
+					}
+				}, FADE_TOTAL_MS);
+			});
+			// Regular incoming: append + later sort
+			incoming.forEach(function (task) {
+				tbody.appendChild(buildActiveRow(task));
+			});
+		}
+
+		// Maintain numeric task ID ordering — but only when actually needed.
+		// Calling tbody.appendChild on an existing child IS a DOM remove+re-insert
+		// operation, which RESTARTS any CSS animations running on that element.
+		// If we blindly sort on every render, a redundant render that fires during
+		// a swap's fade-in (e.g. Tracker double-writes data-sort-value per click)
+		// re-runs the appendChild loop and restarts the swap-in animation —
+		// visible as a second fade-in flash near the end of the first animation.
+		// Skip sort if (a) we're in linear-swap mode (preserve in-place animation)
+		// or (b) tbody is already in correct order.
+		if (!linearSwap) {
+			var current = Array.prototype.slice.call(tbody.children);
+			var sorted = current.slice().sort(function (a, b) {
+				var aId = parseInt(a.getAttribute(TASK_ATTR) || '0', 10);
+				var bId = parseInt(b.getAttribute(TASK_ATTR) || '0', 10);
+				return aId - bId;
+			});
+			var inOrder = true;
+			for (var k = 0; k < current.length; k++) {
+				if (current[k] !== sorted[k]) { inOrder = false; break; }
+			}
+			if (!inOrder) {
+				sorted.forEach(function (tr) { tbody.appendChild(tr); });
+			}
+		}
+
+		// Sync token-column visibility AFTER row inserts
+		applyTokenColumnSync(table);
+	}
+
+	// ── Wiring ──────────────────────────────────────────────────────────────
+
+	function isFeatureEnabled() {
+		var input = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="' + FEATURE_ROW_ID + '"]'
+		);
+		var cell = input && input.closest('.table-progress-checkbox-cell');
+		return !!(cell && cell.getAttribute('data-sort-value') === '1');
+	}
+
+	function refreshAll() {
+		var enabled = isFeatureEnabled();
+		document.querySelectorAll('table.taskTable').forEach(function (t) {
+			if (t.getAttribute('data-tpt-id') === 'TaskTableFeatures') return;
+			if (t.classList.contains(TABLE_CLASS)) return; // skip our own cloned active tables — would loop
+			if (!enabled) {
+				removeWrapper(t);
+				return;
+			}
+			// During Tracker grace period, show spinner placeholder (saved state
+			// is still being populated; the active set would be misleading).
+			if (Date.now() - FEATURE_INIT_TIME < INIT_GRACE_MS) {
+				var wrapper = ensureWrapper(t);
+				var pill = wrapper.querySelector('.' + PILL_CLASS);
+				showLoadingPill(pill);
+				if (!GRACE_RENDER_SCHEDULED) {
+					GRACE_RENDER_SCHEDULED = true;
+					setTimeout(function () {
+						GRACE_RENDER_SCHEDULED = false;
+						if (isFeatureEnabled()) refreshAll();
+					}, INIT_GRACE_MS - (Date.now() - FEATURE_INIT_TIME) + 50);
+				}
+			} else {
+				renderActiveTable(t);
+			}
+		});
+	}
+
+	function setupTableObserver(table) {
+		if (table.getAttribute('data-tpt-id') === 'TaskTableFeatures') return;
+		if (table.classList.contains(TABLE_CLASS)) return; // our own cloned table — never observe
+		if (table._mmwtActiveAttached) return;
+		table._mmwtActiveAttached = true;
+
+		function attachCellObserver(cell) {
+			if (cell._mmwtActiveObserved) return;
+			cell._mmwtActiveObserved = true;
+			new MutationObserver(function () {
+				if (!isFeatureEnabled()) return;
+				// During init grace, defer to the post-grace bulk render
+				if (Date.now() - FEATURE_INIT_TIME < INIT_GRACE_MS) return;
+				renderActiveTable(table);
+			}).observe(cell, { attributes: true, attributeFilter: ['data-sort-value'] });
+		}
+
+		table.querySelectorAll('.table-progress-checkbox-cell').forEach(attachCellObserver);
+
+		// Watch for late-added cells (Tracker async populate). Only attach to
+		// cells that belong to THIS main table (cloned cells in the active
+		// wrapper would otherwise also match, creating a feedback loop).
+		new MutationObserver(function (mutations) {
+			mutations.forEach(function (m) {
+				m.addedNodes && m.addedNodes.forEach(function (n) {
+					if (!(n instanceof HTMLElement)) return;
+					if (n.classList && n.classList.contains('table-progress-checkbox-cell')) {
+						if (n.closest('table') === table) attachCellObserver(n);
+					}
+					n.querySelectorAll && n.querySelectorAll('.table-progress-checkbox-cell').forEach(function (c) {
+						if (c.closest('table') === table) attachCellObserver(c);
+					});
+				});
+			});
+		}).observe(table, { childList: true, subtree: true });
+	}
+
+	function setupFeatureToggleObserver() {
+		var input = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="' + FEATURE_ROW_ID + '"]'
+		);
+		var cell = input && input.closest('.table-progress-checkbox-cell');
+		if (!cell) {
+			setTimeout(setupFeatureToggleObserver, 500);
+			return;
+		}
+		if (!cell._mmwtActiveFeatureObserved) {
+			cell._mmwtActiveFeatureObserved = true;
+			new MutationObserver(refreshAll).observe(cell, {
+				attributes: true, attributeFilter: ['data-sort-value']
+			});
+		}
+		// Also observe Hide Tokens column toggle so we can sync the active table
+		var tokensInput = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="Hide Tokens column"]'
+		);
+		var tokensCell = tokensInput && tokensInput.closest('.table-progress-checkbox-cell');
+		if (tokensCell && !tokensCell._mmwtActiveTokensObserved) {
+			tokensCell._mmwtActiveTokensObserved = true;
+			new MutationObserver(function () {
+				if (!isFeatureEnabled()) return;
+				document.querySelectorAll('table.' + TABLE_CLASS).forEach(applyTokenColumnSync);
+			}).observe(tokensCell, { attributes: true, attributeFilter: ['data-sort-value'] });
+		}
+	}
+
+	function init() {
+		FEATURE_INIT_TIME = Date.now();
+		document.querySelectorAll('table.taskTable').forEach(setupTableObserver);
+		setupFeatureToggleObserver();
+		refreshAll();
+
+		// Watch for new task tables (Tracker / SPA navigation). Skip our own
+		// cloned active tables — they have TABLE_CLASS, getting them through here
+		// would loop (refreshAll → renderActiveTable → ensureWrapper around a
+		// table that's already inside a wrapper → infinite wrapper nesting).
+		new MutationObserver(function (mutations) {
+			var sawNewTable = false;
+			function consider(t) {
+				if (!t || t.classList.contains(TABLE_CLASS)) return;
+				setupTableObserver(t);
+				sawNewTable = true;
+			}
+			mutations.forEach(function (m) {
+				m.addedNodes && m.addedNodes.forEach(function (n) {
+					if (!(n instanceof HTMLElement)) return;
+					if (n.matches && n.matches('table.taskTable')) consider(n);
+					n.querySelectorAll && n.querySelectorAll('table.taskTable').forEach(consider);
+				});
+			});
+			if (sawNewTable) refreshAll();
 		}).observe(document.documentElement || document.body, { childList: true, subtree: true });
 	}
 
