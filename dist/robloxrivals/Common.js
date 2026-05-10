@@ -31,7 +31,8 @@
         'a[href$=":Edward1237" i]',
         'a[href$=":DumplingOnRIVALS" i]',
         'a[href$=":Daveyalt" i]',
-        'a[href$=":MaxGOAT" i]'
+        'a[href$=":MaxGOAT" i]',
+        'a[href$=":NoPartyThisTime" i]'
     ];
 
     // ==================== PRIME SYSTEM ====================

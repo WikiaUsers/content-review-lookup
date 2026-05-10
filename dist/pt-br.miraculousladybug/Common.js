@@ -20,3 +20,14 @@ $(function () {
 
 	button.click(toggleText);
 });
+
+window.lockOldComments = (window.lockOldComments || {});
+
+window.lockOldComments.limit = 100;
+
+window.lockOldComments.addNoteAbove = true;
+
+window.lockOldComments.namespaceNumbers = [0, 500];
+
+window.lockOldComments.noteMessage =
+    "⚠️ Esta discussão foi automaticamente bloqueada após 100 dias sem atividade para evitar respostas em tópicos antigos. Caso necessário, crie uma nova discussão relacionada ao assunto.";

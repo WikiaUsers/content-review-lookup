@@ -107,7 +107,7 @@ window.tooltips_list = [
         parse: '{' + '{Template:Outfit tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text3#>|m=<#model#>|s1=<#skin#>|i=<#illustrator#>|s2=<#series#>|o=<#obtain#>}}',
     },	{
         classname: 'glossary',
-        parse: '{' + '{Template:Glossary tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text3#>|title=<#title#>}}',
+        parse: '{' + '{Template:Glossary tip|1=<#name#>|2=<#title#>|3=<#desc#>}}',
     },	{
         classname: 'profile-picture-tooltip',
         parse: '{' + '{Template:Profile picture tip|1=<#name#>|2=<#text#>|d=<#default#>|o=<#obtain#>}}',

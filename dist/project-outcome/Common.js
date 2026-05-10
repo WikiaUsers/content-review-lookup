@@ -1,16 +1,16 @@
-$(function(){
+mw.loader.using(['jquery'], function () {
+
+$(document).ready(function(){
 
   const TARGET_AUDIO = 'HisWorld2.mp3';
-  const CATBOX_AUDIO = 'https://files.catbox.moe/wpy16n.mp3';
-  const VIDEO_URL    = 'https://files.catbox.moe/jpvvm4.mp4';
+  const INTERNAL_AUDIO = 'https://static.wikia.nocookie.net/project-outcome/images/d/da/HisWorld2.mp3/revision/latest?cb=20260502043224&format=original';
+  const VIDEO_URL = 'https://static.wikia.nocookie.net/project-outcome/images/8/89/HisWorldVideo.mp4/revision/latest?cb=20260505124950&format=original';
 
-  const FLASH_START = 181.2; // 03:01.2
-  const VIDEO_END   = 223.0; // 03:43
+  const FLASH_START = 181.2;
+  const VIDEO_END   = 223.0;
+  const LYRIC_OFFSET = 0.05; ;
 
-  const LYRIC_OFFSET = -0.18;
-  
   /* ================= LYRICS ================= */
-
   const lyrics = [
   { t:21.7, l:"Come on and light the fuse," },
   { t:22.6, l:"he's a rocket, and he's ready to go" },
@@ -94,7 +94,7 @@ $(function(){
   { t:259.6, l:"(His world!) Don't stop now, c'mon and rock and roll!" }
 ];
 
-/* ================= LYRIC UI ================= */
+  /* ================= UI ================= */
 
   const lyricBox = $('<div>').css({
     position:'fixed',
@@ -104,359 +104,186 @@ $(function(){
     zIndex:9999,
     pointerEvents:'none',
     opacity:0,
-    transition:'opacity .2s ease'
+    transition:'opacity .15s linear'
   }).appendTo('body');
 
   const lyricText = $('<span>').css({
     fontSize:'32px',
     fontWeight:'bold',
-    background:'linear-gradient(90deg, #4fc3ff 0%, #b3e5ff 100%)',
+    background:'linear-gradient(180deg, #4fc3ff 0%, #b3e5ff 100%)',
     WebkitBackgroundClip:'text',
     WebkitTextFillColor:'transparent',
     WebkitTextStroke:'1px black',
     whiteSpace:'nowrap'
   }).appendTo(lyricBox);
 
-  let lyricIndex = -1;
-  let lyricsEnabled = true;
-
-  /* ================= FLASH ================= */
-
   const flash = $('<div>').css({
     position:'fixed',
     inset:0,
     background:'#fff',
     zIndex:10000,
-    pointerEvents:'none',
     opacity:0,
-    transition:'opacity .6s ease'
+    pointerEvents:'none',
+    transition:'opacity .5s ease'
   }).appendTo('body');
 
   function flashOnce(){
     flash.css('opacity',1);
-    setTimeout(()=>flash.css('opacity',0),600);
+    setTimeout(()=>flash.css('opacity',0),500);
   }
 
   /* ================= VIDEO ================= */
 
-  const video = $('<video>').attr({
-    src: VIDEO_URL,
-    muted:true,
-    playsinline:true,
-    preload:'auto'
-  }).css({
-    position:'fixed',
-    inset:0,
-    width:'100%',
-    height:'100%',
-    objectFit:'cover',
-    zIndex:9996,
-    pointerEvents:'none',
-    opacity:0,
-    transition:'opacity .8s ease'
-  }).appendTo('body')[0];
+  let video = null;
 
-  // 🔒 HARD MUTE
-  video.muted = true;
-  video.volume = 0;
-  video.addEventListener('volumechange',()=>{
+  function createVideo(){
+    if(video) return;
+
+    video = document.createElement('video');
+    video.src = VIDEO_URL;
     video.muted = true;
-    video.volume = 0;
-  });
+    video.preload = "metadata";
+    video.style.position = "fixed";
+    video.style.inset = "0";
+    video.style.width = "100%";
+    video.style.height = "100%";
+    video.style.objectFit = "cover";
+    video.style.zIndex = "9996";
+    video.style.opacity = "0";
+    video.style.pointerEvents = "none";
 
-  let videoActive = false;
-  let flashStart = false;
-  let flashEnd = false;
-
-  /* ================= CANVAS ================= */
-
-  function mkCanvas(top,flip){
-    return $('<canvas>').css({
-      position:'fixed',
-      left:0,
-      width:'100%',
-      height:'90px',
-      top:top?'0':'auto',
-      bottom:top?'auto':'0',
-      transform:flip?'scaleY(-1)':'none',
-      zIndex:9998,
-      pointerEvents:'none'
-    }).appendTo('body')[0];
+    document.body.appendChild(video);
   }
-
-  const cTop = mkCanvas(true,true);
-  const cBot = mkCanvas(false,false);
-  const ctxT = cTop.getContext('2d');
-  const ctxB = cBot.getContext('2d');
-
-  function resize(){
-    [cTop,cBot].forEach(c=>{
-      c.width = innerWidth;
-      c.height = 90;
-    });
-  }
-  resize();
-  $(window).on('resize',resize);
 
   /* ================= AUDIO ================= */
 
   let audio = null;
-  let audioCtx = null;
-  let analyser = null;
-  let data = null;
-  let init = false;
+  let started = false;
 
-  function setupAudio(a){
-    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.8;
-    data = new Uint8Array(analyser.frequencyBinCount);
-
-    const src = audioCtx.createMediaElementSource(a);
-    src.connect(analyser);
-    analyser.connect(audioCtx.destination);
+  function hookAudio(){
+    document.querySelectorAll('audio').forEach(a=>{
+      if(audio) return;
+      if(a.src && a.src.includes(TARGET_AUDIO)){
+        audio = a;
+        startSystem();
+      }
+    });
   }
 
-  function draw(ctx,arr){
-    ctx.clearRect(0,0,cBot.width,cBot.height);
-    const bars = 70;
-    const mid = cBot.width/2;
-    const bw = mid/bars;
+  function startSystem(){
+    if(started) return;
+    started = true;
 
-    for(let i=0;i<bars;i++){
-      const v = arr[i]||0;
-      const h = (v/255)*cBot.height*0.8;
+    audio.src = INTERNAL_AUDIO;
+    audio.load();
 
-      const g = ctx.createLinearGradient(0,cBot.height-h,0,cBot.height);
-      g.addColorStop(0,'#b3e5ff');
-      g.addColorStop(1,'#0066ff');
+    createVideo();
+    loop();
+  }
 
-      ctx.fillStyle = g;
-      ctx.fillRect(mid+i*bw,cBot.height-h,bw-1,h);
-      ctx.fillRect(mid-(i+1)*bw,cBot.height-h,bw-1,h);
+/* ================= LOOP ================= */
+
+let lyricIndex = -1;
+let videoActive = false;
+let flashStart = false;
+let flashEnd = false;
+let lastTime = 0; // 🔥 novo
+
+function loop(){
+  requestAnimationFrame(loop);
+  if(!audio) return;
+
+  const t = audio.currentTime;
+
+  // 🔥 detecta skip / mudança brusca
+  if(Math.abs(t - lastTime) > 0.4){
+    lyricIndex = -1; // força resync
+  }
+  lastTime = t;
+
+  // 🔇 pausou = tudo some
+  if(audio.paused || audio.ended){
+    lyricBox.css('opacity',0);
+
+    if(video){
+      video.pause();
+      video.style.opacity = 0;
+      videoActive = false;
+    }
+
+    return;
+  }
+
+/* ================= LYRICS ================= */
+
+if(!audio.paused && !audio.ended){
+
+  let found = -1;
+
+  for(let i = lyrics.length - 1; i >= 0; i--){
+    if(t >= lyrics[i].t + LYRIC_OFFSET){
+      found = i;
+      break;
     }
   }
 
-  /* ================= MAIN LOOP ================= */
+  if(found !== -1){
+    lyricText.text(lyrics[found].l);
 
-  function loop(){
-    requestAnimationFrame(loop);
-
-    if(!audio || !analyser){
-      draw(ctxT,[]);
-      draw(ctxB,[]);
-      lyricBox.css('opacity',0);
-      return;
-    }
-
-    // ⏸ pausa / ⏹ fim → lyrics somem
-    if(audio.paused || audio.ended){
-      lyricBox.css('opacity',0);
-    }
-
-    analyser.getByteFrequencyData(data);
-    draw(ctxT,data);
-    draw(ctxB,data);
-
-    const t = audio.currentTime;
-
-    // 🎤 lyrics (somente se não pausado)
-    if(lyricsEnabled && !audio.paused && !audio.ended){
-      for(let i=lyrics.length-1;i>=0;i--){
-        if(t >= lyrics[i].t + LYRIC_OFFSET){
-          if(i !== lyricIndex){
-            lyricIndex = i;
-            lyricText.text(lyrics[i].l);
-            lyricBox.css('opacity',1);
-          }
-          break;
-        }
-      }
-    }
-
-    const shouldShowVideo =
-      !audio.paused &&
-      t >= FLASH_START &&
-      t < VIDEO_END;
-
-    if(shouldShowVideo){
-      if(!videoActive){
-        videoActive = true;
-        lyricsEnabled = false;
-        lyricBox.css('opacity',0);
-        video.style.opacity = 0.5;
-        video.play();
-      }
-
-      const vTime = t - FLASH_START;
-      if(Math.abs(video.currentTime - vTime) > 0.15){
-        video.currentTime = vTime;
-      }
-
+    // 🚫 esconde durante o vídeo
+    if(!(t >= FLASH_START && t < VIDEO_END)){
+      lyricBox.css('opacity',1);
     } else {
-      if(videoActive){
-        videoActive = false;
-        video.pause();
-        video.style.opacity = 0;
-        lyricsEnabled = true;
-      }
+      lyricBox.css('opacity',0);
     }
 
-    if(t >= FLASH_START && !flashStart){
-      flashStart = true;
-      flashOnce();
-    }
-
-    if(t >= VIDEO_END && !flashEnd){
-      flashEnd = true;
-      flashOnce();
-    }
+  } else {
+    lyricBox.css('opacity',0);
   }
-  loop();
 
-  /* ================= AUDIO DETECT ================= */
+}
 
-  document.addEventListener('play',e=>{
-    if(e.target.tagName!=='AUDIO') return;
-    if(!e.target.src.includes(TARGET_AUDIO)) return;
+  /* ================= VIDEO ================= */
 
-    audio = e.target;
+  if(video && t >= FLASH_START && t < VIDEO_END){
 
-    if(!init){
-      audio.pause();
-      audio.src = CATBOX_AUDIO;
-      audio.crossOrigin = 'anonymous';
-      audio.load();
-      audio.play();
-      setupAudio(audio);
-      init = true;
+    if(!videoActive){
+      videoActive = true;
+      video.style.opacity = 0.5;
+      video.currentTime = 0;
+      video.play().catch(()=>{});
     }
 
-    if(audioCtx.state === 'suspended'){
-      audioCtx.resume();
+    const target = t - FLASH_START;
+
+    if(Math.abs(video.currentTime - target) > 0.25){
+      video.currentTime = target;
     }
-  },true);
 
-});
+  } else if(video && videoActive){
+    videoActive = false;
+    video.pause();
+    video.style.opacity = 0;
+  }
 
-(function () {
-  // ===== CONFIG =====
-  const CHANCE = 0.0001; // 1%
-  const DURATION = 20000; // 20 segundos
+  /* ================= FLASH ================= */
 
-  const IMAGE_URL =
-    "https://static.wikia.nocookie.net/the-official-reign-over-all/images/a/ad/THEENDISNEAR.png/revision/latest?cb=20251220005251&format=original";
-  const AUDIO_URL =
-    "https://static.wikia.nocookie.net/the-official-reign-over-all/images/a/a7/Hehearsyou.mp3/revision/latest";
-  // ==================
+  if(t >= FLASH_START && !flashStart){
+    flashStart = true;
+    flashOnce();
+  }
 
-  if (Math.random() > CHANCE) return;
+  if(t >= VIDEO_END && !flashEnd){
+    flashEnd = true;
+    flashOnce();
+  }
+}
 
-  mw.loader.using("jquery", function () {
-    // ===== ANIMAÇÃO DO TEXTO =====
-    const style = document.createElement("style");
-    style.innerHTML = `
-      @keyframes exeShake {
-        0%   { transform: translate(0, 0); }
-        20%  { transform: translate(-1px, 1px); }
-        40%  { transform: translate(1px, -1px); }
-        60%  { transform: translate(-1px, -1px); }
-        80%  { transform: translate(1px, 1px); }
-        100% { transform: translate(0, 0); }
-      }
-    `;
-    document.head.appendChild(style);
+  /* ================= INIT ================= */
 
-    // ===== OVERLAY =====
-    const overlay = document.createElement("div");
-    overlay.style.position = "fixed";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100vw";
-    overlay.style.height = "100vh";
-    overlay.style.background = "rgba(0,0,0,1)";
-    overlay.style.zIndex = "999999";
-    overlay.style.display = "flex";
-    overlay.style.flexDirection = "column";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.style.pointerEvents = "none";
-    overlay.style.textAlign = "center";
+  hookAudio();
+  setInterval(hookAudio, 1500);
 
-    // ===== IMAGEM =====
-    const img = document.createElement("img");
-    img.src = IMAGE_URL;
-    img.style.maxWidth = "55vw";
-    img.style.maxHeight = "55vh";
-    img.style.width = "auto";
-    img.style.height = "auto";
-    img.style.objectFit = "contain";
-    img.style.marginBottom = "24px";
+}); // ready
 
-    // ===== TEXTO EXE =====
-    const text = document.createElement("div");
-    text.innerHTML =
-      "He sees you, he hears you,<br>the end is near,<br>he is going to reign over all";
-
-    text.style.color = "#ff0000";
-    text.style.fontSize = "26px";
-    text.style.fontFamily = "serif";
-    text.style.letterSpacing = "3px";
-    text.style.textShadow =
-      "0 0 5px #ff0000, 0 0 10px #8b0000, 0 0 20px #000";
-    text.style.animation = "exeShake 0.08s infinite";
-    text.style.opacity = "0.95";
-
-    overlay.appendChild(img);
-    overlay.appendChild(text);
-    document.body.appendChild(overlay);
-
-    // ===== TEXTO DE AVISO (FORA DO OVERLAY) =====
-    const notice = document.createElement("div");
-    notice.innerHTML =
-      "Don’t worry, this is just a rare screen that can appear sometimes.<br>" +
-      "Fun fact: it has a 0.01% chance to appear.<br>" +
-      "This screen will disappear in 20 seconds.";
-
-    notice.style.position = "fixed";
-    notice.style.top = "15px";
-    notice.style.left = "0";
-    notice.style.width = "100%";
-    notice.style.textAlign = "center";
-    notice.style.color = "#ffffff";
-    notice.style.fontSize = "14px";
-    notice.style.fontFamily = "sans-serif";
-    notice.style.opacity = "0.9";
-    notice.style.textShadow = "0 0 6px #000";
-    notice.style.zIndex = "1000001";
-    notice.style.pointerEvents = "none";
-
-    document.body.appendChild(notice);
-
-    // ===== ÁUDIO =====
-    const audio = new Audio(AUDIO_URL);
-    audio.loop = true;
-    audio.volume = 0.7;
-    audio.muted = true;
-
-    audio.play().catch(() => {});
-
-    const unlockAudio = () => {
-      audio.muted = false;
-      document.removeEventListener("mousedown", unlockAudio);
-      document.removeEventListener("keydown", unlockAudio);
-    };
-
-    document.addEventListener("mousedown", unlockAudio);
-    document.addEventListener("keydown", unlockAudio);
-
-    // ===== REMOVER TUDO JUNTO =====
-    setTimeout(() => {
-      audio.pause();
-      audio.src = "";
-      overlay.remove();
-      notice.remove();
-    }, DURATION);
-  });
-})();
+}); // loader

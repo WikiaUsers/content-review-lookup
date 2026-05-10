@@ -83,3 +83,5 @@ function insertAtCursor(myField, myValue) {
 		myField.value += myValue;
 	}
 }
+
+mw.loader.load('https://en.wikipedia.org/w/index.php?title=MediaWiki:Gadget-ReferenceTooltips.js&action=raw&ctype=text/javascript');

@@ -1024,3 +1024,73 @@ $(function(){
 		});
 	}
 });
+/* Loot table */
+document.addEventListener('click', function (e) {
+    if (!e.target.classList.contains('loot-pool-toggle')) return;
+
+    var btn     = e.target;
+    var tableId = btn.dataset.tableId;
+    var table   = document.getElementById(tableId);
+    if (!table) return;
+
+    var collapsed = btn.dataset.collapsed === 'true';
+
+    if (collapsed) {
+        // Restore original rows
+        table.querySelectorAll('tr[data-pool]').forEach(function (tr) {
+            tr.style.display = '';
+        });
+        table.querySelectorAll('tr.loot-pool-merged').forEach(function (tr) {
+            tr.remove();
+        });
+        btn.dataset.collapsed = 'false';
+        btn.textContent = 'Toggle loot pools';
+    } else {
+        // Group rows by pool
+        var pools = {};
+        table.querySelectorAll('tr[data-pool]').forEach(function (tr) {
+            var pool = tr.dataset.pool;
+            if (!pools[pool]) pools[pool] = [];
+            pools[pool].push(tr);
+        });
+
+        Object.keys(pools).forEach(function (poolId) {
+            var rows     = pools[poolId];
+            var names    = [];
+            var totalPct = 0;
+            var totalAvg = 0;
+
+            rows.forEach(function (tr) {
+                // Item name is in the second cell (index 1)
+                names.push(tr.cells[1].innerHTML);
+                totalPct += parseFloat(tr.dataset.pct  || 0);
+                totalAvg += parseFloat(
+                    tr.querySelector('[data-avg]')
+                      ? tr.querySelector('[data-avg]').dataset.avg
+                      : 0
+                );
+            });
+
+            var merged = document.createElement('tr');
+            merged.classList.add('loot-pool-merged');
+            merged.innerHTML =
+                '<td></td>' +
+                '<td style="text-align:left;">' + names.join('<br />') + '</td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td style="text-align:center;">' + totalAvg.toFixed(4) + '</td>' +
+                '<td style="text-align:center;">' + totalPct.toFixed(2) + '%</td>';
+
+            // Insert merged row after the last row in the pool
+            var lastRow = rows[rows.length - 1];
+            lastRow.parentNode.insertBefore(merged, lastRow.nextSibling);
+
+            rows.forEach(function (tr) {
+                tr.style.display = 'none';
+            });
+        });
+
+        btn.dataset.collapsed = 'true';
+        btn.textContent = 'Restore loot pools';
+    }
+});

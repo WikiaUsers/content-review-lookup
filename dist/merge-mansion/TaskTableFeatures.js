@@ -35,6 +35,13 @@
  *    page-level MutationObserver fallback.
  *  - Common.js may relocate the "Completed" column to the table tail. Column
  *    discovery is therefore done by header-text lookup (not hard-coded index).
+ *
+ * Changelog:
+ *  v5.10 (2026-05-10) — Inverted Next Area row priority. The "All tasks
+ *    completed!" banner here is now PRIMARY for rendering Next Area; only
+ *    when this banner is absent does MediaWiki:DynamicRemainingItemsTable.js
+ *    fall back to its own Next Area row in the Required Items table.
+ *    Removed Show Only Remaining Items observer dependency.
  */
 
 /* ============================================================================
@@ -226,9 +233,14 @@
 	// Inserted directly below the "All tasks completed!" banner. Mirrors the
 	// "Next Area:" pattern from MediaWiki:DynamicRemainingItemsTable.js — the
 	// content is cloned from the page's infobox `div[data-source="unlocks"]`.
-	// Hidden when the user has enabled `Show Only Remaining Items` on the
-	// Required Items table (so it isn't shown twice on the page).
+	//
+	// As of v5.10 the task-table banner has PRIORITY over the Required Items
+	// "Area Completed!" Next Area row. When this row is present here, the
+	// Required Items script suppresses its own copy. Previously the priority
+	// was inverted (Required Items first, this script second) and we hid the
+	// row whenever Show Only Remaining Items was enabled — that check is gone.
 	function isShowOnlyRemainingEnabled() {
+		// kept for backwards compat in case external code checks this; unused below.
 		var input = document.querySelector(
 			'[data-tpt-id="DynamicRemainingItems"] [data-tpt-row-id="Show Only Remaining Items"]'
 		);
@@ -324,14 +336,11 @@
 		var isAllDone = p.total > 0 && p.completed === p.total;
 		if (isAllDone && isHideCompletedEnabled()) {
 			ensureBanner(table);
-			// Show Next Area row directly under the banner — but only if the
-			// Required Items "Show Only Remaining Items" toggle is OFF (otherwise
-			// that table renders the same Next Area itself, no need for two).
-			if (!isShowOnlyRemainingEnabled()) {
-				ensureNextAreaRow(table);
-			} else {
-				removeNextAreaRow(table);
-			}
+			// v5.10: task-table banner has PRIORITY over Required Items table's
+			// own Next Area row. Always render Next Area here when banner exists;
+			// MediaWiki:DynamicRemainingItemsTable.js detects our row and
+			// suppresses its own duplicate.
+			ensureNextAreaRow(table);
 		} else {
 			removeNextAreaRow(table);
 			removeBanner(table);
@@ -465,26 +474,23 @@
 	}
 
 	function attachFeatureToggleObserver() {
-		// Watch BOTH toggles that influence the banner / Next Area row:
-		//   • Hide Completed Tasks  (TaskTableFeatures)
-		//   • Show Only Remaining Items  (DynamicRemainingItems)
-		var watched = [
-			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="Hide Completed Tasks"]',
-			'[data-tpt-id="DynamicRemainingItems"] [data-tpt-row-id="Show Only Remaining Items"]'
-		];
-		var allFound = true;
-		watched.forEach(function (sel) {
-			var input = document.querySelector(sel);
-			var cell = input && input.closest('.table-progress-checkbox-cell');
-			if (!cell) { allFound = false; return; }
-			if (cell._mmwtBannerToggleObserved) return;
+		// Watch only the Hide Completed Tasks toggle — it directly controls
+		// whether the banner (and our Next Area row) is rendered. v5.10 dropped
+		// the Show Only Remaining Items dependency now that this script has
+		// priority for Next Area rendering.
+		var sel = '[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="Hide Completed Tasks"]';
+		var input = document.querySelector(sel);
+		var cell = input && input.closest('.table-progress-checkbox-cell');
+		if (!cell) {
+			setTimeout(attachFeatureToggleObserver, 500);
+			return;
+		}
+		if (!cell._mmwtBannerToggleObserved) {
 			cell._mmwtBannerToggleObserved = true;
 			new MutationObserver(refreshAllBanners).observe(cell, {
 				attributes: true, attributeFilter: ['data-sort-value']
 			});
-		});
-		// At least one cell may not be present yet (Tracker async populate) — retry.
-		if (!allFound) setTimeout(attachFeatureToggleObserver, 500);
+		}
 	}
 
 	function init() {

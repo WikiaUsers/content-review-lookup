@@ -1,3 +1,12 @@
+// 比[[MediaWiki:ImportJS]]更优先被加载
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js', // 留言墙问候语
+        'MediaWiki:Custom-ImprovedProfileTags.js' // 用户样式化头衔
+    ]
+});
+
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
 (function () {
     const eles = document.querySelectorAll('.js-action-play');

@@ -184,32 +184,44 @@
 
 	function loadAvatars( users ) {
 		var promise = $.Deferred();
-
-		function fetchAvatar( user ) {
-			return $.ajax( 'https://services.fandom.com/user-attribute/user/' + user.userid + '/attr/avatar', {
-				error: function() {
-					user.avatar = 'https://static.wikia.nocookie.net/cc4b265a-0b26-4f7c-a26c-926fc735e433/thumbnail/width/50/height/50';
-				},
-				success: function ( result ) {
-					user.avatar = result.value;
+	
+		var ids = '';
+		for ( var i = 0; i < users.length; i++ ) {
+			ids += ( i ? '&' : '' ) + 'id=' + users[ i ].userid;
+		}
+	
+		$.ajax( 'https://services.fandom.com/user-attribute/user/bulk?' + ids, {
+			error: function() {
+				for ( var i = 0; i < users.length; i++ ) {
+					users[ i ].avatar = 'https://static.wikia.nocookie.net/cc4b265a-0b26-4f7c-a26c-926fc735e433/thumbnail/width/50/height/50';
+				}
+				options.users = users;
+				promise.resolve( users );
+			},
+			success: function ( result ) {
+				var data = ( result && result.users ) || {};
+	
+				for ( var i = 0; i < users.length; i++ ) {
+					var user = users[ i ];
+					var profile = data[ user.userid ];
+	
+					if ( !profile || !profile.avatar ) {
+						user.avatar = 'https://static.wikia.nocookie.net/cc4b265a-0b26-4f7c-a26c-926fc735e433/thumbnail/width/50/height/50';
+						continue;
+					}
+	
+					user.avatar = profile.avatar;
+	
 					if ( user.avatar.match( /\/[0-9a-f-]+$/ ) ) {
 						user.avatar = user.avatar + '/thumbnail/width/50/height/50';
 					}
 				}
-			} );
-		}
-
-		var requests = fetchAvatar( users[ 0 ] );
-		for ( var i = 1; i < users.length; i++ ) {
-			var fn = fetchAvatar.bind( undefined, users[ i ] );
-			requests.then( fn );
-		}
-
-		requests.then( function () {
-			options.users = users;
-			promise.resolve( users );
+	
+				options.users = users;
+				promise.resolve( users );
+			}
 		} );
-
+	
 		return promise;
 	}
 	
@@ -295,6 +307,13 @@
 				id: 'tooltip-thankyou-wrapper',
 				html: content
 			} ).appendTo( 'body' );
+
+			document.addEventListener('click', function handler(e) {
+				if (!tooltip[0].contains(e.target) && !button.contains(e.target)) {
+					tooltip[0].remove();
+					document.removeEventListener('click', handler);
+				}
+			});
 		} );
 
 		thanksButton.addEventListener( 'click', function thanksUser() {

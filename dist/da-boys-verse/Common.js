@@ -337,45 +337,9 @@ $(function() {
 
 /* Template:CategoryScroller*/
 document.addEventListener("DOMContentLoaded", function () {
-  const galleries = document.querySelectorAll(".category-gallery");
-
-  galleries.forEach(function (gallery) {
-    const category = gallery.dataset.category;
-
-    if (!category) return;
-
-    fetch(`/api.php?action=query&list=categorymembers&cmtitle=Category:${encodeURIComponent(category)}&cmlimit=500&format=json`)
-      .then(response => response.json())
-      .then(data => {
-        gallery.innerHTML = "";
-
-        const pages = data.query.categorymembers;
-
-        if (!pages.length) {
-          gallery.innerHTML =
-            '<div class="category-gallery-empty">No pages found.</div>';
-          return;
-        }
-
-        pages.forEach((page, index) => {
-          const card = document.createElement("div");
-          card.className = "category-gallery-card";
-          card.style.animationDelay = `${index * 0.06}s`;
-
-          card.innerHTML = `
-            <a href="/wiki/${encodeURIComponent(page.title)}">
-              <div class="category-gallery-title">${page.title}</div>
-              <div class="category-gallery-badge">${category}</div>
-            </a>
-          `;
-
-          gallery.appendChild(card);
-        });
-      })
-      .catch(() => {
-        gallery.innerHTML =
-          '<div class="category-gallery-empty">Failed to load pages.</div>';
-      });
+  const items = document.querySelectorAll(".dpl-box li");
+  items.forEach((el, i) => {
+    el.style.animationDelay = (i * 0.05) + "s";
   });
 });
 

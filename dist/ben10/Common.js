@@ -102,3 +102,59 @@ importArticles({
 		'u:dev:MediaWiki:ReferencePopups/code.js' //Reference popups
     ]
 });
+
+function updateCountdown(el) {
+    var target = new Date(el.getAttribute('data-release')).getTime();
+    var now = Date.now();
+    var diff = target - now;
+
+    if (diff <= 0) {
+        el.style.display = 'none';
+        var suffix = document.getElementById(el.id + '-suffix');
+        if (suffix) suffix.style.display = 'none';
+        var soon = document.getElementById(el.id.replace('release-countdown-', 'release-soon-'));
+        if (soon) soon.style.display = 'inline';
+        return;
+    }
+
+    var days    = Math.floor(diff / 86400000);
+    var hours   = Math.floor((diff % 86400000) / 3600000);
+    var minutes = Math.floor((diff % 3600000) / 60000);
+    var seconds = Math.floor((diff % 60000) / 1000);
+
+    var parts = [];
+
+    if (days >= 1) {
+        parts.push(days + (days === 1 ? ' day' : ' days'));
+    }
+    if (days >= 1 || hours >= 1) {
+        parts.push(hours + (hours === 1 ? ' hour' : ' hours'));
+    }
+    if (days >= 1 || hours >= 1 || minutes >= 1) {
+        parts.push(minutes + (minutes === 1 ? ' minute' : ' minutes'));
+    }
+    parts.push(seconds + (seconds === 1 ? ' second' : ' seconds'));
+
+    var text;
+    if (parts.length === 1) {
+        text = parts[0];
+    } else {
+        text = parts.slice(0, -1).join(', ') + ', and ' + parts[parts.length - 1];
+    }
+
+    el.textContent = text;
+}
+
+function initCountdowns() {
+    var elements = document.querySelectorAll('[id^="release-countdown-"]');
+    elements.forEach(function(el) {
+        updateCountdown(el);
+        setInterval(function() { updateCountdown(el); }, 1000);
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCountdowns);
+} else {
+    initCountdowns();
+}

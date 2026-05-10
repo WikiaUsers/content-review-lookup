@@ -57,3 +57,60 @@ $(function() {
         });
     }
 });
+
+/* ===== 欣赏模式 - 仅限"第三领域全玩者"页面 ===== */
+$(function() {
+    'use strict';
+
+    if (mw.config.get('wgPageName') !== '第三领域全玩者') {
+        return;
+    }
+
+    var logoUrl = 'https://static.wikia.nocookie.net/hac/images/9/95/%E7%AC%AC%E4%B8%89%E9%A2%86%E5%9F%9F%E5%85%A8%E7%8E%A9%E8%80%85_logo.png/revision/latest?cb=20250814111550&format=original&path-prefix=zh';
+
+    var $btn = $('<button>', {
+        id: 'appreciation-mode-btn',
+        text: '🎨 欣赏背景',
+        'aria-label': '进入欣赏模式，隐藏页面内容展示背景'
+    });
+
+    var $restoreBtn = $('<button>', {
+        id: 'appreciation-restore-btn',
+        text: '↩ 恢复页面',
+        'aria-label': '退出欣赏模式，恢复页面内容'
+    });
+
+    var $logo = $('<img>', {
+        id: 'appreciation-logo',
+        src: logoUrl,
+        alt: 'Logo'
+    });
+
+    var $overlay = $('<div>', {
+        id: 'appreciation-overlay'
+    });
+
+    $('body').append($btn, $restoreBtn, $logo, $overlay);
+
+    $btn.on('click', function() {
+        $('body').addClass('appreciation-active');
+        $overlay.addClass('active');
+        setTimeout(function() {
+            $logo.addClass('show');
+        }, 300);
+    });
+
+    $restoreBtn.on('click', function() {
+        $logo.removeClass('show');
+        setTimeout(function() {
+            $('body').removeClass('appreciation-active');
+            $overlay.removeClass('active');
+        }, 400);
+    });
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $('body').hasClass('appreciation-active')) {
+            $restoreBtn.trigger('click');
+        }
+    });
+});

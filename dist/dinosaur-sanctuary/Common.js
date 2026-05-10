@@ -552,6 +552,7 @@ document.addEventListener("click", () => {setTimeout(initVisibleInfoboxTabs, 120
 	});
 })();
 
+/*
 (function () {
 
   function expandCHAncestors(target) {
@@ -585,4 +586,56 @@ document.addEventListener("click", () => {setTimeout(initVisibleInfoboxTabs, 120
     expandCHAncestors(target);
 
   }, false);
+})();
+*/
+
+(function () {
+
+  function expandAllAncestors(target) {
+
+    var node = target;
+
+    while (node) {
+
+      //Portable infobox handling
+      if (node.classList && node.classList.contains("pi-collapse")) {
+
+        node.classList.add("pi-collapse-open");
+        node.classList.remove("pi-collapse-closed");
+
+      }
+
+      //CH handling
+      if (node.classList && node.classList.contains("ch-outer-wrapper")) {
+
+        var header = node.previousElementSibling;
+        var toggle = header && header.querySelector(".ch-toggle");
+
+        if (toggle && toggle.classList.contains("ch-toggle--collapsed")) {
+          toggle.click();
+        }
+
+      }
+
+      node = node.parentElement;
+    }
+  }
+
+  document.addEventListener("click", function (e) {
+
+    const link = e.target.closest("a[href^='#']");
+    if (!link) return;
+
+    const id = link.getAttribute("href").slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    expandAllAncestors(target);
+
+    setTimeout(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
+
+  }, false);
+
 })();

@@ -626,3 +626,6 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 // Application immédiate au chargement
 styliserPseudos();
+
+importScript('MediaWiki:Iframe.js');
+importScript('MediaWiki:FandomDesktop.js');

@@ -1,7 +1,4 @@
-// the script name may sound a bit... y'know what...
-// but i swear it DESCRIBES EXACTLY what this does!
-// it checks whether position sticky is stuck or not!
-// believe me JSRT!
+// script moved to [[w:c:dev:StickyStuck]]
 (() => {
 	const observer = new IntersectionObserver(([entry]) => {
 		entry.target.nextElementSibling.classList.toggle('is-stuck', !entry.isIntersecting);
@@ -13,4 +10,3 @@
 		observer.observe(sentinel);
 	});
 })();
-//

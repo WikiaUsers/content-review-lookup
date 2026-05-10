@@ -1,3 +1,8 @@
+//////////////////////////////
+// LOAD OTHER JAVASCRIPT FILES
+mw.loader.load('/index.php?title=MediaWiki:ChapterBanner.js&action=raw&ctype=text/javascript');
+
+
 // OTHER
 window.BackToTopModern = true;
 	importArticles({

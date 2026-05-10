@@ -37,6 +37,7 @@ importArticles({
         'u:dev:MediaWiki:MassRollback.js',
         'u:dev:MediaWiki:AnchoredRollback/code.js',
         'u:dev:MediaWiki:Rollback/code.js',
+        'u:dev:MediaWiki:PageRenameAuto-update/code.js',
     ]
 }, {
     type: 'style',

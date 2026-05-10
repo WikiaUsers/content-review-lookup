@@ -10,6 +10,8 @@ window.highlight = {
     }
 };
 
+var copyTextClass = '.copy-text';
+
 // Onload stuff
  var firstRun = true;
  function loadFunc() {
@@ -244,7 +246,7 @@ function registerCollapsibleListeners() {
 
         content.addEventListener('click', function (e) {
             if (e.target.closest('a')) return;
-            if (e.target.closest('.copy-to-clipboard-button')) return;
+            if (e.target.closest(copyTextClass)) return;
             var sel = window.getSelection();
             if (sel && sel.toString().trim() !== "") return;
             toggle.click();
@@ -466,7 +468,7 @@ function registerQuestXPDropdowns() {
 
 registerCopyText();
 function registerCopyText() {
-    $('body').on('click.ct', '.copy-text', function copyText(event) {
+    $('body').on('click.ct', copyTextClass, function copyText(event) {
         var textContent = event.currentTarget.getAttribute('data-text') || '';
         $input = $('<textarea>', { type: 'text' }).val(textContent).appendTo('body').select();
         var success = document.execCommand('Copy');

@@ -1,254 +1,782 @@
-/* 为了方便用户进行使用，增加了详细的注释 */
-/* 由Deepseek R1进行注释 */
+// 比[[MediaWiki:ImportJS]]更优先被加载
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js', // 留言墙问候语
+        'MediaWiki:Custom-ImprovedProfileTags.js' // 用户样式化头衔
+    ]
+});
 
-/* 主匿名立即执行函数 - 媒体播放控制 */
+// 点击播放或暂停音频
 (function () {
-    // 获取所有播放控制按钮
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
-        // 获取关联的媒体元素ID
         const targetId = e.getAttribute('data-media-id');
         if (!targetId) {
-            console.error('元素缺少data-media-id属性', e);
+            console.error('No data-media-id present on element', e);
             return;
         }
-        
-        // 查找对应的媒体元素（audio/video）
-        const target = document.getElementsByClassName('media-id-' + targetId)[0];
+        const target = document.getElementsByClassName('media-id-' + targetId)[0].getElementsByClassName("mw-file-element")[0];
         if (!target) {
-            console.error('找不到对应媒体元素：media-id-' + targetId, e);
+            console.error('No element found with .media-id-' + targetId, e);
             return;
         }
-        
-        // 添加点击事件：切换播放/暂停
         e.addEventListener('click', function () {
-            target.paused ? target.play() : target.pause();
+            console.log(target);
+            if (target.paused || target.ended) {
+                target.play();
+            } else {
+                target.pause();
+            }
         });
     });
 })();
 
-/* Fandom模块加载系统 */
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
-
-/* 动态CSS加载系统（使用Fandom的页面内容钩子） */
 mw.hook("wikipage.content").add(function () {
-    // 处理带内联CSS的span元素
+    // 单页内联CSS与CSS触发器
     $("span.import-css").each(function () {
-        mw.util.addCSS($(this).attr("data-css")); // 使用Fandom API添加CSS
+        var css = mw.util.addCSS($(this).attr("data-css"));
+        $(css.ownerNode).addClass("import-css")
+            .attr("data-css-hash", $(this).attr("data-css-hash"))
+            .attr("data-from", $(this).attr("data-from"))
+            .attr("data-trigger", $(this).attr("data-trigger"));
+        var trigger = $(this).attr("data-trigger");
+        var triggerOpened = false;
+        if (trigger != "none") {
+            css.disabled = true;
+            $(".csstrigger-" + trigger).click(function () {
+                css.disabled = !css.disabled;
+                triggerOpened = true;
+            });
+        }
+        $(".css-toggler").click(function () {
+            if ((trigger != "none" && triggerOpened) || (trigger == "none")) css.disabled = !css.disabled;
+        });
     });
-    
-    // 站点通知标签页切换系统
-    $(".sitenotice-tab-container").each(function() {
-        const container = $(this);
-        
-        // 标签切换逻辑生成器
+
+    // 播放或暂停所有音频
+    $(".audio-toggler").click(function () {
+        $("audio").get().forEach(function (audio) { if (audio.paused || audio.ended) { audio.play(); } else { audio.pause(); } });
+    });
+
+    // 站点公告切换
+    $(".sitenotice-tab-container").each(function () {
+        var container = $(this);
         function switchTab(offset) {
-            return function() {
-                const tabs = container.children(".sitenotice-tab").toArray();
-                let no = Number(container.find(".sitenotice-tab-no")[0].innerText) + offset;
-                const count = tabs.length;
-                
-                // 循环处理页码
-                no = no < 1 ? count : no > count ? 1 : no;
-                
-                // 显示目标标签页
-                tabs.forEach((tab, i) => {
-                    tab.style.display = i + 1 === no ? null : "none";
-                });
-                
+            return function () {
+                var tabs = container.children(".sitenotice-tab").toArray();
+                var no = Number(container.find(".sitenotice-tab-no")[0].innerText) + offset;
+                var count = tabs.length;
+                if (no < 1) no = count;
+                else if (no > count) no = 1;
+                for (var i = 0; i < count; i++)
+                    tabs[i].style.display = (i + 1 == no ? null : "none");
                 container.find(".sitenotice-tab-no")[0].innerText = no;
             };
         }
-        
-        // 绑定前后箭头点击事件
         container.find(".sitenotice-tab-arrow.prev").click(switchTab(-1));
         container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
     });
 });
 
-/* 动态脚本加载系统 */
+// 联立JS脚本页
 $.getJSON(mw.util.wikiScript("index"), {
-    title: "MediaWiki:Custom-import-scripts.json",
+    title: "MediaWiki:Custom-ImportScripts.json",
     action: "raw"
 }).done(function (result, status) {
-    // 校验响应状态和数据结构
-    if (status !== "success" || typeof result !== "object") return;
-    
-    // 获取当前页面名对应的脚本列表
-    const scripts = result[mw.config.get("wgPageName")];
+    if (status != "success" || typeof (result) != "object") return;
+    var scripts = result[mw.config.get("wgPageName")];
     if (scripts) {
-        // 统一处理为数组格式
-        importArticles({ 
-            type: "script", 
-            articles: typeof scripts === "string" ? [scripts] : scripts 
-        });
+        if (typeof (scripts) == "string") scripts = [scripts];
+        importScript(scripts);
     }
 });
 
-/* CSS页面实时预览系统 */
-(function (mw, $) {
-    "use strict";
-    // 仅限以.css结尾的页面
-    if (mw.config.get('wgPageName').toLowerCase().endsWith('.css')) {
-        $.ajax({
-            // 获取原始CSS内容
-            url: mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName')) + '?action=raw&text/css',
-            dataType: 'text',
-            success: function (cssContent) {
-                // 创建<style>标签并注入内容
-                const styleElement = document.createElement('style');
-                styleElement.type = 'text/css';
-                styleElement.textContent = cssContent;
-                document.head.appendChild(styleElement);
-            },
-            error: function () {
-                console.error('CSS加载失败');
+// CSS页预览
+(function () {
+    var page = mw.config.get('wgPageName') || '';
+    var model = mw.config.get('wgPageContentModel');
+    if (!page || model !== 'css') return;
+    var rawUrl = mw.util.getUrl(page, { action: 'raw', ctype: 'text/css' });
+    fetch(rawUrl, { credentials: 'same-origin' })
+        .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.text();
+        })
+        .then(function (cssText) {
+            if (!cssText) return;
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.setAttribute('data-injected-from', page);
+            style.appendChild(document.createTextNode(cssText));
+            document.head.appendChild(style);
+        })
+        .catch(function (err) {
+            console.error('加载CSS源失败: ', page, err);
+        });
+}());
+
+// New JS 4 Wordrain
+/* Word Rain System v2.1 - Fandom Optimized */
+window.wordRainSystem = (function () {
+    'use strict';
+
+    const instances = new Map();
+    let styleAdded = false;
+
+    function addCoreStyles() {
+        if (styleAdded) return;
+
+        mw.util.addCSS(`
+      .word-drop {
+        position: fixed;
+        top: -50px;
+        opacity: 0.9;
+        animation: wordFall linear infinite;
+        pointer-events: none;
+        z-index: 9998;
+        white-space: nowrap;
+        text-shadow: 0 0 5px currentColor;
+        will-change: transform, opacity;
+        font-weight: bold;
+      }
+      
+      @keyframes wordFall {
+        0% { transform: translateY(-100vh) translateX(-5px); }
+        100% { transform: translateY(100vh) translateX(5px); }
+      }
+      
+      .word-rain-toggle[data-state="on"] {
+        background: rgba(0,255,0,0.2) !important;
+        border-color: #0f0 !important;
+        color: #0f0 !important;
+        text-shadow: 0 0 8px #0f0;
+        box-shadow: 0 0 12px #0f0;
+      }
+    `);
+        styleAdded = true;
+    }
+
+    function createDrop(instance) {
+        const drop = document.createElement('div');
+        drop.className = 'word-drop';
+
+        // 随机位置
+        const leftPos = 5 + Math.random() * 90;
+        drop.style.left = `${leftPos}vw`;
+
+        // 随机颜色
+        const colors = instance.config.colors;
+        drop.style.color = colors[Math.floor(Math.random() * colors.length)];
+
+        // 字体设置
+        drop.style.fontSize = `${instance.config.size + Math.floor(Math.random() * 6)}px`;
+        drop.style.fontFamily = instance.config.font;
+
+        // 随机词语
+        const words = instance.config.words;
+        drop.textContent = words[Math.floor(Math.random() * words.length)];
+
+        // 动画参数
+        const baseSpeed = 10000 - (instance.config.speed * 800);
+        const duration = (baseSpeed + Math.random() * 3000) / 1000;
+        drop.style.animation = `wordFall ${duration}s linear infinite`;
+
+        document.body.appendChild(drop);
+
+        // 自动清理
+        setTimeout(() => {
+            drop.remove();
+        }, duration * 1000);
+    }
+
+    return {
+        init: function () {
+            mw.hook('wikipage.content').add(function ($content) {
+                $content.find('.word-rain-widget').each(function () {
+                    const $widget = $(this);
+                    if ($widget.data('initialized')) return;
+
+                    // 初始化配置
+                    const config = {
+                        words: $widget.data('words').split(','),
+                        colors: $widget.data('colors').split(','),
+                        font: $widget.data('font'),
+                        size: parseInt($widget.data('size')) || 18,
+                        speed: Math.min(10, Math.max(1, parseInt($widget.data('speed')) || 5)),
+                        density: Math.min(50, Math.max(1, parseInt($widget.data('density')) || 30))
+                    };
+
+                    // 生成实例ID
+                    const instanceId = `wordrain-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+
+                    instances.set(instanceId, {
+                        config: config,
+                        interval: null,
+                        active: false
+                    });
+
+                    // 标记初始化
+                    $widget.data('initialized', true)
+                        .data('instance-id', instanceId);
+
+                    // 初始化按钮状态
+                    const $btn = $widget.find('.word-rain-toggle');
+                    $btn.data('instance-id', instanceId)
+                        .attr('data-state', 'off')
+                        .text($widget.data('button-off'));
+                });
+            });
+
+            // 全局点击处理
+            $(document).on('click', '.word-rain-toggle', function () {
+                const instanceId = $(this).data('instance-id');
+                const instance = instances.get(instanceId);
+
+                if (!instance) return;
+
+                if (!instance.active) {
+                    // 启动特效
+                    instance.active = true;
+                    instance.interval = setInterval(
+                        () => createDrop(instance),
+                        Math.max(50, 1000 / instance.config.density)
+                    );
+
+                    $(this).attr('data-state', 'on')
+                        .text($(this).closest('.word-rain-widget').data('button-on'));
+                } else {
+                    // 停止特效
+                    instance.active = false;
+                    clearInterval(instance.interval);
+                    instance.interval = null;
+                    document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
+
+                    $(this).attr('data-state', 'off')
+                        .text($(this).closest('.word-rain-widget').data('button-off'));
+                }
+            });
+
+            // 页面卸载时清理
+            window.addEventListener('beforeunload', () => {
+                instances.forEach(instance => {
+                    clearInterval(instance.interval);
+                    document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
+                });
+            });
+
+            // 添加核心样式
+            addCoreStyles();
+        },
+
+        // 公共方法
+        getInstances: () => instances,
+        stopAll: () => {
+            instances.forEach(instance => {
+                clearInterval(instance.interval);
+                instance.active = false;
+            });
+            document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
+        }
+    };
+})();
+
+// 初始化
+mw.loader.using(['mediawiki.util', 'jquery']).then(function () {
+    wordRainSystem.init();
+});
+
+/* Image Slider System */
+window.imageSlider = (function () {
+    'use strict';
+
+    const sliders = new Map();
+
+    function initSlider(container) {
+        const images = container.dataset.images.split(',');
+        const captions = container.dataset.captions.split(',');
+        const track = container.querySelector('.slider-track');
+        let currentIndex = 0;
+        let autoPlayInterval = null;
+
+        // 动态生成幻灯片
+        images.forEach((image, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'slide-item';
+            slide.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'image-overlay';
+            slide.appendChild(overlay);
+
+            const caption = document.createElement('div');
+            caption.className = 'slide-caption';
+            caption.textContent = (captions[index] || '').replace(/[{}]/g, ''); // 移除描述中的{}
+            slide.appendChild(caption);
+
+            // 确保每张图片的描述都能显示
+            slide.addEventListener('mouseenter', () => {
+                overlay.style.opacity = '0.7';
+                caption.style.bottom = '0';
+            });
+
+            slide.addEventListener('mouseleave', () => {
+                overlay.style.opacity = '0';
+                caption.style.bottom = '-50px';
+            });
+
+            track.appendChild(slide);
+        });
+
+        function goToSlide(index) {
+            currentIndex = (index + images.length) % images.length;
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        function startAutoPlay() {
+            if (container.dataset.autoplay === '1') {
+                autoPlayInterval = setInterval(() => {
+                    goToSlide(currentIndex + 1);
+                }, parseInt(container.dataset.speed));
+            }
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        // 事件绑定
+        container.querySelector('.prev-slide').addEventListener('click', () => goToSlide(currentIndex - 1));
+        container.querySelector('.next-slide').addEventListener('click', () => goToSlide(currentIndex + 1));
+
+        // 悬停暂停
+        if (container.dataset.autoplay === '1') {
+            container.addEventListener('mouseenter', stopAutoPlay);
+            container.addEventListener('mouseleave', startAutoPlay);
+        }
+
+        startAutoPlay();
+        sliders.set(container, { goToSlide, stopAutoPlay });
+    }
+
+    return {
+        init: function () {
+            mw.hook('wikipage.content').add(function ($content) {
+                $content.find('.js-slider-container').each(function () {
+                    if (!this.dataset.initialized) {
+                        this.dataset.initialized = true;
+                        initSlider(this);
+                    }
+                });
+            });
+        }
+    };
+})();
+
+// 初始化
+mw.loader.using('mediawiki.util').then(function () {
+    imageSlider.init();
+});
+
+
+// Flat3D
+/* 3D Image Hover System */
+window.image3DSystem = (function () {
+    'use strict';
+
+    function initImageCards(container) {
+        const images = container.dataset.images.split(',');
+        const captions = container.dataset.captions.split(',');
+        const grid = container.querySelector('.image-grid');
+
+        images.forEach((image, index) => {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+
+            const content = document.createElement('div');
+            content.className = 'image-content';
+            content.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
+
+            const caption = document.createElement('div');
+            caption.className = 'caption';
+
+            // 解析Fandom内链
+            const captionText = (captions[index] || '').replace(/[{}]/g, '');
+            const linkMatch = captionText.match(/\[\[(.*?)\]\]/);
+            if (linkMatch) {
+                const linkParts = linkMatch[1].split('|');
+                const linkText = linkParts[1] || linkParts[0];
+                const linkHref = mw.util.getUrl(linkParts[0]);
+
+                const link = document.createElement('a');
+                link.href = linkHref;
+                link.textContent = linkText;
+                link.style.color = '#fff';
+                link.style.textDecoration = 'none';
+                caption.appendChild(link);
+            } else {
+                caption.textContent = captionText;
+            }
+
+            card.appendChild(content);
+            card.appendChild(caption);
+            grid.appendChild(card);
+
+            // 性能优化
+            card.style.willChange = 'transform';
+        });
+
+        // 移动端优化
+        if ('ontouchstart' in window) {
+            grid.querySelectorAll('.image-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    this.classList.toggle('hover-active');
+                });
+            });
+        }
+    }
+
+    return {
+        init: function () {
+            mw.hook('wikipage.content').add(function ($content) {
+                $content.find('.flat-3d-container').each(function () {
+                    if (!this.dataset.initialized) {
+                        this.dataset.initialized = true;
+                        initImageCards(this);
+                    }
+                });
+            });
+        }
+    };
+})();
+
+// 初始化
+mw.loader.using('mediawiki.util').then(function () {
+    image3DSystem.init();
+});
+
+//
+$(document).ready(function () {
+    mw.hook('wikipage.content').add(function ($content) {
+        // 为每个播放器创建独立的控制器
+        $content.find('.player-container').each(function () {
+            const $player = $(this);
+            const playerState = {
+                isPlaying: false,
+                isDragging: false,
+                progress: $player.find('.progress'),
+                playBtn: $player.find('.play-btn'),
+                audio: new Audio($player.data('audio-src')),
+                volumeControl: $player.find('.volume-control'),
+                volumeContainer: $player.find('.volume-slider-container'),
+                volumeFill: $player.find('.volume-slider-fill'),
+                volumeThumb: $player.find('.volume-slider-thumb'),
+                volumeIcon: $player.find('.volume-icon')
+            };
+
+            // 设置专辑封面
+            const albumArt = $player.find('.album-art');
+            albumArt.css('background-image', `url(${$player.data('album-art')})`);
+            // 播放/暂停控制
+            playerState.playBtn.on('click', function () {
+                if (playerState.isPlaying) {
+                    playerState.audio.pause();
+                    playerState.isPlaying = false;
+                    $(this).text('▶');
+                } else {
+                    playerState.audio.play();
+                    playerState.isPlaying = true;
+                    $(this).text('⏸');
+                }
+            });
+            // 进度更新
+            $(playerState.audio).on('timeupdate', function () {
+                const percentage = (this.currentTime / this.duration) * 100;
+                playerState.progress.css('width', percentage + '%');
+            });
+            // 进度条点击
+            $player.find('.progress-bar').on('click', function (e) {
+                const percent = e.offsetX / $(this).width();
+                playerState.audio.currentTime = percent * playerState.audio.duration;
+            });
+            // 音量控制函数
+            function updateVolume(e) {
+                const rect = playerState.volumeContainer[0].getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+                playerState.volumeFill.css('transform', `scaleX(${percentage / 100})`);
+                playerState.volumeThumb.css('right', `${100 - percentage}%`);
+                playerState.audio.volume = percentage / 100;
+                updateVolumeIcon(percentage);
+            }
+            // 音量拖动事件
+            playerState.volumeContainer.on('mousedown', function (e) {
+                playerState.isDragging = true;
+                updateVolume(e);
+            });
+            $(document).on('mousemove', function (e) {
+                if (playerState.isDragging) {
+                    updateVolume(e);
+                }
+            });
+            $(document).on('mouseup', function () {
+                playerState.isDragging = false;
+            });
+            // 更新音量图标
+            function updateVolumeIcon(value) {
+                if (value == 0) {
+                    playerState.volumeIcon.text('🔇');
+                } else if (value < 50) {
+                    playerState.volumeIcon.text('🔉');
+                } else {
+                    playerState.volumeIcon.text('🔊');
+                }
+            }
+            // 音量图标双击事件
+            playerState.volumeIcon.on('dblclick', function () {
+                if (playerState.audio.volume > 0) {
+                    playerState.audio.volume = 0;
+                    playerState.volumeFill.css('transform', 'scaleX(0)');
+                    playerState.volumeThumb.css('right', '100%');
+                    playerState.volumeIcon.text('🔇');
+                } else {
+                    playerState.audio.volume = 1;
+                    playerState.volumeFill.css('transform', 'scaleX(1)');
+                    playerState.volumeThumb.css('right', '0%');
+                    playerState.volumeIcon.text('🔊');
+                }
+            });
+        });
+    });
+});
+
+// 投票偏移量
+(function () {
+    if (typeof jQuery === 'undefined') return;
+    var $ = jQuery;
+    var _getJSON = $.getJSON;
+    function num(x) {
+        if (x === null || x === undefined) return 0;
+        var s = String(x).replace(/,/g, '').trim();
+        if (s === '') return 0;
+        var n = parseFloat(s);
+        return isNaN(n) ? 0 : n;
+    }
+    function collectOffsetsForThread(threadId) {
+        var offsets = [];
+        var totalOffset = 0;
+        $('tr[data-vote-id="' + threadId + '"]').each(function () {
+            var $tr = $(this);
+            var $table = $tr.closest('table');
+            if ($table.hasClass('talescon-table')) {
+                var ch = this.children;
+                var o0 = num(ch[2] && ch[2].textContent);
+                var o1 = num(ch[3] && ch[3].textContent);
+                var o2 = num(ch[4] && ch[4].textContent);
+                offsets[0] = (offsets[0] || 0) + o0;
+                offsets[1] = (offsets[1] || 0) + o1;
+                offsets[2] = (offsets[2] || 0) + o2;
+                totalOffset += (o0 + o1 + o2);
+            } else if ($table.hasClass('themedcon4-table')) {
+                var cells = this.children;
+                for (var i = 0; i <= 4; i++) {
+                    var idx = 3 + i;
+                    var o = num(cells[idx] && cells[idx].textContent);
+                    offsets[i] = (offsets[i] || 0) + o;
+                    totalOffset += o;
+                }
+            } else {
+                var i = 0;
+                while ($tr.attr('data-offset-' + i) !== undefined) {
+                    var o = num($tr.attr('data-offset-' + i));
+                    offsets[i] = (offsets[i] || 0) + o;
+                    totalOffset += o;
+                    i++;
+                }
             }
         });
+        return { offsets: offsets, totalOffset: totalOffset };
     }
-})(mediaWiki, jQuery);
-
-/* 词雨特效系统（详细注释） */
-window.wordRainSystem = (function() {
-  'use strict';
-  // 实例管理器（使用Map存储配置和状态）
-  const instances = new Map();
-  let styleAdded = false;
-
-  // 核心样式注入（防止重复添加）
-  function addCoreStyles() {
-    if (styleAdded) return;
-    
-    mw.util.addCSS(`...`); // 包含动画定义和基础样式
-    styleAdded = true;
-  }
-
-  // 单个雨滴创建逻辑
-  function createDrop(instance) {
-    const drop = document.createElement('div');
-    // 配置随机参数：位置、颜色、字体、速度
-    const leftPos = 5 + Math.random() * 90;
-    drop.style.left = `${leftPos}vw`;
-    drop.style.color = instance.config.colors[Math.floor(Math.random() * colors.length)];
-    // 动画持续时间计算
-    const baseSpeed = 10000 - (instance.config.speed * 800);
-    const duration = (baseSpeed + Math.random() * 3000) / 1000;
-    drop.style.animation = `wordFall ${duration}s linear infinite`;
-    
-    // 自动清理机制
-    setTimeout(() => drop.remove(), duration * 1000);
-  }
-
-  return {
-    init: function() {
-      // 使用Fandom内容钩子初始化小部件
-      mw.hook('wikipage.content').add(function($content) {
-        $content.find('.word-rain-widget').each(function() {
-          // 配置解析（数据驱动）
-          const config = {
-            words: $widget.data('words').split(','),
-            density: Math.min(50, Math.max(1, parseInt($widget.data('density')) || 30))
-          };
-          
-          // 实例管理（唯一ID生成）
-          const instanceId = `wordrain-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-          instances.set(instanceId, { config, interval: null, active: false });
-        });
-      });
-      
-      // 全局状态切换（启动/停止）
-      $(document).on('click', '.word-rain-toggle', function() {
-        const instance = instances.get($(this).data('instance-id'));
-        if (instance.active) {
-          clearInterval(instance.interval);
-          document.querySelectorAll('.word-drop').forEach(drop => drop.remove());
-        } else {
-          instance.interval = setInterval(
-            () => createDrop(instance),
-            Math.max(50, 1000 / instance.config.density)
-          );
+    $.getJSON = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var dataArg = null;
+        if (args.length >= 2 && typeof args[1] === 'object') {
+            dataArg = args[1];
+        } else if (args.length === 1 && typeof args[0] === 'object') {
+            dataArg = args[0];
         }
-      });
-      
-      // 页面卸载清理
-      window.addEventListener('beforeunload', () => {
-        instances.forEach(instance => clearInterval(instance.interval));
-      });
-      
-      addCoreStyles();
-    },
-    // 公共API
-    stopAll: () => { /* ... */ }
-  };
+        var jq = _getJSON.apply($, args);
+        try {
+            if (dataArg && dataArg.controller === 'DiscussionThread' && dataArg.method === 'getThread' && dataArg.threadId) {
+                jq.done(function (result) {
+                    try {
+                        if (!result || !result.poll || !Array.isArray(result.poll.answers)) return;
+                        var threadId = String(dataArg.threadId);
+                        var collected = collectOffsetsForThread(threadId);
+                        var offsets = collected.offsets || [];
+                        var totalOffset = collected.totalOffset || 0;
+                        var sumAdded = 0;
+                        for (var i = 0; i < result.poll.answers.length; i++) {
+                            var add = num(offsets[i]);
+                            if (add) {
+                                result.poll.answers[i].votes = (num(result.poll.answers[i].votes) + add);
+                                sumAdded += add;
+                            }
+                        }
+                        if (sumAdded) {
+                            result.poll.totalVotes = num(result.poll.totalVotes) + sumAdded;
+                        }
+                    } catch (e) {
+                        console.error('vote-offset-interceptor inner error', e);
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('vote-offset-interceptor attach error', e);
+        }
+        return jq;
+    };
 })();
 
-/* 图片轮播系统（带自动播放和悬停暂停） */
-window.imageSlider = (function() {
-'use strict';
-// 使用Map跟踪不同轮播实例
-const sliders = new Map();
+// 投票
+var config = config || mw.config.get();
 
-function initSlider(container) {
-    // 数据解析
-    const images = container.dataset.images.split(',');
-    let currentIndex = 0;
-    
-    // 动态生成幻灯片
-    images.forEach((image, index) => {
-        const slide = document.createElement('div');
-        slide.style.backgroundImage = `url(${mw.config.get('wgScriptPath')}/images/${image.trim()})`;
-        // 添加悬停效果
-        slide.addEventListener('mouseenter', () => overlay.style.opacity = '0.7');
+mw.hook("wikipage.content").add(function () {
+    if (!["view", "edit", "submit"].includes(config.wgAction)) return;
+    if (window.NervieJS) return;
+    window.NervieJS = true;
+    mw.loader.load("mediawiki.util");
+
+    $(".talescon-table tbody tr").each(function () {
+        var thisElement = this;
+        $.getJSON(mw.util.wikiScript("wikia"), {
+            controller: "DiscussionThread",
+            method: "getThread",
+            format: "json",
+            threadId: this.getAttribute("data-vote-id")
+        }).done(function (result) {
+            thisElement.children[2].textContent = result.poll.answers[0].votes;
+            thisElement.children[3].textContent = result.poll.answers[1].votes;
+            thisElement.children[4].textContent = result.poll.answers[2].votes;
+            thisElement.children[5].textContent = ((result.poll.answers[0].votes - result.poll.answers[2].votes) / result.poll.totalVotes).toFixed(4);
+        });
     });
 
-    // 自动播放逻辑
-    function startAutoPlay() {
-        if (container.dataset.autoplay === '1') {
-            autoPlayInterval = setInterval(() => {
-                goToSlide(currentIndex + 1);
-            }, parseInt(container.dataset.speed));
-        }
-    }
-    
-    // 事件绑定
-    container.querySelector('.prev-slide').addEventListener('click', () => goToSlide(currentIndex - 1));
-}
-
-return {
-    init: function() {
-        mw.hook('wikipage.content').add(function($content) {
-            $content.find('.js-slider-container').each(initSlider);
+    $(".themedcon4-table tbody tr").each(function () {
+        var cells = this.children;
+        $.getJSON(mw.util.wikiScript("wikia"), {
+            controller: "DiscussionThread",
+            method: "getThread",
+            format: "json",
+            threadId: this.getAttribute("data-vote-id")
+        }).done(function (result) {
+            cells[3].textContent = result.poll.answers[0].votes;
+            cells[4].textContent = result.poll.answers[1].votes;
+            cells[5].textContent = result.poll.answers[2].votes;
+            cells[6].textContent = result.poll.answers[3].votes;
+            cells[7].textContent = result.poll.answers[4].votes;
+            cells[8].textContent = (
+                (result.poll.answers[0].votes
+                    + result.poll.answers[1].votes / 2
+                    - result.poll.answers[3].votes / 2
+                    - result.poll.answers[4].votes) / result.poll.totalVotes
+            ).toFixed(4);
         });
-    }
-};
-})();
+    });
 
-/* 3D图片悬停系统（带移动端优化） */
-window.image3DSystem = (function() {
-'use strict';
-
-function initImageCards(container) {
-    // 解析Fandom内链格式的标注
-    const captionText = (captions[index] || '').replace(/[{}]/g, '');
-    const linkMatch = captionText.match(/\[\[(.*?)\]\]/);
-    if (linkMatch) {
-        // 使用mw.util生成正确URL
-        const linkHref = mw.util.getUrl(linkParts[0]);
-    }
-    
-    // 移动端点击切换代替悬停
-    if ('ontouchstart' in window) {
-        card.addEventListener('click', function() {
-            this.classList.toggle('hover-active');
+    $.getJSON(mw.util.wikiScript("index"), {
+        title: "User:HyperNervie/竞赛2.json",
+        action: "raw",
+        ctype: "application/json"
+    }).done(function (result, status) {
+        if (status != "success" || typeof (result) != "object") return;
+        var entries_loaded = 0;
+        mw.hook("pollLoader.loaded").add(function () {
+            if (++entries_loaded < result.length) return;
+            result.sort(function (a, b) { return b.rating - a.rating; });
+            $("table.contest-results tbody").empty();
+            result.forEach(function (entry, place) {
+                $("table.contest-results tbody").append(
+                    "<tr>" +
+                    "<td>" + (place + 1) + "</td>" +
+                    "<td>" +
+                    '<a href="' + mw.util.getUrl(entry.name) + '" ' +
+                    'title="' + entry.name + '">' +
+                    (entry.title || entry.name) +
+                    "</a>" +
+                    "</td>" +
+                    "<td>" +
+                    '<a href="' + mw.util.getUrl("User:" + entry.author) + '" ' +
+                    'title="User:' + entry.author + '">' +
+                    entry.author +
+                    "</a>" +
+                    "</td>" +
+                    "<td>" + entry.upvote + "</td>" +
+                    "<td>" + entry.novote + "</td>" +
+                    "<td>" + entry.downvote + "</td>" +
+                    "<td>" + entry.rating.toFixed(4) + "</td>" +
+                    "</tr>"
+                );
+            });
+            $("table.contest-results").makeCollapsible();
         });
-    }
-}
-
-return {
-    init: function() {
-        mw.hook('wikipage.content').add(function($content) {
-            $content.find('.flat-3d-container').each(initImageCards);
+        result.forEach(function (entry) {
+            $.getJSON(mw.util.wikiScript("wikia"), {
+                controller: "DiscussionThread",
+                method: "getThread",
+                format: "json",
+                threadId: entry.poll_id
+            }).done(function (result, status) {
+                if (status != "success" || typeof (result) != "object") return;
+                entry.upvote = result.poll.answers[0].votes;
+                entry.novote = result.poll.answers[1].votes;
+                entry.downvote = result.poll.answers[2].votes;
+                entry.rating = (entry.upvote - entry.downvote) / result.poll.totalVotes;
+                mw.hook("pollLoader.loaded").fire();
+            });
         });
-    }
-};
+    });
+
+    $.getJSON(mw.util.wikiScript("api"), {
+        action: "query",
+        formatversion: 2,
+        format: "json",
+        meta: "siteinfo",
+        siprop: "interwikimap",
+        siinlanguagecode: config.wgUserVariant
+    }, function (result, status) {
+        if (status != "success" || typeof (result) != "object" || !result.batchcomplete) return;
+        $("table.global-interwiki tbody").empty();
+        $("table.local-interwiki tbody").empty();
+        $("table.interlang tbody").empty();
+        result.query.interwikimap.forEach(function (obj) {
+            if (!obj.local)
+                $("table.global-interwiki tbody").append(
+                    "<tr>" +
+                    "<td>" + obj.prefix.toLowerCase() + "</td>" +
+                    "<td>" + obj.url + "</td>" +
+                    "</tr>"
+                );
+            else if (obj.language)
+                $("table.interlang tbody").append(
+                    "<tr>" +
+                    "<td>" + obj.prefix + "</td>" +
+                    "<td>" + obj.language + "</td>" +
+                    "<td>" + obj.url + "</td>" +
+                    "</tr>"
+                );
+            else
+                $("table.local-interwiki tbody").append(
+                    "<tr>" +
+                    "<td>" + obj.prefix.toLowerCase() + "</td>" +
+                    "<td>" + obj.url + "</td>" +
+                    "</tr>"
+                );
+        });
+        $("table.global-interwiki").makeCollapsible();
+        $("table.local-interwiki").makeCollapsible();
+        $("table.interlang").makeCollapsible();
+    });
 })();

@@ -38,5 +38,7 @@ $(function() {
     $("#cat-ranklist").on("click", function() { window.open("https://angelsf3x.fandom.com/wiki/Rank_List", "_blank"); });
     $("#cat-jokes").on("click", function() { window.open("https://angelsf3x.fandom.com/wiki/Category:Joke_Page", "_blank"); });
     $("#cat-misc").on("click", function() { window.open("https://angelsf3x.fandom.com/wiki/Category:Misc_Articles", "_blank"); });
+    $("#company").on("click", function() { window.open("https://angelsf3x.fandom.com/wiki/Category:Company", "_blank"); });
+    $("#show").on("click", function() { window.open("https://angelsf3x.fandom.com/wiki/Category:Show", "_blank"); });
 
 });

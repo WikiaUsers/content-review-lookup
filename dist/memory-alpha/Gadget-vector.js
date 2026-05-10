@@ -1,11 +1,12 @@
 'use strict';
-mw.hook('gadget.skinSetup').add(data => {
+mw.hook('gadget.skin-setup').add(async skinConfig => {
 	// Setup
 	$('.mediawiki').prepend($('<div id="page-grid">'));
+	const pageActions = $('<div id="page-actions">');
 	$('#page-grid')
 		.append($('<div id="left-rail-wrapper">'))
 		.append($('<div id="personal-tools" class="global-top-navigation">').append($('<ul>')))
-		.append($('<div id="page-actions">'))
+		.append(pageActions)
 		.append($('.main-container'))
 		.append($('<footer id="footer">'));
 	
@@ -88,21 +89,19 @@ mw.hook('gadget.skinSetup').add(data => {
 	const subjectPageName = new mw.Title(pageName).getSubjectPage();
 	const talkPageName = new mw.Title(pageName).getTalkPage() ? new mw.Title(pageName).getTalkPage() : subjectPageName;
 	const subjectNamespace = subjectPageName.getNamespaceId();
+	const rightNav = $('<ul id="right-navigation">');
 	
-	$('#page-actions').append($('<ul id="left-navigation">'));
-	$('#left-navigation')
-		.append($(`<li id="ca-nstab-main-li"><a id="ca-nstab-main" href="${mw.util.getUrl(subjectPageName.getPrefixedText())}" title="View the content page">${data.nstab}</a></li>`))
-		.append($(`<li id="ca-talk-li"><a id="ca-talk" href="${mw.util.getUrl(talkPageName.getPrefixedText())}" title="Discuss improvements to the content page">${data.nstabTalk}</a></li>`));
-	
-	$('#page-actions').append($('<ul id="right-navigation">'));
-	$('#right-navigation')
-		.append($('<li id="ca-view-li">'))
-		.append($('<li id="ca-edit-li">'))
-		.append($('<li id="ca-history-li">'))
-		.append($('<li id="ca-watch-li">'))
-		.append($('<li id="ca-unwatch-li">'))
-		.append($('<li id="more-page-actions" class="wds-dropdown">'))
-		.append($('<li id="search-box">'));
+	await skinConfig.associatedPages(pageActions);
+	pageActions.append(rightNav);
+	rightNav.append(
+		$('<li id="ca-view-li">'),
+		$('<li id="ca-edit-li">'),
+		$('<li id="ca-history-li">'),
+		$('<li id="ca-watch-li">'),
+		$('<li id="ca-unwatch-li">'),
+		$('<li id="more-page-actions" class="wds-dropdown">'),
+		$('<li id="search-box">')
+	);
 	
 	$('#search-box').append($(`<form action="${mw.util.getUrl('Special:Search')}">`));
 	$('#search-box form')

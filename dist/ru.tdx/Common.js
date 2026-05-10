@@ -15,3 +15,20 @@ importArticles({
 	[        
 		'u:dev:MediaWiki:MultiClock.js',
 	]});
+
+$(function() {
+    var $descBox = $('#filter-description-box');
+    var defaultText = "Наведите на иконку, чтобы увидеть описание";
+
+    $('.filter-btn').hover(
+        function() {
+            var desc = $(this).data('desc');
+            if (desc) {
+                $descBox.text(desc).addClass('is-active-desc');
+            }
+        }, 
+        function() {
+            $descBox.text(defaultText).removeClass('is-active-desc');
+        }
+    );
+});

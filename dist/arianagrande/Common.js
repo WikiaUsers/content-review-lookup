@@ -5,8 +5,8 @@ importArticles({
 	articles: [
 		"w:dev:ReferencePopups/code.js",
 		"w:dev:RevealAnonIP/code.js",
-                "w:dev:WallGreetingButton/code.js",
-                "w:c:dev:UserTags/code.js",
+        "w:dev:WallGreetingButton/code.js",
+        "w:c:dev:UserTags/code.js",
 	]
 });
 
@@ -20,3 +20,8 @@ importArticles({
         "w:c:dev:Countdown/code.js"
     ]
 });
+
+/* make massedit edits get rate limited at the lowest allowed threshold */
+window.MassEditConfig = {
+  interval: 750,
+};

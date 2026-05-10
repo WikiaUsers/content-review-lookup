@@ -1,4 +1,4 @@
-	/* Any JavaScript here will be loaded for all users on every page load. */
+/* Any JavaScript here will be loaded for all users on every page load. */
 // Template:Tabs
 $(function() {
 	// If a sub-tab is 'selected', also make the parent tabs also 'selected'
@@ -31,19 +31,16 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		/* group: { associated tag data } */
-		// staff ranks, renaming of some ranks too
+		// staff ranks
 		'head-of-wiki': {u:'Head of Wiki', order:-1},
 		'founder': {u:'Founder', order:-1},
-		'senior-content-administrator': {u:'Senior Content Administrator', order:1},
-		'content-administrator': {u:'Content Administrator', order:1},
-		'senior-discussions-administrator': {u:'Senior Discussions Administrator', order:1},
-		'discussions-administrator': {u:'Discussions Administrator', order:1},
-		'bureaucrat': {u:'Senior Administrator', order:1},
+		'bureaucrat': {u:'Bureaucrat', order:1},
+		'administrator': {u:'Administrator', order:1},
+		'dual-moderator': {u:'Dual Moderator', order:2},
 		'threadmoderator': {u:'Discussions Moderator', order:2},
 		'content-moderator': {u:'Content Moderator', order:2},
-		'wiki-developer': {u:'Wiki Developer', order:3},
 		// non-staff tags
-		'Wiki-Contributor': {u:'Wiki Contributor', order:9e9},
+		'wiki-contributor': {u:'Wiki Contributor', order:9e9},
 		'retired-staff': {u:'Former Wiki Staff', order:9e9},
 		'ron-hos': {u:'RON Head of Staff', order:9e9},
 		'ron-senior-administrator': {u:'RON Senior Administrator', order:9e9},
@@ -51,47 +48,45 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.implode = {
-	// merge sysop (or bureaucrat) and mod ranks
-	'content-administrator': ['sysop','content-moderator'],
-	'senior-content-administrator': ['bureaucrat','content-moderator'],
-	'discussions-administrator': ['sysop', 'threadmoderator'],
-	'senior-discussions-administrator': ['bureaucrat','threadmoderator'],
+	// Merge sysop/mod ranks into a single tag
+	'administrator': ['sysop'],
+	'dual-moderator': ['content-moderator', 'threadmoderator'],
 };
 
 UserTagsJS.modules.metafilter = {
-	// remove admin ranks from bureaucrats
-	'discussions-administrator': ['bureaucrat'],
-	'content-administrator': ['bureaucrat'],
-	'sysop': ['bureaucrat', 'ron-hos'],
-	// remove content mod, just a permissions role for wiki developer
-	'content-moderator': ['wiki-developer']
+	// Hide redundant lower ranks when a higher rank is present
+	'administrator':     ['bureaucrat'],
+	'sysop':             ['bureaucrat', 'ron-hos'],
+	'content-moderator': ['administrator', 'dual-moderator'],
+	'threadmoderator':   ['administrator', 'dual-moderator'],
+	'dual-moderator':    ['administrator'],
 };
 
 UserTagsJS.modules.custom = {
 	/* 'user': [groups] */
-	// Current Staff: Edited.
+	// Current Staff
 	// Bureaucrats
 	'SuperGlitchyTheo': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
 	'Standoffiish': ['bureaucrat'],
 	// Administrators
-	'Dxrknrg': ['content-administrator','discussions-administrator','Wiki-Contributor'],
-	'Antiverta': ['content-administrator','discussions-administrator','Wiki-Contributor'],
-	// Moderators
+	'Dxrknrg': ['administrator','wiki-contributor'],
+	'Antiverta': ['administrator','wiki-contributor'],
 	// Dual Moderators
+
 	// Content Moderators
-	'Mysþıc': ['content-moderator','Wiki-Contributor'],
-	'Sorayaann': ['content-moderator','Wiki-Contributor'],
-  	// Junior Content Moderators
-    
+	'Mysþıc': ['content-moderator','wiki-contributor'],
+	'Sorayaann': ['content-moderator','wiki-contributor'],
+	// Junior Content Moderators
+
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
 	'Kaiyie': ['threadmoderator'],
 	'The Shashophille': ['threadmoderator'],
 	'RXRunner27': ['threadmoderator'],
 	// Junior Discussion Moderators
-	
-	// Retired Wiki Staff 
+
+	// Retired Wiki Staff
 	// Retired Bureaucrats
 	'RabbyDevs': ['retired-staff'],
 	'Aurawra': ['retired-staff'],
@@ -114,7 +109,7 @@ UserTagsJS.modules.custom = {
 	'YesIHaveAnAccount': ['retired-staff'],
 	'Alvin': ['retired-staff'],
 	'Polloloko0o': ['retired-staff'],
-	// Retired Content Moderator
+	// Retired Content Moderators
 	'Bazyli123': ['retired-staff'],
 	'PenguinTech': ['retired-staff'],
 	'Eddy0725': ['retired-staff'],
@@ -135,23 +130,25 @@ UserTagsJS.modules.custom = {
 	'Therealusman': ['retired-staff'],
 	'DragooNit': ['retired-staff'],
 	'Silkened': ['retired-staff'],
-	// Retired Discussions Moderator
+	// Retired Discussions Moderators
 	'CreeperSPG': ['retired-staff'],
 	'CrunchMCMunch': ['retired-staff'],
 	'Feepemaster': ['retired-staff'],
 	'Adogeeats25': ['retired-staff'],
 	'Nexandr': ['retired-staff'],
 	'Hisslandia': ['retired-staff'],
-	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
+	// RON Senior Staff
 	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
 	// Wiki Contributors
-    'Cipherusxzy': ['Wiki-Contributor'],
-    'HaHaBlah': ['Wiki-Contributor'],
-    'RyeThePies': ['Wiki-Contributor'],
-    'Thethingiforgor': ['Wiki-Contributor'],
-    'Pro10boy2228': ['Wiki-Contributor'],
-    'FourCer5': ['Wiki-Contributor'],
+	'Cipherusxzy': ['wiki-contributor'],
+	'HaHaBlah': ['wiki-contributor'],
+	'RyeThePies': ['wiki-contributor'],
+	'Thethingiforgor': ['wiki-contributor'],
+	'Pro10boy2228': ['wiki-contributor'],
+	'FourCer5': ['wiki-contributor'],
 };
-window.lockOldComments.limit = 14;
-window.lockOldComments.addNoteAbove = true;
 //* END of UserTags *//
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;

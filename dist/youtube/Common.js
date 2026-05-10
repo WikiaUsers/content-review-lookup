@@ -25,24 +25,3 @@ function subButtonLoad(delay, maxIter) {
 
 /** Change PI label */
 $('.pi-data-label:contains("Username")').replaceWith('<h3 class="pi-data-label pi-secondary-font">Subscribers</h3>');
-
-/**
- * Cosmetically remove Alida's bot tag
- * @param delay Delay between remove attempts
- */
-function removeNFGBotTag(delay) {
-  if (mw.config.get('wgPageName') !== 'User:Nerdfightergirl') return;
-
-  const userTags = document.querySelectorAll('span.user-identity-header__tag');
-  const handler = setInterval(function () {
-    if (userTags) {
-      userTags.forEach(function (userTag) {
-        if (userTag.innerText === "Bot") userTag.remove();
-      })
-      clearInterval(handler);
-    }
-  }, delay);
-}
-
-subButtonLoad(1000, 10);
-removeNFGBotTag(1000)

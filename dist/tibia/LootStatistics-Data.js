@@ -19,6 +19,7 @@ window.loot_parser_data = {
     '8.6': {
       'changed': {
 // 
+'Herald of Fire':'15.24.c50b3f',
 'Sea Captain':'15.24.c50b3f',
 // Targuna update
 'Stone Devourer':'15.24.95dcf3',

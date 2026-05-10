@@ -7,12 +7,12 @@
 			/** @type {HTMLElement[]} */ contents
 		) {
 			for (const content of contents) {
-				content.querySelectorAll(".srw-extra-effect-wrapper").forEach(/** @param {HTMLElement} wrapper */ wrapper => {
+				content.querySelectorAll(".akef-extra-effect-wrapper").forEach(/** @param {HTMLElement} wrapper */ wrapper => {
 					
 					const $wrapper = $(wrapper)
 					
 					/** @type {HTMLSpanElement} */
-					const effectToggle = wrapper.querySelector('.srw-extra-effect.toggle-tooltip');
+					const effectToggle = wrapper.querySelector('.akef-extra-effect.toggle-tooltip');
 					
 					// show on hover, if not already shown
 					effectToggle.addEventListener('mouseover', () => {

@@ -270,3 +270,68 @@ importArticles({
         });
     });
 })();
+
+
+
+
+
+
+
+
+
+const slider = document.querySelector('.slider');
+const slides = document.querySelectorAll('.mini-box');
+
+const left = document.querySelector('.slider-arrow.left');
+const right = document.querySelector('.slider-arrow.right');
+
+const container = document.querySelector('.event-box-house');
+
+let current = 0;
+
+function updateSlider() {
+    slider.style.transform = `translateX(-${current * 100}%)`;
+}
+
+function nextSlide() {
+
+    current++;
+
+    if (current >= slides.length) {
+        current = 0;
+    }
+
+    updateSlider();
+}
+
+function prevSlide() {
+
+    current--;
+
+    if (current < 0) {
+        current = slides.length - 1;
+    }
+
+    updateSlider();
+}
+
+right.addEventListener('click', nextSlide);
+left.addEventListener('click', prevSlide);
+
+if (slides.length <= 1) {
+
+    left.style.display = 'none';
+    right.style.display = 'none';
+
+} else {
+
+    let autoSlide = setInterval(nextSlide, 4000);
+
+    container.addEventListener('mouseenter', () => {
+        clearInterval(autoSlide);
+    });
+
+    container.addEventListener('mouseleave', () => {
+        autoSlide = setInterval(nextSlide, 4000);
+    });
+}

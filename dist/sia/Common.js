@@ -1,5 +1,46 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* inject filters for crayon border effect */
+mw.hook('wikipage.content').add(function() {
+  if (document.getElementById('crayon-filters')) return;
+  
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.id = 'crayon-filters';
+  svg.setAttribute('width', '0');
+  svg.setAttribute('height', '0');
+  svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+  
+  svg.innerHTML = `<defs>
+    <filter id="crayon-roughen">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="5" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="crayon-roughen2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="12" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="G" yChannelSelector="R"/>
+    </filter>
+  </defs>`;
+  
+  document.body.appendChild(svg);
+});
+
+/* change theme colors by category */
+mw.hook('wikipage.content').add(function($content) {
+    var categories = mw.config.get('wgCategories') || [];
+
+	if (categories.indexOf('Everyday Is Christmas songs') !== -1) {
+	    $('main').css('--theme-link-color', '#1B9374');
+	    $('main').css('--theme-accent-color', '#F22339');
+	    $('main').css('--theme-accent-color--rgb', '242, 35, 57');
+	}
+	
+	if (categories.indexOf('Labrinth • Sia • Diplo Present... LSD songs') !== -1) {
+	    $('main').css('--theme-link-color', '#ED80EC');
+	    $('main').css('--theme-accent-color', '#4DACEA');
+		$('main').css('--theme-accent-color--rgb', '77, 172, 234');
+	}
+});
+
 ;(function() {
     $('.mpd-item').click(function(e) {
         e.preventDefault();

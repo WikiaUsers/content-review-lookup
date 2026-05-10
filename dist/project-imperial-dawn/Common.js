@@ -22,10 +22,10 @@
                 title: "HOLONET NEWS NETWORK",
                 data: [
                     {
-                        date: "WEEK 01",
-                        title: "THE NEWS SECTION",
-                        content: "For the first time in galactic history, the silence of the stars is being replaced by a unified voice. Today marks the official activation of the HoloNet News. Whether you are navigating the high-rises of Coruscant or farming the moisture of Tatooine, the truth is now at your fingertips.",
-                        image: "https://placehold.co/600x300/00101c/00ccff?text=HOLONET+BROADCAST",
+                        date: "MAY 4TH, 2026",
+                        title: "MAY THE FOURTH BE WITH YOU",
+                        content: "This global holiday started as a clever pun by fans on the iconic Jedi phrase, May the Force be with you. The joke actually dates all the way back to 1979, when a UK newspaper used May the Fourth Be with You to congratulate Margaret Thatcher (old UK PM) on taking office, and it eventually evolved into the massive worldwide celebration of the saga we know today.",
+                        image: "https://project-imperial-dawn.fandom.com/special:filepath/4th.png",
                         tag: "OFFICIAL"
                     }
                 ]
@@ -60,6 +60,10 @@
                     { 
                         header: "TIER IV - $49.99/MONTH", 
                         content: "• All Tier III benefits<br>• Guaranteed placement on inquisitor waitlist<br>• Command visibility for force sensitive arcs" 
+                    },
+                    {
+                        header: "TIER V - $69.99/MONTH",
+                        content: "• All Tier IV Benefits (Inquisition Waitlist Excluded, Purge Trooper Waitlist Only)<br>• Guaranteed Placement on the CX Clone Assassins Waitlist<br>• Intelligence Visibility in Security Story Arcs<br>• Elite Insider Access to upcoming high-level systems and expansions"
                     }
                 ]
             }

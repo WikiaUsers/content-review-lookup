@@ -151,3 +151,90 @@ document.querySelectorAll(".unix-time").forEach(el => {
 
   mw.hook("wikipage.content").add(init);
 })();
+
+// Function that adds a search bar to a specific page
+$(function () {
+  const mount = document.getElementById("local-page-search");
+  if (!mount) return;
+
+  const input = document.createElement("input");
+  input.type = "search";
+  input.placeholder = "Search...";
+  input.className = "local-search-box";
+  mount.appendChild(input);
+
+  const cards = document.querySelectorAll(".car-header");
+
+  function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function removeHighlights(root) {
+    root.querySelectorAll("mark.search-highlight").forEach(mark => {
+      mark.replaceWith(document.createTextNode(mark.textContent));
+    });
+    root.normalize();
+  }
+
+  function highlightMatches(root, query) {
+    if (!query) return;
+
+    const regex = new RegExp(escapeRegExp(query), "gi");
+
+    const walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          if (node.parentElement.closest("mark.search-highlight")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return regex.test(node.nodeValue)
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT;
+        }
+      }
+    );
+
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(node => {
+      const frag = document.createDocumentFragment();
+      const text = node.nodeValue;
+      let lastIndex = 0;
+
+      text.replace(regex, (match, offset) => {
+        frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+
+        const mark = document.createElement("mark");
+        mark.className = "search-highlight";
+        mark.textContent = match;
+        frag.appendChild(mark);
+
+        lastIndex = offset + match.length;
+      });
+
+      frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      node.replaceWith(frag);
+    });
+  }
+
+  input.addEventListener("input", function () {
+    const q = input.value.trim();
+
+    cards.forEach(card => {
+      removeHighlights(card);
+
+      const text = card.textContent.toLowerCase();
+      const match = !q || text.includes(q.toLowerCase());
+
+      card.style.display = match ? "" : "none";
+
+      if (match && q) {
+        highlightMatches(card, q);
+      }
+    });
+  });
+});

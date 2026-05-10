@@ -33,17 +33,20 @@ function applyWrap(el) {
   if (el.dataset.wrapped) return;
   el.dataset.wrapped = "1";
 
-  el.innerHTML = el.textContent.replace(/([_-])/g, "$1<wbr>");
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+
+  const textNodes = [];
+  while (walker.nextNode()) {
+    textNodes.push(walker.currentNode);
+  }
+
+  for (const node of textNodes) {
+    node.nodeValue = node.nodeValue.replace(/([_-])/g, "$1\u200B");
+  }
 }
 
 function scan() {
-  const isMobile = document.body.classList.contains("skin-minerva");
-
-  document.querySelectorAll(".wrap-id").forEach(applyWrap);
-
-  if (isMobile) {
-    document.querySelectorAll(".wrap-id-mobile").forEach(applyWrap);
-  }
+  document.querySelectorAll(".wrap-id, .wrap-id-mobile").forEach(applyWrap);
 }
 
 document.addEventListener("DOMContentLoaded", scan);

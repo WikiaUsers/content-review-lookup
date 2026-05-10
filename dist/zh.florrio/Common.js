@@ -1,5 +1,7 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
 
+
+
 var sceneList = [ '花园', '蚁穴', '沙漠', '蚂蚁地狱', '沼泽', '海洋', '海洋（滤镜）', 'PvP' ,'下水道','地狱','丛林','中心','蠕虫（地图）'];
 
 var map = 
@@ -90,9 +92,9 @@ document.getElementsByClassName("fandom-community-header__background")[0].style.
 	'下水道':'url(https://floof.netlify.app/assets/tiles/sewer.svg)',
 	'地狱':'url(https://floof.netlify.app/assets/tiles/hell.svg)',
 	'丛林':'url(https://static.wikia.nocookie.net/florrio/images/4/49/JungleBG1.svg/revision/latest/scale-to-width-down/185?cb=20240903143456&path-prefix=zh)',
-	'中心':'url(https://static.wikia.nocookie.net/florrio/images/5/5d/CentraliaBG.svg/revision/latest/scale-to-width-down/185?cb=20240903143806&path-prefix=zh)'
+	'中心':'url(https://static.wikia.nocookie.net/florrio/images/5/5d/CentraliaBG.svg/revision/latest/scale-to-width-down/185?cb=20240903143806&path-prefix=zh)',
 	'蠕虫（地图）':'url(https://static.wikia.nocookie.net/florrio/images/3/3b/Wormmap.svg/revision/latest?cb=20250111063116&path-prefix=zh)'
-}[scene]; // 此处有BUG
+}[scene];
 
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
@@ -148,8 +150,8 @@ $.getJSON(mw.util.wikiScript("index"), {
 
 (function () {
 	var subWikis = {
-		旧: {name: '旧版florr.io 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/a/a8/%E9%85%8D%E7%BD%AE.webp/revision/latest?cb=20240728012911&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&format=original&path-prefix=zh'},
-		二: {name: 'florr.io二创 中文维基'},
+		旧: {name: '旧版florr.io中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/a/a8/%E9%85%8D%E7%BD%AE.webp/revision/latest?cb=20240728012911&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&format=original&path-prefix=zh'},
+		二: {name: 'florr.io中文维基:<span style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; color: transparent">二次创作</span>'},
 		W: {name: 'Flowr.fun 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/7/7d/WSite-logo.png/revision/latest?cb=20240830094753&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/2/2f/WSite-background-light.png/revision/latest?cb=20240830101803&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/f/f1/WSite-background-dark.png/revision/latest?cb=20240830101850&format=original&path-prefix=zh'}
 	};
 
@@ -159,13 +161,14 @@ $.getJSON(mw.util.wikiScript("index"), {
 
 	var root = mw.config.get('wgTitle').split('/')[0];
 	var subWiki = subWikis[root], w = subWiki;
+	
 	if (w) {
-		$(name + ', ' + logo).attr('href', function (_, src) {return src + '/' + root;});
-		if (w.name) $(name).text(w.name);
+		$(name + ', ' + logo).attr('href', function (_, src) {return src.replace(/[^/]*$/, root);});
+		if (w.name) $(name).html(w.name);
 		if (w.logo) $(logo).children().attr('src', w.logo);
 		if (w.light || w.dark) $(background).css('background-image', 'url(' + (mw.config.get('isDarkTheme') ? w.dark || w.light: w.light || w.dark) + ')');
 	}
-})();{{史诗|}}
+})();
 
 // 可选配置 — 留空则使用默认值 （AI代码，用于给每个新编辑的用户发规则）
 window.welcomeMessage = {
@@ -174,83 +177,11 @@ window.welcomeMessage = {
   adminNickname: '维基管理员', // 管理员展示名（对应 $3）
   messageTitle: '欢迎加入我们, $1!',   // 消息标题
   // 消息正文（支持HTML和变量）
-  messageText: '$1 ，欢迎加入florr.io中文维基！\n在您开始编辑前，请认真阅读主页中的 Help:新人编辑者 与 Florr.io_中文维基:封禁标准。前者是对于新用户的建议与指引，后者是本维基的规则。感谢您的理解与支持，现在可以开始您的编辑了！',
+  messageText: '$1 ，欢迎加入florr.io中文维基！\n在您开始编辑前，请认真阅读主页中的 Help:新人编辑者 与 florr.io中文维基:封禁标准。前者是对于新用户的建议与指引，后者是本维基的规则。感谢您的理解与支持，现在可以开始您的编辑了！',
   debug: false,                   // 关闭调试日志
-  testAllEdits: true,            // 关闭测试模式（仅首次编辑触发）
+  testAllEdits: false,            // 关闭测试模式（仅首次编辑触发）
   preferTalk: false               // 优先使用消息墙
 };
-
-// ====== 全局随机数生成器 ======(AI代码)
-window.Random = function(min, max, isInteger) {
-  // 参数处理（支持单参数/多参数调用）
-  const hasMin = (typeof min === 'number');
-  const hasMax = (typeof max === 'number');
-  const toInteger = (typeof isInteger === 'boolean') ? isInteger : false;
-  
-  // 范围校验与默认值
-  const realMin = hasMin ? min : 0;
-  const realMax = hasMax ? max : (hasMin ? min : 1);
-  const [finalMin, finalMax] = realMin > realMax ? [realMax, realMin] : [realMin, realMax];
-  
-  // 核心算法（梅森旋转）
-  const value = _mersenneTwister();
-  
-  // 结果转换
-  if (toInteger) {
-    return Math.floor(value * (finalMax - finalMin + 1)) + finalMin;
-  }
-  return value * (finalMax - finalMin) + finalMin;
-};
-
-// ====== 梅森旋转算法实现 ======
-(function() {
-  // 初始化状态（单例模式）
-  if (window._mtState) return;
-  
-  const N = 624, M = 397;
-  const state = new Array(N);
-  let index = N + 1;
-  const seed = new Date().getTime();
-
-  // 初始化状态数组
-  state = seed >>> 0;
-  for (let i = 1; i < N; i++) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30);
-    state[i] = ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + 
-               (s & 0x0000ffff) * 1812433253 + i;
-    state[i] >>>= 0;
-  }
-
-  // 生成随机数（私有函数）
-  window._mersenneTwister = function() {
-    if (index >= N) {
-      for (let k = 0; k < N - M; k++) {
-        const y = (state[k] & 0x80000000) | (state[k + 1] & 0x7fffffff);
-        state[k] = state[k + M] ^ (y >>> 1)^ ((y & 1) ? 0x9908b0df : 0);
-      }
-      for (let k = N - M; k < N - 1; k++) {
-        const y = (state[k] & 0x80000000) | (state[k + 1] & 0x7fffffff);
-        state[k] = state[k + M - N] ^ (y >>> 1)^ ((y & 1) ? 0x9908b0df : 0);
-      }
-      const y = (state[N - 1] & 0x80000000) | (state & 0x7fffffff);
-      state[N - 1] = state[M - 1] ^ (y >>> 1)^ ((y & 1) ? 0x9908b0df : 0);
-      index = 0;
-    }
-
-    let y = state[index++];
-    y ^= y >>> 11;
-    y^= (y << 7) & 0x9d2c5680;
-    y^= (y << 15) & 0xefc60000;
-    y^= y >>> 18;
-    
-    return (y >>> 0) / 4294967296; // 转换为[0,1)区间
-  };
-})();
-
-importArticles({
-  type: 'script',
-  articles: ['MediaWiki:SaveToast.js']
-});
 
 // JS部分 - 添加到Common.js
 $(function() {
@@ -380,3 +311,84 @@ $(function() {
   }
   animate();
 });
+
+$(function() {
+    var username = mw.config.get('wgUserName');
+    if (username) {
+        $('.js-username').text(username);
+    }
+});
+
+(function() {
+  // ========== 注入淡出动画样式（仅一次）==========
+  if (!document.getElementById('rare-toast-kf')) {
+    var style = document.createElement('style');
+    style.id = 'rare-toast-kf';
+    style.textContent = '@keyframes rareToastFadeOut{0%{opacity:1}100%{opacity:0}}';
+    document.head.appendChild(style);
+  }
+
+  // ========== 创建单行消息 ==========
+  function createLine(text, offsetFromBottom, weight, color, delay) {
+    if (!text) return;
+    var div = document.createElement('div');
+    div.textContent = text;
+    var s = div.style;
+
+    s.setProperty('position', 'fixed', 'important');
+    s.setProperty('z-index', '2147483647', 'important');
+    s.setProperty('pointer-events', 'none', 'important');
+    s.setProperty('opacity', '1', 'important');
+    s.setProperty('visibility', 'visible', 'important');
+    s.setProperty('display', 'block', 'important');
+    s.setProperty('white-space', 'pre-line', 'important');
+    s.setProperty('left', '24px', 'important');
+    s.setProperty('bottom', offsetFromBottom, 'important');
+    s.setProperty('padding', '5px 18px', 'important');
+    s.setProperty('font-size', '14px', 'important');
+    s.setProperty('font-family', '"Ubuntu", sans-serif', 'important');
+    s.setProperty('font-weight', weight, 'important');
+    s.setProperty('color', color, 'important');
+    s.setProperty('text-shadow',
+      '-1px -1px 0 #000,0px -1px 0 #000,1px -1px 0 #000,' +
+      '-1px 0px 0 #000,1px 0px 0 #000,' +
+      '-1px 1px 0 #000,0px 1px 0 #000,1px 1px 0 #000',
+      'important');
+    s.setProperty('border-radius', '6px', 'important');
+    s.setProperty('background', 'transparent', 'important');
+
+    document.body.appendChild(div);
+
+    setTimeout(function() {
+      div.style.setProperty('animation', 'rareToastFadeOut 0.8s forwards', 'important');
+      div.addEventListener('animationend', function() { div.remove(); });
+    }, delay);
+  }
+
+  // ========== 从 Fandom 页面获取文本并显示 ==========
+  fetch('https://florrio.fandom.com/zh/wiki/TextShow?action=raw')
+    .then(function(response) {
+      if (!response.ok) throw new Error('网络响应失败，状态码：' + response.status);
+      return response.text();
+    })
+    .then(function(rawText) {
+      var lines = rawText.split('\n');
+      var lineHeight = 30;   // 每条消息占用的垂直空间（像素）
+      var baseBottom = 48;   // 第一条消息距视窗底部的距离
+      var baseDelay = 5000;  // 淡出前的显示时长（毫秒）
+
+      lines.forEach(function(line, index) {
+        // 匹配格式：##数字 #颜色 文本
+        var match = line.match(/^##\d+\s+(#[0-9A-Fa-f]{6})\s+(.+)/);
+        if (match) {
+          var color = match[1];   // ← 修复：取第一个捕获组（颜色）
+          var text  = match[2];   // ← 修复：取第二个捕获组（文本）
+          var bottom = (baseBottom + index * lineHeight) + 'px';
+          createLine(text, bottom, 'bold', color, baseDelay);
+        }
+      });
+    })
+    .catch(function(error) {
+      console.error('获取 TextShow 内容失败：', error);
+    });
+})();

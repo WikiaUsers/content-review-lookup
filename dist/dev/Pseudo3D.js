@@ -1,6 +1,6 @@
 /**
  * Name:		Pseudo3D
- * Version:		v1.4
+ * Version:		v1.5
  * Author:		t7ru [[User:Gabonnie]]
  * Description:	Allow pseudo3d's spritesheets to be panned.
  */
@@ -27,7 +27,7 @@
 		const startFrame = viewport._currentFrame || 0;
 		const frameAmount = viewport._frameAmount || 24;
 		const piItem = window.PseudoSkybox ? viewport.closest('.pi-item') : null;
-		const currentBgX = parseFloat(piItem && piItem.style.backgroundPositionX) || 50;
+		const currentBgX = parseFloat((piItem && piItem.style.backgroundPositionX) || 50);
 		
 		const move = ev => {
 			const x = touch ? ev.touches[0].pageX : ev.pageX;

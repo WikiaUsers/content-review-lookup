@@ -25,7 +25,7 @@
 		502,
 		2000,
 	].includes(namespaceNumber);
-	
+
 	if (config.wgAction !== 'view' || ((isDiffView || isRevView) && !isFile)){
 		if (config.wgUserLanguage === 'qqx'){
 			$('#firstHeading').html(document.title.replace(titleRegExp, '$1'));
@@ -34,29 +34,29 @@
 		}
 		return;
 	}
-	
+
 	if ((!talkPage && !unprefixedNamespace) || config.wgIsMainPage){
 		return;
 	}
-	
+
 	if (!isDiffView && !isRevView){
 		$('#firstHeading').html(ns + sep + title);
 	}
-	
+
 	mw.loader.using(['mediawiki.api', 'mediawiki.jqueryMsg'], () => {
-		const api = new mw.Api({'parameters': {
-			'action': 'query',
-			'format': 'json',
-			'formatversion': 2,
-			'errorformat': 'plaintext',
-			'uselang': config.wgUserLanguage,
+		const api = new mw.Api({parameters: {
+			action: 'query',
+			format: 'json',
+			formatversion: 2,
+			errorformat: 'plaintext',
+			uselang: config.wgUserLanguage,
 		}});
-		
+
 		if (isFile){
 			api.loadMessagesIfMissing([
 				'pagetitle',
 				'difference-title',
-			]).done(() => {
+			]).then(() => {
 				let titleText = pageName;
 				if (isDiffView){
 					titleText = mw.message('difference-title', pageName).text();
@@ -67,16 +67,16 @@
 				}
 			});
 		}
-		
+
 		if (isDiffView || isRevView){
 			return;
 		}
-		
+
 		api.get({
-			'prop': 'info',
-			'titles': pageName,
-			'inprop': 'displaytitle',
-		}).done(data => {
+			prop: 'info',
+			titles: pageName,
+			inprop: 'displaytitle',
+		}).then(data => {
 			if (data.query.pages[0].displaytitle !== pageName){
 				$('#firstHeading').html(data.query.pages[0].displaytitle);
 			}

@@ -6,3 +6,11 @@ window.UserTagsJS = {
         rollback: { u: 'Patroller' }
     }
 };
+
+UserTagsJS.modules.metafilter = {
+    'inactive': ['bureaucrat', 'sysop', 'rollback'], 
+    'threadmoderator': ['bureaucrat', 'sysop', 'rollback'], 
+    'contentmoderator': ['bureaucrat', 'sysop', 'rollback'] 
+};
+
+UserTagsJS.modules.inactive = 60;
