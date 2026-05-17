@@ -1,4 +1,3 @@
-
 // MediaWiki:MarvelCalendar.js
 // Недельный календарь Marvel — JS-версия с кэшированием по ISO-неделе,
 // автоматической инвалидацией при изменении исключений и выводом через {{РГ}}
@@ -8,12 +7,12 @@
  
     var CALENDAR_ID   = 'marvel-weekly-calendar';
     var CACHE_KEY     = 'marvelCalendarCache';
-    var CACHE_VERSION = 4;
- 
+    var CACHE_VERSION = 5;
+
     // ============================================
     // 0. Стили анимации загрузки (Серебряный Сёрфер)
     // ============================================
- 
+
     var SURFER_CSS = [
         '@keyframes surfer-hover {',
         '  0%   { transform: scaleX(-1) translateY(0px); }',
@@ -40,7 +39,7 @@
         '  opacity: 0.75;',
         '}'
     ].join( '\n' );
- 
+
     ( function injectSurferStyles() {
         if ( document.getElementById( 'mc-surfer-styles' ) ) return;
         var style = document.createElement( 'style' );
@@ -48,9 +47,9 @@
         style.textContent = SURFER_CSS;
         document.head.appendChild( style );
     }() );
- 
+
     var SURFER_URL = 'https://marvel.fandom.com/ru/wiki/Special:FilePath/Silver_Surfer_To_Top.png';
- 
+
     var LOADING_HTML = '<div class="mc-loading">' +
         '<img src="' + SURFER_URL + '" alt="Загрузка..." />' + '<span>Загрузка релизов Marvel...</span>' +
         '</div>';
@@ -69,18 +68,28 @@
     }
  
     function getWeekRange( week, year ) {
-        var monday = getDateOfISOWeek( week, year, 1 );
-        var sunday = getDateOfISOWeek( week, year, 7 );
-        var startDay = monday.getUTCDate();
-        var endDay   = sunday.getUTCDate();
+        var monday    = getDateOfISOWeek( week, year, 1 );
+        var wednesday = getDateOfISOWeek( week, year, 3 );
+        var sunday    = getDateOfISOWeek( week, year, 7 );
+
         var months = [ 'января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря' ];
+
+        var wedDay   = wednesday.getUTCDate();
+        var wedMonth = months[ wednesday.getUTCMonth() ];
+
+        var startDay   = monday.getUTCDate();
+        var endDay     = sunday.getUTCDate();
         var startMonth = months[ monday.getUTCMonth() ];
         var endMonth   = months[ sunday.getUTCMonth() ];
+
+        var range;
         if ( monday.getUTCMonth() === sunday.getUTCMonth() ) {
-            return week + ' неделя, ' + startDay + ' — ' + endDay + ' ' + startMonth;
+            range = startDay + ' — ' + endDay + ' ' + startMonth;
         } else {
-            return week + ' неделя, ' + startDay + ' ' + startMonth + ' — ' + endDay + ' ' + endMonth;
+            range = startDay + ' ' + startMonth + ' — ' + endDay + ' ' + endMonth;
         }
+
+       return '<div class="comics-week_title"><h3 style="text-align:center;">' + week + ' неделя (' + range + '), от ' + wedDay + ' ' + wedMonth + '</h3></div>';
     }
  
     function getDateOfISOWeek( week, year, dayOfWeek ) {
@@ -247,50 +256,61 @@
         return found;
     }
  
+    // Слова-маркеры сборников — используются и при фильтрации, и в no_filter
+    var FILTER_WORDS = /\b(Omnibus|TPB|Edition|Collection)\b/i;
+
     function applyExceptions( titles, exceptions ) {
+        // Восстанавливаем выпуски с no_filter = yes, которые были отфильтрованы. (fetchReleases уже отфильтровал, но здесь обрабатываем оставшиеся)
         return titles.map( function ( title ) {
             var data = parseTitle( title );
             var exc  = findException( data.series, exceptions );
             if ( exc ) {
                 data.isException = true;
+                // no_filter: выпуск не фильтруется как омнибус
+                if ( exc.no_filter === 'yes' ) data.noFilter = true;
                 if ( exc.issue2 ) {
                     data.issueStr = exc.issue2;
                     if ( exc.issue2 === 'One-Shot' ) data.isOneShot = true;
                 }
-                if ( exc.vol2 )     data.vol     = parseInt( exc.vol2 ) || data.vol;
-                if ( exc.picture2 ) data.picture = exc.picture2;
-                if ( exc.name2 )    data.series  = exc.name2;
+                if ( exc.vol2 )       data.vol     = parseInt( exc.vol2 ) || data.vol;
+                if ( exc.picture2 )   data.picture = exc.picture2;
+                if ( exc.name2 )      data.series  = exc.name2;
+                if ( exc.series_link === 'yes' ) data.seriesLink = true;
             }
             return data;
+        } ).filter( function ( data ) {
+            // Фильтруем омнибусы/сборники, если нет явного no_filter
+            if ( data.noFilter ) return true;
+            return !FILTER_WORDS.test( data.fullTitle );
         } );
     }
- 
+
     // ============================================
     // 4б. Автоопределение ван-шотов
     // ============================================
- 
+
     function detectOneShotsFromAPI( releasesData ) {
     	// Собираем кандидатов: Vol 1, выпуск 1, не CGD/FCBD, не помечен исключением
         var candidates = releasesData.filter( function ( d ) {
             return !d.isCGDFCBD && !d.isOneShot && d.vol === 1 && d.issueStr === '1';
         } );
         if ( candidates.length === 0 ) return Promise.resolve( releasesData );
-		// Извлекаем название тома (убираем последнее число — номер выпуска), например: "Amazing Spider-Man Vol 1 1" → "Amazing Spider-Man Vol 1"
+        // Извлекаем название тома (убираем последнее число — номер выпуска), например: "Amazing Spider-Man Vol 1 1" → "Amazing Spider-Man Vol 1"
         var volumeTitles = candidates.map( function ( d ) {
             return d.fullTitle.replace( /\s+\d+$/, '' );
         } );
-		// Батч-запрос (пакетный запрос): до 50 томов за раз
+        // Батч-запрос (пакетный запрос): до 50 томов за раз
         var batches = [];
         for ( var i = 0; i < volumeTitles.length; i += 50 ) {
             batches.push( volumeTitles.slice( i, i + 50 ) );
         }
- 
+
         var requests = batches.map( function ( batch ) {
             var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( batch.join( '|' ) ) + '&prop=categories&clcategories=Category:One%20Shots' + '&format=json&origin=*';
             return fetch( url ).then( function ( res ) {
                 return res.json();
             } ).then( function ( json ) {
-            	// Собираем множество томов, которые входят в категорию One Shots
+                // Собираем множество томов, которые входят в категорию One Shots
                 var oneShotVolumes = {};
                 var pages = json.query && json.query.pages ? json.query.pages : {};
                 Object.keys( pages ).forEach( function ( id ) {
@@ -302,9 +322,9 @@
                 return oneShotVolumes;
             } );
         } );
- 
+
         return Promise.all( requests ).then( function ( results ) {
-        	// Объединяем результаты всех батчей в одно множество
+            // Объединяем результаты всех батчей в одно множество
             var allOneShotVolumes = {};
             results.forEach( function ( r ) {
                 Object.keys( r ).forEach( function ( title ) {
@@ -317,7 +337,7 @@
                     var volumeTitle = d.fullTitle.replace( /\s+\d+$/, '' );
                     if ( allOneShotVolumes[ volumeTitle ] ) {
                         d.isOneShot = true;
-                        d.issueStr  = d.series; // для buildRGCall
+                        d.issueStr  = d.series;
                     }
                 }
             } );
@@ -325,6 +345,74 @@
         } ).catch( function ( err ) {
             console.warn( 'MarvelCalendar: Не удалось проверить ван-шоты', err );
             return releasesData; // при ошибке возвращаем данные как есть
+        } );
+    }
+
+    // ============================================
+    // 4в. Автоопределение Star Wars (ссылка на серию)
+    // ============================================
+
+    function detectStarWarsFromAPI( releasesData ) {
+        // Кандидаты: обычные выпуски, не помеченные вручную через EH
+        var candidates = releasesData.filter( function ( d ) {
+            return !d.isCGDFCBD && !d.isOneShot && !d.seriesLink;
+        } );
+        if ( candidates.length === 0 ) return Promise.resolve( releasesData );
+
+        // Извлекаем названия томов
+        var volumeTitles = candidates.map( function ( d ) {
+            return d.fullTitle.replace( /\s+\d+$/, '' );
+        } );
+
+        // Дедупликация
+        var unique = [];
+        volumeTitles.forEach( function ( t ) {
+            if ( unique.indexOf( t ) === -1 ) unique.push( t );
+        } );
+
+        var batches = [];
+        for ( var i = 0; i < unique.length; i += 50 ) {
+            batches.push( unique.slice( i, i + 50 ) );
+        }
+
+        var requests = batches.map( function ( batch ) {
+            var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( batch.join( '|' ) ) + '&prop=categories&clcategories=Category:Star%20Wars%20Comic%20Books' + '&format=json&origin=*';
+            return fetch( url ).then( function ( res ) {
+                return res.json();
+            } ).then( function ( json ) {
+                var swVolumes = {};
+                var pages = json.query && json.query.pages ? json.query.pages : {};
+                Object.keys( pages ).forEach( function ( id ) {
+                    var page = pages[ id ];
+                    if ( page.categories && page.categories.length > 0 ) {
+                        swVolumes[ page.title ] = true;
+                    }
+                } );
+                return swVolumes;
+            } );
+        } );
+
+        return Promise.all( requests ).then( function ( results ) {
+            var allSWVolumes = {};
+            results.forEach( function ( r ) {
+                Object.keys( r ).forEach( function ( title ) {
+                    allSWVolumes[ title ] = true;
+                } );
+            } );
+            releasesData.forEach( function ( d ) {
+                if ( !d.isCGDFCBD && !d.isOneShot && !d.seriesLink ) {
+                    var volumeTitle = d.fullTitle.replace( /\s+\d+$/, '' );
+                    if ( allSWVolumes[ volumeTitle ] ) {
+                        d.seriesLink = true;
+                        // Обрезаем Vol X из series для ссылки на серию
+                        d.series = d.series.replace( /\s*Vol\s+\d+\s*$/i, '' ).trim();
+                    }
+                }
+            } );
+            return releasesData;
+        } ).catch( function ( err ) {
+            console.warn( 'MarvelCalendar: Не удалось проверить Star Wars', err );
+            return releasesData;
         } );
     }
  
@@ -338,6 +426,10 @@
         }
         if ( data.isOneShot || data.issueStr === 'One-Shot' ) {
             return '{{РГ|' + data.picture + '|' + data.series + '|' + data.series + '}}';
+        }
+        // Ссылка на серию вместо выпуска (series_link или Star Wars)
+        if ( data.seriesLink ) {
+            return '{{РГ|' + data.picture + '|' + data.series + '|#' + data.issueStr + '}}';
         }
         if ( data.isException ) {
             return '{{РГ|' + data.picture + '|' + data.series + '|#' + data.issueStr + '}}';
@@ -353,9 +445,10 @@
             if ( !res.ok ) throw new Error( 'HTTP ' + res.status );
             return res.json();
         } ).then( function ( json ) {
-            return ( json.query && json.query.categorymembers )
+            var all = ( json.query && json.query.categorymembers )
                 ? json.query.categorymembers.map( function ( m ) { return m.title; } )
                 : [];
+            return all;
         } ).catch( function ( err ) {
             console.error( 'MarvelCalendar: Ошибка запроса к API Marvel', err );
             return [];
@@ -401,8 +494,8 @@
         var week = current.week;
         var year = current.year;
  
-        header.innerHTML = 'Комиксы недели ' + getWeekRange( week, year ) + '<br><small style="font-size:0.85em;opacity:0.7;">(автообновление при изменении исключений)</small>';
- 
+        header.innerHTML = getWeekRange( week, year );
+
         // Показываем Серебряного Сёрфера пока идёт загрузка
         container.innerHTML = LOADING_HTML;
  
@@ -419,6 +512,8 @@
                 var releasesData = applyExceptions( titles, exceptionsInfo.exceptions );
                 // Автоопределение ван-шотов через API
                 return detectOneShotsFromAPI( releasesData );
+            } ).then( function ( releasesData ) {
+                return detectStarWarsFromAPI( releasesData );
             } ).then( function ( releasesData ) {
                 setCache( releasesData, exceptionsInfo.revid );
                 return renderWithRG( releasesData );

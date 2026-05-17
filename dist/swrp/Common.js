@@ -19,12 +19,12 @@ switch (mw.config.get('wgPageName')) {
       }
       if (is_secondlife === true) {
         /* Add class to body tag for CSS */
-        $('body.mediawiki').addClass('swrp-ua-slviewer');
+        $('body.mediawiki').addClass('swrp-is-secondlife');
         /* Change Second Life map links in Template:Destination to use Second Life protocol instead */
         $('.swrp-dg-teleport a.external').each(function(index) {
           let str_url = $(this).attr('href');
           let teleport_link = str_url.replace(/^https?:\/\/maps.secondlife.com\/secondlife\//i, 'secondlife://');
-          $(this).attr('href', teleport_link).html('Teleport');
+          $(this).removeAttr('target').attr('href', teleport_link).html('Teleport');
         });
       }
     });

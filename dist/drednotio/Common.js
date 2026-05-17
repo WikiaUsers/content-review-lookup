@@ -7,49 +7,52 @@ importArticles({
     ]
 });
 /* TEST CODE (If Break Delete IT)*/
-$(function() {
-    var userGroups = mw.config.get('wgUserGroups');
-    var editCount = mw.config.get('wgUserEditCount');
-    var badgeName = "Basic Badge";
-    var badgeDesc = "Standard community member";
-    var badgeIcon = "image_b752e7.png";
-    if (userGroups.includes('bureaucrat')) {
-        badgeName = "Bureaucrat";
-        badgeDesc = "High-level site administrator";
-    } else if (editCount >= 10000) {
-        badgeName = "10000+ Edits";
-        badgeDesc = "Legendary Contributor";
-    } else if (editCount >= 5000) {
-        badgeName = "5000+ Edits";
-        badgeDesc = "Elite Editor";
-    } else if (editCount >= 2000) {
-        badgeName = "2000+ Edits";
-        badgeDesc = "Master Editor";
-    } else if (editCount >= 1000) {
-        badgeName = "1000+ Edits";
-        badgeDesc = "Veteran Editor";
-    } else if (editCount >= 500) {
-        badgeName = "500+ Edits";
-        badgeDesc = "Experienced Editor";
-    } else if (editCount >= 200) {
-        badgeName = "200+ Edits";
-        badgeDesc = "Active Contributor";
-    } else if (editCount >= 100) {
-        badgeName = "100+ Edits";
-        badgeDesc = "Rising Star";
-    } else if (editCount >= 1) {
-        badgeName = "First Edit";
-        badgeDesc = "Welcome to the community!";
+
+/* -----------------Admin TAGS-----------------*/
+/* --------- 1 --------- */
+/* Custom user tags */
+/* -------- 1.1 -------- */
+/* Initializing the custom user tags */
+window.UserTagsJS = {
+    modules: {},
+    tags: {
+        former_staff: { u: 'Former Drednot Wiki Staff', order: 100 },
+        impactful: { u: 'Impactful Editor', order: 101 },
+        bureaucrat: { order: 1 },
+        founder: { u: 'Drednot Wiki Founder', order: 0 }
     }
-    var $badgeLink = $(mw.util.addPortletLink(
-        'p-tb',
-        '#',
-        badgeName,
-        't-badge',
-        'Your current rank'
-    ));
-    if ($badgeLink) {
-        $badgeLink.find('a').css('background-image', 'url(' + mw.util.getUrl('File:' + badgeIcon) + ')');
-        $badgeLink.attr('data-tooltip', badgeDesc);
+};
+
+
+/* -------- 1.2 -------- */
+/* Remove the Administrator user tag from Bureaucrats */
+UserTagsJS.modules.metafilter = {
+    sysop: ['bureaucrat'],
+};
+
+
+/* -------- 1.3 -------- */
+/* '123 bst': ['founder'], */
+/* Manually giving the custom user tags to users */
+UserTagsJS.modules.custom = {
+    'Ownslo': ['impactful'],
+};
+
+
+/* -------- 1.4 -------- */
+/* Inactive users who have not edited the wiki for more than 40 days */
+UserTagsJS.modules.inactive = {
+    days: 40,
+    zeroIsInactive: true,
+    namespaces: [0],
+    custom: {
+        'inactive-6m': { days: 180, tag: 'Inactive >6 Months' },
+        'inactive-1y': { days: 365, tag: '>1 Years' },
+        'inactive-5y': { days: 1825, tag: 'Abandoned account' }
     }
-});
+};
+
+/* -------- 1.5 -------- */
+/* New wiki editors & disable the autoconfirmed user tag */
+UserTagsJS.modules.autoconfirmed = false;
+UserTagsJS.modules.newuser = true;

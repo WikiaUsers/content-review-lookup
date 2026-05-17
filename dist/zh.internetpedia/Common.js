@@ -72,16 +72,55 @@ mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util', 'mediawiki.api']).then
         setTimeout(filterLang, 1000);
     });
 
-    // 5. 搜尋框條目數顯示
+    // 5. 搜尋框條目數顯示 - Fandom UCP 動態監聽版
     new mw.Api().get({
         action: 'query',
         meta: 'siteinfo',
-        siprop: 'statistics'
-    }).done(function (data) {
-        var articles = data.query.statistics.articles.toLocaleString();
-        var $search = $('#searchInput, .searchInput, input[type="search"]');
-        if ($search.length) {
-            $search.attr('placeholder', '搜尋 ' + articles + ' 個條目');
+        siprop: 'statistics',
+        format: 'json'
+    }).done(function(data) {
+        if (data.query && data.query.statistics) {
+            var articles = data.query.statistics.articles;
+            var formattedCount = articles.toLocaleString('zh-Hant');
+            var placeholderText = '搜尋 ' + formattedCount + ' 個條目';
+            
+            // Fandom 搜尋框選擇器列表
+            var searchSelectors = '.unified-search__input, .wds-global-navigation__search-input, .mobile-search__input, #searchInput, input[data-test="search-input"]';
+            
+            // 函數：設定所有搜尋框的 placeholder
+            function updateSearchPlaceholder() {
+                var $searchInputs = $(searchSelectors);
+                $searchInputs.each(function() {
+                    // 避免重複設定
+                    if ($(this).attr('placeholder') !== placeholderText) {
+                        $(this).attr('placeholder', placeholderText);
+                    }
+                });
+                return $searchInputs.length > 0;
+            }
+            
+            // 立即執行一次
+            updateSearchPlaceholder();
+            
+            // 用 MutationObserver 監聽 DOM 變化，Fandom 搜尋框是動態載入的
+            var observer = new MutationObserver(function(mutations) {
+                // 只要有新增節點，就檢查一次搜尋框
+                if (updateSearchPlaceholder()) {
+                    // 成功設定後就停止監聽，節省效能
+                    observer.disconnect();
+                }
+            });
+            
+            // 開始監聽整個 body
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // 保險機制：10秒後還沒成功就停掉監聽
+            setTimeout(function() {
+                observer.disconnect();
+            }, 10000);
         }
     });
 
@@ -130,12 +169,12 @@ mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util', 'mediawiki.api']).then
     }
 
     // 啟動監聽器，應對 Fandom 的非同步(AJAX)載入內容
-    var observer = new MutationObserver(function(mutations) {
+    var redlinkObserver = new MutationObserver(function(mutations) {
         applyRedColor();
     });
 
     // 開始監控整張網頁的變化
-    observer.observe(document.body, {
+    redlinkObserver.observe(document.body, {
         childList: true,
         subtree: true
     });

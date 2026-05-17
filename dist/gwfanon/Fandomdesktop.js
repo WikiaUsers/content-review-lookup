@@ -80,3 +80,7 @@ $(function eraIconsOasis() {
         });
     }
 });
+
+// Help-us-grow fix
+document.querySelector('.description').textContent =
+  'Pomóż nam rozwijać naszą społeczność!';

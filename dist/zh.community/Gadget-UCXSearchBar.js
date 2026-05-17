@@ -1,1 +1,0 @@
-mw.loader.load( 'https://dev.fandom.com/wiki/MediaWiki:UCXSearchBar.js?action=raw&ctype=text/javascript' );

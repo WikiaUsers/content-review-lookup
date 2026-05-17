@@ -66,3 +66,20 @@ UserTagsJS.modules.custom = {
 	'Username': ['roleName', 'coder'], // Add multiple tags
 	'AnotherUser': ['chatmod']
 };
+
+/* PlushBox Click Sound */
+mw.loader.using(['jquery'], function () {
+	$(function () {
+		var soundUrl = 'https://dollys-factory-official.fandom.com/wiki/Special:Redirect/file/Button_Click.ogg';
+
+		$(document).on('mousedown', '.plushbox-click', function () {
+			var sound = new Audio(soundUrl);
+			sound.volume = 1;
+			sound.currentTime = 0;
+
+			sound.play().catch(function (err) {
+				console.log('PlushBox sound failed:', err);
+			});
+		});
+	});
+});

@@ -29,7 +29,7 @@
  */
 mw.loader.using([ 'mediawiki.util', 'mediawiki.user' ]).then(function() {
     function useCssSelectorToCheckForWall(resolve, reject) {
-        var wall = '.wds-global-navigation__user-menu a[data-tracking-label="account.message-wall"]';
+        var wall = '.global-action__user__panel-container a[data-label="account.message-wall"]';
 
         if ($(wall).length === 0) {
             reject();

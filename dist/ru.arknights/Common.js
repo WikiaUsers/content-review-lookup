@@ -81,6 +81,21 @@ $(function() {
     });
 });
 
+/* Переключение +/− для кастомных кнопок шаблона Names */
+$(function() {
+    $('.names-toggle').on('click', function() {
+        var $this = $(this);
+        var targetId = $this.attr('id').replace('toggle-', '');
+        var $target = $('#mw-customcollapsible-' + targetId);
+        
+        if ($target.hasClass('mw-collapsed')) {
+            $this.text('[−]');
+        } else {
+            $this.text('[+]');
+        }
+    });
+});
+
 /* TOOLTIPS 
 ----первое число представляет описание; пусто = нет описания, 2 = есть описание----
 ----второе число представляет количество эффектов

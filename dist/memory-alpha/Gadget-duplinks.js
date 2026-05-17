@@ -49,3 +49,5 @@ $(() => {
 		content.find('#body p a').each(findDuplicateLinksBody);
 	});
 });
+
+// {{JavaScript category}}

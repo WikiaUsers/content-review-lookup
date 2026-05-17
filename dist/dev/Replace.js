@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:AutomatedEdit.js?action=raw&ctype=text/javascript");

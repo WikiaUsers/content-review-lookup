@@ -172,3 +172,5 @@ $('.mw-watchlink').click(function(){
 function button(selector, title){
 	return $(selector).attr('title', title).text($(selector).text().trim());
 }
+
+// {{JavaScript category}}

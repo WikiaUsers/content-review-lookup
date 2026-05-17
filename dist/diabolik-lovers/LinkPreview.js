@@ -22,6 +22,12 @@
         document.body.appendChild(popup);
     }
 
+    function hidePopup() {
+        if (popup) {
+            popup.style.display = "none";
+        }
+    }
+
     function getPageTitleFromLink(link) {
         const href = link.getAttribute("href");
         if (!href || !href.startsWith("/wiki/")) return null;
@@ -56,14 +62,15 @@
         });
     }
 
-    function hidePopup() {
-        if (popup) popup.style.display = "none";
-    }
-
     function showPopup(link, templateData) {
         if (!popup) createPopup();
 
-        // No template fallback
+        const readMore = `
+            <div class="mwe-popups-footer">
+                <a href="${link.href}" class="mwe-popups-readmore">Read more</a>
+            </div>
+        `;
+
         if (!templateData || !templateData.customText) {
             popup.innerHTML = `
                 <div class="mwe-popups-container">
@@ -71,6 +78,7 @@
                         <div class="mwe-popups-title"><strong>No preview available.</strong></div>
                     </div>
                 </div>
+                ${readMore}
             `;
         } else {
             const title = templateData.customTitle;
@@ -90,9 +98,7 @@
                         <div class="mwe-popups-extract"><small>${extract}</small></div>
                     </div>
                 </div>
-                <div class="mwe-popups-footer">
-                    <a href="${link.href}" class="mwe-popups-readmore">Read more</a>
-                </div>
+                ${readMore}
             `;
         }
 
@@ -123,7 +129,7 @@
         links.forEach(link => {
             link.addEventListener("click", event => {
                 event.preventDefault();      // stop navigation
-                event.stopPropagation();     // prevent closing immediately
+                event.stopPropagation();     // prevent immediate closing
 
                 const title = getPageTitleFromLink(link);
                 if (title) fetchPreview(title, link);

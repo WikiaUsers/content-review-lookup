@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://florrio.fandom.com/zh/wiki/MediaWiki:Gadget-BetterText.js?action=raw&ctype=text/javascript");

@@ -126,3 +126,5 @@ function button(id, txt, secondary = false){
 function submitForm(e){
 	e.preventDefault();
 }
+
+// {{JavaScript category}}

@@ -4,3 +4,5 @@ importArticles({
 		'u:dev:MediaWiki:OasisRevived.js',
 	]
 });
+
+// {{JavaScript category}}

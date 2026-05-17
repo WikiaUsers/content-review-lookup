@@ -14,6 +14,7 @@
 	skinConfig.mainMenu = async parent => {
 		await api.loadMessagesIfMissing('sidebar');
 		const mainMenu = {};
+		const mainMenuPortlets = [];
 		let activePortlet;
 
 		mw.message('sidebar').text().split(/\s*\n/).forEach(item => {
@@ -27,15 +28,22 @@
 		});
 
 		for (const key of Object.keys(mainMenu)){
-			$(parent).append(await buildPortlet(key));
+			const portlet = await buildPortlet(key);
+			mainMenuPortlets.push(portlet);
+			$(parent).append(portlet);
 			for (const link of mainMenu[key]){
 				await addPortletLink(key, link[0], link[1], 'n');
 			}
 		}
+
+		return mainMenuPortlets;
 	};
 
 	skinConfig.toolbox = async (parent, label) => {
-		$(parent).append(await buildPortlet('tb', label));
+		const toolboxPortlets = [];
+		const mainPortlet = await buildPortlet('tb', label);
+		toolboxPortlets.push(mainPortlet);
+		$(parent).append(mainPortlet);
 		if (currentPage.getNamespaceId() > -1){
 			await addPortletLink(
 				'tb',
@@ -51,7 +59,7 @@
 				'recentchangeslinked',
 			);
 		}
-		await addPortletLink(
+		const printLink = await addPortletLink(
 			'tb',
 			'#',
 			'printableversion',
@@ -59,45 +67,50 @@
 			'print',
 		);
 		if (currentPage.getNamespaceId() > -1){
+			if (config.wgRevisionId && config.wgUserId){
+				await addPortletLink(
+					'tb',
+					{oldid: config.wgRevisionId},
+					'permalink',
+					't',
+				);
+			}
 			await addPortletLink(
 				'tb',
-				`Special:PermanentLink/${config.wgRevisionId}`,
-				'permalink',
-				't',
-			);
-			await addPortletLink(
-				'tb',
-				`Special:PageInfo/${currentPage.toText()}`,
+				{action: 'info'},
 				'pageinfo-toolboxlink',
 				't',
 				'info',
 			);
 		}
-		$('#t-print > a').on('click', event => {
+		$(printLink).find('a').on('click', event => {
 			event.preventDefault();
 			print();
 		});
 		if ($('.content-review__widget').length){
-			$(parent).append(await buildPortlet('js-review', 'Review status'));
-			$('#p-js-review > div').html($('.content-review__widget__title').nextAll());
+			const reviewPortlet = await buildPortlet('js-review', 'Review status');
+			toolboxPortlets.push(reviewPortlet);
+			$(parent).append(reviewPortlet);
+			$(reviewPortlet).find('div').html($('.content-review__widget__title').nextAll());
 		}
 		$('.page__right-rail').remove();
+		return toolboxPortlets;
 	};
 
 	skinConfig.langs = async parent => {
-		const langlinks = (await api.post({
+		await api.loadMessagesIfMissing('interlanguage-link-title');
+		const langlinks = (await api.get({
 			titles: currentPage.toText(),
 			prop: 'langlinks',
 			llprop: ['url', 'langname', 'autonym'],
 			lllimit: 'max',
 		})).query.pages[0].langlinks;
+		const langs = await buildPortlet('lang', 'otherlanguages');
+		$(parent).append(langs);
 
 		if (!langlinks){
-			return;
+			return langs;
 		}
-
-		await api.loadMessagesIfMissing('interlanguage-link-title');
-		$(parent).append(await buildPortlet('lang', 'otherlanguages'));
 
 		for (const langlink of langlinks){
 			mw.util.addPortletLink(
@@ -112,15 +125,18 @@
 				),
 			);
 		}
+
+		return langs;
 	};
 
 	skinConfig.associatedPages = async parent => {
 		const subjectPage = currentPage.getSubjectPage();
 		const talkPage = currentPage.getTalkPage();
-		$(parent).append(await buildPortlet('associated-pages'));
+		const associatedPages = await buildPortlet('associated-pages');
+		$(parent).append(associatedPages);
 
 		if (!talkPage){
-			return;
+			return associatedPages;
 		}
 
 		let subjectNamespace = subjectPage.getNamespaceId();
@@ -143,10 +159,10 @@
 			talkNamespace = config.wgFormattedNamespaces[talkNamespace];
 		}
 
-		const subjectTabKey = `nstab-${formatMessageKey(subjectNamespace)}`;
-		const talkTabKey = `nstab-${formatMessageKey(talkNamespace)}`;
-		const tooltip = `tooltip-ca-nstab-${formatMessageKey(subjectNamespace)}`;
-		const accesskey = `accesskey-ca-nstab-${formatMessageKey(subjectNamespace)}`;
+		const subjectMsg = `nstab-${formatMessageKey(subjectNamespace)}`;
+		const talkMsg = `nstab-${formatMessageKey(talkNamespace)}`;
+		const tooltipMsg = `tooltip-ca-nstab-${formatMessageKey(subjectNamespace)}`;
+		const accesskeyMsg = `accesskey-ca-nstab-${formatMessageKey(subjectNamespace)}`;
 
 		await api.loadMessagesIfMissing([
 			'mainpage',
@@ -156,124 +172,376 @@
 			'tooltip-ca-talk',
 			'accesskey-ca-nstab',
 			'accesskey-ca-talk',
-			subjectTabKey,
-			talkTabKey,
-			tooltip,
-			accesskey,
+			subjectMsg,
+			talkMsg,
+			tooltipMsg,
+			accesskeyMsg,
 		]);
 
-		let subjectTab = subjectNamespace;
-		let talkTab = mw.message('talk').text();
-		let tooltipSubject = mw.message('tooltip-ca-nstab').text();
-		let accesskeySubject = mw.message('accesskey-ca-nstab').text();
-		const tooltipTalk = mw.message('tooltip-ca-talk').text();
-		const accesskeyTalk = mw.message('accesskey-ca-talk').text();
+		let subjectLabel = subjectNamespace;
+		let talkLabel = mw.message('talk').text();
+		let tooltip = mw.message('tooltip-ca-nstab').text();
+		let accesskey = mw.message('accesskey-ca-nstab').text();
 		const mainPage = new mw.Title(mw.message('mainpage').text());
-		const mainPageTab = mw.message('nstab-mainpage');
+		const mainPageLabel = mw.message('nstab-mainpage');
 
-		if (isValid(mainPageTab) && subjectPage.toText() === mainPage.toText()){
-			subjectTab = mainPageTab.text();
-		} else if (isValid(mw.message(subjectTabKey))){
-			subjectTab = mw.message(subjectTabKey).text();
+		if (isValid(mainPageLabel) && subjectPage.toText() === mainPage.toText()){
+			subjectLabel = mainPageLabel.text();
+		} else if (isValid(mw.message(subjectMsg))){
+			subjectLabel = mw.message(subjectMsg).text();
 		}
 
-		if (isValid(mw.message(talkTabKey))){
-			talkTab = mw.message(talkTabKey).text();
+		if (isValid(mw.message(talkMsg))){
+			talkLabel = mw.message(talkMsg).text();
 		}
 
-		if (isValid(mw.message(tooltip))){
-			tooltipSubject = mw.message(tooltip).text();
+		if (isValid(mw.message(tooltipMsg))){
+			tooltip = mw.message(tooltipMsg).text();
 		}
 
-		if (isValid(mw.message(accesskey))){
-			accesskeySubject = mw.message(accesskey).text();
+		if (isValid(mw.message(accesskeyMsg))){
+			accesskey = mw.message(accesskeyMsg).text();
 		}
 
-		mw.util.addPortletLink(
+		const subjectLink = mw.util.addPortletLink(
 			'p-associated-pages',
 			mw.util.getUrl(subjectPage.toText()),
-			subjectTab,
-			`ca-${subjectTabKey}`,
-			tooltipSubject,
-			accesskeySubject,
+			subjectLabel,
+			`ca-${subjectMsg}`,
+			tooltip,
+			accesskey,
 		);
-
-		mw.util.addPortletLink(
+		const talkLink = mw.util.addPortletLink(
 			'p-associated-pages',
 			mw.util.getUrl(talkPage.toText()),
-			talkTab,
+			talkLabel,
 			'ca-talk',
-			tooltipTalk,
-			accesskeyTalk,
+			mw.message('tooltip-ca-talk').text(),
+			mw.message('accesskey-ca-talk').text(),
 		);
+
+		if (currentPage.toText() === talkPage.toText()){
+			$(talkLink).addClass('selected');
+		} else {
+			$(subjectLink).addClass('selected');
+		}
+
+		return associatedPages;
 	};
 
 	skinConfig.views = async parent => {
-		$(parent).append(await buildPortlet('views'));
+		const views = await buildPortlet('views');
+		$(parent).append(views);
 		if (currentPage.getNamespaceId() === -1){
-			return;
+			return views;
 		}
-		await addPortletLink(
+		const viewLink = await addPortletLink(
 			'views',
 			currentPage.toText(),
 			'skin-view-view',
 			'ca',
 			'view',
 		);
-		await addPortletLink(
+		let editMsg = 'skin-view-create';
+		if (!config.wgRelevantPageIsProbablyEditable){
+			editMsg = 'skin-action-viewsource';
+		} else if (config.wgRelevantArticleId){
+			editMsg = 'skin-view-edit';
+		}
+		const editLink = await addPortletLink(
 			'views',
-			`Special:EditPage/${currentPage.toText()}`,
-			'skin-view-edit',
+			{action: 'edit'},
+			editMsg,
 			'ca',
-			'edit',
+			config.wgRelevantPageIsProbablyEditable ? 'edit' : 'viewsource',
 		);
-		await addPortletLink(
-			'views',
-			`Special:PageHistory/${currentPage.toText()}`,
-			'skin-view-history',
-			'ca',
-			'history',
-		);
-		await addPortletLink(
-			'views',
-			'#',
-			'watch',
-			'ca',
-		);
-		$('#ca-watch > a').on('click', event => {
-			event.preventDefault();
-		});
+		if (config.wgRelevantArticleId){
+			const historyLink = await addPortletLink(
+				'views',
+				{action: 'history'},
+				'skin-view-history',
+				'ca',
+				'history',
+			);
+			if (config.wgAction === 'history'){
+				$(historyLink).addClass('selected');
+			}
+		}
+		if (config.wgUserId){
+			const watchAction = (await api.get({
+				titles: currentPage.toText(),
+				prop: 'info',
+				inprop: 'watched',
+			})).query.pages[0].watched ? 'unwatch' : 'watch';
+			const watchLink = await addPortletLink(
+				'views',
+				{action: watchAction},
+				watchAction,
+				'ca',
+			);
+			const require = await mw.loader.using('mediawiki.page.watch.ajax');
+			const watch = require('mediawiki.page.watch.ajax');
+			watch.watchstar($(watchLink).find('a'), currentPage.toText());
+			if (['watch', 'unwatch'].includes(config.wgAction)){
+				$(watchLink).addClass('selected');
+			}
+		}
+		if (config.wgAction === 'view' && config.wgPageName === config.wgRelevantPageName){
+			$(viewLink).addClass('selected');
+		} else if (['edit', 'submit'].includes(config.wgAction)){
+			$(editLink).addClass('selected');
+		}
+		return views;
 	};
 
 	skinConfig.actions = async parent => {
-		$(parent).append(await buildPortlet('cactions'));
+		const page = (await api.get({
+			titles: currentPage.toText(),
+			prop: ['info', 'deletedrevisions'],
+			inprop: 'protection',
+			intestactions: ['delete', 'undelete', 'move', 'protect'],
+			drvlimit: 1,
+			drvprop: '',
+		})).query.pages[0];
+		const actions = await buildPortlet('cactions');
+		$(parent).append(actions);
 		if (currentPage.getNamespaceId() === -1){
+			return actions;
+		}
+		if (page.actions.delete && config.wgRelevantArticleId){
+			const deleteLink = await addPortletLink(
+				'cactions',
+				{action: 'delete'},
+				'skin-action-delete',
+				'ca',
+				'delete',
+			);
+			if (config.wgAction === 'delete'){
+				$(deleteLink).addClass('selected');
+			}
+		}
+		if (page.actions.undelete && page.deletedrevisions && !config.wgRelevantArticleId){
+			const undeleteLink = await addPortletLink(
+				'cactions',
+				`Special:Undelete/${currentPage.toText()}`,
+				'skin-action-undelete',
+				'ca',
+				'undelete',
+			);
+			if (config.wgCanonicalSpecialPageName === 'Undelete'){
+				$(undeleteLink).addClass('selected');
+			}
+		}
+		if (page.actions.move && config.wgRelevantArticleId){
+			const moveLink = await addPortletLink(
+				'cactions',
+				`Special:MovePage/${currentPage.toText()}`,
+				'skin-action-move',
+				'ca',
+				'move',
+			);
+			if (config.wgCanonicalSpecialPageName === 'Movepage'){
+				$(moveLink).addClass('selected');
+			}
+		}
+		if (page.actions.protect){
+			const mode = page.protection.length ? 'unprotect' : 'protect';
+			const protectLink = await addPortletLink(
+				'cactions',
+				{action: mode},
+				`skin-action-${mode}`,
+				'ca',
+				mode,
+			);
+			if (['protect', 'unprotect'].includes(config.wgAction)){
+				$(protectLink).addClass('selected');
+			}
+		}
+		return actions;
+	};
+
+	skinConfig.personalTools = async parent => {
+		const personalTools = await buildPortlet('personal');
+		$(parent).append(personalTools);
+		if (config.wgUserId){
+			$('#pt-userpage').remove();
+			await api.loadMessagesIfMissing([
+				'tooltip-pt-userpage',
+				'accesskey-pt-userpage',
+			]);
+			mw.util.addPortletLink(
+				'p-personal',
+				mw.util.getUrl(`User:${config.wgUserName}`),
+				config.wgUserName,
+				'pt-userpage',
+				mw.message('tooltip-pt-userpage').text(),
+				mw.message('accesskey-pt-userpage').text(),
+			);
+			const notifications = await addPortletLink(
+				'personal',
+				'#',
+				'fd-notifications-notifications',
+				'pt',
+				'notifications',
+			);
+			$(notifications).html($('#global-top-navigation .notifications'));
+			$('.notifications__toggle').attr(
+				'title',
+				mw.message('fd-notifications-notifications').text(),
+			);
+			await addPortletLink(
+				'personal',
+				`User talk:${config.wgUserName}`,
+				'mytalk',
+				'pt',
+			);
+			await addPortletLink(
+				'personal',
+				'Special:Preferences',
+				'mypreferences',
+				'pt',
+				'preferences',
+			);
+			await addPortletLink(
+				'personal',
+				'Special:Watchlist',
+				'mywatchlist',
+				'pt',
+				'watchlist',
+			);
+			await addPortletLink(
+				'personal',
+				`Special:Contributions/${config.wgUserName}`,
+				'mycontris',
+				'pt',
+			);
+			await addPortletLink(
+				'personal',
+				'Special:UserLogout',
+				'pt-userlogout',
+				'pt',
+				'logout',
+			);
+		} else {
+			await addPortletLink(
+				'personal',
+				'Special:CreateAccount',
+				'pt-createaccount',
+				'pt',
+				'createaccount',
+			);
+			await addPortletLink(
+				'personal',
+				'Special:UserLogin',
+				'pt-login',
+				'pt',
+				'login',
+			);
+		}
+		return personalTools;
+	};
+
+	skinConfig.toc = async parent => {
+		const notoc = (await api.get({
+			titles: currentPage.toText(),
+			prop: 'pageprops',
+			ppprop: 'notoc',
+		})).query.pages[0].pageprops;
+		const headings = $('#mw-content-text').find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], .mw-headline[id]');
+
+		if (notoc || !headings.length){
 			return;
 		}
-		await addPortletLink(
-			'cactions',
-			`Special:DeletePage/${currentPage.toText()}`,
-			'skin-action-delete',
-			'ca',
-			'delete',
-		);
-		await addPortletLink(
-			'cactions',
-			`Special:MovePage/${currentPage.toText()}`,
-			'skin-action-move',
-			'ca',
-			'move',
-		);
-		await addPortletLink(
-			'cactions',
-			`Special:ProtectPage/${currentPage.toText()}`,
-			'skin-action-protect',
-			'ca',
-			'protect',
-		);
+
+		const processedHeadings = [{
+			target: '#',
+			label: '(Top)',
+			trail: [0],
+		}];
+		const toc = await buildPortlet('toc');
+
+		headings.each((index, heading) => {
+			const headingEntry = {};
+			const linkSelector = /<a(?: rel=".+?")?(?: class=".+?")?(?: href=".+?")?(?: class=".+?")?(?: title=".+?")?>(.+?)<\/a>/g;
+			const objPrev = processedHeadings[processedHeadings.length - 1];
+
+			headingEntry.target = '#' + $(heading).attr('id');
+			headingEntry.label = $(heading).html().replace(linkSelector, '$1');
+			headingEntry.level = Number($(heading).parent().prop('tagName').substring(1)) || Number($(heading).prop('tagName').substring(1));
+
+			if (processedHeadings.length === 1){
+				objPrev.level = headingEntry.level;
+			}
+
+			const levelPrev = objPrev.level;
+			const trailPrev = objPrev.trail;
+
+			if (levelPrev < headingEntry.level){
+				headingEntry.trail = [...trailPrev, 1];
+			} else if (levelPrev === headingEntry.level){
+				headingEntry.trail = window.structuredClone(trailPrev);
+				headingEntry.trail[trailPrev.length - 1]++;
+			} else if (trailPrev.length === 1){
+				headingEntry.trail = [trailPrev[0] + 1];
+			} else {
+				headingEntry.trail = window.structuredClone(trailPrev);
+				headingEntry.trail.splice(headingEntry.level - 1);
+				headingEntry.trail[headingEntry.trail.length - 1]++;
+			}
+
+			processedHeadings.push(headingEntry);
+		});
+
+		const sublists = [];
+		const levels = [];
+
+		processedHeadings.forEach((obj, i) => {
+			const listItem = $('<li>');
+			const link = $('<a>');
+			const tocNumber = $('<span class="toc-numb">').html(obj.trail.join('.'));
+			const tocText = $('<span>').html(obj.label);
+			link.attr('href', obj.target);
+			link.append(tocNumber).append(tocText);
+			listItem.append(link);
+
+			if (processedHeadings[i + 1] && processedHeadings[i + 1].trail.length > obj.trail.length){
+				const button = $('<button>', {
+					'class': 'toc-sublist-toggle',
+					'aria-expanded': 'false',
+				});
+
+				sublists[i] = $('<ul>').toggle();
+				listItem.append(button).append(sublists[i]);
+				button.on('click', () => {
+					const state = button.attr('aria-expanded');
+					sublists[i].toggle();
+					button.attr('aria-expanded', state === 'false' ? 'true' : 'false');
+				});
+			}
+
+			if (obj.trail.length === 1){
+				$(toc).find('ul').append(listItem);
+			} else {
+				sublists[levels[obj.trail.length - 1]].append(listItem);
+			}
+
+			levels[obj.trail.length] = i;
+		});
+
+		$(parent).append(toc);
+		return toc;
+	};
+
+	skinConfig.appearance = async parent => {
+		// TODO
+	};
+
+	skinConfig.search = async parent => {
+		// TODO
 	};
 
 	async function buildPortlet(key, label = key){
+		$(`#p-${key}`).remove();
 		await api.loadMessagesIfMissing(label);
 		label = isValid(mw.message(label)) ? mw.message(label).text() : label;
 		return mw.util.addPortlet(`p-${key}`, label);
@@ -286,25 +554,34 @@
 		prefix,
 		internalName = linkText,
 	){
+		$(`#${prefix}-${internalName}`).remove();
 		await api.loadMessagesIfMissing([
-			target,
+			String(target),
 			linkText,
 			`tooltip-${prefix}-${internalName}`,
 			`accesskey-${prefix}-${internalName}`,
 		]);
 
-		let href = mw.message(target);
+		let href = mw.message(String(target));
 		let label = mw.message(linkText);
 		let tooltip = mw.message(`tooltip-${prefix}-${internalName}`);
 		let accesskey = mw.message(`accesskey-${prefix}-${internalName}`);
 
 		href = isValid(href) ? href.text() : target;
-		href = target === '#' ? target : mw.util.getUrl(href);
+
+		if (target === '#'){
+			href = target;
+		} else if (typeof target === 'object'){
+			href = mw.util.getUrl(currentPage.toText(), target);
+		} else {
+			href = mw.util.getUrl(href);
+		}
+
 		label = isValid(label) ? label.text() : linkText;
 		tooltip = isValid(tooltip) ? tooltip.text() : undefined;
 		accesskey = isValid(accesskey) ? accesskey.text() : undefined;
 
-		mw.util.addPortletLink(
+		return mw.util.addPortletLink(
 			`p-${portletName}`,
 			href,
 			label,
@@ -324,3 +601,5 @@
 
 	mw.hook('gadget.skin-setup').fire(skinConfig);
 })();
+
+// {{JavaScript category}}

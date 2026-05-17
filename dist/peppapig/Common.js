@@ -91,10 +91,6 @@ window.EmoticonsWindowConfig = {
     chatOptionsIntegration: true
 };
 
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
 window.ArticleRating = {
     title: 'How Is This Article?',
     values: ['Terrible', 'Bad', 'Average', 'Good', 'Wonderful'],

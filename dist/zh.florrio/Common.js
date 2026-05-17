@@ -151,7 +151,7 @@ $.getJSON(mw.util.wikiScript("index"), {
 (function () {
 	var subWikis = {
 		旧: {name: '旧版florr.io中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/a/a8/%E9%85%8D%E7%BD%AE.webp/revision/latest?cb=20240728012911&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&format=original&path-prefix=zh'},
-		二: {name: 'florr.io中文维基:<span style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; color: transparent">二次创作</span>'},
+		二: {name: 'florr.io中文维基：<span style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; color: transparent">二次创作</span>'},
 		W: {name: 'Flowr.fun 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/7/7d/WSite-logo.png/revision/latest?cb=20240830094753&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/2/2f/WSite-background-light.png/revision/latest?cb=20240830101803&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/f/f1/WSite-background-dark.png/revision/latest?cb=20240830101850&format=original&path-prefix=zh'}
 	};
 
@@ -167,6 +167,8 @@ $.getJSON(mw.util.wikiScript("index"), {
 		if (w.name) $(name).html(w.name);
 		if (w.logo) $(logo).children().attr('src', w.logo);
 		if (w.light || w.dark) $(background).css('background-image', 'url(' + (mw.config.get('isDarkTheme') ? w.dark || w.light: w.light || w.dark) + ')');
+	} else {
+		$(name).html("florr.io中文维基");
 	}
 })();
 
@@ -374,8 +376,8 @@ $(function() {
     .then(function(rawText) {
       var lines = rawText.split('\n');
       var lineHeight = 30;   // 每条消息占用的垂直空间（像素）
-      var baseBottom = 48;   // 第一条消息距视窗底部的距离
-      var baseDelay = 5000;  // 淡出前的显示时长（毫秒）
+      var baseBottom = 24;   // 第一条消息距视窗底部的距离
+      var baseDelay = 10000;  // 淡出前的显示时长（毫秒）
 
       lines.forEach(function(line, index) {
         // 匹配格式：##数字 #颜色 文本
@@ -392,3 +394,225 @@ $(function() {
       console.error('获取 TextShow 内容失败：', error);
     });
 })();
+
+$(function () {
+    if (mw.config.get('wgPageName') !== 'Special:申请更改') return;
+
+    var RECORD_PAGE = 'Project:申请更改记录';
+    var SUMMARY = '通过申请更改页面提交的新申请';
+    var api = new mw.Api();
+
+    document.title = '申请更改 - ' + mw.config.get('wgSiteName');
+    $('#firstHeading').text('申请更改');
+    $('.noarticletext, .errorbox, .mw-specialpage-summary').hide();
+
+    $('#mw-content-text').html(
+        '<div id="applyFormWrapper" style="max-width:700px; margin:0 auto 32px; padding:24px; background:#fff; border:1px solid #e0e0e0; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); color:#000;">' +
+        '<h2 style="margin-top:0; color:#000;">📋 申请更改</h2>' +
+        '<p style="color:#000;">你可以在这里向管理员申请关于页面的更改</p>' +
+        '<div style="margin:16px 0;">' +
+        '<label style="display:block; font-weight:bold; margin-bottom:4px; color:#000;">申请类型</label>' +
+        '<select id="changeType" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; color:#000;">' +
+        '<option value="">请选择...</option>' +
+        '<option value="常规求助">常规求助</option>' +
+        '<option value="页面删除">页面删除</option>' +
+        '<option value="页面保护">页面保护</option>' +
+        '<option value="页面内容模型更改">页面内容模型更改</option>' +
+        '<option value="申请JS/CSS效果">申请JS/CSS效果</option>' +
+        '<option value="其他">其他</option>' +
+        '</select>' +
+        '</div>' +
+        '<div style="margin:16px 0;">' +
+        '<label style="display:block; font-weight:bold; margin-bottom:4px; color:#000;">页面链接</label>' +
+        '<input id="targetLink" type="text" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; color:#000;" placeholder="请输入你想要请求帮助页面的链接">' +
+        '</div>' +
+        '<div style="margin:16px 0;">' +
+        '<label style="display:block; font-weight:bold; margin-bottom:4px; color:#000;">申请内容</label>' +
+        '<textarea id="reason" rows="4" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; color:#000;" placeholder="请说明我们如何帮助你"></textarea>' +
+        '</div>' +
+        '<button id="submitBtn" style="padding:10px 24px; background:#4a90d9; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:14px;">提交申请</button>' +
+        '<span id="msg" style="margin-left:12px; color:#000;"></span>' +
+        '</div>' +
+        '<div id="recordListWrapper" style="max-width:700px; margin:0 auto;">' +
+        '<h2 style="color:#000; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">📄 已提交的申请</h2>' +
+        '<div id="recordList" style="color:#000;">正在加载...</div>' +
+        '</div>'
+    );
+
+    // ========== 加载记录列表 ==========
+    function loadRecords() {
+        api.get({
+            action: 'parse',
+            page: RECORD_PAGE,
+            prop: 'text',
+            formatversion: 2
+        }).then(function (data) {
+            var $content = $('<div>').html(data.parse.text);
+            var $list = $content.find('.apply-record-list');
+            if ($list.length) {
+                $('#recordList').html($list.html());
+            } else {
+                $('#recordList').html('<p style="color:#888;">暂无申请记录。</p>');
+            }
+            bindDeleteButtons();
+        }).fail(function () {
+            $('#recordList').html('<p style="color:#888;">暂无申请记录。</p>');
+        });
+    }
+
+    // ========== 提交申请 ==========
+    $('#submitBtn').on('click', function () {
+        var type = $('#changeType').val();
+        var link = $('#targetLink').val().trim();
+        var reason = $('#reason').val().trim();
+        var user = mw.config.get('wgUserName');
+        var time = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+
+        if (!user) {
+            $('#msg').css('color', '#d32f2f').text('请先登录并验证邮箱后再提交申请。');
+            return;
+        }
+
+        if (!type || !link || !reason) {
+            $('#msg').css('color', '#d32f2f').text('请填写所有字段');
+            return;
+        }
+
+        $('#submitBtn').prop('disabled', true);
+        $('#msg').css('color', '#000').text('正在提交...');
+
+        // 自动生成友好的显示文本
+        var displayText = link;
+        var match = link.match(/\/wiki\/(.+?)(?:\?|#|$)/);
+        if (match) {
+            displayText = decodeURIComponent(match[1]).replace(/_/g, ' ');
+        } else if (link.indexOf('://') === -1) {
+            displayText = link;
+        }
+
+        var newEntryWikitext =
+            '\n<div class="apply-entry" style="border:1px solid #e0e0e0; border-radius:8px; padding:16px; margin-bottom:12px; background:#fafafa;">' +
+            "'''[" + link + " " + mw.html.escape(displayText) + "]''' · ''" + mw.html.escape(type) + "''<br/>" +
+            '<span style="color:#888; font-size:12px;">' + time + ' · ' + mw.html.escape(user) + '</span>' +
+            '<p style="margin:8px 0 0; color:#333;">' + mw.html.escape(reason) + '</p>' +
+            '</div>\n';
+
+        api.get({
+            action: 'parse',
+            page: RECORD_PAGE,
+            prop: 'wikitext',
+            formatversion: 2
+        }).then(function (data) {
+            var wikitext = data.parse.wikitext || '';
+            var newWikitext;
+
+            if (wikitext.indexOf('<div class="apply-record-list">') !== -1) {
+                newWikitext = wikitext.replace(
+                    /<div class="apply-record-list">/,
+                    '<div class="apply-record-list">' + newEntryWikitext
+                );
+            } else {
+                newWikitext = wikitext + '\n<div class="apply-record-list">' + newEntryWikitext + '</div>';
+            }
+
+            return api.postWithEditToken({
+                action: 'edit',
+                title: RECORD_PAGE,
+                text: newWikitext,
+                summary: SUMMARY,
+                minor: false
+            });
+        }).then(function () {
+            $('#msg').css('color', '#2e7d32').text('申请已提交成功！');
+            $('#changeType').val('');
+            $('#targetLink').val('');
+            $('#reason').val('');
+            $('#submitBtn').prop('disabled', false);
+            loadRecords();
+        }).fail(function (err, status, xhr) {
+            var errMsg = '提交失败';
+            if (err && err.error && err.error.info) {
+                errMsg += '：' + err.error.info;
+            } else if (err && err.exception) {
+                errMsg += '：' + err.exception;
+            } else if (status === 'error' && xhr && xhr.responseText) {
+                errMsg += '，服务器返回错误，请打开控制台（F12）查看详情';
+                console.error('API 错误响应:', xhr.responseText);
+            } else {
+                errMsg += '：未知错误，请打开控制台（F12）查看详情';
+                console.error('完整错误:', err, '状态:', status);
+            }
+            $('#msg').css('color', '#d32f2f').text(errMsg);
+            $('#submitBtn').prop('disabled', false);
+        });
+    });
+
+    // ========== 管理员标记为完成 ==========
+    function bindDeleteButtons() {
+        var allowedGroups = ['sysop'];
+        var userGroups = mw.config.get('wgUserGroups') || [];
+        var canDelete = userGroups.some(function (g) {
+            return allowedGroups.indexOf(g) !== -1;
+        });
+        if (!canDelete) return;
+
+        $('#recordList .apply-entry').each(function () {
+            var $entry = $(this);
+            if ($entry.find('.apply-delete-btn').length) return;
+
+            var $delBtn = $(
+                '<button class="apply-delete-btn" style="margin-top:8px; padding:4px 12px; background:#2e7d32; color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:12px;">标记为完成</button>'
+            );
+
+            $delBtn.on('click', function () {
+                if (!confirm('确定要将此申请标记为完成吗？')) return;
+
+                $delBtn.prop('disabled', true).text('处理中...');
+
+                var entryIndex = $('#recordList .apply-entry').index($entry);
+
+                api.get({
+                    action: 'parse',
+                    page: RECORD_PAGE,
+                    prop: 'wikitext',
+                    formatversion: 2
+                }).then(function (data) {
+                    var wikitext = data.parse.wikitext || '';
+                    var parts = wikitext.split(/<div class="apply-entry"/);
+                    if (entryIndex + 1 < parts.length) {
+                        var targetPart = parts[entryIndex + 1];
+                        var endIndex = targetPart.indexOf('</div>');
+                        if (endIndex !== -1) {
+                            parts.splice(entryIndex + 1, 1);
+                            var newWikitext = parts.join('<div class="apply-entry"');
+                            return api.postWithEditToken({
+                                action: 'edit',
+                                title: RECORD_PAGE,
+                                text: newWikitext,
+                                summary: '管理员标记申请为完成',
+                                minor: false
+                            });
+                        }
+                    }
+                    throw new Error('未找到对应条目');
+                }).then(function () {
+                    $entry.fadeOut(300, function () {
+                        $(this).remove();
+                        if ($('#recordList .apply-entry').length === 0) {
+                            $('#recordList').html('<p style="color:#888;">暂无申请记录。</p>');
+                        }
+                    });
+                }).fail(function (err) {
+                    alert('操作失败，请手动编辑 ' + RECORD_PAGE + ' 页面处理。');
+                    console.error('错误:', err);
+                    $delBtn.prop('disabled', false).text('标记为完成');
+                });
+            });
+
+            $entry.append($delBtn);
+        });
+    }
+
+    // ========== 初始加载 ==========
+    loadRecords();
+});

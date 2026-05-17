@@ -13,15 +13,17 @@
         'api',
         'css'
     ];
+    const STATE_KEY = 'DoruDev-state';
+    const ONE_DAY = 24 * 60 * 60 * 1000 + 1;
     var settings = {
-        inner: JSON.parse(localStorage.getItem('DoruDev-state') || '{}'),
+        inner: JSON.parse(localStorage.getItem(STATE_KEY) || '{}'),
         get: function(key) {
             return settings.inner[key];
         },
         set: function(key, value) {
             settings.inner[key] = value;
 
-            localStorage.setItem('DoruDev-state',
+            localStorage.setItem(STATE_KEY,
                 JSON.stringify(settings.inner)
             );
         }
@@ -95,12 +97,50 @@
         });
     }
 
+    function ClipboardCheckbox() {
+        var [enabled, setEnabled] = useState(() => {
+            const date = new Date(settings.get('clipboard-copy'));
+
+            if (Number.isNaN(date.getTime())) return false;
+
+            if (Date.now() - date.getTime() > ONE_DAY) return false;
+
+            return true;
+        });
+
+        useEffect(function() {
+            if (enabled) {
+                settings.set('clipboard-copy', Date.now());
+            } else {
+                settings.set('clipboard-copy', null);
+            }
+        }, [enabled]);
+
+        return tags.div({
+            children: [
+                tags.input({
+                    type: 'checkbox',
+                    id: 'DoruDev-clipboard-checkbox',
+                    checked: enabled,
+                    onInput: function(e) {
+                        setEnabled(e.target.checked);
+                    }
+                }),
+                tags.label({
+                    for: 'DoruDev-clipboard-checkbox',
+                    child: 'Automatically pick up code from the clipboard on load for 24 hours'
+                })
+            ]
+        });
+    }
+
     function DoruDev() {
         return preact.frag([
             'I hope your code is not as bad as last time',
             h(EnabledCheckbox),
             h(TextZone, { type: 'js' }),
-            h(TextZone, { type: 'css' })
+            h(TextZone, { type: 'css' }),
+            h(ClipboardCheckbox),
         ]);
     }
 
@@ -208,14 +248,51 @@
 
     function runScripts() {
         if (settings.get('enabled')) {
-            if (settings.get('js')) {
-                eval(settings.get('js'));
-            }
+            fromClipboard().then(() => {
+                if (settings.get('js')) {
+                    eval(settings.get('js'));
+                }
 
-            if (settings.get('css')) {
-                mw.util.addCSS(settings.get('css'));
-            }
+                if (settings.get('css')) {
+                    mw.util.addCSS(settings.get('css'));
+                }
+            });
         }
+    }
+
+    function fromClipboard() {
+        return new Promise(resolve => {
+            if (!settings.get('clipboard-copy')) return resolve();
+
+            const date = new Date(settings.get('clipboard-copy'));
+
+            if (Number.isNaN(date.getTime())) return resolve();
+
+            if (Date.now() - date.getTime() > ONE_DAY) return resolve();
+
+            navigator.clipboard.readText().then(text => {
+                const isJS = /function\s*\w*\(|(var|let|const)\s+\w+\s*=/.test(text);
+                const isCSS = /{\s*[\w-]+:/.test(text);
+
+                if (isJS) {
+                    try {
+                        console.log('[DoruDev] picking js from clipboard');
+                        settings.set('js', text);
+                    } catch(e) {}
+                } else if (isCSS) {
+                    try {
+                        console.log('[DoruDev] picking css from clipboard');
+                        settings.set('css', text);
+                    } catch(e) {}
+                }
+
+                resolve();
+            }).catch(() => {
+                console.log('[DoruDev] skipping clipboard (permissions/focus error)');
+
+                resolve();
+            });
+        });
     }
 
     preload();

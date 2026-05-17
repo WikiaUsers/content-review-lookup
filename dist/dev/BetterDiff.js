@@ -24,7 +24,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 			patrol: config.wgUserGroups.some((group) => {return ['sysop', 'content-moderator'].includes(group);}),
 			rollback: config.wgUserGroups.some((group) => {return ['sysop', 'content-moderator', 'rollback'].includes(group);})
 		},
-		fP = config.wgNamespaceNumber===6 && config.wgAction==='view' && !config.wgDiffNewId && window.dev.BD_FullFilePatrol;
+		fP = config.wgNamespaceNumber===6 && config.wgAction==='view' && !config.wgDiffNewId && window.dev.BD_FullFilePatrol,
+		hasMW = false;
 	
 	// Main class
 	const betterDiff = {
@@ -48,6 +49,16 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 					tokens.rollback = data.query.tokens.rollbacktoken;
 				}
 			});
+			
+			// Check if wiki has Message Walls enabled (taken from [[wgMessageWallsExist]])
+			lApi.get({
+				action: 'query',
+				meta: 'siteinfo',
+				siprop: 'extensions',
+				maxage: 86400,
+				smaxage: 86400,
+				format: 'json',
+			}).done((d) => { if (d && d.query && d.query.extensions && d.query.extensions.find(e => e.name === 'MessageWall')) { hasMW = true; } });
 			
 			// Full patrol link in Files if setting is enabled
 			if (fP && !document.querySelector('#mw-imagepage-content > .patrollink > :is(a, button)')) {
@@ -605,7 +616,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 							'<div id="mw-diff-otitle2">'+
 								'<a href="'+getURL('User:'+data.fromuser)+'" class="mw-userlink" title="User:'+data.fromuser+'"><bdi>'+data.fromuser+'</bdi></a> '+
 								'<span class="mw-usertoollinks">('+
-									'<a href="'+getURL('Message_Wall:'+data.fromuser)+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.fromuser+'">wall</a> | '+
+									(hasMW
+									?	'<a href="'+getURL('Message_Wall:'+data.fromuser)+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.fromuser+'">wall</a> | '
+									:	'<a href="'+getURL('User_talk:'+data.fromuser)+'" class="mw-usertoollinks-talk" title="User talk:'+data.fromuser+'">talk</a> | '
+									)+
 									'<a href="'+getURL('Special:Contributions/'+data.fromuser)+'" class="mw-usertoollinks-contribs" title="Special:Contributions/'+data.fromuser+'">contribs</a>'+
 								')</span>'+
 							'</div>'+
@@ -641,7 +655,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 						'<div id="mw-diff-ntitle2">'+
 							'<a href="'+getURL('User:'+data.touser)+'" class="mw-userlink" title="User:'+data.touser+'"><bdi>'+data.touser+'</bdi></a> '+
 							'<span class="mw-usertoollinks">('+
-								'<a href="'+getURL('Message_Wall:'+data.touser)+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.touser+'">wall</a> | '+
+								(hasMW
+								?	'<a href="'+getURL('Message_Wall:'+data.touser)+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.touser+'">wall</a> | '
+								:	'<a href="'+getURL('User_talk:'+data.touser)+'" class="mw-usertoollinks-talk" title="User talk:'+data.touser+'">talk</a> | '
+								)+
 								'<a href="'+getURL('Special:Contributions/'+data.touser)+'" class="mw-usertoollinks-contribs" title="Special:Contributions/'+data.touser+'">contribs</a>'+
 							')</span>'+
 							((betterDiff.getLoad(turl) === (config.wgServerName+config.wgScriptPath)) && can.rollback && tokens.rollback.length>2 ? (

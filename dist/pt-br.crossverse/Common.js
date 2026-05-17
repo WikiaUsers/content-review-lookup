@@ -159,6 +159,38 @@ document.addEventListener("DOMContentLoaded", function() {
         el.innerText = upsideDownText(el.innerText);
     });
 });
+/* Fim do Texto Invertido */
+
+/* Pergaminho interativo - ativa em qualquer página que tenha .pgm-pergaminho */
+mw.hook('wikipage.content').add(function ($content) {
+    $content.find('.pgm-pergaminho').each(function () {
+        var pergaminho = this;
+        if (pergaminho.dataset.pgmReady) return; // evita registrar 2x
+        pergaminho.dataset.pgmReady = '1';
+
+        // abrir / fechar
+        pergaminho.addEventListener('click', function (e) {
+            if (e.target.closest('.pgm-btn')) return;
+            pergaminho.classList.toggle('pgm-aberto');
+        });
+
+        // botões internos
+        var resposta = pergaminho.querySelector('.pgm-resposta');
+        pergaminho.querySelectorAll('.pgm-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (!resposta) return;
+                resposta.textContent = btn.getAttribute('data-msg') || '';
+                resposta.style.opacity = 0;
+                requestAnimationFrame(function () {
+                    resposta.style.transition = 'opacity .4s ease';
+                    resposta.style.opacity = 1;
+                });
+            });
+        });
+    });
+});
+/* Fim do Pergaminho */
 
 /* ===== LAZY LOAD KUMAGAWA ===== */
 (function(){

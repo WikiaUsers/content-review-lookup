@@ -1,3 +1,25 @@
+/* Daily Quests Board - Scoped Column Controller */
+mw.hook('wikipage.content').add(function($content) {
+    // Utilize .off() to prevent Fandom's lazy-loading from binding clicks multiple times
+    $content.find('.pb-dot').off('click.quests').on('click.quests', function() {
+        var $thisDot = $(this);
+        var targetTier = $thisDot.attr('data-target-tier');
+        
+        if (!targetTier) return;
+
+        // Locate the parent slot container to rigidly isolate the UI scope
+        var $parentSlot = $thisDot.closest('.pb-slot-container');
+
+        // Reset all dots in THIS specific column only, then activate the clicked one
+        $parentSlot.find('.pb-dot').removeClass('active');
+        $thisDot.addClass('active');
+
+        // Hide all tier panels in THIS specific column only, then show the target
+        $parentSlot.find('.pb-tier-panel').removeClass('active');
+        $parentSlot.find('.pb-tier-panel[data-tier="' + targetTier + '"]').addClass('active');
+    });
+});
+
 
 importScript('MediaWiki:List.js');
 

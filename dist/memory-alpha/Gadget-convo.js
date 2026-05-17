@@ -1,9 +1,9 @@
 'use strict';
-$(() => {
-	if (!$('.convo-group').length){
+mw.hook('wikipage.content').add(content => {
+	const groups = content.find('.convo-group');
+	if (!groups.length){
 		return;
 	}
-
 	const popupContainer = $('<div>', {
 		id: 'convo-popup-container',
 		class: 'mw-parser-output',
@@ -12,8 +12,9 @@ $(() => {
 		id: 'convo-popup',
 		class: 'convo-popup-hidden',
 	});
+
 	popupContainer.append(popup);
-	$('.convo-group').each((index, group) => $(group).on('mouseenter', onHover).on('mouseleave', offHover));
+	groups.each((index, group) => $(group).on('mouseenter', onHover).on('mouseleave', offHover));
 	popup.on('mouseleave', () => popup.attr('class', 'convo-popup-hidden'));
 
 	function onHover(event){
@@ -52,3 +53,5 @@ $(() => {
 		}
 	}
 });
+
+// {{JavaScript category}}

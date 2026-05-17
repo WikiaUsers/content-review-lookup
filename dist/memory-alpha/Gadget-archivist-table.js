@@ -37,7 +37,7 @@ mw.hook('wikipage.content').add(content => {
 
 	recentChanges();
 	function recentChanges(rccontinue){
-		api.post({
+		api.get({
 			list: 'recentchanges',
 			rcend: new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString(),
 			rcnamespace: 0,
@@ -62,7 +62,7 @@ mw.hook('wikipage.content').add(content => {
 			if (Object.keys(users).length < 50 && apiOutput.continue){
 				recentChanges(apiOutput.continue.rccontinue);
 			} else {
-				api.post({
+				api.get({
 					list: 'users',
 					usprop: ['blockinfo', 'groups', 'rights', 'editcount'],
 					ususers: Object.keys(users),
@@ -119,3 +119,5 @@ mw.hook('wikipage.content').add(content => {
 		});
 	}
 });
+
+// {{JavaScript category}}

@@ -1,1 +1,0 @@
-console.log("SAFE VERSION: System is working.");

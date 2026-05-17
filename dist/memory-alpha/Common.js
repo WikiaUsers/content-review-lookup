@@ -33,3 +33,5 @@ window.globalFileUsageConfig = {
 		'en:ma-test',
 	],
 };
+
+// {{JavaScript category}}

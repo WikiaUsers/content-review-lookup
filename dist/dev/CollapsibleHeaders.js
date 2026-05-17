@@ -35,8 +35,8 @@ mw.hook('wikipage.content').add(function($content) {
             '    transform: rotate(-90deg);',
             '}',
             '.ch-outer-wrapper {',
-            '    overflow: hidden;',
-            '    display: flow-root;',
+            '    width: 100%;',
+            '	 overflow: clip;',
             '}'
         ].join('\n'));
     }

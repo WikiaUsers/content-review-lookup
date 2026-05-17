@@ -7,6 +7,10 @@
         const elements = document.querySelectorAll(".countdown");
 
         elements.forEach(function (el) {
+
+            if (el.dataset.initialized) return;
+            el.dataset.initialized = "true";
+
             const target = new Date(el.getAttribute("data-date")).getTime();
 
             function update() {
@@ -23,11 +27,16 @@
                 const m = Math.floor((diff / (1000 * 60)) % 60);
                 const s = Math.floor((diff / 1000) % 60);
 
-                el.textContent = d + "d " + h + "h " + m + "m " + s + "s";
+                el.textContent =
+                    d + "d " +
+                    h + "h " +
+                    m + "m " +
+                    s + "s";
             }
 
             update();
             setInterval(update, 1000);
+
         });
     }
 
@@ -39,6 +48,10 @@
         const elements = document.querySelectorAll(".elapsed");
 
         elements.forEach(function (el) {
+
+            if (el.dataset.initialized) return;
+            el.dataset.initialized = "true";
+
             const start = new Date(el.getAttribute("data-start")).getTime();
 
             function update() {
@@ -55,11 +68,43 @@
                 const m = Math.floor((diff / (1000 * 60)) % 60);
                 const s = Math.floor((diff / 1000) % 60);
 
-                el.textContent = d + "d " + h + "h " + m + "m " + s + "s";
+                el.textContent =
+                    d + "d " +
+                    h + "h " +
+                    m + "m " +
+                    s + "s";
             }
 
             update();
             setInterval(update, 1000);
+
+        });
+    }
+
+
+    /* =========================
+       AUDIO AUTO-PAUSE SYSTEM
+    ========================= */
+    function initAudioPlayers() {
+        const audios = document.querySelectorAll("audio");
+
+        audios.forEach(function (audio) {
+
+            if (audio.dataset.initialized) return;
+            audio.dataset.initialized = "true";
+
+            audio.addEventListener("play", function () {
+
+                audios.forEach(function (otherAudio) {
+
+                    if (otherAudio !== audio) {
+                        otherAudio.pause();
+                    }
+
+                });
+
+            });
+
         });
     }
 
@@ -70,6 +115,7 @@
     function initAll() {
         initCountdown();
         initElapsedTimers();
+        initAudioPlayers();
     }
 
     document.addEventListener("DOMContentLoaded", initAll);

@@ -8,3 +8,5 @@
 	$('#mw-content-text > noscript:first-of-type').after(revisionBannerClone);
 	revisionBanner.remove();
 })();
+
+// {{JavaScript category}}

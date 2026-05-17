@@ -199,13 +199,13 @@ $(function () {
 	
 	/* Loot Statistics */
 	if (mw.config.get('wgPageName') === 'Loot_Statistics') {
-	    importArticles({
-	        type: 'script',
-	        articles: [
-	        	'MediaWiki:LootStatistics-Data.js', 
-	        	'MediaWiki:LootStatistics.js'
-	        ]
-	    });
+		$.getScript("/load.php?lang=en&modules=MediaWiki:LootStatistics-Data.js")
+		  .done(function() {
+		    $.getScript("/load.php?lang=en&modules=MediaWiki:LootStatistics.js");
+		  })
+		  .fail(function(err) {
+		    console.error("Failed loading loot statistics js.", err);
+		  });
 	}
 	/* End of Loot Statistics */
 	/* Loot Statistics checker */

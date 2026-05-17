@@ -10,8 +10,8 @@
         if (cheeseElement) {
             var sfx = new Audio(cheeseSoundUrl);
 
-            // Generates a random pitch/speed between 0.5 and 1.5
-            var randomPitch = Math.random() * (1.5 - 0.5) + 0.5;
+            // Generates a random pitch/speed between 0.35 and 1.8
+            var randomPitch = Math.random() * (1.8 - 0.35) + 0.35;
             
             sfx.preservesPitch = false; 
             sfx.playbackRate = randomPitch;
@@ -28,3 +28,7 @@
         }
     });
 })();
+/* LockOldComments thing */
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.limit = 35;

@@ -19,5 +19,10 @@ importArticles({
 importScript('MediaWiki:CircleAvatar.js');
 /* Merchant Spawning Time Converter */
 importScript('MediaWiki:MerchantTime.js');
-// Prevents existing tags from being hidden
+/* Prevents existing tags from being hidden */
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+/* View pages status */
+importArticles({
+    type: 'script',
+    articles: ['MediaWiki:PageStatus.js']
+});

@@ -8,3 +8,5 @@ mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(() => {
 		]
 	});
 });
+
+// {{JavaScript category}}

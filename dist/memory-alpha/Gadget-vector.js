@@ -1,184 +1,137 @@
 'use strict';
 mw.hook('gadget.skin-setup').add(async skinConfig => {
 	// Setup
-	$('.mediawiki').prepend($('<div id="page-grid">'));
-	const pageActions = $('<div id="page-actions">');
-	$('#page-grid')
-		.append($('<div id="left-rail-wrapper">'))
-		.append($('<div id="personal-tools" class="global-top-navigation">').append($('<ul>')))
-		.append(pageActions)
-		.append($('.main-container'))
-		.append($('<footer id="footer">'));
-	
+	const pageGrid = $('<div>', {id: 'page-grid'});
+	$(document.body).prepend(pageGrid);
+	const leftNav = $('<div>', {id: 'left-navigation'});
+	const rightNav = $('<div>', {id: 'right-navigation'});
+	pageGrid.append(
+		$('<div>', {id: 'left-rail-wrapper'}),
+		$('<div>', {
+			id: 'personal-tools',
+			class: 'global-top-navigation',
+		}).append($('<ul>')),
+		$('<div>', {id: 'page-actions'}).append(leftNav, rightNav),
+		$('.main-container'),
+		$('<footer>', {id: 'footer'}),
+	);
+
 	// Left rail
-	$('#left-rail-wrapper')
-		.append($('<a id="p-logo" href="/wiki/">'))
-		.append($(portlet('navigation', 'Navigation')))
-		.append($(portlet('interaction', 'Contribute')))
-		.append($('.content-review__widget').removeAttr('class').attr(portletAttr('js-review')))
-		.append($(portlet('my-tb', 'My tools')))
-		.append($(portlet('global', 'Fandom')));
-	
+	$('#left-rail-wrapper').append(
+		$('<a id="p-logo" href="/wiki/">'),
+		$(portlet('navigation', 'Navigation')),
+		$(portlet('interaction', 'Contribute')),
+		$('.content-review__widget').removeAttr('class').attr(portletAttr('js-review')),
+		$(portlet('my-tb', 'My tools')),
+		$(portlet('global', 'Fandom')),
+	);
+
 	$('#p-navigation-body').html($('<ul>'));
-	$('#p-navigation-body ul')
-		.append($(`<li><a href="${mw.util.getUrl('Portal:Main')}">Main page</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:Forums')}">Forums</a></li>`))
-		.append($('<li><a href="/f">Discussions</a></li>'))
-		.append($(`<li><a href="${mw.util.getUrl('Special:Random')}">Random article</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:About')}">About Memory Alpha</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:Contact us')}">Contact us</a></li>`));
-	
+	$('#p-navigation-body ul').append(
+		$(`<li><a href="${mw.util.getUrl('Portal:Main')}">Main page</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:Forums')}">Forums</a></li>`),
+		$('<li><a href="/f">Discussions</a></li>'),
+		$(`<li><a href="${mw.util.getUrl('Special:Random')}">Random article</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:About')}">About Memory Alpha</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:Contact us')}">Contact us</a></li>`),
+	);
+
 	$('#p-interaction-body').html($('<ul>'));
-	$('#p-interaction-body ul')
-		.append($(`<li><a href="${mw.util.getUrl('MA Help:Contents')}">Help</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('MA Help:Editing')}">Learn to edit</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Special:Community')}">Community portal</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:FAQ')}">FAQ</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:Policies and guidelines')}">Policies</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Special:RecentChanges')}">Recent changes</a></li>`));
-	
+	$('#p-interaction-body ul').append(
+		$(`<li><a href="${mw.util.getUrl('MA Help:Contents')}">Help</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('MA Help:Editing')}">Learn to edit</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Special:Community')}">Community portal</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:FAQ')}">FAQ</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:Policies and guidelines')}">Policies</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Special:RecentChanges')}">Recent changes</a></li>`),
+	);
+
 	$('.content-review__widget__title').removeAttr('class').attr(pHeadingAttr('js-review'));
-	$('#p-js-review-label')
-		.html('Review status')
-		.nextAll()
-		.wrapAll($('<div>').attr(pBodyAttr('js-review')));
-	
+	$('#p-js-review-label').html('Review status').nextAll().wrapAll($('<div>').attr(pBodyAttr('js-review')));
+
 	pageTools();
-	
+
 	const myTools = $('#my-tools-menu').length ? $('#my-tools-menu') : $('<ul>');
 	$('#p-my-tb-body').html(myTools);
-	$('#p-my-tb-body ul')
-		.removeAttr('class')
-		.append($('li:has([data-tracking="admindashboard/toolbar/admin"])'))
-		.append($('li:has([data-tracking="admindashboard/toolbar/reported"])'))
-		.append($('li:has([data-tracking="quickanswers/toolbar"])'))
-		.append($('li:has(.global-shortcuts-help-entry-point)'));
+	$('#p-my-tb-body ul').removeAttr('class').append(
+		$('li:has([data-tracking="admindashboard/toolbar/admin"])'),
+		$('li:has([data-tracking="admindashboard/toolbar/reported"])'),
+		$('li:has([data-tracking="quickanswers/toolbar"])'),
+		$('li:has(.global-shortcuts-help-entry-point)'),
+	);
 	$('[data-tracking="admindashboard/toolbar/admin"]').html('Admin Dashboard');
-	
+
 	$('#p-global-body').html($('<ul>'));
-	$('#p-global-body ul')
-		.append($('<li><a href="https://www.fandom.com">Fandom home</a></li>'))
-		.append($('<li><a href="https://www.fandom.com/fancentral/home">FanCentral</a></li>'))
-		.append($('<li><a href="https://www.fandom.com/explore">Explore other wikis</a></li>'))
-		.append($('<li><a href="https://community.fandom.com/wiki/">Community Central</a></li>'))
-		.append($('<li><a href="https://createnewwiki.fandom.com/wiki/Special:CreateNewWiki">Start a wiki</a></li>'));
-	
+	$('#p-global-body ul').append(
+		$('<li><a href="https://www.fandom.com">Fandom home</a></li>'),
+		$('<li><a href="https://www.fandom.com/fancentral/home">FanCentral</a></li>'),
+		$('<li><a href="https://www.fandom.com/explore">Explore other wikis</a></li>'),
+		$('<li><a href="https://community.fandom.com/wiki/">Community Central</a></li>'),
+		$('<li><a href="https://createnewwiki.fandom.com/wiki/Special:CreateNewWiki">Start a wiki</a></li>'),
+	);
+
 	if ($('#collapsible-content-languages').length){
 		$('#collapsible-content-languages a').wrap($('<li>'));
 		$('#left-rail-wrapper').append($(portlet('lang', 'Languages')));
 		$('#p-lang-body').html($('<ul>').append($('#collapsible-content-languages li')));
 	}
-	
+
 	// Personal tools
 	const logoutURL = `https://auth.fandom.com/logout?source=mw&redirect=${window.location.href}`;
-	
-	$('#personal-tools ul')
-		.append($(ptItem('userpage', `User:${mw.config.get('wgUserName')}`, 'Your user page', mw.config.get('wgUserName'))))
-		.append($(ptItem('notifications')).append($('#global-top-navigation .notifications')))
-		.append($(ptItem('mytalk', `User talk:${mw.config.get('wgUserName')}`, 'Your talk page', 'Talk')))
-		.append($(ptItem('sandbox', `User:${mw.config.get('wgUserName')}/sandbox`, 'Your sandbox', 'Sandbox')))
-		.append($(ptItem('preferences', 'Special:Preferences', 'Your preferences', 'Preferences')))
-		.append($(ptItem('watchlist', 'Special:Watchlist', 'The list of pages you are monitoring for changes', 'Watchlist')))
-		.append($(ptItem('contribs', `Special:Contributions/${mw.config.get('wgUserName')}`, 'A list of your contributions', 'Contributions')))
-		.append($(ptItem('logout')).append($(`<a href="${logoutURL}" title="Log out">Log out</a>`)));
-	
-	$('.notifications__toggle').attr('title', 'Your notifications');
-	
-	// Page actions
-	const pageName = mw.config.get('wgRelevantPageName').replaceAll('_', ' ');
-	const subjectPageName = new mw.Title(pageName).getSubjectPage();
-	const talkPageName = new mw.Title(pageName).getTalkPage() ? new mw.Title(pageName).getTalkPage() : subjectPageName;
-	const subjectNamespace = subjectPageName.getNamespaceId();
-	const rightNav = $('<ul id="right-navigation">');
-	
-	await skinConfig.associatedPages(pageActions);
-	pageActions.append(rightNav);
-	rightNav.append(
-		$('<li id="ca-view-li">'),
-		$('<li id="ca-edit-li">'),
-		$('<li id="ca-history-li">'),
-		$('<li id="ca-watch-li">'),
-		$('<li id="ca-unwatch-li">'),
-		$('<li id="more-page-actions" class="wds-dropdown">'),
-		$('<li id="search-box">')
+
+	$('#personal-tools ul').append(
+		$(ptItem('userpage', `User:${mw.config.get('wgUserName')}`, 'Your user page', mw.config.get('wgUserName'))),
+		$(ptItem('notifications')).append($('#global-top-navigation .notifications')),
+		$(ptItem('mytalk', `User talk:${mw.config.get('wgUserName')}`, 'Your talk page', 'Talk')),
+		$(ptItem('sandbox', `User:${mw.config.get('wgUserName')}/sandbox`, 'Your sandbox', 'Sandbox')),
+		$(ptItem('preferences', 'Special:Preferences', 'Your preferences', 'Preferences')),
+		$(ptItem('watchlist', 'Special:Watchlist', 'The list of pages you are monitoring for changes', 'Watchlist')),
+		$(ptItem('contribs', `Special:Contributions/${mw.config.get('wgUserName')}`, 'A list of your contributions', 'Contributions')),
+		$(ptItem('logout')).append($(`<a href="${logoutURL}" title="Log out">Log out</a>`)),
 	);
-	
+
+	$('.notifications__toggle').attr('title', 'Your notifications');
+
+	// Page actions
+	await skinConfig.associatedPages(leftNav);
+	await skinConfig.views(rightNav);
+	const actions = await skinConfig.actions(rightNav);
+
+	$(actions).addClass('wds-dropdown');
+	$(actions).find('label').addClass('wds-dropdown__toggle');
+	$(actions).find('div').addClass('wds-dropdown__content');
+	$(actions).find('ul').addClass(['wds-list', 'wds-is-linked']);
+
+	rightNav.append($('<div id="search-box">'));
 	$('#search-box').append($(`<form action="${mw.util.getUrl('Special:Search')}">`));
-	$('#search-box form')
-		.append($('<input type="search" id="searchInput" name="query" required placeholder="Search Memory Alpha">'))
-		.append($('<input type="submit" id="searchButton" name="go" value="🔍" title="Go to a page with this exact name if it exists">'));
-	
-	$('#more-page-actions').append($('<a class="wds-dropdown__toggle">More</a>'));
-	$('#more-page-actions').append($('<div class="wds-dropdown__content">').append($('<ul class="wds-list wds-is-linked">')));
-	$('#more-page-actions .wds-list')
-		.append($('<li id="ca-delete-li">'))
-		.append($('<li id="ca-undelete-li">'))
-		.append($('<li id="ca-move-li">'))
-		.append($('<li id="ca-protect-li">'))
-		.append($('<li id="ca-unprotect-li">'));
-	
-	$('#ca-view-li').append($(`<a href="${mw.util.getUrl(pageName)}">Read</a>`));
-	$('#ca-edit-li').append(trimmer('#ca-edit').removeAttr('class').attr('title', 'Edit this page'));
-	$('#ca-history-li').append($('#ca-history').html('View history').attr('title', 'Past revisions of this page'));
-	$('#ca-watch-li').append(trimmer('#ca-watch').attr('title', 'Add this page to your watchlist'));
-	$('#ca-unwatch-li').append(trimmer('#ca-unwatch').attr('title', 'Remove this page from your watchlist'));
-	
-	$('#ca-delete-li').append(trimmer('#ca-delete').attr('title', 'Delete this page'));
-	$('#ca-undelete-li').append(trimmer('#ca-undelete').attr('title', 'Undelete this page'));
-	$('#ca-move-li').append(trimmer('#ca-move').attr('title', 'Rename this page'));
-	$('#ca-protect-li').append(trimmer('#ca-protect').attr('title', 'Protect this page from editing'));
-	$('#ca-unprotect-li').append(trimmer('#ca-unprotect').attr('title', 'Change the protection level on this page'));
-	
-	$('#page-actions li:empty').remove();
-	
-	if (pageName === subjectPageName.getPrefixedText()){
-		$('#ca-nstab-main-li').addClass('selected');
-	} else {
-		$('#ca-talk-li').addClass('selected');
-	}
-	
-	if (mw.config.get('wgPageName').split('/')[0] === 'Special:MovePage'){
-		$('#ca-move-li').addClass('selected');
-	} else if (mw.config.get('wgAction') === 'view'){
-		$('#ca-view-li').addClass('selected');
-	} else if (mw.config.get('wgAction') === 'edit' || mw.config.get('wgAction') === 'submit'){
-		$('#ca-edit-li').addClass('selected');
-	} else if (mw.config.get('wgAction') === 'history'){
-		$('#ca-history-li').addClass('selected');
-	} else if (mw.config.get('wgAction') === 'delete'){
-		$('#ca-delete-li').addClass('selected');
-	} else if (mw.config.get('wgAction') === 'protect' || mw.config.get('wgAction') === 'unprotect'){
-		$('#ca-protect-li, #ca-unprotect-li').addClass('selected');
-	} else if (mw.config.get('wgAction') === 'watch' || mw.config.get('wgAction') === 'unwatch'){
-		$('#ca-watch-li, #ca-unwatch-li').addClass('selected');
-	}
-	
-	if (subjectNamespace === -1){
-		$('#page-actions li:not(#ca-nstab-main-li)').remove();
-	}
-	
-	updateWatchButtons();
-	
+	$('#search-box form').append(
+		$('<input type="search" id="searchInput" name="query" required placeholder="Search Memory Alpha">'),
+		$('<input type="submit" id="searchButton" name="go" value="🔍" title="Go to a page with this exact name if it exists">'),
+	);
+
 	// Footer
-	$('#footer')
-		.append($('<div id="footer-copyright">').html($('.license-description').html()))
-		.append($('<ul id="footer-places">'))
-		.append($('<ul id="footer-icons">'));
-	
-	$('#footer-places')
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:About')}">About Memory Alpha</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:Copyrights')}">Copyright</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Special:Statistics')}">Statistics</a></li>`))
-		.append($(`<li><a href="${mw.util.getUrl('Memory Alpha:Contact us')}">Contact Memory Alpha</a></li>`))
-		.append($('<li><a href="https://www.fandom.com/privacy-policy">Privacy Policy</a></li>'))
-		.append($('<li><a href="https://www.fandom.com/terms-of-use">Terms of Use</a></li>'))
-		.append($('<li><a href="https://www.fandom.com/terms-of-sale">Terms of Sale</a></li>'))
-		.append($('<li><a href="https://www.fandom.com/community-creation-policy">Community Creation Policy</a></li>'))
-		.append($('<li><a href="https://about.fandom.com/about">About Fandom</a></li>'));
-	
-	$('#footer-icons')
-		.append(footerIcon('hostedbyico', 'Hosting provided by Fandom', 'https://www.fandom.com'))
-		.append(footerIcon('poweredbyico', 'Powered by MediaWiki', 'https://www.mediawiki.org'));
+	$('#footer').append(
+		$('<div id="footer-copyright">').html($('.license-description').html()),
+		$('<ul id="footer-places">'),
+		$('<ul id="footer-icons">'),
+	);
+
+	$('#footer-places').append(
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:About')}">About Memory Alpha</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:Copyrights')}">Copyright</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Special:Statistics')}">Statistics</a></li>`),
+		$(`<li><a href="${mw.util.getUrl('Memory Alpha:Contact us')}">Contact Memory Alpha</a></li>`),
+		$('<li><a href="https://www.fandom.com/privacy-policy">Privacy Policy</a></li>'),
+		$('<li><a href="https://www.fandom.com/terms-of-use">Terms of Use</a></li>'),
+		$('<li><a href="https://www.fandom.com/terms-of-sale">Terms of Sale</a></li>'),
+		$('<li><a href="https://www.fandom.com/community-creation-policy">Community Creation Policy</a></li>'),
+		$('<li><a href="https://about.fandom.com/about">About Fandom</a></li>'),
+	);
+
+	$('#footer-icons').append(
+		footerIcon('hostedbyico', 'Hosting provided by Fandom', 'https://www.fandom.com'),
+		footerIcon('poweredbyico', 'Powered by MediaWiki', 'https://www.mediawiki.org'),
+	);
 });
 
 function portlet(name, label){
@@ -234,24 +187,8 @@ function ptItem(id, url, title, text){
 	if (url){
 		return `<li class="ptItem" id="pt-${id}"><a href="${mw.util.getUrl(url)}" title="${title}">${text}</a></li>`;
 	}
-	
+
 	return `<li class="ptItem" id="pt-${id}">`;
 }
 
-function trimmer(selector){
-	return $(selector).html($(selector).text().trim());
-}
-
-function updateWatchButtons(){
-	$('#ca-watch').on('click', () => {
-		$('#ca-watch-li').attr('id', 'ca-unwatch-li');
-		$('#ca-watch').attr('id', 'ca-unwatch');
-		updateWatchButtons();
-	});
-	
-	$('#ca-unwatch').on('click', () => {
-		$('#ca-unwatch-li').attr('id', 'ca-watch-li');
-		$('#ca-unwatch').attr('id', 'ca-watch');
-		updateWatchButtons();
-	});
-}
+// {{JavaScript category}}

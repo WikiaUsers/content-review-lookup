@@ -1,1 +1,3 @@
 mw.loader.load('https://dev.fandom.com/index.php?title=MediaWiki:EasyTalk.js&action=raw&ctype=text/javascript');
+
+// {{JavaScript category}}

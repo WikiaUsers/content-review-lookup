@@ -7794,6 +7794,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "cotton": {
+            	"name": "Cotton",
+            	"types": [
+            		"flower",
+            		"white",
+            		"green"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "cottoncandy": {
                 "name": "Cotton Candy",
                 "types": [
@@ -11771,6 +11798,36 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "emptyheart": {
+            	"name": "Emptyheart",
+            	"types": [
+            		"valentine",
+            		"white",
+            		"yellow"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ],
+                "notes": [
+                	"hidden"
+                ]
+            },
             "empyreal": {
                 "name": "Empyreal",
                 "types": [
@@ -12947,6 +13004,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "festivity": {
+            	"name": "Festivity",
+            	"types": [
+            		"holiday",
+            		"green",
+            		"red"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "feycaster": {
                 "name": "Feycaster",
                 "types": [
@@ -13709,6 +13793,50 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "14_hours_14",
                 "rarity": 2
+            },
+            "flowercarpet": {
+            	"name": "Flower Carpet",
+            	"types": [
+            		"flower",
+            		"green",
+            		"red"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "8_hours_8",
+            	"rarity": 2,
+            	"offspringeligibility": "dragontales",
+            	"notes": [
+            		"feature"
+            	]
+            },
+            "flowerparade": {
+            	"name": "Flower Parade",
+            	"types": [
+            		"flower",
+            		"yellow",
+            		"green"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "flowerpower": {
                 "name": "Flower Power",
@@ -14834,6 +14962,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "fuchsiaflower": {
+            	"name": "Fuchsiaflower",
+            	"types": [
+            		"flower",
+            		"pink",
+            		"purple"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "15_hours_15",
+            	"rarity": 3,
+            	"offspringeligibility": "crafted",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "fullmoon": {
                 "name": "Full Moon",
                 "types": [
@@ -15712,6 +15857,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "marketonly",
                 "notes": [
                     "feature"
+                ]
+            },
+            "gildsphere": {
+            	"name": "Gildsphere",
+            	"types": [
+            		"holiday",
+            		"yellow",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "gingerbread": {
@@ -20327,6 +20499,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                         [
                             "types", [
                                 "green"
+                            ]
+                        ]
+                    ]
+                ]
+            },
+            "japan": {
+            	"name": "Japan",
+            	"types": [
+            		"world",
+            		"white",
+            		"red"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
                             ]
                         ]
                     ]
@@ -25248,6 +25447,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "notes": [
                     "feature"
                 ]
+            },
+            "mothersbouquet": {
+            	"name": "Mother's Bouquet",
+            	"types": [
+            		"flower",
+            		"red",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "15_hours_15",
+            	"rarity": 3,
+            	"offspringeligibility": "tournament",
+            	"notes": [
+            		"feature"
+            	]
             },
             "mountain": {
                 "name": "Mountain",
@@ -31627,6 +31843,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "level": 4,
                 "offspringeligibility": "expired"
             },
+            "pyrotechnic": {
+            	"name": "Pyrotechnic",
+            	"types": [
+            		"shine",
+            		"white",
+            		"red"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "pyxis": {
                 "name": "Pyxis",
                 "types": [
@@ -36653,6 +36896,36 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "21_hours_21",
                 "rarity": 3
             },
+            "soft": {
+            	"name": "Soft",
+            	"types": [
+            		"valentine",
+            		"yellow",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ],
+                "notes": [
+                	"hidden"
+                ]
+            },
             "softheart": {
                 "name": "Soft Heart",
                 "types": [
@@ -37863,6 +38136,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
+                ]
+            },
+            "startop": {
+            	"name": "Startop",
+            	"types": [
+            		"holiday",
+            		"yellow",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "startopper": {
@@ -41353,6 +41653,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "level": 4,
                 "offspringeligibility": "expired"
             },
+            "turkeytail": {
+            	"name": "Turkey Tail",
+            	"types": [
+            		"flower",
+            		"yellow",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "18_hours_18",
+            	"rarity": 4,
+            	"offspringeligibility": "leaderboard",
+            	"notes": [
+            		"feature"
+            	]
+            },
             "turkish": {
                 "name": "Turkish",
                 "types": [
@@ -42504,6 +42821,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                         [
                             "types", [
                                 "yellow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
+            "visucius": {
+            	"name": "Visucius",
+            	"types": [
+            		"mythic",
+            		"yellow",
+            		"white"
+            	],
+            	"environments": [
+            		"dragon_islands"
+            	],
+            	"incubation": "4_hours_4",
+            	"rarity": 1,
+            	"parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
                             ]
                         ]
                     ]

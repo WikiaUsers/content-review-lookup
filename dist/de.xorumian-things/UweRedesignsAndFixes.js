@@ -103,6 +103,21 @@ $("head").append(`<style>
 		scale: 1 -1;
 		translate: 0 10px;
 	}
+	span[data-letter=Z]::before {
+		content: "Z";
+		font-size: 36px;
+		position: absolute;
+		scale: -1 1;
+	}
+	@media only screen and (min-width: 2560px) {
+	span[data-letter="V"],
+	span[data-letter="y"],
+	span[data-letter="J"],
+	span[data-letter="Б"],
+	span[data-letter="h"] {
+		transform: translateY(1px)
+	}
+}
 	</style>`
 );
 document.querySelectorAll('.page-header__title').forEach(h1 => {
@@ -114,13 +129,17 @@ document.querySelectorAll('.page-header__title').forEach(h1 => {
 		.replace(/Ǝ/g, '<span data-letter="E" style="scale:-1 1">Ǝ</span>')
 		.replace(/ǝ/g, '<span data-letter="e" style="scale:-1 1">ǝ</span>')
 		.replace(/ꟼ/g, '<span data-letter="P" style="scale:-1 1">ꟼ</span>')
-		.replace(/ɥ/g, '<span data-letter="h" style="scale:-1 -1;translate:0 5px;">ɥ</span>')
 		.replace(/Ʒ/g, '<span data-letter="3">Ʒ</span>')
 		.replace(/ȝ/g, '<span data-letter="3" style="translate:0 6px">ȝ</span>')
 		.replace(/Ɵ/g, '<span data-letter="Э">Ɵ</span>')
 		.replace(/ɵ/g, '<span data-letter="э">ɵ</span>')
 		.replace(/δ/g, '<span data-letter="o">δ</span>')
-		.replace(/Λ/g, '<span data-letter="V" style="rotate:180deg;translate:0 -1.4px;">Λ</span>')
+		.replace(/ⴵ/g, '<span data-letter="Z">ⴵ</span>')
+		.replace(/Λ/g, '<span data-letter="V" style="scale:1 -1;translate:0 -1.2px;">Λ</span>')
+		.replace(/♇/g, '<span data-letter="Б" style="scale:1 -1;translate:0 -1.2px;">♇</span>')
+		.replace(/λ/g, '<span data-letter="y" style="scale:1 -1;translate: 0 5.5px;">λ</span>')
+		.replace(/Ꮭ/g, '<span data-letter="J" style="scale:-1 -1;translate:0 -1.2px;">Ꮭ</span>')
+		.replace(/ɥ/g, '<span data-letter="h" style="scale:-1 -1;translate:0 5.4px;">ɥ</span>')
 		.replace(/ɑ/g, '<span data-letter="d" style="overflow:hidden;height:20px;translate:0 .7px;">ɑ</span>')
 		.replace(/Ψ/g, '<span data-letter="I" style="margin:0 10px;">Ψ</span>')
 		.replace(/φ/g, '<span data-letter="e" φ style="rotate:270deg;translate:3.5px 1px;scale:1 -1;margin-right:2px;">φ</span>')

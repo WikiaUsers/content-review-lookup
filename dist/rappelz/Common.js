@@ -168,6 +168,16 @@ if (mapdiv) {
   hookEvent('load', mapLoad);
 }
 
+
+
+/* The NavFrame method of making collapsible comment has been replaced by mw-collapsible. 
+   mw-collapsible is part of the mediawiki release, so we see none of its code.
+   The following section all relate to the old NavFrame method.
+   It should be safe to remove them, but initially I'm commenting them out to make sure nothing breaks.
+   They also have some related css common.css. 
+     */
+
+
 // ============================================================
 // BEGIN Dynamic Navigation Bars 
 // This script is from Wikipedia. For author attribution, please see 
@@ -183,21 +193,21 @@ if (mapdiv) {
  * Description: Uses regular expressions and caching for better performance.
  * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
  */
- 
+/* 
 var hasClass = (function () {
     var reCache = {};
     return function (element, className) {
         return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
     };
 })();
- 
+*/ 
  /** Collapsible tables *********************************************************
   *
   *  Description: Allows tables to be collapsed, showing only the header. See
   *               [[Wikipedia:NavFrame]].
   *  Maintainers: [[User:R. Koot]]
   */
- 
+/* 
  var autoCollapse = 2;
  var collapseCaption = "less";
  var expandCaption = "more";
@@ -256,8 +266,8 @@ var hasClass = (function () {
              Button.appendChild( document.createTextNode( "]" ) );
  
              var Header = Tables[i].getElementsByTagName( "tr" )[0].getElementsByTagName( "th" )[0];
-             /* only add button and increment count if there is a header row to work with */
-             if (Header) {
+*/             /* only add button and increment count if there is a header row to work with */
+/*             if (Header) {
                  Header.insertBefore( Button, Header.childNodes[0] );
                  tableIndex++;
              }
@@ -271,13 +281,13 @@ var hasClass = (function () {
      }
  }
  addOnloadHook( createCollapseButtons );
- 
+ */
  /** Dynamic Navigation Bars (experimental) *************************************
   *
   *  Description: See [[Wikipedia:NavFrame]].
   *  Maintainers: UNMAINTAINED
   */
- 
+/* 
   // set up the words in your language
   var NavigationBarHide = '[' + collapseCaption + ']';
   var NavigationBarShow = '[' + expandCaption + ']';
@@ -383,6 +393,6 @@ var hasClass = (function () {
  
   } 
  addOnloadHook( createNavigationBarToggleButton );
- 
+*/ 
 // END Dynamic Navigation Bars (experimantal)
 // ============================================================

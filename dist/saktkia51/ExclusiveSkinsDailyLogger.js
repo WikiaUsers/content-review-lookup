@@ -7,16 +7,16 @@
 	if (srcContainer && !document.getElementById('ExclusiveSkinsDailyLogger_Container')) {
 		console.log("[Exclusive Skins Daily Logger] [LOG]: Running script...");
 		const placeholderImage = "https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/47/Placeholder.png/revision/latest?cb=20220315033423&format=original";
-		const _ = undefined;
 		const gameVersion = "V17.0";
 		const weaponsCount = 21;
+		
 		function checkPlural(input, config = {}) {
 			if (input === 1) {
 				return config.singular;
 			} else {
 				return config.plural ?? config.singular;
-			}
-		}
+			};
+		};
 		
 		const materialFiles = {
 			antenna:"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/20/Craft_Antenna.png/revision/latest?cb=20250828210204&format=original",
@@ -70,14 +70,14 @@
 				ribbon:"Ribbon",
 			};
 			return obj[id] ?? id;
-		}
+		};
 		class WeaponSkin {
 			constructor(mainDetails = {}, otherDetails = {}) {
 				this.id = mainDetails.id;
 				this.name = mainDetails.name ?? mainDetails.id;
 				this.rarity = mainDetails.rarity ?? 'unknown';
 				this.otherDetails = otherDetails;
-			}
+			};
 			formatCraftingReqs(factor = 1, format = {}) {
 				format.inclX ??= true;
 				format.inclIcon ??= true;
@@ -85,7 +85,7 @@
 				format.iconPlacement ??= 'after';
 				if (format.inclX) {
 					format.xPlacement ??= 'after';
-				}
+				};
 				format.outputSeparator ??= ', ';
 				
 				const src = this;
@@ -98,24 +98,24 @@
 							str = 'x' + str;
 						} else {
 							str = str + 'x';
-						}
-					}
+						};
+					};
 					if (format.inclMatName) {
 						str += ' ' + formatMatName(mat);
-					}
+					};
 					if (format.inclIcon) {
-						const imageStr = `<span class='infoicon'><img src='${materialFiles[mat]}'></img></span>`;
+						const imageStr = `<span class='infoicon'><img class='DblClickImg' src='${materialFiles[mat]}'></img></span>`;
 						if (format.iconPlacement === 'before') {
 							str = ` ${imageStr} ${str}`;
 						} else {
 							str = ` ${str} ${imageStr}`;
-						}
-					}
+						};
+					};
 					output.push(str);
-				}
+				};
 				return output.join(format.outputSeparator);
-			}
-		}
+			};
+		};
 		const skins = [];
 		function getCraftingReqs(id) {
 			const obj = {
@@ -152,7 +152,7 @@
 				'equinox':{tentacle:2, ice:1, skin:9, fur:3},
 			};
 			return obj[id] ?? {};
-		}
+		};
 		function getExampleImage(id) {
 			const obj = {
 				'rose':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/53/Gun_Skins_-_P90_-_Rose.png/revision/latest?cb=20260318205450&format=original",
@@ -187,18 +187,19 @@
 				'redox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/ba/Gun_Skins_-_P90_-_Redox.png/revision/latest?cb=20260321063307&format=original",
 				'equinox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/cc/Weapon_Skins_-_P90_-_Equinox.png/revision/latest?cb=20260412100738&format=original",
 			};
-			const elem = `<div class='exampleImageContainer hoverimg'><img class='image' src='${obj[id] ?? placeholderImage}'></img><div class='caption'>In-game appearance</div></div>`;
+			const elem = `<div class='exampleImageContainer'><img class='image DblClickImg' src='${obj[id] ?? placeholderImage}'></img><div class='caption'>In-game appearance</div></div>`;
 			return elem;
-		}
+		};
 		function formatRarityName(id) {
 			const obj = {
 				'entry':'Entry',
 				'expert':'Expert',
 				'exotic':'Exotic',
 				'secret':'Secret',
+				'unknown':'Unknown',
 			};
 			return obj[id] ?? id;
-		}
+		};
 		function getRarityClass(id) {
 			const obj = {
 				'entry':'Entry',
@@ -210,8 +211,8 @@
 				return 'SkinRarity_' + obj[id];
 			} else {
 				return '';
-			}
-		}
+			};
+		};
 		{
 			skins.push(new WeaponSkin({
 				id:'rose',
@@ -368,6 +369,7 @@
 				name:'Equinox',
 				rarity:'expert',
 			}, {craftable:true}));
+			skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			/*
 			skins.push(new WeaponSkin({
 				id:'',
@@ -375,7 +377,7 @@
 				rarity:'',
 			}, {}));
 			*/
-		}
+		};
 		
 		const mainContainer = srcContainer.appendChild(document.createElement('div'));
 		mainContainer.setAttribute('id', 'ExclusiveSkinsDailyLogger_Container');
@@ -393,13 +395,12 @@
 			overflow:auto;
 			margin:auto;
 			
-			.hoverimg {
-				& img {
-					transition:0.5s;
-				}
-				& img:hover {
-					opacity:50%;
-				}
+			.DblClickImg {
+				cursor:pointer;
+				transition:0.5s;
+			}
+			.DblClickImg:hover {
+				opacity:50%;
 			}
 			
 			& .title {
@@ -421,7 +422,6 @@
 					& img {
 						width:150px;
 						border:4px solid var(--saktkia51-border-color);
-						cursor:pointer;
 					}
 					& .caption {
 						max-height:10em;
@@ -464,36 +464,48 @@
 				let delta2 = currentDate.getTime() - origDate.getTime();
 				if (offsets[0] !== offsets[1]) {
 					delta2 += delta;
-				}
+				};
 				return delta2;
-			}
+			};
 			function getArrIndex() {
 				return Math.floor(getDelta() / (86400 * 1e3)) % skins.length;
-			}
+			};
 			const indexPicked = specificIndex ?? getArrIndex();
 			pickedSkin.dailyNumber = indexPicked + 1;
 			pickedSkin.whichSkin = skins[indexPicked];
-		}
+		};
 		function updateTitle() {
 			const s = pickedSkin.whichSkin;
+			function rarityAdder() {
+				return !s.otherDetails.unknown ? ` (<span class='${getRarityClass(s.rarity)}'>${formatRarityName(s.rarity)}</span>)` : '';
+			};
 			let str = `Today's exclusive daily skin:<br/>`
-			+ `<span class='subtitle'>${s.name} (<span class='${getRarityClass(s.rarity)}'>${formatRarityName(s.rarity)}</span>)`
+			+ `<span class='subtitle'>${s.name}${rarityAdder()}`
 			+ ` (#${pickedSkin.dailyNumber.toLocaleString()}/${skins.length.toLocaleString()})</span>`;
 			title.innerHTML = str;
-		}
+		};
 		function updateBody() {
 			const s = pickedSkin.whichSkin;
 			let str = '';
 			str += getExampleImage(s.id);
-			if (s.otherDetails.craftable) {
-				str += `Crafting Requirements (single craft): ${s.formatCraftingReqs()}`;
-				str += `<br/>Crafting Requirements (all weapons): ${s.formatCraftingReqs(weaponsCount)}`;
-			}
+			if (!s.otherDetails.unknown) {
+				if (s.otherDetails.craftable) {
+					str += `Crafting Requirements (single craft): ${s.formatCraftingReqs()}`;
+					str += `<br/>Crafting Requirements (all weapons): ${s.formatCraftingReqs(weaponsCount)}`;
+				};
+			};
 			body.innerHTML = str;
-			body.querySelector('.exampleImageContainer img').addEventListener('click', function() {
-				window.open(this.src);
-			});
-		}
+			
+			{
+				const e = body.querySelectorAll('.DblClickImg');
+				const l = e.length;
+				for (let j = 0; j < l; j++) {
+					e[j].addEventListener('dblclick', function() {
+						window.open(this.src);
+					});
+				};
+			};
+		};
 		function updateClosingNotes() {
 			const count = skins.length;
 			let dateFormat = mw.user.options.get('date');
@@ -510,12 +522,13 @@
 				default:
 				dateFormat = 'yyyy-MM-dd HH:mm:ss';
 				break;
-			}
+			};
 			let str = "(Based on your local time zone, accounting for all " + count.toLocaleString()
 			+ ` exclusive daily ${checkPlural(count, {singular:'skin', plural:'skins'})}.`
-			+ ` Auto updates every 15 seconds, and the last update was at ${formatDate(new Date(), dateFormat)}.`;
+			+ ` Auto updates every 10 seconds, and the last update was at ${formatDate(new Date(), dateFormat)}.`;
 			closingNotes.innerHTML = str;
-		}
+		};
+		
 		function updateAll() {
 			updateInternalData();
 			updateTitle();
@@ -523,9 +536,9 @@
 			updateClosingNotes();
 		};
 		updateAll();
-		setInterval(updateAll, 15e3);
+		setInterval(updateAll, 10e3);
 		
 	} else {
 		console.log("[Exclusive Skins Daily Logger] [LOG]: Script activation conditions not met. Exiting...");
-	}
-}
+	};
+};

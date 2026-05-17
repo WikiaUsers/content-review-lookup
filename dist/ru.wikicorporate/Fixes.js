@@ -90,3 +90,101 @@
     
     processImages();
 })();
+
+
+/* Исправление достижений */
+(() => {
+
+    const namespace = mw.config.get('wgNamespaceNumber');
+    const specialPage = mw.config.get('wgCanonicalSpecialPageName');
+
+    if (namespace !== 2 && specialPage !== 'Leaderboard') return;
+
+    if (window.isAchievementsFixed) return;
+    window.isAchievementsFixed = true;
+
+    // Восстановление недостающих описаний
+    const missingDescriptions = {
+        'welcome':      'Награда за регистрацию на Вики.',
+        'creator':      'Награда за создание Вики. Отличная работа!',
+        'pounce':       'За создание 100 статей на Вики.',
+        'introduction': 'Награда за создание своей страницы участника.',
+        'sayhi':        'Награда за сообщение на чужой стене обсуждения.'
+    };
+
+    const getPlural = (number) => {
+        const absNum = Math.abs(number);
+        const mod10 = absNum % 10;
+        const mod100 = absNum % 100;
+
+        if (mod100 >= 11 && mod100 <= 14) return 'изображений в статьи';
+        if (mod10 === 1) return 'изображение в статью';
+        if (mod10 >= 2 && mod10 <= 4) return 'изображения в статьи';
+        return 'изображений в статьи';
+    };
+
+    const fixTooltip = (tooltipNode) => {
+        if (tooltipNode.dataset.achievementFixed) return;
+
+        const badgeIcon = tooltipNode.nextElementSibling;
+        
+        if (badgeIcon && badgeIcon.classList.contains('badge-icon')) {
+            const iconData = badgeIcon.outerHTML.toLowerCase(); 
+
+            const paragraphs = tooltipNode.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                if (!p.textContent.trim()) {
+                    for (const [internalKey, desc] of Object.entries(missingDescriptions)) {
+                        if (iconData.includes(internalKey.toLowerCase())) {
+                            p.innerHTML = desc;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Исправление ошибок перевода и склонений
+        let content = tooltipNode.innerHTML;
+
+        content = content
+            .replace(/categoryselect-addcategory-button/g, 'Добавить категорию')
+            .replace(/rte-ck-image-add/g, 'Добавить изображение')
+            .replace(/oasis-signup/g, 'Регистрация') 
+            .replace(/⧼|⧽/g, ''); 
+
+        content = content.replace(
+            /((?:(?:\d+(?:[\s,.\xA0]|&nbsp;)+)*\d+))\s+(?:изображений|изображения|изображение)(?:[\s<br>]*в[\s]*)(?:статьи|статью|статей)/gi,
+            (match, numStr) => {
+                const cleanNumStr = numStr.replace(/\D/g, ''); 
+                const number = parseInt(cleanNumStr, 10);
+                if (Number.isNaN(number)) return match;
+                return `${numStr} ${getPlural(number)}`;
+            }
+        );
+
+        tooltipNode.innerHTML = content.trim();
+        tooltipNode.dataset.achievementFixed = "true";
+    };
+
+    const processTooltips = () => {
+        const unhandledTooltips = document.querySelectorAll('.profile-hover:not([data-achievement-fixed="true"])');
+        unhandledTooltips.forEach(fixTooltip);
+    };
+
+    const observer = new MutationObserver((mutations) => {
+        let hasNewNodes = false;
+        for (const mutation of mutations) {
+            if (mutation.addedNodes.length > 0) {
+                hasNewNodes = true;
+                break;
+            }
+        }
+        if (hasNewNodes) {
+            processTooltips();
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+    processTooltips();
+})();

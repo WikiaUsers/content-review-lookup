@@ -335,3 +335,7 @@ if (slides.length <= 1) {
         autoSlide = setInterval(nextSlide, 4000);
     });
 }
+
+
+
+window.AddRailModule = [{prepend: true}];

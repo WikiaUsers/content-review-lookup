@@ -592,37 +592,71 @@ document.addEventListener("click", () => {setTimeout(initVisibleInfoboxTabs, 120
 (function () {
 
   function expandAllAncestors(target) {
-
     var node = target;
 
     while (node) {
-
-      //Portable infobox handling
+      // Portable infobox handling
       if (node.classList && node.classList.contains("pi-collapse")) {
-
         node.classList.add("pi-collapse-open");
         node.classList.remove("pi-collapse-closed");
-
       }
 
-      //CH handling
+      // CH handling
       if (node.classList && node.classList.contains("ch-outer-wrapper")) {
-
         var header = node.previousElementSibling;
         var toggle = header && header.querySelector(".ch-toggle");
 
         if (toggle && toggle.classList.contains("ch-toggle--collapsed")) {
           toggle.click();
         }
-
       }
 
       node = node.parentElement;
     }
   }
 
-  document.addEventListener("click", function (e) {
+  function activateTabs(target) {
+	  const tabber = target.closest(".wds-tabber, .wds-tabs__wrapper");
+	  if (!tabber) return false;
+	
+	  // Find the direct panel ancestor of the target
+	  const panel = target.closest(".wds-tab__content");
+	  if (!panel || !tabber.contains(panel)) return false;
+	
+	  // Collect only direct child panels of this tabber
+	  const panels = Array.from(tabber.querySelectorAll(":scope > .wds-tab__content"));
+	  const index = panels.indexOf(panel);
+	  if (index === -1) return false;
+	
+	  // Collect only direct child tabs of this tabber
+	  const tabsList = tabber.querySelector(".wds-tabs");
+	  const tabs = tabsList ? Array.from(tabsList.children) : [];
+	  const tab = tabs[index];
+	
+	  // Reset siblings inside this tabber
+	  panels.forEach(p => {
+	    if (p !== panel) p.classList.remove("wds-is-current");
+	  });
+	  tabs.forEach(t => {
+	    if (t !== tab) {
+	      t.classList.remove("wds-is-current");
+	      t.setAttribute("aria-selected", "false");
+	      t.tabIndex = -1;
+	    }
+	  });
+	
+	  // Activate the correct panel + tab
+	  panel.classList.add("wds-is-current");
+	  if (tab) {
+	    tab.classList.add("wds-is-current");
+	    tab.setAttribute("aria-selected", "true");
+	    tab.tabIndex = 0;
+	  }
+	
+	  return true;
+  }
 
+  document.addEventListener("click", function (e) {
     const link = e.target.closest("a[href^='#']");
     if (!link) return;
 
@@ -630,12 +664,16 @@ document.addEventListener("click", () => {setTimeout(initVisibleInfoboxTabs, 120
     const target = document.getElementById(id);
     if (!target) return;
 
+    // Original expand behavior
     expandAllAncestors(target);
 
+    // Only activate tab if target is inside one
+    activateTabs(target);
+
+    // Original scroll behavior
     setTimeout(() => {
       target.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 50);
-
   }, false);
 
 })();

@@ -138,15 +138,20 @@ function initCustomMap(mapData) {
             .filter(val => !isNaN(val));
 
         const incompleteCheckbox = document.querySelector('#wds-checkbox-2');
-        const showIncomplete = incompleteCheckbox ? incompleteCheckbox.checked : false;
+        const showIncomplete = incompleteCheckbox ? incompleteCheckbox.checked : true;
 
         markersCluster.clearLayers();
+
         let visibleCompleted = 0;
         let visibleIncomplete = 0;
 
         allMarkers.forEach(obj => {
             const isCompleted = completedMarkers.includes(obj.markerId);
-            const categoryMatch = checkedCategories.length === 0 || checkedCategories.includes(String(obj.categoryId));
+            
+            // Normal category filtering (no forcing anymore)
+            const categoryMatch = checkedCategories.length === 0 || 
+                                  checkedCategories.includes(String(obj.categoryId));
+
             const progressMatch = isCompleted ? true : showIncomplete;
 
             if (categoryMatch && progressMatch) {
@@ -156,6 +161,7 @@ function initCustomMap(mapData) {
             }
         });
 
+        // Update counts
         const completeEl = document.querySelector('.interactive-maps__filter-progress--disabled .interactive-maps__filter-value');
         const incompleteEl = document.querySelector('[data-testid="marker-progress-filter-incomplete"] .interactive-maps__filter-value');
         if (completeEl) completeEl.textContent = visibleCompleted;
@@ -189,6 +195,16 @@ function initCustomMap(mapData) {
     function resolveIcon(fileName) {
         return new Promise(resolve => {
             if (!fileName) return resolve(null);
+
+            // Support direct URL for Scroll icon
+            if (fileName.startsWith('http')) {
+                return resolve(L.icon({
+                    iconUrl: fileName,
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                }));
+            }
+
             const clean = fileName.replace(/^File:/i, '').trim();
             if (imageCache[clean]) {
                 return resolve(L.icon({
@@ -197,6 +213,7 @@ function initCustomMap(mapData) {
                     iconAnchor: [16, 32]
                 }));
             }
+
             api.get({
                 action: 'query',
                 titles: 'File:' + clean,
@@ -440,6 +457,8 @@ document.querySelector('.filter-btn').innerHTML = `
                   <label for="wds-checkbox-3">Select All</label>
                 </div>
               </div>
+
+              <!-- General -->
               <div class="interactive-maps__filter">
                 <div class="wds-checkbox">
                   <input type="checkbox" id="wds-checkbox-4" tabindex="0" value="1" checked="">
@@ -454,25 +473,46 @@ document.querySelector('.filter-btn').innerHTML = `
                   </label>
                 </div>
               </div>
+
+              <!-- Chest -->
               <div class="interactive-maps__filter">
                 <div class="wds-checkbox">
                   <input type="checkbox" id="wds-checkbox-5" tabindex="0" value="2" checked="">
                   <label for="wds-checkbox-5">
                     <span class="interactive-maps__filters-marker-icon MarkerIcon-module_icon__dNELM" style="width: 16px; height: 16px;">
-                      <img alt="File:Chest.png" src="https://static.wikia.nocookie.net/wandering-sword/images/b/b3/Chest.png/revision/latest?cb=20260316205911" data-testid="interactive-maps-marker-icon-custom-marker" style="max-width: 16px; max-height: 16px;">
+                      <img alt="File:Chest.png" src="https://static.wikia.nocookie.net/wandering-sword/images/b/b3/Chest.png/revision/latest?cb=20260316205911" style="max-width: 16px; max-height: 16px;">
                     </span>
                     <span class="interactive-maps__filter-category-name">Chest</span>
                   </label>
                 </div>
               </div>
+
+              <!-- Manual -->
               <div class="interactive-maps__filter">
                 <div class="wds-checkbox">
                   <input type="checkbox" id="wds-checkbox-6" tabindex="0" value="3" checked="">
                   <label for="wds-checkbox-6">
                     <span class="interactive-maps__filters-marker-icon MarkerIcon-module_icon__dNELM" style="width: 16px; height: 16px;">
-                      <img alt="File:Map Manual.png" src="https://static.wikia.nocookie.net/wandering-sword/images/1/1e/Map_Manual.png/revision/latest?cb=20260317083435" data-testid="interactive-maps-marker-icon-custom-marker" style="max-width: 16px; max-height: 16px;">
+                      <img alt="File:Map Manual.png" src="https://static.wikia.nocookie.net/wandering-sword/images/1/1e/Map_Manual.png/revision/latest?cb=20260317083435" style="max-width: 16px; max-height: 16px;">
                     </span>
                     <span class="interactive-maps__filter-category-name">Manual</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Scroll -->
+<div class="interactive-maps__filter">
+                <div class="wds-checkbox">
+                  <input type="checkbox" id="wds-checkbox-7" tabindex="0" value="4" checked="">
+                  <label for="wds-checkbox-7">
+                    <span class="interactive-maps__filters-marker-icon MarkerIcon-module_icon__dNELM" style="width: 16px; height: 16px;">
+                      <img 
+                           alt="Scroll" 
+                           src="https://static.wikia.nocookie.net/wandering-sword/images/8/8d/Scroll.png/revision/latest" 
+                           data-testid="interactive-maps-marker-icon-custom-marker" 
+                           style="max-width: 16px; max-height: 16px;">
+                    </span>
+                    <span class="interactive-maps__filter-category-name">Scroll</span>
                   </label>
                 </div>
               </div>

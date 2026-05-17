@@ -1,5 +1,30 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.quizName = "Test your Zoids knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "You still need a lot to learn to become a great Zoid pilot!",
+    "There are some more knowledgeable Zoid pilots, but you are right in the middle in terms of knowledge!",
+    "Congrats! Your knowledge makes you a very great Zoid pilot!" 
+];
+window.questions = [
+    ["Who of those characters is not a member of Team Freedom?",
+    "Quade",
+    "Bastion",
+    "Apex"], 
+
+    ["Who of those characters is an adult?",
+    "Sigma",
+    "RD",
+    "Blake"],
+
+    ["Which of those Zoids seasons got an actual western English dub?",
+    "Zoids Wild",
+    "Zoids Wild Zero",
+    "Zoids Genesis"],
+
+];
+
 window.MessageBlock = {
   title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',

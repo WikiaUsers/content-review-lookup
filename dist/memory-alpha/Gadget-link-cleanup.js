@@ -1,4 +1,3 @@
-// <pre>
 'use strict';
 mw.loader.using(['mediawiki.api', 'mediawiki.util'], () => {
 	const version = '2.1.1';
@@ -68,9 +67,9 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], () => {
 	
 	function removeLinks(i){
 		const newText = linkCleanup.content[i]
-			.replace(/\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}(?= *[/;])/g, '{{subst:#ifexist:$1||{{rl|$1}}}}')
-			.replace(/(?<=[/;] *)\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}/g, '{{subst:#ifexist:$1||{{rl|$1}}}}')
-			.replace(/\n(\*+) *\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}$/gm, '{{subst:#ifexist:$2||\n$1 {{rl|$2}}}}');
+			.replace(/\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}(?= *[/;])/g, '{{subst:' + '#ifexist:$1||{{rl|$1}}}}')
+			.replace(/(?<=[/;] *)\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}/g, '{{subst:' + '#ifexist:$1||{{rl|$1}}}}')
+			.replace(/\n(\*+) *\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}$/gm, '{{subst:' + '#ifexist:$2||\n$1 {{rl|$2}}}}');
 		const params = paramsMaker(
 			linkCleanup.pages[i],
 			newText,
@@ -182,4 +181,5 @@ function paramsMaker(ttl, txt, cmt){
 		'maxlag': 5,
 	};
 }
-// </pre>
+
+// {{JavaScript category}}
