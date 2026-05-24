@@ -44,7 +44,7 @@ mw.loader.using('mediawiki.util').then(function() {
 
 // Default settings
         medalDefaultSettings: function() {
-            default_cfg = JSON.stringify({dataUser:{}, dataMedal: {}, module_title: 'User\'s reward', module_more: 'Show more', module_count_info: 'Amounts of this achievement', module_info: '', module_info_title: '', border: { top_left: 'https://static.wikia.nocookie.net/siegenax/images/1/13/Medal_Border_corner.png', top_right: 'https://static.wikia.nocookie.net/siegenax/images/d/de/Medal_Border_corner_right.png' }});
+            default_cfg = JSON.stringify({dataUser:{}, dataMedal: {}, module_title: 'User\'s reward', module_more: 'Show more', module_count_info: 'Amounts of this achievement', module_info: '', module_info_title: '', border: { top_left: 'https://static.wikia.nocookie.net/siegenax/ru/images/1/13/Medal_Border_corner.png', top_right: 'https://static.wikia.nocookie.net/siegenax/ru/images/d/de/Medal_Border_corner_right.png' }});
             
             $('#mw-content-text').prepend('<div style="width:100%; text-aling:center; padding:20px;">Settings not exist or broken.&nbsp;<button id="MedalResetSettings">Reset them?</button></div>');
             $('#MedalResetSettings').click(function() {

@@ -43,7 +43,7 @@ UserTagsJS.modules.custom = {
 	'Ghoxst.X': ['fandomcontributor'],
 	'IcySpriggan': ['fandomcontributor'],
     'Rainworth': ['fandomcontributor'],
-    'F_PsinFand0m': ['fandomcontributor'],
+    'F PsinFand0m': ['fandomcontributor'],
 	//'UserName1': ['fandomcontributor'],
 }
 

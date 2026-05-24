@@ -1,5 +1,8 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-// RailModule
-window.AddRailModule = ['Template:Discussion moudle'];
-
-/* The invalid "dev:ProfileTags.js" line has been removed from here. */
+/* Adds Template:RailModule to the top of the sidebar */
+$(function() {
+    if ($('#WikiaRail').length) {
+        $('<section class="rail-module"></section>')
+            .appendTo('#WikiaRail')
+            .load('/wiki/Template:RailModule?action=render');
+    }
+});

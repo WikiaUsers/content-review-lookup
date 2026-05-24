@@ -1,12 +1,3 @@
-mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(() => {
-	window.PurgeButtonText = 'Purge';
-	
-	importArticles({
-		type: 'script',
-		articles: [
-			'u:dev:MediaWiki:PurgeButton/code.js',
-		]
-	});
-});
+mw.loader.load('/load.php?mode=articles&only=scripts&articles=u:dev:MediaWiki:PurgeButton.js');
 
 // {{JavaScript category}}

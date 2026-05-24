@@ -870,8 +870,6 @@
                 } else {
                     body.classList.remove('overflow-allowed');
                 }
-            }, {
-                once: true
             });
         },
 

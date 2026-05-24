@@ -74,78 +74,22 @@ mw.loader.using(['jquery', 'mediawiki.util'], function() {
     new MutationObserver(initTooltips).observe(document.body, { childList: true, subtree: true });
 })();
 
-/* --- [4] СОДЕРЖАНИЕ (ТОЛЬКО ЕСЛИ НУЖНО) --- */
-$(function() {
-    const $nativeToc = $('#toc');
-    const config = mw.config.get(['wgCanonicalNamespace', 'wgIsMainPage', 'wgAction']);
-
-    // ПРОВЕРКА: Если нет родного TOC — не рисуем стекло вообще!
-    if (!$nativeToc.length || config.wgIsMainPage || config.wgAction !== 'view') return;
-
-    let isCollapsed = false;
-    try { isCollapsed = localStorage.getItem('wg-collapsed') === 'true'; } catch(e) {}
-
-    const $sidebar = $(`
-        <div id="wg-side-panel" class="wg-glass-panel ${isCollapsed ? 'wg-collapsed' : ''}">
-            <div class="wg-panel-header">
-                <div class="wg-header-info" ${isCollapsed ? 'style="display:none;"' : ''}>
-                    <span id="wg-header-title">Содержание</span>
-                    <div id="wg-current-stage">Начало</div>
-                </div>
-                <button id="wg-panel-toggle">${isCollapsed ? '☰' : '✕'}</button>
-            </div>
-            <div id="wg-panel-body" class="wg-panel-content" ${isCollapsed ? 'style="display:none;"' : ''}>
-                <div id="wg-progress-bar"><div id="wg-progress-fill"></div></div>
-                <div id="wg-custom-toc"></div>
-            </div>
-        </div>
-    `);
-
-    $('body').append($sidebar);
-    $nativeToc.appendTo('#wg-custom-toc');
-
-    $('#wg-panel-toggle').on('click', function() {
-        const $panel = $('#wg-side-panel'), $body = $('#wg-panel-body'), $info = $('.wg-header-info');
-        const isNowCollapsing = $body.is(':visible');
-        
-        $body.toggle(!isNowCollapsing);
-        $info.toggle(!isNowCollapsing);
-        $(this).text(isNowCollapsing ? '☰' : '✕');
-        $panel.toggleClass('wg-collapsed', isNowCollapsing);
-        
-        try { localStorage.setItem('wg-collapsed', isNowCollapsing); } catch(e) {}
-    });
-
-    // Скролл-трекер (только если есть заголовки)
-    if (window.IntersectionObserver) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const title = $(entry.target).find('.mw-headline').text();
-                    if (title) $('#wg-current-stage').text(title);
-                }
-            });
-        }, { rootMargin: '-100px 0px -70% 0px' });
-        $('h2, h3').each(function() { observer.observe(this); });
-    }
-});
-
-/* --- СКРЫВАЕМЫЕ ЗАГОЛОВКИ --- */
 /* --- СКРЫВАЕМЫЕ ЗАГОЛОВКИ --- */
 mw.hook('wikipage.content').add(function($content) {
-    const excluded = ["WikiGram", "Правила_WikiGram", "WikiGram:О_проекте", "Заявки"];
+    const excluded = ["WikiGram", "Правила_WikiGram", "WikiGram:О_проекте", "Заявки", "Песочница"];
     const currentPage = mw.config.get('wgPageName');
     if (excluded.includes(currentPage) || mw.config.get('wgAction') !== 'view') return;
 
     var $parseroutput = $content.children('.mw-parser-output');
     if (!$parseroutput.length) return;
 
-    // Сначала чистим старые обертки, если вдруг скрипт сработал дважды
+    // Чистим старое
     $parseroutput.find('.wg-outer-wrapper').contents().unwrap();
     $parseroutput.find('.wg-inner-wrapper').contents().unwrap();
     $parseroutput.find('.wg-toggle').remove();
 
-    ['h6', 'h5', 'h4', 'h3', 'h2'].forEach(function(tag) {
+    // От H2 к H6
+    ['h2', 'h3', 'h4', 'h5', 'h6'].forEach(function(tag) {
         $parseroutput.find(tag).each(function() {
             var $header = $(this);
             if ($header.closest('.portable-infobox, .navbox, #toc, .it-infobox, aside').length) return;
@@ -155,9 +99,19 @@ mw.hook('wikipage.content').add(function($content) {
             var $next = $header.next();
 
             while ($next.length) {
+                // Если встретили заголовок
                 if ($next.is('h2, h3, h4, h5, h6')) {
                     var nextLevel = parseInt($next.prop('tagName').substring(1));
                     if (nextLevel <= level) break;
+                }
+                // Если встретили обертку заголовка более высокого уровня (которую создали ранее)
+                if ($next.hasClass('wg-outer-wrapper')) {
+                    // Ищем заголовок внутри или перед ней, чтобы понять его уровень
+                    var $innerHeader = $next.prev('h2, h3, h4, h5, h6');
+                    if ($innerHeader.length) {
+                        var innerLevel = parseInt($innerHeader.prop('tagName').substring(1));
+                        if (innerLevel <= level) break;
+                    }
                 }
                 
                 if ($next.is('.portable-infobox, .it-infobox, aside, .infobox')) {
@@ -171,7 +125,6 @@ mw.hook('wikipage.content').add(function($content) {
 
             if (contentEls.length === 0) return;
 
-            // БОЛЬШЕ НИКАКИХ ИНЛАЙН СТИЛЕЙ ТУТ
             var $outer = $('<div class="wg-outer-wrapper"></div>');
             var $inner = $('<div class="wg-inner-wrapper"></div>');
 
@@ -182,7 +135,8 @@ mw.hook('wikipage.content').add(function($content) {
             var $toggle = $('<span>')
                 .addClass('wg-toggle')
                 .text('▼')
-                .on('click', function() {
+                .on('click', function(e) {
+                    e.stopPropagation(); // Защита от ложных срабатываний во вложенных блоках
                     var isCollapsed = $outer.hasClass('wg-outer--collapsed');
                     
                     if (isCollapsed) {

@@ -1,11 +1,14 @@
 (function() {
-    // --- 1. SAFE LOADER ---
+    // --- 1. SAFE LOADER (Fandom Optimized) ---
+    let loadAttempts = 0;
     const checkExist = setInterval(function() {
         const root = document.getElementById('imperial-terminal-root');
         if (root) {
             clearInterval(checkExist);
             initImperialHolomap(root);
         }
+        // Safety feature: Stop checking after 10 seconds so it doesn't lag other wiki pages
+        if (++loadAttempts > 100) clearInterval(checkExist); 
     }, 100);
 
     // --- 2. THE DATABASE ---
@@ -170,16 +173,17 @@
             "Locations": { 
                 type: "holomap", 
                 data: [
-                    { name: "MANDALA SECTOR", startAngle: 0, endAngle: 45, desc: "Outer Rim // Lothal System", sub: [ { title: "LOTHAL", image: "https://project-imperial-dawn.fandom.com/special:filepath/Lothal.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"PLAINS/SPIRES", "SECTOR":"Mandala"}, bio: "A peaceful Outer Rim world heavily industrialized by the Empire. Now serving as the new Cadet Academy." } ] },
-                    { name: "MYTARANOR SECTOR", startAngle: 45, endAngle: 90, desc: "Mid Rim // Wookiee Homeworlds", sub: [ { title: "KASHYYYK", image: "https://project-imperial-dawn.fandom.com/special:filepath/Kashyyyk.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"JUNGLE/WROSHYR FORESTS", "SECTOR":"Mytaranor"}, bio: "A lush, forest-covered world and home to the Wookiees. Currently under heavy Imperial blockade and resource extraction." } ] },
-                    { name: "ARKANIS SECTOR", startAngle: 90, endAngle: 150, desc: "Outer Rim // Tatoo System", sub: [ { title: "TATOOINE", image: "https://project-imperial-dawn.fandom.com/special:filepath/Tatooine.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"ARID DESERT", "SECTOR":"Arkanis"}, bio: "A harsh, sun-scorched world orbiting a binary star system. A haven for smugglers and the Hutt Cartel." } ] },
-                    { name: "ANOAT SECTOR", startAngle: 150, endAngle: 200, desc: "Outer Rim // Ison Corridor", sub: [ { title: "HOTH", image: "https://project-imperial-dawn.fandom.com/special:filepath/Hoth.png", status: "HELD BY THE REBEL ALLIANCE", stats: {"TERRAIN":"FROZEN TUNDRA", "SECTOR":"Anoat"}, bio: "A remote, ice-covered world. Scans indicate negligible life forms, making it an ideal hideout for terrorist cells." } ] },
-                    { name: "ATRAVIS SECTOR", startAngle: 200, endAngle: 240, desc: "Outer Rim // Mustafar System", sub: [ { title: "MUSTAFAR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mustafar.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"VOLCANIC HELLSCAPE", "SECTOR":"Atravis"}, bio: "A volatile, fire-scorched world rich in minerals and dark side energy. Personal sanctum of Lord Vader." }, { title: "NUR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Nur.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"OCEANIC MOON", "SECTOR":"Atravis"}, bio: "A water-rich moon housing the Fortress Inquisitorius. A secure black-site for the detention of Force-sensitives." } ] },
-                    { name: "UNKNOWN REGIONS", startAngle: 240, endAngle: 260, desc: "Uncharted Space // Galactic West", sub: [ { title: "UNKNOWN SIGNAL", image: "https://placehold.co/300x150/000/555?text=No+Data", status: "UNEXPLORED", stats: {"TERRAIN":"UNKNOWN", "SECTOR":"Unknown"}, bio: "No navigational data available. Long-range sensors detect anomalies. This sector has not yet been charted." } ] },
-                    { name: "OJOSTER SECTOR", startAngle: 260, endAngle: 280, desc: "Outer Rim // Wayland System", sub: [ { title: "WAYLAND", image: "https://project-imperial-dawn.fandom.com/special:filepath/Wayland.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"MOUNTAIN FACILITY", "SECTOR":"Ojoster"}, bio: "A highly classified Imperial mountain facility. It serves as the official academy for the Stormtrooper Corps." } ] },
-                    { name: "CHOMMELL SECTOR", startAngle: 280, endAngle: 300, desc: "Mid Rim // Naboo System", sub: [ { title: "NABOO", image: "https://project-imperial-dawn.fandom.com/special:filepath/Naboo.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"LUSH PLANET", "SECTOR":"Chommell"}, bio: "A beautiful, pastoral world and the homeworld of Emperor Sheev Palpatine." } ] },
-                    { name: "CORUSCA SECTOR", startAngle: 300, endAngle: 330, desc: "Core Worlds // Capital System", sub: [ { title: "CORUSCANT", image: "https://project-imperial-dawn.fandom.com/special:filepath/Coruscant.png", status: "HELD BY THE GALACTIC EMPIRE", stats: {"TERRAIN":"ECUMENOPOLIS", "SECTOR":"Corusca"}, bio: "The ecumenopolis capital of the Galactic Empire. The seat of Emperor Palpatine's power and the central hub of galactic governance." } ] },
-                    { name: "CIRCUMTORE SECTOR", startAngle: 330, endAngle: 360, desc: "Expansion Region // Strategic Mining", sub: [ { title: "MIMBAN", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mimban.png", status: "WAR", stats: {"TERRAIN":"SWAMP/MUD FLATS", "SECTOR":"Circumtore"}, bio: "A dark, mineral-rich world perpetually shrouded in fog. Critical mining infrastructure for the Imperial war machine." } ] }
+                    { name: "CORUSCA SECTOR", startAngle: 0, endAngle: 32, desc: "Core Worlds // Capital System", sub: [ { title: "CORUSCANT", image: "https://project-imperial-dawn.fandom.com/special:filepath/Coruscant.png", status: "IMPERIAL OCCUPIED", stats: {"TERRAIN":"ECUMENOPOLIS", "SECTOR":"Corusca"}, bio: "The ecumenopolis capital of the Galactic Empire. The seat of Emperor Palpatine's power and the central hub of galactic governance." } ] },
+                    { name: "MANDALA SECTOR", startAngle: 32, endAngle: 65, desc: "Outer Rim // Lothal System", sub: [ { title: "LOTHAL", image: "https://project-imperial-dawn.fandom.com/special:filepath/Lothal.png", status: "IMPERIAL OCCUPIED", stats: {"TERRAIN":"PLAINS/SPIRES", "SECTOR":"Mandala"}, bio: "A peaceful Outer Rim world heavily industrialized by the Empire. Now serving as the new Cadet Academy." } ] },
+                    { name: "ATRAVIS SECTOR", startAngle: 65, endAngle: 98, desc: "Outer Rim // Mustafar System", sub: [ { title: "MUSTAFAR & NUR", image: "https://project-imperial-dawn.fandom.com/special:filepath/Mustafar.png", status: "IMPERIAL OCCUPIED", stats: {"TERRAIN":"VOLCANIC / OCEANIC", "SECTOR":"Atravis"}, bio: "A volatile, fire-scorched world and its water-rich moon. Home to Lord Vader's sanctum and the Fortress Inquisitorius." } ] },
+                    { name: "OJOSTER SECTOR", startAngle: 98, endAngle: 130, desc: "Outer Rim // Wayland System", sub: [ { title: "TANTISS", image: "https://project-imperial-dawn.fandom.com/special:filepath/Wayland.png", status: "IMPERIAL OCCUPIED", stats: {"TERRAIN":"MOUNTAIN FACILITY", "SECTOR":"Ojoster"}, bio: "A highly classified Imperial mountain facility located on Wayland. It houses the Empire's most guarded secrets." } ] },
+                    { name: "CHOMMELL SECTOR", startAngle: 130, endAngle: 163, desc: "Mid Rim // Naboo System", sub: [ { title: "NABOO", image: "https://project-imperial-dawn.fandom.com/special:filepath/Naboo.png", status: "CONTESTED", stats: {"TERRAIN":"LUSH PLANET", "SECTOR":"Chommell"}, bio: "A beautiful, pastoral world and the homeworld of Emperor Sheev Palpatine. Now engulfed in conflict." } ] },
+                    { name: "ABRION SECTOR", startAngle: 163, endAngle: 196, desc: "Outer Rim // Kamino System", sub: [ { title: "KAMINO", image: "https://project-imperial-dawn.fandom.com/special:filepath/Kamino.png", status: "CONTESTED", stats: {"TERRAIN":"OCEANIC", "SECTOR":"Abrion"}, bio: "An aquatic planet known for its cloning facilities. Currently a highly contested battleground." } ] },
+                    { name: "MYTARANOR SECTOR", startAngle: 196, endAngle: 229, desc: "Mid Rim // Wookiee Homeworlds", sub: [ { title: "KASHYYYK", image: "https://project-imperial-dawn.fandom.com/special:filepath/Kashyyyk.png", status: "CONTESTED", stats: {"TERRAIN":"JUNGLE/WROSHYR FORESTS", "SECTOR":"Mytaranor"}, bio: "A lush, forest-covered world and home to the Wookiees. Currently caught in a fierce planetary struggle." } ] },
+                    { name: "DOLDUR SECTOR", startAngle: 229, endAngle: 261, desc: "Expansion Region // Ghost Nebula", sub: [ { title: "UMBARA", image: "https://project-imperial-dawn.fandom.com/special:filepath/Umbara.png", status: "CONTESTED", stats: {"TERRAIN":"SHADOW WORLD", "SECTOR":"Doldur"}, bio: "A dark world shrouded in perpetual gloom, home to advanced technology and fierce resistance." } ] },
+                    { name: "GAULUS SECTOR", startAngle: 261, endAngle: 294, desc: "Outer Rim // Ryloth System", sub: [ { title: "RYLOTH", image: "https://project-imperial-dawn.fandom.com/special:filepath/Ryloth.png", status: "CONTESTED", stats: {"TERRAIN":"DESERT/CANYONS", "SECTOR":"Gaulus"}, bio: "The harsh, rocky homeworld of the Twi'leks, known for its fierce freedom fighters and contested territories." } ] },
+                    { name: "THANIUM SECTOR", startAngle: 294, endAngle: 327, desc: "Outer Rim // Felucia System", sub: [ { title: "FELUCIA", image: "https://project-imperial-dawn.fandom.com/special:filepath/Felucia.png", status: "CONTESTED", stats: {"TERRAIN":"FUNGAL JUNGLE", "SECTOR":"Thanium"}, bio: "A vibrant, wildly overgrown world teeming with giant fungal life and dangerous predators." } ] },
+                    { name: "BRIGHT JEWEL SECTOR", startAngle: 327, endAngle: 360, desc: "Mid Rim // Ord Mantell System", sub: [ { title: "ORD MANTELL", image: "https://project-imperial-dawn.fandom.com/special:filepath/OrdMantel.png", status: "SYNDICATE OCCUPIED", stats: {"TERRAIN":"SCRAP/MOUNTAINS", "SECTOR":"Bright Jewel"}, bio: "A haven for bounty hunters, smugglers, and criminal organizations. Currently under Syndicate control." } ] }
                 ]
             }
         }
@@ -189,6 +193,15 @@
         { label: "DISCORD", url: "https://discord.gg/imperialdawn" },
         { label: "ROBLOX GROUP", url: "https://www.roblox.com/communities/130610862/Project-Imperial-Dawn#!/about" },
         { label: "GAME LAUNCH", url: "YOUR_GAME_LINK" }
+    ];
+
+    // --- 3. FACTION CONFIGURATION (EASY TO EDIT) ---
+    const FACTION_CONFIG = [
+        { keyword: "CONTESTED", theme: "war-theme", poly: "war-held", pin: "war" },
+        { keyword: "REBEL", theme: "hostile-rebel", poly: "rebel-held", pin: "rebel" },
+        { keyword: "SYNDICATE", theme: "syndicate-theme", poly: "syndicate-held", pin: "syndicate" },
+        { keyword: "IMPERIAL", theme: "empire-theme", poly: "empire-held", pin: "empire" },
+        { keyword: "EMPIRE", theme: "empire-theme", poly: "empire-held", pin: "empire" }
     ];
 
     // --- 4. MAIN INITIALIZATION ---
@@ -201,6 +214,7 @@
                 --imp-blue-dark: rgba(0, 229, 255, 0.1);
                 --imp-red: #ff3333; 
                 --imp-gold: #ffcc00; 
+                --imp-purple: #b026ff; 
                 --imp-dark: #050a0f; 
                 --imp-glass: rgba(0, 229, 255, 0.05); 
                 --imp-border: rgba(0, 229, 255, 0.3); 
@@ -366,7 +380,6 @@
             }
             .record-card:hover { border-color: var(--imp-blue); box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15); transform: translateX(8px); background: rgba(0, 20, 35, 0.85); }
             
-            /* Themes */
             .record-card.theme-rebel { border-color: rgba(255,51,51,0.3); border-left-color: var(--imp-red); }
             .record-card.theme-rebel:hover { border-color: var(--imp-red); box-shadow: 0 10px 30px rgba(255,51,51,0.15); }
             .record-card.theme-rebel .record-meta { color: var(--imp-red); }
@@ -587,6 +600,14 @@
             .dossier-box.war-theme .dossier-rank { color: var(--imp-gold); }
             .dossier-box.war-theme .dossier-stats-grid { background: rgba(255, 204, 0, 0.08); border-color: rgba(255, 204, 0, 0.2); }
             .dossier-box.war-theme .stat-row span:last-child { color: #fff; }
+
+            /* DOSSIER SYNDICATE THEME */
+            .dossier-box.syndicate-theme { border-color: var(--imp-purple); box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 50px rgba(176, 38, 255, 0.2); }
+            .dossier-box.syndicate-theme .dossier-close:hover { background: var(--imp-purple); color: #fff; box-shadow: 0 0 15px var(--imp-purple); }
+            .dossier-box.syndicate-theme .dossier-header { border-bottom-color: var(--imp-purple); }
+            .dossier-box.syndicate-theme .dossier-rank { color: var(--imp-purple); }
+            .dossier-box.syndicate-theme .dossier-stats-grid { background: rgba(176, 38, 255, 0.08); border-color: rgba(176, 38, 255, 0.2); }
+            .dossier-box.syndicate-theme .stat-row span:last-child { color: #fff; }
             
             .dossier-box.no-img { width: 650px; }
             .dossier-box.no-img .dossier-img { display: none; }
@@ -675,19 +696,67 @@
             .status-msg { font-size: 12px; text-align: center; margin-bottom: 12px; font-weight: bold; color: var(--imp-suc); letter-spacing: 1px; }
 
             /* --- PREMIUM HOLOMAP (CONCENTRIC RINGS REWORK) --- */
-            .holomap-wrapper { position: relative; width: 100%; flex: 1; min-height: 800px; overflow: hidden; background: radial-gradient(circle at center, #00101c 0%, #000000 100%); display: flex; align-items: center; justify-content: center; perspective: 1200px; z-index: 1; border-top: 1px solid var(--imp-border); box-shadow: inset 0 0 150px rgba(0,229,255,0.05); }
+            /* FIX FANDOM CSS OVERRIDES */
+            .holomap-wrapper * { box-sizing: border-box !important; } 
             
-            /* NEBULA BACKGROUND */
-            .nebula-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 30% 40%, rgba(120, 40, 180, 0.25) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(40, 120, 200, 0.2) 0%, transparent 40%), radial-gradient(circle at 40% 70%, rgba(200, 50, 80, 0.15) 0%, transparent 40%); mix-blend-mode: screen; pointer-events: none; z-index: 0; }
+            .holomap-wrapper { position: relative; width: 100%; height: 100%; min-height: 800px; flex: 1; overflow: hidden; background: radial-gradient(circle at center, #00101c 0%, #000000 100%); display: flex; align-items: center; justify-content: center; perspective: 1200px; z-index: 1; border-top: 1px solid var(--imp-border); box-shadow: inset 0 0 150px rgba(0,229,255,0.05); }
             
-            /* MAP LEGEND */
-            .map-legend { position: absolute; top: 20px; left: 20px; background: rgba(0,10,20,0.8); border: 1px solid rgba(0,229,255,0.4); padding: 15px 20px; border-radius: 6px; z-index: 600; backdrop-filter: blur(12px); color: #fff; font-size: 11px; font-weight: bold; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: none; }
-            .map-legend div { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-            .map-legend div:last-child { margin-bottom: 0; }
+            /* NEBULA BACKGROUND - SOFTER */
+            .nebula-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 30% 40%, rgba(120, 40, 180, 0.15) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(40, 120, 200, 0.1) 0%, transparent 40%), radial-gradient(circle at 40% 70%, rgba(200, 50, 80, 0.1) 0%, transparent 40%); mix-blend-mode: screen; pointer-events: none; z-index: 0; }
+            
+            /* MAP LEGEND (COLLAPSIBLE FIX) */
+            .map-legend { position: absolute; top: 20px; left: 20px; background: rgba(0,10,20,0.85); border: 1px solid rgba(0,229,255,0.4); padding: 15px 20px; border-radius: 6px; z-index: 600; backdrop-filter: blur(12px); color: #fff; font-size: 11px; font-weight: bold; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); pointer-events: auto; }
+            .legend-header { cursor: pointer; user-select: none; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; margin-bottom: 8px; color: var(--imp-blue); }
+            .legend-content { display: block; overflow: hidden; }
+            .legend-content div { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+            .legend-content div:last-child { margin-bottom: 0; }
+
+            /* MAP TOP RIGHT TOOLS (SEARCH & FILTERS) */
+            .map-top-bar { position: absolute; top: 20px; right: 20px; z-index: 600; display: flex; flex-direction: column; gap: 15px; align-items: flex-end; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+            
+            /* FIX OVERLAP: SHIFT TOP BAR LEFT WHEN SIDEBAR IS OPEN */
+            .holomap-wrapper.sidebar-open .map-top-bar { right: 360px; }
+            
+            .faction-filters { display: flex; gap: 8px; background: rgba(0,10,20,0.8); padding: 8px; border: 1px solid rgba(0,229,255,0.4); border-radius: 6px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+            .f-btn { padding: 6px 12px; font-size: 10px; font-weight: 900; color: #888; border: 1px solid #555; cursor: pointer; transition: 0.3s; letter-spacing: 1px; margin: 0 !important; }
+            .f-btn:hover, .f-btn.active { background: rgba(255,255,255,0.1); color: #fff; border-color: #fff; }
+            .f-btn[data-faction="empire"].active { background: rgba(0,229,255,0.2); color: var(--imp-blue); border-color: var(--imp-blue); box-shadow: 0 0 10px var(--imp-blue); }
+            .f-btn[data-faction="rebel"].active { background: rgba(255,51,51,0.2); color: var(--imp-red); border-color: var(--imp-red); box-shadow: 0 0 10px var(--imp-red); }
+            .f-btn[data-faction="syndicate"].active { background: rgba(176,38,255,0.2); color: var(--imp-purple); border-color: var(--imp-purple); box-shadow: 0 0 10px var(--imp-purple); }
+            .f-btn[data-faction="war"].active { background: rgba(255,204,0,0.2); color: var(--imp-gold); border-color: var(--imp-gold); box-shadow: 0 0 10px var(--imp-gold); }
+
+            .map-search-box { position: relative; width: 250px; }
+            #map-search { width: 100%; background: rgba(0,10,20,0.8); border: 1px solid rgba(0,229,255,0.4); padding: 10px 15px; color: #fff; font-family: monospace; font-size: 12px; outline: none; border-radius: 6px; backdrop-filter: blur(12px); transition: 0.3s; margin: 0 !important; }
+            #map-search:focus { border-color: var(--imp-blue); box-shadow: 0 0 15px rgba(0,229,255,0.3); }
+            .search-results { position: absolute; top: calc(100% + 5px); left: 0; width: 100%; background: rgba(0,10,20,0.95); border: 1px solid var(--imp-blue); max-height: 200px; overflow-y: auto; display: none; z-index: 610; }
+            .search-results.active { display: block; }
+            .sr-item { padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 11px; color: #cceeff; display: flex; justify-content: space-between; align-items: center; }
+            .sr-item:hover { background: rgba(0,229,255,0.2); color: #fff; }
+            .sr-planet { font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+            .sr-sector { font-size: 9px; color: #888; text-transform: uppercase; }
+            
+            /* FILTER DIMMING CLASS */
+            .dimmed { opacity: 0.05 !important; pointer-events: none !important; filter: grayscale(100%); }
 
             .holo-projector-beam { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 50%; background: linear-gradient(to top, rgba(0,229,255,0.08) 0%, transparent 100%); clip-path: polygon(30% 100%, 70% 100%, 100% 0, 0 0); pointer-events: none; z-index: 0; }
-            .holo-stage { position: relative; width: 800px; height: 800px; transform-style: preserve-3d; transition: transform 0.1s linear; z-index: 2; }
             
+            /* HARDWARE ACCELERATED STAGE - ABSOLUTE POSITIONING TO FIX ZOOMING */
+            .holo-stage { 
+                position: absolute; 
+                top: 50%; left: 50%; 
+                margin-top: -400px; margin-left: -400px; 
+                width: 800px; height: 800px; 
+                transform-style: preserve-3d; 
+                transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); 
+                z-index: 2; 
+                will-change: transform; 
+                transform-origin: center center; 
+            }
+            
+            /* RADAR SWEEP ANIMATION */
+            .radar-sweep { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 70%, rgba(0, 229, 255, 0.2) 100%); animation: radar-spin 6s linear infinite; pointer-events: none; z-index: 1.5; mix-blend-mode: screen; border: 1px solid rgba(0,229,255,0.1); }
+            @keyframes radar-spin { 100% { transform: rotate(360deg); } }
+
             /* Enhanced Galaxy Core */
             .holo-base { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(0,229,255,0.3); background: radial-gradient(circle at center, rgba(30, 40, 60, 0.6) 0%, rgba(10, 15, 25, 0.8) 40%, rgba(0, 0, 0, 0.9) 70%); box-shadow: inset 0 0 80px rgba(0,229,255,0.2), 0 0 40px rgba(0,229,255,0.2); z-index: 1; transform-style: preserve-3d; }
             
@@ -717,8 +786,12 @@
             .sector-poly.unknown-sector.hovered { fill: rgba(255,255,255,0.15); stroke: rgba(255,255,255,0.8); stroke-width: 1.5px; }
 
             /* Empire Sectors (Blue) - Single stroke outer boundary */
-            .sector-poly.empire-held { fill: rgba(0, 150, 255, 0.15); stroke: rgba(0, 180, 255, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(0, 180, 255, 0.5)); }
-            .sector-poly.empire-held.hovered { fill: rgba(0, 150, 255, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.8)); }
+            .sector-poly.empire-held { fill: rgba(0, 229, 255, 0.15); stroke: rgba(0, 229, 255, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.5)); }
+            .sector-poly.empire-held.hovered { fill: rgba(0, 229, 255, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.8)); }
+
+            /* Syndicate Sectors (Purple) - Single stroke outer boundary */
+            .sector-poly.syndicate-held { fill: rgba(176, 38, 255, 0.15); stroke: rgba(176, 38, 255, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(176, 38, 255, 0.5)); }
+            .sector-poly.syndicate-held.hovered { fill: rgba(176, 38, 255, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(176, 38, 255, 0.8)); }
 
             /* Rebel Sectors (Red) - Single stroke outer boundary */
             .sector-poly.rebel-held { fill: rgba(255, 50, 50, 0.15); stroke: rgba(255, 50, 50, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(255, 50, 50, 0.5)); }
@@ -728,27 +801,49 @@
             .sector-poly.war-held { fill: rgba(255, 204, 0, 0.15); stroke: rgba(255, 204, 0, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5)); }
             .sector-poly.war-held.hovered { fill: rgba(255, 204, 0, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.8)); }
 
-            /* Clean Sci-Fi HUD Pins */
+            /* Clean Sci-Fi HUD Pins - NAMETAGS REWORK */
             .holo-pin { position: absolute; width: 0; height: 0; z-index: 30; pointer-events: none; transform-style: preserve-3d; }
-            .pin-wrapper { position: absolute; bottom: 0; left: -100px; width: 200px; transform-style: preserve-3d; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transform-origin: bottom center; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
+            .holo-pin:hover { z-index: 100; } /* Brings hovered label above others to fix overlap */
             
-            .pin-label { background: rgba(0, 15, 30, 0.85); border: 1px solid rgba(0, 229, 255, 0.8); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 2px; padding: 6px 16px; margin-bottom: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(0,229,255,0.5); white-space: nowrap; text-transform: uppercase; border-radius: 4px; backdrop-filter: blur(6px); text-shadow: 0 0 6px rgba(255,255,255,0.6); }
-            .pin-stem { width: 2px; height: 40px; background: linear-gradient(to top, rgba(0,229,255,0.9), transparent); }
+            .pin-wrapper { position: absolute; bottom: 0; left: -100px; width: 200px; transform-style: preserve-3d; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transform-origin: bottom center; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: none; will-change: transform; z-index: 1; }
             
-            .holo-pin.rebel .pin-label { border-color: rgba(255, 51, 51, 0.8); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(255,51,51,0.5); }
-            .holo-pin.rebel .pin-stem { background: linear-gradient(to top, rgba(255,51,51,0.9), transparent); }
+            /* Sleek transparent background with glowing bottom edge and crisp anti-aliased font */
+            .pin-label { 
+                background: rgba(5, 10, 15, 0.95) !important; 
+                border: 1px solid rgba(255, 255, 255, 0.15) !important; 
+                color: #ffffff !important; 
+                font-size: 13px !important; 
+                font-weight: 800 !important; 
+                font-family: 'Segoe UI', Arial, sans-serif !important;
+                letter-spacing: 1.5px !important; 
+                padding: 6px 14px !important; 
+                margin-bottom: 12px !important; 
+                box-shadow: 0px 8px 20px rgba(0,0,0,0.8) !important; 
+                white-space: nowrap !important; 
+                text-transform: uppercase !important; 
+                border-radius: 4px !important; 
+                line-height: 1 !important;
+                -webkit-font-smoothing: antialiased !important;
+                text-rendering: optimizeLegibility !important;
+                pointer-events: auto !important;
+                text-shadow: none !important; /* Disabilita le ombre sfocate per pulire il testo nel 3D */
+            }
+            .pin-stem { width: 2px !important; height: 40px !important; background: linear-gradient(to top, rgba(0,229,255,0.9), transparent) !important; }
+            
+            .holo-pin.rebel .pin-label { border-bottom: 3px solid var(--imp-red) !important; }
+            .holo-pin.rebel .pin-stem { background: linear-gradient(to top, rgba(255,51,51,0.9), transparent) !important; }
 
-            .holo-pin.empire .pin-label { border-color: rgba(0, 180, 255, 0.8); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(0,180,255,0.5); }
-            .holo-pin.empire .pin-stem { background: linear-gradient(to top, rgba(0,180,255,0.9), transparent); }
+            .holo-pin.empire .pin-label { border-bottom: 3px solid var(--imp-blue) !important; }
+            .holo-pin.empire .pin-stem { background: linear-gradient(to top, rgba(0,229,255,0.9), transparent) !important; }
 
-            .holo-pin.war .pin-label { border-color: rgba(255, 204, 0, 0.8); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(255,204,0,0.5); }
-            .holo-pin.war .pin-stem { background: linear-gradient(to top, rgba(255,204,0,0.9), transparent); }
+            .holo-pin.syndicate .pin-label { border-bottom: 3px solid var(--imp-purple) !important; }
+            .holo-pin.syndicate .pin-stem { background: linear-gradient(to top, rgba(176, 38, 255, 0.9), transparent) !important; }
 
-            .holo-pin.neutral .pin-label { border-color: rgba(255, 255, 255, 0.6); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 12px rgba(255,255,255,0.4); }
-            .holo-pin.neutral .pin-stem { background: linear-gradient(to top, rgba(255,255,255,0.7), transparent); }
+            .holo-pin.war .pin-label { border-bottom: 3px solid var(--imp-gold) !important; }
+            .holo-pin.war .pin-stem { background: linear-gradient(to top, rgba(255,204,0,0.9), transparent) !important; }
 
-            @keyframes text-flicker { 0%, 100% { opacity: 1; text-shadow: none; } 50% { opacity: 0.6; text-shadow: 0 0 10px rgba(255,51,51,0.8); } 52% { opacity: 1; } 54% { opacity: 0.4; } 56% { opacity: 1; } }
-            .holo-pin.rebel .pin-label, .holo-pin.war .pin-label { animation: text-flicker 4s infinite; }
+            .holo-pin.neutral .pin-label { border-bottom: 3px solid #fff !important; }
+            .holo-pin.neutral .pin-stem { background: linear-gradient(to top, rgba(255,255,255,0.7), transparent) !important; }
 
             .star-field { position: absolute; top: -500px; left: -500px; width: 2000px; height: 2000px; pointer-events: none; transform-style: preserve-3d; z-index: 0; }
             .h-star { position: absolute; background: #fff; width: 2px; height: 2px; opacity: 0.6; border-radius: 50%; box-shadow: 0 0 4px #fff; }
@@ -756,7 +851,8 @@
             /* YELLOW PLANET FIX FOR WAR SECTORS */
             .planet-sphere { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-blue) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-blue); margin-bottom: 6px; animation: planet-pulse 4s infinite alternate; }
             .holo-pin.rebel .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-red) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-red); }
-            .holo-pin.war .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, #ffcc00 40%, #000 90%); box-shadow: 0 0 20px #ffcc00; }
+            .holo-pin.syndicate .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-purple) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-purple); }
+            .holo-pin.war .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-gold) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-gold); }
             .holo-pin.neutral .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, #aaaaaa 40%, #000 90%); box-shadow: 0 0 20px #fff; }
             @keyframes planet-pulse { 0% { box-shadow: 0 0 8px currentColor; } 100% { box-shadow: 0 0 25px currentColor; } }
 
@@ -770,34 +866,48 @@
             .holo-sidebar { position: absolute; right: -340px; top: 0; width: 340px; height: 100%; background: rgba(2, 6, 12, 0.9); backdrop-filter: blur(20px); border-left: 2px solid var(--imp-border); transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 500; display: flex; flex-direction: column; box-shadow: -15px 0 50px rgba(0,0,0,0.9); }
             .holo-sidebar.active { right: 0; }
             .hs-header { padding: 30px 25px; border-bottom: 1px solid var(--imp-border); background: linear-gradient(90deg, rgba(0, 229, 255, 0.2), transparent); }
-            .hs-title { font-size: 22px; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 15px rgba(0,229,255,0.8); }
-            .hs-close { position: absolute; top: 20px; right: 20px; color: var(--imp-blue); cursor: pointer; font-size: 28px; transition: 0.3s; opacity: 0.7; }
+            .hs-title { font-size: 22px; font-weight: 900; color: #fff; margin: 0 !important; padding-right: 30px; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 15px rgba(0,229,255,0.8); }
+            .hs-close { position: absolute; top: 20px; right: 20px; color: var(--imp-blue); cursor: pointer; font-size: 28px; transition: 0.3s; opacity: 0.7; z-index: 10; }
             .hs-close:hover { opacity: 1; transform: rotate(90deg) scale(1.2); text-shadow: 0 0 15px var(--imp-blue); }
             .hs-body { flex: 1; overflow-y: auto; padding: 25px; }
             .hs-body::-webkit-scrollbar { width: 4px; }
             .hs-body::-webkit-scrollbar-thumb { background: var(--imp-blue); }
             
-            .hs-card { display: flex; gap: 15px; margin-bottom: 18px; background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), rgba(255,255,255,0.02)); padding: 15px; border: 1px solid rgba(0, 229, 255, 0.3); border-left: 5px solid var(--imp-blue); cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
-            .hs-card:hover:not(.hostile-rebel):not(.war-theme) { border-color: var(--imp-blue); background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); transform: translateX(5px); }
-            .hs-card img { width: 55px; height: 55px; object-fit: cover; border: 1px solid var(--imp-blue); border-radius: 4px; box-shadow: 0 0 12px rgba(0,229,255,0.4); }
+            /* DEFAULT / NEUTRAL CARD THEME */
+            .hs-card { display: flex; gap: 15px; margin-bottom: 18px; background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); padding: 15px; border: 1px solid rgba(255,255,255,0.1); border-left: 5px solid #888; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+            .hs-card:hover { border-color: #fff; background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(255,255,255,0.2); transform: translateX(5px); }
+            .hs-card img { width: 55px; height: 55px; object-fit: cover; border: 1px solid #888; border-radius: 4px; box-shadow: 0 0 8px rgba(255,255,255,0.2); }
+            
+            /* EMPIRE CARD THEME */
+            .hs-card.empire-theme { background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), rgba(255,255,255,0.02)); border: 1px solid rgba(0, 229, 255, 0.3); border-left: 5px solid var(--imp-blue); }
+            .hs-card.empire-theme .hs-meta { color: var(--imp-blue); }
+            .hs-card.empire-theme:hover { border-color: var(--imp-blue); background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); transform: translateX(5px); }
+            .hs-card.empire-theme img { border: 1px solid var(--imp-blue); box-shadow: 0 0 12px rgba(0,229,255,0.4); }
 
             /* REBEL CARD THEME */
             .hs-card.hostile-rebel { background: linear-gradient(90deg, rgba(255, 51, 51, 0.15), rgba(30, 0, 0, 0.6)); border: 1px solid rgba(255, 51, 51, 0.5); border-left: 5px solid var(--imp-red); }
             .hs-card.hostile-rebel .hs-name { color: #ffcccc; }
             .hs-card.hostile-rebel .hs-meta { color: var(--imp-red); opacity: 1; }
             .hs-card.hostile-rebel:hover { border-color: var(--imp-red); background: rgba(255, 51, 51, 0.25); box-shadow: 0 0 20px rgba(255, 51, 51, 0.4); transform: translateX(5px); }
-            .hs-card.hostile-rebel img { border-color: var(--imp-red); box-shadow: 0 0 12px rgba(255, 51, 51, 0.5); }
+            .hs-card.hostile-rebel img { border: 1px solid var(--imp-red); box-shadow: 0 0 12px rgba(255, 51, 51, 0.5); }
 
             /* WAR CARD THEME */
             .hs-card.war-theme { background: linear-gradient(90deg, rgba(255, 204, 0, 0.15), rgba(30, 25, 0, 0.6)); border: 1px solid rgba(255, 204, 0, 0.5); border-left: 5px solid var(--imp-gold); }
             .hs-card.war-theme .hs-name { color: #ffe680; }
             .hs-card.war-theme .hs-meta { color: var(--imp-gold); opacity: 1; }
             .hs-card.war-theme:hover { border-color: var(--imp-gold); background: rgba(255, 204, 0, 0.25); box-shadow: 0 0 20px rgba(255, 204, 0, 0.4); transform: translateX(5px); }
-            .hs-card.war-theme img { border-color: var(--imp-gold); box-shadow: 0 0 12px rgba(255, 204, 0, 0.5); }
+            .hs-card.war-theme img { border: 1px solid var(--imp-gold); box-shadow: 0 0 12px rgba(255, 204, 0, 0.5); }
+
+            /* SYNDICATE CARD THEME */
+            .hs-card.syndicate-theme { background: linear-gradient(90deg, rgba(176, 38, 255, 0.15), rgba(20, 0, 30, 0.6)); border: 1px solid rgba(176, 38, 255, 0.5); border-left: 5px solid var(--imp-purple); }
+            .hs-card.syndicate-theme .hs-name { color: #eebbff; }
+            .hs-card.syndicate-theme .hs-meta { color: var(--imp-purple); opacity: 1; }
+            .hs-card.syndicate-theme:hover { border-color: var(--imp-purple); background: rgba(176, 38, 255, 0.25); box-shadow: 0 0 20px rgba(176, 38, 255, 0.4); transform: translateX(5px); }
+            .hs-card.syndicate-theme img { border: 1px solid var(--imp-purple); box-shadow: 0 0 12px rgba(176, 38, 255, 0.5); }
 
             .hs-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
             .hs-name { color: #fff; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; }
-            .hs-meta { color: var(--imp-blue); font-size: 11px; text-transform: uppercase; font-weight: bold; opacity: 0.8; letter-spacing: 1.5px; }
+            .hs-meta { font-size: 11px; text-transform: uppercase; font-weight: bold; opacity: 0.8; letter-spacing: 1.5px; }
 
             .data-card.text-only { aspect-ratio: auto; min-height: 130px; border-left: 5px solid var(--imp-blue); }
             .data-card.text-only .card-content { justify-content: flex-start; gap: 12px; }
@@ -869,7 +979,6 @@
         let curCat = "HOME"; 
         let curSub = "Briefing";
 
-        // --- OPTIMIZATION: Use DocumentFragment for generating links
         const linkFrag = document.createDocumentFragment();
         QUICK_LINKS.forEach(link => {
             const a = document.createElement('a');
@@ -879,7 +988,6 @@
         linksEl.appendChild(linkFrag);
 
         function render() {
-            // Build Side Navigation
             navEl.innerHTML = '<div class="nav-header">DIRECTORY</div>';
             const navFrag = document.createDocumentFragment();
             Object.keys(DB).forEach(key => {
@@ -891,7 +999,6 @@
             });
             navEl.appendChild(navFrag);
 
-            // Build Top Tabs
             tabsEl.innerHTML = '';
             const tabFrag = document.createDocumentFragment();
             Object.keys(DB[curCat]).forEach(key => {
@@ -913,7 +1020,6 @@
             });
         }
 
-        // Keep popup logic consistent
         function openFactionBriefing(data) {
             const old = document.querySelector('.dossier-overlay');
             if(old) old.remove();
@@ -992,8 +1098,8 @@
                 const hasImg = data.image && data.image !== "";
                 let boxClass = "dossier-box";
                 
-                if(data.status && (data.status.includes("WAR") || data.status.includes("CONTESTED"))) boxClass += " war-theme";
-                else if(data.status && data.status.includes("REBEL")) boxClass += " hostile"; 
+                const match = FACTION_CONFIG.find(f => data.status.toUpperCase().includes(f.keyword));
+                if (match) boxClass += " " + match.theme;
                 
                 if(!hasImg) boxClass += " no-img";
                 const imgHtml = hasImg ? `<div class="dossier-img"><img src="${data.image}"></div>` : '';
@@ -1032,8 +1138,6 @@
             }, 800);
         }
 
-        // --- OPTIMIZATION: MODULAR RENDERING ENGINE ---
-        // This splits the gigantic monolith into clean, single-purpose functions
         const ViewRenderers = {
             "welcome": (data) => {
                 let html = '';
@@ -1265,20 +1369,45 @@
             },
             
             "holomap": (data) => {
-                screenEl.style.height = 'auto'; 
+                screenEl.style.height = '800px'; 
                 screenEl.style.padding = '0';
+                screenEl.style.overflow = 'hidden';
                 
                 screenEl.innerHTML = `
                     <div class="holomap-wrapper" id="holomap-wrapper">
                         <div class="nebula-bg"></div>
-                        <div class="map-legend">
-                            <div style="color:var(--imp-blue);">■ EMPIRE</div>
-                            <div style="color:var(--imp-red);">■ REBELLION</div>
-                            <div style="color:var(--imp-gold);">■ WAR IN PROGRESS</div>
-                            <div style="color:#888;">■ UNKNOWN</div>
+                        
+                        <div class="map-legend" id="map-legend">
+                            <div class="legend-header" id="legend-toggle">
+                                <span>DIRECTORY LEGEND</span>
+                                <span id="legend-chevron">▼</span>
+                            </div>
+                            <div class="legend-content" id="legend-content">
+                                <div><span style="color:var(--imp-blue);">■</span> EMPIRE</div>
+                                <div><span style="color:var(--imp-red);">■</span> REBELLION</div>
+                                <div><span style="color:var(--imp-purple);">■</span> SYNDICATE</div>
+                                <div><span style="color:var(--imp-gold);">■</span> WAR IN PROGRESS</div>
+                                <div><span style="color:#888;">■</span> UNKNOWN</div>
+                            </div>
                         </div>
+
+                        <div class="map-top-bar">
+                            <div class="map-search-box">
+                                <input type="text" id="map-search" placeholder="TARGET PLANET...">
+                                <div class="search-results" id="search-results"></div>
+                            </div>
+                            <div class="faction-filters" id="faction-filters">
+                                <div class="f-btn active" data-faction="all">ALL</div>
+                                <div class="f-btn" data-faction="empire-held">EMPIRE</div>
+                                <div class="f-btn" data-faction="rebel-held">REBEL</div>
+                                <div class="f-btn" data-faction="syndicate-held">SYNDICATE</div>
+                                <div class="f-btn" data-faction="war-held">WAR</div>
+                            </div>
+                        </div>
+
                         <div class="holo-projector-beam"></div>
                         <div class="holo-stage" id="holo-stage">
+                            <div class="radar-sweep"></div>
                             
                             <div class="holo-base"></div>
                             <div class="holo-core"></div>
@@ -1314,14 +1443,14 @@
                 const sidebar = document.getElementById('holo-sidebar');
                 const hsBody = document.getElementById('hs-body');
                 const starField = document.querySelector('.star-field');
+                const mapWrapper = document.getElementById('holomap-wrapper');
                 
                 let currentRotX = 35; 
                 let currentRotZ = 0.15;
                 let currentScale = 0.75;
                 
-                // --- OPTIMIZATION: Fragment for Stars ---
                 const starFrag = document.createDocumentFragment();
-                for(let i=0; i<400; i++){
+                for(let i=0; i<200; i++){
                     const s = document.createElement('div');
                     s.className = 'h-star';
                     const x = Math.random() * 2000, y = Math.random() * 2000, z = Math.random() * 500 - 250;
@@ -1429,6 +1558,8 @@
                 const polyBotFrag = document.createDocumentFragment();
                 const polyTopFrag = document.createDocumentFragment();
                 const pinsFrag = document.createDocumentFragment();
+                
+                let allPlanets = [];
 
                 data.data.forEach(sector => {
                     if (sector.startAngle !== undefined) {
@@ -1440,21 +1571,17 @@
                         else if (descUpper.includes("MID")) targetRing = 2;
                         else if (descUpper.includes("OUTER") || descUpper.includes("UNCHARTED")) targetRing = 3;
 
-                        const isRebel = sector.sub.some(p => p.status.includes("REBEL"));
-                        const isEmpire = sector.sub.some(p => p.status.includes("EMPIRE"));
-                        const isWar = sector.sub.some(p => p.status.includes("WAR") || p.status.includes("CONTESTED"));
+                        let match = FACTION_CONFIG.find(f => sector.sub.some(p => p.status.toUpperCase().includes(f.keyword)));
                         
                         let cssClass = "sector-poly";
                         let pinClass = "holo-pin";
                         
-                        if (isWar) {
-                            cssClass += " war-held"; pinClass += " war";
-                        } else if (isRebel) {
-                            cssClass += " rebel-held"; pinClass += " rebel";
-                        } else if (isEmpire) {
-                            cssClass += " empire-held"; pinClass += " empire";
+                        if (match) {
+                            cssClass += " " + match.poly;
+                            pinClass += " " + match.pin;
                         } else {
-                            cssClass += " unknown-sector"; pinClass += " neutral";
+                            cssClass += " unknown-sector";
+                            pinClass += " neutral";
                         }
 
                         let span = sector.endAngle - sector.startAngle;
@@ -1483,6 +1610,16 @@
                             pathString = describeArc(0, 0, rIn, rOut, s, e);
                         }
 
+                        if(sector.sub) {
+                            sector.sub.forEach(planet => {
+                                let planetData = Object.assign({}, planet);
+                                planetData.sectorName = sector.name;
+                                planetData.sectorData = sector;
+                                planetData.pinAngle = pinAngle;
+                                allPlanets.push(planetData);
+                            });
+                        }
+
                         const pathBot = document.createElementNS("http://www.w3.org/2000/svg", "path");
                         const pathTop = document.createElementNS("http://www.w3.org/2000/svg", "path");
                         
@@ -1490,6 +1627,11 @@
                         pathTop.setAttribute("d", pathString);
                         pathBot.setAttribute("class", cssClass);
                         pathTop.setAttribute("class", cssClass);
+                        
+                        if(match) {
+                            pathBot.setAttribute("data-faction", match.poly);
+                            pathTop.setAttribute("data-faction", match.poly);
+                        }
 
                         pathTop.onmouseenter = () => { pathBot.classList.add('hovered'); pathTop.classList.add('hovered'); };
                         pathTop.onmouseleave = () => { pathBot.classList.remove('hovered'); pathTop.classList.remove('hovered'); };
@@ -1501,6 +1643,7 @@
                         const pinPos = polarToCartesian(0, 0, pinRad, pinAngle);
                         const pin = document.createElement('div');
                         pin.className = pinClass;
+                        if(match) pin.setAttribute("data-faction", match.poly);
                         pin.style.left = (pinPos.x + 50) + "%";
                         pin.style.top = (pinPos.y + 50) + "%";
                         pin.innerHTML = `
@@ -1517,11 +1660,31 @@
                 svgLayerBot.appendChild(polyBotFrag);
                 svgLayerTop.appendChild(polyTopFrag);
                 stage.appendChild(pinsFrag);
+                
+                const pinElements = document.querySelectorAll('.pin-wrapper');
+                const filterBtns = document.querySelectorAll('.f-btn');
+                const filterPolys = document.querySelectorAll('.sector-poly');
+                const filterPins = document.querySelectorAll('.holo-pin');
+                const searchInput = document.getElementById('map-search');
+                const searchResults = document.getElementById('search-results');
+
+                document.getElementById('legend-toggle').onclick = () => {
+                    const content = document.getElementById('legend-content');
+                    const chevron = document.getElementById('legend-chevron');
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        chevron.innerText = '▼';
+                    } else {
+                        content.style.display = 'none';
+                        chevron.innerText = '▲';
+                    }
+                };
 
                 function updateTransform() {
                     stage.style.transform = `scale(${currentScale}) rotateX(${currentRotX}deg) rotateZ(${currentRotZ}deg)`;
-                    document.querySelectorAll('.pin-wrapper').forEach(lbl => {
-                        lbl.style.transform = `translateZ(25px) rotateZ(${-currentRotZ}deg) rotateX(${-currentRotX}deg)`;
+                    const inverseScale = 1 / currentScale; 
+                    pinElements.forEach(lbl => {
+                        lbl.style.transform = `translateZ(25px) rotateZ(${-currentRotZ}deg) rotateX(${-currentRotX}deg) scale(${inverseScale})`;
                     });
                 }
                 updateTransform();
@@ -1532,8 +1695,75 @@
                 document.getElementById('btn-zoom-out').onclick = () => { currentScale = Math.max(currentScale - 0.15, 0.4); updateTransform(); };
                 document.getElementById('btn-reset').onclick = () => { currentRotX = 35; currentRotZ = 0.15; currentScale = 0.75; updateTransform(); };
 
+                filterBtns.forEach(btn => {
+                    btn.onclick = () => {
+                        filterBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const factionTarget = btn.getAttribute('data-faction');
+                        
+                        filterPolys.forEach(p => {
+                            if (p.classList.contains('grid-filler')) return;
+                            if (factionTarget === 'all' || p.getAttribute('data-faction') === factionTarget) {
+                                p.classList.remove('dimmed');
+                            } else {
+                                p.classList.add('dimmed');
+                            }
+                        });
+                        
+                        filterPins.forEach(p => {
+                            if (factionTarget === 'all' || p.getAttribute('data-faction') === factionTarget) {
+                                p.classList.remove('dimmed');
+                            } else {
+                                p.classList.add('dimmed');
+                            }
+                        });
+                    };
+                });
+
+                searchInput.oninput = (e) => {
+                    const val = e.target.value.toLowerCase();
+                    searchResults.innerHTML = '';
+                    
+                    if (!val) {
+                        searchResults.classList.remove('active');
+                        return;
+                    }
+                    
+                    const matches = allPlanets.filter(p => p.title.toLowerCase().includes(val) || p.sectorName.toLowerCase().includes(val));
+                    
+                    if (matches.length > 0) {
+                        searchResults.classList.add('active');
+                        matches.forEach(match => {
+                            const div = document.createElement('div');
+                            div.className = 'sr-item';
+                            div.innerHTML = `<span class="sr-planet">${match.title}</span><span class="sr-sector">${match.sectorName}</span>`;
+                            div.onclick = () => {
+                                searchResults.classList.remove('active');
+                                searchInput.value = '';
+                                
+                                filterBtns[0].click();
+                                
+                                // Zoom tracking logic completely removed
+                                
+                                openSector(match.sectorData);
+                                setTimeout(() => openDossier(match), 450); 
+                            };
+                            searchResults.appendChild(div);
+                        });
+                    } else {
+                        searchResults.classList.remove('active');
+                    }
+                };
+
+                mapWrapper.addEventListener('click', (e) => {
+                    if(!e.target.closest('.map-search-box') && searchResults) {
+                        searchResults.classList.remove('active');
+                    }
+                });
+
                 function openSector(data) {
                     sidebar.classList.add('active');
+                    mapWrapper.classList.add('sidebar-open');
                     document.getElementById('hs-title').innerText = data.name;
                     hsBody.innerHTML = '';
                     if(data.sub.length === 0) {
@@ -1541,14 +1771,11 @@
                     } else {
                         const frag = document.createDocumentFragment();
                         data.sub.forEach(planet => {
-                            const div = document.createElement('div');
-                            let themeClass = '';
-                            if (planet.status.includes("WAR") || planet.status.includes("CONTESTED")) {
-                                themeClass = 'war-theme';
-                            } else if (planet.status.includes("REBEL")) {
-                                themeClass = 'hostile-rebel';
-                            }
+                            const s = planet.status.toUpperCase();
+                            const match = FACTION_CONFIG.find(f => s.includes(f.keyword));
+                            const themeClass = match ? match.theme : 'neutral-theme';
                             
+                            const div = document.createElement('div');
                             div.className = `hs-card ${themeClass}`;
                             div.innerHTML = `<img src="${planet.image}"><div class="hs-info"><div class="hs-name">${planet.title}</div><div class="hs-meta">${planet.stats.TERRAIN || 'Unknown'}</div></div>`;
                             div.onclick = () => openDossier(planet);
@@ -1557,11 +1784,14 @@
                         hsBody.appendChild(frag);
                     }
                 }
-                document.getElementById('hs-close').onclick = () => sidebar.classList.remove('active');
+                
+                document.getElementById('hs-close').onclick = () => {
+                    sidebar.classList.remove('active');
+                    mapWrapper.classList.remove('sidebar-open');
+                };
             }
         };
 
-        // --- Core Render Router ---
         function renderContent() {
             if (window.holomapAnimFrame) {
                 cancelAnimationFrame(window.holomapAnimFrame);
@@ -1581,7 +1811,6 @@
             }
         }
 
-        // Initialize!
         render();
     }
 })();

@@ -45,38 +45,6 @@ UserTagsJS.modules.custom = {
 	'Touchgrass210779': ['montheditor'],
 	'MapleIsNotAMapleLeaf': ['montheditor'],
 };
-window.quizName = "The Hard Quiz";
-window.quizLang = "en";
-window.resultsTextArray = [ 
-    "You suck so much, that's REALLY sad.",
-    "mid",
-    "You're clearly the biggest Babassian fan ever" 
-];
-window.questions = [
-    ["sin 120°",
-    "√3/2",
-    "√2/2",
-    "1/2",
-    "-√2/2",
-    "-√3/2",
-    "-1/2"],
-
-    ["sin 30°",
-    "1/2",
-    "√2/2",
-    "√3/2",
-    "-√2/2",
-    "-√3/2",
-    "-1/2"],
-
-    ["sin 45°",
-    "√2/2",
-    "√3/2",
-    "1/2",
-    "-√2/2",
-    "-√3/2",
-    "-1/2"],
-];
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 180;
 window.AutoCreateUserPagesConfig = {
@@ -89,120 +57,143 @@ window.AutoCreateUserPagesConfig = {
     notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
 };
 
-/* Section audio switcher for Fandom HTML5AudioPlayer + mw-collapsible
-   - When a section expands: stop all other audio, play this section's audio
-   - When a section collapses: stop this section's audio
-   Markup expected:
-     <div class="mw-collapsible ... audioSection" data-audio-section> ... <div class="html5audio" ...> ...
-*/
-
+// Audio Thing
 (function () {
-  "use strict";
+  var AUDIO_SELECTOR = ".html5audio.auto-page-audio audio, audio.auto-page-audio";
+  var WRAPPER_SELECTOR = ".html5audio.auto-page-audio, audio.auto-page-audio";
+  var startedByUser = false;
 
-  // --- audio helpers ---
-  function stopAudioEl(a) {
-    if (!a) return;
-    try {
-      a.pause();
-      a.currentTime = 0;
-      // load() is the “hard stop / reset” that fixes a lot of “it keeps playing” cases
-      a.load();
-    } catch (_) {}
+  function getControlledAudios() {
+    return Array.prototype.slice.call(document.querySelectorAll(AUDIO_SELECTOR));
   }
 
-  function stopAllAudioIn(root) {
-    root.querySelectorAll(".html5audio audio").forEach(stopAudioEl);
-  }
+  function isReallyVisible(el) {
+    if (!el) return false;
 
-  function stopAllAudioEverywhere() {
-    document.querySelectorAll(".html5audio audio").forEach(stopAudioEl);
-  }
+    var node = el;
 
-  function playSectionAudio(section) {
-    const wrappers = section.querySelectorAll(".html5audio");
-    if (!wrappers.length) return;
+    while (node && node !== document.body) {
+      if (node.classList) {
+        if (node.classList.contains("mw-collapsed")) return false;
+        if (node.classList.contains("collapsed")) return false;
+      }
 
-    // choose the first audio in the section (or change this if you have multiple)
-    const wrapper = wrappers[0];
-    const audio = wrapper.querySelector("audio");
-    if (!audio) return;
+      var style = window.getComputedStyle(node);
 
-    stopAllAudioEverywhere();
+      if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.opacity === "0"
+      ) {
+        return false;
+      }
 
-    // apply data-volume if present
-    const v = parseFloat(wrapper.dataset.volume);
-    if (!Number.isNaN(v)) audio.volume = Math.max(0, Math.min(1, v));
-
-    const p = audio.play();
-    if (p && typeof p.catch === "function") p.catch(() => {});
-  }
-
-  // --- accordion + default behavior ---
-  function init() {
-    const sections = Array.from(document.querySelectorAll("[data-audio-section].mw-collapsible"));
-    if (!sections.length) return;
-
-    const defaultSection =
-      document.querySelector('[data-audio-section][data-default-audio="1"]') || null;
-
-    function collapseSection(section) {
-      section.classList.add("mw-collapsed");
-      stopAllAudioIn(section);
+      node = node.parentElement;
     }
 
-    function expandSection(section) {
-      section.classList.remove("mw-collapsed");
-      playSectionAudio(section);
+    return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+  }
+
+  function prepareAudio(audio) {
+    if (!audio || audio.dataset.autoPageAudioReady === "1") return;
+
+    audio.dataset.autoPageAudioReady = "1";
+
+    var wrapper = audio.closest(".html5audio.auto-page-audio") || audio;
+
+    var vol = wrapper.getAttribute("data-volume");
+    if (vol !== null && vol !== "") {
+      var n = parseFloat(vol);
+      if (!isNaN(n)) audio.volume = Math.max(0, Math.min(1, n));
     }
 
-    // 1) Observe class changes so audio stops even if something else collapses it
-    sections.forEach((section) => {
-      const obs = new MutationObserver(() => {
-        const collapsed = section.classList.contains("mw-collapsed");
-        if (collapsed) {
-          stopAllAudioIn(section);
+    audio.loop = true;
+    audio.preload = "auto";
+  }
 
-          // Optional: when a non-default collapses, resume default
-          if (defaultSection && section !== defaultSection) {
-            if (defaultSection.classList.contains("mw-collapsed")) {
-              expandSection(defaultSection);
-            } else {
-              playSectionAudio(defaultSection);
-            }
-          }
-        }
-      });
+  function tryPlay(audio) {
+    prepareAudio(audio);
 
-      obs.observe(section, { attributes: true, attributeFilter: ["class"] });
+    if (!isReallyVisible(audio)) {
+      audio.pause();
+      return;
+    }
+
+    var promise = audio.play();
+
+    if (promise && typeof promise.catch === "function") {
+      promise.catch(function () {});
+    }
+  }
+
+  function syncAudios() {
+    getControlledAudios().forEach(function (audio) {
+      prepareAudio(audio);
+
+      if (isReallyVisible(audio)) {
+        tryPlay(audio);
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+      }
     });
+  }
 
-    // 2) Accordion behavior: opening one collapses all others
-    sections.forEach((section) => {
-      const toggle = section.querySelector(".mw-collapsible-toggle") || section;
-      toggle.addEventListener("click", () => {
-        // wait for MediaWiki to toggle mw-collapsed
-        setTimeout(() => {
-          const nowCollapsed = section.classList.contains("mw-collapsed");
-          if (!nowCollapsed) {
-            sections.forEach((other) => {
-              if (other !== section) collapseSection(other);
-            });
-            playSectionAudio(section);
-          }
-        }, 30);
-      });
+  function waitForFandomAudio() {
+    var tries = 0;
+
+    var timer = setInterval(function () {
+      tries++;
+      syncAudios();
+
+      if (tries > 40) {
+        clearInterval(timer);
+      }
+    }, 250);
+  }
+
+  function userStart() {
+    startedByUser = true;
+    syncAudios();
+  }
+
+  document.addEventListener("click", userStart, { once: true });
+  document.addEventListener("keydown", userStart, { once: true });
+  document.addEventListener("touchstart", userStart, { once: true });
+
+  document.addEventListener("click", function () {
+    setTimeout(syncAudios, 80);
+    setTimeout(syncAudios, 350);
+  });
+
+  if (window.jQuery) {
+    jQuery(document).on(
+      "afterExpand.mw-collapsible afterCollapse.mw-collapsible",
+      function () {
+        setTimeout(syncAudios, 80);
+      }
+    );
+  }
+
+  var observer = new MutationObserver(function () {
+    setTimeout(syncAudios, 80);
+  });
+
+  function start() {
+    waitForFandomAudio();
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style", "aria-expanded"]
     });
-
-    // 3) On load, keep only default open (if you want)
-    if (defaultSection && !defaultSection.classList.contains("mw-collapsed")) {
-      sections.forEach((s) => { if (s !== defaultSection) collapseSection(s); });
-    }
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", start);
   } else {
-    init();
+    start();
   }
 })();
 
@@ -680,9 +671,21 @@ for(var i=0;i<ols.length;i++){
     }
 }
 
-//Adding page jumping for blog post listings (click the #)
-var pageLocation=window.location+'';
-document.getElementsByClassName("paginator-spacer")[0].innerHTML='...&nbsp;<a onclick="var pageToScrollTo=prompt(\'Page number?\');window.location=pageLocation.split(\'?page=\')[0]+\'?page=\'+pageToScrollTo;">#</a>&nbsp;...';
+var spacer = document.getElementsByClassName("paginator-spacer")[0];
+
+if (spacer) {
+    var pageLocation = window.location.href.split('?')[0];
+    spacer.innerHTML = '...&nbsp;<a href="#" id="custom-paginator-jump">#</a>&nbsp;...';
+    document.getElementById("custom-paginator-jump").addEventListener("click", function(e) {
+        e.preventDefault();
+        var pageToScrollTo = prompt('Page number?');
+        if (pageToScrollTo && !isNaN(pageToScrollTo)) {
+            window.location.href = pageLocation + '?page=' + encodeURIComponent(pageToScrollTo.trim());
+        }
+    });
+} else {
+    console.warn("Could not find an element with the class 'paginator-spacer'.");
+}
 
   // Apply MathJax to comment (not working?)
   (function() {
@@ -707,9 +710,30 @@ document.getElementsByClassName("paginator-spacer")[0].innerHTML='...&nbsp;<a on
             }
         }
         if (nodes.length > 0) typeset(nodes);
-    }).observe(document.querySelector("#articleComments"), {
-        childList: true,
-        subtree: true
-    });
-  })();
+	});
+
+	var commentsContainer = document.querySelector("#articleComments");
+    if (commentsContainer) {
+        var observer = new MutationObserver(function(mutations) {
+            if (typeof MathJax === "undefined") return;
+            var nodes = [];
+            for (var i = 0; i < mutations.length; ++i) {
+                var mutation = mutations[i];
+                for (var j = 0; j < mutation.addedNodes.length; ++j) {
+                    var node = mutation.addedNodes[j];
+                    if (!node.querySelectorAll) continue;
+                    nodes = nodes.concat(Array.from(node.querySelectorAll(".entity-content")));
+                }
+            }
+            if (nodes.length > 0) typeset(nodes);
+        });
+
+        observer.observe(commentsContainer, {
+            childList: true,
+            subtree: true
+        });
+    } else {
+        console.log("#articleComments not found on this page; skipping observer.");
+    }
+})();
 }

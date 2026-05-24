@@ -100,6 +100,56 @@
             } );
         }
 
+        function getLastUnpinnedThread() {
+            const threads = document.querySelectorAll( '.Message__wrapper:not(.PinMessages-pinned)' );
+            return threads.length ? threads[ threads.length - 1 ] : null;
+        }
+
+        function hideLastUnpinnedThread() {
+            const last = getLastUnpinnedThread();
+            if ( last ) {
+                last.setAttribute( 'data-pinmessages-hidden', 'true' );
+                last.style.display = 'none';
+            }
+        }
+
+        function restoreHiddenThread() {
+            const hidden = document.querySelector( '[data-pinmessages-hidden="true"]' );
+            if ( hidden ) {
+                hidden.style.display = '';
+                hidden.removeAttribute( 'data-pinmessages-hidden' );
+            }
+        }
+
+        function unpinThread() {
+            const pinned = document.querySelector( '.PinMessages-pinned' );
+            if ( !pinned ) return;
+
+            restoreHiddenThread();
+
+            const wasIframeFetched = pinned.hasAttribute( 'data-pinmessages-iframe' );
+            const nextSibling = pinned.dataset.pinmessagesNextSibling
+                ? document.querySelector( '[data-pinmessages-anchor="' + pinned.dataset.pinmessagesNextSibling + '"]' )
+                : null;
+            const parent = pinned.parentNode;
+
+            pinned.classList.remove( 'PinMessages-pinned' );
+            delete pinned.dataset.pinmessagesNextSibling;
+            const indicator = pinned.querySelector( '.PinMessages-pin-indicator' );
+            if ( indicator ) indicator.remove();
+
+            if ( wasIframeFetched ) {
+                pinned.remove();
+            } else if ( parent ) {
+                if ( nextSibling && nextSibling.parentNode === parent ) {
+                    parent.insertBefore( pinned, nextSibling );
+                } else {
+                    parent.appendChild( pinned );
+                }
+                pinned.removeAttribute( 'data-pinmessages-anchor' );
+            }
+        }
+
         function pinThread( threadId, callback ) {
             const forum = document.querySelector( '.MessageWallForum' );
             const header = forum && forum.querySelector( '.MessageWallForum__header' );
@@ -116,6 +166,32 @@
             }
 
             function injectThread( thread ) {
+                const alreadyInDom = document.querySelector( '[href*="threadId=' + threadId + '"]' );
+                if ( alreadyInDom ) {
+                    const wrapper = alreadyInDom.closest( '.Message__wrapper' );
+                    if ( wrapper && !wrapper.classList.contains( 'PinMessages-pinned' ) ) {
+                        const nextSib = wrapper.nextElementSibling;
+                        if ( nextSib ) {
+                            nextSib.setAttribute( 'data-pinmessages-anchor', threadId );
+                            wrapper.dataset.pinmessagesNextSibling = threadId;
+                        }
+                        wrapper.classList.add( 'PinMessages-pinned' );
+                        header.insertAdjacentElement( 'afterend', wrapper );
+                        if ( !wrapper.querySelector( '.PinMessages-pin-indicator' ) ) {
+                            const indicator = document.createElement( 'div' );
+                            indicator.className = 'PinMessages-pin-indicator';
+                            indicator.style.marginBottom = '10px';
+                            indicator.innerHTML = '<img src="' + pinIcon + '" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;">This message is pinned';
+                            wrapper.insertAdjacentElement( 'afterbegin', indicator );
+                        }
+                    }
+                    if ( callback ) callback();
+                    return;
+                }
+
+                hideLastUnpinnedThread();
+
+                thread.setAttribute( 'data-pinmessages-iframe', 'true' );
                 thread.classList.add( 'PinMessages-pinned' );
                 header.insertAdjacentElement( 'afterend', thread );
 
@@ -168,15 +244,32 @@
                 li.addEventListener( 'click', function() {
                     if ( isPinned ) {
                         savePinnedId( '' ).then( function() {
-                            setTimeout( function() {
-                                window.location.reload();
-                            }, 1500 );
+                            cachedPinnedId = null;
+                            unpinThread();
+                            document.querySelectorAll( '.PinMessages-action' ).forEach( function( el ) {
+                                el.remove();
+                            } );
+                            updateDropdowns( null );
                         } );
                     } else {
                         savePinnedId( threadId ).then( function() {
-                            setTimeout( function() {
-                                window.location.reload();
-                            }, 1500 );
+                            if ( cachedPinnedId ) {
+                                unpinThread();
+                            }
+                            cachedPinnedId = threadId;
+                            isPinning = true;
+                            observer && observer.disconnect();
+                            pinThread( threadId, function() {
+                                isPinning = false;
+                                const forum = document.querySelector( '.MessageWallForum' );
+                                if ( forum && observer ) {
+                                    observer.observe( forum, { childList: true, subtree: true } );
+                                }
+                            } );
+                            document.querySelectorAll( '.PinMessages-action' ).forEach( function( el ) {
+                                el.remove();
+                            } );
+                            updateDropdowns( threadId );
                         } );
                     }
                 } );
@@ -185,9 +278,67 @@
             } );
         }
 
+        function attachLoadMoreListener() {
+            const btn = document.querySelector( '.LoadMoreButton_load-more__9yEV2' );
+            if ( !btn || btn.dataset.pinmessagesListening ) return;
+            btn.dataset.pinmessagesListening = 'true';
+
+            btn.addEventListener( 'click', function() {
+                const countBefore = document.querySelectorAll(
+                    '.Message__wrapper:not(.PinMessages-pinned)'
+                ).length;
+
+                const poll = setInterval( function() {
+                    const countAfter = document.querySelectorAll(
+                        '.Message__wrapper:not(.PinMessages-pinned)'
+                    ).length;
+
+                    if ( countAfter > countBefore ) {
+                        clearInterval( poll );
+
+                        if ( cachedPinnedId ) {
+                            restoreHiddenThread();
+                            hideLastUnpinnedThread();
+                        }
+
+                        updateDropdowns( cachedPinnedId );
+
+                        delete btn.dataset.pinmessagesListening;
+                        attachLoadMoreListener();
+                    }
+                }, 300 );
+
+                setTimeout( function() { clearInterval( poll ); }, 15000 );
+            } );
+        }
+
         function startObserver( forum ) {
+            const header = forum.querySelector( '.MessageWallForum__header' );
             observer = new MutationObserver( function() {
                 updateDropdowns( cachedPinnedId );
+                attachLoadMoreListener();
+
+                if ( cachedPinnedId ) {
+                    const pinned = document.querySelector( '.PinMessages-pinned' );
+                    const real = document.querySelector( '[href*="threadId=' + cachedPinnedId + '"]' );
+                    if ( pinned && real ) {
+                        const realWrapper = real.closest( '.Message__wrapper' );
+                        if ( realWrapper && realWrapper !== pinned ) {
+                            restoreHiddenThread();
+                            pinned.remove();
+                            realWrapper.classList.add( 'PinMessages-pinned' );
+                            if ( header ) header.insertAdjacentElement( 'afterend', realWrapper );
+                            if ( !realWrapper.querySelector( '.PinMessages-pin-indicator' ) ) {
+                                const indicator = document.createElement( 'div' );
+                                indicator.className = 'PinMessages-pin-indicator';
+                                indicator.style.marginBottom = '10px';
+                                indicator.innerHTML = '<img src="' + pinIcon + '" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;">This message is pinned';
+                                realWrapper.insertAdjacentElement( 'afterbegin', indicator );
+                            }
+                        }
+                    }
+                }
+
                 if ( cachedPinnedId && !document.querySelector( '.PinMessages-pinned' ) && !isPinning ) {
                     isPinning = true;
                     observer.disconnect();
@@ -221,6 +372,7 @@
                 const forum = document.querySelector( '.MessageWallForum' );
                 if ( forum ) {
                     startObserver( forum );
+                    attachLoadMoreListener();
                 }
             } );
         } );

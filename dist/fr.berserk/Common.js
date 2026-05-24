@@ -1,6 +1,11 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
-/*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
-window.BackToTopModern = true;
+/* Imports de Scripts */
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Scroll.js', /* Icône de Scroll */
+    ]
+});
 
 // Modèle:Onglet
 $(function() {

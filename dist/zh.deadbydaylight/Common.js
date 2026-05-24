@@ -1,85 +1,275 @@
 /* 这里的任何JavaScript将为所有用户在每次页面载入时加载。 */
-/*****************************************
-/* Front Page 3-column height equalization *
-/*****************************************/
-// Author:  Shawn Bruckner
-// Date:    2013-Sept-21
-// License: CC-BY 3.0
-// Version: beta
+/* Any JavaScript here will be loaded for all users on every page load. */
 
-var fp = fp || {
-  equalizeColumns : function() {
-    $( '.fpmain' ).each( function () {
-      fp.resetSectionBoxHeights( $( this ).find( '.fpsection1, .fpsection2, .fpsection3, .fpsection4' ) );
-    } );
-    if ( $( window ).width() > 789 && $( window ).width() < 1390 ) {
-      $( '.fpmain' ).each( function (index) {
-        var leftHeight = $( this ).find( '.fpsection1' ).height() + $( this ).find( '.fpsection4' ).height();
-        var rightHeight = $( this ).find( '.fpsection2' ).height() + $( this ).find( '.fpsection3' ).height();
-        var difference = Math.abs( rightHeight - leftHeight );
-        
-        if ( leftHeight < rightHeight ) {
-          fp.adjustSectionBoxHeights( difference, $( this ).find( '.fpsection1, .fpsection4' ) );
-        } else if ( rightHeight < leftHeight ) {
-          fp.adjustSectionBoxHeights( difference, $( this ).find( '.fpsection2, .fpsection3' ) );
-        }
-      } );
-    } else if ( $( window ).width() > 1389 ) {
-      $( '.fpmain' ).each( function (index) {
-        var leftHeight = $( this ).find( '.fpsection1' ).height() + $( this ).find( '.fpsection4' ).height();
-        var middleHeight = $( this ).find( '.fpsection2' ).height();
-        var rightHeight = $( this ).find( '.fpsection3' ).height();
-        var maxHeight = Math.max( leftHeight, middleHeight, rightHeight );
-        
-        if ( leftHeight < maxHeight ) {
-          fp.adjustSectionBoxHeights( maxHeight - leftHeight, $( this ).find( '.fpsection1, .fpsection4' ) );
-        }
-        if ( middleHeight < maxHeight ) {
-          fp.adjustSectionBoxHeights( maxHeight - middleHeight, $( this ).find( '.fpsection2' ) );
-        }
-        if ( rightHeight < maxHeight ) {
-          fp.adjustSectionBoxHeights( maxHeight - rightHeight, $( this ).find( '.fpsection3' ) );
-        }
-      } );
+$(function(){
+	console.log("Custom Javascript executed");
+	
+	SoS2();
+	CosmeticExpandingButton();
+	SoSArchiveButton();
+	ForceSourceEditor();
+	TooltipCursorTracker();
+	
+	/**************************************************************************/
+	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
+	SetAppropriateDimensions(); //Deprecated but still used until old BP BG cost will be used
+	SetHeadersShadows();
+	SetPerkCheckBoxes();
+	ScrollToTabberID();
+	
+	$.each($(".mw-collapsible-text"), function(index, element){
+		console.log("element #" + index);
+		$(element).click(function(){
+			setTimeout(function(){
+				SetAppropriateDimensionsCosts();
+			},
+			1); //Must be delayed because the real height is 0 at the time of executing the script. This is due to table is collapsed (basically height of all TR elements are set to 0)
+		});
+	});
+	
+	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
+	CreateEditSourceLink(); //Deprecated?
+});
+
+/******************************************************************************/
+
+function SoS2(){
+	console.log("SoS2 Executed");
+	
+	$('.sos2 > .sosPerk').each(function(i){
+	    $(this).hover(
+	        function(){
+	            $(this).addClass('sosPerkHovered');
+	            $(this).parent().children().filter(':not(.sosPerkHovered):not(.sosPerkDesc)').addClass('sosPerkNotHovered');
+	        },
+	        function(){
+	            $(this).removeClass('sosPerkHovered', 115);
+	            $(this).parent().children().removeClass('sosPerkNotHovered');
+	     });
+	});
+	console.log("SoS2 Initialisation completed");
+}
+
+function CosmeticExpandingButton(){
+	console.log("CosmeticExpandingButton Executed");
+	
+	$('span.divButton').click(function() {
+    var expandableArea = $('.' + this.id);
+    var underlyingOutfitPieces = expandableArea.children();
+    var cosmeticTable = $(this).closest('.cosmeticTable');
+    var expandString = $('#expandString').text();
+    var collapseString = $('#collapseString').text();
+    var baseHeight = parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) 
+    				+ 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10);
+    var openedHeight = baseHeight + (underlyingOutfitPieces.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10);
+    
+    if(parseInt(cosmeticTable.css("height"), 10) > parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10)){
+        $(this).text("⇓ " + expandString + " ⇓");
+        cosmeticTable.css('height', baseHeight + 'px');
     }
-  },
-
-  findAdjustableSectionBoxes : function ( sections ) {
-    var boxes = sections.find( '.fpbox.fpgreedy' );
-
-    if ( boxes.length === 0 ) {
-      return sections.find( '.fpbox' ).not( '.fpnoresize' );
-    } else {
-      return boxes;
+    else
+    {
+        $(this).text("⇑ " + collapseString + " ⇑");
+        cosmeticTable.css('height', openedHeight + 'px');
     }
-  },
+});
+}
 
-  resetSectionBoxHeights : function ( sections ) {
-    fp.findAdjustableSectionBoxes( sections ).each( function () {
-      $( this ).height( 'auto' );
-    } );
-  },
+function SoSArchiveButton(){
+	console.log("Creating handlers for SoS Archives");
+	
+	var inceptionYear = 2016;
+	var currentYear = new Date().getFullYear();
 
-  adjustSectionBoxHeights : function ( heightToAdd, sections ) {
-    var boxes, lastBox, remainingHeightToAdd, boxHeightToAdd;
-    boxes = fp.findAdjustableSectionBoxes( sections );
-    lastBox = boxes.last();
-    remainingHeightToAdd = heightToAdd;
-    boxHeightToAdd = Math.floor( heightToAdd / boxes.length );
+	for(i = inceptionYear; i <= currentYear; i++){
+		$('#inceptionPerks' + i).css('font-weight', 'bold');
+		$('#inceptionPerks' + i).css('color', '#e2ce97');
+		$('#inceptionPerks' + i).css('display', 'inline');
+		$('#inceptionPerks' + i).html('Show/Hide (only) Introduced Perks this year &#10060;');
+		
+		$('#inceptionPerks' + i).hover(function(){
+			$(this).css('cursor', 'pointer');
+			$(this).css('text-decoration', 'underline');
+		}, function(){
+			$(this).css('text-decoration', 'none');
+		});
+		
+		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
+	}
+}
 
-    boxes.each( function() {
-      if ( this === lastBox.get( 0 ) ) {
-        $( this ).height( $( this ).height() + remainingHeightToAdd );
-      } else {
-        $( this ).height( $( this ).height() + boxHeightToAdd );
-        remainingHeightToAdd -= boxHeightToAdd;
-      }
-    } );
-  }
-};
+function GetInceptionPerksHandler(year){
+	return function(){
+		var inceptionRows = $('.inception-row' + year);
+		var switcher = $('#inceptionPerks' + year);
+		var rowsDisplayed = inceptionRows.css('display') == 'table-row';
+		var text = 'Show/Hide (only) Introduced Perks this year';
 
-$( document ).ready( fp.equalizeColumns );
-$( window ).resize( fp.equalizeColumns );
-/*********************************************
-/* End Front Page column height equalization *
-/*********************************************/
+		if(rowsDisplayed){
+			inceptionRows.css('display', 'none');
+			switcher.html(text + '&#10060;');
+			rowsDisplayed = false;
+		}else{
+			inceptionRows.css('display', 'table-row');
+			switcher.html(text + ' &#9989;');
+			rowsDisplayed = true;
+		}
+	};
+}
+
+function ForceSourceEditor(){
+	console.log("ForceSourceEditor script Executed");
+	$("a[href*='veaction']").attr("href", function(){
+		return this.href.replace("veaction", "action");
+	});
+}
+
+function TooltipCursorTracker(){
+	console.log("TooltipCursorTracker script Executed");
+	
+	var minWidth = 240;
+	var maxWidth = 400;
+	//we have to show the hidden elements (display: none or hidden) in order to being able calculate the position 
+	$('.wds-tab__content').each(function(){
+		$(this).addClass('wds-tab__content_shown');
+	});
+	//reason why it's set like this is to avoid using !important flag as much as possible, leaving it as a true last resort
+    $('.tooltip').find('.tooltiptext').each(function(){
+    	$(this).width(Math.min(Math.max($(this).text().length * 2.5, minWidth), maxWidth));	
+    });
+    
+	$('.tooltip:not(.linkIncluded)').mousemove(function(event){
+	    var tooltipText = $(this).find('.tooltiptext');
+	    tooltipText.css('left', (event.clientX - $(this).offset().left - (tooltipText.width() / 2) ) + 'px');
+	});
+	
+	$('.tooltip.linkIncluded').each(function(){
+		var tooltipBlockLeftOffset = $(this).offset().left;
+	    var tooltipText = $(this).find('.tooltiptext');
+	    $(this).find('.tooltipBaseText').hover(function(event){
+	    	/*hover in*/
+	    	tooltipText.css('left', (event.clientX - tooltipBlockLeftOffset - (tooltipText.width() / 2) ) + 'px');
+	    },function(){
+	    	/*hover out*/
+	    });
+	});
+	
+	//after claculation we can hide it back
+	$('.wds-tab__content_shown').each(function(){
+		$(this).removeClass('wds-tab__content_shown');
+	});
+	console.log("TooltipCursorTracker FINISHED");
+}
+/******************************************************************************/
+
+function SetAppropriateDimensions(){
+	var elements =  $(".BPBG-All");
+	$.each(elements, function(index, element){
+		var elementH = $(element).height(); 
+		var elementW = $(element).width();
+		//console.log("Looking for element width: " + elementW);
+		//console.log("Looking for element height: " + elementH);
+		if(elementH * 0.5517 > elementW){
+			$(element).width($(element).height() * 0.5517);
+		}else{
+			$(element).height($(element).width() * 1.8125);
+		}
+	});
+}
+
+function SetHeadersShadows(){
+	var elements =  $("table th");
+	//console.dir(elements);
+	$.each(elements, function(index, element){
+		var elementH = $(element).height(); 
+		var elementW = $(element).width();
+		if(elementH < 80 || elementW < 80){
+			//$(element).css("box-shadow", "none");
+			$(element).css("box-shadow", "inset 0px 0px 8px 0px rgba(0,0,0,0.8)");
+		}
+	});
+	elements =  $(".fpbox");
+	$.each(elements, function(index, element){
+		var elementH = $(element).height(); 
+		var elementW = $(element).width();
+		if(elementH > 1000){
+			$(element).css("background-size", "auto");
+		}
+	});
+}
+
+function SetAppropriateDimensionsCosts(){
+	var elements =  $.merge($(".ACBG"), $(".ISBG"));
+	//console.log(elements);
+	$.each(elements, function(index, element){
+		var elementH = $(element).height(); 
+		var elementW = $(element).width();
+		//console.log("Looking for COST element width: " + elementW);
+		//console.log("Looking for COST element height: " + elementH);
+		if(elementH > elementW){
+			$(element).width($(element).height());
+		}else{
+			$(element).height($(element).width());
+		}
+	});
+}
+
+function CreateEditSourceLink(){
+	console.log('CreateEditSourceLink Executed');
+	var link = document.querySelectorAll('[data-tracking-label="ca-edit-dropdown"]')[0].getAttribute('href');
+	var vanillaEdit = document.querySelectorAll('[data-tracking-label="ca-ve-edit"]')[1];
+	var editSourceNode = document.createElement('a');
+	editSourceNode.appendChild(document.createTextNode('Edit Source'));
+	editSourceNode.setAttribute('href', link);
+	editSourceNode.setAttribute('class', 'wds-button wds-is-text page-header__action-button has-label');
+	
+	vanillaEdit.parentNode.insertBefore(editSourceNode, vanillaEdit.nextSibling);
+}
+
+function isMobileDevice() {
+    return window.matchMedia("(max-width: 1024px)").matches;
+}
+
+function MobileViewHovers(){
+	//if(!isMobileDevice){
+		////console.log("Preparing tooltips...");
+		////$('.mobileView').hide();
+		/*
+		tooltip = $('.tooltip-value');
+		tooltipValue = tooltip.attr('title');
+		span = $('<span> (' + tooltipValue + ')</span>');
+		span.css(
+			{
+				'font-size': '7pt',
+        	}
+    	);
+    	
+    	tooltip.append(span);*/
+	//}
+}
+function SetPerkCheckBoxes(){
+	console.log("Checkboxes Function initiallised");
+	$.each(document.getElementsByClassName("switchArea"), 
+		function(index, el){
+	        var x = document.createElement("INPUT");
+	        x.setAttribute("class", "switchBox");
+	        x.setAttribute("type", "checkbox");
+	        el.parentNode.insertBefore(x, el.nextSibling);
+	    }
+    );
+}
+
+function ScrollToTabberID(){
+	$("li[data-hash]").each(function() {
+		console.log("Found Tabber Node, ID: " + $(this).attr('data-hash'))
+	    $(this).attr('id', $(this).attr('data-hash'))
+	    if(window.location.hash.replace('#', "") == $(this).attr('data-hash')){
+	        $('html, body').animate({
+	            scrollTop: $(this).offset().top - 45
+	        }, 250);
+	    }
+	});
+}
+/*********************************************************************************************/
+/*********************************************************************************************/
+/*********************************************************************************************/

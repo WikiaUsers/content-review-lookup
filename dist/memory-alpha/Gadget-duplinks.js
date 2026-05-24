@@ -1,53 +1,34 @@
-$(() => {
-	if ($('.ns-talk').length){
-		return;
+'use strict';
+mw.hook('wikipage.content').add(content => {
+	const seenOpening = [];
+	const seenBody = [];
+	content = content.find('.mw-parser-output').first();
+	content.children().first().nextUntil('h2').addBack().wrapAll('<div class="opening-section">');
+	content.children('h2').first().nextAll().addBack().wrapAll('<div class="body-sections">');
+	content.children('.opening-section').find('p a').each(findDuplicateLinksOpening);
+	content.children('.body-sections').find('p a').each(findDuplicateLinksBody);
+
+	function findDuplicateLinksOpening(index, link){
+		const href = $(link).attr('href');
+		if (href && href.indexOf('#')){
+			if (seenOpening.includes(href)){
+				$(link).addClass('duplicate-link');
+			} else {
+				seenOpening.push(href);
+			}
+		}
 	}
-	
-	const label = 'Highlight duplicate links';
-	const button = $('<li>').append($('<a href="#">').text(label));
-	$('#my-tools-menu').prepend(button);
-	
-	button.on('click', (e) => {
-		e.preventDefault();
-		const veRoot = $('.ve-ce-rootNode');
-		const pgRoot = $('#content .mw-parser-output');
-		const content = veRoot.length ? veRoot : pgRoot;
-		content.prepend('<div id="lede-start">');
-		
-		$('#lede-start').nextUntil('h2').wrapAll('<div id="lede">');
-		$('#lede').after('<div id="body-start">');
-		$('#body-start').nextAll().wrapAll('<div id="body">');
-		
-		function findDuplicateLinksLede(index, link){
-			const href = $(link).attr('href');
-			
-			if (href !== undefined && href.indexOf('#')){
-				if (seenLede[href]){
-					$(link).addClass('duplicate-link');
-				} else {
-					seenLede[href] = true;
-				}
+
+	function findDuplicateLinksBody(index, link){
+		const href = $(link).attr('href');
+		if (href && href.indexOf('#')){
+			if (seenBody.includes(href)){
+				$(link).addClass('duplicate-link');
+			} else {
+				seenBody.push(href);
 			}
 		}
-		
-		function findDuplicateLinksBody(index, link){
-			const href = $(link).attr('href');
-			
-			if (href !== undefined && href.indexOf('#')){
-				if (seenBody[href]){
-					$(link).addClass('duplicate-link');
-				} else {
-					seenBody[href] = true;
-				}
-			}
-		}
-		
-		const seenLede = {};
-		const seenBody = {};
-		
-		content.find('#lede p a').each(findDuplicateLinksLede);
-		content.find('#body p a').each(findDuplicateLinksBody);
-	});
+	}
 });
 
 // {{JavaScript category}}

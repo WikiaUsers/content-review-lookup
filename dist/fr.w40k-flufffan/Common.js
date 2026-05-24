@@ -12,15 +12,10 @@ window.ajaxRefresh = 30000;
     "fullscreenMode": "window"
 }; */
 
-/*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
-window.BackToTopModern = true;
-
-// Modèle:EditConflictAlert
-window.EditConflictAlertInterval = 5000;
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:EditConflictAlert/code.js',
+        'MediaWiki:Scroll.js'
     ]
 });
 

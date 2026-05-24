@@ -4,9 +4,7 @@
 	if (!revisionBanner.length){
 		return;
 	}
-	const revisionBannerClone = revisionBanner.clone();
-	$('#mw-content-text > noscript:first-of-type').after(revisionBannerClone);
-	revisionBanner.remove();
+	$('#mw-content-text > noscript:first-of-type').after(revisionBanner);
 })();
 
 // {{JavaScript category}}

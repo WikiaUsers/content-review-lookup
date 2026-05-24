@@ -1,8 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 window.ajaxRefresh = 30000;
 
-/*Adding a visual button instead of it just being in Tools - Update of the dev:BackToTopButton */
-window.BackToTopModern = true;
+/* Scripts Import */
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:Scroll.js', /* Scroll */
+    ]
+});
+
 
 // Credits go to ray808080 from the Sky: Children of the Light Wiki https://sky-children-of-the-light.fandom.com 
 $('.fandom-community-header__community-name-wrapper').append(

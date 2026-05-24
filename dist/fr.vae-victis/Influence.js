@@ -110,8 +110,8 @@ var ZONES_DATA = {
   "scandinavie": {
     nom: "Scandinavie",
     leader: "À définir",
-    portrait: "",
-    influence_nom: "",
+    portrait: "https://imgur.com/SsqAB5N.png",
+    influence_nom: "Romina Pourmokhtari",
     influence_logo: "",
     pays: ["Sweden","Norway","Denmark","Finland","Iceland"]
   },
@@ -276,7 +276,8 @@ function initGlobe(conteneur, zonesActives) {
     tip.innerHTML = [
       '<div style="background:rgba(8,10,22,0.97);border:1px solid #c8a96e;border-radius:3px;',
       'padding:12px 16px;min-width:190px;box-shadow:0 4px 20px rgba(0,0,0,0.8),0 0 10px rgba(200,169,110,0.2);font-family:Georgia,serif">',
-      '<img id="ig-portrait" style="width:100%;height:80px;object-fit:cover;border-radius:2px;',
+	'<img id="ig-portrait" style="width:100px;height:100px;object-fit:cover;border-radius:50%;',
+	'margin:0 auto 8px;display:block;border:2px solid rgba(200,169,110,0.5);',
       'margin-bottom:10px;border:1px solid rgba(200,169,110,0.3);display:none">',
       '<div id="ig-zone" style="font-size:13px;color:#c8a96e;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px"></div>',
       '<div style="font-size:10px;color:#5a6080;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Leader</div>',
@@ -299,7 +300,8 @@ function initGlobe(conteneur, zonesActives) {
     var isActive = active.indexOf(zoneId) !== -1;
 
     document.getElementById('ig-zone').textContent   = zone.nom;
-    document.getElementById('ig-leader').textContent = zone.leader;
+	document.getElementById('ig-leader').textContent = zone.leader !== 'À définir' ? zone.leader : '';
+	document.getElementById('ig-leader').style.display = zone.leader !== 'À définir' ? 'block' : 'none';
 
     var portrait = document.getElementById('ig-portrait');
     if (zone.portrait) {

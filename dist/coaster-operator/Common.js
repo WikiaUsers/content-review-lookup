@@ -1,9 +1,4 @@
-/* * Coaster Operator Wiki - v19 "The Perfect Layout"
- * Features: Horizontal Network Hub (Top), Fixed Spacing, Removed Status Badge, 100% Content.
- */
-
 $(function() {
-    // --- CONFIGURATION ---
     const rootId = "coaster-wiki-root";
     const fileNameToFind = "File:RealisticDarKoaster.png"; 
     const gameLink = "https://www.roblox.com/games/17152219682/Coaster-Operator";
@@ -11,10 +6,8 @@ $(function() {
     const targetRoot = document.getElementById(rootId);
     if (!targetRoot) return; 
 
-    // Clear initial loading styles
     targetRoot.removeAttribute("style");
 
-    // 1. INJECT THE GLASS-OS HTML
     targetRoot.innerHTML = `
         <div class="os-master-container">
             
@@ -226,7 +219,6 @@ $(function() {
         </div>
     `;
 
-    // 2. INJECT CSS
     const style = document.createElement('style');
     style.innerHTML = `
         /* --- CORE DESIGN TOKENS --- */

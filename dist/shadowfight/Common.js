@@ -57,3 +57,23 @@ document.addEventListener('click', function (event) {
 		button.classList.remove('now-playing');
 	});
 }, true);
+
+$(function () {
+  function openTabFromHash() {
+    var hash = decodeURIComponent(window.location.hash);
+    if (!hash.startsWith('#tab-')) return;
+
+    var target = hash.replace('#tab-', '').replace(/_/g, ' ').toLowerCase();
+
+    $('.wds-tabs__tab-label').each(function () {
+      var label = $(this).text().trim().toLowerCase();
+
+      if (label === target) {
+        $(this).closest('.wds-tabs__tab').trigger('click');
+      }
+    });
+  }
+
+  openTabFromHash();
+  $(window).on('hashchange', openTabFromHash);
+});

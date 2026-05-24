@@ -188,3 +188,65 @@
     observer.observe(document.body, { childList: true, subtree: true });
     processTooltips();
 })();
+
+/* Доработка поиска */
+((window, mw) => {
+
+    if (window.fandomSearchShortcutsLoaded) return;
+    window.fandomSearchShortcutsLoaded = true;
+
+    // Расширенный селектор: охватывает и страницу поиска, и глобальную строку поиска в шапке Fandom
+    const searchInputSelector = '.search-app__wrapper > input, .wds-global-navigation__search-input, #searchInput';
+
+    // Получаем локализованные пространства имён один раз
+    const ns = mw.config.get('wgFormattedNamespaces');
+    const namespaces = {
+        t: ns[10],   // Template
+        mw: ns[8],   // MediaWiki
+        s: ns[-1],   // Special
+        h: ns[12],   // Help
+        m: ns[828],  // Module
+        f: ns[6],    // File
+        u: ns[2],    // User
+        ut: ns[3],   // User talk
+        w: ns[1200], // Message Wall
+        ub: ns[500], // User blog
+        p: ns[4],    // Project
+        c: ns[14],   // Category
+        fo: ns[110]  // Forum
+    };
+
+    // ОПТИМИЗАЦИЯ: Кешируем сеттер React один раз при загрузке скрипта
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+    ).set;
+
+    // ОПТИМИЗАЦИЯ: Используем нативный 'input' вместо 'keyup'
+    document.addEventListener('input', (event) => {
+        const target = event.target;
+
+        // Делегирование событий: проверяем, что ввод был именно в строку поиска
+        if (!target.matches(searchInputSelector)) return;
+
+        const currentVal = target.value;
+        // Флаг 'i' позволяет вводить шорткаты в любом регистре (например, !T или !t)
+        const match = currentVal.match(/^\!([a-z]+) /i);
+
+        if (match) {
+            const shortcut = match[1].toLowerCase();
+            
+            if (namespaces.hasOwnProperty(shortcut)) {
+                // Используем шаблонные строки ES6 и современный slice
+                const newText = `${namespaces[shortcut]}:${currentVal.slice(match[0].length)}`;
+
+                // Вызываем закешированный сеттер React
+                nativeInputValueSetter.call(target, newText);
+                
+                // Триггерим событие, чтобы React обновил стейт
+                target.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+    });
+
+})(window, window.mediaWiki);

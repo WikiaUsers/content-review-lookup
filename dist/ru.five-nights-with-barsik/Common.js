@@ -1,4 +1,4 @@
-// Скрипт для замены русской локализации интерфейса вики на предпочтительную
+// Замена русской локализации интерфейса вики на предпочтительную
 $(function() {
     // ====== 1. Замена «Заглавная» на «Главная» ======
     function replaceMainPageTitle() {
@@ -149,3 +149,112 @@ $(function() {
         subtree: true
     });
 });
+
+// Значки WDSIcons в меню навигации
+(function () {
+    var WDS_ICONS_ARTICLE = 'u:dev:MediaWiki:WDSIcons/code.js';
+    var wdsIconsLoaded = false;
+
+    var iconMapByText = {
+        'Вики': 'wikis-tiny',
+        'Главная': 'home-tiny',
+        'Информация': 'info-tiny',
+        'Правила': 'toc-tiny',
+        'Персонал': 'users-tiny',
+        'Страница для общения': 'discussions-tiny',
+        'Блог вики': 'blocks-tiny',
+        'Категории': 'book-tiny',
+        'Игры': 'games-tiny',
+        'Персонажи': 'users-tiny',
+        'Локации': 'image-tiny',
+        'Реальная жизнь': 'sun-tiny',
+        'Служебные страницы': 'wrench-tiny',
+        'Последние правки на вики': 'activity-tiny',
+        'Все страницы вики': 'pages-tiny',
+        'Требуемые страницы': 'pencil-tiny',
+        'Загруженные на вики файлы': 'grid-tiny',
+        'Сохранённые на вики видео': 'video-tiny',
+        'Случайная статья на вики': 'external-tiny'
+    };
+
+    function getIconNameByText(text) {
+        return iconMapByText[text] || null;
+    }
+
+    function insertIcon($el, iconName, wds) {
+        if (!iconName) return;
+        if ($el.find('svg.nav-item-icon-wds').length) return;
+
+        var icon = wds.icon(iconName, {
+            'class': 'wds-icon wds-icon-tiny navigation-item-icon nav-item-icon-wds',
+            'aria-hidden': 'true',
+            'focusable': 'false'
+        });
+
+        $el.prepend(icon);
+    }
+
+    function insertIcons(wds) {
+        var $nav = $('.fandom-community-header__local-navigation');
+        if (!$nav.length) return false;
+
+        // Значки пунктов меню (ссылки)
+        $nav.find('a').each(function () {
+            var $a = $(this);
+            var text = $.trim($a.text());
+            var href = $a.attr('href') || '';
+
+            var iconName = getIconNameByText(text);
+
+            if (!iconName) {
+                if (href.indexOf('AllPages') !== -1) iconName = 'pages-tiny';
+                else if (href.indexOf('RecentChanges') !== -1) iconName = 'activity-tiny';
+                else if (href.indexOf('NewFiles') !== -1) iconName = 'images-tiny';
+                else if (href.indexOf('/f') !== -1) iconName = 'discussions-tiny';
+                else if (href.indexOf('Random') !== -1) iconName = 'external-tiny';
+            }
+
+            insertIcon($a, iconName, wds);
+        });
+
+        // Значки вкладок (Вики, Категории, Служебные страницы)
+        $nav.find('.wds-dropdown__placeholder').each(function () {
+            var $ph = $(this);
+            var text = $.trim($ph.text());
+            var iconName = getIconNameByText(text);
+            insertIcon($ph, iconName, wds);
+        });
+
+        return true;
+    }
+
+    function bootWdsIcons() {
+        if (wdsIconsLoaded) return;
+        wdsIconsLoaded = true;
+
+        if (typeof mw === 'undefined' || !mw.hook || typeof importArticle !== 'function') {
+            return;
+        }
+
+        mw.hook('dev.wds').add(function (wds) {
+            insertIcons(wds);
+
+            // Наблюдаем за динамической подгрузкой меню
+            var observer = new MutationObserver(function () {
+                insertIcons(wds);
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+
+        importArticle({
+            type: 'script',
+            article: WDS_ICONS_ARTICLE
+        });
+    }
+
+    $(bootWdsIcons);
+})();

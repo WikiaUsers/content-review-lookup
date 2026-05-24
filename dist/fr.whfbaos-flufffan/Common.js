@@ -1,17 +1,14 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
 window.ajaxRefresh = 30000;
 
-/*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
-window.BackToTopModern = true;
-
-// Modèle:EditConflictAlert
-window.EditConflictAlertInterval = 5000;
+// Imports des .JS
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:EditConflictAlert/code.js',
+        'MediaWiki:Scroll.js'
     ]
 });
+
 
 // Création d'une page Utilisateur
 window.AutoCreateUserPagesConfig = {

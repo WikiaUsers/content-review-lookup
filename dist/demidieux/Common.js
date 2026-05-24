@@ -1,7 +1,13 @@
 /* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
 
-/*Ajout d'un bouton permettant de revenir en haut de la page - lié à dev:BackToTopButton */
-window.BackToTopModern = true;
+/* Imports de Scripts */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:RemoveLegacyThreads.js', /* Suppression des anciens fils de discussion devenus inaccessibles */
+        'MediaWiki:Scroll.js', /* Icône de Scroll */
+    ]
+});
 
 // Modèle:Onglet
 $(function() {
@@ -20,11 +26,3 @@ $(function() {
     });
 });
 // Fin de Modèle:Onglet
-
-/* Suppression des anciens fils de discussion devenus inaccessibles */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:RemoveLegacyThreads.js',
-    ]
-});

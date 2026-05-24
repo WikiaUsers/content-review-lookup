@@ -3,6 +3,10 @@
 // Adds some common functions.
 mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:BasicFunctions.js&action=raw&ctype=text/javascript')
 .then(function() {
+	// [ Staff ]
+	// Small stuff pertaining to Wiki Staff.
+	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:Staff.js&action=raw&ctype=text/javascript');
+
 	// [ User Page Notice ]
 	// Script for adding a notice to user sub-pages that the current page is not a main wiki article.
 	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:UserPageNotice.js&action=raw&ctype=text/javascript');

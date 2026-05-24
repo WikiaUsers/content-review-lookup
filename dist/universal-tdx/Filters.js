@@ -42,12 +42,7 @@ mw.hook('wikipage.content').add(function ($content) {
             if (window.innerWidth && x + w > window.innerWidth) { x = e.clientX - w - 15; }
             if (window.innerHeight && y + h > window.innerHeight) { y = window.innerHeight - h - 15; }
             
-            $tooltip.css({
-                left: x + 'px',
-                top: y + 'px',
-                transform: 'none',
-                margin: '0'
-            });
+            $tooltip.css({ left: x + 'px', top: y + 'px', transform: 'none', margin: '0' });
         }
     });
 
@@ -69,7 +64,7 @@ mw.hook('wikipage.content').add(function ($content) {
                     .addClass(t === 'All' ? 'is-active' : '')
                     .appendTo($bar);
             });
-            var $search = $('<div class="ao-search-wrap"><div class="ao-search-icon">🔍</div><input class="ao-search-input" type="text" placeholder="Search items or sets..." /></div>');
+            var $search = $('<div class="ao-search-wrap"><div class="ao-search-icon"><img src="https://static.wikia.nocookie.net/universal-tdx/images/1/10/SearchIcon.png/revision/latest?cb=20260521110032" alt="Search" style="width: 15px; height: 15px; vertical-align: middle;"></div><input class="ao-search-input" type="text" placeholder="Search items or sets..." /></div>');
             $hostItems.empty();
             $bar.append($search).appendTo($hostItems);
 
@@ -209,11 +204,8 @@ mw.hook('wikipage.content').add(function ($content) {
         }
     }
 
-  // =====================================================================
-    // DPS CALCULATOR UPDATED SCRIPT
     // =====================================================================
-// =====================================================================
-    // DPS CALCULATOR (UNIVERSAL TD OPTIMIZER MATH)
+    // DPS CALCULATOR (WITH SYSTEM LEVELS & CUSTOM SUMMONS INCORPORATED)
     // =====================================================================
     $content.find('.utdx-dps-calculator').each(function () {
         var $calc = $(this);
@@ -252,6 +244,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
         function formatNumber(value) {
             value = num(value, 0);
+            if (isNaN(value)) return "0";
             var abs = Math.abs(value);
             if (abs >= 1000000000) return (value / 1000000000).toFixed(2).replace(/\.?0+$/, '') + 'B';
             if (abs >= 1000000) return (value / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
@@ -261,186 +254,303 @@ mw.hook('wikipage.content').add(function ($content) {
 
         function pct(value) { return formatNumber(value) + '%'; }
 
-        // --- MATH ENGINE (From Optimizer Source) ---
-        function calculate() {
-            var unit = data.unit;
-            
-            // Get Inputs safely
-            var set = $calc.find('[data-calc="set"]').val() || 'none';
-            var head = $calc.find('[data-calc="head"]').val() || 'none';
-            var traitId = $calc.find('[data-calc="trait"]').val() || 'none';
-            var trait = findById(data.traits, traitId);
-            var placement = Math.min(num(unit.placement, 1), trait.limitPlace ? num(trait.limitPlace, 1) : num(unit.placement, 1));
-
-            var dmgPoints = num($calc.find('[data-calc="dmgPoints"]').val(), 0);
-            var spaPoints = num($calc.find('[data-calc="spaPoints"]').val(), 0);
-            var rangePoints = num($calc.find('[data-calc="rangePoints"]').val(), 0);
-            
-            var rankDmg = num($calc.find('[data-calc="rankDmg"]').val(), 20);
-            var rankSpa = num($calc.find('[data-calc="rankSpa"]').val(), 8);
-            var rankRange = num($calc.find('[data-calc="rankRange"]').val(), 20);
-
-            // Fetch Relic Substats
-            var relic = { dmg: 0, spa: 0, range: 0, cm: 0, cf: 0, dot: 0 };
-            
-            var bodyMainId = $calc.find('[data-calc="bodyMain"]').val();
-            var legsMainId = $calc.find('[data-calc="legsMain"]').val();
-            
-            var bodyMainObj = findById(data.bodyMain, bodyMainId);
-            var legsMainObj = findById(data.legsMain, legsMainId);
-            
-            if (bodyMainObj.value) relic[bodyMainId] += num(bodyMainObj.value, 0);
-            if (legsMainObj.value) relic[legsMainId] += num(legsMainObj.value, 0);
-
-            $calc.find('.utdx-dps-sub').each(function () {
-                var $input = $(this);
-                // Disable conflicting main stats
-                var slot = $input.attr('data-slot');
-                var stat = $input.attr('data-stat');
-                var isBlocked = (slot === 'body' && stat === bodyMainId) || (slot === 'legs' && stat === legsMainId);
-                $input.prop('disabled', isBlocked);
-                
-                if (!isBlocked) {
-                    relic[stat] += num($input.val(), 0);
-                } else {
-                    $input.val(0);
-                }
+        function optionHtml(list, selected) {
+            var html = '';
+            $.each(list || [], function (_, item) {
+                var id = String(item.id);
+                html += '<option value="' + id + '"' + (id === String(selected) ? ' selected' : '') + '>' + item.name + '</option>';
             });
-
-            // 1. Base Level Stats (Optimizer Formula)
-            var lvDmg = num(unit.atk, 0) * Math.pow(1.0045125, dmgPoints) * (1 + rankDmg / 100);
-            var lvSpa = num(unit.spa, 1) * Math.pow(0.9954875, spaPoints) * (1 - rankSpa / 100);
-            var lvRange = num(unit.range, 0) * Math.pow(1.0045125, rangePoints) * (1 + rankRange / 100);
-
-            // 2. Set & Tag Bonuses
-            var sBonus = { dmg: 0, spa: 0, range: 0, cm: 0, cf: 0, dot: 0 };
-            var setInfo = findById(data.sets, set);
-            if (setInfo && setInfo.bonus) {
-                for (var k in sBonus) sBonus[k] = num(setInfo.bonus[k], 0);
-            }
-
-            var element = String(unit.element || '').toLowerCase();
-            if (head === 'reaper_necklace' && set !== 'reaper_set') { sBonus.spa += 7.5; sBonus.range += 15; }
-            if (head === 'shadow_reaper_necklace' && set !== 'shadow_reaper') { sBonus.dmg += 2.5; sBonus.range += 10; sBonus.cf += 5; sBonus.cm += 5; }
-            if (set === 'ninja' && ['dark','rose','fire'].indexOf(element) !== -1) sBonus.dmg += 10;
-            if (set === 'sun_god' && ['ice','light','water'].indexOf(element) !== -1) sBonus.dmg += 10;
-            if (set === 'rebellious_set' && unit.hasCC) sBonus.dmg += 30;
-            
-            // Tag Checks
-            if (set === 'shadow_reaper' && hasTag('Peroxide')) sBonus.spa += 10;
-            if (set === 'shadow_reaper' && hasTag('Reaper')) { sBonus.dmg += 25; sBonus.spa += 12.5; }
-            if (set === 'reaper_set' && hasTag('Peroxide')) { sBonus.dmg += 10; sBonus.dot += 5; sBonus.cm += 8.5; }
-            if (set === 'reaper_set' && hasTag('Reaper')) { sBonus.range += 15; }
-
-            // 3. Relic Buffs (Artificer)
-            var baseR = { dmg: relic.dmg, spa: relic.spa, range: relic.range, cm: relic.cm, cf: relic.cf, dot: relic.dot };
-            if (trait.relicBuff) {
-                var mult = num(trait.relicBuff, 1);
-                baseR.dmg = ((1 + baseR.dmg / 100) * mult - 1) * 100;
-                baseR.range = ((1 + baseR.range / 100) * mult - 1) * 100;
-                baseR.spa *= mult; baseR.cm *= mult; baseR.cf *= mult; baseR.dot *= mult;
-            }
-
-            var passiveDmg = num(unit.passiveDmg, 0);
-            var passiveSpa = num(unit.passiveSpa, 0);
-            var passiveRange = num(unit.passiveRange, 0);
-            
-            var eternalDmg = 0; var eternalRange = 0;
-            if (trait.isEternal) {
-                eternalDmg = 12 * 5; // Capped at wave 12
-                eternalRange = 12 * 2.5;
-                passiveDmg += eternalDmg;
-            }
-
-            // 4. Final SPA & Range
-            var totalAdditiveRange = sBonus.range + passiveRange + eternalRange;
-            var finalRange = lvRange * (1 + num(trait.range, 0) / 100) * (1 + baseR.range / 100) * (1 + totalAdditiveRange / 100);
-
-            var spaAfterRelic = lvSpa * (1 - num(trait.spa, 0) / 100) * (1 - baseR.spa / 100);
-            var rawSpa = spaAfterRelic * (1 - (sBonus.spa + passiveSpa) / 100);
-            var finalSpa = Math.max(rawSpa, num(unit.spaCap, 0.1));
-
-            // 5. Head Dynamic Buffs
-            var headDmgBase = 0, headDmgPassive = 0, headDotBuff = 0, noCrits = false;
-            if (head === 'sun_god') {
-                var buffAttacks = Math.floor(7 / Math.max(finalSpa, 0.1));
-                var uptime = buffAttacks > 0 ? buffAttacks / (6 + buffAttacks) : 0;
-                headDmgBase = finalRange * uptime;
-            } else if (head === 'ninja') {
-                var ninjaUp = 10 / (10 + (5 * Math.max(finalSpa, 0.1)));
-                headDotBuff = 20 * ninjaUp;
-            } else if (head === 'biju_head' && String(unit.name).toLowerCase().indexOf('sasuke') !== -1) {
-                var bUp = Math.min(1, 10 / (3 * Math.max(finalSpa, 0.1)));
-                headDmgPassive = 70 * bUp;
-            } else if (head === 'reanimated_head') {
-                var rAttacks = Math.floor(10 / Math.max(finalSpa, 0.1));
-                var rUp = rAttacks > 0 ? rAttacks / (5 + rAttacks) : 0;
-                headDotBuff = finalRange * rUp;
-            } else if (head === 'sorcerer_hunter_spirit') {
-                headDmgBase = 60; noCrits = true;
-            } else if (head === 'strongest_sorcerer_glasses' && (String(unit.name).toLowerCase().indexOf('strongest') !== -1 || String(unit.name).toLowerCase().indexOf('gojo') !== -1)) {
-                headDmgPassive = 50;
-            } else if (head === 'bloodline_head' && hasTag('Bloodline')) {
-                headDmgPassive = 30;
-            }
-
-            // 6. Hit DPS
-            var additiveDmg = sBonus.dmg + passiveDmg + headDmgBase + headDmgPassive;
-            var finalDmg = lvDmg * (1 + num(trait.dmg, 0) / 100) * (1 + baseR.dmg / 100) * (1 + additiveDmg / 100);
-
-            var finalCdmg = num(unit.cdmg, 150) + sBonus.cm + baseR.cm + num(unit.passiveCdmg, 0);
-            var finalCrit = Math.min(100, num(unit.crit, 0) + num(trait.critRate, 0) + sBonus.cf + baseR.cf + num(unit.passiveCrit, 0));
-            if (noCrits) finalCrit = 0;
-
-            var avgCritMult = 1 + ((finalCdmg / 100) * (finalCrit / 100));
-            var avgHit = finalDmg * avgCritMult;
-            var hitDps = (avgHit / Math.max(finalSpa, 0.1)) * placement;
-
-            // 7. DoT DPS
-            var traitDotBonus = num(trait.dotBuff, 0) + num(unit.passiveDot, 0);
-            var gearDotBonus = baseR.dot + headDotBuff + sBonus.dot;
-            var traitMult = 1 + traitDotBonus / 100;
-            var gearMult = 1 + gearDotBonus / 100;
-            var canStack = trait.allowDotStack;
-            
-            var nativeDps = 0;
-            if (num(unit.dot, 0) > 0) {
-                var tickPct = num(unit.dot, 0) * traitMult * gearMult;
-                var totalDotDmg = finalDmg * (tickPct / 100); // DoT does not crit in base engine
-                var dotDur = num(unit.dotDuration, 0);
-                var interval = canStack ? finalSpa : (dotDur > 0 ? Math.ceil(dotDur / Math.max(finalSpa, 0.1)) * finalSpa : finalSpa);
-                nativeDps = totalDotDmg / Math.max(interval, 0.1);
-            }
-
-            var radDps = 0;
-            if (trait.hasRadiation) {
-                var radPct = num(trait.radiationPct, 20) * traitMult * gearMult;
-                radDps = (finalDmg * (radPct / 100)) / 10;
-            }
-
-            var dotDps = (nativeDps + radDps) * (canStack ? placement : 1);
-            var totalDps = hitDps + dotDps;
-
-            // 8. Output to UI
-            $calc.find('[data-result="total"]').text(formatNumber(totalDps));
-            $calc.find('[data-result="hit"]').text(formatNumber(hitDps));
-            $calc.find('[data-result="dot"]').html(dotDps > 0 ? formatNumber(dotDps) : '-<br><span style="font-size:0.6rem; color:#555;">No DoT</span>');
-            $calc.find('[data-result="damage"]').text(formatNumber(finalDmg));
-            $calc.find('[data-result="spa"]').text(finalSpa.toFixed(2) + 's');
-            $calc.find('[data-result="range"]').text(formatNumber(finalRange));
-            
-            // Breakdowns
-            $calc.find('[data-result="crit-combo"]').html('<span style="color:#55ff55;">' + Math.floor(finalCrit) + '%</span> <span style="color:#a0a0b8; margin:0 5px;">|</span> <span style="color:#55ffff;">x' + avgCritMult.toFixed(2) + '</span>');
-            $calc.find('[data-result="atk-rate"]').html(finalSpa.toFixed(2) + 's');
-            
-            $calc.find('[data-result="traitBreakdown"]').text('Trait: +' + pct(num(trait.dmg, 0)) + ' Dmg, -' + pct(num(trait.spa, 0)) + ' SPA, +' + pct(num(trait.range, 0)) + ' Range');
-            $calc.find('[data-result="relicBreakdown"]').text('Relics: +' + pct(baseR.dmg) + ' Dmg, -' + pct(baseR.spa) + ' SPA, +' + pct(baseR.range) + ' Range');
-            $calc.find('[data-result="critBreakdown"]').text('Crit: ' + pct(finalCrit) + ' / ' + pct(finalCdmg) + ' CDmg');
+            return html;
         }
 
-        // Attach event listeners correctly to inputs
-        $calc.on('input change', '.utdx-calc-input, .utdx-calc-select, .gear-select', calculate);
+        function statInputs(slot) {
+            var labels = [
+                ['dmg', 'DMG'], ['spa', 'SPA'],
+                ['range', 'RNG'], ['cm', 'CRIT DMG'],
+                ['cf', 'CRIT RATE'], ['dot', 'DOT']
+            ];
+            var html = '<div class="utdx-calc-subgrid">';
+            $.each(labels, function (_, item) {
+                html += '<div class="utdx-calc-sub-item" data-stat-type="' + item[0] + '">';
+                html += '<span class="utdx-calc-sub-lbl">' + item[1] + '</span>';
+                html += '<input class="utdx-calc-input utdx-dps-sub" type="number" step="0.1" value="0" data-slot="' + slot + '" data-stat="' + item[0] + '">';
+                html += '</div>';
+            });
+            html += '</div>';
+            return html;
+        }
+
+        var defs = data.defaults || {};
+        var controls = '';
         
-        // Run initial calculation
+        controls += '<div class="utdx-calc-grid">';
+        controls += '<div class="utdx-calc-panel">';
+        controls += '<div class="utdx-calc-row"><span class="utdx-calc-label">Relic Set</span></div>';
+        controls += '<select class="utdx-calc-select" data-calc="set">' + optionHtml(data.sets, defs.set) + '</select>';
+        controls += '<div class="utdx-calc-row" style="margin-top:12px;"><span class="utdx-calc-label">Trait</span></div>';
+        controls += '<select class="utdx-calc-select" data-calc="trait">' + optionHtml(data.traits, defs.trait) + '</select>';
+        controls += '</div>';
+        controls += '<div class="utdx-calc-panel">';
+        controls += '<div class="utdx-calc-row"><span class="utdx-calc-label">Dmg Pts</span><input class="utdx-calc-input" type="number" step="1" value="' + num(defs.dmgPoints, 0) + '" data-calc="dmgPoints"></div>';
+        controls += '<div class="utdx-calc-row" style="margin-top:12px;"><span class="utdx-calc-label">Rank Dmg%</span><input class="utdx-calc-input" type="number" step="0.1" value="' + num(defs.rankDmg, 20) + '" data-calc="rankDmg"></div>';
+        controls += '</div>';
+        controls += '<div class="utdx-calc-panel">';
+        controls += '<div class="utdx-calc-row"><span class="utdx-calc-label">Spa Pts</span><input class="utdx-calc-input" type="number" step="1" value="' + num(defs.spaPoints, 0) + '" data-calc="spaPoints"></div>';
+        controls += '<div class="utdx-calc-row" style="margin-top:12px;"><span class="utdx-calc-label">Rank Spa%</span><input class="utdx-calc-input" type="number" step="0.1" value="' + num(defs.rankSpa, 8) + '" data-calc="rankSpa"></div>';
+        controls += '</div>';
+        controls += '<div class="utdx-calc-panel">';
+        controls += '<div class="utdx-calc-row"><span class="utdx-calc-label">Rng Pts</span><input class="utdx-calc-input" type="number" step="1" value="' + num(defs.rangePoints, 0) + '" data-calc="rangePoints"></div>';
+        controls += '<div class="utdx-calc-row" style="margin-top:12px;"><span class="utdx-calc-label">Rank Rng%</span><input class="utdx-calc-input" type="number" step="0.1" value="' + num(defs.rankRange, 20) + '" data-calc="rankRange"></div>';
+        controls += '</div></div>';
+
+        controls += '<div class="utdx-calc-grid">';
+        controls += '<div class="utdx-calc-panel gear-panel">';
+        controls += '<div class="utdx-calc-panel-title">HEAD PIECE</div>';
+        controls += '<select class="utdx-calc-select gear-select" data-calc="head">' + optionHtml(data.heads, defs.head) + '</select>';
+        controls += statInputs('head') + '</div>';
+        controls += '<div class="utdx-calc-panel gear-panel">';
+        controls += '<div class="utdx-calc-panel-title">BODY MAIN</div>';
+        controls += '<select class="utdx-calc-select gear-select" data-calc="bodyMain">' + optionHtml(data.bodyMain, defs.bodyMain) + '</select>';
+        controls += statInputs('body') + '</div>';
+        controls += '<div class="utdx-calc-panel gear-panel">';
+        controls += '<div class="utdx-calc-panel-title">LEGS MAIN</div>';
+        controls += '<select class="utdx-calc-select gear-select" data-calc="legsMain">' + optionHtml(data.legsMain, defs.legsMain) + '</select>';
+        controls += statInputs('legs') + '</div></div>';
+
+        $calc.find('.utdx-dps-control-host').html(controls);
+
+        function calculate() {
+            try {
+                var unit = data.unit;
+                
+                var set = $calc.find('[data-calc="set"]').val() || 'none';
+                var head = $calc.find('[data-calc="head"]').val() || 'none';
+                var traitId = $calc.find('[data-calc="trait"]').val() || 'none';
+                var trait = findById(data.traits, traitId);
+                var placement = Math.min(num(unit.placement, 1), trait.limitPlace ? num(trait.limitPlace, 1) : num(unit.placement, 1));
+
+                var dmgPoints = num($calc.find('[data-calc="dmgPoints"]').val(), 0);
+                var spaPoints = num($calc.find('[data-calc="spaPoints"]').val(), 0);
+                var rangePoints = num($calc.find('[data-calc="rangePoints"]').val(), 0);
+                
+                var rankDmg = num($calc.find('[data-calc="rankDmg"]').val(), 20);
+                var rankSpa = num($calc.find('[data-calc="rankSpa"]').val(), 8);
+                var rankRange = num($calc.find('[data-calc="rankRange"]').val(), 20);
+
+                var relic = { dmg: 0, spa: 0, range: 0, cm: 0, cf: 0, dot: 0 };
+                
+                var bodyMainId = $calc.find('[data-calc="bodyMain"]').val();
+                var legsMainId = $calc.find('[data-calc="legsMain"]').val();
+                var bodyMainObj = findById(data.bodyMain, bodyMainId);
+                var legsMainObj = findById(data.legsMain, legsMainId);
+                
+                if (bodyMainObj.value) relic[bodyMainId] += num(bodyMainObj.value, 0);
+                if (legsMainObj.value) relic[legsMainId] += num(legsMainObj.value, 0);
+
+                $calc.find('.utdx-dps-sub').each(function () {
+                    var $input = $(this);
+                    var slot = $input.attr('data-slot');
+                    var stat = $input.attr('data-stat');
+                    var isBlocked = (slot === 'body' && stat === bodyMainId) || (slot === 'legs' && stat === legsMainId);
+                    $input.prop('disabled', isBlocked);
+                    
+                    if (!isBlocked) {
+                        relic[stat] += num($input.val(), 0);
+                    } else {
+                        $input.val(0);
+                    }
+                });
+
+                var lvDmg = num(unit.atk, 0) * Math.pow(1.0045125, dmgPoints) * (1 + rankDmg / 100);
+                var lvSpa = num(unit.spa, 1) * Math.pow(0.9954875, spaPoints) * (1 - rankSpa / 100);
+                var lvRange = num(unit.range, 0) * Math.pow(1.0045125, rangePoints) * (1 + rankRange / 100);
+
+                var sBonus = { dmg: 0, spa: 0, range: 0, cm: 0, cf: 0, dot: 0 };
+                var setInfo = findById(data.sets, set);
+                if (setInfo && setInfo.bonus) {
+                    for (var k in sBonus) sBonus[k] = num(setInfo.bonus[k], 0);
+                }
+
+                var element = String(unit.element || '').toLowerCase();
+                if (head === 'reaper_necklace' && set !== 'reaper_set') { sBonus.spa += 7.5; sBonus.range += 15; }
+                if (head === 'shadow_reaper_necklace' && set !== 'shadow_reaper') { sBonus.dmg += 2.5; sBonus.range += 10; sBonus.cf += 5; sBonus.cm += 5; }
+                if (set === 'ninja' && ['dark','rose','fire'].indexOf(element) !== -1) sBonus.dmg += 10;
+                if (set === 'sun_god' && ['ice','light','water'].indexOf(element) !== -1) sBonus.dmg += 10;
+                if (set === 'rebellious_set' && unit.hasCC) sBonus.dmg += 30;
+                
+                if (set === 'shadow_reaper' && hasTag('Peroxide')) sBonus.spa += 10;
+                if (set === 'shadow_reaper' && hasTag('Reaper')) { sBonus.dmg += 25; sBonus.spa += 12.5; }
+                if (set === 'reaper_set' && hasTag('Peroxide')) { sBonus.dmg += 10; sBonus.dot += 5; sBonus.cm += 8.5; }
+                if (set === 'reaper_set' && hasTag('Reaper')) { sBonus.range += 15; }
+
+                var baseR = { dmg: relic.dmg, spa: relic.spa, range: relic.range, cm: relic.cm, cf: relic.cf, dot: relic.dot };
+                if (trait.relicBuff) {
+                    var mult = num(trait.relicBuff, 1);
+                    baseR.dmg = ((1 + baseR.dmg / 100) * mult - 1) * 100;
+                    baseR.range = ((1 + baseR.range / 100) * mult - 1) * 100;
+                    baseR.spa *= mult; baseR.cm *= mult; baseR.cf *= mult; baseR.dot *= mult;
+                }
+
+                var passiveDmg = num(unit.passiveDmg, 0);
+                var passiveSpa = num(unit.passiveSpa, 0);
+                var passiveRange = num(unit.passiveRange, 0);
+
+                // ==============================================================
+                // 1. SYSTEM LEVEL INTEGRATION (Jinoo, etc.)
+                // ==============================================================
+                if (unit.systemLevel) {
+                    var cfg = unit.systemLevel;
+                    var sysLvl = 100; // Fandom Defaults to Max Potential
+                    if (cfg.perLevel && cfg.perLevel.passiveDmg) {
+                        passiveDmg += cfg.perLevel.passiveDmg * sysLvl;
+                    }
+                    if (cfg.thresholds) {
+                        $.each(cfg.thresholds, function(idx, t) {
+                            if (sysLvl >= num(t.level, 0)) {
+                                if (t.passiveDmg) passiveDmg += num(t.passiveDmg, 0);
+                                if (t.passiveSpa) passiveSpa += num(t.passiveSpa, 0);
+                            }
+                        });
+                    }
+                }
+                
+                var eternalDmg = 0; var eternalRange = 0;
+                if (trait.isEternal) {
+                    eternalDmg = 12 * 5; 
+                    eternalRange = 12 * 2.5;
+                    passiveDmg += eternalDmg;
+                }
+
+                var totalAdditiveRange = sBonus.range + passiveRange + eternalRange;
+                var finalRange = lvRange * (1 + num(trait.range, 0) / 100) * (1 + baseR.range / 100) * (1 + totalAdditiveRange / 100);
+
+                var spaAfterRelic = lvSpa * (1 - num(trait.spa, 0) / 100) * (1 - baseR.spa / 100);
+                var rawSpa = spaAfterRelic * (1 - (sBonus.spa + passiveSpa) / 100);
+                var finalSpa = Math.max(rawSpa, num(unit.spaCap, 0.1));
+
+                var headDmgBase = 0, headDmgPassive = 0, headDotBuff = 0, noCrits = false;
+                if (head === 'sun_god') {
+                    var buffAttacks = Math.floor(7 / Math.max(finalSpa, 0.1));
+                    var uptime = buffAttacks > 0 ? buffAttacks / (6 + buffAttacks) : 0;
+                    headDmgBase = finalRange * uptime;
+                } else if (head === 'ninja') {
+                    var ninjaUp = 10 / (10 + (5 * Math.max(finalSpa, 0.1)));
+                    headDotBuff = 20 * ninjaUp;
+                } else if (head === 'biju_head' && String(unit.name).toLowerCase().indexOf('sasuke') !== -1) {
+                    var bUp = Math.min(1, 10 / (3 * Math.max(finalSpa, 0.1)));
+                    headDmgPassive = 70 * bUp;
+                } else if (head === 'reanimated_head') {
+                    var rAttacks = Math.floor(10 / Math.max(finalSpa, 0.1));
+                    var rUp = rAttacks > 0 ? rAttacks / (5 + rAttacks) : 0;
+                    headDotBuff = finalRange * rUp;
+                } else if (head === 'sorcerer_hunter_spirit') {
+                    headDmgBase = 60; noCrits = true;
+                } else if (head === 'strongest_sorcerer_glasses' && (String(unit.name).toLowerCase().indexOf('strongest') !== -1 || String(unit.name).toLowerCase().indexOf('gojo') !== -1)) {
+                    headDmgPassive = 50;
+                } else if (head === 'bloodline_head' && hasTag('Bloodline')) {
+                    headDmgPassive = 30;
+                }
+
+                var additiveDmg = sBonus.dmg + passiveDmg + headDmgBase + headDmgPassive;
+                var finalDmg = lvDmg * (1 + num(trait.dmg, 0) / 100) * (1 + baseR.dmg / 100) * (1 + additiveDmg / 100);
+
+                var finalCdmg = num(unit.cdmg, 150) + sBonus.cm + baseR.cm + num(unit.passiveCdmg, 0);
+                var finalCrit = Math.min(100, num(unit.crit, 0) + num(trait.critRate, 0) + sBonus.cf + baseR.cf + num(unit.passiveCrit, 0));
+                if (noCrits) finalCrit = 0;
+
+                var avgCritMult = 1 + ((finalCdmg / 100) * (finalCrit / 100));
+                var avgHit = finalDmg * avgCritMult;
+                var hitDps = (avgHit / Math.max(finalSpa, 0.1)) * placement;
+
+                // ==============================================================
+                // 2. SUMMON DPS INTEGRATION (Shadow Legion, Planes, etc.)
+                // ==============================================================
+                var summonDpsTotal = 0;
+                var isJinoo = String(unit.name).toLowerCase().indexOf('jinoo') !== -1 || String(unit.name).toLowerCase().indexOf('shadow monarch') !== -1;
+                
+                // Standard Summons (E.g., Phantom Captain Planes)
+                if (unit.summonStats) {
+                    var ss = unit.summonStats;
+                    var pBaseDmg = finalDmg * (num(ss.dmgPct, 0) / 100);
+                    var dpsA = ss.planeA ? (pBaseDmg * 1.5) / Math.max(num(ss.planeA.spa, 1), 0.1) : 0; 
+                    var dpsB = ss.planeB ? (pBaseDmg * 1.5) / Math.max(num(ss.planeB.spa, 1), 0.1) : 0;
+                    var avgPlaneDps = (dpsA + dpsB) / 2;
+                    var avgDur = ((num(ss.planeA && ss.planeA.duration, 0)) + (num(ss.planeB && ss.planeB.duration, 0))) / 2;
+                    var atkToSpawn = num(ss.attacksToSpawn, 1);
+                    var actualCount = Math.min(avgDur / (finalSpa * atkToSpawn), num(ss.maxCount, 1));
+                    summonDpsTotal += (avgPlaneDps * actualCount) * placement;
+                }
+
+                // Custom Summons (E.g., Jinoo Shadow Legion, Sukuna Mahoraga)
+                if (unit.customSummons && unit.customSummons.length > 0) {
+                    var cDpsTotal = 0;
+                    $.each(unit.customSummons, function(idx, s) {
+                        var sDmgMult = num(s.e6DmgMult || s.dmgMult, 1);
+                        
+                        // Jinoo HP scaling rule (0.5hp = +50% dmg)
+                        if (isJinoo && s.ui && s.ui.hp) {
+                            sDmgMult += (num(s.ui.hp, 0) / 100);
+                        }
+                        
+                        var sAvgMult = s.noCrit ? 1.0 : avgCritMult; 
+                        var sHitDmg = finalDmg * sDmgMult;
+                        var sAvgDmg = sHitDmg * sAvgMult;
+                        var sDps = (sAvgDmg / Math.max(num(s.spa, 1), 0.1)) * num(s.count, 1);
+                        cDpsTotal += sDps;
+                    });
+                    summonDpsTotal += (cDpsTotal * placement);
+                }
+
+                var traitDotBonus = num(trait.dotBuff, 0) + num(unit.passiveDot, 0);
+                var gearDotBonus = baseR.dot + headDotBuff + sBonus.dot;
+                var traitMult = 1 + traitDotBonus / 100;
+                var gearMult = 1 + gearDotBonus / 100;
+                var canStack = trait.allowDotStack;
+                
+                var nativeDps = 0;
+                if (num(unit.dot, 0) > 0) {
+                    var tickPct = num(unit.dot, 0) * traitMult * gearMult;
+                    var totalDotDmg = finalDmg * (tickPct / 100);
+                    var dotDur = num(unit.dotDuration, 0);
+                    var interval = canStack ? finalSpa : (dotDur > 0 ? Math.ceil(dotDur / Math.max(finalSpa, 0.1)) * finalSpa : finalSpa);
+                    nativeDps = totalDotDmg / Math.max(interval, 0.1);
+                }
+
+                var radDps = 0;
+                if (trait.hasRadiation) {
+                    var radPct = num(trait.radiationPct, 20) * traitMult * gearMult;
+                    radDps = (finalDmg * (radPct / 100)) / 10;
+                }
+
+                var dotDps = (nativeDps + radDps) * (canStack ? placement : 1);
+                
+                // ==============================================================
+                // 3. THE FINAL TOTAL (INCLUDING SUMMONS!)
+                // ==============================================================
+                var totalDps = hitDps + dotDps + summonDpsTotal;
+
+                $calc.find('[data-result="total"]').html(formatNumber(totalDps) + (summonDpsTotal > 0 ? '<br><span style="font-size:0.6rem; color:#a0a0b8;">(+Summons)</span>' : ''));
+                $calc.find('[data-result="hit"]').text(formatNumber(hitDps));
+                $calc.find('[data-result="dot"]').html(dotDps > 0 ? formatNumber(dotDps) : '-<br><span style="font-size:0.6rem; color:#555;">No DoT</span>');
+                $calc.find('[data-result="damage"]').text(formatNumber(finalDmg));
+                $calc.find('[data-result="spa"]').text(finalSpa.toFixed(2) + 's');
+                $calc.find('[data-result="range"]').text(formatNumber(finalRange));
+                
+                $calc.find('[data-result="crit-combo"]').html('<span style="color:#55ff55;">' + Math.floor(finalCrit) + '%</span> <span style="color:#a0a0b8; margin:0 5px;">|</span> <span style="color:#55ffff;">x' + avgCritMult.toFixed(2) + '</span>');
+                $calc.find('[data-result="atk-rate"]').html(finalSpa.toFixed(2) + 's');
+                
+                $calc.find('[data-result="traitBreakdown"]').text('Trait: +' + pct(num(trait.dmg, 0)) + ' Dmg, -' + pct(num(trait.spa, 0)) + ' SPA, +' + pct(num(trait.range, 0)) + ' Range');
+                $calc.find('[data-result="relicBreakdown"]').text('Relics: +' + pct(baseR.dmg) + ' Dmg, -' + pct(baseR.spa) + ' SPA, +' + pct(baseR.range) + ' Range');
+                $calc.find('[data-result="critBreakdown"]').text('Crit: ' + pct(finalCrit) + ' / ' + pct(finalCdmg) + ' CDmg');
+
+            } catch (e) {
+                console.error("Calculator Error:", e);
+                // Safe fallback to prevent blank boxes if math fails
+                $calc.find('[data-result="total"], [data-result="damage"], [data-result="spa"], [data-result="range"]').text("Err");
+            }
+        }
+
+        $calc.on('input change', '.utdx-calc-input, .utdx-calc-select, .gear-select', calculate);
         setTimeout(calculate, 100);
     });
+});
