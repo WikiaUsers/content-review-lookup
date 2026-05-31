@@ -32,6 +32,6 @@ window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulat
 
 /* for [[dev:GlobalFileUsage]] */
 window.globalFileUsageConfig = {
-    'lang': ['th', 'vi', 'es'],
+    'lang': ['th', 'vi', 'es', 'ru'],
     'auto_show': false
 }

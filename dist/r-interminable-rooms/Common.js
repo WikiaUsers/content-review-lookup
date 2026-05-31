@@ -36,49 +36,9 @@ window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.limit = 35;
 
-	function getUserStatus(data) {
-		var recentEdits = data.query && (data.query.usercontribs.length + data.query.logevents.length);
-		if (recentEdits > 0 && recentEdits < 10) {
-			return {
-				status: i18n.msg('online').plain(),
-				color: 'var(--Yes-colour)',
-				image: 'https://static.wikia.nocookie.net/r-interminable-rooms/images/d/da/OnlineIcon_20.png/revision/latest?cb=20260520102745&format=original'
-			};
-		} else if (recentEdits > 0) {
-			return {
-				status: i18n.msg('busy').plain(),
-				color: 'var(--Maybe-colour)',
-				image: 'https://static.wikia.nocookie.net/r-interminable-rooms/images/a/ac/BusyIcon_20.png/revision/latest?cb=20260520102746&format=original'
-			};
-		} else {
-			return {
-				status: i18n.msg('offline').plain(),
-				color: 'var(--No-colour)',
-				image: 'https://static.wikia.nocookie.net/r-interminable-rooms/images/9/96/OfflineIcon_20.png/revision/latest?cb=20260520102747&format=original'
-			};
-		}
-	}
-	function addToContent($content) {
-		var $statusElements = $content.find('span[data-user-status]:not(.loaded)');
-		if (!$statusElements.length) {
-			return;
-		}
-		$statusElements.each(function() {
-			var $element = $(this).addClass('loaded');
-			if (!$element.data('userStatus')) {
-				return;
-			}
-			getRecentEdits($element.data('userStatus')).done(function(data) {
-				var userStatus = getUserStatus(data);
-				$element
-					.css('color', userStatus.color)
-					.text(userStatus.status)
-					.append(
-						' ',
-						$('<img>', {
-							src: userStatus.image
-						})
-					);
-			});
-		});
-	}
+// register hook before import to avoid race conditions
+mw.hook('dev.wds').add(function(wds) {
+    // wds is a shortcut to window.dev.wds
+});
+
+importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });

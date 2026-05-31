@@ -12,13 +12,13 @@
             return;
         }
 
-        var unblockelement = $('.mw-contributions-user-tools a.mw-contributions-link-change-block');
+        var unblockelement = $('.mw-contributions-user-tools a.mw-contributions-link-unblock');
 
         if (!unblockelement.length) {
             return;
         }
 
-        $('.mw-contributions-user-tools a.mw-contributions-link-block').text(data.query.allmessages[0]['*']);
+        $('.mw-contributions-user-tools a.mw-contributions-link-change-block').text(data.query.allmessages[0]['*']);
         unblockelement.parent().hide();
     }
 

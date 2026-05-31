@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+mw.loader.getScript('/w/index.php?title=MediaWiki:Countdown.js&action=raw&ctype=text/javascript');
+
 
 /* Tab scroll position */
 $(function() {
@@ -57,7 +59,8 @@ mw.hook('wikipage.content').add(function() {
 });
 
 
-/* SLIMES PAGE */var RARITY_THRESHOLDS = [
+/* SLIMES PAGE */
+var RARITY_THRESHOLDS = [
   { max: 5, name: 'Basic', color: '#FFFFFF' },
   { max: 20, name: 'Common', color: '#a6ff8b' },
   { max: 60, name: 'Uncommon', color: '#98f0be' },
@@ -222,53 +225,6 @@ function drawSparkle(ctx, x, y, size, alpha) {
   });
 })();
 
-/*scaling*/
-
-(function() {
-  function updateFloatingImages() {
-    document.querySelectorAll('.sliming img').forEach(function(img) {
-      const sliming = img.closest('.sliming');
-      const scale = parseFloat(sliming.dataset.scale) || 1;
-      if (scale <= 1) return;
-
-      var ghost = img._ghost;
-      if (!ghost) {
-        ghost = document.createElement('img');
-        ghost.src = img.src;
-        ghost.style.cssText = 'position:fixed;pointer-events:none;z-index:2;transform-origin:center center;';
-        document.body.appendChild(ghost);
-        img._ghost = ghost;
-        img.style.opacity = '0';
-      }
-
-      const rect = img.getBoundingClientRect();
-      const w = rect.width * scale;
-      const h = rect.height * scale;
-      const ox = parseFloat(sliming.dataset.ox) || 0;
-      const oy = parseFloat(sliming.dataset.oy) || 0;
-
-      ghost.style.width = w + 'px';
-      ghost.style.height = h + 'px';
-      ghost.style.left = (rect.left + rect.width / 2 - w / 2 + ox) + 'px';
-      ghost.style.top = (rect.top + rect.height / 2 - h / 2 + oy) + 'px';
-    });
-    requestAnimationFrame(updateFloatingImages);
-  }
-
-  window.addEventListener('load', function() {
-    document.querySelectorAll('.sliming').forEach(function(div) {
-      const scale = parseFloat(div.dataset.scale) || 1;
-      if (scale > 1) {
-        const img = div.querySelector('img');
-        if (img && img.complete) {
-          updateFloatingImages();
-        } else if (img) {
-          img.addEventListener('load', updateFloatingImages);
-        }
-      }
-    });
-  });
-})();
 
 /*Slime view*/
 
@@ -277,13 +233,15 @@ function drawSparkle(ctx, x, y, size, alpha) {
     function closeAll() {
       document.querySelectorAll('.slime-view').forEach(function(p) { p.remove(); });
       document.querySelectorAll('.slime.active').forEach(function(s) { s.classList.remove('active'); });
+      var previewImg = document.querySelector('.slime-inside img');
+      if (previewImg && window.starsRemove) window.starsRemove(previewImg);
     }
 
-    document.querySelectorAll('.slime').forEach(function(slime) {
+    document.querySelectorAll('#slime-grid .slime').forEach(function(slime) {
       slime.style.cursor = 'pointer';
       slime.addEventListener('click', function () {
         const grid = this.parentElement;
-        const allSlimes = Array.from(grid.querySelectorAll('.slime'));
+        const allSlimes = Array.from(grid.querySelectorAll('#slime-grid .slime'));
         const cols = 5;
 
         if (this.classList.contains('active')) {
@@ -365,6 +323,10 @@ document.addEventListener('click', function(e) {
   }
 
   if (cls === 'big' || cls === 'huge') {
+    if (previewImg) {
+      if (cls === 'big') previewImg.style.transform = isActive ? 'scale(1.5)' : '';
+      if (cls === 'huge') previewImg.style.transform = isActive ? 'scale(2)' : '';
+    }
     if (previewImg && window.starsRemove && window.starsSetup) {
       window.starsRemove(previewImg);
       setTimeout(function() {
@@ -395,14 +357,14 @@ document.addEventListener('click', function(e) {
   if (titleDiv) {
     var baseName = activeSlime.querySelector('.slime-base-name');
     var base = baseName ? baseName.textContent.trim() : '';
-    var rarity = activeSlime.querySelector('.slime-rarity');
-    var rare = rarity ? rarity.textContent.trim() : '';
+    var rarityText = activeSlime.querySelector('.slime-rarity');
+    var rare = rarityText ? rarityText.textContent.trim() : '';
     var order = ['Shiny', 'Big', 'Huge', 'Inverted'];
-    var active = order.filter(function(c) { return sliming.classList.contains(c.toLowerCase()); });
-    var parts = active.length > 0 ? active.join(' ') + ' ' + base : base;
+    var activeClasses = order.filter(function(c) { return sliming.classList.contains(c.toLowerCase()); });
+    var parts = activeClasses.length > 0 ? activeClasses.join(' ') + ' ' + base : base;
     titleDiv.textContent = parts + (rare ? ' - ' + rare : '');
   }
-  
+
   var baseAtk = parseStat(activeSlime.querySelector('.slime-base-atk').textContent);
   var baseHp = parseStat(activeSlime.querySelector('.slime-base-hp').textContent);
 
@@ -416,12 +378,12 @@ document.addEventListener('click', function(e) {
   var hpDiv = panel.querySelector('.slime-stat-hp');
   if (atkDiv) atkDiv.textContent = formatStat(baseAtk * multiplier);
   if (hpDiv) hpDiv.textContent = formatStat(baseHp * multiplier);
-  
+
   function parseChance(str) {
-  var parts = str.split('/');
-  if (parts.length < 2) return parseStat(str);
-  return parseStat(parts[1].trim());
-}
+    var parts = str.split('/');
+    if (parts.length < 2) return parseStat(str);
+    return parseStat(parts[1].trim());
+  }
 
   var baseChance = parseChance(activeSlime.querySelector('.slime-base-chance').textContent);
   var chanceMult = 1;
@@ -432,27 +394,338 @@ document.addEventListener('click', function(e) {
 
   var chanceDiv = panel.querySelector('.slime-stat-chance');
   if (chanceDiv) chanceDiv.textContent = '1 / ' + formatStat(baseChance * chanceMult);
- 
+
   var rarity = getRarityFromChance(baseChance * chanceMult);
+
   var rarityBtn = panel.querySelector('.change-color');
   if (rarityBtn) {
-  rarityBtn.textContent = rarity.name;
-  rarityBtn.style.color = rarity.color;
-  rarityBtn.style.borderColor = rarity.color;
+    rarityBtn.textContent = rarity.name;
+    rarityBtn.style.color = rarity.color;
+    rarityBtn.style.borderColor = rarity.color;
   }
+
   var titleRarity = panel.querySelector('.slime-title');
   if (titleRarity) titleRarity.style.color = rarity.color;
-  
+
   var changeRarity = panel.querySelector('.change-rarity');
   if (changeRarity) {
-  changeRarity.textContent = rarity.name;
-  changeRarity.style.color = rarity.color;
-  changeRarity.style.borderColor = rarity.color;
+    changeRarity.textContent = rarity.name;
+    changeRarity.style.color = rarity.color;
+    changeRarity.style.borderColor = rarity.color;
   }
-  
+
   var chanceDisplay = panel.querySelector('.box-rarity');
-  if (chanceDisplay) {
-  chanceDisplay.style.background = rarity.color;
-  }
+  if (chanceDisplay) chanceDisplay.style.background = rarity.color;
+
+  var lvlEl = panel.querySelector('.text-lvl');
+  if (lvlEl) updateStats(lvlEl);
 });
+
+/*level*/
+document.addEventListener('click', function(e) {
+  var isNext = e.target.matches('.panel-switch-btn');
+  var isPrev = e.target.matches('.panel-switch-btnr');
+  if (!isNext && !isPrev) return;
+
+  const panel = e.target.closest('.slime-view');
+  if (!panel) return;
+  const slider = panel.querySelector('.panel-slider');
+  if (!slider) return;
+
+  slider.classList.toggle('show-level');
+});
+
+document.addEventListener('input', function(e) {
+  if (!e.target.matches('.text-lvl')) return;
+  
+  var val = e.target.textContent.replace(/[^0-9]/g, '');
+  if (val === '') val = '1';
+  if (parseInt(val) < 1) val = '1';
+  e.target.textContent = val;
+  
+  var range = document.createRange();
+  var sel = window.getSelection();
+  range.selectNodeContents(e.target);
+  range.collapse(false);
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  updateStats(e.target);
+});
+
+function updateStats(levelEl) {
+  const panel = levelEl.closest('.slime-view');
+  if (!panel) return;
+  const activeSlime = document.querySelector('.slime.active');
+  if (!activeSlime) return;
+
+  var level = parseInt(levelEl.textContent) || 1;
+  var sliming = panel.querySelector('.slime-inside');
+
+  var baseAtk = parseStat(activeSlime.querySelector('.slime-base-atk').textContent);
+  var baseHp = parseStat(activeSlime.querySelector('.slime-base-hp').textContent);
+
+  var mutMultAtk = 1;
+  var mutMultHp = 1;
+  if (sliming.classList.contains('big')) { mutMultAtk *= 4; mutMultHp *= 4; }
+  if (sliming.classList.contains('huge')) { mutMultAtk *= 10; mutMultHp *= 10; }
+  if (sliming.classList.contains('shiny')) { mutMultAtk *= 6; mutMultHp *= 6; }
+  if (sliming.classList.contains('inverted')) { mutMultAtk *= 13; mutMultHp *= 13; }
+
+  var atk = Math.round((baseAtk / 10) * (9 + level) * mutMultAtk);
+  var hp  = Math.round((baseHp  / 10) * (9 + level) * mutMultHp);
+
+  var atkDiv = panel.querySelector('.slime-stat-atk');
+  var hpDiv  = panel.querySelector('.slime-stat-hp');
+  if (atkDiv) atkDiv.textContent = formatStat(atk);
+  if (hpDiv)  hpDiv.textContent  = formatStat(hp);
+}
+
+document.addEventListener('click', function(e) {
+  var isAdd = e.target.matches('.add-lvl');
+  var isRemove = e.target.matches('.remove-lvl');
+  if (!isAdd && !isRemove) return;
+
+  const panel = e.target.closest('.slime-view');
+  if (!panel) return;
+
+  var lvlEl = panel.querySelector('.text-lvl');
+  if (!lvlEl) return;
+
+  var level = parseInt(lvlEl.textContent) || 1;
+  if (isAdd) level = level + 1;
+  if (isRemove) {
+  if (level <= 1) {
+    lvlEl.classList.remove('shake-red');
+    lvlEl.offsetHeight;
+    lvlEl.classList.add('shake-red');
+    lvlEl.addEventListener('animationend', function() {
+      lvlEl.classList.remove('shake-red');
+    }, { once: true });
+    return;
+  }
+  level = level - 1;
+}
+  lvlEl.textContent = level;
+
+  updateStats(lvlEl);
+});
+
 /* END OF SLIMES PAGE */
+
+/*Clickable box*/
+document.querySelectorAll('[data-url]').forEach(function(box) {
+    box.style.cursor = 'pointer';
+    box.addEventListener('click', function() {
+        window.open(this.dataset.url, '_blank');
+    });
+});
+
+
+/*Countdown*/
+$(function () {
+  mw.hook('wikipage.content').add(function () {
+    var el = document.getElementById('event-countdown');
+    if (!el) return;
+
+    function parseMmSs(val) {
+      var str = String(val || '0');
+      var parts = str.split('.');
+      var mins = parseInt(parts[0]) || 0;
+      var secs = parseInt(parts[1]) || 0;
+      return (mins * 60 + secs) * 1000;
+    }
+
+    var cfg = {
+      title:    el.dataset.title      || 'In',
+      titleUrl: el.dataset.titleUrl   || '',
+      target:   el.dataset.target     || '',
+      dur:      parseMmSs(el.dataset.eventDuration),
+      evtTxt:   el.dataset.eventText  || 'Event now',
+      color:    el.dataset.color      || '#FFFFFF',
+      anim:     el.dataset.animation  || 'pulse',
+      loop:     el.dataset.loop       === 'true',
+      loopMs:   parseMmSs(el.dataset.loopMinutes)
+    };
+
+    if (!cfg.dur) cfg.dur = 60000;
+    if (!cfg.loopMs && cfg.loop) cfg.loopMs = 3600000;
+
+    var endTime = cfg.target ? new Date(cfg.target).getTime() : 0;
+    if (!endTime || isNaN(endTime)) return;
+    var evEnd = endTime + cfg.dur;
+    var now = Date.now();
+    var loopMs = cfg.loopMs;
+    var phase;
+
+    if (now < endTime) {
+      phase = 'countdown';
+    } else if (now < evEnd) {
+      phase = 'event';
+    } else if (cfg.loop && loopMs > 0) {
+      var cycleMs = cfg.dur + loopMs;
+      var elapsed = (now - endTime) % cycleMs;
+      if (elapsed < cfg.dur) {
+        phase = 'event';
+        endTime = now - elapsed;
+        evEnd = endTime + cfg.dur;
+      } else {
+        phase = 'countdown';
+        endTime = now - elapsed + cycleMs;
+        evEnd = endTime + cfg.dur;
+      }
+    } else {
+      phase = 'done';
+    }
+
+    el.style.textAlign = 'center';
+
+    var lbl = document.createElement(cfg.titleUrl ? 'a' : 'div');
+    lbl.textContent = cfg.title;
+    if (cfg.titleUrl) {
+      lbl.href = cfg.titleUrl;
+      lbl.style.textDecoration = 'none';
+    }
+    lbl.style.cssText += 'font-weight:bold;font-size:20px;text-align:center;color:#a78bfa;margin-bottom:16px;display:block';
+
+    var num = document.createElement('div');
+    num.style.cssText = 'font-size:clamp(28px,6vw,52px);font-weight:500;letter-spacing:.04em;color:' + cfg.color;
+
+    el.appendChild(lbl);
+    el.appendChild(num);
+
+    var style = document.createElement('style');
+    style.textContent =
+      '@keyframes fcdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}' +
+      '@keyframes fcdShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}60%{transform:translateX(3px)}}' +
+      '@keyframes fcdBounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}60%{transform:translateY(-4px)}}' +
+      '@keyframes fcdStretch{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.07)}}' +
+      '@keyframes fcdFlicker{0%,94%,100%{opacity:1}95%{opacity:.15}97%{opacity:.8}99%{opacity:.35}}' +
+      '@keyframes fcdSpin{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}' +
+      '@keyframes fcdType{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}' +
+      '@keyframes fcdWave{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}';
+    document.head.appendChild(style);
+
+    var animMap = {
+      pulse:   'fcdPulse 1s ease-in-out infinite',
+      shake:   'fcdShake .6s ease-in-out infinite',
+      bounce:  'fcdBounce .8s ease-in-out infinite',
+      stretch: 'fcdStretch 1s ease-in-out infinite',
+      flicker: 'fcdFlicker 2s linear infinite',
+      spin:    'fcdSpin 2s linear infinite',
+      type:    '',
+      wave:    ''
+    };
+
+    function fmtMs(ms) {
+      if (ms <= 0) return '0s';
+      var t = Math.floor(ms / 1000);
+      var d = Math.floor(t / 86400); t %= 86400;
+      var h = Math.floor(t / 3600);  t %= 3600;
+      var m = Math.floor(t / 60);    t %= 60;
+      var parts = [];
+      if (d > 0) parts.push(d + 'd');
+      if (h > 0) parts.push(h + 'h');
+      if (m > 0) parts.push(m + 'm');
+      if (t > 0 || parts.length === 0) parts.push(t + 's');
+      return parts.join(' ');
+    }
+
+    function renderWave(txt) {
+      num.style.animation = 'none';
+      num.innerHTML = txt.split('').map(function (ch, i) {
+        if (ch === ' ') return '<span style="display:inline-block;width:.3em">&nbsp;</span>';
+        return '<span style="display:inline-block;animation:fcdWave 1s ease-in-out ' + (i * .09).toFixed(2) + 's infinite;color:' + cfg.color + '">' + ch + '</span>';
+      }).join('');
+    }
+
+    var animApplied = false;
+    function applyAnim() {
+      if (animApplied) return;
+      animApplied = true;
+      if (cfg.anim === 'wave' || cfg.anim === 'type') return;
+      num.style.animation = 'none';
+      void num.offsetWidth;
+      num.style.animation = animMap[cfg.anim] || animMap.pulse;
+    }
+
+    function resetAnim() {
+      animApplied = false;
+    }
+
+    function setNum(txt) {
+      if (cfg.anim === 'wave') { renderWave(txt); return; }
+      if (cfg.anim === 'type') {
+        if (num.textContent === txt) return;
+        num.textContent = txt;
+        num.style.animation = 'none';
+        void num.offsetWidth;
+        num.style.animation = 'fcdType .35s steps(20,end)';
+        return;
+      }
+      num.textContent = txt;
+    }
+
+    var loopAnims = ['pulse','bounce','shake','stretch','flicker','spin','wave','type'];
+    var loopIdx = loopAnims.indexOf(cfg.anim);
+
+    function enterEvent() {
+      phase = 'event';
+      resetAnim();
+      lbl.textContent = cfg.evtTxt;
+      applyAnim();
+      el.classList.remove('fcd-countdown');
+      el.classList.add('fcd-event');
+    }
+
+    function enterCountdown() {
+      phase = 'countdown';
+      resetAnim();
+      lbl.textContent = cfg.title;
+      applyAnim();
+      el.classList.remove('fcd-event');
+      el.classList.add('fcd-countdown');
+    }
+
+    function enterDone() {
+      phase = 'done';
+      num.style.animation = 'none';
+      num.textContent = 'Done';
+      lbl.textContent = cfg.title;
+      el.classList.remove('fcd-event', 'fcd-countdown');
+      el.classList.add('fcd-done');
+    }
+
+    el.classList.add('fcd-' + phase);
+    if (phase === 'event') enterEvent();
+    else if (phase === 'done') enterDone();
+    else { applyAnim(); }
+
+    setInterval(function () {
+      var now = Date.now();
+      if (phase === 'countdown') {
+        var rem = endTime - now;
+        if (rem > 0) {
+          setNum(fmtMs(rem));
+        } else {
+          enterEvent();
+        }
+      } else if (phase === 'event') {
+        var erem = evEnd - now;
+        if (erem > 0) {
+          num.textContent = fmtMs(erem) + '';
+        } else {
+          if (cfg.loop && loopMs > 0) {
+            loopIdx = (loopIdx + 1) % loopAnims.length;
+            cfg.anim = loopAnims[loopIdx];
+            endTime = Date.now() + loopMs;
+            evEnd = endTime + cfg.dur;
+            enterCountdown();
+          } else {
+            enterDone();
+          }
+        }
+      }
+    }, 200);
+  });
+});

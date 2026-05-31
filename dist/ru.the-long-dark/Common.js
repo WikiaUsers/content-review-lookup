@@ -18,13 +18,6 @@ importArticles({
     ]
 });
 
-/*делаем скрытие меню при прокрутке вниз и уходе мышки из верхней области*/
-addEventListener("mousemove" , upmenu);
-function upmenu(e) {
-        e = e || window.event;
-        if (e.clientY > 60) {
-			document.getElementById("globalNavigation").style.position = "absolute";
-    } else {
-        document.getElementById("globalNavigation").style.position = "fixed";
-    }
-}
+/*LockOldComments*/
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 180;

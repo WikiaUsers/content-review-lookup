@@ -93,13 +93,13 @@
                 type: "record_list", 
                 data: [
                     { 
-                        title: "UNKNOWN EVENT", 
-                        loc: "UNKNOWN SECTOR", 
-                        date: "TBD", 
-                        status: "AWAITING DATA", 
-                        theme: "neutral",
-                        desc: "No major galactic events have been logged. The timeline remains undisturbed. Awaiting future updates.", 
-                        image: "https://placehold.co/400x200/00101c/00ccff?text=NO+DATA" 
+                        title: "OPERATION NIGHTFALL", 
+                        loc: "CORUSCANT, JEDI TEMPLE", 
+                        date: "19 BBY", 
+                        status: "CHAPTER 1", 
+                        theme: "empire",
+                        desc: "The Republic has fallen. The fires of the Jedi Temple still burn against the Coruscant sky. But from the ruins of the old world, a relentless new order is rising and it is time the galaxy bears witness to its dawn... Imperial Dawn.",
+                        image: "https://project-imperial-dawn.fandom.com/special:filepath/templeonfire.png" 
                     }
                 ] 
             },
@@ -166,8 +166,117 @@
             "Factions": { 
                 type: "factions", 
                 data: [
-                    { title: "GALACTIC EMPIRE", sub: "Ruling Government", status: "EMPIRE", alignment: "empire", image: "https://static.wikia.nocookie.net/project-imperial-dawn/images/d/d9/TGEFinished.png/revision/latest/scale-to-width-down/185?cb=20260215172437", stats: { "Capital": "Coruscant", "Head": "Emperor Palpatine", "Influence": "Universal" }, bio: "The supreme authority in the galaxy, bringing order and security to the systems through military strength and law.", divisions: ["Imperial Navy", "Imperial Army", "Stormtrooper Corps", "Imperial Intelligence", "Inquisitorius", "COMPNOR"] },
-                    { title: "REBEL ALLIANCE", sub: "Terrorist Organization", status: "REBELLION", alignment: "rebel", image: "https://static.wikia.nocookie.net/project-imperial-dawn/images/3/37/Rebels.webp/revision/latest?cb=20260215164349", stats: { "Base": "Hidden", "Threat": "High", "Influence": "Outer Rim" }, bio: "An illegal insurgency operating in the Outer Rim, seeking to destabilize Galactic peace through sabotage and guerilla warfare.", divisions: ["HIDDEN"] }
+                    { 
+                        title: "GALACTIC EMPIRE", 
+                        sub: "Ruling Government", 
+                        status: "EMPIRE", 
+                        alignment: "empire", 
+                        image: "https://static.wikia.nocookie.net/project-imperial-dawn/images/d/d9/TGEFinished.png/revision/latest/scale-to-width-down/185?cb=20260215172437", 
+                        stats: { "Capital": "Coruscant", "Head": "Emperor Palpatine", "Influence": "Universal" }, 
+                        bio: "The supreme authority in the galaxy, bringing order and security to the systems through military strength and law.", 
+                        divisions: [
+                            {
+                                name: "IMPERIAL ARMY",
+                                sub: [
+                                    { name: "14th Security Division", desc: "The primary law enforcement and urban warfare division of the Empire. Tasked with planetary security, riot suppression, Senate protection, and operational support for the ISB." },
+                                    { name: "224th Armored Division", desc: "A heavy mechanized and infantry vanguard unit. Specializes in frontline combat, siege operations, combat engineering, and advanced planetary reconnaissance." }
+                                ]
+                            },
+                            {
+                                name: "IMPERIAL NAVY",
+                                sub: [
+                                    { name: "Naval Marine Commandos", desc: "Elite specialized forces serving aboard naval vessels, tasked with ship-to-ship boarding actions and critical zero-gravity security operations." },
+                                    { name: "Naval Crew Corps", desc: "The backbone of the Imperial fleet, responsible for operating, maintaining, and commanding the Empire's vast armada of starships.<br><br><strong style=\"color:var(--imp-blue);\">SUB-DIVISIONS:</strong><br>• 1st Fleet" },
+                                    { name: "Starfighter Corps", desc: "The aerospace combat branch of the Navy, commanding the Empire's immense force of TIE fighters and elite pilot squadrons.<br><br><strong style=\"color:var(--imp-blue);\">SUB-DIVISIONS:</strong><br>• 121st Starfighter Wing<br>• 182nd Starfighter Wing<br>• Titan Squadron" }
+                                ]
+                            },
+                            {
+                                name: "STORMTROOPER CORPS",
+                                sub: [
+                                    { name: "EVO Troopers", desc: "Specialized infantry trained to operate in the galaxy's most hostile environments, handling extreme biohazards, toxins, and lethal weather conditions." },
+                                    { name: "Shock Troopers", desc: "Heavy mechanized infantry and elite riot control forces, deployed to pacify planetary uprisings and secure high-value Imperial assets." },
+                                    { name: "Death Troopers", desc: "Classified, highly trained elite operatives serving as the personal death squads and bodyguards for high-ranking Imperial Intelligence officers." },
+                                    { name: "Scout Troopers", desc: "Expert marksmen and light-armored pathfinders utilized for rapid planetary reconnaissance, sabotage, and forward observation." },
+                                    { name: "501st Legion", desc: "Vader's Fist. The elite spearhead infantry legion of the Empire, deployed for the most critical and dangerous frontline combat missions." },
+                                    { name: "41st Elite Legion", desc: "Specialized infantry unit renowned for its unparalleled expertise in prolonged camouflage operations, jungle warfare, and hostile terrain survival." },
+                                    { name: "212th Legion", desc: "A heavily armed siege and assault division, renowned for breaking entrenched enemy positions and executing large-scale planetary invasions." },
+                                    { name: "327th Legion", desc: "Rugged, highly disciplined infantry forces specializing in securing and holding arid, desert, and sandy planetary environments across the Outer Rim." }
+                                ]
+                            },
+                            {
+                                name: "IMPERIAL SECURITY BUREAU",
+                                sub: [
+                                    { name: "Intelligence & Enforcement", desc: "The primary intelligence and secret police organization of the Empire, dedicated to rooting out sedition, espionage, and ensuring total ideological loyalty." }
+                                ]
+                            },
+                            {
+                                name: "COMPNOR",
+                                sub: [
+                                    { name: "Coalition of Progress", desc: "The propaganda and cultural branch, shaping galactic public opinion and promoting the ideals of the New Order." },
+                                    { name: "Coalition of Customs", desc: "Responsible for the regulation of planetary borders, major trade checkpoints, and the strict management of local elections." },
+                                    { name: "Coalition of Improvement", desc: "The compliance and indoctrination branch, enforcing Imperial standards and ensuring sectors strictly adhere to Imperial law." },
+                                    { name: "Coalition of Security", desc: "The armed, paramilitary wing of COMPNOR, acting as a political police force entirely separate from the standard military branches." }
+                                ]
+                            },
+                            {
+                                name: "GOVERNMENT",
+                                sub: [
+                                    { name: "Moffs Council", desc: "The supreme political assembly governing the Empire's sectors. These elite administrators oversee planetary governors, manage critical supply chains, and dictate regional law." }
+                                ]
+                            },
+                            {
+                                name: "IMPERIAL ACADEMY",
+                                sub: [
+                                    { name: "Training & Doctrine", desc: "The central military training institution of the Empire. It molds raw recruits into disciplined cadets, preparing them for service in the Army, Navy, or Stormtrooper Corps." }
+                                ]
+                            },
+                            {
+                                name: "THRONE",
+                                sub: [
+                                    { name: "Imperial Guard", desc: "The absolute pinnacle of Imperial security, sworn to the protection of the Emperor and the enforcement of his direct, unquestionable will.<br><br><strong style=\"color:var(--imp-blue);\">SUB-DIVISIONS:</strong><br>• Imperial Royal Guard<br>• Imperial Sovereign Protectors<br>• Imperial Senate Guard<br>• Shadow Guard<br>• Imperial Guard Academy" }
+                                ]
+                            }
+                        ] 
+                    },
+                    { 
+                        title: "THE SYNDICATE", 
+                        sub: "Underworld Alliance", 
+                        status: "SYNDICATE", 
+                        alignment: "syndicate", 
+                        image: "https://project-imperial-dawn.fandom.com/special:filepath/Syndacate.png", 
+                        stats: { "Main Planet": "Ord Mantell", "Head": "Darth Maul", "Influence": "Extended" }, 
+                        bio: "During the reign of the Galactic Empire, the renegade Sith Lord Maul seized control over the galaxy's major criminal enterprises. While this brutal arrangement provided immense wealth that silenced many of Maul's detractors, those who felt kept under his boot were swiftly and permanently silenced if they dared to voice open discontent.", 
+                        divisions: [
+                            {
+                                name: "THE FIVE FAMILIES",
+                                sub: [
+                                    { name: "Crimson Dawn", desc: "A notoriously ruthless criminal organization that serves as the central pillar of Maul's underworld empire." },
+                                    { name: "Black Sun", desc: "A massive, galaxy-spanning syndicate with vast resources and formidable paramilitary forces." },
+                                    { name: "Crymorah Syndicate", desc: "A powerful crime family known for its deep connections within the galactic underworld and lucrative smuggling operations." },
+                                    { name: "Hutt Clan", desc: "The ancient, deeply entrenched criminal empire ruled by the Hutt Grand Council, controlling vast swaths of the Outer Rim." },
+                                    { name: "Pyke Syndicate", desc: "The premier distributors of illicit spice, holding a near-monopoly on the galaxy's most valuable narcotic trade." }
+                                ]
+                            }
+                        ] 
+                    },
+                    { 
+                        title: "REMAINING CIS", 
+                        sub: "Confederacy of Independent Systems", 
+                        status: "CIS", 
+                        alignment: "cis", 
+                        image: "https://project-imperial-dawn.fandom.com/special:filepath/CIS_roundel.svg", 
+                        stats: { "Capital": "None", "Head": "None", "Influence": "Scattered" }, 
+                        bio: "Comprised of the fragmented holdouts and remaining droid forces from the end of the Clone Wars. Though lacking a central leader or capital world, these isolated remnants still pose a coordinated threat to Imperial expansion, stubbornly continuing to follow their outdated combat protocols.", 
+                        divisions: [
+                            {
+                                name: "SEPARATIST HOLDOUTS",
+                                sub: [
+                                    { name: "Droid Remnants", desc: "Leftover B1, B2, and specialized battle droids operating autonomously under lingering separatist directives." },
+                                    { name: "Isolated Fleet Elements", desc: "A handful of surviving CIS fleet assets." }
+                                ]
+                            }
+                        ] 
+                    }
                 ]
             },
             "Locations": { 
@@ -183,7 +292,7 @@
                     { name: "DOLDUR SECTOR", startAngle: 229, endAngle: 261, desc: "Expansion Region // Ghost Nebula", sub: [ { title: "UMBARA", image: "https://project-imperial-dawn.fandom.com/special:filepath/Umbara.png", status: "CONTESTED", stats: {"TERRAIN":"SHADOW WORLD", "SECTOR":"Doldur"}, bio: "A dark world shrouded in perpetual gloom, home to advanced technology and fierce resistance." } ] },
                     { name: "GAULUS SECTOR", startAngle: 261, endAngle: 294, desc: "Outer Rim // Ryloth System", sub: [ { title: "RYLOTH", image: "https://project-imperial-dawn.fandom.com/special:filepath/Ryloth.png", status: "CONTESTED", stats: {"TERRAIN":"DESERT/CANYONS", "SECTOR":"Gaulus"}, bio: "The harsh, rocky homeworld of the Twi'leks, known for its fierce freedom fighters and contested territories." } ] },
                     { name: "THANIUM SECTOR", startAngle: 294, endAngle: 327, desc: "Outer Rim // Felucia System", sub: [ { title: "FELUCIA", image: "https://project-imperial-dawn.fandom.com/special:filepath/Felucia.png", status: "CONTESTED", stats: {"TERRAIN":"FUNGAL JUNGLE", "SECTOR":"Thanium"}, bio: "A vibrant, wildly overgrown world teeming with giant fungal life and dangerous predators." } ] },
-                    { name: "BRIGHT JEWEL SECTOR", startAngle: 327, endAngle: 360, desc: "Mid Rim // Ord Mantell System", sub: [ { title: "ORD MANTELL", image: "https://project-imperial-dawn.fandom.com/special:filepath/OrdMantel.png", status: "SYNDICATE OCCUPIED", stats: {"TERRAIN":"SCRAP/MOUNTAINS", "SECTOR":"Bright Jewel"}, bio: "A haven for bounty hunters, smugglers, and criminal organizations. Currently under Syndicate control." } ] }
+                    { name: "BRIGHT JEWEL SECTOR", startAngle: 327, endAngle: 360, desc: "Mid Rim // Ord Mantell System", sub: [ { title: "ORD MANTELL", image: "https://project-imperial-dawn.fandom.com/special:filepath/Syndacate.png", status: "SYNDICATE OCCUPIED", stats: {"TERRAIN":"SCRAP/MOUNTAINS", "SECTOR":"Bright Jewel"}, bio: "A haven for bounty hunters, smugglers, and criminal organizations. Currently under Syndicate control." } ] }
                 ]
             }
         }
@@ -201,7 +310,8 @@
         { keyword: "REBEL", theme: "hostile-rebel", poly: "rebel-held", pin: "rebel" },
         { keyword: "SYNDICATE", theme: "syndicate-theme", poly: "syndicate-held", pin: "syndicate" },
         { keyword: "IMPERIAL", theme: "empire-theme", poly: "empire-held", pin: "empire" },
-        { keyword: "EMPIRE", theme: "empire-theme", poly: "empire-held", pin: "empire" }
+        { keyword: "EMPIRE", theme: "empire-theme", poly: "empire-held", pin: "empire" },
+        { keyword: "CIS", theme: "cis-theme", poly: "cis-held", pin: "cis" }
     ];
 
     // --- 4. MAIN INITIALIZATION ---
@@ -215,6 +325,7 @@
                 --imp-red: #ff3333; 
                 --imp-gold: #ffcc00; 
                 --imp-purple: #b026ff; 
+                --cis-blue: #4488ff;
                 --imp-dark: #050a0f; 
                 --imp-glass: rgba(0, 229, 255, 0.05); 
                 --imp-border: rgba(0, 229, 255, 0.3); 
@@ -512,23 +623,38 @@
             .faction-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.7); }
             .faction-card.empire { border-left: 5px solid var(--imp-blue); }
             .faction-card.rebel { border-left: 5px solid var(--imp-red); }
+            .faction-card.syndicate { border-left: 5px solid var(--imp-purple); }
+            .faction-card.war { border-left: 5px solid var(--imp-gold); }
+            .faction-card.cis { border-left: 5px solid var(--cis-blue); }
             
             .fac-logo-box { width: 160px; background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%); border-right: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
             .fac-logo-box img { width: 85%; height: 85%; object-fit: contain; opacity: 0.7; filter: saturate(0) brightness(1.2); transition: 0.4s; }
             .faction-card:hover .fac-logo-box img { opacity: 1; filter: none; transform: scale(1.1); }
             
+            /* SYNDICATE LOGO FIX */
+            .faction-card.syndicate .fac-logo-box img { width: 95%; height: 95%; }
+            .faction-card.syndicate:hover .fac-logo-box img { transform: scale(1.15); }
+            
             .fac-info-area { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; }
             .fac-name { font-size: 24px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 2px; }
             .fac-role { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; font-weight: bold; }
+            
             .faction-card.empire .fac-role { color: var(--imp-blue); }
             .faction-card.rebel .fac-role { color: var(--imp-red); }
+            .faction-card.syndicate .fac-role { color: var(--imp-purple); }
+            .faction-card.war .fac-role { color: var(--imp-gold); }
+            .faction-card.cis .fac-role { color: var(--cis-blue); }
             
             .fac-stats-row { display: flex; gap: 20px; font-size: 12px; color: #cceeff; margin-bottom: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; font-family: monospace; }
             .fac-stat span { color: #fff; font-weight: bold; letter-spacing: 1px; }
             .fac-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
             .f-tag { font-size: 10px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.2); color: #aaa; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+            
             .faction-card.empire .f-tag { background: rgba(0,229,255,0.1); border-color: rgba(0,229,255,0.3); color: var(--imp-blue); }
             .faction-card.rebel .f-tag { background: rgba(255,51,51,0.1); border-color: rgba(255,51,51,0.3); color: var(--imp-red); }
+            .faction-card.syndicate .f-tag { background: rgba(176,38,255,0.1); border-color: rgba(176,38,255,0.3); color: var(--imp-purple); }
+            .faction-card.war .f-tag { background: rgba(255,204,0,0.1); border-color: rgba(255,204,0,0.3); color: var(--imp-gold); }
+            .faction-card.cis .f-tag { background: rgba(68, 136, 255, 0.1); border-color: rgba(68, 136, 255, 0.3); color: var(--cis-blue); }
 
             /* --- DOSSIER & POPUPS --- */
             .dossier-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,5,10,0.85); backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center; animation: fade-in 0.3s ease-out; padding: 20px; box-sizing: border-box; }
@@ -608,6 +734,14 @@
             .dossier-box.syndicate-theme .dossier-rank { color: var(--imp-purple); }
             .dossier-box.syndicate-theme .dossier-stats-grid { background: rgba(176, 38, 255, 0.08); border-color: rgba(176, 38, 255, 0.2); }
             .dossier-box.syndicate-theme .stat-row span:last-child { color: #fff; }
+
+            /* DOSSIER CIS THEME */
+            .dossier-box.cis-theme { border-color: var(--cis-blue); box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 50px rgba(68, 136, 255, 0.2); }
+            .dossier-box.cis-theme .dossier-close:hover { background: var(--cis-blue); color: #fff; box-shadow: 0 0 15px var(--cis-blue); }
+            .dossier-box.cis-theme .dossier-header { border-bottom-color: var(--cis-blue); }
+            .dossier-box.cis-theme .dossier-rank { color: var(--cis-blue); }
+            .dossier-box.cis-theme .dossier-stats-grid { background: rgba(68, 136, 255, 0.08); border-color: rgba(68, 136, 255, 0.2); }
+            .dossier-box.cis-theme .stat-row span:last-child { color: #fff; }
             
             .dossier-box.no-img { width: 650px; }
             .dossier-box.no-img .dossier-img { display: none; }
@@ -615,32 +749,51 @@
 
             /* --- BRIEFING BOX --- */
             .briefing-box { width: 950px; max-width: 90vw; height: auto; max-height: 85vh; min-height: 400px; background: var(--glass-bg); border: 1px solid var(--imp-blue); display: flex; flex-direction: column; box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 60px rgba(0,229,255,0.2); position: relative; animation: scale-up 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+            
             .briefing-box.rebel { border-color: var(--imp-red); box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 60px rgba(255,51,51,0.2); }
+            .briefing-box.syndicate { border-color: var(--imp-purple); box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 60px rgba(176, 38, 255, 0.2); }
+            .briefing-box.cis { border-color: var(--cis-blue); box-shadow: 0 20px 80px rgba(0,0,0,0.9), 0 0 60px rgba(68, 136, 255, 0.2); }
             
             .brief-header { padding: 35px 40px; border-bottom: 2px solid var(--imp-blue); background: linear-gradient(90deg, rgba(0,229,255,0.15), transparent); }
             .briefing-box.rebel .brief-header { border-bottom-color: var(--imp-red); background: linear-gradient(90deg, rgba(255,51,51,0.15), transparent); }
+            .briefing-box.syndicate .brief-header { border-bottom-color: var(--imp-purple); background: linear-gradient(90deg, rgba(176, 38, 255, 0.15), transparent); }
+            .briefing-box.cis .brief-header { border-bottom-color: var(--cis-blue); background: linear-gradient(90deg, rgba(68, 136, 255, 0.15), transparent); }
             
             .brief-title { font-size: 40px; font-weight: 900; color: #fff; letter-spacing: 6px; text-transform: uppercase; margin: 0; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+            
             .brief-subtitle { font-size: 13px; color: var(--imp-blue); letter-spacing: 4px; font-weight: bold; margin-top: 8px; }
             .briefing-box.rebel .brief-subtitle { color: var(--imp-red); }
+            .briefing-box.syndicate .brief-subtitle { color: var(--imp-purple); }
+            .briefing-box.cis .brief-subtitle { color: var(--cis-blue); }
             
             .brief-main { display: flex; flex: 1; overflow: hidden; }
             .brief-left { width: 35%; min-width: 200px; max-width: 340px; border-right: 1px solid rgba(255,255,255,0.1); padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); }
+            
             .brief-logo { width: 100%; max-width: 220px; aspect-ratio: 1/1; object-fit: contain; filter: drop-shadow(0 0 20px rgba(0,229,255,0.4)); }
             .briefing-box.rebel .brief-logo { filter: drop-shadow(0 0 20px rgba(255,51,51,0.4)); }
+            .briefing-box.syndicate .brief-logo { filter: drop-shadow(0 0 20px rgba(176, 38, 255, 0.4)); }
+            .briefing-box.cis .brief-logo { filter: drop-shadow(0 0 20px rgba(68, 136, 255, 0.4)); }
             
             .brief-right { flex: 1; padding: 30px 40px; position: relative; overflow-y: auto; }
             .brief-right::-webkit-scrollbar { width: 4px; }
             .brief-right::-webkit-scrollbar-thumb { background: var(--imp-blue); }
             .briefing-box.rebel .brief-right::-webkit-scrollbar-thumb { background: var(--imp-red); }
+            .briefing-box.syndicate .brief-right::-webkit-scrollbar-thumb { background: var(--imp-purple); }
+            .briefing-box.cis .brief-right::-webkit-scrollbar-thumb { background: var(--cis-blue); }
             
             .brief-section-title { font-size: 12px; color: var(--imp-blue); font-weight: 800; letter-spacing: 3px; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; }
             .briefing-box.rebel .brief-section-title { color: var(--imp-red); border-bottom-color: rgba(255,51,51,0.3); }
+            .briefing-box.syndicate .brief-section-title { color: var(--imp-purple); border-bottom-color: rgba(176, 38, 255, 0.3); }
+            .briefing-box.cis .brief-section-title { color: var(--cis-blue); border-bottom-color: rgba(68, 136, 255, 0.3); }
             
             .brief-bio { font-size: 15px; line-height: 1.8; color: #d0e8f2; margin-bottom: 35px; }
+            
             .brief-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; }
             .b-stat { background: rgba(255,255,255,0.05); padding: 18px; border-left: 4px solid var(--imp-blue); }
             .briefing-box.rebel .b-stat { border-left-color: var(--imp-red); }
+            .briefing-box.syndicate .b-stat { border-left-color: var(--imp-purple); }
+            .briefing-box.cis .b-stat { border-left-color: var(--cis-blue); }
+            
             .b-stat-lab { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 6px; font-weight: bold; letter-spacing: 1px; }
             .b-stat-val { font-size: 15px; color: #fff; font-weight: 800; }
             
@@ -648,6 +801,10 @@
             .division-btn:hover { background: var(--imp-blue); color: #000; box-shadow: 0 0 15px var(--imp-blue); }
             .briefing-box.rebel .division-btn { border-color: var(--imp-red); background: rgba(255,51,51,0.1); }
             .briefing-box.rebel .division-btn:hover { background: var(--imp-red); color: #fff; box-shadow: 0 0 15px var(--imp-red); }
+            .briefing-box.syndicate .division-btn { border-color: var(--imp-purple); background: rgba(176, 38, 255, 0.1); }
+            .briefing-box.syndicate .division-btn:hover { background: var(--imp-purple); color: #fff; box-shadow: 0 0 15px var(--imp-purple); }
+            .briefing-box.cis .division-btn { border-color: var(--cis-blue); background: rgba(68, 136, 255, 0.1); }
+            .briefing-box.cis .division-btn:hover { background: var(--cis-blue); color: #fff; box-shadow: 0 0 15px var(--cis-blue); }
 
             /* --- WELCOME HERO --- */
             .welcome-hero { width: 100%; height: 350px; overflow: hidden; border: 1px solid var(--imp-border); margin-bottom: 35px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
@@ -724,6 +881,7 @@
             .f-btn[data-faction="rebel"].active { background: rgba(255,51,51,0.2); color: var(--imp-red); border-color: var(--imp-red); box-shadow: 0 0 10px var(--imp-red); }
             .f-btn[data-faction="syndicate"].active { background: rgba(176,38,255,0.2); color: var(--imp-purple); border-color: var(--imp-purple); box-shadow: 0 0 10px var(--imp-purple); }
             .f-btn[data-faction="war"].active { background: rgba(255,204,0,0.2); color: var(--imp-gold); border-color: var(--imp-gold); box-shadow: 0 0 10px var(--imp-gold); }
+            .f-btn[data-faction="cis-held"].active { background: rgba(68,136,255,0.2); color: var(--cis-blue); border-color: var(--cis-blue); box-shadow: 0 0 10px var(--cis-blue); }
 
             .map-search-box { position: relative; width: 250px; }
             #map-search { width: 100%; background: rgba(0,10,20,0.8); border: 1px solid rgba(0,229,255,0.4); padding: 10px 15px; color: #fff; font-family: monospace; font-size: 12px; outline: none; border-radius: 6px; backdrop-filter: blur(12px); transition: 0.3s; margin: 0 !important; }
@@ -801,6 +959,10 @@
             .sector-poly.war-held { fill: rgba(255, 204, 0, 0.15); stroke: rgba(255, 204, 0, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5)); }
             .sector-poly.war-held.hovered { fill: rgba(255, 204, 0, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.8)); }
 
+            /* CIS Sectors (Blue) */
+            .sector-poly.cis-held { fill: rgba(68, 136, 255, 0.15); stroke: rgba(68, 136, 255, 1); stroke-width: 2.5px; cursor: pointer; pointer-events: all; filter: drop-shadow(0 0 5px rgba(68, 136, 255, 0.5)); }
+            .sector-poly.cis-held.hovered { fill: rgba(68, 136, 255, 0.4); stroke: #fff; stroke-width: 3.5px; filter: drop-shadow(0 0 10px rgba(68, 136, 255, 0.8)); }
+
             /* Clean Sci-Fi HUD Pins - NAMETAGS REWORK */
             .holo-pin { position: absolute; width: 0; height: 0; z-index: 30; pointer-events: none; transform-style: preserve-3d; }
             .holo-pin:hover { z-index: 100; } /* Brings hovered label above others to fix overlap */
@@ -842,6 +1004,9 @@
             .holo-pin.war .pin-label { border-bottom: 3px solid var(--imp-gold) !important; }
             .holo-pin.war .pin-stem { background: linear-gradient(to top, rgba(255,204,0,0.9), transparent) !important; }
 
+            .holo-pin.cis .pin-label { border-bottom: 3px solid var(--cis-blue) !important; }
+            .holo-pin.cis .pin-stem { background: linear-gradient(to top, rgba(68,136,255,0.9), transparent) !important; }
+
             .holo-pin.neutral .pin-label { border-bottom: 3px solid #fff !important; }
             .holo-pin.neutral .pin-stem { background: linear-gradient(to top, rgba(255,255,255,0.7), transparent) !important; }
 
@@ -853,6 +1018,7 @@
             .holo-pin.rebel .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-red) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-red); }
             .holo-pin.syndicate .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-purple) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-purple); }
             .holo-pin.war .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--imp-gold) 40%, #000 90%); box-shadow: 0 0 20px var(--imp-gold); }
+            .holo-pin.cis .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, var(--cis-blue) 40%, #000 90%); box-shadow: 0 0 20px var(--cis-blue); }
             .holo-pin.neutral .planet-sphere { background: radial-gradient(circle at 30% 30%, #ffffff, #aaaaaa 40%, #000 90%); box-shadow: 0 0 20px #fff; }
             @keyframes planet-pulse { 0% { box-shadow: 0 0 8px currentColor; } 100% { box-shadow: 0 0 25px currentColor; } }
 
@@ -904,6 +1070,13 @@
             .hs-card.syndicate-theme .hs-meta { color: var(--imp-purple); opacity: 1; }
             .hs-card.syndicate-theme:hover { border-color: var(--imp-purple); background: rgba(176, 38, 255, 0.25); box-shadow: 0 0 20px rgba(176, 38, 255, 0.4); transform: translateX(5px); }
             .hs-card.syndicate-theme img { border: 1px solid var(--imp-purple); box-shadow: 0 0 12px rgba(176, 38, 255, 0.5); }
+
+            /* CIS CARD THEME */
+            .hs-card.cis-theme { background: linear-gradient(90deg, rgba(68, 136, 255, 0.15), rgba(0, 20, 40, 0.6)); border: 1px solid rgba(68, 136, 255, 0.5); border-left: 5px solid var(--cis-blue); }
+            .hs-card.cis-theme .hs-name { color: #aaddff; }
+            .hs-card.cis-theme .hs-meta { color: var(--cis-blue); opacity: 1; }
+            .hs-card.cis-theme:hover { border-color: var(--cis-blue); background: rgba(68, 136, 255, 0.25); box-shadow: 0 0 20px rgba(68, 136, 255, 0.4); transform: translateX(5px); }
+            .hs-card.cis-theme img { border: 1px solid var(--cis-blue); box-shadow: 0 0 12px rgba(68, 136, 255, 0.5); }
 
             .hs-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
             .hs-name { color: #fff; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; }
@@ -1029,10 +1202,43 @@
             for (const [key, value] of Object.entries(data.stats)) {
                 statsHTML += `<div class="b-stat"><div class="b-stat-lab">${key}</div><div class="b-stat-val">${value}</div></div>`;
             }
+            
+            // Dynamic theming for Accordions
+            let colorHex = "0, 229, 255"; 
+            let varColor = "var(--imp-blue)";
+            if (data.alignment === "rebel") { colorHex = "255, 51, 51"; varColor = "var(--imp-red)"; }
+            else if (data.alignment === "syndicate") { colorHex = "176, 38, 255"; varColor = "var(--imp-purple)"; }
+            else if (data.alignment === "war") { colorHex = "255, 204, 0"; varColor = "var(--imp-gold)"; }
+            else if (data.alignment === "cis") { colorHex = "68, 136, 255"; varColor = "var(--cis-blue)"; }
+
             let divisionsHTML = '';
             if(data.divisions) {
-                data.divisions.forEach(div => { divisionsHTML += `<div class="division-btn" data-link="${div}">${div}</div>`; });
+                data.divisions.forEach(div => { 
+                    if (typeof div === 'string') {
+                        divisionsHTML += `<div class="division-btn" data-link="${div}">${div}</div>`;
+                    } else {
+                        let subHtml = '';
+                        if (div.sub && div.sub.length > 0) {
+                            div.sub.forEach(sub => {
+                                let subDesc = sub.desc ? `<div style="font-size:11px; color:#aaa; margin-top:4px; line-height:1.4;">${sub.desc}</div>` : '';
+                                subHtml += `<div style="margin-bottom:12px; padding-left: 12px; border-left: 2px solid rgba(${colorHex}, 0.4);"><div style="color:#fff; font-weight:bold; font-size:12px;">${sub.name}</div>${subDesc}</div>`;
+                            });
+                        } else {
+                            subHtml = `<div style="font-size:11px; color:#666; font-style:italic;">[ DATA CLASSIFIED / UNAVAILABLE ]</div>`;
+                        }
+                        divisionsHTML += `
+                        <div class="div-accordion" style="margin-bottom:10px; background:rgba(${colorHex}, 0.05); border:1px solid rgba(${colorHex}, 0.2);">
+                            <div class="div-acc-header" style="padding:12px; cursor:pointer; font-weight:bold; color:${varColor}; font-size:12px; display:flex; justify-content:space-between; align-items:center; transition:0.3s;" onmouseover="this.style.background='rgba(${colorHex}, 0.1)'" onmouseout="this.style.background='transparent'" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                                <span style="letter-spacing:1px;">// ${div.name}</span><span style="font-size:10px;">▼ EXPAND</span>
+                            </div>
+                            <div class="div-acc-content" style="display:none; padding:15px; background:rgba(0,0,0,0.4); border-top:1px solid rgba(${colorHex}, 0.1);">
+                                ${subHtml}
+                            </div>
+                        </div>`;
+                    }
+                });
             }
+            
             overlay.innerHTML = `
                 <div class="briefing-box ${data.alignment}">
                     <div class="dossier-close">×</div>
@@ -1055,6 +1261,8 @@
             `;
             uiEl.appendChild(overlay);
             overlay.querySelector('.dossier-close').onclick = () => overlay.remove();
+            
+            // For backward compatibility if any string-based divisions exist
             overlay.querySelectorAll('.division-btn').forEach(btn => {
                 btn.onclick = () => {
                     const wikiPath = '/wiki/' + btn.getAttribute('data-link').replace(/ /g, '_');
@@ -1322,8 +1530,8 @@
                 data.data.forEach(item => {
                     const card = document.createElement('div'); card.className = `faction-card ${item.alignment || 'neutral'}`;
                     let divs = '';
-                    if(item.divisions) { divs = '<div class="fac-tags">'; item.divisions.forEach(d => divs += `<div class="f-tag">${d}</div>`); divs += '</div>'; }
-                    card.innerHTML = `<div class="fac-logo-box"><img src="${item.image}"></div><div class="fac-info-area"><div class="fac-name">${item.title}</div><div class="fac-role">${item.sub}</div><div class="fac-stats-row"><div class="fac-stat"><span>LOC:</span> ${item.stats.Capital || item.stats.Base}</div></div><div style="font-size:13px; color:#cceeff; line-height:1.6; margin-bottom:20px;">${item.bio}</div>${divs}</div>`;
+                    if(item.divisions) { divs = '<div class="fac-tags">'; item.divisions.forEach(d => divs += `<div class="f-tag">${typeof d === 'string' ? d : d.name}</div>`); divs += '</div>'; }
+                    card.innerHTML = `<div class="fac-logo-box"><img src="${item.image}"></div><div class="fac-info-area"><div class="fac-name">${item.title}</div><div class="fac-role">${item.sub}</div><div class="fac-stats-row"><div class="fac-stat"><span>LOC:</span> ${item.stats.Capital || item.stats["Main Planet"] || item.stats.Base}</div></div><div style="font-size:13px; color:#cceeff; line-height:1.6; margin-bottom:20px;">${item.bio}</div>${divs}</div>`;
                     card.onclick = () => openFactionBriefing(item);
                     frag.appendChild(card);
                 });
@@ -1387,6 +1595,7 @@
                                 <div><span style="color:var(--imp-red);">■</span> REBELLION</div>
                                 <div><span style="color:var(--imp-purple);">■</span> SYNDICATE</div>
                                 <div><span style="color:var(--imp-gold);">■</span> WAR IN PROGRESS</div>
+                                <div><span style="color:var(--cis-blue);">■</span> CIS REMNANT</div>
                                 <div><span style="color:#888;">■</span> UNKNOWN</div>
                             </div>
                         </div>
@@ -1401,6 +1610,7 @@
                                 <div class="f-btn" data-faction="empire-held">EMPIRE</div>
                                 <div class="f-btn" data-faction="rebel-held">REBEL</div>
                                 <div class="f-btn" data-faction="syndicate-held">SYNDICATE</div>
+                                <div class="f-btn" data-faction="cis-held">CIS</div>
                                 <div class="f-btn" data-faction="war-held">WAR</div>
                             </div>
                         </div>
@@ -1742,8 +1952,6 @@
                                 searchInput.value = '';
                                 
                                 filterBtns[0].click();
-                                
-                                // Zoom tracking logic completely removed
                                 
                                 openSector(match.sectorData);
                                 setTimeout(() => openDossier(match), 450); 

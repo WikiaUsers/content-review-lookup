@@ -26,7 +26,6 @@
 
             this.loadTemplates().then(() => {
                 this.linkSuggest();
-                this.customInsert();
             });
         },
 
@@ -36,7 +35,6 @@
             const fetchModule = (api, moduleName) => {
                 return api.get({
                     action: 'expandtemplates',
-                    // ИСПРАВЛЕНИЕ: Разрываем фигурные скобки, чтобы избежать краша Lua-парсера
                     text: '{' + '{#invoke:' + moduleName + '|toJSON}}',
                     prop: 'wikitext'
                 }).then(data => {
@@ -349,7 +347,6 @@
                     
                     methods.closeSuggestions();
 
-                    // ИСПРАВЛЕНИЕ: Разрываем фигурные скобки
                     const wikitext = '{' + '{#invoke:' + tpl.moduleName + '|main|' + tpl.name + '}}';
 
                     localApi.get({
@@ -506,87 +503,6 @@
                 }
             };
             methods.initListeners();
-        },
-
-        customInsert() {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'custom-insert rich-text-editor__toolbar__icon-controls'; 
-            wrapper.innerHTML = `
-                <div class="insert-menu tool tool-select">
-                    <a class="label" role="button" tabindex="0" aria-haspopup="menu">Insert</a>
-                    <div class="insert-menu__dropdown menu">
-                        <div class="options"></div>
-                    </div>
-                </div>
-            `;
-
-            let count = 0;
-
-            document.body.addEventListener('click', (e) => {
-                document.querySelectorAll('.insert-menu--open').forEach(el => el.classList.remove('insert-menu--open'));
-                const toolSelect = e.target.closest('.insert-menu');
-                if (toolSelect && e.target.classList.contains('label')) {
-                    toolSelect.classList.add('insert-menu--open');
-                }
-            });
-
-            mw.hook('EnhancedEditor').add((_i) => {
-                if (!_i || typeof _i !== 'object') return;
-                const inserts = Array.isArray(_i) ? _i : [_i];
-
-                const appendList = (insert, listElement) => {
-                    if (insert.insert && insert.button && (!insert.namespace || [].concat(insert.namespace).includes(config.wgNamespaceNumber))) {
-                        count++;
-                        const btn = document.createElement('a');
-                        btn.className = 'insert-menu__option option';
-                        btn.tabIndex = 0;
-                        btn.setAttribute('role', 'menuitem');
-                        btn.textContent = insert.button;
-
-                        btn.addEventListener('mousedown', (event) => {
-                            event.preventDefault();
-                            const temp = {};
-                            const preparsed = insert.insert.replace(/%([\w\s]+)%/g, (_, type) => {
-                                const val = insert[type] || temp[type] || prompt(`What value to replace "${type}" with?`);
-                                temp[type] = val; 
-                                return val || '';
-                            });
-                            EnhancedEditor.parseInsert(preparsed, insert.replaceAll);
-                        });
-                        listElement.appendChild(btn);
-
-                    } else if (insert.nested && insert.button) {
-                        count++;
-                        const toggle = document.createElement('a');
-                        toggle.className = 'insert-menu__option insert-menu__option--nested option';
-                        toggle.tabIndex = 0;
-                        toggle.innerHTML = `<span class="label">${insert.button}</span><div class="insert-menu__dropdown insert-menu__dropdown--nested menu options-nested-list" tabindex="0"></div>`;
-                        listElement.appendChild(toggle);
-                        const nestedList = toggle.querySelector('.insert-menu__dropdown--nested');
-                        insert.nested.forEach(nestedInsert => appendList(nestedInsert, nestedList));
-                    }
-                };
-
-                const optionsContainer = wrapper.querySelector('.options');
-                inserts.forEach(insert => appendList(insert, optionsContainer));
-
-                if (count > 0) {
-                    const observer = new MutationObserver((mutations, me) => {
-                        document.querySelectorAll('.rich-text-editor__wrapper:not(.enhanced-editor-loaded)').forEach(targetNode => {
-                            const toolbar = targetNode.querySelector('.rich-text-editor__toolbar__icons-container');
-                            if (toolbar) {
-                                const sep = document.createElement('div');
-                                sep.className = 'custom-separator';
-                                toolbar.prepend(sep);
-                                toolbar.prepend(wrapper.cloneNode(true));
-                                targetNode.classList.add('enhanced-editor-loaded');
-                            }
-                        });
-                    });
-
-                    observer.observe(document.body, { childList: true, subtree: true });
-                }
-            });
         },
 
         getCaret() {

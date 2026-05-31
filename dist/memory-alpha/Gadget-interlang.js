@@ -8,7 +8,6 @@
 		'sysop',
 		'content-moderator',
 		'rollback',
-		'quick-answers-editor',
 	];
 	const apiParams = {
 		action: 'query',
@@ -19,7 +18,7 @@
 	};
 	const api = {[config.wgContentLanguage]: new mw.Api({parameters: apiParams})};
 
-	api[config.wgContentLanguage].post({
+	api[config.wgContentLanguage].get({
 		meta: 'siteinfo',
 		siprop: 'interwikimap',
 		sifilteriw: 'local',
@@ -41,6 +40,7 @@
 		// Administration table
 		const adminTablePlaceholder = $('.administration');
 		if (adminTablePlaceholder.length){
+			const promises = [];
 			const tBody = $('<tbody>');
 			const adminTable = $('<table>').addClass(['grey', 'sortable']).append(
 				$('<thead>').append($('<tr>').append(
@@ -52,13 +52,73 @@
 				)),
 				tBody
 			);
-			fetchAdminsByLang(
-				Object.keys(langs),
-				0,
-				tBody,
-				adminTablePlaceholder,
-				adminTable
-			);
+			Object.keys(langs).forEach(lang => {
+				promises.push(lang, api[lang].get({
+					list: 'allusers',
+					augroup: validGroups,
+					auprop: ['groups', 'editcount'],
+					aulimit: 'max',
+					auwitheditsonly: true,
+				}));
+			});
+			Promise.all(promises).then(results => {
+				const promises = [];
+				let lang;
+				results.forEach(apiOutput => {
+					if (typeof apiOutput === 'string'){
+						lang = apiOutput;
+						return;
+					}
+					for (const user of apiOutput.query.allusers){
+						promises.push([lang, user], api[lang].get({
+							list: 'usercontribs',
+							uclimit: 1,
+							ucuser: user.name,
+							ucprop: ['ids', 'timestamp'],
+						}));
+					}
+				});
+				Promise.all(promises).then(results => {
+					let lang;
+					let user;
+					results.forEach(apiOutput => {
+						if (apiOutput.length){
+							lang = apiOutput[0];
+							user = apiOutput[1];
+							return;
+						}
+						const lastEdit = apiOutput.query.usercontribs[0];
+
+						if (!lastEdit){
+							return;
+						}
+
+						const inactivity = Date.now() - new Date(lastEdit.timestamp).getTime();
+						let status;
+
+						if (inactivity > 1000 * 60 * 60 * 24 * 365 * 5){
+							status = 'inactive';
+						} else if (inactivity > 1000 * 60 * 60 * 24 * 30){
+							status = 'semi-active';
+						} else {
+							status = 'active';
+						}
+
+						tBody.append($('<tr>', {
+							id: `${lang}__${mw.util.wikiUrlencode(user.name)}`,
+							class: `administration_table__${lang}`,
+						}).append(
+							$('<td>').append(link(`User:${user.name}`, user.name, lang)),
+							$('<td>').text(validGroups.filter(group => user.groups.indexOf(group) !== -1).join(', ')),
+							$('<td>').text(user.editcount),
+							$('<td>').addClass(status).append(link(`Special:Diff/${lastEdit.revid}`, lastEdit.timestamp, lang)),
+							$('<td>').text(language(lang))
+						));
+					});
+					adminTablePlaceholder.html(adminTable);
+					mw.hook('wikipage.content').fire(adminTablePlaceholder);
+				});
+			});
 		}
 
 		// International stats table
@@ -86,76 +146,10 @@
 		}
 	});
 
-	function fetchAdminsByLang(langList, lang, tBody, adminTablePlaceholder, adminTable){
-		api[langList[lang]].post({
-			list: 'allusers',
-			augroup: validGroups,
-			auprop: ['groups', 'editcount'],
-			aulimit: 'max',
-			auwitheditsonly: true,
-		}).then(apiOutput => {
-			fetchAdmin(langList, lang, tBody, adminTablePlaceholder, adminTable, apiOutput.query.allusers, 0);
-		});
-	}
-
-	function fetchAdmin(langList, lang, tBody, adminTablePlaceholder, adminTable, userList, user){
-		api[langList[lang]].post({
-			list: 'usercontribs',
-			uclimit: 1,
-			ucuser: userList[user].name,
-			ucprop: ['ids', 'timestamp'],
-		}).then(apiOutput => {
-			const lastEdit = apiOutput.query.usercontribs[0];
-
-			if (!lastEdit){
-				if (user < userList.length - 1){
-					fetchAdmin(langList, lang, tBody, adminTablePlaceholder, adminTable, userList, user + 1);
-				} else if (lang < langList.length - 1){
-					fetchAdminsByLang(langList, lang + 1, tBody, adminTablePlaceholder, adminTable);
-				} else {
-					adminTablePlaceholder.html(adminTable);
-					mw.hook('wikipage.content').fire(adminTablePlaceholder);
-				}
-				return;
-			}
-
-			const inactivity = Date.now() - new Date(lastEdit.timestamp).getTime();
-			let status;
-
-			if (inactivity > 1000 * 60 * 60 * 24 * 365 * 5){
-				status = 'inactive';
-			} else if (inactivity > 1000 * 60 * 60 * 24 * 30){
-				status = 'semi-active';
-			} else {
-				status = 'active';
-			}
-
-			tBody.append($('<tr>', {
-				id: `${langList[lang]}__${mw.util.wikiUrlencode(userList[user].name)}`,
-				class: `administration_table__${langList[lang]}`,
-			}).append(
-				$('<td>').append(link(`User:${userList[user].name}`, userList[user].name, langList[lang])),
-				$('<td>').text(validGroups.filter(group => userList[user].groups.indexOf(group) !== -1).join(', ')),
-				$('<td>').text(userList[user].editcount),
-				$('<td>').addClass(status).append(link(`Special:Diff/${lastEdit.revid}`, lastEdit.timestamp, langList[lang])),
-				$('<td>').text(language(langList[lang]))
-			));
-
-			if (user < userList.length - 1){
-				fetchAdmin(langList, lang, tBody, adminTablePlaceholder, adminTable, userList, user + 1);
-			} else if (lang < langList.length - 1){
-				fetchAdminsByLang(langList, lang + 1, tBody, adminTablePlaceholder, adminTable);
-			} else {
-				adminTablePlaceholder.html(adminTable);
-				mw.hook('wikipage.content').fire(adminTablePlaceholder);
-			}
-		});
-	}
-
 	function fetchStatsByLang(langList, lang, tBody, internationalStatsPlaceholder, statsTable){
 		const id = `international-stats__${langList[lang]}`;
 		const langCode = langList[lang] === 'mu' ? 'mu' : link(`Category:User ${langList[lang]}`, langList[lang], langList[lang]).prop('outerHTML');
-		api[langList[lang]].post({
+		api[langList[lang]].get({
 			meta: 'siteinfo',
 			siprop: 'statistics',
 		}).then(apiOutput => {

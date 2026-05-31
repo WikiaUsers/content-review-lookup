@@ -103,8 +103,8 @@
 				c.css('display', 'none');
 				return true;
 			}
-			if (toggle && $(toggle).length) {
-				$(toggle).css('display', 'inline');
+			if (toggle && $(document).find(toggle).length) {
+				$(document).find(toggle).css('display', 'inline');
 				c.css('display', 'none');
 				return true;
 			}

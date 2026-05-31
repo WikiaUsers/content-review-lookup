@@ -355,227 +355,75 @@ window.addEventListener("load", initVisibleInfoboxTabs);
 document.addEventListener("click", () => {setTimeout(initVisibleInfoboxTabs, 120);});
 
 (function () {
-	//CSS
-	mw.util.addCSS(`
-	.ch-toggle{font-size:inherit!important;cursor:pointer;float:right;margin-right:8px;user-select:none;display:inline-block;color:var(--ch-color,var(--theme-link-color))!important;transition:transform .2s linear}
-	.ch-toggle:hover{color:var(--theme-link-color--hover)!important}
-	.ch-toggle.ch-toggle--collapsed{transform:rotate(-180deg)!important}
-	`);
-	
-	//TOGGLE CLEANUP
-	function fixToggles(root){
-	    $(root).find('.ch-toggle').each(function(){
-	
-	        this.style.removeProperty('color');
-	        this.style.removeProperty('transition');
-	        this.style.transform = '';
-	        this.textContent = '▲';
-	
-	        let prev = this.previousSibling;
-	        while (prev && prev.nodeType === 3 && !prev.textContent.trim()) {
-	            prev = prev.previousSibling;
-	        }
-	
-	        if (prev && prev.nodeType === 1 && prev.classList.contains('ch-toggle')) {
-	            $(this).remove();
-	            return;
-	        }
-	
-	        $(this).off('click.chFix').on('click.chFix', function () {
-	            setTimeout(() => {
-	                this.style.transform = '';
-	                this.textContent = '▲';
-	            }, 0);
-	        });
-	
-	    });
-	}
-	
-	mw.hook('wikipage.content').add(function($content){
-	    let runs = 0;
-	    const interval = setInterval(() => {
-	        fixToggles($content);
-	        runs++;
-	        if (runs >= 10) clearInterval(interval);
-	    }, 500);
-	});
-	
-	//TOP LEVEL HEADERS
-	function getTopLevelHeaders() {
-	    for (let i = 2; i <= 6; i++) {
-	        const headers = document.querySelectorAll('h' + i);
-	        if (headers.length) return headers;
-	    }
-	    return [];
-	}
-	
-	//APPLY STATE
-	function setAll(collapsed) {
-	    const headers = getTopLevelHeaders();
-	
-	    headers.forEach(h => {
-	        const toggle = h.querySelector('.ch-toggle');
-	        if (!toggle) return;
-	
-	        const shouldBeCollapsed = collapsed;
-	        const isCollapsed = toggle.classList.contains('ch-toggle--collapsed');
-	
-	        if (shouldBeCollapsed !== isCollapsed) {
-	            toggle.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-	        }
-	    });
-	}
-	
-	//SIDE TOOL
-	function addSideTool() {
-	    if (document.querySelector('.ch-side-toggle-all')) return true;
-	
-	    const container = document.querySelector('.page-side-tools');
-	    if (!container) return false;
-	
-	    const button = document.createElement('button');
-	    button.className = 'page-side-tool ch-side-toggle-all';
-	
-	    button.type = 'button';
-	
-	    button.title = 'Toggle All Top Headers';
-	
-	    button.innerHTML = `<i class="fa-solid fa-folder"></i>`;
-	
-	    button.addEventListener('click', function () {
-	
-	        const headers = getTopLevelHeaders();
-	
-	        let total = 0;
-	        let collapsed = 0;
-	
-	        headers.forEach(h => {
-	            const toggle = h.querySelector('.ch-toggle');
-	            if (!toggle) return;
-	
-	            total++;
-	            if (toggle.classList.contains('ch-toggle--collapsed')) {
-	                collapsed++;
-	            }
-	        });
-	
-	        const shouldCollapse = collapsed < total;
-	
-	        setAll(shouldCollapse);
-	
-	    });
-	
-	    container.appendChild(button);
-	
-	    return true;
-	}
-	
-	//INIT SIDE TOOL (10s scan)
-	mw.hook('wikipage.content').add(function () {
-	
-	    let runs = 0;
-	
-	    const interval = setInterval(() => {
-	
-	        const container = document.querySelector('.page-side-tools');
-	        const hasToggles = document.querySelector('.ch-toggle');
-	
-	        if (container && hasToggles) {
-	            addSideTool();
-	            clearInterval(interval);
-	            return;
-	        }
-	
-	        runs++;
-	        if (runs >= 20) clearInterval(interval);
-	
-	    }, 500);
-	
-	});
-	
-	//HEADER CLICK BEHAVIOR
-	function bindHeaders(root) {
-	    const headers = root.querySelectorAll('.page__main h1, .page__main h2, .page__main h3, .page__main h4, .page__main h5, .page__main h6');
-	
-	    headers.forEach(h => {
-	
-	       if (h.closest('.portable-infobox')) return;
-               if (h.closest('.right-rail-wrapper.WikiaRail')) return;
-	
-	        if (h.dataset.chBound) return;
-	        h.dataset.chBound = '1';
-	
-	        h.style.cursor = 'pointer';
-	
-	        let startX = 0, startY = 0, moved = false;
-	
-	        h.addEventListener('pointerdown', function (e) {
-	            startX = e.clientX;
-	            startY = e.clientY;
-	            moved = false;
-	        });
-	
-	        h.addEventListener('pointermove', function (e) {
-	            if (Math.abs(e.clientX - startX) > 5 ||
-	                Math.abs(e.clientY - startY) > 5) {
-	                moved = true;
-	            }
-	        });
-	        
-	        h.addEventListener('pointerup', function (e) {
-			  // If the mouse has moved, or it's not a left-click, ignore
-			  if (moved) return;
-			  if (e.button !== 0) return;
-			
-			  // Ignore clicks on elements with class .toc-link or .mw-editsection
-			  if (e.target.closest('.toc-link') || e.target.closest('.mw-editsection')) return;
-			
-			  // If the target is already a ch-toggle, don't do anything
-			  if (e.target.closest('.ch-toggle')) return;
-			
-			  const toggle = h.querySelector('.ch-toggle');
-			  if (toggle) toggle.click();
-			});
-	
-	    });
-	}
-	
-	//INIT HEADERS
-	mw.hook('wikipage.content').add(function ($content) {
-	
-	    const root = $content[0];
-	
-	    bindHeaders(root);
-	
-	    requestAnimationFrame(() => bindHeaders(root));
-	
-	});
-})();
 
-/*
-(function () {
+  function expandAllAncestors(target) {
+    var node = target;
 
-  function expandCHAncestors(target) {
-
-    var wrapper = target.closest(".ch-outer-wrapper");
-    while (wrapper) {
-      var header = wrapper.previousElementSibling;
-      var toggle = header && header.querySelector(".ch-toggle");
-
-      if (toggle && toggle.classList.contains("ch-toggle--collapsed")) {
-        toggle.click();
+    while (node) {
+      // Portable infobox handling
+      if (node.classList && node.classList.contains("pi-collapse")) {
+        node.classList.add("pi-collapse-open");
+        node.classList.remove("pi-collapse-closed");
       }
 
-      wrapper = wrapper.parentElement;
+      // CH handling
+      /*
+      if (node.classList && node.classList.contains("ch-outer-wrapper")) {
+        var header = node.previousElementSibling;
+        var toggle = header && header.querySelector(".ch-toggle");
 
-      while (wrapper && !wrapper.classList.contains("ch-outer-wrapper")) {
-        wrapper = wrapper.parentElement;
+        if (toggle && toggle.classList.contains("ch-toggle--collapsed")) {
+          toggle.click();
+        }
       }
+      */
+
+      node = node.parentElement;
     }
   }
 
-  document.addEventListener("click", function (e) {
+  function activateTabs(target) {
+	  const tabber = target.closest(".wds-tabber, .wds-tabs__wrapper");
+	  if (!tabber) return false;
+	
+	  // Find the direct panel ancestor of the target
+	  const panel = target.closest(".wds-tab__content");
+	  if (!panel || !tabber.contains(panel)) return false;
+	
+	  // Collect only direct child panels of this tabber
+	  const panels = Array.from(tabber.querySelectorAll(":scope > .wds-tab__content"));
+	  const index = panels.indexOf(panel);
+	  if (index === -1) return false;
+	
+	  // Collect only direct child tabs of this tabber
+	  const tabsList = tabber.querySelector(".wds-tabs");
+	  const tabs = tabsList ? Array.from(tabsList.children) : [];
+	  const tab = tabs[index];
+	
+	  // Reset siblings inside this tabber
+	  panels.forEach(p => {
+	    if (p !== panel) p.classList.remove("wds-is-current");
+	  });
+	  tabs.forEach(t => {
+	    if (t !== tab) {
+	      t.classList.remove("wds-is-current");
+	      t.setAttribute("aria-selected", "false");
+	      t.tabIndex = -1;
+	    }
+	  });
+	
+	  // Activate the correct panel + tab
+	  panel.classList.add("wds-is-current");
+	  if (tab) {
+	    tab.classList.add("wds-is-current");
+	    tab.setAttribute("aria-selected", "true");
+	    tab.tabIndex = 0;
+	  }
+	
+	  return true;
+  }
 
+  document.addEventListener("click", function (e) {
     const link = e.target.closest("a[href^='#']");
     if (!link) return;
 
@@ -583,49 +431,16 @@ document.addEventListener("click", () => {setTimeout(initVisibleInfoboxTabs, 120
     const target = document.getElementById(id);
     if (!target) return;
 
-    expandCHAncestors(target);
+    // Original expand behavior
+    expandAllAncestors(target);
 
+    // Only activate tab if target is inside one
+    activateTabs(target);
+
+    // Original scroll behavior
+    setTimeout(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
   }, false);
+
 })();
-*/
-
-function activateTabs(target) {
-  const tabber = target.closest(".wds-tabber, .wds-tabs__wrapper");
-  if (!tabber) return false;
-
-  // Find the direct panel ancestor of the target
-  const panel = target.closest(".wds-tab__content");
-  if (!panel || !tabber.contains(panel)) return false;
-
-  // Collect only direct child panels of this tabber
-  const panels = Array.from(tabber.querySelectorAll(":scope > .wds-tab__content"));
-  const index = panels.indexOf(panel);
-  if (index === -1) return false;
-
-  // Collect only direct child tabs of this tabber
-  const tabsList = tabber.querySelector(".wds-tabs");
-  const tabs = tabsList ? Array.from(tabsList.children) : [];
-  const tab = tabs[index];
-
-  // Reset siblings inside this tabber
-  panels.forEach(p => {
-    if (p !== panel) p.classList.remove("wds-is-current");
-  });
-  tabs.forEach(t => {
-    if (t !== tab) {
-      t.classList.remove("wds-is-current");
-      t.setAttribute("aria-selected", "false");
-      t.tabIndex = -1;
-    }
-  });
-
-  // Activate the correct panel + tab
-  panel.classList.add("wds-is-current");
-  if (tab) {
-    tab.classList.add("wds-is-current");
-    tab.setAttribute("aria-selected", "true");
-    tab.tabIndex = 0;
-  }
-
-  return true;
-}

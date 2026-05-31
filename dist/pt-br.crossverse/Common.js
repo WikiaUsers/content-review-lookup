@@ -161,6 +161,63 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 /* Fim do Texto Invertido */
 
+/* Texto de Visual Novel */
+mw.hook('wikipage.content').add(function($content) {
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var $el = $(entry.target);
+                var fullText = $el.attr('data-text');
+                
+                if ($el.data('timer')) {
+                    clearInterval($el.data('timer'));
+                }
+                
+                $el.empty();
+                var i = 0;
+                var speed = 30; 
+                
+                var timer = setInterval(function() {
+                    if (i < fullText.length) {
+                        $el.append(fullText.charAt(i));
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                    }
+                }, speed);
+                
+                $el.data('timer', timer);
+            }
+        });
+    });
+
+    $content.find('.vn-typewriter').each(function() {
+        var $el = $(this);
+        if (!$el.attr('data-text')) {
+            $el.attr('data-text', $el.text().trim());
+        }
+        $el.empty();
+        observer.observe(this);
+    });
+});
+/* fim do texto de VN */
+
+/* Pegar imagem dos usuários na Pergunta e Respostas */
+mw.hook('wikipage.content').add(function($content) {
+if ($content.find('.avatar-dinamico-usuario').length === 0) return;
+var userId = mw.config.get('wgUserId');
+if (!userId) return;
+$.getJSON('/api/v1/User/Details', { ids: userId })
+.done(function(data) {
+if (data && data.items && data.items.length > 0) {
+var avatarUrl = data.items[0].avatar;
+$content.find('.avatar-dinamico-usuario').html('<img src="' + avatarUrl + '" style="width: 100%; height: 100%; object-fit: cover;">');
+}
+});
+});
+/* Fim da Imagem Perguntas e Respostas */
+
+
 /* Pergaminho interativo - ativa em qualquer página que tenha .pgm-pergaminho */
 mw.hook('wikipage.content').add(function ($content) {
     $content.find('.pgm-pergaminho').each(function () {

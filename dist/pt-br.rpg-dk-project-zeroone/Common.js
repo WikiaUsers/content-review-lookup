@@ -87,89 +87,77 @@ $(function(){
 
 
   /* =========================================================================
-     TABS — Verificar páginas inexistentes via API
-     Funciona para TODOS os usuários (logados e visitantes)
+     TABS — Marcar páginas inexistentes e bloquear para não-admins
+     
+     3 métodos de detecção (em cascata):
+     1. Classe .new (funciona para logados)
+     2. href contém "redlink=1" (Fandom adiciona para inexistentes)
+     3. API query como fallback
      ========================================================================= */
 
   var $tabLinks = $('[class^="dk-tab"] a, [class*="dk-tab"] a').not('.tab-act');
-  var titlesToCheck = {};
 
+  /* Método 1: já tem .new (usuários logados) — nada a fazer */
+
+  /* Método 2: verificar redlink no href */
   $tabLinks.each(function(){
-    var href = $(this).attr('href') || '';
-    /* Suporta múltiplos formatos de URL do Fandom:
-       /wiki/Titulo
-       /pt-br/wiki/Titulo
-       /f/p/Titulo
-    */
-    var match = href.match(/\/wiki\/([^?#]+)/);
-    if(!match){
-      /* Tenta extrair do href relativo */
-      match = href.match(/\/([^\/\?#]+)$/);
-    }
-    if(match){
-      var title = decodeURIComponent(match[1]).replace(/_/g, ' ');
-      if(!titlesToCheck[title]){
-        titlesToCheck[title] = [];
-      }
-      titlesToCheck[title].push($(this));
+    var $link = $(this);
+    var href = $link.attr('href') || '';
+    if(href.indexOf('redlink=1') !== -1){
+      $link.addClass('new');
     }
   });
 
-  var allTitles = Object.keys(titlesToCheck);
-
-  if(allTitles.length > 0){
-    /* Construir URL da API de forma robusta */
-    var apiUrl;
-    if(typeof mw !== 'undefined' && mw.util && mw.util.wikiScript){
-      apiUrl = mw.util.wikiScript('api');
-    } else {
-      /* Fallback: construir manualmente a partir do hostname */
-      apiUrl = '/api.php';
+  /* Método 3: API fallback para links que não têm .new nem redlink */
+  var linksParaVerificar = {};
+  $tabLinks.not('.new').each(function(){
+    var $link = $(this);
+    var href = $link.attr('href') || '';
+    var match = href.match(/\/wiki\/([^?#]+)/);
+    if(match){
+      var title = decodeURIComponent(match[1]).replace(/_/g, ' ');
+      if(!linksParaVerificar[title]) linksParaVerificar[title] = [];
+      linksParaVerificar[title].push($link);
     }
+  });
 
-    var batchSize = 50;
-    var pendingBatches = Math.ceil(allTitles.length / batchSize);
-    var completedBatches = 0;
-
-    for(var b = 0; b < allTitles.length; b += batchSize){
-      var batch = allTitles.slice(b, b + batchSize);
-      (function(batchTitles){
-        $.ajax({
-          url: apiUrl,
-          data: {
-            action: 'query',
-            titles: batchTitles.join('|'),
-            format: 'json',
-            origin: '*'
-          },
-          dataType: 'json',
-          timeout: 5000,
-          success: function(data){
-            if(!data.query || !data.query.pages) return;
-            var pages = data.query.pages;
-            for(var id in pages){
-              if(pages.hasOwnProperty(id)){
-                var page = pages[id];
-                if(parseInt(id) < 0 || page.missing !== undefined){
-                  var title = page.title;
-                  if(titlesToCheck[title]){
-                    titlesToCheck[title].forEach(function($link){
-                      $link.addClass('new');
-                    });
-                  }
-                }
+  var titulos = Object.keys(linksParaVerificar);
+  if(titulos.length > 0){
+    var apiUrl = mw.util ? mw.util.wikiScript('api') : '/api.php';
+    
+    $.ajax({
+      url: apiUrl,
+      data: {
+        action: 'query',
+        titles: titulos.join('|'),
+        format: 'json',
+        origin: '*'
+      },
+      dataType: 'json',
+      timeout: 5000,
+      success: function(data){
+        if(!data.query || !data.query.pages) return;
+        var pages = data.query.pages;
+        for(var id in pages){
+          if(pages.hasOwnProperty(id)){
+            var page = pages[id];
+            if(parseInt(id) < 0 || page.missing !== undefined){
+              var title = page.title;
+              if(linksParaVerificar[title]){
+                linksParaVerificar[title].forEach(function($link){
+                  $link.addClass('new');
+                });
               }
             }
-          },
-          complete: function(){
-            completedBatches++;
-            if(completedBatches >= pendingBatches){
-              aplicarBloqueioTabs();
-            }
           }
-        });
-      })(batch);
-    }
+        }
+        aplicarBloqueioTabs();
+      },
+      error: function(){
+        /* Se API falhar, aplicar bloqueio mesmo assim */
+        aplicarBloqueioTabs();
+      }
+    });
   } else {
     aplicarBloqueioTabs();
   }

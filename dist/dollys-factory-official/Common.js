@@ -221,8 +221,4 @@ importArticles({
   }
 })();
 
-dev:AddRailModule/code.js
-window.AddRailModule = [{ prepend: true }];
-window.AddRailModule = [
-  { page: 'Template:Update', prepend: true }
-];
+window.AddRailModule = (window.AddRailModule || []).concat(['Template:Update']);

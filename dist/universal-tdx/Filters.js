@@ -113,7 +113,7 @@ mw.hook('wikipage.content').add(function ($content) {
         if ($hostUnits.length && !$hostUnits.data('initialized')) {
             $hostUnits.data('initialized', true);
             var rarities = ["Boundless", "Secret", "Exclusive", "Mythic", "Legendary", "Epic", "Rare"];
-            var elements = ["Physical", "Magic", "Fire", "Water", "Wind", "Light", "Dark", "Ice", "Rose"];
+            var elements = ["Fire", "Water", "Wind", "Light", "Dark", "Ice", "Rose"];
             $browserUnits.find('.utdx-list-card').each(function () {
                 var eStr = $(this).attr('data-utdx-element') || "";
                 eStr.split(/,\s*/).forEach(function (el) {

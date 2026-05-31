@@ -239,9 +239,14 @@ mw.hook('wikipage.content').add(function ($content) {
           const items = [];
           if (!cell) return items;
 
+          // Module:Areas now wraps each item via utils.ItemLink which produces TWO
+          // anchors per item: (1) icon anchor (<a><img></a>) and (2) text anchor with
+          // display name. Filter to text anchors via "no <img> child" check (= robust
+          // even when text anchor would happen to be empty due to layout edge cases).
           const anchors = Array
             .from(cell.querySelectorAll("a"))
-            .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""));
+            .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""))
+            .filter(a => !a.querySelector('img'));
 
           const quantities = extractQuantitiesFromCell(cell);
 
@@ -262,12 +267,15 @@ mw.hook('wikipage.content').add(function ($content) {
         // Helper: finds the "item anchor" in area table row (ignores Special:Upload Level N links)
         function getItemAnchorFromRow(row) {
           if (!row) return null;
+          // Same dual-anchor handling as parseItems: prefer anchor without <img>
+          // (= text anchor). Falls back to first anchor if no text-only anchor found.
           const anchors = Array
             .from(row.querySelectorAll("td:nth-of-type(1) a"))
             .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""));
-          if (anchors.length > 0) return anchors[0];
-          // fallback: first anchor in the first TD if no valid one found
-          return row.querySelector("td:nth-of-type(1) a");
+          const textAnchor = anchors.find(a => !a.querySelector('img'));
+          if (textAnchor) return textAnchor;
+          // Fallback: first non-Special:Upload anchor; absolute last resort = first any
+          return anchors[0] || row.querySelector("td:nth-of-type(1) a");
         }
 
         // Build groups from original headers: from each .startOfTheGroup until next header/footer
@@ -884,11 +892,16 @@ mw.hook('wikipage.content').add(function ($content) {
           const out = { items: [], xp: 0 };
           if (!cell) return out;
 
-          // XP: first numeric value in the cell text. Module:Areas emits XP
-          // as "<XP icon span> <number><br>...item anchors...".
-          const cellText = (cell.textContent || '').replace(/ /g, ' ').trim();
-          const xpMatch = cellText.match(/^[^\d]*?([\d,]+)/);
-          if (xpMatch) out.xp = parseIntSafe(xpMatch[1]);
+          // XP: only when the cell actually contains an XP icon (otherwise the first
+          // number could be the `(L7)` suffix from a level-bearing item label, which
+          // would falsely inflate consumedXp on item-only reward cells).
+          // Module:Areas emits XP as "<XP icon span> <number><br>...item anchors...".
+          const cellText = (cell.textContent || '').replace(/ /g, ' ').trim();
+          const hasXpIcon = !!(cell.querySelector('img[alt*="XP" i], span[title*="XP" i], [data-image-name*="XP" i]'));
+          if (hasXpIcon) {
+            const xpMatch = cellText.match(/([\d,]+)/);
+            if (xpMatch) out.xp = parseIntSafe(xpMatch[1]);
+          }
 
           // Items: every anchor with /wiki/ that's not the XP/Experience link.
           cell.querySelectorAll('a').forEach(a => {
@@ -928,7 +941,16 @@ mw.hook('wikipage.content').add(function ($content) {
             }
             // Item row: <td>name</td><td>count</td>
             if (tds.length === 2 && ths.length === 0) {
-              const a = tds[0].querySelector('a');
+              // Module:Areas now renders the item cell via utils.ItemLink which wraps
+              // an iconLinkWrap span with TWO anchors: (1) the icon anchor wrapping <img>
+              // (empty textContent) and (2) the text anchor with display name. Pick the
+              // anchor with actual text content; fallback to last anchor if no text.
+              const anchors = tds[0].querySelectorAll('a');
+              let a = null;
+              for (let k = 0; k < anchors.length; k++) {
+                if ((anchors[k].textContent || '').trim()) { a = anchors[k]; break; }
+              }
+              if (!a && anchors.length) a = anchors[anchors.length - 1];
               if (a) out.itemRows.push({ tr, anchor: a, countCell: tds[1] });
             }
           });
@@ -1013,7 +1035,14 @@ mw.hook('wikipage.content').add(function ($content) {
           // Apply to summary rows.
           const summary = getSummaryRows();
           summary.itemRows.forEach(r => {
-            const name = (r.anchor.textContent || '').trim();
+            // Strip trailing "(L#)" / "(Lv#)" from rewards-summary anchor text so the
+            // lookup key matches the stripped names produced by parseRewardCell from
+            // task-table anchors. Both sides must strip — Module:Areas now renders
+            // level-specific display names with (L#) suffix in the rewards summary
+            // (e.g. "Spirit Level (L7)"), so without symmetric stripping the lookup
+            // would always miss and nothing would get subtracted.
+            const rawName = (r.anchor.textContent || '').trim();
+            const name = rawName.replace(/\s*\(L\s*\d+\s*\)\s*$/i, '');
             const orig = parseIntSafe(r.countCell.dataset.original || r.countCell.textContent);
             const used = consumedItems[name] || 0;
             const remaining = Math.max(0, orig - used);

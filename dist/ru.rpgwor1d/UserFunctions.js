@@ -1,4 +1,3 @@
-
 "use strict";
 /**
  * @name UserFunctions.js
@@ -86,26 +85,14 @@ var UserFunctions = /** @class */ (function () {
         return $el;
     };
     UserFunctions.prototype.handleIfUserName = function ($el) {
-        var _a;
-        var users = __assign((_a = {}, _a['' + this.userName] = false, _a), UserFunctions.parseBoolMap($el.data('if-username')));
-        var show = !!users['' + this.userName];
+        var data = $el.data('if-username');
+        var show = UserFunctions.evaluateUserCondition(data, this.userName);
         $el.toggle(show).attr('data-user-fn-hit', '' + show);
         return $el;
     };
     UserFunctions.prototype.handleIfUserGroup = function ($el) {
-        var _this = this;
-        var groups = UserFunctions.parseBoolMap($el.data('if-usergroup'));
-        var show = false;
-        Object.keys(groups).forEach(function (key) {
-            var yes = groups[key];
-            if ((yes && _this.userGroups.includes(key)) ||
-                (!yes && !_this.userGroups.includes(key))) {
-                show = true;
-            }
-            else {
-                show = false;
-            }
-        });
+        var data = $el.data('if-usergroup');
+        var show = UserFunctions.evaluateGroupCondition(data, this.userGroups);
         $el.toggle(show).attr('data-user-fn-hit', '' + show);
         return $el;
     };
@@ -125,9 +112,59 @@ var UserFunctions = /** @class */ (function () {
             .attr('data-user-fn-error', 'true');
     };
     /**
-     * Get standard compare boolean map
-     * @example toBoolMap('foo|!bar') === { foo: true, bar: false }
+     * Разбирает строку условия с поддержкой логических операторов | (ИЛИ) и && (И)
+     * Возвращает массив групп, где каждая группа — массив условий [ { key, expectPresent } ]
+     * Пример: "User1|!User2&&!User3" -> [ [{key:"User1",expectPresent:true}], [{key:"User2",expectPresent:false},{key:"User3",expectPresent:false}] ]
      */
+    UserFunctions.parseConditionString = function (data) {
+        if (!data || typeof data !== 'string') return [];
+        var groups = data.split('|');
+        return groups.map(function (group) {
+            if (!group.trim()) return [];
+            return group.split('&&').map(function (cond) {
+                var trimmed = cond.trim();
+                if (!trimmed) return null;
+                var negated = trimmed.startsWith('!');
+                var key = negated ? trimmed.slice(1).trim() : trimmed;
+                return { key: key, expectPresent: !negated };
+            }).filter(Boolean);
+        });
+    };
+    /**
+     * Вычисляет, нужно ли показать элемент для заданного имени пользователя
+     */
+    UserFunctions.evaluateUserCondition = function (data, userName) {
+        var groups = UserFunctions.parseConditionString(data);
+        if (groups.length === 0) return false; // нет условий -> скрыть
+        return groups.some(function (group) {
+            if (group.length === 0) return false; // пустая группа из-за лишних ||
+            return group.every(function (condition) {
+                if (condition.expectPresent) {
+                    return userName === condition.key;
+                } else {
+                    return userName !== condition.key;
+                }
+            });
+        });
+    };
+    /**
+     * Вычисляет, нужно ли показать элемент для групп пользователя
+     */
+    UserFunctions.evaluateGroupCondition = function (data, userGroups) {
+        var groups = UserFunctions.parseConditionString(data);
+        if (groups.length === 0) return false;
+        return groups.some(function (group) {
+            if (group.length === 0) return false;
+            return group.every(function (condition) {
+                var hasGroup = userGroups.includes(condition.key);
+                if (condition.expectPresent) {
+                    return hasGroup;
+                } else {
+                    return !hasGroup;
+                }
+            });
+        });
+    };
     UserFunctions.parseBoolMap = function (data) {
         var arr = data.split('|');
         var map = {};
@@ -137,11 +174,6 @@ var UserFunctions = /** @class */ (function () {
         });
         return map;
     };
-    /**
-     * Data is means yes or no
-     * - `false`, `no`, `n`, `0` → `false`
-     * - others → `true`
-     */
     UserFunctions.parseBool = function (data) {
         return ![false, 'false', 'no', 'n', 0, '0'].includes(data);
     };
@@ -150,7 +182,6 @@ var UserFunctions = /** @class */ (function () {
 window.dev = __assign(__assign({}, window.dev), { UserFunctions: UserFunctions });
 // Run
 var app = new UserFunctions('.user-functions, .UserFunctions');
-// Вызываем init() повторно с интервалом
 setInterval(function () {
     app.init();
-}, 1000); // Вызываем каждую секунду (1000 миллисекунд)
+}, 1000);

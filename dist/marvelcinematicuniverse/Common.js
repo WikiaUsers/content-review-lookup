@@ -125,37 +125,6 @@ window.NoLicenseWarning = {
 // PreloadFileDescription
 PFD_templates = '{{Image\n| media = \n| source = \n| artist = \n| note = \n| type = \n}}';
 
-// Transcluding Talk Page Template
-$(function () {
-  let msSet = 500;
-  const firstLine = $('.cm-line').first();
-  if (!firstLine.length) {
-    msSet = 1200;
-  }
-
-  setTimeout(() => {
-    const isTalkPage = $('body').hasClass('ns-talk');
-    const isEditAction = window.location.search.includes('action=edit');
-    let firstLine = $('.cm-line').first();
-    if (!firstLine.length) {
-       firstLine = $('.ve-ce-branchNode-slug').first();
-    }
-
-    const isOnlyBr = firstLine.length &&
-                     firstLine.children().length === 1 &&
-                     (firstLine.children().is('br') || firstLine.children().is('img')) &&
-                     firstLine.text().trim() === '';
-
-    if (isTalkPage && isEditAction && isOnlyBr) {
-      const url = new URL(window.location.href);
-      if (!url.searchParams.has('preload')) {
-        url.searchParams.append('preload', 'Template:TalkTransclude');
-        window.location.href = url.toString();
-      }
-    }
-  }, msSet);
-});
-
 // Doomsday Clock (Created by Pr0tato210)
 ;(function (mw, document) {
 	'use strict';

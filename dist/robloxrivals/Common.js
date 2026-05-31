@@ -5,7 +5,7 @@
         prime: {
 			swipeSpeed: 10000,
 			swipeGap: 3000,
-            starSpawnRate: 1250,
+            starSpawnRate: 1550,
             starLifespan: 2000,
             starRounds: 1.5
         },
@@ -136,13 +136,38 @@
         document.querySelectorAll('.contraband, .contraband-bp, ' + owner)
             .forEach(startGlitch);
     }
+	
+	// ==================== Table Counter ====================
 
+	function updateCounts() {
+	    const tables = document.querySelectorAll(
+	        '.count-table[data-type][data-id]'
+	    );
+	
+	    tables.forEach(function (table) {
+	        const type = table.dataset.type;
+	        const rarity = table.dataset.id;
+	
+	        const count = table.querySelectorAll('tr').length - 1;
+	
+	        const counter =
+	            document.getElementById(
+	                `${type}-${rarity}-count`
+	            );
+	
+	        if (counter) {
+	            counter.textContent = count;
+	        }
+	    });
+	}
+	
     // ==================== INIT ====================
 
     function initializeAll() {
         applyStaffPrime();
         initPrime();
         initContraband();
+        updateCounts();
     }
 
     if (typeof $ !== 'undefined') $(document).ready(initializeAll);

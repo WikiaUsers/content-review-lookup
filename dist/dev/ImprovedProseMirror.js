@@ -1,4 +1,4 @@
-// <nowiki> (this tag disables pre-save transforms) ~~~~~
+// <nowiki> ~~~~~ (this tag disables pre-save transforms)
 /* jshint
 	bitwise: true,
 	curly: true,
@@ -62,16 +62,18 @@
 			const WIKILINK_REGEX = /\[\[([^\[\]]*)\]?\]?$/;
 			const EXT_LINK_REGEX = /\[([^\[\]]+)\]$/;
 			
-			let search = {};
+			let searchParams = {};
+			let interwikiMapCache = {};
+			let apiEndpointCache = {};
 			let lastRequest = {};
 			let resultCount = 0;
 			
 			const body = $(document.body);
 			const wrapper = $(
-				'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-popupWidget oo-ui-popupWidget-anchored oo-ui-popupWidget-anchored-top IPM-ui-linkSuggest" id="IPM-wrapper" style="display:none;">'+
-					'<div class="oo-ui-popupWidget-anchor" style="left:12px;"></div>'+
-					'<div class="oo-ui-popupWidget-popup" style="padding:0;">'+
-						'<div class="oo-ui-popupWidget-body" style="width:320px;">'+
+				'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-popupWidget oo-ui-popupWidget-anchored oo-ui-popupWidget-anchored-top IPM-ui-linkSuggest" id="IPM-wrapper" style="display: none;">'+
+					'<div class="oo-ui-popupWidget-anchor" style="left: 12px;"></div>'+
+					'<div class="oo-ui-popupWidget-popup" style="padding: 0;">'+
+						'<div class="oo-ui-popupWidget-body" style="width: 320px;">'+
 							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget" id="IPM-list" role="listbox" aria-multiselectable="false"></div>'+
 						'</div>'+
 					'</div>'+
@@ -85,9 +87,9 @@
 					const checkMessageDebounced = mw.util.debounce(methods.checkMessage, 250);
 					const observer = new MutationObserver(checkMessageDebounced);
 					const onSelectOption = () => {
-						if (search.type === 'link') {
+						if (searchParams.type === 'link') {
 							methods.dispatchLink();
-						} else if (search.type === 'image') {
+						} else if (searchParams.type === 'image') {
 							methods.insertImage();
 						}
 					};
@@ -102,18 +104,26 @@
 					});
 					
 					body.on('click.IPM', (event) => {
-						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event); onSelectOption();}
-						else if (event.target.matches('.rich-text-editor__content')) {checkMessageDebounced();}
+						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {
+							methods.handleOOUI(event);
+							onSelectOption();
+						} else if (event.target.matches('.rich-text-editor__content')) {
+							checkMessageDebounced();
+						}
 					});
 					
 					body.on('mousedown.IPM', (event) => {
-						if (event.target.closest('.IPM-ui-linkSuggest')) {event.preventDefault();}
-						else if (event.target.closest('.ProseMirror')) {checkMessageDebounced();}
-						else {methods.closeSuggestions();}
+						if (event.target.closest('.IPM-ui-linkSuggest')) {
+							event.preventDefault();
+						} else if (event.target.closest('.ProseMirror')) {
+							checkMessageDebounced();
+						} else {
+							methods.closeSuggestions();
+						}
 					});
 					
-					body.on('contextmenu.IPM', (event) => {
-						if (event.target.closest('.IPM-ui-linkSuggest')) {event.preventDefault();}
+					wrapper.on('contextmenu.IPM', (event) => {
+						event.preventDefault();
 					});
 					
 					document.addEventListener('keydown', (event) => {
@@ -151,7 +161,7 @@
 							case 'ArrowRight':
 								checkMessageDebounced();
 						}
-					});
+					}, true);
 					
 					suggestBox.on('mousemove.IPM mouseleave.IPM', '.IPM-ui-linkSuggest-selectable', methods.handleOOUI);
 					
@@ -170,7 +180,9 @@
 				
 				matchReplace(str, patterns, rep) {
 					for (const pattern of patterns) {
-						if (pattern.test(str)) {return str.replace(pattern, rep);}
+						if (pattern.test(str)) {
+							return str.replace(pattern, rep);
+						}
 					}
 					return str;
 				},
@@ -187,39 +199,35 @@
 								top: caret.y,
 							});
 							match[1] = match[1].replace(/^\||\|.*/, ''); // remove pipe character and everything after it, or just the pipe character if it's at the beginning
-							let image = false;
-							if (match[1].startsWith(':')) {
-								image = true;
-								match[1] = match[1].replace(':', '');
-							}
-							search = {
+							searchParams = {
 								node: caret.node,
 								offsets: [match.index, match[0].length],
 								source: 'wiki',
-								type: image ? 'image' : 'link',
+								type: match[1].startsWith(':') ? 'image' : 'link',
 							};
 							return methods.getPages(match[1], true);
 						} else if ((match = EXT_LINK_REGEX.exec(rawStr))) {
-							search = {
+							searchParams = {
 								node: caret.node,
 								offsets: [match.index, match[0].length],
 								source: 'external',
 								type: 'link',
 							};
 							let url = prompt('Enter URL to create a link to');
-							if (URL_REGEX.test(url)) {methods.dispatchLink(url, match[1]);}
-							else if (url) {alert('Invalid URL!');}
+							if (URL_REGEX.test(url)) {
+								methods.dispatchLink(url, match[1]);
+							} else if (url) {
+								alert('Invalid URL!');
+							}
 						}
 					}
 				},
 				
-				getPages(prefix, interwikiMode, apiEndpoint, articlePath, offset = 0, retries = 0) {
-					while (prefix.startsWith(':')) {
-						prefix = prefix.replace(':', '');
-					}
+				getPages(prefix, interwikiMode, apiEndpoint = '', articlePath = '', offset = 0, retries = 0) {
+					prefix = prefix.replace(/^:+/, ''); // remove leading colons
 					
 					if (!prefix) {
-						methods.appendMessage(`Search for ${(search.type === 'image' ? 'an image' : 'a page')+(articlePath ? ` at ${articlePath.replace('$1', '...')}` : '...')}`);
+						methods.appendMessage(`Search for ${(searchParams.type === 'image' ? 'an image' : 'a page')+(articlePath ? ` at ${articlePath.replace('$1', '...')}` : '...')}`);
 						return Promise.resolve();
 					}
 					
@@ -236,7 +244,7 @@
 						if (code === 'http') {
 							if (data && (data.error || data.errors)) {
 								return methods.appendMessage('Bad API response: server sent fake error data.');
-							} else if (data && data.textStatus !== 'abort' && !(interwikiMode && apiEndpoint && data.textStatus === 'error')) {
+							} else if (data && data.textStatus !== 'abort' && (!interwikiMode || !apiEndpoint || data.textStatus !== 'error')) {
 								return api.getErrorMessage(data).each((_, element) => {
 									return methods.appendMessage(element.innerText);
 								});
@@ -256,15 +264,17 @@
 					let match = prefix.match(/^(.+?):/);
 					if (match && interwikiMode) {
 						let newPrefix = prefix.replace(/^.+?:/, '');
-						(lastRequest = api.get({
+						(lastRequest = interwikiMapCache[apiEndpoint] ? Promise.resolve(interwikiMapCache[apiEndpoint]) : api.get({
 							meta: 'siteinfo',
 							siprop: 'interwikimap',
 							maxage: '3600',
 						})).then((data) => {
+							apiEndpointCache[articlePath] = apiEndpoint;
 							if (!data.query || !data.query.interwikimap) {
 								return methods.appendMessage('Bad API response: invalid interwiki map.');
 							}
-							let interwiki = data.query.interwikimap.find((iw) => iw && typeof iw.prefix === 'string' && iw.prefix.toLowerCase() === match[1].toLowerCase() && typeof iw.url === 'string');
+							interwikiMapCache[apiEndpoint] = data;
+							let interwiki = data.query.interwikimap.find((iw) => iw && typeof iw.url === 'string' && typeof iw.prefix === 'string' && iw.prefix.toLowerCase() === match[1].toLowerCase());
 							if (!interwiki) {
 								return methods.getPages(prefix, false, apiEndpoint, articlePath);
 							}
@@ -276,9 +286,9 @@
 								return methods.appendMessage(`Invalid interwiki URL "${interwiki.url}".`);
 							}
 							if (wikiUrl.protocol !== 'http:' && wikiUrl.protocol !== 'https:') {
-								return methods.appendMessage(`Unsupported interwiki URL protocol "${wikiUrl.protocol.replace(':', '')}". Only "https" is allowed.`);
+								return methods.appendMessage(`Unsupported interwiki URL protocol "${wikiUrl.protocol.slice(0, -1)}". Only "https" is allowed.`);
 							}
-							wikiUrl.protocol = 'https:'; // csp upgrades insecure requests so we can't access resources with http anyway
+							wikiUrl.protocol = 'https'; // since csp upgrades insecure requests we can't access resources with http anyway
 							if (wikiUrl.host.endsWith('.wikia.com')) {
 								// update Wikia urls to Fandom ones
 								wikiUrl.host = wikiUrl.host.replace(/wikia\.com$/, 'fandom.com');
@@ -292,7 +302,10 @@
 							
 							let apiUrl;
 							let altApiUrls = [];
-							if (typeof interwiki.api === 'string') {
+							if (apiEndpointCache[wikiUrl]) {
+								// retrieve the api url from the cache if available
+								apiUrl = new URL(apiEndpointCache[wikiUrl]);
+							} else if (typeof interwiki.api === 'string') {
 								// ideally the api url will be provided by the interwiki map
 								try {
 									apiUrl = new URL(interwiki.api);
@@ -300,9 +313,9 @@
 									return methods.appendMessage(`Invalid interwiki API URL "${interwiki.api}".`);
 								}
 								if (wikiUrl.protocol !== 'http:' && wikiUrl.protocol !== 'https:') {
-									return methods.appendMessage(`Unsupported interwiki API URL protocol "${wikiUrl.protocol.replace(':', '')}". Only "https" is allowed.`);
+									return methods.appendMessage(`Unsupported interwiki API URL protocol "${wikiUrl.protocol.slice(0, -1)}". Only "https" is allowed.`);
 								}
-								apiUrl.protocol = 'https:';
+								apiUrl.protocol = 'https';
 								if (apiUrl.host.endsWith('.wikia.com')) {
 									apiUrl.host = apiUrl.host.replace(/wikia\.com$/, 'fandom.com');
 								} else if (apiUrl.host === 'mediawiki.org') {
@@ -351,15 +364,16 @@
 							});
 						}, onRejected);
 						return lastRequest;
-					} else if (match && search.type === 'image') {
+					} else if (match && searchParams.type === 'image') {
 						return methods.getPages(prefix.replace(/^.+?:/, ''), false, apiEndpoint, articlePath);
-					} else if (search.type === 'link') {
+					} else if (searchParams.type === 'link') {
 						(lastRequest = api.get({
 							list: 'prefixsearch',
 							pssearch: prefix.toWellFormed ? prefix.toWellFormed() : prefix.replace(/\p{Cs}/gu, '\ufffd'), // jshint ignore: line
 							pslimit: '6',
 							maxage: '60',
 						})).then((data) => {
+							apiEndpointCache[articlePath] = apiEndpoint;
 							if (data.query && data.query.prefixsearch instanceof Array && data.query.prefixsearch.length) {
 								if (articlePath) {
 									methods.appendMessage(articlePath.replace('$1', '...'));
@@ -370,7 +384,7 @@
 							}
 						}, onRejected);
 						return lastRequest;
-					} else if (search.type === 'image') {
+					} else if (searchParams.type === 'image') {
 						(lastRequest = api.get({
 							generator: 'prefixsearch',
 							gpssearch: prefix.toWellFormed ? prefix.toWellFormed() : prefix.replace(/\p{Cs}/gu, '\ufffd'), // jshint ignore: line
@@ -381,17 +395,17 @@
 							iiprop: 'url|mime',
 							maxage: '60',
 						})).then((data) => {
+							apiEndpointCache[articlePath] = apiEndpoint;
 							if (data.query && data.query.pages instanceof Array && data.query.pages.length) {
 								if (articlePath && !offset) {
 									methods.appendMessage(articlePath.replace('$1', '...'));
 								}
 								methods.buildSuggestions(data.query.pages, articlePath);
 								if (resultCount < 6 && data.continue && typeof data.continue.gpsoffset === 'number' && data.continue.gpsoffset < 36) {
-									if (data.continue.gpsoffset === offset + data.query.pages.length) {
-										return methods.getPages(prefix, false, apiEndpoint, articlePath, data.continue.gpsoffset);
-									} else {
-										return methods.appendMessage('Bad API response: incorrect continue offset.');
+									if (data.continue.gpsoffset < offset + data.query.pages.length) {
+										return methods.appendMessage('Bad API response: invalid query continue offset.');
 									}
+									return methods.getPages(prefix, false, apiEndpoint, articlePath, data.continue.gpsoffset);
 								} else if (!resultCount) {
 									return methods.appendMessage(`No image results found for "${prefix}".`);
 								}
@@ -416,16 +430,18 @@
 				buildSuggestions(pages, path) {
 					for (const page of pages) {
 						if (resultCount >= 6) {break;}
-						if (page && typeof page.title === 'string' && (search.type !== 'image' || page.imageinfo && page.imageinfo[0] && typeof page.imageinfo[0].mime === 'string' && page.imageinfo[0].mime.startsWith('image/') && typeof page.imageinfo[0].url === 'string')) {
+						if (page && typeof page.title === 'string' && (searchParams.type !== 'image' || page.imageinfo && page.imageinfo[0] && typeof page.imageinfo[0].url === 'string' && typeof page.imageinfo[0].mime === 'string' && page.imageinfo[0].mime.startsWith('image/'))) {
 							const suggestion = $(
-								`<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-optionWidget oo-ui-labelElement IPM-ui-linkSuggest-selectable IPM-ui-linkSuggest-suggestion" id="IPM-linkSuggest-${++resultCount}" role="option" aria-selected="false" tabindex="-1" data-url="${search.type === 'image' ? page.imageinfo[0].url : path ? path.replace('$1', mw.util.wikiUrlencode(page.title)) : config.wgServer+mw.util.getUrl(page.title)}">`+
+								`<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-optionWidget oo-ui-labelElement IPM-ui-linkSuggest-selectable IPM-ui-linkSuggest-suggestion" id="IPM-linkSuggest-${++resultCount}" role="option" aria-selected="false" tabindex="-1" data-url="${searchParams.type === 'image' ? page.imageinfo[0].url : path ? path.replace('$1', mw.util.wikiUrlencode(page.title)) : config.wgServer+mw.util.getUrl(page.title)}">`+
 									`<span class="oo-ui-labelElement-label">${page.title}</span>`+
 								`</div>`
 							);
 							suggestBox.append(suggestion);
 						}
 					}
-					if (resultCount) {wrapper.show();}
+					if (resultCount) {
+						wrapper.show();
+					}
 				},
 				
 				handleOOUI(event) {
@@ -435,20 +451,9 @@
 						case 'mousemove':
 						case 'click':
 							newNode = event.target.closest('.IPM-ui-linkSuggest-selectable');
-							if (currentNode) {
-								currentNode.classList.remove('oo-ui-optionWidget-highlighted');
-								currentNode.setAttribute('aria-selected', 'false');
-							}
-							newNode.classList.add('oo-ui-optionWidget-highlighted');
-							newNode.setAttribute('aria-selected', 'true');
-							suggestBox.attr('aria-activedescendant', newNode.id);
 							break;
 						case 'mouseleave':
-							if (currentNode) {
-								currentNode.classList.remove('oo-ui-optionWidget-highlighted');
-								currentNode.setAttribute('aria-selected', 'false');
-							}
-							suggestBox.removeAttr('aria-activedescendant');
+							newNode = null;
 							break;
 						case 'keydown':
 							switch (event.key) {
@@ -466,24 +471,26 @@
 								case 'PageDown':
 									newNode = suggestBox.children('.IPM-ui-linkSuggest-selectable').get(-1);
 							}
-							if (newNode) {
-								if (currentNode) {
-									currentNode.classList.remove('oo-ui-optionWidget-highlighted');
-									currentNode.setAttribute('aria-selected', 'false');
-								}
-								newNode.classList.add('oo-ui-optionWidget-highlighted');
-								newNode.setAttribute('aria-selected', 'true');
-								suggestBox.attr('aria-activedescendant', newNode.id);
-							}
+					}
+					if (newNode !== undefined) {
+						if (currentNode) {
+							currentNode.classList.remove('oo-ui-optionWidget-highlighted');
+							currentNode.setAttribute('aria-selected', 'false');
+						}
+						if (newNode) {
+							newNode.classList.add('oo-ui-optionWidget-highlighted');
+							newNode.setAttribute('aria-selected', 'true');
+						}
+						suggestBox.attr('aria-activedescendant', newNode && newNode.id);
 					}
 				},
 				
 				dispatchLink(url, label) {
-					let parentNode = search.node.parentNode;
-					let searchNode = search.node.splitText(search.offsets[0]);
-					searchNode.splitText(search.offsets[1]);
+					let parentNode = searchParams.node.parentNode;
+					let searchNode = searchParams.node.splitText(searchParams.offsets[0]);
+					searchNode.splitText(searchParams.offsets[1]);
 					
-					if (search.source === 'wiki') {
+					if (searchParams.source === 'wiki') {
 						let optionNode = suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0);
 						if (!url) {
 							url = optionNode.dataset.url;
@@ -494,7 +501,7 @@
 								label = optionNode.innerText;
 							} else if (!match[1]) {
 								// pipe trick
-								// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_43/includes/parser/Parser.php$4671
+								// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_43/includes/parser/Parser.php$4692
 								
 								// [[ns:page (context)|]]
 								const p1 = /^(?::?.+:|:|)(.+?)(?: ?[\(\uff08].+[\)\uff09])$/;
@@ -543,12 +550,12 @@
 				},
 				
 				insertImage(url) {
-					let parentNode = search.node.parentNode;
-					let searchNode = search.node.splitText(search.offsets[0]);
-					searchNode.splitText(search.offsets[1]);
+					let parentNode = searchParams.node.parentNode;
+					let searchNode = searchParams.node.splitText(searchParams.offsets[0]);
+					searchNode.splitText(searchParams.offsets[1]);
 					let inputNode = parentNode.closest('.rich-text-editor__wrapper').querySelector('#rich-text-editor__image-input');
 					
-					if (search.source === 'wiki' && !url) {
+					if (searchParams.source === 'wiki' && !url) {
 						url = suggestBox.children('#'+suggestBox.attr('aria-activedescendant')).get(0).dataset.url;
 					}
 					
@@ -559,7 +566,7 @@
 						let transfer = new DataTransfer();
 						transfer.items.add(new File([blob], url));
 						inputNode.files = transfer.files; // put the image in the input element's file list
-						inputNode.dispatchEvent(new Event('change', {bubbles: true})); // fire a change event to make Fandom upload and insert the image
+						inputNode.dispatchEvent(new Event('change', {bubbles: true})); // fire a change event to get Fandom to upload and insert the image
 					});
 				},
 				
@@ -571,8 +578,10 @@
 						top: '',
 					});
 					wrapper.hide();
-					search = {};
-					if (lastRequest.abort) {lastRequest.abort();}
+					searchParams = {};
+					if (lastRequest.abort) {
+						lastRequest.abort();
+					}
 					resultCount = 0;
 				},
 			};

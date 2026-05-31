@@ -1,18 +1,13 @@
-// MediaWiki:MarvelCalendar.js
-// Недельный календарь Marvel — JS-версия с кэшированием по ISO-неделе,
-// автоматической инвалидацией при изменении исключений и выводом через {{РГ}}
+// MediaWiki:MarvelCalendar.js. Недельный календарь Marvel — JS-версия с кэшированием по ISO-неделе, автоматической инвалидацией при изменении исключений и выводом через {{РГ}}
  
 ( function ( $, mw ) {
     'use strict';
  
     var CALENDAR_ID   = 'marvel-weekly-calendar';
     var CACHE_KEY     = 'marvelCalendarCache';
-    var CACHE_VERSION = 5;
+    var CACHE_VERSION = 6;
 
-    // ============================================
     // 0. Стили анимации загрузки (Серебряный Сёрфер)
-    // ============================================
-
     var SURFER_CSS = [
         '@keyframes surfer-hover {',
         '  0%   { transform: scaleX(-1) translateY(0px); }',
@@ -54,10 +49,7 @@
         '<img src="' + SURFER_URL + '" alt="Загрузка..." />' + '<span>Загрузка релизов Marvel...</span>' +
         '</div>';
  
-    // ============================================
     // 1. Вспомогательные функции
-    // ============================================
- 
     function getCurrentISOWeekAndYear() {
         var now = new Date();
         var d = new Date( Date.UTC( now.getFullYear(), now.getMonth(), now.getDate() ) );
@@ -99,10 +91,7 @@
         return date;
     }
  
-    // ============================================
     // 2. Работа с кэшем
-    // ============================================
- 
     function isLocalStorageAvailable() {
         try {
             var test = '__ls_test__';
@@ -147,10 +136,7 @@
         }
     }
  
-    // ============================================
     // 3. Загрузка исключений
-    // ============================================
- 
     var EXCEPTIONS_PAGE    = 'Данные:ReleaseExceptions';
     var EXCEPTION_TEMPLATE = 'EH';
  
@@ -190,10 +176,7 @@
         } );
     }
  
-    // ============================================
     // 4. Парсинг и применение исключений
-    // ============================================
- 
     var CGD_PREFIX  = 'Comics Giveaway Day';
     var FCBD_PREFIX = 'Free Comic Book Day';
  
@@ -285,10 +268,7 @@
         } );
     }
 
-    // ============================================
     // 4б. Автоопределение ван-шотов
-    // ============================================
-
     function detectOneShotsFromAPI( releasesData ) {
     	// Собираем кандидатов: Vol 1, выпуск 1, не CGD/FCBD, не помечен исключением
         var candidates = releasesData.filter( function ( d ) {
@@ -348,10 +328,7 @@
         } );
     }
 
-    // ============================================
     // 4в. Автоопределение Star Wars (ссылка на серию)
-    // ============================================
-
     function detectStarWarsFromAPI( releasesData ) {
         // Кандидаты: обычные выпуски, не помеченные вручную через EH
         var candidates = releasesData.filter( function ( d ) {
@@ -416,10 +393,7 @@
         } );
     }
  
-    // ============================================
     // 5. Формирование {{РГ}} и рендер
-    // ============================================
- 
     function buildRGCall( data ) {
         if ( data.isCGDFCBD ) {
             return '{{РГ|' + data.picture + '|' + data.series + '|' + data.series + '}}';
@@ -431,8 +405,10 @@
         if ( data.seriesLink ) {
             return '{{РГ|' + data.picture + '|' + data.series + '|#' + data.issueStr + '}}';
         }
+        // Исключение без series_link — ссылка на конкретный выпуск с кастомной обложкой/томом
+        // data.series, data.vol и data.picture уже содержат применённые значения из EH
         if ( data.isException ) {
-            return '{{РГ|' + data.picture + '|' + data.series + '|#' + data.issueStr + '}}';
+            return '{{РГ|' + data.picture + '|' + data.series + ' Vol ' + data.vol + ' ' + data.issueStr + '|#' + data.issueStr + '}}';
         }
         var volPart = ( data.vol === 1 ) ? '' : ' ' + data.vol;
         return '{{РГ|' + data.issueStr + volPart + '|в=' + data.series + '}}';
@@ -455,8 +431,8 @@
         } );
     }
  
-    function renderWithRG( releasesData ) {
-        var container = document.querySelector( '#' + CALENDAR_ID + ' .comics-container' );
+    function renderWithRG( releasesData, calendar ) {
+        var container = calendar.querySelector( '.comics-container' );
         if ( !container ) return Promise.resolve();
         if ( releasesData.length === 0 ) {
             container.innerHTML = '<p class="no-releases">На этой неделе релизов Marvel нет.</p>';
@@ -469,8 +445,11 @@
             disableeditsection: true,
             wrapoutputclass: ''
         } ).then( function ( parsed ) {
+            var current = getCurrentISOWeekAndYear();
+            // Заголовок недели переносим внутрь .comics-week, чтобы .comics-week_title был siblings с .comics-table — это необходимо для корректной работы CSS (order: -1 в railModule)
             container.innerHTML =
                 '<div class="comics-week">' +
+                    getWeekRange( current.week, current.year ) +
                     '<div class="comics-table">' +
                         parsed +
                     '</div>' +
@@ -481,20 +460,15 @@
         } );
     }
  
-    // ============================================
     // 6. Основная функция инициализации
-    // ============================================
- 
-    function initMarvelCalendar() {
-        var header    = document.querySelector( '#' + CALENDAR_ID + ' .week-header' );
-        var container = document.querySelector( '#' + CALENDAR_ID + ' .comics-container' );
-        if ( !header || !container ) return;
- 
+    function initMarvelCalendar( calendar ) {
+        // .week-header оставляем пустым — заголовок теперь рендерится внутри .comics-week
+        var container = calendar.querySelector( '.comics-container' );
+        if ( !container ) return;
+
         var current = getCurrentISOWeekAndYear();
         var week = current.week;
         var year = current.year;
- 
-        header.innerHTML = getWeekRange( week, year );
 
         // Показываем Серебряного Сёрфера пока идёт загрузка
         container.innerHTML = LOADING_HTML;
@@ -506,7 +480,7 @@
                  cache.week === week &&
                  cache.year === year &&
                  cache.exceptionsRevId === exceptionsInfo.revid ) {
-                return renderWithRG( cache.data );
+                return renderWithRG( cache.data, calendar );
             }
             return fetchReleases( week, year ).then( function ( titles ) {
                 var releasesData = applyExceptions( titles, exceptionsInfo.exceptions );
@@ -516,7 +490,7 @@
                 return detectStarWarsFromAPI( releasesData );
             } ).then( function ( releasesData ) {
                 setCache( releasesData, exceptionsInfo.revid );
-                return renderWithRG( releasesData );
+                return renderWithRG( releasesData, calendar );
             } );
         } ).catch( function ( err ) {
             console.error( err );
@@ -524,36 +498,33 @@
         } );
     }
  
-    // ============================================
     // 7. Запуск + кнопка «Обновить сейчас»
-    // ============================================
- 
-    var started = false;
- 
-    function startCalendar() {
-        if ( started ) return;
-        started = true;
-        var calendar = document.getElementById( CALENDAR_ID );
-        if ( !calendar ) return;
-        initMarvelCalendar();
-        var refreshBtn = document.createElement( 'button' );
-        var refreshing = false;
-        refreshBtn.textContent = 'Обновить календарь сейчас';
-        refreshBtn.style.cssText = 'font-size:0.85em; margin-top:8px; opacity:0.8;';
-        refreshBtn.onclick = function () {
-            if ( refreshing ) return;
-            refreshing = true;
-            if ( LS_AVAILABLE ) {
-                try { localStorage.removeItem( CACHE_KEY ); } catch ( _ ) {}
-            }
-            initMarvelCalendar();
-            refreshBtn.textContent = 'Обновлено!';
-            setTimeout( function () {
-                refreshBtn.textContent = 'Обновить календарь сейчас';
-                refreshing = false;
-            }, 3000 );
-        };
-        calendar.appendChild( refreshBtn );
+    // Вместо глобального флага started используем атрибут data-mc-init на каждом элементе — это позволяет корректно инициализировать оба экземпляра календаря: на Заглавной и в модуле рельсы (вставляется позже через AddRailModule, который повторно файрит mw.hook('wikipage.content'))
+    function startCalendar( $content ) {
+        var root = ( $content && $content[ 0 ] ) ? $content[ 0 ] : document;
+        var calendars = root.querySelectorAll( '#' + CALENDAR_ID + ':not([data-mc-init])' );
+        calendars.forEach( function ( calendar ) {
+            calendar.setAttribute( 'data-mc-init', '1' );
+            initMarvelCalendar( calendar );
+            var refreshBtn = document.createElement( 'button' );
+            var refreshing = false;
+            refreshBtn.textContent = 'Обновить календарь сейчас';
+            refreshBtn.style.cssText = 'font-size:0.85em; margin-top:8px; opacity:0.8;';
+            refreshBtn.onclick = function () {
+                if ( refreshing ) return;
+                refreshing = true;
+                if ( LS_AVAILABLE ) {
+                    try { localStorage.removeItem( CACHE_KEY ); } catch ( _ ) {}
+                }
+                initMarvelCalendar( calendar );
+                refreshBtn.textContent = 'Обновлено!';
+                setTimeout( function () {
+                    refreshBtn.textContent = 'Обновить календарь сейчас';
+                    refreshing = false;
+                }, 3000 );
+            };
+            calendar.appendChild( refreshBtn );
+        } );
     }
  
     mw.loader.using( 'mediawiki.api' ).then( function () {
@@ -565,3 +536,9 @@
     } );
  
 }( jQuery, mediaWiki ) );
+// html контейнер для корректного вызова:
+/*<div id="marvel-weekly-calendar">
+  <div class="week-header"></div>
+  <div class="comics-container">Загрузка...</div>
+</div> */
+// «Загрузка...» нужна как статический контент — без него AddRailModule может посчитать модуль пустым. JS немедленно перезаписывает .comics-container на Серебряного Сёрфера.

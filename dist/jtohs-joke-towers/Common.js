@@ -59,142 +59,63 @@ window.AutoCreateUserPagesConfig = {
 
 // Audio Thing
 (function () {
-  var AUDIO_SELECTOR = ".html5audio.auto-page-audio audio, audio.auto-page-audio";
-  var WRAPPER_SELECTOR = ".html5audio.auto-page-audio, audio.auto-page-audio";
-  var startedByUser = false;
-
-  function getControlledAudios() {
-    return Array.prototype.slice.call(document.querySelectorAll(AUDIO_SELECTOR));
+  function findAudio() {
+    var audios = document.querySelectorAll("audio");
+    if (audios.length) return audios[0];
+    return null;
   }
 
-  function isReallyVisible(el) {
-    if (!el) return false;
+  function setButtonText(button, text) {
+    var span = button.querySelector(".audio-start-text");
 
-    var node = el;
-
-    while (node && node !== document.body) {
-      if (node.classList) {
-        if (node.classList.contains("mw-collapsed")) return false;
-        if (node.classList.contains("collapsed")) return false;
-      }
-
-      var style = window.getComputedStyle(node);
-
-      if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        style.opacity === "0"
-      ) {
-        return false;
-      }
-
-      node = node.parentElement;
-    }
-
-    return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-  }
-
-  function prepareAudio(audio) {
-    if (!audio || audio.dataset.autoPageAudioReady === "1") return;
-
-    audio.dataset.autoPageAudioReady = "1";
-
-    var wrapper = audio.closest(".html5audio.auto-page-audio") || audio;
-
-    var vol = wrapper.getAttribute("data-volume");
-    if (vol !== null && vol !== "") {
-      var n = parseFloat(vol);
-      if (!isNaN(n)) audio.volume = Math.max(0, Math.min(1, n));
-    }
-
-    audio.loop = true;
-    audio.preload = "auto";
-  }
-
-  function tryPlay(audio) {
-    prepareAudio(audio);
-
-    if (!isReallyVisible(audio)) {
-      audio.pause();
-      return;
-    }
-
-    var promise = audio.play();
-
-    if (promise && typeof promise.catch === "function") {
-      promise.catch(function () {});
+    if (span) {
+      span.textContent = text;
+    } else {
+      button.textContent = text;
     }
   }
 
-  function syncAudios() {
-    getControlledAudios().forEach(function (audio) {
-      prepareAudio(audio);
-
-      if (isReallyVisible(audio)) {
-        tryPlay(audio);
-      } else {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    });
+  function getText(button, name, fallback) {
+    return button.getAttribute(name) || fallback;
   }
 
-  function waitForFandomAudio() {
+  function tryPlay(button) {
     var tries = 0;
 
-    var timer = setInterval(function () {
-      tries++;
-      syncAudios();
+    function attempt() {
+      var audio = findAudio();
 
-      if (tries > 40) {
-        clearInterval(timer);
+      if (!audio) {
+        tries++;
+
+        if (tries < 40) {
+          setTimeout(attempt, 150);
+        } else {
+          setButtonText(button, getText(button, "data-missing-text", "Audio Not Found"));
+        }
+
+        return;
       }
-    }, 250);
+
+      audio.loop = true;
+
+      audio.play().then(function () {
+        setButtonText(button, getText(button, "data-playing-text", "Music Started"));
+        button.classList.add("started");
+      }).catch(function () {
+        setButtonText(button, getText(button, "data-failed-text", "Click Again"));
+      });
+    }
+
+    attempt();
   }
 
-  function userStart() {
-    startedByUser = true;
-    syncAudios();
-  }
+  document.addEventListener("click", function (e) {
+    var button = e.target.closest(".audio-start");
+    if (!button) return;
 
-  document.addEventListener("click", userStart, { once: true });
-  document.addEventListener("keydown", userStart, { once: true });
-  document.addEventListener("touchstart", userStart, { once: true });
-
-  document.addEventListener("click", function () {
-    setTimeout(syncAudios, 80);
-    setTimeout(syncAudios, 350);
-  });
-
-  if (window.jQuery) {
-    jQuery(document).on(
-      "afterExpand.mw-collapsible afterCollapse.mw-collapsible",
-      function () {
-        setTimeout(syncAudios, 80);
-      }
-    );
-  }
-
-  var observer = new MutationObserver(function () {
-    setTimeout(syncAudios, 80);
-  });
-
-  function start() {
-    waitForFandomAudio();
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class", "style", "aria-expanded"]
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
+    tryPlay(button);
+  }, true);
 })();
 
 // Command terminal

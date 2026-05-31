@@ -34,22 +34,3 @@ window.rwaOptions = {
     refresh : true,
     refreshDelay : 3 * 60 * 1000,
     timeout : 20 * 1000
-};
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		//Ranks
-		HoD: { u:'Head of Division', order:-1/0 },
-		'Co-HoD': { u: 'Co-Division Leader', order:-1/0 },
-		'Media Supervisor': {u: 'Media Supervisor', order:-1/0 },
-	}
-};
-UserTagsJS.modules.mwGroups = ['sysop', 'council', 'rollback', 'chatmoderator', 'threadmoderator', 'content-moderator', 'bureaucrat'];
-//Add Tags
-UserTagsJS.modules.custom = {
-	//Staff
-	'774POPS': ['Bureaucrat', 'Media Supervisor']
-	
-	Still a work in progress
-};

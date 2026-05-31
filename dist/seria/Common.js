@@ -41,7 +41,7 @@ function copyToClipboard(text) {
         }).prop("outerHTML"), "confirm", null, 2000).show();
 }
 
-mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
     var api = new mw.Api();
     var conf = mw.config.get([
         "wgUserGroups",
@@ -70,7 +70,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             var serverlang = conf.wgContentLanguage;
             var langcode = match2 ? ("/" + match2[1]) : (match ? "" : serverlang === "en" ? "" : ("/" + serverlang));
             var page = "/" + (match2 ? match2[2] : match ? match[2] : v);
-            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript&redirect=no";
+            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript&redirect=no&cb=" + Date.now();
             $.ajax({
                 url: url,
                 dataType: "script",
@@ -82,10 +82,14 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     };
     // Please note that ES5 script imports are moved to MediaWiki:ImportJS
     // (for convenience to promptly disable any script at any time)
-    // ES6 scripts needs to be imported here
-    window.importScripts([
-        "MediaWiki:Common.js/search.js"
-    ]);
+    // Load UI scripts using native mw.loader.load to bypass CDN cache and comply with CSP
+    var scriptPath = mw.config.get("wgScript");
+    var cb = Date.now();
+    ["minetip.js", "mcui.js"].forEach(function(js) {
+        var url = scriptPath + "?title=MediaWiki:Common.js/" + js + "&action=raw&ctype=text/javascript&cb=" + cb;
+        mw.loader.load(url);
+    });
+
 
     //##############################################################
     /* ==Small scripts== (W00)*/
@@ -588,3 +592,12 @@ $.extend(true, window, {
         }
     }
 });
+// Load Minecraft Font and other external CSS (since @import is blocked in Common.css)
+var externalCSS = [
+    'https://cdn.jsdelivr.net/gh/skyblock-wiki/wiki-assets@1.0/fonts/font-import/lib/wiki-use.css',
+    'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,700;1,700&display=swap',
+    'https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap'
+];
+for (var i = 0; i < externalCSS.length; i++) {
+    mw.util.addCSS('@import url("' + externalCSS[i] + '");');
+}

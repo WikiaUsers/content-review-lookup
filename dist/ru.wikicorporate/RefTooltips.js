@@ -1,34 +1,29 @@
 const cloneReferences = () => {
     const refs = document.querySelectorAll('[id^="cite_ref"]');
-    
-    refs.forEach(ref => {
-        const hash = ref.querySelector('a')?.hash;
-        if (!hash) return;
-
-        const targetId = decodeURIComponent(hash.substring(1));
-        const targetNode = document.getElementById(targetId);
-        const targetElement = targetNode?.querySelector('.reference-text');
-
+    refs.forEach((ref) => {
+        const targetId = decodeURIComponent(ref.children[0].hash.substring(1));
+        const targetElement = document.querySelector(`[id="${targetId}"] .reference-text`);
         if (targetElement) {
             ref.appendChild(targetElement.cloneNode(true));
         }
     });
 };
-
-if (document.querySelector('[id^="cite_ref"]')) {
-    cloneReferences();
-} else {
-    const observer = new MutationObserver(() => {
-        if (document.querySelector('[id^="cite_ref"]')) {
-            observer.disconnect(); 
-            cloneReferences();
+const observer = new MutationObserver((mutations) => {
+    let foundReferences = false;
+    mutations.forEach((mutation) => {
+        if (mutation.type === "childList") {
+            if (document.querySelectorAll('[id^="cite_ref"]').length > 0) {
+                foundReferences = true;
+            }
         }
     });
-
-    const config = {
-        childList: true,
-        subtree: true
-    };
-    
-    observer.observe(document.body, config);
-}
+    if (foundReferences) {
+        cloneReferences();
+        observer.disconnect();
+    }
+});
+const config = {
+    childList: true,
+    subtree: true,
+};
+observer.observe(document.body, config);

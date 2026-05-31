@@ -17,6 +17,7 @@ importArticles({
 // --------------------------------------------------------------------------------------------
 // Other import
 mw.loader.load('/index.php?title=MediaWiki:WSBuildEditor.js&action=raw&ctype=text/javascript');
+mw.loader.load('/index.php?title=MediaWiki:WSInheritancelibrary.js&action=raw&ctype=text/javascript');
 
 // --------------------------------------------------------------------------------------------
 // Site-wide floating buttons (Discord, YouTube, Steam)

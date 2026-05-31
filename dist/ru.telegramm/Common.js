@@ -76,7 +76,7 @@ mw.loader.using(['jquery', 'mediawiki.util'], function() {
 
 /* --- СКРЫВАЕМЫЕ ЗАГОЛОВКИ --- */
 mw.hook('wikipage.content').add(function($content) {
-    const excluded = ["WikiGram", "Правила_WikiGram", "WikiGram:О_проекте", "Заявки", "Песочница"];
+    const excluded = ["WikiGram", "WikiGram:Правила", "WikiGram:О_проекте", "WikiGram:Заявки", "WikiGram:Песочница", "Участник:LuckyBlock13fa"];
     const currentPage = mw.config.get('wgPageName');
     if (excluded.includes(currentPage) || mw.config.get('wgAction') !== 'view') return;
 

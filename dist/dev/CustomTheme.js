@@ -1,4 +1,7 @@
 mw.hook('wikipage.content').add(function() {
+    if (window.CustomThemeLoaded) return;
+    window.CustomThemeLoaded = true;
+
     var configEl = document.createElement('div');
     configEl.className = 'custom-theme';
     configEl.style.display = 'none';
@@ -164,5 +167,54 @@ mw.hook('wikipage.content').add(function() {
         css += bodyCSS;
     }
 
-    mw.util.addCSS(css);
+    var styleEl = document.createElement('style');
+    styleEl.id = 'custom-theme-styles';
+    styleEl.textContent = css;
+    document.head.appendChild(styleEl);
+
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    function setCookie(name, value) {
+        document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; domain=.fandom.com; max-age=31536000';
+    }
+
+    var enabled = getCookie('customThemeEnabled') !== 'false';
+    styleEl.disabled = !enabled;
+
+    function updateToolbar() {
+        var link = document.getElementById('custom-theme-toolbar-link');
+        if (link) {
+            link.textContent = 'CustomTheme: ' + (enabled ? 'On' : 'Off');
+        }
+    }
+
+    function toggle() {
+        enabled = !enabled;
+        styleEl.disabled = !enabled;
+        setCookie('customThemeEnabled', enabled ? 'true' : 'false');
+        updateToolbar();
+    }
+
+    var toolbarLink = document.createElement('a');
+    toolbarLink.id = 'custom-theme-toolbar-link';
+    toolbarLink.style.cursor = 'pointer';
+    toolbarLink.addEventListener('click', toggle);
+
+    var toolbarLi = document.createElement('li');
+    toolbarLi.appendChild(toolbarLink);
+
+    var toolbarUl = document.querySelector('#WikiaBar .tools');
+    if (toolbarUl) {
+        var overflowMenu = toolbarUl.querySelector('li.menu.overflow-menu.wds-dropdown');
+        if (overflowMenu) {
+            toolbarUl.insertBefore(toolbarLi, overflowMenu);
+        } else {
+            toolbarUl.appendChild(toolbarLi);
+        }
+    }
+
+    updateToolbar();
 });

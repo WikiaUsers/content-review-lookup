@@ -165,3 +165,72 @@ mw.loader.using('jquery', function() {
         });
     });
 });
+
+/* Credits feature, replicating the game one*/
+mw.hook('wikipage.content').add(function () {
+  var stage = document.getElementById('wiki-credits-stage');
+  if (!stage) return;
+
+  /* ── Parse the data table ── */
+  var rows = document.querySelectorAll('#wiki-credits-data tr');
+  if (!rows.length) return;
+
+  var items = [];
+  rows.forEach(function (tr) {
+    var cells = tr.querySelectorAll('td');
+    if (cells.length < 2) return;
+    items.push({
+      type: cells[0].textContent.trim(),
+      text: cells[1].textContent.trim()
+    });
+  });
+
+  /* ── Build HTML from parsed data ── */
+  var classMap = {
+    title:    'wc-title',
+    subtitle: 'wc-subtitle',
+    section:  'wc-section',
+    role:     'wc-role',
+    name:     'wc-name'
+  };
+
+  var html = ['<div id="wiki-credits-fade-top"></div>',
+              '<div id="wiki-credits-fade-bottom"></div>',
+              '<div id="wiki-credits-scroll">',
+              '<div style="height:480px"></div>'];
+
+  items.forEach(function (item) {
+    if (item.type === 'divider') {
+      html.push('<div class="wc-divider"></div>');
+    } else if (classMap[item.type]) {
+      html.push('<p class="' + classMap[item.type] + '">' + item.text + '</p>');
+    }
+  });
+
+  html.push('<div style="height:520px"></div>', '</div>');
+  stage.innerHTML = html.join('');
+
+  /* ── Animate (same as before) ── */
+  var scroller = document.getElementById('wiki-credits-scroll');
+  var DURATION = 40;
+
+  function start(fromFraction) {
+    var totalH = scroller.scrollHeight - stage.offsetHeight;
+    var startPx = (fromFraction || 0) * totalH;
+    var remaining = DURATION * (1 - (fromFraction || 0));
+    scroller.style.transition = 'none';
+    scroller.style.transform = 'translateY(-' + startPx + 'px)';
+    void scroller.offsetHeight;
+    scroller.style.transition = 'transform ' + remaining + 's linear';
+    scroller.style.transform = 'translateY(-' + totalH + 'px)';
+  }
+
+  scroller.addEventListener('transitionend', function () {
+    scroller.style.transition = 'none';
+    scroller.style.transform = 'translateY(0)';
+    void scroller.offsetHeight;
+    setTimeout(function () { start(0); }, 1000);
+  });
+
+  setTimeout(function () { start(0); }, 300);
+});

@@ -184,6 +184,7 @@ function initializeCalculator($el) {
   var allowModsArr     = allowMods  ? allowMods.split(',').map(function(s){ return s.trim(); })  : null;
   var allowCatsArr     = allowCats  ? allowCats.split(',').map(function(s){ return s.trim(); })  : null;
   var fullCalcLink     = $el.data('full-calc-link') || null;
+  var pageDomain       = $el.data('domain')       || null;
 
   $.get(mw.util.wikiScript('api'), {
     action: 'expandtemplates',
@@ -199,19 +200,42 @@ function initializeCalculator($el) {
       return;
     }
 
+    // filter by domain(s) – supports comma-separated list
+    if (pageDomain) {
+      var allowedDomains = pageDomain.split(',').map(function(d) { return d.trim(); });
+      var domainFiltered = {};
+      Object.keys(DATA).forEach(function(k) {
+        if (allowedDomains.indexOf(DATA[k].tag) !== -1) domainFiltered[k] = DATA[k];
+      });
+      DATA = domainFiltered;
+    }
+
     if (allowModsArr) {
       var filtered = {};
       allowModsArr.forEach(function(k) { if (DATA[k]) filtered[k] = DATA[k]; });
       DATA = filtered;
     }
 
-    initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCalcLink);
+    if (allowCatsArr) {
+      var catFiltered = {};
+      Object.keys(DATA).forEach(function(k) {
+        var mod = DATA[k];
+        if (mod.categories && mod.categories.some(function(cat) {
+          return allowCatsArr.indexOf(cat.name) !== -1;
+        })) {
+          catFiltered[k] = mod;
+        }
+      });
+      DATA = catFiltered;
+    }
+
+    initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCalcLink, pageDomain);
   }).fail(function() {
     $el.html('<p style="color:red">Failed to fetch modifier data.</p>');
   });
 }
 
-function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCalcLink) {
+function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCalcLink, pageDomain) {
   console.log('[ModifierCalculator] loaded for:', $el.attr('class') || $el.attr('id'));
   var modKeys = Object.keys(DATA);
   var isModRestricted = !!(allowModsArr);
@@ -299,38 +323,64 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     headerHtml += '</div>';
   }
 
-  if (!isModRestricted) {
-    domainHtml = '<div class="mc-domain-btns" id="mc-domain-filter">'
-      + '<button class="mc-domain-btn mc-filter-active" data-domain="all">All</button>'
-      + '<button class="mc-domain-btn mc-domain-government" data-domain="government">Government</button>'
-      + '<button class="mc-domain-btn mc-domain-diplomacy" data-domain="diplomacy">Diplomacy</button>'
-      + '<button class="mc-domain-btn mc-domain-economy" data-domain="economy">Economy</button>'
-      + '<button class="mc-domain-btn mc-domain-technology" data-domain="technology">Technology</button>'
-      + '<button class="mc-domain-btn mc-domain-military" data-domain="military">Military</button>'
-      + '</div>';
-  }
+var activeDomain = pageDomain || 'all';
+// If multiple domains are specified, treat it as "all" for button highlighting
+var highlightDomain = (activeDomain.indexOf(',') !== -1) ? 'all' : activeDomain;
 
-  var modifierRowHtml = '<div class="mc-row">'
-    + '<span class="mc-label">Modifier</span>'
-    + '<div style="position:relative;flex:1;">'
-    + domainHtml
-    + '<input class="mc-select-search" id="mc-mod-search" type="search" placeholder="Search modifier type e.g. Tax Income..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="mc-mod-type-search">'
-    + '<div id="mc-mod-suggestions"></div>'
-    + '</div>'
-    + '</div>';
+// Build domain filter buttons dynamically based on available tags
+(function() {
+    var availableTags = {};
+    modKeys.forEach(function(k) {
+      var t = DATA[k].tag;
+      if (t) availableTags[t] = true;
+    });
+    var tagOrder = ['government','diplomacy','economy','technology','military'];
+    var buttons = ['<button type="button" id="mc-browse-btn" class="mc-browse-btn">Browse</button>'];
+    buttons.push('<button class="mc-domain-btn' + (highlightDomain === 'all' ? ' mc-filter-active' : '') + '" data-domain="all">All</button>');
+    tagOrder.forEach(function(tag) {
+      if (availableTags[tag]) {
+        buttons.push('<button class="mc-domain-btn mc-domain-' + tag + (highlightDomain === tag ? ' mc-filter-active' : '') + '" data-domain="' + tag + '">' + tag.charAt(0).toUpperCase() + tag.slice(1) + '</button>');
+      }
+    });
+    domainHtml = '<div class="mc-domain-btns" id="mc-domain-filter">' + buttons.join('') + '</div>';
+})();
+
+ var modifierRowHtml = '<div class="mc-row">'
+  + '<span class="mc-label">Modifier</span>'
+  + '<div style="position:relative;flex:1;">'
+  + domainHtml
+  + '<input class="mc-select-search" id="mc-mod-search" type="search" placeholder="Search modifier type e.g. Tax Income..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="mc-mod-type-search">'
+  + '<div id="mc-mod-suggestions"></div>'
+  + '<div id="mc-browse-panel"></div>'
+  + '</div>'
+  + '</div>';
 
   var html = '<div id="mc-wrap">'
     + headerHtml
     + modifierRowHtml
 
     + '<div class="mc-row">'
-    + '<span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21. All further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability. However, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall.">ⓘ</span></span>'
+    + '<span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21. All further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability. However, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall.">ⓘ</span></span>'
     + '<input class="mc-base-input" type="number" id="mc-base" value="0" min="0">'
     + '</div>'
 
     + '<div class="mc-row">'
     + '<span class="mc-label">Base percentage (%) <span class="info-icon" title="This shows the total modifier effect applied to your Base value.\n\nSome modifiers are added together first (additive stacking), then converted into a single multiplier. Others apply separately as multipliers (multiplicative stacking).\n\nFinal formula:\nBase × (1 + additive modifiers) × multiplicative modifiers">ⓘ</span></span>'
     + '<input class="mc-base-input" type="number" id="mc-base-pct" value="100" min="0">'
+    + '</div>'
+
+    // ── Current RP selector (only for Manpower Increase) ──
+    + '<div id="mc-current-rp-selector" style="display:none; margin-bottom:1rem;">'
+    + '<div class="mc-filter-group">'
+    + '<span class="mc-filter-group-label">Current Law RP</span>'
+    + '<div class="mc-filter-btns" id="mc-current-rp-btns">'
+    + '<button class="mc-filter-btn" data-rp="1">Disarmed 1%</button>'
+    + '<button class="mc-filter-btn mc-filter-active" data-rp="2">Volunteer 2%</button>'
+    + '<button class="mc-filter-btn" data-rp="5">Limited 5%</button>'
+    + '<button class="mc-filter-btn" data-rp="10">Extensive 10%</button>'
+    + '<button class="mc-filter-btn" data-rp="25">Required 25%</button>'
+    + '</div>'
+    + '</div>'
     + '</div>'
 
     + '<div class="mc-result-card">'
@@ -404,7 +454,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     + '<div class="mc-section-title">Add a custom modifier</div>'
     + '<div class="mc-custom-row">'
     + '<input class="mc-custom-input" id="mc-c-name" placeholder="Modifier name" type="text">'
-    + '<input class="mc-custom-input" id="mc-c-val" placeholder="e.g. +15%, x1.2, or +5 (base)" type="text">'
+    + '<input class="mc-custom-input" id="mc-c-val" placeholder="e.g. +15%, 1.2x, or +5 (base)" type="text">'
     + '<button class="mc-add-btn" id="mc-add-btn">Add</button>'
     + '</div>'
     + '<div id="mc-custom-tags"></div>'
@@ -434,10 +484,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
   var filterSubcats = [];
   var filterShow   = 'all';
   var filterText   = '';
-  var activeDomain = 'all';
 
-  // Keep track of the active affine law (only one allowed)
   var activeAffineId = null;
+  var currentRP      = 2;   // default Volunteer
 
   /* ── HELPERS ── */
   function isMultiplicative(label) { return /^\d+(\.\d+)?x$/.test((label || '').trim()); }
@@ -462,6 +511,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     checked = {};
     scalerVals = {};
     activeAffineId = null;
+    currentRP = 2;
     filterCats = [];
     filterSubcats = [];
     setModSearchLabel(key);
@@ -470,6 +520,15 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     renderCategoryFilter();
     renderSubcategoryFilter();
     renderSections();
+
+    if (key === 'manpowerincrease') {
+      $el.find('#mc-current-rp-selector').show();
+    } else {
+      $el.find('#mc-current-rp-selector').hide();
+    }
+    $el.find('#mc-current-rp-btns .mc-filter-btn').removeClass('mc-filter-active');
+    $el.find('#mc-current-rp-btns .mc-filter-btn[data-rp="2"]').addClass('mc-filter-active');
+
     recalc();
   }
 
@@ -478,6 +537,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     checked = {};
     scalerVals = {};
     activeAffineId = null;
+    currentRP = 2;
     filterCats = [];
     filterSubcats = [];
     $el.find('#mc-mod-search').val('');
@@ -487,19 +547,26 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     $el.find('#mc-sections').empty();
     $el.find('#mc-selected-list').hide().empty();
     $el.find('#mc-formula-tab').hide();
+    $el.find('#mc-current-rp-selector').hide();
     if ($el.find('#mc-panel-formula').is(':visible')) switchTab('toggle');
     $el.find('#mc-base').val(0);
     recalc();
   }
 
-  function switchTab(t) {
-    $el.find('.mc-tab').removeClass('mc-tab-active');
-    $el.find('.mc-tab[data-tab="' + t + '"]').addClass('mc-tab-active');
-    $el.find('#mc-panel-toggle').toggle(t === 'toggle');
-    $el.find('#mc-panel-custom').toggle(t === 'custom');
-    $el.find('#mc-panel-formula').toggle(t === 'formula');
-    if (t === 'formula') renderFormulaPanel();
+function switchTab(t) {
+  $el.find('.mc-tab').removeClass('mc-tab-active');
+  $el.find('.mc-tab[data-tab="' + t + '"]').addClass('mc-tab-active');
+  $el.find('#mc-panel-toggle').toggle(t === 'toggle');
+  $el.find('#mc-panel-custom').toggle(t === 'custom');
+  $el.find('#mc-panel-formula').toggle(t === 'formula');
+  if (t === 'formula') renderFormulaPanel();
+
+  // Ensure custom panel works even without a loaded modifier
+  if (t === 'custom' && !currentMod) {
+    // No modifier loaded – still allow custom inputs
+    // The custom add button already works independently
   }
+}
 
   /* ── FORMULA PANEL ── */
   function renderFormulaPanel() {
@@ -614,12 +681,15 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     return getScalerEffectType(cat) === filterType;
   }
 
-  /* ── DOMAIN FILTER ── */
+  /* ── DOMAIN FILTER (only if buttons exist) ── */
   $el.find('#mc-domain-filter').on('click', '.mc-domain-btn', function() {
     $el.find('.mc-domain-btn').removeClass('mc-filter-active');
     $(this).addClass('mc-filter-active');
     activeDomain = $(this).data('domain');
     $el.find('#mc-mod-search').trigger('input');
+    if ($el.find('#mc-browse-panel').is(':visible')) {
+      populateBrowsePanel();
+    }
   });
 
   /* ── MOD TYPE SEARCH ── */
@@ -627,9 +697,13 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     var q = $(this).val().toLowerCase().trim();
     $el.find('#mc-mod-suggestions').empty().hide();
     if (!q) { clearModifier(); return; }
+    
+    // Build allowed domains list (supports comma-separated)
+    var allowedDomains = (activeDomain === 'all') ? null : activeDomain.split(',').map(function(d) { return d.trim(); });
+    
     var hits = modKeys.filter(function(k) {
       var labelMatch = DATA[k].label.toLowerCase().includes(q);
-      var domainMatch = activeDomain === 'all' || DATA[k].tag === activeDomain;
+      var domainMatch = !allowedDomains || allowedDomains.indexOf(DATA[k].tag) !== -1;
       return labelMatch && domainMatch;
     });
     if (!hits.length) return;
@@ -799,60 +873,68 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
   }
 
   function applyFilters() {
-    $el.find('.mc-section').each(function() {
-      var catName = $(this).data('cat');
-      var catVisible = !filterCats.length || filterCats.indexOf(catName) !== -1;
-      if (!catVisible) { $(this).hide(); return; }
-      if ($(this).data('scaler')) {
-        if (filterRange === 'normal') { $(this).hide(); return; }
-        var ci = $(this).find('.mc-scaler-input').data('ci');
-        var cat = DATA[currentMod] && DATA[currentMod].categories[ci];
-        if (!cat || !scalerMatchesTypeFilter(cat)) { $(this).hide(); return; }
-        var ig = $(this).data('input-good');
-        var scalerEffectOk = filterEffect === 'all' || (filterEffect === 'dynamic' && ig === 'dynamic') || (filterEffect === 'good' && ig === true) || (filterEffect === 'bad' && ig === false);
-        var catNameLower = (catName || '').toLowerCase();
-        var textOk = !filterText || catNameLower.includes(filterText);
-        $(this).toggle(scalerEffectOk && textOk);
-        return;
-      }
-      if (filterRange === 'scaler') { $(this).hide(); return; }
-      var anyVisible = false;
-      var hasSubcats = $(this).find('.mc-subsection').length > 0;
-      var catTextOk = filterTextMatches(catName);
-      $(this).children('.mc-mod-list').find('.mc-mod-item').each(function() {
-        var showDirect = !filterSubcats.length || !hasSubcats;
-        var visible = showDirect && modItemVisible($(this), catTextOk);
-        $(this).toggle(visible);
-        if (visible) anyVisible = true;
-      });
-      $(this).find('.mc-subsection').each(function() {
-        var subName = $(this).data('subcat');
-        var subVisible = !filterSubcats.length || filterSubcats.indexOf(subName) !== -1;
-        if (!subVisible) { $(this).hide(); return; }
-        var subTextOk = filterTextMatches(subName);
-        var subAny = false;
-        $(this).find('.mc-mod-item').each(function() {
-          var visible = modItemVisible($(this), catTextOk || subTextOk);
-          $(this).toggle(visible);
-          if (visible) subAny = true;
-        });
-        $(this).toggle(subAny);
-        if (subAny) anyVisible = true;
-      });
-      $(this).toggle(anyVisible);
-    });
-    renderSelectedList();
-    updateGlobalCheckbox();
-    updateSelectMeta();
-    var data = DATA[currentMod];
-    if (data) {
-      data.categories.forEach(function(cat, ci) {
-        if (cat.type === 'scaler') return;
-        updateCatCheckbox(ci);
-        (cat.subcategories || []).forEach(function(sub, si) { updateSubcatCheckbox(ci, si); });
-      });
+  $el.find('.mc-section').each(function() {
+    var catName = $(this).data('cat');
+    var catVisible = !filterCats.length || filterCats.indexOf(catName) !== -1;
+    if (!catVisible) { $(this).hide(); return; }
+    if ($(this).data('scaler')) {
+      if (filterSubcats.length > 0) { $(this).hide(); return; }
+      if (filterRange === 'normal') { $(this).hide(); return; }
+      var ci = $(this).find('.mc-scaler-input').data('ci');
+      var cat = DATA[currentMod] && DATA[currentMod].categories[ci];
+      if (!cat || !scalerMatchesTypeFilter(cat)) { $(this).hide(); return; }
+      var ig = $(this).data('input-good');
+      var scalerEffectOk = filterEffect === 'all' || (filterEffect === 'dynamic' && ig === 'dynamic') || (filterEffect === 'good' && ig === true) || (filterEffect === 'bad' && ig === false);
+      var catNameLower = (catName || '').toLowerCase();
+      var textOk = !filterText || catNameLower.includes(filterText);
+      $(this).toggle(scalerEffectOk && textOk);
+      return;
     }
+    if (filterRange === 'scaler') { $(this).hide(); return; }
+    
+    // NEW: If subcategory filters are active, hide categories that have NO subcategories
+    var hasSubcats = $(this).find('.mc-subsection').length > 0;
+    if (filterSubcats.length > 0 && !hasSubcats) {
+      $(this).hide();
+      return;
+    }
+    
+    var anyVisible = false;
+    var catTextOk = filterTextMatches(catName);
+    $(this).children('.mc-mod-list').find('.mc-mod-item').each(function() {
+      var showDirect = !filterSubcats.length || !hasSubcats;
+      var visible = showDirect && modItemVisible($(this), catTextOk);
+      $(this).toggle(visible);
+      if (visible) anyVisible = true;
+    });
+    $(this).find('.mc-subsection').each(function() {
+      var subName = $(this).data('subcat');
+      var subVisible = !filterSubcats.length || filterSubcats.indexOf(subName) !== -1;
+      if (!subVisible) { $(this).hide(); return; }
+      var subTextOk = filterTextMatches(subName);
+      var subAny = false;
+      $(this).find('.mc-mod-item').each(function() {
+        var visible = modItemVisible($(this), catTextOk || subTextOk);
+        $(this).toggle(visible);
+        if (visible) subAny = true;
+      });
+      $(this).toggle(subAny);
+      if (subAny) anyVisible = true;
+    });
+    $(this).toggle(anyVisible);
+  });
+  renderSelectedList();
+  updateGlobalCheckbox();
+  updateSelectMeta();
+  var data = DATA[currentMod];
+  if (data) {
+    data.categories.forEach(function(cat, ci) {
+      if (cat.type === 'scaler') return;
+      updateCatCheckbox(ci);
+      (cat.subcategories || []).forEach(function(sub, si) { updateSubcatCheckbox(ci, si); });
+    });
   }
+}
 
   /* ── ID HELPERS ── */
   function getAllModIds() {
@@ -1033,11 +1115,11 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           var goodCls = m.good === true ? 'mc-pos' : m.good === false ? 'mc-neg' : 'mc-neu';
           var label = m.label || m.n;
           if (isAffine(m)) {
-            var slope = m.affine.slope;
-            var transformed = (curBase - 166.6667) * slope + 166.6667;
+            var effectiveSlope = m.affine.slope * (2 / currentRP);
+            var transformed = (curBase - 166.6667) * effectiveSlope + 166.6667;
             var transformedStr = Math.round(transformed * 100) / 100;
-            var rp = m.rp || (slope * 2);
-            label = m.n + ' (Base ' + transformedStr + ' / ' + slope + 'x RP ' + rp + '%)';
+            var rp = m.rp || (m.affine.slope * 2);
+            label = m.n + ' (Base ' + transformedStr + ' / ' + Math.round(effectiveSlope * 100) / 100 + 'x RP ' + rp + '%)';
           }
           directTags.push(buildSelectedTagHtml(m.n, label, goodCls, '<span class="mc-selected-rm" data-id="' + id + '">×</span>'));
         });
@@ -1051,11 +1133,11 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
             var goodCls = m.good === true ? 'mc-pos' : m.good === false ? 'mc-neg' : 'mc-neu';
             var label = m.label || m.n;
             if (isAffine(m)) {
-              var slope = m.affine.slope;
-              var transformed = (curBase - 166.6667) * slope + 166.6667;
+              var effectiveSlope = m.affine.slope * (2 / currentRP);
+              var transformed = (curBase - 166.6667) * effectiveSlope + 166.6667;
               var transformedStr = Math.round(transformed * 100) / 100;
-              var rp = m.rp || (slope * 2);
-              label = m.n + ' (Base ' + transformedStr + ' / ' + slope + 'x RP ' + rp + '%)';
+              var rp = m.rp || (m.affine.slope * 2);
+              label = m.n + ' (Base ' + transformedStr + ' / ' + Math.round(effectiveSlope * 100) / 100 + 'x RP ' + rp + '%)';
             }
             subTags.push(buildSelectedTagHtml(m.n, label, goodCls, '<span class="mc-selected-rm" data-id="' + id + '">×</span>'));
           });
@@ -1091,7 +1173,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
   }
 
   // ---------- FIXED CLEAR BUTTONS (delegated) ----------
-  // Clear all
   $el.on('click', '#mc-clear-all', function() {
     getAllModIds().forEach(function(id) { checked[id] = false; $el.find('#' + id).prop('checked', false); });
     scalerVals = {};
@@ -1118,17 +1199,14 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     applyFilters(); recalc();
   });
 
-  // Clear per category
   $el.on('click', '.mc-clear-cat', function() {
     clearCategory(parseInt($(this).data('ci')));
   });
 
-  // Clear per subcategory
   $el.on('click', '.mc-clear-sub', function() {
     clearSubcategory(parseInt($(this).data('ci')), parseInt($(this).data('si')));
   });
 
-  // Remove individual selected mod
   $el.on('click', '.mc-selected-rm', function() {
     var id = $(this).data('id'); checked[id] = false; $el.find('#' + id).prop('checked', false);
     var parts = id.split('_');
@@ -1137,7 +1215,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     updateCatCheckbox(ci); updateGlobalCheckbox(); applyFilters(); recalc();
   });
 
-  // Remove scaler
   $el.on('click', '.mc-selected-rm-scaler', function() {
     var ci = $(this).data('ci');
     delete scalerVals['scaler_' + ci];
@@ -1149,6 +1226,93 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     applyFilters(); recalc();
   });
   // ---------- END FIXED CLEAR BUTTONS ----------
+
+  // Current RP selector buttons
+  $el.on('click', '#mc-current-rp-btns .mc-filter-btn', function() {
+    var rp = parseInt($(this).data('rp'));
+    if (rp === currentRP) return;
+    currentRP = rp;
+    $el.find('#mc-current-rp-btns .mc-filter-btn').removeClass('mc-filter-active');
+    $(this).addClass('mc-filter-active');
+    recalc();
+  });
+
+  /* ── BROWSE BUTTON LOGIC (3‑column grid) ── */
+function populateBrowsePanel() {
+  var $panel = $el.find('#mc-browse-panel');
+  $panel.empty();
+  
+  // Build list of allowed domains (supports comma-separated)
+  var allowedDomains = (activeDomain === 'all') ? null : activeDomain.split(',').map(function(d) { return d.trim(); });
+  
+  var groups = {};
+  var totalCount = 0;
+  
+  modKeys.forEach(function(k) {
+    var tag = DATA[k].tag || 'other';
+    // Filter by active domain(s)
+    if (allowedDomains && allowedDomains.indexOf(tag) === -1) return;
+    if (!groups[tag]) groups[tag] = [];
+    groups[tag].push({ key: k, label: DATA[k].label });
+    totalCount++;
+  });
+  
+  // Total count header
+  $('<div class="mc-browse-total"></div>')
+    .text(totalCount + ' modifier' + (totalCount !== 1 ? 's' : '') + ' available')
+    .appendTo($panel);
+  
+  var domainOrder = ['government','diplomacy','economy','technology','military'];
+  
+  domainOrder.forEach(function(tag) {
+    if (!groups[tag] || groups[tag].length === 0) return;
+    
+    var $group = $('<div class="mc-browse-group" data-domain="' + tag + '"></div>');
+    $('<div class="mc-browse-group-title">' +
+      tag.charAt(0).toUpperCase() + tag.slice(1) +
+      ' <span class="mc-browse-count">(' + groups[tag].length + ')</span>' +
+      '</div>').appendTo($group);
+    
+    var $grid = $('<div class="mc-browse-group-items"></div>');
+    groups[tag].forEach(function(item) {
+      $('<div class="mc-browse-item"></div>')
+        .text(item.label)
+        .data('key', item.key)
+        .appendTo($grid);
+    });
+    $grid.appendTo($group);
+    $group.appendTo($panel);
+  });
+  
+  if ($panel.children().length === 0) {
+    $panel.html('<div style="padding:10px;color:#888;">No modifiers match the current filter.</div>');
+  }
+}
+  // Browse button toggle
+  $el.on('click', '#mc-browse-btn', function(e) {
+    e.stopPropagation();
+    var $panel = $el.find('#mc-browse-panel');
+    if ($panel.is(':visible')) {
+      $panel.hide();
+    } else {
+      populateBrowsePanel();
+      $panel.show();
+    }
+  });
+
+  // Click on a browse item loads the modifier
+  $el.on('click', '.mc-browse-item', function() {
+    var key = $(this).data('key');
+    $el.find('#mc-browse-panel').hide();
+    loadModifier(key);
+  });
+
+  // Hide panel when clicking outside
+  $(document).on('click', function(e) {
+    if (!$(e.target).closest('#mc-browse-btn, #mc-browse-panel').length) {
+      $el.find('#mc-browse-panel').hide();
+    }
+  });
 
   /* ── RENDER SECTIONS (affine mods show RP%) ── */
   function renderSections() {
@@ -1274,7 +1438,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       if (e.key === 'Enter') { e.preventDefault(); commitScalerNum(parseInt($(this).data('ci'))); this.blur(); }
     });
 
-    // Conscription law – only one active, no automatic base change
+    // Conscription law – only one active
     $el.find('#mc-sections').off('change', '.mc-mod-item input[type=checkbox][data-affine="true"]')
       .on('change', '.mc-mod-item input[type=checkbox][data-affine="true"]', function() {
         var $cb = $(this);
@@ -1282,7 +1446,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         var isChecked = $cb.prop('checked');
 
         if (isChecked) {
-          // Uncheck all other affine boxes
           $el.find('#mc-sections .mc-mod-item input[type=checkbox][data-affine="true"]').not(this).each(function() {
             if (this.checked) {
               this.checked = false;
@@ -1320,13 +1483,13 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     updateSelectMeta();
   }
 
-  /* ── GET TOTALS (affine transformation applied here) ── */
+  /* ── GET TOTALS ── */
   function getTotals() {
     var base = parseFloat($el.find('#mc-base').val()) || 0;
     var data = DATA[currentMod];
     if (!data) return { transformedBase: base, pct: 0, base: 0, mul: 1 };
 
-    var transformedBase = base;  // default no change
+    var transformedBase = base;
     if (activeAffineId) {
       var parts = activeAffineId.split('_');
       var ci = parseInt(parts[1]);
@@ -1341,8 +1504,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           if (sub) lawMod = sub.mods[parseInt(parts[4])];
         }
         if (lawMod && isAffine(lawMod)) {
-          var slope = lawMod.affine.slope;
-          transformedBase = (base - 166.6667) * slope + 166.6667;
+          var effectiveSlope = lawMod.affine.slope * (2 / currentRP);
+          transformedBase = (base - 166.6667) * effectiveSlope + 166.6667;
         }
       }
     }
@@ -1385,85 +1548,106 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     return { transformedBase: transformedBase, pct: totalPct, base: totalBase, mul: totalMul };
   }
 
-  /* ── RECALC ── */
-  function recalc() {
-    var base = parseFloat($el.find('#mc-base').val()) || 0;
-    var data = DATA[currentMod];
-    var basePctVal = parseFloat($el.find('#mc-base-pct').val());
-    var basePct = isNaN(basePctVal) ? 1 : (basePctVal / 100);
+/* ── RECALC ── */
+function recalc() {
+  var base = parseFloat($el.find('#mc-base').val()) || 0;
+  var data = DATA[currentMod];
+  var basePctVal = parseFloat($el.find('#mc-base-pct').val());
+  var basePct = isNaN(basePctVal) ? 1 : (basePctVal / 100);
 
-    if (!data) {
-      $el.find('#mc-r-base').text(base.toLocaleString('en-US'));
-      $el.find('#mc-r-mods').text('none');
-      var defRes = base * basePct;
-      $el.find('#mc-r-result').text(defRes.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-      $el.find('#mc-r-formula').text(base + ' × (' + (basePct * 100) + '%) = ' + defRes.toFixed(2));
-      return;
-    }
-
-    var totals = getTotals();
-    var transformedBase = totals.transformedBase;
-    var totalPct = totals.pct, totalBase = totals.base, totalMul = totals.mul;
-
-    var effBase = transformedBase + totalBase;
-    var result = effBase * (basePct + totalPct) * totalMul;
-
-    var activeNames = [];
-    if (activeAffineId) {
-      var parts = activeAffineId.split('_');
-      var ci = parseInt(parts[1]);
-      var cat = DATA[currentMod].categories[ci];
-      if (cat) {
-        var lawMod;
-        if (parts[2] === 'd') lawMod = cat.mods[parseInt(parts[3])];
-        else if (parts[2] === 's') lawMod = cat.subcategories[parseInt(parts[3])].mods[parseInt(parts[4])];
-        if (lawMod && isAffine(lawMod)) {
-          var slope = lawMod.affine.slope;
-          var rp = lawMod.rp || (slope * 2);
-          var transformedVal = Math.round(((base - 166.6667) * slope + 166.6667) * 100) / 100;
-          activeNames.unshift(lawMod.n + ' (Base ' + transformedVal + ' / ' + slope + 'x RP ' + rp + '%)');
-        }
-      }
-    }
-
-    data.categories.forEach(function(cat, ci) {
-      if (cat.type !== 'scaler') return;
-      if (!categoryMatchesAllowed(cat.name)) return;
-      var val = scalerVals['scaler_' + ci];
-      if (val === undefined) return;
-      var sv = scalerValue(cat, val);
-      activeNames.push(formatScalerActiveName(cat, val, sv));
+  if (!data) {
+    // No modifier loaded, but custom modifiers may still be active
+    var cTotalPct = 0, cTotalBase = 0, cTotalMul = 1;
+    customs.forEach(function(c) {
+      if (c.isBase) cTotalBase += c.v;
+      else if (c.isMul) cTotalMul *= (1 + c.v);
+      else cTotalPct += c.v;
     });
 
-    data.categories.forEach(function(cat, ci) {
-      if (!categoryMatchesAllowed(cat.name)) return;
-      forEachModInCat(cat, ci, function(m, id) {
-        if (!checked[id] || isAffine(m)) return;
-        activeNames.push(m.label || m.n);
-      });
-    });
+    var cEffBase = base + cTotalBase;
+    var cResult = cEffBase * (basePct + cTotalPct) * cTotalMul;
 
-    customs.forEach(function(c) { activeNames.push(c.label); });
+    var cNames = customs.map(function(c) { return c.label; });
 
     $el.find('#mc-r-base').text(base.toLocaleString('en-US'));
-    $el.find('#mc-r-mods').text(activeNames.length ? activeNames.join(', ') : 'none');
-    $el.find('#mc-r-result').text(result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    $el.find('#mc-r-mods').text(cNames.length ? cNames.join(', ') : 'none');
+    $el.find('#mc-r-result').text(cResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-    var fStr = base.toLocaleString('en-US');
-    if (activeAffineId) {
-      fStr += ' → (' + base + ' - 166.67) × ' + totals.transformedBase + ' + 166.67 = ' + transformedBase.toLocaleString('en-US');
-    }
-    if (totalBase !== 0) fStr += ' + ' + totalBase;
-    if (totalBase !== 0 || activeAffineId) fStr = '(' + fStr + ')';
-    var pctDisplay = (basePct * 100) + '%';
-    if (totalPct !== 0) fStr += ' × (' + pctDisplay + ' + ' + (totalPct * 100).toFixed(1) + '%)';
-    else fStr += ' × ' + pctDisplay;
-    if (totalMul !== 1) fStr += ' × ' + totalMul;
-    fStr += ' = ' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    $el.find('#mc-r-formula').text(fStr);
-
-    if ($el.find('#mc-panel-formula').is(':visible')) calcFormula();
+    var cFStr = base.toLocaleString('en-US');
+    if (cTotalBase !== 0) cFStr += (cTotalBase >= 0 ? ' + ' : ' - ') + Math.abs(cTotalBase);
+    if (cTotalBase !== 0) cFStr = '(' + cFStr + ')';
+    var cPctDisplay = (basePct * 100) + '%';
+    if (cTotalPct !== 0) cFStr += ' × (' + cPctDisplay + ' + ' + (cTotalPct * 100).toFixed(1) + '%)';
+    else cFStr += ' × ' + cPctDisplay;
+    if (cTotalMul !== 1) cFStr += ' × ' + cTotalMul;
+    cFStr += ' = ' + cResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    $el.find('#mc-r-formula').text(cFStr);
+    return;
   }
+
+  var totals = getTotals();
+  var transformedBase = totals.transformedBase;
+  var totalPct = totals.pct, totalBase = totals.base, totalMul = totals.mul;
+
+  var effBase = transformedBase + totalBase;
+  var result = effBase * (basePct + totalPct) * totalMul;
+
+  var activeNames = [];
+  if (activeAffineId) {
+    var parts = activeAffineId.split('_');
+    var ci = parseInt(parts[1]);
+    var cat = DATA[currentMod].categories[ci];
+    if (cat) {
+      var lawMod;
+      if (parts[2] === 'd') lawMod = cat.mods[parseInt(parts[3])];
+      else if (parts[2] === 's') lawMod = cat.subcategories[parseInt(parts[3])].mods[parseInt(parts[4])];
+      if (lawMod && isAffine(lawMod)) {
+        var effectiveSlope = lawMod.affine.slope * (2 / currentRP);
+        var transformedVal = Math.round(((base - 166.6667) * effectiveSlope + 166.6667) * 100) / 100;
+        var rp = lawMod.rp || (lawMod.affine.slope * 2);
+        activeNames.unshift(lawMod.n + ' (Base ' + transformedVal + ' / ' + Math.round(effectiveSlope * 100) / 100 + 'x RP ' + rp + '%)');
+      }
+    }
+  }
+
+  data.categories.forEach(function(cat, ci) {
+    if (cat.type !== 'scaler') return;
+    if (!categoryMatchesAllowed(cat.name)) return;
+    var val = scalerVals['scaler_' + ci];
+    if (val === undefined) return;
+    var sv = scalerValue(cat, val);
+    activeNames.push(formatScalerActiveName(cat, val, sv));
+  });
+
+  data.categories.forEach(function(cat, ci) {
+    if (!categoryMatchesAllowed(cat.name)) return;
+    forEachModInCat(cat, ci, function(m, id) {
+      if (!checked[id] || isAffine(m)) return;
+      activeNames.push(m.label || m.n);
+    });
+  });
+
+  customs.forEach(function(c) { activeNames.push(c.label); });
+
+  $el.find('#mc-r-base').text(base.toLocaleString('en-US'));
+  $el.find('#mc-r-mods').text(activeNames.length ? activeNames.join(', ') : 'none');
+  $el.find('#mc-r-result').text(result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+  var fStr = base.toLocaleString('en-US');
+  if (activeAffineId) {
+    fStr += ' → (' + base + ' - 166.67) × ' + Math.round(transformedBase * 100) / 100 + ' + 166.67 = ' + transformedBase.toLocaleString('en-US');
+  }
+  if (totalBase !== 0) fStr += ' + ' + totalBase;
+  if (totalBase !== 0 || activeAffineId) fStr = '(' + fStr + ')';
+  var pctDisplay = (basePct * 100) + '%';
+  if (totalPct !== 0) fStr += ' × (' + pctDisplay + ' + ' + (totalPct * 100).toFixed(1) + '%)';
+  else fStr += ' × ' + pctDisplay;
+  if (totalMul !== 1) fStr += ' × ' + totalMul;
+  fStr += ' = ' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  $el.find('#mc-r-formula').text(fStr);
+
+  if ($el.find('#mc-panel-formula').is(':visible')) calcFormula();
+}
 
   /* ── CUSTOM MODIFIERS ── */
   function renderCustomTags() {

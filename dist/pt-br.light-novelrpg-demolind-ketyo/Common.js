@@ -1,137 +1,188 @@
-/* === PortableInfobox: toggle por título (todas as infobox) === */
-mw.hook('wikipage.content').add(function($content){
-  $content.find('.portable-infobox').each(function(idx, el){
-    var $box = $(el);
+/* =============================================================================
+   TEMA LIVRO — JavaScript de Colapso/Expansão + Tabs
+   Colar em: MediaWiki:Common.js
+   ============================================================================= */
 
-    // Se tiver "no-collapse", respeita opt-out
-    if ($box.hasClass('no-collapse')) return;
+$(function(){
+  'use strict';
 
-    // Marca como "collapsible" (CSS usa esta classe)
-    $box.addClass('collapsible');
+  /* =========================================================================
+     INFOBOX — Colapso por cabeçalho e título
+     ========================================================================= */
 
-    var $title = $box.find('.pi-title').first();
-    if (!$title.length) return;
+  $('.portable-infobox[class*="pi-theme-"] .pi-title').on('click', function(){
+    var $infobox = $(this).closest('.portable-infobox');
+    var isCollapsed = $infobox.hasClass('bk-collapsed-all');
 
-    // Acessibilidade
-    $title.attr({
-      role: 'button',
-      tabindex: 0,
-      'aria-expanded': 'true',
-      'aria-controls': 'pi-body-'+idx
-    });
-
-    // Clique / teclado
-    var toggle = function(ev){
-      if (ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
-      ev.preventDefault();
-
-      // Alterna colapsado
-      $box.toggleClass('collapsed');
-      var collapsed = $box.hasClass('collapsed');
-      $title.attr('aria-expanded', String(!collapsed));
-    };
-
-    $title.on('click', toggle);
-    $title.on('keydown', toggle);
-  });
-});
-
-/* TabelaMapa – botão Ocultar/Expandir no título (alinhado à direita) */
-(function () {
-  // Garante jQuery e o hook de conteúdo
-  mw.loader.using(['jquery']).then(function () {
-    var $ = jQuery;
-
-    function wireToggles($root) {
-      $root.find('.dk-mapbox-link').each(function () {
-        var $sec     = $(this);
-        var $bar     = $sec.children('.dk-linkbar').first();
-        var $content = $sec.children('.mw-collapsible-content, .dk-sec-content').first();
-
-        if (!$bar.length || !$content.length) return;
-
-        // Evita duplicar
-        if ($bar.data('dkToggleWired')) return;
-
-        // Wrapper e botão
-        var $wrap = $('<span class="dk-toggle-wrap" />');
-        var $btn  = $('<button type="button" class="dk-toggle" aria-expanded="true">Ocultar</button>');
-
-        // Estado inicial se vier "fechado" pela marcação
-        if ($sec.hasClass('mw-collapsed')) {
-          $content.hide();
-          $btn.text('Expandir').attr('aria-expanded', 'false');
-        }
-
-        $btn.on('click', function () {
-          var isVisible = $content.is(':visible');
-          // Animação suave
-          $content.stop(true, true).slideToggle(150);
-          // Alterna texto/estado
-          $btn.text(isVisible ? 'Expandir' : 'Ocultar')
-              .attr('aria-expanded', String(!isVisible));
-        });
-
-        // Insere no título e marca como ligado
-        $wrap.append($btn);
-        $bar.append($wrap).data('dkToggleWired', true);
-      });
+    if(isCollapsed){
+      $infobox.removeClass('bk-collapsed-all');
+      $infobox.find('.bk-hidden').removeClass('bk-hidden');
+      $infobox.find('.pi-header').removeClass('bk-section-collapsed');
+    } else {
+      $infobox.addClass('bk-collapsed-all');
+      $infobox.find('.pi-header, .pi-item, .pi-image, .pi-navigation').addClass('bk-hidden');
     }
-
-    // Na carga da página e sempre que o conteúdo for re-renderizado
-    mw.hook('wikipage.content').add(function ($content) {
-      wireToggles($content);
-    });
-
-    // Fallback para a primeira carga fora do hook (caso o tema atrase o hook)
-    $(function () { wireToggles($(document)); });
   });
-})();
 
-(function () {
-  function makeSpan(cls, txt) {
-    var s = document.createElement('span');
-    s.className = cls;
-    s.textContent = txt;
-    return s;
-  }
+  $('.portable-infobox[class*="pi-theme-"] .pi-header').on('click', function(e){
+    e.stopPropagation();
+    var $header = $(this);
+    var isCollapsed = $header.hasClass('bk-section-collapsed');
+    var $items = $header.nextUntil('.pi-header');
 
-  function splitOne(el) {
-    if (!el || el.dataset.dkSplitDone === '1') return;
+    if(isCollapsed){
+      $header.removeClass('bk-section-collapsed');
+      $items.removeClass('bk-hidden');
+    } else {
+      $header.addClass('bk-section-collapsed');
+      $items.addClass('bk-hidden');
+    }
+  });
 
-    var t = (el.textContent || '').replace(/\s+/g, ' ').trim();
-    if (t.length < 2) return;
 
-    var left = t.slice(0, 1);
-    var right = t.slice(-1);
-    var mid = t.slice(1, -1);
+  /* =========================================================================
+     MAPBOX — Colapso por título e barras de seção
+     ========================================================================= */
 
-    el.textContent = '';
-    el.appendChild(makeSpan('dk-split-left', left));
-    el.appendChild(makeSpan('dk-split-mid', mid));
-    el.appendChild(makeSpan('dk-split-right', right));
-    el.dataset.dkSplitDone = '1';
-  }
+  $('.dk-linkbar').each(function(){
+    var $bar = $(this);
+    var title = $bar.attr('data-title') || '';
+    $bar.find('.mw-collapsible-toggle').remove();
+    if($bar.find('.bk-bar-text').length === 0){
+      $bar.prepend('<span class="bk-bar-text">' + title + '</span>');
+      $bar.append('<span class="bk-toggle">Ocultar</span>');
+    }
+  });
 
-  function splitAll(root) {
-    root = root || document;
-    var nodes = root.querySelectorAll ? root.querySelectorAll('.dk-split-auto') : [];
-    for (var i = 0; i < nodes.length; i++) splitOne(nodes[i]);
-  }
+  $('.dk-mapbox-title').on('click', function(){
+    var $mapbox = $(this).closest('.dk-mapbox');
+    var isCollapsed = $mapbox.hasClass('bk-map-collapsed');
 
-  function run() { splitAll(document); }
+    if(isCollapsed){
+      $mapbox.removeClass('bk-map-collapsed');
+      $mapbox.find('.dk-mapbox-link').removeClass('bk-hidden');
+      $mapbox.find('.dk-sec-content').removeClass('bk-hidden');
+      $mapbox.find('.bk-toggle').text('Ocultar');
+    } else {
+      $mapbox.addClass('bk-map-collapsed');
+      $mapbox.find('.dk-mapbox-link').addClass('bk-hidden');
+    }
+  });
 
-  // 1) load normal
-  document.addEventListener('DOMContentLoaded', run);
+  $('.dk-linkbar').on('click', function(){
+    var $bar = $(this);
+    var $section = $bar.closest('.dk-mapbox-link');
+    var $content = $section.find('.dk-sec-content');
+    var $toggle = $bar.find('.bk-toggle');
+    var isCollapsed = $content.hasClass('bk-hidden');
 
-  // 2) quando o navegador restaura a página do cache (sem recarregar)
-  window.addEventListener('pageshow', run);
+    if(isCollapsed){
+      $content.removeClass('bk-hidden');
+      $toggle.text('Ocultar');
+    } else {
+      $content.addClass('bk-hidden');
+      $toggle.text('Expandir');
+    }
+  });
 
-  // 3) quando o Fandom/MediaWiki injeta conteúdo (troca de página interna, etc.)
-  if (window.mw && mw.hook) {
-    mw.hook('wikipage.content').add(function ($content) {
-      // $content é jQuery; pegamos o nó raiz
-      splitAll($content && $content[0] ? $content[0] : document);
+
+  /* =========================================================================
+     TABS — Marcar páginas inexistentes e bloquear para não-admins
+     
+     3 métodos de detecção (em cascata):
+     1. Classe .new (funciona para logados)
+     2. href contém "redlink=1" (Fandom adiciona para inexistentes)
+     3. API query como fallback
+     ========================================================================= */
+
+  var $tabLinks = $('[class^="dk-tab"] a, [class*="dk-tab"] a').not('.tab-act');
+
+  /* Método 1: já tem .new (usuários logados) — nada a fazer */
+
+  /* Método 2: verificar redlink no href */
+  $tabLinks.each(function(){
+    var $link = $(this);
+    var href = $link.attr('href') || '';
+    if(href.indexOf('redlink=1') !== -1){
+      $link.addClass('new');
+    }
+  });
+
+  /* Método 3: API fallback para links que não têm .new nem redlink */
+  var linksParaVerificar = {};
+  $tabLinks.not('.new').each(function(){
+    var $link = $(this);
+    var href = $link.attr('href') || '';
+    var match = href.match(/\/wiki\/([^?#]+)/);
+    if(match){
+      var title = decodeURIComponent(match[1]).replace(/_/g, ' ');
+      if(!linksParaVerificar[title]) linksParaVerificar[title] = [];
+      linksParaVerificar[title].push($link);
+    }
+  });
+
+  var titulos = Object.keys(linksParaVerificar);
+  if(titulos.length > 0){
+    var apiUrl = mw.util ? mw.util.wikiScript('api') : '/api.php';
+    
+    $.ajax({
+      url: apiUrl,
+      data: {
+        action: 'query',
+        titles: titulos.join('|'),
+        format: 'json',
+        origin: '*'
+      },
+      dataType: 'json',
+      timeout: 5000,
+      success: function(data){
+        if(!data.query || !data.query.pages) return;
+        var pages = data.query.pages;
+        for(var id in pages){
+          if(pages.hasOwnProperty(id)){
+            var page = pages[id];
+            if(parseInt(id) < 0 || page.missing !== undefined){
+              var title = page.title;
+              if(linksParaVerificar[title]){
+                linksParaVerificar[title].forEach(function($link){
+                  $link.addClass('new');
+                });
+              }
+            }
+          }
+        }
+        aplicarBloqueioTabs();
+      },
+      error: function(){
+        /* Se API falhar, aplicar bloqueio mesmo assim */
+        aplicarBloqueioTabs();
+      }
     });
+  } else {
+    aplicarBloqueioTabs();
   }
-})();
+
+  function aplicarBloqueioTabs(){
+    var userGroups = [];
+    if(typeof mw !== 'undefined' && mw.config){
+      userGroups = mw.config.get('wgUserGroups') || [];
+    }
+    var isAdmin = (
+      userGroups.indexOf('sysop') !== -1 ||
+      userGroups.indexOf('bureaucrat') !== -1 ||
+      userGroups.indexOf('staff') !== -1 ||
+      userGroups.indexOf('wiki-manager') !== -1
+    );
+
+    if(!isAdmin){
+      $('[class^="dk-tab"] a.new, [class*="dk-tab"] a.new')
+        .addClass('bk-locked')
+        .on('click', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        });
+    }
+  }
+
+});

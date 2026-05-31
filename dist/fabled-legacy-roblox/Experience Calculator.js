@@ -124,9 +124,12 @@ var dungeonList = [
   { name: "Forsaken Limbo: Normal", baseEXP: 39300000000000 },
   { name: "Forsaken Limbo: Expert", baseEXP: 78600000000000 },
   { name: "Forsaken Limbo: Chaos", baseEXP: 143000000000000 },
-  { name: "Neon District: Normal", baseEXP: 395000000000000 },
-  { name: "Neon District: Expert", baseEXP: 790000000000000 },
-  { name: "Neon District: Chaos", baseEXP: 1092000000000000 }
+  { name: "Neon District: Normal", baseEXP: 592500000000000 },
+  { name: "Neon District: Expert", baseEXP: 1185000000000000 },
+  { name: "Neon District: Chaos", baseEXP: 2457000000000000 },
+  { name: "The First Sanctuary: Normal", baseEXP: 9117000000000000 },
+  { name: "The First Sanctuary: Expert", baseEXP: 13906500000000000 },
+  { name: "The First Sanctuary: Chaos", baseEXP: 26400000000000000 }
 ];
   
 var weaponPerks = [
@@ -332,7 +335,7 @@ calcBtn.onclick = function () {
   
   var modifierExceptionText = document.getElementById('dungeonExp');
   var selectedText = modifierExceptionText.options[modifierExceptionText.selectedIndex].text;
-  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
+  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos", "The First Sanctuary: Normal", "The First Sanctuary: Expert", "The First Sanctuary: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
 
 
   // Error messages

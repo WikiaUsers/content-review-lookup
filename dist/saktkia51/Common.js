@@ -27,10 +27,10 @@ mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:Basi
 	// Displays the current exclusive daily skin's various info according to the browser's detected time zone.
 	// See https://saktkia51.fandom.com/wiki/Weapon_Skins
 	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:ExclusiveSkinsDailyLogger.js&action=raw&ctype=text/javascript');
-
-	// -- [ Other code ] --
-	window.BackToTopModern = true;
-
-	window.lockOldComments = (window.lockOldComments || {});
-	window.lockOldComments.limit = 90;
 });
+
+// -- [ Other code ] --
+window.BackToTopModern = true;
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;

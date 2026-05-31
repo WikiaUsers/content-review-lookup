@@ -8,49 +8,7 @@ importArticles({
 });
 /* TEST CODE (If Break Delete IT)*/
 /* Custom Status Icon based on PAGE PROTECTION */
-$(document).ready(function() {
-    // 1. Get the edit restrictions for the current page
-    // This returns an array like [] (unprotected), ['autoconfirmed'], or ['sysop']
-    var protection = mw.config.get('wgRestrictionEdit') || [];
 
-    // 2. Default Setup: Level 1 (Unprotected page)
-    var currentLevel = 1;
-    var iconUrl = mw.util.getUrl('Special:FilePath/Guest_mgr.png');
-    var alertMessage = "Edit is available for everyone.";
-
-    // 3. Evaluate Protection Levels
-    if (protection.includes('sysop')) {
-        // Level 3: Fully Protected (Admins only)
-        currentLevel = 3;
-        iconUrl = mw.util.getUrl('Special:FilePath/Capatin_mgr.png');
-        alertMessage = "Only for administrators and above.";
-    } 
-    else if (protection.includes('autoconfirmed') || protection.includes('user')) {
-        // Level 2: Semi-Protected (Registered/Verified accounts only)
-        currentLevel = 2;
-        iconUrl = mw.util.getUrl('Special:FilePath/Crew_mgr.png');
-        alertMessage = "For verified and logged-in accounts.";
-    }
-
-    // 4. Create the image element
-    var $customIcon = $('<img>', {
-        src: iconUrl,
-        class: 'custom-status-icon level-' + currentLevel,
-        alt: 'Protection Status',
-        title: 'Page Protection Level'
-    });
-
-    // 5. Handle Click Popup
-    $customIcon.on('click', function() {
-        alert(alertMessage);
-    });
-
-    // 6. Inject to the left of the SAVE button
-    var $targetContainer = $('.page-header__actions');
-    if ($targetContainer.length) {
-        $targetContainer.prepend($customIcon);
-    }
-});
 
 /* -----------------Admin TAGS-----------------*/
 /* --------- 1 --------- */

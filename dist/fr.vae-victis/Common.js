@@ -91,3 +91,11 @@ importScript('MediaWiki:USA-map.js');
 importScript('MediaWiki:USA-globe.js');
 importScriptPage('MediaWiki:Europe-influence.js', 'vae-victis');
 importScript('MediaWiki:NewsSystem.js');
+importScriptURI('https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js');
+importScriptURI('https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js');
+importScript('MediaWiki:France-globe.js');
+importScript('Mediawiki:GlobeVaeVictis.js');
+importScript('MediaWiki:Mecanique.js');
+importScript('Mediawiki:Franceinfo.js');
+importScript('Mediawiki:Guide.js');
+importScript('Mediawiki:Divinity.js')

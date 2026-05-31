@@ -6,3 +6,11 @@ var tooltips_list = [
        parse: '{'+'{TooltipP|<#name#>}}',
    }
 ];
+
+// auto-loop .webM videos inside class="webm-loop" to make them behave like GIFs
+mw.hook('wikipage.content').add($content =>
+    $content.find('.webm-loop video, video.webm-loop')
+        .prop('loop', true)
+        .prop('autoplay', true)
+        .prop('controls', false)
+);

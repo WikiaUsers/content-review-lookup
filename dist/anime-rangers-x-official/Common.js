@@ -23,20 +23,12 @@ mw.hook('wikipage.content').add(function($content) {
 (function () {
     'use strict';
 
-    var LEVEL_MULTI = { '50': 1.5625, '100': 2.25 };
-    var STAT_MULTI = {
-        'O-': { dmg:1.20, hp:1.20, rng:1.20, spd:1.20, acd:0.90 },
-        'O':  { dmg:1.25, hp:1.25, rng:1.25, spd:1.25, acd:0.875 },
-        'O+': { dmg:1.30, hp:1.30, rng:1.30, spd:1.30, acd:0.85  }
-    };
-
-    var RARITY_COLORS = {
-        Rare:      { border:'#00BFFF', bg:'rgba(0,80,120,0.5)' },
-        Epic:      { border:'#CC00FF', bg:'rgba(80,0,120,0.5)' },
-        Legendary: { border:'#FFD700', bg:'rgba(120,90,0,0.5)' },
-        Mythic:    { border:'#FF44FF', bg:'rgba(120,0,100,0.5)' },
-        Secret:    { border:'#FF2200', bg:'rgba(120,0,0,0.5)'   }
-    };
+    var LEVEL_MULTI   = {};
+    var STAT_MULTI    = {};
+    var RARITY_COLORS = {};
+    var STAT_ICONS    = {};
+    var LEVEL_BUTTONS = [];
+    var STAT_BUTTONS  = [];
 
     var WIKI_FILE_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/Special:FilePath/';
 
@@ -77,9 +69,16 @@ mw.hook('wikipage.content').add(function($content) {
         return { dmg:dmg, hp:hp, cd:cd, rng:rng, spd:spd, dps:dps };
     }
 
-    function makePill(type, icon, value) {
+    function makePill(type, iconFile, value) {
         var p = el('div', 'arx-pill arx-pill-' + type);
-        p.appendChild(el('span', 'arx-pill-icon', icon));
+        var iconSpan = el('span', 'arx-pill-icon');
+        var iImg = document.createElement('img');
+        iImg.src = WIKI_FILE_BASE + iconFile;
+        iImg.alt = type;
+        iImg.className = 'arx-pill-icon-img';
+        iImg.onerror = function() { iImg.style.display='none'; };
+        iconSpan.appendChild(iImg);
+        p.appendChild(iconSpan);
         p.appendChild(el('span', 'arx-pill-val', value));
         return p;
     }
@@ -105,11 +104,11 @@ mw.hook('wikipage.content').add(function($content) {
             head.appendChild(el('span','arx-row-idx','[' + i + ']'));
             row.appendChild(head);
             var pills = el('div','arx-pills');
-            pills.appendChild(makePill('hp',  '♥',  fmt(s.hp)));
-            pills.appendChild(makePill('dmg', '⚔',  fmt(s.dmg)));
-            pills.appendChild(makePill('cd',  '⏳', fmtCd(s.cd)));
-            pills.appendChild(makePill('rng', '🏹', fmt(s.rng)));
-            pills.appendChild(makePill('spd', '👟', fmt(s.spd)));
+            pills.appendChild(makePill('hp',  STAT_ICONS.hp  || 'Health.png',   fmt(s.hp)));
+            pills.appendChild(makePill('dmg', STAT_ICONS.dmg || 'Damage.png',   fmt(s.dmg)));
+            pills.appendChild(makePill('cd',  STAT_ICONS.cd  || 'Cooldown.png', fmtCd(s.cd)));
+            pills.appendChild(makePill('rng', STAT_ICONS.rng || 'Range.png',    fmt(s.rng)));
+            pills.appendChild(makePill('spd', STAT_ICONS.spd || 'Speed.png',    fmt(s.spd)));
             row.appendChild(pills);
             var foot = el('div','arx-row-foot');
             if (u.Note) foot.appendChild(el('span','arx-note', u.Note));
@@ -121,26 +120,107 @@ mw.hook('wikipage.content').add(function($content) {
         });
     }
 
-    // ---- Gear card builder ----
     function makeGearCard(item) {
-        var rc = RARITY_COLORS[item.Rarity] || RARITY_COLORS.Rare;
+        var rc = RARITY_COLORS[item.Rarity] || { border:'#00BFFF', bg:'rgba(0,80,120,0.5)' };
         var card = el('div','arx-gear-card');
         card.style.borderColor     = rc.border;
         card.style.backgroundColor = rc.bg;
         card.style.boxShadow       = '0 0 10px ' + rc.border;
-
         var img = document.createElement('img');
         img.className = 'arx-gear-card-img';
         img.src = WIKI_FILE_BASE + item.Img;
         img.alt = item.Name;
         img.onerror = function() { img.style.display='none'; };
-
         card.appendChild(img);
         card.appendChild(el('div','arx-gear-card-name', item.Name));
         return card;
     }
 
-    // ---- Obtain section ----
+    function renderRangerDetail(container, unit, unitKey) {
+        var fullImg  = unit.FullImg || '';
+        var upgrades = unit.Upgrade || {};
+        var keys     = Object.keys(upgrades).map(Number).sort(function(a,b){return a-b;});
+        var baseU    = upgrades[keys[0]] || {};
+        var maxU     = upgrades[keys[keys.length-1]] || {};
+
+        var wrap = el('div','arx-info-section');
+        wrap.appendChild(el('div','arx-info-title','RANGER DETAIL'));
+        var body = el('div','arx-detail-body');
+
+        var imgWrap = el('div','arx-detail-imgwrap');
+        var img = document.createElement('img');
+        img.className = 'arx-detail-img';
+        img.src = WIKI_FILE_BASE + fullImg;
+        img.alt = unit.DisplayName || unitKey;
+        img.onerror = function() { imgWrap.style.opacity='0.3'; };
+        imgWrap.appendChild(img);
+        body.appendChild(imgWrap);
+
+        var info = el('div','arx-detail-info');
+
+        function detailRow(label, value, cls) {
+            var row = el('div','arx-detail-row');
+            row.appendChild(el('span','arx-detail-label', label + ': '));
+            row.appendChild(el('span','arx-detail-value' + (cls ? ' '+cls : ''), value));
+            return row;
+        }
+
+        function perfRow(icon, label, base, max) {
+            var row = el('div','arx-detail-row');
+            var ic  = el('span','arx-detail-icon');
+            if (icon) {
+                if (icon.endsWith('.png') || icon.endsWith('.svg')) {
+                    var iImg = document.createElement('img');
+                    iImg.src = WIKI_FILE_BASE + icon;
+                    iImg.alt = label;
+                    iImg.className = 'arx-detail-icon-img';
+                    iImg.onerror = function() { iImg.style.display='none'; };
+                    ic.appendChild(iImg);
+                } else {
+                    ic.textContent = icon;
+                }
+            }
+            row.appendChild(ic);
+            row.appendChild(el('span','arx-detail-label', label + ': '));
+            var val;
+            if (max !== null && base !== max) {
+                val = el('span','arx-detail-value');
+                val.innerHTML = '<span class="arx-perf-base">' + base + '</span>' +
+                                ' <span class="arx-perf-arrow">→</span> ' +
+                                '<span class="arx-perf-max">' + max + '</span>';
+            } else {
+                val = el('span','arx-detail-value', base);
+            }
+            row.appendChild(val);
+            return row;
+        }
+
+        info.appendChild(el('div','arx-detail-section-title','General'));
+        var genList = el('div','arx-detail-list');
+        genList.appendChild(detailRow('Name',           unit.DisplayName   || '—'));
+        genList.appendChild(detailRow('Attack Element', unit.PrimaryAttack || '—', 'arx-val-physical'));
+        genList.appendChild(detailRow('Attack Type',    unit.AttackType    || '—'));
+        genList.appendChild(detailRow('Element',        unit.Element       || '—'));
+        genList.appendChild(detailRow('Rarity',         unit.Rarity        || '—'));
+        info.appendChild(genList);
+
+        info.appendChild(el('div','arx-detail-section-title','Performance'));
+        var perfList = el('div','arx-detail-list');
+        perfList.appendChild(perfRow('💰', 'Cost',         '¥ '+fmt(unit.Cost||0), null));
+        perfList.appendChild(perfRow('⏱',  'Send Cooldown',(unit.SendCooldown||0)+'s', null));
+        perfList.appendChild(perfRow('∞',  'Limit Spawn',  (unit.SpawnCap||0)+' (Unit)', null));
+        perfList.appendChild(perfRow(STAT_ICONS.hp  || 'Health.png',   'Health',   fmt(baseU.Health||0),               fmt(maxU.Health||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.dmg || 'Damage.png',   'Damage',   fmt(baseU.Damage||0),               fmt(maxU.Damage||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.cd  || 'Cooldown.png', 'Cooldown', fmtCd(baseU.AttackCooldown||0)+'s', fmtCd(maxU.AttackCooldown||0)+'s'));
+        perfList.appendChild(perfRow(STAT_ICONS.rng || 'Range.png',    'Range',    fmt(baseU.Range||0),                fmt(maxU.Range||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.spd || 'Speed.png',    'Speed',    fmt(baseU.Speed||0),                fmt(maxU.Speed||0)));
+        info.appendChild(perfList);
+
+        body.appendChild(info);
+        wrap.appendChild(body);
+        container.appendChild(wrap);
+    }
+
     function renderObtain(container, obtain) {
         if (!obtain) return;
         var wrap = el('div','arx-info-section');
@@ -151,7 +231,6 @@ mw.hook('wikipage.content').add(function($content) {
         container.appendChild(wrap);
     }
 
-    // ---- Evolve section ----
     function renderEvolve(container, evolveData, goldImg, displayName) {
         var wrap = el('div','arx-info-section');
         wrap.appendChild(el('div','arx-info-title','EVOLVE REQUIREMENTS'));
@@ -162,24 +241,23 @@ mw.hook('wikipage.content').add(function($content) {
             noEvolve.innerHTML = '<i><b>' + displayName + '</b> does not evolve.</i>';
             box.appendChild(noEvolve);
         } else {
-            var layout = el('div','arx-evolve-layout');
-
-            // Left: unit cards
+            var layout    = el('div','arx-evolve-layout');
             var unitCards = el('div','arx-evolve-units');
-            var fromCard  = el('div','arx-evolve-unit-card');
-            var fromImg   = document.createElement('img');
-            fromImg.src   = WIKI_FILE_BASE + evolveData.EvolveFrom + '.png';
-            fromImg.alt   = evolveData.EvolveFrom;
+
+            var fromCard = el('div','arx-evolve-unit-card');
+            var fromImg  = document.createElement('img');
+            fromImg.src  = WIKI_FILE_BASE + evolveData.EvolveFrom + '.png';
+            fromImg.alt  = evolveData.EvolveFrom;
             fromImg.onerror = function() { fromImg.style.display='none'; };
             fromCard.appendChild(fromImg);
             fromCard.appendChild(el('div','arx-evolve-unit-name', evolveData.EvolveFrom));
 
             var arrow = el('div','arx-evolve-arrow','▶');
 
-            var toCard  = el('div','arx-evolve-unit-card');
-            var toImg   = document.createElement('img');
-            toImg.src   = WIKI_FILE_BASE + evolveData.EvolveTo + '.png';
-            toImg.alt   = evolveData.EvolveTo;
+            var toCard = el('div','arx-evolve-unit-card');
+            var toImg  = document.createElement('img');
+            toImg.src  = WIKI_FILE_BASE + evolveData.EvolveTo + '.png';
+            toImg.alt  = evolveData.EvolveTo;
             toImg.onerror = function() { toImg.style.display='none'; };
             toCard.appendChild(toImg);
             toCard.appendChild(el('div','arx-evolve-unit-name', evolveData.EvolveTo));
@@ -189,7 +267,6 @@ mw.hook('wikipage.content').add(function($content) {
             unitCards.appendChild(toCard);
             layout.appendChild(unitCards);
 
-            // Right: requirements
             var req = el('div','arx-evolve-req');
             req.appendChild(el('div','arx-evolve-req-title','Requirement'));
 
@@ -200,16 +277,13 @@ mw.hook('wikipage.content').add(function($content) {
                 iImg.src = WIKI_FILE_BASE + item.Img;
                 iImg.alt = item.Name;
                 iImg.onerror = function() { iImg.style.display='none'; };
-                var qty = el('div','arx-evolve-item-qty', item.Qty + 'x');
-                var nm  = el('div','arx-evolve-item-name', item.Name);
                 ic.appendChild(iImg);
-                ic.appendChild(qty);
-                ic.appendChild(nm);
+                ic.appendChild(el('div','arx-evolve-item-qty', item.Qty + 'x'));
+                ic.appendChild(el('div','arx-evolve-item-name', item.Name));
                 itemsGrid.appendChild(ic);
             });
             req.appendChild(itemsGrid);
 
-            // Gold
             var goldRow = el('div','arx-evolve-gold');
             var gImg    = document.createElement('img');
             gImg.src    = WIKI_FILE_BASE + goldImg;
@@ -228,34 +302,30 @@ mw.hook('wikipage.content').add(function($content) {
         container.appendChild(wrap);
     }
 
-    // ---- Gear recommendation section ----
     function renderGearRec(container, gearRec) {
         if (!gearRec || gearRec.length === 0) return;
         var wrap = el('div','arx-info-section');
         wrap.appendChild(el('div','arx-info-title','GEAR RECOMMENDATION'));
         var box  = el('div','arx-info-box');
         var grid = el('div','arx-gear-rec-grid');
-        gearRec.forEach(function(item) {
-            grid.appendChild(makeGearCard(item));
-        });
+        gearRec.forEach(function(item) { grid.appendChild(makeGearCard(item)); });
         box.appendChild(grid);
         wrap.appendChild(box);
         container.appendChild(wrap);
     }
-    
+
     function renderPassive(container, unit) {
         if (!unit.Passive || !unit.Passive.Info) return;
         var wrap = el('div','arx-info-section');
         wrap.appendChild(el('div','arx-info-title','PASSIVE'));
-        var box = el('div','arx-info-box');
+        var box  = el('div','arx-info-box');
         var info = document.createElement('p');
         info.innerHTML = unit.Passive.Info;
         box.appendChild(info);
         wrap.appendChild(box);
         container.appendChild(wrap);
     }
-    
-    // ---- Modal item builder ----
+
     function makeModalItem(trait, col, sel, onSelect) {
         var item   = document.createElement('div');
         item.className = 'arx-modal-item';
@@ -267,10 +337,10 @@ mw.hook('wikipage.content').add(function($content) {
         var info   = document.createElement('div');
         info.className = 'arx-modal-item-info';
         var nameEl = document.createElement('span');
-        nameEl.className  = 'arx-modal-item-name';
+        nameEl.className   = 'arx-modal-item-name';
         nameEl.textContent = trait.Name;
         var fxEl   = document.createElement('span');
-        fxEl.className  = 'arx-modal-item-effect';
+        fxEl.className   = 'arx-modal-item-effect';
         fxEl.textContent = trait.Effect;
         info.appendChild(nameEl);
         info.appendChild(fxEl);
@@ -355,10 +425,10 @@ mw.hook('wikipage.content').add(function($content) {
                 var info   = document.createElement('div');
                 info.className = 'arx-modal-item-info';
                 var nameEl = document.createElement('span');
-                nameEl.className  = 'arx-modal-item-name';
+                nameEl.className   = 'arx-modal-item-name';
                 nameEl.textContent = trait.Name;
                 var fxEl   = document.createElement('span');
-                fxEl.className  = 'arx-modal-item-effect';
+                fxEl.className   = 'arx-modal-item-effect';
                 fxEl.textContent = trait.Effect || '';
                 info.appendChild(nameEl);
                 info.appendChild(fxEl);
@@ -401,6 +471,18 @@ mw.hook('wikipage.content').add(function($content) {
         if (!unitKey) { host.textContent = 'No unit specified.'; return; }
         if (error)    { host.textContent = 'Error: ' + error; return; }
         if (!payload) { host.textContent = 'No data found for: ' + unitKey; return; }
+
+        var configRaw = host.getAttribute('data-config');
+        if (configRaw) {
+            var cfg = JSON.parse(configRaw);
+            LEVEL_MULTI   = cfg.LevelMulti   || {};
+            STAT_MULTI    = cfg.StatMulti     || {};
+            RARITY_COLORS = cfg.RarityColors  || {};
+            STAT_ICONS    = cfg.StatIcons     || {};
+            LEVEL_BUTTONS = cfg.LevelButtons  || ['50','100'];
+            STAT_BUTTONS  = cfg.StatButtons   || ['O-','O','O+'];
+        }
+
         try {
             var unit = JSON.parse(payload);
             renderWidget(host, unitKey, unit);
@@ -422,12 +504,11 @@ mw.hook('wikipage.content').add(function($content) {
 
         var container = el('div','arx-widget-container');
 
-        // ---- Obtain + Evolve + Gear Rec ----
+        renderRangerDetail(container, unit, unitKey);
         renderObtain(container, obtain);
         renderEvolve(container, evolveData, goldImg, displayName);
         renderGearRec(container, gearRec);
 
-        // ---- Stats sheet ----
         var sheet = el('div','arx-sheet');
         sheet.appendChild(el('div','arx-sheet-header','UPGRADE STATS — ' + displayName));
 
@@ -436,7 +517,7 @@ mw.hook('wikipage.content').add(function($content) {
         var rightCtrls = el('div','arx-controls-right');
 
         var lvlRow = el('div','arx-btn-row');
-        ['50','100'].forEach(function(lv) {
+        LEVEL_BUTTONS.forEach(function(lv) {
             var b = el('button','arx-btn','Level ' + lv);
             b.addEventListener('click', function() {
                 if (state.level === lv) { state.level=null; b.classList.remove('active'); }
@@ -452,7 +533,7 @@ mw.hook('wikipage.content').add(function($content) {
         leftCtrls.appendChild(lvlRow);
 
         var statRow = el('div','arx-btn-row');
-        ['O-','O','O+'].forEach(function(st) {
+        STAT_BUTTONS.forEach(function(st) {
             var b = el('button','arx-btn','Stats ' + st);
             b.addEventListener('click', function() {
                 if (state.stat === st) { state.stat=null; b.classList.remove('active'); }
@@ -469,10 +550,10 @@ mw.hook('wikipage.content').add(function($content) {
 
         var traitsBtn = el('button','arx-btn arx-btn-modal','Traits');
         traitsBtn.addEventListener('click', function() {
-            var traitsData  = host.getAttribute('data-traits');
-            var traits      = traitsData ? JSON.parse(traitsData) : {};
-            var tiersRaw    = host.getAttribute('data-trait-tiers');
-            var tiers       = tiersRaw ? JSON.parse(tiersRaw) : ['Mythic','Legendary','Epic','Rare'];
+            var traitsData = host.getAttribute('data-traits');
+            var traits     = traitsData ? JSON.parse(traitsData) : {};
+            var tiersRaw   = host.getAttribute('data-trait-tiers');
+            var tiers      = tiersRaw ? JSON.parse(tiersRaw) : ['Mythic','Legendary','Epic','Rare'];
             makeModal('Traits', tiers, traits, function(trait) {
                 state.trait = trait;
                 traitsBtn.textContent = trait ? 'Trait: ' + trait.Name : 'Traits';
@@ -483,10 +564,10 @@ mw.hook('wikipage.content').add(function($content) {
 
         var gearBtn = el('button','arx-btn arx-btn-modal','Gear');
         gearBtn.addEventListener('click', function() {
-            var gearData  = host.getAttribute('data-gear');
-            var gear      = gearData ? JSON.parse(gearData) : {};
-            var slotsRaw  = host.getAttribute('data-gear-slots');
-            var slots     = slotsRaw ? JSON.parse(slotsRaw) : ['Head','Body','Arms','Legs'];
+            var gearData = host.getAttribute('data-gear');
+            var gear     = gearData ? JSON.parse(gearData) : {};
+            var slotsRaw = host.getAttribute('data-gear-slots');
+            var slots    = slotsRaw ? JSON.parse(slotsRaw) : ['Head','Body','Arms','Legs'];
             makeModalMulti('Gear', slots, gear, state.gearSelections, function(slot, item) {
                 state.gearSelections[slot] = item;
                 var hasAny = Object.keys(state.gearSelections).some(function(k){return state.gearSelections[k];});

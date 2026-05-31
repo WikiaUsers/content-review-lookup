@@ -1,20 +1,22 @@
 window.addEventListener("load", function () {
-  console.log("✅ Window fully loaded");
+  console.log("Page fully loaded");
 
   const container = document.querySelector(".community-header-wrapper");
 
   if (!container) {
-    console.log("header container not found");
+    console.log("Container not found");
     return;
   }
 
-  console.log("found header container");
+  console.log("Container found");
 
   // Prevent duplicates
   if (document.getElementById("UTCClock")) return;
 
-  const clock = document.createElement("div");
+  const clock = document.createElement("a");
   clock.id = "UTCClock";
+  clock.href = "?action=purge";
+  clock.title = "UTC Clock";
 
   container.appendChild(clock);
 

@@ -50,3 +50,26 @@ $(function () {
     });
   });
 })(jQuery, mw);
+
+// On attend que la page soit prête
+$(function() {
+    // On vérifie si le bandeau n'existe pas déjà pour éviter les doublons
+    if ($('#tintin-move-banner').length === 0) {
+        
+        // On crée le bandeau en HTML pur avec son style intégré
+        var bannerHTML = '<div id="tintin-move-banner" style="display:block !important; background-color:#fff3cd; color:#333; padding:12px; border:2px solid #f28500; font-size:115%; text-align:center; font-weight:bold; margin: 10px 0; width:100%; box-sizing:border-box;">' +
+                         '⚠️ Ce site web a déménagé ! Retrouvez-nous désormais sur ' +
+                         '<a href="https://tintinpedia.fr" target="_blank" style="color:#0056b3; text-decoration:underline; font-weight:extrabold;">Tintinpédia (tintinpedia.fr)</a>' +
+                         '</div>';
+        
+        // On cible l'élément principal de Fandom et on injecte TOUT EN HAUT
+        var $fandomMain = $('.page-container, #content, .mw-body, #mw-content-text');
+        if ($fandomMain.length) {
+            $fandomMain.first().before(bannerHTML);
+            console.log("Bandeau Tintinpédia injecté avec succès !");
+        } else {
+            // Sécurité si la structure Fandom est vraiment étrange sur ce wiki : on le met au tout début du body
+            $('body').prepend(bannerHTML);
+        }
+    }
+});

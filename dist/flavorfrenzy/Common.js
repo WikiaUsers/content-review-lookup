@@ -1,6 +1,6 @@
 mw.loader.using('mediawiki.util', function () {
   window.lockOldComments = window.lockOldComments || {};
-  window.lockOldComments.limit = 14; // Lock threads after 14 days
+  window.lockOldComments.limit = 7; // Lock threads after 7 days
   window.lockOldComments.addNoteAbove = true; // Show a note above locked threads
 
   console.log('[LockOldComments] Configuration applied');

@@ -57,30 +57,32 @@ $(document).on('click', '.ending-retry-btn', function() {
 
 /* table collapsible stuff */
 mw.hook('wikipage.content').add(function($content) {
-    $content.find('table.mw-collapsible').each(function() {
+    $content.find('table.ege-table-spoilers').each(function() {
         var $table = $(this);
-        var $toggle = $table.find('.mw-collapsible-toggle').first();
-        var $rows = $table.find('tr').not(':has(.mw-collapsible-toggle)');
+        var $headerRow = $table.find('tr').first();
+        var $dataRows = $table.find('tr').not(':first-child');
 
-        $rows.css({
-            'transition': 'opacity 0.35s ease',
-            'opacity': '1'
-        });
+        $headerRow.css('cursor', 'pointer');
+        $dataRows.addClass('ege-row-expanded');
 
-        $toggle.off('click.collapsibleAnim').on('click.collapsibleAnim', function(e) {
-            e.stopImmediatePropagation();
-            e.preventDefault();
+        $headerRow.on('click', function() {
+            var isCollapsed = $table.hasClass('ege-collapsed');
 
-            var isVisible = $rows.first().css('display') !== 'none';
-
-            if (isVisible) {
-                $rows.css('opacity', '0');
-                setTimeout(function() { $rows.hide(); }, 350);
-                $toggle.find('.mw-collapsible-text').text('show');
+            if (!isCollapsed) {
+                $dataRows.removeClass('ege-row-expanded').addClass('ege-row-hidden');
+                $table.addClass('ege-collapsed');
+                setTimeout(function() {
+                    if ($table.hasClass('ege-collapsed')) {
+                        $dataRows.hide();
+                    }
+                }, 300);
             } else {
-                $rows.show().css('opacity', '0');
-                setTimeout(function() { $rows.css('opacity', '1'); }, 10);
-                $toggle.find('.mw-collapsible-text').text('hide');
+                $dataRows.show();
+                $table.removeClass('ege-collapsed');
+                
+                setTimeout(function() {
+                    $dataRows.removeClass('ege-row-hidden').addClass('ege-row-expanded');
+                }, 10);
             }
         });
     });
