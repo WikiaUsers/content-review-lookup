@@ -3,5 +3,10 @@ window.BackToTopModern = true;
 /* 结束 */
 
 /* 导入脚本 */
-mw.loader.load('https://dev.fandom.com/wiki/MediaWiki:BackToTopButton/code.js?action=raw&ctype=text/javascript');
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:BackToTopButton/code.js',
+    ]
+});
 /* 结束 */

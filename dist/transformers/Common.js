@@ -1,3 +1,28 @@
+window.quizName = "Test your Transformers knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "Nah... Optimus Prime would perhaps be better off without you!",
+    "You could still be a good human companion for Optimus Prime!",
+    "Optimus Prime would be extremely proud of you!" 
+];
+window.questions = [
+    ["Which of those Transformers iterations didn't feature any new content?",
+    "Generation 2",
+    "Beast Wars",
+    "Unicron Trilogy"], 
+
+    ["Who of those is Sam's girlfriend in Dark of the Moon?",
+    "Carly",
+    "Mikaela",
+    "Maggie"],
+
+    ["In which of those Transformers series did Optimus Prime die?",
+    "Generation 1",
+    "Animated",
+    "Prime"],
+
+];
+
 importScriptPage('MediaWiki:MassCategorization/code.js', 'dev');
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 window.railWAM = {

@@ -142,3 +142,19 @@ window.SpoilerAlertJS = {
 
 // Prevents existing tags from being hidden:
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+/* This code is used to redirect Mobile users from the Home Page to the Mobile Home Page. */
+
+/**
+ * Rolling Sky Wiki - Automatic Mobile Home Page Redirect
+ * Safely targets the custom homepage title and forces mobile users over.
+ */
+(function() {
+    var currentSkin = mw.config.get('skin');
+    var pageName = mw.config.get('wgPageName');
+
+    // Check if the user is on the mobile layout AND specifically browsing the home page
+    if (currentSkin === 'fandommobile' && pageName === 'Rolling_Sky_Wikia') {
+        window.location.href = mw.util.getUrl('Mobile_Home_Page');
+    }
+})();

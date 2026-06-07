@@ -64,7 +64,7 @@ window.addEventListener('load', function(){
 //***********
 //Called in due to Math Extension being ... well completely & utterly broken for >2 months
 
-loadScript("https://polyfill.io/v3/polyfill.min.js?features=es6");
+loadScript("https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6");
 loadScript("https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js");
 
 function loadScript(url) {

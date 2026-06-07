@@ -1,7 +1,4 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
-
-
-
 var sceneList = [ '花园', '蚁穴', '沙漠', '蚂蚁地狱', '沼泽', '海洋', '海洋（滤镜）', 'PvP' ,'下水道','地狱','丛林','中心','蠕虫（地图）'];
 
 var map = 
@@ -321,80 +318,6 @@ $(function() {
     }
 });
 
-(function() {
-  // ========== 注入淡出动画样式（仅一次）==========
-  if (!document.getElementById('rare-toast-kf')) {
-    var style = document.createElement('style');
-    style.id = 'rare-toast-kf';
-    style.textContent = '@keyframes rareToastFadeOut{0%{opacity:1}100%{opacity:0}}';
-    document.head.appendChild(style);
-  }
-
-  // ========== 创建单行消息 ==========
-  function createLine(text, offsetFromBottom, weight, color, delay) {
-    if (!text) return;
-    var div = document.createElement('div');
-    div.textContent = text;
-    var s = div.style;
-
-    s.setProperty('position', 'fixed', 'important');
-    s.setProperty('z-index', '2147483647', 'important');
-    s.setProperty('pointer-events', 'none', 'important');
-    s.setProperty('opacity', '1', 'important');
-    s.setProperty('visibility', 'visible', 'important');
-    s.setProperty('display', 'block', 'important');
-    s.setProperty('white-space', 'pre-line', 'important');
-    s.setProperty('left', '24px', 'important');
-    s.setProperty('bottom', offsetFromBottom, 'important');
-    s.setProperty('padding', '5px 18px', 'important');
-    s.setProperty('font-size', '14px', 'important');
-    s.setProperty('font-family', '"Ubuntu", sans-serif', 'important');
-    s.setProperty('font-weight', weight, 'important');
-    s.setProperty('color', color, 'important');
-    s.setProperty('text-shadow',
-      '-1px -1px 0 #000,0px -1px 0 #000,1px -1px 0 #000,' +
-      '-1px 0px 0 #000,1px 0px 0 #000,' +
-      '-1px 1px 0 #000,0px 1px 0 #000,1px 1px 0 #000',
-      'important');
-    s.setProperty('border-radius', '6px', 'important');
-    s.setProperty('background', 'transparent', 'important');
-
-    document.body.appendChild(div);
-
-    setTimeout(function() {
-      div.style.setProperty('animation', 'rareToastFadeOut 0.8s forwards', 'important');
-      div.addEventListener('animationend', function() { div.remove(); });
-    }, delay);
-  }
-
-  // ========== 从 Fandom 页面获取文本并显示 ==========
-  fetch('https://florrio.fandom.com/zh/wiki/TextShow?action=raw')
-    .then(function(response) {
-      if (!response.ok) throw new Error('网络响应失败，状态码：' + response.status);
-      return response.text();
-    })
-    .then(function(rawText) {
-      var lines = rawText.split('\n');
-      var lineHeight = 30;   // 每条消息占用的垂直空间（像素）
-      var baseBottom = 24;   // 第一条消息距视窗底部的距离
-      var baseDelay = 10000;  // 淡出前的显示时长（毫秒）
-
-      lines.forEach(function(line, index) {
-        // 匹配格式：##数字 #颜色 文本
-        var match = line.match(/^##\d+\s+(#[0-9A-Fa-f]{6})\s+(.+)/);
-        if (match) {
-          var color = match[1];   // ← 修复：取第一个捕获组（颜色）
-          var text  = match[2];   // ← 修复：取第二个捕获组（文本）
-          var bottom = (baseBottom + index * lineHeight) + 'px';
-          createLine(text, bottom, 'bold', color, baseDelay);
-        }
-      });
-    })
-    .catch(function(error) {
-      console.error('获取 TextShow 内容失败：', error);
-    });
-})();
-
 $(function () {
     if (mw.config.get('wgPageName') !== 'Special:申请更改') return;
 
@@ -616,3 +539,20 @@ $(function () {
     // ========== 初始加载 ==========
     loadRecords();
 });
+
+/*
+让被应用show-when-loaded类的折叠类元素在完成加载后再显示，防止网页错乱。
+有show-when-loaded类的元素默认是隐藏的。（.show-when-loaded {display: none;}）
+如果没有折叠元素，则跳过代码逻辑直接显示。
+我们认为第一个有mw-collapsible类的元素完成加载时就算所有可折叠元素都已完成加载。
+*/
+(() => {
+    if (!$('.mw-collapsible').length) {
+        return $('.show-when-loaded').show();
+    }
+    function show() {
+        mw.hook('wikipage.collapsibleContent').remove(show);
+        $('.show-when-loaded').show();
+    }
+    mw.hook('wikipage.collapsibleContent').add(show);
+})();

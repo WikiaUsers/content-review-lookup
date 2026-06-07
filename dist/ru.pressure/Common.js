@@ -103,3 +103,10 @@ function animateOpacity(el, from, to, time) {
 
 	requestAnimationFrame(step);
 }
+
+
+var wiki_name_number=Math.floor(Math.random() * 12);
+	var wiki_name_text=["Давай посмотрим, что там... Ой.", "Мы... приносим извинения за то, что брандмауэр был активирован, когда вы проходили оценочный курс.", "Подводная лодка прибыла.", "Оооооооууууууу, посетитель!", "Это... Просто Себастьян", "П-привет?", "Я тебя напугал?", "ТЫ! НАРУШАЕШЬ!! ДРЕСС-КОД!!!", "С возвращением! Хотите прокатиться еще раз?" ][wiki_name_number];
+	var elements=document.getElementsByClassName('fandom-community-header__community-name');
+	var wiki_name=elements[0];
+	wiki_name.textContent=wiki_name_text;

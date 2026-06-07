@@ -13,7 +13,7 @@ if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgC
   console.log("Applying MathJax...");
 
   var script_1 = document.createElement('script');
-  script_1.src = "https://polyfill.io/v3/polyfill.min.js?features=es6";
+  script_1.src = "https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6";
   document.head.appendChild(script_1);
 
   var script_2 = document.createElement('script');

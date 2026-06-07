@@ -355,7 +355,7 @@ window.MessageWallUserTags = {
 		'SpongeBot678': 'Assistant',
 		
 		'SPONGEBOBSUPERFANINFINITY': 'Rollback',
-                'Madtendo': 'Rollback',
+                'Madtendo': 'Rollback • Discussion Moderator',
 		
         'LarryBoy_fan': 'Discussion Moderator',
     }

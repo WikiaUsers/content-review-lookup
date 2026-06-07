@@ -124,10 +124,18 @@ $(document).ready(function() {
     	'</div></td>' +
     	'<td><div id="secondHeroGearEffLvlInfo" style="display:none; cursor:help;">&#9432;</div></td></tr>' +
     	'<tr><td><span id="darkCrownHarness"></span></td></tr>' +
+    	'<tr><td><span id="monolithArrowHarness"></span></td></tr>' +
 	'</table></div>');
 	// Equipment-specific modifiers
 	// Dark Crown
 	$("span#darkCrownHarness").html('<div id="darkCrownInput" style="display:none;">Dark Crown Stacks: <select name="darkCrownStackLevel" id="darkCrownStackLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	// Monolith Arrow (comprising of a damage stage input and target HP input)
+	$("span#monolithArrowHarness").html('<div id="monolithArrowInput" style="display:none;">' + 
+	'<table>' +
+	'<tr><td>Monolith Arrow Damage Stage: <select name="monolithArrowDamageLevel" id="monolithArrowDamageLevel"> <option value="0">Off</option> <option value="1">Green</option> <option value="2">Blue</option>  <option value="3">Purple</option> </select></td></tr>' + 
+	'<tr><td><div id="monoTargetHP" style="display:none;">Target Max HP: <input name="monoArrowTargetHP" type="text" value="0" id="monoArrowTargetHP" style="text-align: right; width: 55px; background-color:white;"></input></div></td></tr>' +
+	'</table>' +
+	'</div>');
 	// Crafted Defense-specific modifiers
 	// Hero Bell (defense inactive but modifier is left in to reserve functionality)
 	$("span#heroBellDamageHarness").html('<div id="heroBellDamageInput">Hero Bell DPS Level: <select name="heroBellDamageLevel" id="heroBellDamageLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> </select></div>');
@@ -233,6 +241,14 @@ $(document).ready(function() {
             // Also reset the value to 0
             $("select#darkCrownStackLevel option[value=0]").prop('selected',true);
         }
+        if (checkIsSpecialChoiceSelected(firstGearName,secondGearName,"Monolith Arrow")) {
+        	$("div#monolithArrowInput").css("display","block");
+        } else {
+        	$("div#monolithArrowInput").css("display","none");
+            // Also reset the input values to 0
+            $("select#monolithArrowDamageLevel option[value=0]").prop('selected',true);
+            refreshMonoArrow();
+        }
     }
     function checkIsSpecialChoiceSelected(firstGear, secondGear, choiceName) {
     	// Always return false if hero gear toggle is false
@@ -283,10 +299,15 @@ $(document).ready(function() {
         	return -1;
         }
         // Look through the two equipments
+        var equipLevel;
         if ($("select#firstHeroGearChoice option:selected").text() === choice) {
-        	return $("select#firstHeroGearLevel").val();
+        	equipLevel = $("select#firstHeroGearLevel").val() * 1;
+        	return getEffectiveLevel(choice,equipLevel);
+        	//return $("select#firstHeroGearLevel").val();
         } else if ($("select#secondHeroGearChoice option:selected").text() === choice) {
-        	return $("select#secondHeroGearLevel").val();
+        	equipLevel = $("select#secondHeroGearLevel").val() * 1;
+        	return getEffectiveLevel(choice,equipLevel);
+        	//return $("select#secondHeroGearLevel").val();
         }
        	return -1;
     }
@@ -363,6 +384,7 @@ $(document).ready(function() {
     	"Frozen Arrow": {level: 27, type: 1},
     	"Magic Mirror": {level: 27, type: 1},
     	"Action Figure": {level: 27, type: 1},
+    	"Monolith Arrow": {level: 27, type: 1},
     	"Henchmen Puppet": {level: 18, type: 0},
     	"Dark Orb": {level: 18, type: 0},
     	"Metal Pants": {level: 18, type: 0},
@@ -399,7 +421,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse"];
     		break;
     	case ("Archer Queen"):
-    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure"];
+    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Monolith Arrow"];
     		break;
     	case ("Minion Prince"):
     		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff"];
@@ -414,7 +436,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Monolith Arrow", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -487,6 +509,20 @@ $(document).ready(function() {
    		if ($("input#heroGearToggle").val() != undefined) {
     		updateEffectiveEquipLevels();
     	}
+   });
+   // Special change function for the Monolith Arrow
+   // If the arrow is in "disabled" mode (value 0), then the target HP is hidden and reset to zero
+   function refreshMonoArrow() {
+	  var level = $("select#monolithArrowDamageLevel").val() * 1;
+	  if (level === 0) {
+	   $("div#monoTargetHP").css("display","none");
+	   $("#monoArrowTargetHP").val("0").change();
+	  } else {
+	   $("div#monoTargetHP").css("display","block");
+	  }
+   }
+   $("select#monolithArrowDamageLevel").change(function() {
+		refreshMonoArrow();
    });
    $(".GoldPass").each(function() {
 	  var initialStr = $(this).text();
@@ -1204,6 +1240,7 @@ $(document).ready(function() {
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
 			"Magic Mirror": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
 			"Action Figure": [159,184,200,217,236,254,276,298,318,339,359,380,399,424,448,473,498,522,544,565,586,608,628,649,671,692,713],
+			"Monolith Arrow": [100,140,180,220,260,300,340,380,420,460,500,540,580,620,680,700,740,780,820,860,900,940,980,1020,1080,1120,1160],
 			"Henchmen Puppet": Array(18).fill(500),
 			"Dark Orb": [588,603,617,631,647,661,675,690,719,766,813,859,906,953,1000,1046,1093,1140],
 			"Metal Pants": [850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550,1600,1650,1700],
@@ -1272,6 +1309,12 @@ $(document).ready(function() {
 		};
 		// Lookup for the Dark Crown's boosts
 		var darkCrownBoostArr = [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10];
+		// Lookup for the Monolith Arrow's percentage boosts (in tenths of damage)
+		var monolithArrowBoostArr = [Array(27).fill(0),	// Filler (should not be accessed)
+			[40,40,41,41,41,42,42,42,43,43,43,44,44,44,45,45,45,46,46,46,47,47,47,48,48,48,50],		// Green
+			[70,70,75,75,75,80,80,80,85,85,85,90,90,90,92,92,92,94,94,94,96,96,96,98,98,98,100],	// Blue
+			[95,95,100,100,100,105,105,105,110,110,110,115,115,115,120,120,120,125,125,125,130,130,130,135,135,135,140]
+			];
 		// Difficulty lookups
 		var difficultyAttackHeroPenalty = [0,5,10,20,20];
 		var difficultyDefenseBuildingBoost = [0,10,15,20,25];
@@ -1498,6 +1541,9 @@ $(document).ready(function() {
 			var difficultyLevel = $("#difficultyModeBoost").val() * 1;
 			var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
 			var darkCrownLevel = getSpecialChoiceLevel("Dark Crown");
+			var monolithArrowStage = $("select#monolithArrowDamageLevel").val() * 1;
+			var monolithArrowLevel = getSpecialChoiceLevel("Monolith Arrow");
+			var monolithTargetHP = $("input#monoArrowTargetHP").val() * 1;
 			var diff = $("select#difficultyModeBoost").val() * 1;
 			var modifierMode = "";
 			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
@@ -1525,6 +1571,9 @@ $(document).ready(function() {
 		    }
 		    if (isNaN(darkCrownStacks) === true) {
 		    	darkCrownStacks = 0;
+		    }
+		    if (isNaN(monolithArrowStage) === true) {
+		    	monolithArrowStage = 0;
 		    }
 			var calcNewDPH = initialDPH;
 			var rageMultiplier = 1;
@@ -1660,6 +1709,15 @@ $(document).ready(function() {
 					}
 				}
 			}
+			// Monolith Arrow's damage increase is considered a flat damage increase independent of all other damage
+    		var monolithBonusDamage = 0;
+    		// If the target HP is invalid (NaN or empty or negative), disable
+    		if (isNaN(monolithTargetHP) || !monolithTargetHP || monolithTargetHP < 0) {
+    			monolithBonusDamage = 0;
+    		} else if (monolithArrowLevel > -1) {
+    			monolithBonusDamage = monolithTargetHP * monolithArrowBoostArr[monolithArrowStage][monolithArrowLevel] / 1000;
+    		}
+    		calcNewDPH += monolithBonusDamage;
 			return calcNewDPH;
 		}
 		$(".DPH").each(function() {
@@ -1668,6 +1726,8 @@ $(document).ready(function() {
 			var calcNewDPH = initialDPH;
 			// For CSS styling purposes
 			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
+			var monolithBoost = $("select#monolithArrowDamageLevel").val() * 1;
+			var monolithTargetHP = $("input#monoArrowTargetHP").val() * 1;
 			// First, alter the initial DPH by passive DPS-increasing equipment
 			// We'll write our attack speed in milliseconds
 			var attackSpeed = $(".AttackSpeed").attr("title") * 1000;
@@ -1752,11 +1812,40 @@ $(document).ready(function() {
 					$(this).removeClass("StatPoisoned");
 				}
 			}
+			if (!isNaN(monolithBoost) && !isNaN(monolithTargetHP) && monolithTargetHP > 0) {
+				switch(monolithBoost) {
+					case 1:
+						$(this).addClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-2");
+						$(this).removeClass("StatMonolith-3");
+						break;
+					case 2:
+						$(this).addClass("StatMonolith-2");
+						$(this).removeClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-3");
+						break;
+					case 3:
+						$(this).addClass("StatMonolith-3");
+						$(this).removeClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-2");
+						break;
+					default:
+						$(this).removeClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-2");
+						$(this).removeClass("StatMonolith-3");
+						break;
+				}
+			} else {
+				$(this).removeClass("StatMonolith-1");
+				$(this).removeClass("StatMonolith-2");
+				$(this).removeClass("StatMonolith-3");
+			}
 		});
 		$(".DPHRange").each(function() {
 			var initRange = $(this).attr("title");
 			// For CSS styling purposes
 			var difficultyBoost = $("select#difficultyModeBoost").val() * 1;
+			// var monolithBoost = $("select#monolithArrowDamageLevel").val() * 1; Disabled for optimisation but reserved functionality
 			// Initial range but formatted - used to compare with the final output
 			var initFormat = "";
 			var initArray = readRange(initRange);
@@ -1869,6 +1958,9 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
+			// For CSS styling purposes
+			var monolithBoost = $("select#monolithArrowDamageLevel").val() * 1;
+			var monolithTargetHP = $("input#monoArrowTargetHP").val() * 1;
 			poisonUsed = ((poisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed || THpoisonUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
@@ -1880,6 +1972,34 @@ $(document).ready(function() {
 				$(this).addClass("StatFrozen");
 			} else {
 				$(this).removeClass("StatFrozen");
+			}
+			if (!isNaN(monolithBoost) && !isNaN(monolithTargetHP) && monolithTargetHP > 0) {
+				switch(monolithBoost) {
+					case 1:
+						$(this).addClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-2");
+						$(this).removeClass("StatMonolith-3");
+						break;
+					case 2:
+						$(this).addClass("StatMonolith-2");
+						$(this).removeClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-3");
+						break;
+					case 3:
+						$(this).addClass("StatMonolith-3");
+						$(this).removeClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-2");
+						break;
+					default:
+						$(this).removeClass("StatMonolith-1");
+						$(this).removeClass("StatMonolith-2");
+						$(this).removeClass("StatMonolith-3");
+						break;
+				}
+			} else {
+				$(this).removeClass("StatMonolith-1");
+				$(this).removeClass("StatMonolith-2");
+				$(this).removeClass("StatMonolith-3");
 			}
 		});
 		// Alternative DPS for different attack speeds
@@ -1954,6 +2074,9 @@ $(document).ready(function() {
 					hardModeUsed = true;
 				}
 			}
+			// For CSS styling purposes (currently disabled for optimisation)
+			/* var monolithBoost = $("select#monolithArrowDamageLevel").val() * 1;
+			var monolithTargetHP = $("input#monoArrowTargetHP").val() * 1; */
 			poisonUsed = ((poisonSpellLevel + HHpoisonSpellLevel + PLpoisonSpellLevel > 0) || poisonTowerUsed || THpoisonUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed || hardModeUsed) {
@@ -2045,11 +2168,17 @@ $(document).ready(function() {
 			if (isNaN(rageAuraLevel) === true) {
 		    	rageAuraLevel = 0;
 		    }
+		    /* Disabled for optimisation (the Hero page does not use AltDPS)
 		    var darkCrownStacks = $("select#darkCrownStackLevel").val() * 1;
 			var darkCrownLevel = getSpecialChoiceLevel("Dark Crown");
 			if (isNaN(darkCrownStacks) === true) {
 		    	darkCrownStacks = 0;
 		    }
+		    var monolithArrowStage = $("select#monolithArrowDamageLevel").val() * 1;
+		    var monolithArrowLevel = getSpecialChoiceLevel("Monolith Arrow");
+			if (isNaN(monolithArrowStage) === true) {
+		    	monolithArrowStage = 0;
+		    } */
 		    var heroBellDPSLevel = $("#heroBellDamageLevel").val() * 1;
 		    if (isNaN(heroBellDPSLevel) === true) {
 		    	heroBellDPSLevel = 0;
@@ -2129,9 +2258,10 @@ $(document).ready(function() {
 				}
 			}
 			// Dark crown boost
+			/*
 			if (darkCrownLevel > -1) {
 				darkCrownMultiplier = (100 + darkCrownStacks * darkCrownBoostArr[darkCrownLevel])/100;
-			}
+			} */
 			if (heroBellDPSLevel > 0) {
 				heroBellMultiplier = (100 + heroBellDPSIncrease[heroBellDPSLevel]) / 100;
 			}
@@ -2732,7 +2862,7 @@ $(document).ready(function() {
 		// Function to handle percentage damage (used by Monolith)
 		function calcPercentDamage(HP,percent) {
 			if (isNaN(HP) || !HP || HP < 0) return -1;
-			return Math.floor(HP * percent) / 100;
+			return Math.floor(HP * percent * 100) / 10000;
 		}
 		$(".ModifierPercent").each(function() {
 			var percentDamage = $(this).attr("title").replace(/%/g,"") * 1;
@@ -2749,7 +2879,14 @@ $(document).ready(function() {
 			} else {
 				$(this).text(calcDamage.format("#,##0[.]###"));
 				// Cosmetic change to color of text depending on shot color (this depends on the Monolith's target's max HP)
-				if (HP >= 2000) {
+				// However, force the class change by checking for special classes first
+				if ($(this).hasClass("MonolithMod-1")) {
+					$(this).addClass("StatMonolith-1");
+				} else if ($(this).hasClass("MonolithMod-2")) {
+					$(this).addClass("StatMonolith-2");
+				} else if ($(this).hasClass("MonolithMod-3")) {
+					$(this).addClass("StatMonolith-3");	
+				} else if (HP >= 2000) {
 					$(this).addClass("StatMonolith-3");
 					$(this).removeClass("StatMonolith-1");
 					$(this).removeClass("StatMonolith-2");
@@ -2983,6 +3120,9 @@ $(document).ready(function() {
 			$(this).removeClass("StatModifiedGP");
 			$(this).removeClass("StatFrozen");
 			$(this).removeClass("StatPoisoned");
+			$(this).removeClass("StatMonolith-1");
+        	$(this).removeClass("StatMonolith-2");
+        	$(this).removeClass("StatMonolith-3");
         });
         $(".ModifierRange").each(function() {
             var returnInitial = readRange($(this).attr("title"));

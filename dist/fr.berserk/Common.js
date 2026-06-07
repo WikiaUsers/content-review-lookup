@@ -1,4 +1,5 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+window.enableReadProgressBarOnArticles = true;
 /* Imports de Scripts */
 importArticles({
     type: 'script',

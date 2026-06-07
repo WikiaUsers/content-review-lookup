@@ -161,8 +161,8 @@ $(function() {
         'Информация': 'info-tiny',
         'Правила': 'toc-tiny',
         'Персонал': 'users-tiny',
-        'Страница для общения': 'discussions-tiny',
-        'Блог вики': 'blocks-tiny',
+        'Обсуждения': 'discussions-tiny',
+        'Публикации': 'blocks-tiny',
         'Категории': 'book-tiny',
         'Игры': 'games-tiny',
         'Персонажи': 'users-tiny',
@@ -171,9 +171,9 @@ $(function() {
         'Служебные страницы': 'wrench-tiny',
         'Последние правки на вики': 'activity-tiny',
         'Все страницы вики': 'pages-tiny',
-        'Требуемые страницы': 'pencil-tiny',
-        'Загруженные на вики файлы': 'grid-tiny',
-        'Сохранённые на вики видео': 'video-tiny',
+        'Требуемые на вики статьи': 'pencil-tiny',
+        'Файлы на вики': 'grid-tiny',
+        'Видео на вики': 'video-tiny',
         'Случайная статья на вики': 'external-tiny'
     };
 

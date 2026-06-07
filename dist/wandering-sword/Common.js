@@ -1,24 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:Translator/Translator.js'
-    ]
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:YouTubeModal/code.js'
-    ]
-});
-
-// --------------------------------------------------------------------------------------------
-// Other import
-mw.loader.load('/index.php?title=MediaWiki:WSBuildEditor.js&action=raw&ctype=text/javascript');
-mw.loader.load('/index.php?title=MediaWiki:WSInheritancelibrary.js&action=raw&ctype=text/javascript');
-
 // --------------------------------------------------------------------------------------------
 // Site-wide floating buttons (Discord, YouTube, Steam)
 (function () {

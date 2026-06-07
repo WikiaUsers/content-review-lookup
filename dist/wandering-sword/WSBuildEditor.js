@@ -95,17 +95,15 @@ updateStats(name);
 
 function loadMap(name){
 
-let container=document.querySelector(".map-container");
-
-container.innerHTML="Loading "+name+" map...";
-
-fetch(name+".json")
-.then(r=>r.json())
-.then(data=>{
-
-container.innerHTML="<pre>"+JSON.stringify(data,null,2)+"</pre>";
-
-});
+	let container=document.querySelector(".map-container");
+	
+	container.innerHTML="Loading " + mw.html.escape(name) + " map...";
+	
+	fetch(name+".json")
+		.then(r=>r.json())
+		.then(data=>{
+			container.innerHTML="<pre>" + mw.html.escape(JSON.stringify(data,null,2)) + "</pre>";
+		});
 
 }
 
@@ -121,10 +119,9 @@ document.getElementById(s).innerText=stats[s];
 
 }
 
-document.querySelector(".reset").onclick=()=>{
-
-document.getElementById("mapScreen").style.display="none";
-
-document.getElementById("wheel").style.display="block";
-
-};
+if (document.querySelector(".reset")) {
+	document.querySelector(".reset").onclick=()=>{
+		document.getElementById("mapScreen").style.display="none";
+		document.getElementById("wheel").style.display="block";
+	};
+}

@@ -1,1 +1,6 @@
-mw.loader.load('https://dev.fandom.com/wiki/MediaWiki:QuickIW/code.js?action=raw&ctype=text/javascript');
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:QuickIW/code.js',
+    ]
+});

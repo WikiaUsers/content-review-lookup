@@ -52,6 +52,37 @@
   var content = document.getElementById( 'mw-content-text' );
   if ( !content ) return;
 
+
+  /* ── Wire dismiss buttons on manually placed template banners ── */
+  /*
+    Fandom strips inline onclick from wikitext for security.
+    Templates use data-dismissible="true" instead — we attach
+    the click handler here so manual banners are also dismissible.
+  */
+  var manualBanners = content.querySelectorAll( '[data-dismissible="true"]' );
+  Array.prototype.forEach.call( manualBanners, function ( banner ) {
+    var type    = banner.getAttribute( 'data-banner' ) || 'manual';
+    var key     = pageName + '-' + type;
+
+    /* If previously dismissed this session, hide immediately */
+    if ( isDismissed( key ) ) {
+      banner.style.display = 'none';
+      return;
+    }
+
+    /* Inject dismiss button */
+    var btn = document.createElement( 'button' );
+    btn.className = 'maint-dismiss';
+    btn.title     = 'Dismiss';
+    btn.textContent = '✕';
+    btn.addEventListener( 'click', function () {
+      banner.style.display = 'none';
+      try { sessionStorage.setItem( 'maint-' + key, '1' ); }
+      catch (e) {}
+    } );
+    banner.appendChild( btn );
+  } );
+
   /* ── Page type detection ─────────────────────────────── */
 
   var catLinks = document.querySelector( '.categories, .articleCategories, #catlinks' );

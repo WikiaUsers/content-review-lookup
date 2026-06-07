@@ -1,5 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 window.ajaxRefresh = 30000;
+window.enableReadProgressBarOnArticles = true;
 
 /* Scripts Import */
 importArticles({

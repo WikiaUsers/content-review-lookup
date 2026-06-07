@@ -6,6 +6,3 @@
 */
 
 mw.loader.load('/wiki/MediaWiki:BannerDetect.js?action=raw&ctype=text/javascript');
-
-
-dev:ModernLeaderboard.js

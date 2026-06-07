@@ -1,3 +1,4 @@
+
 // CategoryCSS 
 window.categoryCSS = {
     "Market": "MediaWiki:Market.css",
@@ -271,13 +272,7 @@ importArticles({
     });
 })();
 
-
-
-
-
-
-
-
+// Main Page Slider
 
 const slider = document.querySelector('.slider');
 const slides = document.querySelectorAll('.mini-box');
@@ -287,55 +282,214 @@ const right = document.querySelector('.slider-arrow.right');
 
 const container = document.querySelector('.event-box-house');
 
-let current = 0;
+if (slider && left && right && container) {
 
-function updateSlider() {
-    slider.style.transform = `translateX(-${current * 100}%)`;
-}
+    let current = 0;
 
-function nextSlide() {
-
-    current++;
-
-    if (current >= slides.length) {
-        current = 0;
+    function updateSlider() {
+        slider.style.transform = `translateX(-${current * 100}%)`;
     }
 
-    updateSlider();
-}
-
-function prevSlide() {
-
-    current--;
-
-    if (current < 0) {
-        current = slides.length - 1;
+    function nextSlide() {
+        current++;
+        if (current >= slides.length) current = 0;
+        updateSlider();
     }
 
-    updateSlider();
+    function prevSlide() {
+        current--;
+        if (current < 0) current = slides.length - 1;
+        updateSlider();
+    }
+
+    right.addEventListener('click', nextSlide);
+    left.addEventListener('click', prevSlide);
+
+    if (slides.length <= 1) {
+
+        left.style.display = 'none';
+        right.style.display = 'none';
+
+    } else {
+
+        let autoSlide = setInterval(nextSlide, 4000);
+
+        container.addEventListener('mouseenter', () => {
+            clearInterval(autoSlide);
+        });
+
+        container.addEventListener('mouseleave', () => {
+            autoSlide = setInterval(nextSlide, 4000);
+        });
+    }
 }
 
-right.addEventListener('click', nextSlide);
-left.addEventListener('click', prevSlide);
+// Hitbox Table
 
-if (slides.length <= 1) {
+$(function () {
 
-    left.style.display = 'none';
-    right.style.display = 'none';
+    if (!$('#hitbox').length) {
+        return;
+    }
 
-} else {
+    const weapons = [];
+    let selected = [];
 
-    let autoSlide = setInterval(nextSlide, 4000);
+    $('.hitbox-table').each(function () {
 
-    container.addEventListener('mouseenter', () => {
-        clearInterval(autoSlide);
+        $(this).find('tr').each(function () {
+
+            const cells = $(this).find('td');
+
+            if (cells.length < 2) return;
+
+            const name = cells.eq(0).find('a').first().text().trim();
+
+            const length = parseFloat(
+                cells.eq(1).text().trim()
+            );
+
+            if (!name || isNaN(length)) return;
+
+            weapons.push({
+                name,
+                length
+            });
+
+            cells.eq(0).append(
+                ` <button class="hitbox-com-a"
+                    data-weapon="${name}">
+                    Compare
+                </button>`
+            );
+        });
+
     });
 
-    container.addEventListener('mouseleave', () => {
-        autoSlide = setInterval(nextSlide, 4000);
-    });
-}
+    const maxLength = Math.max(
+        ...weapons.map(w => w.length)
+    );
 
+    $('body').append(`
+        <div id="hitbox-box-a">
+            <div id="hitbox-box-b">
+                Comparator
+            </div>
 
+            <div id="hitbox-box-c">
+                Select 2 weapons...
+            </div>
+        </div>
+    `);
 
-window.AddRailModule = [{prepend: true}];
+    $(document).on(
+        'click',
+        '.hitbox-com-a',
+        function () {
+
+            const name = $(this).data('weapon');
+
+            if (selected.includes(name))
+                return;
+
+            if (selected.length >= 2)
+                selected.shift();
+
+            selected.push(name);
+
+            updateComparison();
+        }
+    );
+
+    function updateComparison() {
+
+        if (selected.length < 2) {
+
+            $('#hitbox-box-c').html(`
+                <div>
+                    Selected:
+                    ${selected.join(' vs ')}
+                </div>
+            `);
+
+            return;
+        }
+
+        const a = weapons.find(
+            w => w.name === selected[0]
+        );
+
+        const b = weapons.find(
+            w => w.name === selected[1]
+        );
+
+        const diff =
+            Math.abs(a.length - b.length);
+
+        const larger =
+            a.length > b.length ? a : b;
+
+        const smaller =
+            a.length > b.length ? b : a;
+
+        const percent =
+            ((larger.length / smaller.length) - 1)
+            * 100;
+
+        const multiplier =
+            larger.length / smaller.length;
+
+        const barA =
+            (a.length / maxLength) * 100;
+
+        const barB =
+            (b.length / maxLength) * 100;
+
+        $('#hitbox-box-c').html(`
+
+            <div class="weapon-block">
+                <strong>${a.name}</strong>
+                (${a.length})
+
+                <div class="hitbox-box-d">
+                    <div
+                        style="width:${barA}%">
+                    </div>
+                </div>
+            </div>
+
+            <div class="weapon-block">
+                <strong>${b.name}</strong>
+                (${b.length})
+
+                <div class="hitbox-box-d">
+                    <div
+                        style="width:${barB}%">
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div>
+                <b>${larger.name}</b>
+                is
+                <b>${percent.toFixed(2)}%</b>
+                longer.
+            </div>
+
+            <div>
+                Difference:
+                <b>${diff.toFixed(3)}</b>
+                studs
+            </div>
+
+            <div>
+                Multiplier:
+                <b>${multiplier.toFixed(2)}x</b>
+            </div>
+
+        `);
+    }
+
+});

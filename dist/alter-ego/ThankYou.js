@@ -43,7 +43,8 @@
 					icon: 'heart',
 					placement: 'page-tools-left',
 					position: options.position,
-					text: 'Give your thanks to the alter egoists!'
+					text: 'Give your thanks to the alter egoists!',
+					i18nKey: 'thankyouu'
 				});
 			})
 			.then(findSelector.bind(undefined, '.thankyou__button'))
@@ -265,7 +266,7 @@
 			const tooltip = $('<div>', {
 				class: 'wds-tooltip is-right',
 				css: {
-					left: ($(this).offset().left + 50) + 'px',
+					left: ($(this).offset().left + 41.5) + 'px',
 					top: ($(this).offset().top - $(document).scrollTop() + 20) + 'px',
 					'z-index': 999
 				},

@@ -18,7 +18,7 @@ $(function () {
         }
 
         // Hide all sibling tabs
-        $target.siblings(".sbw-ui-tab-content").addClass("hidden").hide();
+        $parent.find(".sbw-ui-tab-content").not($target).addClass("hidden").hide();
         // Show target tab
         $target.removeClass("hidden").show();
 

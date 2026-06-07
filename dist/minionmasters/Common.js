@@ -8,7 +8,7 @@ const Buffs = {
     },
     
     Haste: {
-        attackSpeedMultiplier: 0.67,
+        attackSpeedMultiplier: 1.33 ** -1, // Attackspeed in the Game is defined as Time/Attack, but for Calculations Attack/Time is taken, so it is multiplicated with: 1.33^-1
         movementSpeedMultiplier: 1.33
     },
     
@@ -33,7 +33,7 @@ const Buffs = {
     },
     
     ManaSurge: {
-        attackSpeedMultiplier: 0.75
+        attackSpeedMultiplier: 1.25 **  -1		// Attackspeed in the Game is defined as Time/Attack, but for Calculations Attack/Time is taken, so it is multiplicated with: 1.25^-1
     },
     
     Marked: {
@@ -41,7 +41,7 @@ const Buffs = {
     },
     
     Slow: {
-    	attackSpeedMultiplier: 1.2,
+    	attackSpeedMultiplier: 0.8 ** -1,		// Attackspeed in the Game is defined as Time/Attack, but for Calculations Attack/Time is taken, so it is multiplicated with: 0.8^-1
         movementSpeedMultiplier: 0.8
     }
 };
@@ -142,15 +142,15 @@ const activatedEffects = {
 	"Wartrack Dreadnaught": [{ flatManaBonus: 4 }, { damageMultiplier: 2 }, { flatHealthBonus: 350}],
 	//Slither
 	"Taloc, the Vessel": { damageMultiplier: 1.5 },
-	"Soul Stealer": {attackSpeedMultiplier: 0.4},
+	"Soul Stealer": {attackSpeedMultiplier: 2.5 ** -1},
 	"Rabid Prowler": Buffs.Haste,
 	"Impatient Statue": Buffs.Haste,
-	"Empowered Soul Stealer": {attackSpeedMultiplier: 0.4},
+	"Empowered Soul Stealer": {attackSpeedMultiplier: 2.5 ** -1},
 	"Poison Strike": { poisonDuration: 8, poisonTickDamage: 10 },
 	//Stoutheart
 	"Woodsman": Buffs.Haste,
-	"Groggy Woodsman": [Buffs.Haste, {attackSpeedMultiplier: 0.833}, {movementSpeedMultiplier: 1.2}],
-	"Adventuring Party": [Buffs.Haste, {attackSpeedMultiplier: 0.833}, {movementSpeedMultiplier: 1.2}, { flatManaBonus: 2 }],
+	"Groggy Woodsman": [Buffs.Haste, {attackSpeedMultiplier: 0.8}, {movementSpeedMultiplier: 1.2}],
+	"Adventuring Party": [Buffs.Haste, {attackSpeedMultiplier: 0.8}, {movementSpeedMultiplier: 1.2}, { flatManaBonus: 2 }],
 	"Caber Tosser": Buffs.Haste,
 	"Urclaw, Protector of the Peaks": [Buffs.BerserkerRage, Buffs.Haste],
 	"Fergus Flagon Fighter": {movementSpeedFlat: 2},
@@ -167,7 +167,7 @@ const activatedEffects = {
 	"Gor'Rakk Gate": { flatManaBonus: -1 },
 	// Zen-Chi
 	"Xiao Long": [Buffs.Rage, Buffs.Haste],
-	"Battle Shi-Hou": {attackSpeedMultiplier: 0.222},
+	"Battle Shi-Hou": {attackSpeedMultiplier: 4.5 ** -1},
 	"Feng the Wanderer": [Buffs.Rage, Buffs.Spirit, Buffs.GiantGrowth], //Assuming this Buffs-Combination for him
 	"Shen Stormstrike": { attackSpeedMultiplier: 0.5 },
 	"Red Golem": [Buffs.Rage, Buffs.Spirit],
@@ -763,7 +763,7 @@ $(function () {
         if (Number.isFinite(damage)) damage = Math.round(damage);
 		if (Number.isFinite(atk)) atk = Math.max(0.1, +atk.toFixed(2));
 		if (Number.isFinite(hp)) hp = Math.max(1, Math.round(hp));
-		if (Number.isFinite(mana)) mana = Math.max(1, Math.round(mana));
+		if (Number.isFinite(mana)) mana = Math.max(0, Math.round(mana));
 		if (Number.isFinite(count)) count = Math.max(1, Math.round(count));
 		if (Number.isFinite(range)) range = Math.max(0, parseFloat(range.toFixed(2)));
 		if (Number.isFinite(move)) move = Math.round(move);

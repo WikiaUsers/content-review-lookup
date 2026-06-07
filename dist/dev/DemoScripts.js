@@ -133,6 +133,11 @@
             styles: 'MediaWiki:CSS3Tooltip.css',
             scripts: 'MediaWiki:CSS3Tooltip/code-2/demo.js'
         },
+        
+        CustomBullets: {
+            page: 'CustomBullets',
+            styles: 'MediaWiki:CustomBullets.css'
+        },
 
         DataTables: {
             selector: '.datatable',
@@ -289,6 +294,11 @@
         FloatingTitle: {
             page: 'FloatingTitle',
             styles: 'MediaWiki:FloatingTitle.css'
+        },
+        
+        FontAwesome: {
+        	selector: '.fa, .fas, .far, .fab',
+        	styles: 'MediaWiki:FontAwesome.css'
         },
 
         FusionButtonSet: {
@@ -473,6 +483,12 @@
                 // This variable doesn't seem to affect anything else
                 mw.config.set('wgIsTestModeEnabled', true);
             }
+        },
+        
+        MiniWiki: {
+            selector: '.miniwiki',
+            styles: ['MediaWiki:Global_Lua_Modules/MiniWiki.css', 'MediaWiki:Global_Lua_Modules/MiniWiki/Main.css', 'MediaWiki: Global_Lua_Modules/MiniWiki/Presets.css', 'MediaWiki:Global_Lua_Modules/MiniWiki/Sandbox.css'],
+            scripts: 'MediaWiki:MiniWiki.js'
         },
 
         MinutelyWider: {

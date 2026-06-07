@@ -1,1 +1,6 @@
-mw.loader.load('https://dev.fandom.com/wiki/MediaWiki:EasyTalk.js?action=raw&ctype=text/javascript');
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:EasyTalk.js',
+    ]
+});

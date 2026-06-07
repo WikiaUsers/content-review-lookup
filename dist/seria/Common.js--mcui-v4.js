@@ -35,7 +35,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
             console.warn("No such tab ID \"" + id + "\"");
             return;
         }
-        $parent.find(".sbw-ui-tab-content#" + id).siblings(".sbw-ui-tab-content").addClass("hidden").hide();
+        $parent.find(".sbw-ui-tab-content").not("#" + id).addClass("hidden").hide();
         $parent.find(".sbw-ui-tab-content#" + id).removeClass("hidden").show();
         // Since images don't load on hidden tabs, force them to load
         var onloadEl = $parent.find(".sbw-ui-tab-content#" + id + " .lzy[onload]");

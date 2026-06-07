@@ -201,7 +201,7 @@ $(document).ready(function() {
       });
       $(".RP").each(function() {
          var cellValueRP = $(this).attr("title") * 1;
-         var calcNewRP = Math.round(cellValueRP * (1 + (getInputRP / 100)));
+         var calcNewRP = Math.floor(cellValueRP * (1 + (getInputRP / 100)));
          $(this).text(calcNewRP.format("#,##0[.]###"));
         if (calcNewRP === cellValueRP) {
             $(".RP").removeClass("StatModified");

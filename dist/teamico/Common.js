@@ -285,6 +285,12 @@ function removeNodes(obj) {
   while(obj.firstChild) obj.removeChild(obj.firstChild);
 }
 
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/t__/images/b/b3/Sz_toumei.png/revision/latest?cb=20260601233340&path-prefix=teamico';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/t__/images/b/b3/Sz_toumei.png/revision/latest?cb=20260601233340&path-prefix=teamico';
+window.pPreview.tlen = 1000;
+window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]'];
+
 // ================================================================================
 //  END dynamic topics for help.wikia
 // ================================================================================

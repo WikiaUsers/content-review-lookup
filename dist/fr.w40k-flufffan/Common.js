@@ -1,5 +1,6 @@
 /* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
 window.ajaxRefresh = 30000;
+window.enableReadProgressBarOnArticles = true;
 
 // Cartes Interactives
 /* window.mapsExtendedConfig = {
@@ -15,7 +16,7 @@ window.ajaxRefresh = 30000;
 importArticles({
     type: 'script',
     articles: [
-        'MediaWiki:Scroll.js'
+        'MediaWiki:Scroll.js'				/* Icône de Scroll */
     ]
 });
 

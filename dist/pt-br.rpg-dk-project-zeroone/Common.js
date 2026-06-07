@@ -49,7 +49,7 @@ $(function(){
     var title = $bar.attr('data-title') || '';
     $bar.find('.mw-collapsible-toggle').remove();
     if($bar.find('.bk-bar-text').length === 0){
-      $bar.prepend('<span class="bk-bar-text">' + title + '</span>');
+      $bar.prepend('<span class="bk-bar-text">' + mw.html.escape(title) + '</span>');
       $bar.append('<span class="bk-toggle">Ocultar</span>');
     }
   });

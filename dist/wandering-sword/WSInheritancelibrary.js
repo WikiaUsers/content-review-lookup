@@ -1,9 +1,19 @@
-$(document).ready(function() {
+    $(document).ready(function() {
     var $library = $('.inheritance-library');
     if ($library.length === 0) return;
 
     let totalSpent = 0;
     const selectedItems = new Set();
+    let itemsState      = {};
+    let blueprintsState = {};
+    let attributeState  = {};
+    let lifeSkillState  = { forging: 1, tailoring: 1, alchemy: 1, cooking: 1 };
+    let legacyState = null;   // Currently selected legacy
+    let outfitState = {};
+
+    const BLUE = "https://static.wikia.nocookie.net/wandering-sword/images/d/d7/BlueGenericEmblem.png/revision/latest?cb=20260601020912";
+
+    // ==================== DATA ====================
 
     const martialData = {
         fist: [
@@ -62,7 +72,6 @@ $(document).ready(function() {
         {name: "Tongbeiquan", img: "https://static.wikia.nocookie.net/wandering-sword/images/9/9e/Tongbeiquan.png/revision/latest?cb=20250810224218", cost: 50},
         {name: "Jianghu Palm Technique", img: "https://static.wikia.nocookie.net/wandering-sword/images/4/4c/JianghuPalmTechnique.png/revision/latest?cb=20250810224148", cost: 50},
         ],
-
         hidden: [
         {name: "Vengeance of Scorching Star", img: "https://static.wikia.nocookie.net/wandering-sword/images/a/ae/Vengeance_of_Scorching_Star.png/revision/latest?cb=20250725163758", cost: 6000},
         {name: "Crimson Blade Mastery", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/5c/Crimson_Blade_Mastery.png/revision/latest?cb=20250919014919", cost: 6000},
@@ -93,7 +102,6 @@ $(document).ready(function() {
         {name: "Jianghu Hidden Weapon", img: "https://static.wikia.nocookie.net/wandering-sword/images/f/fb/JianghuHiddenWeapon.png/revision/latest?cb=20250811022831", cost: 50},
         {name: "Shadowy Arrows", img: "https://static.wikia.nocookie.net/wandering-sword/images/9/9d/ShadowyArrows.png/revision/latest?cb=20250810230624", cost: 50},
         ],
-
         sword: [
         {name: "Drifting Cloud Tai Chi Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/c/cc/Drifting_Cloud_Tai_Chi_Swordplay.png/revision/latest?cb=20250731033733", cost: 6000},
         {name: "Celestial Fairy Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/8/8f/CelestialFairySwordplay.png/revision/latest?cb=20250811020127", cost: 6000},
@@ -139,7 +147,6 @@ $(document).ready(function() {
         {name: "Graypine Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/2/2d/GraypineSwordplay.png/revision/latest?cb=20250811015352", cost: 50},
         {name: "Arching Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/1a/ArchingSwordplay.png/revision/latest?cb=20250811015321", cost: 10},
         ],
-
         saber: [
         {name: "Bloodstained Devil's Saber", img: "https://static.wikia.nocookie.net/wandering-sword/images/0/06/BloodstainedDevil%27sSaber.png/revision/latest?cb=20250811013759", cost: 6000},
         {name: "Saha Hell", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/55/SahaHell.png/revision/latest?cb=20250811013746", cost: 6000},
@@ -184,7 +191,6 @@ $(document).ready(function() {
         {name: "Twin Dragons' Slash", img: "https://static.wikia.nocookie.net/wandering-sword/images/9/9e/TwinDragons%27Slash.png/revision/latest?cb=20250811012719", cost: 50},
         {name: "Darkwind Saberplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/e/ea/DarkwindSaberplay.png/revision/latest?cb=20250811012541", cost: 10},
         ],
-
         polearm: [
         {name: "Repelling Staff Technique", img: "https://static.wikia.nocookie.net/wandering-sword/images/a/ad/RepellingStaffTechnique.png/revision/latest?cb=20250810232545", cost: 6000},
         {name: "Vairocana's Staff", img: "https://static.wikia.nocookie.net/wandering-sword/images/7/75/Vairocana%27sStaff.png/revision/latest?cb=20250810232520", cost: 6000},
@@ -219,7 +225,6 @@ $(document).ready(function() {
         {name: "Demon Polearm Technique", img: "https://static.wikia.nocookie.net/wandering-sword/images/6/63/DemonPolearmTechnique.png/revision/latest?cb=20250810232209", cost: 50},
         {name: "Nanshan Spearplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/9/9c/Nanshan_Spearplay.png/revision/latest?cb=20250810232732", cost: 10},
         ],
-
         lightness: [
         {name: "Water Traversing Steps", img: "https://static.wikia.nocookie.net/wandering-sword/images/2/28/Water_Traversing_Steps.png/revision/latest?cb=20250815030918", cost: 6000},
         {name: "Sky Feather Steps", img: "https://static.wikia.nocookie.net/wandering-sword/images/2/20/SkyFeatherSteps.png/revision/latest?cb=20250810223826", cost: 4000},
@@ -238,7 +243,6 @@ $(document).ready(function() {
         {name: "Wudang Lightness Skill", img: "https://static.wikia.nocookie.net/wandering-sword/images/2/21/WudangLightnessSkill.png/revision/latest?cb=20250810223559", cost: 50},
         {name: "Basic Lightness Skill", img: "https://static.wikia.nocookie.net/wandering-sword/images/b/b1/BasicLightnessSkill.png/revision/latest?cb=20250810223544", cost: 10},
         ],
-
         cultivation: [
         {name: "Evergreen Vitality Mastery", img: "https://static.wikia.nocookie.net/wandering-sword/images/b/b5/Evergreen_Vitality_Mastery.png/revision/latest?cb=20250810205607", cost: 6000},
         {name: "Stringless Silence", img: "https://static.wikia.nocookie.net/wandering-sword/images/e/e0/Stringless_Silence.png/revision/latest?cb=20250810205744", cost: 6000},
@@ -343,7 +347,6 @@ $(document).ready(function() {
         {name: "Arhat Fist", img: "https://static.wikia.nocookie.net/wandering-sword/images/8/8d/Fist_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014426", cost: 100},
         {name: "Tongbeiquan", img: "https://static.wikia.nocookie.net/wandering-sword/images/8/8d/Fist_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014426", cost: 100},
         ],
-
         hidden: [
         {name: "Vengeance of Scorching Star", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/11/Hidden_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014812", cost: 12000},
         {name: "Unrivaled Finger Strike", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/11/Hidden_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014812", cost: 12000},
@@ -368,7 +371,6 @@ $(document).ready(function() {
         {name: "Shadowy Arrows", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/11/Hidden_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014426", cost: 100},
         {name: "Bones Nails", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/11/Hidden_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014426", cost: 100},
         ],
-
         sword: [
         {name: "Tai Chi Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/3/38/Sword_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014426", cost: 12000},
         {name: "Zhenwu's Sword Intent", img: "https://static.wikia.nocookie.net/wandering-sword/images/6/69/Sword_Arts_Manual_%28Orange%29.png/revision/latest?cb=20250822014426", cost: 8000},
@@ -403,7 +405,6 @@ $(document).ready(function() {
         {name: "Mingjian Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/8/89/Sword_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014426", cost: 100},
         {name: "Shaolin Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/8/89/Sword_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014426", cost: 100},
         ],
-
         saber: [
         {name: "Saha Hell", img: "https://static.wikia.nocookie.net/wandering-sword/images/3/3e/Saber_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014812", cost: 12000},
         {name: "Encompassing Saberplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/3/3e/Saber_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014812", cost: 12000},
@@ -438,7 +439,6 @@ $(document).ready(function() {
         {name: "Shaolin Saberplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/6/6a/Saber_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014425", cost: 100},
         {name: "Darkwind Saberplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/0/0e/Saber_Arts_Manual.png/revision/latest?cb=20250822013841", cost: 50},
         ],
-
         polearm: [
         {name: "Madness Staff Technique", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/51/Polearm_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014425", cost: 12000},
         {name: "Vairocana's Staff", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/51/Polearm_Arts_Manual_%28Red%29.png/revision/latest?cb=20250822014425", cost: 12000},
@@ -467,7 +467,6 @@ $(document).ready(function() {
         {name: "Demon Polearm Technique", img: "https://static.wikia.nocookie.net/wandering-sword/images/6/60/Polearm_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014425", cost: 100},
         {name: "Crouching Dragon Polearm Technique", img: "https://static.wikia.nocookie.net/wandering-sword/images/6/60/Polearm_Arts_Manual_%28Green%29.png/revision/latest?cb=20250822014425", cost: 100},
         ],
-
         lightness: [
         {name: "Water Traversing Steps", img: "https://static.wikia.nocookie.net/wandering-sword/images/c/c5/Lightness_Manual_%28Red%29.png/revision/latest?cb=20250822014812", cost: 12000},
         {name: "Chenghuang Windrider", img: "https://static.wikia.nocookie.net/wandering-sword/images/9/96/Lightness_Manual_%28Orange%29.png/revision/latest?cb=20250822014425", cost: 8000},
@@ -481,7 +480,6 @@ $(document).ready(function() {
         {name: "Wudang Lightness Skill", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/18/Lightness_Manual_%28Green%29.png/revision/latest?cb=20250822014425", cost: 100},
         {name: "Basic Lightness Skill", img: "https://static.wikia.nocookie.net/wandering-sword/images/3/38/Blue_Lightness_Manual.png/revision/latest?cb=20250822013655", cost: 50},
         ],
-
         cultivation: [
         {name: "Elusive Liuyao Swordplay", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/5e/Cultivation_Manual_%28Red%29.png/revision/latest?cb=20250822014811", cost: 12000},
         {name: "Stringless Silence", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/5e/Cultivation_Manual_%28Red%29.png/revision/latest?cb=20250822014811", cost: 12000},
@@ -527,8 +525,443 @@ $(document).ready(function() {
         ]
     };
 
+    // === Items Tab Data ===
+const itemsData = [
+    { id: "sword",   name: "Initial Sword",          icon: "https://static.wikia.nocookie.net/wandering-sword/images/f/fc/SwordEmblem.png/revision/latest?cb=20260601015917",    levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "saber",   name: "Initial Saber",           icon: "https://static.wikia.nocookie.net/wandering-sword/images/4/41/SaberEmblem.png/revision/latest?cb=20260601015957",    levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "polearm", name: "Initial Polearm",         icon: "https://static.wikia.nocookie.net/wandering-sword/images/f/fd/PolearmEmblem.png/revision/latest?cb=20260601020009",  levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "fist",    name: "Initial Fist Weapon",     icon: "https://static.wikia.nocookie.net/wandering-sword/images/3/32/FistEmblem.png/revision/latest?cb=20260601020034",     levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "hidden",  name: "Initial Hidden Weapon",   icon: "https://static.wikia.nocookie.net/wandering-sword/images/9/9d/HiddenEmblem.png/revision/latest?cb=20260601020016",   levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "headwear",name: "Initial Headwear",        icon: "https://static.wikia.nocookie.net/wandering-sword/images/4/47/HeadwearEmblem.png/revision/latest?cb=20260601020026", levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "garment", name: "Initial Garment",         icon: "https://static.wikia.nocookie.net/wandering-sword/images/1/1c/GarmentEmblem.png/revision/latest?cb=20260601020114",  levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "shoes",   name: "Initial Shoes",           icon: "https://static.wikia.nocookie.net/wandering-sword/images/a/a5/ShoesEmblem.png/revision/latest?cb=20260601015945",    levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] },
+    { id: "accessory",name: "Initial Accessory",      icon: "https://static.wikia.nocookie.net/wandering-sword/images/5/5b/AccessoryEmblem.png/revision/latest?cb=20260601020104",levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III", "Class II", "Class I"], costs: [0, 100, 200, 300, 500, 600, 1000, 1500, 2200, 3500, 3500] }
+];
+
+// === Blueprints Tab Data ===
+const blueprintsData = [
+    { 
+        id: "weapon", 
+        name: "Advanced Blueprint (Weapon)", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    },
+    { 
+        id: "headwear", 
+        name: "Advanced Blueprint (Headwear)", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    },
+    { 
+        id: "garment", 
+        name: "Advanced Blueprint (Garment)", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    },
+    { 
+        id: "shoes", 
+        name: "Advanced Blueprint (Shoes)", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    },
+    { 
+        id: "accessory", 
+        name: "Advanced Blueprint (Accessory)", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    },
+    { 
+        id: "spagirism", 
+        name: "Spagirism", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    },
+    { 
+        id: "recipe", 
+        name: "Recipe", 
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/8/80/BlueprintEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        levels: ["", "Class X", "Class IX", "Class VIII", "Class VII", "Class VI", "Class V", "Class IV", "Class III"],
+        costs: [0, 200, 400, 800, 1200, 2000, 3000, 5000, 5000]
+    }
+];
+
+// === Attribute Points Tab Data ===
+const attributeData = [
+    {
+        id: "martial",
+        name: "Initial Martial Points",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/5/53/MartialPointEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        values: [0, 500, 2000, 5000, 10000, 20000, 50000, 100000],
+        costs: [0, 150, 450, 900, 1500, 3000, 9000, 15000]
+    },
+    {
+        id: "meridian",
+        name: "Initial Meridian Points",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/7/78/MeridianEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        values: [0, 100, 500, 1000, 3000, 5000, 8000, 13000],
+        costs: [0, 300, 1200, 1500, 6000, 6000, 9000, 15000]
+    },
+    {
+        id: "coins",
+        name: "Initial Coins",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/6/65/CoinsEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        values: [0, 1000, 5000, 10000, 50000, 100000, 250000, 500000],
+        costs: [0, 100, 400, 500, 4000, 4500, 12000, 17500]
+    }
+];
+
+// === Life Skill Mastery Tab Data ===
+const lifeSkillData = [
+    {
+        id: "forging",
+        name: "Forging",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/b/b0/ForgingEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        maxLevel: 10
+    },
+    {
+        id: "tailoring",
+        name: "Tailoring",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/e/eb/TailoringEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        maxLevel: 10
+    },
+    {
+        id: "alchemy",
+        name: "Alchemy",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/1/14/AlchemyEmblem-Photoroom.png/revision/latest?cb=20260601152234",
+        maxLevel: 10
+    },
+    {
+        id: "cooking",
+        name: "Cooking",
+        icon: "https://static.wikia.nocookie.net/wandering-sword/images/4/4e/CookingEmblem-Photoroom.png/revision/latest?cb=20260601152233",
+        maxLevel: 10
+    }
+];
+
+const lifeSkillCosts = [0, 50, 100, 200, 400, 800, 1500, 2500, 4000, 6000, 6000];
+
+// === Legacy Tab Data ===
+const legacyData = [
+    { 
+        id: "snowlock", 
+        name: "Snowlock", 
+        cost: 50000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/0/01/Snowlock%27s_Legacy.png/revision/latest?cb=20260603000432"
+    },
+    { 
+        id: "mara", 
+        name: "Mara", 
+        cost: 50000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/9/9b/Mara%27s_Legacy.png/revision/latest?cb=20260603000516"
+    },
+    { 
+        id: "bodhidharma", 
+        name: "Bodhidharma", 
+        cost: 40000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/0/01/Bodhidharma%27s_Legacy.png/revision/latest?cb=20260603000533"
+    },
+    { 
+        id: "tianjian", 
+        name: "Tianjian Sect", 
+        cost: 40000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/b/b9/Tianjian_Sect%27s_Legacy.png/revision/latest?cb=20260603000414"
+    },
+    { 
+        id: "tianshan", 
+        name: "Tianshan", 
+        cost: 40000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/3/30/Tianshan_Sect%27s_Legacy.png/revision/latest?cb=20260603000443"
+    },
+    { 
+        id: "qingyun", 
+        name: "Qingyun", 
+        cost: 60000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/3/3a/Master_Qingyun%27s_Legacy.png/revision/latest?cb=20260603000507"
+    },
+    { 
+        id: "jadedragon", 
+        name: "Jade Dragon", 
+        cost: 60000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/e/e7/Jade_Dragon%27s_Legacy.png/revision/latest?cb=20260603000525"
+    },
+    { 
+        id: "tianji", 
+        name: "Tianji Palace", 
+        cost: 50000,
+        tooltip: "https://static.wikia.nocookie.net/wandering-sword/images/3/36/Tianji_Palace%27s_Legacy.png/revision/latest?cb=20260603000456"
+    }
+];
+
+const outfitData = [
+    { id: "wudang",    cost: 300, dim: "https://static.wikia.nocookie.net/wandering-sword/images/5/57/OutfitWudangInheritence.png/revision/latest?cb=20260601225945",      lit: "https://static.wikia.nocookie.net/wandering-sword/images/0/05/OutfitWudangInheritence%28Illuminated%29.png/revision/latest?cb=20260601225946" },
+    { id: "prodigy",   cost: 300, dim: "https://static.wikia.nocookie.net/wandering-sword/images/a/a1/OutfitProdigyInheritence.png/revision/latest?cb=20260601235043",     lit: "https://static.wikia.nocookie.net/wandering-sword/images/c/c6/OutfitProdigyInheritence%28Illuminated%29.png/revision/latest?cb=20260601235113" },
+    { id: "sima",      cost: 10,  dim: "https://static.wikia.nocookie.net/wandering-sword/images/c/ce/OutfitSimaInheritence.png/revision/latest?cb=20260601235704",         lit: "https://static.wikia.nocookie.net/wandering-sword/images/f/f4/OutfitSimaInheritence%28Illuminated%29.png/revision/latest?cb=20260601235715" },
+    { id: "shangguan", cost: 10,  dim: "https://static.wikia.nocookie.net/wandering-sword/images/b/be/OutfitShangguanInheritence.png/revision/latest?cb=20260601225946",    lit: "https://static.wikia.nocookie.net/wandering-sword/images/9/95/OutfitShangguanInheritence%28Illuminated%29.png/revision/latest?cb=20260601225946" },
+    { id: "luxianer",  cost: 300, dim: "https://static.wikia.nocookie.net/wandering-sword/images/f/f6/OutfitLuxianerInheritence.png/revision/latest?cb=20260602000156",     lit: "https://static.wikia.nocookie.net/wandering-sword/images/7/7d/OutfitLuxianerInheritence%28Illuminated%29.png/revision/latest?cb=20260602000154" }
+];
+
+    // ==================== HELPERS ====================
+
     function updatePoints() {
         $('#points-total').text(totalSpent);
+    }
+
+    function buildCostHtml(itemIcon, gainText, cost) {
+        return `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <span style="color:#ccc;display:flex;align-items:center;gap:5px;">
+                    <img src="${mw.html.escape(itemIcon)}" style="width:22px;height:22px;vertical-align:middle;"> ${mw.html.escape(gainText)}
+                </span>
+                <span style="color:#ff6666;display:flex;align-items:center;gap:5px;">
+                    <img src="${mw.html.escape(BLUE)}" style="width:22px;height:22px;vertical-align:middle;"> - ${Number(cost)}
+                </span>
+            </div>`;
+    }
+
+    function buildRow(iconSrc, labelHtml, costHtml, minusDisabled, plusDisabled) {
+        return $(`
+            <div class="item-row">
+                <div class="item-info">
+                    <img src="${mw.html.escape(iconSrc)}" style="width:36px;height:36px;">
+                    <span>${labelHtml}</span>
+                </div>
+                <div class="item-cost">${costHtml}</div>
+                <div class="item-controls">
+                    <button class="btn-minus" ${minusDisabled ? 'disabled' : ''}>-</button>
+                    <button class="btn-plus"  ${plusDisabled  ? 'disabled' : ''}>+</button>
+                </div>
+            </div>
+        `);
+    }
+
+    // ==================== TAB LOADERS ====================
+
+const quirkData = [
+    { id: "q1", img: "https://static.wikia.nocookie.net/wandering-sword/images/2/24/Samsara.png/revision/latest?cb=20260602014303",                tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/5/53/Samsara_-_Tooltip.png/revision/latest?cb=20260602030718" },
+    { id: "q2", img: "https://static.wikia.nocookie.net/wandering-sword/images/1/18/Effortless_Mastery.png/revision/latest?cb=20260602014303",    tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/0/0a/Effortless_Mastery_-_Tooltip.png/revision/latest?cb=20260602163636" },
+    { id: "q3", img: "https://static.wikia.nocookie.net/wandering-sword/images/9/93/Relentless_Vigor.png/revision/latest?cb=20260602014303",       tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/d/d8/Relentless_Vigor_-_Tooltip.png/revision/latest?cb=20260602031035" },
+    { id: "q4", img: "https://static.wikia.nocookie.net/wandering-sword/images/e/eb/Fortune%27s_Bounty.png/revision/latest?cb=20260602014303",     tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/c/c9/Fortune%27s_Bounty_-_Tooltip.png/revision/latest?cb=20260602163635" },
+    { id: "q5", img: "https://static.wikia.nocookie.net/wandering-sword/images/7/73/Blessed_Craftmanship.png/revision/latest?cb=20260602014303",   tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/d/dd/Blessed_Craftmanship_-_Tooltip.png/revision/latest?cb=20260602163636" },
+    { id: "q6", img: "https://static.wikia.nocookie.net/wandering-sword/images/4/4d/Fated_Spoils.png/revision/latest?cb=20260602014303",           tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/1/1a/Fated_Spoils_-_Tooltip.png/revision/latest?cb=20260602163634" },
+    { id: "q7", img: "https://static.wikia.nocookie.net/wandering-sword/images/c/c0/Doubled_Diligence.png/revision/latest?cb=20260602014303",      tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/1/13/Doubled_Diligence_-_Tooltip.png/revision/latest?cb=20260602031026" },
+    { id: "q8", img: "https://static.wikia.nocookie.net/wandering-sword/images/c/c7/Boundless_Abundance.png/revision/latest?cb=20260602014303",    tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/d/d8/Boundless_Abundance_-_Tooltip.png/revision/latest?cb=20260602030718" }
+];
+
+const redQuirkData = [
+    { id: "rq1", img: "https://static.wikia.nocookie.net/wandering-sword/images/5/53/Overcomer.png/revision/latest?cb=20260602014303",     tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/f/f0/Overcomer_-_Tooltip.png/revision/latest?cb=20260602032815" },
+    { id: "rq2", img: "https://static.wikia.nocookie.net/wandering-sword/images/e/e1/Apex_Challenger.png/revision/latest?cb=20260602014304", tooltipImg: "https://static.wikia.nocookie.net/wandering-sword/images/7/70/Apex_Challenger_-_Tooltip.png/revision/latest?cb=20260602031017" }
+];
+
+let redQuirkCount = 0;
+
+function loadDifficultyTab() {
+    var $grid = $('#inherit-grid');
+    $grid.empty();
+    $grid.html(`
+        <div class="difficulty-wrapper">
+            <!-- LEFT PANEL -->
+            <div class="difficulty-left">
+                <div class="difficulty-bar">Difficulty</div>
+                <img src="https://static.wikia.nocookie.net/wandering-sword/images/4/4d/Extreme_Difficulty.png/revision/latest?cb=20260602001359" class="difficulty-img">
+            </div>
+            <!-- RIGHT PANEL -->
+            <div class="difficulty-right">
+                <div class="difficulty-bar">Quirks</div>
+                <div class="quirks-container">
+                    <div class="quirks-grid">
+                        ${quirkData.map(q => `
+                            <div class="quirk-circle">
+                                <img src="${mw.html.escape(q.img)}" class="quirk-icon">
+                                <div class="quirk-tooltip"><img src="${mw.html.escape(q.tooltipImg)}" class="quirk-tooltip-img"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p class="quirks-note">Each additional difficulty Quirk increases the difficulty score by 0.2 in the Settlement.</p>
+                    <hr class="quirks-divider">
+                    <div class="red-quirks-row">
+                        <div class="quirk-circle red-quirk" id="rq1-circle">
+                            <img src="${mw.html.escape(redQuirkData[0].img)}" class="quirk-icon">
+                            <span class="rq-count" id="rq1-count">0</span>
+                            <div class="quirk-tooltip"><img src="${mw.html.escape(redQuirkData[0].tooltipImg)}" class="quirk-tooltip-img"></div>
+                        </div>
+                        <div class="quirk-circle red-quirk">
+                            <img src="${mw.html.escape(redQuirkData[1].img)}" class="quirk-icon">
+                            <div class="quirk-tooltip"><img src="${mw.html.escape(redQuirkData[1].tooltipImg)}" class="quirk-tooltip-img"></div>
+                        </div>
+                    </div>
+                    <p class="quirks-note">Quirks in red will not increase the score in the Settlement.</p>
+                </div>
+            </div>
+        </div>
+    `);
+    // Clickable red quirk counter (0-30, resets)
+    $('#rq1-circle').on('click', function() {
+        redQuirkCount = (redQuirkCount >= 30) ? 0 : redQuirkCount + 1;
+        $('#rq1-count').text(redQuirkCount);
+    });
+}
+
+    function loadItemsTab() {
+        var $grid = $('#inherit-grid');
+        $grid.empty();
+
+        itemsData.forEach(function(item) {
+            if (itemsState[item.id] === undefined) itemsState[item.id] = 0;
+            var lvl = itemsState[item.id];
+            var displayClass = item.levels[lvl] || 'None';
+            var costHtml = lvl >= 1 ? buildCostHtml(item.icon, '+ 1', item.costs[lvl]) : '';
+
+            var $row = buildRow(
+                item.icon,
+                `${mw.html.escape(item.name)} : <strong>${mw.html.escape(displayClass)}</strong>`,
+                costHtml,
+                lvl === 0,
+                lvl >= 10
+            );
+
+            $row.find('.btn-plus').on('click', function() {
+                if (lvl >= 10) return;
+                totalSpent += item.costs[lvl + 1];
+                itemsState[item.id]++;
+                updatePoints(); loadItemsTab();
+            });
+            $row.find('.btn-minus').on('click', function() {
+                if (lvl <= 0) return;
+                totalSpent -= item.costs[lvl];
+                itemsState[item.id]--;
+                updatePoints(); loadItemsTab();
+            });
+            $grid.append($row);
+        });
+    }
+
+function loadBlueprintsTab() {
+    var $grid = $('#inherit-grid');
+    $grid.empty();
+
+    blueprintsData.forEach(function(item) {
+        if (blueprintsState[item.id] === undefined) blueprintsState[item.id] = 0;
+        
+        var lvl = blueprintsState[item.id];
+        var displayClass = item.levels[lvl] || "";
+        
+        var labelHtml = displayClass 
+            ? `${mw.html.escape(item.name)} : <strong>${mw.html.escape(displayClass)}</strong>` 
+            : item.name;
+
+        var costHtml = (lvl >= 1) 
+            ? buildCostHtml(item.icon, '+ 1', item.costs[lvl]) 
+            : '';
+
+        var $row = buildRow(
+            item.icon, 
+            labelHtml, 
+            costHtml, 
+            lvl === 0, 
+            lvl >= (item.levels.length - 1)
+        );
+
+        $row.find('.btn-plus').on('click', function() {
+            if (lvl >= (item.levels.length - 1)) return;
+            totalSpent += item.costs[lvl + 1];
+            blueprintsState[item.id]++;
+            updatePoints();
+            loadBlueprintsTab();
+        });
+
+        $row.find('.btn-minus').on('click', function() {
+            if (lvl <= 0) return;
+            totalSpent -= item.costs[lvl];
+            blueprintsState[item.id]--;
+            updatePoints();
+            loadBlueprintsTab();
+        });
+
+        $grid.append($row);
+    });
+}
+
+function loadAttributeTab() {
+    var $grid = $('#inherit-grid');
+    $grid.empty();
+
+    attributeData.forEach(function(item) {
+        if (attributeState[item.id] === undefined) attributeState[item.id] = 0;
+        
+        var lvl = attributeState[item.id];
+        var displayValue = item.values[lvl] || 0;
+        
+        var costHtml = (lvl >= 1) 
+            ? buildCostHtml(item.icon, `+ ${item.values[lvl]}`, item.costs[lvl]) 
+            : '';
+
+        var $row = buildRow(
+            item.icon,
+            `${mw.html.escape(item.name)} : <strong>${displayValue.toLocaleString()}</strong>`,
+            costHtml,
+            lvl === 0,
+            lvl >= (item.values.length - 1)
+        );
+
+        $row.find('.btn-plus').on('click', function() {
+            if (lvl >= (item.values.length - 1)) return;
+            totalSpent += item.costs[lvl + 1];
+            attributeState[item.id]++;
+            updatePoints();
+            loadAttributeTab();
+        });
+
+        $row.find('.btn-minus').on('click', function() {
+            if (lvl <= 0) return;
+            totalSpent -= item.costs[lvl];
+            attributeState[item.id]--;
+            updatePoints();
+            loadAttributeTab();
+        });
+
+        $grid.append($row);
+    });
+}
+
+    function loadLifeSkillTab() {
+        var $grid = $('#inherit-grid');
+        $grid.empty();
+
+        lifeSkillData.forEach(function(item) {
+            if (lifeSkillState[item.id] === undefined) lifeSkillState[item.id] = 1;
+            var lvl = lifeSkillState[item.id];
+            var costHtml = buildCostHtml(item.icon, '+ 1', lifeSkillCosts[lvl]);
+
+            var $row = buildRow(
+                item.icon,
+                `${mw.html.escape(item.name)} : <strong>Level ${Number(lvl)}</strong>`,
+                costHtml,
+                lvl <= 1,
+                lvl >= 10
+            );
+
+            $row.find('.btn-plus').on('click', function() {
+                if (lvl >= 10) return;
+                totalSpent += lifeSkillCosts[lvl + 1];
+                lifeSkillState[item.id]++;
+                updatePoints(); loadLifeSkillTab();
+            });
+            $row.find('.btn-minus').on('click', function() {
+                if (lvl <= 1) return;
+                totalSpent -= lifeSkillCosts[lvl];
+                lifeSkillState[item.id]--;
+                updatePoints(); loadLifeSkillTab();
+            });
+            $grid.append($row);
+        });
+
+        updatePoints();
     }
 
     function loadItems(items) {
@@ -537,13 +970,8 @@ $(document).ready(function() {
         items.forEach(function(item) {
             var isSelected = selectedItems.has(item.name);
             var $card = $('<div class="item-card"></div>');
-            if (isSelected) {
-                $card.addClass('selected');
-            }
-            $card.html(
-                '<img src="' + item.img + '" alt="' + item.name + '">' +
-                '<p>' + item.name + '</p>'
-            );
+            if (isSelected) $card.addClass('selected');
+            $card.html('<img src="' + mw.html.escape(item.img) + '" alt="' + mw.html.escape(item.name) + '"><p>' + mw.html.escape(item.name) + '</p>');
             $card.on('click', function() {
                 if (selectedItems.has(item.name)) {
                     selectedItems.delete(item.name);
@@ -560,71 +988,192 @@ $(document).ready(function() {
         });
     }
 
-    // Updated to support both Martial and Manuals
-    function loadMartialCategory(category, isManual = false) {
-        const dataSource = isManual ? manualsData : martialData;
-        if (dataSource[category]) {
-            loadItems(dataSource[category]);
-        } else {
-            $('#inherit-grid').empty();
-        }
+function loadLegacyTab() {
+    var $grid = $('#inherit-grid');
+    $grid.empty();
+    $grid.addClass('legacy-grid');
+
+    legacyData.forEach(function(item) {
+        var isSelected = legacyState === item.id;
+        
+        var $card = $(`
+            <div class="legacy-card ${isSelected ? 'selected' : ''}" data-id="${mw.html.escape(item.id)}">
+                <div class="legacy-circle">
+                    <span class="legacy-name">${mw.html.escape(item.name)}</span>
+                </div>
+                <div class="legacy-cost">- ${item.cost.toLocaleString()}</div>
+                <div class="legacy-tooltip"><img src="${mw.html.escape(item.tooltip)}"></div>
+            </div>
+        `);
+
+        $card.on('click', function() {
+            if (legacyState === item.id) {
+                legacyState = null;
+                totalSpent -= item.cost;
+            } else {
+                if (legacyState) {
+                    const prev = legacyData.find(i => i.id === legacyState);
+                    if (prev) totalSpent -= prev.cost;
+                }
+                legacyState = item.id;
+                totalSpent += item.cost;
+            }
+            updatePoints();
+            loadLegacyTab();
+        });
+
+        $card.on('mouseenter', function() {
+            var $tooltip = $(this).find('.legacy-tooltip');
+            var rect = this.getBoundingClientRect();
+            var tooltipWidth = 384;
+            var index = $(this).index();
+
+            var left = rect.right + 10;
+            var top = rect.top + 150;
+
+            if (index === 3 || index === 7) {
+                left = rect.left - (tooltipWidth / 2) - 10;
+            }
+
+            if (index >= 4) {
+                top = rect.top - 320;
+            }
+
+            if (left + tooltipWidth > window.innerWidth) {
+                left = rect.left - tooltipWidth - 10;
+            }
+
+            $tooltip.css({
+                position: 'fixed',
+                top:      top + 'px',
+                left:     left + 'px',
+                zIndex:   9999
+            }).fadeIn(100);
+        });
+
+        $card.on('mouseleave', function() {
+            $(this).find('.legacy-tooltip').fadeOut(50);
+        });
+
+        $grid.append($card);
+    });
+
+    $grid.append(`
+        <div style="grid-column: 1 / -1; text-align: center; margin-top: 10px; color: #aaa; font-size: 0.95em;">
+            Obtain Legacy Items to unlock their corresponding Legacies
+        </div>
+    `);
+}
+
+function loadOutfitTab() {
+    var $grid = $('#inherit-grid');
+    $grid.empty();
+    $grid.addClass('outfit-grid');
+
+    var $row1 = $('<div class="outfit-row"></div>');
+    var $row2 = $('<div class="outfit-row"></div>');
+
+    outfitData.forEach(function(item, index) {
+        if (outfitState[item.id] === undefined) outfitState[item.id] = false;
+        var isSelected = outfitState[item.id];
+
+        var $img = $(`<img class="outfit-img" src="${mw.html.escape(isSelected ? item.lit : item.dim)}" data-id="${mw.html.escape(item.id)}">`);
+
+        $img.on('click', function() {
+            if (outfitState[item.id]) {
+                outfitState[item.id] = false;
+                totalSpent -= item.cost;
+                $(this).attr('src', item.dim);
+            } else {
+                outfitState[item.id] = true;
+                totalSpent += item.cost;
+                $(this).attr('src', item.lit);
+            }
+            updatePoints();
+        });
+
+        if (index < 3) $row1.append($img);
+        else           $row2.append($img);
+    });
+
+    $grid.append($row1).append($row2);
+}
+
+function loadMartialCategory(category, isManual = false) {
+    const dataSource = isManual ? manualsData : martialData;
+    if (dataSource[category]) {
+        loadItems(dataSource[category]);
+    } else {
+        $('#inherit-grid').empty();
     }
+}
 
-    $('.sidebar-btn').on('mouseenter', function() {
-        $('.sidebar-btn').removeClass('active');
-        $(this).addClass('active');
-        var tab = $(this).data('tab');
+    // ==================== SIDEBAR HANDLER ====================
 
-        if (tab === 'martial') {
-            $('#subtabs-martial').show();
-            $('#subtabs-manuals').hide();
-            var activeSub = $('#subtabs-martial .sub-tab.active').data('sub') || 'fist';
-            loadMartialCategory(activeSub, false);
-        } 
-        else if (tab === 'manuals') {
+        $('.sidebar-btn').on('mouseenter', function() {
+            $('.sidebar-btn').removeClass('active');
+            $(this).addClass('active');
+            var tab = $(this).data('tab');
+            $('#inherit-grid').removeClass('legacy-grid outfit-grid');
+            $('.outfit-row').remove();
             $('#subtabs-martial').hide();
-            $('#subtabs-manuals').show();
-            var activeSub = $('#subtabs-manuals .sub-tab.active').data('sub') || 'fist';
-            loadMartialCategory(activeSub, true);
-        } 
+            $('#subtabs-manuals').hide();
+
+        if      (tab === 'martial')    { $('#subtabs-martial').show(); loadMartialCategory($('#subtabs-martial .sub-tab.active').data('sub') || 'fist', false); }
+        else if (tab === 'manuals')    { $('#subtabs-manuals').show(); loadMartialCategory($('#subtabs-manuals .sub-tab.active').data('sub') || 'fist', true); }
+        else if (tab === 'items')      { loadItemsTab(); }
+        else if (tab === 'blueprints') { loadBlueprintsTab(); }
+        else if (tab === 'attributes') { loadAttributeTab(); }
+        else if (tab === 'lifeskill')  { loadLifeSkillTab(); }
+        else if (tab === 'legacy')     { loadLegacyTab(); }
+        else if (tab === 'outfit') { loadOutfitTab(); }
+        else if (tab === 'difficulty') { loadDifficultyTab(); }
         else {
-            $('#subtabs-martial').hide();
-            $('#subtabs-manuals').hide();
-            $('#inherit-grid').html(
-                '<p style="grid-column:1/-1;text-align:center;padding:80px;color:#777;">' +
-                $(this).text() + ' content coming soon...</p>'
-            );
+            $('#inherit-grid').html('<p style="grid-column:1/-1;text-align:center;padding:80px;color:#777;">' + $(this).html() + ' content coming soon...</p>');
         }
     });
 
-    // Sub-tab handler for Martial
     $(document).on('mouseenter', '#subtabs-martial .sub-tab', function() {
         $('#subtabs-martial .sub-tab').removeClass('active');
         $(this).addClass('active');
         loadMartialCategory($(this).data('sub'), false);
     });
 
-    // Sub-tab handler for Manuals
     $(document).on('mouseenter', '#subtabs-manuals .sub-tab', function() {
         $('#subtabs-manuals .sub-tab').removeClass('active');
         $(this).addClass('active');
         loadMartialCategory($(this).data('sub'), true);
     });
 
-    $('.btn-reset').on('click', function() {
-        totalSpent = 0;
-        selectedItems.clear();
-        updatePoints();
-        if ($('#subtabs-martial').is(':visible')) {
-            var activeSub = $('#subtabs-martial .sub-tab.active').data('sub') || 'fist';
-            loadMartialCategory(activeSub, false);
-        } else if ($('#subtabs-manuals').is(':visible')) {
-            var activeSub = $('#subtabs-manuals .sub-tab.active').data('sub') || 'fist';
-            loadMartialCategory(activeSub, true);
-        }
-    });
+    // ==================== RESET ====================
 
-    // Initial Load
+$('.btn-reset').on('click', function() {
+    totalSpent      = 0;
+    selectedItems.clear();
+    itemsState      = {};
+    blueprintsState = {};
+    attributeState  = {};
+    lifeSkillState  = { forging: 1, tailoring: 1, alchemy: 1, cooking: 1 };
+    outfitState     = {};
+    legacyState     = null;
+    redQuirkCount   = 0;
+    updatePoints();
+
+    var activeTab = $('.sidebar-btn.active').data('tab');
+    if      (activeTab === 'martial')    { loadMartialCategory($('#subtabs-martial .sub-tab.active').data('sub') || 'fist', false); }
+    else if (activeTab === 'manuals')    { loadMartialCategory($('#subtabs-manuals .sub-tab.active').data('sub') || 'fist', true); }
+    else if (activeTab === 'items')      { loadItemsTab(); }
+    else if (activeTab === 'blueprints') { loadBlueprintsTab(); }
+    else if (activeTab === 'attributes') { loadAttributeTab(); }
+    else if (activeTab === 'lifeskill')  { loadLifeSkillTab(); }
+    else if (activeTab === 'legacy')     { loadLegacyTab(); }
+    else if (activeTab === 'outfit')     { loadOutfitTab(); }
+    else if (activeTab === 'difficulty') { loadDifficultyTab(); }
+});
+
+// ==================== INITIAL LOAD ====================
+
     loadMartialCategory('fist', false);
+    totalSpent = 0;   // Reset to 0 after life skill pre-charges settle
     updatePoints();
 });

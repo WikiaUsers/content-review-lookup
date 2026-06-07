@@ -12,7 +12,7 @@
 	const devAccordion = {
 		shouldAttachEvents: true,
 		types: ['text', 'links'],
-		controls: ['Space', 'Enter', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'Home', 'End'],
+		controls: ['Space', 'Enter', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'Home', 'End'],
 		classNames: {
 			wrapper: 'accordions__wrapper',
 			upgraded: 'upgraded__accordion',
