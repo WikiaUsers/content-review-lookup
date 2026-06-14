@@ -81,6 +81,26 @@ $(".game-box").each(function() {
     $this.find("a").attr("tabindex", "-1");
 });
 
+// Condense game/feature button links into one clickable button
+document.querySelectorAll('.gamebutton, .featurebutton').forEach(function(btn) {
+    var imgLink = btn.querySelector('div:first-child a');
+    var textLink = btn.querySelector('div:last-child a');
+    if (!imgLink || !textLink) return;
+
+    imgLink.setAttribute('tabindex', '-1'); // Remove image link
+
+    var href = textLink.getAttribute('href');
+    btn.style.cursor = 'pointer';
+    btn.addEventListener('click', function(e) {
+        if (e.target.closest('a')) return;
+        if (e.ctrlKey || e.metaKey || e.shiftKey) {
+            window.open(href, '_blank');
+        } else {
+            window.location.href = href;
+        }
+    });
+});
+
 // Importing from dev.fandom.com
 // See the pages for the code.
  importArticles({

@@ -1,4 +1,9 @@
 ;(function() {
+    // Don't run on userpages or usertalk pages
+    if (mw.config.get('profileIsUserPage') || mw.config.get('profileIsUserTalkPage')) {
+        return;
+    }   
+
     // Make a function to prepend the items to the article
     function prependContent ($el) {
         $el.insertBefore('#content');
@@ -9,13 +14,11 @@
     mw.hook('LastEdited.inserted').add(prependContent);
     
     // Add some CSS
-    if (!$('.UserProfileActionButton').length) {
-        mw.util.addCSS(
-            '#page-creator,\
-            .lastEdited {\
-                position: relative;\
-                bottom: 10px;\
-            }'
-        );
-    }
+    mw.util.addCSS(
+        '#page-creator,\
+        .lastEdited {\
+            position: relative;\
+            bottom: 10px;\
+        }'
+    );
 })();

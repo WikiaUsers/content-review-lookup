@@ -32,3 +32,13 @@ window.FloatingToc = {
     auto: false,
     enableKey: true
 };
+
+
+// Buildings
+$(function () {
+    if (mw.config.get('wgCanonicalNamespace') === 'Building') {
+        $('.page-header__title-wrapper').append(
+            '<div class="page-header__page-subtitle">Buildings Page</div>'
+        );
+    }
+});

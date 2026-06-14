@@ -1,6 +1,6 @@
 mw.loader.load('https://apis.google.com/js/platform.js');
  
-if(wgPageName == 'Special:Upload' || wgPageName == 'Special:MultipleUpload') {
+if(mw.config.get('wgPageName') == 'Special:Upload' || mw.config.get('wgPageName') == 'Special:MultipleUpload') {
 $('#wpUploadDescription').val('[[Category:Images]]');
 }
  
@@ -85,3 +85,73 @@ function insertAtCursor(myField, myValue) {
 }
 
 mw.loader.load('https://en.wikipedia.org/w/index.php?title=MediaWiki:Gadget-ReferenceTooltips.js&action=raw&ctype=text/javascript');
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});
+
+/* Audio Button Handler */
+mw.loader.using(['mediawiki.util'], function() {
+    mw.hook('wikipage.content').add(function($content) {
+        var currentAudio = null;
+        var currentButton = null;
+
+        $(document).off('click.audiobutton').on('click.audiobutton', '.audio-button', function() {
+            var $btn = $(this);
+            var fileName = $btn.data('audio');
+
+            console.log('Audio button clicked:', fileName);
+
+            if (!fileName) return;
+
+            if (currentButton && currentButton.is($btn)) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                $btn.removeClass('now-playing');
+                currentAudio = null;
+                currentButton = null;
+                return;
+            }
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentButton.removeClass('now-playing');
+            }
+
+            $.getJSON(mw.util.wikiScript('api'), {
+                action: 'query',
+                titles: 'File:' + fileName,
+                prop: 'imageinfo',
+                iiprop: 'url',
+                format: 'json'
+            }).done(function(data) {
+                console.log('API response:', data);
+                var pages = data.query.pages;
+                var page = pages[Object.keys(pages)[0]];
+                if (!page.imageinfo) {
+                    console.log('No imageinfo found!');
+                    return;
+                }
+
+                var audioUrl = page.imageinfo[0].url;
+                console.log('Playing:', audioUrl);
+                var audio = new Audio(audioUrl);
+
+                audio.play();
+                $btn.addClass('now-playing');
+                currentAudio = audio;
+                currentButton = $btn;
+
+                audio.addEventListener('ended', function() {
+                    $btn.removeClass('now-playing');
+                    currentAudio = null;
+                    currentButton = null;
+                });
+            });
+        });
+    });
+});

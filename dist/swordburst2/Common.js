@@ -325,7 +325,6 @@ if (slider && left && right && container) {
 }
 
 // Hitbox Table
-
 $(function () {
 
     if (!$('#hitbox').length) {
@@ -358,7 +357,7 @@ $(function () {
 
             cells.eq(0).append(
                 ` <button class="hitbox-com-a"
-                    data-weapon="${name}">
+                    data-weapon="${mw.html.escape(name)}">
                     Compare
                 </button>`
             );
@@ -408,7 +407,7 @@ $(function () {
             $('#hitbox-box-c').html(`
                 <div>
                     Selected:
-                    ${selected.join(' vs ')}
+                    ${selected.map(s => mw.html.escape(s)).join(' vs ')}
                 </div>
             `);
 
@@ -448,7 +447,7 @@ $(function () {
         $('#hitbox-box-c').html(`
 
             <div class="weapon-block">
-                <strong>${a.name}</strong>
+                <strong>${mw.html.escape(a.name)}</strong>
                 (${a.length})
 
                 <div class="hitbox-box-d">
@@ -459,7 +458,7 @@ $(function () {
             </div>
 
             <div class="weapon-block">
-                <strong>${b.name}</strong>
+                <strong>${mw.html.escape(b.name)}</strong>
                 (${b.length})
 
                 <div class="hitbox-box-d">
@@ -472,7 +471,7 @@ $(function () {
             <hr>
 
             <div>
-                <b>${larger.name}</b>
+                <b>${mw.html.escape(larger.name)}</b>
                 is
                 <b>${percent.toFixed(2)}%</b>
                 longer.
@@ -493,3 +492,37 @@ $(function () {
     }
 
 });
+
+
+// Global Boss Timer
+
+function BossTimer() {
+    const timer = document.getElementById("boss-timer");
+    const spawned = document.getElementById("boss-spawned");
+    if (!timer || !spawned) return;
+    const now = new Date();
+    let remaining =
+        3600 -
+        (now.getMinutes() * 60 + now.getSeconds());
+    if (remaining === 3600) {
+        remaining = 0;
+    }
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining % 60;
+    timer.textContent =
+        `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    if (now.getMinutes() === 0 && now.getSeconds() < 20) {
+        spawned.style.display = "block";
+    } else {
+        spawned.style.display = "none";
+    }
+    if (remaining <= 60) {
+        timer.style.color = "#FF0000";
+    } else if (remaining <= 300) {
+        timer.style.color = "#ffcc00";
+    } else {
+        timer.style.color = "#6EBD1E";
+    }
+}
+BossTimer();
+setInterval(BossTimer, 1000);

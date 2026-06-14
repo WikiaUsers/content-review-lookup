@@ -172,7 +172,7 @@ var BackToTop = true; // prevent duplication
 /*------------------------- Случайный фон страницы ---------------------------*/
 function randomBackground () {
 	var backgroundLight = [
-	'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?cb=20260614063606&path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/f/f0/Background-14.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/e/eb/Background-15.jpg/revision/latest?path-prefix=ru',
 	'https://static.wikia.nocookie.net/elderscrolls/images/9/9c/Background-16.jpg/revision/latest?path-prefix=ru',

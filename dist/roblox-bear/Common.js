@@ -73,3 +73,43 @@ mw.loader.using(["mediawiki.util"]).then(function() {
     attachThemeButtons();
     mw.hook("wikipage.content").add(attachThemeButtons);
 });
+
+
+mw.hook("wikipage.content").add(() => {
+    (async () => {
+        const avatars = document.querySelectorAll(".roblox-avatar");
+
+        for (const container of avatars) {
+            const username = container.dataset.user;
+            if (!username) continue;
+
+            try {
+                const userResponse = await fetch("https://users.roblox.com/v1/usernames/users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        usernames: [username],
+                        excludeBannedUsers: false
+                    })
+                });
+
+                const userData = await userResponse.json();
+                if (!userData.data.length) continue;
+
+                const userId = userData.data[0].id;
+
+                const thumbResponse = await fetch(
+                    `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`
+                );
+
+                const thumbData = await thumbResponse.json();
+                const imageUrl = thumbData.data[0].imageUrl;
+
+                container.innerHTML = `<img src="${imageUrl}" width="200">`;
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    })();
+});

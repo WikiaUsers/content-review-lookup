@@ -89,7 +89,7 @@ $(function () {
 
     var $progressBar = $('<input>', { type: "range", min: 0, max: 100, value: 0, css: { flex: 1, appearance: "none", height: "6px", background: "#333", borderRadius: "4px", cursor: "pointer", "accent-color": "#f5a200" } });
 
-    var $skipButton = $('<button>', { text: "⏭", css: { background: "#820f03", border: "none", borderRadius: "6px", padding: "2px 6px", cursor: "pointer", color: "#fff", fontWeight: "bold" } });
+    var $skipButton = $('<button>', { text: "⏭", css: { background: "#f5a200", border: "none", borderRadius: "6px", padding: "2px 6px", cursor: "pointer", color: "#000", fontWeight: "bold" } });
 
     $controls.append($progressBar).append($skipButton);
     $radioContainer.append($radio).append($radioGif).append($controls);
@@ -270,8 +270,8 @@ $(function () {
             right: "20px",
             width: "26px",
             height: "26px",
-            background: "#820f03",
-            color: "#fff",
+            background: "#f5a200",
+            color: "#000",
             borderRadius: "6px",
             cursor: "pointer",
             display: "flex",
@@ -321,3 +321,47 @@ $(function () {
     });
 
 });
+let activeTooltip = null;
+let activeParent = null;
+
+document.addEventListener('mouseenter', function(e) {
+    const tt = e.target.closest('.tt-tooltip');
+    if (!tt) return;
+
+    if (activeTooltip) {
+        activeTooltip.style.display = 'none';
+        if (activeParent) {
+            activeParent.appendChild(activeTooltip);
+        }
+    }
+
+    const tooltip = tt.querySelector('.tt-tooltip-text');
+    if (!tooltip) return;
+
+    activeTooltip = tooltip;
+    activeParent = tt;
+
+    document.body.appendChild(tooltip);
+
+    const rect = tt.getBoundingClientRect();
+
+    tooltip.style.display = 'block';
+    tooltip.style.position = 'fixed';
+    tooltip.style.left = (rect.left + rect.width / 2 - 150) + 'px';
+    tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+
+}, true);
+
+document.addEventListener('mouseleave', function(e) {
+    const tt = e.target.closest('.tt-tooltip');
+    if (!tt) return;
+
+    if (!activeTooltip) return;
+
+    activeTooltip.style.display = 'none';
+    activeParent.appendChild(activeTooltip);
+
+    activeTooltip = null;
+    activeParent = null;
+
+}, true);

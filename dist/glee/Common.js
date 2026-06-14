@@ -91,3 +91,15 @@ $(document).ready(function(){
 		$('#control_edit').remove();
 	}
 });
+
+window.welcomeMessage = {
+  adminUsername: 'BerryHudson1218',
+  adminNickname: 'BerryHudson1218',
+  messageTitle: 'Welcome to the Glee Wiki, $1!',
+  messageText: 'Hey $1! Welcome to the Glee Wiki! Thanks for your first edit on $2. We\'re glad to have you here — feel free to reach out if you have any questions!\n\n— BerryHudson1218',
+};
+
+importArticles({
+  type: 'script',
+  articles: ['dev:MediaWiki:WelcomeMessage.js']
+});

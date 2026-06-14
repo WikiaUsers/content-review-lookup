@@ -1,5 +1,5 @@
 /**
- * SynthwaveArtistMap for synthwave.fandom.com
+ * SynthwaveArtistMap for synthwave.fandom.com 
  * Renders an auto-populated world map of all artists in Category:Artists
  * based on the Place of Origin field in their Artist Infobox.
  *
@@ -223,7 +223,7 @@
             var entry = byCoord[ key ];
             var lines = entry.artists.map( function ( a ) {
                 var href = mw.util.getUrl( a.title );
-                return '<a href="' + href + '">' + a.title + '</a>';
+                return '<a href="' + href + '">' + mw.html.escape(a.title) + '</a>';
             } );
             var label = entry.artists.length === 1
                 ? entry.artists[ 0 ].loc
@@ -233,7 +233,7 @@
                 .addTo( map )
                 .bindPopup(
                     '<b>' + lines.join( '<br>' ) + '</b>' +
-                    '<br><small style="color:#888">' + label + '</small>'
+                    '<br><small style="color:#888">' + mw.html.escape(label) + '</small>'
                 );
         } );
 

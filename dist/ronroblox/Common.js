@@ -1,4 +1,4 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Any JavaScript here will be loaded for all users on every page load.  */
 // Template:Tabs
 $(function() {
 	// If a sub-tab is 'selected', also make the parent tabs also 'selected'
@@ -153,7 +153,6 @@ UserTagsJS.modules.custom = {
 	'RyeThePies': ['wiki-contributor'],
 	'Thethingiforgor': ['wiki-contributor'],
 	'Pro10boy2228': ['wiki-contributor'],
-	'FourCer5': ['wiki-contributor'],
 	'The Dimensional Doctor': ['wiki-contributor'],
 };
 
@@ -367,39 +366,33 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
   const updateTypeFilterAvailability = () => {
     const available = computeAvailableFilters(activeKey());
 
-    // Show/hide each type button
     dom.$typeBtns.each(function () {
       const filterVal = $(this).data('filter');
       $(this).toggle(available.type.has(filterVal));
     });
 
-    // If the currently selected type is no longer available, reset to "All"
     if (!available.type.has(state.filters.type)) {
       state.filters.type = 'all';
       dom.$typeBtns.removeClass('mc-filter-active');
       dom.$typeBtns.filter('[data-filter="all"]').addClass('mc-filter-active');
     }
 
-    // Show/hide each effect button
     dom.$effectBtns.each(function () {
       const filterVal = $(this).data('filter');
       $(this).toggle(available.effect.has(filterVal));
     });
 
-    // If the currently selected effect is no longer available, reset to "All"
     if (!available.effect.has(state.filters.effect)) {
       state.filters.effect = 'all';
       dom.$effectBtns.removeClass('mc-filter-active');
       dom.$effectBtns.filter('[data-filter="all"]').addClass('mc-filter-active');
     }
 
-    // Show/hide each range button
     dom.$rangeBtns.each(function () {
       const filterVal = $(this).data('filter');
       $(this).toggle(available.range.has(filterVal));
     });
 
-    // If the currently selected range is no longer available, reset to "All"
     if (!available.range.has(state.filters.range)) {
       state.filters.range = 'all';
       dom.$rangeBtns.removeClass('mc-filter-active');
@@ -445,6 +438,16 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
   const isMultiplicative = (label) => /^\d+(\.\d+)?x$/.test((label || '').trim());
   const isBase            = (label) => /^[+-]?\d+(\.\d+)?$/.test((label || '').trim());
   const isAffine          = (mod) => !!(mod && mod.affine && typeof mod.affine.slope === 'number');
+
+  // NEW: Determine actual effect type considering inverted flag
+  const getModEffectType = (mod) => {
+    if (mod.type === 'base') return 'base';
+    let type = isMultiplicative(mod.label) ? 'multiplicative' : 'additive';
+    if (mod.inverted) {
+      type = type === 'additive' ? 'multiplicative' : 'additive';
+    }
+    return type;
+  };
 
   const initModState = (key) => {
     if (!state.perModState[key]) {
@@ -573,8 +576,12 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     return `${cat.name}: ${val}${unit} → ${scalerEffectLabel(cat, sv)}`;
   };
 
+  // Updated getScalerEffectType to handle inverted
   const getScalerEffectType = (cat) => {
-    const t = (cat.effectType || 'additive').toLowerCase();
+    let t = (cat.effectType || 'additive').toLowerCase();
+    if (t !== 'base' && cat.inverted) {
+      t = t === 'additive' ? 'multiplicative' : 'additive';
+    }
     return (t === 'base' || t === 'multiplicative' || t === 'additive') ? t : 'additive';
   };
 
@@ -911,6 +918,11 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
 
   const loadModifier = (key) => {
     if (!DATA[key]) return;
+
+    const oldKey = activeKey();
+    const oldDefault = oldKey ? getDefaultBaseValue(oldKey) : null;
+    const savedBase = dom.$base.val();
+
     if (!state.multiSelectMode) {
       if (state.loadedModifiers.length > 0) {
         if (state.loadedModifiers[0] === key && state.loadedModifiers.length === 1) {
@@ -943,13 +955,20 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     renderCategoryFilter();
     renderSubcategoryFilter();
     renderSections();
+    const newDefault = getDefaultBaseValue(key);
+    // Update base only if user hasn't manually changed it
+    if (savedBase === '' || savedBase === '0' || (oldDefault !== null && Math.abs(parseFloat(savedBase) - oldDefault) < 0.001)) {
+      dom.$base.val(newDefault);
+    } else {
+      dom.$base.val(savedBase);
+    }
     if (key === 'manpowerincrease') dom.$rpSelector.show();
     else if (!state.loadedModifiers.some(k => k === 'manpowerincrease')) dom.$rpSelector.hide();
     dom.$rpBtns.removeClass('mc-filter-active');
     dom.$rpBtns.filter('[data-rp="2"]').addClass('mc-filter-active');
     recalc();
   };
-
+  
   const removeModifier = (idx) => {
     const key = state.loadedModifiers[idx];
     state.loadedModifiers.splice(idx, 1);
@@ -991,7 +1010,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     dom.$modSearch.parent().find('.mod-tooltip-icon').remove();
     dom.$modSearch.val(d.label);
     if (d.tooltip) {
-      const $icon = $('<span class="info-icon mod-tooltip-icon" style="margin-left:8px;">ⓘ</span>')
+      const $icon = $('<span class="info-icon mod-tooltip-icon" style="margin-left:8px;"></span>')
         .attr('title', d.tooltip);
       dom.$modSearch.after($icon);
     }
@@ -1246,6 +1265,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     getVisibleModIds().forEach(id => {
       st.checked[id] = val;
       $(`#${id}`).prop('checked', val);
+      const $item = $(`#${id}`).closest('.mc-mod-item');
+      $item.find('.mc-mod-val').css('font-weight', val ? 'bold' : 'normal');
     });
     const data = DATA[key];
     data.categories.forEach((cat, ci) => {
@@ -1402,6 +1423,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     getCatModIds(ci).forEach(id => {
       st.checked[id] = false;
       $(`#${id}`).prop('checked', false);
+      $(`#${id}`).closest('.mc-mod-item').find('.mc-mod-val').css('font-weight', 'normal');
     });
     updateCatCheckbox(ci);
     (cat.subcategories || []).forEach((sub, si) => updateSubcatCheckbox(ci, si));
@@ -1439,6 +1461,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       getSubcatModIds(ci, si).forEach(id => {
         st.checked[id] = false;
         $(`#${id}`).prop('checked', false);
+        $(`#${id}`).closest('.mc-mod-item').find('.mc-mod-val').css('font-weight', 'normal');
       });
     }
     updateSubcatCheckbox(ci, si);
@@ -1710,10 +1733,17 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       (state.filters.effect === 'good' && isGood === true) ||
       (state.filters.effect === 'bad' && isGood === false);
 
+    // Inverted type detection
     let typeOk = true;
-    if (state.filters.type === 'additive') typeOk = !mul && !base && !affine;
-    else if (state.filters.type === 'multiplicative') typeOk = mul;
-    else if (state.filters.type === 'base') typeOk = base;
+    const inverted = $item.data('inverted') === true;
+    let actualMul = mul, actualBase = base;
+    if (inverted) {
+        if (mul) { actualMul = false; } // multiplicative becomes additive
+        else if (!base && !affine) { actualMul = true; } // additive becomes multiplicative
+    }
+    if (state.filters.type === 'additive') typeOk = !actualMul && !actualBase && !affine;
+    else if (state.filters.type === 'multiplicative') typeOk = actualMul;
+    else if (state.filters.type === 'base') typeOk = actualBase;
     else if (state.filters.type === 'affine') typeOk = affine;
 
     const rangeOk = state.filters.range === 'all' || state.filters.range === 'normal';
@@ -1766,7 +1796,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         return;
       }
 
-      // UPDATED: user_input section filtering - now filters individual rows
       if ($section.data('type') === 'user_input') {
         if (rangeFilter === 'normal' || rangeFilter === 'scaler') {
           $section.hide();
@@ -1846,7 +1875,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           return;
         }
 
-        // UPDATED: user_input subcategory filtering - now filters individual rows
         if ($sub.data('type') === 'user_input') {
           if (rangeFilter === 'normal' || rangeFilter === 'scaler') {
             $sub.hide();
@@ -1925,9 +1953,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         let scalerTitle = cat.link
           ? `<a href="${mw.html.escape(cat.link)}" target="_blank" class="mc-section-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(cat.name)}</a>`
           : `<span class="mc-section-title">${mw.html.escape(cat.name)}</span>`;
-        if (cat.tooltip) scalerTitle += ` <span class="info-icon" title="${mw.html.escape(cat.tooltip)}">ⓘ</span>`;
+        if (cat.tooltip) scalerTitle += ` <span class="info-icon" title="${mw.html.escape(cat.tooltip)}"></span>`;
 
-        out += `<div class="mc-section mc-scaler-section" data-cat="${mw.html.escape(cat.name)}" data-scaler="1" data-input-good="${igood}">`;
+        out += `<div class="mc-section mc-scaler-section" data-cat="${mw.html.escape(cat.name)}" data-scaler="1" data-input-good="${mw.html.escape(String(igood))}">`;
         out += `<div class="mc-section-header">${scalerTitle}<input type="text" class="mc-scaler-live ${mw.html.escape(initEffectCls)}" id="mc-scaler-display-${ci}" value="${mw.html.escape(dispStr)}" size="4"></div>`;
         out += `<div class="mc-scaler-row">`;
         out += `<span class="mc-scaler-bound ${mw.html.escape(scalerBoundClass(cat, 'min'))}">${Number(cat.scaleMin)}${mw.html.escape(unitLbl)}</span>`;
@@ -1945,9 +1973,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         let catTitleHtml = cat.link
           ? `<a href="${mw.html.escape(cat.link)}" target="_blank" class="mc-section-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(cat.name)}</a>`
           : `<span class="mc-section-title">${mw.html.escape(cat.name)}</span>`;
-        if (cat.tooltip) catTitleHtml += ` <span class="info-icon" title="${mw.html.escape(cat.tooltip)}">ⓘ</span>`;
+        if (cat.tooltip) catTitleHtml += ` <span class="info-icon" title="${mw.html.escape(cat.tooltip)}"></span>`;
 
-        out += `<div class="mc-section mc-user-input-section" data-cat="${mw.html.escape(cat.name)}" data-type="user_input" data-input-good="${cat.inputGood !== undefined ? cat.inputGood : 'dynamic'}">`;
+        out += `<div class="mc-section mc-user-input-section" data-cat="${mw.html.escape(cat.name)}" data-type="user_input" data-input-good="${cat.inputGood !== undefined ? mw.html.escape(String(cat.inputGood)) : 'dynamic'}">`;
         out += `<div class="mc-section-header">${catTitleHtml}</div>`;
 
         inputs.forEach((input, idx) => {
@@ -1958,10 +1986,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           const effectCls = scalerEffectClass(sv);
           const label = input.label || 'Value';
           
-          // UPDATED: Added data-input-good to row for filtering
           const rowInputGood = input.inputGood !== undefined ? input.inputGood : (cat.inputGood !== undefined ? cat.inputGood : 'dynamic');
 
-          out += `<div class="mc-scaler-row" data-input-good="${rowInputGood}">`;
+          out += `<div class="mc-scaler-row" data-input-good="${mw.html.escape(String(rowInputGood))}">`;
           out += `<span class="mc-scaler-bound">${mw.html.escape(label)}:</span>`;
           out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${Number(curInputVal)}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
           if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-unit-${storeKey}">${mw.html.escape(unitLbl)}</span>`;
@@ -1981,9 +2008,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
             let subTitleHtml = sub.link
               ? `<a href="${mw.html.escape(sub.link)}" target="_blank" class="mc-subsection-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(sub.name)}</a>`
               : `<span class="mc-subsection-title">${mw.html.escape(sub.name)}</span>`;
-            if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}">ⓘ</span>`;
+            if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}"></span>`;
 
-            out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-scaler="1" data-input-good="${igood}">`;
+            out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-scaler="1" data-input-good="${mw.html.escape(String(igood))}">`;
             out += `<div class="mc-subsection-header">`;
             out += subTitleHtml + `<input type="text" class="mc-scaler-live ${mw.html.escape(initEffectCls)}" id="mc-scaler-display-${ci}_${si}" value="${mw.html.escape(dispStr)}" size="4">`;
             out += `</div>`;
@@ -2002,9 +2029,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
             let subTitleHtml = sub.link
               ? `<a href="${mw.html.escape(sub.link)}" target="_blank" class="mc-subsection-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(sub.name)}</a>`
               : `<span class="mc-subsection-title">${mw.html.escape(sub.name)}</span>`;
-            if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}">ⓘ</span>`;
+            if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}"></span>`;
 
-            out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-type="user_input" data-input-good="${sub.inputGood !== undefined ? sub.inputGood : 'dynamic'}">`;
+            out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-type="user_input" data-input-good="${sub.inputGood !== undefined ? mw.html.escape(String(sub.inputGood)) : 'dynamic'}">`;
             out += `<div class="mc-subsection-header">`;
             out += subTitleHtml;
             out += `</div>`;
@@ -2017,10 +2044,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
               const unitLbl = input.unit !== undefined ? input.unit : '';
               const label = input.label || 'Value';
               
-              // UPDATED: Added data-input-good to row for filtering
               const rowInputGood = input.inputGood !== undefined ? input.inputGood : (sub.inputGood !== undefined ? sub.inputGood : 'dynamic');
 
-              out += `<div class="mc-scaler-row" style="margin-left:0;" data-input-good="${rowInputGood}">`;
+              out += `<div class="mc-scaler-row" style="margin-left:0;" data-input-good="${mw.html.escape(String(rowInputGood))}">`;
               out += `<span class="mc-scaler-bound">${mw.html.escape(label)}:</span>`;
               out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" data-idx="${idx}" value="${curVal}" step="${input.step || 'any'}" min="${input.min != null ? input.min : ''}" max="${input.max != null ? input.max : ''}">`;
               if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}">${mw.html.escape(unitLbl)}</span>`;
@@ -2046,7 +2072,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       let catTitleHtml = cat.link
         ? `<a href="${mw.html.escape(cat.link)}" target="_blank" class="mc-section-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(cat.name)}</a>`
         : `<span class="mc-section-title">${mw.html.escape(cat.name)}</span>`;
-      if (cat.tooltip) catTitleHtml += ` <span class="info-icon" title="${mw.html.escape(cat.tooltip)}">ⓘ</span>`;
+      if (cat.tooltip) catTitleHtml += ` <span class="info-icon" title="${mw.html.escape(cat.tooltip)}"></span>`;
 
       out += `<div class="mc-section" data-cat="${mw.html.escape(cat.name)}">`;
       out += `<div class="mc-section-header">`;
@@ -2063,7 +2089,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           const valCls = m.good === true ? 'mc-pos' : m.good === false ? 'mc-neg' : 'mc-neu';
           const tooltipHtml = m.tooltip ? ` title="${mw.html.escape(m.tooltip)}"` : '';
           const displayVal = m.label || m.n;
-          out += `<label class="mc-mod-item" ${goodAttr} ${affineAttr} ${tooltipHtml}>`;
+          out += `<label class="mc-mod-item" ${goodAttr} ${affineAttr} ${tooltipHtml} data-inverted="${Boolean(m.inverted)}">`;
           out += `<input type="checkbox" id="${id}" ${st.checked[id] ? 'checked' : ''} data-affine="${isAffine(m) ? 'true' : 'false'}">`;
           out += `<span class="mc-mod-name">${mw.html.escape(m.n)}</span>`;
           out += `<span class="mc-mod-val ${valCls}">${mw.html.escape(displayVal)}</span>`;
@@ -2084,9 +2110,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           let subTitleHtml = sub.link
             ? `<a href="${mw.html.escape(sub.link)}" target="_blank" class="mc-subsection-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(sub.name)}</a>`
             : `<span class="mc-subsection-title">${mw.html.escape(sub.name)}</span>`;
-          if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}">ⓘ</span>`;
+          if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}"></span>`;
 
-          out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-scaler="1" data-input-good="${igood}">`;
+          out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-scaler="1" data-input-good="${mw.html.escape(String(igood))}">`;
           out += `<div class="mc-subsection-header">`;
           out += subTitleHtml + `<input type="text" class="mc-scaler-live ${mw.html.escape(initEffectCls)}" id="mc-scaler-display-${ci}_${si}" value="${mw.html.escape(dispStr)}" size="4">`;
           out += `</div>`;
@@ -2106,9 +2132,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           let subTitleHtml = sub.link
             ? `<a href="${mw.html.escape(sub.link)}" target="_blank" class="mc-subsection-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(sub.name)}</a>`
             : `<span class="mc-subsection-title">${mw.html.escape(sub.name)}</span>`;
-          if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}">ⓘ</span>`;
+          if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}"></span>`;
 
-          out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-type="user_input" data-input-good="${sub.inputGood !== undefined ? sub.inputGood : 'dynamic'}">`;
+          out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}" data-type="user_input" data-input-good="${sub.inputGood !== undefined ? mw.html.escape(String(sub.inputGood)) : 'dynamic'}">`;
           out += `<div class="mc-subsection-header">`;
           out += subTitleHtml;
           out += `</div>`;
@@ -2122,10 +2148,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
             const unitLbl = input.unit !== undefined ? input.unit : '';
             const label = input.label || 'Value';
             
-            // UPDATED: Added data-input-good to row for filtering
             const rowInputGood = input.inputGood !== undefined ? input.inputGood : (sub.inputGood !== undefined ? sub.inputGood : 'dynamic');
 
-            out += `<div class="mc-scaler-row" style="margin-left:0;" data-input-good="${rowInputGood}">`;
+            out += `<div class="mc-scaler-row" style="margin-left:0;" data-input-good="${mw.html.escape(String(rowInputGood))}">`;
             out += `<span class="mc-scaler-bound">${mw.html.escape(label)}:</span>`;
             out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${curVal}" step="${input.step || 'any'}" min="${input.min != null ? input.min : ''}" max="${input.max != null ? input.max : ''}">`;
             if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}">${mw.html.escape(unitLbl)}</span>`;
@@ -2140,7 +2165,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         let subTitleHtml = sub.link
           ? `<a href="${mw.html.escape(sub.link)}" target="_blank" class="mc-subsection-title" style="color:#86abe5;text-decoration:none;">${mw.html.escape(sub.name)}</a>`
           : `<span class="mc-subsection-title">${mw.html.escape(sub.name)}</span>`;
-        if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}">ⓘ</span>`;
+        if (sub.tooltip) subTitleHtml += ` <span class="info-icon" title="${mw.html.escape(sub.tooltip)}"></span>`;
 
         out += `<div class="mc-subsection" data-subcat="${mw.html.escape(sub.name)}">`;
         out += `<div class="mc-subsection-header">`;
@@ -2155,7 +2180,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           const valCls = m.good === true ? 'mc-pos' : m.good === false ? 'mc-neg' : 'mc-neu';
           const tooltipHtml = m.tooltip ? ` title="${mw.html.escape(m.tooltip)}"` : '';
           const displayVal = m.label || m.n;
-          out += `<label class="mc-mod-item" ${goodAttr} ${affineAttr} ${tooltipHtml}>`;
+          out += `<label class="mc-mod-item" ${goodAttr} ${affineAttr} ${tooltipHtml} data-inverted="${Boolean(m.inverted)}">`;
           out += `<input type="checkbox" id="${id}" ${st.checked[id] ? 'checked' : ''} data-affine="${isAffine(m) ? 'true' : 'false'}">`;
           out += `<span class="mc-mod-name">${mw.html.escape(m.n)}</span>`;
           out += `<span class="mc-mod-val ${valCls}">${mw.html.escape(displayVal)}</span>`;
@@ -2212,7 +2237,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       }
     });
 
-    // UPDATED: User input value handler with min/max clamping
     dom.$sections.off('input', '.mc-user-input-val').on('input', '.mc-user-input-val', function() {
       const key2 = activeKey();
       if (!key2) return;
@@ -2341,7 +2365,6 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         recalc();
       });
 
-    // Bold/unbold modifier value on selection
     dom.$sections.off('change', '.mc-mod-item input[type=checkbox]')
       .on('change', '.mc-mod-item input[type=checkbox]', function() {
         const $item = $(this).closest('.mc-mod-item');
@@ -2502,8 +2525,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
 
         forEachModInCat(cat, ci, (m, id) => {
           if (!st.checked[id] || isAffine(m)) return;
-          if (m.type === 'base') totalBase += m.v;
-          else if (isMultiplicative(m.label)) totalMul *= (1 + m.v);
+          const eType = getModEffectType(m);
+          if (eType === 'base') totalBase += m.v;
+          else if (eType === 'multiplicative') totalMul *= (1 + m.v);
           else totalPct += m.v;
         });
       });
@@ -2599,7 +2623,10 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     dom.$rMods.text(activeNames.length ? activeNames.join(', ') : 'none');
     dom.$rResult.text(formatNumber(result));
     const basePctDisplay = isNaN(basePctVal) ? 1 : (basePctVal / 100);
-    dom.$rFormula.text(`${formatNumber(totals.transformedBase)} × (${((basePctDisplay + totals.pct) * 100).toFixed(1)}%) × ${totals.mul.toFixed(2)}x = ${formatNumber(result)}`);
+    const basePart = totals.base !== 0
+      ? `(${formatNumber(totals.transformedBase)} + ${formatNumber(totals.base)})`
+      : formatNumber(totals.transformedBase);
+    dom.$rFormula.text(`${basePart} × (${((basePctDisplay + totals.pct) * 100).toFixed(1)}%) × ${totals.mul.toFixed(2)}x = ${formatNumber(result)}`);
     
     if (dom.$panelFormula.is(':visible')) calcFormula();
   };
@@ -2675,11 +2702,11 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         <div id="mc-loaded-chips" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;"></div>
 
         <div class="mc-row">
-          <span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21.\nAll further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Diplomatic Actions: 2\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability.\nHowever, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall.">ⓘ</span></span>
+          <span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21.\nAll further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Diplomatic Actions: 2\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability.\nHowever, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall."></span></span>
           <input class="mc-base-input" type="number" id="mc-base" value="0" min="0" step="any">
         </div>
         <div class="mc-row">
-          <span class="mc-label">Base percentage (%) <span class="info-icon" title="This shows the total modifier effect applied to your Base value.\n\nSome modifiers are added together first (additive stacking), then converted into a single multiplier.\nOthers apply separately as multipliers (multiplicative stacking).\n\nFinal formula:\nBase × (1 + additive modifiers) × multiplicative modifiers.">ⓘ</span></span>
+          <span class="mc-label">Base percentage (%) <span class="info-icon" title="This shows the total modifier effect applied to your Base value.\n\nSome modifiers are added together first (additive stacking), then converted into a single multiplier.\nOthers apply separately as multipliers (multiplicative stacking).\n\nFinal formula:\n(Current Base value + Base modifiers) × (additive modifiers) × multiplicative modifiers = New Base value"></span></span>
           <input class="mc-base-input" type="number" id="mc-base-pct" value="100" min="0">
         </div>
 
@@ -2816,6 +2843,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       getVisibleModIdsInCategory(ci).forEach(id => {
         st.checked[id] = val;
         $(`#${id}`).prop('checked', val);
+        const $item = $(`#${id}`).closest('.mc-mod-item');
+        $item.find('.mc-mod-val').css('font-weight', val ? 'bold' : 'normal');
       });
       updateCatCheckbox(ci);
       const data = DATA[key];
@@ -2835,6 +2864,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       getVisibleModIdsInSubcategory(ci, si).forEach(id => {
         st.checked[id] = val;
         $(`#${id}`).prop('checked', val);
+        const $item = $(`#${id}`).closest('.mc-mod-item');
+        $item.find('.mc-mod-val').css('font-weight', val ? 'bold' : 'normal');
       });
       updateSubcatCheckbox(ci, si);
       updateCatCheckbox(ci);
@@ -2851,6 +2882,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       getAllModIds().forEach(id => {
         st.checked[id] = false;
         $(`#${id}`).prop('checked', false);
+        const $item = $(`#${id}`).closest('.mc-mod-item');
+        $item.find('.mc-mod-val').css('font-weight', 'normal');
       });
       st.scalerVals = {};
       st.userInputVals = {};
@@ -2916,6 +2949,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       const id = $(this).data('id');
       st.checked[id] = false;
       $(`#${id}`).prop('checked', false);
+      $(`#${id}`).closest('.mc-mod-item').find('.mc-mod-val').css('font-weight', 'normal');
       const parts = id.split('_');
       const ci = parseInt(parts[1]);
       if (parts[2] === 's') updateSubcatCheckbox(ci, parseInt(parts[3]));

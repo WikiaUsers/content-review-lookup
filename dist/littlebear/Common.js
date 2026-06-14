@@ -1,18 +1,10 @@
-// Any JavaScript here will be loaded for all users on every page load.
-console.log('************ MediaWiki:Common.js ************');
-
+// This JavaScript file loads for all users on every skin except FandomMobile.
 // Customizing text of auto-created user and user talk pages
-const welcomeText = 'Welcome to the Little Bear Wiki!';
-const talkLink = mw.util.getUrl('User talk:$2');
-const welcomeLink = $('<a>').attr('href', talkLink).text(welcomeText);
 window.AutoCreateUserPagesConfig = {
 	content: {
 		2: '{{Placeholder}}',
 		3: '== Welcome ==\n\n{{Welcome}}',
 	},
 	summary: 'auto creating user and user talk pages',
-	notify: welcomeLink.prop('outerHTML'),
+	notify: '<a href="/wiki/User_talk:$2">Welcome to the Little Bear Wiki!</a>',
 };
-
-// Prevent undesirable scroll behavior
-$('[href="#"]').on('click', event => event.preventDefault());

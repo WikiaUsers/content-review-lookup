@@ -13,12 +13,13 @@ switch (mw.config.get('wgPageName')) {
     case 'Category:Platinum_Rank_Dragons':
     case 'Category:Gold_Rank_Dragons':
     case 'Category:Silver_Rank_Dragons':
+    case 'Category:Diamond_Rank_Dragons':
     case 'Category:Arcadia_Dragons':
     case 'Category:Coin_Dragons':
     case 'Category:Shiny_Dragons':
     case 'Category:Breeding_Exclusive_Dragons':
          $(document).ready(function(){
-             const myNodelist = document.querySelectorAll('[id$="Table"]');
+             const myNodelist = document.querySelectorAll('[id$="Table"],[id="tpt-shiny"');
              var text="";
              myNodelist.forEach(function(node,index){
                 const rowCount = node.rows.length - 1;

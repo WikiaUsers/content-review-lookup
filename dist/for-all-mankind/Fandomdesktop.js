@@ -18,8 +18,8 @@ var pageName = mw.config.get('wgPageName');
 
 // Specific pages to target
 var targetPages = [
-    "Star_City",
-    "Star_City_season_1",
+ //   "Star_City",
+ //   "Star_City_season_1",
     "Template:Countdown",
     "Template:Countdown/doc",
     "Template:Countdown/testcases",

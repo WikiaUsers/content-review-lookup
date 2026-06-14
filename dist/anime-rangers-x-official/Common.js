@@ -20,28 +20,6 @@ mw.hook('wikipage.content').add(function($content) {
 });
 
 /* === ARX Upgrade Stat Widget === */
-/* Any JavaScript here will be loaded for all users on every page load. */
-mw.hook('wikipage.content').add(function($content) {
-    if (window.copyCodeLoaded) return;
-    window.copyCodeLoaded = true;
-    $(document).on('click', '.copy-code', function() {
-        var $el = $(this);
-        var text = $el.attr('data-copy') || $el.text();
-        var originalHTML = $el.html();
-        var $temp = $("<input>");
-        $("body").append($temp);
-        $temp.val(text).select();
-        try {
-            document.execCommand("copy");
-            $el.html('<span style="color:#00ff00;">✔ Copied!</span>');
-            $el.css('border-color','#00ff00');
-            setTimeout(function() { $el.html(originalHTML); $el.css('border-color','#ff8200'); }, 1000);
-        } catch(err) { console.error('Copy failed', err); }
-        $temp.remove();
-    });
-});
-
-/* === ARX Upgrade Stat Widget === */
 (function () {
     'use strict';
 
@@ -115,9 +93,12 @@ mw.hook('wikipage.content').add(function($content) {
             if (!u) return;
             var s = calcStats(u, state);
 
-            var abilityDmgPct = (unit.AbilityDamage || 0);
-            var finalAdmg     = s.dmg * (1 + abilityDmgPct / 100);
-            var abilityCd     = fmtCd(unit.AbilityCooldown || 0) + 's';
+            var abilityDmgPct  = (unit.AbilityDamage || 0);
+            var finalAdmg      = s.dmg * (1 + abilityDmgPct / 100);
+            var abilityCdVal   = unit.AbilityCooldown || 0;
+            var abilityCd      = fmtCd(abilityCdVal) + 's';
+            var abilityDps     = abilityCdVal > 0 ? finalAdmg / abilityCdVal : 0;
+            var totalDps       = s.dps + abilityDps;
 
             var row  = el('div','arx-row');
             var head = el('div','arx-row-head');
@@ -145,9 +126,10 @@ mw.hook('wikipage.content').add(function($content) {
 
             var foot = el('div','arx-row-foot');
             if (u.Note) foot.appendChild(el('span','arx-note', u.Note));
-            var dps = el('span','arx-dps');
-            dps.innerHTML = 'DPS: <b>' + fmt(s.dps) + '/s</b>';
-            foot.appendChild(dps);
+            var totalDps = s.dps + abilityDps;
+            var dpsEl = el('span','arx-dps');
+            dpsEl.innerHTML = 'DPS: <b>' + fmt(totalDps) + '/s</b>';
+            foot.appendChild(dpsEl);
             row.appendChild(foot);
             panel.appendChild(row);
         });
@@ -209,8 +191,6 @@ mw.hook('wikipage.content').add(function($content) {
                     iImg.className = 'arx-detail-icon-img';
                     iImg.onerror = function() { iImg.style.display='none'; };
                     ic.appendChild(iImg);
-                } else {
-                    ic.textContent = icon;
                 }
             }
             row.appendChild(ic);
@@ -239,18 +219,18 @@ mw.hook('wikipage.content').add(function($content) {
 
         info.appendChild(el('div','arx-detail-section-title','Performance'));
         var perfList = el('div','arx-detail-list');
-        perfList.appendChild(perfRow('💰', 'Cost',             '¥ '+fmt(unit.Cost||0), null));
-        perfList.appendChild(perfRow('⏱',  'Send Cooldown',    (unit.SendCooldown||0)+'s', null));
-        perfList.appendChild(perfRow('∞',  'Limit Spawn',      (unit.SpawnCap||0)+' (Unit)', null));
-        perfList.appendChild(perfRow(STAT_ICONS.hp   || 'Health.png',          'Health',            fmt(baseU.Health||0),               fmt(maxU.Health||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.dmg  || 'Damage.png',          'Damage',            fmt(baseU.Damage||0),               fmt(maxU.Damage||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.cd   || 'Cooldown.png',        'Cooldown',          fmtCd(baseU.AttackCooldown||0)+'s', fmtCd(maxU.AttackCooldown||0)+'s'));
-        perfList.appendChild(perfRow(STAT_ICONS.rng  || 'Range.png',           'Range',             fmt(baseU.Range||0),                fmt(maxU.Range||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.spd  || 'Speed.png',           'Speed',             fmt(baseU.Speed||0),                fmt(maxU.Speed||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.acc  || '',                    'Accuracy',          (unit.Accuracy||0)+'%',             null));
-        perfList.appendChild(perfRow(STAT_ICONS.admg || 'AbilityDamage.webp',  'Ability Damage',    (unit.AbilityDamage||0)+'%',        null));
-        perfList.appendChild(perfRow(STAT_ICONS.acd  || 'AbilityCooldown.webp','Ability Cooldown',  fmtCd(unit.AbilityCooldown||0)+'s', null));
-        perfList.appendChild(perfRow(STAT_ICONS.size || '',                    'Ability Size',      (unit.AbilitySize||0)+'',           null));
+        perfList.appendChild(perfRow(STAT_ICONS.cost  || '', 'Cost',             '¥ '+fmt(unit.Cost||0),                 null));
+        perfList.appendChild(perfRow(STAT_ICONS.send  || '', 'Send Cooldown',    (unit.SendCooldown||0)+'s',              null));
+        perfList.appendChild(perfRow(STAT_ICONS.spawn || '', 'Limit Spawn',      (unit.SpawnCap||0)+' (Unit)',            null));
+        perfList.appendChild(perfRow(STAT_ICONS.hp    || 'Health.png',           'Health',            fmt(baseU.Health||0),               fmt(maxU.Health||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.dmg   || 'Damage.png',           'Damage',            fmt(baseU.Damage||0),               fmt(maxU.Damage||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.cd    || 'Cooldown.png',         'Cooldown',          fmtCd(baseU.AttackCooldown||0)+'s', fmtCd(maxU.AttackCooldown||0)+'s'));
+        perfList.appendChild(perfRow(STAT_ICONS.rng   || 'Range.png',            'Range',             fmt(baseU.Range||0),                fmt(maxU.Range||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.spd   || 'Speed.png',            'Speed',             fmt(baseU.Speed||0),                fmt(maxU.Speed||0)));
+        perfList.appendChild(perfRow(STAT_ICONS.acc   || '',                     'Accuracy',          (unit.Accuracy||0)+'%',             null));
+        perfList.appendChild(perfRow(STAT_ICONS.admg  || 'AbilityDamage.webp',   'Ability Damage',    (unit.AbilityDamage||0)+'%',        null));
+        perfList.appendChild(perfRow(STAT_ICONS.acd   || 'AbilityCooldown.webp', 'Ability Cooldown',  fmtCd(unit.AbilityCooldown||0)+'s', null));
+        perfList.appendChild(perfRow(STAT_ICONS.size  || '',                     'Ability Size',      (unit.AbilitySize||0)+'',           null));
         info.appendChild(perfList);
 
         body.appendChild(info);
@@ -274,7 +254,7 @@ mw.hook('wikipage.content').add(function($content) {
         var box = el('div','arx-info-box');
         if (!evolveData || !evolveData.EvolveTo || evolveData.EvolveTo === '') {
             var noEvolve = el('p','arx-no-evolve');
-            noEvolve.innerHTML = '<i><b>' + displayName + '</b> does not evolve.</i>';
+            noEvolve.innerHTML = '<i><b>' + mw.html.escape(displayName) + '</b> does not evolve.</i>';
             box.appendChild(noEvolve);
         } else {
             var layout    = el('div','arx-evolve-layout');
@@ -347,7 +327,7 @@ mw.hook('wikipage.content').add(function($content) {
         wrap.appendChild(el('div','arx-info-title','PASSIVE'));
         var box  = el('div','arx-info-box');
         var info = document.createElement('p');
-        info.innerHTML = unit.Passive.Info;
+        info.textContent = unit.Passive.Info;
         box.appendChild(info);
         wrap.appendChild(box);
         container.appendChild(wrap);

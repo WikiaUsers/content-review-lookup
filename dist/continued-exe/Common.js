@@ -19,10 +19,28 @@ document.getElementById("spoilers_image").addEventListener("click", function() {
     });
 });
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:FastBlock.js',
-        'u:dev:MediaWiki:MassUserRights/code.js',
-    ]
-});
+(function() {
+
+    if (mw.config.get('wgPageName') !== 'Yeuxsang') {
+        return;
+    }
+
+    var audioUrl = 'https://static.wikia.nocookie.net/continued-exe/images/0/04/01_-_MENU1_-_SONICEXE_OST_.mp3/revision/latest?cb=20240713233538';
+    var audio = new Audio(audioUrl);
+    
+    audio.loop = true;
+    audio.volume = 1.0;
+
+    var startAudio = function() {
+        audio.play().then(function() {
+            ['click', 'mousedown', 'keydown', 'touchstart'].forEach(function(eventType) {
+                document.removeEventListener(eventType, startAudio, true);
+            });
+        }).catch(function(error) {
+        });
+    };
+
+    ['click', 'mousedown', 'keydown', 'touchstart'].forEach(function(eventType) {
+        document.addEventListener(eventType, startAudio, true);
+    });
+})();

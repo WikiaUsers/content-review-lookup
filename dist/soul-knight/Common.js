@@ -11,6 +11,7 @@ var tooltips_list = [
 mw.hook('wikipage.content').add($content =>
     $content.find('.webm-loop video, video.webm-loop')
         .prop('loop', true)
+        .prop('muted', true)
         .prop('autoplay', true)
         .prop('controls', false)
 );

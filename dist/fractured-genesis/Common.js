@@ -184,3 +184,78 @@ $(function () {
         spawnVideoInstance();
     }
 })();
+
+$(document).ready(function() {
+    
+    // Initialize standard background loop
+    var mainAudio = new Audio('https://static.wikia.nocookie.net/continued-exe/images/8/8c/12_-_MENU3_-_SONICEXE_OST.mp3/revision/latest?cb=20240713233537');
+    mainAudio.loop = true;
+    mainAudio.preload = "auto";
+
+    var fadeInterval;
+
+    // Fades audio up to 100% volume
+    function fadeInTrack(audio) {
+        clearInterval(fadeInterval);
+        audio.volume = 0;
+        audio.play().catch(function(e) {});
+        var vol = 0;
+        fadeInterval = setInterval(function() {
+            if (vol < 1) {
+                vol += 0.05;
+                audio.volume = Math.min(1, vol);
+            } else {
+                clearInterval(fadeInterval);
+            }
+        }, 20);
+    }
+
+    // Fades audio down to 0% volume before stopping stream entirely
+    function fadeOutTrack(audio, callback) {
+        clearInterval(fadeInterval);
+        var vol = audio.volume;
+        fadeInterval = setInterval(function() {
+            if (vol > 0) {
+                vol -= 0.05;
+                audio.volume = Math.max(0, vol);
+            } else {
+                clearInterval(fadeInterval);
+                audio.pause();
+                if (callback) callback();
+            }
+        }, 20);
+    }
+
+    // Snaps an instant red flash to the viewer's screen
+    function triggerInstantFlash() {
+        $('#flash-screen').removeClass('execute-flash');
+        void document.getElementById('flash-screen').offsetWidth; // Force CSS reflow to re-trigger animation
+        $('#flash-screen').addClass('execute-flash');
+    }
+
+    // --- ACTION: OPEN MODULES ---
+    $('#deity-trigger, #reven-trigger').on('click', function(e) {
+        e.preventDefault();
+        var targetOverlay = (this.id === 'deity-trigger') ? '#deity-overlay' : '#reven-overlay';
+        
+        triggerInstantFlash();
+        $(targetOverlay).addClass('is-visible');
+        fadeInTrack(mainAudio);
+    });
+
+    // --- ACTION: CLOSE MODULES ---
+    $('.wiki-overlay').on('click', function(e) {
+        if (e.target === this) {
+            var activeOverlay = $(this);
+            
+            triggerInstantFlash();
+            fadeOutTrack(mainAudio);
+
+            // Instant collapse of the menu frame while the screen is fully red
+            setTimeout(function() {
+                activeOverlay.removeClass('is-visible');
+            }, 30);
+        }
+    });
+
+});

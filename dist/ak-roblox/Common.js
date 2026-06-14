@@ -9,7 +9,7 @@ window.lockOldComments.addNoteAbove = true;
 window.BackToTopModern = true;
 
 //AbuseLogRC
-abuseLogRC_showTo = [ 'content-moderator', 'thread-moderator',  'rollback' ];
+abuseLogRC_showTo = [ 'bureaucrat', 'administrator', 'content-moderator', 'thread-moderator',  'rollback' ];
 
 //AjaxRC
 window.ajaxSpecialPages = [

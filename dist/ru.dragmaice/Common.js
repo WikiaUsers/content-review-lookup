@@ -52,3 +52,41 @@ $( function () {
 		}
 	} );
 } );
+
+/* Добавление шаблонов Концепт и Иконки на подстраницу /Закулисный концепт */
+mw.loader.using( [ 'mediawiki.api', 'mediawiki.util' ] ).then( function() {
+    $( function() {
+        // Проверяем, что пользователь просто смотрит страницу
+        if ( mw.config.get( 'wgAction' ) !== 'view' ) {
+            return;
+        }
+
+        var fullPageName = mw.config.get( 'wgPageName' );
+
+        // Проверяем, что страница заканчивается на /Закулисный концепт
+        if ( fullPageName.endsWith( '/Закулисный_концепт' ) || fullPageName.endsWith( '/Закулисный концепт' ) ) {
+            
+            // Формируем текст вики-разметки с вашими шаблонами
+            var wikiText = '{{Концепт}}\n{{Иконки|За кулисами}}\n{{Содержание справа}}';
+
+            // Отправляем запрос к API вики для перевода шаблонов в HTML
+            var api = new mw.Api();
+            api.get( {
+                action: 'parse',
+                text: wikiText,
+                title: fullPageName,
+                disablelimitreport: true,
+                wrapoutputclass: ''
+            } ).done( function( data ) {
+                if ( data && data.parse && data.parse.text ) {
+                    // Создаем обертку для шаблонов
+                    var $wrapper = $( '<div id="default-templates-wrapper" class="noprint"></div>' );
+                    $wrapper.html( data.parse.text[ '*' ] );
+                    
+                    // Вставляем готовые шаблоны в самое начало страницы
+                    $( '#mw-content-text' ).prepend( $wrapper );
+                }
+            } );
+        }
+    } );
+} );

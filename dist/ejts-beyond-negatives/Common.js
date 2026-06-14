@@ -1,94 +1,28 @@
-// [[Category:Internal]]
+const specialPages = {
+    "The_First_Concept": {
+        color: "#000000",
+        font: "Orbitron"
+    },
 
-console.log("EJTS TEST");
-// For [[Module:CSS]]; [[T:CSS]] dependency
-mw.hook("wikipage.content").add(function() {
-	$("span.import-css").each(function() {
-		var css = mw.util.addCSS($(this).attr("data-css"));
-		$(css.ownerNode).addClass("import-css")
-			.attr("data-css-hash", $(this).attr("data-css-hash"))
-			.attr("data-from", $(this).attr("data-from"))
-			.attr("data-wait", $(this).attr("data-wait"))
-			.attr("data-portal", $(this).attr("data-portal"));
-		
-		var wait = $(this).attr("data-wait");
-		var portal = $(this).attr("data-portal");
-		var portalOpened = false;
-		
-		if (wait != "none") {
-			css.disabled = true;
-			var timer = setTimeout(() => css.disabled = false, wait);
-		}
-		
-		if (portal != "none") {
-			css.disabled = true;
-			$(".t-css-portal-" + portal).click(function() {
-				css.disabled = !css.disabled;
-				portalOpened = true;
-			});
-		}
-		
-		$(".theme-toggler").click(function() {
-			switch (true) {
-				case wait != "none":
-					if (timer || css.disabled == false) {
-						clearTimeout(timer);
-						timer = false;
-						css.disabled = true;
-					} else css.disabled = false;
-					break;
-				case portal != "none":
-					if (portalOpened) css.disabled = !css.disabled;
-					break;
-				default:
-					css.disabled = !css.disabled;
-					break;
-			}
-		});
-	});
-	
-	// Template:Audio toggle
-	$(".t-audio").each(function() {
-		var toggle = $(this).attr("data-toggle");
-		if (toggle != "none") {
-			$(".t-audio-toggle-" + toggle).click(function () {
-				var audio = $(`.t-audio-toggle-${toggle} audio`)[0];
-				audio.paused ? audio.play() : audio.pause();
-			});
-		}
-	});
-});
-
-
-
-// UserTags config
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		inactive: { order: -2 },
-		bot: { link:'Help:Bots', order: -1 },
-		bureaucrat: { order: 0 },
-		sysop: { order: 1 },
-		'content-moderator': { order: 2 },
-		threadmoderator: { order: 3 }
-	}
+    "Supreme": {
+        color: "#c000ff",
+        font: "Impact"
+    }
 };
 
-UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true };
-UserTagsJS.modules.autoconfirmed = false;
-UserTagsJS.modules.newuser = false;
-UserTagsJS.modules.metafilter = false;
+let css = "";
 
-// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
-$('.fandom-community-header__community-name-wrapper').append(
-	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
-		$('<img/>').css('height', '60px').css('position', 'relative').css('top', '10px')
-		.attr('src', 'https://static.wikia.nocookie.net/sky-children-of-the-light/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230720221916').attr('title', 'This wiki is part of Fandom Compass')
-));
+for (const [page, data] of Object.entries(specialPages)) {
+    css += `
+    .search-app__suggestion-link[href$="/wiki/${page}"],
+    a[data-tracking-label="whatlinkshere"][href$="/${page}"],
+    a[data-tracking-label="recentchangeslinked"][href$="/${page}"] {
+        color: ${data.color} !important;
+        font-family: "${data.font}" !important;
+        font-weight: bold;
+        text-shadow: 0 0 5px ${data.color};
+    }
+    `;
+}
 
-
-mw.hook("wikipage.content").add(function() {
-    $("span.import-css").each(function() {
-        console.log(this.outerHTML);
-    });
-});
+mw.util.addCSS(css);

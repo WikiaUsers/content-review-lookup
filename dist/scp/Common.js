@@ -44,6 +44,19 @@ mw.hook("wikipage.content").add(function () {
 	});
 });
 
+// FNDM page subtitle for FNDM namespaced pages
+$(function () {
+    if (mw.config.get('wgCanonicalNamespace') !== 'FNDM') return;
+
+    $('#firstHeading').text(mw.config.get('wgTitle'));
+
+    if (!$('.page-header__page-subtitle').length) {
+        $('.page-header__title-wrapper').append(
+            '<div class="page-header__page-subtitle">FNDM Page</div>'
+        );
+    }
+});
+
 // License thing for creative commons
 $(function() {
     // Custom license text (modify as needed)

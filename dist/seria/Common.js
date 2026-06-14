@@ -85,7 +85,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
     // Load UI scripts using native mw.loader.load to bypass CDN cache and comply with CSP
     var scriptPath = mw.config.get("wgScript");
     var cb = Date.now();
-    ["minetip.js", "mcui.js"].forEach(function(js) {
+    ["minetip-v4.js", "mcui-v4.js"].forEach(function(js) {
         var url = scriptPath + "?title=MediaWiki:Common.js/" + js + "&action=raw&ctype=text/javascript&cb=" + cb;
         mw.loader.load(url);
     });

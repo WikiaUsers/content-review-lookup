@@ -1,4 +1,3 @@
-
 (function() {
   // ========== 注入淡出动画样式（仅一次）==========
   if (!document.getElementById('rare-toast-kf')) {
@@ -79,7 +78,7 @@
     })
     .then(function(rawText) {
       $(".fandom-community-header__community-name, .fandom-sticky-header__sitename").each(function() {
-        $(this).html($(this).html() + rawText);
+        $(this).html($(this).html() + mw.html.escape(rawText));
       });
-    })
+    });
 })();

@@ -93,3 +93,29 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 		});
 	});
 });
+
+// Custom tpt page-level checks for achievs (test)
+mw.hook('wikipage.content').add(()=>{
+	const api = new mw.Rest();
+	$('.tpt-instance:empty').each((_, el) => {
+		const $el = $(el);
+		const catID = el.dataset.category;
+		const pageID = el.dataset.pageid;
+		const inpt = $('<input>', { id: catID+'-'+pageID, type: 'checkbox' });
+		const labl = $('<label>', { 'for': catID+'-'+pageID });
+		const url = '/progress-tracking/table/'+catID+'/Achievement';
+		inpt.on('change', (e) => {
+			api[inpt.checked ? 'post' : 'delete'](url, { entityId: pageID });
+		});
+		api 
+		.get(url, {}, { 'Content-Type': 'application/json' })
+		.then((arr)=>{
+			if (arr.includes(pageID)) {inpt.attr('checked', '');}
+			$el.append(inpt, labl);
+			$el.before('Unlocked? ');
+		});
+	});
+});
+
+
+/* extra spacing for editor convenience */

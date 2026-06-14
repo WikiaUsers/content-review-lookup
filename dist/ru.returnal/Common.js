@@ -8,6 +8,7 @@ importArticles({
 	        "u:ru.wikicorporate:MediaWiki:FanFeed.js",
 	        "u:ru.wikicorporate:MediaWiki:ThemeToggler.js",
 	        "u:ru.wikicorporate:MediaWiki:Rail.js",
-	        "u:ru.wikicorporate:MediaWiki:Pseudo3D.js"
+	        "u:ru.wikicorporate:MediaWiki:Pseudo3D.js",
+	        "u:ru.wikicorporate:MediaWiki:Users.js"
 	    ]
 	});

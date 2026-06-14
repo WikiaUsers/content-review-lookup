@@ -147,8 +147,8 @@ function initGaffDiagram() {
         var row = document.createElement("div");
         row.className = "swg-srow";
         row.innerHTML =
-          '<span class="swg-sl">' + r[0] + '</span>' +
-          '<span class="swg-sv">' + r[1] + '</span>';
+          '<span class="swg-sl">' + mw.html.escape(r[0]) + '</span>' +
+          '<span class="swg-sv">' + mw.html.escape(r[1]) + '</span>';
         st.appendChild(row);
       });
     } else {

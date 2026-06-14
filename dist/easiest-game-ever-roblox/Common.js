@@ -87,3 +87,70 @@ mw.hook('wikipage.content').add(function($content) {
         });
     });
 });
+
+/* skatepark stuff */
+$(function() {
+    var skateparkPages = [
+        'Beat_Up', 'Boombox_Boogie', 'Fall_Damage', 'Lava_Pit',
+        'Slipped', 'Wake', 'Zapped', 'Break_Down', 'Bronze_Medal',
+        'Deadly_Touch', 'Secret_Stash', 'Skateboard', 'Slumber',
+        'Theft', 'XTREME_MODE', 'Bare_Minimum', 'Blackout',
+        'Killer_Escape', 'Silver_Medal', 'Gold_Medal'
+    ];
+
+    if (skateparkPages.indexOf(mw.config.get('wgPageName')) !== -1) {
+        var header = document.querySelector('.fandom-community-header__community-name');
+        if (header) {
+            header.style.cssText += `
+                font-family: Arial, sans-serif;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #ffffff;
+                text-shadow:
+                    -1px -1px 0 #000,  1px -1px 0 #000, -1px  1px 0 #000,  1px  1px 0 #000,
+                     0px -1px 0 #000,  0px  1px 0 #000, -1px  0px 0 #000,  1px  0px 0 #000,
+                    -2px -2px 0 #000,  2px -2px 0 #000, -2px  2px 0 #000,  2px  2px 0 #000,
+                     0px -2px 0 #000,  0px  2px 0 #000, -2px  0px 0 #000,  2px  0px 0 #000,
+                    -2px -1px 0 #000, -1px -2px 0 #000,  2px -1px 0 #000,  1px -2px 0 #000,
+                    -2px  1px 0 #000, -1px  2px 0 #000,  2px  1px 0 #000,  1px  2px 0 #000;
+            `;
+        }
+    }
+});
+
+function initSpinnyHeader() {
+  document.querySelectorAll('.fandom-community-header__image, .fandom-sticky-header__logo').forEach(function(img) {
+
+        img.addEventListener('mouseenter', function() {
+            if (!img.classList.contains('is-spinning')) {
+                img.style.animation = '';
+                img.classList.add('is-spinning');
+            }
+        });
+
+        img.addEventListener('mouseleave', function() {
+            var currentTransform = window.getComputedStyle(img).transform;
+
+            img.classList.remove('is-spinning');
+            img.style.transform = currentTransform;
+
+            void img.offsetWidth;
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    img.style.transform = 'rotate(0deg) scale(1)';
+                });
+            });
+
+            setTimeout(function() {
+                img.style.transform = '';
+            }, 450);
+        });
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSpinnyHeader);
+} else {
+    initSpinnyHeader();
+}

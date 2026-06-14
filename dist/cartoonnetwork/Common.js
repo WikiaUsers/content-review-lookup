@@ -28,3 +28,4 @@ importArticles({
         'u:dev:MediaWiki:AjaxBatchUndelete.js',
     ]
 });
+importScriptPage('ShowHide/code.js', 'dev');

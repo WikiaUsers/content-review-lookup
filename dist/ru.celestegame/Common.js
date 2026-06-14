@@ -20,13 +20,3 @@ nkch_gst_gadgets = [{
     title: "Исправление глобальных стилей",
     description: "Улучшает оформление глобальных элементов"
 }];
-
-
-// Полная ширина страницы 
-$(function(){   
-    switch ( mw.config.get('wgPageName') ) {
-      case 'Celeste_вики':
-            $('body').addClass('is-content-expanded')
-        break;
-    }
-});

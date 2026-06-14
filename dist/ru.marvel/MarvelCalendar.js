@@ -14,6 +14,13 @@
         '  50%  { transform: scaleX(-1) translateY(-8px); }',
         '  100% { transform: scaleX(-1) translateY(0px); }',
         '}',
+        // .railModule задаёт flex на .comics-week через boxes.css, но вне rail (Заглавная, трансклюзия) flex отсутствует —', без него order:-1 на .comics-week_title не работает и заголовок недели не отображается',
+        '#marvel-weekly-calendar .comics-week {',
+        '  display: flex;',
+        '  flex-wrap: wrap;',
+        '  justify-content: center;',
+        '}',
+        '#marvel-weekly-calendar .comics-week_title { order: -1; width: 100%; }',
         '.mc-loading {',
         '  display: flex;',
         '  flex-direction: column;',
@@ -446,14 +453,21 @@
             wrapoutputclass: ''
         } ).then( function ( parsed ) {
             var current = getCurrentISOWeekAndYear();
-            // Заголовок недели переносим внутрь .comics-week, чтобы .comics-week_title был siblings с .comics-table — это необходимо для корректной работы CSS (order: -1 в railModule)
+            // Заголовок недели переносим внутрь .comics-week; .comics-week_title — под .mw-collapsible, — это необходимо для корректной работы CSS (order: -1 в railModule); .mw-collapsible даёт раскрывающуюся вкладку; инициализируется через jquery.makeCollapsible
             container.innerHTML =
                 '<div class="comics-week">' +
                     getWeekRange( current.week, current.year ) +
-                    '<div class="comics-table">' +
-                        parsed +
+                    '<div class="mw-collapsible mw-collapsed">' +
+                        '<div class="mw-collapsible-content">' +
+                            '<div class="comics-table">' +
+                                parsed +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
                 '</div>';
+            mw.loader.using( 'jquery.makeCollapsible' ).then( function () {
+                $( container ).find( '.mw-collapsible' ).makeCollapsible();
+            } );
         } ).catch( function ( err ) {
             console.error( 'MarvelCalendar: Ошибка парсинга {{РГ}}', err );
             container.innerHTML = '<p class="error">Ошибка отображения календаря. Попробуйте обновить страницу.</p>';

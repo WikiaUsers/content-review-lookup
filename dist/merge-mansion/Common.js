@@ -4,6 +4,7 @@ importScript('MediaWiki:DynamicRemainingItemsTable.js');
 importScript('MediaWiki:TaskTableFeatures.js');
 importScript('MediaWiki:UsesTableFeatures.js');
 importScript('MediaWiki:SeasonPassFeatures.js');
+importScript('MediaWiki:Events.js');
 
 (function () {
   console.log("Searching for Checkbox tracker (robust v2)");

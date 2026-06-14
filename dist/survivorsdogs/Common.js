@@ -15,3 +15,13 @@ importArticles({
                 'MediaWiki:Kindle.js', //Kindle Web Reader
     ]
 });
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		bureaucrat: { u:'Alpha (Bureaucrat)', link:'Survivors_by_Erin_Hunter_Wiki:Staff' },
+		sysop: { u:'Beta (Admin)', link:'Survivors_by_Erin_Hunter_Wiki:Staff' },
+		threadmoderator: { u:'Third Dog (Mod)', link:'Survivors_by_Erin_Hunter_Wiki:Staff' },
+		blocked: { u:'Exiled' },
+	}
+};
