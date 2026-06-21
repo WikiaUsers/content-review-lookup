@@ -102,10 +102,8 @@ $(document).ready(function(){
     width:'100%',
     textAlign:'center',
     zIndex:9999,
-    pointerEvents:'none',
-    opacity:0,
-    transition:'opacity .15s linear'
-  }).appendTo('body');
+    pointerEvents:'none'
+}).appendTo('body');
 
   const lyricText = $('<span>').css({
     fontSize:'32px',
@@ -283,6 +281,482 @@ if(!audio.paused && !audio.ended){
 
   hookAudio();
   setInterval(hookAudio, 1500);
+
+}); // ready
+
+}); // loader
+
+
+
+
+mw.loader.using(['jquery'], function () {
+
+$(document).ready(function(){
+
+const TARGET_AUDIO = 'SuperSonicHero.mp3';
+const INTERNAL_AUDIO = 'https://static.wikia.nocookie.net/project-outcome/images/6/67/SuperSonicHero.mp3/revision/latest?cb=20260617201834&format=original';
+
+const VIDEO_URL = 'https://static.wikia.nocookie.net/project-outcome/images/2/2c/SuperSonicIntro.mp4/revision/latest?cb=20260617201741&format=original';
+
+const LYRIC_OFFSET = 0.05;
+
+  /* ================= LYRICS ================= */
+  const lyrics = [
+
+// efeito especial
+{ t:21.243, l:"You" },
+{ t:21.637, l:"You can" },
+{ t:22.136, l:"You can feel" },
+{ t:22.886, l:"You can feel me" },
+
+// efeito especial
+{ t:23.968, l:"You" },
+{ t:24.137, l:"You can" },
+{ t:24.250, l:"You can see" },
+{ t:24.969, l:"You can see me" },
+{ t:25.180, l:"You can see me clear" },
+
+// efeito especial
+{ t:26.302, l:"I" },
+{ t:26.718, l:"I don't" },
+{ t:27.218, l:"I don't whis" },
+{ t:27.601, l:"I don't whisper" },
+
+// efeito especial
+{ t:27.851, l:"Yes," },
+{ t:28.102, l:"Yes, I" },
+{ t:28.603, l:"Yes, I shout!" },
+
+{ t:29.635, l:"SHOUT!" },
+
+{ t:31.635, l:"And in my dust" },
+{ t:34.300, l:"I leave you doubt" },
+
+{ t:36.790, l:"And you know me" },
+{ t:40.100, l:"Yes you do" },
+{ t:41.851, l:"And you can hear me" },
+{ t:43.035, l:"Coming light years away" },
+{ t:46.634, l:"Faster than light" },
+
+// efeito especial
+{ t:49.034, l:"In a" },
+{ t:49.352, l:"In a world" },
+{ t:49.851, l:"In a world you" },
+{ t:50.602, l:"In a world you wonder" },
+{ t:52.401, l:"You can feel" },
+{ t:54.390, l:"A Super Sonic power" },
+{ t:56.280, l:"Over you" },
+// efeito especial
+{ t:57.500, l:"Yes," },
+{ t:57.900, l:"Yes, I'm" },
+{ t:58.200, l:"Yes, I'm real" },
+// efeito especial
+{ t:59.534, l:"I" },
+{ t:59.785, l:"I will" },
+{ t:60.035, l:"I will speed" },
+{ t:60.400, l:"I will speed my" },
+
+{ t:60.700, l:"way" },
+{ t:61.418, l:"way right" },
+
+{ t:61.768, l:"through" },
+{ t:62.267, l:"through you" },
+
+{ t:62.784, l:"here" },
+{ t:63.034, l:"here I" },
+{ t:63.534, l:"here I am" },
+
+// efeito especial
+{ t:64.419, l:"I'm" },
+{ t:64.668, l:"I'm the" },
+{ t:64.918, l:"I'm the Super" },
+{ t:65.300, l:"I'm the Super Sonic" },
+{ t:66.000, l:"I'm the Super Sonic power" },
+
+// efeito especial
+{ t:66.668, l:"That" },
+{ t:66.918, l:"That you" },
+{ t:67.300, l:"That you fear" },
+
+// efeito especial
+{ t:68.050, l:"Yes," },
+{ t:68.320, l:"Yes, I" },
+{ t:68.590, l:"Yes, I am" },
+
+// efeito especial
+{ t:69.669, l:"I'm" },
+{ t:69.918, l:"I'm the" },
+{ t:70.100, l:"I'm the Super" },
+{ t:70.418, l:"I'm the Super Sonic" },
+{ t:71.167, l:"I'm the Super Sonic Hero" },
+
+// efeito especial
+{ t:71.918, l:"That" },
+{ t:72.320, l:"That you" },
+{ t:72.551, l:"That you know" }
+];
+
+  /* ================= UI ================= */
+
+  const lyricBox = $('<div>').css({
+    position:'fixed',
+    bottom:'100px',
+    width:'100%',
+    textAlign:'center',
+    zIndex:9999,
+    pointerEvents:'none',
+    opacity:0,
+    transition:'none'
+  }).appendTo('body');
+
+  const lyricText = $('<span>').css({
+    fontSize:'32px',
+    fontWeight:'bold',
+    background:'linear-gradient(180deg,#fff7b2 0%,#ffd700 40%,#ffae00 100%)',
+    WebkitBackgroundClip:'text',
+    WebkitTextFillColor:'transparent',
+    WebkitTextStroke:'1px #000',
+    textShadow:
+        '0 0 10px rgba(255,215,0,.8),' +
+        '0 0 25px rgba(255,180,0,.6)',
+    whiteSpace:'nowrap',
+
+    opacity:0,
+    transform:'scale(0.9)',
+    transition:'opacity .25s ease, transform .25s ease'
+
+}).appendTo(lyricBox);
+
+  const flash = $('<div>').css({
+    position:'fixed',
+    inset:0,
+    background:'#fff',
+    zIndex:10000,
+    opacity:0,
+    pointerEvents:'none',
+    transition:'none'
+  }).appendTo('body');
+
+
+const hideRanges = [
+  [23.212,23.968],
+  [25.468,26.302],
+  [33.135,34.300],
+
+  [39.400,40.100], // And you know me
+  [41.334,41.851], // Yes you do
+  [45.786,46.634], // Coming light years away
+  [48.640,49.034],  // Faster than light
+  [51.850,52.401], // In a world you wonder
+  [53.651,54.390], // You can feel
+  [57.285,57.500], // Over you
+  [58.700,59.534], // Yes, I'm real
+  [67.850,68.050], // That you fear
+  [71.800,71.918]  // Hero (ajuste depois se precisar)
+];
+
+  /* ================= VIDEO ================= */
+
+  let video = null;
+
+  function createVideo(){
+    if(video) return;
+
+    video = document.createElement('video');
+    video.src = VIDEO_URL;
+    video.muted = true;
+    video.preload = "metadata";
+    video.style.position = "fixed";
+    video.style.inset = "0";
+    video.style.width = "100%";
+    video.style.height = "100%";
+    video.style.objectFit = "cover";
+    video.style.zIndex = "9996";
+    video.style.opacity = "0";
+    video.style.pointerEvents = "none";
+
+    document.body.appendChild(video);
+  }
+
+  /* ================= AUDIO ================= */
+
+  let audio = null;
+  let started = false;
+
+  function hookAudio(){
+    document.querySelectorAll('audio').forEach(a=>{
+      if(audio) return;
+      if(a.src && a.src.includes(TARGET_AUDIO)){
+        audio = a;
+        startSystem();
+      }
+    });
+  }
+
+  function startSystem(){
+    if(started) return;
+    started = true;
+
+    audio.src = INTERNAL_AUDIO;
+    audio.load();
+
+    createVideo();
+    loop();
+  }
+
+/* ================= LOOP ================= */
+
+let videoActive = false;
+let lastTime = 0;
+let lastLyric = '';
+
+function loop(){
+
+    requestAnimationFrame(loop);
+
+    if(!audio) return;
+
+    const t = audio.currentTime;
+
+    if(Math.abs(t - lastTime) > 0.4){
+    }
+
+    lastTime = t;
+
+    if(audio.paused || audio.ended){
+
+    // some lyrics
+    lyricText.css({
+        opacity:0,
+        transform:'translateY(15px) scale(0.95)'
+    });
+
+    lyricBox.css('opacity',0);
+
+    // limpa texto
+    lastLyric = '';
+    lyricText.text('');
+
+    // some flash
+    flash.css('opacity',0);
+
+    // some vídeo
+    if(video){
+        video.pause();
+        video.style.opacity = 0;
+        videoActive = false;
+    }
+
+    return;
+}
+
+    let shouldHide = false;
+
+    for(const r of hideRanges){
+
+    if(t >= r[0] && t < r[1]){
+
+        shouldHide = true;
+        break;
+
+    }
+}
+
+
+if(t >= 20.400 && t <= 21.100){
+
+    const p = (t - 20.400) / (21.100 - 20.400);
+
+    let opacity;
+
+    if(p < 0.5){
+        opacity = p * 2;
+    }else{
+        opacity = (1 - p) * 2;
+    }
+
+    flash.css('opacity', opacity);
+
+}else if(t >= 31.136 && t <= 33.900){
+
+    const p = 1 - (
+        (t - 31.136) /
+        (33.900 - 31.136)
+    );
+
+    flash.css('opacity', p);
+
+}else if(t >= 51.900 && t <= 52.200){
+
+    const p = 1 - (
+        (t - 51.900) /
+        (52.200 - 51.900)
+    );
+
+    flash.css('opacity', p);
+
+}else if(t >= 72.450 && t <= 73.800){
+
+    const p = 1 - (
+        (t - 72.450) /
+        (73.800 - 72.450)
+    );
+
+    flash.css('opacity', p);
+
+}else{
+
+    flash.css('opacity',0);
+
+}
+
+/* ================= LYRICS ================= */
+
+if(!audio.paused && !audio.ended){
+
+    let found = -1;
+
+    for(let i = lyrics.length - 1; i >= 0; i--){
+
+        if(t >= lyrics[i].t + LYRIC_OFFSET){
+            found = i;
+            break;
+        }
+
+    }
+
+    if(found !== -1){
+
+        // Atualiza apenas quando trocar a lyric
+        if(lastLyric !== lyrics[found].l){
+
+            lyricText.text(lyrics[found].l);
+            lastLyric = lyrics[found].l;
+
+            // animação de entrada
+            lyricText.css({
+                opacity:0,
+                transform:'translateY(15px) scale(0.95)'
+            });
+
+            setTimeout(()=>{
+
+    lyricText.css({
+        opacity:1,
+        transform:'translateY(0px) scale(1)'
+    });
+
+},1);
+
+        }
+
+        if(!shouldHide){
+
+            lyricBox.css('opacity',1);
+
+            if(lyrics[found].l === "SHOUT!"){
+
+                const progress =
+                    Math.min(
+                        Math.max(
+                            (t - 29.635) /
+                            (31.136 - 29.635),
+                            0
+                        ),
+                        1
+                    );
+
+                lyricText.css({
+                    fontSize:(32 + progress * 120) + "px"
+                });
+
+            }else{
+
+                lyricText.css({
+                    fontSize:'32px'
+                });
+
+            }
+
+        }else{
+
+            // animação de saída
+            lyricText.css({
+                opacity:0,
+                transform:'translateY(15px) scale(0.95)'
+            });
+
+            lyricBox.css('opacity',1);
+
+            setTimeout(()=>{
+                lyricBox.css('opacity',0);
+            },250);
+
+        }
+
+    }else{
+
+        lyricText.css({
+            opacity:0,
+            transform:'translateY(15px) scale(0.95)'
+        });
+
+        lyricBox.css('opacity',1);
+
+        setTimeout(()=>{
+            lyricBox.css('opacity',0);
+        },250);
+
+    }
+
+} // fecha if(!audio.paused && !audio.ended)
+
+    /* ================= VIDEO ================= */
+
+    if(video){
+
+        if(t >= 0 && t <= 20.500){
+
+            if(!videoActive){
+
+                videoActive = true;
+
+                video.style.opacity = 0.65;
+                video.currentTime = 0;
+
+                video.play().catch(()=>{});
+
+            }
+
+            if(
+                Math.abs(
+                    video.currentTime - t
+                ) > 0.25
+            ){
+                video.currentTime = t;
+            }
+
+        }else if(videoActive){
+
+            videoActive = false;
+
+            video.pause();
+            video.style.opacity = 0;
+
+        }
+
+    }
+
+} // fecha loop()
+
+/* ================= INIT ================= */
+
+hookAudio();
+
+setInterval(
+    hookAudio,
+    1500
+);
 
 }); // ready
 

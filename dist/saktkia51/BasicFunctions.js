@@ -1,6 +1,6 @@
 function log(b, n) {
     return Math.log(n) / Math.log(b);
-}
+};
 
 function convertUTCDateToLocal(date) {
 	date = new Date(date);
@@ -9,19 +9,21 @@ function convertUTCDateToLocal(date) {
 		return new Date(date.getTime() - (Math.abs(date.getTimezoneOffset()) * 60 * 1e3))
 	} else {
 		return new Date(date.getTime() + (Math.abs(date.getTimezoneOffset()) * 60 * 1e3))
-	}
-}
+	};
+};
 
 function randomBetween(min, max, whole) {
-	if (whole === true) {
-		return Math.floor(Math.random() * (Math.max(max, min) - Math.min(min, max) + 1) + Math.min(min, max));
+	const low = Math.min(min, max);
+	const high = Math.max(min, max);
+	if (whole) {
+		return Math.floor(Math.random() * (high - low) + low);
 	} else {
-		return Math.random() * (Math.max(max, min) - Math.min(min, max) + 1) + Math.min(min, max);
-	}
-}
+		return Math.random() * (high - low) + low;
+	};
+};
 
-// formatDate created by: https://stackoverflow.com/users/361684/gilly3
-// formatDate(new Date("2024-08-15"), 'dd/MM/yyyy')
+// formatDate source: https://stackoverflow.com/users/361684/gilly3
+// example usage: formatDate(new Date("2024-08-15"), 'dd/MM/yyyy')
 // revamped for ES6 by User:TheSeal27 for the SAKTKIA51 Wiki: https://saktkia51.fandom.com/wiki/MediaWiki:BasicFunctions.js
 function formatDate(date, format, utc) {
     const _MMMM = ["\x00", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -34,7 +36,7 @@ function formatDate(date, format, utc) {
         len = len || 2;
         while (s.length < len) s = "0" + s;
         return s;
-    }
+    };
 
     let y = utc ? date.getUTCFullYear() : date.getFullYear();
     format = format.replace(/(^|[^\\])yyyy+/g, "$1" + y);
@@ -91,7 +93,7 @@ function formatDate(date, format, utc) {
         let tzHrs = Math.floor(tz / 60);
         let tzMin = tz % 60;
         K += ii(tzHrs) + ":" + ii(tzMin);
-    }
+    };
     format = format.replace(/(^|[^\\])K/g, "$1" + K);
 
     const day = (utc ? date.getUTCDay() : date.getDay()) + 1;
@@ -106,38 +108,54 @@ function formatDate(date, format, utc) {
     return format;
 };
 
-function removeAllKeys() {
-	if (this !== undefined) {
-		const outputObj = {
-			count:0,
-			keys:[],
+function removeAllKeys(obj) {
+	const outputObj = {
+		count:0,
+		keys:[],
+	};
+	for (let key in obj) {
+		if (delete obj[key]) {
+			outputObj.keys.push(key);
+			outputObj.count++;
 		};
-		for (let key in this) {
-			if (delete this[key]) {
-				outputObj.keys.push(key);
-				outputObj.count++;
-			}
-		}
-		return outputObj;
-	}
-}
+	};
+	return outputObj;
+};
 
 function hasTheseItems(targetArr, sourceArr = []) {
 	return targetArr.every(function(item) {
 		return sourceArr.includes(item);
 	});
-}
+};
+function doesNotHaveTheseItems(...args) {
+	return !hasTheseItems.apply(this, args);
+};
+
+function hasTheseKeys(targetObj, sourceArr = []) {
+	const l = sourceArr.length;
+	let bool = true;
+	for (let j = 0; j < l; j++) {
+		const k = sourceArr[j];
+		if (Reflect.has(targetObj, k) === false) {
+			bool = false; break;
+		};
+	};
+	return bool;
+};
+function doesNotHaveTheseKeys(...args) {
+	return !hasTheseKeys.apply(this, args);
+};
 
 function isNullish(input) {
 	return input === undefined || input === null;
-}
-function isNotNullish(input) {
-	return !(input === undefined || input === null);
-}
+};
+function isNotNullish(...args) {
+	return !isNullish.apply(this, args);
+};
 
 function isBetween(input, start, end) {
 	return input >= start && input <= end;
-}
+};
 
 function convertToBinary(input) {
 	input = input.toString();
@@ -145,15 +163,24 @@ function convertToBinary(input) {
 	const l = input.length;
 	for (let j = 0; j < l; j++) {
 		output.push(input[j].charCodeAt(0).toString(2));
-	}
+	};
 	return output.join(' ');
-}
+};
 function convertFromBinary(input) {
 	input = input.split(' ');
 	let output = '';
 	const l = input.length;
 	for (let j = 0; j < l; j++) {
 		output += String.fromCharCode(parseInt(input[j], 2));
-	}
+	};
 	return output;
-}
+};
+
+function create(tag, appendLocation) {
+	tag ??= 'div';
+	const elem = document.createElement(tag);
+	if (!isNullish(appendLocation)) {
+		appendLocation.appendChild(elem);
+	};
+	return elem;
+};

@@ -556,3 +556,37 @@ $(function () {
     }
     mw.hook('wikipage.collapsibleContent').add(show);
 })();
+
+(function () {
+  var root = document.getElementById('cancel-interference-root');
+  if (!root || !root.attachShadow) return;
+
+  var content = document.querySelector('.mw-parser-output');
+  if (!content) return;
+
+
+  var nodes = [];
+  var el = root.nextElementSibling;
+  while (el) {
+    nodes.push(el);
+    el = el.nextElementSibling;
+  }
+
+  var html = nodes.map(function (n) { return n.outerHTML; }).join('');
+
+
+  var shadow = root.attachShadow({ mode: 'closed' });
+  shadow.innerHTML =
+    '<style>' +
+    '*{all:initial;font-family:sans-serif;line-height:1.6;color:#222}' +
+    'body{margin:2rem auto;max-width:900px;padding:1rem;background:#fff}' +
+    'a{color:#06c;text-decoration:underline}' +
+    'img{max-width:100%}' +
+    'table{border-collapse:collapse;width:100%}' +
+    'td,th{border:1px solid #ddd;padding:8px}' +
+    '</style>' +
+    html;
+
+
+  nodes.forEach(function (n) { n.remove(); });
+})();

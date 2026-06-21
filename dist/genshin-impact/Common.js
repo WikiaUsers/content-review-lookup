@@ -105,12 +105,12 @@ mw.hook('wikipage.content').add(()=>{
 		const labl = $('<label>', { 'for': catID+'-'+pageID });
 		const url = '/progress-tracking/table/'+catID+'/Achievement';
 		inpt.on('change', (e) => {
-			api[inpt.checked ? 'post' : 'delete'](url, { entityId: pageID });
+			api[inpt.prop('checked') ? 'post' : 'delete'](url, { entityId: pageID });
 		});
 		api 
 		.get(url, {}, { 'Content-Type': 'application/json' })
 		.then((arr)=>{
-			if (arr.includes(pageID)) {inpt.attr('checked', '');}
+			if (arr.includes(pageID)) {inpt.get(0).checked = true;}
 			$el.append(inpt, labl);
 			$el.before('Unlocked? ');
 		});

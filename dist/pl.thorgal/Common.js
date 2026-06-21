@@ -1,85 +1,321 @@
-function insertHackyLog( putMeInLog ) {
-	//$().log('function init');
-	$.getJSON(
-        'http://szeryftest.wikia.com/api.php?',
-        {
-            action: 'query',
-            prop: 'info',
-            intoken: 'edit',
-            titles: 'Template:ActivityLog',
-            indexpageids: '',
-            format: 'json'
-        },
-        function( data ) {
-            //$().log('calling for token');
-			if ( data.query.pages && data.query.pageids ) {
-                var pageid = data.query.pageids[0];
-				var editToken = data.query.pages[pageid].edittoken;
-				//$().log('gotTheToken');
-				var cd = new Date(); 
-				$.ajax({
-					url: 'http://szeryftest.wikia.com/api.php',
-					data: {
-						format: 'json',
-						action: 'edit',
-						title: 'Template:ActivityLog/' + cd.getFullYear() + '-' + cd.getMonth() + '-' + cd.getDate(),
-						summary: '',
-						watchlist: 'unwatch',
-						prependtext: putMeInLog,
-						token: editToken
-					},
-					dataType: 'json',
-					type: 'POST',
-					success: function( data ) {
-						//$().log('gotTheToken');
-						if ( data && data.edit && data.edit.result == 'Success' ) {
-							//$().log('huzza!');
-						} else if ( data && data.error ) {
-							//$().log( 'Error: API returned error code "' + data.error.code + '": ' + data.error.info );
-						} else {
-							//$().log( 'Error: Unknown result from API.' );
-						}
-					},
-					error: function( xhr ) {
-						//$().log( 'Error: Request failed.' );
-					}
-				});
-            }
+/* === Username system === */
+function typeText(el, text) {
+    let i = 0;
+    el.textContent = "";
+
+    if (!text) return;
+
+    const interval = setInterval(() => {
+        el.textContent += text[i];
+        i++;
+
+        if (i >= text.length) {
+            clearInterval(interval);
         }
-    )
+    }, 60);
 }
 
-$(function() {
-	
-	if( ( wgUserName == null) && ( document.referrer != null ) && ( document.referrer.indexOf(wgServer ) != 0 )){
-		var logText = '';
-		if ( (wgPageName + '').indexOf(':') > -1  ){
-			wgPageName = ':' + wgPageName;
-		}
-		if (document.referrer && document.referrer!="") {
-			if (document.referrer.search(/google\.*/i) != -1) {
-				var start = document.referrer.search(/q=/);
-				var searchTerms = document.referrer.substring(start + 2);
-				var end = searchTerms.search(/&/);
-				end = (end == -1) ? searchTerms.length:end;
-				searchTerms = searchTerms.substring(0, end);
-				if (searchTerms.length != 0) {
-					searchTerms = searchTerms.replace(/\+/g, " ");
-					searchTerms = unescape(searchTerms);
-					logText = '{{googleSearch|1=' + searchTerms + '|2=' + wgPageName  + '}}';
-				}
-			}
+mw.hook('wikipage.content').add(function ($content) {
 
-			if ( logText == '' ){
-				if ( document.referrer.substring(19,0) == 'http://www.facebook' ){
-					logText = '{{linkFromFacebook|1=' + wgPageName + '}}';
-				} else {				
-					logText = '{{directLinkReferrer|1=' + document.referrer + '|2=' + wgPageName + '}}';
-				}
-			}
-			insertHackyLog( logText ); 
-		} else {
-		 // $().log('notworthourattention');
-		}
-	}
+    const user = mw.config.get("wgUserName");
+
+    $content.find(".insertusername").each(function () {
+
+        let el = this;
+        let raw = el.textContent;
+
+        const match = raw.match(/\{\{USERNAME\|(.*?)\}\}/);
+
+        if (!match) {
+            typeText(el, raw);
+            return;
+        }
+
+        let fallback = match[1];
+        let isEmptyFallback = fallback.trim() === "";
+
+        let replacement = "";
+
+              if (user) {
+            replacement = user;
+        } else if (!isEmptyFallback) {
+            replacement = fallback.trim();
+        }
+
+                if (replacement) {
+            const finalText = raw.replace(/\{\{USERNAME\|(.*?)\}\}/, replacement);
+            typeText(el, finalText);
+            return;
+        }
+
+        
+        let parent = el.parentNode;
+
+                if (el.previousSibling && el.previousSibling.nodeType === Node.TEXT_NODE) {
+            el.previousSibling.textContent =
+                el.previousSibling.textContent.replace(/ $/, "");
+        }
+
+        el.remove();
+    });
 });
+
+/* === READING PROGRESS BAR === */
+(function () {
+
+    function createBar() {
+        const bar = document.createElement("div");
+
+        bar.id = "wiki-reading-progress";
+
+        bar.style.position = "fixed";
+        bar.style.top = "0";
+
+        // Fandom has a top bar → we move slightly upwards with a layer
+        bar.style.left = "0";
+
+        bar.style.height = "4px";
+        bar.style.width = "0%";
+
+        // gradient
+        bar.style.background = "linear-gradient(90deg, #4caf50, #2196f3)";
+
+        bar.style.zIndex = "2147483647";
+
+        bar.style.pointerEvents = "none";
+
+        // smooth animation
+        bar.style.transition = "width 0.1s linear";
+
+        document.body.appendChild(bar);
+
+        return bar;
+    }
+
+    function updateBar(bar) {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        let percent = 0;
+
+        if (docHeight > 0) {
+            percent = (scrollTop / docHeight) * 100;
+        }
+
+        bar.style.width = percent + "%";
+    }
+
+    function init() {
+        const bar = createBar();
+
+        window.addEventListener("scroll", () => updateBar(bar), { passive: true });
+        window.addEventListener("resize", () => updateBar(bar));
+
+        // start immediately (important)
+        updateBar(bar);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
+
+})();
+
+/* === Activity of wiki === */
+(function () {
+
+    const style = document.createElement("style");
+    style.textContent = `
+    @keyframes wikiSadOut {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+        }
+        50% {
+            transform: scale(0.95);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.7);
+            filter: blur(2px);
+        }
+    }
+
+    .wiki-sad-out {
+        animation: wikiSadOut 0.6s ease forwards;
+    }
+    `;
+    document.head.appendChild(style);
+
+
+    function getMood(days) {
+
+        if (days <= 7) {
+            return {
+                color: "#4caf50",
+                icon: "🟢",
+                text: "Żyję i mam się dobrze!",
+                msg: "Nie daj jej nigdy umrzeć ❤️",
+                sadExit: "Ale... dlaczego? 😢"
+            };
+        }
+
+        if (days <= 30) {
+            return {
+                color: "#ffeb3b",
+                icon: "🟡",
+                text: "Jestem spokojna, wiem że wrócisz ❤️",
+                msg: "Zawsze jest czas, żeby coś dodać!",
+                sadExit: "No dobrze... 😔"
+            };
+        }
+
+        if (days <= 180) {
+            return {
+                color: "#ff9800",
+                icon: "🟠",
+                text: "Czuję się poważnie zaniedbana 😢",
+                msg: "Wiki potrzebuje Twojej edycji!",
+                sadExit: "Masz innną, prawda?! 💔"
+            };
+        }
+
+        return {
+            color: "#f44336",
+            icon: "🔴",
+            text: "Czuję się taka samotna...",
+            msg: "Ożyw ją zanim będzie za późno!",
+            sadExit: "Już mnie nie potrzebujesz... 💔"
+        };
+    }
+
+
+    function fetchLastEdit(cb) {
+
+        const api = mw.util.wikiScript("api");
+
+        $.getJSON(api, {
+            action: "query",
+            list: "recentchanges",
+            rclimit: 1,
+            rcprop: "timestamp",
+            format: "json"
+        }, function (data) {
+
+            const change = data.query.recentchanges[0];
+            if (!change) return cb(null);
+
+            const lastEdit = new Date(change.timestamp);
+            const now = new Date();
+
+            const diffDays = Math.floor((now - lastEdit) / (1000 * 60 * 60 * 24));
+
+            cb(diffDays);
+        });
+    }
+
+
+    function createBox(mood, days) {
+
+        const box = document.createElement("div");
+
+        box.style.position = "fixed";
+        box.style.bottom = "40px";
+        box.style.right = "20px";
+        box.style.zIndex = "2147483647";
+        box.style.background = "#1e1e1e";
+        box.style.color = "#fff";
+        box.style.borderRadius = "10px";
+        box.style.border = "2px solid " + mood.color;
+        box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
+        box.style.fontSize = "13px";
+        box.style.padding = "10px 14px";
+        box.style.textAlign = "center";
+        box.style.maxWidth = "240px";
+
+
+        const closeBtn = document.createElement("div");
+        closeBtn.innerHTML = "×";
+        closeBtn.style.position = "absolute";
+        closeBtn.style.top = "4px";
+        closeBtn.style.right = "8px";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.style.fontSize = "16px";
+        closeBtn.style.opacity = "0.7";
+        closeBtn.style.userSelect = "none";
+
+        closeBtn.onmouseenter = () => closeBtn.style.opacity = "1";
+        closeBtn.onmouseleave = () => closeBtn.style.opacity = "0.7";
+
+
+        const content = document.createElement("div");
+        content.innerHTML = `
+            <div style="font-weight:bold;">
+                ${mood.icon} Stan Wiki: ${mood.text}
+            </div>
+            <div style="font-size:12px; opacity:0.8; margin-top:2px;">
+                Ostatnia edycja: ${days} dni temu
+            </div>
+            <div style="
+                margin-top:6px;
+                font-size:11px;
+                opacity:0.7;
+                font-style:italic;
+            ">
+                ${mood.msg}
+            </div>
+        `;
+
+
+        closeBtn.onclick = () => {
+
+            // sad news
+            content.innerHTML = `
+                <div style="font-size:13px; font-weight:bold;">
+                    ${mood.sadExit}
+                </div>
+            `;
+
+            // slight pause before closing
+            setTimeout(() => {
+
+                box.classList.add("wiki-sad-out");
+
+                setTimeout(() => {
+                    box.remove();
+                }, 600);
+
+            }, 700);
+        };
+
+
+        box.appendChild(closeBtn);
+        box.appendChild(content);
+        document.body.appendChild(box);
+    }
+
+
+    function init() {
+
+        fetchLastEdit(function (days) {
+
+            if (days === null) return;
+
+            const mood = getMood(days);
+
+            createBox(mood, days);
+        });
+
+    }
+
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
+
+})();

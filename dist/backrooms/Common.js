@@ -1,17 +1,19 @@
 // [[Category:Internal]]
 
-// For [[Module:CSS]]; [[T:CSS]] dependency
+// Template dependencies
 mw.hook("wikipage.content").add(function() {
+	
+	// [[Module:CSS]]; [[T:CSS]]
 	$("span.import-css").each(function() {
-		var css = mw.util.addCSS($(this).attr("data-css"));
+		const css = mw.util.addCSS($(this).attr("data-css"));
 		$(css.ownerNode).addClass("import-css")
 			.attr("data-css-hash", $(this).attr("data-css-hash"))
 			.attr("data-from", $(this).attr("data-from"))
 			.attr("data-wait", $(this).attr("data-wait"))
 			.attr("data-portal", $(this).attr("data-portal"));
 		
-		var wait = $(this).attr("data-wait");
-		var portal = $(this).attr("data-portal");
+		const wait = $(this).attr("data-wait");
+		const portal = $(this).attr("data-portal");
 		var portalOpened = false;
 		
 		if (wait != "none") {
@@ -46,13 +48,41 @@ mw.hook("wikipage.content").add(function() {
 		});
 	});
 	
-	// Template:Audio toggle
+	// [[Template:Audio]] toggle
 	$(".t-audio").each(function() {
-		var toggle = $(this).attr("data-toggle");
+		const toggle = $(this).attr("data-toggle");
+		const toggleFunction = $(this).attr("data-toggle-function");
+		const fadeSteps = Math.round(250 * toggleFunction.replace(/fade-(in|out)-/, ""));
 		if (toggle != "none") {
 			$(".t-audio-toggle-" + toggle).click(function () {
-				var audio = $(`.t-audio-toggle-${toggle} audio`)[0];
-				audio.paused ? audio.play() : audio.pause();
+				const audio = $(`.t-audio-toggle-${toggle} audio`)[0];
+				switch (true) {
+					case toggleFunction.includes("time"):
+						audio.currentTime = toggleFunction.replace("time-", "");
+						audio.play();
+						break;
+					case toggleFunction.includes("fade-in"):
+						audio.play();
+						(function loop(i) {
+							setTimeout(() => {
+								console.log((-i + fadeSteps) / fadeSteps);
+								if (--i > -1) loop(i);
+						    }, 4);
+						})(fadeSteps - 1);
+						break;
+					case toggleFunction.includes("fade-out"):
+						audio.play();
+						(function loop(i) {
+							setTimeout(() => {
+								console.log((i) / fadeSteps);
+								if (--i > -1) loop(i);
+						    }, 4);
+						})(fadeSteps - 1);
+						break;
+					default:
+						audio.paused ? audio.play() : audio.pause();
+						break;
+				}
 			});
 		}
 	});

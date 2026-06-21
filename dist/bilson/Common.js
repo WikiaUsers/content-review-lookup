@@ -426,3 +426,429 @@ document.addEventListener('DOMContentLoaded', function () {
             '0 0 ' + glow + 'px #6a4a9c, 0 0 ' + glow2 + 'px #6a4a9c, 0 0 30px rgba(106,74,156,0.4)';
     }, 250);
 });
+( function () {
+    'use strict';
+
+    /* Only run on pages that have the sevil wrapper */
+    var sevilPage = document.querySelector( '[data-sevil]' );
+    if ( !sevilPage ) {
+        /* fallback: check for the warning banner as a marker */
+        var banner = document.querySelector( '.sevil-warning-banner' );
+        sevilPage = banner ? banner.closest( 'div' ) : null;
+    }
+
+    /* -------------------------------------------------------
+       INFOBOX FIX
+       Force the character infobox to render above the
+       background div by pulling it out and prepending it
+       before the styled wrapper, then restoring float.
+    ------------------------------------------------------- */
+    var infobox = document.querySelector( '.portable-infobox, .pi-theme-wikia, table.infobox, .character-infobox, aside' );
+    var styledWrapper = document.querySelector( 'div[style*="background-color:#0d0000"]' );
+
+    if ( infobox && styledWrapper ) {
+        var parent = styledWrapper.parentNode;
+        if ( parent ) {
+            /* Move infobox to just before the styled div */
+            parent.insertBefore( infobox, styledWrapper );
+            infobox.style.position = 'relative';
+            infobox.style.zIndex   = '10';
+            infobox.style.float    = 'right';
+            infobox.style.clear    = 'right';
+            infobox.style.margin   = '0 0 16px 24px';
+        }
+    }
+
+    /* -------------------------------------------------------
+       TYPEWRITER — classified header lines
+    ------------------------------------------------------- */
+    var headerLines = document.querySelectorAll( 'div[style*="letter-spacing:0.14em"]' );
+
+    if ( headerLines.length ) {
+        var originals = [];
+        headerLines.forEach( function ( l ) { originals.push( l.innerHTML ); } );
+        headerLines.forEach( function ( l ) { l.textContent = ''; } );
+
+        var delay = 0;
+        headerLines.forEach( function ( line, idx ) {
+            var plain    = originals[ idx ].replace( /<[^>]+>/g, '' );
+            var original = originals[ idx ];
+            var hasSpan  = /ff2020/.test( original );
+
+            setTimeout( function () {
+                var k  = 0;
+                var iv = setInterval( function () {
+                    if ( k < plain.length ) {
+                        line.textContent += plain.charAt( k );
+                        k++;
+                    } else {
+                        clearInterval( iv );
+                        if ( hasSpan ) line.innerHTML = original;
+                    }
+                }, 20 );
+            }, delay );
+
+            delay += plain.length * 20 + 400;
+        } );
+    }
+
+    /* -------------------------------------------------------
+       REDACTED REVEAL — click to declassify
+    ------------------------------------------------------- */
+    var redactedBars = document.querySelectorAll( 'span[style*="background-color:#cc0000"][style*="color:#cc0000"]' );
+
+    redactedBars.forEach( function ( bar ) {
+        bar.style.cursor = 'pointer';
+        bar.title        = 'Click to reveal';
+
+        bar.addEventListener( 'click', function () {
+            var box  = bar.parentNode;
+            var text = box ? box.querySelector( 'span[style*="#b09090"]' ) : null;
+
+            var flickers = 0;
+            var fi = setInterval( function () {
+                bar.style.opacity = ( bar.style.opacity === '0' ) ? '1' : '0';
+                flickers++;
+                if ( flickers >= 6 ) {
+                    clearInterval( fi );
+                    bar.style.backgroundColor = 'transparent';
+                    bar.style.color           = '#cc4444';
+                    bar.style.userSelect      = 'text';
+                    bar.style.cursor          = 'default';
+                    bar.style.opacity         = '1';
+                    bar.style.padding         = '0';
+                    bar.style.fontSize        = '10px';
+                    bar.textContent           = 'DECLASSIFIED';
+                    if ( text ) text.style.color = '#d4b8b8';
+                }
+            }, 80 );
+        } );
+    } );
+
+    /* -------------------------------------------------------
+       THREAT LEVEL PULSE — recreate the CSS animation
+       via JS since Common.css class selectors are blocked
+    ------------------------------------------------------- */
+    var threatSpan = document.querySelector( 'span[style*="ff2020"]' );
+    if ( threatSpan ) {
+        var up = true;
+        setInterval( function () {
+            threatSpan.style.opacity = up ? '0.45' : '1';
+            up = !up;
+        }, 1000 );
+    }
+
+    /* -------------------------------------------------------
+       WARNING BANNER MARQUEE on narrow screens
+    ------------------------------------------------------- */
+    var warningBanner = document.querySelector( 'div[style*="background-color:#8b0000"]' );
+    if ( warningBanner && window.innerWidth < 700 ) {
+        var msg = warningBanner.textContent.trim();
+        warningBanner.style.overflow   = 'hidden';
+        warningBanner.style.whiteSpace = 'nowrap';
+
+        var span           = document.createElement( 'span' );
+        span.textContent   = msg + '     ' + msg;
+        span.style.display = 'inline-block';
+
+        var styleTag       = document.createElement( 'style' );
+        styleTag.textContent = '@keyframes sevilmarquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }';
+        document.head.appendChild( styleTag );
+
+        span.style.animation  = 'sevilmarquee 18s linear infinite';
+        span.style.paddingLeft = '100%';
+        warningBanner.textContent = '';
+        warningBanner.appendChild( span );
+    }
+
+}() );
+( function () {
+    'use strict';
+
+    var styleTag = document.createElement( 'style' );
+    styleTag.textContent =
+        '@keyframes sobWobble {' +
+        '  0%   { transform: scaleX(1)   scaleY(1)    rotate(0deg);   }' +
+        '  10%  { transform: scaleX(1.4) scaleY(0.6)  rotate(-8deg);  }' +
+        '  20%  { transform: scaleX(0.7) scaleY(1.3)  rotate(6deg);   }' +
+        '  30%  { transform: scaleX(1.3) scaleY(0.75) rotate(-10deg); }' +
+        '  40%  { transform: scaleX(0.8) scaleY(1.2)  rotate(4deg);   }' +
+        '  50%  { transform: scaleX(1.2) scaleY(0.85) rotate(-6deg);  }' +
+        '  60%  { transform: scaleX(0.9) scaleY(1.15) rotate(8deg);   }' +
+        '  70%  { transform: scaleX(1.15) scaleY(0.9) rotate(-4deg);  }' +
+        '  80%  { transform: scaleX(0.95) scaleY(1.05) rotate(3deg);  }' +
+        '  90%  { transform: scaleX(1.05) scaleY(0.97) rotate(-2deg); }' +
+        '  100% { transform: scaleX(1)   scaleY(1)    rotate(0deg);   }' +
+        '}' +
+        '@keyframes sobRoll {' +
+        '  0%   { transform: translateX(0px)   rotate(0deg);   }' +
+        '  15%  { transform: translateX(12px)  rotate(25deg);  }' +
+        '  30%  { transform: translateX(-14px) rotate(-30deg); }' +
+        '  45%  { transform: translateX(10px)  rotate(20deg);  }' +
+        '  60%  { transform: translateX(-8px)  rotate(-15deg); }' +
+        '  75%  { transform: translateX(5px)   rotate(10deg);  }' +
+        '  90%  { transform: translateX(-3px)  rotate(-5deg);  }' +
+        '  100% { transform: translateX(0px)   rotate(0deg);   }' +
+        '}' +
+        '@keyframes sobBounce {' +
+        '  0%,100% { transform: translateY(0px);  }' +
+        '  20%     { transform: translateY(-10px); }' +
+        '  40%     { transform: translateY(4px);   }' +
+        '  60%     { transform: translateY(-6px);  }' +
+        '  80%     { transform: translateY(2px);   }' +
+        '}' +
+        '@keyframes sobSpin {' +
+        '  0%   { transform: rotate(0deg)   scale(1);   }' +
+        '  25%  { transform: rotate(180deg) scale(1.3); }' +
+        '  50%  { transform: rotate(360deg) scale(0.8); }' +
+        '  75%  { transform: rotate(540deg) scale(1.2); }' +
+        '  100% { transform: rotate(720deg) scale(1);   }' +
+        '}' +
+        '@keyframes sobShake {' +
+        '  0%,100% { transform: translateX(0);   }' +
+        '  10%     { transform: translateX(-6px); }' +
+        '  20%     { transform: translateX(6px);  }' +
+        '  30%     { transform: translateX(-5px); }' +
+        '  40%     { transform: translateX(5px);  }' +
+        '  50%     { transform: translateX(-4px); }' +
+        '  60%     { transform: translateX(4px);  }' +
+        '  70%     { transform: translateX(-3px); }' +
+        '  80%     { transform: translateX(3px);  }' +
+        '  90%     { transform: translateX(-1px); }' +
+        '}' +
+        '@keyframes sobStretch {' +
+        '  0%,100% { transform: scaleX(1)   scaleY(1);   }' +
+        '  25%     { transform: scaleX(1.6) scaleY(0.5); }' +
+        '  50%     { transform: scaleX(0.6) scaleY(1.6); }' +
+        '  75%     { transform: scaleX(1.4) scaleY(0.7); }' +
+        '}';
+    document.head.appendChild( styleTag );
+
+    var animations = [
+        'sobWobble 0.6s ease-in-out infinite',
+        'sobRoll 1.2s ease-in-out infinite',
+        'sobBounce 0.8s ease-in-out infinite',
+        'sobSpin 1.4s ease-in-out infinite',
+        'sobShake 0.5s ease-in-out infinite',
+        'sobStretch 0.7s ease-in-out infinite',
+        'sobWobble 0.5s ease-in-out infinite, sobBounce 0.9s ease-in-out infinite',
+        'sobRoll 0.8s ease-in-out infinite, sobShake 0.4s ease-in-out infinite'
+    ];
+
+    function randomAnim() {
+        return animations[ Math.floor( Math.random() * animations.length ) ];
+    }
+
+    function applyToElement( el ) {
+        el.style.display         = 'inline-block';
+        el.style.animation       = randomAnim();
+        el.style.cursor          = 'pointer';
+        el.style.transformOrigin = 'center center';
+
+        el.addEventListener( 'click', function () {
+            el.style.animation = randomAnim();
+        } );
+        el.addEventListener( 'mouseenter', function () {
+            el.style.animationDuration = '0.15s';
+        } );
+        el.addEventListener( 'mouseleave', function () {
+            el.style.animationDuration = '';
+        } );
+    }
+
+    function isSob( el ) {
+        var alt   = ( el.getAttribute( 'alt' )   || '' ).toLowerCase();
+        var title = ( el.getAttribute( 'title' ) || '' ).toLowerCase();
+        var src   = ( el.getAttribute( 'src' )   || '' ).toLowerCase();
+        return (
+            alt   === ':sob:' ||
+            alt   === '😭'    ||
+            alt.indexOf( 'sob' ) !== -1 ||
+            title.indexOf( 'sob' ) !== -1 ||
+            src.indexOf(  'sob' ) !== -1 ||
+            src.indexOf(  '1f62d' ) !== -1
+        );
+    }
+
+    /* --- Pass 1: all images --- */
+    function scanImages() {
+        var imgs = document.querySelectorAll( 'img' );
+        imgs.forEach( function ( img ) {
+            if ( isSob( img ) ) applyToElement( img );
+        } );
+    }
+
+    /* --- Pass 2: text nodes for :sob: and raw emoji --- */
+    function scanText() {
+        var targets = [ ':sob:', '\uD83D\uDE2D' ];
+
+        targets.forEach( function ( token ) {
+            var walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            var nodes = [];
+            var node;
+            while ( ( node = walker.nextNode() ) ) {
+                if ( node.nodeValue && node.nodeValue.indexOf( token ) !== -1 ) {
+                    /* Skip if parent is already a script or style */
+                    var tag = node.parentNode && node.parentNode.tagName;
+                    if ( tag !== 'SCRIPT' && tag !== 'STYLE' ) {
+                        nodes.push( node );
+                    }
+                }
+            }
+
+            nodes.forEach( function ( textNode ) {
+                var parts = textNode.nodeValue.split( token );
+                var frag  = document.createDocumentFragment();
+                parts.forEach( function ( part, i ) {
+                    frag.appendChild( document.createTextNode( part ) );
+                    if ( i < parts.length - 1 ) {
+                        var span         = document.createElement( 'span' );
+                        span.textContent = token;
+                        if ( token === '\uD83D\uDE2D' ) span.style.fontSize = '1.3em';
+                        applyToElement( span );
+                        frag.appendChild( span );
+                    }
+                } );
+                textNode.parentNode.replaceChild( frag, textNode );
+            } );
+        } );
+    }
+
+    /* --- Pass 3: MutationObserver for anything Fandom renders late --- */
+    function watchForLateRenders() {
+        var observer = new MutationObserver( function ( mutations ) {
+            mutations.forEach( function ( mutation ) {
+                mutation.addedNodes.forEach( function ( added ) {
+                    if ( added.nodeType === 1 ) {
+                        /* Check if the added node itself is a sob img */
+                        if ( added.tagName === 'IMG' && isSob( added ) ) {
+                            applyToElement( added );
+                        }
+                        /* Check children too */
+                        var imgs = added.querySelectorAll ? added.querySelectorAll( 'img' ) : [];
+                        imgs.forEach( function ( img ) {
+                            if ( isSob( img ) ) applyToElement( img );
+                        } );
+                    }
+                } );
+            } );
+        } );
+
+        observer.observe( document.body, { childList: true, subtree: true } );
+    }
+
+    /* Run on DOMContentLoaded to be safe */
+    if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', function () {
+            scanImages();
+            scanText();
+            watchForLateRenders();
+        } );
+    } else {
+        scanImages();
+        scanText();
+        watchForLateRenders();
+    }
+
+}() );
+/* Lapicnirp Page Effects */
+
+(function () {
+    if (!document.querySelector('.lapicnirp-page')) return;
+
+    document.body.classList.add('lapicnirp-active');
+
+    // === JUMPSCARE ===
+    var overlay = document.createElement('div');
+    overlay.className = 'jumpscare-overlay active';
+    var scareText = document.createElement('div');
+    scareText.className = 'jumpscare-text';
+    scareText.innerHTML = '⚠ WARNING ⚠<br><span style="font-size:24px">You are about to enter his domain.</span><br><span style="font-size:18px; color:#c084fc;">Click to proceed... if you dare.</span>';
+    overlay.appendChild(scareText);
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', function () {
+        overlay.classList.remove('active');
+        overlay.style.display = 'none';
+    });
+
+    // === FOG OVERLAY ===
+    var fog = document.createElement('div');
+    fog.className = 'fog-overlay';
+    document.body.appendChild(fog);
+
+    // === BLOOD DRIPS ===
+    var dripContainer = document.createElement('div');
+    dripContainer.className = 'drip-container';
+    document.querySelector('.lapicnirp-page').appendChild(dripContainer);
+
+    for (var i = 0; i < 12; i++) {
+        (function (index) {
+            var drip = document.createElement('div');
+            drip.className = 'drip';
+            var leftPos = Math.random() * 100;
+            var height = Math.floor(Math.random() * 60) + 20;
+            var duration = (Math.random() * 4 + 3).toFixed(1);
+            var delay = (Math.random() * 5).toFixed(1);
+            drip.style.left = leftPos + '%';
+            drip.style.height = height + 'px';
+            drip.style.animationDuration = duration + 's';
+            drip.style.animationDelay = delay + 's';
+            dripContainer.appendChild(drip);
+        })(i);
+    }
+
+    // === SHAKE ON HOVER ===
+    var page = document.querySelector('.lapicnirp-page');
+    page.addEventListener('mouseenter', function () {
+        page.style.animation = 'shake 0.3s infinite';
+    });
+    page.addEventListener('mouseleave', function () {
+        page.style.animation = '';
+    });
+
+    // === RANDOM FLICKER ON TITLE ===
+    var title = document.querySelector('.lapicnirp-title');
+    if (title) {
+        setInterval(function () {
+            var rand = Math.random();
+            if (rand < 0.15) {
+                title.style.opacity = '0';
+                setTimeout(function () {
+                    title.style.opacity = '1';
+                }, 80);
+            }
+        }, 1500);
+    }
+
+})();
+/* Vallvet Page Effects */
+
+(function () {
+    if (!document.querySelector('.vallvet-page')) return;
+
+    // === FOG OVERLAY ===
+    var fog = document.createElement('div');
+    fog.className = 'vallvet-fog-overlay';
+    document.body.appendChild(fog);
+
+    // === SPARKLES ===
+    var page = document.querySelector('.vallvet-page');
+    for (var i = 0; i < 15; i++) {
+        (function () {
+            var sparkle = document.createElement('div');
+            sparkle.className = 'vallvet-sparkle';
+            sparkle.style.left = (Math.random() * 100) + '%';
+            sparkle.style.animationDuration = (Math.random() * 4 + 2).toFixed(1) + 's';
+            sparkle.style.animationDelay = (Math.random() * 5).toFixed(1) + 's';
+            page.appendChild(sparkle);
+        })();
+    }
+
+})();

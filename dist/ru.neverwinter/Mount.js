@@ -12,15 +12,15 @@ window.initializeMountPower = function() {
     }
 
     // Таблица качества
-    var qualityLevels = {
-        common: 0.0062,    // 0,62%
-        uncommon: 0.0667,  // 6,67%
-        rare: 0.2,         // 20%
-        epic: 0.4,         // 40%
-        legendary: 0.6667, // 66,67%
-        mythic: 1.0,       // 100%
-        celestial: 1.3123     // 125%
-    };
+	var qualityLevels = {
+	    common: 0.0047,
+	    uncommon: 0.0551,
+	    rare: 0.1524,
+	    epic: 0.3317,
+	    legendary: 0.57,
+	    mythic: 0.8294,
+	    celestial: 1.0
+	};
 
     // Функция форматирования числа с запятой
     var formatNumber = function(number) {
@@ -199,11 +199,11 @@ window.initializeMountPower = function() {
 
                 if (hasComma) {
                     var tempValue = parseFloat(original.replace(',', ''));
-                    finalValue = tempValue * qualityLevels[globalQuality] * (1 + globalBolster / 125);
+                    finalValue = tempValue * qualityLevels[globalQuality] * (1 + globalBolster / 100);
                     var rounded = Math.round(finalValue);
                     formattedValue = rounded.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
                 } else {
-                    finalValue = maxValue * qualityLevels[globalQuality] * (1 + globalBolster / 125);
+                    finalValue = maxValue * qualityLevels[globalQuality] * (1 + globalBolster / 100);
                     formattedValue = finalValue.toFixed(1);
                 }
 

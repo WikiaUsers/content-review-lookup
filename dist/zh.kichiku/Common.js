@@ -114,3 +114,12 @@ $(function() {
         }
     });
 });
+
+/* HLTV 战队榜单：点击卡片展开/收起 */
+$( function () {
+    $( document ).on( 'click', '.hltv-rankcard-header', function ( e ) {
+        // 让"查看更多信息"链接的点击不触发收起
+        if ( $( e.target ).closest( '.hltv-more-btn' ).length ) return;
+        $( this ).closest( '.hltv-rankcard' ).toggleClass( 'is-expanded' );
+    } );
+} );

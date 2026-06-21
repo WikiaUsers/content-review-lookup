@@ -154,3 +154,59 @@ if (document.readyState === 'loading') {
 } else {
     initSpinnyHeader();
 }
+
+/* drop down thingy */
+$(window).on('load', function() {
+    function hideContent(content, flipped) {
+        content.style.transition = 'none';
+        content.style.clipPath = flipped ? 'inset(100% 0 0 0)' : 'inset(0 0 100% 0)';
+    }
+
+    function showContent(content) {
+        content.style.transition = 'clip-path 0.65s cubic-bezier(0.1, 0.9, 0.15, 1)';
+        content.style.clipPath = 'inset(0 0 0 0)';
+    }
+
+    function initDropdown(dropdown) {
+        if (dropdown.dataset.wipeInit) return;
+        dropdown.dataset.wipeInit = 'true';
+        var content = dropdown.querySelector(':scope > .wds-is-not-scrollable, :scope > .wds-dropdown__content');
+        if (!content) return;
+        hideContent(content, dropdown.classList.contains('wds-is-flipped'));
+        dropdown.addEventListener('mouseenter', function() {
+            showContent(content);
+        });
+        dropdown.addEventListener('mouseleave', function() {
+            hideContent(content, dropdown.classList.contains('wds-is-flipped'));
+        });
+    }
+
+    function initNested(nested) {
+        if (nested.dataset.wipeInit) return;
+        nested.dataset.wipeInit = 'true';
+        var content = nested.querySelector(':scope > .wds-dropdown-level-nested__content, :scope > .wds-is-not-scrollable');
+        if (!content) return;
+        hideContent(content, false);
+        nested.addEventListener('mouseenter', function() {
+            showContent(content);
+        });
+        nested.addEventListener('mouseleave', function() {
+            hideContent(content, false);
+        });
+    }
+
+    document.querySelectorAll('.wds-dropdown').forEach(initDropdown);
+    document.querySelectorAll('.wds-dropdown-level-nested').forEach(initNested);
+
+    new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType !== 1) return;
+                if (node.classList.contains('wds-dropdown')) initDropdown(node);
+                if (node.classList.contains('wds-dropdown-level-nested')) initNested(node);
+                node.querySelectorAll('.wds-dropdown').forEach(initDropdown);
+                node.querySelectorAll('.wds-dropdown-level-nested').forEach(initNested);
+            });
+        });
+    }).observe(document.body, { childList: true, subtree: true });
+});

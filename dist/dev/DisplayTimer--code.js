@@ -51,6 +51,7 @@
             format: 'json',
             title: mw.config.get('wgPageName'),
             token: mw.user.tokens.get('csrfToken'),
+            watchlist: 'nochange',
             prependtext: ''
         }).always(function (data) {
             if (data.edit && data.edit.result === 'Success') {

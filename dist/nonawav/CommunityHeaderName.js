@@ -20,13 +20,21 @@ var possibleTexts = [
 			"no na wiki | when you come, when you come home...",
 			"no na wiki | you and i were one...",
 			"no na wiki | can it be? can it be done?",
+			"no na wiki | like an orchid...",
 			"no na wiki | kembali...",
 			"no na wiki | straight for the heart!",
 			"no na wiki | don't test me, you know it's POOF!",
+			"no na wiki | i know that look, i've seen it before...",
 			"no na wiki | got you right where i want you...",
 			"no na wiki | how you like that, baby?",
-			"no na wiki | mhm, i bet you know i do!",
+			"no na wiki | mhm, and i bet you know i do!",
 			"no na wiki | your ego ain't bulletproof!",
+			"no na wiki | you never seen a sniper lookin' this cute!",
+			"no na wiki | 'cause giving up was never for me...",
+			"no na wiki | i been feelin' and believin' all the miracles...",
+			"no na wiki | i'm fearless, i don't ask for forgiveness...",
+			"no na wiki | not just another princess...",
+			"no na wiki | wishin' for something different...",
 			"no na wiki | very superstitious...",
 			"no na wiki | i'm superstitious!",
 			"no na wiki | that's why i'm superstitious...",
@@ -40,6 +48,7 @@ var possibleTexts = [
 			"no na wiki | best you never had face!",
 			"no na wiki | TMI, patronizing my sanity...",
 			"no na wiki | guilt-trippin' over what's her name for...",
+			"no na wiki | damn, lookin' at me with the sad face!",
 			"no na wiki | f**k your sad, sad face!",
 			"no na wiki | are you about to meet the one?",
 			"no na wiki | say that you'll be the one...",
@@ -75,7 +84,7 @@ var possibleTexts = [
 			"no na wiki | rollerblade! rollerblade!",
 			"no na wiki | on my rollerblades!",
 			"no na wiki | on my 🛼!",
-			"no na wiki | on my sepatu rodaku!",
+			"no na wiki | on my sepatu roda!",
 			"no na wiki | ayy, mari bergoyang!",
 			"no na wiki | demonstration, i'm the teacher!",
 			"no na wiki | simon says, 'follow the leader'",
@@ -87,10 +96,11 @@ var possibleTexts = [
 			"no na wiki | wheels on my shoes, so fresh, so baru!",
 			"no na wiki | every day of the week, so keren, so asik!",
 			"no na wiki | jedag jedug, tiga, dua, satu!",
+			"no na wiki | i set the mood like who the f**k are you?",
 			"no na wiki | grrah, grrah, grrah!",
 			"no na wiki | ride on my dump truck!"
         ],
-        weight: 500000000
+        weight: 5000000000000000
     },
 
 
@@ -98,21 +108,33 @@ var possibleTexts = [
     {
         texts: [
         	"no na wiki 🎃",
+        	"no na wiki 🍂",
+        	"no na wiki 🦃",
+        	"no na wiki 🍁",
+        	"no na wiki 🕸️",
             "no na wiki | boo! 👻",
             "no na wiki | happy halloween, orchids! 🎃",
             "no na wiki | happy autumn, orchids! 🍂",
             "no na wiki | happy fall, orchids! 🍂",
             "no na wiki | happy thanksgiving month, orchids! 🦃",
+            "no na wiki | pengucapan syukur! 🦃",
+            "no na wiki | won't see me comin' but i'm COMIN'... 🎃",
             "no na wiki | no na is COMING straight for your heart... 🎃",
+            "no na wiki | straight for your HEART... 🩸🧛",
+            "no na wiki | stay cozy and listen to no na! 🍁",
+            "no na wiki | stay warm this fall and listen to no na... 🍂",
             "no na wiki | let, let, let me in your mind... 🎃",
-            "no na wiki | i make 'em freak, freak, freak... 🌩️",
+            "no na wiki | i make 'em freak, freak, FREAK... 🌩️",
             "no na wiki | udah siap belom? 🎃", 
+            "no na wiki | tired of running, it's now or nothing... 🕸️",
             "no na wiki | back up, bet ya HEAD'S BLOWN... 💀", 
-            "no na wiki | what an earthquake, going so CRAYYYYY... 🧟",
+            "no na wiki | gonna shut down the opps! 🗡️💀",
+            "no na wiki | got me wild and free, now watch us take flight... 🌪️🍂",
+            "no na wiki | what an earthquake, going so CRAYYYYY... 🌪️🧟",
             "no na wiki | f**k it up, ghosts! put in that work! 👻",
-            "no na wiki | ghosts be feelin' superstitious... 👻",
+            "no na wiki | ghosts be feelin' superstitious... 👻"
         ],
-        weight: 1
+        weight: 0
     },
     
     
@@ -122,17 +144,19 @@ var possibleTexts = [
             "no na wiki 🌨️",
             "no na wiki ☃️",
             "no na wiki 🎄",
+            "no na wiki 🔔",
             "no na wiki 🎆",
             "no na wiki | merry xmas, orchids! 🎄",
             "no na wiki | happy holidays, orchids! 🌨️",
             "no na wiki | selamat hari natal, orchids! 🎄",
             "no na wiki | selamat tahun baru, orchids! 🎆",
             "no na wiki | i see the glimpse of who i used to 'snow' 🌨️",
-            "no na wiki | enemies, i watch em freeze! ❄️",
-            "no na wiki | jingle bells!",
+            "no na wiki | enemies, i watch 'em freeze! ❄️",
+            "no na wiki | got a crew so hot, no riddles! 🥾🧣🗻",
+            "no na wiki | jingle bells! 🔔",
             "no na wiki | have yourself a merry little christmas! 🎄"
         ],
-        weight: 1
+        weight: 0
     }
 ];
 

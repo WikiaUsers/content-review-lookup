@@ -125,15 +125,11 @@
                 setTimeout(this.next.bind(this), 29000);
             } else {
                 var prefix = isDoubleRedirectsPage ? 'double' : 'broken';
-                mw.notify(this.i18n.msg(prefix + '-error', page, code).plain(), {
+                mw.notify(this.i18n.msg('error-' + prefix, page, code).plain(), {
                     type: 'error'
                 });
                 this.next();
             }
-        },
-        i18nPrefix: function(k, param) {
-            var prefix = this.double ? 'Double' : 'Broken';
-            return this.i18n.msg([k + prefix], param).plain();
         }
     }, window.RedirectManagement);
     // Translate the deprecated summary variable into I18n-js overrides.

@@ -1,7 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 // turns out jQuery and JavaScript are two very different things, good job old me, please never speak of that again... and also fix this out of rage
-
+// hey maybe i finally actually fixed it (watch it not work :heart:)
+document.querySelectorAll('a[title="Pumpkin placeholder"]').forEach((link) => {
+	link.textContent = "Pumpkin_placeholder"
+});
 
 // ts better work (it wont)
 
@@ -23,12 +26,14 @@ window.lockOldComments.addNoteAbove = true;
 */
 
 //Let me try it for a moment.
+//-- hey when did you get here???? either way seems we both failed :broken_heart:
 
 function replaceTitles() {
     const replacements = {
         "Temp": "temp",
         "Pumpkin placeholder": "Pumpkin_placeholder",
-        "Pumpkin Placeholder": "Pumpkin_placeholder"
+        "Pumpkin Placeholder": "Pumpkin_placeholder",
+        "Cherry Door Top": "_Cherry Door Top"
     };
 
     document.querySelectorAll("*").forEach(el => {
@@ -47,6 +52,7 @@ function replaceTitles() {
     document.title = document.title
         .replace(/Pumpkin placeholder/g, "Pumpkin_placeholder")
         .replace(/Pumpkin Placeholder/g, "Pumpkin_placeholder")
+        .replace(/Cherry Door Top/g, "_Cherry Door Top")
         .replace(/\bTemp\b/g, "temp");
 }
 
@@ -93,4 +99,28 @@ $(function () {
 
     });
 
+});
+
+$(function () {
+    $('.show-hide').each(function () {
+        var $box = $(this);
+
+        $box.addClass('mw-collapsible mw-collapsed');
+
+        $box.prepend(
+            '<span class="mw-collapsible-toggle">[<a href="#">Show</a>]</span> '
+        );
+
+        $box.makeCollapsible();
+
+        function updateText() {
+            var text = $box.hasClass('mw-collapsed') ? 'Show' : 'Hide';
+            $box.find('.mw-collapsible-toggle a').text(text);
+        }
+
+        updateText();
+
+        $box.on('afterExpand.mw-collapsible', updateText);
+        $box.on('afterCollapse.mw-collapsible', updateText);
+    });
 });

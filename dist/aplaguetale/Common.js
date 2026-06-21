@@ -5,7 +5,11 @@
 /* [[w:c:dev:AddRailModule]]
  * Ensure the latest content is displayed immediately
  */
-window.AddRailModule = [{ page: 'Template:RailModule', maxAge: 0 }]; // [[Template:RailModule]]
+window.AddRailModule = [{
+	page: 'Template:RailModule', // [[Template:RailModule]]
+	prepend: true,
+	maxAge: 0
+}];
 
 /* [[w:c:dev:WelcomeMessage]]
  * Welcome automation for this site
@@ -44,6 +48,7 @@ importArticles({
 	type: 'script',
     articles: [
     	'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
+        'u:clodaghelm:MediaWiki:LastModified.js',
         'u:clodaghelm:MediaWiki:RailCarousel.js',
         'u:clodaghelm:MediaWiki:PageFooterPanel.js'
     ]

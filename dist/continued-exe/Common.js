@@ -44,3 +44,74 @@ document.getElementById("spoilers_image").addEventListener("click", function() {
         document.addEventListener(eventType, startAudio, true);
     });
 })();
+(function() {
+    'use strict';
+
+    if (mw.config.get('wgPageName') !== 'The_horrifying_orange_gal') {
+        return;
+    }
+
+    var videoUrl = "https://static.wikia.nocookie.net/fridaynightfunking/images/d/d5/DangerCutscene.mp4/revision/latest?cb=20230124051331";
+
+    var style = document.createElement('style');
+    style.innerHTML = [
+        '@keyframes wtfamidoing {',
+        '    0% { bottom: 120%; animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335); }',
+        '    25% { bottom: 0px; animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1); }',
+        '    43% { bottom: 490px; animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335); }',
+        '    60% { bottom: 0px; animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1); }',
+        '    72% { bottom: 240px; animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335); }',
+        '    82% { bottom: 0px; animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1); }',
+        '    90% { bottom: 95px; animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335); }',
+        '    95% { bottom: 0px; animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1); }',
+        '    98% { bottom: 35px; animation-timing-function: ease-in; }',
+        '    100% { bottom: 0px; }',
+        '}',
+        '.fandom-infinite-bounce-video {',
+        '    position: fixed !important;',
+        '    z-index: 999999 !important;',
+        '    width: 420px !important;',
+        '    height: 236px !important;',
+        '    background-color: #000000 !important;',
+        '    border: none !important;',
+        '    box-shadow: none !important;',
+        '    overflow: hidden !important;',
+        '    animation: wtfamidoing 2.5s forwards !important;',
+        '    pointer-events: none !important;',
+        '}'
+    ].join('\n');
+    document.head.appendChild(style);
+
+    function spawnVideoInstance() {
+        if (!document.body) return;
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'fandom-infinite-bounce-video';
+        
+        var randomLeftPosition = Math.floor(Math.random() * 76); 
+        wrapper.style.left = randomLeftPosition + '%';
+
+        wrapper.innerHTML = '<video ' +
+            'src="' + videoUrl + '" ' +
+            'autoplay unmuted loop playsinline ' +
+            'style="width:100% !important; height:100% !important; object-fit: contain;">' +
+            '</video>';
+
+        document.body.appendChild(wrapper);
+
+        setTimeout(function() {
+            if (wrapper && wrapper.parentNode) {
+                wrapper.parentNode.removeChild(wrapper);
+            }
+        }, 13000);
+
+        var randomDelay = Math.floor(Math.random() * 1000) + 1000;
+        setTimeout(spawnVideoInstance, randomDelay);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', spawnVideoInstance);
+    } else {
+        spawnVideoInstance();
+    }
+})();

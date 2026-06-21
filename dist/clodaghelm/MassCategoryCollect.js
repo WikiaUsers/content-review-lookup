@@ -3,13 +3,22 @@
  * @desc Collects items from category pages.
  * @auth [[User:ClodaghelmC]]
  */
- 
+
 (function (window, $, mw) {
+    'use strict';
+
+    window.MassCategoryCollect = $.extend({
+        timeout: {
+            toast: 1000,
+            action: 1000
+        }
+    }, window.MassCategoryCollect || {});
+
     // Double load protection
-    if (window.MassCategoryCollectLoaded) {
+    if (window.MassCategoryCollect.loaded) {
         return;
     }
-    window.MassCategoryCollectLoaded = true;
+    window.MassCategoryCollect.loaded = true;
 
     // Library scope
     (window.dev = window.dev || {}).mcc = {};
@@ -20,20 +29,6 @@
     ]);
 
     mw.loader.using(['mediawiki.api', 'mediawiki.util'], function () {
-        // Config options
-        var config = window.MassCategoryCollect = $.extend({
-            toast: {
-                success: 1000,
-                warning: 1000,
-                info: 1000,
-                error: 1000
-            },
-            action: {
-                itemAdded: 1000,
-                itemRemoved: 1000
-            }
-        }, window.MassCategoryCollect || {});
-
         var collectedItems = JSON.parse(localStorage.getItem('mcc-data') || '[]');
         var listModal;
 
@@ -77,24 +72,24 @@
                         var isEnabled = document.body.classList.contains('mcc-enabled');
                         window.dev.toasts[isEnabled ? 'success' : 'warning'](
                             'MCC has been ' + (isEnabled ? 'enabled' : 'disabled') + '!',
-                            { timeout: isEnabled ? config.toast.success : config.toast.warning }
+                            { timeout: window.MassCategoryCollect.timeout.toast }
                         );
                     },
                     copyList: function () {
-                        if (collectedItems.length === 0) return window.dev.toasts.error('Nothing to copy!', { timeout: config.toast.error });
+                        if (collectedItems.length === 0) return window.dev.toasts.error('Nothing to copy!', { timeout: window.MassCategoryCollect.timeout.toast });
                         navigator.clipboard.writeText(collectedItems.join('\n')).then(function () {
-                            window.dev.toasts.success('Copied to clipboard!', { timeout: config.toast.success });
+                            window.dev.toasts.success('Copied to clipboard!', { timeout: window.MassCategoryCollect.timeout.toast });
                         });
                     },
                     clearList: function () {
-                        if (collectedItems.length === 0) return window.dev.toasts.error('List is already empty!', { timeout: config.toast.error });
+                        if (collectedItems.length === 0) return window.dev.toasts.error('List is already empty!', { timeout: window.MassCategoryCollect.timeout.toast });
                         collectedItems = [];
                         localStorage.removeItem('mcc-data');
                         document.querySelectorAll('.category-page__member').forEach(function (item) {
                             item.classList.remove('mcc-selected');
                         });
                         updateModal();
-                        window.dev.toasts.info('List cleared!', { timeout: config.toast.info });
+                        window.dev.toasts.info('List cleared!', { timeout: window.MassCategoryCollect.timeout.toast });
                     }
                 }
             });
@@ -124,11 +119,11 @@
                 if (index > -1) {
                     collectedItems.splice(index, 1);
                     item.classList.remove('mcc-selected');
-                    window.dev.toasts.warning('Removed: ' + itemName, { timeout: config.action.itemRemoved });
+                    window.dev.toasts.warning('Removed: ' + itemName, { timeout: window.MassCategoryCollect.timeout.action });
                 } else {
                     collectedItems.push(itemName);
                     item.classList.add('mcc-selected');
-                    window.dev.toasts.success('Added: ' + itemName, { timeout: config.action.itemAdded });
+                    window.dev.toasts.success('Added: ' + itemName, { timeout: window.MassCategoryCollect.timeout.action });
                 }
                 localStorage.setItem('mcc-data', JSON.stringify(collectedItems));
                 updateModal();

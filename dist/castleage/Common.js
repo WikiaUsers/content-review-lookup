@@ -224,8 +224,8 @@ mw.hook('wikipage.content').add(function initAutoSwitchingTabber($content) {
     const content = $content.get(0);
 
     // for each element with 'auto-switching-tabber' class init first descendant tabber
-    content.querySelectorAll('.auto-switching-tabber').forEach(slidingTabber => {
-        const tabsContainer = slidingTabber.querySelector('.tabber .wds-tabs');
+    content.querySelectorAll('.auto-switching-tabber, .portable-infobox').forEach(slidingTabberContainer => {
+        const tabsContainer = slidingTabberContainer.querySelector('.tabber .wds-tabs, .pi-image-collection.wds-tabber .wds-tabs');
         if (!tabsContainer) return;
 
         // only direct children tabs - not nested
@@ -243,7 +243,7 @@ mw.hook('wikipage.content').add(function initAutoSwitchingTabber($content) {
             return Math.min(Math.max(val, TIMEOUT_MS.MIN), TIMEOUT_MS.MAX);
         }
 
-        const timeoutMiliseconds = getTimeoutValue(slidingTabber.getAttribute('data-period-ms'));
+        const timeoutMiliseconds = getTimeoutValue(slidingTabberContainer.getAttribute('data-period-ms'));
 
         // current active tab
         let currentTabIndex = tabs.findIndex(tab => tab.classList.contains('wds-is-current'));

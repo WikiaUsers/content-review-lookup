@@ -1,0 +1,1 @@
+$('.page-header__title').after('<div style="background: red; color: white; padding: 10px;">ГАДЖЕТ РАБОТАЕТ!</div>');

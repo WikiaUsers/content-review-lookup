@@ -185,9 +185,9 @@ $(document).ready(function() {
     var length = document.querySelectorAll('.FFRSRcalculator').length;
 
     for (var i = 1; i <= length; i++) {
-        $("span#NumBox-" + i).html('<input onClick="this.select();" type="number" value="0" style="text-shadow: 2px 2px 2px black; border: 5px solid #48526B; border-radius: 5px; background-color: #48526B; color: white; max-width: 100px font-weight: bold;"></input>');
-        $("span#TypeBox-" + i).html('<select style="text-shadow: 2px 2px 2px black; border: 5px solid #48526B; border-radius: 5px; background-color: #48526B; color: white; font-weight: bold;"><option value="1">%</option><option value="2">RSR</option></select>');
-         $("span#CustomMode-" + i).html('<input type="checkbox"></span>');
+        $("span#NumBox-" + i).html('<input onClick="this.select();" type="number" value="5" style="text-shadow: 2px 2px 2px black; border: 5px solid #48526B; border-radius: 5px; background-color: #48526B; color: white; max-width: 100px font-weight: bold;"></input>');
+        $("span#TypeBox-" + i).html('%');
+        $("span#CustomMode-" + i).html('<input type="checkbox"></span>');
     }
     
 	$(document).on('change', '.CustomMode input[type="checkbox"]', function() {
@@ -210,24 +210,18 @@ $(document).ready(function() {
         $("#Warning-" + id).html("");
 
         p_[0] = parseFloat($("#NumBox-" + id + " > input").val());
-        
-        var percentOrRSR = parseInt($("#TypeBox-" + id + " > select").val());
 
-        if (percentOrRSR == 1) {
-            if (p_[0] <= 0){
-            	$("#Warning-" + id).html("Warning: Chance cant be 0% or lower.");
-            	$("#NumBox-" + id + " > input")[0].value = 1;
-            	p_[0] = 1;
-            }
-            p_[0] = Math.round(10 / (p_[0] / 100));
-        }
-        else{
-	        if (p_[0] < 0) {
-	        	$("#Warning-" + id).html("Warning: Cost cant be below 0 RSR.");
-	            $("#NumBox-" + id + " > input")[0].value = 0;
-	            p_[0] = 0;
-	        }
-        }
+        if (p_[0] < 5){
+		    $("#Warning-" + id).html("Warning: Chance can't be lower than 5%.");
+		    $("#NumBox-" + id + " > input")[0].value = 5;
+		    p_[0] = 5;
+		} else if (p_[0] > 100){
+			$("#Warning-" + id).html("Warning: Chance can't be greater than 100%.");
+		    $("#NumBox-" + id + " > input")[0].value = 100;
+		    p_[0] = 100;
+		}
+
+		p_[0] = Math.round(10000 / p_[0]);
 
         document.getElementById("BaseCost-" + id).innerHTML = p_[0] + " RSR";
 

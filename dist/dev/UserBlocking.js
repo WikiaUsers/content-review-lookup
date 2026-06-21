@@ -57,24 +57,7 @@ mw.loader.using('mediawiki.api', function() {
 		        var wait = function() {
 		            if ($('.user-identity-box').length) {
 		                $('body').append($('<style>').text(`
-			    		.user-identity-box:not(.shownUsually) {filter:blur(5px);} #userProfileApp:hover {filter:blur(0);transition:500ms;}
-			    		.user-identity-box__wrapper {
-						filter: blur(.3em);
-						}
-						.daler-Box {
-						    padding: 2% 18%;
-						    position: absolute;
-						    left: 0;
-						    right: 0;
-						    top: 0;
-						    width: 100%;
-						    height: 100%;
-						    min-height:200px;
-						    z-index: 2;
-						}
-						#userProfileApp {
-						    position: relative;
-						}
+		                @import url("/load.php?mode=articles&only=styles&articles=u:dev:MediaWiki:UserBlocking.css");
 			    		`).attr('id', 'blockedProfile'));
 			    		$('#userProfileApp').append(`
 			    		<div class="daler-Box">

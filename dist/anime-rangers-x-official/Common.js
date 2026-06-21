@@ -19,6 +19,7 @@ mw.hook('wikipage.content').add(function($content) {
     });
 });
 
+
 /* === ARX Upgrade Stat Widget === */
 (function () {
     'use strict';
@@ -47,26 +48,48 @@ mw.hook('wikipage.content').add(function($content) {
         return e;
     }
 
-    function calcStats(u, state) {
+    function calcStats(u, state, unit) {
         var lm = state.level ? LEVEL_MULTI[state.level] : 1;
         var sm = state.stat  ? STAT_MULTI[state.stat]   : { dmg:1, hp:1, rng:1, spd:1, acd:1 };
         var tm = state.trait ? state.trait.Mult          : {};
-        var gm = { dmg:1, hp:1, rng:1, spd:1, cost:1 };
+        var gm = {};
         Object.keys(state.gearSelections).forEach(function(slot) {
             var g = state.gearSelections[slot];
             if (g && g.Mult) {
                 Object.keys(g.Mult).forEach(function(stat) {
-                    gm[stat] = (gm[stat] || 1) * g.Mult[stat];
+                    if (stat === 'cc' || stat === 'cd_dmg' || stat === 'admg') {
+                        gm[stat] = (gm[stat] || 0) + g.Mult[stat];
+                    } else {
+                        gm[stat] = (gm[stat] || 1) * g.Mult[stat];
+                    }
                 });
             }
         });
-        var dmg = (u.Damage || 0) * lm * sm.dmg * (tm.dmg||1) * (gm.dmg||1);
-        var hp  = (u.Health || 0) * lm * sm.hp  * (tm.hp ||1) * (gm.hp ||1);
-        var cd  = (u.AttackCooldown || 1);
-        var rng = (u.Range  || 0) * sm.rng * (tm.rng||1) * (gm.rng||1);
-        var spd = (u.Speed  || 0) * sm.spd * (tm.spd||1) * (gm.spd||1);
-        var dps = cd > 0 ? dmg / cd : 0;
-        return { dmg:dmg, hp:hp, cd:cd, rng:rng, spd:spd, dps:dps };
+
+        var dmg  = (u.Damage          || 0) * lm * (sm.dmg||1) * (tm.dmg||1) * (gm.dmg||1);
+        var hp   = (u.Health          || 0) * lm * (sm.hp ||1) * (tm.hp ||1) * (gm.hp ||1);
+        var cd   = (u.AttackCooldown  || 1)      * (sm.acd||1) * (tm.cd ||1) * (gm.cd ||1);
+        var rng  = (u.Range           || 0)      * (sm.rng||1) * (tm.rng||1) * (gm.rng||1);
+        var spd  = (u.Speed           || 0)      * (sm.spd||1) * (tm.spd||1) * (gm.spd||1);
+        var acd        = (unit ? (unit.AbilityCooldown || 0) : 0) * (tm.acd||1) * (gm.acd||1);
+        var scd  = (u.SendCooldown    || 0)      * (sm.scd||1)               * (gm.scd||1);
+        var cost = (u.Cost            || 0)                    * (tm.cost||1) * (gm.cost||1);
+
+        var baseAdmg   = (unit ? (unit.AbilityDamage   || 0) : 0);
+        var admgBonus = (tm.admg || 0) + (gm.admg || 0);
+        var admgMult  = 1 + (baseAdmg + admgBonus) / 100;
+
+        var critChance = (unit ? (unit.CriticalChance  || 0) : 0) + (gm.cc     || 0);
+        var critDamage = (unit ? (unit.CriticalDamage  || 0) : 0) + (gm.cd_dmg || 0);
+        var critMult   = 1 + (critChance / 100) * (critDamage / 100);
+        var dmgFinal   = dmg * critMult;
+        var admgFinal  = dmgFinal * admgMult;
+
+        var dps      = cd  > 0 ? dmgFinal  / cd  : 0;
+        var admgDps  = acd > 0 ? admgFinal / acd : 0;
+        var totalDps = dps + admgDps;
+
+        return { dmg:dmgFinal, hp:hp, cd:cd, rng:rng, spd:spd, admg:admgFinal, acd:acd, scd:scd, cost:cost, dps:dps, totalDps:totalDps };
     }
 
     function makePill(type, iconFile, value) {
@@ -91,14 +114,7 @@ mw.hook('wikipage.content').add(function($content) {
         keys.forEach(function(i) {
             var u = upgrades[i];
             if (!u) return;
-            var s = calcStats(u, state);
-
-            var abilityDmgPct  = (unit.AbilityDamage || 0);
-            var finalAdmg      = s.dmg * (1 + abilityDmgPct / 100);
-            var abilityCdVal   = unit.AbilityCooldown || 0;
-            var abilityCd      = fmtCd(abilityCdVal) + 's';
-            var abilityDps     = abilityCdVal > 0 ? finalAdmg / abilityCdVal : 0;
-            var totalDps       = s.dps + abilityDps;
+            var s = calcStats(u, state, unit);
 
             var row  = el('div','arx-row');
             var head = el('div','arx-row-head');
@@ -115,20 +131,19 @@ mw.hook('wikipage.content').add(function($content) {
             row.appendChild(head);
 
             var pills = el('div','arx-pills');
-            pills.appendChild(makePill('hp',   STAT_ICONS.hp   || 'Health.png',          fmt(s.hp)));
-            pills.appendChild(makePill('dmg',  STAT_ICONS.dmg  || 'Damage.png',          fmt(s.dmg)));
-            pills.appendChild(makePill('cd',   STAT_ICONS.cd   || 'Cooldown.png',         fmtCd(s.cd)));
-            pills.appendChild(makePill('rng',  STAT_ICONS.rng  || 'Range.png',            fmt(s.rng)));
-            pills.appendChild(makePill('spd',  STAT_ICONS.spd  || 'Speed.png',            fmt(s.spd)));
-            pills.appendChild(makePill('admg', STAT_ICONS.admg || 'AbilityDamage.webp',   fmt(finalAdmg)));
-            pills.appendChild(makePill('acd',  STAT_ICONS.acd  || 'AbilityCooldown.webp', abilityCd));
+            pills.appendChild(makePill('hp',   'Health.png',           fmt(s.hp)));
+            pills.appendChild(makePill('dmg',  'Damage.png',           fmt(s.dmg)));
+            pills.appendChild(makePill('cd',   'Cooldown.png',         fmtCd(s.cd) + 's'));
+            pills.appendChild(makePill('rng',  'Range.png',            fmt(s.rng)));
+            pills.appendChild(makePill('spd',  'Speed.png',            fmt(s.spd)));
+            pills.appendChild(makePill('admg', 'AbilityDamage.png',    fmt(s.admg)));
+            pills.appendChild(makePill('acd',  'AbilityCooldown.png',  fmtCd(s.acd) + 's'));
             row.appendChild(pills);
 
             var foot = el('div','arx-row-foot');
             if (u.Note) foot.appendChild(el('span','arx-note', u.Note));
-            var totalDps = s.dps + abilityDps;
             var dpsEl = el('span','arx-dps');
-            dpsEl.innerHTML = 'DPS: <b>' + fmt(totalDps) + '/s</b>';
+            dpsEl.innerHTML = 'DPS: <b>' + fmt(s.totalDps) + '/s</b>';
             foot.appendChild(dpsEl);
             row.appendChild(foot);
             panel.appendChild(row);
@@ -184,14 +199,12 @@ mw.hook('wikipage.content').add(function($content) {
             var row = el('div','arx-detail-row');
             var ic  = el('span','arx-detail-icon');
             if (icon) {
-                if (icon.endsWith('.png') || icon.endsWith('.svg') || icon.endsWith('.webp')) {
-                    var iImg = document.createElement('img');
-                    iImg.src = WIKI_FILE_BASE + icon;
-                    iImg.alt = label;
-                    iImg.className = 'arx-detail-icon-img';
-                    iImg.onerror = function() { iImg.style.display='none'; };
-                    ic.appendChild(iImg);
-                }
+                var iImg = document.createElement('img');
+                iImg.src = WIKI_FILE_BASE + icon;
+                iImg.alt = label;
+                iImg.className = 'arx-detail-icon-img';
+                iImg.onerror = function() { iImg.style.display='none'; };
+                ic.appendChild(iImg);
             }
             row.appendChild(ic);
             row.appendChild(el('span','arx-detail-label', label + ': '));
@@ -219,18 +232,19 @@ mw.hook('wikipage.content').add(function($content) {
 
         info.appendChild(el('div','arx-detail-section-title','Performance'));
         var perfList = el('div','arx-detail-list');
-        perfList.appendChild(perfRow(STAT_ICONS.cost  || '', 'Cost',             '¥ '+fmt(unit.Cost||0),                 null));
-        perfList.appendChild(perfRow(STAT_ICONS.send  || '', 'Send Cooldown',    (unit.SendCooldown||0)+'s',              null));
-        perfList.appendChild(perfRow(STAT_ICONS.spawn || '', 'Limit Spawn',      (unit.SpawnCap||0)+' (Unit)',            null));
-        perfList.appendChild(perfRow(STAT_ICONS.hp    || 'Health.png',           'Health',            fmt(baseU.Health||0),               fmt(maxU.Health||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.dmg   || 'Damage.png',           'Damage',            fmt(baseU.Damage||0),               fmt(maxU.Damage||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.cd    || 'Cooldown.png',         'Cooldown',          fmtCd(baseU.AttackCooldown||0)+'s', fmtCd(maxU.AttackCooldown||0)+'s'));
-        perfList.appendChild(perfRow(STAT_ICONS.rng   || 'Range.png',            'Range',             fmt(baseU.Range||0),                fmt(maxU.Range||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.spd   || 'Speed.png',            'Speed',             fmt(baseU.Speed||0),                fmt(maxU.Speed||0)));
-        perfList.appendChild(perfRow(STAT_ICONS.acc   || '',                     'Accuracy',          (unit.Accuracy||0)+'%',             null));
-        perfList.appendChild(perfRow(STAT_ICONS.admg  || 'AbilityDamage.webp',   'Ability Damage',    (unit.AbilityDamage||0)+'%',        null));
-        perfList.appendChild(perfRow(STAT_ICONS.acd   || 'AbilityCooldown.webp', 'Ability Cooldown',  fmtCd(unit.AbilityCooldown||0)+'s', null));
-        perfList.appendChild(perfRow(STAT_ICONS.size  || '',                     'Ability Size',      (unit.AbilitySize||0)+'',           null));
+        perfList.appendChild(perfRow('Cost.png',             'Cost',             '¥ '+fmt(unit.Cost||0),                              null));
+        perfList.appendChild(perfRow('SendCooldown.png',     'Send Cooldown',    (unit.SendCooldown||0)+'s',                          null));
+        perfList.appendChild(perfRow('LimitSpawn.png',       'Limit Spawn',      (unit.SpawnCap||0)+' (Unit)',                        null));
+        perfList.appendChild(perfRow('Health.png',           'Health',           fmt(baseU.Health||0),           fmt(maxU.Health||0)));
+        perfList.appendChild(perfRow('Damage.png',           'Damage',           fmt(baseU.Damage||0),           fmt(maxU.Damage||0)));
+        perfList.appendChild(perfRow('Cooldown.png',         'Cooldown',         fmtCd(baseU.AttackCooldown||0)+'s', fmtCd(maxU.AttackCooldown||0)+'s'));
+        perfList.appendChild(perfRow('Range.png',            'Range',            fmt(baseU.Range||0),            fmt(maxU.Range||0)));
+        perfList.appendChild(perfRow('Speed.png',            'Speed',            fmt(baseU.Speed||0),            fmt(maxU.Speed||0)));
+        perfList.appendChild(perfRow('Accuracy.png',         'Accuracy',         (unit.Accuracy||0)+'%',                              null));
+        perfList.appendChild(perfRow('CritChance.png',       'Crit Chance',      (unit.CriticalChance||0)+'%',                        null));
+        perfList.appendChild(perfRow('CritDamage.png',       'Crit Damage',      (unit.CriticalDamage||0)+'%',                        null));
+        perfList.appendChild(perfRow('AbilityDamage.png',    'Ability Damage',   (unit.AbilityDamage||0)+'%',                         null));
+        perfList.appendChild(perfRow('AbilityCooldown.png',  'Ability Cooldown', fmtCd(unit.AbilityCooldown||0)+'s',                  null));
         info.appendChild(perfList);
 
         body.appendChild(info);
@@ -647,4 +661,684 @@ mw.hook('wikipage.content').add(function($content) {
     } else {
         init();
     }
+})();
+
+/* === ARX Unit Navigation Widget === */
+(function () {
+    var WIKI_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/';
+    var FILE_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/Special:FilePath/';
+
+    var RARITY_ORDER = ['Ranger','Singularity','Exclusive','Secret','Mythic','Legendary','Epic','Rare'];
+
+    function makeCard(u) {
+        var rarityClass = u.rarity.toLowerCase() + '-ranger-card';
+        var pageName = u.name.replace(/ /g, '_');
+
+        var card = document.createElement('a');
+        card.href = WIKI_BASE + pageName;
+        card.className = rarityClass;
+        card.style.textDecoration = 'none';
+        card.style.display = 'inline-block';
+        card.setAttribute('data-name', u.name.toLowerCase());
+        card.setAttribute('data-rarity', u.rarity.toLowerCase());
+
+        var img = document.createElement('img');
+        img.className = 'ranger-image';
+        img.src = FILE_BASE + u.img;
+        img.alt = u.name;
+        img.onerror = function() { img.style.opacity = '0.3'; };
+
+        var name = document.createElement('div');
+        name.className = 'ranger-name';
+        name.textContent = u.name;
+
+        card.appendChild(img);
+        card.appendChild(name);
+        return card;
+    }
+
+    function buildNav(host) {
+        var raw = host.getAttribute('data-units');
+        if (!raw) return;
+        var units;
+        try { units = JSON.parse(raw); } catch(e) { return; }
+
+        units.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+        var byRarity = {};
+        RARITY_ORDER.forEach(function(r) { byRarity[r] = { evo: [], normal: [] }; });
+        units.forEach(function(u) {
+            var r = u.rarity;
+            if (!byRarity[r]) byRarity[r] = { evo: [], normal: [] };
+            if (u.evo) byRarity[r].evo.push(u);
+            else byRarity[r].normal.push(u);
+        });
+
+        var container = document.createElement('div');
+        container.className = 'arx-nav-container';
+
+        var searchWrap = document.createElement('div');
+        searchWrap.className = 'arx-nav-search-wrap';
+        var searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Type unit name...';
+        searchInput.className = 'arx-nav-search';
+        searchWrap.appendChild(searchInput);
+        container.appendChild(searchWrap);
+
+        var tabBar = document.createElement('div');
+        tabBar.className = 'arx-nav-tab-bar';
+        container.appendChild(tabBar);
+
+        var panelsWrap = document.createElement('div');
+
+        var searchPanel = document.createElement('div');
+        searchPanel.className = 'arx-nav-search-results';
+        searchPanel.style.display = 'none';
+        var searchGrid = document.createElement('div');
+        searchGrid.className = 'arx-nav-grid';
+        searchPanel.appendChild(searchGrid);
+        panelsWrap.appendChild(searchPanel);
+
+        var firstTab = null;
+        var allPanels = [];
+        var allTabs   = [];
+
+        RARITY_ORDER.forEach(function(rarity) {
+            var group = byRarity[rarity];
+            if (!group || (group.evo.length === 0 && group.normal.length === 0)) return;
+
+            var tab = document.createElement('div');
+            tab.className = 'arx-nav-tab';
+            tab.textContent = rarity;
+            tab.setAttribute('data-rarity', rarity.toLowerCase());
+            tabBar.appendChild(tab);
+            allTabs.push(tab);
+            if (!firstTab) firstTab = tab;
+
+            var panel = document.createElement('div');
+            panel.className = 'arx-nav-panel-content';
+            panel.setAttribute('data-panel', rarity.toLowerCase());
+
+            var hasBoth = group.evo.length > 0 && group.normal.length > 0;
+
+            if (hasBoth) {
+                var subTabBar = document.createElement('div');
+                subTabBar.className = 'arx-nav-subtab-bar';
+                panel.appendChild(subTabBar);
+
+                var subTabs   = [];
+                var subPanels = [];
+
+                ['Evolved', 'Normal'].forEach(function(subName) {
+                    var subTab = document.createElement('div');
+                    subTab.className = 'arx-nav-subtab';
+                    subTab.textContent = subName;
+                    subTabBar.appendChild(subTab);
+                    subTabs.push(subTab);
+
+                    var subPanel = document.createElement('div');
+                    subPanel.className = 'arx-nav-subpanel';
+                    var grid = document.createElement('div');
+                    grid.className = 'arx-nav-grid';
+                    var items = subName === 'Evolved' ? group.evo : group.normal;
+                    items.forEach(function(u) { grid.appendChild(makeCard(u)); });
+                    subPanel.appendChild(grid);
+                    panel.appendChild(subPanel);
+                    subPanels.push(subPanel);
+
+                    subTab.addEventListener('click', function() {
+                        subTabs.forEach(function(t) { t.classList.remove('active'); });
+                        subPanels.forEach(function(p) { p.style.display = 'none'; });
+                        subTab.classList.add('active');
+                        subPanel.style.display = 'block';
+                    });
+                });
+
+                subTabs[0].click();
+
+            } else {
+                var onlyItems = group.evo.length > 0 ? group.evo : group.normal;
+                var grid = document.createElement('div');
+                grid.className = 'arx-nav-grid';
+                onlyItems.forEach(function(u) { grid.appendChild(makeCard(u)); });
+                panel.appendChild(grid);
+            }
+
+            panelsWrap.appendChild(panel);
+            allPanels.push(panel);
+
+            tab.addEventListener('click', function() {
+                searchInput.value = '';
+                searchPanel.style.display = 'none';
+                allTabs.forEach(function(t) { t.classList.remove('active'); });
+                allPanels.forEach(function(p) { p.style.display = 'none'; });
+                tab.classList.add('active');
+                panel.style.display = 'block';
+            });
+        });
+
+        container.appendChild(panelsWrap);
+
+        searchInput.addEventListener('input', function() {
+            var query = searchInput.value.trim().toLowerCase();
+            if (!query) {
+                searchPanel.style.display = 'none';
+                var activeTab = tabBar.querySelector('.arx-nav-tab.active');
+                if (activeTab) {
+                    var rPanel = panelsWrap.querySelector('[data-panel="' + activeTab.getAttribute('data-rarity') + '"]');
+                    if (rPanel) rPanel.style.display = 'block';
+                }
+                return;
+            }
+            allPanels.forEach(function(p) { p.style.display = 'none'; });
+            searchGrid.innerHTML = '';
+            units.forEach(function(u) {
+                if (u.name.toLowerCase().indexOf(query) !== -1) {
+                    searchGrid.appendChild(makeCard(u));
+                }
+            });
+            searchPanel.style.display = 'block';
+        });
+
+        host.innerHTML = '';
+        host.appendChild(container);
+
+        if (firstTab) firstTab.click();
+    }
+
+    function init() {
+        var navs = document.querySelectorAll('.arx-unit-nav');
+        Array.prototype.forEach.call(navs, buildNav);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+/* === ARX Item Navigation Widget === */
+(function () {
+    var FILE_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/Special:FilePath/';
+
+    var RARITY_COLORS = {
+        Rare:        '#00BFFF',
+        Epic:        '#CC00FF',
+        Legendary:   '#FFD700',
+        Mythic:      '#FF44FF',
+        Secret:      '#FF2200',
+        Exclusive:   '#FF8C00',
+        Singularity: '#FF44FF',
+    };
+
+    var CAT_LABELS = {
+        EvoMaterial: 'Evo Material',
+        Material:    'Material',
+        Gear:        'Gear',
+        Soul:        'Soul',
+        ExpFood:     'EXP Food',
+        Currency:    'Currency',
+        Misc:        'Misc',
+    };
+
+    function el(tag, cls, txt) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (txt != null) e.textContent = txt;
+        return e;
+    }
+
+    function makeCard(item, catKey) {
+        var card = document.createElement('div');
+        card.className = 'arx-item-card arx-item-rarity-' + item.rarity;
+        card.setAttribute('data-name', item.name.toLowerCase());
+
+        var img = document.createElement('img');
+        img.className = 'arx-item-card-img';
+        img.src = FILE_BASE + item.img;
+        img.alt = item.name;
+        img.onerror = function() { img.style.opacity = '0.2'; };
+
+        var name = el('div', 'arx-item-card-name', item.name);
+
+        card.appendChild(img);
+        card.appendChild(name);
+
+        card.addEventListener('click', function() {
+            showPopup(item, catKey);
+        });
+
+        return card;
+    }
+
+    function showPopup(item, catKey) {
+        var overlay = el('div', 'arx-item-popup-overlay');
+        var panel   = el('div', 'arx-item-popup');
+
+        var close = el('button', 'arx-item-popup-close', '✕');
+        function closePopup() {
+            panel.classList.remove('visible');
+            overlay.classList.remove('visible');
+            setTimeout(function() { overlay.remove(); }, 250);
+        }
+        close.addEventListener('click', closePopup);
+        overlay.addEventListener('click', function(e) { if (e.target === overlay) closePopup(); });
+
+        var img = document.createElement('img');
+        img.className = 'arx-item-popup-img';
+        img.src = FILE_BASE + item.img;
+        img.alt = item.name;
+        img.onerror = function() { img.style.display = 'none'; };
+
+        var name = el('div', 'arx-item-popup-name', item.name);
+
+        var cat = el('div', 'arx-item-popup-category arx-item-popup-cat-' + catKey, CAT_LABELS[catKey] || catKey);
+
+        panel.appendChild(close);
+        panel.appendChild(img);
+        panel.appendChild(name);
+        panel.appendChild(cat);
+
+        if (item.obtainment) {
+            var f = el('div', 'arx-item-popup-field');
+            f.appendChild(el('div', 'arx-item-popup-label', 'Obtainment'));
+            f.appendChild(el('div', 'arx-item-popup-value', item.obtainment));
+            panel.appendChild(f);
+        }
+
+        if (item.description) {
+            var f2 = el('div', 'arx-item-popup-field');
+            f2.appendChild(el('div', 'arx-item-popup-label', 'Description'));
+            f2.appendChild(el('div', 'arx-item-popup-value', item.description));
+            panel.appendChild(f2);
+        }
+
+        if (item.usedFor) {
+            var f3 = el('div', 'arx-item-popup-field');
+            var uf = el('div', 'arx-item-popup-value arx-item-popup-usedfor');
+            uf.textContent = 'Used for evolving ' + item.usedFor + '.';
+            f3.appendChild(uf);
+            panel.appendChild(f3);
+        }
+
+        if (item.pity && item.pity > 0) {
+            var pity = el('div', 'arx-item-popup-pity', 'Pity: ' + item.pity);
+            panel.appendChild(pity);
+        }
+
+        overlay.appendChild(panel);
+        document.body.appendChild(overlay);
+
+        setTimeout(function() {
+            overlay.classList.add('visible');
+            panel.classList.add('visible');
+        }, 16);
+    }
+
+    function buildItemNav(host) {
+        var raw = host.getAttribute('data-items');
+        if (!raw) return;
+        var categories;
+        try { categories = JSON.parse(raw); } catch(e) { return; }
+
+        var container = el('div', 'arx-item-nav-container');
+
+        // Search
+        var searchWrap = el('div', 'arx-item-search-wrap');
+        var searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Search for an item...';
+        searchInput.className = 'arx-item-search';
+        searchWrap.appendChild(searchInput);
+        container.appendChild(searchWrap);
+
+        // Tab bar
+        var tabBar = el('div', 'arx-item-tab-bar');
+        container.appendChild(tabBar);
+
+        var panelsWrap = el('div', '');
+
+        // Search results panel
+        var searchPanel = el('div', 'arx-item-search-results');
+        searchPanel.style.display = 'none';
+        var searchGrid = el('div', 'arx-item-grid');
+        searchPanel.appendChild(searchGrid);
+        panelsWrap.appendChild(searchPanel);
+
+        var allItems  = [];
+        var allTabs   = [];
+        var allPanels = [];
+        var firstTab  = null;
+
+        categories.forEach(function(cat) {
+            if (!cat.items || cat.items.length === 0) return;
+
+            cat.items.forEach(function(i) { allItems.push({ item: i, catKey: cat.key }); });
+
+            var tab = el('div', 'arx-item-tab', cat.label);
+            tab.setAttribute('data-cat', cat.key);
+            tabBar.appendChild(tab);
+            allTabs.push(tab);
+            if (!firstTab) firstTab = tab;
+
+            var panel = el('div', 'arx-item-panel');
+            panel.setAttribute('data-panel', cat.key);
+            var grid = el('div', 'arx-item-grid');
+            cat.items.forEach(function(item) {
+                grid.appendChild(makeCard(item, cat.key));
+            });
+            panel.appendChild(grid);
+            panelsWrap.appendChild(panel);
+            allPanels.push(panel);
+
+            tab.addEventListener('click', function() {
+                searchInput.value = '';
+                searchPanel.style.display = 'none';
+                allTabs.forEach(function(t) { t.classList.remove('active'); });
+                allPanels.forEach(function(p) { p.style.display = 'none'; });
+                tab.classList.add('active');
+                panel.style.display = 'block';
+            });
+        });
+
+        container.appendChild(panelsWrap);
+
+        searchInput.addEventListener('input', function() {
+            var query = searchInput.value.trim().toLowerCase();
+            if (!query) {
+                searchPanel.style.display = 'none';
+                var activeTab = tabBar.querySelector('.arx-item-tab.active');
+                if (activeTab) {
+                    var p = panelsWrap.querySelector('[data-panel="' + activeTab.getAttribute('data-cat') + '"]');
+                    if (p) p.style.display = 'block';
+                }
+                return;
+            }
+            allPanels.forEach(function(p) { p.style.display = 'none'; });
+            searchGrid.innerHTML = '';
+            allItems.forEach(function(entry) {
+                if (entry.item.name.toLowerCase().indexOf(query) !== -1) {
+                    searchGrid.appendChild(makeCard(entry.item, entry.catKey));
+                }
+            });
+            searchPanel.style.display = 'block';
+        });
+
+        host.innerHTML = '';
+        host.appendChild(container);
+
+        if (firstTab) firstTab.click();
+    }
+
+    function init() {
+        var navs = document.querySelectorAll('.arx-item-nav');
+        Array.prototype.forEach.call(navs, buildItemNav);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    /* === ARX Item Navigation Widget === */
+(function () {
+    var FILE_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/Special:FilePath/';
+
+    function getInitials(name) {
+        var words = name.split(/\s+/);
+        var out = "";
+        for (var i = 0; i < words.length; i++) {
+            if (words[i]) out += words[i].charAt(0);
+            if (out.length >= 2) break;
+        }
+        return out.toUpperCase();
+    }
+
+    function makeThumb(imgFile, name, cls) {
+        var span = document.createElement('span');
+        span.className = cls;
+        if (imgFile) {
+            if (!imgFile.match(/\.\w+$/)) imgFile += '.png';
+            var img = document.createElement('img');
+            img.src = FILE_BASE + encodeURIComponent(imgFile);
+            img.alt = name;
+            img.onerror = function() { img.style.display = 'none'; };
+            span.appendChild(img);
+        }
+        var initials = document.createElement('span');
+        initials.className = 'arxif-initials';
+        initials.textContent = getInitials(name);
+        span.appendChild(initials);
+        return span;
+    }
+
+    function makeCard(it) {
+        var card = document.createElement('a');
+        card.className = 'arxif-card arxif-rar-' + it.rarity;
+        card.href = '#' + it.popupId;
+        card.setAttribute('data-name', it.name.toLowerCase());
+        card.appendChild(makeThumb(it.img, it.name, 'arxif-thumb'));
+
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'arxif-card-name';
+        nameSpan.textContent = it.name;
+        card.appendChild(nameSpan);
+        return card;
+    }
+
+    function makePopup(it, catKey, catLabel) {
+        var overlay = document.createElement('div');
+        overlay.id = it.popupId;
+        overlay.className = 'arxif-overlay arxif-cat-' + catKey + ' arxif-rar-' + it.rarity;
+
+        var backdrop = document.createElement('a');
+        backdrop.className = 'arxif-backdrop';
+        backdrop.href = '#arxif-cat-all';
+        overlay.appendChild(backdrop);
+
+        var popup = document.createElement('div');
+        popup.className = 'arxif-popup';
+
+        var close = document.createElement('a');
+        close.className = 'arxif-close';
+        close.href = '#arxif-cat-all';
+        close.innerHTML = '&#10005;';
+        popup.appendChild(close);
+
+        var header = document.createElement('div');
+        header.className = 'arxif-pop-header';
+        header.appendChild(makeThumb(it.img, it.name, 'arxif-pop-thumb'));
+
+        var popName = document.createElement('div');
+        popName.className = 'arxif-pop-name';
+        popName.textContent = it.name;
+        header.appendChild(popName);
+
+        var chips = document.createElement('div');
+        chips.className = 'arxif-chips';
+        if (it.rarity) {
+            var rChip = document.createElement('span');
+            rChip.className = 'arxif-chip arxif-chip-rar';
+            rChip.textContent = it.rarity;
+            chips.appendChild(rChip);
+        }
+        var cChip = document.createElement('span');
+        cChip.className = 'arxif-chip arxif-chip-cat';
+        cChip.textContent = catLabel;
+        chips.appendChild(cChip);
+        header.appendChild(chips);
+        popup.appendChild(header);
+
+        var body = document.createElement('div');
+        body.className = 'arxif-pop-body';
+
+        if (it.obtainment) {
+            var f = document.createElement('div'); f.className = 'arxif-field';
+            f.innerHTML = '<div class="arxif-label">Obtainment</div><div class="arxif-value">' + mw.html.escape(it.obtainment) + '</div>';
+            body.appendChild(f);
+        }
+        if (it.description) {
+            var f = document.createElement('div'); f.className = 'arxif-field';
+            f.innerHTML = '<div class="arxif-label">Description</div><div class="arxif-value">' + mw.html.escape(it.description) + '</div>';
+            body.appendChild(f);
+        }
+        if (it.usedFor) {
+            var uf = document.createElement('div'); uf.className = 'arxif-usedfor';
+            uf.textContent = 'Used for evolving ' + it.usedFor + '.';
+            body.appendChild(uf);
+        }
+        if (it.pity && it.pity > 0) {
+            var pw = document.createElement('div'); pw.className = 'arxif-pity-wrap';
+            pw.innerHTML = '<span class="arxif-pity">Pity: ' + mw.html.escape(it.pity) + '</span>';
+            body.appendChild(pw);
+        }
+        popup.appendChild(body);
+        overlay.appendChild(popup);
+        return overlay;
+    }
+
+    function buildItemNav(host) {
+        var raw = host.getAttribute('data-payload');
+        if (!raw) return;
+        var data;
+        try { data = JSON.parse(raw); } catch(e) { return; }
+
+        var cats = data.categories || [];
+        var allItems = [];
+        cats.forEach(function(c) {
+            c.items.forEach(function(it) { allItems.push(it); });
+        });
+        allItems.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+        var root = document.createElement('div');
+        root.className = 'arxif-root';
+
+        var searchWrap = document.createElement('div');
+        searchWrap.className = 'arxif-search-wrap';
+        var searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'arxif-search';
+        searchInput.placeholder = 'Search for an item...';
+        searchWrap.appendChild(searchInput);
+        root.appendChild(searchWrap);
+
+        var tabbar = document.createElement('div');
+        tabbar.className = 'arxif-tabbar';
+        var allTab = document.createElement('a');
+        allTab.className = 'arxif-tab arxif-tab-all';
+        allTab.href = '#arxif-cat-all';
+        allTab.innerHTML = '<span class="arxif-tab-dot"></span>All<span class="arxif-count">' + allItems.length + '</span>';
+        tabbar.appendChild(allTab);
+
+        cats.forEach(function(cat) {
+            var tab = document.createElement('a');
+            tab.className = 'arxif-tab arxif-cat-' + cat.key;
+            tab.href = '#arxif-cat-' + cat.key.toLowerCase();
+            tab.innerHTML = '<span class="arxif-tab-dot"></span>' + mw.html.escape(cat.label) + '<span class="arxif-count">' + Number(cat.items.length) + '</span>';
+            tabbar.appendChild(tab);
+        });
+        root.appendChild(tabbar);
+
+        var panelsContainer = document.createElement('div');
+        panelsContainer.className = 'arxif-panels';
+
+        var allPanel = document.createElement('div');
+        allPanel.id = 'arxif-cat-all';
+        allPanel.className = 'arxif-panel arxif-panel-all';
+
+        cats.forEach(function(cat) {
+            var section = document.createElement('div');
+            section.className = 'arxif-section';
+            section.innerHTML = '<div class="arxif-section-title arxif-cat-' + mw.html.escape(cat.key) + '"><span class="arxif-secdot"></span>' + mw.html.escape(cat.label) + '<span class="arxif-count">' + Number(cat.items.length) + '</span></div>';
+            
+            var grid = document.createElement('div');
+            grid.className = 'arxif-grid';
+            cat.items.forEach(function(it) { grid.appendChild(makeCard(it)); });
+            
+            section.appendChild(grid);
+            allPanel.appendChild(section);
+        });
+        panelsContainer.appendChild(allPanel);
+
+        cats.forEach(function(cat) {
+            var panel = document.createElement('div');
+            panel.id = 'arxif-cat-' + cat.key.toLowerCase();
+            panel.className = 'arxif-panel';
+
+            var grid = document.createElement('div');
+            grid.className = 'arxif-grid';
+            cat.items.forEach(function(it) { grid.appendChild(makeCard(it)); });
+            
+            panel.appendChild(grid);
+            panelsContainer.appendChild(panel);
+        });
+        root.appendChild(panelsContainer);
+
+        var resultsPanel = document.createElement('div');
+        resultsPanel.className = 'arxif-results';
+        var resultsGrid = document.createElement('div');
+        resultsGrid.className = 'arxif-grid';
+        
+        var searchCardsRefs = [];
+        allItems.forEach(function(it) {
+            var card = makeCard(it);
+            resultsGrid.appendChild(card);
+            searchCardsRefs.push(card);
+        });
+        
+        var noResults = document.createElement('div');
+        noResults.className = 'arxif-noresults';
+        noResults.textContent = 'No items found.';
+        noResults.style.display = 'none';
+        resultsGrid.appendChild(noResults);
+        
+        resultsPanel.appendChild(resultsGrid);
+        root.appendChild(resultsPanel);
+
+        cats.forEach(function(cat) {
+            cat.items.forEach(function(it) {
+                root.appendChild(makePopup(it, cat.key, cat.label));
+            });
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            var term = e.target.value.toLowerCase().trim();
+            if (term === "") {
+                resultsPanel.style.display = 'none';
+                panelsContainer.style.display = 'block';
+                return;
+            }
+            panelsContainer.style.display = 'none';
+            resultsPanel.style.display = 'block';
+
+            var matches = 0;
+            searchCardsRefs.forEach(function(card) {
+                var name = card.getAttribute('data-name') || '';
+                if (name.includes(term)) {
+                    card.style.display = 'inline-block';
+                    matches++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            noResults.style.display = (matches === 0) ? 'block' : 'none';
+        });
+
+        host.innerHTML = '';
+        host.appendChild(root);
+    }
+
+    function initItemNav() {
+        var hosts = document.querySelectorAll('.arx-item-nav-widget');
+        Array.prototype.forEach.call(hosts, buildItemNav);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initItemNav);
+    } else {
+        initItemNav();
+    }
+})();
 })();

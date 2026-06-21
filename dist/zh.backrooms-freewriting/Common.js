@@ -3,7 +3,8 @@ importArticles({
     articles: [
         'u:dev:MediaWiki:WallGreeting.js',
         'MediaWiki:Custom-ImprovedProfileTags.js',
-        'MediaWiki:Custom-Vote.js'
+        'MediaWiki:Custom-Vote.js',
+        'MediaWiki:Custom-Page.js'
     ]
 });
 
@@ -32,31 +33,6 @@ importArticles({
     });
 })();
 
-// 处理JS脚本导入
-// 注意本站对JS的政策与主站不同，不要直接用主站代码覆盖了
-mw.hook("wikipage.content").add(function () {
-    $("span.import-script").each(function () {
-        var $this = $(this);
-        var scriptContent = $this.attr("data-script");
-        var pageName = $this.attr("data-page");
-        
-        if (scriptContent) {
-            try {
-                // 导入JS代码
-                var script_element = document.createElement('script');
-            	script_element.type = 'text/javascript';
-            	script_element.textContent = scriptContent;
-            	script_element.className += 'import-js';
-            	document.head.appendChild(script_element);
-                console.log("JS加载成功: " + pageName);
-            } catch (error) {
-                console.error("JS加载错误 (" + pageName + "):", error);
-                $this.after('<strong class="error">JS加载失败: ' + error.message + '</strong>');
-            }
-            
-        }
-    });
-});
 
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 mw.hook("wikipage.content").add(function () {

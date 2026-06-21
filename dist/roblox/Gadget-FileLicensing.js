@@ -2,6 +2,7 @@
 * FileLicensing
 * Joritochip
 */
+/* <nowiki> */
 mw.loader.using('mediawiki.api', function (require) {
     if (!$('body').hasClass('page-Roblox_Wiki_Files_with_missing_license_information')) return;
 
@@ -60,3 +61,4 @@ mw.loader.using('mediawiki.api', function (require) {
         $('.wikia-gallery-item').append(control);
     });
 });
+/* </nowiki> */

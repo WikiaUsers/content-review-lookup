@@ -113,7 +113,7 @@ $(function () {
       //250
       'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear', 'Guardian_Lion',
       //255
-      'Reliable_Ram'
+      'Reliable_Ram', 'Vampiric_Hound', 'Night_Hound', 'Infernal_Hound'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink (https://tibia.fandom.com/wiki/Template:OutfiterLink)
@@ -216,7 +216,7 @@ $(function () {
       //225
       'Martial_Artist', 'Necromancer', 'Illuminator', 'Bat_Knight', 'Feral_Trapper',
       //230
-      'Phoenix_Evoker', 'Aerial_Disciple'
+      'Phoenix_Evoker', 'Aerial_Disciple', 'Vampire_Noble'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {

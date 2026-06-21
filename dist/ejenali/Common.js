@@ -93,65 +93,51 @@ importArticles({
     ]
 });
 
-/* Audio Button Handler */
-mw.loader.using(['mediawiki.util'], function() {
-    mw.hook('wikipage.content').add(function($content) {
-        var currentAudio = null;
-        var currentButton = null;
+/* Ejen Ali custom audio button */
 
-        $(document).off('click.audiobutton').on('click.audiobutton', '.audio-button', function() {
-            var $btn = $(this);
-            var fileName = $btn.data('audio');
+$(function () {
 
-            console.log('Audio button clicked:', fileName);
+    $(".audio-clip").each(function () {
 
-            if (!fileName) return;
+        var container = $(this);
+        var audio = container.find("audio").get(0);
 
-            if (currentButton && currentButton.is($btn)) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                $btn.removeClass('now-playing');
-                currentAudio = null;
-                currentButton = null;
-                return;
-            }
+        if (!audio) {
+            return;
+        }
 
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentButton.removeClass('now-playing');
-            }
+        var button = $("<span></span>")
+            .addClass("audio-clip-button");
 
-            $.getJSON(mw.util.wikiScript('api'), {
-                action: 'query',
-                titles: 'File:' + fileName,
-                prop: 'imageinfo',
-                iiprop: 'url',
-                format: 'json'
-            }).done(function(data) {
-                console.log('API response:', data);
-                var pages = data.query.pages;
-                var page = pages[Object.keys(pages)[0]];
-                if (!page.imageinfo) {
-                    console.log('No imageinfo found!');
-                    return;
-                }
+        container.prepend(button);
 
-                var audioUrl = page.imageinfo[0].url;
-                console.log('Playing:', audioUrl);
-                var audio = new Audio(audioUrl);
+        button.on("click", function () {
+
+            $(".audio-clip audio").each(function () {
+                this.pause();
+                this.currentTime = 0;
+            });
+
+            $(".audio-clip-button")
+                .removeClass("now-playing");
+
+            if (audio.paused) {
 
                 audio.play();
-                $btn.addClass('now-playing');
-                currentAudio = audio;
-                currentButton = $btn;
+                button.addClass("now-playing");
 
-                audio.addEventListener('ended', function() {
-                    $btn.removeClass('now-playing');
-                    currentAudio = null;
-                    currentButton = null;
-                });
-            });
+            } else {
+
+                audio.pause();
+                audio.currentTime = 0;
+            }
+
         });
+
+        audio.onended = function () {
+            button.removeClass("now-playing");
+        };
+
     });
+
 });

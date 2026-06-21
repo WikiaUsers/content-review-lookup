@@ -50,3 +50,24 @@ $(".analytics_table").each(function() {
         .replace('Viet Nam',                                             'Vietnam')
     );
 });
+
+/* ImageCategory: see https://dev.fandom.com/wiki/ImageCategory */
+// <nowiki>
+(function() {
+	var page = mw.config.get('wgCanonicalSpecialPageName');
+	if (
+		window.ImageCategoryLoaded ||
+		!(/Upload|MultipleUpload/g.test(page))
+	) {
+        return;
+	}
+	window.ImageCategoryLoaded = true;
+	
+	var queryString = window.location.search;
+	var urlParams = new URLSearchParams(queryString);
+
+	if (urlParams.get('wpForReUpload') != 1) {
+		$('#wpUploadDescription').val(window.ImageCategory || '[[Category:图片]]');
+	}
+})();
+// </nowiki>

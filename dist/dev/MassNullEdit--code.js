@@ -57,6 +57,7 @@
         summary: 'Null edit (this edit should not be visible)',
         notminor: true,
         prependtext: '',
+        watchlist: 'nochange',
         nocreate: true
     };
     var i18n;

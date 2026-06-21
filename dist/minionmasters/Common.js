@@ -408,8 +408,18 @@ $(function () {
         }
         
         applyFilters();
+        // After filters update, reapply search
+		const query = $("#table-search").val().toLowerCase();
+		if (query !== "") {
+		    applySearch(query);
+		}
     });
     applyFilters();
+    // After filters update, reapply search
+	const query = $("#table-search").val().toLowerCase();
+	if (query !== "") {
+	    applySearch(query);
+	}
 });
 
 // Switch table for type
@@ -423,6 +433,11 @@ $(document).on('click', '.type-switch .filter-btn', function () {
     $('.type-table[data-type="' + type + '"]').show();
 
     applyFilters(); // apply existing Filter again
+    // After filters update, reapply search
+	const query = $("#table-search").val().toLowerCase();
+	if (query !== "") {
+	    applySearch(query);
+	}
 });
 
 
@@ -885,10 +900,6 @@ $(function () {
 
 
 
-
-
-
-
 		
 		// ---- Derived DPS stats (with multi-unit bonus)
 		if (dps !== null && Number.isFinite(count)) {
@@ -923,9 +934,6 @@ $(function () {
 		    totalDpsPerManaCell.text("");
 		}
 
-
-
-		
 		
 		// Derived HP stats
 		// ---- Multi-unit TOTAL HP contribution
@@ -953,7 +961,6 @@ $(function () {
 		        }
 		    });
 		}
-
 
 		
 		// ---- Derived HP stats (with multi-unit bonus)
@@ -991,12 +998,17 @@ $(function () {
 		    totalHpPerManaCell.text("");
 		}
 
+}
 
+function recalcCargoTable(ActivatedStats) {
 
-
-
-
+    for (let i = 0; i < 2; i++) {
+        $(".cargoTable tbody tr").each(function () {
+            recalcRow($(this), ActivatedStats);
+        });
     }
+}
+
     
 function resortCargoTable() {
     const $table = $('.type-table:visible');
@@ -1014,33 +1026,59 @@ function resortCargoTable() {
 
     // ---- Buttons
 	$("#btn-base-stats").on("click", function () {
-	    $(".cargoTable tbody tr").each(function () {
-	        $("#btn-base-stats").addClass("active");
-	        $("#btn-activated-stats").removeClass("active");
-	        recalcRow($(this), false);
-	    });
-	
-	    resortCargoTable();
+		// Set new Button State
+		$("#btn-base-stats").addClass("active");
+		$("#btn-activated-stats").removeClass("active");
+		// recalctable and sort again
+		recalcCargoTable(false);
+		resortCargoTable();
 	});
 	
 	$("#btn-activated-stats").on("click", function () {
-	    $(".cargoTable tbody tr").each(function () {
-	        $("#btn-activated-stats").addClass("active");
-	        $("#btn-base-stats").removeClass("active");
-	        recalcRow($(this), true);
-	    });
-	
-	    resortCargoTable();
+		// Set new Button State
+	    $("#btn-activated-stats").addClass("active");
+	    $("#btn-base-stats").removeClass("active");
+		// recalctable and sort again
+		recalcCargoTable(true);
+		resortCargoTable();
 	});
 
+    // ---- Initial load: show base stats (with the default buffs applied)
+	 recalcCargoTable(false);
+});
 
-    // ---- Initial load: show base stats WITH innate b
-	 $(".cargoTable tbody tr").each(function () {
-	        recalcRow($(this), false);
-	    });
-	 //2nd recalc so cards that rely on other card's stats can use them 
-	 $(".cargoTable tbody tr").each(function () {
-	        recalcRow($(this), false);
+// Search Function for Seach field
+function applySearch(query) {
+
+	 // Start from ALL rows
+	    const $rows = $('.type-table:visible tbody tr');
+	
+	    // Apply filters first (baseline visibility)
+	    applyFilters();
+	
+	    // If search is empty → stop here
+	    if (query === "") {
+	        updateResultCount();
+	        return;
+	    }
+	
+	    // Apply search ONLY to rows that filters kept visible
+	    $('.type-table:visible tbody tr:visible').each(function () {
+	        const name = $(this).find("td:first-child").text().trim().toLowerCase();
+	        $(this).toggle(name.includes(query));
 	    });
 	
-	});
+	    updateResultCount();
+}
+
+
+// Search field for Cargo table
+$("#table-search-container").html(
+    '<input type="text" id="table-search" placeholder="Search cards..." />'
+);
+
+$(document).on("input", "#table-search", function () {
+    const query = $(this).val().toLowerCase();
+
+    applySearch(query);
+});

@@ -1,30 +1,21 @@
-$(function () {
+var btn = document.querySelector('.content-size-toggle');
+var toc = document.querySelector('#toc');
+var cols = document.querySelector('.companion-columns');
 
-    $('#wandering-sword-playlist').html(`
-        <div style="position:relative;width:560px;height:315px;">
-            
-            <iframe
-                width="560"
-                height="315"
-                src="https://www.youtube.com/embed/AQh2pptdg9w"
-                frameborder="0"
-                style="pointer-events:none;"
-            ></iframe>
+if (btn) {
+    function applyCollapseState() {
+        var isCollapsed = btn.getAttribute('aria-label') === 'Expand';
+        if (toc) {
+            if (isCollapsed) toc.classList.add('toc-collapsed');
+            else toc.classList.remove('toc-collapsed');
+        }
+        if (cols) {
+            if (isCollapsed) cols.classList.add('cols-collapsed');
+            else cols.classList.remove('cols-collapsed');
+        }
+    }
 
-            <a
-                href="https://www.youtube.com/playlist?list=PLhDQ30vZfNoaRtTNhtb-3K4L2ezFRalLG"
-                target="_blank"
-                style="
-                    position:absolute;
-                    top:0;
-                    left:0;
-                    width:100%;
-                    height:100%;
-                    z-index:999;
-                "
-            ></a>
+    new MutationObserver(applyCollapseState).observe(btn, { attributes: true, attributeFilter: ['aria-label'] });
 
-        </div>
-    `);
-
-});
+    applyCollapseState();
+}

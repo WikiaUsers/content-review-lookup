@@ -39,7 +39,7 @@ mw.loader.using([
 	let updatePreview;
 	let msg;
 	let newTopicToolAvailable = true;
-	const version = '2.1.9';
+	const version = '2.1.10';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -403,8 +403,10 @@ mw.loader.using([
 			comment = parseReplyText($(`#${editorID} textarea`).val());
 			if (!comment){
 				$('#easy-talk-preview-js').html('');
+				removeEventListener('beforeunload', beforeUnloadHandler);
 				return;
 			}
+			addEventListener('beforeunload', beforeUnloadHandler);
 			const parseParams = {
 				'title': pageName,
 				'revid': revid,
@@ -517,6 +519,7 @@ mw.loader.using([
 					revid = data.edit.newrevid;
 					api.parse(new mw.Title(pageName)).then(parsedText => {
 						$('#mw-content-text > .mw-parser-output').html($(parsedText).contents());
+						removeEventListener('beforeunload', beforeUnloadHandler);
 						mw.hook('wikipage.content').fire($('#mw-content-text'));
 						mw.notify(
 							msg('postedit-confirmation-published').parse(),
@@ -616,8 +619,10 @@ mw.loader.using([
 			comment = parseTopicText($(`#${editorID} textarea`).val());
 			if (!comment){
 				$('#easy-talk-preview-js').html('');
+				removeEventListener('beforeunload', beforeUnloadHandler);
 				return;
 			}
+			addEventListener('beforeunload', beforeUnloadHandler);
 			const parseParams = {
 				'title': pageName,
 				'pst': true,
@@ -711,6 +716,7 @@ mw.loader.using([
 					} else {
 						$(`#${editorID}`).before($(parserOutput));
 					}
+					removeEventListener('beforeunload', beforeUnloadHandler);
 					mw.hook('wikipage.content').fire($('#mw-content-text'));
 					$(`#${editorID}`).remove();
 					newTopicToolAvailable = true;
@@ -738,6 +744,7 @@ mw.loader.using([
 	
 	function closeEditor(){
 		clearInterval(updatePreview);
+		removeEventListener('beforeunload', beforeUnloadHandler);
 		newTopicToolAvailable = true;
 		$('.reply-button-js').attr('tabindex', 0).removeAttr('disabled');
 		$('#active-reply-button-js').removeAttr('id');
@@ -838,6 +845,10 @@ function addSig(comment){
 
 function timeIndex(timeElement){
 	return new Date(timeElement.attr('datetime')).getTime();
+}
+
+function beforeUnloadHandler(event){
+	event.preventDefault();
 }
 
 mw.hook('wikipage.content').add(content => {

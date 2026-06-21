@@ -6,3 +6,5 @@ importArticles({
         "u:danmachi:MediaWiki:Common.js"
     ]
 });
+
+window.BackToTopModern = true;

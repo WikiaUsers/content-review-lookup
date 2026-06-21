@@ -114,7 +114,7 @@ This script only renders the clocks and handles formatting.
         return $el;
     });
 
-    // FORMATTING ENGINE (Symbiosis from original UTCClock)
+    // FORMATTING ENGINE
     function createFormatter(monthsLong, monthsShort) {
         const cases = {
             "%": function() { return "%"; },

@@ -31,3 +31,12 @@ window.lockOldComments.namespaceNumbers = [0, 500];
 
 window.lockOldComments.noteMessage =
     "⚠️ Esta discussão foi automaticamente bloqueada após 100 dias sem atividade para evitar respostas em tópicos antigos. Caso necessário, crie uma nova discussão relacionada ao assunto.";
+
+/* For [[Template:Ícones]] */
+$(function () {
+	var ícones = $('#ícones');
+    if ([ícones].length) {
+        $('.page-header__meta').after(ícones);
+        ícones.show();
+    }
+});

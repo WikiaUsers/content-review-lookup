@@ -1020,7 +1020,7 @@ $(function () {
             $itemsContainer.on('click', '.dt-item', rateLimit(function (e) {
                 const $item = $(e.currentTarget);
                 const info = JSON.parse($item.attr('data-info') || '{}');
-                $table.data('active-quality', info.quality || 'mythic');
+                $table.data('active-quality', info.quality || 'celestial');
                 $itemsContainer.find('.dt-item').removeClass('active');
                 $item.addClass('active');
 
@@ -1043,7 +1043,7 @@ $(function () {
                         $details.find('.dt-power-calc-target').each(function () {
                             $(this).data('base-html', this.innerHTML.trim());
                         });
-                        const q = activeQuality || config.defaultQuality || 'mythic';
+                        const q = activeQuality || config.defaultQuality || 'celestial';
                         const b = config.hasBolster ? parseFloat($table.find('.dt-bolster-input').val()) || 0 : 0;
                         recalcQualityValues($table, q, b, config);
                     }
@@ -1053,7 +1053,7 @@ $(function () {
             }, 300, 'throttle'));
 
             $table.on('input change', '.dt-bolster-input', () => {
-                const q = activeQuality || config.defaultQuality || 'mythic';
+                const q = activeQuality || config.defaultQuality || 'celestial';
                 const b = config.hasBolster ? parseFloat($table.find('.dt-bolster-input').val()) || 0 : 0;
                 recalcQualityValues($table, q, b, config);
             });

@@ -1,43 +1,4 @@
-/* fandom staff, this just changes my name to Teto */
 
-mw.hook('wikipage.content').add(() => {
-    document.querySelectorAll('a').forEach(link => {
-        if (!link.href || !link.href.includes("User:TayJay1320")) return;
-
-        link.childNodes.forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE && node.textContent.includes("TayJay1320")) {
-                node.textContent = node.textContent.replace("TayJay1320", "Teto");
-            }
-        });
-    });
-});
-
-
-
-/* fandom staff, this just changes my user name depending on the page type */
-
-mw.hook('wikipage.content').add(() => {
-    // 1. Figure out what kind of page this is
-    const namespace = mw.config.get('wgCanonicalNamespace');
-    let newName = "Fake Wifies"; // Default name for normal articles
-
-    if (namespace === "User_blog") {
-        newName = "The Director";   // Name for Blog Posts
-    } else if (namespace === "Message_Wall" || namespace === "Board" || namespace === "Thread") {
-        newName = "i am not here"; // Name for Social Pages
-    }
-
-    // 2. Scan all links and replace Goodman183179 with the correct name
-    document.querySelectorAll('a').forEach(link => {
-        if (!link.href || !link.href.includes("User:Goodman183179")) return;
-
-        link.childNodes.forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE && node.textContent.includes("Goodman183179")) {
-                node.textContent = node.textContent.replace("Goodman183179", newName);
-            }
-        });
-    });
-});
 
 //locks old comments
 window.lockOldComments = window.lockOldComments || {};

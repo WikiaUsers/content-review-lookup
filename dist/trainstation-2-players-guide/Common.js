@@ -637,3 +637,143 @@ mw.hook('wikipage.content').add(function($content) {
         }, 1500);
     });
 });
+
+/* ============================================================
+   FANDOM WIKI JAVASCRIPT  –  MediaWiki:Common.js
+   Implements the auto-advancing banner slider for
+   Template:ForumHeader.
+   ============================================================ */
+
+( function () {
+  'use strict';
+
+  /* ── Slider initialiser ─────────────────────────────────── */
+  function pfedSliderInit () {
+    var slider = document.getElementById( 'pfedSlider' );
+    if ( !slider ) { return; }                       // template not on page
+
+    var track  = document.getElementById( 'pfedSlidesTrack' );
+    var prev   = document.getElementById( 'pfedPrev' );
+    var next   = document.getElementById( 'pfedNext' );
+    var dotsEl = document.getElementById( 'pfedDots' );
+
+    if ( !track || !prev || !next || !dotsEl ) { return; }
+
+    var slides    = track.querySelectorAll( '.pfed-slide' );
+    var dots      = dotsEl.querySelectorAll( '.pfed-dot' );
+    var total     = slides.length;
+    var current   = 0;
+    var autoTimer = null;
+    var AUTO_MS   = 5000;         // milliseconds between auto-advance
+
+    /* ── Core move function ─────────────────────────────── */
+    function goTo ( index ) {
+      // Wrap around
+      if ( index < 0 )     { index = total - 1; }
+      if ( index >= total ) { index = 0; }
+
+      current = index;
+
+      // Slide the track
+      track.style.transform = 'translateX(-' + ( current * 100 ) + '%)';
+
+      // Update dots
+      for ( var i = 0; i < dots.length; i++ ) {
+        dots[ i ].classList.toggle( 'pfed-dot-active', i === current );
+      }
+    }
+
+    /* ── Autoplay ───────────────────────────────────────── */
+    function startAuto () {
+      stopAuto();
+      autoTimer = setInterval( function () {
+        goTo( current + 1 );
+      }, AUTO_MS );
+    }
+
+    function stopAuto () {
+      if ( autoTimer ) {
+        clearInterval( autoTimer );
+        autoTimer = null;
+      }
+    }
+
+    /* ── Controls ───────────────────────────────────────── */
+    prev.addEventListener( 'click', function () {
+      goTo( current - 1 );
+      startAuto();                // reset autoplay timer on manual nav
+    } );
+
+    next.addEventListener( 'click', function () {
+      goTo( current + 1 );
+      startAuto();
+    } );
+
+    // Dot clicks
+    for ( var d = 0; d < dots.length; d++ ) {
+      ( function ( dotIndex ) {
+        dots[ dotIndex ].addEventListener( 'click', function () {
+          goTo( dotIndex );
+          startAuto();
+        } );
+      } )( d );
+    }
+
+    /* ── Pause on hover ─────────────────────────────────── */
+    slider.addEventListener( 'mouseenter', stopAuto );
+    slider.addEventListener( 'mouseleave', startAuto );
+
+    /* ── Touch / swipe support ──────────────────────────── */
+    var touchStartX = 0;
+    var touchEndX   = 0;
+    var SWIPE_THRESHOLD = 40;    // px minimum to count as a swipe
+
+    slider.addEventListener( 'touchstart', function ( e ) {
+      touchStartX = e.changedTouches[ 0 ].clientX;
+    }, { passive: true } );
+
+    slider.addEventListener( 'touchend', function ( e ) {
+      touchEndX = e.changedTouches[ 0 ].clientX;
+      var delta = touchStartX - touchEndX;
+      if ( Math.abs( delta ) > SWIPE_THRESHOLD ) {
+        goTo( delta > 0 ? current + 1 : current - 1 );
+        startAuto();
+      }
+    }, { passive: true } );
+
+    /* ── Keyboard accessibility ─────────────────────────── */
+    slider.setAttribute( 'tabindex', '0' );
+    slider.addEventListener( 'keydown', function ( e ) {
+      if ( e.key === 'ArrowLeft'  || e.key === 'ArrowUp'   ) { goTo( current - 1 ); startAuto(); }
+      if ( e.key === 'ArrowRight' || e.key === 'ArrowDown' ) { goTo( current + 1 ); startAuto(); }
+    } );
+
+    /* ── Pause when tab is hidden (battery / a11y) ──────── */
+    document.addEventListener( 'visibilitychange', function () {
+      if ( document.hidden ) { stopAuto(); } else { startAuto(); }
+    } );
+
+    /* ── Respect reduced-motion preference ──────────────── */
+    if ( window.matchMedia &&
+         window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+      // Still allow manual nav, just don't autoplay
+      goTo( 0 );
+      return;
+    }
+
+    /* ── Kick off ───────────────────────────────────────── */
+    goTo( 0 );
+    startAuto();
+  }
+
+  /* ── Expose for inline call in template ─────────────────── */
+  window.pfedSliderInit = pfedSliderInit;
+
+  /* ── Auto-run on DOM ready ───────────────────────────────── */
+  if ( document.readyState === 'loading' ) {
+    document.addEventListener( 'DOMContentLoaded', pfedSliderInit );
+  } else {
+    pfedSliderInit();
+  }
+
+} )();

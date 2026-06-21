@@ -14,4 +14,5 @@ mw.hook('wikipage.content').add($content =>
         .prop('muted', true)
         .prop('autoplay', true)
         .prop('controls', false)
+        .trigger('play')
 );

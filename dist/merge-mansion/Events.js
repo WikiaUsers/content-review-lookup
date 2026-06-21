@@ -49,6 +49,36 @@
 		return 'in under a minute';
 	}
 
+	// Precise remaining time "5d 3h 42m" for the countdown hover tooltip.
+	function relPrecise(sec) {
+		if (sec < 0) sec = 0;
+		var d = Math.floor(sec / DAY); sec -= d * DAY;
+		var h = Math.floor(sec / 3600); sec -= h * 3600;
+		var m = Math.floor(sec / 60);
+		var parts = [];
+		if (d) parts.push(d + 'd');
+		if (h) parts.push(h + 'h');
+		parts.push(m + 'm');
+		return parts.join(' ');
+	}
+
+	var MON = ['January', 'February', 'March', 'April', 'May', 'June',
+		'July', 'August', 'September', 'October', 'November', 'December'];
+	function pad2(n) { return (n < 10 ? '0' : '') + n; }
+	// Absolute date+time in UTC, matching Lua fmtEpoch ("June 23, 2026, 08:00 UTC").
+	function fmtUTC(epoch) {
+		var dt = new Date(epoch * 1000);
+		return MON[dt.getUTCMonth()] + ' ' + dt.getUTCDate() + ', ' + dt.getUTCFullYear()
+			+ ', ' + pad2(dt.getUTCHours()) + ':' + pad2(dt.getUTCMinutes()) + ' UTC';
+	}
+	// Fill the countdown hover tooltip: date+time on top (prominent), precise d/h/m below (dimmer).
+	function setCdTip(run, word, epoch, rel) {
+		var t = run.querySelector('.mmev-cd-tip');
+		if (!t) return;
+		t.innerHTML = '<span class="mmev-cd-tip-date" style="font-weight:bold;">' + word + ' ' + fmtUTC(epoch) + '</span>'
+			+ '<br><span class="mmev-cd-tip-rel" style="opacity:0.65;">' + rel + '</span>';
+	}
+
 	function tick() {
 		// Date.now() is true Unix epoch ms; the Lua epochs are built from UTC civil dates, so both
 		// refer to the same absolute instant — no timezone conversion needed.
@@ -72,12 +102,14 @@
 				run.setAttribute('data-mmev-state', 'up');
 				if (label) label.textContent = 'Starts in';
 				if (val) val.textContent = relShort(s - now);
+				setCdTip(run, 'Starts', s, 'in ' + relPrecise(s - now));
 				if (prog) prog.style.display = 'none';
 			} else if (now <= e) {               // active
 				run.style.display = '';
 				run.setAttribute('data-mmev-state', 'active');
 				if (label) label.textContent = 'ends in';
 				if (val) val.textContent = relShort(e - now);
+				setCdTip(run, 'Ends', e, relPrecise(e - now) + ' left');
 				if (prog) {
 					prog.style.display = 'block';
 					var span = e - s;

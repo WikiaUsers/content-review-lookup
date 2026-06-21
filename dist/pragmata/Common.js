@@ -40,7 +40,7 @@ window.welcomeMessage = {
     adminUsername: 'ClodaghelmC',
     adminNickname: 'Clodaghelm',
     messageTitle: 'Welcome to Pragmata Wiki, $1!',
-    messageText: 'Hi $1, I\'m an admin for Pragmata Wiki. Welcome and thank you for your edit to the <a href="https://pragmata.fandom.com/wiki/$2">$2</a> page.\n‎ \n\n' +
+    messageText: 'Hi $1, . Welcome and thank you for your edit to the <a href="https://pragmata.fandom.com/wiki/$2">$2</a> page.\n‎ \n\n' +
                  'Please leave a message on my <a href="https://pragmata.fandom.com/wiki/Message_Wall:$4">wall</a> or reach out to the <a href="https://pragmata.fandom.com/wiki/Special:ListAdmins/sysop">other admins</a> if you need help. You can also visit the <a href="https://pragmata.fandom.com/wiki/Special:Community">community portal</a> to find active tasks, and use <a href="https://pragmata.fandom.com/wiki/Special:Forum">Discussions</a> to connect with the community. If you are new to the platform, <a href="https://community.fandom.com">Community Central</a> and <a href="https://community.fandom.com/wiki/Help:Getting_started">Help:Getting started</a> are excellent resources for general help.\n‎ \n\n' +
                  'Enjoy your time at Pragmata Wiki!'
 };
@@ -53,6 +53,8 @@ importArticles({
 	type: 'script',
     articles: [
     	'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
-        'u:clodaghelm:MediaWiki:RailCarousel.js'
+        'u:clodaghelm:MediaWiki:LastModified.js',
+        'u:clodaghelm:MediaWiki:RailCarousel.js',
+        'u:clodaghelm:MediaWiki:PageFooterPanel.js'
     ]
 });

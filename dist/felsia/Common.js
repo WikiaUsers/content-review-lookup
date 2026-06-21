@@ -1,3 +1,19 @@
+/* Fullscreen overlay on load */
+#page-init-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fade-out 2s forwards 2s;
+}
+
+@keyframes fade-out {
+    to { opacity: 0; pointer-events: none; }
+}
+
 /* ==========================================================================
    Avionics Flight Deck Instrumentation Controls
    ========================================================================== */
@@ -102,6 +118,17 @@ function rotateKnob(el) {
   let current = parseInt(dot.dataset.rot || "0");
   current += 30;
   dot.dataset.rot = current;
+  
+  (function() {
+    var groups = mw.config.get('wgRelevantUserGroups') || [];
+    var $body = $('body');
+    
+    if (groups.includes('sysop') || groups.includes('bureaucrat')) {
+        $body.addClass('viewing-admin-profile');
+    } else if (groups.includes('content-moderator') || groups.includes('threadmoderator')) {
+        $body.addClass('viewing-mod-profile');
+    }
+})();
   dot.style.transform = `rotate(${current}deg)`;
 }
 
@@ -112,3 +139,19 @@ setInterval(() => {
   setAttitude((Math.random() * 40) - 20, (Math.random() * 60) - 30);
 }, 1200);
 </script>
+
+// Automatically tag sidebar/tabber links for staff
+(function() {
+    new mw.Api().get({
+        action: 'query',
+        list: 'allusers',
+        augroup: 'sysop|bureaucrat|content-moderator',
+        aulimit: 500
+    }).done(function(data) {
+        data.query.allusers.forEach(function(user) {
+            var groupClass = (user.groups.includes('sysop') || user.groups.includes('bureaucrat')) ? 'is-admin-link' : 'is-mod-link';
+            // Find links in sidebar and tabbers that point to these specific users
+            $('a[href$="User:' + user.name + '"], a[href$="User_talk:' + user.name + '"]').addClass(groupClass);
+        });
+    });
+})();

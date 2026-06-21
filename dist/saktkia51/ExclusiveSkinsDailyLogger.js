@@ -1,11 +1,13 @@
 // Created by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:ExclusiveSkinsDailyLogger.js
+// Dependencies: create(), formatDate(), MediaWiki base module's mw object
 
 {
 	"use strict";
 	
 	const srcContainer = document.getElementById('ExclusiveSkinsDailyLogger');
+	const toolName = 'Exclusive Skins Daily Logger';
 	if (srcContainer && !document.getElementById('ExclusiveSkinsDailyLogger_Container')) {
-		console.log("[Exclusive Skins Daily Logger] [LOG]: Running script...");
+		console.log(`[${toolName}] [LOG]: Running script...`);
 		const placeholderImage = "https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/47/Placeholder.png/revision/latest?cb=20220315033423&format=original";
 		const gameVersion = "V17.0";
 		const weaponsCount = 21;
@@ -43,6 +45,41 @@
 			pumpkin:"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/9/94/Craft_Pumpkin.png/revision/latest?cb=20260110210030&format=original",
 			ribbon:"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/2c/Craft_Ribbon.png/revision/latest?cb=20260110210045&format=original",
 		};
+		const exampleImages = {
+			'rose':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/53/Gun_Skins_-_P90_-_Rose.png/revision/latest?cb=20260318205450&format=original",
+			'decay':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/28/Gun_Skins_-_P90_-_Decay.png/revision/latest?cb=20260318205405&format=original",
+			'souldebt':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/0/08/Gun_Skins_-_P90_-_Soul_Debt.png/revision/latest?cb=20260318205453&format=original",
+			'classicfire':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/70/Gun_Skins_-_P90_-_Classic_Fire.png/revision/latest?cb=20260318205357&format=original",
+			'plum':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/1/19/Gun_Skins_-_P90_-_Plum.png/revision/latest?cb=20260318235134&format=original",
+			'magma':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/a/a3/Gun_Skins_-_P90_-_Magma.png/revision/latest?cb=20260318235132&format=original",
+			'badlands':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/6/6c/Weapon_Skins_-_P90_-_Badlands_2026-03-23.png/revision/latest?cb=20260323212936&format=original",
+			'heartsofred':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/57/Gun_Skins_-_P90_-_Hearts_of_Red.png/revision/latest?cb=20260320101440&format=original",
+			'unclej':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/78/Gun_Skins_-_P90_-_Uncle_Jaquavius.png/revision/latest?cb=20260321101816&format=original",
+			'slime':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/f5/Weapon_Skins_-_P90_-_Slime.png/revision/latest?cb=20260322101417&format=original",
+			'duckweed':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/2d/Weapon_Skins_-_P90_-_Duckweed.png/revision/latest?cb=20260323101030&format=original",
+			'purpleberry':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/78/Weapon_Skins_-_P90_-_Purple_Berry.png/revision/latest?cb=20260324100933&format=original",
+			'heartsoforange':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/c4/Weapon_Skins_-_P90_-_Hearts_of_Orange.png/revision/latest?cb=20260325101043&format=original",
+			'fall':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/f5/Weapon_Skins_-_P90_-_Fall.png/revision/latest?cb=20260326101114&format=original",
+			'sharpshell':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/b2/Weapon_Skins_-_P90_-_Sharp_Shell.png/revision/latest?cb=20260327215519&format=original",
+			'snowleapord':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/1/1f/Weapon_Skins_-_P90_-_Snow_Leapord.png/revision/latest?cb=20260328104033&format=original",
+			'waves':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/8/8d/Weapon_Skins_-_P90_-_Waves.png/revision/latest?cb=20260329110443&format=original",
+			'jade':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/b8/Weapon_Skins_-_P90_-_Jade.png/revision/latest?cb=20260330113119&format=original",
+			'cherrywood':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/f4/Weapon_Skins_-_P90_-_Cherry_Wood.png/revision/latest?cb=20260331124106&format=original",
+			'warmvalentine':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/ff/Weapon_Skins_-_P90_-_Warm_Valentine.png/revision/latest?cb=20260401154808&format=original",
+			'sharpradiant':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/4d/Weapon_Skins_-_P90_-_Sharp_Radiant.png/revision/latest?cb=20260402171004&format=original",
+			'graffiti':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/45/Weapon_Skins_-_P90_-_Graffiti.png/revision/latest?cb=20260403215646&format=original",
+			'reinforcedmetal':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/3/36/Weapon_Skins_-_P90_-_Reinforced_Metal.png/revision/latest?cb=20260404100943&format=original",
+			'corrupted':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/29/Weapon_Skins_-_P90_-_Corrupted.png/revision/latest?cb=20260405101038&format=original",
+			'chekhovs':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/d/d3/Weapon_Skins_-_P90_-_Chekhov%27s.png/revision/latest?cb=20260406112711&format=original",
+			'witchcraft':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/9/9c/Weapon_Skins_-_P90_-_Witchcraft.png/revision/latest?cb=20260407102932&format=original",
+			'heartsofgreen':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/7b/Weapon_Skins_-_P90_-_Hearts_of_Green.png/revision/latest?cb=20260408100846&format=original",
+			'camo':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/5c/Weapon_Skins_-_P90_-_Camo.png/revision/latest?cb=20260409101014&format=original",
+			'inverted':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/d/d4/Weapon_Skins_-_P90_-_Inverted.png/revision/latest?cb=20260410100827&format=original",
+			'redox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/ba/Gun_Skins_-_P90_-_Redox.png/revision/latest?cb=20260321063307&format=original",
+			'equinox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/cc/Weapon_Skins_-_P90_-_Equinox.png/revision/latest?cb=20260412100738&format=original",
+			'toothpaste':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/3/3d/Weapon_Skins_-_P90_-_Toothpaste.png/revision/latest?cb=20260615155802&format=original",
+			'nocturnal':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/6/65/Weapon_Skins_-_P90_-_Nocturnal.png/revision/latest?cb=20260616101212&format=original",
+		};
 		function formatMatName(id) {
 			const obj = {
 				antenna:"Antenna",
@@ -71,6 +108,7 @@
 			};
 			return obj[id] ?? id;
 		};
+		
 		class WeaponSkin {
 			constructor(mainDetails = {}, otherDetails = {}) {
 				this.id = mainDetails.id;
@@ -78,7 +116,9 @@
 				this.rarity = mainDetails.rarity ?? 'unknown';
 				this.otherDetails = otherDetails;
 			};
-			formatCraftingReqs(factor = 1, format = {}) {
+			formatCraftingReqs(factor, format) {
+				factor ??= 1;
+				format ??= {};
 				format.inclX ??= true;
 				format.inclIcon ??= true;
 				format.inclMatName ??= true;
@@ -94,22 +134,14 @@
 				for (let mat in reqs) {
 					let str = (reqs[mat] * factor).toLocaleString();
 					if (format.inclX) {
-						if (format.xPlacement === 'before') {
-							str = 'x' + str;
-						} else {
-							str = str + 'x';
-						};
+						str = format.xPlacement === 'before' ? `x${str}` : `${str}x`;
 					};
 					if (format.inclMatName) {
 						str += ' ' + formatMatName(mat);
 					};
 					if (format.inclIcon) {
 						const imageStr = `<span class='infoicon'><img class='DblClickImg' src='${materialFiles[mat]}'></img></span>`;
-						if (format.iconPlacement === 'before') {
-							str = ` ${imageStr} ${str}`;
-						} else {
-							str = ` ${str} ${imageStr}`;
-						};
+						str = format.iconPlacement === 'before' ? ` ${imageStr} ${str}` : ` ${str} ${imageStr}`;
 					};
 					output.push(str);
 				};
@@ -150,44 +182,25 @@
 				'inverted':{rubber:1, skin:4, redlight:2, hair:2},
 				'redox':{antenna:1, skin:5, metal:3, horn:2},
 				'equinox':{tentacle:2, ice:1, skin:9, fur:3},
+				'toothpaste':{bone:1, skin:4, slime:3, wood:2},
+				'nocturnal':{tie:3, glass:2, skin:12, horn:6},
 			};
-			return obj[id] ?? {};
+			if (obj[id] !== undefined) {
+				return obj[id];
+			} else {
+				console.log(`[${toolName}] [LOG]: Unavailable crafting requirements for skin ID ${id}`);
+				return {};
+			};
 		};
 		function getExampleImage(id) {
-			const obj = {
-				'rose':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/53/Gun_Skins_-_P90_-_Rose.png/revision/latest?cb=20260318205450&format=original",
-				'decay':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/28/Gun_Skins_-_P90_-_Decay.png/revision/latest?cb=20260318205405&format=original",
-				'souldebt':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/0/08/Gun_Skins_-_P90_-_Soul_Debt.png/revision/latest?cb=20260318205453&format=original",
-				'classicfire':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/70/Gun_Skins_-_P90_-_Classic_Fire.png/revision/latest?cb=20260318205357&format=original",
-				'plum':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/1/19/Gun_Skins_-_P90_-_Plum.png/revision/latest?cb=20260318235134&format=original",
-				'magma':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/a/a3/Gun_Skins_-_P90_-_Magma.png/revision/latest?cb=20260318235132&format=original",
-				'badlands':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/6/6c/Weapon_Skins_-_P90_-_Badlands_2026-03-23.png/revision/latest?cb=20260323212936&format=original",
-				'heartsofred':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/57/Gun_Skins_-_P90_-_Hearts_of_Red.png/revision/latest?cb=20260320101440&format=original",
-				'unclej':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/78/Gun_Skins_-_P90_-_Uncle_Jaquavius.png/revision/latest?cb=20260321101816&format=original",
-				'slime':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/f5/Weapon_Skins_-_P90_-_Slime.png/revision/latest?cb=20260322101417&format=original",
-				'duckweed':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/2d/Weapon_Skins_-_P90_-_Duckweed.png/revision/latest?cb=20260323101030&format=original",
-				'purpleberry':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/78/Weapon_Skins_-_P90_-_Purple_Berry.png/revision/latest?cb=20260324100933&format=original",
-				'heartsoforange':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/c4/Weapon_Skins_-_P90_-_Hearts_of_Orange.png/revision/latest?cb=20260325101043&format=original",
-				'fall':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/f5/Weapon_Skins_-_P90_-_Fall.png/revision/latest?cb=20260326101114&format=original",
-				'sharpshell':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/b2/Weapon_Skins_-_P90_-_Sharp_Shell.png/revision/latest?cb=20260327215519&format=original",
-				'snowleapord':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/1/1f/Weapon_Skins_-_P90_-_Snow_Leapord.png/revision/latest?cb=20260328104033&format=original",
-				'waves':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/8/8d/Weapon_Skins_-_P90_-_Waves.png/revision/latest?cb=20260329110443&format=original",
-				'jade':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/b8/Weapon_Skins_-_P90_-_Jade.png/revision/latest?cb=20260330113119&format=original",
-				'cherrywood':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/f4/Weapon_Skins_-_P90_-_Cherry_Wood.png/revision/latest?cb=20260331124106&format=original",
-				'warmvalentine':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/f/ff/Weapon_Skins_-_P90_-_Warm_Valentine.png/revision/latest?cb=20260401154808&format=original",
-				'sharpradiant':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/4d/Weapon_Skins_-_P90_-_Sharp_Radiant.png/revision/latest?cb=20260402171004&format=original",
-				'graffiti':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/45/Weapon_Skins_-_P90_-_Graffiti.png/revision/latest?cb=20260403215646&format=original",
-				'reinforcedmetal':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/3/36/Weapon_Skins_-_P90_-_Reinforced_Metal.png/revision/latest?cb=20260404100943&format=original",
-				'corrupted':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/2/29/Weapon_Skins_-_P90_-_Corrupted.png/revision/latest?cb=20260405101038&format=original",
-				'chekhovs':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/d/d3/Weapon_Skins_-_P90_-_Chekhov%27s.png/revision/latest?cb=20260406112711&format=original",
-				'witchcraft':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/9/9c/Weapon_Skins_-_P90_-_Witchcraft.png/revision/latest?cb=20260407102932&format=original",
-				'heartsofgreen':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/7b/Weapon_Skins_-_P90_-_Hearts_of_Green.png/revision/latest?cb=20260408100846&format=original",
-				'camo':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/5/5c/Weapon_Skins_-_P90_-_Camo.png/revision/latest?cb=20260409101014&format=original",
-				'inverted':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/d/d4/Weapon_Skins_-_P90_-_Inverted.png/revision/latest?cb=20260410100827&format=original",
-				'redox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/b/ba/Gun_Skins_-_P90_-_Redox.png/revision/latest?cb=20260321063307&format=original",
-				'equinox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/cc/Weapon_Skins_-_P90_-_Equinox.png/revision/latest?cb=20260412100738&format=original",
-			};
-			const elem = `<div class='exampleImageContainer'><img class='image DblClickImg' src='${obj[id] ?? placeholderImage}'></img><div class='caption'>In-game appearance</div></div>`;
+			const elem = create('div');
+			elem.classList.add('exampleImageContainer');
+			const img = create('img', elem);
+			img.classList.add('image', 'DblClickImg');
+			img.setAttribute('src', exampleImages[id] ?? placeholderImage);
+			const caption = create('div', elem);
+			caption.classList.add('caption');
+			caption.innerHTML = 'In-game appearance';
 			return elem;
 		};
 		function formatRarityName(id) {
@@ -207,13 +220,12 @@
 				'exotic':'Exotic',
 				'secret':'Secret',
 			};
-			if (obj[id]) {
-				return 'SkinRarity_' + obj[id];
-			} else {
+			return obj[id] !== undefined ? 'SkinRarity_' + obj[id] : (function() {
+				console.log(`[${toolName}] [LOG]: Unavailable rarity class for skin ID ${id}`);
 				return '';
-			};
+			})();
 		};
-		{
+		(function addSkins() {
 			skins.push(new WeaponSkin({
 				id:'rose',
 				name:'Rose',
@@ -369,7 +381,17 @@
 				name:'Equinox',
 				rarity:'expert',
 			}, {craftable:true}));
-			skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
+			skins.push(new WeaponSkin({
+				id:'toothpaste',
+				name:'Toothpaste',
+				rarity:'entry',
+			}, {craftable:true}));
+			skins.push(new WeaponSkin({
+				id:'nocturnal',
+				name:'Nocturnal',
+				rarity:'exotic',
+			}, {craftable:true}));
+			// skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			/*
 			skins.push(new WeaponSkin({
 				id:'',
@@ -377,9 +399,9 @@
 				rarity:'',
 			}, {}));
 			*/
-		};
+		})();
 		
-		const mainContainer = srcContainer.appendChild(document.createElement('div'));
+		const mainContainer = create('div', srcContainer);
 		mainContainer.setAttribute('id', 'ExclusiveSkinsDailyLogger_Container');
 		mainContainer.classList.add('ExclusiveSkinsDailyLogger');
 		const stylesheet = new CSSStyleSheet();
@@ -395,11 +417,11 @@
 			overflow:auto;
 			margin:auto;
 			
-			.DblClickImg {
+			& .DblClickImg {
 				cursor:pointer;
 				transition:0.5s;
 			}
-			.DblClickImg:hover {
+			& .DblClickImg:hover {
 				opacity:50%;
 			}
 			
@@ -447,47 +469,48 @@
 			}
 		}
 		`);
-		const title = mainContainer.appendChild(document.createElement('div'));
+		const title = create('div', mainContainer);
 		title.classList.add('title');
-		const body = mainContainer.appendChild(document.createElement('div'));
+		const body = create('div', mainContainer);
 		body.classList.add('body');
-		const closingNotes = mainContainer.appendChild(document.createElement('div'));
+		const closingNotes = create('div', mainContainer);
 		closingNotes.classList.add('closingNotes');
 		
-		const pickedSkin = {};
+		let currentSkin = {};
 		function updateInternalData(specificIndex) {
-			function getDelta(extraDays = 0) {
-				const origDate = new Date("2026-03-14T00:00");
-				const currentDate = new Date(new Date().getTime() + (8.64e4 * 1e3 * extraDays));
-				const offsets = [origDate.getTimezoneOffset(), currentDate.getTimezoneOffset()];
-				const delta = (offsets[0] - offsets[1]) * 60 * 1e3;
-				let delta2 = currentDate.getTime() - origDate.getTime();
-				if (offsets[0] !== offsets[1]) {
-					delta2 += delta;
-				};
-				return delta2;
+			const newSkin = {};
+			const d = 86400 * 1e3;
+			function getDelta(extraDays = 0, useUTC = false) {
+				const currTime = new Date().getTime();
+				const offset = new Date(currTime + (d * extraDays)).getTimezoneOffset() * 1e3 * 60;
+				const origDate = useUTC ? new Date("2026-03-14T00:00") : new Date("2026-03-14");
+				const alteredDate = new Date(currTime - offset + (d * extraDays));
+				const delta = alteredDate.getTime() - origDate.getTime();
+				return delta;
 			};
-			function getArrIndex() {
-				return Math.floor(getDelta() / (86400 * 1e3)) % skins.length;
-			};
-			const indexPicked = specificIndex ?? getArrIndex();
-			pickedSkin.dailyNumber = indexPicked + 1;
-			pickedSkin.whichSkin = skins[indexPicked];
+			const indexPicked = specificIndex ?? Math.floor(getDelta() / d) % (skins.length - 1);
+			newSkin.dailyNumber = indexPicked + 1;
+			newSkin.whichSkin = skins[indexPicked];
+			return newSkin;
 		};
 		function updateTitle() {
-			const s = pickedSkin.whichSkin;
-			function rarityAdder() {
-				return !s.otherDetails.unknown ? ` (<span class='${getRarityClass(s.rarity)}'>${formatRarityName(s.rarity)}</span>)` : '';
-			};
+			const s = currentSkin.whichSkin;
+			const count = skins.length;
+			const isUnknown = s.otherDetails.unknown;
+			const nameText = !isUnknown ? s.name : `<i>${s.name}</i>`;
+			const rarityText = !isUnknown ? ` (<span class='${getRarityClass(s.rarity)}'>${formatRarityName(s.rarity)}</span>)` : '';
 			let str = `Today's exclusive daily skin:<br/>`
-			+ `<span class='subtitle'>${s.name}${rarityAdder()}`
-			+ ` (#${pickedSkin.dailyNumber.toLocaleString()}/${skins.length.toLocaleString()})</span>`;
+			+ `<span class='subtitle'>${nameText}${rarityText}`
+			+ ` (#${currentSkin.dailyNumber.toLocaleString()}/${count.toLocaleString()})`
+			+ `</span>`;
 			title.innerHTML = str;
 		};
 		function updateBody() {
-			const s = pickedSkin.whichSkin;
+			const s = currentSkin.whichSkin;
 			let str = '';
-			str += getExampleImage(s.id);
+			const exampleImage = getExampleImage(s.id);
+			str += exampleImage.outerHTML;
+			exampleImage.remove();
 			if (!s.otherDetails.unknown) {
 				if (s.otherDetails.craftable) {
 					str += `Crafting Requirements (single craft): ${s.formatCraftingReqs()}`;
@@ -508,6 +531,7 @@
 		};
 		function updateClosingNotes() {
 			const count = skins.length;
+			const currentDate = new Date();
 			let dateFormat = mw.user.options.get('date');
 			switch (dateFormat) {
 				case 'dmy':
@@ -525,20 +549,23 @@
 			};
 			let str = "(Based on your local time zone, accounting for all " + count.toLocaleString()
 			+ ` exclusive daily ${checkPlural(count, {singular:'skin', plural:'skins'})}.`
-			+ ` Auto updates every 10 seconds, and the last update was at ${formatDate(new Date(), dateFormat)}.`;
+			+ ` Auto updates every 10 seconds, and the last update was at ${formatDate(currentDate, dateFormat)}.`;
 			closingNotes.innerHTML = str;
 		};
 		
 		function updateAll() {
-			updateInternalData();
-			updateTitle();
-			updateBody();
+			const newSkin = updateInternalData();
+			if (newSkin.dailyNumber !== currentSkin.dailyNumber) {
+				currentSkin = newSkin;
+				updateTitle();
+				updateBody();
+			};
 			updateClosingNotes();
 		};
 		updateAll();
-		setInterval(updateAll, 10e3);
+		const autoUpdateInterval = setInterval(updateAll, 10e3);
 		
 	} else {
-		console.log("[Exclusive Skins Daily Logger] [LOG]: Script activation conditions not met. Exiting...");
+		console.log(`[${toolName}] [LOG]: Script activation conditions not met. Exiting...`);
 	};
 };
