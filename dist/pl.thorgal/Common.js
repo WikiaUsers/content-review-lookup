@@ -1,63 +1,40 @@
 /* === Username system === */
+
 function typeText(el, text) {
-    let i = 0;
-    el.textContent = "";
+  let i = 0;
+  el.textContent = "";
 
-    if (!text) return;
+  if (!text) return;
 
-    const interval = setInterval(() => {
-        el.textContent += text[i];
-        i++;
+  const interval = setInterval(() => {
+    el.textContent += text[i];
+    i++;
 
-        if (i >= text.length) {
-            clearInterval(interval);
-        }
-    }, 60);
+    if (i >= text.length) {
+      clearInterval(interval);
+    }
+  }, 60);
 }
 
 mw.hook('wikipage.content').add(function ($content) {
+  const user = mw.config.get("wgUserName");
 
-    const user = mw.config.get("wgUserName");
+  $content.find(".insertusername").each(function () {
+    const el = this;
 
-    $content.find(".insertusername").each(function () {
+    const fallback = el.getAttribute("data-fallback") || "";
 
-        let el = this;
-        let raw = el.textContent;
 
-        const match = raw.match(/\{\{USERNAME\|(.*?)\}\}/);
+    const replacement = user ? " " + user : fallback;
 
-        if (!match) {
-            typeText(el, raw);
-            return;
-        }
+    if (!replacement) {
+      el.remove();
+      return;
+    }
 
-        let fallback = match[1];
-        let isEmptyFallback = fallback.trim() === "";
 
-        let replacement = "";
-
-              if (user) {
-            replacement = user;
-        } else if (!isEmptyFallback) {
-            replacement = fallback.trim();
-        }
-
-                if (replacement) {
-            const finalText = raw.replace(/\{\{USERNAME\|(.*?)\}\}/, replacement);
-            typeText(el, finalText);
-            return;
-        }
-
-        
-        let parent = el.parentNode;
-
-                if (el.previousSibling && el.previousSibling.nodeType === Node.TEXT_NODE) {
-            el.previousSibling.textContent =
-                el.previousSibling.textContent.replace(/ $/, "");
-        }
-
-        el.remove();
-    });
+    typeText(el, replacement);
+  });
 });
 
 /* === READING PROGRESS BAR === */

@@ -30,7 +30,6 @@
             ]
         }
     );
-    var isLegacy = mw.config.get('wgVersion') === '1.19.24';
     var MassBlock = {
         _loading: 0,
         paused: true,
@@ -82,9 +81,9 @@
                             this.inputField('watch', 'watch', 'checkbox', {
                                 checked: ''
                             }),
-                            this.inputField('iw', 'ignoreWarnings', 'checkbox', $.extend({
+                            this.inputField('iw', 'ignoreWarnings', 'checkbox', {
                                 checked: ''
-                            }, isLegacy ? { disabled: '' } : null)),
+                            }),
                             {
                                 type: 'p',
                                 text: this.msg('instructions')
@@ -222,11 +221,7 @@
                 }
             }).bind(this))
             .fail((function(code) {
-                if (isLegacy) {
-                    $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +'!<br/>');
-                } else {
-                    $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +' : '+ code +'<br/>');
-                }
+                $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +' : '+ code +'<br/>');
             }).bind(this));
         },
         pause: function() {
@@ -303,9 +298,7 @@
         },
         blockFail: function(error, name) {
             return (function(code) {
-                if (!isLegacy) {
-                    error = code;
-                }
+                error = code;
                 var msg = this.i18n.msg('blockFail', name, error);
                 console.error(msg.plain());
                 $('#text-error-output').append('<br />', msg.escape());

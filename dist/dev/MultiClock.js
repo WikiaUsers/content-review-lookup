@@ -174,7 +174,7 @@ This script only renders the clocks and handles formatting.
                 }
                 parsed = dispatcher(date, start);
                 if (typeof parsed === "object") parsed = parsed.v;
-                result += pad(parsed, parseInt(match, 10));
+                result += pad(parsed, parseInt(match[1], 10)); 
             }
             result += string.substr(lastIndex);
             return result;

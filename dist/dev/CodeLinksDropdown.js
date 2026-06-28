@@ -14,7 +14,6 @@ mw.hook('dev.i18n').add(function (lib) {
         var config = mw.config.get([
                 'wgFormattedNamespaces',
                 'wgUserName',
-                'wgVersion'
             ]),
             rootUrl = 'community',
             namespacePath = mw.util.getUrl(config.wgFormattedNamespaces[2] + ':'),

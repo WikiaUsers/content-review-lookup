@@ -46,15 +46,3 @@ mw.hook("wikipage.content").add(function () {
 		container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
 	});
 });
-
-$.getJSON(mw.util.wikiScript("index"), {
-    title: "MediaWiki:Custom-import-scripts.json",
-    action: "raw"
-}).done(function (result, status) {
-    if (status != "success" || typeof (result) != "object") return;
-    var scripts = result[mw.config.get("wgPageName")];
-    if (scripts) {
-        if (typeof (scripts) == "string") scripts = [scripts];
-        importArticles({ type: "script", articles: scripts });
-    }
-});

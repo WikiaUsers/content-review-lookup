@@ -1,6 +1,6 @@
 /**
  * Name:		EditLeaderboard
- * Version:		v1.1
+ * Version:		v1.2
  * Author:		Caburum
  * Description:	Creates a leaderboard based on edit count at Special:Leaderboard
  *				Useful for wikis not using the achievements extension
@@ -16,7 +16,7 @@
 	if (
 		!['Leaderboard', 'Specialpages'].includes(specialPage) &&
 		!(page === 'Leaderboard' && ns === 4)
-	) return; // Not Special:Leaderboard or Special:SpecialPages
+	) return; // only run on Special:Leaderboard, Project:Leaderboard, Special:SpecialPages
 
 	mw.util.addCSS('\
 		#EditLeaderboard {\
@@ -36,17 +36,21 @@
 		}\
 	');
 
-	$.when(mw.loader.using(['mediawiki.api', 'mediawiki.jqueryMsg']), mw.hook('wikipage.content').add(function() {return true}))
-		.then(function() {
-			return new mw.Api().loadMessagesIfMissing(['fandom-pagetitle', 'leaderboard-title', 'achievements-leaderboard-rank-label', 'listusers-username', 'listusersrev-cnt']);
-		})
-		.then(function() {
+	mw.loader.using(['mediawiki.api', 'mediawiki.jqueryMsg']).then(function() {
+		return new mw.Api().loadMessagesIfMissing(['fandom-pagetitle', 'leaderboard-title', 'achievements-leaderboard-rank-label', 'listusers-username', 'listusersrev-cnt']);
+	}).then(function() {
+		mw.hook('wikipage.content').add(function($content) {
+			if (
+				$content.attr('id') !== 'mw-content-text' // only run on main content
+				|| $('#EditLeaderboard, #EditLeaderboard__link').length // only run once
+			) return;
+			
 			if (specialPage === 'Specialpages') { // Add a link on Special:SpecialPages then exit
-				var link = mw.config.get('wgFormattedNamespaces')[-1] + ':Leaderboard';
 				return $('<a>', {
+					id: 'EditLeaderboard__link',
 					text: mw.msg('leaderboard-title'),
 					title: link,
-					href: mw.util.getUrl(link),
+					href: mw.util.getUrl('Special:Leaderboard'),
 					appendTo: $('<li>').appendTo($('#mw-specialpagesgroup-other + div.mw-specialpages-list ul'))
 				});
 			}
@@ -91,4 +95,5 @@
 
 			$contentContainer.append($table.append($tableBody));
 		});
+	});
 })();

@@ -1,1 +1,0 @@
-$(function() { $('.subnav-2-item a[href="/wiki/Special:NewFiles"]').attr("href", "/wiki/Photos"); });

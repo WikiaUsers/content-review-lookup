@@ -17,7 +17,6 @@
         'profileUserName',
         'wgPageName',
         'wgUserGroups',
-        'wgVersion',
         'wgUserName'
     ]);
     if (
@@ -263,7 +262,7 @@
         $('.selectiveDel').each(function() {
             var $this = $(this),
                 title = new mw.Title($('.mw-revdelundel-link').length ?
-                    (config.wgVersion === '1.39.7' ? $this.parent().children('a').eq(0).attr('title') : $this.parent().children('bdi').children('a').eq(0).attr('title')) :
+                    $this.parent().children('bdi').children('a').eq(0).attr('title') :
                     $this.parent().find('a').first().attr('title'));
             if ($this.prop('checked') && title.namespace !== 1200) {
                 apiDelete(title.getPrefixedText(), deleteReason);
@@ -323,23 +322,16 @@
             })
         );
 
-        $(config.wgVersion === '1.39.7' ? 'li .newpage ~ a' : 'li .newpage ~ bdi').each(function() {
+        $('li .newpage ~ bdi').each(function() {
             if (!$(this).parent().find('input').length) {
                 $(this).parent().prepend($chk.clone());
             }
         });
 
         $('#mw-content-text ul li').each(function() {
-        	var $children, title, url;
-        	if (config.wgVersion === '1.39.7') {
-        		$children = $(this).children('a');
-                title = $children.first().attr('title');
-                url = new URL($children.eq(1).prop('href'));
-        	} else {
-        		$children = $(this).children('bdi').children('a');
-                title = $children.first().attr('title');
-                url = new URL($children.eq(1).prop('href'));
-        	}
+			var $children = $(this).children('bdi').children('a');
+			var title = $children.first().attr('title');
+			var url = new URL($children.eq(1).prop('href'));
             if (
                 // If it's a thread...
                 title.match(/\/@comment-/) &&

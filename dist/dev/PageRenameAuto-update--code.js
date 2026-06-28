@@ -173,8 +173,7 @@
             $.when.apply(this, promises).then(function() {
                 console.log('Page contents retrieved and saved. Begin processing page content.');
                 // Replacing image name on each page
-                var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
-                var escapedName = escapeRegExp(PRA.oldName).replace(/( |_)/g, '[ _]*?');
+                var escapedName = mw.util.escapeRegExp(PRA.oldName).replace(/( |_)/g, '[ _]*?');
                 if (escapedName.slice(0, 1).match(/[A-Za-z]/i)) {
                     escapedName = '[' + escapedName.slice(0, 1).toUpperCase() +
                                   escapedName.slice(0, 1).toLowerCase() + ']' + escapedName.slice(1);
@@ -182,7 +181,7 @@
                 // Support variations (i.e. canonical, localized, image alias) for file namespace
                 var escapedFileNamespaceNames = Object.entries(PRA.wg.wgNamespaceIds).flatMap(function (entry) {
                     if (entry[1] !== 6) return [];
-                    var escapedFileNamespaceName = escapeRegExp(entry[0]) + ':';
+                    var escapedFileNamespaceName = mw.util.escapeRegExp(entry[0]) + ':';
                     // TODO: Confirm naive capitalisation works on all supported localisations
                     escapedFileNamespaceName = '[' + escapedFileNamespaceName.slice(0, 1).toUpperCase() +
                                                escapedFileNamespaceName.slice(0, 1).toLowerCase() + ']' +

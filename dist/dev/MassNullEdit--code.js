@@ -465,7 +465,7 @@
             'mediawiki.user'
         ]).then(function () {
             if (!(editApi instanceof mw.Api)) {
-                editApi.token = mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken');
+                editApi.token = mw.user.tokens.get('csrfToken');
                 editApi = new mw.Api({parameters: editApi});
             }
 

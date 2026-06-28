@@ -5,12 +5,12 @@ window.UserTagsJS = {
 	tags: {
 
 		// former staff
-		formerbureaucrat: { u:'Former Bureaucrat', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 100 },
-		formersysop: { u:'Former Administrator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 101 },
-		formermod: { u:'Former Moderator', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff',  order: 102 },
+		formerbureaucrat: { u:'Former Bureaucrat', order: 100 },
+		formersysop: { u:'Former Administrator', order: 101 },
+		formermod: { u:'Former Moderator', order: 102 },
 
 		// former staff reasons
-		retired: { u:'Retired Staff', link: 'SCP Foundation Wikia:Rules and Guidelines/Staff', order: 103 },
+		retired: { u:'Retired Staff', order: 103 },
 		fired: { u:'Hall of Shame', order: 104 },
 
 		// other

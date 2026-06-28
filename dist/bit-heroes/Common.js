@@ -1,19 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-if (wgPageName === 'Experience') {
-    $(function () {
-        importScriptPage('MediaWiki:Calculators/Code.js');
-    });
-}
-
-if (wgPageName === 'Bonuses') {
-    $(function () {
-        importScriptPage('MediaWiki:Calculators/BonusCode.js');
-    });
-}
-
-if (wgPageName === 'Sandbox') {
-    $(function () {
-        importScriptPage('MediaWiki:Sandbox.js');
-    });
-}
+importArticles( {
+    type: 'script',
+    articles: [
+        'MediaWiki:FusionSearch.js'
+        // 'MediaWiki:Calculators/Code.js',
+        // 'MediaWiki:Calculators/BonusCode.js'  
+        // 'MediaWiki:Calculators/Sandbox.js'
+    ]
+} );

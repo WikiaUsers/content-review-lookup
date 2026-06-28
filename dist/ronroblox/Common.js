@@ -155,6 +155,7 @@ UserTagsJS.modules.custom = {
 	'Pro10boy2228': ['wiki-contributor'],
 	'The Dimensional Doctor': ['wiki-contributor'],
 	'Blazarvortexd': ['wiki-contributor'],
+	'Mattiemeowxd': ['wiki-contributor'],
 };
 
 //* LockOldComments.js Configuration *//
@@ -475,9 +476,14 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
   const userInputToSv = (cat, rawVal) => {
     const v = parseFloat(rawVal);
     if (isNaN(v)) return 0;
-    const t = getScalerEffectType(cat);
-    if (t === 'base') return v;
-    if (t === 'multiplicative') return v - 1;
+    // Parse the raw input value based on effectType.
+    // inverted only changes the DISPLAY (which side shows % vs x),
+    // not how the raw value is parsed — the unit label always matches effectType:
+    //   additive       → user types % → v / 100
+    //   multiplicative → user types x → v - 1
+    const tRaw = (cat.effectType || 'additive').toLowerCase();
+    if (tRaw === 'base') return v;
+    if (tRaw === 'multiplicative') return v - 1;
     return v / 100;
   };
 
@@ -1383,6 +1389,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         if ($unit.length) {
           $unit.removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
         }
+        // Clear derived display for inverted inputs
+        dom.$sections.find(`#mc-user-input-derived-${storeKey}`).val('').removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+        dom.$sections.find(`#mc-user-input-derived-unit-${storeKey}`).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
       });
       (cat.subcategories || []).forEach((sub, si) => {
         if (sub.type !== 'user_input') return;
@@ -1395,6 +1404,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
             $input.val('');
             $input.removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
           }
+          dom.$sections.find(`#mc-user-input-derived-${storeKey}`).val('').removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+          dom.$sections.find(`#mc-user-input-derived-unit-${storeKey}`).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
         });
       });
       renderSelectedList();
@@ -1457,6 +1468,8 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           $input.val('');
           $input.removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
         }
+        dom.$sections.find(`#mc-user-input-derived-${storeKey}`).val('').removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+        dom.$sections.find(`#mc-user-input-derived-unit-${storeKey}`).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
       });
     } else {
       getSubcatModIds(ci, si).forEach(id => {
@@ -1805,19 +1818,64 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         const typeOk = state.filters.type === 'all' || state.filters.type === 'additive';
         if (!typeOk) { $section.hide(); return; }
 
+        // If a subcategory filter is active, this top-level user_input section
+        // should only be visible if it contains a subsection matching the filter.
+        // A plain user_input section (no subsections) is only shown when no subcat filter is active.
+        if (fSubcats.length > 0) {
+          const matchingSubs = $section.find('.mc-subsection').filter(function () {
+            return fSubcats.indexOf($(this).data('subcat')) !== -1;
+          });
+          if (!matchingSubs.length) {
+            $section.hide();
+            return;
+          }
+        }
+
         let anyVisible = false;
-        $section.find('.mc-scaler-row').each(function() {
-          const rowIg = $(this).data('input-good');
-          const rowEffectOk = state.filters.effect === 'all' ||
-            (state.filters.effect === 'dynamic' && rowIg === 'dynamic') ||
-            (state.filters.effect === 'good' && rowIg === true) ||
-            (state.filters.effect === 'bad' && rowIg === false);
-          const rowTextOk = !state.filters.text || (catName || '').toLowerCase().includes(state.filters.text) ||
-            $(this).find('.mc-scaler-bound').text().toLowerCase().includes(state.filters.text);
-          const vis = rowEffectOk && rowTextOk;
-          $(this).toggle(vis);
-          if (vis) anyVisible = true;
+
+        // Handle subsections: show/hide them according to subcat filter, then
+        // process their rows individually.
+        $section.find('.mc-subsection').each(function () {
+          const $sub = $(this);
+          const subName = $sub.data('subcat');
+          const subVisible = !fSubcats.length || fSubcats.indexOf(subName) !== -1;
+          if (!subVisible) {
+            $sub.hide();
+            return;
+          }
+          let subAny = false;
+          $sub.find('.mc-scaler-row').each(function () {
+            const rowIg = $(this).data('input-good');
+            const rowEffectOk = state.filters.effect === 'all' ||
+              (state.filters.effect === 'dynamic' && rowIg === 'dynamic') ||
+              (state.filters.effect === 'good' && rowIg === true) ||
+              (state.filters.effect === 'bad' && rowIg === false);
+            const rowTextOk = !state.filters.text || (subName || '').toLowerCase().includes(state.filters.text) ||
+              $(this).find('.mc-scaler-bound').text().toLowerCase().includes(state.filters.text);
+            const vis = rowEffectOk && rowTextOk;
+            $(this).toggle(vis);
+            if (vis) subAny = true;
+          });
+          $sub.toggle(subAny);
+          if (subAny) anyVisible = true;
         });
+
+        // Only process top-level rows when no subcat filter is active.
+        if (!fSubcats.length) {
+          $section.find('> .mc-scaler-row').each(function() {
+            const rowIg = $(this).data('input-good');
+            const rowEffectOk = state.filters.effect === 'all' ||
+              (state.filters.effect === 'dynamic' && rowIg === 'dynamic') ||
+              (state.filters.effect === 'good' && rowIg === true) ||
+              (state.filters.effect === 'bad' && rowIg === false);
+            const rowTextOk = !state.filters.text || (catName || '').toLowerCase().includes(state.filters.text) ||
+              $(this).find('.mc-scaler-bound').text().toLowerCase().includes(state.filters.text);
+            const vis = rowEffectOk && rowTextOk;
+            $(this).toggle(vis);
+            if (vis) anyVisible = true;
+          });
+        }
+
         $section.toggle(anyVisible);
         return;
       }
@@ -1986,13 +2044,35 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           const sv = userInputToSv(input, curInputVal);
           const effectCls = scalerEffectClass(sv);
           const label = input.label || 'Value';
-          
           const rowInputGood = input.inputGood !== undefined ? input.inputGood : (cat.inputGood !== undefined ? cat.inputGood : 'dynamic');
 
           out += `<div class="mc-scaler-row" data-input-good="${mw.html.escape(String(rowInputGood))}">`;
           out += `<span class="mc-scaler-bound">${mw.html.escape(label)}:</span>`;
-          out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${Number(curInputVal)}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
-          if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-unit-${storeKey}">${mw.html.escape(unitLbl)}</span>`;
+
+          if (input.inverted) {
+            const baseType = (input.effectType || 'additive').toLowerCase();
+            // effectType 'additive'       + inverted → user types % → shows: ___% → ___x
+            // effectType 'multiplicative' + inverted → user types x → shows: ___x → ___%
+            const rawUnit    = baseType === 'additive' ? (unitLbl || '%') : 'x';
+            const derivedUnit = baseType === 'additive' ? 'x' : (unitLbl || '%');
+            let derivedVal;
+            if (baseType === 'additive') {
+              // user typed %, derive x: 1 + v/100
+              derivedVal = Math.round((1 + curInputVal / 100) * 1000) / 1000;
+            } else {
+              // user typed x, derive %: (v - 1) * 100
+              derivedVal = Math.round((curInputVal - 1) * 1000) / 10;
+            }
+            out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${Number(curInputVal)}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
+            out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-unit-${storeKey}">${mw.html.escape(rawUnit)}</span>`;
+            out += `<span class="mc-scaler-unit mc-neu" style="margin:0 4px;">→</span>`;
+            out += `<input type="number" class="mc-scaler-num mc-user-input-derived ${effectCls}" id="mc-user-input-derived-${storeKey}" data-storekey="${mw.html.escape(storeKey)}" data-basetype="${mw.html.escape(baseType)}" value="${Number(derivedVal)}" step="any" tabindex="-1">`;
+            out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-derived-unit-${storeKey}">${mw.html.escape(derivedUnit)}</span>`;
+          } else {
+            out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${Number(curInputVal)}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
+            if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-unit-${storeKey}">${mw.html.escape(unitLbl)}</span>`;
+          }
+
           out += `</div>`;
         });
 
@@ -2044,13 +2124,31 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
               const effectCls = scalerEffectClass(sv);
               const unitLbl = input.unit !== undefined ? input.unit : '';
               const label = input.label || 'Value';
-              
               const rowInputGood = input.inputGood !== undefined ? input.inputGood : (sub.inputGood !== undefined ? sub.inputGood : 'dynamic');
 
               out += `<div class="mc-scaler-row" style="margin-left:0;" data-input-good="${mw.html.escape(String(rowInputGood))}">`;
               out += `<span class="mc-scaler-bound">${mw.html.escape(label)}:</span>`;
-              out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" data-idx="${idx}" value="${curVal}" step="${input.step || 'any'}" min="${input.min != null ? input.min : ''}" max="${input.max != null ? input.max : ''}">`;
-              if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}">${mw.html.escape(unitLbl)}</span>`;
+
+              if (input.inverted) {
+                const baseType = (input.effectType || 'additive').toLowerCase();
+                const rawUnit    = baseType === 'additive' ? (unitLbl || '%') : 'x';
+                const derivedUnit = baseType === 'additive' ? 'x' : (unitLbl || '%');
+                let derivedVal;
+                if (baseType === 'additive') {
+                  derivedVal = Math.round((1 + curVal / 100) * 1000) / 1000;
+                } else {
+                  derivedVal = Math.round((curVal - 1) * 1000) / 10;
+                }
+                out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" data-idx="${idx}" value="${curVal}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
+                out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-unit-${storeKey}">${mw.html.escape(rawUnit)}</span>`;
+                out += `<span class="mc-scaler-unit mc-neu" style="margin:0 4px;">→</span>`;
+                out += `<input type="number" class="mc-scaler-num mc-user-input-derived ${effectCls}" id="mc-user-input-derived-${storeKey}" data-storekey="${mw.html.escape(storeKey)}" data-basetype="${mw.html.escape(baseType)}" value="${Number(derivedVal)}" step="any" tabindex="-1">`;
+                out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-derived-unit-${storeKey}">${mw.html.escape(derivedUnit)}</span>`;
+              } else {
+                out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" data-idx="${idx}" value="${curVal}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
+                if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}">${mw.html.escape(unitLbl)}</span>`;
+              }
+
               out += `</div>`;
             });
 
@@ -2148,13 +2246,31 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
             const effectCls = scalerEffectClass(sv);
             const unitLbl = input.unit !== undefined ? input.unit : '';
             const label = input.label || 'Value';
-            
             const rowInputGood = input.inputGood !== undefined ? input.inputGood : (sub.inputGood !== undefined ? sub.inputGood : 'dynamic');
 
             out += `<div class="mc-scaler-row" style="margin-left:0;" data-input-good="${mw.html.escape(String(rowInputGood))}">`;
             out += `<span class="mc-scaler-bound">${mw.html.escape(label)}:</span>`;
-            out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${curVal}" step="${input.step || 'any'}" min="${input.min != null ? input.min : ''}" max="${input.max != null ? input.max : ''}">`;
-            if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}">${mw.html.escape(unitLbl)}</span>`;
+
+            if (input.inverted) {
+              const baseType = (input.effectType || 'additive').toLowerCase();
+              const rawUnit    = baseType === 'additive' ? (unitLbl || '%') : 'x';
+              const derivedUnit = baseType === 'additive' ? 'x' : (unitLbl || '%');
+              let derivedVal;
+              if (baseType === 'additive') {
+                derivedVal = Math.round((1 + curVal / 100) * 1000) / 1000;
+              } else {
+                derivedVal = Math.round((curVal - 1) * 1000) / 10;
+              }
+              out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${Number(curVal)}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
+              out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-unit-${storeKey}">${mw.html.escape(rawUnit)}</span>`;
+              out += `<span class="mc-scaler-unit mc-neu" style="margin:0 4px;">→</span>`;
+              out += `<input type="number" class="mc-scaler-num mc-user-input-derived ${effectCls}" id="mc-user-input-derived-${storeKey}" data-storekey="${mw.html.escape(storeKey)}" data-basetype="${mw.html.escape(baseType)}" value="${Number(derivedVal)}" step="any" tabindex="-1">`;
+              out += `<span class="mc-scaler-unit ${effectCls}" id="mc-user-input-derived-unit-${storeKey}">${mw.html.escape(derivedUnit)}</span>`;
+            } else {
+              out += `<input type="number" class="mc-scaler-num mc-user-input-val ${effectCls}" id="mc-user-input-${storeKey}" data-ci="${ci}" data-si="${si}" ${inputs.length > 1 ? `data-idx="${idx}"` : ''} value="${curVal}" step="${Number(input.step) || 'any'}" min="${input.min != null ? Number(input.min) : ''}" max="${input.max != null ? Number(input.max) : ''}">`;
+              if (unitLbl) out += `<span class="mc-scaler-unit ${effectCls}">${mw.html.escape(unitLbl)}</span>`;
+            }
+
             out += `</div>`;
           });
 
@@ -2223,12 +2339,12 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
     dom.$sections.off('focus', '.mc-scaler-num').on('focus', '.mc-scaler-num', function () {
       this.select();
     });
-    dom.$sections.off('blur', '.mc-scaler-num').on('blur', '.mc-scaler-num', function () {
+    dom.$sections.off('blur', '.mc-scaler-num').on('blur', '.mc-scaler-num:not(.mc-user-input-derived)', function () {
       const ci = parseInt($(this).data('ci'));
       const si = $(this).data('si');
       commitScalerSubNum(ci, si);
     });
-    dom.$sections.off('keydown', '.mc-scaler-num').on('keydown', '.mc-scaler-num', function (e) {
+    dom.$sections.off('keydown', '.mc-scaler-num').on('keydown', '.mc-scaler-num:not(.mc-user-input-derived)', function (e) {
       if (e.key === 'Enter') {
         e.preventDefault();
         const ci = parseInt($(this).data('ci'));
@@ -2292,6 +2408,21 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
           $(this).removeClass('mc-pos mc-neg mc-neu').addClass(cls);
           const unitId = 'mc-user-input-unit-' + storeKey;
           dom.$sections.find(`#${unitId}`).removeClass('mc-pos mc-neg mc-neu').addClass(cls);
+          // Update the derived display if this input is inverted
+          if (inputObj.inverted) {
+            const baseType = (inputObj.effectType || 'additive').toLowerCase();
+            let derivedVal;
+            if (baseType === 'additive') {
+              // user typed %, derive x: 1 + v/100
+              derivedVal = Math.round((1 + num / 100) * 1000) / 1000;
+            } else {
+              // user typed x, derive %: (v - 1) * 100
+              derivedVal = Math.round((num - 1) * 1000) / 10;
+            }
+            const $derived = dom.$sections.find(`#mc-user-input-derived-${storeKey}`);
+            $derived.val(derivedVal).removeClass('mc-pos mc-neg mc-neu').addClass(cls);
+            dom.$sections.find(`#mc-user-input-derived-unit-${storeKey}`).removeClass('mc-pos mc-neg mc-neu').addClass(cls);
+          }
         } else {
           const cls = scalerEffectClass(userInputToSv({effectType: 'additive'}, num));
           $(this).removeClass('mc-pos mc-neg mc-neu').addClass(cls);
@@ -2301,6 +2432,31 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
       }
       renderSelectedList();
       recalc();
+    });
+
+    // Handler for editing the derived (right-hand) display of an inverted input.
+    // Back-converts the typed derived value into the raw value and triggers a normal update.
+    dom.$sections.off('input', '.mc-user-input-derived').on('input', '.mc-user-input-derived', function() {
+      const storeKey = $(this).data('storekey');
+      const baseType = $(this).data('basetype');
+      const derivedRaw = parseFloat($(this).val());
+      if (isNaN(derivedRaw)) return;
+
+      // Convert derived → raw
+      let rawVal;
+      if (baseType === 'additive') {
+        // derived is x, raw is %: raw = (derived - 1) * 100
+        rawVal = Math.round((derivedRaw - 1) * 10000) / 100;
+      } else {
+        // derived is %, raw is x: raw = 1 + derived/100
+        rawVal = Math.round((1 + derivedRaw / 100) * 10000) / 10000;
+      }
+
+      // Update the primary input and trigger its handler
+      const $primary = dom.$sections.find(`#mc-user-input-${storeKey}`);
+      if ($primary.length) {
+        $primary.val(rawVal).trigger('input');
+      }
     });
 
     dom.$sections.off('focus', '.mc-scaler-live').on('focus', '.mc-scaler-live', function () {
@@ -2703,7 +2859,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         <div id="mc-loaded-chips" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;"></div>
 
         <div class="mc-row">
-          <span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21.\nAll further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Diplomatic Actions: 2\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability.\nHowever, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall."></span></span>
+          <span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21.\nAll further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Diplomatic Actions: 2\n- Stability Hit on Offensive Wars: 0\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability.\nHowever, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall."></span></span>
           <input class="mc-base-input" type="number" id="mc-base" value="0" min="0" step="any">
         </div>
         <div class="mc-row">
@@ -2921,6 +3077,11 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         delete st.userInputVals[storeKey];
         $(this).val('');
         $(this).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+        // Also clear any derived display for inverted inputs
+        if (storeKey) {
+          dom.$sections.find(`#mc-user-input-derived-${storeKey}`).val('').removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+          dom.$sections.find(`#mc-user-input-derived-unit-${storeKey}`).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+        }
       });
       if (data) {
         data.categories.forEach((cat, ci) => {
@@ -2974,6 +3135,9 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         }
         const unitId = 'mc-user-input-unit-' + storeKey;
         dom.$sections.find(`#${unitId}`).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+        // Clear derived display for inverted inputs
+        dom.$sections.find(`#mc-user-input-derived-${storeKey}`).val('').removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
+        dom.$sections.find(`#mc-user-input-derived-unit-${storeKey}`).removeClass('mc-pos mc-neg mc-neu').addClass('mc-neu');
       } else {
         const ci = parseInt($(this).data('ci'));
         const si = $(this).data('si') !== undefined ? parseInt($(this).data('si')) : undefined;

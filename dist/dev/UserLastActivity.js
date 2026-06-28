@@ -19,7 +19,6 @@
     var config = mw.config.get([
         "wgUserLanguage",
         "wgUserVariant",
-        "wgVersion"
     ]);
     var lang = config.wgUserVariant || config.wgUserLanguage;
     var api;
@@ -263,13 +262,9 @@
             request: {
                 action: "query",
                 list: "users"
-            }
+            },
+        	parameter: "ususerids",
         };
-        if (config.wgVersion === "1.19.24") {
-            obj.parameter = "usids";
-        } else {
-            obj.parameter = "ususerids";
-        }
         return getNames(obj);
     }).then(function () {
 /* get activity timestamps and determin element content */

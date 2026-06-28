@@ -698,7 +698,6 @@
         "wgServer",
         "wgUserGroups",
         "wgUserLanguage",
-        "wgVersion",
       ]),
     },
 

@@ -85,17 +85,9 @@
             ).appendTo('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list');
         },
         click: function() {
-            var regexEscape = $.escapeRE ?
-                // Legacy Fandom
-                $.escapeRE :
-                    mw.RegExp ?
-                        // MediaWiki 1.26+
-                        mw.RegExp.escape :
-                        // MediaWiki 1.34+
-                        mw.util.escapeRegExp;
             this.regex = new RegExp(
                 '\\{\\{' +
-                regexEscape(this.config.archiveListTemplate) +
+                mw.util.escapeRegExp(this.config.archiveListTemplate) +
                 '\\}\\}'
             );
             this.$container = $('.WikiaArticle, #content')

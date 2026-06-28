@@ -369,157 +369,75 @@ mw.loader.using('jquery').then(function () {
 
 
 
-// === Load dependencies ===
-mw.loader.using(['mediawiki.api','jquery'], function () {
+(function() {
+    function forceHighRes(img) {
+        if (img.classList.contains('high-res-fixed')) return;
 
-    // --- DATA: giá trị phụ thuộc ---
-    var subOptions = {
-        Food: ["Sweet", "Savory", "Spicy"],
-        Dressing: ["Hair", "Top", "Bottom"],
-        Idols: ["Sexy", "Sassy", "Smart", "Sporty", "Sorrowful", "Sweet"]
-    };
+        var src = img.getAttribute('src') || '';
+        var dataSrc = img.getAttribute('data-src') || '';
+        
+        var scaleRegex = /\/(scale-to-width-down|thumbnail-down|smart\/width)\/\d+/ig;
+        var needsFixing = false;
 
-    var filters = {};
-
-    // ==========================================================
-    //  HÀM TẠO DROPDOWN
-    // ==========================================================
-    function createDropdown(targetId, key, options, placeholder, disabled) {
-        var $select = $("<select>")
-            .addClass("dynamic-select")
-            .attr("data-key", key);
-
-        $select.append(
-            $("<option>").val("").text(placeholder || "Select...")
-        );
-
-        if (Array.isArray(options)) {
-            options.forEach(function(opt){
-                if (opt) $select.append($("<option>").val(opt).text(opt));
-            });
+        if (src.match(scaleRegex)) {
+            img.setAttribute('src', src.replace(scaleRegex, ''));
+            needsFixing = true;
+        }
+        
+        if (dataSrc.match(scaleRegex)) {
+            img.setAttribute('data-src', dataSrc.replace(scaleRegex, ''));
+            needsFixing = true;
         }
 
-        if (disabled) $select.prop("disabled", true);
-
-        $("#" + targetId).html($select);
-    }
-
-    // ==========================================================
-    //  ĐỌC OPTIONS TỪ TEMPLATE
-    // ==========================================================
-    function getOptionsFromTemplate() {
-        var div = $("#js-filter-obtain");
-
-        if (div.length === 0) return []; // không có template
-
-        var count = Number(div.data("count")) || 10;
-        var arr = [];
-
-        for (var i = 1; i <= count; i++) {
-            var val = div.data("opt" + i);
-            if (val) arr.push(val);
+        if (img.hasAttribute('srcset') || img.hasAttribute('data-srcset')) {
+            img.removeAttribute('srcset');
+            img.removeAttribute('data-srcset');
+            needsFixing = true;
         }
 
-        return arr;
-    }
-
-    // ==========================================================
-    //  KHỞI TẠO DROPDOWN MAIN & SUB
-    // ==========================================================
-    createDropdown("dd-main", "main", Object.keys(subOptions), "Chọn loại chính", false);
-    createDropdown("dd-sub", "sub", [], "Filter 2", false);
-
-    // ==========================================================
-    //  KHỞI TẠO DROPDOWN OBTAIN TỪ TEMPLATE
-    // ==========================================================
-    var obtainOptions = getOptionsFromTemplate();
-    createDropdown("dd-obtain", "obtain", obtainOptions, "Obtain method", false);
-
-
-    // ==========================================================
-    //  HÀM POPULATE SUB
-    // ==========================================================
-    function populateSub(mainVal) {
-        if (mainVal && subOptions[mainVal]) {
-            createDropdown("dd-sub", "sub", subOptions[mainVal], "Chọn loại phụ", false);
-        } else {
-            createDropdown("dd-sub", "sub", [], "Filter 2", false);
+        if (needsFixing) {
+            img.classList.add('high-res-fixed');
         }
     }
 
-    // ==========================================================
-    //  HÀM BUILD FILTERS
-    // ==========================================================
-    function recomputeFiltersFromSelects(){
-        var mainVal   = $("#dd-main select").val();
-        var subVal    = $("#dd-sub select").val();
-        var obtainVal = $("#dd-obtain select").val();
-
-        filters = {};
-
-        if (mainVal)   filters.main = [ mainVal ];
-        if (subVal)    filters.sub  = [ subVal ];
-        if (obtainVal) filters.obtain = [ obtainVal ];
-    }
-
-    // ==========================================================
-    //  EVENT LISTENERS
-    // ==========================================================
-    $("body").on("change", "#dd-main select", function(){
-        populateSub($(this).val());
-        recomputeFiltersFromSelects();
-    });
-
-    $("body").on("change", "#dd-sub select, #dd-obtain select", function(){
-        recomputeFiltersFromSelects();
-    });
-
-    // ==========================================================
-    //  QUERY BUTTON
-    // ==========================================================
-    $("#queryDataBtn").on("click", function(){
-
-        if ($.isEmptyObject(filters)) {
-            $("#queryDataGrid").html("No filter selected.");
-            return;
-        }
-
-        var dpl = ["{{#dpl:"];
-
-        Object.keys(filters).forEach(group => {
-            filters[group].forEach(val => {
-                dpl.push("|category=" + val);
-            });
-        });
-
-        dpl.push("|notnamespace=File¦Template¦Category");
-        dpl.push("|ordermethod=title");
-        dpl.push("|format=,²{Shop¦food¦¦%TITLE%_ui¦¦5¦}²\\n,,");
-        dpl.push("}}");
-
-        var queryText = dpl.join("\n");
-
-        new mw.Api().get({
-            action:'parse',
-            format:'json',
-            text: queryText,
-            contentmodel:'wikitext'
-        }).done(function(data){
-            $("#queryDataGrid").html(data.parse.text["*"]);
+    mw.hook('wikipage.content').add(function($content) {
+        $content.find('.wikia-gallery .thumbimage, .gallerybox img').each(function() {
+            forceHighRes(this);
         });
     });
 
-    // ==========================================================
-    //  CLEAR BUTTON
-    // ==========================================================
-    $("#clearParamBtn").on("click", function(){
-        $("#dd-main select").val("");
-        $("#dd-obtain select").val("");
-
-        populateSub(null);
-
-        filters = {};
-        $("#queryDataGrid").html("");
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                var target = mutation.target;
+                if (target.tagName === 'IMG' && target.classList.contains('thumbimage')) {
+                    forceHighRes(target);
+                }
+            }
+            else if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) {
+                        if (node.tagName === 'IMG' && node.classList.contains('thumbimage')) {
+                            forceHighRes(node);
+                        } else {
+                            var imgs = node.querySelectorAll('.wikia-gallery .thumbimage, .gallerybox img');
+                            imgs.forEach(function(img) { forceHighRes(img); });
+                        }
+                    }
+                });
+            }
+        });
     });
 
-});
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['src']
+    });
+})();
+
+
+
+
+/********/

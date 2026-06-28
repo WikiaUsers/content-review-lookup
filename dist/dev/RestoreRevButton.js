@@ -48,7 +48,7 @@ $( function() {
     		api.post({
     			action: 'edit',
         		title: pname,
-        		token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
+        		token: mw.user.tokens.get('csrfToken'),
            		watchlist: 'nochange',
            		text: data.query.pages[0].revisions[0].slots.main.content,
            		summary: summarytext

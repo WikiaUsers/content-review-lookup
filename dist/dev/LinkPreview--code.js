@@ -95,7 +95,7 @@
         }
         Settings.version = '1.70';
         log('init vrsn:', Settings.version);
-        apiUri = new mw.Uri({path: mwc.wgScriptPath + '/api.php'});
+        apiUri = new URL(mw.util.wikiScript('api'), location.href);
         // use api.v1/article/details
         Settings.apid = Settings.apid !== undefined ? Settings.apid : false;
         // show preview delay, ms
@@ -173,7 +173,7 @@
             Settings.cache = ncache;
         }
         Settings.RegExp.ilinks.push(thisPage); // ignore this page
-        Settings.RegExp.ilinks.push(new RegExp(apiUri.path)); // ignore unknown
+        Settings.RegExp.ilinks.push(new RegExp(apiUri.pathname)); // ignore unknown
         var r;
         if (Settings.RegExp.prep instanceof RegExp) {
             r = Settings.RegExp.prep;
@@ -254,7 +254,7 @@
         if (!ahref) return false;
         ahref = createUri(ahref);
         // log('elValidate.uri:', ahref);
-        if (!ahref || (ahref.hostname !== apiUri.host) || nignoreLink(ahref.truepath)) {
+        if (!ahref || (ahref.hostname !== apiUri.hostname) || nignoreLink(ahref.truepath)) {
             return false;
         }
 
@@ -291,8 +291,8 @@
         if (!src) return false;
         var url;
         try {
-            url = new mw.Uri(src);
-            return (/(\.wikia\.(com|org)|\.fandom\.com|\.wikia\.nocookie\.net)$/.test(url.host));
+            url = new URL(src);
+            return (/(\.wikia\.(com|org)|\.fandom\.com|\.wikia\.nocookie\.net)$/.test(url.hostname));
         }
         catch (e) {
             return false;
@@ -340,7 +340,7 @@
         return s;
     }// preprocess
     
-    function createUri (href, base) {
+    function createUri (href) {
         var h;
         try {
             h = new mw.Uri(href.toString());

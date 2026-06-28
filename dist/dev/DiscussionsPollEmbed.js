@@ -17,9 +17,7 @@
     'wgScriptPath',
     'wgServer',
     'wgUserName',
-    'wgVersion'
   ]);
-  var isUCP = wgConf.wgVersion !== '1.19.24';
   var i18n = null;
 
   function DiscussionsPollEmbed($container, data, checkedAnswer) {
@@ -59,20 +57,12 @@
             answerIds: $checkedOption.val()
           }
         }).done(function() {
-          if (isUCP) {
-            mw.notify(i18n.msg('voting-success').plain());
-          } else {
-            new BannerNotification(i18n.msg('voting-success').plain(), 'confirm').show();
-          }
+          mw.notify(i18n.msg('voting-success').plain());
           $container.addClass('voted');
           new DiscussionsPollEmbed(this.$container, this.data, parseInt($checkedOption.val())); // this is ugly
         }.bind(this)).fail(function(err) {
           console.error(err);
-          if (isUCP) {
-            mw.notify(i18n.msg('voting-error', err.message).plain());
-          } else {
-            new BannerNotification(i18n.msg('voting-error', err.message).plain(), 'error').show();
-          }
+          mw.notify(i18n.msg('voting-error', err.message).plain());
           button.disabled = false;
         });
       } else {
@@ -83,7 +73,7 @@
     this.fetchThread(mw.html.escape(data.threadId)).done(function(thread) {
       this.thread = thread;
       $container.addClass('loaded');
-      $container.addClass(isUCP ? 'mw_ucp': 'mw_legacy');
+      $container.addClass('mw_ucp');
       if (thread.funnel !== 'POLL' || !thread.poll) {
         $container.text('[DiscussionsPollEmbed] ' + i18n.msg('error-not-poll').plain());
         return;

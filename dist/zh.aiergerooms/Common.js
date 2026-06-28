@@ -574,3 +574,11 @@ mw.loader.using('mediawiki.util').then(function () {
     //     )
     // );
 });
+//以下为原创
+// 检测页面是否加载Beach模板，自动给body追加beach-skin类
+mw.hook('wikipage.content').add(function($content) {
+    // 判断页面存在Beach模板渲染容器
+    if ($content.find('.template-Beach').length > 0) {
+        document.body.classList.add('beach-skin');
+    }
+});

@@ -13,8 +13,7 @@
       optionSet = 'option' in options && (options.option == 'opt-in-all' || options.option == 'opt-out-all'),
       wikiIds = null,
       isWikiaOrg = mw.config.get('wgServer').indexOf('wikia.org') !== -1,
-      servicesUrl = 'https://services.' + (isWikiaOrg ? 'wikia.org' : 'fandom.com'),
-      isUCP = mw.config.get('wgVersion') !== '1.19.24';
+      servicesUrl = 'https://services.' + (isWikiaOrg ? 'wikia.org' : 'fandom.com');
 
    // Clean wiki IDs
    if ('exceptWikiIds' in options && $.isArray(options.exceptWikiIds)) {
@@ -86,18 +85,6 @@
          },
          data: JSON.stringify(uris),
          contentType: 'application/json; charset=UTF-8'
-      }).then(function(data) {
-         // For each URI, render the notification as read
-         if (!isUCP) {
-            require(['ext.wikia.design-system.on-site-notifications.view'], function(View) {
-               uris.forEach(function(uri) {
-                  View.renderNotificationAsRead(uri);
-               });
-               var numNotifications = View._$notificationsCount.text();
-               numNotifications = Math.max(numNotifications - uris.length, 0);
-               View.renderUnreadCount(numNotifications);
-            });
-         }
       });
    };
 

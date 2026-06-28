@@ -528,8 +528,7 @@ dev.ReferencePopups = dev.ReferencePopups || {};
     }
 
     var mwReady = $.Deferred();
-    var mwDeps = mw.config.get('wgVersion').includes('1.33') ? ['jquery.ui.slider', 'jquery.ui.button'] : ['jquery.ui'];
-    mwDeps.push('mediawiki.template.mustache');
+    var mwDeps = ['jquery.ui', 'mediawiki.template.mustache'];
     mw.loader.load(mwDeps, null, true);
     mw.loader.using(mwDeps, mwReady.resolve, mwReady.reject);
     var colors = window.dev.colors || importArticles({

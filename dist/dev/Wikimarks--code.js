@@ -49,7 +49,7 @@
         var $wikimarks = $('.wikimarks');
 
         $wikimarks.find('> .wds-dropdown > .wds-tabs__tab-label').append(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>'
+            '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>'
         );
 
         $wikimarks.children('.wds-dropdown').append($menu);
@@ -110,7 +110,7 @@
         // add chevrons
         $menu.find('.wds-dropdown-level-2__content').siblings('a').each(function () {
             var $this = $(this),
-                chevron = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown-chevron" id="wds-icons-menu-control-tiny"><path d="M11.707 3.293a.999.999 0 0 0-1.414 0L6 7.586 1.707 3.293A.999.999 0 1 0 .293 4.707l5 5a.997.997 0 0 0 1.414 0l5-5a.999.999 0 0 0 0-1.414" fill-rule="evenodd"></path></svg>';
+                chevron = '<svg class="wds-icon wds-icon-tiny wds-dropdown-chevron" aria-label="Expand"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>';
 
             $this.append(chevron);
             $this.addClass('wds-dropdown-level-nested__toggle');
@@ -120,7 +120,7 @@
 
         $menu.find('.wds-dropdown-level-3__content').siblings('a').each(function () {
             var $this = $(this),
-                chevron = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" class="wds-icon wds-icon-tiny wds-dropdown-chevron" id="wds-icons-menu-control-tiny"><path d="M6.003 10.002a.997.997 0 0 1-.707-.293L.293 4.707a.999.999 0 1 1 1.414-1.414l4.296 4.295 4.293-4.293A.999.999 0 1 1 11.71 4.71l-5 5a.997.997 0 0 1-.707.293" fill-rule="evenodd"></path></svg>';
+                chevron = '<svg class="wds-icon wds-icon-tiny wds-dropdown-chevron" aria-label="Expand"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg>';
 
             $this.append(chevron);
             $this.addClass('wds-dropdown-level-nested__toggle');
@@ -307,7 +307,7 @@
 
         data = parsed.join('\n').trim();
         mw.log(data);
-
+		
         if (invalidLink) {
             // @todo do something
         }

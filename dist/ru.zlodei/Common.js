@@ -8,6 +8,9 @@
         window.dev.i18n.overrides['LockOldComments'] = window.dev.i18n.overrides['LockOldComments'] || {};
         window.dev.i18n.overrides['LockOldComments']['locked-reply-box'] = "🔒 Этой ветке комментариев более " + window.lockOldComments.limit + " " + (window.lockOldComments.limit > 1 ? 'дней.' : 'дня.') + " Нет необходимости отвечать.";
      
+/*---------------------------- Кнопка "Новая страница" -----------------------*/
+$(".wiki-tools__theme-switch").before('<a href="https://zlodei.fandom.com/ru/wiki/Служебная:CreatePage" class="wds-button wds-is-secondary" title="Новая страница"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-page-small"></use></svg></a>');
+
 /*----------------------------- Блок "Новые страницы" ------------------------*/
 // Блок правой панели. Всзято с вики "Убежище"
 function addNewPages(){

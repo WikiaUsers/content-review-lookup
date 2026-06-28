@@ -136,15 +136,14 @@ if (mediaWiki.config.get('wgAction') === 'view')  (function () {
         .addClass('scroll-content')
         .before('<div class="scroll-bar-wrap ui-widget-content"><div class="scroll-bar"></div></div>');
  
-        mediaWiki.loader.using('jquery.ui.slider', function () {
+        mediaWiki.loader.using('jquery.ui', function () {
             $('.scroll-pane').each(createSlider);
         });
     });
 }());
 
 function createContentSlider() {
-    mw.loader.using(['jquery.cookie']);
-    mw.loader.using(['jquery.ui.tabs'], function() {
+    mw.loader.using(['jquery.ui'], function() {
         $("[class^=portal_vtab]").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
         var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100}});
         $("[class*=portal_sliderlink-]").click(function() {

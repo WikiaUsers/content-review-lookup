@@ -12,9 +12,6 @@ importArticles({
 	]
 });
 
- if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
-}
 
 /* Adds icons to page header bottom border
  * by: [[User:The 888th Avatar]], adapted to new header by [[User:Thailog]]

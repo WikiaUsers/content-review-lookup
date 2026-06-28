@@ -167,7 +167,7 @@
                 summary: mw.message("codeload-edit-summary").plain(),
                 text: JSON.stringify(newPrefs, null, 4),
                 title: cl.userDataPage,
-                token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("editToken")
+                token: mw.user.tokens.get("csrfToken")
             },
             dataType: "json",
             type: "POST"

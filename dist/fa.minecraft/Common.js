@@ -1,4 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
 /**
  * Scripts placed here are loaded for all skins on the desktop view
  * 

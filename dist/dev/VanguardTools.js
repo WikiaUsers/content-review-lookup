@@ -35,7 +35,6 @@
         'wgTitle',
         'wgUserGroups',
         'wgUserLanguage',
-        'wgVersion'
     ]);
 
     // User parrot status.
@@ -258,14 +257,11 @@
             }
         },
         execute: function() {
-            var uri = new mw.Uri(
-                mw.util.getUrl('Template:' + VAN.redirect.template)
-            );
-            uri.extend({
+            var uri = new URL(mw.util.getUrl('Template:' + VAN.redirect.template, {
                 action: 'edit',
                 useeditor: 'source'
-            });
-            window.location.href = uri.toString();
+            }), location.href);
+            location.href = uri.href;
             VAN.redirect.$executed.resolve();
         },
         $executed: $.Deferred()

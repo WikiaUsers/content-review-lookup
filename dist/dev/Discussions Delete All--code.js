@@ -6,7 +6,6 @@
 
     var config = mw.config.get([
         'wgUserGroups',
-        'wgVersion',
         'wgCanonicalSpecialPageName'
     ]);
 

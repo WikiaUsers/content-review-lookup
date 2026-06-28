@@ -22,7 +22,6 @@
     var conf = mw.config.get([
         'wgArticlePath',
         'wgAction',
-        'wgVersion',
         'wgCanonicalSpecialPageName',
     ]);
 
@@ -78,7 +77,7 @@
                 bot: '1',
                 minor: window.AjaxUndoMinor ? undefined : '1',
                 summary: summary === '' ? undefined : summary,
-                token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken')
+                token: mw.user.tokens.get('csrfToken')
             });
         }).then(function (data) {
             if (!data) {

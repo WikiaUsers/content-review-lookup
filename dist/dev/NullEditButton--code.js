@@ -67,7 +67,7 @@
         new mw.Api().post({
             action: 'edit',
             title: config.wgPageName,
-            token: mw.user.tokens.get('csrfToken') || mw.user.tokens.get('editToken'),
+            token: mw.user.tokens.get('csrfToken'),
             watchlist: 'nochange',
             prependtext: ''
         }).done(getPage).fail(onError);

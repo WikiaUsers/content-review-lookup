@@ -1,4 +1,4 @@
-// Created by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:ExclusiveSkinsDailyLogger.js
+// Created, and currently maintained, by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:ExclusiveSkinsDailyLogger.js
 // Dependencies: create(), formatDate(), MediaWiki base module's mw object
 
 {
@@ -549,7 +549,8 @@
 			};
 			let str = "(Based on your local time zone, accounting for all " + count.toLocaleString()
 			+ ` exclusive daily ${checkPlural(count, {singular:'skin', plural:'skins'})}.`
-			+ ` Auto updates every 10 seconds, and the last update was at ${formatDate(currentDate, dateFormat)}.`;
+			+ ` Auto updates every 10 seconds, and the last update was at ${formatDate(currentDate, dateFormat)}.)`;
+			str +=`<br/>Report tool issues or suggestions on the <a href="https://saktkia51.fandom.com/wiki/Editorial_Noticeboard">Editorial Noticeboard page</a> or contact any <a href="https://saktkia51.fandom.com/wiki/MediaWiki:ExclusiveSkinsDailyLogger.js">tool maintainer</a>.`;
 			closingNotes.innerHTML = str;
 		};
 		

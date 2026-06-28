@@ -540,7 +540,6 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
            'wgUserGroups',
            'wgUserLanguage',
            'wgUserName',
-           'wgVersion',
         ]);
         // Ensure we're on the right page
         if (mwConfig.wgCanonicalSpecialPageName !== 'Recentchanges') {

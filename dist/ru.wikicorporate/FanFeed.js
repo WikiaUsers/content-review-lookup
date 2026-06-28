@@ -4,7 +4,7 @@
 (() => {
     const articlePath = mw.config.get('wgArticlePath') || '/wiki/$1';
     const dynamicFaviconUrl = articlePath.replace('$1', 'Special:FilePath/Site-favicon.ico');
-
+    
     const CONFIG = {
         maxTiles: 9, 
         allowedNamespaces: [0], 
@@ -24,7 +24,6 @@
     const buildFanFeed = () => {
         const wikiId = mw.config.get('wgCityId');
         const articleId = mw.config.get('wgArticleId');
-
         if (!wikiId || !articleId) return;
 
         const $wrapper = $('<div>', { class: 'fan-feed', id: 'custom-fan-feed' }).append(
@@ -36,9 +35,10 @@
                 $('<div>', { class: 'fan-feed__grid' })
             )
         );
-        const $grid = $wrapper.find('.fan-feed__grid');
 
+        const $grid = $wrapper.find('.fan-feed__grid');
         const $target = $('.page.has-right-rail');
+
         if ($target.length) {
             $target.after($wrapper);
         } else {
@@ -47,9 +47,7 @@
 
         fetch(`${CONFIG.apiUrl}?wikiId=${wikiId}&articleId=${articleId}`)
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Ошибка сети');
-                }
+                if (!response.ok) throw new Error('Ошибка сети');
                 return response.json();
             })
             .then((data) => {
@@ -65,26 +63,38 @@
                             : '';
                         
                         if (imgSrc) {
-                            imgSrc = imgSrc.replace(/\/top-crop\/width\/\d+\/height\/\d+/g, '');
+
+                            imgSrc = imgSrc.replace(/\/(top-crop|smart|scale-to-width-down)\/[a-zA-Z0-9\/]+/g, '');
                         } else {
                             imgSrc = CONFIG.fallbackImage;
                         }
 
+                        const $img = $('<img>', { class: 'fan-feed__image', src: imgSrc, alt: item.article_title });
+
+                        $img.on('load', function() {
+                            const ratio = this.naturalWidth / this.naturalHeight;
+                            
+
+                            if (ratio >= 0.95 && ratio <= 1.05) {
+                                $(this).addClass('fan-feed__image--square');
+                            } else {
+                                $(this).addClass('fan-feed__image--rect');
+                            }
+                        });
+
                         return $('<a>', { class: 'fan-feed__card', href: item.url }).append(
-                            $('<img>', { class: 'fan-feed__image', src: imgSrc, alt: item.article_title }),
+                            $img,
                             $('<div>', { class: 'fan-feed__overlay' }).append(
                                 $('<h4>', { class: 'fan-feed__card-title' }).text(item.article_title),
                                 $('<p>', { class: 'fan-feed__card-subtitle' }).text(item.wiki_title)
                             )
                         );
                     });
-
                     $grid.append(tiles);
                 }
             })
             .catch((error) => {
                 console.warn('Fan Feed error:', error);
-
                 $grid.append('<p class="fan-feed__message fan-feed__message--error">Ошибка при загрузке рекомендаций</p>');
             });
     };

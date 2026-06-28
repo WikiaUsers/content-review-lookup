@@ -10,7 +10,6 @@
         circuitbreaker = 0,// break init() loop (site-wide hook(lng1) + user hook(lng2))
         lang = mw.config.get( 'wgContentLanguage' );// use rules by content;
             
-    p.isUcp = parseFloat( mw.config.get( 'wgVersion' ) ) > 1.19;
     p.debug = mw.config.get( 'debug' ) || urlVars.get('debug1');// ucp have problems with debug mode, so...
     // these ((())) are made for reasons
     if ((( wikificator && wikificator.loaded === true ) || 
@@ -2202,7 +2201,7 @@
     };// log
 
     p.isVeActive = function isVeActive () {
-        return p.isUcp && window.ve && ve.init && ve.init.target && ve.init.target.active;
+        return window.ve && ve.init && ve.init.target && ve.init.target.active;
     };// isVeActive
     
     p.isOldVeActive = function isOldVeActive () {
@@ -2460,66 +2459,48 @@
         }
 
         function setContents ( txt ) {
-            p.log( 'setContents', p.isUcp, { txt: txt } );
+            p.log( 'setContents', { txt: txt } );
             var start, end;
             if ( !txt ) return;
-            if ( p.isUcp ) {
-                // is new ve
-                if ( p.isVeActive() ) {
-                    var dm = p.surface.getModel(),
-                        fragment = dm.getLinearFragment(
-                            new ve.Range( 1, dm.getDocument().getLength() )
-                        );
-                    //fragment.insertHtml( txt );
-                    fragment.insertContent( txt );
-                } else {
-                    // old ve
-                    $input = $.wikiEditor.instances[0];// $( '#wpTextbox1' );
-                    if ( $input.textSelection && $input.textSelection( 'getSelection' ) ) {
-                    	$input.textSelection( 'replaceSelection', txt );
-                    } else {
-                    	$input.textSelection( 'setContents', txt );
-                    }
-                }
+            // is new ve
+            if ( p.isVeActive() ) {
+                var dm = p.surface.getModel(),
+                    fragment = dm.getLinearFragment(
+                        new ve.Range( 1, dm.getDocument().getLength() )
+                    );
+                //fragment.insertHtml( txt );
+                fragment.insertContent( txt );
             } else {
-                $input = $( '#wpTextbox1' );
-                if ( $input.selectionStart !== undefined ) {
-                    start = $input.selectionStart;
-                    end = $input.selectionEnd;
-                    $input.val( $input.val().slice( 0, start ) + txt + $input.val().slice( end ) );
+                // old ve
+                $input = $.wikiEditor.instances[0];// $( '#wpTextbox1' );
+                if ( $input.textSelection && $input.textSelection( 'getSelection' ) ) {
+                	$input.textSelection( 'replaceSelection', txt );
                 } else {
-                    $input.val( txt );
+                	$input.textSelection( 'setContents', txt );
                 }
             }
         }// setContents
 
         function processAllText() {
-            if ( p.isUcp ) {
-                txt = text;
-                // old ve
-                if ( p.isOldVeActive() ) {//(ve && ve.init && !ve.init.target) {
-                    $input = $.wikiEditor.instances[0]; //$( '#wpTextbox1' );
-                    txt = $input.length ?
-                        $input.textSelection( 'getContents' ) ||
-                        $input.val() :
-                        text;
-                } else {
-                    // 2017 wikitext editor adds an empty line to the end with every text replacement
-                    // Remove the .trim when [[phab:T198010]] is fixed.
-                    //txt = p.surface.model.documentModel.data.getSourceText().trim();
-                    $input = $( '#wpTextbox1' );
-                    txt = $input.length ?
-                        $input.textSelection( 'getContents' ) ||
-                        p.surface.model.documentModel.data.getSourceText().trim() :
-                        text;
-                }
-            } else {
+            txt = text;
+            // old ve
+            if ( p.isOldVeActive() ) {//(ve && ve.init && !ve.init.target) {
+                $input = $.wikiEditor.instances[0]; //$( '#wpTextbox1' );
                 txt = $input.length ?
                     $input.textSelection( 'getContents' ) ||
                     $input.val() :
                     text;
+            } else {
+                // 2017 wikitext editor adds an empty line to the end with every text replacement
+                // Remove the .trim when [[phab:T198010]] is fixed.
+                //txt = p.surface.model.documentModel.data.getSourceText().trim();
+                $input = $( '#wpTextbox1' );
+                txt = $input.length ?
+                    $input.textSelection( 'getContents' ) ||
+                    p.surface.model.documentModel.data.getSourceText().trim() :
+                    text;
             }
-            p.log( 'processAllText', p.isUcp, { txt: txt } );
+            p.log( 'processAllText', { txt: txt } );
             if ( txt && txt.length ) {
                 p.log( 'processAllText.pt' );
                 processText();
@@ -2713,36 +2694,32 @@
     };// createVEWikificatorTool
 
     p.click = function ( e ) {
-        if ( p.isUcp ) {
-            // is old ve
-            if ( p.isOldVeActive() ) {
-                var t = p.wikify( $.wikiEditor.instances[0] ); // p.wikify( $( '#wpTextbox1' ) );
-                //setContents( t );
-            } else {
-                if ( !p.isVeActive() ) return;
-                // 2017 wikitext editor adds an empty line to the end with every text replacement
-                // Remove the .trim when [[phab:T198010]] is fixed.
-                //var t = p.wikify( p.surface.model.documentModel.data.getSourceText().trim() );
-                var t = p.wikify( $( '#wpTextbox1' ) );
-                /* check for source mode done by createVEWikificatorTool
-                p.surface = surface;
-                if ( !p.surface || p.surface.getMode() !== 'source' ) {
-                    p.activateSourceMode().done( function ( surface ) {
-                        // 2017 wikitext editor adds an empty line to the end with every text replacement
-                        // Remove the .trim when [[phab:T198010]] is fixed.
-                        p.surface = surface;
-                        var t = p.wikify( surface.model.documentModel.data.getSourceText().trim() );
-                        //p.setContents ( t );
-                        //p.wikify();
-                    });
-                } else {
-                    p.wikify();
-                }
-                */
-            }// if old ve
+        // is old ve
+        if ( p.isOldVeActive() ) {
+            var t = p.wikify( $.wikiEditor.instances[0] ); // p.wikify( $( '#wpTextbox1' ) );
+            //setContents( t );
         } else {
-            p.wikify();
-        }
+            if ( !p.isVeActive() ) return;
+            // 2017 wikitext editor adds an empty line to the end with every text replacement
+            // Remove the .trim when [[phab:T198010]] is fixed.
+            //var t = p.wikify( p.surface.model.documentModel.data.getSourceText().trim() );
+            var t = p.wikify( $( '#wpTextbox1' ) );
+            /* check for source mode done by createVEWikificatorTool
+            p.surface = surface;
+            if ( !p.surface || p.surface.getMode() !== 'source' ) {
+                p.activateSourceMode().done( function ( surface ) {
+                    // 2017 wikitext editor adds an empty line to the end with every text replacement
+                    // Remove the .trim when [[phab:T198010]] is fixed.
+                    p.surface = surface;
+                    var t = p.wikify( surface.model.documentModel.data.getSourceText().trim() );
+                    //p.setContents ( t );
+                    //p.wikify();
+                });
+            } else {
+                p.wikify();
+            }
+            */
+        }// if old ve
     };// click
 
     p.init = function ( language ) {
@@ -2804,27 +2781,23 @@
     
     $('body').on( 'click', '.wikify', p.click );
     //p.init();
-    if ( p.isUcp ) {
-        //'ve.wikitextInteractive': source
-        // try to set old ve button
-        mw.loader.using( 'ext.wikiEditor' ).then( function () {
-            try {
-                p.log( 'trying to add old ve button');
-                p.addNewToolbarButton();
-            } catch ( ex ) {
-                p.log( 'old ve button error', ex );
-            }
-            p.init();
-        } );
-        // w8 4 new ve
-        mw.hook( 've.activationComplete' ).add( function () {
-            p.surface = ve.init.target.getSurface();
-            p.createVEWikificatorTool();
-            p.init();
-        });
-    } else {
+    //'ve.wikitextInteractive': source
+    // try to set old ve button
+    mw.loader.using( 'ext.wikiEditor' ).then( function () {
+        try {
+            p.log( 'trying to add old ve button');
+            p.addNewToolbarButton();
+        } catch ( ex ) {
+            p.log( 'old ve button error', ex );
+        }
         p.init();
-    }
+    } );
+    // w8 4 new ve
+    mw.hook( 've.activationComplete' ).add( function () {
+        p.surface = ve.init.target.getSurface();
+        p.createVEWikificatorTool();
+        p.init();
+    });
 
 } )( jQuery, window.wikificator = ( window.wikificator || {} ) );
 // </nowiki>

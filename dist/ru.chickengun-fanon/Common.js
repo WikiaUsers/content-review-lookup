@@ -631,4 +631,269 @@
     });
   })();
 
+
+
+(function () {
+    // 1. НАДЕЖНАЯ ПРОВЕРКА ПРАВ ЧЕРЕЗ СИСТЕМНЫЙ ОБЪЕКТ mw.config
+    var userGroups = mw.config.get('wgUserGroups') || [];
+    var isModerator = userGroups.some(function (g) { 
+        return ['sysop', 'moderator', 'bureaucrat', 'staff'].includes(g); 
+    });
+    if (!isModerator) return;
+
+    var specialPage = mw.config.get('wgCanonicalSpecialPageName');
+    var ns = mw.config.get('wgNamespaceNumber');
+    var targetUser = mw.config.get('wgTitle');
+
+    function formatExpiry(expiry) {
+        if (!expiry) return 'Не указан';
+        var exp = expiry.toLowerCase().trim();
+        return (exp === 'infinite' || exp === 'infinity' || exp === 'indefinite')
+            ? 'Бессрочно'
+            : expiry;
+    }
+
+    // =========================
+    // BAN + TEMPLATE
+    // =========================
+    function executeBanSequence(user, expiry, reason, successUrl) {
+        var api = new mw.Api();
+        var userPage = 'User:' + user;
+        var expiryRu = formatExpiry(expiry);
+        var newTemplate = '{{Заблокирован|срок=' + expiryRu + '|причина=' + reason + '}}\n';
+
+        api.postWithToken('csrf', {
+            action: 'block',
+            user: user,
+            expiry: expiry,
+            reason: reason,
+            nocreate: true,
+            autoblock: true,
+            reblock: true
+        }).done(function () {
+
+            api.get({
+                action: 'query',
+                prop: 'revisions',
+                titles: userPage,
+                rvprop: 'content',
+                rvslots: 'main'
+            }).done(function (res) {
+
+                var pages = res.query.pages;
+                var pageId = Object.keys(pages)[0];
+                var currentText = '';
+
+                if (pageId && pageId !== '-1' && pages[pageId].revisions) {
+                    currentText =
+                        pages[pageId].revisions[0].slots.main['*'] || '';
+                }
+
+                var cleanText = currentText.replace(/\{\{[Зз]аблокирован[\s\S]*?\}\}\n?/g, '');
+                var finalText = newTemplate + cleanText;
+
+                api.postWithToken('csrf', {
+                    action: 'edit',
+                    title: userPage,
+                    text: finalText,
+                    summary: 'Обновление плашки блокировки [Автоскрипт]'
+                }).done(function () {
+                    alert('Пользователь заблокирован');
+                    window.location.href = successUrl || window.location.href;
+                });
+
+            });
+
+        }).fail(function (code) {
+            alert('Ошибка блокировки: ' + code);
+        });
+    }
+
+    // =========================
+    // UNBAN + REMOVE TEMPLATE
+    // =========================
+    function executeUnban(user, reason, successUrl) {
+        var api = new mw.Api();
+        var userPage = 'User:' + user;
+
+        api.postWithToken('csrf', {
+            action: 'unblock',
+            user: user,
+            reason: reason
+        }).done(function () {
+
+            api.get({
+                action: 'query',
+                prop: 'revisions',
+                titles: userPage,
+                rvprop: 'content',
+                rvslots: 'main'
+            }).done(function (res) {
+
+                var pages = res.query.pages;
+                var pageId = Object.keys(pages)[0];
+                var currentText = '';
+
+                if (pageId && pageId !== '-1' && pages[pageId].revisions) {
+                    currentText =
+                        pages[pageId].revisions[0].slots.main['*'] || '';
+                }
+
+                var cleanText = currentText.replace(/\{\{[Зз]аблокирован[\s\S]*?\}\}\n?/g, '');
+
+                api.postWithToken('csrf', {
+                    action: 'edit',
+                    title: userPage,
+                    text: cleanText,
+                    summary: 'Разблокировка + удаление плашки [Автоскрипт]'
+                }).done(function () {
+                    alert('Пользователь разблокирован');
+                    window.location.href = successUrl || window.location.href;
+                });
+
+            });
+
+        }).fail(function (code) {
+            alert('Ошибка разблокировки: ' + code);
+        });
+    }
+
+    // =========================
+    // INIT
+    // =========================
+    mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
+
+        // ========================================================
+        // BLOCK PAGE
+        // ========================================================
+        if (specialPage === 'Block') {
+
+            mw.hook('wikipage.content').add(function () {
+
+                var $container =
+                    $('.mw-htmlform-submit-container').length
+                        ? $('.mw-htmlform-submit-container')
+                        : $('button[type="submit"]').parent();
+
+                if (!$container.length || $('#fandom-fast-block-btn').length) return;
+
+                var $btn = $('<button>', {
+                    id: 'fandom-fast-block-btn',
+                    type: 'button',
+                    text: 'Заблокировать и повесить плашку',
+                    css: {
+                        marginLeft: '12px',
+                        backgroundColor: '#007bff',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '9px 15px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold'
+                    }
+                });
+
+                $container.append($btn);
+
+                $btn.on('click', function () {
+
+                    var user =
+                        $('#mw-bi-target').val() ||
+                        $('input[name="wpTarget"]').val();
+
+                    var expiry =
+                        $('#mw-input-wpExpiry').val() ||
+                        $('select[name="wpExpiry"]').val() ||
+                        $('input[name="wpExpiry"]').val();
+
+                    var selReason =
+                        $('#mw-input-wpReason').val() ||
+                        $('select[name="wpReason"]').val() ||
+                        '';
+
+                    var custReason =
+                        $('#mw-input-wpReason-other').val() ||
+                        $('input[name="wpReason-other"]').val() ||
+                        '';
+
+                    var finalReason =
+                        (selReason && selReason !== 'other')
+                            ? selReason + (custReason ? ' (' + custReason + ')' : '')
+                            : (custReason || 'Не указана');
+
+                    if (!user) return alert('Ошибка: имя пользователя не указано!');
+
+                    $btn.prop('disabled', true).text('Обработка...');
+
+                    executeBanSequence(
+                        user,
+                        expiry,
+                        finalReason,
+                        mw.util.getUrl('User:' + user)
+                    );
+                });
+            });
+        }
+
+        // ========================================================
+        // USER PAGE
+        // ========================================================
+        if ((ns === 2 || ns === 3) && !targetUser.includes('/')) {
+
+            var observer = new MutationObserver(function (mutations, obs) {
+
+                var $actionsMenu = $('.page-header__actions');
+
+                if ($actionsMenu.length && !$('#fandom-profile-block-btn').length) {
+                    obs.disconnect();
+
+                    var $profileBtn = $('<button>', {
+                        id: 'fandom-profile-block-btn',
+                        type: 'button',
+                        text: '🔒 Забанить / Разбан',
+                        css: {
+                            marginRight: '12px',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            color: '#ff4d4d',
+                            padding: '6px 10px'
+                        }
+                    });
+
+                    $actionsMenu.prepend($profileBtn);
+
+                    $profileBtn.on('click', function () {
+
+                        var exp = prompt('Срок блокировки (3 days, 1 week, infinite, 0 = разбан):', 'infinite');
+                        if (exp === null) return;
+
+                        exp = exp.trim();
+                        if (!exp) return alert('Ошибка: срок пустой!');
+
+                        var reason = prompt('Причина:', 'Вандализм');
+                        if (reason === null) return;
+                        reason = reason.trim() || 'Не указана';
+
+                        $profileBtn.prop('disabled', true).text('Обработка...');
+
+                        if (exp === '0') {
+                            executeUnban(targetUser, reason, mw.util.getUrl('User:' + targetUser));
+                        } else {
+                            executeBanSequence(targetUser, exp, reason, mw.util.getUrl('User:' + targetUser));
+                        }
+                    });
+                }
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+
+    });
+
+})();
+
+
+
 })(jQuery, mediaWiki);

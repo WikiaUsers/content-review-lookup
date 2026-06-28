@@ -185,3 +185,59 @@ mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util', 'mediawiki.api']).then
     });
 
 });
+
+$(document).ready(function() {
+    // 1. 定義你的多語言子站清單
+    const wikiFamily = {
+        "Deutsch": "https://internetpedia.fandom.com/de/wiki/",
+        "English": "https://internetpedia.fandom.com/en/wiki/",
+        "Español": "https://internetpedia.fandom.com/es/wiki/",
+        "Bahasa Indonesia": "https://internetpedia.fandom.com/id/wiki/",
+        "日本語": "https://internetpedia.fandom.com/ja/wiki/",
+        "한국어": "https://internetpedia.fandom.com/ko/wiki/",
+        "Bahasa Melayu": "https://internetpedia.fandom.com/ms/wiki/",
+        "Nederlands": "https://internetpedia.fandom.com/nl/wiki/",
+        "Reo tahiti": "https://internetpedia.fandom.com/ty/wiki/"
+    };
+
+    // 2. 獲取當前頁面名稱
+    let pageTitle = mw.config.get('wgPageName');
+
+    // 3. 建立下拉選單的 HTML 結構
+    let $customLangContainer = $('<div class="custom-lang-selector" style="margin: 10px 0; position: relative; display: inline-block; z-index: 9999;"></div>');
+    let $button = $('<button class="custom-lang-btn" style="background: #ffffff; color: #333; border: 1px solid #a2a9b1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">🌐 跨語言連結 ▼</button>');
+    let $dropdown = $('<ul class="custom-lang-dropdown" style="display: none; position: absolute; left: 0; top: 100%; background: #ffffff; border: 1px solid #dadce0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 160px;"></ul>');
+
+    // 4. 循環把所有語言塞進選單中
+    $.each(wikiFamily, function(langName, urlPrefix) {
+        let targetUrl = urlPrefix + encodeURIComponent(pageTitle);
+        let $li = $('<li style="margin:0; padding:0;"></li>');
+        let $a = $('<a href="' + targetUrl + '" style="display: block; padding: 8px 16px; color: #333; text-decoration: none; font-size: 14px;">' + langName + '</a>');
+        
+        // 滑鼠滑過變色效果
+        $a.hover(
+            function() { $(this).css('background-color', '#f1f3f4'); },
+            function() { $(this).css('background-color', '#ffffff'); }
+        );
+        
+        $li.append($a);
+        $dropdown.append($li);
+    });
+
+    $customLangContainer.append($button).append($dropdown);
+
+    // 5. 【暴力插入法】直接插入到 Fandom 的主要內容區塊 (#mw-content-text) 的最前面
+    if ($('#mw-content-text').length) {
+        $('#mw-content-text').prepend($customLangContainer);
+    }
+
+    // 6. 點擊按鈕切換下拉選單顯示/隱藏
+    $button.on('click', function(e) {
+        e.stopPropagation();
+        $dropdown.toggle();
+    });
+
+    $(document).on('click', function() {
+        $dropdown.hide();
+    });
+});

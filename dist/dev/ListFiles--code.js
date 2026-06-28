@@ -644,8 +644,7 @@
 
 	// main form initialization sequence
 	function initialize() {
-	    var escapeRegex = mw.RegExp.escape || mw.util.escapeRegExp;
-        pathRegex = new RegExp('^' + escapeRegex(mw.config.get('wgArticlePath').replace('$1', '')));
+        pathRegex = new RegExp('^' + mw.util.escapeRegExp(mw.config.get('wgArticlePath').replace('$1', '')));
 		if (mw.config.get('wgAction') !== 'edit') {
 			$(initListFilesForm);
 		}

@@ -54,3 +54,7 @@ importArticles({
     'dev:MediaWiki:WelcomeMessage.js'
   ]
 });
+
+window.discussEmbedLimit = 10;
+window.discussEmbedForum = "1234567890";
+window.discussEmbedSortTrending = 1;

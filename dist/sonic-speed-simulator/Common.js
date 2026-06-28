@@ -62,5 +62,27 @@ importArticles({
     }
 }() );
 
+$(document).ready(function () {
+    $('#expand-all-button').on('click', function () {
+
+        const collapsed = $('.mw-collapsible.mw-collapsed').length > 0;
+
+        if (collapsed) {
+            $('.mw-collapsible.mw-collapsed')
+                .find('.mw-collapsible-toggle')
+                .trigger('click');
+
+            $(this).text('Collapse all');
+        } else {
+            $('.mw-collapsible')
+                .not('.mw-collapsed')
+                .find('.mw-collapsible-toggle')
+                .trigger('click');
+
+            $(this).text('Expand all');
+        }
+    });
+});
+
 window.AddRailModule = [{prepend: true}];
 window.AddRailModule = ['Template:RailModuleTabs'];

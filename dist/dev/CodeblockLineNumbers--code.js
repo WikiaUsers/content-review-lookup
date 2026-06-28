@@ -38,12 +38,7 @@
 	
     if (window.dev && window.dev.CodeblockLineNumbers) return;
     
-    var classes = [
-		'lineNumbers',
-		parseInt(mw.config.get('wgVersion').split('.')[1]) < 37
-			? null
-			: 'obs'
-	].filter(Boolean);
+    var classes = ['lineNumbers', 'obs'];
 	
     var codeblocks = [
         ['de1', 'hljs'],

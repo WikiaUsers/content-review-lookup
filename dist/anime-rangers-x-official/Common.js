@@ -852,239 +852,53 @@ mw.hook('wikipage.content').add(function($content) {
         Array.prototype.forEach.call(navs, buildNav);
     }
 
-    if (document.readyState === 'loading') {
+    if (document.readyState === 'loading') {a
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 })();
 
+
 /* === ARX Item Navigation Widget === */
 (function () {
     var FILE_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/Special:FilePath/';
+    var soulTiersCache = null;
+    var RARITY_ORDER = { Singularity:1, Exclusive:2, Secret:3, Mythic:4, Legendary:5, Epic:6, Rare:7 };
 
-    var RARITY_COLORS = {
-        Rare:        '#00BFFF',
-        Epic:        '#CC00FF',
-        Legendary:   '#FFD700',
-        Mythic:      '#FF44FF',
-        Secret:      '#FF2200',
-        Exclusive:   '#FF8C00',
-        Singularity: '#FF44FF',
-    };
-
-    var CAT_LABELS = {
-        EvoMaterial: 'Evo Material',
-        Material:    'Material',
-        Gear:        'Gear',
-        Soul:        'Soul',
-        ExpFood:     'EXP Food',
-        Currency:    'Currency',
-        Misc:        'Misc',
-    };
-
-    function el(tag, cls, txt) {
-        var e = document.createElement(tag);
-        if (cls) e.className = cls;
-        if (txt != null) e.textContent = txt;
-        return e;
-    }
-
-    function makeCard(item, catKey) {
-        var card = document.createElement('div');
-        card.className = 'arx-item-card arx-item-rarity-' + item.rarity;
-        card.setAttribute('data-name', item.name.toLowerCase());
-
-        var img = document.createElement('img');
-        img.className = 'arx-item-card-img';
-        img.src = FILE_BASE + item.img;
-        img.alt = item.name;
-        img.onerror = function() { img.style.opacity = '0.2'; };
-
-        var name = el('div', 'arx-item-card-name', item.name);
-
-        card.appendChild(img);
-        card.appendChild(name);
-
-        card.addEventListener('click', function() {
-            showPopup(item, catKey);
-        });
-
-        return card;
-    }
-
-    function showPopup(item, catKey) {
-        var overlay = el('div', 'arx-item-popup-overlay');
-        var panel   = el('div', 'arx-item-popup');
-
-        var close = el('button', 'arx-item-popup-close', '✕');
-        function closePopup() {
-            panel.classList.remove('visible');
-            overlay.classList.remove('visible');
-            setTimeout(function() { overlay.remove(); }, 250);
-        }
-        close.addEventListener('click', closePopup);
-        overlay.addEventListener('click', function(e) { if (e.target === overlay) closePopup(); });
-
-        var img = document.createElement('img');
-        img.className = 'arx-item-popup-img';
-        img.src = FILE_BASE + item.img;
-        img.alt = item.name;
-        img.onerror = function() { img.style.display = 'none'; };
-
-        var name = el('div', 'arx-item-popup-name', item.name);
-
-        var cat = el('div', 'arx-item-popup-category arx-item-popup-cat-' + catKey, CAT_LABELS[catKey] || catKey);
-
-        panel.appendChild(close);
-        panel.appendChild(img);
-        panel.appendChild(name);
-        panel.appendChild(cat);
-
-        if (item.obtainment) {
-            var f = el('div', 'arx-item-popup-field');
-            f.appendChild(el('div', 'arx-item-popup-label', 'Obtainment'));
-            f.appendChild(el('div', 'arx-item-popup-value', item.obtainment));
-            panel.appendChild(f);
-        }
-
-        if (item.description) {
-            var f2 = el('div', 'arx-item-popup-field');
-            f2.appendChild(el('div', 'arx-item-popup-label', 'Description'));
-            f2.appendChild(el('div', 'arx-item-popup-value', item.description));
-            panel.appendChild(f2);
-        }
-
-        if (item.usedFor) {
-            var f3 = el('div', 'arx-item-popup-field');
-            var uf = el('div', 'arx-item-popup-value arx-item-popup-usedfor');
-            uf.textContent = 'Used for evolving ' + item.usedFor + '.';
-            f3.appendChild(uf);
-            panel.appendChild(f3);
-        }
-
-        if (item.pity && item.pity > 0) {
-            var pity = el('div', 'arx-item-popup-pity', 'Pity: ' + item.pity);
-            panel.appendChild(pity);
-        }
-
-        overlay.appendChild(panel);
-        document.body.appendChild(overlay);
-
-        setTimeout(function() {
-            overlay.classList.add('visible');
-            panel.classList.add('visible');
-        }, 16);
-    }
-
-    function buildItemNav(host) {
-        var raw = host.getAttribute('data-items');
-        if (!raw) return;
-        var categories;
-        try { categories = JSON.parse(raw); } catch(e) { return; }
-
-        var container = el('div', 'arx-item-nav-container');
-
-        // Search
-        var searchWrap = el('div', 'arx-item-search-wrap');
-        var searchInput = document.createElement('input');
-        searchInput.type = 'text';
-        searchInput.placeholder = 'Search for an item...';
-        searchInput.className = 'arx-item-search';
-        searchWrap.appendChild(searchInput);
-        container.appendChild(searchWrap);
-
-        // Tab bar
-        var tabBar = el('div', 'arx-item-tab-bar');
-        container.appendChild(tabBar);
-
-        var panelsWrap = el('div', '');
-
-        // Search results panel
-        var searchPanel = el('div', 'arx-item-search-results');
-        searchPanel.style.display = 'none';
-        var searchGrid = el('div', 'arx-item-grid');
-        searchPanel.appendChild(searchGrid);
-        panelsWrap.appendChild(searchPanel);
-
-        var allItems  = [];
-        var allTabs   = [];
-        var allPanels = [];
-        var firstTab  = null;
-
-        categories.forEach(function(cat) {
-            if (!cat.items || cat.items.length === 0) return;
-
-            cat.items.forEach(function(i) { allItems.push({ item: i, catKey: cat.key }); });
-
-            var tab = el('div', 'arx-item-tab', cat.label);
-            tab.setAttribute('data-cat', cat.key);
-            tabBar.appendChild(tab);
-            allTabs.push(tab);
-            if (!firstTab) firstTab = tab;
-
-            var panel = el('div', 'arx-item-panel');
-            panel.setAttribute('data-panel', cat.key);
-            var grid = el('div', 'arx-item-grid');
-            cat.items.forEach(function(item) {
-                grid.appendChild(makeCard(item, cat.key));
-            });
-            panel.appendChild(grid);
-            panelsWrap.appendChild(panel);
-            allPanels.push(panel);
-
-            tab.addEventListener('click', function() {
-                searchInput.value = '';
-                searchPanel.style.display = 'none';
-                allTabs.forEach(function(t) { t.classList.remove('active'); });
-                allPanels.forEach(function(p) { p.style.display = 'none'; });
-                tab.classList.add('active');
-                panel.style.display = 'block';
-            });
-        });
-
-        container.appendChild(panelsWrap);
-
-        searchInput.addEventListener('input', function() {
-            var query = searchInput.value.trim().toLowerCase();
-            if (!query) {
-                searchPanel.style.display = 'none';
-                var activeTab = tabBar.querySelector('.arx-item-tab.active');
-                if (activeTab) {
-                    var p = panelsWrap.querySelector('[data-panel="' + activeTab.getAttribute('data-cat') + '"]');
-                    if (p) p.style.display = 'block';
+    function fetchSoulTiers(callback) {
+        if (soulTiersCache) { callback(soulTiersCache); return; }
+        fetch('/api.php?action=query&prop=revisions&titles=Module:ItemData%2FSouls&rvprop=content&rvslots=main&format=json&origin=*')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var pages = data.query.pages;
+                var page = pages[Object.keys(pages)[0]];
+                var content = page.revisions[0].slots.main['*'];
+                var result = {};
+                var soulRe = /\["([^"]+)"\]\s*=\s*\{([\s\S]*?)\},?\s*(?=\["|^return)/g;
+                var m;
+                while ((m = soulRe.exec(content)) !== null) {
+                    var soulName = m[1];
+                    var block = m[2];
+                    var tiers = [];
+                    if (block.indexOf('Tiers') !== -1) {
+                        var tiersBlockMatch = block.match(/Tiers\s*=\s*\{([\s\S]*?)\}/);
+                        if (tiersBlockMatch) {
+                            var tiersBlock = tiersBlockMatch[1];
+                            var tr = /\[(\d+)\]\s*=\s*"([\s\S]*?)(?<!\\)",?/g;
+                            var tm;
+                            while ((tm = tr.exec(tiersBlock)) !== null) {
+                                tiers.push({ tier: parseInt(tm[1]), text: tm[2] });
+                            }
+                        }
+                    }
+                    result[soulName] = tiers;
                 }
-                return;
-            }
-            allPanels.forEach(function(p) { p.style.display = 'none'; });
-            searchGrid.innerHTML = '';
-            allItems.forEach(function(entry) {
-                if (entry.item.name.toLowerCase().indexOf(query) !== -1) {
-                    searchGrid.appendChild(makeCard(entry.item, entry.catKey));
-                }
-            });
-            searchPanel.style.display = 'block';
-        });
-
-        host.innerHTML = '';
-        host.appendChild(container);
-
-        if (firstTab) firstTab.click();
+                soulTiersCache = result;
+                callback(result);
+            })
+            .catch(function() { callback({}); });
     }
-
-    function init() {
-        var navs = document.querySelectorAll('.arx-item-nav');
-        Array.prototype.forEach.call(navs, buildItemNav);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-    /* === ARX Item Navigation Widget === */
-(function () {
-    var FILE_BASE = 'https://anime-rangers-x-official.fandom.com/wiki/Special:FilePath/';
 
     function getInitials(name) {
         var words = name.split(/\s+/);
@@ -1114,37 +928,78 @@ mw.hook('wikipage.content').add(function($content) {
         return span;
     }
 
-    function makeCard(it) {
-        var card = document.createElement('a');
-        card.className = 'arxif-card arxif-rar-' + it.rarity;
-        card.href = '#' + it.popupId;
-        card.setAttribute('data-name', it.name.toLowerCase());
-        card.appendChild(makeThumb(it.img, it.name, 'arxif-thumb'));
+    function renderTiers(tiers, body) {
+        if (!tiers || tiers.length === 0) return;
+        var fTiers = document.createElement('div');
+        fTiers.className = 'arxif-field arxif-tiers-field';
 
-        var nameSpan = document.createElement('span');
-        nameSpan.className = 'arxif-card-name';
-        nameSpan.textContent = it.name;
-        card.appendChild(nameSpan);
-        return card;
+        var tiersLabel = document.createElement('div');
+        tiersLabel.className = 'arxif-label';
+        tiersLabel.textContent = 'Tiers';
+        fTiers.appendChild(tiersLabel);
+
+        var tabbar = document.createElement('div');
+        tabbar.className = 'arxif-tier-tabbar';
+
+        var contentArea = document.createElement('div');
+        contentArea.className = 'arxif-tier-content';
+
+        var activeTab = null;
+        var activeContent = null;
+
+        tiers.forEach(function(t) {
+            var tab = document.createElement('button');
+            tab.className = 'arxif-tier-tab';
+            tab.textContent = t.tier === 0 ? 'Base' : t.tier.toString();
+
+            var content = document.createElement('div');
+            content.className = 'arxif-tier-panel';
+            content.textContent = t.text;
+            content.style.display = 'none';
+
+            tab.addEventListener('click', function() {
+                if (activeTab) activeTab.classList.remove('arxif-tier-tab-active');
+                if (activeContent) activeContent.style.display = 'none';
+                tab.classList.add('arxif-tier-tab-active');
+                content.style.display = 'block';
+                activeTab = tab;
+                activeContent = content;
+            });
+
+            tabbar.appendChild(tab);
+            contentArea.appendChild(content);
+        });
+
+        fTiers.appendChild(tabbar);
+        fTiers.appendChild(contentArea);
+        body.appendChild(fTiers);
+
+        if (tabbar.firstChild) tabbar.firstChild.click();
     }
 
-    function makePopup(it, catKey, catLabel) {
+    function showPopup(it, catKey, catLabel) {
+        var existing = document.getElementById('arxif-active-popup');
+        if (existing) existing.remove();
+
         var overlay = document.createElement('div');
-        overlay.id = it.popupId;
+        overlay.id = 'arxif-active-popup';
         overlay.className = 'arxif-overlay arxif-cat-' + catKey + ' arxif-rar-' + it.rarity;
 
-        var backdrop = document.createElement('a');
+        var backdrop = document.createElement('div');
         backdrop.className = 'arxif-backdrop';
-        backdrop.href = '#arxif-cat-all';
         overlay.appendChild(backdrop);
 
         var popup = document.createElement('div');
         popup.className = 'arxif-popup';
 
-        var close = document.createElement('a');
+        var close = document.createElement('button');
         close.className = 'arxif-close';
-        close.href = '#arxif-cat-all';
         close.innerHTML = '&#10005;';
+
+        function hidePopup() { overlay.remove(); }
+        close.addEventListener('click', hidePopup);
+        backdrop.addEventListener('click', hidePopup);
+
         popup.appendChild(close);
 
         var header = document.createElement('div');
@@ -1175,28 +1030,67 @@ mw.hook('wikipage.content').add(function($content) {
         body.className = 'arxif-pop-body';
 
         if (it.obtainment) {
-            var f = document.createElement('div'); f.className = 'arxif-field';
-            f.innerHTML = '<div class="arxif-label">Obtainment</div><div class="arxif-value">' + mw.html.escape(it.obtainment) + '</div>';
-            body.appendChild(f);
+            var fObt = document.createElement('div');
+            fObt.className = 'arxif-field';
+            fObt.innerHTML = '<div class="arxif-label">Obtainment</div><div class="arxif-value">' + mw.html.escape(it.obtainment) + '</div>';
+            body.appendChild(fObt);
         }
         if (it.description) {
-            var f = document.createElement('div'); f.className = 'arxif-field';
-            f.innerHTML = '<div class="arxif-label">Description</div><div class="arxif-value">' + mw.html.escape(it.description) + '</div>';
-            body.appendChild(f);
+            var fDesc = document.createElement('div');
+            fDesc.className = 'arxif-field';
+            fDesc.innerHTML = '<div class="arxif-label">Description</div><div class="arxif-value">' + mw.html.escape(it.description) + '</div>';
+            body.appendChild(fDesc);
         }
+
+        if (it.tiers && it.tiers.length > 0) {
+            renderTiers(it.tiers, body);
+        } else if (catKey === 'Souls' || catKey === 'Soul') {
+            var loadingDiv = document.createElement('div');
+            loadingDiv.className = 'arxif-field';
+            loadingDiv.innerHTML = '<div class="arxif-label">Tiers</div><div class="arxif-value arxif-loading">Loading...</div>';
+            body.appendChild(loadingDiv);
+            fetchSoulTiers(function(tiersMap) {
+                loadingDiv.remove();
+                renderTiers(tiersMap[it.name] || [], body);
+            });
+        }
+
         if (it.usedFor) {
-            var uf = document.createElement('div'); uf.className = 'arxif-usedfor';
-            uf.textContent = 'Used for evolving ' + it.usedFor + '.';
+            var uf = document.createElement('div');
+            uf.className = 'arxif-usedfor';
+            uf.textContent = (it.catKey === 'EvoMaterial' ? 'Used for evolving ' : 'Used for ') + it.usedFor + '.';
             body.appendChild(uf);
         }
         if (it.pity && it.pity > 0) {
-            var pw = document.createElement('div'); pw.className = 'arxif-pity-wrap';
+            var pw = document.createElement('div');
+            pw.className = 'arxif-pity-wrap';
             pw.innerHTML = '<span class="arxif-pity">Pity: ' + mw.html.escape(it.pity) + '</span>';
             body.appendChild(pw);
         }
+
         popup.appendChild(body);
         overlay.appendChild(popup);
-        return overlay;
+        document.body.appendChild(overlay);
+
+        setTimeout(function() { overlay.classList.add('arxif-visible'); }, 16);
+    }
+
+    function makeCard(it, catKey, catLabel) {
+        var card = document.createElement('div');
+        card.className = 'arxif-card arxif-rar-' + it.rarity;
+        card.setAttribute('data-name', it.name.toLowerCase());
+        card.appendChild(makeThumb(it.img, it.name, 'arxif-thumb'));
+
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'arxif-card-name';
+        nameSpan.textContent = it.name;
+        card.appendChild(nameSpan);
+
+        card.addEventListener('click', function() {
+            showPopup(it, catKey, catLabel);
+        });
+
+        return card;
     }
 
     function buildItemNav(host) {
@@ -1204,13 +1098,32 @@ mw.hook('wikipage.content').add(function($content) {
         if (!raw) return;
         var data;
         try { data = JSON.parse(raw); } catch(e) { return; }
+        var cats = data.categories || data || [];
 
-        var cats = data.categories || [];
+        cats.forEach(function(c) {
+            c.items.sort(function(a, b) {
+                var ra = RARITY_ORDER[a.rarity] || 99;
+                var rb = RARITY_ORDER[b.rarity] || 99;
+                if (ra !== rb) return ra - rb;
+                return a.name < b.name ? -1 : 1;
+            });
+        });
+
         var allItems = [];
         cats.forEach(function(c) {
-            c.items.forEach(function(it) { allItems.push(it); });
+            c.items.forEach(function(it) {
+                it.catKey   = c.key;
+                it.catLabel = c.label;
+                allItems.push(it);
+            });
         });
-        allItems.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+        allItems.sort(function(a, b) {
+            var ra = RARITY_ORDER[a.rarity] || 99;
+            var rb = RARITY_ORDER[b.rarity] || 99;
+            if (ra !== rb) return ra - rb;
+            return a.name < b.name ? -1 : 1;
+        });
 
         var root = document.createElement('div');
         root.className = 'arxif-root';
@@ -1226,53 +1139,76 @@ mw.hook('wikipage.content').add(function($content) {
 
         var tabbar = document.createElement('div');
         tabbar.className = 'arxif-tabbar';
-        var allTab = document.createElement('a');
-        allTab.className = 'arxif-tab arxif-tab-all';
-        allTab.href = '#arxif-cat-all';
-        allTab.innerHTML = '<span class="arxif-tab-dot"></span>All<span class="arxif-count">' + allItems.length + '</span>';
-        tabbar.appendChild(allTab);
 
-        cats.forEach(function(cat) {
-            var tab = document.createElement('a');
-            tab.className = 'arxif-tab arxif-cat-' + cat.key;
-            tab.href = '#arxif-cat-' + cat.key.toLowerCase();
-            tab.innerHTML = '<span class="arxif-tab-dot"></span>' + mw.html.escape(cat.label) + '<span class="arxif-count">' + Number(cat.items.length) + '</span>';
-            tabbar.appendChild(tab);
-        });
-        root.appendChild(tabbar);
+        var allTabsRefs   = [];
+        var allPanelsRefs = [];
+
+        var allTab = document.createElement('a');
+        allTab.className = 'arxif-tab arxif-tab-all arxif-active';
+        allTab.href = 'javascript:void(0);';
+        allTab.innerHTML = '<span class="arxif-tab-dot"></span>All<span class="arxif-count">' + Number(allItems.length) + '</span>';
+        tabbar.appendChild(allTab);
+        allTabsRefs.push(allTab);
 
         var panelsContainer = document.createElement('div');
         panelsContainer.className = 'arxif-panels';
 
         var allPanel = document.createElement('div');
-        allPanel.id = 'arxif-cat-all';
-        allPanel.className = 'arxif-panel arxif-panel-all';
+        allPanel.className = 'arxif-panel arxif-panel-all arxif-active';
+        allPanelsRefs.push(allPanel);
+
+        function switchTab(targetTab, targetPanel) {
+            allTabsRefs.forEach(function(t)   { t.classList.remove('arxif-active'); });
+            allPanelsRefs.forEach(function(p) { p.classList.remove('arxif-active'); });
+            targetTab.classList.add('arxif-active');
+            targetPanel.classList.add('arxif-active');
+        }
+
+        allTab.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchTab(allTab, allPanel);
+        });
 
         cats.forEach(function(cat) {
+            var tab = document.createElement('a');
+            tab.className = 'arxif-tab arxif-cat-' + cat.key;
+            tab.href = 'javascript:void(0);';
+            tab.innerHTML = '<span class="arxif-tab-dot"></span>' + mw.html.escape(cat.label) + '<span class="arxif-count">' + Number(cat.items.length) + '</span>';
+            tabbar.appendChild(tab);
+            allTabsRefs.push(tab);
+
+            var panel = document.createElement('div');
+            panel.className = 'arxif-panel';
+            allPanelsRefs.push(panel);
+
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab(tab, panel);
+            });
+
             var section = document.createElement('div');
             section.className = 'arxif-section';
-            section.innerHTML = '<div class="arxif-section-title arxif-cat-' + mw.html.escape(cat.key) + '"><span class="arxif-secdot"></span>' + mw.html.escape(cat.label) + '<span class="arxif-count">' + Number(cat.items.length) + '</span></div>';
-            
+            var secTitle = document.createElement('div');
+            secTitle.className = 'arxif-section-title arxif-cat-' + cat.key;
+            secTitle.innerHTML = '<span class="arxif-secdot"></span>' + mw.html.escape(cat.label) + '<span class="arxif-count">' + Number(cat.items.length) + '</span>';
+            section.appendChild(secTitle);
+
             var grid = document.createElement('div');
             grid.className = 'arxif-grid';
-            cat.items.forEach(function(it) { grid.appendChild(makeCard(it)); });
-            
+            cat.items.forEach(function(it) { grid.appendChild(makeCard(it, cat.key, cat.label)); });
             section.appendChild(grid);
             allPanel.appendChild(section);
+
+            var specificGrid = document.createElement('div');
+            specificGrid.className = 'arxif-grid';
+            cat.items.forEach(function(it) { specificGrid.appendChild(makeCard(it, cat.key, cat.label)); });
+            panel.appendChild(specificGrid);
         });
+
+        root.appendChild(tabbar);
         panelsContainer.appendChild(allPanel);
-
-        cats.forEach(function(cat) {
-            var panel = document.createElement('div');
-            panel.id = 'arxif-cat-' + cat.key.toLowerCase();
-            panel.className = 'arxif-panel';
-
-            var grid = document.createElement('div');
-            grid.className = 'arxif-grid';
-            cat.items.forEach(function(it) { grid.appendChild(makeCard(it)); });
-            
-            panel.appendChild(grid);
-            panelsContainer.appendChild(panel);
+        allPanelsRefs.forEach(function(p) {
+            if (!p.classList.contains('arxif-panel-all')) panelsContainer.appendChild(p);
         });
         root.appendChild(panelsContainer);
 
@@ -1280,28 +1216,21 @@ mw.hook('wikipage.content').add(function($content) {
         resultsPanel.className = 'arxif-results';
         var resultsGrid = document.createElement('div');
         resultsGrid.className = 'arxif-grid';
-        
+
         var searchCardsRefs = [];
         allItems.forEach(function(it) {
-            var card = makeCard(it);
+            var card = makeCard(it, it.catKey, it.catLabel);
             resultsGrid.appendChild(card);
             searchCardsRefs.push(card);
         });
-        
+
         var noResults = document.createElement('div');
         noResults.className = 'arxif-noresults';
         noResults.textContent = 'No items found.';
         noResults.style.display = 'none';
         resultsGrid.appendChild(noResults);
-        
         resultsPanel.appendChild(resultsGrid);
         root.appendChild(resultsPanel);
-
-        cats.forEach(function(cat) {
-            cat.items.forEach(function(it) {
-                root.appendChild(makePopup(it, cat.key, cat.label));
-            });
-        });
 
         searchInput.addEventListener('input', function(e) {
             var term = e.target.value.toLowerCase().trim();
@@ -1312,12 +1241,11 @@ mw.hook('wikipage.content').add(function($content) {
             }
             panelsContainer.style.display = 'none';
             resultsPanel.style.display = 'block';
-
             var matches = 0;
             searchCardsRefs.forEach(function(card) {
                 var name = card.getAttribute('data-name') || '';
-                if (name.includes(term)) {
-                    card.style.display = 'inline-block';
+                if (name.indexOf(term) !== -1) {
+                    card.style.display = 'block';
                     matches++;
                 } else {
                     card.style.display = 'none';
@@ -1340,5 +1268,4 @@ mw.hook('wikipage.content').add(function($content) {
     } else {
         initItemNav();
     }
-})();
 })();

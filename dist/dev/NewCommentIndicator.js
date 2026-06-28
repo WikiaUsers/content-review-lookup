@@ -37,8 +37,8 @@
 		var commentSelectors =
 		[
 			{ root: "#MessageWall", comment: ".Message, .Reply" },
-			{ root: "#articleComments", comment: "[class^='Comment_comment__'], [class^='Reply_reply__']" },
-			{ root: "#articleComments-panel", comment: "[class^='Comment_comment__'], [class^='Reply_reply__']" }
+			{ root: "#articleComments", comment: "[class*='Comment_comment__'], [class*='Reply_reply__']" },
+			{ root: "#articleComments-panel", comment: "[class*='Comment_comment__'], [class*='Reply_reply__']" }
 		];
 		
 		// Find the first comments root that exists on the page
@@ -196,7 +196,7 @@
 			
 			if (diffSec <= this.config.newThreshold)
 			{
-				var headerDetails = timeElem.closest("[class^='EntityHeader_header-details__']");
+				var headerDetails = timeElem.closest("[class*='EntityHeader_header-details__']");
 				var indicator = document.createElement("span");
 				indicator.className = "new-comment-indicator";
 				
@@ -239,10 +239,61 @@
 		}
 	};
 	
-	if (document.readyState == "loading") {
-		document.addEventListener("readystatechange", init);
-	} else {
-		init();
+	// Find the ResourceLoader module with the Timeago export (we can't rely on the module name since it changes)
+	var timeagoModule = Object.entries(mw.loader.moduleRegistry).find(function(obj)
+	{
+		if (obj[0].startsWith("index-"))
+		{
+			var m = obj[1];
+			return m.module && m.module.exports && m.module.exports.Timeago;
+		}
+	});
+	
+	if (timeagoModule == null)
+	{
+		console.error("NewCommentIndicator failed to find Timeago module!");
+		return;
 	}
+	else
+		timeagoModule = timeagoModule[0];
+	
+	// This overrides Timeago to use a correctly-formatted ISO string.
+	// Fandom is using Date.toLocaleString, which isn't a valid value for datetime,
+	// so if we try to use the <time>.dateTime interface, it's likely to be incorrect
+	// Remove all this when it gets fixed!
+	mw.loader.using(timeagoModule).then(function(require)
+	{
+		var exports = require(timeagoModule);
+		
+		var Timeago = exports.Timeago;
+		var TimeagoNew = function(e)
+		{
+			var iso = new Date(e.datetime).toISOString();
+			var elem = Timeago.apply(this, arguments);
+			elem.props.dateTime = iso;
+			return elem;
+		};
+		
+		exports.Timeago = TimeagoNew;
+		
+		// If articleComments already exists, we're too late, re-call the module
+		// to regenerate the comments with the new time strings (it's fairly fast
+		// since they're all cached already)
+		if (document.querySelector(".article-comments-app"))
+		{
+			console.log("Article comments loaded too early, resetting...");
+			var moduleToLoad = document.querySelector("#articleComments") 
+				? 'ext.fandom.ArticleComments.js' 
+				: 'ext.fandom.ArticleComments.panel.js';
+			return mw.loader.using(moduleToLoad);
+		}
+	})
+	.then(function(require)
+	{
+		if (document.readyState == "loading")
+			document.addEventListener("readystatechange", init);
+		else
+			init();
+	});
 	
 })();

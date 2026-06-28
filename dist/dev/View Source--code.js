@@ -27,7 +27,6 @@
         'wgPageContentModel',
         'wgPageName',
         'wgUserLanguage',
-        'wgVersion'
     ]),
 
 

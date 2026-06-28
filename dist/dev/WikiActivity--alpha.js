@@ -237,7 +237,6 @@
 		wka.MODULES = Object.freeze( [ 
 			"mediawiki.api",
 			"mediawiki.Title",
-			"mediawiki.Uri"
 		] );
 		
 		// The setters object

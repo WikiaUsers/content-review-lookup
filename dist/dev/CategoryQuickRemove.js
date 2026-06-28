@@ -28,8 +28,7 @@
     function cook(text) {
         // capitalize and despacelize text
         if (!text) return '';
-        var escapeRegex = mw.RegExp.escape || mw.util.escapeRegExp;
-        return '[' + text.slice(0, 1).toUpperCase() + text.slice(0, 1).toLowerCase() + ']' + escapeRegex(text.slice(1)).replace(/[ _]/g, '[ _]');
+        return '[' + text.slice(0, 1).toUpperCase() + text.slice(0, 1).toLowerCase() + ']' + mw.util.escapeRegExp(text.slice(1)).replace(/[ _]/g, '[ _]');
     }// cook
     
     function getPage(pagename) {

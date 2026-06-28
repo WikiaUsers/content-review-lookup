@@ -21,3 +21,17 @@ window.AddRailModule = [{
     mw.hook('AddRailModule.module').add(render);
     mw.hook('wikipage.content').add(render);
 })();
+
+/* [[w:c:dev:WelcomeMessage]] */
+window.welcomeMessage = {
+	enabled: true,
+	adminUsername: 'Sapphire-Diamond-Star',
+	adminNickname: 'Sapphire-Diamond-Star',
+	messageTitle: 'Welcome to KIRAKLE Wiki, $1!',
+	messageText: 'Hi $1, . Thank you for your edit to <a href="https://kirakle.fandom.com/wiki/$2" title="$2">$2</a>.\n‎ \n\n' +
+	'Before continuing, please click on the links listed below to learn more about contributing to the wiki:\n‎ \n\n' +
+	'{{Project}}\n‎ \n\n' +
+	'Visit the wiki%27s <a href="https://kirakle.fandom.com/wiki/Special:Community" title="Special:Community">community portal</a> to find incomplete tasks on the wiki. If you still need help, you can also be part of the larger Fandom family of communities. Visit <a href="https://community.fandom.com/wiki/Community_Wiki" title"w:c:community">Fandom%27s Community Central</a> to <a href="https://community.fandom.com/wiki/Help:Getting_Started" title"w:Help:Getting Started">get started</a>!\n‎ \n\n' +
+	'Enjoy your stay on KIRAKLE Wiki!\n‎ \n\n' +
+	'<span style="font-size: small; text-align: center;">This message is automated. Please do not reply</span>',
+};

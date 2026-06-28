@@ -31,6 +31,7 @@ window.lockOldComments.addNoteAbove = true;
 function replaceTitles() {
     const replacements = {
         "Temp": "temp",
+        "Staging.bloxd.io": "staging.bloxd.io",
         "Pumpkin placeholder": "Pumpkin_placeholder",
         "Pumpkin Placeholder": "Pumpkin_placeholder",
         "Cherry Door Top": "_Cherry Door Top"
@@ -53,7 +54,8 @@ function replaceTitles() {
         .replace(/Pumpkin placeholder/g, "Pumpkin_placeholder")
         .replace(/Pumpkin Placeholder/g, "Pumpkin_placeholder")
         .replace(/Cherry Door Top/g, "_Cherry Door Top")
-        .replace(/\bTemp\b/g, "temp");
+        .replace(/\bTemp\b/g, "temp")
+        .replace(/\bStaging.bloxd.io\b/g, "staging.bloxd.io");
 }
 
 replaceTitles();

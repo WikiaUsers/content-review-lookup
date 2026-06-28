@@ -25,13 +25,9 @@
     
     // MediaWiki variables
     const conf = mw.config.get( [ 
-        "wgVersion",
         "wgUserGroups",
         "wgFormattedNamespaces"
     ] );
-    
-    // Checks if the wiki is UCP
-    const isUCP = parseFloat( conf.wgVersion ) > 1.19;
     
     // Determines whether the string is not empty
     function notEmpty( s ) { 
@@ -413,32 +409,18 @@
                     }
                 } );
                     
-                const continueKey = isUCP ? "continue" : "query-continue";
-                
                 dil._dcount++;
                 
-                if ( response[ continueKey ] ) {
-                    const r = response[ continueKey ];
-                    if ( !isUCP ) {
-                        if ( r.duplicatefiles ) {
-                            const c = r.duplicatefiles.dfcontinue;
-                            
-                            dil.findDupImages( c );
-                        } else {
-                            const c = r.allimages.gaifrom;
-                            
-                            dil.findDupImages( c );
-                        }
+                if ( response.continue ) {
+                    const r = response.continue;
+                    if ( r.dfcontinue ) {
+                        const c = r.dfcontinue;
+                        
+                        dil.findDupImages( c );
                     } else {
-                        if ( r.dfcontinue ) {
-                            const c = r.dfcontinue;
-                            
-                            dil.findDupImages( c );
-                        } else {
-                            const c = r.gaicontinue;
-                            
-                            dil.findDupImages( c );
-                        }
+                        const c = r.gaicontinue;
+                        
+                        dil.findDupImages( c );
                     }
                 } else {
                     dil._processing = false;

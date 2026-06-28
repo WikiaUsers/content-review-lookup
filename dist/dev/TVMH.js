@@ -741,10 +741,9 @@
 			}
 
 			return new Promise( function ( resolve ) {
-				if ( TVMH.isUCP ) {
-					return resolve( [] );
-				}
+				return resolve( [] );
 
+				/*
 				if ( self.__tagsReport ) {
 					return resolve( self.__tagsReport );
 				}
@@ -753,6 +752,7 @@
 				return __fetch().then( function() {
 					resolve( self.__tagsReport );
 				} );
+				*/
 			} );
 		},
 
@@ -788,8 +788,6 @@
 
 	/*** MAIN OBJECT ***/
 	const TVMH = {
-		isUCP: mw.config.get( 'wgVersion' ) !== '1.19.24',
-
 		// because Fandom's jsminplus minifier is broken -.-
 		REGEX_COMMENT: new RegExp( '<!--(.*?)-->', 'gs' ),
 		REGEX_NOINCLUDE: new RegExp( '<noinclude>(.*?)<\\/noinclude>', 'gs' ),
@@ -820,10 +818,10 @@
 
 			this.rawDetection = !!mw.util.getParamValue( 'rawdetection' );
 
-			/*if ( this.isUCP ) {
-				alert( 'TagsReport API on UCP is currently broken, which prevents the script from working properly.' );
-				return;
-			}*/
+			/*
+			alert( 'TagsReport API is currently broken, which prevents the script from working properly.' );
+			return;
+			*/
 
 			TVMHApiWrapper.api = new mw.Api();
 

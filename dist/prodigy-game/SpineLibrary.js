@@ -1,5 +1,4 @@
 if (!window.dev) window.dev = {};
-else if (window.dev.spine) return;
 // Notes:
 //   The script reports errors - ignore them. The code runs fine.
 //   There is a single difference from the polyfill, being the change for spine to be defined to the `window.dev` global scope. This is to allow for the library to be accessed by the script.
@@ -60,7 +59,7 @@ function _toPrimitive(t, r) {
   }
   return ("string" === r ? String : Number)(t);
 }
-window.dev.spine = ((
+if (!window.dev.spine) window.dev.spine = ((
   _Color2,
   _MathUtils2,
   _Interpolation2,

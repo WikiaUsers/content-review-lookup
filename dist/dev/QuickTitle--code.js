@@ -78,7 +78,7 @@ mw.loader.using([
                             bot: true,
                             summary: $("#QuickTitleSummary").val(),
                             title: config.wgPageName,
-                            token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("editToken")
+                            token: mw.user.tokens.get("csrfToken")
                         }, text ? { "text": text } : { prependtext: displayTitle })).done(function(d) {
                             titleLocation.text(newTitle);
                             window.location.reload();

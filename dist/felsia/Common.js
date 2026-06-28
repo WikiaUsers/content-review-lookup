@@ -13,6 +13,20 @@
 @keyframes fade-out {
     to { opacity: 0; pointer-events: none; }
 }
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:NewImages.js',
+    ]
+});
+
+/* Auto-loading Recent Images for tactical sidebar */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:NewImages.js',
+    ]
+});
 
 /* ==========================================================================
    Avionics Flight Deck Instrumentation Controls

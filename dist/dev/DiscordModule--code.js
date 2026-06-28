@@ -13,7 +13,6 @@ mw.loader.using('mediawiki.util').done(function() {
             'wgPageName',
             'wgUserName',
             'wgUserGroups',
-            'wgVersion'
         ]);
 
     /*global require module list*/

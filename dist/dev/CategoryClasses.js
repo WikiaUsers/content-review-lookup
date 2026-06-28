@@ -19,7 +19,6 @@
     
     var config = mw.config.get([
         "wgPageName",
-        "wgVersion"
     ]);
     var request = {
         action: "query",
@@ -56,12 +55,7 @@
                     });
                 }
             }
-            if ((config.wgVersion === "1.19.24") && data && data["query-continue"]
-                && data["query-continue"].categories
-                && data["query-continue"].categories.clcontinue) {
-                request.clcontinue = data["query-continue"].categories.clcontinue;
-                run();
-            } else if (data && data["continue"] && data["continue"].clcontinue) {
+            if (data && data["continue"] && data["continue"].clcontinue) {
                 request.clcontinue = data["continue"].clcontinue;
                 run();
             }

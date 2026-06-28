@@ -14,3 +14,4 @@ importArticles({
         'u:dev:MediaWiki:BlockSummary.js',
     ]
 });
+window.discussionsModuleEmbed = true;

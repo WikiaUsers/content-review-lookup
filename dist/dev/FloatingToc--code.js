@@ -32,13 +32,7 @@
     	article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
 
-  var mwDeps = mw.config.get('wgVersion').includes('1.33') ? [
-    "jquery.ui.dialog",
-    "jquery.ui.draggable",
-    "jquery.ui.resizable",
-    "jquery.effects.slide",
-  ] : 'jquery.ui';
-  var jQueryUI = mw.loader.using(mwDeps);
+  var jQueryUI = mw.loader.using('jquery.ui');
 
   $.when(i18n, css, colors, jQueryUI)
     .then(function () {

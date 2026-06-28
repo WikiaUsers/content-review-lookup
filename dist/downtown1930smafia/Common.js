@@ -272,3 +272,4 @@ mw.loader.using("mediawiki.util").then(function () {
 
   });
 });
+dev:SpoilerTags.js

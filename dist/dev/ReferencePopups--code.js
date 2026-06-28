@@ -15,7 +15,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-/*jshint browser:true jquery:true laxbreak:true smarttabs:true multistr:true trailing:true */
+/*jshint browser:true, jquery:true, laxbreak:true, smarttabs:true, multistr:true, trailing:true */
 /*global mediaWiki */
 
 // Standard cite:
@@ -164,16 +164,15 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
     }
 
     // Deps
-    var isMediaWiki133 = mw.config.get('wgVersion').includes('1.33');
     var mwReady = $.Deferred(),
-        mwDeps = isMediaWiki133 ? ['jquery.ui.position', 'jquery.effects.fold', 'jquery.ui.core', 'jquery.ui.widget'] : 'jquery.ui';
+        mwDeps = 'jquery.ui';
     mw.loader.load(mwDeps, null, true);
     mw.loader.using(mwDeps, mwReady.resolve, mwReady.reject);
     var colors = window.dev.colors || importArticle({
     	type: 'script',
     	article: 'u:dev:MediaWiki:Colors/code.js'
     });
-    var effects = isMediaWiki133 || $.when(mwReady).then(function () {
+    var effects = $.when(mwReady).then(function () {
         return importArticle({
             type: 'script',
             article: 'u:dev:MediaWiki:ReferencePopups/jquery.effects.js'
@@ -684,9 +683,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
 }(window, jQuery))(function ( module, window, $, mw ) {
     "use strict";
 
-// Local Storage wrapper. I don't know when $.storage becomes available as it isn't
-// a standard ResourceLoader module. And I have an allergy to jquery.cookie
-// NOTE: IE8 supports localStorage and we don't care about anything more crap than that
+// Local Storage wrapper. TODO: use `mediawiki.storage` instead (?)
     var store = {
         get: function ( key ) {
             try {
