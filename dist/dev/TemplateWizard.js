@@ -454,6 +454,7 @@ mw.loader.using('mediawiki.api', () => {
 				pipe: '|',
 				tag: '<',
 				excl: '!',
+				eq: '=',
 			},
 			
 			// Test if start of nest and handle it
@@ -473,6 +474,11 @@ mw.loader.using('mediawiki.api', () => {
 						startC: S.bracketL,
 						endC: S.bracketR
 					},
+					{	// Handle HTML tag short calls
+						check: (first === S.tag && second === 'n'),
+						startR: /^<nowiki\s*>/,
+						endR: /^<\/\s*nowiki>/
+					},
 					{	// Handle HTML comments
 						check: (first === S.tag && second === S.excl),
 						startC: '<!--',
@@ -484,9 +490,9 @@ mw.loader.using('mediawiki.api', () => {
 						endR: /^\/>/
 					},
 					{	// Handle HTML tags
-						check: (first === S.tag && (/^<[a-z][^>/]*>[^<]*<\/[a-z][^>/]*>/).test(newS)),
+						check: (first === S.tag && (/^<[a-z][^>/]*>[^<]*<\/\s*[a-z][^>/]*>/).test(newS)),
 						startR: /^<\w+/,
-						endR: /^<\/\w+>/
+						endR: /^<\/\s*\w+>/
 					},
 				];
 
@@ -514,16 +520,36 @@ mw.loader.using('mediawiki.api', () => {
 				// Ignore template name
 				if (template.params === null) {template.params = {};}
 				else {
-					let sectioned = (/^([^=]*)(\s*=[^\n\S]*)([\s\S]*)$/).exec(tempParam.value);
+					let coded = tempParam.value.split('');
+					let sectioned = [];
+					let index = 0;
+					console.log(coded, 'coded');
+					while (index < coded.length) {
+						if (coded[index] === S.eq && !sectioned[1]) {
+							sectioned = [
+								tempParam.value.slice(0, index),
+								tempParam.value.slice(index+1)
+							];
+							break;
+						} else {
+							let nest = handleNest(tempParam.value.substring(index));
+							if (nest && nest.length>0) {
+								index =+ nest;
+							} else {
+								index++;
+							}
+						}
+					}
+					console.log(sectioned, 'sectioned');
 					let param = {
 						raw: tempParam.value, // entire param string
 						start: tempParam.start, // param string start point
 						end: end, // param string end point
 					};
 					// Terminate into parsed template
-					if (sectioned && sectioned[1]) {
-						param.value = sectioned[3];
-						param.name = sectioned[1].trim();
+					if (sectioned && sectioned[0]) {
+						param.value = sectioned[1].trim();
+						param.name = sectioned[0].trim();
 					} else {
 						template.unnamedCount++;
 						param.value = tempParam.value;
@@ -536,7 +562,8 @@ mw.loader.using('mediawiki.api', () => {
 						TW.paramOrder.push(param.name);
 						template.paramOrder.push(param.name);
 					} else if (!template.dupes || (template.dupes && !template.dupes.includes(param.selected))) {
-						template.dupes = (template.dupes || []).push(param.selected); // Mark as repeated
+						template.dupes = (template.dupes || []);
+						template.dupes.push(param.selected); // Mark as repeated
 					}
 					template.params[param.name] = param; // Only keep latest version
 	

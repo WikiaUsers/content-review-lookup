@@ -57,31 +57,31 @@ $(function() {
 
 /* ========== НОВАЯ СИСТЕМА ТУЛТИПОВ ========== */
 window.tooltips_list = [
-    {
-        classname: 'item-tooltip',
-        parse: '{' + '{Template:Item tip|1=<#name#>|2=<#title#>|3=<#tier#>|4=<#use#>|5=<#desc#>|6=<#obtain#>|7=<#firstdrop#>|8=<#regdrop#>|9=<#specdrop#>|10=<#base#>|11=<#cond#>}}',
-    }, {
-        classname: 'enemy-tooltip',
-        parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#title#>|3=<#code#>|4=<#race#>|5=<#type#>}}',
-    }, {
-        classname: 'character-tooltip',
-        parse: '{' + '{Template:Character tip|1=<#name#>|2=<#class#>|3=<#class#>|4=<#branch#>|5=<#rarity#>|6=<#faction#>}}',
-    }, {
-        classname: 'collectible-tooltip',
-        parse: '{' + '{Template:Collectible tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text2b#>|5=<#text2c#>|t=<#type#>|no=<#no#>|e=<#event#>|q=<#quality#>|c=<#condition#>}}',
-    }, {
-        classname: 'furniture-tooltip',
-        parse: '{' + '{Template:Furniture tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text2b#>|5=<#text2c#>|title=<#title#>|a=<#ambience#>|t1=<#type#>|t2=<#theme#>|s=<#set#>|o=<#obtain#>|o1a=<#obtain1a#>|o1b=<#obtain1b#>|o1c=<#obtain1c#>}}',
-    }, {
-        classname: 'outfit-tooltip',
-        parse: '{' + '{Template:Outfit tip|1=<#name#>|2=<#text1#>|3=<#text2#>|4=<#text3#>|m=<#model#>|s1=<#skin#>|i=<#illustrator#>|s2=<#series#>|o=<#obtain#>}}',
-    }, {
-        classname: 'glossary',
-        parse: '{' + '{Template:Glossary tip|1=<#name#>|2=<#title#>|3=<#desc#>}}',
-    }, {
-        classname: 'profile-picture-tooltip',
-        parse: '{' + '{Template:Profile picture tip|1=<#name#>|2=<#text#>|d=<#default#>|o=<#obtain#>}}',
-    }
+	{
+		classname: 'item-tooltip',
+		parse: '{' + '{Template:Item tip|1=<#name#>|2=<#title#>|3=<#tier#>|4=<#use#>|5=<#desc#>|6=<#obtain#>|7=<#firstdrop#>|8=<#regdrop#>|9=<#specdrop#>|10=<#base#>|11=<#cond#>}}',
+	},  {
+		classname: 'enemy-tooltip',
+		parse: '{' + '{Template:Enemy tip|1=<#name#>|2=<#title#>|3=<#code#>|4=<#race#>|5=<#type#>}}',
+	},  {
+		classname: 'character-tooltip',
+		parse: '{' + '{Template:Character tip|1=<#name#>|2=<#title#>|3=<#class#>|4=<#branch#>|5=<#star#>|6=<#faction#>}}',
+	},	{
+		classname: 'collectible-tooltip',
+		parse: '{' + '{Template:Collectible tip|1=<#name#>|2=<#title#>|3=<#num#>|4=<#qlt#>|5=<#use#>|6=<#desc#>|7=<#theme#>|8=<#cond#>}}',
+	},	{
+		classname: 'furniture-tooltip',
+		parse: '{' + '{Template:Furniture tip|1=<#name#>|2=<#title#>|3=<#use#>|4=<#desc#>|5=<#ambience#>|6=<#cat#>|7=<#theme#>|8=<#set#>|9=<#obtain#>|10=<#firstdrop#>|11=<#regdrop#>}}',
+	},	{
+		classname: 'outfit-tooltip',
+		parse: '{' + '{Template:Outfit tip|1=<#name#>|2=<#model#>|3=<#num#>|4=<#artist#>|5=<#use#>|6=<#quote#>|7=<#series#>|8=<#desc#>|9=<#obtain#>|10=<#title#>}}',
+	},	{
+		classname: 'glossary',
+		parse: '{' + '{Template:Glossary tip|1=<#name#>|2=<#title#>|3=<#desc#>}}',
+	},	{
+		classname: 'profile-picture-tooltip',
+		parse: '{' + '{Template:Profile picture tip|1=<#name#>|2=<#title#>|3=<#desc#>|4=<#obtain#>}}',
+	}
 ];
 
 // Движок тултипов (с wiki.gg)

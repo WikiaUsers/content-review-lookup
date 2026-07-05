@@ -453,12 +453,14 @@
             wrapoutputclass: ''
         } ).then( function ( parsed ) {
             var current = getCurrentISOWeekAndYear();
-            // Заголовок недели переносим внутрь .comics-week; .comics-week_title — под .mw-collapsible, — это необходимо для корректной работы CSS (order: -1 в railModule); .mw-collapsible даёт раскрывающуюся вкладку; инициализируется через jquery.makeCollapsible
+            // Заголовок недели переносим внутрь .comics-week, чтобы .comics-week_title был siblings с .mw-collapsible — это необходимо для корректной работы CSS (order: -1 в railModule), .mw-collapsible даёт раскрывающуюся вкладку; инициализируется через jquery.makeCollapsible
             container.innerHTML =
                 '<div class="comics-week">' +
-                    getWeekRange( current.week, current.year ) +
                     '<div class="mw-collapsible mw-collapsed">' +
                         '<div class="mw-collapsible-content">' +
+                            '<div class="comics-week_title">' +
+                                getWeekRange( current.week, current.year ) +
+                            '</div>' +
                             '<div class="comics-table">' +
                                 parsed +
                             '</div>' +
@@ -550,8 +552,8 @@
     } );
  
 }( jQuery, mediaWiki ) );
-// html контейнер для корректного вызова:
-/*<div id="marvel-weekly-calendar">
+/* HTML-контейнер для корректного вызова:
+<div id="marvel-weekly-calendar">
   <div class="week-header"></div>
   <div class="comics-container">Загрузка...</div>
 </div> */

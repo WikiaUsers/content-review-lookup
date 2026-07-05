@@ -3,27 +3,30 @@
  *
  * Server side (Module:FusionSearch) emits, per .fusion-search-app:
  *   data-familiars            : JSON array of { id, name } for every familiar
- *                               (drives suggestions + name->id resolution)
+ *   data-materials            : JSON array of { id, name } for every material
+ *                               (both drive suggestions + name->id resolution)
  *   .fusion-search-controls   : reserved-height box containing a no-JS
  *                               fallback line; we remove the fallback and
  *                               inject the input + <datalist> + Search button
  *   .fusion-search-result     : empty; we inject the rendered tree
  *
- * On search we resolve the typed value to a familiar id CLIENT-SIDE (exact
- * name, then prefix). If it doesn't resolve, we show "not found" with no
- * network call. If it does, we ask the parse API to run
- *   {{#invoke:FusionTable|render|<id>}}
- * and inject the returned HTML. The id is numeric and comes from our own
- * data, so there is no wikitext-injection surface. Module:FusionTable stays
- * the one and only tree renderer.
+ * On search we resolve the typed value CLIENT-SIDE to a { type, id } pair --
+ * exact name (familiars, then materials), then prefix. If it doesn't resolve we
+ * show "not found" with no network call. If it does, we ask the parse API to run
+ *   {{#invoke:FusionTable|render|<id>|<type>}}
+ * and inject the returned HTML. A familiar renders a tree + shopping list;
+ * a material renders only its "Used In" table (materials have no recipe).
+ * Both id and type are validated (numeric id; type whitelisted) before use, and
+ * both come from our own data, so there's no wikitext-injection surface.
+ * Module:FusionTable stays the one and only renderer.
  *
  * Suggestions: the <datalist> starts empty and is refilled on every keystroke
- * with only the matching names (capped), and only once the user has typed
- * MIN_CHARS. Population is synchronous on the 'input' event -- a native
- * datalist decides whether to open its popup at keystroke time, so options
- * must already be present then; deferring them (e.g. via debounce) makes the
- * popup lag a keystroke or not appear at all. The list is small, so filtering
- * every keystroke is cheap.
+ * with only the matching names (capped), once the user has typed MIN_CHARS.
+ * Familiars are listed first, then materials, and each <option> carries a
+ * `label` naming its category. Native datalists ignore <optgroup>, so ordering +
+ * label is the most separation a native control allows. Population is
+ * synchronous on the 'input' event -- a native datalist decides whether to open
+ * its popup at keystroke time, so options must already be present then.
  *
  * Install: test via Special:MyPage/common.js; production via MediaWiki:Common.js
  * (requires custom-JS enablement + JS review; desktop skin only).
@@ -32,7 +35,7 @@
 	'use strict';
 
 	var MIN_CHARS = 3;          // don't suggest until this many characters typed
-	var MAX_SUGGESTIONS = 10;   // cap the dropdown length
+	var MAX_SUGGESTIONS = 10;   // cap the dropdown length, PER category
 
 	function init( content ) {
 		var root = ( content && content[ 0 ] ) || document;
@@ -75,13 +78,28 @@
 			return;
 		}
 
-		// Index by lower-cased name for exact resolution.
-		var byName = {};
-		familiars.forEach( function ( f ) {
-			if ( f && f.name ) {
-				byName[ f.name.toLowerCase() ] = f;
-			}
-		} );
+		// Materials are optional: if absent or malformed, degrade to familiars-only
+		// rather than breaking the whole widget.
+		var materials;
+		try {
+			materials = JSON.parse( app.getAttribute( 'data-materials' ) || '[]' );
+		} catch ( e ) {
+			materials = [];
+		}
+
+		// Index each book by lower-cased name -> { type, id, name } for exact
+		// resolution. Familiars take precedence on a (rare) name clash.
+		function indexByName( list, type ) {
+			var map = {};
+			list.forEach( function ( r ) {
+				if ( r && r.name ) {
+					map[ r.name.toLowerCase() ] = { type: type, id: r.id, name: r.name };
+				}
+			} );
+			return map;
+		}
+		var byNameFam = indexByName( familiars, 'familiar' );
+		var byNameMat = indexByName( materials, 'material' );
 
 		// Build controls: input + native datalist + Search button.
 		var listId = 'fs-list-' + Math.random().toString( 36 ).slice( 2 );
@@ -94,7 +112,7 @@
 		input.type = 'text';
 		input.className = 'fusion-search-input';
 		input.setAttribute( 'list', listId );
-		input.setAttribute( 'placeholder', 'Search a familiar\u2026' );
+		input.setAttribute( 'placeholder', 'Search a familiar or material\u2026' );
 
 		var button = document.createElement( 'button' );
 		button.type = 'button';
@@ -106,9 +124,25 @@
 		controls.appendChild( button );
 		controls.appendChild( datalist );
 
-		// Refill the datalist with up to MAX_SUGGESTIONS names matching the
-		// current input, once at least MIN_CHARS have been typed. Below the
-		// threshold the list is left empty so no dropdown shows.
+		// Append up to MAX_SUGGESTIONS substring matches from one list, tagging
+		// each option with a category label. Capped per-list so both familiars
+		// and materials can appear even when one group has many matches.
+		function appendMatches( list, key, typeLabel ) {
+			var shown = 0;
+			for ( var i = 0; i < list.length && shown < MAX_SUGGESTIONS; i++ ) {
+				var name = list[ i ].name || '';
+				if ( name.toLowerCase().indexOf( key ) !== -1 ) {   // substring match
+					var opt = document.createElement( 'option' );
+					opt.value = name;
+					opt.label = typeLabel;   // category hint (shown where supported)
+					datalist.appendChild( opt );
+					shown++;
+				}
+			}
+		}
+
+		// Refill the datalist once at least MIN_CHARS have been typed: familiars
+		// first, then materials. Below the threshold it's left empty (no popup).
 		function refreshSuggestions() {
 			var key = input.value.trim().toLowerCase();
 
@@ -120,16 +154,18 @@
 				return;
 			}
 
-			var shown = 0;
-			for ( var i = 0; i < familiars.length && shown < MAX_SUGGESTIONS; i++ ) {
-				var name = familiars[ i ].name || '';
-				if ( name.toLowerCase().indexOf( key ) !== -1 ) {   // substring match
-					var opt = document.createElement( 'option' );
-					opt.value = name;
-					datalist.appendChild( opt );
-					shown++;
+			appendMatches( familiars, key, 'Familiar' );
+			appendMatches( materials, key, 'Material' );
+		}
+
+		function prefixHit( list, key, type ) {
+			for ( var i = 0; i < list.length; i++ ) {
+				var n = ( list[ i ].name || '' ).toLowerCase();
+				if ( n.indexOf( key ) === 0 ) {
+					return { type: type, id: list[ i ].id, name: list[ i ].name };
 				}
 			}
+			return null;
 		}
 
 		function resolve( value ) {
@@ -140,35 +176,39 @@
 			if ( !key ) {
 				return null;
 			}
-			if ( byName[ key ] ) {
-				return byName[ key ];            // exact (case-insensitive)
+			if ( byNameFam[ key ] ) {
+				return byNameFam[ key ];             // exact familiar (wins on clash)
 			}
-			for ( var i = 0; i < familiars.length; i++ ) {   // prefix fallback
-				var n = ( familiars[ i ].name || '' ).toLowerCase();
-				if ( n.indexOf( key ) === 0 ) {
-					return familiars[ i ];
-				}
+			if ( byNameMat[ key ] ) {
+				return byNameMat[ key ];             // exact material
 			}
-			return null;
+			var hit = prefixHit( familiars, key, 'familiar' );   // prefix: familiars first
+			if ( hit ) {
+				return hit;
+			}
+			return prefixHit( materials, key, 'material' );
 		}
 
 		function search() {
 			var rec = resolve( input.value );
 			if ( !rec ) {
-				msg( result, 'No familiar found matching "' + input.value + '".', 'fusion-search-notfound' );
+				msg( result, 'Nothing found matching "' + input.value + '".', 'fusion-search-notfound' );
 				return;
 			}
 			// id is from our own data; require it to be numeric before use.
 			var id = String( rec.id );
 			if ( !/^\d+$/.test( id ) ) {
-				msg( result, 'That familiar has an invalid id.', 'fusion-search-error' );
+				msg( result, 'That entry has an invalid id.', 'fusion-search-error' );
 				return;
 			}
-			renderTree( id );
+			// type is whitelisted -- only these two reach the invoke.
+			var type = ( rec.type === 'material' ) ? 'material' : 'familiar';
+			renderResult( id, type );
 		}
 
-		function renderTree( id ) {
-			msg( result, 'Loading fusion tree\u2026', 'fusion-search-loading' );
+		function renderResult( id, type ) {
+			msg( result, ( type === 'material' ? 'Loading\u2026' : 'Loading fusion tree\u2026' ),
+				'fusion-search-loading' );
 
 			if ( !( window.mw && mw.loader && mw.loader.using ) ) {
 				msg( result, 'MediaWiki JS API is unavailable on this page.', 'fusion-search-error' );
@@ -177,7 +217,7 @@
 
 			mw.loader.using( [ 'mediawiki.api' ] ).then( function () {
 				return new mw.Api().parse(
-					'{{#invoke:FusionTable|render|' + id + '}}',
+					'{{#invoke:FusionTable|render|' + id + '|' + type + '}}',
 					{ disablelimitreport: 1 }
 				);
 			} ).then( function ( html ) {
@@ -187,12 +227,12 @@
 						( html.parse.text[ '*' ] || html.parse.text ) ) || '';
 				}
 				if ( !html ) {
-					msg( result, 'The fusion tree came back empty (is Module:FusionTable installed?).', 'fusion-search-error' );
+					msg( result, 'The result came back empty (is Module:FusionTable installed?).', 'fusion-search-error' );
 					return;
 				}
 				result.innerHTML = String( html );
 
-				// The injected tree is taller than the empty result box, so nudge
+				// The injected content is taller than the empty result box, so nudge
 				// any height-managing gadget (e.g. Collapse Header) to re-measure.
 				if ( window.requestAnimationFrame ) {
 					requestAnimationFrame( function () {
@@ -212,7 +252,7 @@
 				} else if ( code && code.message ) {
 					detail = code.message;
 				}
-				msg( result, 'Could not load the fusion tree: ' + ( detail || 'unknown error' ) + '.', 'fusion-search-error' );
+				msg( result, 'Could not load the result: ' + ( detail || 'unknown error' ) + '.', 'fusion-search-error' );
 			} );
 		}
 

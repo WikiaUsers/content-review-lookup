@@ -1,4 +1,4 @@
-// The css used for this feature can be found in MediaWiki:UweInactivityWindow.css
+// The css used for this feature can be found at [[MediaWiki:UweInactivityWindow.css]]
 
 let timeout;
 
@@ -16,7 +16,7 @@ function createPrompt() {
     let text1 = document.createElement('span');
     text1.innerText = 'You haven\'t moved your mouse for at least fifteen minutes. That got us wondering:';
 
-    let text2 = document.createElement('span');
+    let text2 = document.createElement('b');
     text2.innerText = 'Are you still alive?';
 
     let buttonContainer = document.createElement('div');

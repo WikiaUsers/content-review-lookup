@@ -352,30 +352,14 @@ mw.loader.using('jquery').then(function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(function() {
+/********/
+(function () {
     function forceHighRes(img) {
         if (img.classList.contains('high-res-fixed')) return;
 
         var src = img.getAttribute('src') || '';
         var dataSrc = img.getAttribute('data-src') || '';
-        
+
         var scaleRegex = /\/(scale-to-width-down|thumbnail-down|smart\/width)\/\d+/ig;
         var needsFixing = false;
 
@@ -383,14 +367,18 @@ mw.loader.using('jquery').then(function () {
             img.setAttribute('src', src.replace(scaleRegex, ''));
             needsFixing = true;
         }
-        
+
         if (dataSrc.match(scaleRegex)) {
             img.setAttribute('data-src', dataSrc.replace(scaleRegex, ''));
             needsFixing = true;
         }
 
-        if (img.hasAttribute('srcset') || img.hasAttribute('data-srcset')) {
+        if (img.hasAttribute('srcset')) {
             img.removeAttribute('srcset');
+            needsFixing = true;
+        }
+
+        if (img.hasAttribute('data-srcset')) {
             img.removeAttribute('data-srcset');
             needsFixing = true;
         }
@@ -400,29 +388,30 @@ mw.loader.using('jquery').then(function () {
         }
     }
 
-    mw.hook('wikipage.content').add(function($content) {
-        $content.find('.wikia-gallery .thumbimage, .gallerybox img').each(function() {
+    mw.hook('wikipage.content').add(function ($content) {
+        $content.find('img').each(function () {
             forceHighRes(this);
         });
     });
 
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-                var target = mutation.target;
-                if (target.tagName === 'IMG' && target.classList.contains('thumbimage')) {
-                    forceHighRes(target);
-                }
-            }
-            else if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach(function(node) {
-                    if (node.nodeType === 1) {
-                        if (node.tagName === 'IMG' && node.classList.contains('thumbimage')) {
-                            forceHighRes(node);
-                        } else {
-                            var imgs = node.querySelectorAll('.wikia-gallery .thumbimage, .gallerybox img');
-                            imgs.forEach(function(img) { forceHighRes(img); });
-                        }
+    var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (
+                mutation.type === 'attributes' &&
+                mutation.attributeName === 'src' &&
+                mutation.target.tagName === 'IMG'
+            ) {
+                forceHighRes(mutation.target);
+            } else if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function (node) {
+                    if (node.nodeType !== 1) return;
+
+                    if (node.tagName === 'IMG') {
+                        forceHighRes(node);
+                    } else {
+                        node.querySelectorAll('img').forEach(function (img) {
+                            forceHighRes(img);
+                        });
                     }
                 });
             }

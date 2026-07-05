@@ -163,6 +163,8 @@
 		setProgress( null );
 		$( '#mgu-mutation' ).val( '' );
 		$( '#mgu-count' ).text( '0' ).removeClass( 'mgu-count--warn mgu-count--limit' );
+		var sbw = window.innerWidth - document.documentElement.clientWidth;
+		document.documentElement.style.setProperty( '--mgu-sbw', sbw + 'px' );
 		$( 'body' ).addClass( 'mgu-no-scroll' );
 		$( '#mgu-overlay' ).removeAttr( 'aria-hidden' ).addClass( 'mgu-overlay--open' );
 		$( '#mgu-mutation' ).trigger( 'focus' );

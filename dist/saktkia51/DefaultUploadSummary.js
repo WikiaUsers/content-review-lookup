@@ -20,10 +20,7 @@
 		
 		let summaryText = '[[' + "Category:Unsorted files]]";
 		function addDefaultSummary() {
-			const e = document.querySelectorAll("*[id^='wpUploadDescription']");
-			e.forEach(function(elem) {
-				elem.value = summaryText.toString();
-			});
+			document.querySelectorAll("*[id^='wpUploadDescription']").forEach((elem) => elem.value=summaryText);
 		};
 		
 		// Due to load order differences between site and personal JS, the usage of looped intervals are used here to ensure an event listener is added to the proper file input.
@@ -36,8 +33,9 @@
 					elem.addEventListener('change', addDefaultSummary);
 					console.log(`[${toolName}] [LOG]: Successfully found element ID ${searchingID}.`);
 				};
-				if (performance.now() - origPerformance >= msCap || elem) {
+				if (elem || performance.now() - origPerformance >= msCap) {
 					clearInterval(intervals[intervalName]);
+					delete intervals[intervalName];
 				};
 			}, delay);
 		};

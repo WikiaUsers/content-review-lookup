@@ -11,35 +11,44 @@
             if (el.dataset.initialized) return;
             el.dataset.initialized = "true";
 
-            const target = new Date(el.getAttribute("data-date")).getTime();
+            const dateString =
+                el.getAttribute("data-date") ||
+                el.getAttribute("data-target");
+
+            const target = new Date(dateString).getTime();
+
+            if (isNaN(target)) {
+                el.textContent = "INVALID DATE";
+                return;
+            }
 
             function update() {
-                const now = new Date().getTime();
+                const now = Date.now();
                 const diff = target - now;
 
                 if (diff <= 0) {
                     el.textContent = "COUNTDOWN ENDED";
+                    clearInterval(interval);
                     return;
                 }
 
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const m = Math.floor((diff / (1000 * 60)) % 60);
-                const s = Math.floor((diff / 1000) % 60);
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
 
                 el.textContent =
-                    d + "d " +
-                    h + "h " +
-                    m + "m " +
-                    s + "s";
+                    days + "d " +
+                    hours + "h " +
+                    minutes + "m " +
+                    seconds + "s";
             }
 
             update();
-            setInterval(update, 1000);
+            const interval = setInterval(update, 1000);
 
         });
     }
-
 
     /* =========================
        TIME ELAPSED TIMER SYSTEM
@@ -54,8 +63,13 @@
 
             const start = new Date(el.getAttribute("data-start")).getTime();
 
+            if (isNaN(start)) {
+                el.textContent = "INVALID DATE";
+                return;
+            }
+
             function update() {
-                const now = new Date().getTime();
+                const now = Date.now();
                 const diff = now - start;
 
                 if (diff < 0) {
@@ -63,16 +77,16 @@
                     return;
                 }
 
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const m = Math.floor((diff / (1000 * 60)) % 60);
-                const s = Math.floor((diff / 1000) % 60);
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
 
                 el.textContent =
-                    d + "d " +
-                    h + "h " +
-                    m + "m " +
-                    s + "s";
+                    days + "d " +
+                    hours + "h " +
+                    minutes + "m " +
+                    seconds + "s";
             }
 
             update();
@@ -80,7 +94,6 @@
 
         });
     }
-
 
     /* =========================
        AUDIO AUTO-PAUSE SYSTEM
@@ -96,18 +109,15 @@
             audio.addEventListener("play", function () {
 
                 audios.forEach(function (otherAudio) {
-
                     if (otherAudio !== audio) {
                         otherAudio.pause();
                     }
-
                 });
 
             });
 
         });
     }
-
 
     /* =========================
        INITIALIZE EVERYTHING
@@ -118,10 +128,16 @@
         initAudioPlayers();
     }
 
-    document.addEventListener("DOMContentLoaded", initAll);
-
-    mw.hook("wikipage.content").add(function () {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initAll);
+    } else {
         initAll();
-    });
+    }
+
+    if (typeof mw !== "undefined") {
+        mw.hook("wikipage.content").add(function () {
+            initAll();
+        });
+    }
 
 })();

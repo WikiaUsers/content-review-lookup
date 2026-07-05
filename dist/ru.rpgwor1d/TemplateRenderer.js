@@ -1,31 +1,37 @@
 (function() {
   function parseTemplateInDiv() {
-    // Ищем все элементы с id="parseTemplate" (для лучшей практики лучше использовать класс)
     var parseTemplateDivs = document.querySelectorAll('#parseTemplate');
 
     parseTemplateDivs.forEach(function(div) {
-      var templateName = div.textContent.trim(); // имя шаблона из текста div
+      var templateName;
+      // Проверяем, есть ли внутри скрытый блок с именем шаблона
+      var nameDiv = div.querySelector('#parseTemplateName');
+      if (nameDiv) {
+        // Новый способ: имя берётся из #parseTemplateName,
+        // содержимое #parseReplace игнорируется при считывании имени
+        templateName = nameDiv.textContent.trim();
+      } else {
+        // Старый способ: имя шаблона — это текстовое содержимое div
+        templateName = div.textContent.trim();
+      }
+
       var params = [];
 
-      // Собираем параметры из data-атрибутов
+      // Сбор параметров из data-атрибутов
       var attributes = div.attributes;
       for (var i = 0; i < attributes.length; i++) {
         var attr = attributes[i];
         if (attr.name.startsWith('data-')) {
-          var paramKey = attr.name.slice(5); // часть после "data-"
+          var paramKey = attr.name.slice(5);
           if (paramKey.startsWith('param-')) {
-            // Именованный параметр: data-param-имя="значение"
             var paramName = paramKey.slice(6);
             params.push({ type: 'named', name: paramName, value: attr.value });
           } else if (/^\d+$/.test(paramKey)) {
-            // Позиционный параметр: data-1, data-2 и т.д.
             params.push({ type: 'positional', index: parseInt(paramKey, 10), value: attr.value });
           }
-          // Остальные data-* атрибуты игнорируются
         }
       }
 
-      // Формируем строку параметров для викитекста
       var positionalParams = params
         .filter(function(p) { return p.type === 'positional'; })
         .sort(function(a, b) { return a.index - b.index; });
@@ -47,14 +53,14 @@
           contentmodel: 'wikitext',
           format: 'json',
           uselang: mw.config.get('wgUserLanguage'),
-          title: mw.config.get('wgPageName') // важно для относительных ссылок
+          title: mw.config.get('wgPageName')
         },
         dataType: 'json',
         success: function(data) {
           if (data.parse && data.parse.text && data.parse.text['*']) {
-            div.innerHTML = data.parse.text['*']; // заменяем содержимое div
+            // Замена содержимого div результатом парсинга (при этом #parseReplace удаляется)
+            div.innerHTML = data.parse.text['*'];
 
-            // Применяем tooltips (если подключена система подсказок)
             if (typeof tooltips !== 'undefined' && tooltips.applyTooltips) {
               tooltips.applyTooltips($(div));
             }
@@ -71,7 +77,6 @@
     });
   }
 
-  // Запуск после загрузки страницы
   $(document).ready(function() {
     parseTemplateInDiv();
   });

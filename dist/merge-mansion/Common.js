@@ -168,4 +168,40 @@ importScript('MediaWiki:Events.js');
   }
 })();
 
+
+/* Uses table sticky-header state: toggle .mm-uses-stuck on the table while its
+   sticky column header is actually stuck under the Fandom bar, so header-icon
+   tooltips flip below the icon ONLY when scrolled (Common.css handles the flip).
+   Sentinel + IntersectionObserver at the sticky offset; no per-scroll cost. */
+(function () {
+  var OFFSET = 45; // must match Common.css: .itemUsesTable th top calc(46px - 1px)
+  function initUsesStuck(root) {
+    var scope = root || document;
+    var tables = scope.querySelectorAll ? scope.querySelectorAll(".itemUsesTable") : [];
+    Array.prototype.forEach.call(tables, function (table) {
+      if (table.dataset.mmStuckInit) return;
+      table.dataset.mmStuckInit = "1";
+      var sentinel = document.createElement("div");
+      sentinel.className = "mm-uses-sentinel";
+      sentinel.style.cssText = "position:relative;height:0;margin:0;padding:0;border:0;";
+      table.parentNode.insertBefore(sentinel, table);
+      var io = new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        var stuck = e.intersectionRatio === 0 && e.boundingClientRect.top < OFFSET;
+        table.classList.toggle("mm-uses-stuck", stuck);
+      }, { threshold: [0], rootMargin: "-" + OFFSET + "px 0px 0px 0px" });
+      io.observe(sentinel);
+    });
+  }
+  if (window.mw && mw.hook) {
+    mw.hook("wikipage.content").add(function ($content) {
+      initUsesStuck(($content && $content[0]) ? $content[0] : document);
+    });
+  } else if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { initUsesStuck(document); });
+  } else {
+    initUsesStuck(document);
+  }
+})();
+
 console.log("COMMON.JS END");

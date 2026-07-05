@@ -1576,7 +1576,7 @@
       lootmatch = theline.match(loot_regexps[0]);
       //regular loot
       if (lootmatch) {
-        lootignore = theline.match(/\b(?:active prey bonus|boss bonus|gut charm|bounty talisman|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute|hazard|bakragore's tribute|soul core)\b/i);
+        lootignore = theline.match(/\b(?:active prey bonus|boss bonus|gut charm|bounty talisman|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute|hazard|bakragore's tribute|soul core|echo warden kill)\b/i);
         if (!lootignore) {
           lootparser_loot_process_loot(lootmatch[1], lootmatch[2], monsters, loot_exp, loot_tem);
         }

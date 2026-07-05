@@ -35,3 +35,6 @@ window.welcomeMessage = {
 	'Enjoy your stay on KIRAKLE Wiki!\n‎ \n\n' +
 	'<span style="font-size: small; text-align: center;">This message is automated. Please do not reply</span>',
 };
+
+
+/* [[w:c:dev:Standard_Edit_Summary]] */

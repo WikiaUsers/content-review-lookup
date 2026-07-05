@@ -3,7 +3,6 @@
 //LockOldComments
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 7;
-window.lockOldComments.addNoteAbove = true;
 
 //BackToTopButton
 window.BackToTopModern = true;

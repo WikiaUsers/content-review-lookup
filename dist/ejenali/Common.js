@@ -93,6 +93,15 @@ importArticles({
     ]
 });
 
+importArticles({
+    type: 'script',
+    articles: [
+        // ...
+        'w:c:dev:ReferencePopups/code.js',
+        // ...
+    ]
+});
+
 /* Ejen Ali custom audio button */
 
 $(function () {

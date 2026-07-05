@@ -216,29 +216,26 @@ observer.observe(document.body, {
 
 // Infobox tab syncronization --------------------------------------------------
 setTimeout(() => {
-	const groups = [
-		{
-			buttons: [...document.querySelectorAll(".wds-tab__content.wds-is-current .pi-image-collection .wds-tabs__tab")],
-			images:  [...document.querySelectorAll(".wds-tab__content.wds-is-current .pi-image-collection .wds-tab__content:nth-child(n+2)")]
-		},
-		{
-			buttons: [...document.querySelectorAll(".wds-tab__content:not(.wds-is-current) .pi-image-collection .wds-tabs__tab")],
-			images:  [...document.querySelectorAll(".wds-tab__content:not(.wds-is-current) .pi-image-collection .wds-tab__content:nth-child(n+2)")]
-		}
-	];
-	
-	function activate(index, from, to) {
-		from.buttons.forEach((b,i) => b.classList.toggle("wds-is-current", i === index));
-		from.images.forEach((img,i) => img.classList.toggle("wds-is-current", i === index));
-		to.buttons.forEach((b,i) => b.classList.toggle("wds-is-current", i === index));
-		to.images.forEach((img,i) => img.classList.toggle("wds-is-current", i === index));
-	}
-	
-	groups.forEach((group, gIndex) => {
-		group.buttons.forEach((btn, i) => {
-			btn.addEventListener("click", () => {
-				activate(i, groups[gIndex], groups[1 - gIndex]);
-			});
-		});
-	});
+    const groups = [...document.querySelectorAll(".pi-image-collection")]
+        .map(collection => ({
+            buttons: [...collection.querySelectorAll(".wds-tabs__tab")],
+            images:  [...collection.querySelectorAll(".wds-tab__content:nth-child(n+2)")]
+        }));
+
+    function activateAll(index) {
+        groups.forEach(group => {
+            group.buttons.forEach((b, i) =>
+                b.classList.toggle("wds-is-current", i === index)
+            );
+            group.images.forEach((img, i) =>
+                img.classList.toggle("wds-is-current", i === index)
+            );
+        });
+    }
+
+    groups.forEach(group => {
+        group.buttons.forEach((btn, i) => {
+            btn.addEventListener("click", () => activateAll(i));
+        });
+    });
 }, 500);

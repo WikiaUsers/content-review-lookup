@@ -47,3 +47,27 @@ importArticles({
         'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });
+
+/********** Hide sections in sortable tables **********/
+$(function () {
+	$('.grouped-sortable').each(function () {
+		var $table = $(this);
+
+		function updateSectionVisibility() {
+			var isSorted =
+				$table.find('th.headerSortUp, th.headerSortDown, th.sort-up, th.sort-down, th.jquery-tablesorter-headerAsc, th.jquery-tablesorter-headerDesc').length > 0;
+
+			if (isSorted) {
+				$table.find('.sort-section').hide();
+			} else {
+				$table.find('.sort-section').show();
+			}
+		}
+
+		$table.find('th').on('click', function () {
+			setTimeout(updateSectionVisibility, 0);
+		});
+
+		updateSectionVisibility();
+	});
+});

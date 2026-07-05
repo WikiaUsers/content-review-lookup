@@ -107,7 +107,7 @@ const activatedEffects = {
 	"Tombstone": { flatHealthBonus: 1000 },
 	"Harmful Souls": { damageMultiplier: 1.6 },
 	//Crystal Elf
-	"Lone Scout": { flatManaBonus: -1 },
+	"Lone Scout":  [Buffs.Haste, Buffs.ManaSurge] ,
 	"Mana Chaser": [ { flatManaBonus: 3 }, { flatCountBonus: 2 }],
 	"Arcane Golem": [{ flatHealthBonus: 250}, {damageMultiplier: 2.67}],	//Milloween Perk
 	"Crystal Arcanist": Buffs.ManaSurge,

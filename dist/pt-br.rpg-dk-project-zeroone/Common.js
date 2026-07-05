@@ -8,24 +8,36 @@ $(function(){
 
   /* =========================================================================
      INFOBOX — Colapso por cabeçalho e título
+     - Título (pi-title): clique colapsa/expande TODA a infobox
+     - Cabeçalho (pi-header): clique colapsa/expande sua seção
+     - Infobox começa SEMPRE expandida
      ========================================================================= */
 
-  $('.portable-infobox[class*="pi-theme-"] .pi-title').on('click', function(){
+  $(document).on('click', '.portable-infobox[class*="pi-theme-"] .pi-title', function(e){
+    /* Ignorar cliques em links dentro do título */
+    if($(e.target).is('a')) return;
+    
     var $infobox = $(this).closest('.portable-infobox');
     var isCollapsed = $infobox.hasClass('bk-collapsed-all');
 
     if(isCollapsed){
+      /* Expandir tudo */
       $infobox.removeClass('bk-collapsed-all');
       $infobox.find('.bk-hidden').removeClass('bk-hidden');
       $infobox.find('.pi-header').removeClass('bk-section-collapsed');
     } else {
+      /* Colapsar: esconder tudo EXCETO o título */
       $infobox.addClass('bk-collapsed-all');
-      $infobox.find('.pi-header, .pi-item, .pi-image, .pi-navigation').addClass('bk-hidden');
+      $infobox.find('.pi-header, .pi-item, .pi-image, .pi-navigation, .pi-panel, .pi-group, .pi-data, .pi-smart-data-value').not('.pi-title').addClass('bk-hidden');
     }
   });
 
-  $('.portable-infobox[class*="pi-theme-"] .pi-header').on('click', function(e){
+  $(document).on('click', '.portable-infobox[class*="pi-theme-"] .pi-header', function(e){
     e.stopPropagation();
+    /* Ignorar se a infobox inteira está colapsada */
+    var $infobox = $(this).closest('.portable-infobox');
+    if($infobox.hasClass('bk-collapsed-all')) return;
+    
     var $header = $(this);
     var isCollapsed = $header.hasClass('bk-section-collapsed');
     var $items = $header.nextUntil('.pi-header');
@@ -42,19 +54,51 @@ $(function(){
 
   /* =========================================================================
      MAPBOX — Colapso por título e barras de seção
+     Compatível com tabelas geradas pelo Module:TabelaMapa e HTML manual
      ========================================================================= */
 
   $('.dk-linkbar').each(function(){
     var $bar = $(this);
     var title = $bar.attr('data-title') || '';
+    
+    /* Remover toggles nativos do MediaWiki */
     $bar.find('.mw-collapsible-toggle').remove();
-    if($bar.find('.bk-bar-text').length === 0){
+    
+    /* Se já tem bk-bar-text, não duplicar */
+    if($bar.find('.bk-bar-text').length > 0) return;
+    
+    /* Se data-title existe, usar ele e limpar o conteúdo texto solto */
+    if(title){
+      /* Limpar texto solto (que pode estar duplicando o título) */
+      $bar.contents().filter(function(){
+        return this.nodeType === 3; /* text nodes */
+      }).remove();
       $bar.prepend('<span class="bk-bar-text">' + mw.html.escape(title) + '</span>');
+    } else {
+      /* Sem data-title: pegar o texto existente e envolver em bk-bar-text */
+      var existingText = $bar.text().trim();
+      /* Remover todo conteúdo texto */
+      $bar.contents().filter(function(){
+        return this.nodeType === 3;
+      }).remove();
+      /* Remover spans que não são bk-toggle */
+      $bar.children('span:not(.bk-toggle)').each(function(){
+        existingText = existingText || $(this).text().trim();
+        $(this).remove();
+      });
+      if(existingText){
+        $bar.prepend('<span class="bk-bar-text">' + mw.html.escape(existingText) + '</span>');
+      }
+    }
+    
+    /* Adicionar toggle se não existe */
+    if($bar.find('.bk-toggle').length === 0){
       $bar.append('<span class="bk-toggle">Ocultar</span>');
     }
   });
 
-  $('.dk-mapbox-title').on('click', function(){
+  /* Título da mapbox — colapsa/expande TUDO */
+  $(document).on('click', '.dk-mapbox-title', function(){
     var $mapbox = $(this).closest('.dk-mapbox');
     var isCollapsed = $mapbox.hasClass('bk-map-collapsed');
 
@@ -69,7 +113,8 @@ $(function(){
     }
   });
 
-  $('.dk-linkbar').on('click', function(){
+  /* Barra de seção — colapsa/expande conteúdo dessa seção */
+  $(document).on('click', '.dk-linkbar', function(){
     var $bar = $(this);
     var $section = $bar.closest('.dk-mapbox-link');
     var $content = $section.find('.dk-sec-content');
@@ -85,20 +130,20 @@ $(function(){
     }
   });
 
+  /* Seções que começam colapsadas (data-collapsed="1") */
+  $('.dk-mapbox-link[data-collapsed="1"]').each(function(){
+    $(this).find('.dk-sec-content').addClass('bk-hidden');
+    $(this).find('.bk-toggle').text('Expandir');
+  });
+
 
   /* =========================================================================
      TABS — Marcar páginas inexistentes e bloquear para não-admins
-     
-     3 métodos de detecção (em cascata):
-     1. Classe .new (funciona para logados)
-     2. href contém "redlink=1" (Fandom adiciona para inexistentes)
-     3. API query como fallback
      ========================================================================= */
 
   var $tabLinks = $('[class^="dk-tab"] a, [class*="dk-tab"] a').not('.tab-act');
 
-  /* Método 1: já tem .new (usuários logados) — nada a fazer */
-
+  /* Método 1: já tem .new */
   /* Método 2: verificar redlink no href */
   $tabLinks.each(function(){
     var $link = $(this);
@@ -108,7 +153,7 @@ $(function(){
     }
   });
 
-  /* Método 3: API fallback para links que não têm .new nem redlink */
+  /* Método 3: API fallback */
   var linksParaVerificar = {};
   $tabLinks.not('.new').each(function(){
     var $link = $(this);
@@ -154,7 +199,6 @@ $(function(){
         aplicarBloqueioTabs();
       },
       error: function(){
-        /* Se API falhar, aplicar bloqueio mesmo assim */
         aplicarBloqueioTabs();
       }
     });
@@ -175,7 +219,7 @@ $(function(){
     );
 
     if(!isAdmin){
-      $('[class^="dk-tab"] a.new, [class*="dk-tab"] a.new')
+      $('[class^="dk-tab"] a.new, [class*="dk-tab"] a.new, [class^="dk-tab"] span.new, [class*="dk-tab"] span.new')
         .addClass('bk-locked')
         .on('click', function(e){
           e.preventDefault();

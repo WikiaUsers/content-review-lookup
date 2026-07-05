@@ -163,3 +163,136 @@
 		document.addEventListener('DOMContentLoaded', start);
 	}
 }());
+
+/* == The Daily Scoop: segment selector for per-segment task goals (.mm-dsg spans) ==
+ * Injects a dropdown into .mm-dsg-selector; choice is stored in localStorage and applied
+ * as a body class (CSS in Common.css shows the matching spans; no class = Level 51+). */
+(function () {
+	var holder = document.querySelector('.mm-dsg-selector');
+	if (!holder || !document.querySelector('.mm-dsg')) { return; }
+	var SEGS = [
+		['l51', 'Level 51+'],
+		['l46', 'Level 46\u201350'],
+		['l26', 'Level 26\u201345'],
+		['l15', 'Level 15\u201325'],
+		['lt5', 'Level 26+ (low spender)']
+	];
+	var KEY = 'mmDsgSeg';
+	var saved = null;
+	try { saved = localStorage.getItem(KEY); } catch (e) {}
+	var label = document.createElement('label');
+	label.appendChild(document.createTextNode('Show task goals for:'));
+	var sel = document.createElement('select');
+	SEGS.forEach(function (sdef) {
+		var o = document.createElement('option');
+		o.value = sdef[0];
+		o.textContent = sdef[1];
+		sel.appendChild(o);
+	});
+	function apply(v) {
+		document.body.className = document.body.className.replace(/\bmm-seg-\w+\b/g, '').replace(/\s+/g, ' ').trim();
+		if (v !== 'l51') { document.body.classList.add('mm-seg-' + v); }
+		try { localStorage.setItem(KEY, v); } catch (e) {}
+	}
+	sel.addEventListener('change', function () { apply(sel.value); });
+	var init = (saved && SEGS.some(function (sdef) { return sdef[0] === saved; })) ? saved : 'l51';
+	sel.value = init;
+	apply(init);
+	label.appendChild(sel);
+	holder.appendChild(label);
+})();
+
+/* == The Daily Scoop: week selector (current/next week task variants, .mm-dsw cards) ==
+ * Module:DailyScoop resolves event-tied tasks per day against the current and next
+ * Daily Scoop week and emits hidden variant cards plus a .mm-dsw-selector placeholder
+ * carrying the week windows as data attributes. The choice here toggles
+ * body.mm-week-cur/-next (visibility rules live in Common.css) and marks the matching
+ * difficulty tab. The windows are computed at page-parse time; labels below are derived
+ * from the CLIENT clock, so after a week rollover a stale "next" window is relabelled
+ * "Current week" and an ended window is dropped until the page cache refreshes. */
+(function () {
+	var holder = document.querySelector('.mm-dsw-selector');
+	if (!holder || holder.getAttribute('data-mm-init')) { return; }
+	var KEY = 'mmDswWeek';
+	var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	function fmt(iso) {
+		if (!iso) { return ''; }
+		var p = iso.split('-');
+		return MONTHS[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10);
+	}
+	// Daily Scoop weeks roll at 08:05 UTC (schedule anchor in Datatable/Events).
+	function status(wk) {
+		var s = holder.getAttribute('data-' + wk + '-start');
+		if (!s) { return null; }
+		var e = holder.getAttribute('data-' + wk + '-end');
+		var now = Date.now();
+		if (now >= Date.parse(e + 'T08:05:00Z')) { return 'past'; }
+		if (now >= Date.parse(s + 'T08:05:00Z')) { return 'current'; }
+		return 'future';
+	}
+	function optionLabel(wk) {
+		var st = status(wk);
+		if (!st || st === 'past') { return null; }
+		var out = (st === 'current') ? 'Current week' : 'Next week';
+		out += ' (' + fmt(holder.getAttribute('data-' + wk + '-start'))
+			+ ' – ' + fmt(holder.getAttribute('data-' + wk + '-end'));
+		var t = holder.getAttribute('data-' + wk + '-type');
+		if (t) { out += ' · ' + t; }
+		return out + ')';
+	}
+	var OPTS = [];
+	['cur', 'next'].forEach(function (wk) {
+		var lab = optionLabel(wk);
+		if (lab) { OPTS.push([wk, lab, status(wk)]); }
+	});
+	if (!OPTS.length) { return; }
+	OPTS.push(['def', 'Default template', null]);
+	holder.setAttribute('data-mm-init', '1'); // guard against double injection (site + user script)
+
+	var label = document.createElement('label');
+	label.appendChild(document.createTextNode('Show tasks for:'));
+	var sel = document.createElement('select');
+	OPTS.forEach(function (o) {
+		var opt = document.createElement('option');
+		opt.value = o[0];
+		opt.textContent = o[1];
+		sel.appendChild(opt);
+	});
+	function markWeekTab(v) {
+		var marked = document.querySelectorAll('.mm-dsw-weektab');
+		for (var i = 0; i < marked.length; i++) { marked[i].classList.remove('mm-dsw-weektab'); }
+		var t = (v === 'cur' || v === 'next') ? holder.getAttribute('data-' + v + '-type') : null;
+		if (!t) { return; }
+		var tabs = document.querySelectorAll('.wds-tabs__tab[data-hash="' + t + '_Week"]');
+		for (var j = 0; j < tabs.length; j++) { tabs[j].classList.add('mm-dsw-weektab'); }
+	}
+	function apply(v) {
+		document.body.classList.remove('mm-week-cur', 'mm-week-next');
+		if (v === 'cur' || v === 'next') { document.body.classList.add('mm-week-' + v); }
+		markWeekTab(v);
+		try { localStorage.setItem(KEY, v); } catch (e) {}
+	}
+	sel.addEventListener('change', function () { apply(sel.value); });
+	var saved = null;
+	try { saved = localStorage.getItem(KEY); } catch (e) {}
+	var init = null;
+	if (saved && OPTS.some(function (o) { return o[0] === saved; })) { init = saved; }
+	if (!init) {
+		// default to the week actually running right now, else the first offered window
+		var running = OPTS.filter(function (o) { return o[2] === 'current'; });
+		init = running.length ? running[0][0] : OPTS[0][0];
+	}
+	sel.value = init;
+	apply(init);
+	label.appendChild(sel);
+	holder.appendChild(label);
+
+	// Mark today's day-of-week index (1-7) of the RUNNING scoop week on <body>;
+	// Common.css uses it in the current-week view to softly dim the other Full Week
+	// columns. Client-clock based, so it stays correct even on a stale page cache.
+	var cs = holder.getAttribute('data-cur-start');
+	if (cs && status('cur') === 'current') {
+		var idx = Math.floor((Date.now() - Date.parse(cs + 'T08:05:00Z')) / 86400000) + 1;
+		if (idx >= 1 && idx <= 7) { document.body.classList.add('mm-today-' + idx); }
+	}
+})();

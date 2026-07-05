@@ -391,6 +391,7 @@
 				name:'Nocturnal',
 				rarity:'exotic',
 			}, {craftable:true}));
+			skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			// skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			/*
 			skins.push(new WeaponSkin({
@@ -483,12 +484,13 @@
 			function getDelta(extraDays = 0, useUTC = false) {
 				const currTime = new Date().getTime();
 				const offset = new Date(currTime + (d * extraDays)).getTimezoneOffset() * 1e3 * 60;
-				const origDate = useUTC ? new Date("2026-03-14T00:00") : new Date("2026-03-14");
+				const origDate = new Date(useUTC ? "2026-03-14T00:00" : "2026-03-14");
 				const alteredDate = new Date(currTime - offset + (d * extraDays));
 				const delta = alteredDate.getTime() - origDate.getTime();
 				return delta;
 			};
-			const indexPicked = specificIndex ?? Math.floor(getDelta() / d) % (skins.length - 1);
+			let factor = Math.floor((skins.length - 1) / 2);
+			const indexPicked = specificIndex ?? Math.floor(getDelta() / d) % (factor*3) % skins.length;
 			newSkin.dailyNumber = indexPicked + 1;
 			newSkin.whichSkin = skins[indexPicked];
 			return newSkin;

@@ -49,18 +49,18 @@ function buildNewCategoryLine(node, cats, prefix) {
 	if (!cats.length) return;
 
 	// Add prefix
-	node.append('<span class="page-header__categories-in">' + prefix + ' </span>');
+	node.append('<span class="page-header__categories-in">' + mw.html.escape(prefix) + ' </span>');
 
 	if (cats.length <= 4) {
 		// Append all categories with commas
 		for (let i = 0; i < cats.length; i++) {
-			node.append(cats[i]);
+			node.append(mw.html.escape(cats[i]));
 			if (i < cats.length - 1) node.append(', ');
 		}
 	} else {
 		// Append first 3 categories with commas
 		for (let i = 0; i < 3; i++) {
-			node.append(cats[i]);
+			node.append(mw.html.escape(cats[i]));
 			node.append(', ');
 		}
 
@@ -79,7 +79,7 @@ function buildNewCategoryLine(node, cats, prefix) {
 		const items = [];
 
 		for (let i = 3; i < cats.length; i++)
-			items.push($('<li></li>').append(cats[i]));
+			items.push($('<li></li>').append(mw.html.escape(cats[i])));
 
 		$ul.append(items);
 

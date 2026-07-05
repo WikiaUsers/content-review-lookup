@@ -143,3 +143,12 @@ $(document).ready(function() {
 mw.hook('wikipage.content').add(function() {
     triggerTSCalculator();
 });
+
+// Scrolling tables
+$(document).ready(function() {
+    const tabelContainers = document.querySelectorAll('.scroll-tabel');
+    tabelContainers.forEach(function(container) {
+        // Scroll each container directly to the bottom
+        container.scrollTop = container.scrollHeight;
+    });
+});

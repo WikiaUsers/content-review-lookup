@@ -169,3 +169,15 @@ setInterval(() => {
         });
     });
 })();
+
+window.ProfileTags = {
+    noHide: true,
+    onlyMyWiki: true
+};
+
+importArticles({
+    type: 'script',
+    articles: [
+        'w:c:dev:MediaWiki:ProfileTags.js/code.js'
+    ]
+});

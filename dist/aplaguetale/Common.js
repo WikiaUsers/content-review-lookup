@@ -47,6 +47,7 @@ window.welcomeMessage = {
 importArticles({
 	type: 'script',
     articles: [
+    	'u:clodaghelm:MediaWiki:Chronoa.js',
     	'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
         'u:clodaghelm:MediaWiki:LastModified.js',
         'u:clodaghelm:MediaWiki:RailCarousel.js',

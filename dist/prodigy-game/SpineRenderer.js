@@ -14,7 +14,8 @@ function error(element, msg) {
 	element.textContent = msg;
 }
 
-function loadRender(element, sidebar) {
+const existingRenders = {};
+function loadRender(element, sidebar, reuseDuplicates, contentOnWebglLost=element.innerHTML) {
 	const trans_str = element.getAttribute("data-transform");
 	const trans = {
 		width: null, height: null,
@@ -82,6 +83,7 @@ function loadRender(element, sidebar) {
 		if (err) return;
 	}
 	const bgcolor = element.getAttribute("data-bgcolor");
+	const cssbgcolor = bgcolor ? cssColorToFloat4(bgcolor) : [0,0,0,0];
 	const isenglish = element.hasAttribute("data-isenglish");
 	//const version = parseInt(element.getAttribute("data-assetsversion"));
 	const version = element.getAttribute("data-hash");
@@ -111,27 +113,46 @@ function loadRender(element, sidebar) {
 		});
 		if (err) return;
 	}
-	const view = new SpineView({
+	const anim = element.getAttribute("data-animation");
+	const trans_str_split = ['_','_','0','0','1','1'];
+	if (trans_str) trans_str.split(',').every((e, i) => {
+		if (i >= trans_str_split.length) return false;
+		trans_str_split[i] = e;
+		return true;
+	});
+	const canvaspath = [
+		id, version, anim,
+		cssbgcolor.join(),
+		replacements_str,
+		trans_str_split.join()
+	].join('\n');
+	const dupesearch = existingRenders[canvaspath];
+	const view = dupesearch ? new CopierCanvas(dupesearch.canvas, element, contentOnWebglLost) : new SpineView({
 		trans: trans,
-		bgcolor: bgcolor ? cssColorToFloat4(bgcolor) : [0,0,0,0],
+		bgcolor: cssbgcolor,
 		version: version,
 		id: id, english: isenglish,
-		anim: element.getAttribute("data-animation"),
+		anim: anim,
 		replacements: replacements,
 		sidebar: sidebar, canv: sidebar ? element : null // only have resizable canvas if the sidebar is present
-	});
+	}, element, contentOnWebglLost);
 	if (view.canvas == null) return;
 	if (view.error) {
 		error(element, view.error);
 	} else {
 		element.innerHTML = "";
 		element.appendChild(view.canvas);
+		if (dupesearch) {
+			dupesearch.copiers.push(view);
+		} else {
+			existingRenders[canvaspath] = view;
+		}
 	}
 }
 
 //let assetsJsons = {};
 let spine = false, downloader, assetCache;
-function forElement(element, list) {
+function forElement(element, list, reuseDuplicates) {
 	// According to the documentation, this is safe.
 	importArticles({type: "script", articles: ["MediaWiki:SpineLibrary.js"]}).then(() => {
 		if (!spine) { // This will only setup things for spine rendering if there is any spine to render.
@@ -175,14 +196,14 @@ function forElement(element, list) {
 			};
 			request.send();
 		} else if (Array.isArray(data)) data.push([element, list]);
-		else*/ loadRender(element, list);
+		else*/ loadRender(element, list, reuseDuplicates);
 	});
 }
 
 mw.hook("wikipage.content").add(() => {
 	Array.from(document.getElementsByClassName("spine-renderer-element")).forEach(element => {
 		if (element.hasAttribute("spine-work-completed")) return;
-		forElement(element, null);
+		forElement(element, null, true);
 		element.setAttribute("spine-work-completed", ''); // avoid touching this element twice if this hook is for some reason called again
 	});
 	
@@ -197,7 +218,8 @@ mw.hook("wikipage.content").add(() => {
 			}
 			return !(canv && sidebar);
 		});
-		forElement(canv, sidebar);
+		// TODO: This probably shouldn't be hardcoded.
+		forElement(canv, sidebar, false, `<span style="color: red; font-size:18px">WebGL context was lost. Reload the page.</span>`);
 		element.setAttribute("spine-work-completed", '');
 	});
 });
@@ -206,10 +228,12 @@ mw.hook("wikipage.content").add(() => {
 class SpineView {
 	/**
 	 * Available props:
-	 * scale - Multiplier for scale of the object.
+	 * posX, posY - Offsets for the object.
+	 * sclX, sclY - Scale multipliers for the object.
 	 * bgcolor - An array of 4 numbers (ranged 0.0-1.0) determining RGBA values of the background.
+	 * replacements - A map of assets that should be replaced with specified files present on the wiki.
  	 */
-	constructor(props) {
+	constructor(props, element, contentOnWebglLost) {
 		if (!props.trans) props.trans = {
 			width: null, height: null,
 			posX: 0, posY: 0,
@@ -219,12 +243,13 @@ class SpineView {
 		if (!props.bgcolor) props.bgcolor = [0,0,0,0];
 		if (!props.replacements) props.replacements = {};
 		this.props = props;
+		this.copiers = [];
 		
 		this.mvp = new window.dev.spine.Matrix4();
 		this.canvas = document.createElement('canvas');
 		// typeof(null) == 'object'
 		if (typeof(this.props.trans.width) != 'object') this.canvas.width = this.props.trans.width;
-		if (typeof(this.props.trans.width) != 'object') this.canvas.height = this.props.trans.height;
+		if (typeof(this.props.trans.height) != 'object') this.canvas.height = this.props.trans.height;
 		this.ctx = new window.dev.spine.ManagedWebGLRenderingContext(this.canvas, {
 			alpha: this.props.bgcolor[3] < 1
 		});
@@ -233,6 +258,10 @@ class SpineView {
 			this.canvas = null;
 			return;
 		}
+		this.canvas.addEventListener("webglcontextlost", () => {
+			element.innerHTML = contentOnWebglLost;
+			this.copiers.forEach(c => c.element.innerHTML = c.contentOnWebglLost);
+		});
 	
 		// Create a simple shader, mesh, model-view-projection matrix, SkeletonRenderer, and AssetManager.
 		this.shader = window.dev.spine.Shader.newTwoColoredTextured(this.ctx);
@@ -421,5 +450,26 @@ class SpineView {
 		const centerY = offY + ((sizeY + (sizeY / scaleY) - this.canvas.height - height)/2);
 		this.mvp.ortho2d(centerX, centerY, width, height);
 		this.ctx.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+	}
+}
+
+class CopierCanvas {
+	constructor(srccanvas, element, contentOnWebglLost) {
+		this.srccanvas = srccanvas;
+		this.element = element;
+		this.contentOnWebglLost = contentOnWebglLost;
+		
+		this.canvas = document.createElement('canvas');
+		this.ctx = this.canvas.getContext('2d');
+    	
+		this.boundrender = this.render.bind(this);
+		requestAnimationFrame(this.boundrender);
+	}
+	
+	render() {
+		this.canvas.width = this.srccanvas.width;
+		this.canvas.height = this.srccanvas.height;
+		ctx.drawImage(this.srccanvas, 0, 0);
+		requestAnimationFrame(this.boundrender);
 	}
 }

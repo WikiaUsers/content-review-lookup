@@ -1094,3 +1094,49 @@ document.addEventListener('click', function (e) {
         btn.textContent = 'Restore loot pools';
     }
 });
+
+/* START OF BOSS DIFFICULTY SYSTEM RELATED SCRIPTS */
+// Wait for the document to be fully ready before executing code
+$(function() {
+    var $container = $('.boss-difficulty-container');
+    if (!$container.length) return;
+
+    // 1. INITIALIZATION: Set to difficulty 1 on page load
+    var currentLvl = parseInt($container.attr('data-current-level') || '1');
+    $container.find('.diff-state').hide();
+    $container.find('.diff-state[data-level="' + currentLvl + '"]').show();
+
+    // 2. CLICK ENGINE: Track button clicks dynamically
+    $(document).off('click.bossDiffTest').on('click.bossDiffTest', '.diff-btn', function(e) {
+        e.preventDefault();
+        
+        var $btn = $(this);
+        var $container = $btn.closest('.boss-difficulty-container');
+        var $display = $container.find('.diff-display-val');
+        
+        var currentLvl = parseInt($container.attr('data-current-level') || '1');
+        var action = $btn.attr('data-action');
+
+        // Shift-Click Check: Move by 5 if Shift is held, otherwise move by 1
+        var step = e.shiftKey ? 5 : 1;
+
+        if (action === 'prev') {
+            currentLvl = Math.max(0, currentLvl - step); // Subtract step, stop at 0
+        } else if (action === 'next') {
+            currentLvl = Math.min(30, currentLvl + step); // Add step, stop at 30
+        } else if (action === 'min') {
+            currentLvl = 0;
+        } else if (action === 'max') {
+            currentLvl = 30;
+        }
+
+        $container.attr('data-current-level', currentLvl);
+        if ($display.length) {
+            $display.text(currentLvl);
+        }
+
+        $container.find('.diff-state').hide();
+        $container.find('.diff-state[data-level="' + currentLvl + '"]').show();
+    });
+});
+/* END OF BOSS DIFFICULTY SYSTEM RELATED SCRIPTS */

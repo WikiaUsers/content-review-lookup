@@ -138,3 +138,50 @@ mw.loader.using('mediawiki.user').then(function() {
     }
   }, 100);
 })();
+
+mw.loader.using(['mediawiki.util']).then(function () {
+	if (!mw.config.get('wgUserName')) {
+		var page = mw.config.get('wgPageName');
+
+		if (page.indexOf('Project:Suggested_edits/') === 0) {
+			return;
+		}
+
+		var suggestion = 'Project:Suggested_edits/' + page;
+
+		var editLink = document.querySelector('#ca-edit a');
+		if (!editLink) return;
+
+		editLink.textContent = 'Suggest edit';
+		editLink.title = 'Suggest an edit for review';
+
+		editLink.href = mw.util.getUrl(suggestion, {
+			action: 'edit',
+			preload: 'Template:Suggested edit preload',
+			summary: 'Suggested edit for ' + page
+		});
+	}
+});
+
+if (mw.config.get('wgNamespaceNumber') >= 0) {
+	var page = mw.config.get('wgPageName');
+	var suggestion = 'Project:Suggested_edits/' + page;
+
+	new mw.Api().get({
+		action: 'query',
+		titles: suggestion
+	}).then(function (data) {
+		var pages = data.query.pages;
+		var id = Object.keys(pages)[0];
+
+		if (id !== "-1") {
+			mw.notify(
+				'This page has a suggested edit awaiting review.',
+				{
+					title: 'Suggested edit',
+					autoHide: false
+				}
+			);
+		}
+	});
+}

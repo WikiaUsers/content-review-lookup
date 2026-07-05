@@ -9,6 +9,7 @@ importArticles( {
         'u:dev:MediaWiki:AjaxEmoticons/code.js',
         'u:dev:MediaWiki:ChatLinkPreview.js',
         'u:dev:MediaWiki:ChatImages/code.js',
+         'u:dev:MediaWiki:ChatAnnouncements/code.js',
     ]
 } );
 
