@@ -87,8 +87,7 @@ var Global =  (function () {
         "wgUserLanguage",
         "wgServer",
         "wgScriptPath",
-        "wgMonthNames",
-        "wgVersion",
+        "wgMonthNames"
     ]);
     Global.debug = Global.config.debug || mw.util.getParamValue("useuserjs") == "0" || mw.util.getParamValue("safemode") == "1";
     Global.AUTO_REFRESH_LOCAL_STORAGE_ID = "RecentChangesMultiple-autorefresh-" + Global.config.wgPageName;

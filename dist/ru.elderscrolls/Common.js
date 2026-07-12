@@ -172,13 +172,13 @@ var BackToTop = true; // prevent duplication
 /*------------------------- Случайный фон страницы ---------------------------*/
 function randomBackground () {
 	var backgroundLight = [
-	'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?cb=20260614063606&path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/f/f0/Background-14.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/e/eb/Background-15.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/9/9c/Background-16.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/0/0c/Background-17.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/2/2d/Background-18.jpg/revision/latest?path-prefix=ru',
-	'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-19.jpg/revision/latest?path-prefix=ru'
+	'https://static.wikia.nocookie.net/elderscrolls/images/b/b6/Background-13.jpg/revision/latest?cb=20260709152809&path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/f/f0/Background-14.jpg/revision/latest?cb=20260709152149&path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/e/eb/Background-15.jpg/revision/latest?cb=20260709152158&path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/9/9c/Background-16.jpg/revision/latest?cb=20260709152204&path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/0/0c/Background-17.jpg/revision/latest?cb=20260709152214&path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/2/2d/Background-18.jpg/revision/latest?cb=20260709152222&path-prefix=ru',
+	'https://static.wikia.nocookie.net/elderscrolls/images/4/4f/Background-19.jpg/revision/latest?cb=20260709152228&path-prefix=ru'
 	];
 	
 	var backgroundDark = [

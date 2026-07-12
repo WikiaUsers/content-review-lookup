@@ -190,7 +190,7 @@ document.getElementById('dungeonExp').onchange = function () {
   var selectedText = this.options[this.selectedIndex].text;
   var calamityRowSpacing = document.getElementById('calamityBoost-exp-calculator-spacing');
 
-  var supportedChaosDungeons = ["Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos", "Neon District: Chaos"]; // Dungeons that support the calamity exp gain
+  var supportedChaosDungeons = ["Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos", "Neon District: Chaos", "The First Sanctuary: Chaos"]; // Dungeons that support the calamity exp gain
 
   if (supportedChaosDungeons.includes(selectedText)) {
     calamityRowSpacing.style.display = 'block';
@@ -335,7 +335,7 @@ calcBtn.onclick = function () {
   
   var modifierExceptionText = document.getElementById('dungeonExp');
   var selectedText = modifierExceptionText.options[modifierExceptionText.selectedIndex].text;
-  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos", "The First Sanctuary: Normal", "The First Sanctuary: Expert", "The First Sanctuary: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
+  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
 
 
   // Error messages

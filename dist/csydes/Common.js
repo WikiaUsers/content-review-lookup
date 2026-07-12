@@ -1,4 +1,4 @@
-// 10:53, 12 September 2025 (UTC) <nowiki>
+// 01:09, 10 July 2026 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -152,3 +152,23 @@ $(function () {
     });
 });
 // END REPLACE NUMBER SIGNS WITH MUSIC SHARP SIGNS </nowiki>
+
+// CLOSEDWIKI PAGE HEADER TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('.page-header__title').text('Closed Wiki');
+        });
+// END CLOSEDWIKI PAGE HEADER TITLE FIX </nowiki>
+
+// CLOSEDWIKI TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('title').text((_, old)=>old.replace('⧼closedwiki⧽', 'Closed Wiki'));
+        });
+// END CLOSEDWIKI TITLE FIX </nowiki>

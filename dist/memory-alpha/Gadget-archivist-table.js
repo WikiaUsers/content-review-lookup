@@ -1,30 +1,12 @@
 'use strict';
-mw.hook('wikipage.content').add(content => {
-	const archivistTablePlaceholder = content.find('.archivist-table');
-	if (!archivistTablePlaceholder.length){
+(() => {
+	if (!$('#archivist-table').length){
 		return;
 	}
 
+	const api = new mw.Api();
 	const now = Date.now();
-	const users = {};
-	const tBody = $('<tbody>');
-	const archivistTable = $('<table>').addClass(['grey', 'sortable']).append(
-		$('<thead>').append($('<tr>').append(
-			$('<th>').text('User'),
-			$('<th>').text('Groups'),
-			$('<th>').text('Edit count'),
-			$('<th>').text('Last article edit')
-		)),
-		tBody
-	);
-	const api = new mw.Api({parameters: {
-		action: 'query',
-		format: 'json',
-		formatversion: 2,
-		errorformat: 'plaintext',
-		uselang: mw.config.values.wgUserLanguage,
-	}});
-	const validGroups = [
+	const validRoles = [
 		'bot',
 		'bureaucrat',
 		'sysop',
@@ -34,90 +16,76 @@ mw.hook('wikipage.content').add(content => {
 		'quick-answers-editor',
 		'user',
 	];
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	];
 
-	recentChanges();
-	function recentChanges(rccontinue){
+	$('#archivist-table tr:not(:first-child)').each((index, row) => editDate(row, 'newer', '4'));
+
+	function editDate(row, dir, i, first, last){
 		api.get({
-			list: 'recentchanges',
-			rcend: new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString(),
-			rcnamespace: 0,
-			rcprop: ['user', 'timestamp', 'ids'],
-			rcshow: ['!anon', '!bot'],
-			rclimit: 'max',
-			rctype: 'edit',
-			rccontinue: rccontinue,
-		}).then(apiOutput => {
-			for (const edit of apiOutput.query.recentchanges){
-				if (Object.keys(users).length === 50){
-					break;
-				}
-				if (Object.keys(users).indexOf(edit.user) === -1){
-					users[edit.user] = {
-						name: edit.user,
-						revid: edit.revid,
-						timestamp: edit.timestamp,
-					};
-				}
-			}
-			if (Object.keys(users).length < 50 && apiOutput.continue){
-				recentChanges(apiOutput.continue.rccontinue);
+			action: 'query',
+			list: 'usercontribs',
+			uclimit: '1',
+			ucprop: ['ids', 'timestamp'],
+			ucnamespace: '0',
+			ucuser: $(row).find('td:first-child a').attr('title'),
+			ucdir: dir,
+		}).then(userData => {
+			const diffURL = mw.util.getUrl('Special:Diff/' + userData.query.usercontribs[0].revid);
+			const timestamp = userData.query.usercontribs[0].timestamp;
+			$(row).find('td:nth-child(' + i + ')').html(
+				$('<a href="' + diffURL + '">').html(
+					timestamp.split('T')[1].split(/:\d\dZ/)[0] + ', ' +
+					new Date(timestamp).getUTCDate() + ' ' +
+					months[new Date(timestamp).getUTCMonth()] + ' ' +
+					new Date(timestamp).getUTCFullYear()
+				)
+			).data('sort-value', new Date(timestamp).getTime());
+
+			if (dir === 'newer'){
+				editDate(row, 'older', '5', new Date(timestamp).getTime());
 			} else {
-				api.get({
-					list: 'users',
-					usprop: ['blockinfo', 'groups', 'rights', 'editcount'],
-					ususers: Object.keys(users),
-				}).then(apiOutput => {
-					for (const user of apiOutput.query.users){
-						users[user.name].editcount = user.editcount;
-						users[user.name].groups = user.groups;
-						if (
-							user.blockid ||
-							user.rights.indexOf('bot') !== -1 ||
-							user.groups.indexOf('autoconfirmed') === -1 ||
-							user.groups.indexOf('emailconfirmed') === -1 ||
-							user.editcount < 100
-						){
-							delete users[user.name];
-						}
-					}
-					for (const user in users){
-						addRow(users[user]);
-					}
-				});
+				userInfo(row, first, new Date(timestamp).getTime());
 			}
 		});
 	}
 
-	function addRow(user){
-		const row = $('<tr>');
-		const groups = validGroups
-			.filter(group => user.groups.indexOf(group) !== -1)
-			.join(', ')
-			.replace('sysop', 'admin')
-			.replace('content-moderator', 'content moderator')
-			.replace('threadmoderator', 'thread moderator')
-			.replace('quick-answers-editor', 'quick answers editor')
-			.replace('user', 'archivist');
+	function userInfo(row, first, last){
+		api.get({
+			action: 'query',
+			list: 'users',
+			usprop: ['editcount', 'groups'],
+			ususers: $(row).find('td:first-child a').attr('title'),
+		}).then(userData => {
+			const editCount = userData.query.users[0].editcount;
+			const editActivityUntouched = (editCount * (last - first + 1)) / (now - last + 1);
+			const editActivity = Math.round(Math.log(editActivityUntouched * Math.pow(10, 11) + 1) * 10) / 10;
+			const roles = validRoles.filter(role => userData.query.users[0].groups.indexOf(role) !== -1);
+			const rolesString = roles
+				.join(', ')
+				.replace('sysop', 'admin')
+				.replace('content-moderator', 'content moderator')
+				.replace('threadmoderator', 'thread moderator')
+				.replace('quick-answers-editor', 'quick answers editor')
+				.replace('user', 'archivist');
 
-		row.append($('<td>').html(link(`User:${user.name}`, user.name)));
-		row.append($('<td>').html(link(`Special:Diff/${user.revid}`, user.timestamp)));
-		row.append($('<td>').html(groups));
-		row.append($('<td>').html(user.editcount));
-		tBody.append(row);
-
-		if (Object.keys(users).indexOf(user.name) === Object.keys(users).length - 1){
-			archivistTablePlaceholder.html(archivistTable);
-			mw.hook('wikipage.content').fire(archivistTablePlaceholder);
-		}
-	}
-
-	function link(target, display = target){
-		return $('<a>', {
-			href: mw.util.getUrl(target),
-			title: target,
-			html: display,
+			$(row).find('td:nth-child(6)').html(editActivity);
+			$(row).find('td:nth-child(7)').html(rolesString);
+			$(row).find('td:nth-child(8)').html(editCount);
 		});
 	}
-});
+})();
 
 // {{JavaScript category}}

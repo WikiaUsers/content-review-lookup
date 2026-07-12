@@ -1,5 +1,5 @@
 'use strict';
-(() => {
+(async () => {
 	const skinConfig = {};
 	const config = mw.config.values;
 	const currentPage = new mw.Title(config.wgRelevantPageName);
@@ -10,9 +10,111 @@
 		errorformat: 'plaintext',
 		uselang: config.wgUserLanguage,
 	}});
+	const pageInfo = (await api.get({
+		titles: currentPage.toText(),
+		prop: ['deletedrevisions', 'info', 'langlinks', 'pageprops'],
+		drvprop: '',
+		drvlimit: 1,
+		inprop: ['protection', 'watched'],
+		intestactions: ['delete', 'undelete', 'move', 'protect'],
+		llprop: ['url', 'langname', 'autonym'],
+		lllimit: 'max',
+		ppprop: 'notoc',
+	})).query.pages[0];
+
+	await api.loadMessagesIfMissing([
+		'accesskey-ca-delete',
+		'accesskey-ca-edit',
+		'accesskey-ca-history',
+		'accesskey-ca-move',
+		'accesskey-ca-nstab',
+		'accesskey-ca-protect',
+		'accesskey-ca-talk',
+		'accesskey-ca-undelete',
+		'accesskey-ca-unprotect',
+		'accesskey-ca-unwatch',
+		'accesskey-ca-view',
+		'accesskey-ca-viewsource',
+		'accesskey-ca-watch',
+		'accesskey-pt-createaccount',
+		'accesskey-pt-login',
+		'accesskey-pt-logout',
+		'accesskey-pt-mycontris',
+		'accesskey-pt-mytalk',
+		'accesskey-pt-preferences',
+		'accesskey-pt-userpage',
+		'accesskey-pt-watchlist',
+		'accesskey-t-info',
+		'accesskey-t-permalink',
+		'accesskey-t-print',
+		'accesskey-t-recentchangeslinked',
+		'accesskey-t-whatlinkshere',
+		'associated-pages',
+		'cactions',
+		'fd-notifications-notifications',
+		'interlanguage-link-title',
+		'mainpage',
+		'mycontris',
+		'mypreferences',
+		'mytalk',
+		'mywatchlist',
+		'nstab-mainpage',
+		'otherlanguages',
+		'pageinfo-toolboxlink',
+		'permalink',
+		'personal',
+		'printableversion',
+		'pt-createaccount',
+		'pt-login',
+		'pt-userlogout',
+		'recentchangeslinked-toolbox',
+		'sidebar',
+		'skin-action-delete',
+		'skin-action-move',
+		'skin-action-protect',
+		'skin-action-undelete',
+		'skin-action-unprotect',
+		'skin-action-viewsource',
+		'skin-view-create',
+		'skin-view-edit',
+		'skin-view-history',
+		'skin-view-view',
+		'talk',
+		'toc',
+		'toolbox',
+		'tooltip-ca-delete',
+		'tooltip-ca-edit',
+		'tooltip-ca-history',
+		'tooltip-ca-move',
+		'tooltip-ca-nstab',
+		'tooltip-ca-protect',
+		'tooltip-ca-talk',
+		'tooltip-ca-undelete',
+		'tooltip-ca-unprotect',
+		'tooltip-ca-unwatch',
+		'tooltip-ca-view',
+		'tooltip-ca-viewsource',
+		'tooltip-ca-watch',
+		'tooltip-pt-createaccount',
+		'tooltip-pt-login',
+		'tooltip-pt-logout',
+		'tooltip-pt-mycontris',
+		'tooltip-pt-mytalk',
+		'tooltip-pt-preferences',
+		'tooltip-pt-userpage',
+		'tooltip-pt-watchlist',
+		'tooltip-t-info',
+		'tooltip-t-permalink',
+		'tooltip-t-print',
+		'tooltip-t-recentchangeslinked',
+		'tooltip-t-whatlinkshere',
+		'unwatch',
+		'views',
+		'watch',
+		'whatlinkshere',
+	]);
 
 	skinConfig.mainMenu = async parent => {
-		await api.loadMessagesIfMissing('sidebar');
 		const mainMenu = {};
 		const mainMenuPortlets = [];
 		let activePortlet;
@@ -22,10 +124,9 @@
 				const linkMessages = item.replace(/^\*\*+\s*/, '').split('|');
 				mainMenu[activePortlet].push(linkMessages);
 				await api.loadMessagesIfMissing([
-					linkMessages[0],
-					linkMessages[1],
-					`tooltip-n-${linkMessages[1]}`,
+					...linkMessages,
 					`accesskey-n-${linkMessages[1]}`,
+					`tooltip-n-${linkMessages[1]}`,
 				]);
 			} else {
 				activePortlet = item.replace(/^\*\s*/, '');
@@ -39,34 +140,16 @@
 			mainMenuPortlets.push(portlet);
 			$(parent).append(portlet);
 			for (const link of mainMenu[key]){
-				addPortletLink(key, link[0], link[1], 'n');
+				addPortletLink(key, ...link, 'n');
 			}
 		}
 
 		return mainMenuPortlets;
 	};
 
-	skinConfig.toolbox = async (parent, label) => {
-		await api.loadMessagesIfMissing([
-			label,
-			'whatlinkshere',
-			'tooltip-t-whatlinkshere',
-			'accesskey-t-whatlinkshere',
-			'recentchangeslinked-toolbox',
-			'tooltip-t-recentchangeslinked',
-			'accesskey-t-recentchangeslinked',
-			'printableversion',
-			'tooltip-t-print',
-			'accesskey-t-print',
-			'permalink',
-			'tooltip-t-permalink',
-			'accesskey-t-permalink',
-			'pageinfo-toolboxlink',
-			'tooltip-t-info',
-			'accesskey-t-info',
-		]);
+	skinConfig.toolbox = parent => {
 		const toolboxPortlets = [];
-		const mainPortlet = buildPortlet('tb', label);
+		const mainPortlet = buildPortlet('tb', 'toolbox');
 		toolboxPortlets.push(mainPortlet);
 		$(parent).append(mainPortlet);
 		if (currentPage.getNamespaceId() > -1){
@@ -122,25 +205,15 @@
 		return toolboxPortlets;
 	};
 
-	skinConfig.langs = async parent => {
-		await api.loadMessagesIfMissing([
-			'interlanguage-link-title',
-			'otherlanguages',
-		]);
-		const langlinks = (await api.get({
-			titles: currentPage.toText(),
-			prop: 'langlinks',
-			llprop: ['url', 'langname', 'autonym'],
-			lllimit: 'max',
-		})).query.pages[0].langlinks;
+	skinConfig.langs = parent => {
 		const langs = buildPortlet('lang', 'otherlanguages');
 		$(parent).append(langs);
 
-		if (!langlinks){
+		if (!pageInfo.langlinks){
 			return langs;
 		}
 
-		for (const langlink of langlinks){
+		for (const langlink of pageInfo.langlinks){
 			mw.util.addPortletLink(
 				'p-lang',
 				langlink.url,
@@ -160,6 +233,13 @@
 	skinConfig.associatedPages = async parent => {
 		const subjectPage = currentPage.getSubjectPage();
 		const talkPage = currentPage.getTalkPage();
+		const associatedPages = buildPortlet('associated-pages');
+		$(parent).append(associatedPages);
+
+		if (!talkPage){
+			return associatedPages;
+		}
+
 		let subjectNamespace = subjectPage.getNamespaceId();
 		let talkNamespace = talkPage.getNamespaceId();
 
@@ -180,32 +260,17 @@
 			talkNamespace = config.wgFormattedNamespaces[talkNamespace];
 		}
 
+		const accesskeyMsg = `accesskey-ca-nstab-${formatMessageKey(subjectNamespace)}`;
 		const subjectMsg = `nstab-${formatMessageKey(subjectNamespace)}`;
 		const talkMsg = `nstab-${formatMessageKey(talkNamespace)}`;
 		const tooltipMsg = `tooltip-ca-nstab-${formatMessageKey(subjectNamespace)}`;
-		const accesskeyMsg = `accesskey-ca-nstab-${formatMessageKey(subjectNamespace)}`;
 
 		await api.loadMessagesIfMissing([
-			'associated-pages',
-			'mainpage',
-			'nstab-mainpage',
-			'talk',
-			'tooltip-ca-nstab',
-			'tooltip-ca-talk',
-			'accesskey-ca-nstab',
-			'accesskey-ca-talk',
+			accesskeyMsg,
 			subjectMsg,
 			talkMsg,
 			tooltipMsg,
-			accesskeyMsg,
 		]);
-
-		const associatedPages = buildPortlet('associated-pages');
-		$(parent).append(associatedPages);
-
-		if (!talkPage){
-			return associatedPages;
-		}
 
 		const mainPage = new mw.Title(mw.message('mainpage').text());
 		const mainPageLabel = mw.message('nstab-mainpage');
@@ -258,51 +323,42 @@
 		return associatedPages;
 	};
 
-	skinConfig.views = async parent => {
-		const editLinkInternalName = config.wgRelevantPageIsProbablyEditable ? 'edit' : 'viewsource';
-		let editMsg = 'skin-view-create';
-		if (!config.wgRelevantPageIsProbablyEditable){
-			editMsg = 'skin-action-viewsource';
-		} else if (config.wgRelevantArticleId){
-			editMsg = 'skin-view-edit';
-		}
-		await api.loadMessagesIfMissing([
-			'views',
-			'skin-view-view',
-			'tooltip-ca-view',
-			'accesskey-ca-view',
-			editMsg,
-			`tooltip-ca-${editLinkInternalName}`,
-			`accesskey-ca-${editLinkInternalName}`,
-			'skin-view-history',
-			'tooltip-ca-history',
-			'accesskey-ca-history',
-			'watch',
-			'tooltip-ca-watch',
-			'accesskey-ca-watch',
-			'unwatch',
-			'tooltip-ca-unwatch',
-			'accesskey-ca-unwatch',
-		]);
+	skinConfig.views = parent => {
 		const views = buildPortlet('views');
 		$(parent).append(views);
 		if (currentPage.getNamespaceId() === -1){
 			return views;
 		}
-		const viewLink = addPortletLink(
-			'views',
-			currentPage.toText(),
-			'skin-view-view',
-			'ca',
-			'view',
-		);
-		const editLink = addPortletLink(
-			'views',
-			{action: 'edit'},
-			editMsg,
-			'ca',
-			editLinkInternalName,
-		);
+		if (config.wgRelevantArticleId){
+			const viewLink = addPortletLink(
+				'views',
+				currentPage.toText(),
+				'skin-view-view',
+				'ca',
+				'view',
+			);
+			if (config.wgAction === 'view' && config.wgPageName === config.wgRelevantPageName){
+				$(viewLink).addClass('selected');
+			}
+		}
+		if (config.wgRelevantArticleId || config.wgRelevantPageIsProbablyEditable){
+			let editMsg = 'skin-view-create';
+			if (!config.wgRelevantPageIsProbablyEditable){
+				editMsg = 'skin-action-viewsource';
+			} else if (config.wgRelevantArticleId){
+				editMsg = 'skin-view-edit';
+			}
+			const editLink = addPortletLink(
+				'views',
+				{action: 'edit'},
+				editMsg,
+				'ca',
+				config.wgRelevantPageIsProbablyEditable ? 'edit' : 'viewsource',
+			);
+			if (['edit', 'submit'].includes(config.wgAction)){
+				$(editLink).addClass('selected');
+			}
+		}
 		if (config.wgRelevantArticleId){
 			const historyLink = addPortletLink(
 				'views',
@@ -316,65 +372,29 @@
 			}
 		}
 		if (config.wgUserId){
-			const watchAction = (await api.get({
-				titles: currentPage.toText(),
-				prop: 'info',
-				inprop: 'watched',
-			})).query.pages[0].watched ? 'unwatch' : 'watch';
+			const watchAction = pageInfo.watched ? 'unwatch' : 'watch';
 			const watchLink = addPortletLink(
 				'views',
 				{action: watchAction},
 				watchAction,
 				'ca',
 			);
-			const require = await mw.loader.using('mediawiki.page.watch.ajax');
 			const watch = require('mediawiki.page.watch.ajax');
 			watch.watchstar($(watchLink).find('a'), currentPage.toText());
 			if (['watch', 'unwatch'].includes(config.wgAction)){
 				$(watchLink).addClass('selected');
 			}
 		}
-		if (config.wgAction === 'view' && config.wgPageName === config.wgRelevantPageName){
-			$(viewLink).addClass('selected');
-		} else if (['edit', 'submit'].includes(config.wgAction)){
-			$(editLink).addClass('selected');
-		}
 		return views;
 	};
 
-	skinConfig.actions = async parent => {
-		await api.loadMessagesIfMissing([
-			'cactions',
-			'skin-action-delete',
-			'tooltip-ca-delete',
-			'accesskey-ca-delete',
-			'skin-action-undelete',
-			'tooltip-ca-undelete',
-			'accesskey-ca-undelete',
-			'skin-action-move',
-			'tooltip-ca-move',
-			'accesskey-ca-move',
-			'skin-action-protect',
-			'tooltip-ca-protect',
-			'accesskey-ca-protect',
-			'skin-action-unprotect',
-			'tooltip-ca-unprotect',
-			'accesskey-ca-unprotect',
-		]);
-		const page = (await api.get({
-			titles: currentPage.toText(),
-			prop: ['info', 'deletedrevisions'],
-			inprop: 'protection',
-			intestactions: ['delete', 'undelete', 'move', 'protect'],
-			drvlimit: 1,
-			drvprop: '',
-		})).query.pages[0];
+	skinConfig.actions = parent => {
 		const actions = buildPortlet('cactions');
 		$(parent).append(actions);
 		if (currentPage.getNamespaceId() === -1){
 			return actions;
 		}
-		if (page.actions.delete && config.wgRelevantArticleId){
+		if (pageInfo.actions.delete && config.wgRelevantArticleId){
 			const deleteLink = addPortletLink(
 				'cactions',
 				{action: 'delete'},
@@ -386,7 +406,7 @@
 				$(deleteLink).addClass('selected');
 			}
 		}
-		if (page.actions.undelete && page.deletedrevisions && !config.wgRelevantArticleId){
+		if (pageInfo.actions.undelete && pageInfo.deletedrevisions && !config.wgRelevantArticleId){
 			const undeleteLink = addPortletLink(
 				'cactions',
 				`Special:Undelete/${currentPage.toText()}`,
@@ -398,7 +418,7 @@
 				$(undeleteLink).addClass('selected');
 			}
 		}
-		if (page.actions.move && config.wgRelevantArticleId){
+		if (pageInfo.actions.move && config.wgRelevantArticleId){
 			const moveLink = addPortletLink(
 				'cactions',
 				`Special:MovePage/${currentPage.toText()}`,
@@ -410,8 +430,8 @@
 				$(moveLink).addClass('selected');
 			}
 		}
-		if (page.actions.protect){
-			const mode = page.protection.length ? 'unprotect' : 'protect';
+		if (pageInfo.actions.protect){
+			const mode = pageInfo.protection.length ? 'unprotect' : 'protect';
 			const protectLink = addPortletLink(
 				'cactions',
 				{action: mode},
@@ -426,34 +446,7 @@
 		return actions;
 	};
 
-	skinConfig.personalTools = async parent => {
-		await api.loadMessagesIfMissing([
-			'personal',
-			'tooltip-pt-userpage',
-			'accesskey-pt-userpage',
-			'fd-notifications-notifications',
-			'mytalk',
-			'tooltip-pt-mytalk',
-			'accesskey-pt-mytalk',
-			'mypreferences',
-			'tooltip-pt-preferences',
-			'accesskey-pt-preferences',
-			'mywatchlist',
-			'tooltip-pt-watchlist',
-			'accesskey-pt-watchlist',
-			'mycontris',
-			'tooltip-pt-mycontris',
-			'accesskey-pt-mycontris',
-			'pt-userlogout',
-			'tooltip-pt-logout',
-			'accesskey-pt-logout',
-			'pt-createaccount',
-			'tooltip-pt-createaccount',
-			'accesskey-pt-createaccount',
-			'pt-login',
-			'tooltip-pt-login',
-			'accesskey-pt-login',
-		]);
+	skinConfig.personalTools = parent => {
 		const personalTools = buildPortlet('personal');
 		$(parent).append(personalTools);
 		if (config.wgUserId){
@@ -530,34 +523,37 @@
 		return personalTools;
 	};
 
-	// TODO: Make sure this works properly
-	skinConfig.toc = async parent => {
-		const notoc = (await api.get({
-			titles: currentPage.toText(),
-			prop: 'pageprops',
-			ppprop: 'notoc',
-		})).query.pages[0].pageprops;
-		const headings = $('#mw-content-text').find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], .mw-headline[id]');
+	skinConfig.toc = parent => {
+		$('#toc').remove();
+		const notoc = pageInfo.pageprops;
+		let headings = $('#mw-content-text').find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');
+		if ($('.mw-parser-output').length){
+			headings = $('#mw-content-text').find('.mw-headline[id]');
+		}
 
 		if (notoc || !headings.length){
 			return;
 		}
 
-		await api.loadMessagesIfMissing('toc');
 		const processedHeadings = [{
 			target: '#',
-			label: '(Top)',
+			text: '(Top)',
 			trail: [0],
 		}];
 		const toc = buildPortlet('toc');
 
 		headings.each((index, heading) => {
 			const headingEntry = {};
-			const linkSelector = /<a(?: rel=".+?")?(?: class=".+?")?(?: href=".+?")?(?: class=".+?")?(?: title=".+?")?>(.+?)<\/a>/g;
 			const objPrev = processedHeadings[processedHeadings.length - 1];
 
 			headingEntry.target = '#' + $(heading).attr('id');
-			headingEntry.label = $(heading).html().replace(linkSelector, '$1');
+			headingEntry.text = $(heading).html().replace(
+				/<(?!(?:b|bdi|i|q|s|span|sub|sup|\/)\b).+?>(.+?)<\/.+?>/gi,
+				'$1',
+			).replace(
+				/<(b|bdi|i|q|s|span|sub|sup) .+?>(.+?)<\/\1>/gi,
+				'<$1>$2</$1>',
+			);
 			headingEntry.level = Number($(heading).parent().prop('tagName').substring(1)) || Number($(heading).prop('tagName').substring(1));
 
 			if (processedHeadings.length === 1){
@@ -590,28 +586,33 @@
 			const listItem = $('<li>');
 			const link = $('<a>');
 			const tocNumber = $('<span class="toc-numb">').html(obj.trail.join('.'));
-			const tocText = $('<span>').html(obj.label);
+			const tocText = $('<span>').html(obj.text);
 			link.attr('href', obj.target);
-			link.append(tocNumber).append(tocText);
+			link.append(tocNumber, tocText);
 			listItem.append(link);
 
 			if (processedHeadings[i + 1] && processedHeadings[i + 1].trail.length > obj.trail.length){
-				const button = $('<button>', {
-					'class': 'toc-sublist-toggle',
-					'aria-expanded': 'false',
-				});
-
-				sublists[i] = $('<ul>').toggle();
-				listItem.append(button).append(sublists[i]);
-				button.on('click', () => {
-					const state = button.attr('aria-expanded');
+				sublists[i] = $('<ul>');
+				if (obj.trail.length === 1){
+					const button = $('<button>', {
+						'class': 'toc-sublist-toggle',
+						'aria-expanded': false,
+					});
+					listItem.append(button);
 					sublists[i].toggle();
-					button.attr('aria-expanded', state === 'false' ? 'true' : 'false');
-				});
+					button.on('click', () => {
+						sublists[i].toggle();
+						button.attr(
+							'aria-expanded',
+							button.attr('aria-expanded') !== 'true',
+						);
+					});
+				}
+				listItem.append(sublists[i]);
 			}
 
 			if (obj.trail.length === 1){
-				$(toc).find('ul').append(listItem);
+				$(toc).find('div > ul').append(listItem);
 			} else {
 				sublists[levels[obj.trail.length - 1]].append(listItem);
 			}
@@ -620,14 +621,15 @@
 		});
 
 		$(parent).append(toc);
+		mw.util.showPortlet('p-toc');
 		return toc;
 	};
 
-	skinConfig.appearance = async parent => {
+	skinConfig.appearance = parent => {
 		// TODO
 	};
 
-	skinConfig.search = async parent => {
+	skinConfig.search = parent => {
 		// TODO
 	};
 
@@ -646,7 +648,7 @@
 	){
 		$(`#${prefix}-${internalName}`).remove();
 		let href = mw.message(String(target));
-		let label = mw.message(linkText);
+		let text = mw.message(linkText);
 		let tooltip = mw.message(`tooltip-${prefix}-${internalName}`);
 		let accesskey = mw.message(`accesskey-${prefix}-${internalName}`);
 
@@ -660,14 +662,14 @@
 			href = mw.util.getUrl(href);
 		}
 
-		label = isValid(label) ? label.text() : linkText;
+		text = isValid(text) ? text.text() : linkText;
 		tooltip = isValid(tooltip) ? tooltip.text() : undefined;
 		accesskey = isValid(accesskey) ? accesskey.text() : undefined;
 
 		return mw.util.addPortletLink(
 			`p-${portletName}`,
 			href,
-			label,
+			text,
 			`${prefix}-${internalName}`,
 			tooltip,
 			accesskey,

@@ -41,3 +41,10 @@ importArticles({
         'w:c:dev:Countdown/code.js'
     ]
 });
+
+mw.loader.using([], function () {
+    var script = document.createElement("script");
+    script.src = "https://platform.x.com/widgets.js";
+    script.async = true;
+    document.head.appendChild(script);
+});

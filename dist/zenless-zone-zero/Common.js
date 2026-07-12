@@ -86,7 +86,7 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 		.find('.custom-tt-wrapper.mw-collapsible')
 		.each((_, wrapper) => {
 			const $wrapper = $(wrapper);
-			const isEE = $wrapper.hasClass('giw-extra-effect-wrapper');
+			const isEE = $wrapper.hasClass('zzw-extra-effect-wrapper');
 			const hover = !toggle || isEE;
 			const classes = $wrapper.attr('class').replace(/mw-collapsible|mw-made-collapsible/g, '');
 			
@@ -96,7 +96,7 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 			const toggleCont = $wrapper.children('.toggle-tooltip').html();
 			$wrapper.children('.toggle-tooltip').replaceWith(toggleCont);
 			const $toggle = $('<span>', {
-				'class': 'custom-tt toggle-tooltip'+(isEE ? ' giw-extra-effect' : ''),
+				'class': 'custom-tt toggle-tooltip'+(isEE ? ' zzw-extra-effect' : ''),
 				html: $wrapper.html().replace(/mw-collapsible-toggle(-collapsed|-expanded)? ?/g, '')
 			});
 			const popup = new OO.ui.PopupWidget({
@@ -104,7 +104,7 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 				$container: $('.page__main'),
 				anchor: !isEE,
 			});
-			if (isEE) { popup.$element.find('.oo-ui-popupWidget-popup').toggleClass('giw-extra-effect', true); }
+			if (isEE) { popup.$element.find('.oo-ui-popupWidget-popup').toggleClass('zzw-extra-effect', true); }
 			
 			// Remove default collapsible
 			const newWrap = $('<span>', {

@@ -94,8 +94,8 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 
 	// Page actions
 	await skinConfig.associatedPages(leftNav);
-	await skinConfig.views(rightNav);
-	const actions = await skinConfig.actions(rightNav);
+	skinConfig.views(rightNav);
+	const actions = skinConfig.actions(rightNav);
 
 	$(actions).addClass('wds-dropdown');
 	$(actions).find('label').addClass('wds-dropdown__toggle');

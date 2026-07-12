@@ -253,9 +253,12 @@
             return;
         }
 
-        // no fragment check is to ensure section links/collapsible trigger links on diff pages are ignored
-        var hasDiffParam = url.searchParams.has("diff")
-                && url.hash === "";
+        // ignore section links/collapsible trigger links (#, #section)
+        if (event.currentTarget.getAttribute("href").startsWith("#")) {
+            return;
+        }
+
+        var hasDiffParam = url.searchParams.has("diff");
         var isSpecialDiffLink = url.pathname.startsWith(special.diff)
                 || url.pathname.startsWith(special.diffDefault);
         var isSpecialCompareLink = url.pathname.startsWith(special.compare)

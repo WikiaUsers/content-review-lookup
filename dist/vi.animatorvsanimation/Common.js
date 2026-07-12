@@ -3,12 +3,19 @@ importArticles({
     type: 'script',
     articles: [
     	'u:dev:MediaWiki:AjaxBatchDelete/code.js',
+    	'u:dev:Countdown/code.js',
     	'u:dev:MediaWiki:LastEdited/code.js',
-    	'u:dev:MediaWiki:UTCClock.js',
     	'u:dev:MediaWiki:MassEdit/code.js',
+    	'u:dev:MediaWiki:UTCClock/code.js'
     ],
 });
-window.ajaxPages = ["Đặc biệt:Thay đổi gần đây","Đặc biệt:Danh sách theo dõi","Đặc biệt:Nhật trình","Đặc biệt:Đóng góp","Special:WikiActivity"];
+window.ajaxPages = [
+	"Đặc biệt:Thay đổi gần đây",
+	"Đặc biệt:Danh sách theo dõi",
+	"Đặc biệt:Nhật trình",
+	"Đặc biệt:Đóng góp",
+	"Special:WikiActivity"
+];
 window.AjaxRCRefreshText = 'Tự động làm mới';
 window.AjaxRCRefreshHoverText = 'Tự động làm mới trang';
 /* LockOldComments */

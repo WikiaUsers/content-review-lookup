@@ -33,7 +33,6 @@
             const api = new mw.Api();
 
             // Функции сбора данных
-
             const fetchAndParseModules = () => {
                 return api
                     .get({
@@ -47,18 +46,15 @@
                     .then((sourceResponse) => {
                         const pages = sourceResponse.query && sourceResponse.query.pages;
                         if (!pages || pages.length === 0 || pages[0].missing) return null;
-
                         const luaCode = pages[0].revisions[0].slots.main.content;
                         const regex = /local\s+([a-zA-Z0-9_]+)\s*=\s*\[==\[([\s\S]*?)\]==\]/g;
                         let match,
                             combinedWikitext = "";
-
                         while ((match = regex.exec(luaCode)) !== null) {
                             combinedWikitext += `<div class="temp-rail-wrapper" data-module-name="${match[1]}">\n${match[2]}\n</div>\n`;
                         }
                         if (!combinedWikitext) return null;
                         combinedWikitext += "\n__NOTOC__\n";
-
                         return api.post({
                             action: "parse",
                             text: combinedWikitext,
@@ -161,7 +157,6 @@
 
             const fetchDiscussionsActivity = () => {
                 const apiUrl = mw.util.wikiScript("wikia");
-
                 return $.getJSON(apiUrl, {
                     controller: "DiscussionPost",
                     method: "getPosts",
@@ -172,9 +167,9 @@
                     .then((postsData) => {
                         const posts = (postsData && postsData._embedded && postsData._embedded["doc:posts"]) || [];
                         if (posts.length === 0) return null;
-
                         const uniquePosts = [];
                         const seenThreads = new Set();
+
                         for (let i = 0; i < posts.length; i++) {
                             const post = posts[i];
                             if (!seenThreads.has(post.threadId)) {
@@ -183,6 +178,7 @@
                             }
                             if (uniquePosts.length === 5) break;
                         }
+
                         if (uniquePosts.length === 0) return null;
 
                         const articleIds = uniquePosts
@@ -306,7 +302,6 @@
                         const totalImages =
                             logData.query && logData.query.statistics && logData.query.statistics.images;
                         const pageIds = (logData.query.logevents || []).map((e) => e.pageid).filter((id) => id > 0);
-
                         if (pageIds.length === 0) return null;
 
                         return api
@@ -320,7 +315,6 @@
                             })
                             .then((imageInfo) => {
                                 const files = [];
-
                                 pageIds.forEach((id) => {
                                     const p = imageInfo.query.pages.find((page) => page.pageid === id);
                                     if (p && p.imageinfo && p.imageinfo[0]) {
@@ -331,7 +325,6 @@
                                         });
                                     }
                                 });
-
                                 return files.length > 0 ? { files, total: totalImages } : null;
                             });
                     })
@@ -344,7 +337,6 @@
             // VUE-компонент
             const mountVueApp = (container, dataProps) => {
                 if (!dataProps.popular && !dataProps.social && !dataProps.files) return;
-
                 return mw.loader.using(["vue", "@wikimedia/codex"]).then((require) => {
                     const Vue = require("vue");
 
@@ -397,25 +389,25 @@
                                     <a :href="uploadLink" class="wds-is-secondary wds-button wds-is-squished new-files__btn-upload">Загрузить</a>
                                 </div>
                                 <div class="new-files__carousel" v-if="filesData.files.length > 0">
-                                    <button class="new-files__control new-files__control--left wds-is-secondary wds-button wds-is-squished" 
-                                            :class="{'wds-is-disabled': carouselIndex === 0}" 
-                                            @click="carouselIndex--"><</button>
+                                    <button class="new-files__control new-files__control--left wds-is-secondary wds-button wds-is-squished"
+                                             :class="{'wds-is-disabled': carouselIndex === 0}"
+                                             @click="carouselIndex--"><</button>
                                     <ul class="new-files__list">
-                                        <li v-for="(file, idx) in filesData.files" :key="file.url" 
-                                            class="new-files__item" 
-                                            :class="{'new-files__item--hidden': idx < carouselIndex || idx >= carouselIndex + 4}">
+                                        <li v-for="(file, idx) in filesData.files" :key="file.url"
+                                             class="new-files__item"
+                                             :class="{'new-files__item--hidden': idx < carouselIndex || idx >= carouselIndex + 4}">
                                             <a class="new-files__link" :href="file.url" :title="file.title">
                                                 <img v-if="file.thumb" :src="formatImage(file.thumb)" :alt="file.title" class="new-files__image">
                                                 <div v-else class="new-files__placeholder">Файл</div>
                                             </a>
                                         </li>
                                     </ul>
-                                    <button class="new-files__control new-files__control--right wds-is-secondary wds-button wds-is-squished" 
-                                            :class="{'wds-is-disabled': carouselIndex >= maxCarouselIndex}" 
-                                            @click="carouselIndex++">></button>
+                                    <button class="new-files__control new-files__control--right wds-is-secondary wds-button wds-is-squished"
+                                             :class="{'wds-is-disabled': carouselIndex >= maxCarouselIndex}"
+                                             @click="carouselIndex++">></button>
                                 </div>
                                 <div class="new-files__footer">
-                                    <a :href="newFilesLink" class="new-files__link-all">Показать все</a>
+                                    <a :href="newFilesLink" class="new-files__link-all wds-is-secondary wds-button wds-is-squished ">Показать все</a>
                                 </div>
                             </section>
                         </div>
@@ -446,16 +438,35 @@
                         methods: {
                             formatImage(imgStr) {
                                 if (!imgStr) return this.fallbackImage;
-                                let cleanImg = imgStr.trim();
-                                // Удаляем параметры обрезки
-                                cleanImg = cleanImg.replace(/\/top-crop\/width\/\d+\/height\/\d+/g, "");
-                                // Удаляем параметр /scale-to-width-down/50 (или любые другие числа ширины)
-                                cleanImg = cleanImg.replace(/\/scale-to-width-down\/\d+/g, "");
-                                return cleanImg.replace(/\/smart\/[^\?]+/, "/smart/width/50/height/50");
+                                
+                                try {
+                                    // Оборачиваем строку в класс URL для безопасной работы
+                                    const url = new URL(imgStr, window.location.origin);
+                                    
+                                    // Ищем базовую часть ссылки
+                                    const revIndex = url.pathname.indexOf('/revision/latest');
+                                    
+                                    if (revIndex !== -1) {
+                                        // Отсекаем абсолютно все модификаторы обрезки, оставляя только путь до оригинала
+                                        // 16 - это длина строки "/revision/latest"
+                                        url.pathname = url.pathname.substring(0, revIndex + 16);
+                                        
+                                        // url.href автоматически вернет чистую ссылку, сохранив параметры кэша (query)
+                                        return url.href;
+                                    }
+                                    
+                                    // Фоллбэк на случай нестандартных ссылок (если /revision/latest отсутствует)
+                                    let cleanImg = imgStr.trim();
+                                    cleanImg = cleanImg.replace(/\/(top-crop|window-crop|smart|thumbnail|zoom-crop)\/width\/\d+\/height\/\d+(?:\/x-offset\/\d+\/y-offset\/\d+)?/g, "");
+                                    cleanImg = cleanImg.replace(/\/scale-to-width-(down|up)\/\d+/g, "");
+                                    return cleanImg;
+                                    
+                                } catch (e) {
+                                    return imgStr;
+                                }
                             },
                         },
                     };
-
                     Vue.createMwApp(App).mount(container);
                 });
             };
@@ -490,6 +501,7 @@
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(renderedHtml, "text/html");
                             const wrappers = doc.querySelectorAll(".temp-rail-wrapper");
+
                             for (let i = 0; i < wrappers.length; i++) {
                                 const section = document.createElement("section");
                                 section.className = "railModule rail-module";

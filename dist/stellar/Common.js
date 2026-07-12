@@ -7,6 +7,6 @@ $(document).ready(function() {
     $.getJSON('/api.php?action=parse&text={{Sidebar}}&format=json', 
      function(data) {
         var content = data.parse.text['*'];
-        $('section#sidebar').append(content);
+        $('section#sidebar').prepend(content);
     });
 });

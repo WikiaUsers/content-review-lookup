@@ -62,6 +62,21 @@
 		return parts.join(' ');
 	}
 
+	// Minute+second precision "1h 23m 45s" for the Auto-Merge row (short windows, ticked every
+	// second). Mirrors relFull() in Module:Events.
+	function relFull(sec) {
+		if (sec < 0) sec = 0;
+		var d = Math.floor(sec / DAY); sec -= d * DAY;
+		var h = Math.floor(sec / 3600); sec -= h * 3600;
+		var m = Math.floor(sec / 60); var s = Math.floor(sec - m * 60);
+		var parts = [];
+		if (d) parts.push(d + 'd');
+		if (d || h) parts.push(h + 'h');
+		if (d || h || m) parts.push(m + 'm');
+		parts.push(s + 's');
+		return parts.join(' ');
+	}
+
 	var MON = ['January', 'February', 'March', 'April', 'May', 'June',
 		'July', 'August', 'September', 'October', 'November', 'December'];
 	function pad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -142,14 +157,62 @@
 			// collapses to block, stacking the icon centered above the text.
 			seg.style.display = anyVisible ? 'flex' : 'none';
 		}
+
+	}
+
+	// Auto-Merge pinned row — its own 1-second tick (short windows shown with second precision).
+	// Recomputes the current-or-next window live from the embedded pattern
+	// (data-mmev-am = "startEpoch,durSec,intervalSec;...") — several windows a day means the
+	// parser-cached server snapshot goes stale within the hour.
+	function tickAutoMerge() {
+		var now = Date.now() / 1000;
+		var am = document.querySelectorAll('.mmev-root .mmev-am');
+		for (var a = 0; a < am.length; a++) {
+			var row = am[a];
+			var spec = row.getAttribute('data-mmev-am');
+			if (!spec) continue;
+			var parts = spec.split(';');
+			var best = null;
+			for (var b = 0; b < parts.length; b++) {
+				var p = parts[b].split(',');
+				var startE = parseInt(p[0], 10), dur = parseInt(p[1], 10), intv = parseInt(p[2], 10);
+				if (isNaN(startE) || isNaN(dur) || !intv) continue;
+				var occ = startE + Math.floor((now - startE) / intv) * intv;
+				var cand;
+				if (now >= occ && now < occ + dur) cand = { active: true, s: occ, e: occ + dur };
+				else { var ns = (now < occ) ? occ : occ + intv; cand = { active: false, s: ns, e: ns + dur }; }
+				if (!best) best = cand;
+				else if (cand.active && !best.active) best = cand;
+				else if (cand.active === best.active) {
+					if (best.active) { if (cand.e < best.e) best = cand; }
+					else { if (cand.s < best.s) best = cand; }
+				}
+			}
+			if (!best) continue;
+			var amLabel = row.querySelector('.mmev-am-label');
+			var amVal = row.querySelector('.mmev-am-val');
+			if (best.active) {
+				if (amLabel) amLabel.textContent = 'active now, ends in';
+				if (amVal) amVal.textContent = relFull(best.e - now);
+				setCdTip(row, 'Ends', best.e, relFull(best.e - now) + ' left');
+			} else {
+				if (amLabel) amLabel.textContent = 'next in';
+				if (amVal) amVal.textContent = relFull(best.s - now);
+				setCdTip(row, 'Starts', best.s, 'in ' + relFull(best.s - now));
+			}
+			row.classList.toggle('mmev-seg-active', best.active);
+			row.classList.toggle('mmev-seg', !best.active);
+		}
 	}
 
 	function start() {
 		if (!document.querySelector('.mmev-root')) return;
 		tick();
+		tickAutoMerge();
 		if (!started) {
 			started = true;
 			setInterval(tick, 30000);
+			setInterval(tickAutoMerge, 1000);
 		}
 	}
 
@@ -175,13 +238,13 @@
 		['l46', 'Level 46\u201350'],
 		['l26', 'Level 26\u201345'],
 		['l15', 'Level 15\u201325'],
-		['lt5', 'Level 26+ (low spender)']
+		['lt5', 'Level 26+ ($500+ spent)']
 	];
 	var KEY = 'mmDsgSeg';
 	var saved = null;
 	try { saved = localStorage.getItem(KEY); } catch (e) {}
 	var label = document.createElement('label');
-	label.appendChild(document.createTextNode('Show task goals for:'));
+	label.appendChild(document.createTextNode('Show objective goals for:'));
 	var sel = document.createElement('select');
 	SEGS.forEach(function (sdef) {
 		var o = document.createElement('option');
@@ -250,7 +313,7 @@
 	holder.setAttribute('data-mm-init', '1'); // guard against double injection (site + user script)
 
 	var label = document.createElement('label');
-	label.appendChild(document.createTextNode('Show tasks for:'));
+	label.appendChild(document.createTextNode('Show objectives for:'));
 	var sel = document.createElement('select');
 	OPTS.forEach(function (o) {
 		var opt = document.createElement('option');
@@ -258,6 +321,22 @@
 		opt.textContent = o[1];
 		sel.appendChild(opt);
 	});
+	// Today's index (1-7) within the RUNNING scoop week, client-clock based, so it
+	// stays correct even on a stale page cache. Also drives the Full Week column
+	// highlight via the body class (Common.css).
+	var todayIdx = null;
+	var runningWk = null; // whichever emitted window is running by the CLIENT clock
+	['cur', 'next'].forEach(function (wk) {
+		if (!runningWk && status(wk) === 'current') { runningWk = wk; }
+	});
+	if (runningWk) {
+		var ti = Math.floor((Date.now()
+			- Date.parse(holder.getAttribute('data-' + runningWk + '-start') + 'T08:05:00Z')) / 86400000) + 1;
+		if (ti >= 1 && ti <= 7) {
+			todayIdx = ti;
+			document.body.classList.add('mm-today-' + ti);
+		}
+	}
 	function markWeekTab(v) {
 		var marked = document.querySelectorAll('.mm-dsw-weektab');
 		for (var i = 0; i < marked.length; i++) { marked[i].classList.remove('mm-dsw-weektab'); }
@@ -266,13 +345,47 @@
 		var tabs = document.querySelectorAll('.wds-tabs__tab[data-hash="' + t + '_Week"]');
 		for (var j = 0; j < tabs.length; j++) { tabs[j].classList.add('mm-dsw-weektab'); }
 	}
+	// Dot on today's Day tab — only in the current-week view and only inside the
+	// panel of the RUNNING week type (Day_N data-hash repeats in all four tabbers).
+	function markToday(v) {
+		var marked = document.querySelectorAll('.mm-dsw-daytab');
+		for (var i = 0; i < marked.length; i++) { marked[i].classList.remove('mm-dsw-daytab'); }
+		if (v !== runningWk || !todayIdx) { return; }
+		var t = holder.getAttribute('data-' + runningWk + '-type');
+		var outer = document.querySelector('.wds-tabber');
+		if (!t || !outer) { return; }
+		var tabs = outer.querySelectorAll(':scope > .wds-tabs__wrapper .wds-tabs__tab');
+		var idx = -1;
+		for (var j = 0; j < tabs.length; j++) {
+			if (tabs[j].getAttribute('data-hash') === t + '_Week') { idx = j; }
+		}
+		var panels = outer.querySelectorAll(':scope > .wds-tab__content');
+		if (idx < 0 || !panels[idx]) { return; }
+		var day = panels[idx].querySelector('.wds-tabs__tab[data-hash="Day_' + todayIdx + '"]');
+		if (day) { day.classList.add('mm-dsw-daytab'); }
+	}
 	function apply(v) {
 		document.body.classList.remove('mm-week-cur', 'mm-week-next');
 		if (v === 'cur' || v === 'next') { document.body.classList.add('mm-week-' + v); }
 		markWeekTab(v);
+		markToday(v);
 		try { localStorage.setItem(KEY, v); } catch (e) {}
 	}
-	sel.addEventListener('change', function () { apply(sel.value); });
+	// Switch the outer tabber to the selected week's difficulty. Only on a USER
+	// change — doing it on the initial apply would jump the page on every load.
+	function switchWeekTab(v) {
+		var t = (v === 'cur' || v === 'next') ? holder.getAttribute('data-' + v + '-type') : null;
+		if (!t) { return; }
+		var tab = document.querySelector('.wds-tabs__tab[data-hash="' + t + '_Week"]');
+		if (tab && !tab.classList.contains('wds-is-current')) {
+			var a = tab.querySelector('a');
+			if (a) { a.click(); } else { tab.click(); }
+		}
+	}
+	sel.addEventListener('change', function () {
+		apply(sel.value);
+		switchWeekTab(sel.value);
+	});
 	var saved = null;
 	try { saved = localStorage.getItem(KEY); } catch (e) {}
 	var init = null;
@@ -286,13 +399,84 @@
 	apply(init);
 	label.appendChild(sel);
 	holder.appendChild(label);
+	var note = document.createElement('div');
+	note.className = 'mm-dsw-note';
+	note.textContent = '● marks the selected week’s difficulty and today’s day.';
+	holder.appendChild(note);
 
-	// Mark today's day-of-week index (1-7) of the RUNNING scoop week on <body>;
-	// Common.css uses it in the current-week view to softly dim the other Full Week
-	// columns. Client-clock based, so it stays correct even on a stale page cache.
-	var cs = holder.getAttribute('data-cur-start');
-	if (cs && status('cur') === 'current') {
-		var idx = Math.floor((Date.now() - Date.parse(cs + 'T08:05:00Z')) / 86400000) + 1;
-		if (idx >= 1 && idx <= 7) { document.body.classList.add('mm-today-' + idx); }
+	// == New-visit auto-focus: jump the tabber to the running week type + today's day.
+	// A genuine new visit selects the current week/day; a RELOAD instead keeps whatever
+	// the visitor had open (their per-tab-session choice, persisted on every tab click).
+	// Classes are toggled directly (not .click()) so the far-down tabber never scrolls
+	// the freshly-arrived visitor away from the top of the page; a later user click on
+	// any tab fully re-toggles Fandom's own state, so nothing desyncs.
+	var SELKEY = 'mmDsTab';
+	var userTouched = false;
+	function setCurrent(list, idx) {
+		for (var i = 0; i < list.length; i++) { list[i].classList.toggle('wds-is-current', i === idx); }
 	}
+	function focusWeekDay(wHash, dHash) {
+		var outer = document.querySelector('.wds-tabber');
+		if (!outer) { return; }
+		var otabs = outer.querySelectorAll(':scope > .wds-tabs__wrapper .wds-tabs__tab');
+		var opanels = outer.querySelectorAll(':scope > .wds-tab__content');
+		var oidx = -1;
+		for (var i = 0; i < otabs.length; i++) { if (otabs[i].getAttribute('data-hash') === wHash) { oidx = i; } }
+		if (oidx < 0) { return; }
+		setCurrent(otabs, oidx); setCurrent(opanels, oidx);
+		if (!dHash || !opanels[oidx]) { return; }
+		var inner = opanels[oidx].querySelector('.wds-tabber');
+		if (!inner) { return; }
+		var itabs = inner.querySelectorAll(':scope > .wds-tabs__wrapper .wds-tabs__tab');
+		var ipanels = inner.querySelectorAll(':scope > .wds-tab__content');
+		var iidx = -1;
+		for (var k = 0; k < itabs.length; k++) { if (itabs[k].getAttribute('data-hash') === dHash) { iidx = k; } }
+		if (iidx < 0) { return; }
+		setCurrent(itabs, iidx); setCurrent(ipanels, iidx);
+	}
+	// Snapshot the tabber's current outer(week)+inner(day) selection into sessionStorage.
+	function captureSel() {
+		var outer = document.querySelector('.wds-tabber');
+		if (!outer) { return; }
+		var otabs = outer.querySelectorAll(':scope > .wds-tabs__wrapper .wds-tabs__tab');
+		var opanels = outer.querySelectorAll(':scope > .wds-tab__content');
+		var oidx = -1, wHash = null;
+		for (var i = 0; i < otabs.length; i++) {
+			if (otabs[i].classList.contains('wds-is-current')) { oidx = i; wHash = otabs[i].getAttribute('data-hash'); }
+		}
+		if (!wHash) { return; }
+		var dHash = null;
+		if (oidx >= 0 && opanels[oidx]) {
+			var inner = opanels[oidx].querySelector('.wds-tabber');
+			var cur = inner && inner.querySelector(':scope > .wds-tabs__wrapper .wds-tabs__tab.wds-is-current');
+			if (cur) { dHash = cur.getAttribute('data-hash'); }
+		}
+		try { sessionStorage.setItem(SELKEY, JSON.stringify({ w: wHash, d: dHash })); } catch (e) {}
+	}
+	function isReload() {
+		try {
+			var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+			if (nav && nav.type) { return nav.type === 'reload'; }
+			if (performance.navigation) { return performance.navigation.type === 1; }
+		} catch (e) {}
+		return false;
+	}
+	// Persist the visitor's choice after each manual tab switch (deferred so Fandom has
+	// already flipped wds-is-current), and stop the re-assert below from overriding it.
+	document.addEventListener('click', function (e) {
+		var tab = e.target && e.target.closest && e.target.closest('.wds-tabber .wds-tabs__tab');
+		if (tab) { userTouched = true; setTimeout(captureSel, 60); }
+	}, true);
+	function initialTab() {
+		if (userTouched) { return; }
+		var stored = null;
+		try { stored = JSON.parse(sessionStorage.getItem(SELKEY)); } catch (e) {}
+		if (isReload() && stored && stored.w) { focusWeekDay(stored.w, stored.d); return; }
+		if (runningWk) {
+			var wt = holder.getAttribute('data-' + runningWk + '-type');
+			if (wt) { focusWeekDay(wt + '_Week', todayIdx ? ('Day_' + todayIdx) : null); captureSel(); }
+		}
+	}
+	initialTab();
+	setTimeout(initialTab, 250); // re-assert once in case Fandom's tabber init ran after us
 })();

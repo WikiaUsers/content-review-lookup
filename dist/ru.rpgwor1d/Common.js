@@ -12,6 +12,8 @@ window.tooltips_list = [
         parse: '{'+'{ПодсказкаТекст|<#text#>|<#size#>|<#wrap#>}}'},
     {   classname: 'adv-tooltip-infobox',
         parse: '{'+'{ПродвинутаяПодсказкаТекст|Header=<#header#>|desc=<#desc#>}}'},
+    {   classname: 'ruling-tooltip-infobox',
+        parse: '{'+'{КартыВнутриРулинга|<#cards#>}}'},
     {   classname: 'estavita-sleeve-infobox',
         parse: '{'+'{ПодсказкаРубашкиЭставиты|<#name#>|SIGN=<#sign#>|Счётчик=<#st#>|Левый текст счётчика=<#stl#>|Правый текст счётчика=<#str#>|Текстура=<#txt#>|Качество текстуры=<#qtxt#>}}'},
         ]

@@ -56,3 +56,25 @@ $(function() {
   $tfb = $("#tfb");
   $(BC + " span.ajaxttlink").each(bindTT);
 });
+
+
+// User tags configuration
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		mostedits: { u: 'Most Prolific Editor' }
+	}
+};
+UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.newuser = true;
+UserTagsJS.modules.autoconfirmed = true;
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller', 'rollback', 'sysop', 'bot', 'bot-global'];
+UserTagsJS.modules.metafilter = {
+	sysop: ['bureaucrat', 'founder'],
+	bureaucrat: ['founder'],
+	threadmoderator: ['sysop', 'bureaucrat']
+};
+
+UserTagsJS.modules.custom = {
+	'KaiserVonMegalo': ['mostedits'] // NOTE: order of list here does NOT matter
+};

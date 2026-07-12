@@ -33,3 +33,6 @@ window.rwaOptions = {
     refresh : true,
     refreshDelay : 3 * 60 * 1000,
     timeout : 20 * 1000
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: false };

@@ -12,10 +12,11 @@
 
 	var specialPage = mw.config.get('wgCanonicalSpecialPageName'),
 		page = mw.config.get('wgTitle'),
-		ns = mw.config.get('wgNamespaceNumber');
+		ns = mw.config.get('wgNamespaceNumber'),
+		action = mw.config.get('wgAction');
 	if (
 		!['Leaderboard', 'Specialpages'].includes(specialPage) &&
-		!(page === 'Leaderboard' && ns === 4)
+		!(page === 'Leaderboard' && ns === 4 && action === 'view')
 	) return; // only run on Special:Leaderboard, Project:Leaderboard, Special:SpecialPages
 
 	mw.util.addCSS('\

@@ -31,10 +31,6 @@
 			width: 18,
 			alt: 'View file page',
 		});
-		const linkAttributes = {
-			target: '_blank',
-			href: mw.util.getUrl(`Special:FilePath/${fileName}`),
-		};
 
 		$(pdfGalleryItem).after($('<iframe>', {
 			src: mw.util.getUrl(`Special:FilePath/${fileName}`),
@@ -45,7 +41,10 @@
 			class: 'thumbimage ls-is-cached lazyloaded',
 			title: fileName,
 		}));
-		$(pdfGalleryItem).parent().addClass('document-embed').attr(linkAttributes);
+		$(pdfGalleryItem).parent().addClass('document-embed').attr({
+			target: '_blank',
+			href: mw.util.getUrl(`Special:FilePath/${fileName}`),
+		});
 		$(pdfGalleryItem).parent().parent().parent().addClass('show-info-icon').append(figcaption);
 		figcaption.append(iconLink);
 		iconLink.append(iconSVG);
@@ -69,7 +68,10 @@
 		}
 
 		function createThumbnail(parserOutput){
-			const fig = $(`<figure class="thumb mw-halign-${floatDir} show-info-icon document-embed" typeof="mw:File/Thumb">`);
+			const fig = $('<figure>', {
+				class: `thumb mw-halign-${floatDir} show-info-icon document-embed`,
+				typeof: 'mw:File/Thumb',
+			});
 			const pdfLink = $('<a>', {
 				href: filePath,
 				class: 'mw-file-description image',

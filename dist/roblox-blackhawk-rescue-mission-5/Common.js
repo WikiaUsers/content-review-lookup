@@ -17,6 +17,6 @@ UserTagsJS.modules.custom = {
 }
 /* The Configurations for the LockOldComments script. */
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 60;
+window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.namespaceNumbers = [0];

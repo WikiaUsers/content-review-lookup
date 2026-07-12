@@ -48,7 +48,8 @@ mw.hook("wikipage.content").add(function () {
 $(function () {
     if (mw.config.get('wgCanonicalNamespace') !== 'FNDM') return;
 
-    $('#firstHeading').text(mw.config.get('wgTitle'));
+    $('#firstHeading .mw-page-title-namespace').remove();
+    $('#firstHeading .mw-page-title-separator').remove();
 
     if (!$('.page-header__page-subtitle').length) {
         $('.page-header__title-wrapper').append(

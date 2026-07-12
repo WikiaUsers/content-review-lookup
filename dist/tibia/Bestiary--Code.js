@@ -120,22 +120,24 @@ $(function(){
         $('#bestiary_search_results').show();
         $.each(bestiary_classes, function (n, v) {
             var nm = n, //Name may be trimmed, so 2 separate vars are required
-            title = '';
-            if (nm.length > 15) {
-                nm = nm.substr(0, 13) + "...";
-            }
-            /*if (bestiary_vr_creatures.includes(v.name)) {
-                vr = '<div title="Occurrence: Very Rare"><img src="' + fpath + 'Bestiary Occurrence Icon.gif"></div>';
-            } */
-            $('#bestiary_search_results').append(
-                '<div class="bestiary_search_box">' +
-                '<div class="bestiary_search_name bestiary_bgdark" title="' + n + '">' + nm + '</div>' +
-                '<div class="bestiary_class_img" name="'+ n + '">' + 
-                '<img src="' + fpath + n + '.png"></div>' +
-                '<div class="bestiary_search_box_count">Total: ' + v + '</div>' +
-                '<div class="bestiary_search_box_count">Known: ' + v + '</div>' +
-                '</div>'
-            );
+        title = '';
+        if (nm.length > 15) {
+            nm = nm.substr(0, 13) + "...";
+        }
+        
+        // Check our tracking list: if it is a missing class, use the fallback image name
+        var isMissing = window.missingClassesList && window.missingClassesList.includes(n);
+        var imgName = isMissing ? 'Missing_Bestiary_Class' : n;
+
+        $('#bestiary_search_results').append(
+            '<div class="bestiary_search_box">' +
+            '<div class="bestiary_search_name bestiary_bgdark" title="' + n + '">' + nm + '</div>' +
+            '<div class="bestiary_class_img" name="'+ n + '">' + 
+            '<img src="' + fpath + imgName + '.png"></div>' +
+            '<div class="bestiary_search_box_count">Total: ' + v + '</div>' +
+            '<div class="bestiary_search_box_count">Known: ' + v + '</div>' +
+            '</div>'
+        );
         });
     },
     bestiary_clear_ui = function() {
@@ -332,7 +334,22 @@ $(function(){
     bestiary_creature_baseinfo.sort(function(a, b) {  //Sort by race_id 
         return a.raceid - b.raceid;
     });
+    window.missingClassesList = window.missingClassesList || [];
+
     $.each(bestiary_creature_baseinfo, function (i, v) {
+        // 1. Check if the class is missing from your hardcoded list
+        if (typeof bestiary_classes[v.bclass] === 'undefined') {
+            console.error("🚨 Missing class detected! Creature: '" + v.name + "' | Unrecognized Class: '" + v.bclass + "'");
+            
+            // 2. Initialize the missing class on the fly
+            bestiary_classes[v.bclass] = 0;
+            bestiary_creature_classes[v.bclass] = [];
+            
+            // 3. Track this specific class so we know to use the fallback image later
+            window.missingClassesList.push(v.bclass);
+        }
+        
+        // 4. Proceed normally
         bestiary_classes[v.bclass] += 1; 
         bestiary_creature_classes[v.bclass].push(v.name);
     });

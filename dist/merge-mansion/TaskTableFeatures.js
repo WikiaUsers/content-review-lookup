@@ -892,6 +892,9 @@
 	var HEADING_CLASS = 'mmwt-active-heading';
 	var TITLE_CLASS = 'mmwt-active-title';
 	var PILL_CLASS = 'mmwt-active-pill';
+	var LOCK_PILL_CLASS = 'mmwt-active-lock-pill';
+	var BRANCH_TAG_CLASS = 'mmwt-branch-tag';
+	var UNDO_BTN_CLASS = 'mmwt-undo-btn';
 	var PILL_PULSE_CLASS = 'mmwt-active-pill-pulse';
 	var SPINNER_CLASS = 'mmwt-active-spinner';
 	var FADE_OUT_CLASS = 'mmwt-active-row-fading';
@@ -985,6 +988,78 @@
 			'  from{opacity:0;}',
 			'  to{opacity:1;}',
 			'}',
+			// ── lock pill (tasks remaining before time-locked content) ───────
+			'.' + LOCK_PILL_CLASS + ' img{',
+			'  width:16px;height:16px;object-fit:contain;',
+			'  margin-left:6px;vertical-align:-3px;',
+			'}',
+			// ── branch tag: paper note beside each active row ─────────────────
+			'.' + BRANCH_TAG_CLASS + '{',
+			'  position:absolute;left:100%;top:50%;',
+			'  transform:translateY(-50%) rotate(2.5deg);',
+			'  margin-left:12px;',
+			'  display:inline-flex;align-items:center;gap:5px;',
+			'  padding:7px 11px;',
+			'  background:linear-gradient(160deg,#f7e9c3,#e4cd97);',
+			'  color:#5b4519;font-weight:bold;font-size:0.92em;line-height:1;',
+			'  border-radius:3px;',
+			'  box-shadow:0 2px 6px rgba(0,0,0,0.5),inset 0 0 0 1px rgba(91,69,25,0.25);',
+			'  white-space:nowrap;cursor:default;',
+			'}',
+			// styled hover tooltip (native title attributes are banned on this wiki);
+			// counter-rotated so it sits level despite the note tilt
+			'.' + BRANCH_TAG_CLASS + '::after{',
+			'  content:attr(data-tip);',
+			'  position:absolute;bottom:calc(100% + 10px);right:0;',
+			'  transform:rotate(-2.5deg);transform-origin:bottom right;',
+			'  padding:6px 10px;border-radius:6px;',
+			'  background:rgba(20,16,10,0.97);color:#ffd479;',
+			'  font-size:12px;font-weight:bold;',
+			'  white-space:normal;width:max-content;max-width:260px;text-align:left;',
+			'  box-shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 1px rgba(255,212,121,0.3);',
+			'  opacity:0;pointer-events:none;transition:opacity 120ms ease-out;',
+			'}',
+			'.' + BRANCH_TAG_CLASS + ':hover::after{opacity:1;}',
+			// pin dot on top of the note
+			'.' + BRANCH_TAG_CLASS + '::before{',
+			'  content:"";position:absolute;top:-4px;left:50%;',
+			'  width:7px;height:7px;border-radius:50%;',
+			'  background:radial-gradient(circle at 30% 30%,#ffd479,#8a6a2f);',
+			'  box-shadow:0 1px 2px rgba(0,0,0,0.6);',
+			'  transform:translateX(-50%);',
+			'}',
+			'.' + BRANCH_TAG_CLASS + ' img{',
+			'  width:14px;height:14px;object-fit:contain;',
+			'}',
+			'.' + BRANCH_TAG_CLASS + ' svg{',
+			'  width:13px;height:13px;display:block;',
+			'}',
+			// ── undo button: revert the completed predecessor of an active row ─
+			'.' + UNDO_BTN_CLASS + '{',
+			'  position:absolute;right:4px;top:50%;transform:translateY(-50%);',
+			'  width:26px;height:26px;border-radius:50%;',
+			'  display:flex;align-items:center;justify-content:center;',
+			'  cursor:pointer;color:#ffd479;',
+			'  background:rgba(255,212,121,0.08);',
+			'  box-shadow:inset 0 0 0 1px rgba(255,212,121,0.35);',
+			'  user-select:none;',
+			'  transition:background 120ms ease-out;',
+			'}',
+			'.' + UNDO_BTN_CLASS + ' svg{',
+			'  width:14px;height:14px;display:block;',
+			'}',
+			'.' + UNDO_BTN_CLASS + ':hover{background:rgba(255,212,121,0.25);}',
+			// styled hover tooltip (native title attributes are banned on this wiki)
+			'.' + UNDO_BTN_CLASS + '::after{',
+			'  content:"Reverts the previous task to uncompleted";',
+			'  position:absolute;bottom:calc(100% + 9px);right:-6px;',
+			'  padding:6px 10px;border-radius:6px;',
+			'  background:rgba(20,16,10,0.97);color:#ffd479;',
+			'  font-size:12px;font-weight:bold;white-space:nowrap;',
+			'  box-shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 1px rgba(255,212,121,0.3);',
+			'  opacity:0;pointer-events:none;transition:opacity 120ms ease-out;',
+			'}',
+			'.' + UNDO_BTN_CLASS + ':hover::after{opacity:1;}',
 			// ── disable sortable affordance on cloned thead ──────────────────
 			'.' + TABLE_CLASS + ' thead th{cursor:default !important;}',
 			'.' + TABLE_CLASS + ' thead th.headerSort,',
@@ -1032,8 +1107,23 @@
 		return ids;
 	}
 
+	// Time-locked content marker: lock icon + unlock date (DD.MM.YYYY) in the
+	// Items cell. The page keeps the icon after the date passes (e.g. staged
+	// area waves already released), so a lock only counts while its date is in
+	// the future. No parsable date next to the icon → conservatively locked.
+	function rowIsTimeLocked(tr) {
+		var lockImg = tr.querySelector('img[data-image-name="AreaLockedIcon.png"]');
+		if (!lockImg) return false;
+		var cell = lockImg.closest('td');
+		var m = cell && (cell.textContent || '').match(/(\d{2})\.(\d{2})\.(\d{4})/);
+		if (!m) return true;
+		var unlock = new Date(+m[3], +m[2] - 1, +m[1]);
+		return Date.now() < unlock.getTime();
+	}
+
 	function buildModel(table) {
 		var needsIdx = findColumnIndex(table, 'Needs');
+		var opensIdx = findColumnIndex(table, 'Opens');
 		var rows = [];
 		var byId = {};
 		table.querySelectorAll('tbody > tr').forEach(function (tr) {
@@ -1043,17 +1133,84 @@
 			if (!taskId) return;
 			var tds = tr.querySelectorAll(':scope > td');
 			var needsTd = needsIdx >= 0 ? tds[needsIdx] : null;
+			var opensTd = opensIdx >= 0 ? tds[opensIdx] : null;
 			var entry = {
 				taskId: taskId,
 				rowEl: tr,
 				checkboxCell: checkbox,
 				needs: parseRefCell(needsTd),
-				completed: checkbox.getAttribute('data-sort-value') === '1'
+				opens: parseRefCell(opensTd),
+				completed: checkbox.getAttribute('data-sort-value') === '1',
+				locked: rowIsTimeLocked(tr)
 			};
 			rows.push(entry);
 			byId[taskId] = entry;
 		});
 		return { rows: rows, byId: byId };
+	}
+
+	// Branch outlook of one task: how many (uncompleted, doable) tasks lie on
+	// this task's branch — itself included — following Opens edges until the
+	// branch "end": a time-locked task (endsAtLock) or no more Opens (area end).
+	// Traversal stops at locks AND at merge tasks whose other parent path is
+	// gated by a lock (blocked) — those cannot be done before the unlock date
+	// either. Completed tasks pass through without counting (merge points).
+	// Note: branches that merge further down legitimately share their tail, so
+	// per-branch counts can overlap (each note is true for its own branch).
+	function computeBranchTag(model, taskId, blocked) {
+		var seen = {};
+		var queue = [taskId];
+		var count = 0;
+		var lockHit = false;
+		while (queue.length) {
+			var id = queue.shift();
+			if (seen[id]) continue;
+			seen[id] = 1;
+			var t = model.byId[id];
+			if (!t) continue;
+			if (t.locked || (!t.completed && blocked(t.taskId, {}))) { lockHit = true; continue; }
+			if (!t.completed) count++;
+			for (var i = 0; i < t.opens.length; i++) queue.push(t.opens[i]);
+		}
+		return { count: count, lockHit: lockHit };
+	}
+
+	// Memoized "is this task gated by time-locked content" predicate: the task
+	// is locked itself, or some uncompleted locked task sits anywhere in its
+	// Needs ancestry.
+	function makeBlockedFn(model) {
+		var memo = {};
+		return function blocked(id, stack) {
+			if (memo[id] !== undefined) return memo[id];
+			var t = model.byId[id];
+			if (!t || stack[id]) return false;
+			stack[id] = 1;
+			var b = false;
+			if (t.locked && !t.completed) {
+				b = true;
+			} else {
+				for (var i = 0; i < t.needs.length; i++) {
+					var n = model.byId[t.needs[i]];
+					if (n && !n.completed && blocked(n.taskId, stack)) { b = true; break; }
+				}
+			}
+			delete stack[id];
+			memo[id] = b;
+			return b;
+		};
+	}
+
+	// Tasks the player can still complete before hitting time-locked content.
+	// Returns null when the area has no time-locked tasks (pill not shown).
+	function computeTasksUntilLocked(model, blocked) {
+		var hasLocked = false;
+		model.rows.forEach(function (r) { if (r.locked) hasLocked = true; });
+		if (!hasLocked) return null;
+		var count = 0;
+		model.rows.forEach(function (r) {
+			if (!r.completed && !blocked(r.taskId, {})) count++;
+		});
+		return count;
 	}
 
 	// Active = uncompleted AND (no Needs OR all Needs completed)
@@ -1086,6 +1243,39 @@
 		activeTable.querySelectorAll('.tokensColumn').forEach(function (cell) {
 			cell.style.display = hide ? 'none' : '';
 		});
+	}
+
+	// ── Column-width sync with the main table ───────────────────────────────
+	// The active table is a separate <table>, so browser auto-layout re-derives
+	// its column widths from its few (changing) rows — the table visibly jumps
+	// around as tasks get checked off. Pin the clone to the main table instead:
+	// table-layout:fixed + every header cell gets the measured width of its
+	// counterpart in the main table.
+	function syncColumnWidths(activeTable) {
+		var wrapper = activeTable.closest('.' + WRAPPER_CLASS);
+		var mainTable = wrapper && wrapper._mmwtMainTable;
+		if (!mainTable) return;
+		var mainThs = mainTable.querySelectorAll('thead th');
+		var actThs = activeTable.querySelectorAll('thead th');
+		if (!mainThs.length || mainThs.length !== actThs.length) return;
+		activeTable.style.tableLayout = 'fixed';
+		activeTable.style.width = mainTable.getBoundingClientRect().width + 'px';
+		for (var i = 0; i < mainThs.length; i++) {
+			var w = mainThs[i].getBoundingClientRect().width;
+			// hidden columns (e.g. Hide Tokens) measure 0 — their clone is hidden too
+			if (w > 0) actThs[i].style.width = w + 'px';
+		}
+	}
+
+	// Keep the widths pinned when the MAIN table changes size (Hide Completed
+	// toggles, lazy-loaded images, window/skin reflows).
+	function attachWidthObserver(wrapper, mainTable) {
+		if (wrapper._mmwtWidthObserved || typeof ResizeObserver === 'undefined') return;
+		wrapper._mmwtWidthObserved = true;
+		new ResizeObserver(function () {
+			var t = wrapper.querySelector('table.' + TABLE_CLASS);
+			if (t) syncColumnWidths(t);
+		}).observe(mainTable);
 	}
 
 	// ── Wrapper / heading ───────────────────────────────────────────────────
@@ -1142,6 +1332,7 @@
 		wrapper.appendChild(newTable);
 
 		mainTable.parentNode.insertBefore(wrapper, mainTable);
+		attachWidthObserver(wrapper, mainTable);
 		return wrapper;
 	}
 
@@ -1169,6 +1360,48 @@
 		pill.appendChild(spinner);
 	}
 
+	// ── Lock pill ("N tasks until [lock]") ──────────────────────────────────
+	// Shown only on areas that still have time-locked content. Counts the tasks
+	// the player can complete before running into the locks.
+	function lockIconFor(mainTable) {
+		var src = mainTable.querySelector('img[data-image-name="AreaLockedIcon.png"]');
+		if (!src) return null;
+		var img = src.cloneNode(false);
+		// lazyload clones keep the 1px placeholder in src — promote the real URL
+		var real = img.getAttribute('data-src');
+		if (real) img.setAttribute('src', real);
+		img.removeAttribute('class');
+		img.removeAttribute('width');
+		img.removeAttribute('height');
+		img.removeAttribute('loading');
+		return img;
+	}
+
+	function updateLockPill(wrapper, mainTable, count) {
+		var heading = wrapper.querySelector('.' + HEADING_CLASS);
+		var pill = heading.querySelector('.' + LOCK_PILL_CLASS);
+		if (count === null) {
+			if (pill) pill.parentNode.removeChild(pill);
+			return;
+		}
+		var label = count + (count === 1 ? ' task until' : ' tasks until');
+		if (!pill) {
+			pill = document.createElement('span');
+			pill.className = PILL_CLASS + ' ' + LOCK_PILL_CLASS;
+			heading.appendChild(pill);
+		} else if (pill._mmwtLockLabel === label) {
+			return;
+		}
+		pill._mmwtLockLabel = label;
+		pill.textContent = label;
+		var icon = lockIconFor(mainTable);
+		if (icon) pill.appendChild(icon); else pill.textContent = label + ' unlock date';
+		// Re-trigger pulse animation (reflow trick, same as the progress pill)
+		pill.classList.remove(PILL_PULSE_CLASS);
+		void pill.offsetWidth;
+		pill.classList.add(PILL_PULSE_CLASS);
+	}
+
 	// ── Mockup checkbox proxying ────────────────────────────────────────────
 	// Cloned cell HTML keeps the visual styling. We intercept clicks at the
 	// cloned-cell level, prevent default, and forward to the original input
@@ -1186,6 +1419,12 @@
 			input.removeAttribute('name');
 			input.removeAttribute('id');
 			if (input.type === 'checkbox') {
+				// The original is transiently disabled while Tracker persists a
+				// write (e.g. right after the undo button unchecks it) — a row
+				// cloned in that window would stay greyed out forever. The proxy
+				// is display-only and forwards clicks anyway: never clone disabled.
+				input.disabled = false;
+				input.removeAttribute('disabled');
 				input.checked = originalCell.getAttribute('data-sort-value') === '1';
 				// Disable native interaction — outer click handler forwards
 				input.addEventListener('click', function (e) {
@@ -1201,6 +1440,8 @@
 		clonedCell.addEventListener('click', function (e) {
 			// If click bubbled from the input we already handled, skip
 			if (e.target && e.target.tagName === 'INPUT') return;
+			// The undo button lives in this cell too and handles itself
+			if (e.target && e.target.closest && e.target.closest('.' + UNDO_BTN_CLASS)) return;
 			e.preventDefault();
 			e.stopPropagation();
 			var orig = originalCell.querySelector('input[type="checkbox"]');
@@ -1220,7 +1461,81 @@
 		});
 		var clonedCell = clonedRow.querySelector('.table-progress-checkbox-cell');
 		if (clonedCell) proxyCheckboxCell(clonedCell, task.checkboxCell);
+		attachBranchTag(clonedRow, task);
+		attachUndoButton(clonedRow, task);
 		return clonedRow;
+	}
+
+	// Curved-arrow button inside the Completed cell of an active row: reverts
+	// the row's completed predecessor(s) — unchecks the task's completed Needs
+	// in the MAIN table via their original Tracker-wired checkboxes. The state
+	// change re-renders the active set, so the row swaps back in place to the
+	// predecessor. Entry tasks (no completed Needs) get no button. Data come
+	// from task._undoNeeds (original checkbox cells), precomputed in render.
+	function attachUndoButton(clonedRow, task) {
+		var cells = task._undoNeeds;
+		if (!cells || !cells.length) return;
+		var anchor = clonedRow.querySelector('.table-progress-checkbox-cell');
+		if (!anchor) return;
+		anchor.style.position = 'relative';
+		var btn = document.createElement('span');
+		btn.className = UNDO_BTN_CLASS;
+		btn.setAttribute('role', 'button');
+		btn.setAttribute('aria-label', 'Revert the previous task');
+		// inline SVG undo arrow: font glyphs (↩) have unreliable vertical metrics
+		// across platforms and sat visibly off-centre in the circle
+		btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+			+ '<path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>'
+			+ '</svg>';
+		btn.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			cells.forEach(function (cell) {
+				// only revert what is still marked completed (stale-row guard)
+				if (cell.getAttribute('data-sort-value') !== '1') return;
+				var input = cell.querySelector('input[type="checkbox"]');
+				if (input) input.click();
+			});
+		});
+		anchor.appendChild(btn);
+	}
+
+	// Paper-note tag beside the row: "N to [lock icon]" (branch runs into a
+	// time lock) / "N to [flag]" (branch runs to the end of the area). The tag
+	// lives inside the row's last cell (position:relative anchor), so it moves,
+	// fades and swaps together with the row. Data come from task._branchTag,
+	// precomputed in renderActiveTable (buildActiveRow itself has no model).
+	function attachBranchTag(clonedRow, task) {
+		var info = task._branchTag;
+		if (!info || !info.count) return;
+		var anchor = clonedRow.lastElementChild;
+		if (!anchor) return;
+		anchor.style.position = 'relative';
+		var tag = document.createElement('span');
+		tag.className = BRANCH_TAG_CLASS;
+		tag.setAttribute('data-tip', info.lockHit
+			? 'Tasks you can still complete on this branch before reaching its time-locked content'
+			: 'Tasks remaining on this branch up to the end of the area');
+		tag.appendChild(document.createTextNode(info.count + ' to '));
+		var icon = info.lockHit && lockIconFor(task.rowEl.closest('table'));
+		if (icon) {
+			tag.appendChild(icon);
+		} else if (info.lockHit) {
+			tag.appendChild(document.createTextNode('unlock date'));
+		} else {
+			// checkered finish flag drawn in the note's own ink/paper colours
+			// (the emoji renders as an ugly monochrome block on most platforms)
+			var flag = document.createElement('span');
+			flag.innerHTML = '<svg viewBox="0 0 14 14" aria-hidden="true">'
+				+ '<rect x="2" y="1" width="1.3" height="12" rx="0.6" fill="#5b4519"/>'
+				+ '<rect x="3.3" y="1.6" width="9.2" height="5.6" fill="#5b4519"/>'
+				+ '<rect x="3.3" y="1.6" width="3.07" height="2.8" fill="#efdcb0"/>'
+				+ '<rect x="9.43" y="1.6" width="3.07" height="2.8" fill="#efdcb0"/>'
+				+ '<rect x="6.37" y="4.4" width="3.06" height="2.8" fill="#efdcb0"/>'
+				+ '</svg>';
+			tag.appendChild(flag.firstChild);
+		}
+		anchor.appendChild(tag);
 	}
 
 	// Linear-progression swap: 1 outgoing + 1 incoming → fade old content,
@@ -1300,10 +1615,20 @@
 		var pill = wrapper.querySelector('.' + PILL_CLASS);
 
 		updatePill(pill, completedCount, totalCount);
+		var blocked = makeBlockedFn(model);
+		updateLockPill(wrapper, mainTable, computeTasksUntilLocked(model, blocked));
 
 		var activeTasks = computeActiveTasks(model);
 		var newTaskIds = {};
-		activeTasks.forEach(function (t) { newTaskIds[t.taskId] = 1; });
+		activeTasks.forEach(function (t) {
+			newTaskIds[t.taskId] = 1;
+			// branch outlook for the paper-note tag (consumed by buildActiveRow)
+			t._branchTag = computeBranchTag(model, t.taskId, blocked);
+			// original checkbox cells of completed predecessors (undo button)
+			t._undoNeeds = t.needs.map(function (id) { return model.byId[id]; })
+				.filter(function (n) { return n && n.completed; })
+				.map(function (n) { return n.checkboxCell; });
+		});
 
 		// Diff vs current tbody children
 		var existingRows = {};
@@ -1403,6 +1728,9 @@
 
 		// Sync token-column visibility AFTER row inserts
 		applyTokenColumnSync(table);
+		// Pin column widths to the main table AFTER visibility sync (hidden
+		// columns must measure 0 on both sides)
+		syncColumnWidths(table);
 	}
 
 	// ── Wiring ──────────────────────────────────────────────────────────────
@@ -1504,7 +1832,10 @@
 			tokensCell._mmwtActiveTokensObserved = true;
 			new MutationObserver(function () {
 				if (!isFeatureEnabled()) return;
-				document.querySelectorAll('table.' + TABLE_CLASS).forEach(applyTokenColumnSync);
+				document.querySelectorAll('table.' + TABLE_CLASS).forEach(function (t) {
+					applyTokenColumnSync(t);
+					syncColumnWidths(t);
+				});
 			}).observe(tokensCell, { attributes: true, attributeFilter: ['data-sort-value'] });
 		}
 	}

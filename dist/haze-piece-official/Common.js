@@ -236,21 +236,142 @@ $(document).ready(function () {
     ];
 
     const Swords = [
-        {name: 'Dark Blade', Rarity: 'Mythical', Sea: 3, image: 'Dark_Blade.png', level: '1200', source: 'Mihawk', type: 'Sword', description: 'A blade forged in darkness. It absorbs the life force of its enemies.'},
-        {name: 'Gryphon', Rarity: 'Legendary', Sea: 3, image: 'Gryphon.png', level: '1150', source: 'Gryphon', type: 'Katana', description: 'A pristine, elegant saber wielded by legendary sea captains.'},
-        {name: 'Golden Staff V2', Rarity: 'Legendary', Sea: 3, image: 'Golden_Staff_V2.png', level: '1100', source: 'Heaven Trial', type: 'Greatsword', description: 'Upgraded staff flowing with static electricity charges.'},
-        {name: 'Dual Dark Blade', Rarity: 'Epic', Sea: 3, image: 'Dual_Dark_Blade.png', level: '950', source: 'Dark Chest', type: 'Dual Blade', description: 'Twin blades reflecting ultimate dark energy.', obtainment: {method: 'crafted',
+        {name: 'Dark Blade', Rarity: 'Mythical', Sea: 3, image: 'DarkBlade.png', level: '4200', source: 'Shop', type: 'Sword', description: 'A blade forged in darkness. It absorbs the life force of its enemies.', obtainment: {method: 'crafted',
         	cost: 'Unreleased',
         	npc: 'Doran The Forge',
         	location: 'Land Of Gods'
         }},
-        {name: 'Ace', Rarity: 'Legendary', Sea: 3, image: 'Ace.png', level: '900', source: 'Port City', type: 'Sword', description: 'A renowned cutlass prized for its swift, slashing motion.'},
-        {name: 'Krampus', Rarity: 'Legendary', Sea: 2, image: 'Krampus.png', level: '850', source: 'Krampus Raid', type: 'Sword', description: 'A winter event blade adorned with chilling spikes.'},
-        {name: 'Rengoku', Rarity: 'Epic', Sea: 2, image: 'Rengoku.png', level: '800', source: 'Demon Island', type: 'Katana', description: 'A burning katana imbued with deep crimson fire essence.'},
-        {name: 'Frostbite', Rarity: 'Rare', Sea: 2, image: 'Frostbite.png', level: '650', source: 'Ice Castle', type: 'Sword', description: 'A frozen rapier that slows enemies down on impact.'},
-        {name: 'Iron Blade', Rarity: 'Uncommon', Sea: 1, image: 'Iron_Blade.png', level: '1', source: 'Starter Island', type: 'Sword', description: 'A simple iron sword issued to novice adventurers.'},
-        {name: 'Rusty Sword', Rarity: 'Common', Sea: 1, image: 'Rusty_Sword.png', level: '1', source: 'Starter Island', type: 'Sword', description: 'An old, oxidized blade left behind in safe zones.'}
-    ];
+        {name: 'Katana', Rarity: 'Common', Sea: 1, image: 'Katana.png', level: '10+', source: 'Bandit Leader', type: 'Sword', description: 'A blade forged by an aspiring blacksmith.', obtainment: {method: 'Shop',
+        	cost: '$200',
+        	npc: 'Katana',
+        	location: 'Starter Island'
+        }},
+        {name: 'Shark Blade', Rarity: 'Common', Sea: 1, image: 'SharkBlade.png', level: '90+', source: 'Shark Boss', type: 'Sword', description: 'A blade forged for a fishman. (5% Drop chance)', obtainment: {method: 'Drop',
+        	cost: '',
+        	npc: 'Shark Boss',
+        	location: 'Shark Park Island'
+        }},
+        {name: 'Pipe', Rarity: 'Uncommon', Sea: 1, image: 'Pipe.png', level: '350+', source: 'Sabo', type: 'Sword', description: 'A pipe enhanced for a revolutionary.', obtainment: {method: 'Shop',
+        	cost: '$250,000',
+        	npc: 'Sabo',
+        	location: 'Marine Base Town Island'
+        }},
+        {name: 'Soul Cane', Rarity: 'Uncommon', Sea: 1, image: 'SoulCane.png', level: '1000+', source: 'Mr. Skeleton', type: 'Sword', description: 'A cane once wielded by a great pirate.', obtainment: {method: 'Shop',
+        	cost: '$100,000',
+        	npc: 'Mr. Skeleton',
+        	location: 'Impel Jail Island'
+        }},
+        {name: 'Mace', Rarity: 'Uncommon', Sea: 1, image: 'Mace.png', level: '350+', source: 'Mace Boss', type: 'Sword', description: 'A mace wielded by a mysterious entity. (100% chance)', obtainment: {method: 'BossDrop',
+        	cost: '',
+        	npc: 'Mace Boss',
+        	location: 'Marine Base Town Island'
+        }},
+        {name: 'Fishman Trident', Rarity: 'Uncommon', Sea: 1, image: 'Trident.png', level: '1600+', source: 'Fork Merchant', type: 'Sword', description: 'A trident used for unique purposes.', obtainment: {method: 'Shop',
+        	cost: '$50,000 + Fork (5% Chance from Neptune Boss)',
+        	npc: 'Fork Merchant',
+        	location: 'Fishman Island'
+        }},
+        {name: 'Operation Blade', Rarity: 'Uncommon', Sea: 1, image: 'OpeBlade.png', level: '1450+', source: 'Magma Minion', type: 'Sword', description: 'A blade wielded by a surgeon of "Death".', obtainment: {method: 'Shop',
+        	cost: '$100,000 + Level 1000',
+        	npc: 'Magma Minion',
+        	location: 'Half Hot Half Cold Island'
+        }},
+        {name: 'SeaBeast Hammer', Rarity: 'Rare', Sea: 1, image: 'SeaBeastHammer.png', level: '1500+', source: 'SeaBeast', type: 'Sword', description: 'A blade wielded by those who were fortunate enough to survive a clash against a great Beast of the Seas. (50% Chance)', obtainment: {method: 'Drop',
+        	cost: '',
+        	npc: 'SeaBeast',
+        	location: 'Anywhere on the Seas (1st Sea)'
+        }},
+        {name: 'Shusui', Rarity: 'Rare', Sea: 1, image: 'Shusui.png', level: '2150+', source: 'Ryummy Boss', type: 'Sword', description: 'A blade wielded by a former great swordsman. (5% Chance)', obtainment: {method: 'Drop',
+        	cost: '',
+        	npc: 'Ryummy Boss',
+        	location: 'Thriller Island'
+        }},
+        {name: 'Bisento', Rarity: 'Rare', Sea: 1, image: 'Bisento.png', level: '2150+', source: 'Bella', type: 'Sword', description: 'A blade wielded by a legendary Pirate who once collided with the ruler of the Seas!', obtainment: {method: 'Shop',
+        	cost: '$500,000',
+        	npc: 'Bella',
+        	location: 'Marine HQ'
+        }},
+        {name: 'Raiu', Rarity: 'Rare', Sea: 1, image: 'Raiu.png', level: '1700+', source: 'Shiryu', type: 'Sword', description: 'A blade wielded by a pirate who loves to steal others stuff!', obtainment: {method: 'Shop',
+        	cost: 'Rare Scroll (5% Drop Chance from Shiryu Boss)',
+        	npc: 'Scroll Merchant',
+        	location: 'Skull Island'
+        }},
+        {name: '2 Sword Style', Rarity: 'Rare', Sea: 1, image: '2ss.png', level: '400+', source: 'Dr. White', type: 'Sword', description: 'A blade wielded by a pirate which aspires to be the best!', obtainment: {method: 'Shop',
+        	cost: '$100,000',
+        	npc: 'Dr.White',
+        	location: 'Marine Base Town Island'
+        }},
+        {name: 'Golden Staff', Rarity: 'Rare', Sea: 1, image: 'GoldenStaff.png', level: '1100+', source: 'Thunder God Boss', type: 'Sword', description: 'A blade wielded by a lightning fruit user!', obtainment: {method: 'Drop',
+        	cost: '1% Drop Chance from Thunder God Boss',
+        	npc: 'Thunder God Boss',
+        	location: 'Sky Islands'
+        }},
+        {name: '2 Sword Style V2', Rarity: 'Legendary', Sea: 1, image: '2ssV2.png', level: '500+', source: 'Dr. White', type: 'Sword', description: 'A blade wielded by a swordsman which aspires to become the best!', obtainment: {method: 'Shop',
+        	cost: 'Book + $20,000 (Book has a 10% Drop chance from Dual Swordsman)',
+        	npc: 'Dr. White',
+        	location: 'Marine Base Town'
+        }},
+        {name: 'Bisento V2', Rarity: 'Legendary', Sea: 1, image: 'BisentoV2.png', level: '800+', source: 'TremorGirl Super-Boss', type: 'Sword', description: 'A blade wielded by a legendary pirate who once collided with the conqueror of the Seas!', obtainment: {method: 'Drop',
+        	cost: '20-50% drop chance from Tremor Girl (Must have V1 in Inventory)',
+        	npc: 'Tremor Girl Super-Boss',
+        	location: 'Marine HQ'
+        }},
+        {name: 'SeaBeast Hammer V2', Rarity: 'Legendary', Sea: 2, image: 'SeaBeastHammerV2.png', level: '2200+', source: 'Sea Beast', type: 'Sword', description: 'A blade wielded by those who have defeated an acient beast of the seas!', obtainment: {method: 'Drop',
+        	cost: '3.5% Drop Chance from Sea Beast at Second Sea',
+        	npc: 'SeaBeast',
+        	location: 'Anywhere in the Seas'
+        }},
+        {name: 'Enma', Rarity: 'Rare', Sea: 2, image: 'Enma.png', level: '2200+', source: 'Enma Super-Boss', type: 'Sword', description: 'A blade wielded by 1 who has sought adventure since his earlier days!', obtainment: {method: 'Drop',
+        	cost: '10% Drop Chance from Enma Super-Boss',
+        	npc: 'Enma Boss',
+        	location: 'Flower Capital'
+        }},
+        {name: 'Dual Axe', Rarity: 'Legendary', Sea: 1, image: 'DualAxe.png', level: 'Any', source: 'Halloween Event (Unobtainable)', type: 'Sword', description: 'A secret Sword...', obtainment: {method: 'Shop',
+        	cost: '4,500 Candies from Candy Market Npc',
+        	npc: 'Candy Market Npc',
+        	location: 'Starter Island'
+        }},
+        {name: 'Krampus Scythe', Rarity: 'Mythical', Sea: 2, image: 'KrampusScythe.png', level: '3750+', source: 'Xmas Event 2022 (Unobtainable)', type: 'Sword', description: 'A secret Sword...', obtainment: {method: 'Drop',
+        	cost: '10% Drop Chance from Krampus Boss in Xmas 2022 event (Currently Unobtainable)',
+        	npc: 'Krampus Boss',
+        	location: 'Winter Island'
+        }},
+        {name: 'Mace V2', Rarity: 'Legendary', Sea: 2, image: 'MaceV2.png', level: '2850+', source: 'MaceV2 Boss', type: 'Sword', description: 'A blade wielded by 1 who has forsaken himself.', obtainment: {method: 'Drop',
+        	cost: '1% Drop Chance',
+        	npc: 'MaceV2 Boss',
+        	location: 'Dragon Island'
+        }},
+        {name: 'Dough Trident', Rarity: 'Legendary', Sea: 2, image: 'DoughTrident.png', level: '3300+', source: 'Dough User Super-Boss', type: 'Sword', description: 'A blade wielded by 1 who loves donuts so much that his constitution eventually started changing', obtainment: {method: 'Drop',
+        	cost: '50% Drop Chance',
+        	npc: 'Dough User Super-Boss',
+        	location: 'Dough Island'
+        }},
+        {name: 'Zenith', Rarity: 'Legendary', Sea: 2, image: 'Zenith.png', level: '2500+', source: 'Zenith Super-Boss', type: 'Sword', description: 'A blade wielded by 1 who has embraced darkness itself! (This boss only spawns when a storm occurs - 2h & 35 Minutes)', obtainment: {method: 'Drop',
+        	cost: '100% Drop Chance',
+        	npc: 'Zenith Super-Boss',
+        	location: 'Shadow Island'
+        }},
+        {name: 'Ace', Rarity: 'Mythical', Sea: 1, image: 'Ace.png', level: 'Any+', source: 'Daily/Infinite Quests', type: 'Sword', description: 'A blade wielded by those who seek Glory!', obtainment: {method: 'Quests',
+        	cost: '0.1% Drop chance from Dailies and 1% From Infinites!',
+        	npc: 'N/A',
+        	location: 'N/A'
+        }},
+        {name: 'DarkBlade V2', Rarity: 'Mythical', Sea: 2, image: 'DarkBladeV2.png', level: '3600+', source: 'Mihawk Super-Boss', type: 'Sword', description: 'Must complete Nikkolapz quest: Requirements: Having DarkBlade V1, given him a mythical/Legendary Physical devil fruit & having killed Enma/3ss Boss once! ', obtainment: {method: 'Quests',
+        	cost: 'Upon completing the said quest, there will be a timer to spawn Mihawk Boss. It\'s drop chance is 100%',
+        	npc: 'Mihawk Super-Boss',
+        	location: 'Foggy Castle'
+        }},
+        {name: '3 Sword Style', Rarity: 'Mythical', Sea: 3, image: '3ss.png', level: '4200+', source: 'Quest', type: 'Sword', description: 'Must obtain Zenith, Enma & Shusui + grind all of their masteries to 300. Upon doing so, user must go to the Third Sea and interact with the Shrine of 3 Swords on Land Of Gods ', obtainment: {method: 'Quests',
+        	cost: 'Zenith, Shusui, Enma all at 300 Mastery',
+        	npc: 'Shrine of 3 Swords Rock',
+        	location: 'Land Of Gods'
+        }},
+        {name: '3 Sword Style V2', Rarity: 'Mythical', Sea: 3, image: '3ssV2.png', level: '4200+', source: 'Doran The Forge', type: 'Sword', description: 'Must first have obtained 3 Sword Style V1!', obtainment: {method: 'Crafting',
+        	cost: '300 Mastery on V1 + 5x Ancient Blade Relics',
+        	npc: 'Shrine of 3 Swords Rock',
+        	location: 'Land Of Gods'
+        }}
+        ];
 
     const uiStyles = {
         rarityColors: { 
@@ -1012,7 +1133,7 @@ $(document).ready(function() {
         "Fishborne": { 
             image: "Fishborne_Neon.png", themeColor: "#0cc242", rarity: "Uncommon", desc: "Born to thrive in the waters.",
             v1: ["+50% Swim Speed"], 
-            v2: ["Water immunity (fruit users)", "x2 Walk Speed for 4 seconds when coming out of the water"], 
+            v2: ["Water immunity (fruit users)", "x2 Walk Speed for 4 seconds when coming out of the water", "100% Swim Speed"], 
             v3: ["Special ability heals 25% of the player's maximum health for 7 seconds.", "Hellfire circle summoning when dashing"] 
         },
         "Demon": { 
@@ -1030,7 +1151,7 @@ $(document).ready(function() {
         "D.Clan": { 
             image: "DClan_Neon.png", themeColor: "#e80707", rarity: "Mythical", desc: "Members of an ancient and secret clan.",
             v1: ["+5% Stamina", "+5% Health", "Free Conqueror's Haki (cost 250 Stamina)"], 
-            v2: ["+10% Stamina", "+10% Health", "Conqueror's Haki cost 50 less Stamina (cost 200 Stamina)"], 
+            v2: ["+10% Stamina", "+10% Health", "Conqueror's Haki cost 50 less Stamina (cost 200 Stamina)", " + 1 Conqueror's Spirit"], 
             v3: ["Damage amplification by 25% for 7 seconds.", "Conqueror's Haki cost 0 Stamina if ability is in use.", "Hellfire summoning circle when dashing"] 
         }
     };
@@ -1318,78 +1439,6 @@ mw.hook('wikipage.content').add(function($content) {
             ]
         },
         {
-            id: 'Black-Leg-V2',
-            name: 'Black Leg V2',
-            rarity: 'Legendary',
-            sea: 'Third Sea',
-            desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
-            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/38/Black_Leg_V2.png/revision/latest/scale-to-width-down/600?cb=20260628204802', 
-            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
-            reqs: { 
-                money: { val: '$2,500,000', icon: '💸' }, 
-                gems: { val: '750', icon: '💎' }, 
-                mastery: { val: '300', icon: '⚔️' }, 
-                materials: { val: 'Dragon Scale x10', icon: '🎃' },
-                level: {val: '250', icon: '✊'}
-            },
-            obtain: 'Purchase from the Dragon Dojo on Dragon Island. <br><br> <span style="color:#888; font-style:italic;">"Only those who control their power can wield the dragon\'s."</span>',
-            availability: ['Third Sea'],
-            moves: [
-                {
-                    key: 'Z', name: 'Dragon Rush', tags: ['Damage', 'Movement'],
-                    desc: 'Rush forward with incredible speed and strike the enemy with a powerful dragon-infused punch.',
-                    mastery: 0, gif: 'https://media.tenor.com/placeholder.gif' // Direct GIF link
-                },
-                {
-                    key: 'X', name: 'Dragon Spiral', tags: ['Damage', 'AoE'],
-                    desc: 'Spin in a spiral motion, creating a dragon shockwave that damages enemies around you.',
-                    mastery: 25, gif: 'https://media.tenor.com/placeholder2.gif'
-                },
-                {
-                    key: 'C', name: 'Dragon Roar', tags: ['Damage', 'Stun'],
-                    desc: 'Let out a mighty roar that unleashes a shockwave, stunning and damaging enemies in front of you.',
-                    mastery: 50, gif: 'https://media.tenor.com/placeholder3.gif'
-                }
-            ]
-        },
-        {
-            id: 'Cyborg-V2',
-            name: 'Cyborg V2',
-            rarity: 'Legendary',
-            sea: 'Third Sea',
-            desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
-            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/8c/Cyborg_V2.png/revision/latest/scale-to-width-down/600?cb=20260628205300', 
-            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
-            reqs: { 
-                money: { val: '$2,500,000', icon: '💸' }, 
-                gems: { val: '750', icon: '💎' }, 
-                mastery: { val: '300', icon: '⚔️' }, 
-                materials: { val: 'Dragon Scale x10', icon: '🎃' },
-                level: {val: '250', icon: '✊'}
-            },
-            obtain: 'Purchase from the Dragon Dojo on Dragon Island. <br><br> <span style="color:#888; font-style:italic;">"Only those who control their power can wield the dragon\'s."</span>',
-            availability: ['Third Sea'],
-            moves: [
-                {
-                    key: 'Z', name: 'Dragon Rush', tags: ['Damage', 'Movement'],
-                    desc: 'Rush forward with incredible speed and strike the enemy with a powerful dragon-infused punch.',
-                    mastery: 0, gif: 'https://media.tenor.com/placeholder.gif' // Direct GIF link
-                },
-                {
-                    key: 'X', name: 'Dragon Spiral', tags: ['Damage', 'AoE'],
-                    desc: 'Spin in a spiral motion, creating a dragon shockwave that damages enemies around you.',
-                    mastery: 25, gif: 'https://media.tenor.com/placeholder2.gif'
-                },
-                {
-                    key: 'C', name: 'Dragon Roar', tags: ['Damage', 'Stun'],
-                    desc: 'Let out a mighty roar that unleashes a shockwave, stunning and damaging enemies in front of you.',
-                    mastery: 50, gif: 'https://media.tenor.com/placeholder3.gif'
-                }
-            ]
-        },
-        {
             id: 'Electro-V1',
             name: 'Electro V1',
             rarity: 'Rare',
@@ -1422,42 +1471,6 @@ mw.hook('wikipage.content').add(function($content) {
                     key: 'C', name: 'Electric Slam', tags: ['Damage', 'Stun', 'Movement'],
                     desc: 'User rushes forward with insane speed and let\'s out an explosion which stunns all afflicted personnel for over a second!',
                     mastery: 50, gif: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExamh3eXFmbTYyODR2eTBxeW1ubG42Nm12OXdibmZpd3VieThoYnVudyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0vTbI3RbPzu1MfoWkK/giphy.gif'
-                }
-            ]
-        },
-        {
-            id: 'Electro-V2',
-            name: 'Electro V2',
-            rarity: 'Legendary',
-            sea: 'Third Sea',
-            desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
-            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/b8/Electro_V2.png/revision/latest/scale-to-width-down/600?cb=20260628210051', 
-            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
-            reqs: { 
-                money: { val: '$2,500,000', icon: '💸' }, 
-                gems: { val: '750', icon: '💎' }, 
-                mastery: { val: '300', icon: '⚔️' }, 
-                materials: { val: 'Dragon Scale x10', icon: '🎃' },
-                level: {val: '250', icon: '✊'}
-            },
-            obtain: 'Purchase from the Dragon Dojo on Dragon Island. <br><br> <span style="color:#888; font-style:italic;">"Only those who control their power can wield the dragon\'s."</span>',
-            availability: ['Third Sea'],
-            moves: [
-                {
-                    key: 'Z', name: 'Dragon Rush', tags: ['Damage', 'Movement'],
-                    desc: 'Rush forward with incredible speed and strike the enemy with a powerful dragon-infused punch.',
-                    mastery: 0, gif: 'https://media.tenor.com/placeholder.gif' // Direct GIF link
-                },
-                {
-                    key: 'X', name: 'Dragon Spiral', tags: ['Damage', 'AoE'],
-                    desc: 'Spin in a spiral motion, creating a dragon shockwave that damages enemies around you.',
-                    mastery: 25, gif: 'https://media.tenor.com/placeholder2.gif'
-                },
-                {
-                    key: 'C', name: 'Dragon Roar', tags: ['Damage', 'Stun'],
-                    desc: 'Let out a mighty roar that unleashes a shockwave, stunning and damaging enemies in front of you.',
-                    mastery: 50, gif: 'https://media.tenor.com/placeholder3.gif'
                 }
             ]
         },
@@ -1505,7 +1518,7 @@ mw.hook('wikipage.content').add(function($content) {
             desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
             // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a2/Fishman_Karate_V2.png/revision/latest/scale-to-width-down/600?cb=20260628210626', 
-            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/0a/FishmanStance.Webp/revision/latest?cb=20260704165236', 
             reqs: { 
                 money: { val: '$0', icon: '💸' }, 
                 gems: { val: '0', icon: '💎' }, 
@@ -1569,42 +1582,6 @@ mw.hook('wikipage.content').add(function($content) {
                 }
             ]
         },
-        {
-            id: 'Dragon-Claw-V2',
-            name: 'Dragon Claw V2',
-            rarity: 'Legendary',
-            sea: 'Third Sea',
-            desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
-            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/1b/Dragon_Claw_V2.png/revision/latest/scale-to-width-down/600?cb=20260628211341', 
-            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
-            reqs: { 
-                money: { val: '$2,500,000', icon: '💸' }, 
-                gems: { val: '750', icon: '💎' }, 
-                mastery: { val: '300', icon: '⚔️' }, 
-                materials: { val: 'Dragon Scale x10', icon: '🎃' },
-                level: {val: '250', icon: '✊'}
-            },
-            obtain: 'Purchase from the Dragon Dojo on Dragon Island. <br><br> <span style="color:#888; font-style:italic;">"Only those who control their power can wield the dragon\'s."</span>',
-            availability: ['Third Sea'],
-            moves: [
-                {
-                    key: 'Z', name: 'Dragon Rush', tags: ['Damage', 'Movement'],
-                    desc: 'Rush forward with incredible speed and strike the enemy with a powerful dragon-infused punch.',
-                    mastery: 0, gif: 'https://media.tenor.com/placeholder.gif' // Direct GIF link
-                },
-                {
-                    key: 'X', name: 'Dragon Spiral', tags: ['Damage', 'AoE'],
-                    desc: 'Spin in a spiral motion, creating a dragon shockwave that damages enemies around you.',
-                    mastery: 25, gif: 'https://media.tenor.com/placeholder2.gif'
-                },
-                {
-                    key: 'C', name: 'Dragon Roar', tags: ['Damage', 'Stun'],
-                    desc: 'Let out a mighty roar that unleashes a shockwave, stunning and damaging enemies in front of you.',
-                    mastery: 50, gif: 'https://media.tenor.com/placeholder3.gif'
-                }
-            ]
-        }
     ];
 
     const baseUI = `
@@ -1766,20 +1743,228 @@ mw.hook('wikipage.content').add(function($content) {
 
     // --- DATA STORE ---
     const bossesData = [
+    	{
+            id: 'SeaBeast-BossV3',
+            name: 'SeaBeast Boss 3rd Sea',
+            sea: 3,
+            level: 3000,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/SeaBeast.png/revision/latest/scale-to-width-down/681?cb=20260705203945',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/SeaBeast.png/revision/latest/scale-to-width-down/681?cb=20260705203945',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            desc: 'The notorious predator of the Seas!',
+            stats: { atk: '2344', hp: '227,708', recLevel: '3000+' },
+            location: 'Anywhere in the ocean.',
+            respawn: '',
+            respawnmethod: 'Spawns anywhere with water every 20M-1H',
+            drops: [
+                { name: 'SeaBeast Heart', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' },
+                { name: 'SeaBeast Hammer V2', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '3.5%' },
+                { name: 'Blade Fragment', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+            ],
+            rewards: { money: '$25,000', Gems: '25' },
+            about: 'Starter Boss of 3rd Sea.',
+            tips: ['Stay mobile and avoid his explosive attacks.']
+        },
+    	{
+            id: 'SeaBeast-Boss',
+            name: 'SeaBeast Boss 1st Sea',
+            sea: 1,
+            level: 1500,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/7f/SeaBeast1.png/revision/latest/scale-to-width-down/800?cb=20260705204242',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/7f/SeaBeast1.png/revision/latest/scale-to-width-down/800?cb=20260705204242',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
+            desc: 'The notorious predator of the Seas!',
+            stats: { atk: '1174', hp: '114,308', recLevel: '1500+' },
+            location: 'Anywhere in the ocean.',
+            respawn: '',
+            respawnmethod: 'Spawns anywhere with water every 20M-1H',
+            drops: [
+                { name: 'SeaBeast Core', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '100%' },
+                { name: 'SeaBeast Hammer', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' }
+            ],
+            rewards: { money: '$25,000', Gems: '30' },
+            about: 'Starter Boss of 2nd Seas.',
+            tips: ['Stay mobile and avoid his explosive attacks.']
+        },
+    	{
+            id: 'SeaBeast-BossV2',
+            name: 'SeaBeast Boss 2nd Sea',
+            sea: 2,
+            level: 1500,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/SeaBeast.png/revision/latest/scale-to-width-down/681?cb=20260705203945',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/SeaBeast.png/revision/latest/scale-to-width-down/681?cb=20260705203945',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            desc: 'The notorious predator of the Seas!',
+            stats: { atk: '1174', hp: '114,308', recLevel: '2200+' },
+            location: 'Anywhere in the ocean.',
+            respawn: '',
+            respawnmethod: 'Spawns anywhere with water every 20M-1H',
+            drops: [
+                { name: 'SeaBeast Heart', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' },
+                { name: 'SeaBeast Hammer V2', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '3.5%' }
+            ],
+            rewards: { money: '$25,000', Gems: '25' },
+            about: 'Starter Boss of 2nd Seas.',
+            tips: ['Stay mobile and avoid his explosive attacks.']
+        },
+    	{
+            id: 'DarkBlade-Boss',
+            name: 'DarkBlade Boss',
+            sea: 2,
+            level: 6000,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/87/MihawkBoss.png/revision/latest?cb=20260705202557',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/87/MihawkBoss.png/revision/latest?cb=20260705202557',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of Foggy Castle!',
+            stats: { atk: '1873', hp: '454,508', recLevel: '3600+' },
+            location: 'Dough Island',
+            respawn: '',
+            respawnmethod: 'Spawned from the DarkBlade Upgrader Quest in Foggy Castle - Can only be spawned every 2 hours.',
+            drops: [
+                { name: 'Night Hat', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' },
+                { name: 'Dough Trident', rarity: 'Mythical', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '0.1%' }
+            ],
+            rewards: { money: '$25,000', Gems: '25' },
+            about: 'Most dangerous boss within the 2nd Seas.',
+            tips: ['Stay mobile and avoid his barrage of slashes.']
+        },
+    	{
+            id: 'Dough-Boss',
+            name: 'Dough Boss',
+            sea: 2,
+            level: 5000,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/48/DoughBoss.png/revision/latest/scale-to-width-down/180?cb=20241123130834',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/48/DoughBoss.png/revision/latest/scale-to-width-down/180?cb=20241123130834',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of Dough Island!',
+            stats: { atk: '1561', hp: '378,908', recLevel: '3300+' },
+            location: 'Dough Island',
+            respawn: '',
+            respawnmethod: 'Kill a 1000 Npcs across the Island',
+            drops: [
+                { name: 'Dough Scarf', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' },
+                { name: 'Dough Trident', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+            ],
+            rewards: { money: '$30,000', Gems: '25' },
+            about: 'Most chill pirate within the 2nd Seas.',
+            tips: ['Stay mobile and avoid his close ranged attacks.']
+        },
+    	{
+            id: 'Dragon-Boss',
+            name: 'Dragon Boss',
+            sea: 2,
+            level: 5000,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/6/67/DragonBoss.png/revision/latest/scale-to-width-down/596?cb=20260705201129',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/6/67/DragonBoss.png/revision/latest/scale-to-width-down/596?cb=20260705201129',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of Dragon Island!',
+            stats: { atk: '1561', hp: '378,908', recLevel: '2850+' },
+            location: 'Dragon Island',
+            respawn: '',
+            respawnmethod: 'Kill a 1000 Npcs across the Island',
+            drops: [
+                { name: 'Drums of Liberation', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '100%' },
+                { name: 'Dragon Horns', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+            ],
+            rewards: { money: '$30,000', Gems: '35' },
+            about: 'Most evil pirate within the 2nd Sea.',
+            tips: ['Stay mobile and avoid his heavy attacks.']
+        },
+    	{
+            id: 'Enma-Boss',
+            name: 'Enma Boss',
+            sea: 2,
+            level: 2500,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/7e/EnmaBoss.png/revision/latest?cb=20260705200357',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/7e/EnmaBoss.png/revision/latest?cb=20260705200357',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of Marine HQ!',
+            stats: { atk: '782', hp: '189,908', recLevel: '2200+' },
+            location: 'Flower Capital',
+            respawn: '1 Hour',
+            drops: [
+                { name: 'Enma', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+            ],
+            rewards: { money: '$25,000', Gems: '25' },
+            about: 'The strongest swordsman in the 2nd Sea.',
+            tips: ['Stay mobile and avoid his heavy attacks.']
+        },
+    	{
+            id: 'Tremor-Girl',
+            name: 'Tremor GIrl',
+            sea: 1,
+            level: 1000,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/5d/TremorGirl.png/revision/latest?cb=20260705195549',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/5d/TremorGirl.png/revision/latest?cb=20260705195549',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of Marine HQ!',
+            stats: { atk: '314', hp: '76,508', recLevel: '1000+' },
+            location: 'Marine HQ',
+            respawn: '',
+            respawnmethod: 'Spawn by unlocking her, using the TremorBeard Key dropped from Ice Admiral at Marine HQ.',
+            drops: [
+                { name: 'Bisento V2', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' },
+                { name: 'White Orb', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' }
+            ],
+            rewards: { money: '$20,000', Gems: '25' },
+            about: 'The strongest swordsman in the 1st Sea.',
+            tips: ['Stay mobile and avoid her heavy attacks.']
+        },
+    	{
+            id: 'Dual-Swordsman Super-Boss',
+            name: 'Dual Swordsman',
+            sea: 1,
+            level: 500,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/ae/DualSwordsman.png/revision/latest/scale-to-width-down/646?cb=20260705192322',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/ae/DualSwordsman.png/revision/latest/scale-to-width-down/646?cb=20260705192322',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of the bandits terrorizing the Starter Island.',
+            stats: { atk: '158', hp: '38,708', recLevel: '500+' },
+            location: 'Marine Base Town Island',
+            respawn: '1 Hour',
+            drops: [
+                { name: 'Green Bandanna', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' },
+                { name: 'Book', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' }
+            ],
+            rewards: { money: '$5,000', Gems: '10' },
+            about: 'The strongest swordsman in the 1st Sea.',
+            tips: ['Stay mobile and avoid his heavy attacks.']
+        },
+        {
+            id: 'Fire-Fist',
+            name: 'Fire Fist',
+            sea: 1,
+            level: 1400,
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/87/FireFist.png/revision/latest/scale-to-width-down/800?cb=20260705193531',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/87/FireFist.png/revision/latest/scale-to-width-down/800?cb=20260705193531',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
+            desc: 'The notorious leader of Tall Woods!',
+            stats: { atk: '439', hp: '106,748', recLevel: '1400+' },
+            location: 'Tall Woods',
+            respawn: 'N/A',
+            respawnmethod: 'Collect Match from Warden in Impel Jail - (5%) drop, Go to Tall Woods and light a campfire using the match. This will spawn some Pearls, Collect 4 Pearls scattered around Tall Woods, Bring all 4 Pearls and plug them into the 4 Totems behind the campfire.',
+            drops: [
+                { name: 'Pearl Necklace', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '100%' },
+                { name: 'Flame Fruit', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' }
+            ],
+            rewards: { money: '$40,000', Gems: '25' },
+            about: 'The strongest swordsman in the 1st Sea.',
+            tips: ['Stay mobile and keep geppoing.']
+        },
         {
             id: 'bandit-Boss',
             name: 'Bandit Boss',
             sea: 1,
             level: 25,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/1f/BanditBoss.png/revision/latest/scale-to-width-down/268?cb=20241130130116',
-            icon: 'https://placehold.co/40x40/151518/333?text=BL',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/1f/BanditBoss.png/revision/latest/scale-to-width-down/268?cb=20241130130116',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'The notorious leader of the bandits terrorizing the Starter Island.',
             stats: { atk: '10', hp: '530', recLevel: '20+' },
             location: 'Bandit Camp, Starter Island',
             respawn: '30 Seconds',
             drops: [
-                { name: 'EyePatch', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Cloth' }
+                { name: 'EyePatch', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '40%' }
             ],
             rewards: { money: '$600', Exp: '9,000' },
             about: 'The Bandit Leader is the strongest among the bandits on Starter Island.',
@@ -1791,13 +1976,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: 60,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/31/ClownBoss.png/revision/latest/scale-to-width-down/268?cb=20241124035948',
-            icon: 'https://placehold.co/40x40/151518/333?text=MK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/31/ClownBoss.png/revision/latest/scale-to-width-down/268?cb=20241124035948',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'The fierce ruler of the Circus. Known for his funny nature.',
             stats: { atk: '60.1', hp: '1,021', recLevel: '60+' },
             location: 'Clown Island',
             respawn: '5 Minutes',
-            drops: [{ name: 'Clown Nose', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Banana' }],
+            drops: [{ name: 'Clown Nose', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Banana', chance: '30%' }],
             rewards: { money: '$1,400', Exp: '28,500' },
             about: 'A random guy which happened to eat a funny fruit.',
             tips: ['Avoid using sword skills.']
@@ -1808,13 +1993,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: 300,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/4a/KriegBoss.png/revision/latest/scale-to-width-down/268?cb=20241124033436',
-            icon: 'https://placehold.co/40x40/151518/333?text=MK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/4a/KriegBoss.png/revision/latest/scale-to-width-down/268?cb=20241124033436',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'The fierce ruler of the Sea Restaurant. Known for his unruly nature.',
             stats: { atk: '100', hp: '4,423', recLevel: '300+' },
             location: 'Sea Restaurant',
             respawn: '5 Minutes',
-            drops: [{ name: 'Gold Pauldrons', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Banana' }],
+            drops: [{ name: 'Gold Pauldrons', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Banana', chance: '5%' }],
             rewards: { money: '$3,200', Exp: '551,000' },
             about: 'A random guy which happened to become too egotistical.',
             tips: ['Just beat him up. Has no special qualities.']
@@ -1825,33 +2010,16 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: 120,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/06/SharkBoss.png/revision/latest/scale-to-width-down/268?cb=20241124042222',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/06/SharkBoss.png/revision/latest/scale-to-width-down/268?cb=20241124042222',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Ruler of the Shark Park Waters.',
             stats: { atk: '39.5', hp: '1,872', recLevel: '120+' },
             location: 'Shark Park',
             respawn: '5 Minutes',
-            drops: [{ name: 'Shark Blade', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Sand' }],
+            drops: [{ name: 'Shark Blade', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '5%' }],
             rewards: { money: '$2,000', Exp: '94.000' },
             about: 'Commands the Shark Park itself.',
             tips: ['Just face him with the required Level.']
-        },
-        {
-            id: 'Red-Emperor',
-            name: 'Red Emperor',
-            sea: 3,
-            level: '???',
-            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/fa/Red_Emperor.png/revision/latest?cb=20260701195624',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
-            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
-            desc: 'Ruler of the 2nd Sea!',
-            stats: { atk: '1200', hp: '378,000', recLevel: '4200+' },
-            location: 'Land Of Gods',
-            respawn: '1 hour and 30 Minutes',
-            drops: [{ name: 'WIP!', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand' }],
-            rewards: { money: 'WIP!', gems: 'WIP!' },
-            about: 'Commands the 2nd Sea itself.',
-            tips: ['Always fight him in a group!']
         },
         {
             id: 'Mammoth-Boss',
@@ -1859,7 +2027,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: 2500,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/51/Mammoth_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250221173833',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/51/Mammoth_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250221173833',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Safekeeps the Impel Jails upper floors.',
             stats: { atk: '781.7', hp: '35,608', recLevel: '1500+' },
@@ -1876,13 +2044,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '2,500',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a7/Zenith_Boss.png/revision/latest/scale-to-width-down/717?cb=20260701200624',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a7/Zenith_Boss.png/revision/latest/scale-to-width-down/717?cb=20260701200624',
             tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'A strange creature that roams the seas only during Storms!',
             stats: { atk: '1200', hp: '189,000', recLevel: '2,500+' },
             location: 'shadow Island',
             respawn: '2 Hours and 35 Minutes.',
-            drops: [{ name: 'Zenith', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Sand' }],
+            drops: [{ name: 'Zenith', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '100%' }],
             rewards: { money: '25k', gems: '25', bounty: '12,500'},
             about: 'Boss that lurks the seas only during Storms.',
             tips: ['Relatively weak for his grade, simply stunlock him!']
@@ -1893,7 +2061,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '200',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/bc/BombBoss.png/revision/latest/scale-to-width-down/268?cb=20241124043255',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/bc/BombBoss.png/revision/latest/scale-to-width-down/268?cb=20241124043255',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'A funny lad that causes explosions wherever he touches!',
             stats: { atk: '65', hp: '3,006', recLevel: '200+' },
@@ -1910,13 +2078,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '400',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/5a/TashiiBoss.png/revision/latest/scale-to-width-down/268?cb=20241130132512',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/5a/TashiiBoss.png/revision/latest/scale-to-width-down/268?cb=20241130132512',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'A repressive girl who wields a blade!',
             stats: { atk: '130', hp: '5,841', recLevel: '400+' },
             location: 'Logue Town',
             respawn: '10 Minutes.',
-            drops: [{name: 'Glasses', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Sand'}],
+            drops: [{name: 'Glasses', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
             rewards: { money: '3,800', Exp: '942,000'},
             about: 'A unruly girl which seeks to become the Worlds strongest swordsman!',
             tips: ['Not needed!']
@@ -1927,13 +2095,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '550',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/27/GorillaKingBoss.png/revision/latest/scale-to-width-down/267?cb=20241130134256',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/27/GorillaKingBoss.png/revision/latest/scale-to-width-down/267?cb=20241130134256',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'A repressive girl who wields a blade!',
             stats: { atk: '130', hp: '5,841', recLevel: '400+' },
             location: 'Logue Town',
             respawn: '10 Minutes.',
-            drops: [{name: 'Monkey Crown', rarity: 'Uncommon', amount: 'x1', img: 'https://placehold.co/50?text=Sand'}],
+            drops: [{name: 'Monkey Crown', rarity: 'Uncommon', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
             rewards: { money: '4,600', Exp: '$1,720,000'},
             about: 'A unruly girl which seeks to become the Worlds strongest swordsman!',
             tips: ['Not needed!']
@@ -1944,14 +2112,14 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1,100',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2c/ThungerGod.png/revision/latest/scale-to-width-down/268?cb=20241205233710',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2c/ThungerGod.png/revision/latest/scale-to-width-down/268?cb=20241205233710',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'A strange foe that somehow seems to fase through attacks with lightning!',
             stats: { atk: '345', hp: '15,763', recLevel: '1100+' },
             location: 'Sky Islands',
             respawn: '5 Minutes.',
-            drops: [{name: 'Golden Staff', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand'},
-            {name: 'Thunder Drums', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand'}],
+            drops: [{name: 'Golden Staff', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '1%'},
+            {name: 'Thunder Drums', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
             rewards: { money: '8,450', Exp: '6,590,000'},
             about: 'Has a rather arrogant personality!',
             tips: ['Avoid getting too close!']
@@ -1962,14 +2130,14 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '650',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/5e/MarineCaptainBoss.png/revision/latest/scale-to-width-down/268?cb=20241130135745',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/5e/MarineCaptainBoss.png/revision/latest/scale-to-width-down/268?cb=20241130135745',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'A crazy dude that replaced his hand for a Sword!',
             stats: { atk: '204.8', hp: '9,384', recLevel: '650+' },
             location: 'Marine BaseTown',
             respawn: '1 Minute.',
-            drops: [{name: 'Irown Jaw', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'},
-            {name: 'Lava Ore', dropchance: '5%', amount: 'x1'}],
+            drops: [{name: 'Irown Jaw', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
+            {name: 'Lava Ore', chance: '5%', amount: 'x1'}],
             rewards: { money: '5,200', Exp: '$2,370,000'},
             about: 'Seeks to conquer east blue!',
             tips: ['Not needed!']
@@ -1980,14 +2148,14 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '750',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/01/MinotaurBoss.png/revision/latest/scale-to-width-down/268?cb=20241224190901',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/01/MinotaurBoss.png/revision/latest/scale-to-width-down/268?cb=20241224190901',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Strong foe that utilizes aoe Attacks solely!',
             stats: { atk: '204.8', hp: '9,384', recLevel: '750+' },
             location: 'Three Islands',
             respawn: '1 Minute.',
-            drops: [{name: 'Oversized Helmet', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'},
-            {name: 'Lava Ore', dropchance: '5%', amount: 'x1'}],
+            drops: [{name: 'Oversized Helmet', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
+            {name: 'Lava Ore', chance: '5%', amount: 'x1'}],
             rewards: { money: '5,800', Exp: '$3,120,000'},
             about: 'Says what his owner tells him to!',
             tips: ['Not needed!']
@@ -1998,14 +2166,14 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '900',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/b2/IceAdmiralBoss.png/revision/latest/scale-to-width-down/268?cb=20241205231611',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/b2/IceAdmiralBoss.png/revision/latest/scale-to-width-down/268?cb=20241205231611',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Strong foe that freezes his enemies to death!',
             stats: { atk: '282.7', hp: '12,928', recLevel: '900+' },
             location: 'Marine HQ',
             respawn: '1 Minute.',
-            drops: [{name: 'Sleeping Mask', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'},
-            {name: 'Tremor Beard Key', dropchance: '1%', amount: 'x1'}],
+            drops: [{name: 'Sleeping Mask', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
+            {name: 'Tremor Beard Key', chance: '1%', amount: 'x1'}],
             rewards: { money: '8,250', Exp: '$4,450,000'},
             about: 'Most chill admiral ever!',
             tips: ['Not needed!']
@@ -2016,7 +2184,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1250',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/c/c8/RevolutionaryBoss.png/revision/latest/scale-to-width-down/268?cb=20241205234036',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/c/c8/RevolutionaryBoss.png/revision/latest/scale-to-width-down/268?cb=20241205234036',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'An old man past his prime!',
             stats: { atk: '391.9', hp: '17,889', recLevel: '1200+' },
@@ -2033,14 +2201,14 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1400',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/9/9b/WardenBoss.png/revision/latest/scale-to-width-down/268?cb=20241206000143',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/9/9b/WardenBoss.png/revision/latest/scale-to-width-down/268?cb=20241206000143',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'A quirky personality individual!',
             stats: { atk: '282.7', hp: '12,928', recLevel: '1400+' },
             location: 'Impel Jail',
             respawn: '1 Minute.',
-            drops: [{name: 'Warden Hat', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '2.5%'},
-            {name: 'Match', dropchance: '5%', amount: 'x1'}],
+            drops: [{name: 'Warden Hat', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '2.5%'},
+            {name: 'Match', chance: '5%', amount: 'x1'}],
             rewards: { money: '8,850', Exp: '$10,500,000'},
             about: 'Do not kill this fraudulent being!',
             tips: ['Not needed!']
@@ -2051,13 +2219,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1500',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/9/91/Ivergo.webp/revision/latest/scale-to-width-down/268?cb=20250221160323',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/9/91/Ivergo.webp/revision/latest/scale-to-width-down/268?cb=20250221160323',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Well, a certain person that thinks of himself as pretty tuff!',
             stats: { atk: '436.8', hp: '21,433', recLevel: '1500+' },
             location: 'Hot Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Black Shades', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '2.5%'}],
+            drops: [{name: 'Black Shades', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '2.5%'}],
             rewards: { money: '3,650', Exp: '$24,200,000'},
             about: 'Do not kill this fraudulent being!',
             tips: ['Not needed!']
@@ -2068,13 +2236,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1550',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/73/Harpy.webp/revision/latest/scale-to-width-down/268?cb=20250221162209',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/73/Harpy.webp/revision/latest/scale-to-width-down/268?cb=20250221162209',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Why so afraid?',
             stats: { atk: '500', hp: '22,142', recLevel: '1550+' },
             location: 'Hot Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Ice Ore', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '1%'}],
+            drops: [{name: 'Ice Ore', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
             rewards: { money: '9,050', Exp: '$25,800,000'},
             about: 'Bully me please!',
             tips: ['Not needed!']
@@ -2085,14 +2253,14 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1700',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/9/94/Neptune.webp/revision/latest/scale-to-width-down/268?cb=20250221162911',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/9/94/Neptune.webp/revision/latest/scale-to-width-down/268?cb=20250221162911',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Just sit back and relax with me!',
             stats: { atk: '532.5', hp: '24,268', recLevel: '1700+' },
             location: 'Hot Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Neptune Crown', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'},
-            {name: 'Fork', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'}],
+            drops: [{name: 'Neptune Crown', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
+            {name: 'Fork', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
             rewards: { money: '9,250', Exp: '$31,000,000'},
             about: 'Slightly arrogant!',
             tips: ['Not needed!']
@@ -2103,13 +2271,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '1850',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/78/Shiryu.webp/revision/latest/scale-to-width-down/267?cb=20250221163830',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/78/Shiryu.webp/revision/latest/scale-to-width-down/267?cb=20250221163830',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'I hate everyone!',
             stats: { atk: '579', hp: '26,394', recLevel: '1850+' },
             location: 'Skull Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Scroll', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'}],
+            drops: [{name: 'Scroll', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
             rewards: { money: '9,450', Exp: '$36,600,000'},
             about: 'Has too much ego!',
             tips: ['Not needed!']
@@ -2120,13 +2288,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '2000',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2a/G4Boss.webp/revision/latest/scale-to-width-down/268?cb=20250221164440',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2a/G4Boss.webp/revision/latest/scale-to-width-down/268?cb=20250221164440',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'I wanna become the King Of The Pirates!',
             stats: { atk: '625.8', hp: '28.521', recLevel: '2000+' },
             location: 'Bubble Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Haki Book', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '0.5%'}],
+            drops: [{name: 'Haki Book', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '0.5%'}],
             rewards: { money: '9,650', Exp: '$42,600,000'},
             about: 'Carefree!',
             tips: ['Not needed!']
@@ -2137,13 +2305,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 1,
             level: '2150',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/0c/Ryuma.webp/revision/latest/scale-to-width-down/268?cb=20250221165324',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/0c/Ryuma.webp/revision/latest/scale-to-width-down/268?cb=20250221165324',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'please let me rest!',
             stats: { atk: '625.8', hp: '28.521', recLevel: '2150+' },
             location: 'Thriller Boat',
             respawn: '1 Minute.',
-            drops: [{name: 'Shusui', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '1%'}],
+            drops: [{name: 'Shusui', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
             rewards: { money: '9,850', Exp: '$25,700,000'},
             about: 'Swordsman on his youth full of vigor!',
             tips: ['Not needed!']
@@ -2154,13 +2322,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '2650',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a3/3ss_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222150643',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a3/3ss_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222150643',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'He who cuts anything!',
             stats: { atk: '828.5', hp: '37.734', recLevel: '2650+' },
             location: 'Thriller Boat',
             respawn: '1 Minute.',
-            drops: [{name: 'Green Cloak', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '5%'}],
+            drops: [{name: 'Green Cloak', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
             rewards: { money: '11,500', Exp: '$37,200,000'},
             about: 'Swordsman on his youth full of vigor!',
             tips: ['Not needed!']
@@ -2171,7 +2339,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '2800',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/4e/Desert_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222151957',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/4e/Desert_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222151957',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Holds himself in a rather high regard!',
             stats: { atk: '875.2', hp: '39.861', recLevel: '2800+' },
@@ -2187,16 +2355,17 @@ mw.hook('wikipage.content').add(function($content) {
             name: 'Mace Boss',
             sea: 1,
             level: '700',
-            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/4e/Desert_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222151957',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
-            tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/c/c0/MaceBoss.png/revision/latest?cb=20260705200138',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/c/c0/MaceBoss.png/revision/latest?cb=20260705200138',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'First Sea', class: 'tag-blue' }],
             desc: 'Some crazy cultist!',
             stats: { atk: '200', hp: '53.828', recLevel: '700+' },
             location: 'Marine Base Town',
-            respawn: 'Whenever player summons him.',
-            drops: [{name: 'Coded Mask', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '100%'},
-            {name: 'Mace', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '100%'}],
-            rewards: { money: '10,000', Gems: '15'},
+            respawn: '',
+            respawnmethod: 'Unlock the gate by using the Lava key, and drop a Lava ore into the cauldron.',
+            drops: [{name: 'Coded Mask', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '100%'},
+            {name: 'Mace', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '100%'}],
+            rewards: { money: '$5,000', Gems: '15'},
             about: 'Insane person.',
             tips: ['Not needed!']
         },
@@ -2206,13 +2375,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '2950',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/7d/MaceV2_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222153511',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/7d/MaceV2_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222153511',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Selfish person.',
             stats: { atk: '922', hp: '41.987', recLevel: '2.900+' },
             location: 'Dragon Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Purple Orb', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '1%'}],
+            drops: [{name: 'Purple Orb', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
             rewards: { money: '13,500', Exp: '46.000.000'},
             about: 'Loves to fight.',
             tips: ['Not needed!']
@@ -2223,7 +2392,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '3100',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/1f/Shadow_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222154422',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/1f/Shadow_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222154422',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Just wanted to reach the top!',
             stats: { atk: '968.8', hp: '44.113', recLevel: '3050+' },
@@ -2240,7 +2409,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '3250',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/51/Peanut_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222155606',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/51/Peanut_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222155606',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Peanut man for peanut people!',
             stats: { atk: '1015.6', hp: '46.239', recLevel: '3,250+' },
@@ -2257,7 +2426,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '4400',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/c/c0/Tree_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222160529',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/c/c0/Tree_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222160529',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Selfish person.',
             stats: { atk: '1062.4', hp: '48.366', recLevel: '3500+' },
@@ -2274,13 +2443,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '3550',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/3d/Soul_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222161611',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/3d/Soul_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222161611',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Selfish person.',
             stats: { atk: '1109.1', hp: '50.492', recLevel: '3500+' },
             location: 'Cake Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Mirror Fragment', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '1%'}],
+            drops: [{name: 'Mirror Fragment', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
             rewards: { money: '17,500', Exp: '66.500.000'},
             about: 'Loves to humiliate others!',
             tips: ['Not needed!']
@@ -2291,13 +2460,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '3850',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/f2/Snow_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222163331',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/f2/Snow_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222163331',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Kind natured individual.',
             stats: { atk: '1202.7', hp: '54.744', recLevel: '3.800+' },
             location: 'Winter Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Snow orb', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: 'Unobtainable'}],
+            drops: [{name: 'Snow orb', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: 'Unobtainable'}],
             rewards: { money: '19,500', Exp: '78.200.000'},
             about: 'Loves to fool around!',
             tips: ['Not needed!']
@@ -2308,13 +2477,13 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: 'Snake Earrings',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/f4/Love_Boss.webp/revision/latest/scale-to-width-down/267?cb=20250222164156',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/f4/Love_Boss.webp/revision/latest/scale-to-width-down/267?cb=20250222164156',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Kind natured individual.',
             stats: { atk: '1202.7', hp: '54.744', recLevel: '3.950+' },
             location: 'Snake Amazon Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Snake Earrings', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', dropchance: '1%'}],
+            drops: [{name: 'Snake Earrings', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
             rewards: { money: '20,500', Exp: '84.300.000'},
             about: 'Loves Luffy!',
             tips: ['Not needed!']
@@ -2325,7 +2494,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '3700',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/88/Baboon_Boss.webp/revision/latest/scale-to-width-down/267?cb=20250222162723',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/8/88/Baboon_Boss.webp/revision/latest/scale-to-width-down/267?cb=20250222162723',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Eats bananas and munches opponents.',
             stats: { atk: '1155.3', hp: '52.618', recLevel: '3700+' },
@@ -2342,7 +2511,7 @@ mw.hook('wikipage.content').add(function($content) {
             sea: 2,
             level: '4150',
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/50/Venom_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222165116',
-            icon: 'https://placehold.co/40x40/151518/333?text=DK',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/50/Venom_Boss.webp/revision/latest/scale-to-width-down/268?cb=20250222165116',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
             desc: 'Persists to kill all around him.',
             stats: { atk: '1296.2', hp: '58.997', recLevel: '4100+' },
@@ -2357,29 +2526,41 @@ mw.hook('wikipage.content').add(function($content) {
 
     // --- STATE VARIABLES ---
     let activeSea = 1;
-    
-    // SAFE FALLBACK: Find the first boss without using optional chaining
-    const initialBoss = bossesData.find(b => b.sea === activeSea);
-    let activeBossId = initialBoss ? initialBoss.id : null;
+    let activeCategory = 'Normal Boss'; // New state for tracking boss type
+
+    // SAFE FALLBACK: Find the first boss that matches BOTH the active sea and category
+    function getInitialBoss() {
+        return bossesData.find(b => b.sea === activeSea && b.tags.some(t => t.label === activeCategory));
+    }
+    let activeBossId = getInitialBoss() ? getInitialBoss().id : null;
 
     // --- RENDER FUNCTION ---
     function renderApp() {
-        const currentSeaBosses = bossesData.filter(b => b.sea === activeSea);
+        // Filter by both Sea and Category (Normal vs Super)
+        const currentSeaBosses = bossesData.filter(b => 
+            b.sea === activeSea && 
+            b.tags.some(t => t.label === activeCategory)
+        );
         const activeBoss = bossesData.find(b => b.id === activeBossId);
 
+        // Created a two-tier tab system
         const tabsHTML = `
-            <div class="boss-tabs">
-                <div class="boss-tab ${activeSea === 1 ? 'active' : ''}" data-sea="1">SEA 1 BOSSES</div>
-                <div class="boss-tab ${activeSea === 2 ? 'active' : ''}" data-sea="2">SEA 2 BOSSES</div>
-                <div class="boss-tab ${activeSea === 3 ? 'active' : ''}" data-sea="3">SEA 3 BOSSES</div>
+            <div class="boss-tabs category-tabs" style="margin-bottom: 8px;">
+                <div class="boss-tab ${activeCategory === 'Normal Boss' ? 'active' : ''}" data-cat="Normal Boss">NORMAL BOSSES</div>
+                <div class="boss-tab ${activeCategory === 'Super Boss' ? 'active' : ''}" data-cat="Super Boss">SUPER BOSSES</div>
+            </div>
+            <div class="boss-tabs sea-tabs">
+                <div class="boss-tab ${activeSea === 1 ? 'active' : ''}" data-sea="1">SEA 1</div>
+                <div class="boss-tab ${activeSea === 2 ? 'active' : ''}" data-sea="2">SEA 2</div>
+                <div class="boss-tab ${activeSea === 3 ? 'active' : ''}" data-sea="3">SEA 3</div>
             </div>
         `;
 
         if (!activeBoss) {
             $container.html(`
                 ${tabsHTML}
-                <div class="boss-layout" style="justify-content: center; align-items: center; color: var(--text-muted);">
-                    <h2>No bosses added for this Sea yet.</h2>
+                <div class="boss-layout" style="justify-content: center; align-items: center; color: var(--text-muted); min-height: 300px;">
+                    <h2>No ${mw.html.escape(activeCategory)}es added for Sea ${mw.html.escape(activeSea)} yet.</h2>
                 </div>
             `);
             return;
@@ -2421,26 +2602,45 @@ mw.hook('wikipage.content').add(function($content) {
                         </div>
                     </div>
 
+                    <!-- Updated Location & Respawn Info -->
                     <div class="boss-section info-grid">
                         <div>
                             <span style="color:var(--accent-gold); font-size:12px; display:block;">📍 LOCATION</span>
                             <strong>${activeBoss.location}</strong>
                         </div>
-                        <div>
-                            <span style="color:var(--accent-gold); font-size:12px; display:block;">⏱️ RESPAWN TIME</span>
-                            <strong>${activeBoss.respawn}</strong>
-                        </div>
+                        
+                        <!-- Only render Respawn Time if it is NOT empty -->
+                        ${activeBoss.respawn ? `
+                            <div>
+                                <span style="color:var(--accent-gold); font-size:12px; display:block;">⏱️ RESPAWN TIME</span>
+                                <strong>${activeBoss.respawn}</strong>
+                            </div>
+                        ` : ''}
                     </div>
 
+                    <!-- Only render Respawn Method if it exists on the boss -->
+                    ${activeBoss.respawnmethod ? `
+                        <div class="boss-section" style="margin-top: 15px;">
+                            <span style="color:var(--accent-gold); font-size:12px; display:block;">📝 HOW TO SPAWN</span>
+                            <p style="margin: 5px 0 0 0; color:var(--text-muted); line-height:1.5;">${activeBoss.respawnmethod}</p>
+                        </div>
+                    ` : ''}
+
+                    <!-- Updated Drops Section -->
                     <div class="boss-section">
                         <h3>Drops</h3>
                         <div class="drop-grid">
                             ${activeBoss.drops.map(drop => `
                                 <div class="drop-card">
-                                    <img src="${drop.img}">
+                                    ${drop.img ? `<img src="${drop.img}">` : ''}
                                     <strong>${drop.name}</strong>
-                                    <span style="color:${drop.rarity === 'Rare' ? 'var(--accent-blue)' : 'var(--text-muted)'}">${drop.rarity}</span>
-                                    <span>${drop.amount}</span>
+                                    ${drop.rarity ? `<span style="color:${drop.rarity === 'Rare' ? 'var(--accent-blue)' : 'var(--text-muted)'}">${drop.rarity}</span>` : ''}
+                                    
+                                    <!-- Wrapping amount and chance together -->
+                                    <div style="margin-top: 4px;">
+                                        ${drop.amount ? `<span>${drop.amount}</span>` : ''}
+                                        ${drop.chance ? `<span style="color:var(--accent-gold); margin-left: 5px;">(${drop.chance})</span>` : ''}
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>
@@ -2463,10 +2663,21 @@ mw.hook('wikipage.content').add(function($content) {
     }
 
     // --- EVENT DELEGATION (Only runs once) ---
-    // Tab clicks
-    $container.on('click', '.boss-tab', function() {
+    
+    // Category (Normal/Super) tab clicks
+    $container.on('click', '.category-tabs .boss-tab', function() {
+        activeCategory = $(this).attr('data-cat');
+        // Re-filter to select the first boss of the new category
+        const newCategoryBosses = bossesData.filter(b => b.sea === activeSea && b.tags.some(t => t.label === activeCategory));
+        activeBossId = newCategoryBosses.length > 0 ? newCategoryBosses[0].id : null;
+        renderApp();
+    });
+
+    // Sea tab clicks
+    $container.on('click', '.sea-tabs .boss-tab', function() {
         activeSea = parseInt($(this).attr('data-sea'));
-        const newSeaBosses = bossesData.filter(b => b.sea === activeSea);
+        // Re-filter to select the first boss of the new sea
+        const newSeaBosses = bossesData.filter(b => b.sea === activeSea && b.tags.some(t => t.label === activeCategory));
         activeBossId = newSeaBosses.length > 0 ? newSeaBosses[0].id : null;
         renderApp();
     });
@@ -2523,13 +2734,13 @@ mw.hook('wikipage.content').add(function($content) {
                 { evo: 'III → IV', level: 1900, gems: 0, money: '$200,000', items: 'N/A' }
             ],
             moves: [
-                { key: 'T', name: 'Flash Step', desc: 'Disappear and reappear a short distance away.', cooldown: '8s' }
+                { key: 'T', name: 'Flash Step', desc: 'Disappear and reappear a short distance away.', cooldown: '8s', gif: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTF2ZnNnbXhhd2Z3cDJ6MXNjMW84dXA5cGRrcWo1dmZmZzQyNHI4NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WeMi8csXbXTLKaIIjI/giphy.gif' }
             ],
             location: {
                 name: 'House',
                 sub: 'Clown Island',
                 desc: 'The Flash Step Teacher can be found right by a houses window.',
-                img: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/34/House_Location.webp/revision/latest/scale-to-width-down/800?cb=20260703234150'
+                img: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/0c/FlashStepTrainer1stSpawn.png/revision/latest/scale-to-width-down/800?cb=20260705174259'
             }
         },
         {
@@ -2538,26 +2749,30 @@ mw.hook('wikipage.content').add(function($content) {
             type: 'Combat',
             themeColor: '#ff4d4d',
             icon: 'https://placehold.co/40x40/151518/ff4d4d?text=AH',
-            mainImage: 'https://placehold.co/350x220/151518/ff4d4d?text=Armament+Preview',
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/ab/ArmamentTeacher.png/revision/latest/scale-to-width-down/530?cb=20260705184332',
             desc: 'Harden your body to increase attack damage and bypass natural immunities.',
             info: { learnedFrom: 'Rayleigh', sea: 'Sea 1', available: 'Level 100+' },
             evolutions: [
-                { name: 'Stage 1', tag: 'Basic', tagColor: '#888', desc: 'Coats arms.' },
-                { name: 'Stage 2', tag: 'Advanced', tagColor: '#ff4d4d', desc: 'Coats torso.' }
+                { name: 'Stage 1', tag: 'Basic', tagColor: '#888', desc: 'Coats fists.' },
+                { name: 'Stage 2', tag: 'Medium', tagColor: '#ff4d4d', desc: 'Coats Arms.' },
+                { name: 'Stage 3', tag: 'Semi-Advanced', tagColor: '#ff4d4d', desc: 'Coats Arms + Feet.' },
+                { name: 'Stage 4', tag: 'Advanced', tagColor: '#ff4d4d', desc: 'Coats Arms + Legs' }
             ],
-            learningReqs: { level: 100, gems: 100, money: '$100,000', items: 'None' },
+            learningReqs: { level: 350, gems: 0, money: '$100,000', items: 'None' },
             // --- NEW ADDITIONS HERE ---
             upgradeType: 'strikes',
             upgradeReqs: [
-                { evo: '1 → 2', req: '500 Strikes' },
-                { evo: '2 → 3', req: '1,500 Strikes' } // Add more stages as needed
+                { evo: '1 → 2', req: '5000 Strikes' },
+                { evo: '2 → 3', req: '20,000 Strikes' },
+                { evo: '3 → 4', req: '50,000 Strikes' }
+                
             ],
             // --------------------------
             moves: [
-                { key: 'J', name: 'Toggle Haki', desc: 'Activate Armament Haki to boost damage.', cooldown: '1s' }
+                { key: 'J', name: 'Toggle Haki', desc: 'Activate Armament Haki to boost damage.', cooldown: '1s', gif: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXVzbjRzMGIyaXJwbzN2c3A1ZHlja3N0d2o2cXV4NW0zc2lmZTgzcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bO3F5LQvEfS1dQrq7d/giphy.gif' }
             ],
             location: {
-                name: 'Hidden Cave', sub: 'Jungle Island', desc: 'Find the hidden master to learn this power.', img: 'https://placehold.co/200x100/151518/333?text=Cave'
+                name: 'Tower Yard', sub: 'Marine Base Town', desc: 'Find the hidden master to learn this power.', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/e/e3/ArmamentLocation.png/revision/latest/scale-to-width-down/800?cb=20260705184710'
             }
         },
         {
@@ -2566,32 +2781,28 @@ mw.hook('wikipage.content').add(function($content) {
             type: 'Movement',
             themeColor: '#3498db', // Sky Blue theme
             icon: 'https://placehold.co/40x40/151518/3498db?text=GP',
-            mainImage: 'https://placehold.co/350x220/151518/3498db?text=Geppo+Preview',
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/79/SkyTeacher.png/revision/latest/scale-to-width-down/602?cb=20260705175328',
             desc: 'A superhuman martial arts technique that allows the user to kick off the air itself, enabling mid-air flight and extra jumps.',
             info: {
-                learnedFrom: 'Sky Monk',
+                learnedFrom: 'Sky Teacher',
                 sea: 'Sea 1',
                 available: 'Always Available'
             },
             evolutions: [
-                { name: 'Sky Walk I', tag: 'Basic', tagColor: '#888', desc: 'Allows a single mid-air jump.' },
-                { name: 'Sky Walk II', tag: 'Advanced', tagColor: '#3498db', desc: 'Perform up to 3 mid-air jumps with reduced stamina cost.' },
-                { name: 'Sky Walk III', tag: 'Master', tagColor: '#3498db', desc: 'Chain up to 6 mid-air jumps with a powerful aerial dash.' }
+                { name: 'Sky Walk I', tag: 'Basic', tagColor: '#888', desc: 'Allows multiple mid-air jumps.' }
             ],
-            learningReqs: { level: 40, gems: 0, money: '$25,000', items: 'None' },
+            learningReqs: { level: 1, gems: 0, money: '$20,000', items: 'None' },
             upgradeReqs: [
-                { evo: 'I → II', level: 100, gems: 15, money: '$100,000', items: '—' },
-                { evo: 'II → III', level: 200, gems: 50, money: '$350,000', items: '—' }
+                { evo: 'N/A', level: 1, gems: 0, money: '$0', items: '—' },
             ],
             moves: [
-                { key: 'SPACE', name: 'Sky Jump', desc: 'Kick the air to jump higher while already airborne.', cooldown: '0.5s' },
-                { key: 'Q', name: 'Air Dash', desc: 'Propel yourself forward rapidly while mid-air.', cooldown: '4s' }
+                { key: 'SPACE', name: 'Sky Jump', desc: 'Kick the air to jump higher while already airborne.', cooldown: '0.5s', gif: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnlpejBtbHY4aGlvNG1teXBobWpiZGNkYWRjN2xsc2VseXJ1cmNwZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/G7YYRcZeYKTYRWWJME/giphy.gif' },
             ],
             location: {
-                name: 'High Temple',
-                sub: 'Sky Island',
-                desc: 'The Sky Monk mediates at the very peak of the High Temple. Prove your agility to him to learn Geppo.',
-                img: 'https://placehold.co/200x100/151518/333?text=Temple'
+                name: 'Secret Cave',
+                sub: 'Rocky Pillars',
+                desc: 'The Sky Teacher stands at the very peak of the Rocky Pillars, inside a secret cave.',
+                img: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a8/GeppoLocation.png/revision/latest/scale-to-width-down/800?cb=20260705175145'
             }
         },
         {
@@ -2600,27 +2811,30 @@ mw.hook('wikipage.content').add(function($content) {
             type: 'Support',
             themeColor: '#f1c40f',
             icon: 'https://placehold.co/40x40/151518/f1c40f?text=OH',
-            mainImage: 'https://placehold.co/350x220/151518/f1c40f?text=Observation+Preview',
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/70/ObservationHakiNpc.png/revision/latest/scale-to-width-down/487?cb=20260705180158',
             desc: 'Awaken your sixth sense to feel the presence of others, predict incoming attacks, and automatically dodge strikes.',
-            info: { learnedFrom: 'Blind Swordsman', sea: 'Sea 1', available: 'Level 150+' },
+            info: { learnedFrom: 'Observation Haki Teacher', sea: 'Sea 1', available: 'Level 600+' },
             evolutions: [
-                { name: 'Instinct 1', tag: 'Basic', tagColor: '#888', desc: 'Grants 3 automatic dodges and highlights enemies.' },
-                { name: 'Instinct 2', tag: 'Advanced', tagColor: '#f1c40f', desc: 'Grants 5 dodges and reveals enemy health/energy.' },
-                { name: 'Future Sight', tag: 'Legendary', tagColor: '#f1c40f', desc: 'Grants 8 dodges and slightly slows down incoming projectiles.' }
+                { name: 'Instinct 1', tag: 'Basic', tagColor: '#888', desc: 'Grants 3 automatic dodges and highlights enemies + Reveals enmy Health and dodges.' },
+                { name: 'Instinct 2', tag: 'Master', tagColor: '#f1c40f', desc: 'Grants everything previously mentioned + Aura Cosmetic and Inventory Items visibility + stamina' }
             ],
-            learningReqs: { level: 150, gems: 150, money: '$250,000', items: 'None' },
+            learningReqs: { level: 600, gems: 0, money: '$150,000', items: 'None' },
             // --- NEW ADDITIONS HERE ---
             upgradeType: 'dodges',
             upgradeReqs: [
-                { evo: '1 → 2', req: '500 Dodges', unlocks: '+2 Dodges (5 Total)' },
-                { evo: '2 → 3', req: '2,000 Dodges', unlocks: '+3 Dodges (8 Total)' }
+                { evo: '1 → 2', req: '100 Dodges', unlocks: '+1 Dodge (4 Total)' },
+                { evo: '2 → 3', req: '1,000 Dodges', unlocks: '+1 Dodge (5 Total)' },
+                { evo: '3 → 4', req: '2,000 Dodges', unlocks: '+1 Dodge (6 Total)' },
+                { evo: '4 → 5', req: '3,000 Dodges', unlocks: '+1 Dodge (7 Total)' },
+                { evo: '5 → 6', req: 'Quest Completed: 4,000 Dodges, 10 Bosses hunted across 10 Islands, 5 players Hunted & $10,000,000', unlocks: '+1 Dodge (8 Total)' },
+                { evo: '6 → 7', req: 'Pay up 2 Shrine Relics and 1000 Gems + previous quest complete', unlocks: 'Toolbar Item Visibility + Stamina and Aura cosmetic!' },
             ],
             // --------------------------
             moves: [
-                { key: 'K', name: 'Toggle Instinct', desc: 'Activate Observation Haki to begin dodging and tracking enemies.', cooldown: '5s' }
+                { key: 'R', name: 'Toggle Instinct', desc: 'Activate Observation Haki to begin dodging and tracking enemies.', cooldown: '3s', gif: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHEzcHdtNGF5c25vOGJxY3F0YW1zYndldTFjcG1qbzBudjU3dG95YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cNHZJ14VoYMXeeyGBb/giphy.gif' }
             ],
             location: {
-                name: 'Upper Yard', sub: 'Sky Island', desc: 'A legendary blind swordsman wanders the deepest parts of the Upper Yard forest.', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/47/Capture_20260703_235330.gif/revision/latest/scale-to-width-down/697?cb=20260704002352'
+                name: 'Upper Yard', sub: 'Marine Base Town', desc: 'A legendary Rockstar thats fleeing from the marines.', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/4e/ObservationLocation.png/revision/latest/scale-to-width-down/800?cb=20260705181919'
             }
         }
     ];
@@ -2739,7 +2953,7 @@ mw.hook('wikipage.content').add(function($content) {
                                 <span class="key-badge" style="border: 1px solid ${active.themeColor}; color: ${active.themeColor}">${move.key}</span>
                                 <strong>${move.name}</strong>
                             </div>
-                            <img src="https://placehold.co/200x120/151518/333?text=GIF" class="move-gif">
+                            <img src="${move.gif || 'https://placehold.co/200x120/151518/333?text=Missing+GIF'}" class="move-gif">
                             <p style="font-size: 12px; color: var(--text-muted); margin: 0;">${move.desc}</p>
                             <div class="move-cooldown">
                                 <span>COOLDOWN</span>
@@ -2769,4 +2983,924 @@ mw.hook('wikipage.content').add(function($content) {
     });
 
     renderApp();
+});
+
+/*------------------------------------------------------------------------------------Misc Npc's----------------------------------------------------------------------------------------------------*/
+
+mw.hook('wikipage.content').add(function($content) {
+    // 1. Locate the insertion container using Fandom's $content
+    const container = $content[0].querySelector(".misc-npc-widget");
+    if (!container) return; // Stop if not on a page with the widget
+    
+    // Prevent double-loading if Fandom refreshes part of the page
+    if (container.innerHTML.trim() !== "") return; 
+
+    // 2. Define the NPC Data
+    const npcData = [
+        {
+            sea: 1,
+            name: "Cynthia The Fruit Dealer",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7e/DealerGif.gif/revision/latest/scale-to-width-down/120?cb=20260705224708", // Replace with actual Sea 1 Image URL
+            desc1: "Allows players to Spin/Buy Fruits",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 2,
+            name: "Cynthia The Fruit Dealer",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7e/DealerGif.gif/revision/latest/scale-to-width-down/120?cb=20260705224708", // Replace with actual Sea 1 Image URL
+            desc1: "Allows players to Spin/Buy Fruits",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 3,
+            name: "Cynthia The Fruit Dealer",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7e/DealerGif.gif/revision/latest/scale-to-width-down/120?cb=20260705224708", // Replace with actual Sea 1 Image URL
+            desc1: "Allows players to Spin/Buy Fruits",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 1,
+            name: "Yumi The Navigator",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/d/d9/Yumi.gif/revision/latest/scale-to-width-down/120?cb=20260705224755", // Replace with actual Sea 1 Image URL
+            desc1: "Set's player spawnpoint",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 2,
+            name: "Yumi The Navigator",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/d/d9/Yumi.gif/revision/latest/scale-to-width-down/120?cb=20260705224755", // Replace with actual Sea 1 Image URL
+            desc1: "Set's player spawnpoint",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 3,
+            name: "Yumi The Navigator",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/d/d9/Yumi.gif/revision/latest/scale-to-width-down/120?cb=20260705224755", // Replace with actual Sea 1 Image URL
+            desc1: "Set's player spawnpoint",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 1,
+            name: "Dimensional Sailor",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7c/DimensionalSailor.png/revision/latest/scale-to-width-down/561?cb=20260705224158", // Replace with actual Sea 2 Image URL
+            desc1: "Allows players to travel to Sea 2.",
+            desc2: "Used for traveling to the second sea.",
+            extra: "-"
+        },
+        {
+            sea: 2,
+            name: "Dimensional Sailor",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7c/DimensionalSailor.png/revision/latest/scale-to-width-down/561?cb=20260705224158", // Replace with actual Sea 2 Image URL
+            desc1: "Allows players to travel to Sea 1.",
+            desc2: "Used for traveling to the second sea.",
+            extra: "-"
+        },
+        {
+            sea: 1,
+            name: "BlackSmith",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/b/bd/BlackSmith.gif/revision/latest/scale-to-width-down/113?cb=20260705224430", // Replace with actual Sea 2 Image URL
+            desc1: "Located on Starter Island, in the forge.",
+            desc2: "Give Seabeast Core & Ice Ore to Blacksmith to create Seabeast Armor and Helmet accessories.",
+            extra: "-"
+        },
+        {
+            sea: 2,
+            name: "Gatekeeper",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/6/64/GateKeeper.png/revision/latest?cb=20260705224901", // Replace with actual Sea 2 Image URL
+            desc1: "Sea 3 Teleporter",
+            desc2: "Talk to Gatekeeper at Flower Capital spawn once you reach Level 4200",
+            extra: "-"
+        },
+        {
+            sea: 3,
+            name: "Doran The Forge",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/4/43/Doran.png/revision/latest/scale-to-width-down/800?cb=20260705225117", // Replace with actual Sea 2 Image URL
+            desc1: "Used to craft Accessories, Swords, Titles & etc.",
+            desc2: "",
+            extra: "-"
+        },
+        {
+            sea: 3,
+            name: "Wandering Merchant",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/2/20/WanderingMerchant.png/revision/latest/scale-to-width-down/786?cb=20260705225354", // Replace with actual Sea 2 Image URL
+            desc1: "Sells: Ancient Blade Relic for $1M, Blade Fragment for 300k$",
+            desc2: "Each item can only be purchased once. If you buy out his stock, he will disappear until he re-appears.",
+            extra: "Spawns in a random location in sea 3 every 1H 30M to 2H 30M. (4 Different Spawns)"
+        },
+        {
+            sea: 3,
+            name: "Archivist Of Bloodlines",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/5/56/Archivist.png/revision/latest/scale-to-width-down/800?cb=20260705225635", // Replace with actual Sea 2 Image URL
+            desc1: "Location: Land Of Gods Near spawn.",
+            desc2: "This npc stores up to 5 races for later / future use.",
+            extra: "You pay 1k gems for each slot and you can freely swap between those stored races."
+        },
+        {
+            sea: 2,
+            name: "Archivist Of Bloodlines",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/5/56/Archivist.png/revision/latest/scale-to-width-down/800?cb=20260705225635", // Replace with actual Sea 2 Image URL
+            desc1: "Location: Snowy Graveyard Near spawn.",
+            desc2: "This npc stores up to 5 races for later / future use.",
+            extra: "You pay 1k gems for each slot and you can freely swap between those stored races."
+        },
+        {
+            sea: 2,
+            name: "Fruit Archivist",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/78/FruitArchivist.png/revision/latest/scale-to-width-down/585?cb=20260705225852", // Replace with actual Sea 2 Image URL
+            desc1: "Location: Snowy Graveyard Near spawn.",
+            desc2: "Similar to the Race Archivist NPC, the Fruit Storage NPC allows players to save powerful fruits for future use instead of permanently losing them when switching to another.",
+            extra: "Players may only store fruits that have reached 400 Mastery or higher."
+        },
+        {
+            sea: 3,
+            name: "Fruit Archivist",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/78/FruitArchivist.png/revision/latest/scale-to-width-down/585?cb=20260705225852", // Replace with actual Sea 2 Image URL
+            desc1: "Location: Land Of Gods Near spawn.",
+            desc2: "Similar to the Race Archivist NPC, the Fruit Storage NPC allows players to save powerful fruits for future use instead of permanently losing them when switching to another.",
+            extra: "Players may only store fruits that have reached 400 Mastery or higher."
+        },
+        {
+            sea: 3,
+            name: "Researcher Iris",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/c/cb/Researcher.png/revision/latest/scale-to-width-down/615?cb=20260705230151", // Replace with actual Sea 2 Image URL
+            desc1: "Rainbow Haki obtained from this NPC.",
+            desc2: "Must have 12 haki colors (spin them via Pirate Chroma).",
+            extra: "She requires prismatic shard + 500 Gems as payment for this rainbow Haki color."
+        },
+        {
+            sea: 2,
+            name: "Race Engineer (V2 Obtainment)",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/5/5c/RaceEngineer.png/revision/latest/scale-to-width-down/800?cb=20260705230339", // Replace with actual Sea 2 Image URL
+            desc1: "Used to upgrade Races to V2",
+            desc2: "",
+            extra: "Extra information can be found on the Races Page!"
+        },
+        {
+            sea: 3,
+            name: "Pirate Chroma",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/e/e0/PirateChroma.png/revision/latest/scale-to-width-down/800?cb=20260705230501", // Replace with actual Sea 2 Image URL
+            desc1: "You may equip your haki colors here.",
+            desc2: "",
+            extra: "She also allows you to spin for 12 unique haki colors (required for rainbow haki)"
+        },
+        {
+            sea: 2,
+            name: "Dragon Skins",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/fe/DragonSkins.png/revision/latest/scale-to-width-down/800?cb=20260705230607", // Replace with actual Sea 2 Image URL
+            desc1: "Talk to the Boat to spin one of 15 regular colors for 25 gems",
+            desc2: "Talk to Haze Dude to purchase/craft one of 6-7 special color",
+            extra: "Located on the tall pillar behind Flower Capital"
+        },
+        {
+            sea: 3,
+            name: "Dragon Skins",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/fe/DragonSkins.png/revision/latest/scale-to-width-down/800?cb=20260705230607", // Replace with actual Sea 2 Image URL
+            desc1: "Talk to the Boat to spin one of 15 regular colors for 25 gems",
+            desc2: "Talk to Haze Dude to purchase/craft one of 6-7 special color",
+            extra: "located on a pillar in the center of Land Of Gods"
+        },
+        {
+            sea: 3,
+            name: "ShapeShifterMimiko",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/a/a8/ShapeShifterMimiko.png/revision/latest/scale-to-width-down/800?cb=20260705230911", // Replace with actual Sea 2 Image URL
+            desc1: "Sells race spins for gems.",
+            desc2: "Located at Land Of Gods",
+            extra: "1 Spin - 25 Gems, 5 Spins - 125 Gems, 10 Spins - 250 Gems"
+        },
+        {
+            sea: 2,
+            name: "ShapeShifterMimiko",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/a/a8/ShapeShifterMimiko.png/revision/latest/scale-to-width-down/800?cb=20260705230911", // Replace with actual Sea 2 Image URL
+            desc1: "Sells race spins for gems.",
+            desc2: "Located at Flower Capital",
+            extra: "1 Spin - 25 Gems, 5 Spins - 125 Gems, 10 Spins - 250 Gems"
+        },
+        {
+            sea: 2,
+            name: "Bounty Hunter Remzxy",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/8/8c/Remxzy.png/revision/latest?cb=20260705231219", // Replace with actual Sea 2 Image URL
+            desc1: "Location: Flower Capital - Near Docks",
+            desc2: "This NPC located in sea 2 & 3 will give a quest to hunt random players for a reward. Only players NOT in grace period will be huntable.",
+            extra: "If you complete the quest, there will be a 5 minute cooldown. Same applies if the target leaves."
+        },
+        {
+            sea: 3,
+            name: "Bounty Hunter Remzxy",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/8/8c/Remxzy.png/revision/latest?cb=20260705231219", // Replace with actual Sea 2 Image URL
+            desc1: "Location: Land Of Gods - under bridge",
+            desc2: "This NPC located in sea 2 & 3 will give a quest to hunt random players for a reward. Only players NOT in grace period will be huntable.",
+            extra: "If you complete the quest, there will be a 5 minute cooldown. Same applies if the target leaves."
+        },
+        {
+            sea: 3,
+            name: "ShipWright - Andromeda (Boat Merchant)",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/fe/ShipWright.png/revision/latest?cb=20260705231528", // Replace with actual Sea 2 Image URL
+            desc1: "Boats are spawned through Boat Merchants, usually located at an island’s docks.",
+            desc2: "",
+            extra: ""
+        },
+        {
+            sea: 2,
+            name: "ShipWright - Andromeda (Boat Merchant)",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/fe/ShipWright.png/revision/latest?cb=20260705231528", // Replace with actual Sea 2 Image URL
+            desc1: "Boats are spawned through Boat Merchants, usually located at an island’s docks.",
+            desc2: "",
+            extra: ""
+        },
+        {
+            sea: 1,
+            name: "ShipWright - Andromeda (Boat Merchant)",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/fe/ShipWright.png/revision/latest?cb=20260705231528", // Replace with actual Sea 2 Image URL
+            desc1: "Boats are spawned through Boat Merchants, usually located at an island’s docks.",
+            desc2: "",
+            extra: ""
+        },
+        {
+            sea: 1,
+            name: "StatResetNpc",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/3/35/StatReset.png/revision/latest/scale-to-width-down/539?cb=20260705231755", // Replace with actual Sea 2 Image URL
+            desc1: "Gives you the option to reset your stats for 100 Gems or 75 Robux.",
+            desc2: "",
+            extra: "location: Starter Island - Near spawn, in a house beside the waterfall."
+        },
+        {
+            sea: 1,
+            name: "StatResetNpc",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/3/35/StatReset.png/revision/latest/scale-to-width-down/539?cb=20260705231755", // Replace with actual Sea 2 Image URL
+            desc1: "Gives you the option to reset your stats for 100 Gems or 75 Robux.",
+            desc2: "",
+            extra: "location: Flower Capital (SEA 2) - At the spawn point, near the leaderboard."
+        },
+        {
+            sea: 3,
+            name: "StatResetNpc",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/3/35/StatReset.png/revision/latest/scale-to-width-down/539?cb=20260705231755", // Replace with actual Sea 2 Image URL
+            desc1: "Gives you the option to reset your stats for 100 Gems or 75 Robux.",
+            desc2: "",
+            extra: "location: Land of Gods - To the right of Spawn on that square circle."
+        },
+        {
+            sea: 3,
+            name: "QuestGivers",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7d/QuestGivers.png/revision/latest/scale-to-width-down/443?cb=20260705232114", // Replace with actual Sea 2 Image URL
+            desc1: "Each Island has their own quest givers which will help you level up. Some island have multiple quest givers.",
+            desc2: "",
+            extra: ""
+        },
+        {
+            sea: 2,
+            name: "QuestGivers",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7d/QuestGivers.png/revision/latest/scale-to-width-down/443?cb=20260705232114", // Replace with actual Sea 2 Image URL
+            desc1: "Each Island has their own quest givers which will help you level up. Some island have multiple quest givers.",
+            desc2: "",
+            extra: ""
+        },
+        {
+            sea: 1,
+            name: "QuestGivers",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7d/QuestGivers.png/revision/latest/scale-to-width-down/443?cb=20260705232114", // Replace with actual Sea 2 Image URL
+            desc1: "Each Island has their own quest givers which will help you level up. Some island have multiple quest givers.",
+            desc2: "",
+            extra: ""
+        },
+        {
+            sea: 1,
+            name: "Makino",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/4/49/Makino.png/revision/latest/scale-to-width-down/586?cb=20260705232230", // Replace with actual Sea 2 Image URL
+            desc1: "Gives information on Pirates and Marines.",
+            desc2: "Sells a bottle of Cola for $1k",
+            extra: "Located inside Haze Bar, on Starter Island."
+        },
+        {
+            sea: 1,
+            name: "Marine Recruiter",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/0/05/MarineRecruiter.png/revision/latest/scale-to-width-down/552?cb=20260705232501", // Replace with actual Sea 2 Image URL
+            desc1: "Switches your team to Marines.",
+            desc2: "",
+            extra: "Marines can use the bounty board to hunt down pirates for their bounty"
+        },
+        {
+            sea: 2,
+            name: "Marine Recruiter",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/0/05/MarineRecruiter.png/revision/latest/scale-to-width-down/552?cb=20260705232501", // Replace with actual Sea 2 Image URL
+            desc1: "Switches your team to Marines.",
+            desc2: "",
+            extra: "Marines can use the bounty board to hunt down pirates for their bounty."
+        },
+        {
+            sea: 1,
+            name: "Sword Shop (Merchant)",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/1/18/SwordMerchant.png/revision/latest/scale-to-width-down/437?cb=20260705232651", // Replace with actual Sea 2 Image URL
+            desc1: "Sells a katana for $1200",
+            desc2: "",
+            extra: "Located on Starter Island"
+        },
+        {
+            sea: 1,
+            name: "Sabo",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/3/36/Sabo.png/revision/latest/scale-to-width-down/422?cb=20260705232750", // Replace with actual Sea 2 Image URL
+            desc1: "Sells Pipe for $250k",
+            desc2: "",
+            extra: "Located in Marine Base Town."
+        },
+        {
+            sea: 1,
+            name: "Bella Thell (Merchant)",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/6/6b/Bella_Thell.png/revision/latest?cb=20260705232856", // Replace with actual Sea 2 Image URL
+            desc1: "Sells Bisento V1 for $500k",
+            desc2: "Also Sells Tremor Cloak accessory for $100k + White Orb",
+            extra: "Located on a tower, in the corner of Marine HQ"
+        },
+        {
+            sea: 1,
+            name: "Dr.White",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/Dr.White.png/revision/latest/scale-to-width-down/642?cb=20260705232959", // Replace with actual Sea 2 Image URL
+            desc1: "Can remove your fruit for 5 gems or 25 rbx",
+            desc2: "He also sells Dual Swords (2ss) for $100k. After obtaining 2ss V1, you can learn 2ss V2 by giving him a book, dropped by Dual Swordsman Boss.",
+            extra: "Located at Logue Town in 1st Sea"
+        },
+        {
+            sea: 1,
+            name: "Mr.Skeleton",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/b/b8/Mr.Skeleton.png/revision/latest/scale-to-width-down/337?cb=20260705233145", // Replace with actual Sea 2 Image URL
+            desc1: "Sells Soul Cane for $100k.",
+            desc2: "",
+            extra: "Located at Impel Jail. Must break a wall to pass through and talk to NPC."
+        },
+        {
+            sea: 1,
+            name: "Wizard",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/c/c7/Wizard.png/revision/latest/scale-to-width-down/525?cb=20260705233259", // Replace with actual Sea 2 Image URL
+            desc1: "He can spawn a Sea Beast in 1st Sea",
+            desc2: "Wizard spawns at Pillars every 30 min - 2h. Despawns after 30 minutes.",
+            extra: "You must give the Wizard a COLA which can be bought from Makino at Starter Island! He will then spawn a Sea Beast."
+        },
+        {
+            sea: 1,
+            name: "Minion",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/c/c1/Minion.png/revision/latest?cb=20260705233431", // Replace with actual Sea 2 Image URL
+            desc1: "Sells Operation Blade for 250k$.",
+            desc2: "Must break a wall to pass through and talk to NPC",
+            extra: "Hidden on Half Hot Island in 1st Sea"
+        },
+        {
+            sea: 1,
+            name: "ForkMerchant",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/4/41/ForkMerchant.png/revision/latest?cb=20260705233644", // Replace with actual Sea 2 Image URL
+            desc1: "Sells Trident. Requires a Fork + $50k",
+            desc2: "",
+            extra: "Located on Fishman Island"
+        },
+        {
+            sea: 1,
+            name: "Fisherman",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/f0/Fisherman.png/revision/latest?cb=20260705233756", // Replace with actual Sea 2 Image URL
+            desc1: "Sells different fishing rods",
+            desc2: "",
+            extra: "Located at Starter Island"
+        },
+        {
+            sea: 2,
+            name: "Fisherman",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/f/f0/Fisherman.png/revision/latest?cb=20260705233756", // Replace with actual Sea 2 Image URL
+            desc1: "Sells different fishing rods",
+            desc2: "",
+            extra: "Located at Flower Capital docks."
+        },
+        {
+            sea: 1,
+            name: "ScrollMerchant",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/a/aa/ScrollMerchant.png/revision/latest?cb=20260705234122", // Replace with actual Sea 2 Image URL
+            desc1: "Give him the scroll (5% Boss drop from shiryu) to obtain Raiu",
+            desc2: "",
+            extra: "Located on Skull Island (behind the skull)"
+        },
+        {
+            sea: 1,
+            name: "Vanny",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/5/55/Vanny.png/revision/latest?cb=20260705234224", // Replace with actual Sea 2 Image URL
+            desc1: "Sells dino mount for 750 gems",
+            desc2: "",
+            extra: "Location: Skull Island"
+        },
+        {
+            sea: 2,
+            name: "Vanny",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/5/55/Vanny.png/revision/latest?cb=20260705234224", // Replace with actual Sea 2 Image URL
+            desc1: "Sells dino mount for 750 gems",
+            desc2: "",
+            extra: "Location: Flower Capital"
+        },
+        {
+            sea: 2,
+            name: "Syn",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/2/2a/Syn.png/revision/latest?cb=20260705234355", // Replace with actual Sea 2 Image URL
+            desc1: "Opens up the mirror portal to Mirror World",
+            desc2: "Requirements.",
+            extra: "1 mirror fragment (1% big mom boss drop - cake island)10 doughnuts (1% drop from any npc on peanut island, dough island, or cake island)"
+        },
+        {
+            sea: 2,
+            name: "Spex",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/c/ce/Spex.png/revision/latest?cb=20260705234530", // Replace with actual Sea 2 Image URL
+            desc1: "Spawns Dough Superboss for 50 gems",
+            desc2: "2 Hour Cooldown",
+            extra: "Located in Mirror World"
+        },
+        {
+            sea: 2,
+            name: "Nikkolapz",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/b/be/Nikkz.png/revision/latest?cb=20260705234637", // Replace with actual Sea 2 Image URL
+            desc1: "Spawns Darkblade Boss for you (Must have completed the quest)",
+            desc2: "Further Information on quest may be found on Bosses page.",
+            extra: "Located on Foggy Castle Secret Cave"
+        },
+        {
+            sea: 2,
+            name: "XmasMarket",
+            image: "https://static.wikia.nocookie.net/haze-piece-official/images/b/bc/XmasMarket.png/revision/latest?cb=20260705234823", // Replace with actual Sea 2 Image URL
+            desc1: "Sells Race Spins for 300 Presents, Sells Random surprise (10-50gems, 10-30k$, 10 minutes of x2 exp) for 300 presents.",
+            desc2: "",
+            extra: "Located at Flower Capital"
+        }
+    ];
+
+    // 3. Build the UI HTML string
+    let html = `
+        <div class="npc-header-container">
+            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/0/0e/NpcIcon.png/revision/latest?cb=20260705221617" alt="Fruit Icon" style="border-radius: 50%;"> <h2>Misc NPC's</h2>
+        </div>
+        
+        <div class="npc-tabs">
+            <button class="npc-tab-btn" data-sea="1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0a3 3 0 100 6 3 3 0 000-6zm0 6v10m-7-5a7 7 0 0014 0m-14 0h3m8 0h3"/></svg>
+                Sea 1
+            </button>
+            <button class="npc-tab-btn" data-sea="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0a3 3 0 100 6 3 3 0 000-6zm0 6v10m-7-5a7 7 0 0014 0m-14 0h3m8 0h3"/></svg>
+                Sea 2
+            </button>
+            <button class="npc-tab-btn" data-sea="3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0a3 3 0 100 6 3 3 0 000-6zm0 6v10m-7-5a7 7 0 0014 0m-14 0h3m8 0h3"/></svg>
+                Sea 3
+            </button>
+        </div>
+        
+        <div class="npc-list">
+    `;
+
+    // 4. Populate the Data (Setting them as hidden initially)
+    npcData.forEach(npc => {
+        html += `
+            <div class="npc-card hidden" data-sea-target="${npc.sea}">
+                <div class="npc-image-container">
+                    <img class="npc-image" src="${npc.image}" alt="${npc.name}">
+                </div>
+                
+                <div class="npc-details">
+                    <div class="npc-main-info">
+                        <h3 class="npc-name">${npc.name}</h3>
+                        <p class="npc-description">${npc.desc1}</p>
+                        <p class="npc-description">${npc.desc2}</p>
+                    </div>
+                    
+                    <div class="npc-extra-info">
+                        <h4 class="npc-extra-title">Extra Information</h4>
+                        <p class="npc-extra-content">${npc.extra}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    
+    // Inject into DOM
+    container.innerHTML = html;
+
+    // 5. Add Tab Switching & Filtering Logic
+    const tabs = container.querySelectorAll(".npc-tab-btn");
+    const cards = container.querySelectorAll(".npc-card");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            // Remove active from all tabs
+            tabs.forEach(t => t.classList.remove("active"));
+            // Add active to clicked tab
+            tab.classList.add("active");
+            
+            // Get the target sea number
+            const selectedSea = tab.getAttribute("data-sea");
+            
+            // Show/Hide cards based on the selected sea
+            cards.forEach(card => {
+                if(card.getAttribute("data-sea-target") === selectedSea) {
+                    card.classList.remove("hidden");
+                } else {
+                    card.classList.add("hidden");
+                }
+            });
+        });
+    });
+
+    // 6. Initialize widget state by simulating a click on the first tab
+    if (tabs.length > 0) {
+        tabs[0].click();
+    }
+});
+
+/*------------------------------------------------------------------------------------Shrine--------------------------------------------------------------------------------------------------------*/
+
+mw.hook('wikipage.content').add(function($content) {
+    // 1. Locate the insertion container
+    const container = $content[0].querySelector(".treasure-raid-widget");
+    if (!container) return; 
+    
+    // 2. Prevent double-loading
+    if (container.innerHTML.trim() !== "") return; 
+
+    // 3. Build the large HTML structure
+    const html = `
+        <!-- HEADER -->
+        <div class="tr-header">
+            <div class="tr-header-left">
+                <img src="https://static.wikia.nocookie.net/haze-piece-official/images/e/e8/Shrine.png/revision/latest/scale-to-width-down/800?cb=20260706001441" alt="Shrine" class="tr-header-icon">
+                <div class="tr-header-info">
+                    <h2>Treasure Shrine Raid</h2>
+                    <span class="tr-badge-sea">SEA 2</span>
+                    <p>A treasure vault shrine will surface in one of three locations in Sea 2.<br>Work together, destroy the central chest, and claim the rewards!</p>
+                </div>
+            </div>
+            <div class="tr-cooldown-box">
+                <img src="https://static.wikia.nocookie.net/haze-piece-official/images/1/11/Hourglass.png/revision/latest?cb=20260706015025" alt="Hourglass">
+                <div class="tr-cooldown-text-area">
+                    <p class="tr-cd-label">RAID COOLDOWN</p>
+                    <p class="tr-cd-time">1h 45m</p>
+                    <p class="tr-cd-sub">After the previous raid ends</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN BODY GRID -->
+        <div class="tr-body-grid">
+            
+            <!-- LEFT COLUMN -->
+            <div class="tr-col-left">
+                <!-- How It Works Panel -->
+                <div class="tr-panel">
+                    <div class="tr-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        HOW IT WORKS
+                    </div>
+                    <p class="tr-text-muted">A treasure vault shrine (⛩️) will spawn in 1 of 3 locations in Sea 2, which occurs every 1 hour and 45 minutes after the previous raid ends.<br>Spawns in 3 different locations.</p>
+                    
+                    <div class="tr-highlight-box">
+                        <img src="https://static.wikia.nocookie.net/haze-piece-official/images/9/9e/SwordsCross.png/revision/latest?cb=20260706004804" alt="Swords" class="tr-highlight-icon">
+                        <div class="tr-highlight-content">
+                            <p>To succeed, players must destroy the shrine's central treasure chest within <span class="tr-text-yellow">5 minutes</span> (2-3M HP).</p>
+                            <p>If they fail, the doors will close, and the vault will flood with rising water, and all players still inside will be killed instantly.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server Messages Panel -->
+                <div class="tr-panel">
+                    <div class="tr-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        SERVER MESSAGES
+                    </div>
+                    <div class="tr-message-list">
+                        <div class="tr-message-item">
+                            <div class="tr-msg-icon color-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+                            <div class="tr-msg-content">
+                                <p class="tr-msg-text color-blue">"The treasure shrine has been spotted in the sea.."</p>
+                                <p class="tr-msg-sub">This message will appear 30 seconds before raid starts.</p>
+                            </div>
+                            <div class="tr-msg-badge color-blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                30 SECONDS
+                            </div>
+                        </div>
+
+                        <div class="tr-message-item">
+                            <div class="tr-msg-icon color-yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                            <div class="tr-msg-content">
+                                <p class="tr-msg-text color-yellow">"WARNING: The shrine has surfaced. You have 5 minutes to destroy the central vault!"</p>
+                                <p class="tr-msg-sub">The shrine will spawn for 5 minutes.</p>
+                            </div>
+                            <div class="tr-msg-badge color-yellow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                5 MINUTES
+                            </div>
+                        </div>
+
+                        <div class="tr-message-item">
+                            <div class="tr-msg-icon color-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                            <div class="tr-msg-content">
+                                <p class="tr-msg-text color-red">"WARNING: The vault was not destroyed in time and the shrine is now sinking."</p>
+                                <p class="tr-msg-sub">Players failed to destroy the core chest in 5 minutes.</p>
+                            </div>
+                        </div>
+
+                        <div class="tr-message-item">
+                            <div class="tr-msg-icon color-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                            <div class="tr-msg-content">
+                                <p class="tr-msg-text color-green">"Success. The vault has been destroyed in time!"</p>
+                                <p class="tr-msg-sub">Players destroyed the core chest in 5 minutes successfully.</p>
+                            </div>
+                        </div>
+
+                        <div class="tr-message-item">
+                            <div class="tr-msg-icon color-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                            <div class="tr-msg-content">
+                                <p class="tr-msg-text color-purple">"You have dealt the the most damage and will be rewarded a random rare+ fruit!"</p>
+                                <p class="tr-msg-sub">Will only appear to the player who dealt the most damage.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tr-message-item">
+                            <div class="tr-msg-icon color-light-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                            <div class="tr-msg-content">
+                                <p class="tr-msg-text color-light-purple">"You have dealt atleast 10% dmg and have been awarded!"</p>
+                                <p class="tr-msg-sub">Will only appear to anyone who dealt atleast 10% damage.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="tr-col-right">
+                <!-- Rewards Panel -->
+                <div class="tr-panel">
+                    <div class="tr-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                        REWARDS
+                    </div>
+                    <p class="tr-text-muted" style="margin-bottom: 20px;">All players who deal at least 10% damage to the treasure chest will earn the following rewards:</p>
+                    
+                    <div class="tr-rewards-grid">
+                        <div class="tr-reward-card">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/4/47/MoneyIcon.png/revision/latest/scale-to-width-down/600?cb=20260525181551" alt="Money" class="tr-reward-img">
+                            <p class="tr-reward-val color-green">$30,000 - $80,000</p>
+                            <p class="tr-reward-label">Money</p>
+                        </div>
+                        <div class="tr-reward-card">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/2/2e/Star.png/revision/latest/scale-to-width-down/800?cb=20260706002547" alt="Star" class="tr-reward-img">
+                            <p class="tr-reward-val color-yellow">1</p>
+                            <p class="tr-reward-label">Level</p>
+                        </div>
+                        <div class="tr-reward-card">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/9/93/GemsIcon.png/revision/latest/scale-to-width-down/800?cb=20260525191141" alt="Gem" class="tr-reward-img">
+                            <p class="tr-reward-val color-blue">25</p>
+                            <p class="tr-reward-label">Gems</p>
+                        </div>
+                        <div class="tr-reward-card mythic">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/a/a4/ShrineRelic.png/revision/latest/scale-to-width-down/720?cb=20260706002733" alt="Relic" class="tr-reward-img">
+                            <p class="tr-reward-val color-purple">100%</p>
+                            <p class="tr-reward-label">Shrine Relic<br><span style="font-size: 10px">(Legendary Material)</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Damage Reward -->
+                <div class="tr-highlight-box gold" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div style="flex: 1;">
+                        <div class="tr-panel-header" style="color: #facc15; margin-bottom: 8px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            TOP DAMAGE REWARD
+                        </div>
+                        <p style="font-size: 13px; color: #d1d5db; margin: 0 0 8px 0; line-height: 1.4;">Only the player who inflicts the <span style="font-weight: bold; color: #fff;">MOST</span> damage will receive a random Rare+ fruit.</p>
+                        <p style="font-size: 12px; color: #9ca3af; margin: 0;">(Chances = to Robux Spin in shop)</p>
+                    </div>
+                    <img src="https://static.wikia.nocookie.net/haze-piece-official/images/a/a5/FruitShrine.png/revision/latest/scale-to-width-down/800?cb=20260706003034" alt="Fruit" style="width: 64px; height: 64px; object-fit: contain;">
+                </div>
+
+                <!-- Titles Panel -->
+                <div class="tr-panel">
+                    <div class="tr-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                        TITLES
+                    </div>
+                    <div class="tr-title-item">
+                        <img src="https://static.wikia.nocookie.net/haze-piece-official/images/b/bd/CrownShrine.png.png/revision/latest/scale-to-width-down/800?cb=20260706003251" alt="Crown" class="tr-title-icon">
+                        <div class="tr-title-info">
+                            <h4 class="color-yellow">The MVP</h4>
+                            <p>Get a fruit from the shrine raid (meaning you did the most damage)</p>
+                        </div>
+                    </div>
+                    <div class="tr-title-item">
+                        <img src="https://static.wikia.nocookie.net/haze-piece-official/images/5/56/ShrinePlunderer.png/revision/latest/scale-to-width-down/600?cb=20260706003617" alt="Sword" class="tr-title-icon">
+                        <div class="tr-title-info">
+                            <h4 style="color: #cbd5e1;">Shrine Plunderer</h4>
+                            <p>Defeat 1 shrine</p>
+                        </div>
+                    </div>
+                    <div class="tr-title-item">
+                        <img src="https://static.wikia.nocookie.net/haze-piece-official/images/2/29/ShrineConqueror.png/revision/latest/scale-to-width-down/600?cb=20260706003819" alt="Purple Swords" class="tr-title-icon">
+                        <div class="tr-title-info">
+                            <h4 class="color-purple">Shrine Conqueror</h4>
+                            <p>Defeat 20 shrines</p>
+                        </div>
+                    </div>
+                    <div class="tr-title-item">
+                        <img src="https://static.wikia.nocookie.net/haze-piece-official/images/1/10/Relic_Raider.png/revision/latest/scale-to-width-down/600?cb=20260706004043" alt="Relic Shield" class="tr-title-icon">
+                        <div class="tr-title-info">
+                            <h4 class="color-yellow">Relic Raider</h4>
+                            <p>Defeat 100 shrines</p>
+                        </div>
+                    </div>
+                    <div class="tr-title-item">
+                        <img src="https://static.wikia.nocookie.net/haze-piece-official/images/4/46/DrownedIcon.png/revision/latest/scale-to-width-down/600?cb=20260706004336" alt="Water Drop" class="tr-title-icon">
+                        <div class="tr-title-info">
+                            <h4 class="color-blue">Drowned</h4>
+                            <p>Die to shrine by drowning</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    // 4. Inject HTML
+    container.innerHTML = html;
+});
+
+/*-------------------------------------------------------------------------------------Merchant-----------------------------------------------------------------------------------------------------*/
+
+mw.hook('wikipage.content').add(function($content) {
+    const container = $content[0].querySelector(".traveling-merchant-widget");
+    if (!container) return; 
+    
+    if (container.innerHTML.trim() !== "") return; 
+
+    const html = `
+        <div class="tm-header">
+            <div class="tm-header-left">
+                <img src="https://static.wikia.nocookie.net/haze-piece-official/images/2/20/WanderingMerchant.png/revision/latest/scale-to-width-down/786?cb=20260705225354" alt="Merchant" class="tm-header-icon">
+                <div class="tm-header-info">
+                    <h2>Traveling Merchant</h2>
+                    <span class="tm-badge-purple">SEA 3</span>
+                    <p>Sells a blade fragment + a relic. Spawns in 1 of 4 locations in Sea 3 every 1H30M - 2H30M. Leaves after 7 minutes or if items are bought.</p>
+                </div>
+            </div>
+            
+            <div class="tm-header-stats">
+                <div class="tm-stat-box">
+                    <svg class="tm-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                    <div class="tm-stat-content">
+                        <p class="tm-stat-label">SPAWN TIMER</p>
+                        <p class="tm-stat-val">1H 30M - 2H 30M</p>
+                        <p class="tm-stat-sub">Random interval</p>
+                    </div>
+                </div>
+                <div class="tm-stat-box">
+                    <svg class="tm-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <div class="tm-stat-content">
+                        <p class="tm-stat-label">STAY DURATION</p>
+                        <p class="tm-stat-val">7 MINUTES</p>
+                        <p class="tm-stat-sub">or until stock is bought</p>
+                    </div>
+                </div>
+                <div class="tm-stat-box">
+                    <svg class="tm-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <div class="tm-stat-content">
+                        <p class="tm-stat-label">SEA</p>
+                        <p class="tm-stat-val">SEA 3</p>
+                        <p class="tm-stat-sub">Random location</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tm-body-grid">
+            
+            <div class="tm-col-left">
+                <div class="tm-panel">
+                    <div class="tm-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        OVERVIEW
+                    </div>
+                    <p class="tm-text-muted" style="margin-bottom: 12px;">Spawns in a random location in Sea 3 every 1H 30M to 2H 30M.</p>
+                    <p class="tm-text-muted">Each item can only be purchased once. If you buy out his stock, he will disappear until he re-appears.</p>
+                </div>
+
+                <div class="tm-panel">
+                    <div class="tm-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        ITEMS FOR SALE
+                    </div>
+                    <div class="tm-items-grid">
+                        <div class="tm-item-card legendary">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/a/a4/ShrineRelic.png/revision/latest/scale-to-width-down/720?cb=20260706002733" alt="Ancient Blade Relic" class="tm-item-img">
+                            <p class="tm-item-name gold">Ancient Blade Relic</p>
+                            <p class="tm-item-price">1,000,000 $</p>
+                            <p class="tm-item-rarity">Legendary Relic</p>
+                        </div>
+                        <div class="tm-item-card common">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/3/31/Blade_Fragment.png/revision/latest/scale-to-width-down/800?cb=20260706012951" alt="Blade Fragment" class="tm-item-img">
+                            <p class="tm-item-name blue">Blade Fragment</p>
+                            <p class="tm-item-price">300,000 $</p>
+                            <p class="tm-item-rarity">Common Material</p>
+                        </div>
+                    </div>
+                    <div class="tm-warning-box">
+                        <svg style="width: 20px; height: 20px; color: #facc15; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <div>
+                            <p style="margin: 0 0 4px 0; font-size: 14px; color: #d1d5db;">Each item can only be purchased <span style="color: #facc15; font-weight: bold;">once</span>.</p>
+                            <p style="margin: 0; font-size: 13px; color: #9ca3af;">If you buy out his stock, he will disappear until he re-appears.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tm-col-right">
+                <div class="tm-panel">
+                    <div class="tm-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        CHAT MESSAGES
+                    </div>
+                    <div class="tm-chat-list">
+                        <div class="tm-chat-item">
+                            <div class="tm-chat-icon" style="color: #a855f7;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></div>
+                            <p class="tm-chat-msg">"A rare trader has entered the seas...<br>his wares won't last long."</p>
+                            <p class="tm-chat-cond">Appears when the<br>merchant spawns.</p>
+                        </div>
+                        <div class="tm-chat-item">
+                            <div class="tm-chat-icon" style="color: #4ade80;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
+                            <p class="tm-chat-msg">"A deal has been struck...<br>the merchant vanishes."</p>
+                            <p class="tm-chat-cond">Appears when you<br>buy out his stock.</p>
+                        </div>
+                        <div class="tm-chat-item">
+                            <div class="tm-chat-icon" style="color: #ef4444;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg></div>
+                            <p class="tm-chat-msg">"The merchant slips away<br>into the shadows..."</p>
+                            <p class="tm-chat-cond">Appears if the stock<br>isn't bought out in 7 min.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tm-panel">
+                    <div class="tm-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        SPAWN LOCATIONS (SEA 3)
+                    </div>
+                    <div class="tm-locations-grid">
+                        <div class="tm-location-card">
+                            <div class="tm-loc-header"><span class="tm-loc-num">1</span> Forgotten Throne Land Of Gods</div>
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/c/c1/Spawn1.Webp/revision/latest/scale-to-width-down/800?cb=20260706013926" class="tm-loc-img" alt="Forgotten Cove">
+                        </div>
+                        <div class="tm-location-card">
+                            <div class="tm-loc-header"><span class="tm-loc-num">2</span> Land Of God's Cliffs</div>
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/5/57/CliffCenter.Webp/revision/latest/scale-to-width-down/800?cb=20260706014152" class="tm-loc-img" alt="Haunted Shipyard">
+                        </div>
+                        <div class="tm-location-card">
+                            <div class="tm-loc-header"><span class="tm-loc-num">3</span> Land Of Gods Docks</div>
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/0/0b/LandOfGodsDocks.Webp/revision/latest/scale-to-width-down/800?cb=20260706014334" class="tm-loc-img" alt="Coral Caverns">
+                        </div>
+                        <div class="tm-location-card">
+                            <div class="tm-loc-header"><span class="tm-loc-num">4</span>Land Of Gods Log Pose</div>
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/e/ee/LandOfGodsLogPose.Webp/revision/latest/scale-to-width-down/800?cb=20260706014449" class="tm-loc-img" alt="Mistcliff Outpost">
+                        </div>
+                    </div>
+                    <div class="tm-loc-footer">
+                        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle></svg>
+                        The merchant will randomly spawn in one of these 4 locations.
+                    </div>
+                </div>
+
+                <div class="tm-panel">
+                    <div class="tm-panel-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                        TITLES
+                    </div>
+                    <div class="tm-titles-grid">
+                        <div class="tm-title-card">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/d/d8/The_one_who_found_him.png/revision/latest/scale-to-width-down/800?cb=20260706012538" alt="Gold Badge" class="tm-title-icon">
+                            <div class="tm-title-info">
+                                <h4>The One Who Found Him</h4>
+                                <p>Find and make a deal<br>with the traveling merchant.</p>
+                            </div>
+                        </div>
+                        <div class="tm-title-card">
+                            <img src="https://static.wikia.nocookie.net/haze-piece-official/images/b/b6/Black_Market_Hunter.png/revision/latest/scale-to-width-down/800?cb=20260706012249" alt="Purple Badge" class="tm-title-icon">
+                            <div class="tm-title-info">
+                                <h4 class="purple">Black Market Hunter</h4>
+                                <p>Find and make a deal 10 times<br>with the traveling merchant.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
 });

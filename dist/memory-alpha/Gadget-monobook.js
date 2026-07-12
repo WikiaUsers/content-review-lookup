@@ -15,7 +15,7 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 	$('#left-rail-wrapper').append($('<a id="p-logo" href="/wiki/">'));
 	await skinConfig.mainMenu('#left-rail-wrapper');
 	// $('#left-rail-wrapper').append(portlet('search', 'Search'));
-	await skinConfig.toolbox('#left-rail-wrapper', 'Page tools');
+	skinConfig.toolbox('#left-rail-wrapper');
 	// $('#left-rail-wrapper').append(portlet('my-tb', 'My tools'));
 
 	$('#p-search > div').html($(`<form action="${mw.util.getUrl('Special:Search')}">`));
@@ -26,7 +26,7 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 	);
 
 	$('#collapsible-content-languages').remove();
-	await skinConfig.langs('#left-rail-wrapper');
+	skinConfig.langs('#left-rail-wrapper');
 
 	// Personal tools
 	function ptItem(id, url, title, text){
@@ -52,8 +52,8 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 
 	// Page actions
 	await skinConfig.associatedPages(pageActions);
-	await skinConfig.views(pageActions);
-	await skinConfig.actions(pageActions);
+	skinConfig.views(pageActions);
+	skinConfig.actions(pageActions);
 
 	// Footer
 	function footerIcon(id, title, url){

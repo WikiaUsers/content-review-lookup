@@ -178,3 +178,175 @@
 
     startSeasonTimer(0);
 })();
+
+/* ------------------------------------------------------------------ */
+/* Sliced custom wood box background for tabber boxes                  */
+/* ------------------------------------------------------------------ */
+(function () {
+    function getDefaultWoodBoxBackground() {
+        const probe = document.createElement('div');
+
+        probe.className = 'custom-wood-box';
+        probe.style.cssText = [
+            'position:absolute',
+            'left:-99999px',
+            'top:-99999px',
+            'width:200px',
+            'height:200px',
+            'visibility:hidden',
+            'pointer-events:none'
+        ].join(';');
+
+        document.body.appendChild(probe);
+
+        const bg = window.getComputedStyle(probe).backgroundImage;
+
+        probe.remove();
+
+        if (!bg || bg === 'none') {
+            return null;
+        }
+
+        return bg;
+    }
+
+    function initWoodTabberBoxes(attempt) {
+        const boxes = document.querySelectorAll('.custom-wood-box.wood-tabber-box');
+
+        if (boxes.length === 0) {
+            if (attempt < 40) {
+                setTimeout(function () {
+                    initWoodTabberBoxes(attempt + 1);
+                }, 500);
+            }
+            return;
+        }
+
+        const bg = getDefaultWoodBoxBackground();
+
+        if (!bg) {
+            return;
+        }
+
+        boxes.forEach(function (box) {
+            box.style.setProperty('--wood-box-bg', bg);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initWoodTabberBoxes(0);
+    });
+
+    window.addEventListener('load', function () {
+        initWoodTabberBoxes(0);
+    });
+
+    initWoodTabberBoxes(0);
+})();
+
+/* Replaces missing file links with the wiki's Missing File icon */
+
+(function () {
+    'use strict';
+
+    const FALLBACK_FILE = 'Missing File Icon.png';
+    const FALLBACK_SIZE = 120;
+
+    const FALLBACK_SRC = mw.util.getUrl(
+        'Special:Redirect/file/' + FALLBACK_FILE,
+        {
+            width: FALLBACK_SIZE,
+            height: FALLBACK_SIZE
+        }
+    );
+
+
+    function getMissingFileTitle(link) {
+        const title = link.getAttribute('title') || '';
+        const titleMatch = title.match(
+            /^((?:File|Image):.+?)(?:\s+\(.*\))?$/i
+        );
+
+        if (titleMatch) {
+            return titleMatch[1];
+        }
+
+        let href = link.getAttribute('href') || '';
+
+        try {
+            href = decodeURIComponent(href);
+        } catch (error) {
+            
+        }
+
+        const hrefMatch = href.match(
+            /(?:title=|\/wiki\/)((?:File|Image):[^?&#]+)/i
+        );
+
+        return hrefMatch
+            ? hrefMatch[1].replace(/_/g, ' ')
+            : null;
+    }
+
+
+    function replaceMissingFiles(root) {
+        if (!root || !root.querySelectorAll) {
+            return;
+        }
+
+        root.querySelectorAll('a.new').forEach(function (link) {
+            if (link.dataset.missingFileFallback === 'true') {
+                return;
+            }
+
+            const missingFileTitle = getMissingFileTitle(link);
+
+            if (!missingFileTitle) {
+                return;
+            }
+
+            const image = document.createElement('img');
+
+            image.src = FALLBACK_SRC;
+            image.alt = 'Missing file';
+            image.title = missingFileTitle + ' has not been uploaded yet.';
+            image.loading = 'lazy';
+
+            image.style.width = FALLBACK_SIZE + 'px';
+            image.style.height = FALLBACK_SIZE + 'px';
+            image.style.maxWidth = '100%';
+            image.style.objectFit = 'contain';
+            image.style.display = 'block';
+            image.style.margin = '0 auto';
+            image.style.background = 'transparent';
+            image.style.border = 'none';
+            image.style.boxShadow = 'none';
+
+            link.textContent = '';
+            link.appendChild(image);
+
+            link.classList.remove('new');
+            link.classList.add('missing-file-fallback');
+            link.dataset.missingFileFallback = 'true';
+
+            link.style.display = 'inline-block';
+            link.style.background = 'transparent';
+            link.style.border = 'none';
+            link.style.boxShadow = 'none';
+            link.style.textDecoration = 'none';
+
+            link.setAttribute(
+                'aria-label',
+                missingFileTitle + ' has not been uploaded yet.'
+            );
+        });
+    }
+
+    mw.hook('wikipage.content').add(function ($content) {
+        const root = $content && $content[0]
+            ? $content[0]
+            : document;
+
+        replaceMissingFiles(root);
+    });
+})();

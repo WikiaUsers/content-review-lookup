@@ -2,16 +2,17 @@
    #SCRIPT-CONFIGURATIONS
 \*-----------------------------------*/
 
-/* [[w:c:dev:AddRailModule]]
+/**
+ * [[w:c:dev:AddRailModule]]
  * Ensure the latest content is displayed immediately
  */
 window.AddRailModule = [{
-	page: 'Template:RailModule', // [[Template:RailModule]]
-	prepend: true,
-	maxAge: 0
+    page: 'Template:CountdownModule', prepend: true, maxAge: 0 }, { // [[Template:CountdownModule]]
+	page: 'Template:RailModule', prepend: true, maxAge: 0 // [[Template:RailModule]]
 }];
 
-/* [[w:c:dev:WelcomeMessage]]
+/**
+ * [[w:c:dev:WelcomeMessage]]
  * Welcome automation for this site
  */
 window.welcomeMessage = {
@@ -23,7 +24,8 @@ window.welcomeMessage = {
     messageText: '{{' + 'subst:WelcomeMessage|$1|$2|$3|$4|' + '{{' + 'subst:CURRENTTIME}}, {{' + 'subst:CURRENTDAY}} {{' + 'subst:CURRENTMONTHNAME}} {{' + 'subst:CURRENTYEAR}} (UTC)}}' // [[Template:WelcomeMessage]]
 };
 
-/* [[w:c:dev:WDSIcons]]
+/**
+ * [[w:c:dev:WDSIcons]]
  * Help the script render on the rail and dynamic containers
  */
 (function() {
@@ -47,9 +49,10 @@ window.welcomeMessage = {
 importArticles({
 	type: 'script',
     articles: [
-    	'u:clodaghelm:MediaWiki:Chronoa.js',
-    	'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
+        'u:clodaghelm:MediaWiki:Chronoa.js',
+        'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
         'u:clodaghelm:MediaWiki:LastModified.js',
+        'u:clodaghelm:MediaWiki:NewPages.js',
         'u:clodaghelm:MediaWiki:RailCarousel.js',
         'u:clodaghelm:MediaWiki:PageFooterPanel.js'
     ]

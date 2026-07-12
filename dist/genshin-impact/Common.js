@@ -15,7 +15,7 @@ mw.hook('ext.CodeMirror.ready').add(() => {
 window.dev = window.dev || {};
 window.dev.BetterUpload = {
 	'default': '==Licensing==\n{{Fairuse}}',
-	redirectFormat: '#redirect [[File:%TARGET%]]\n[[Category:Redirect Pages]]'
+	redirectFormat: '#redirect ['+'[File:%TARGET%]]\n[[Category:Redirect Pages]]'
 };
 
 // Fix the search field not updating when ctrl+f with text selected (should be removed when/if fandom fixes it in native)

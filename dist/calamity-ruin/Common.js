@@ -1,3 +1,110 @@
+mw.loader.using(['mediawiki.util']).then(() => {
+
+    if (mw.config.get('wgPageName') !== 'Home') return;
+
+    // 2%
+    if (Math.random() > 0.02) return;
+
+    const content = document.querySelector('.mw-parser-output');
+    if (!content) return;
+
+    const originalHTML = content.innerHTML;
+
+    // Música
+    const audio = new Audio(
+        'https://static.wikia.nocookie.net/calamity-ruin/images/4/47/ERRORSONGNOTFOUND.mp3/revision/latest?cb=20260709000048&format=original'
+    );
+
+    document.addEventListener('click', function startMusic() {
+        audio.play().catch(() => {});
+    }, { once: true });
+
+    // Cria um background cobrindo toda a tela
+    const bg = document.createElement("div");
+    bg.id = "gasterBackground";
+    bg.style.cssText = `
+        position:fixed;
+        inset:0;
+        z-index:-1;
+        background:url("https://static.wikia.nocookie.net/calamity-ruin/images/0/03/Room.jpg/revision/latest?cb=20260709000447&format=original") center center / cover no-repeat;
+    `;
+    document.body.appendChild(bg);
+
+    // Esconde o fundo original da wiki
+    document.body.style.background = "#000";
+    document.documentElement.style.background = "#000";
+
+    // Página corrompida
+    content.innerHTML = `
+        <div style="text-align:center;margin-top:60px">
+
+            <img src="https://static.wikia.nocookie.net/calamity-ruin/images/2/22/CRLogoAlt.png/revision/latest?cb=20260708235957&format=original"
+                 style="width:460px">
+
+            <div style="
+                margin:auto;
+                margin-top:40px;
+                max-width:700px;
+                padding:30px;
+                background:rgba(0,0,0,.82);
+                border:1px solid #444;
+                color:white;
+                font-family:'Determination Mono',monospace;
+                font-size:18px;
+                line-height:1.9;
+                text-align:left;
+            ">
+
+📬︎📬︎📬︎☟︎♏︎●︎●︎□︎✍︎
+
+<br><br>
+
+✋︎♐︎ ⍓︎□︎◆︎ ♍︎♋︎■︎ ❒︎♏︎♋︎♎︎ ⧫︎♒︎♓︎⬧︎📪︎ ⧫︎♒︎♏︎■︎ ⬧︎□︎❍︎♏︎⧫︎♒︎♓︎■︎♑︎ ♒︎♋︎⬧︎ ♑︎□︎■︎♏︎ ⧫︎♏︎❒︎❒︎♓︎♌︎●︎⍓︎ ⬥︎❒︎□︎■︎♑︎📬︎
+
+<br><br>
+
+✋︎ ♎︎□︎■︎🕯︎⧫︎ 🙵■︎□︎⬥︎ ♒︎□︎⬥︎ ⍓︎□︎◆︎ ♐︎□︎◆︎■︎♎︎ ⧫︎♒︎♓︎⬧︎ ◻︎●︎♋︎♍︎♏︎...
+
+<br><br>
+
+☟︎♏︎🕯︎⬧︎ ⬥︎♋︎⧫︎♍︎♒︎♓︎■︎♑︎📬︎
+
+<br><br>
+
+🏱︎●︎♏︎♋︎⬧︎♏︎...
+
+<br><br>
+
+♎︎□︎■︎🕯︎⧫︎ ⧫︎❒︎◆︎⬧︎⧫︎ ⧫︎♒︎♏︎ ❍︎♋︎■︎ ⬥︎♒︎□︎ ⬧︎◻︎♏︎♋︎🙵⬧︎ ⧫︎♒︎❒︎□︎◆︎♑︎♒︎ ♒︎♓︎⬧︎ ♒︎♋︎■︎♎︎⬧︎📬︎
+
+            </div>
+
+            <div style="
+                margin-top:60px;
+                color:#777;
+                letter-spacing:4px;
+                font-size:12px;
+                font-family:'Determination Mono',monospace;
+            ">
+                ERROR: SAVE DATA NOT FOUND
+            </div>
+
+        </div>
+    `;
+
+    setTimeout(() => {
+
+        audio.pause();
+        audio.currentTime = 0;
+
+        content.innerHTML = originalHTML;
+
+        bg.remove();
+
+    }, 120000);
+
+});
+
 $(function(){
 
   /* ================= PAGE CHECK ================= */

@@ -430,3 +430,177 @@ mw.loader.using('jquery', function () {
 //     });
 
 // });
+
+mw.loader.using('jquery', function() {
+
+  $(document).ready(function() {
+
+    if ($('#virtual-keyboard').length === 0) return;
+
+
+
+    // По умолчанию цель — блокнот
+
+    var targetInput = $('#keyboard-input');
+
+
+
+    // Если кликнули по полю поиска — переключаем цель на него
+
+    $('#search-input').on('focus click', function() {
+
+      targetInput = $(this);
+
+    });
+
+
+
+    // Если кликнули по блокноту — возвращаем цель
+
+    $('#keyboard-input').on('focus click', function() {
+
+      targetInput = $(this);
+
+    });
+
+
+
+    // Обработчик виртуальных клавиш
+
+    $(document).on('click', '.virtual-key', function(e) {
+
+      e.preventDefault();
+
+      var key = $(this).data('key');
+
+
+
+      // Фокусируем цель, чтобы каретка встала на место
+
+      targetInput.focus();
+
+
+
+      if (key === 'BACKSPACE') {
+
+        // Эмуляция backspace через Selection API
+
+        var sel = window.getSelection();
+
+        if (sel.rangeCount && $(sel.anchorNode).closest(targetInput).length) {
+
+          var range = sel.getRangeAt(0);
+
+          if (range.collapsed && range.startOffset > 0) {
+
+            range.setStart(range.startContainer, range.startOffset - 1);
+
+            range.deleteContents();
+
+          } else if (!range.collapsed) {
+
+            range.deleteContents();
+
+          }
+
+        }
+
+      } else if (key === 'ENTER') {
+
+        document.execCommand('insertHTML', false, '\n');
+
+      } else if (key === 'SPACE') {
+
+        document.execCommand('insertText', false, ' ');
+
+      } else {
+
+        document.execCommand('insertText', false, key);
+
+      }
+
+    });
+
+  });
+
+});
+$(function() {
+
+    'use strict';
+
+    // Не добавляем плашку в служебных списках правок
+
+    if ($('body').hasClass('mw-special-Contributions')) return;
+
+
+    // Функция добавления плашки
+
+    function addBadge() {
+
+        $('a[href$=":Dramz0wen"], a[href$="/Dramz0wen"]').each(function() {
+
+            var $link = $(this);
+
+            // Проверяем, что плашка ещё не добавлена
+
+            if ($link.next('.dramz-admin-badge').length) return;
+
+
+            var $badge = $('<span>')
+
+                .addClass('dramz-admin-badge')
+
+                .css({
+
+                    fontFamily: 'BarboskinsAkzident, monospace',
+
+                    color: '#00ffff',
+
+                    textShadow: '0 0 16px #00ffff, 0 0 10px #00ffff, 0 0 8px #00ffff, 0 0 4px #aa44ff',
+
+                    background: 'linear-gradient(45deg, #000a1a, #001a1a, #000a1a, #001a30, #000a1a, #001a1a, #000a1a, #001a30)',
+
+                    borderRadius: '10px',
+
+                    border: '2.5px solid #00ffff',
+
+                    boxShadow: '0 0 5px #00ffff, 0 0 10px #aa44ff',
+
+                    padding: '2px 6px',
+
+                    fontSize: '0.8em',
+
+                    marginLeft: '5px',
+
+                    verticalAlign: 'middle'
+
+                })
+
+                .text('Администратор, почётный участник');
+
+
+            $link.after($badge);
+
+        });
+
+    }
+
+
+    // Запускаем при первой загрузке
+
+    addBadge();
+
+
+    // И при каждом изменении DOM (например, если комментарии подгружаются динамически)
+
+    mw.hook('wikipage.content').add(function($content) {
+
+        if ($content) {
+
+            addBadge();
+
+        }
+
+    });
+
+});

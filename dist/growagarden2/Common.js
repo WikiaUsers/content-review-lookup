@@ -62,3 +62,66 @@ importScript( 'MediaWiki:MutationGalleryUpload.js' );
   tick();
   setInterval(tick, 1000);
 })();
+
+$(function () {
+    $(".application-button").on("click", function () {
+        var button = $(this);
+        var username = mw.config.get("wgUserName");
+
+        if (!username) return;
+
+        var role = button.data("role");
+
+        var applications = [
+            "Applications:" + role + "/" + username,
+            "Applications:" + role + "/" + username + " (1)",
+            "Applications:" + role + "/" + username + " (2)"
+        ];
+
+        function showError() {
+            button.next(".application-error").remove();
+
+            $("<div>")
+                .addClass("application-error")
+                .css({
+                    "color": "red",
+                    "font-weight": "bold",
+                    "margin-top": "10px"
+                })
+                .text("You have reached the maximum number of applications allowed.")
+                .insertAfter(button);
+        }
+
+        function checkPage(index) {
+            if (index >= applications.length) {
+                showError();
+                return;
+            }
+
+            $.ajax({
+                url: mw.util.getUrl(applications[index], {
+                    action: "raw"
+                }),
+                type: "GET",
+
+                success: function () {
+                    checkPage(index + 1);
+                },
+
+                error: function (xhr) {
+                    if (xhr.status === 404) {
+                        // Page does not exist, open creation editor
+                        window.location.href = mw.util.getUrl(applications[index], {
+                            action: "edit",
+                            preload: "Template:Application_Template"
+                        });
+                    } else {
+                        checkPage(index + 1);
+                    }
+                }
+            });
+        }
+
+        checkPage(0);
+    });
+});

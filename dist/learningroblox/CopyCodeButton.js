@@ -17,6 +17,71 @@
         const expandIconHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="${classNames.toggleIcon}" height="18" viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
         const collapseIconHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="${classNames.toggleIcon}" height="18" viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
 
+        // --- ĐÃ FIX TRIỆT ĐỂ: TÁCH BIỆT MŨI TÊN DỌC VÀ MŨI TÊN NGANG ---
+        const customStyles = document.createElement('style');
+        customStyles.innerHTML = `
+            /* Cấu hình chung cho thanh cuộn */
+            .roblox-code-card ::-webkit-scrollbar {
+                width: 6px;   
+                height: 6px;
+            }
+            .roblox-code-card ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .roblox-code-card ::-webkit-scrollbar-thumb {
+                background-color: #808080;
+                border-radius: 4px;
+            }
+            .roblox-code-card ::-webkit-scrollbar-thumb:hover {
+                background-color: #595a5b;
+            }
+            
+            .roblox-code-card ::-webkit-scrollbar-corner {
+                background: transparent;
+            }
+
+            /* ==================== 1. THANH CUỘN DỌC (:vertical) ==================== */
+            /* Mũi tên LÊN */
+            .roblox-code-card ::-webkit-scrollbar-button:vertical:single-button:decrement {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%23a0a0a0'%3E%3Cpolygon points='5,0 0,6 10,6'/%3E%3C/svg%3E") !important;
+                background-repeat: no-repeat;
+                background-position: center center;
+                display: block;
+                height: 12px;        
+                background-size: 8px 5px;
+            }
+            /* Mũi tên XUỐNG */
+            .roblox-code-card ::-webkit-scrollbar-button:vertical:single-button:increment {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%23a0a0a0'%3E%3Cpolygon points='0,0 10,0 5,6'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: center center;
+                display: block;
+                height: 12px;        
+                background-size: 8px 5px;
+            }
+
+            /* ==================== 2. THANH CUỘN NGANG (:horizontal) ==================== */
+            /* Mũi tên SANG TRÁI */
+            .roblox-code-card ::-webkit-scrollbar-button:horizontal:single-button:decrement {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 10' fill='%23a0a0a0'%3E%3Cpolygon points='6,0 6,10 0,5'/%3E%3C/svg%3E") !important;
+                background-repeat: no-repeat;
+                background-position: center center;
+                display: block;
+                width: 12px;        /* Thanh ngang thì chỉnh độ rộng vùng bấm */
+                background-size: 5px 8px; /* Hình tam giác nằm ngang tương ứng */
+            }
+            /* Mũi tên SANG PHẢI */
+            .roblox-code-card ::-webkit-scrollbar-button:horizontal:single-button:increment {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 10' fill='%23a0a0a0'%3E%3Cpolygon points='0,0 0,10 6,5'/%3E%3C/svg%3E") !important;
+                background-repeat: no-repeat;
+                background-position: center center;
+                display: block;
+                width: 12px;        
+                background-size: 5px 8px;
+            }
+        `;
+        document.head.appendChild(customStyles);
+
         function showNotification(msg, isError) {
             let toast = document.getElementById('roblox-toast-notify');
             if (!toast) {
@@ -36,12 +101,10 @@
             const textArea = document.createElement("textarea");
             textArea.value = text;
             
-            // Đẩy textarea ra khỏi màn hình để tránh bàn phím ảo bật lên trên Mobile
             textArea.style.top = "0";
             textArea.style.left = "0";
             textArea.style.position = "fixed";
             textArea.style.opacity = "0";
-
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
@@ -56,7 +119,6 @@
             } catch (err) {
                 showNotification("Error", true);
             }
-
             document.body.removeChild(textArea);
         }
 
@@ -68,7 +130,6 @@
             const rows = table.querySelectorAll('.roblox-code-content');
             let content = Array.from(rows).map(row => row.innerText).join('\n');
 
-            // Thử dùng API hiện đại trước, nếu xịt hoặc không hỗ trợ (Mobile) thì dùng Fallback
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(content).then(function() {
                     showNotification("Text copied to clipboard", false);
@@ -80,7 +141,6 @@
             }
         }
 
-        // Ép các thuộc tính cảm ứng để không bị highlight xanh khi bấm trên điện thoại
         const commonButtonStyle = "position: relative !important; cursor: pointer !important; border: none !important; background: transparent !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 8px !important; margin: 0 !important; color: #a0a0a0 !important; height: 36px !important; width: 36px !important; border-radius: 8px !important; outline: none !important; z-index: 99999 !important; -webkit-tap-highlight-color: transparent !important; touch-action: manipulation !important;";
 
         mw.hook('wikipage.content').add(function($content) {
@@ -109,10 +169,9 @@
                 copyButton.style.cssText = commonButtonStyle;
                 copyButton.innerHTML = copyIconHTML;
                 copyButton._table = table;
-                // Dùng event 'click' chuẩn, hệ điều hành mobile tự ánh xạ touch vào đây
                 copyButton.addEventListener('click', (e) => { 
                     e.preventDefault(); 
-                    e.stopPropagation(); // Ngăn sự kiện lan truyền gây lỗi cuộn trang
+                    e.stopPropagation(); 
                     copyCode(copyButton); 
                 });
                 actionGroup.appendChild(copyButton);

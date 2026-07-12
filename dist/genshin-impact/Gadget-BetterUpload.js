@@ -41,7 +41,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 					fn = $('#wpDestFile');
 				if ( rd.length>0 && rd.val().length>0 && fn.val().length>0 ) {
 					let openRD = ()=>{window.open( mw.config.get('wgServer')+mw.util.getUrl('File:'+fn.val())+'?redirect=no', '_self');},
-						rdContent = (window.dev.BetterUpload.redirectFormat||'#redirect [[File:%TARGET%]]').replace(/%TARGET%/, rd.val());
+						rdContent = (window.dev.BetterUpload.redirectFormat||'#redirect ['+'[File:%TARGET%]]').replace(/%TARGET%/, rd.val());
 					api.create('File:'+fn.val(), {recreate: true}, rdContent).then(openRD);
 					api.edit('File:'+fn.val(), ()=>({ text: rdContent, comment: 'Create redirect' })).then(openRD);
 				} else {

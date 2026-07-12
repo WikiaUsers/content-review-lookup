@@ -2,12 +2,24 @@
    #SCRIPT-CONFIGURATIONS
 \*-----------------------------------*/
 
-/* [[w:c:dev:AddRailModule]]
+/**
+ * [[w:c:dev:AddRailModule]]
  * Ensure the latest content is displayed immediately
  */
-window.AddRailModule = [{ page: 'Template:RailModule', maxAge: 0 }]; // [[Template:RailModule]]
+window.AddRailModule = [{
+	page: 'Template:RailModule', // [[Template:RailModule]]
+	maxAge: 0
+}];
 
-/* [[w:c:dev:WDSIcons]]
+/**
+ * [[NewPages]]
+ */
+window.NewPages = {
+    namespaces: [0, 8]
+};
+
+/**
+ * [[w:c:dev:WDSIcons]]
  * Help the script render on the rail and dynamic containers
  */
 (function() {

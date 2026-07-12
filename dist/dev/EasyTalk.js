@@ -39,7 +39,7 @@ mw.loader.using([
 	let updatePreview;
 	let msg;
 	let newTopicToolAvailable = true;
-	const version = '2.2.0';
+	const version = '2.2.1';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
 	const api = new mw.Api({'parameters': {
@@ -52,7 +52,7 @@ mw.loader.using([
 	const archived = $(`#${window.dev.DisableArchivedPages.id}`).length;
 	const previewDelay = 1000;
 	const now = Date.now();
-	const postDatetimeChars = '[}\\s\\w().!?;,]*?$';
+	const postDatetimeChars = '[}|\\s\\w().!?;,]*?$';
 	const editorID = 'easy-talk-editor-js';
 	const docRef = `[[${helpPage}|${toolName}]] v${version}`;
 	const fatalErrors = [

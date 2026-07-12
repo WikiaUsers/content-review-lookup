@@ -176,46 +176,9 @@ function toggleInit()
     for (var i = 0; i < togglerElems.length; i++)
         createTogglerLink(togglerElems[i], i);
 }
- 
- 
-function owwsitesearch(f){
-    f.q.value='site:http://openwetware.org/wiki/'+
-        f.base.value+'++'+f.qfront.value
-}
- 
+
 addOnloadHook(toggleInit);
-
+	
 // End Toggle code
- 
-function owwsitesearch(f){
-    f.q.value='site:http://openwetware.org/wiki/'+
-        f.base.value+'++'+f.qfront.value
-}
-
-function scrollHack()
-{
-   /* A horrible workaround for wikia's broken image load code that assumes that the position of the images on the page won't change after it's been loaded...
-*/
-   window.setTimeout(
-    function () {
-        window.scrollTo(window.scrollX, window.scrollY+1);
-        window.scrollTo(window.scrollX, window.scrollY-1);
-    }, 2000);
-}
- 
-addOnloadHook(scrollHack);
-
-
-/* Replaces {{USERNAME}} with the name of the user browsing the page. 
-   Requires copying Template:USERNAME. */ 
-
-function UserNameReplace() { 
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return; 
-    $("span.insertusername").html(wgUserName); 
- } 
- addOnloadHook(UserNameReplace);
-
-/* End of the {{USERNAME}} replacement */ 
-
 /* Adds Inactive title to users who have not made an edit for 3 months */
 importScriptPage('InactiveUsers/code.js', 'dev');

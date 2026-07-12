@@ -146,7 +146,7 @@ function searchJavaScript()
 		if(exCategories.length > 0) text += '|notcategory = ' + exCategories.join('|notcategory = ');
 		if(set !== "Any" && set !== null) text += '|linksfrom=' + set;
 		text += '|allowcachedresults = true';
-		text += '|count = 150';
+		text += '|count = 500';
 		text += '|ordermethod = title';
 		text += '|noresultsheader = No cards match the search criteria.';
 		text += '}}';
@@ -166,43 +166,98 @@ function searchJavaScript()
 		});
 	}
 	
-	function convertAndApply(input)
-	{
-		if(input.includes("No cards match the search criteria")) 
-		{
-			document.getElementById('content-container').innerHTML = input;
-			return;
-		}
-		
-		var html = '<div><ul>';
-		var lineTemplate = '<li style="display: inline-block; width:185px; vertical-align: top; text-align: center"">{{CardSearchResult|cardName}}[[cardName]]<br><br></li>';
-		var position = -7;
-		var limit = 30;
-		var i = 1;
-		while(true)
-		{
-			position = input.indexOf('title="', position + 7);
-			if(position < 0 || i > limit )
-			{
-				break;
-			}
-			var endPosition = input.indexOf('">', position);
-			var cardTitle = input.substring(position+7, endPosition);
-			html += lineTemplate.replace(/cardName/g, cardTitle);
-			i++;
-		}
-		html += '</ul></div>';
-		
-		var text = html;
-		new mw.Api().get({
-			action: 'parse',
-			text: text,
-			contentmodel: 'wikitext',
-		}).then(function(data) {
-			var final = data.parse.text['*'];
-			document.getElementById('content-container').innerHTML = final; 
-		});
-	}
+function convertAndApply(input)
+{
+    if (input.includes("No cards match the search criteria"))
+    {
+        document.getElementById('content-container').innerHTML = input;
+        return;
+    }
+
+    var cardTitles = [];
+    var position = -7;
+
+    while (true)
+    {
+        position = input.indexOf('title="', position + 7);
+
+        if (position < 0)
+            break;
+
+        var endPosition = input.indexOf('">', position);
+        cardTitles.push(input.substring(position + 7, endPosition));
+    }
+
+    var pageSize = 30;
+    var currentPage = 0;
+    var totalPages = Math.max(1, Math.ceil(cardTitles.length / pageSize));
+
+    function renderPage()
+    {
+        var html = '<div><ul>';
+
+        var start = currentPage * pageSize;
+        var end = Math.min(start + pageSize, cardTitles.length);
+
+        for (var i = start; i < end; i++)
+        {
+            html += '<li style="display:inline-block;width:185px;vertical-align:top;text-align:center">{{CardSearchResult|'
+                 + cardTitles[i]
+                 + '}}[['
+                 + cardTitles[i]
+                 + ']]<br><br></li>';
+        }
+
+        html += '</ul></div>';
+
+        html += '<div style="text-align:center;margin-top:1em;">';
+
+        if (currentPage > 0)
+        {
+            html += '<span id="acs-prev" style="cursor:pointer;font-weight:bold;">← Previous</span> ';
+        }
+
+        html += ' Page ' + (currentPage + 1) + ' of ' + totalPages + ' ';
+
+        if (currentPage < totalPages - 1)
+        {
+            html += '<span id="acs-next" style="cursor:pointer;font-weight:bold;">Next →</span>';
+        }
+
+        html += '</div>';
+
+        new mw.Api().get({
+            action: 'parse',
+            text: html,
+            contentmodel: 'wikitext'
+        }).then(function(data)
+        {
+            document.getElementById('content-container').innerHTML = data.parse.text['*'];
+
+            var prev = document.getElementById('acs-prev');
+            if (prev)
+            {
+                prev.onclick = function()
+                {
+                    currentPage--;
+                    renderPage();
+                };
+            }
+
+            var next = document.getElementById('acs-next');
+            if (next)
+            {
+                next.onclick = function()
+                {
+                    currentPage++;
+                    renderPage();
+                };
+            }
+        });
+    }
+
+    renderPage();
+}
 	
 	function addInput(elem, container, cat) {
 		if(container === null) return;

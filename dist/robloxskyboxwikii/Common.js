@@ -14,7 +14,7 @@ window.UserTagsJS = {
 	}
 };
 if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
+	$('.insertusername').text(wgUserName);
 }
 /*Password Protected Notice Stuff*/
 mw.hook('wikipage.content').add(function ($content) {
@@ -179,7 +179,7 @@ mw.hook('wikipage.content').add(function ($content) {
 				html += `
                     <li class="friends-item">
                         <a href="/wiki/User:${encodeURIComponent(name)}" class="friends-link">
-                            <img src="${avatar}" alt="${name}" class="friends-avatar" />
+                            <img src="${avatar}" alt="${mw.html.escape(name)}" class="friends-avatar" />
                             <span class="friends-username">${mw.html.escape(name)}</span>
                         </a>
                     </li>`;
@@ -476,5 +476,40 @@ mw.hook('wikipage.content').add(function ($content) {
     mw.loader.using(['mediawiki.api']).done(function() {
         $(function() { App.init(); });
     });
-
 })(window, jQuery, mediaWiki);
+
+/* recent-pages function */
+mw.loader.using(['mediawiki.api']).then(function () {
+    if (!document.getElementById("recent-pages")) return;
+
+    var api = new mw.Api();
+
+    api.get({
+        action: "query",
+        list: "recentchanges",
+        rctype: "new",
+        rcshow: "!bot",
+        rclimit: 10,
+        rcprop: "title"
+    }).done(function (data) {
+
+        var html = "<ul>";
+
+        data.query.recentchanges.forEach(function (page) {
+            html += '<li><a href="' +
+                mw.util.getUrl(page.title) +
+                '">' +
+                mw.html.escape(page.title) +
+                '</a></li>';
+        });
+
+        html += "</ul>";
+
+        document.getElementById("recent-pages").innerHTML = html;
+
+    }).fail(function (err) {
+        console.error(err);
+        document.getElementById("recent-pages").textContent =
+            "Couldn't load recent pages.";
+    });
+});
