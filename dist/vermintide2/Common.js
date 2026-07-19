@@ -1,3 +1,14 @@
+/*****************************************
+/* Inject Custom Fonts via <link>
+/*****************************************/
+// Inject font using <link> tag instead of CSS @import 
+(function() {
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.cdnfonts.com/css/caslon-antique';
+    document.head.appendChild(link);
+})();
+
 /*************************
  * JQuery Random  Plugin *
  *************************/
@@ -67,188 +78,209 @@ $('.random-subset').each(function() {
 * through the tabs in the background and scrolling to the target element.
 */
 var LAZY_TABS_DEBUG = false;
-function debugLog() {
-    if (LAZY_TABS_DEBUG) console.log.apply(console, arguments);
-}
-function debugError() {
-    if (LAZY_TABS_DEBUG) console.error.apply(console, arguments);
-}
-// Manual trigger for testing in the browser console: runLazyTabs()
+function debugLog() { if (LAZY_TABS_DEBUG) console.log.apply(console, arguments); }
+function debugError() { if (LAZY_TABS_DEBUG) console.error.apply(console, arguments); }
+
 window.runLazyTabs = function() {
-	initializeLazyTabs(0);
+    initializeLazyTabs();
 };
-// Prevent the script from re-initializing itself when it fires the wikipage.content hook
+
+// Prevent the script from re-initializing itself
 var lazyTabsInitialized = false;
-// Wait for Fandom's page content (and the Tabber extension) to be fully ready
-mw.hook('wikipage.content').add(function() {
-	if (lazyTabsInitialized) return;
-	lazyTabsInitialized = true;
-	// Give Tabber a brief moment to transform the DOM
-	setTimeout(function() { initializeLazyTabs(0); }, 500);
-});
-function initializeLazyTabs(retryCount) {
-	retryCount = retryCount || 0;
-	if (retryCount === 0 && !document.querySelector('.lazy-tab')) {
-		return; 
-	}
-	// Prevent infinite spam
-	if (retryCount > 4) {
-		debugError("[LazyTabs] Gave up waiting for Tabber to initialize after 5 seconds.");
-		return;
-	}
-	// Target Fandom's WDS Tabber classes
-	var $tabbers = $('.wds-tabber, .tabber');
-	debugLog("[LazyTabs] Attempt " + (retryCount + 1) + " - Found WDS tabbers:", $tabbers.length);
-	// If Tabber hasn't built the DOM yet, wait and try again
-	if (!$tabbers.length) {
-		setTimeout(function() { initializeLazyTabs(retryCount + 1); }, 500);
-		return;
-	}
-	// Check if the user arrived via an anchor link
-	var hash = window.location.hash;
-	var targetId = hash ? decodeURIComponent(hash.substring(1)) : null;
-	// Function to fetch tab content via MediaWiki API
-	function loadTabContent($lazyDiv) {
-		return new Promise(function(resolve, reject) {
-			// If already loaded, resolve immediately
-			if ($lazyDiv.data('loaded')) { resolve(); return; }
-			var pageName = $lazyDiv.data('page');
-			if (!pageName) { resolve(); return; }
-			debugLog("[LazyTabs] Loading:", pageName);
-			new mw.Api().get({
-				action: 'parse',
-				page: pageName,
-				prop: 'text',
-				format: 'json'
-			}).done(function(data) {
-				if (data.parse && data.parse.text) {
-					// Parse the API response into a temporary container
-					var $content = $('<div>').html(data.parse.text['*']);
-					// Remove any nested tabbers or leftover loading divs
-					// (e.g., from transcluded navigation templates)
-					$content.find('.wds-tabber, .tabber, .tabbernav').remove();
-					// cleaned HTML
-					$lazyDiv.html($content.html());
-					$lazyDiv.data('loaded', true);
-					debugLog("[LazyTabs] Loaded:", pageName);
-					// correct initialization
-					if (typeof mw.hook !== 'undefined') {
-						mw.hook('wikipage.content').fire($lazyDiv);
-					}
-					resolve();
-				} else { 
-					debugError("[LazyTabs] No text for:", pageName);
-					reject(); 
-				}
-			}).fail(function(err) {
-				debugError("[LazyTabs] API failed:", pageName, err);
-				$lazyDiv.html('<p style="color:red;">Failed to load. Check console (F12).</p>');
-				reject();
-			});
-		});
-	}
-	// Helper to find the target element by ID (handles space/underscore variations)
-	function findTarget() {
-		if (!targetId) return null;
-		return document.getElementById(targetId) || document.getElementById(targetId.replace(/ /g, '_'));
-	}
-	// Helper to activate a specific tab and scroll to the target element
-	function activateAndScroll($tabber, tabIndex) {
-		var $tabLi = $tabber.find('ul.wds-tabs li.wds-tabs__tab').eq(tabIndex);
-		if ($tabLi.length) {
-			$tabLi[0].click(); // Click the WDS tab button to make it visible
-		}
-		setTimeout(function() {
-			// Restore the URL hash
-			if (hash) {
-				history.replaceState(null, null, hash);
-			}
-			var el = findTarget();
-			if (el) {
-				el.classList.add('lazy-tab-target');
-				// If the target is a table row (<tr>), apply the class to its cells (<td>) too
-				if (el.tagName === 'TR') {
-					el.querySelectorAll('td').forEach(function(td) {
-						td.classList.add('lazy-tab-target');
-					});
-				}
-				var pos = el.getBoundingClientRect().top + window.scrollY - 100;
-				window.scrollTo({ top: pos, behavior: 'smooth' });
-			}
-		}, 300);
-	}
-	/* Listen for in-page anchor clicks (hash changes) to clear the manual JS highlight.
-	* This ensures that when a user clicks a new in-page link, the manual highlight is removed
-	  and the browser's native CSS :target takes over for the newly clicked element. */
-	window.addEventListener('hashchange', function() {
-		document.querySelectorAll('.lazy-tab-target').forEach(function(el) {
-			el.classList.remove('lazy-tab-target');
-		});
-	});
-	// Process each tabber found on the page
-	$tabbers.each(function() {
-		var $tabber = $(this);
-		// Find the content panels (Fandom's WDS uses .tabbertab or direct child divs)
-		var $panels = $tabber.find('.tabbertab');
-		if (!$panels.length) {
-			$panels = $tabber.children('div').not('.wds-tabs__wrapper');
-		}
-		debugLog("[LazyTabs] Processing tabber with", $panels.length, "panels.");
-		// User arrived using anchor link
-		if (targetId) {
-			var currentPanelIndex = 0;
-			// to satisfy the linter's rule against functions inside blocks.
-			var searchPanel = function() {
-				if (currentPanelIndex >= $panels.length) return; // Target not found in any tab
-				var $lazyDiv = $panels.eq(currentPanelIndex).find('.lazy-tab');
-				
-				// If already loaded, just check if the target is there
-				if ($lazyDiv.data('loaded')) {
-					if (findTarget()) {
-						activateAndScroll($tabber, currentPanelIndex);
-						return;
-					} else {
-						currentPanelIndex++;
-						searchPanel();
-					}
-				} 
-				// If not loaded, load it and then check
-				else if ($lazyDiv.length) {
-					loadTabContent($lazyDiv).then(function() {
-						if (findTarget()) {
-							activateAndScroll($tabber, currentPanelIndex);
-							return;
-						} else {
-							currentPanelIndex++;
-							searchPanel();
-						}
-					}).catch(function() {
-						currentPanelIndex++;
-						searchPanel();
-					});
-				} else {
-					currentPanelIndex++;
-					searchPanel();
-				}
-			};
-			searchPanel();
-		}  
-		// Normal page load
-		else {
-			var $firstLazyDiv = $panels.first().find('.lazy-tab');
-			if ($firstLazyDiv.length) {
-				debugLog("[LazyTabs] Loading first panel by default.");
-				loadTabContent($firstLazyDiv);
-			}
-		}
-		// User manually clicks a WDS tab
-		$tabber.on('click', 'ul.wds-tabs li.wds-tabs__tab', function() {
-			var index = $(this).index();
-			var $content = $panels.eq(index);
-			var $lazyDiv = $content.find('.lazy-tab');
-			if ($lazyDiv.length && !$lazyDiv.data('loaded')) {
-				loadTabContent($lazyDiv);
-			}
-		});
-	});
+
+// Polling
+var lazyTabsInterval = setInterval(function() {
+    var hasLazyTabs = document.querySelector('.lazy-tab');
+    var hasTabbers = document.querySelector('.wds-tabber, .tabber');
+    
+    if (hasLazyTabs && hasTabbers) {
+        clearInterval(lazyTabsInterval);
+        if (!lazyTabsInitialized) {
+            lazyTabsInitialized = true;
+            debugLog("[LazyTabs] DOM ready. Initializing...");
+            initializeLazyTabs();
+        }
+    }
+}, 300);
+
+// Stop polling after 15 seconds
+setTimeout(function() { 
+    clearInterval(lazyTabsInterval); 
+    if (!lazyTabsInitialized) {
+        debugError("[LazyTabs] Failsafe: Tabber did not initialize within 15 seconds.");
+    }
+}, 15000);
+
+function initializeLazyTabs() {
+    // Check if the user arrived via an anchor link
+    var hash = window.location.hash;
+    var targetId = hash ? decodeURIComponent(hash.substring(1)) : null;
+
+    // Function to fetch tab content via MediaWiki API
+    function loadTabContent($lazyDiv) {
+        return new Promise(function(resolve, reject) {
+            // If already loaded, resolve immediately
+            if ($lazyDiv.data('loaded')) { resolve(); return; }
+            var pageName = $lazyDiv.data('page');
+            if (!pageName) { resolve(); return; }
+
+            debugLog("[LazyTabs] Loading:", pageName);
+            new mw.Api().get({
+                action: 'parse',
+                page: pageName,
+                prop: 'text',
+                format: 'json'
+            }).done(function(data) {
+                if (data.parse && data.parse.text) {
+                    // Parse the API response into a temporary container
+                    var $content = $('<div>').html(data.parse.text['*']);
+                    
+                    // Remove any nested tabbers or leftover loading divs
+                    // (e.g., from transcluded navigation templates like {{OkriTabs}})
+                    $content.find('.wds-tabber, .tabber, .tabbernav, .dynamic-tabs-nav').remove();
+                    
+                    // Inject the cleaned HTML
+                    $lazyDiv.html($content.html());
+                    $lazyDiv.data('loaded', true);
+                    debugLog("[LazyTabs] Loaded:", pageName);
+                    
+                    // Fire Fandom hooks so tooltips, collapsibles, and images initialize correctly
+                    if (typeof mw.hook !== 'undefined') {
+                        mw.hook('wikipage.content').fire($lazyDiv);
+                    }
+                    resolve();
+                } else { 
+                    debugError("[LazyTabs] No text for:", pageName);
+                    reject(); 
+                }
+            }).fail(function(err) {
+                debugError("[LazyTabs] API failed:", pageName, err);
+                $lazyDiv.html('<p style="color:red;">Failed to load. Check console (F12).</p>');
+                reject();
+            });
+        });
+    }
+
+    // Helper to find the target element by ID (handles space/underscore variations)
+    function findTarget() {
+        if (!targetId) return null;
+        return document.getElementById(targetId) || document.getElementById(targetId.replace(/ /g, '_'));
+    }
+
+    // Helper to activate a specific tab and scroll to the target element
+    function activateAndScroll($tabber, tabIndex) {
+        var $tabLi = $tabber.find('ul.wds-tabs li.wds-tabs__tab').eq(tabIndex);
+        if ($tabLi.length) {
+            $tabLi[0].click();
+        }
+        
+        setTimeout(function() {
+            // Restore the URL hash so it looks correct to the user and CSS :target works
+            if (hash) {
+                history.replaceState(null, null, hash);
+            }
+            
+            var el = findTarget();
+            if (el) {
+                // Manually apply highlight class because browsers fail to apply CSS :target 
+                // to elements that were injected dynamically after page load.
+                el.classList.add('lazy-tab-target');
+                
+                // If the target is a table row (<tr>), apply the class to its cells (<td>) too
+                if (el.tagName === 'TR') {
+                    el.querySelectorAll('td').forEach(function(td) {
+                        td.classList.add('lazy-tab-target');
+                    });
+                }
+                
+                var pos = el.getBoundingClientRect().top + window.scrollY - 100; // 100px offset for sticky headers
+                window.scrollTo({ top: pos, behavior: 'smooth' });
+            }
+        }, 300);
+    }
+
+    // Listen for in-page anchor clicks (hash changes) to clear the manual JS highlight
+    window.addEventListener('hashchange', function() {
+        document.querySelectorAll('.lazy-tab-target').forEach(function(el) {
+            el.classList.remove('lazy-tab-target');
+        });
+    });
+    
+    // Process each tabber found on the page
+    $('.wds-tabber, .tabber').each(function() {
+        var $tabber = $(this);
+        
+        // Prevent double-processing if the interval or hooks fire multiple times
+        if ($tabber.data('lazyTabsProcessed')) return;
+        $tabber.data('lazyTabsProcessed', true);
+        
+        // Find the content panels (Fandom's WDS uses .tabbertab or direct child divs)
+        var $panels = $tabber.find('.tabbertab');
+        if (!$panels.length) {
+            $panels = $tabber.children('div').not('.wds-tabs__wrapper');
+        }
+        if (!$panels.length) return;
+
+        debugLog("[LazyTabs] Processing tabber with", $panels.length, "panels.");
+
+        // User arrived using anchor link
+        if (targetId) {
+            var currentPanelIndex = 0;
+            
+            // Recursive function to satisfy the linter's rule against functions inside blocks.
+            var searchPanel = function() {
+                if (currentPanelIndex >= $panels.length) return; // Target not found in any tab
+                
+                var $lazyDiv = $panels.eq(currentPanelIndex).find('.lazy-tab');
+                
+                // If already loaded, just check if the target is there
+                if ($lazyDiv.data('loaded')) {
+                    if (findTarget()) {
+                        activateAndScroll($tabber, currentPanelIndex);
+                        return;
+                    } else {
+                        currentPanelIndex++;
+                        searchPanel();
+                    }
+                } 
+                // If not loaded, load it and then check
+                else if ($lazyDiv.length) {
+                    loadTabContent($lazyDiv).then(function() {
+                        if (findTarget()) {
+                            activateAndScroll($tabber, currentPanelIndex);
+                            return;
+                        } else {
+                            currentPanelIndex++;
+                            searchPanel();
+                        }
+                    }).catch(function() {
+                        currentPanelIndex++;
+                        searchPanel();
+                    });
+                } else {
+                    currentPanelIndex++;
+                    searchPanel();
+                }
+            };
+            searchPanel();
+        }  
+        // Normal page load
+        else {
+            var $firstLazyDiv = $panels.first().find('.lazy-tab');
+            if ($firstLazyDiv.length) {
+                debugLog("[LazyTabs] Loading first panel by default.");
+                loadTabContent($firstLazyDiv);
+            }
+        }
+
+        // User manually clicks a WDS tab
+        $tabber.on('click', 'ul.wds-tabs li.wds-tabs__tab', function() {
+            var index = $(this).index();
+            var $content = $panels.eq(index);
+            var $lazyDiv = $content.find('.lazy-tab');
+            if ($lazyDiv.length && !$lazyDiv.data('loaded')) {
+                loadTabContent($lazyDiv);
+            }
+        });
+    });
 }

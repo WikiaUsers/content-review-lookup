@@ -1,6 +1,6 @@
 /* <pre> */
 /* smth like mw:Extension:Popups */
-/* popup on link:hover */
+/* popup on link:hover + viewport prefetch */
 /* maintainer: user:fngplg */
 /* classes: main: npage-preview, image not found: npage-preview-noimage */
 /* img: <img>, text: <div> */
@@ -25,8 +25,12 @@
     var ncache = []; // {href, data}
     var loc = {lefts: 5, tops: 5}; // left: x, top: y, lefts: left-shift, clientx
     var currentEl = {}; // {href, ?data}
-    // var api = new mw.Api();
     var apiUri;
+    var prefetchTimers = new WeakMap();
+    var activePrefetch = 0;
+    var currentRequests = new Set(); // active hover
+    var prefetchRequests = new Set(); // background prefetch
+
     // exports
     Settings.wrapper = wrapper;
     Settings.context = this;
@@ -55,7 +59,7 @@
         pp.sync.push(e || Settings.process);
         return true;
     };// start
-    
+
     pp.stop = function (e) {
         hlpaHover();
         var epos = pp.sync.indexOf(e);
@@ -93,7 +97,7 @@
             log('init dbl run protection triggered');
             return;
         }
-        Settings.version = '1.70';
+        Settings.version = '1.80';
         log('init vrsn:', Settings.version);
         apiUri = new URL(mw.util.wikiScript('api'), location.href);
         // use api.v1/article/details
@@ -104,7 +108,7 @@
         // Settings.throttling = timeout until x
         Settings.throttle = Settings.throttle !== undefined ? Settings.throttle : 100;
         Settings.throttling = false;
-        Settings.process = false;// processing data
+        Settings.process = false; // processing data
         Settings.tlen = Settings.tlen !== undefined ? Settings.tlen : 1000; // max text length
         // do not remove portable infobox on preprocess stage
         Settings.pibox = Settings.pibox !== undefined ? Settings.pibox : false;
@@ -113,8 +117,15 @@
         // cache size
         Settings.csize = Settings.csize !== undefined ? Settings.csize : 100;
         Settings.defimage = Settings.defimage !== undefined ? Settings.defimage : Defaults.defimage; // default image path
+        // prefetch cache config
+        Settings.prefetch = Settings.prefetch !== undefined ? Settings.prefetch : false;
+        Settings.prefetchDelay = Settings.prefetchDelay !== undefined ? Settings.prefetchDelay : 80;
+        Settings.prefetchMax = Settings.prefetchMax !== undefined ? Settings.prefetchMax : 3;
+        Settings.viewportPrefetch = Settings.viewportPrefetch !== undefined ? Settings.viewportPrefetch : false;
         // no image found. class: npage-preview-noimage
         Settings.noimage = Settings.noimage !== undefined ? Settings.noimage : Defaults.noimage;
+        // show "No Image" placeholder when no thumbnail is available
+        Settings.showNoImagePlaceholder = Settings.showNoImagePlaceholder !== undefined ? Settings.showNoImagePlaceholder :  true;
         // request to perform scaling
         Settings.scale = Settings.scale !== undefined ? Settings.scale : {r: '?', t: '/scale-to-width-down/350?'};
         // container (#WikiaMainContent, #mw-content-text etc)
@@ -207,9 +218,8 @@
 	        });
         	importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
         }
-        // main();
-    } // init
-    
+    }// init
+
     function main ($cont) {
         // main
         log('main', $cont);
@@ -235,17 +245,49 @@
         });// each dock
         $content = $(arr);
         log('main.c:', $content);
+
+        if ('IntersectionObserver' in window && Settings.prefetch && Settings.viewportPrefetch) {
+            if (!window.ppViewportObserver) {
+                window.ppViewportObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            var el = entry.target;
+                            prefetchPreview(el);
+                            window.ppViewportObserver.unobserve(el); // Cache only once per link
+                        }
+                    });
+                }, { rootMargin: "150px" }); // Prefetch when link is 150px from screen
+            }
+        }
+
         $content.find('a').each(function() {
             var $el = $(this);
             if (elValidate($el)) { // internal link
-                // $el.hover(aHover, nhidePreview);
-                $el.off('mouseenter.pp mouseleave.pp');
-                $el.on('mouseenter.pp', aHover);
-                $el.on('mouseleave.pp', nhidePreview);
+                if (window.ppViewportObserver && Settings.viewportPrefetch) {
+                    window.ppViewportObserver.observe(this);
+                }
+
+                $el.off('.pp');
+                $el.on('mouseenter.pp', function (e) {
+                    if (Settings.prefetch) {
+                        clearTimeout(prefetchTimers.get(this));
+                        prefetchTimers.set(
+                            this,
+                            setTimeout(function () {
+                                prefetchPreview(e.currentTarget);
+                            }, Settings.prefetchDelay)
+                        );
+                    }
+                    aHover(e);
+                });
+                $el.on('mouseleave.pp', function () {
+                    clearTimeout(prefetchTimers.get(this));
+                    nhidePreview();
+                });
             } // if internal link
-        }); // each a
+        }); // each dock element
     } // main
-    
+
     function elValidate ($el) {
         // returns false if element should be ignored
         var ahref = $el.attr('href'),
@@ -257,7 +299,6 @@
         if (!ahref || (ahref.hostname !== apiUri.hostname) || nignoreLink(ahref.truepath)) {
             return false;
         }
-
         // chk classes
         if ($.isArray(Settings.RegExp.iclasses)) {
             Settings.RegExp.iclasses.forEach(function(v) {
@@ -270,7 +311,6 @@
         }
         // log('elValidate classes', bstop);
         if (bstop) return false;
-
         // chk parents
         if ($.isArray(Settings.RegExp.iparents)) {
             Settings.RegExp.iparents.forEach(function(v) {
@@ -285,7 +325,7 @@
         if (bstop) return false;
         return true;
     }// elValidate
-    
+
     function chkImageSrc (src) {
         // is src belongs to wikia
         if (!src) return false;
@@ -297,15 +337,13 @@
         catch (e) {
             return false;
         }
-        return false;
     }// chkimagesrc
-    
+
     function preprocess (text) {
         // prep must be non-empty array (script removing at least, added in the init)
         if (!(Settings.RegExp.prep instanceof Array) || Settings.RegExp.prep.length < 1) return '';
         var s = text,
             $s = $('<div>').html(s);
-
         // remove noinclude items
         if (Settings.RegExp.noinclude && (Settings.RegExp.noinclude instanceof Array)) {
             Settings.RegExp.noinclude.forEach(function(v){$s.find(v).remove();});
@@ -333,13 +371,12 @@
             })
             .filter(Boolean).join() || s;
         }// if RegExp.onlyinclude
-        
         Settings.RegExp.prep.forEach(function (v) {
             s = s.replace(v, '');
         });
         return s;
     }// preprocess
-    
+
     function createUri (href) {
         var h;
         try {
@@ -363,21 +400,64 @@
         }
         return h;
     } // createUri
-        
+
     function escapeRegExp(str) {
         return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-    } // escapeRegExp
-    
-    function hlpaHover () {
+    }// escapeRegExp
+
+    function hlpaHover() {
         // aHover helper
         if (Settings.throttling) {
             clearTimeout(Settings.throttling);
             Settings.throttling = false;
         }
     }// hlpaHover
-    
+
+    function cancelCurrentRequests() {
+        var reqs = Array.from(currentRequests);
+        currentRequests.clear();
+        reqs.forEach(function (req) {
+            if (req && typeof req.abort === "function") {
+                req.abort();
+            }
+        });
+        // Note: Prefetch Requests are not cleared to keep the background coaching process running!
+    }
+
+    function prefetchPreview(el) {
+        if (!Settings.prefetch) {
+            return;
+        }
+        if (activePrefetch >= Settings.prefetchMax) {
+            return;
+        }
+        var uri = createUri($(el).attr('href'));
+        if (!uri || !uri.truepath) {
+            return;
+        }
+        if (ncacheOf(uri.truepath)) {
+            return;
+        }
+        activePrefetch++;
+        var fakeEvent = {
+            currentTarget: el,
+            pageX: -9999,
+            pageY: -9999,
+            clientX: -9999,
+            clientY: -9999
+        };
+        var request = ngetPreview(fakeEvent, uri.truepath, false, true);
+        if (request) {
+            request.always(function () {
+                activePrefetch--;
+            });
+        } else {
+            activePrefetch--;
+        }
+    }
+
     function aHover (ev) {
-        // a hover handler
+        // aHover helper
         ev.stopPropagation();
         log('ahover ', Settings.throttling, currentEl.href);
         // suppress some events
@@ -390,6 +470,7 @@
         if (hel && hel.truepath && currentEl.href == hel.truepath) {
             return false;
         }
+        cancelCurrentRequests();
         currentEl.href = hel.truepath;
         currentEl.islocal = hel.islocal;
         currentEl.interwiki = hel.interwiki;
@@ -406,9 +487,9 @@
         setTimeout(ngetPreview.bind(this, ev), Settings.delay);
         return false;
     } // ahover
-    
+
     function getObj (data, key) {
-        // traverse through object tree
+      // traverse through object tree
         var ret = [], r;
         for (var k in data) {
             if (data[k] instanceof Object) {
@@ -421,9 +502,9 @@
         } // for k in data
         return ret;
     } // getObj
-    
+
     function getVal (data, key) {
-        // travers through object tree
+      // travers through object tree
         var ret = [], r;
         for (var k in data) {
             if (data[k] instanceof Object) {
@@ -439,29 +520,45 @@
         } // for k in data
         return ret;
     } // getVal
-    
-    function hlpPreview (uri, div, img, force, withD) {
-        // preview helper
-        // load img and add to div
+
+    function hlpPreview(uri, div, img, force, withD, prefetch) {
+      // preview helper
+      // load img and add to div
         var im, d;
         im = $('img', div);
+        // check whether the preview contains any text
+        var hasText = $.trim(div.text()).length > 0;
+        var hasImage = typeof img === 'string'
+            ? $.trim(img).length > 0
+            : !!img;
+        if (!hasImage && !hasText && !Settings.showNoImagePlaceholder) {
+            pp.stop(uri.truepath);
+            return;
+        }
         if (!Settings.apid && !withD) {
             if (img) {
                 // let vignette do scale
                 im.attr('src', Settings.scale ? img.replace(Settings.scale.r, Settings.scale.t) : img);
             } else {
-                im.attr('src', Settings.noimage);
-                im.addClass('npage-preview-noimage');
+                // show placeholder only if enabled
+                if (!Settings.showNoImagePlaceholder) {
+                    im.remove();
+                } else {
+                    im.attr('src', Settings.noimage);
+                    im.addClass('npage-preview-noimage');
+                }
             } // if img
-        }// if !apid
+        } // if !apid
         d = {href: uri.truepath, data: div, uri: uri};
         ncache.push(d);
         if (Settings.debug) window.pPreview.pdiv = d.data;
-        nshowPreview(d.data, d.uri, force);
+        if (!prefetch || currentEl.href === uri.truepath) {
+            nshowPreview(d.data, d.uri, force);
+        }
         pp.stop(d.href);
     } // hlpPreview
-    
-    function ngetPreview (ev, forcepath, withD) {
+
+    function ngetPreview(ev, forcepath, withD, prefetch) {
         var nuri = createUri($(ev.currentTarget).attr('href')) || {};
         nuri.truepath = forcepath || nuri.truepath;
         if (!nuri || !nuri.truepath) {
@@ -476,7 +573,7 @@
         // save bandwith
         log('gp uri: ', nuri, ' curel.href: ', currentEl.href, nuri.truepath === currentEl.href, 'd:', withD);
         // withd means fallback request, that should not be cancelled early
-        if (!forcepath && !withD && (nuri.truepath != currentEl.href)) {
+        if (!forcepath && !withD && (nuri.truepath != currentEl.href) && !prefetch) {
             pp.stop(nuri.truepath);
             return;
         }
@@ -484,12 +581,20 @@
         log('gp x:', loc.left, 'y:', loc.top);
         if (ndata) {
             log('gp show preview', ndata);
-            nshowPreview(ndata.data, nuri, forcepath ? true : false);
+            if (!prefetch || currentEl.href === nuri.truepath) {
+                nshowPreview(ndata.data, nuri, forcepath ? true : false);
+            }
             pp.stop(nuri.truepath);
             return false;
         } // if data
+
+        var targetQueue = prefetch ? prefetchRequests : currentRequests;
+
         // get data
         var apipage,
+            request,
+            requestImg,
+            requestRedir,
             iwrap = $('<img>', {src: Settings.defimage}),
             twrap = $('<div>'),
             div = $('<div>', {class: 'npage-preview'});
@@ -497,7 +602,7 @@
             apipage = new mw.Uri(nuri.interwiki + '/api/v1/Articles/Details');
             apipage.extend({titles: nuri.truepath, abstract: Math.min(Settings.tlen, 500)});
             log('gp apid', apipage);
-            $.getJSON(apipage).done(function(data) {
+            request = $.getJSON(apipage).done(function(data) {
                 if (!data || data.error) {
                     log('gp apid.error', nuri, data);
                     Settings.RegExp.ilinks.push(nuri.truepath); // and ignore it
@@ -511,21 +616,32 @@
                     pp.stop(nuri.truepath);
                     return this;
                 }
-                iwrap.attr('src', item.thumbnail || Settings.noimage);
-                iwrap.addClass(item.thumbnail ? '' : 'npage-preview-noimage');
+                if (item.thumbnail) {
+                    iwrap.attr('src', item.thumbnail);
+                } else if (Settings.showNoImagePlaceholder) {
+                    iwrap.attr('src', Settings.noimage);
+                    iwrap.addClass('npage-preview-noimage');
+                } else {
+                    iwrap.remove();
+                }
                 twrap.text(item.abstract);
                 div.append(iwrap).append(twrap);
-                hlpPreview(nuri, div, item.thumbnail, forcepath ? true : false, withD);
-                return this;
+                hlpPreview(nuri, div, item.thumbnail, forcepath ? true : false, withD, prefetch);
+                return;
             })// apid.done
-            .fail(function(data) {
-                log('gp apid.fail', nuri, data);
+            .fail(function (xhr, status) {
+                if (status === "abort") return;
+                log('gp apid.fail', nuri);
                 Settings.RegExp.ilinks.push(nuri.truepath); // and ignore it
                 pp.stop(nuri.truepath);
-                return this;
-            });// apid.fail
-            return;
+            })
+            .always(function () {
+                targetQueue.delete(request);
+            });
+            targetQueue.add(request);
+            return request;
         }
+
         apipage = new mw.Uri({path: nuri.interwiki + '/api.php'});
         apipage.extend({
             action: 'parse',
@@ -540,7 +656,8 @@
         });
         if (!Settings.wholepage) apipage.extend({section: 0});
         log('gp apip: ', apipage.toString());
-        $.getJSON(apipage).done(function(data) {
+
+        request = $.getJSON(apipage).done(function(data) {
             // parse: {text: {*: text}, images: []}
             if (!data.parse) {
                 log('gp apip. no valid data in', data);
@@ -556,6 +673,7 @@
                 }
             }).filter(Boolean)[0];
             // img = $(img);
+
             var text = data.parse.text['*'];
             log('gp apip img:', img, 'text:', {text: text});
             if (!img && !text) {
@@ -565,7 +683,7 @@
                     return this;
                 } else {
                     // last try; via api.v1
-                    return ngetPreview(ev, null, true);
+                    return ngetPreview(ev, null, true, prefetch);
                 }
             }
             // preprocess (cleanup)
@@ -597,14 +715,14 @@
                 div.append(twrap);
             } // if text
             div.prepend(iwrap);
+
             if (img) {
                 // action=query&titles=file:.jpg&iiprop=url&prop=imageinfo&format=xml
                 var im = 'file:' + img.trim();
                 var apiimage = new mw.Uri({path: nuri.interwiki + '/api.php'});
-                apiimage.extend({action: 'query', redirects: '',
-                            titles: im, iiprop: 'url', prop: 'imageinfo', format: 'json'});
+                apiimage.extend({action: 'query', redirects: '', titles: im, iiprop: 'url', prop: 'imageinfo', format: 'json'});
                 log('gp apii: ', apiimage.toString());
-                $.getJSON(apiimage.toString()).done(function(data) {
+                requestImg = $.getJSON(apiimage.toString()).done(function(data) {
                     log('gp apii done:', data);
                     var im, d1;
                     d1 = data.query;
@@ -615,23 +733,30 @@
                             imRed = imRed[0];
                         } else {
                             // no url found
-                            iwrap.attr('src', Settings.noimage);
-                            log('gp img redir.to not found in', d1);
-                            return this;
+                            hlpPreview(nuri, div, false, forcepath ? true : false, withD, prefetch);
+                            return;
                         }
                         var apiim = apiimage.clone().extend({titles: imRed});
                         // resolve redirect
                         log('gp resolv redir:', apiim.toString());
-                        $.getJSON(apiim.toString(), function(data) {
+                        requestRedir = $.getJSON(apiim.toString(), function(data) {
                             var im = getVal(getObj(data, 'pages'), 'url');
                             if (im.length > 0) {
                                 im = im[0];
                             } else {
-                                // no url found. again
+                                // no url found
                                 im = false;
                             }
-                            hlpPreview(nuri, div, im, forcepath ? true : false);
-                        }); // getjson. resolve redirect
+                            hlpPreview(nuri, div, im, forcepath ? true : false, withD, prefetch);
+                        })
+                        .fail(function (xhr, status) {
+                            if (status === "abort") return;
+                        })
+                        .always(function () {
+                            targetQueue.delete(requestRedir);
+                        });
+                        targetQueue.add(requestRedir);
+                        return requestRedir;
                     } else {
                         im = getVal(getObj(d1, 'imageinfo'), 'url');
                         if (im.length > 0) {
@@ -639,55 +764,58 @@
                         } else {
                             im = false;
                         }
-                        hlpPreview(nuri, div, im, forcepath ? true : false);
-                    } // if redirects
-                    return this; // should be promise. but well
-                }).fail(function(obj, stat, err) {
-                    log('gp img api fail', obj, stat, err);
-                    hlpPreview(nuri, div, false, forcepath ? true : false);
+                        hlpPreview(nuri, div, im, forcepath ? true : false, withD, prefetch);
+                    }
                     return this;
-                });// img fail
-            } else { // no img
-                hlpPreview(nuri, div, false, forcepath ? true : false);
-            }// if img
-        
-        })// get page data.done
-        .fail(function(obj, stat, err){
+                }).fail(function (obj, stat, err) {
+                    if (stat === "abort") return;
+                    log('gp img api fail', obj, stat, err);
+                    hlpPreview(nuri, div, false, forcepath ? true : false, withD, prefetch);
+                })
+                .always(function () {
+                    targetQueue.delete(requestImg);
+                });
+                targetQueue.add(requestImg);
+                return requestImg;
+            } else {
+                hlpPreview(nuri, div, false, forcepath ? true : false, withD, prefetch);
+            }
+        })
+        .fail(function (obj, stat, err) {
+            if (stat === "abort") return;
             log('pg get page data fail', obj, stat, err);
             pp.stop(nuri.truepath);
-        });// get page data.fail
-        // pp.stop();
-        return false;
-    
+        })
+        .always(function () {
+            targetQueue.delete(request);
+        });
+        targetQueue.add(request);
+        return request;
     } // getpreview
-    
+
     function nshowPreview (data, target, force) {
         log('sp', data, target, force);
         if (!force && (currentEl.href !== target.truepath)) {
-            return false; // other hover processing yet
+            return false;
         }
         log('sp data:', data);
-        
-        // nhidePreview();
-        $('.npage-preview').remove(); // remove artefacts
+
+        $('.npage-preview').remove();
         $('body').append($(data));
 
-        // prehide data
         $(data).css({left: -10000, top: -10000});
-        $(data).show(200, function() { // ;// fadeIn('fast');
-            // reposition works well with pre-set fixed data bounds
+        $(data).show(200, function() {
             if ((loc.clientY + $(data).height()) > $(window).height()) {
                 loc.top -= ($(data).height() + loc.tops);
             } else {
                 loc.top += loc.tops;
-            }// if top>window
+            }
             if ((loc.clientX + $(data).width()) > $(window).width()) {
                 loc.left -= ($(data).width() + loc.lefts);
             } else {
                 loc.left += loc.lefts;
-            }// if left>window
-        
-            // move preview to target location
+            }
+
             log('sp loc', loc);
             loc.left = loc.left > 0 ? loc.left : 0;
             loc.top = loc.top > 0 ? loc.top : 0;
@@ -695,66 +823,61 @@
                 left: force ? $('body').scrollLeft() : loc.left,
                 top: force ? $('body').scrollTop() : loc.top});
             mw.hook('ppreview.show').fire(data);
-        });// data.show.done
+        });
     } // showpreview
-    
+
     function nhidePreview (data) {
         currentEl.href = '';
+        cancelCurrentRequests();
         $('.npage-preview').remove();
-        // clear throttling
         hlpaHover();
     } // hidepreview
-    
+
     function nignoreImage (name) {
-        // true if image should be ignore
-        // name = name.replace(/(file):/im, '');
-        // name = name.charAt(0).toUpperCase() + name.slice(1);
         for (var i = 0, len = Settings.RegExp.iimages.length; i < len; i++) {
             if (Settings.RegExp.iimages[i] instanceof RegExp) {
                 if (Settings.RegExp.iimages[i].test(name)) return true;
             } else {
                 if (name === Settings.RegExp.iimages[i]) return true;
-            } // if regexp
+            }
         }
         return false;
-    } // nignoreimage
-    
+    }
+
     function nignorePage (name) {
-        // true if page should be ignore
         var a = Settings.RegExp.ipages;
         for (var i = 0, len = a.length; i < len; i++) {
             if (a[i] instanceof RegExp) {
                 if (a[i].test(name)) return true;
             } else {
                 if (name === a[i]) return true;
-            } // if regexp
+            }
         }
         return false;
-    } // nignorepage
-    
+    }
+
     function nignoreLink (name) {
-        // true if link should be ignore
         var a = Settings.RegExp.ilinks;
         for (var i = 0, len = a.length; i < len; i++) {
             if (a[i] instanceof RegExp) {
                 if (a[i].test(name)) return true;
             } else {
                 if (name === a[i]) return true;
-            } // if regexp
+            }
         }
         return false;
-    } // nignorelink
-    
+    }
+
     function ncacheOf (href) {
-        // returns cached obj or null
-        if (ncache.length > Settings.csize) ncache = []; // clear cache
+        while (ncache.length > Settings.csize) {
+            ncache.shift();
+        }
         for (var i = 0, len = ncache.length; i < len; i++) {
             if (ncache[i].href === href) {
                 log('cache found:', href, 'data:', ncache[i].data);
-                // window.ppcdata = ncache[i];
                 return ncache[i];
             }
         }
         return null;
-    } // ncacheof
+    }
 })(jQuery);

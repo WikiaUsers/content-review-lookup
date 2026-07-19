@@ -156,6 +156,7 @@ UserTagsJS.modules.custom = {
 	'The Dimensional Doctor': ['wiki-contributor'],
 	'Blazarvortexd': ['wiki-contributor'],
 	'Mattiemeowxd': ['wiki-contributor'],
+	'Ameer.Jor': ['wiki-contributor'],
 };
 
 //* LockOldComments.js Configuration *//

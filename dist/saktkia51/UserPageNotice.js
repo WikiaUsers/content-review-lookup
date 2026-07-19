@@ -1,13 +1,35 @@
 // Created by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:UserPageNotice.js
+// Dependencies: create().
 {
+	const toolName = 'User Page Notice';
 	if (mw.config.get('wgNamespaceNumber') === 2 && mw.config.get('wgTitle').match(/[/]/) !== null && !document.getElementById('UserPageNotice')) {
-		console.log("[User Page Notice] [LOG]: Script activation conditions met. Running script...");
-		let str = "<div class='templatedesktop AlertNotice' id='UserPageNotice'><span style='font-weight:bold;font-size:20px'>"
-		+ "<span style='color:var(--saktkia51-js-userpagenotice-hazard-color)'>⚠</span> Unofficial Content <span style='color:var(--saktkia51-js-userpagenotice-hazard-color)'>⚠</span></span><br>"
-		+ `<p><span style='font-weight:bold'>${mw.config.get('wgPageName').replace(/_/g, ' ')}</span> is a personal user page. It is not a main wiki article, and as such, any information contained on this page is not official.</p>`
-		+ `<p>Only the page owner may edit this page, except in cases of removing rule violations, fixing formatting issues like broken links or double redirects or if the page owner has explicitly granted permission for others to edit it.</p>`;
-		document.getElementById('content').insertAdjacentHTML('beforebegin', str);
+		console.log(`[${toolName}] [LOG]: Script activation conditions met. Running script...`);
+		const mainContainer = document.querySelector('#content.page-content');
+		const container = create('div');
+		container.classList.add('templatedesktop', 'AlertNotice');
+		container.setAttribute('id', 'UserPageNotice');
+		
+		const title = create('div', container);
+		title.style = 'font-weight:bold;font-size:20px';
+		const title_0 = create('span', title);
+		const n = 'var(--saktkia51-js-userpagenotice-hazard-color)';
+		title_0.style.color = n;
+		title_0.innerText = '⚠';
+		const title_1 = create('span', title);
+		title_1.innerText = ' Unofficial Content ';
+		const title_2 = create('span', title);
+		title_2.style.color = n;
+		title_2.innerText = '⚠';
+		
+		const body = create('div', container);
+		const body_0 = create('span', body);
+		body_0.style.fontWeight = 'bold';
+		body_0.innerText = mw.config.get('wgPageName').replace(/_/g, ' ');
+		const body_1 = create('span', body);
+		body_1.innerText = ' is a personal user page. It is not a main wiki article, and as such, any information contained on this page is not official.';
+		
+		mainContainer.insertAdjacentElement('beforebegin', container);
 	} else {
-		console.log("[User Page Notice] [LOG]: Script activation conditions not met. Exiting...");
-	}
-}
+		console.log(`[${toolName}] [LOG]: Script activation conditions not met. Exiting...`);
+	};
+};

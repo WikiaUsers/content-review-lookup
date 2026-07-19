@@ -6,8 +6,7 @@ $(function () {
     var SELECTORS = [
         '.modal', '.popup', '.overlay', '.dialog',            // 弹窗遮罩
         '.fandom-sticky-header',                               // Fandom 固定顶栏
-        '.page__main', '.article-content',                     // 主内容区
-        '.mw-parser-output',                                   // 正文区
+        '.article-content',                     // 主内容区
         '[class*="animation"]', '[class*="transition"]'        // 动画元素
     ];
 
@@ -66,8 +65,7 @@ $(function () {
     }
 
     // 暴露手动加速方法
-    window.GPUAccelerator = {
-        accelerate: accelerate,
-        scan: scanAndAccelerate
+    window.wikiGPUAccelerate = function (el) {
+        accelerate(el);
     };
 });

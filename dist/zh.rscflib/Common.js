@@ -1,3 +1,55 @@
+(function() {
+      // 要处理的容器（可根据需要替换为更精确的选择器）
+      const container = document.getElementById('content');
+
+      // 定义处理函数：在文本节点中，在中英/中数交界处插入薄空格（&#x2009;）
+      function insertSpacingBetweenCJKAndLatin(text) {
+        // 匹配中文字符（CJK统一表意文字）与英文字母或数字的交界
+        // 注意：这里的中文字符范围涵盖常用汉字，可根据实际扩展
+        const cjk = '\\u4e00-\\u9fff\\u3400-\\u4dbf\\uf900-\\ufaff\\u3000-\\u303f';
+        const latin = 'a-zA-Z';
+        const digit = '0-9';
+
+        // 构建正则：中文后跟字母/数字，或字母/数字后跟中文
+        // 使用捕获组来保留字符并插入分隔符
+        const regex1 = new RegExp(`([${cjk}])([${latin}${digit}])`, 'g');
+        const regex2 = new RegExp(`([${latin}${digit}])([${cjk}])`, 'g');
+
+        // 先处理中文→英文/数字，再处理英文/数字→中文
+        let result = text.replace(regex1, '$1 $2'); // 使用窄空格 (U+2009)
+        result = result.replace(regex2, '$1 $2');
+        return result;
+      }
+
+      // 递归遍历 DOM 树，仅处理文本节点
+      function processTextNodes(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          // 只处理非空文本
+          if (node.textContent.trim()) {
+            const original = node.textContent;
+            const updated = insertSpacingBetweenCJKAndLatin(original);
+            if (updated !== original) {
+              node.textContent = updated;
+            }
+          }
+        } else {
+          // 跳过 <script>、<style> 等内部不需要处理的元素
+          const tag = node.tagName ? node.tagName.toLowerCase() : '';
+          if (['script', 'style', 'textarea', 'input'].includes(tag)) {
+            return;
+          }
+          // 递归子节点
+          const children = node.childNodes;
+          for (let i = 0; i < children.length; i++) {
+            processTextNodes(children[i]);
+          }
+        }
+      }
+      processTextNodes(container);
+    })();
+    
+// 个人页面设计
+
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {

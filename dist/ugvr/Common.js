@@ -1,5 +1,4 @@
-document.addEventListner("DOMcontentLoaded", function () {
-
+document.addEventListener("DOMContentLoaded", function () {
     const dinoValues = {
         "": 0,
 	    "Newbiesaurus": 100,
@@ -53,66 +52,69 @@ document.addEventListner("DOMcontentLoaded", function () {
     };
 
     const yourGrid = document.getElementById("your-dino-grid");
-    const theirGrid = documents.getElementById("their-dino-grid");
+    const theirGrid = document.getElementById("their-dino-grid");
     if (!yourGrid || !theirGrid) return;
-    
-    function createDropdowns(container, prefix, borderColour) {
-    	for (let i = 1; i <= 7; i++) {
-    		let select = document.createElement("select");
-    		select.id = `${prefix}-dino-${i}`;
-    		select.style.cssText= `width: 30%; height: 50px; border-radius: 6px; font-size: 0.8em; font-weight: bold; text-align: center; border: 2px dashed rgba(139,49,3,0.4); background: rgba(0,0,0,0.05); colour: rgba(0,0,0,0.5); cursor: pointer; padding: 2px;`;
-    		
-    		Object.keys(dinoValues).forEach(dino => {
-    			let opt = document.createElement("option");
-    			opt.value = dino;
-    			opt.textContent = dino === "" ? "+" : dino;
-    			select.appendChiled(opt);
-    		});
-    		
-    		select.addEventListener("change", function() {
-    			if (this.value === "") {
-    				this.style.background = "rgba(0,0,0,0.05)";
-    				this.style.border = `2px dashed ${borderColor}`;
-    				this.style.color = "#000";
-    			}
-    			calculatedTrade();
-    		});
-    		
-    		container.appendChiled(select);
-    	
-    	}
+
+    function createDropdowns(container, prefix, borderColor) {
+        for (let i = 1; i <= 7; i++) {
+            let select = document.createElement("select");
+            select.id = `${prefix}-dino-${i}`;
+            select.style.cssText = `width: 30%; height: 50px; border-radius: 6px; font-size: 0.8em; font-weight: bold; text-align: center; border: 2px dashed rgba(139,49,3,0.4); background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.5); cursor: pointer; padding: 2px;`;
+            
+            Object.keys(dinoValues).forEach(dino => {
+                let opt = document.createElement("option");
+                opt.value = dino;
+                opt.textContent = dino === "" ? "+" : dino;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener("change", function() {
+                if (this.value === "") {
+                    this.style.background = "rgba(0,0,0,0.05)";
+                    this.style.border = `2px dashed ${borderColor}66`;
+                    this.style.color = "rgba(0,0,0,0.5)";
+                } else {
+                    this.style.background = "#fff";
+                    this.style.border = `2px solid ${borderColor}`;
+                    this.style.color = "#000";
+                }
+                calculateTrade();
+            });
+
+            container.appendChild(select);
+        }
     }
-    
-    createDropdown(yourGrid, "your", "#8b3103");
-    createDropdown(theirGrid, "their", "#501b01");
-    
+
+    createDropdowns(yourGrid, "your", "#8b3103");
+    createDropdowns(theirGrid, "their", "#501b01");
+
     function calculateTrade() {
-    	let yourTotal = 0;
-    	let theirTotal = 0;
-    	
-    	for (let i = 1; i <= 7; i++) {
-    		yourTotal +=dinoValues[document.getElementById(`your-dino-${i}`).value] || 0;
-    		theirTotal += dinoValues[document.getElementById(`their=dino-${i}`).value] || 0;
-    	}
-    	document.getElementById("your-total-value").textContent = yourTotal;
-    	document.getElementById("their-total-value").textContent = theirTotal;
-    	
-    	const verdictBar = document.getElementById("trade-verdict-bar");
-    	const verdictText = document.getElementById("trade-verdict-text");
-    	
-    	if (yourTotal === 0 && theirTotal === 0) {
-    		verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba;";
-    		verdictText.textContent = "Fair Trade (Equal Value)";
-    	} else if (theirTotal > yourTotal * 1.15) {
-    		verdictBar.style.cssText = "margin top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb;";
-    		verdictText.textContent = "Big Win (They Are Overpaying!)";
-    	} else if (theirTotal < yourTotal * 0.85) {
-    		verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em;background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb;";
-    		verdictText.textContent = "Big Loss (You Are Overpaying!)";
-    	} else {
-    		verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba;";
-    		verdictText.textContent = "Fair Trade (Equal Value)";
-    	}
+        let yourTotal = 0;
+        let theirTotal = 0;
+
+        for (let i = 1; i <= 7; i++) {
+            yourTotal += dinoValues[document.getElementById(`your-dino-${i}`).value] || 0;
+            theirTotal += dinoValues[document.getElementById(`their-dino-${i}`).value] || 0;
+        }
+
+        document.getElementById("your-total-value").textContent = yourTotal;
+        document.getElementById("their-total-value").textContent = theirTotal;
+
+        const verdictBar = document.getElementById("trade-verdict-bar");
+        const verdictText = document.getElementById("trade-verdict-text");
+
+        if (yourTotal === 0 && theirTotal === 0) {
+            verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba;";
+            verdictText.textContent = "🤝 FAIR TRADE (Equal Value)";
+        } else if (theirTotal > yourTotal * 1.15) {
+            verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb;";
+            verdictText.textContent = "🎉 BIG WIN (They are overpaying!)";
+        } else if (theirTotal < yourTotal * 0.85) {
+            verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb;";
+            verdictText.textContent = "❌ BIG LOSS (You are overpaying!)";
+        } else {
+            verdictBar.style.cssText = "margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2em; background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba;";
+            verdictText.textContent = "🤝 FAIR TRADE (Equal Value)";
+        }
     }
-	
 });

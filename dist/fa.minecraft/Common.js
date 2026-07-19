@@ -6,6 +6,7 @@
  * Mobile-only scripts should go in [[MediaWiki:Mobile.js]]
  */
 
+
 ( function() {
 'use strict';
 
@@ -231,47 +232,17 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
 
 
 
+mw.loader.load(
+    mw.util.getUrl("MediaWiki:PersianDigits.js", {
+        action: "raw",
+        ctype: "text/javascript"
+    })
+);
 
 
 
 
-$(function () {
-    var page = mw.config.get("wgPageName");
-
-    new mw.Api().get({
-        action: "query",
-        prop: "revisions",
-        titles: page,
-        rvlimit: 1,
-        rvdir: "newer",
-        rvprop: "user",
-        format: "json"
-    }).done(function (data) {
-        var pages = data.query.pages;
-        var pageId = Object.keys(pages)[0];
-
-        if (pages[pageId].revisions) {
-            var creator = pages[pageId].revisions[0].user;
-
-            var box = $('<div>')
-                .css({
-                    display: 'flex',
-                    'align-items': 'center',
-                    gap: '8px',
-                    padding: '12px 16px',
-                    margin: '15px 0',
-                    border: '1px solid #c8ccd1',
-                    'border-radius': '8px',
-                    background: '#f8f9fa',
-                    color: '#202122',
-                    'font-size': '15px',
-                    'box-shadow': '0 1px 3px rgba(0,0,0,0.08)'
-                })
-                .html(
-                    '📄 این صفحه توسط <b>' + creator + '</b> ایجاد شده است.'
-                );
-
-            $('#firstHeading').after(box);
-        }
-    });
-});
+mw.loader.load(mw.util.getUrl('MediaWiki:CreatorInfo.js', {
+    action: 'raw',
+    ctype: 'text/javascript'
+}));

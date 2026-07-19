@@ -1,4 +1,4 @@
-(function() {
+(() => {
 	function addStyleSheet() {
 		const stylesheet = new CSSStyleSheet();
 		document.adoptedStyleSheets.push(stylesheet);
@@ -13,19 +13,12 @@
 		`);
 	};
 	
-	const e = document.querySelectorAll('.StaffBoxStyling');
+	const e = document.querySelectorAll('.StaffBoxStyling img');
 	const l = e.length;
-	if (l > 0) {
-		addStyleSheet();
-	};
+	if (l > 0) addStyleSheet();
 	for (let j = 0; j < l; j++) {
-		const e_0 = e[j].querySelectorAll('img');
-		const l_1 = e_0.length;
-		for (let i = 0; i < l_1; i++) {
-			e_0[i].classList.add('DblClickImg');
-			e_0[i].addEventListener('dblclick', function() {
-				window.open(this.src);
-			});
-		};
+		const n = e[j];
+		n.classList.add('DblClickImg');
+		n.addEventListener('dblclick', ()=>window.open(n.src));
 	};
 })();

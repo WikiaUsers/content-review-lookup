@@ -25,3 +25,7 @@ function subButtonLoad(delay, maxIter) {
 
 /** Change PI label */
 $('.pi-data-label:contains("Username")').replaceWith('<h3 class="pi-data-label pi-secondary-font">Subscribers</h3>');
+
+// ==== Invocation line ====
+// Scripts from above should be called below this marker
+subButtonLoad(1000, 10);

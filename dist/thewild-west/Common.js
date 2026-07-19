@@ -1,4 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+//mediawiki script to force loads of non-WEBP images for those on Desktop, and for moderators/admins - pork :)
+if(!document.body.classList.contains('skin-fandommobile') || mw.config.get('wgUserGroups').includes('content-moderator')) {
+	importArticles({
+    	type: 'script',
+    	articles: [
+    	    'u:dev:MediaWiki:OriginalImages.js',
+    	]
+	});
+}
+
 // character dialogue (stupid editor with no syntax highlighting D:)
 mw.hook("wikipage.content").add(function($content) {	
 	if (!$content || !$content[0]) return;
@@ -33,7 +44,7 @@ mw.hook("wikipage.content").add(function($content) {
 		function show(active) {
 			if (!active) return;
 			pending.forEach(timeout => clearTimeout(timeout));
-			buttonTimeouts = [];
+			pending = [];
 			eopts.innerHTML = "";
 			clearTimeout(db);
 			espeaker.textContent = active.speaker || "";
@@ -64,7 +75,7 @@ mw.hook("wikipage.content").add(function($content) {
 					});
 					const t = setTimeout(() => {
 						eopts.appendChild(button);
-					}, index * 500);
+					}, index * 100);
 					
 					pending.push(t);
 				});

@@ -1,3 +1,10 @@
+importArticles({
+    type: "script",
+    articles: [
+        "MediaWiki:DamageTable.js",
+    ]
+});
+
 /* Configuration for the Lock Old Comments JS. */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 30;

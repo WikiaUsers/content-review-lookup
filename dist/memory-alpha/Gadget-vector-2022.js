@@ -1,5 +1,6 @@
 'use strict';
 // Local settings
+/*
 window.Vector2022 = {};
 window.Vector2022.storageKey = 'custom.vector-2022.settings';
 window.Vector2022.storedData = mw.storage.getObject(window.Vector2022.storageKey) || {
@@ -12,6 +13,7 @@ window.Vector2022.storedData = mw.storage.getObject(window.Vector2022.storageKey
 	'tools': 'pinned',
 	'appearance': 'pinned',
 };
+*/
 
 mw.hook('gadget.skin-setup').add(async skinConfig => {
 	// Setup
@@ -242,17 +244,17 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 		portlet('my-tb', 'My tools'),
 	);
 
-	if (window.Vector2022.storedData.tools === 'pinned'){
+	// if (window.Vector2022.storedData.tools === 'pinned'){
 		$('#right-rail-wrapper > div').prepend(pcTools);
-	} else {
-		$('#page-actions').append($('<div>', {
-			id: 'pc-tools-unpinned',
-			tabindex: 0,
-		}).append($('<span>', {
-			class: 'toggle-with-icon',
-			text: 'Tools',
-		}), pcTools));
-	}
+	// } else {
+	// 	$('#page-actions').append($('<div>', {
+	// 		id: 'pc-tools-unpinned',
+	// 		tabindex: 0,
+	// 	}).append($('<span>', {
+	// 		class: 'toggle-with-icon',
+	// 		text: 'Tools',
+	// 	}), pcTools));
+	// }
 
 	$('#p-cactions-body').html($('<ul>'));
 	$('#p-cactions-body ul').append(
@@ -300,6 +302,7 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 		$('#p-js-review-body').append($('.content-review__widget__title').nextAll());
 	}
 
+	/*
 	$('#right-rail-wrapper > div').append($('<div>', {
 		id: 'pc-appearance',
 		class: 'portlet-container',
@@ -339,8 +342,10 @@ mw.hook('gadget.skin-setup').add(async skinConfig => {
 	];
 	$(radioButtons.join(', ')).on('change', updateSettings);
 	$('.pinnable-header-toggle-button').on('click', updateSettings);
+	*/
 });
 
+/*
 function updateSettings(event){
 	window.Vector2022.storedData[event.currentTarget.name] = event.currentTarget.value;
 	mw.storage.setObject(window.Vector2022.storageKey, window.Vector2022.storedData);
@@ -362,13 +367,15 @@ function updateSettings(event){
 		$('#pc-tools [value="pinned"]').removeAttr('hidden');
 	}
 }
+*/
 
-function pcHeader(label, pc){
+function pcHeader(label, /*pc*/){
 	return $('<div class="pinnable-header">').append(
 		$('<h2>', {
 			class: 'pinnable-header-label',
 			text: label,
 		}),
+		/*
 		$('<button>', {
 			class: 'pinnable-header-toggle-button',
 			name: pc,
@@ -383,9 +390,11 @@ function pcHeader(label, pc){
 			hidden: window.Vector2022.storedData[pc] === 'unpinned',
 			text: 'hide',
 		}),
+		*/
 	);
 }
 
+/*
 function option(name, value, label){
 	return $('<div>').append($('<input>', {
 		type: 'radio',
@@ -395,6 +404,7 @@ function option(name, value, label){
 		checked: window.Vector2022.storedData[name] === value,
 	}), $(`<label for="${name}--${value}">${label}</label>`));
 }
+*/
 
 function portlet(name, label){
 	return $(`<nav class="portlet" id="p-${name}" aria-labelledby="p-${name}-label"><h3 class="pHeading" id="p-${name}-label">${label}</h3><div class="pBody" id="p-${name}-body"></div></nav>`);
@@ -418,7 +428,7 @@ function ptItem(id, url, title, text){
 }
 
 function trimmer(selector){
-	return $(selector).html($(selector).text().trim());
+	return $(selector).text($(selector).text().trim());
 }
 
 // {{JavaScript category}}

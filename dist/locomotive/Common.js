@@ -20,12 +20,12 @@ function AdminTag() {
 
 // To make hover over tag appear for bots
 function BotTag() {
- $('[href="/wiki/User:Starfleet_Bot"]').attr('title', 'This is a bot');
+ $('[href="/wiki/User:Syde_BOT"]').attr('title', 'This is a bot');
 }
 
 /* === AjaxRC (and compatibility code by Mathmagician & Pecoes) === */
 // Ajax auto-refresh
-var ajaxPages = ['Special:RecentChanges','Special:Watchlist','Special:WikiActivity'];
+var ajaxPages = ['Special:RecentChanges','Special:Watchlist'];
 var AjaxRCRefreshText = 'Auto-refresh';
  
 /* This calls AdminTag() and BotTag()
@@ -51,17 +51,6 @@ var ShowHideConfig = {
 };
 importScriptPage('ShowHide/code.js', 'dev');
 // END importing show/hide
-
-//Adds a notice to the main page when not in Oasis -- by Starfleet Academy
-$(function() {
- if (mw.config.get('wgUserGroups') != null && skin != "oasis") {
-  $('.mp-introduction').append('<p id="OasisIsBest" style="text-align: center; font-size:85%; margin-bottom: 10px;"><em>This wiki looks best viewed in</em> <a href="http://locomotive.wikia.com/index.php?title=Locomotive_Wiki&useskin=wikia">the Wikia skin</a> <em>(Oasis)</em>.<a id="HideButton" style="margin-left: 20px; cursor: pointer;">[Dismiss]</a></p>');
-  $('#HideButton').click(function() {
-  $('#OasisIsBest').hide('slow');
-  });
- };
-});
-//END adding notice
 
 /**** Glossary -- by Starfleet Academy ****/
 //Builds ToCs in glossary
@@ -106,5 +95,51 @@ var nod = document.getElementById("numberOfDefinitions");
 }
 //END counting definitions
 /**** END Glossary ****/
+
+// *************************************************
+// PAGETITLE REWRITE
+//
+// REWRITES THE PAGE'S TITLE, USED BY TEMPLATE:TITLE
+// *************************************************
+$(function() {
+    var inter = setInterval(function() {
+        if (!$('h1[itemprop=\"name\"]').length) return;
+
+        clearInterval(inter);
+        var newTitle = $("span.newPageTitle").find(':not(big, small, center, h1, h2, h3, h4, h5, h6, b, i, u, s, span, div)').remove().end().html();
+        var edits = $("#user_masthead_since").text();
+        $(".firstHeading,h1[itemprop=\"name\"],.resizable-container .page-header__title").html(mw.html.escape(newTitle));
+        $("#user_masthead_head h2").html(mw.html.escape(newTitle + "<small id='user_masthead_since'>" + edits + "</small>"));
+    });
+});
+
+$(function changeTitle(){
+    if (!$('span.newPageTitle').length) {
+        return;
+    }
+    var title = $('span.newPageTitle').find(':not(big, small, center, h1, h2, h3, h4, h5, h6, b, i, u, s, span, div)').remove().end().html();
+    $('h1.page-header__title').html(mw.html.escape(title));
+});
+// END PAGETITLE
+
+// CLOSEDWIKI PAGE HEADER TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('.page-header__title').text('Closed Wiki');
+        });
+// END CLOSEDWIKI PAGE HEADER TITLE FIX
+
+// CLOSEDWIKI TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('title').text((_, old)=>old.replace('⧼closedwiki⧽', 'Closed Wiki'));
+        });
+// END CLOSEDWIKI TITLE FIX
 
 //</pre>

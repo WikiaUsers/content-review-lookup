@@ -18,13 +18,14 @@ mw.loader.using('mediawiki.util').then(function () {
         crossorigin: 'anonymous',
         appendTo: $('head')
     });
-    //Some CSS fixes for playing nice with MediaWiki/Fandom
+    //Some fixes for playing nice with MediaWiki/Fandom
     mw.util.addCSS('\
         .mw-highlight > pre {\
             border: unset;\
             background-color: ' + (isDarkTheme ? '#282c34' : '#fafafa') + ';\
         }\
     ');
+    $('.mw-highlight').removeClass('mw-highlight-lines');
 
     //Apply lang class to pre if possible (rather than highlight.js trying to guess the lang of the pre)
     var ext = new mw.Title(mw.config.get('wgPageName')).getExtension();
@@ -55,7 +56,7 @@ mw.loader.using('mediawiki.util').then(function () {
     $.when(js).then(function () {
         pre.each(function () {
             //Handle [[Template:Script Install]]'s `importArticles` having no linebreaks due to the PI removing them
-            if (mw.config.get('wgDBname') === 'dev' && $(this).parents('.pi-theme-install.type-javascript').length) {
+            if (mw.config.get('wgDBname') === 'dev' && $(this).parents('.pi-theme-install.type-javascript .importarticles').length) {
                 //First <span> is empty for some reason
                 $(this).find('span:first-child:empty').remove();
 

@@ -231,3 +231,31 @@ mw.hook('wikipage.content').add(function() {
 
 
 var el = document.getElementById('update-countdown');
+
+
+
+
+
+document.querySelectorAll(".crop-card").forEach(card => {
+
+    card.addEventListener("click", () => {
+
+        document.getElementById("modal-name").textContent =
+            card.dataset.name;
+
+        document.getElementById("modal-details").innerHTML = `
+            <p><b>Rarity:</b> ${card.dataset.rarity}</p>
+            <p><b>Source:</b> ${card.dataset.source}</p>
+            <p><b>Roll Chance:</b> ${card.dataset.roll}</p>
+            <p><b>Cost:</b> ${card.dataset.cost}</p>
+            <p><b>Sell Price:</b> ${card.dataset.price}</p>
+            <p><b>Grow Time:</b> ${card.dataset.grow}</p>
+        `;
+
+        document.getElementById("crop-modal").style.display = "block";
+    });
+});
+
+document.querySelector(".close").onclick = () => {
+    document.getElementById("crop-modal").style.display = "none";
+};

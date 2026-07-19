@@ -1,34 +1,152 @@
 (function(mw, $) {
     'use strict';
 
+    // Stream and apply the subpage animation styles directly to the head
+    mw.loader.load('/wiki/MediaWiki:Common.css/videoview.css?action=raw&ctype=text/css', 'text/css');
+
     mw.hook('wikipage.content').add(function($content) {
         if (!('speechSynthesis' in window)) {
             return;
         }
 
-        $content.find('.custom-tts-player').each(function() {
+        $content.find('.custom-tts-player-video').each(function() {
             var $player = $(this);
-            var text = $player.data('tts-text');
+            var timelineString = $player.data('tts-timeline') || '';
             var lang = $player.data('tts-lang') || 'en-US';
-            var $btn = $player.find('.tts-toggle-btn');
-            var $iconText = $player.find('.tts-icon-text');
-            var $progressBar = $player.find('.tts-progress-bar');
             
-            if (!text) {
-                $player.hide();
+            var $btn = $player.find('.video-toggle-btn');
+            var $iconText = $player.find('.video-icon-text');
+            var $textBox = $player.find('.video-text-target');
+            var $imgContainer = $player.find('.video-img-frame');
+            
+            // Capture the plain text script from the element
+            var textToSpeak = $textBox.text().trim();
+            
+            if (!textToSpeak) {
                 return;
             }
 
             var utterance = null;
             var isPlaying = false;
+            var imageMap = {};
+            var hasInitializedSpans = false;
 
-            function resetInterface() {
+            // FIX: Infinite Loop Space-Separated Parser Engine
+            if (timelineString) {
+                var pairs = String(timelineString).split(/\s+/);
+                for (var p = 0; p < pairs.length; p++) {
+                    var pair = pairs[p] ? pairs[p].trim() : '';
+                    if (!pair) continue; 
+
+                    var splitPair = pair.split(':');
+                    if (splitPair.length === 2) {
+                        var wordNum = parseInt(splitPair[0].trim(), 10);
+                        var filename = splitPair[1].trim();
+                        
+                        if (!isNaN(wordNum) && filename) {
+                            // Direct secure Fandom file directory pathing loophole
+                            var fileUrl = mw.util.getUrl('Special:FilePath/' + filename);
+                            imageMap[wordNum] = '<img src="' + fileUrl + '" alt="Broadcast Frame" />';
+                        }
+                    }
+                }
+            }
+
+            function updateDisplayImage(htmlContent) {
+                if (!htmlContent) {
+                    $imgContainer.empty();
+                    return;
+                }
+                $imgContainer.html(htmlContent); // Instantly drop raw image layout
+            }
+
+            // Load starting initial landscape photo frame instantly on render
+            if (imageMap[0]) {
+                updateDisplayImage(imageMap[0]);
+            }
+
+            // Consolidated Instant Interface Reset Loop
+            function forceSystemReset() {
                 window.speechSynthesis.cancel();
+                $player.find('.video-word-span').removeClass('speaking-now');
+                if (imageMap[0]) {
+                    updateDisplayImage(imageMap[0]); // Snap cleanly back to starting frame
+                } else {
+                    $imgContainer.empty();
+                }
+                $iconText.text('▶'); // Force button back to play arrow instantly
                 $btn.removeClass('is-loading');
-                $iconText.text('▶');
                 isPlaying = false;
                 utterance = null;
             }
+
+            // Playback click handler
+            $btn.on('click', function() {
+                if (isPlaying) {
+                    forceSystemReset();
+                } else {
+                    window.speechSynthesis.cancel(); // Safety purge
+
+                    // Render tracking spans cleanly on first click
+                    if (!hasInitializedSpans) {
+                        var rawWords = String(textToSpeak).split(/\s+/).filter(Boolean);
+                        var spanHtml = '';
+                        for (var i = 0; i < rawWords.length; i++) {
+                            spanHtml += '<span class="video-word-span" id="vw-' + i + '">' + mw.html.escape(rawWords[i]) + '</span> ';
+                        }
+                        $textBox.html(spanHtml);
+                        hasInitializedSpans = true;
+                    }
+                    
+                    utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = lang;
+                    
+                    var voice = getPremiumVoice(lang);
+                    if (voice) utterance.voice = voice;
+
+                    utterance.rate = 0.95; 
+                    utterance.pitch = 1.0; 
+
+                    isPlaying = true;
+                    $btn.addClass('is-loading'); 
+
+                    var wordCounter = 0;
+
+                    // Reliable word boundary tracking system (No scrolling)
+                    utterance.onboundary = function(event) {
+                        if (event.name === 'word') {
+                            $player.find('.video-word-span').removeClass('speaking-now');
+                            
+                            var $currentWordSpan = $player.find('#vw-' + wordCounter);
+                            if ($currentWordSpan.length) {
+                                $currentWordSpan.addClass('speaking-now');
+                            }
+                            
+                            // Check and trigger image switch cleanly across your infinite map arrays
+                            if (imageMap[wordCounter]) {
+                                updateDisplayImage(imageMap[wordCounter]);
+                            }
+                            
+                            wordCounter++;
+                        }
+                    };
+
+                    utterance.onstart = function() {
+                        $btn.removeClass('is-loading');
+                        $iconText.text('⏸');
+                    };
+
+                    utterance.onend = function() {
+                        forceSystemReset();
+                    };
+
+                    utterance.onerror = function() {
+                        forceSystemReset();
+                    };
+
+                    window.speechSynthesis.speak(utterance);
+                }
+            });
 
             function getPremiumVoice(langCode) {
                 var voices = window.speechSynthesis.getVoices();
@@ -46,66 +164,6 @@
             if (window.speechSynthesis.onvoiceschanged !== undefined) {
                 window.speechSynthesis.onvoiceschanged = getPremiumVoice;
             }
-
-            $btn.on('click', function() {
-                if (isPlaying) {
-                    // Reset instantly if clicked during playback
-                    $progressBar.attr('style', 'width: 0% !important; transition: none !important;');
-                    resetInterface();
-                } else {
-                    window.speechSynthesis.cancel(); 
-                    
-                    utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = lang;
-                    
-                    var voice = getPremiumVoice(lang);
-                    if (voice) utterance.voice = voice;
-
-                    var speechRate = 0.95;
-                    utterance.rate = speechRate; 
-                    utterance.pitch = 1.0; 
-
-                    isPlaying = true;
-                    $btn.addClass('is-loading'); // Spinning wheel triggers instantly
-                    
-                    // Reset bar to zero with no transition delay
-                    $progressBar.attr('style', 'width: 0% !important; transition: none !important;');
-
-                    // Bar stays locked at zero until speech engine starts
-                    utterance.onstart = function() {
-                        $btn.removeClass('is-loading');
-                        $iconText.text('⏸');
-
-                        // Clean duration estimate based on standard character speech pace
-                        var totalChars = text.length || 1;
-                        var durationSeconds = (totalChars / (15.5 * speechRate));
-
-                        // FIX: Uses strict inline attribute injections with !important flags.
-                        // This forcefully overrides Fandom's style sheets and enforces an unbending, smooth pace.
-                        $progressBar.attr('style', 'transition: width ' + durationSeconds + 's linear !important; width: 96% !important;');
-                    };
-
-                    // Snap the final 4% gap seamlessly when speech concludes
-                    utterance.onend = function() {
-                        $progressBar.attr('style', 'transition: width 0.2s ease-out !important; width: 100% !important;');
-                        
-                        setTimeout(function() {
-                            if (!isPlaying) { 
-                                $progressBar.attr('style', 'width: 0% !important; transition: none !important;');
-                                $iconText.text('▶');
-                            }
-                        }, 250); 
-                        resetInterface();
-                    };
-
-                    utterance.onerror = function() {
-                        $progressBar.attr('style', 'width: 0% !important; transition: none !important;');
-                        resetInterface();
-                    };
-
-                    window.speechSynthesis.speak(utterance);
-                }
-            });
         });
     });
 })(mediaWiki, jQuery);

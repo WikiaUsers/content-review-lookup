@@ -1,4 +1,4 @@
-// 10:55, 15 September 2021 (UTC) <nowiki>
+// 06:59, 17 July 2026 (UTC) <nowiki>
 // *************************************************
 // PAGETITLE REWRITE
 //
@@ -24,3 +24,23 @@ $(function changeTitle(){
     $('h1.page-header__title').html(mw.html.escape(title));
 });
 // END PAGETITLE
+
+// CLOSEDWIKI PAGE HEADER TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('.page-header__title').text('Closed Wiki');
+        });
+// END CLOSEDWIKI PAGE HEADER TITLE FIX
+
+// CLOSEDWIKI TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('title').text((_, old)=>old.replace('⧼closedwiki⧽', 'Closed Wiki'));
+        });
+// END CLOSEDWIKI TITLE FIX </nowiki>

@@ -4,6 +4,14 @@ CHANGING THE CODE WITHOUT ANY PERMISSION OR APPROVAL FROM THE WIKI'S CURRENT BUR
 PROCEED AT YOUR OWN RISK. 
 **********/
 
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AutoDesktop.js',
+        'u:dev:MediaWiki:PatrolPanel.js',
+    ]
+});
+
 /********* UTC Clock Format Starts HERE **********/
 (function () {
   const now = new Date();
@@ -149,7 +157,7 @@ mw.loader.using("mediawiki.util").then(function () {
       const startTime = performance.now();
 
       function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 5);
+        return 1 - Math.pow(1 - t, 3);
       }
 
       function updateCounter(currentTime) {

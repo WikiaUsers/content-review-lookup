@@ -1,7 +1,7 @@
 /* BuildCalculator.js  —  build / loadout calculator client
  * ===========================================================================
- * Version:   1.12.0  (2026-07-09)
- * Host page: MediaWiki:BuildCalculator.js  (testing)  ->  rename for final deploy
+ * Version:   1.16.0  (2026-07-19)
+ * Host page: MediaWiki:BuildCalculator.js  ->  rename for final deploy
  * Pairs with: Module:BuildCalculator, Module:SlotData + the *Data modules,
  *             and the build-calculator block in MediaWiki:Common.css.
  *
@@ -11,6 +11,29 @@
  * .getAttribute('data-bc-version') ) to confirm which revision is served.
  *
  * Changelog
+ *   1.16.0 Tier filter. A "Select tier" dropdown at the front of the action bar
+ *          (before Apply set) caps which equipment is selectable: picking Tier N
+ *          limits every slot dropdown to items of tier N or lower; untiered
+ *          records (runes, enchants, mounts, some accessories) are always
+ *          selectable. Range 6..21, plus a "select tier" (= no cap) default.
+ *          Any currently-equipped item above the cap is dropped when the filter
+ *          changes. Client-only view constraint: NOT stored in the share hash.
+ *          Apply set skips over-tier pieces.
+ *   1.14.0 Primordial Codex element bonus. The two Codex variants (Offensive /
+ *          Defensive) ship an `elementBonus` map (element -> bonus text). When a
+ *          Codex is equipped, the Effects card shows only the line matching the
+ *          equipped MAINHAND's `element` (read in the pre-pass); with no mainhand
+ *          it shows a hint. Live-updates on mainhand change (recompute already
+ *          fires). Requires `elementBonus` shipped + reserved by
+ *          Module:BuildCalculator (deep-copied).
+ *   1.13.0 Tier 12+ toggle for a fixed set of legacy ancients. A yes/no "Tier 12
+ *          or above" select appears in the Ancient Selector while an item listed
+ *          in TIER_BONUS_IDS is equipped; "yes" folds a flat +5 damage-give / +5
+ *          damage-receive into the totals before any doubling. Detected by
+ *          hardcoded prefixed id (the only id-based detection in this client) for
+ *          stable legacy content that carries no data marker. Client-only: no
+ *          generator/module/data change. Pick is per item id; not in the share
+ *          hash.
  *   1.12.0 Evolvium reforge choices. A ring carrying a `reforge` table (the two
  *          Evolvium variants) reveals a "Reforge Evolvium" field in the Ancient
  *          Selector box: four selects (+1..+4), each picking one of that tier's
@@ -46,8 +69,7 @@
  *          equipped ancient (marker or effect-text) OR a set bonus that grants it
  *          (Apocalypse's 3-piece enchant / 4-piece mount / 5-piece rune). All
  *          four doublings unified: each doubled record resolves to one source
- *          that drives both the x2 and its badge. Non-stacking; categories are
- *          disjoint so nothing doubles twice.
+ *          that drives both the x2 and its badge. Non-stacking.
  *   1.8.0  Elementarium (ancient) / doublerune: doubles the bonuses of every
  *          equipped MAJOR rune in the totals. Active from an equipped
  *          Elementarium (a `doublerune` marker, effect-text fallback on "major
@@ -125,7 +147,7 @@
 
   // Version of this client. Keep in sync with the header changelog above; it
   // is stamped onto each .build-app as data-bc-version on init.
-var VERSION = "1.12.0";
+var VERSION = "1.16.0";
 
   // Reserved (non-stat) keys -- never summed. Mirrors Module:BuildCalculator.
   // `statUpgrade` is the accessory per-stat upgrade table ({stat: perLevelDelta});
@@ -151,6 +173,7 @@ var VERSION = "1.12.0";
     doubleenchant: 1,
     doublemount: 1,
     reforge: 1,
+    elementBonus: 1,
   };
 
   // Flat base stats are omitted from the Total Stats panel; only bonuses are
@@ -189,8 +212,25 @@ var VERSION = "1.12.0";
     neck: 1,
   };
 
-  // Accessory upgrade levels offered in the picker: +0 .. +MAX_UPGRADE.
+// Accessory upgrade levels offered in the picker: +0 .. +MAX_UPGRADE.
   var MAX_UPGRADE = 4;
+
+// Tier filter range offered by the "Select tier" dropdown (inclusive). Picking
+// a tier caps selectable equipment to that tier or lower; untiered records
+// (runes/enchants/mounts/some accessories) always pass the filter.
+  var TIER_MIN = 6;
+  var TIER_MAX = 21;
+
+  var TIER_BONUS_IDS = {
+    "eq-20740": 1,
+	"eq-31400": 1,
+	"eq-31420": 1,
+	"eq-41880": 1,
+	"eq-41900": 1,
+	"eq-69480": 1,
+	"eq-69500": 1,
+  };
+  var TIER_BONUS = { damagegivebonus: 5, damagereceivebonus: 5 };
 
   function capitalize(s) {
     s = String(s || "");
@@ -389,6 +429,27 @@ var VERSION = "1.12.0";
       setupApp(app, single);
     });
   }
+  
+	// Slot's `accepts` -> the book prefix its ids carry (see mergeRecords in
+    // Module:BuildCalculator). Everything not listed is equipment ("eq-"). Used
+    // to strip the prefix in the share hash and re-add it on read, so the hash
+    // stays short but ids remain durable across data regen.
+    var BOOK_PREFIX = {
+      mount: "mt-",
+      minor: "rn-",
+      major: "rn-",
+      meta: "rn-",
+      relic: "rn-",
+      artifact: "rn-",
+      enchant: "en-",
+    };
+    function prefixFor(accepts) {
+      return BOOK_PREFIX[accepts] || "eq-";
+    }
+    function stripPrefix(id) {
+      var m = /^(?:eq|mt|rn|en)-(.*)$/.exec(id);
+      return m ? m[1] : id;
+    }
 
   function setupApp(app, hashEnabled) {
     var slotsBox = app.querySelector(".build-slots");
@@ -439,6 +500,13 @@ var VERSION = "1.12.0";
 
     var byId = equipment; // id -> record (lookup)
 
+    // Tier filter (0 = no cap). Driven by the "Select tier" dropdown; caps each
+    // slot's option list to records of tier <= tierLimit. Untiered records pass.
+    var tierLimit = 0;
+    function passesTier(rec) {
+      return !(tierLimit > 0 && rec.tier && rec.tier > tierLimit);
+    }
+
     function optionsFor(accepts) {
       var out = [];
       for (var id in byId) {
@@ -458,6 +526,42 @@ var VERSION = "1.12.0";
         return (RARITY_RANK[a.rarity] || 99) - (RARITY_RANK[b.rarity] || 99);
       });
       return out;
+    }
+    
+    // (Re)populate a slot <select>: the "(none)" option + every record of the
+    // slot's type that passes the current tier filter, appending the rarity to
+    // same-named options (rune tiers). Keeps the current pick if it survives the
+    // filter, else drops the slot to "(none)". Used for the initial build AND on
+    // every tier-filter change.
+    function fillSlotSelect(sel, accepts) {
+      var prev = sel.value;
+      while (sel.firstChild) {
+        sel.removeChild(sel.firstChild);
+      }
+      var none = document.createElement("option");
+      none.value = "";
+      none.textContent = "\u2014 none \u2014";
+      sel.appendChild(none);
+
+      var opts = optionsFor(accepts).filter(passesTier);
+      var nameCounts = {};
+      opts.forEach(function (r) {
+        nameCounts[r.name] = (nameCounts[r.name] || 0) + 1;
+      });
+      var found = false;
+      opts.forEach(function (rec) {
+        var o = document.createElement("option");
+        o.value = rec.id;
+        o.textContent =
+          nameCounts[rec.name] > 1 && rec.rarity
+            ? rec.name + " (" + capitalize(rec.rarity) + ")"
+            : rec.name;
+        sel.appendChild(o);
+        if (rec.id === prev) {
+          found = true;
+        }
+      });
+      sel.value = found ? prev : ""; // drop a now-invalid pick
     }
 
     function statMeta(key) {
@@ -691,8 +795,32 @@ var VERSION = "1.12.0";
     // choices across re-equips. reforgeBuiltFor tracks which item's selects are
     // rendered so recompute only rebuilds when the equipped Evolvium changes
     // (rebuilding every recompute would wipe the user's picks).
-    var reforgeChoiceState = {};
+var reforgeChoiceState = {};
     var reforgeBuiltFor = null;
+
+    var tierSlot = document.createElement("div");
+    tierSlot.className = "build-slot";
+    tierSlot.style.display = "none";
+    var tierLabel = document.createElement("label");
+    tierLabel.className = "build-slot-label";
+    tierLabel.textContent = "Tier 12 or above";
+    var tierSelect = document.createElement("select");
+    tierSelect.className = "build-select";
+    [["no", "No"], ["yes", "Yes"]].forEach(function (opt) {
+      var o = document.createElement("option");
+      o.value = opt[0];
+      o.textContent = opt[1];
+      tierSelect.appendChild(o);
+    });
+tierSelect.addEventListener("change", function () {
+      tierBonusOn = tierSelect.value === "yes";
+      recompute();
+    });
+    tierSlot.appendChild(tierLabel);
+    tierSlot.appendChild(tierSelect);
+    ancientBox.appendChild(tierSlot);
+
+	var tierBonusOn = false;
 
     function renderReforgeChoices(rec) {
       if (reforgeBuiltFor === rec.id) {
@@ -769,6 +897,13 @@ var VERSION = "1.12.0";
           sel._refresh(); // reset rarity bar + meta line (+ upgrade picker)
         }
       });
+      // Ancient-selector state isn't held in a slot <select>, so the loop above
+	  // never clears it. Reset it here too, or a stale toggle keeps re-writing
+	  // itself into the hash after everything is cleared (e.g. #b=~t).
+	  tierBonusOn = false;
+	  reforgeSelect.value = "";
+	  reforgeChoiceState = {};
+	  reforgeBuiltFor = null;
       recompute(); // single repaint; clears hash if enabled
       updateSetPreview(); // targets are now empty -> all fills
     }
@@ -778,7 +913,7 @@ var VERSION = "1.12.0";
     // their type in order, capped by how many such slots exist. Returns
     // { plan: [ { slot, rec }, ... ], overflow: <pieces that found no slot> }.
     // Shared by the preview and the actual apply so the two can't disagree.
-    function planSet(sid) {
+	function planSet(sid) {
       var plan = [];
       var members = setMembers[sid] || [];
       if (!members.length) {
@@ -799,6 +934,9 @@ var VERSION = "1.12.0";
           return; // more slots than pieces of this type
         }
         cursor[slot.accepts] = i + 1;
+        if (!passesTier(list[i])) {
+          return; // excluded by the tier filter -> falls into overflow
+        }
         plan.push({ slot: slot, rec: list[i] });
       });
       return { plan: plan, overflow: members.length - plan.length };
@@ -831,30 +969,52 @@ var VERSION = "1.12.0";
 
     var setSelect = document.createElement("select");
     setSelect.className = "build-setpicker";
-    var setNone = document.createElement("option");
+	var setNone = document.createElement("option");
     setNone.value = "";
     setNone.textContent = "\u2014 choose a set \u2014";
     setSelect.appendChild(setNone);
 
-    // Sets that actually have pieces, sorted by name; label shows piece count.
-    Object.keys(setMembers)
-      .map(function (sid) {
-        var srec = sets[sid];
-        return {
-          id: sid,
-          name: srec && srec.name ? srec.name : "Set " + sid,
-          count: setMembers[sid].length,
-        };
-      })
-      .sort(function (a, b) {
-        return a.name.localeCompare(b.name);
-      })
-      .forEach(function (s) {
-        var o = document.createElement("option");
-        o.value = s.id;
-        o.textContent = s.name + " (" + s.count + ")";
-        setSelect.appendChild(o);
-      });
+    // (Re)populate the set picker with only the sets that have at least one
+    // piece placeable under the current tier cap. Rerun on tier-filter change.
+    // Keeps the "(none)" option; preserves the current pick if it survives.
+    function fillSetPicker() {
+      var prev = setSelect.value;
+      // Remove everything except the leading "(none)" option.
+      while (setSelect.children.length > 1) {
+        setSelect.removeChild(setSelect.lastChild);
+      }
+      var kept = { "": true };
+      Object.keys(setMembers)
+        .filter(function (sid) {
+          // Show the set only if at least one of its pieces passes the tier
+          // cap (planSet would place it); an all-over-tier set is hidden.
+          return setMembers[sid].every(passesTier);
+        })
+        .map(function (sid) {
+          var srec = sets[sid];
+          return {
+            id: sid,
+            name: srec && srec.name ? srec.name : "Set " + sid,
+            // Count only the pieces that actually pass the cap, so the label
+            // matches what Apply set will place.
+            count: setMembers[sid].filter(passesTier).length,
+          };
+        })
+        .sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        })
+        .forEach(function (s) {
+          var o = document.createElement("option");
+          o.value = s.id;
+          o.textContent = s.name + " (" + s.count + ")";
+          setSelect.appendChild(o);
+          kept[s.id] = true;
+        });
+      // If the previously-picked set was filtered out, reset the picker (and
+      // its preview) so a hidden set can't stay selected.
+      setSelect.value = kept[prev] ? prev : "";
+    }
+    fillSetPicker();
 
     var applyBtn = document.createElement("button");
     applyBtn.type = "button";
@@ -1026,6 +1186,39 @@ var VERSION = "1.12.0";
       "\u2014 choose an enchant \u2014",
       "Apply enchants"
     );
+    
+    // Tier filter picker -- sits at the FRONT of the bar, before Apply set.
+    // Caps selectable equipment to the chosen tier or lower, rebuilding every
+    // slot's options and dropping any pick that's now over the cap.
+    var tierGroup = document.createElement("div");
+    tierGroup.className = "build-actions-set";
+    var tierFilter = document.createElement("select");
+    tierFilter.className = "build-setpicker";
+    var tierAll = document.createElement("option");
+    tierAll.value = "";
+    tierAll.textContent = "\u2014 select tier \u2014";
+    tierFilter.appendChild(tierAll);
+    for (var tval = TIER_MIN; tval <= TIER_MAX; tval++) {
+      var topt = document.createElement("option");
+      topt.value = String(tval);
+      topt.textContent = "Tier " + tval + " and below";
+      tierFilter.appendChild(topt);
+    }
+	tierFilter.addEventListener("change", function () {
+      tierLimit = parseInt(tierFilter.value, 10) || 0;
+      slots.forEach(function (slot) {
+        var sel = selects[slot.id];
+        fillSlotSelect(sel, slot.accepts); // rebuild under the new cap
+        if (sel._refresh) {
+          sel._refresh(); // resync rarity bar/meta if a pick was dropped
+        }
+      });
+      fillSetPicker(); // hide sets with no placeable piece at this cap
+      recompute(); // reflect dropped picks (also rewrites the hash)
+      updateSetPreview(); // preview reads setSelect.value, which may have reset
+    });
+    tierGroup.appendChild(tierFilter);
+    actions.appendChild(tierGroup); // leftmost -> before the set group
 
     // Assemble the bar:  [set]  [runes]  [enchants]  ...  [Clear all]
     if (Object.keys(setMembers).length) {
@@ -1085,6 +1278,8 @@ var VERSION = "1.12.0";
       var mountDoubleItem = null; // mount-doubler item, if equipped
       var reforgeItem = null; // reforge-copy ancient (W3-4TY), if equipped
       var reforgeChoiceItem = null; // Evolvium (carries a `reforge` table)
+      var tierItem = null;
+      var mainhandElement = null; // Primoridal codex logic
       slots.forEach(function (slot) {
         var rec = byId[selects[slot.id].value];
         if (!rec) {
@@ -1109,6 +1304,12 @@ var VERSION = "1.12.0";
         }
         if (rec.reforge) {
           reforgeChoiceItem = rec; // Evolvium (non-stacking; one ring)
+        }
+		if (TIER_BONUS_IDS[selects[slot.id].value]) {
+          tierItem = rec;
+        }
+        if (slot.accepts === "mainhand" && rec.element) {
+          mainhandElement = rec.element;
         }
         if (MYTHIC_COUNT_SLOTS[slot.accepts] && rec.rarity === "mythic") {
           mythicCount++;
@@ -1154,9 +1355,15 @@ var VERSION = "1.12.0";
         reforgeChoiceBlock.style.display = "none";
         reforgeBuiltFor = null; // rebuild cleanly next time one is equipped
       }
+      if (tierItem) {
+    		tierSlot.style.display = "";
+    		tierSelect.value = tierBonusOn ? "yes" : "no";
+      } else {
+        	tierSlot.style.display = "none";
+      }
       // The box shows while ANY ancient control is active.
       ancientBox.style.display =
-        reforgeItem || reforgeChoiceItem ? "" : "none";
+        reforgeItem || reforgeChoiceItem || tierItem ? "" : "none";
       var reforgeCount =
         reforgeItem && reforgeSelect.value
           ? parseInt(reforgeSelect.value, 10) || 0
@@ -1274,10 +1481,32 @@ var VERSION = "1.12.0";
             sums[k] = (sums[k] || 0) + val * factor; // doubling applied here
           }
         }
-        if (rec.effects) {
+		if (tierBonusOn && TIER_BONUS_IDS[selects[slot.id].value]) {
+          for (var tk in TIER_BONUS) {
+            sums[tk] = (sums[tk] || 0) + TIER_BONUS[tk] * factor;
+          }
+        }
+		if (rec.effects) {
           rec.effects.forEach(function (t) {
             effects.push(fxObj(rec, t, dbl));
           });
+        }
+        // Primordial Codex: show only the element bonus matching the equipped
+        // mainhand's element (read in the pre-pass), or a hint if none is set.
+        if (rec.elementBonus) {
+          if (mainhandElement && rec.elementBonus[mainhandElement]) {
+            effects.push(
+              fxObj(
+                rec,
+                capitalize(mainhandElement) + ": " + rec.elementBonus[mainhandElement],
+                dbl
+              )
+            );
+          } else {
+            effects.push(
+              fxObj(rec, "Equip a mainhand to see its element bonus", dbl)
+            );
+          }
         }
         // Mounts: show only the prose `bonus` line and suppress the
         // `skill`. The meta/relic/artifact runes also carry a `skill`
@@ -1534,74 +1763,139 @@ var VERSION = "1.12.0";
       totals.innerHTML = html;
     }
 
-    // ---- URL-hash share (optional, no network) ----
-    // Hash pairs are slotId:itemId, with an OPTIONAL third field for the
-    // accessory upgrade level (slotId:itemId:level). Older 2-field links still
-    // parse (level defaults to 0). Returns { picks, levels }.
+	// ---- URL-hash share (optional, no network) ----
+    // Format: #b=<f0>|<f1>|...~<ancient>
+    //   loadout: one field per slot, in data-slots order. Empty = nothing.
+    //     field = <itemId-without-book-prefix>[.<accessoryLevel>]
+    //   ancient (optional, after ~): comma-separated, each tagged:
+    //     t          tier-12+ toggle on
+    //     rN         W3-4TY reforge-copy tier (r2 / r3)
+    //     eA.B.C.D   Evolvium picks per tier ('-' = none, else choice index)
+    // Returns { picks, levels, tierOn, reforgeCopy, evolvium }.
     function readHash() {
-      var picks = {},
-        levels = {};
-      var m = /(?:^|#|&)build=([^&]*)/.exec(location.hash || "");
+      var out = {
+        picks: {},
+        levels: {},
+        tierOn: false,
+        reforgeCopy: "",
+        evolvium: null,
+      };
+      var m = /(?:^|#|&)b=([^&]*)/.exec(location.hash || "");
       if (!m) {
-        return { picks: picks, levels: levels };
+        return out;
       }
+      var raw;
       try {
-        decodeURIComponent(m[1])
-          .split(",")
-          .forEach(function (pair) {
-            var kv = pair.split(":");
-            if (kv.length >= 2 && kv[0] && kv[1]) {
-              picks[kv[0]] = kv[1];
-              if (kv.length >= 3 && kv[2]) {
-                var lv = parseInt(kv[2], 10);
-                if (lv > 0) {
-                  levels[kv[0]] = lv;
-                }
-              }
-            }
-          });
-      } catch (e) {}
-      return { picks: picks, levels: levels };
-    }
+        raw = decodeURIComponent(m[1]);
+      } catch (e) {
+        raw = m[1];
+      }
+      var tilde = raw.indexOf("~");
+      var loadout = tilde >= 0 ? raw.slice(0, tilde) : raw;
+      var ancient = tilde >= 0 ? raw.slice(tilde + 1) : "";
 
-    function writeHash() {
-      var parts = [];
-      slots.forEach(function (s) {
-        var v = selects[s.id].value;
-        if (v) {
-          // Append the accessory upgrade level as a third field only when it's
-          // above +0, so ordinary items keep the compact slotId:itemId form.
-          var upEl = upgrades[s.id];
-          var lv =
-            upEl && !upEl.disabled ? parseInt(upEl.value, 10) || 0 : 0;
-          parts.push(s.id + ":" + v + (lv > 0 ? ":" + lv : ""));
+      // Loadout: positional over slots.
+      var fields = loadout.split("|");
+      slots.forEach(function (slot, i) {
+        var f = fields[i];
+        if (!f) {
+          return; // empty slot
+        }
+        var dot = f.indexOf(".");
+        var idPart = dot >= 0 ? f.slice(0, dot) : f;
+        var lvPart = dot >= 0 ? f.slice(dot + 1) : "";
+        if (!idPart) {
+          return;
+        }
+        out.picks[slot.id] = prefixFor(slot.accepts) + idPart;
+        if (lvPart) {
+          var lv = parseInt(lvPart, 10);
+          if (lv > 0) {
+            out.levels[slot.id] = lv;
+          }
         }
       });
-      var val = parts.join(",");
+
+      // Ancient block.
+      if (ancient) {
+        ancient.split(",").forEach(function (tok) {
+          if (tok === "t") {
+            out.tierOn = true;
+          } else if (/^r[23]$/.test(tok)) {
+            out.reforgeCopy = tok.slice(1);
+          } else if (tok.charAt(0) === "e") {
+            out.evolvium = tok.slice(1).split(".").map(function (c) {
+              return c === "" || c === "-" ? null : parseInt(c, 10);
+            });
+          }
+        });
+      }
+      return out;
+    }
+
+	function writeHash() {
+      // Loadout, positional.
+      var fields = slots.map(function (s) {
+        var v = selects[s.id].value;
+        if (!v) {
+          return "";
+        }
+        var f = stripPrefix(v);
+        var upEl = upgrades[s.id];
+        var lv = upEl && !upEl.disabled ? parseInt(upEl.value, 10) || 0 : 0;
+        return lv > 0 ? f + "." + lv : f;
+      });
+      // Trim trailing empties.
+      while (fields.length && fields[fields.length - 1] === "") {
+        fields.pop();
+      }
+      var loadout = fields.join("|");
+
+      // Ancient block (only non-default parts).
+      var anc = [];
+      if (tierBonusOn) {
+        anc.push("t");
+      }
+      if (reforgeSelect.value === "2" || reforgeSelect.value === "3") {
+        anc.push("r" + reforgeSelect.value);
+      }
+      // Evolvium: emit only if an Evolvium is equipped AND has any pick set.
+      if (reforgeBuiltFor && reforgeChoiceState[reforgeBuiltFor]) {
+        var picks = reforgeChoiceState[reforgeBuiltFor];
+        if (
+          picks.some(function (p) {
+            return p != null;
+          })
+        ) {
+          anc.push(
+            "e" +
+              picks
+                .map(function (p) {
+                  return p == null ? "-" : String(p);
+                })
+                .join(".")
+          );
+        }
+      }
+
+      var val = anc.length ? loadout + "~" + anc.join(",") : loadout;
       try {
-        if (val) {
-          // ':' and ',' are legal in a URL fragment (RFC 3986) and slot/
-          // item ids are URL-safe, so write the readable raw form
-          // (#build=mainhand:39420,offhand:272000) rather than percent-
-          // encoding it. readHash decodeURIComponent's before splitting, so
-          // older %3A/%2C links still load.
-          history.replaceState(null, "", "#build=" + val);
-        } else if (/(?:^|#|&)build=/.test(location.hash)) {
+        if (val && val !== "") {
+          history.replaceState(null, "", "#b=" + val);
+        } else if (/(?:^|#|&)b=/.test(location.hash)) {
           history.replaceState(null, "", location.pathname + location.search);
         }
       } catch (e) {}
     }
 
-    // ---- hydrate from hash, then first paint ----
+	// ---- hydrate from hash, then first paint ----
     if (hashEnabled) {
       var saved = readHash();
       slots.forEach(function (slot) {
         var id = saved.picks[slot.id];
         if (id && byId[id] && byId[id].type === slot.accepts) {
           selects[slot.id].value = id;
-          selects[slot.id]._refresh(); // rarity/meta + upgrade enable/disable
-          // Restore the saved upgrade level, but only if the item is actually
-          // upgradeable (refreshMeta left the picker enabled). Clamp to range.
+          selects[slot.id]._refresh();
           var lv = saved.levels[slot.id];
           var upEl = upgrades[slot.id];
           if (lv && upEl && !upEl.disabled) {
@@ -1609,8 +1903,35 @@ var VERSION = "1.12.0";
           }
         }
       });
+
+      // Apply the tier toggle + W3-4TY copy before the first recompute so they
+      // show correctly; the controls read these on render.
+      tierBonusOn = !!saved.tierOn;
+      if (saved.reforgeCopy) {
+        reforgeSelect.value = saved.reforgeCopy;
+      }
+
+      // First paint: builds the ancient controls (incl. the Evolvium selects,
+      // which only exist once an Evolvium is equipped).
+      recompute();
+
+      // Now the Evolvium selects exist (if one is equipped) -> restore picks and
+      // repaint. reforgeBuiltFor was set by renderReforgeChoices during recompute.
+      if (saved.evolvium && reforgeBuiltFor) {
+        reforgeChoiceState[reforgeBuiltFor] = saved.evolvium.slice();
+        // Reflect into the on-screen selects.
+        var host = reforgeChoiceHost;
+        var sels = host.querySelectorAll("select");
+        saved.evolvium.forEach(function (v, i) {
+          if (sels[i]) {
+            sels[i].value = v == null ? "" : String(v);
+          }
+        });
+        recompute();
+      }
+    } else {
+      recompute();
     }
-    recompute();
   }
 
   // Bind via the MediaWiki content hook, with a DOM-ready fallback.

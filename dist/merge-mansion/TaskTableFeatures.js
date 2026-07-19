@@ -28,6 +28,19 @@
  *                            100 %. A spinner placeholder shows during the
  *                            initial Tracker grace period.
  *
+ *  4b. Foreshadow Upcoming Tasks — controlled by feature checkbox "Foreshadow
+ *      Upcoming Tasks" (sub-feature of the Active Tasks table). Under every
+ *      active row it previews the tasks up to 6 Opens-steps ahead, covering
+ *      all branches, as compact dimmed sub-rows. Branches that run into an
+ *      active time lock end with a bare lock row (icon + unlock date) unless
+ *      the "Ignore Time Locks" sub-toggle is on (revealed only on pages with
+ *      active locks). Sub-rows of the same task highlight together on hover
+ *      (tap-toggle on hoverless devices); each group collapses/expands via its
+ *      "Show/Hide upcoming tasks" divider (persisted per page, and a freshly
+ *      activated task inherits the collapsed state of its completed
+ *      predecessor). Group rows are cached so unchanged groups keep their DOM
+ *      (and images) across re-renders.
+ *
  * Robustness notes:
  *  - Fandom Tracker populates / enables the checkbox cells asynchronously,
  *    AFTER our scripts run. Each feature observes its anchor cells (rather
@@ -906,6 +919,20 @@
 	var SWAP_HALF_MS = 150;     // fade-out / fade-in halves of the in-place swap
 	var TASK_ATTR = 'data-mmwt-task';
 
+	// ── Foreshadow Upcoming Tasks (sub-feature) ─────────────────────────────
+	var FS_FEATURE_ROW_ID = 'Foreshadow Upcoming Tasks';
+	var FS_ROW_CLASS = 'mmwt-fs-row';
+	var FS_LOCK_ROW_CLASS = 'mmwt-fs-lock-row';
+	var FS_HL_CLASS = 'mmwt-fs-highlight';
+	var FS_ARROW_CLASS = 'mmwt-fs-arrow';
+	var FS_GAP_ROW_CLASS = 'mmwt-fs-gap-row';
+	var FS_INLINE_CLASS = 'mmwt-fs-inline';
+	var FS_SEP_CLASS = 'mmwt-fs-sep';
+	var FS_SOURCE_ATTR = 'data-mmwt-fs-source';
+	var FS_TASK_ATTR = 'data-mmwt-fs-task';
+	var FS_MAX_DEPTH = 6;
+	var FS_STORE_KEY = 'mmwtFsCollapsed:' + location.pathname;
+
 	var FEATURE_INIT_TIME = 0;
 	var GRACE_RENDER_SCHEDULED = false;
 
@@ -1060,6 +1087,61 @@
 			'  opacity:0;pointer-events:none;transition:opacity 120ms ease-out;',
 			'}',
 			'.' + UNDO_BTN_CLASS + ':hover::after{opacity:1;}',
+			// ── foreshadow sub-rows: compact dimmed preview of upcoming tasks ─
+			'.' + FS_ROW_CLASS + '{opacity:0.72;}',
+			// snappy hover: override any slower site-wide row/cell transitions
+			'.' + FS_ROW_CLASS + ',',
+			'.' + FS_ROW_CLASS + ' td{',
+			'  transition:background-color 50ms ease-out,opacity 50ms ease-out !important;',
+			'}',
+			'.' + FS_ROW_CLASS + ' td{',
+			'  padding-top:2px !important;padding-bottom:2px !important;',
+			'  font-size:0.86em;line-height:1.3;',
+			'  background:rgba(0,0,0,0.15);',
+			'  border-top-width:0 !important;',
+			'}',
+			// rewards + tokens collapse onto one line; the Items cell keeps its
+			// natural one-item-per-line layout
+			'.' + FS_ROW_CLASS + ' td.' + FS_INLINE_CLASS + ' br{display:none;}',
+			'.' + FS_ROW_CLASS + ' td.tokensColumn br{display:none;}',
+			// dot separator standing in for the collapsed reward line breaks
+			'.' + FS_ROW_CLASS + ' .' + FS_SEP_CLASS + '{margin:0 7px;color:rgba(255,212,121,0.55);font-weight:bold;}',
+			'.' + FS_ROW_CLASS + ' td img{max-height:20px;width:auto;}',
+			// tokens slightly smaller (zoom keeps the value badges aligned)
+			'.' + FS_ROW_CLASS + ' td.tokensColumn{zoom:0.85;}',
+			// token grid ships as repeat(3, …) → widen so all tokens fit one line
+			'.' + FS_ROW_CLASS + ' .tokenGrid{grid-template-columns:repeat(8, 26px);}',
+			// hover cross-highlight: all sub-rows of the same task light up together
+			// (kept subtle — a faint tint plus full opacity)
+			'.' + FS_ROW_CLASS + '.' + FS_HL_CLASS + '{opacity:0.95;}',
+			'.' + FS_ROW_CLASS + '.' + FS_HL_CLASS + ' td{background:rgba(255,212,121,0.06);}',
+			'.' + FS_ARROW_CLASS + '{',
+			'  color:#ffd479;opacity:0.8;margin-right:5px;display:inline-block;',
+			'}',
+			// collapsed-group divider — same visual language as Hide Completed gaps
+			'.' + FS_GAP_ROW_CLASS + ' td{',
+			'  border-top:1px dotted rgba(255,212,121,0.45) !important;',
+			'  border-bottom:1px dotted rgba(255,212,121,0.45) !important;',
+			'  background:transparent !important;',
+			'  padding:3px 0 !important;',
+			'  cursor:pointer;',
+			// double-clicking the toggle divider must not select surrounding text
+			'  user-select:none;-webkit-user-select:none;',
+			'}',
+			'.' + FS_GAP_ROW_CLASS + ':hover td{',
+			'  background:rgba(255,212,121,0.06) !important;',
+			'}',
+			'.' + FS_GAP_ROW_CLASS + ' td::after{',
+			'  content:attr(data-mmwt-fs-gap-label);',
+			'  display:block;text-align:center;',
+			'  font-size:0.7em;font-style:italic;color:rgba(255,212,121,0.55);',
+			'  letter-spacing:2px;line-height:1;',
+			'}',
+			// bare lock row: why the branch preview ends here — centered across the row
+			'.' + FS_LOCK_ROW_CLASS + ' td{color:#ffd479;font-weight:bold;text-align:center;}',
+			'.' + FS_LOCK_ROW_CLASS + ' td img{',
+			'  width:16px;height:16px;object-fit:contain;vertical-align:-3px;margin-right:6px;',
+			'}',
 			// ── disable sortable affordance on cloned thead ──────────────────
 			'.' + TABLE_CLASS + ' thead th{cursor:default !important;}',
 			'.' + TABLE_CLASS + ' thead th.headerSort,',
@@ -1226,6 +1308,417 @@
 				if (!completedIds[r.needs[i]]) return false;
 			}
 			return true;
+		});
+	}
+
+	// ── Foreshadow Upcoming Tasks ───────────────────────────────────────────
+	// Preview of what lies ahead: under every active row, show the tasks up to
+	// FS_MAX_DEPTH Opens-steps ahead, covering ALL branches. Completed tasks
+	// pass through for free (not shown, no depth spent) — same philosophy as
+	// the branch tags. Sub-rows are compact clones of the main-table rows, so
+	// the column grid stays aligned with the active table.
+
+	function isForeshadowEnabled() {
+		var input = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="' + FS_FEATURE_ROW_ID + '"]'
+		);
+		var cell = input && input.closest('.table-progress-checkbox-cell');
+		return !!(cell && cell.getAttribute('data-sort-value') === '1');
+	}
+
+	// The template row is prefixed with a {{SubArrow}} glyph that may end up in
+	// the Tracker row id, so match by substring.
+	function isIgnoreLocksEnabled() {
+		var input = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id*="Ignore Time Locks"]'
+		);
+		var cell = input && input.closest('.table-progress-checkbox-cell');
+		return !!(cell && cell.getAttribute('data-sort-value') === '1');
+	}
+
+	// The "Ignore Time Locks" template sub-row ships hidden (class "dnone");
+	// reveal it only on pages that have ACTIVE (unexpired) time locks.
+	function updateIgnoreLocksRowVisibility(hasActiveLocks) {
+		document.querySelectorAll('[data-tpt-id="TaskTableFeatures"] tr.subRow').forEach(function (tr) {
+			if ((tr.textContent || '').indexOf('Ignore Time Locks') === -1) return;
+			if (hasActiveLocks) tr.classList.remove('dnone');
+			else tr.classList.add('dnone');
+		});
+	}
+
+	function readFsCollapsed() {
+		try {
+			var s = localStorage.getItem(FS_STORE_KEY);
+			return s ? JSON.parse(s) : {};
+		} catch (e) { return {}; }
+	}
+
+	function writeFsCollapsed(map) {
+		try { localStorage.setItem(FS_STORE_KEY, JSON.stringify(map)); } catch (e) {}
+	}
+
+	// Unlock date text next to the lock icon (format already validated by
+	// rowIsTimeLocked; empty string when the cell carries no parsable date).
+	function lockDateText(tr) {
+		var lockImg = tr.querySelector('img[data-image-name="AreaLockedIcon.png"]');
+		var cell = lockImg && lockImg.closest('td');
+		var m = cell && (cell.textContent || '').match(/(\d{2})\.(\d{2})\.(\d{4})/);
+		return m ? m[0] : '';
+	}
+
+	// BFS over Opens edges from one active task. Returns render entries:
+	//   { task, depth }                — upcoming task to preview
+	//   { task, depth, lockEnd: true } — branch preview ends here in a time lock
+	// With ignoreLocks on, locked tasks render as regular entries (the caller
+	// marks them with an inline lock icon) and the walk continues through them.
+	function computeForeshadow(model, sourceId, blocked, ignoreLocks) {
+		var entries = [];
+		var seen = {};
+		seen[sourceId] = 1;
+		var src = model.byId[sourceId];
+		if (!src) return entries;
+		var queue = [];
+		for (var i = 0; i < src.opens.length; i++) queue.push({ id: src.opens[i], depth: 1 });
+		while (queue.length) {
+			var cur = queue.shift();
+			if (cur.depth > FS_MAX_DEPTH) continue;
+			if (seen[cur.id]) continue;
+			seen[cur.id] = 1;
+			var t = model.byId[cur.id];
+			if (!t) continue;
+			if (t.completed) {
+				// completed tasks pass through for free (not shown, no depth spent)
+				for (var j = 0; j < t.opens.length; j++) queue.push({ id: t.opens[j], depth: cur.depth });
+				continue;
+			}
+			if (!ignoreLocks && (t.locked || blocked(t.taskId, {}))) {
+				entries.push({ task: t, depth: cur.depth, lockEnd: true });
+				continue; // the branch preview ends at the lock
+			}
+			entries.push({ task: t, depth: cur.depth });
+			for (var k = 0; k < t.opens.length; k++) queue.push({ id: t.opens[k], depth: cur.depth + 1 });
+		}
+		return entries;
+	}
+
+	// "⤷" indent marker at the start of the Name cell, shifted by BFS depth.
+	function prependFsIndent(td, depth) {
+		var arrow = document.createElement('span');
+		arrow.className = FS_ARROW_CLASS;
+		arrow.textContent = '⤷';
+		arrow.style.marginLeft = ((depth - 1) * 14) + 'px';
+		td.insertBefore(arrow, td.firstChild);
+	}
+
+	// Compact clone of the main-table row: Needs/Opens cells emptied and the
+	// checkbox cell stripped (tds stay for the column grid), name indented by
+	// BFS depth. Lock-end entries render as a bare lock + unlock-date row —
+	// the locked task itself stays hidden, only the reason is shown.
+	function buildFsRow(entry, sourceId, mainTable, colIdx) {
+		var tr = entry.task.rowEl.cloneNode(true);
+		tr.classList.add(FS_ROW_CLASS);
+		tr.removeAttribute('id');
+		tr.setAttribute(FS_SOURCE_ATTR, sourceId);
+		tr.setAttribute(FS_TASK_ATTR, entry.task.taskId);
+		tr.querySelectorAll('span[id^="T"]').forEach(function (sp) {
+			sp.removeAttribute('id');
+		});
+		// Promote lazyload placeholders to their real URLs so the browser fetches
+		// all sub-row images in parallel right away — cloned placeholders would
+		// otherwise trickle in one by one through the lazyload queue.
+		tr.querySelectorAll('img').forEach(function (img) {
+			var real = img.getAttribute('data-src');
+			if (real) img.setAttribute('src', real);
+			var realSet = img.getAttribute('data-srcset');
+			if (realSet) img.setAttribute('srcset', realSet);
+			img.classList.remove('lazyload', 'lazyloading');
+			img.removeAttribute('loading');
+		});
+		var cb = tr.querySelector('.table-progress-checkbox-cell');
+		if (cb) {
+			cb.classList.remove('table-progress-checkbox-cell');
+			cb.removeAttribute('data-tpt-row-id');
+			cb.removeAttribute('data-sort-value');
+			cb.textContent = '';
+		}
+		var tds = tr.querySelectorAll(':scope > td');
+		var nameTd = colIdx.name >= 0 ? tds[colIdx.name] : tds[1];
+		var needsTd = colIdx.needs >= 0 ? tds[colIdx.needs] : null;
+		var opensTd = colIdx.opens >= 0 ? tds[colIdx.opens] : null;
+		// One-line names: span the Name cell across the (unused) Needs and Opens
+		// columns. Merge only when they directly follow it, so the cell removal
+		// can never misalign the grid (cell order differs before/after the
+		// Common.js Completed-column relocation).
+		if (nameTd) {
+			var span = 1;
+			while (nameTd.nextElementSibling &&
+				(nameTd.nextElementSibling === needsTd || nameTd.nextElementSibling === opensTd)) {
+				tr.removeChild(nameTd.nextElementSibling);
+				span++;
+			}
+			if (span > 1) nameTd.colSpan = span;
+		}
+		// Same for tokens: span under the (emptied) Completed column so the
+		// token icons fit on one line.
+		var tokensTd = null;
+		for (var ti = 0; ti < tds.length; ti++) {
+			if (tds[ti].classList.contains('tokensColumn')) { tokensTd = tds[ti]; break; }
+		}
+		if (tokensTd && cb && cb.parentNode && tokensTd.nextElementSibling === cb) {
+			tr.removeChild(cb);
+			tokensTd.colSpan = 2;
+		}
+		if (needsTd && needsTd.parentNode) needsTd.textContent = '';
+		if (opensTd && opensTd.parentNode) opensTd.textContent = '';
+		// Rewards layout follows the Items cell: when the row already spans two
+		// lines (two requirement items), rewards stack naturally too (XP line +
+		// item reward line). Single-line rows keep rewards inline — the item
+		// reward is reduced to its icon (dual-anchor pattern: drop the text
+		// anchor), because the name rarely fits next to the separator.
+		var itemsTd = colIdx.items >= 0 ? tds[colIdx.items] : null;
+		var multiLineItems = !!(itemsTd && itemsTd.parentNode && itemsTd.querySelector('br'));
+		if (colIdx.rewards >= 0 && tds[colIdx.rewards] && tds[colIdx.rewards].parentNode && !multiLineItems) {
+			var rewardsTd = tds[colIdx.rewards];
+			rewardsTd.classList.add(FS_INLINE_CLASS);
+			rewardsTd.querySelectorAll('.iconLinkWrap a').forEach(function (a) {
+				if (!a.querySelector('img')) a.parentNode.removeChild(a);
+			});
+			// the line breaks between reward parts become visual separators
+			rewardsTd.querySelectorAll('br').forEach(function (br) {
+				var sep = document.createElement('span');
+				sep.className = FS_SEP_CLASS;
+				sep.textContent = '·';
+				br.parentNode.replaceChild(sep, br);
+			});
+		}
+		if (nameTd) {
+			prependFsIndent(nameTd, entry.depth);
+			if (entry.task.locked) {
+				// visible only with Ignore Time Locks on — mark the task inline
+				var icon = lockIconFor(mainTable);
+				if (icon) nameTd.appendChild(icon);
+			}
+		}
+		return tr;
+	}
+
+	// Store semantics: 1 = collapsed, 0 = explicitly expanded (blocks re-inheriting
+	// from a collapsed predecessor), absent = default (may inherit on activation).
+	function toggleFsCollapsed(sourceId, mainTable) {
+		var collapsed = readFsCollapsed();
+		collapsed[sourceId] = collapsed[sourceId] ? 0 : 1;
+		writeFsCollapsed(collapsed);
+		syncForeshadow(mainTable);
+	}
+
+	// The collapse state travels WITH the progression: an in-place swap (complete
+	// → successor, or undo → predecessor) hands the outgoing task's state to the
+	// incoming one instead of remembering every task forever.
+	function transferFsState(fromId, toId) {
+		if (!fromId || !toId || fromId === toId) return;
+		var store = readFsCollapsed();
+		if (!(fromId in store)) return;
+		store[toId] = store[fromId];
+		delete store[fromId];
+		writeFsCollapsed(store);
+	}
+
+	// Bare lock divider: why the branch preview ends here — a single centered
+	// cell across the whole row (no indent arrow, no task details).
+	function buildFsLockRow(entry, sourceId, mainTable, colspan) {
+		var tr = document.createElement('tr');
+		tr.className = FS_ROW_CLASS + ' ' + FS_LOCK_ROW_CLASS;
+		tr.setAttribute(FS_SOURCE_ATTR, sourceId);
+		tr.setAttribute(FS_TASK_ATTR, entry.task.taskId);
+		var td = document.createElement('td');
+		td.colSpan = colspan;
+		var icon = lockIconFor(mainTable);
+		if (icon) td.appendChild(icon);
+		var date = lockDateText(entry.task.rowEl);
+		td.appendChild(document.createTextNode(
+			date ? 'Locked until ' + date : 'Time-locked'
+		));
+		tr.appendChild(td);
+		return tr;
+	}
+
+	// Divider row toggling a group — same visual language as the Hide Completed
+	// gap rows. A collapsed group shows "⋯ Show upcoming tasks ⋯" in its place;
+	// an expanded group ends with "⋯ Hide upcoming tasks ⋯". Click to toggle.
+	function makeFsGapRow(label, sourceId, mainTable, colspan) {
+		var gap = document.createElement('tr');
+		gap.className = FS_ROW_CLASS + ' ' + FS_GAP_ROW_CLASS;
+		gap.setAttribute(FS_SOURCE_ATTR, sourceId);
+		var td = document.createElement('td');
+		td.colSpan = colspan;
+		td.setAttribute('data-mmwt-fs-gap-label', '⋯  ' + label + '  ⋯');
+		gap.appendChild(td);
+		gap.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			toggleFsCollapsed(sourceId, mainTable);
+		});
+		return gap;
+	}
+
+	// Delegated hover: entering any sub-row lights up ALL sub-rows of the same
+	// task (branches can cross, so one task may preview under several sources).
+	// Hoverless devices (mobile in desktop view) get a tap-toggle instead:
+	// tapping a sub-row highlights its twins, tapping it again (or another
+	// row) clears the highlight. Taps on links still navigate.
+	function attachFsHover(tbody) {
+		if (tbody._mmwtFsHover) return;
+		tbody._mmwtFsHover = true;
+		function twins(row) {
+			var id = row.getAttribute(FS_TASK_ATTR);
+			return id ? tbody.querySelectorAll('tr[' + FS_TASK_ATTR + '="' + id + '"]') : [];
+		}
+		var touchMode = window.matchMedia && window.matchMedia('(hover: none)').matches;
+		if (touchMode) {
+			tbody.addEventListener('click', function (e) {
+				var row = e.target && e.target.closest && e.target.closest('tr.' + FS_ROW_CLASS);
+				if (!row || !tbody.contains(row)) return;
+				if (row.classList.contains(FS_GAP_ROW_CLASS)) return; // toggles collapse instead
+				if (e.target.closest && e.target.closest('a')) return; // let item links navigate
+				var turnOn = !row.classList.contains(FS_HL_CLASS);
+				tbody.querySelectorAll('tr.' + FS_HL_CLASS).forEach(function (r) {
+					r.classList.remove(FS_HL_CLASS);
+				});
+				if (turnOn) twins(row).forEach(function (r) { r.classList.add(FS_HL_CLASS); });
+			});
+			return;
+		}
+		tbody.addEventListener('mouseover', function (e) {
+			var row = e.target && e.target.closest && e.target.closest('tr.' + FS_ROW_CLASS);
+			if (!row || !tbody.contains(row)) return;
+			twins(row).forEach(function (r) { r.classList.add(FS_HL_CLASS); });
+		});
+		tbody.addEventListener('mouseout', function (e) {
+			var row = e.target && e.target.closest && e.target.closest('tr.' + FS_ROW_CLASS);
+			if (!row) return;
+			twins(row).forEach(function (r) { r.classList.remove(FS_HL_CLASS); });
+		});
+	}
+
+	// Detach fs rows — cached group rows keep their references and get
+	// re-inserted by syncForeshadow, so images stay loaded. Groups whose source
+	// id is in keepIds stay in place (mid-swap rows keep their old group visible
+	// for the whole animation instead of leaving a height gap).
+	function removeFsRows(tbody, keepIds) {
+		tbody.querySelectorAll('tr.' + FS_ROW_CLASS).forEach(function (r) {
+			var src = r.getAttribute(FS_SOURCE_ATTR);
+			if (keepIds && src && keepIds[src]) return;
+			if (r.parentNode) r.parentNode.removeChild(r);
+		});
+	}
+
+	// Post-render pass: (re)attach all foreshadow groups. Runs at the end of
+	// renderActiveTable (which detaches fs rows up front so the diff/sort never
+	// sees them), after an in-place swap completes, and when either foreshadow
+	// toggle changes. Group rows are CACHED per source task and content
+	// signature — an unchanged group re-inserts the very same DOM elements, so
+	// its images never reload/redecode (a full re-clone made every image in
+	// every group repaint one by one on each checkbox click).
+	function syncForeshadow(mainTable, model, blocked) {
+		var wrapper = findExistingWrapper(mainTable);
+		if (!wrapper) return;
+		var table = wrapper.querySelector('table.' + TABLE_CLASS);
+		var tbody = table && table.querySelector('tbody');
+		if (!tbody) return;
+		// Mid-swap rows keep their old group in place — it holds the section
+		// height through the animation and gets replaced atomically afterwards.
+		var keepIds = {};
+		Array.prototype.forEach.call(tbody.children, function (tr) {
+			var kid = tr.getAttribute(TASK_ATTR);
+			if (!kid) return;
+			if (tr.classList.contains(SWAP_OUT_CLASS) || tr._mmwtSwapTarget) keepIds[kid] = 1;
+		});
+		removeFsRows(tbody, keepIds);
+		if (!model) model = buildModel(mainTable);
+		var hasActiveLocks = false;
+		model.rows.forEach(function (r) { if (r.locked) hasActiveLocks = true; });
+		updateIgnoreLocksRowVisibility(hasActiveLocks);
+		if (!isForeshadowEnabled()) return;
+		if (!blocked) blocked = makeBlockedFn(model);
+		var ignoreLocks = hasActiveLocks && isIgnoreLocksEnabled();
+		var store = readFsCollapsed();
+		var storeDirty = false;
+		var colIdx = {
+			needs: findColumnIndex(mainTable, 'Needs'),
+			opens: findColumnIndex(mainTable, 'Opens'),
+			name: findColumnIndex(mainTable, 'Name'),
+			rewards: findColumnIndex(mainTable, 'Rewards'),
+			items: findColumnIndex(mainTable, 'Items')
+		};
+		var colspan = table.querySelectorAll('thead th').length || 8;
+		var cache = tbody._mmwtFsCache || (tbody._mmwtFsCache = {});
+		attachFsHover(tbody);
+		Array.prototype.slice.call(tbody.children).forEach(function (tr) {
+			var id = tr.getAttribute(TASK_ATTR);
+			if (!id) return;
+			if (tr.classList.contains(FADE_OUT_CLASS)) return;   // leaving the active set
+			if (tr.classList.contains(SWAP_OUT_CLASS) || tr._mmwtSwapTarget) return; // mid-swap
+			var entries = computeForeshadow(model, id, blocked, ignoreLocks);
+			if (!entries.length) return;
+			// Collapse inheritance: a freshly activated task (no stored state)
+			// starts collapsed when the completed predecessor it came from was
+			// collapsed. Explicit expands are stored as 0 and never re-inherit.
+			if (!(id in store)) {
+				var t = model.byId[id];
+				for (var ni = 0; t && ni < t.needs.length; ni++) {
+					var pred = model.byId[t.needs[ni]];
+					if (pred && pred.completed && store[pred.taskId] === 1) {
+						store[id] = 1;
+						storeDirty = true;
+						break;
+					}
+				}
+			}
+			var isCollapsed = store[id] === 1;
+			// Content signature: any change here (entry set, lock state, collapse,
+			// ignore-locks mode) invalidates the cached rows for this group.
+			var sig = (isCollapsed ? 'C' : 'E') + (ignoreLocks ? 'I' : '') + '|'
+				+ entries.map(function (e) {
+					return e.task.taskId + (e.lockEnd ? 'L' : '') + (e.task.locked ? 'l' : '') + ':' + e.depth;
+				}).join(',');
+			var bySig = cache[id] || (cache[id] = {});
+			var rows = bySig[sig];
+			if (!rows) {
+				rows = [];
+				if (isCollapsed) {
+					rows.push(makeFsGapRow('Show upcoming tasks', id, mainTable, colspan));
+				} else {
+					// collapse divider sits directly under the active row, above the group
+					rows.push(makeFsGapRow('Hide upcoming tasks', id, mainTable, colspan));
+					entries.forEach(function (entry) {
+						rows.push(entry.lockEnd
+							? buildFsLockRow(entry, id, mainTable, colspan)
+							: buildFsRow(entry, id, mainTable, colIdx));
+					});
+				}
+				bySig[sig] = rows;
+			}
+			var anchor = tr;
+			rows.forEach(function (row) {
+				anchor.parentNode.insertBefore(row, anchor.nextSibling);
+				anchor = row;
+			});
+		});
+		if (storeDirty) writeFsCollapsed(store);
+		// Cached groups of no-longer-active tasks are kept on purpose: an undo
+		// brings the task right back, and reusing the same rows means its images
+		// don't reload. The cache lives only for the page's lifetime.
+		// cloned token cells in the fresh sub-rows need the same visibility state
+		applyTokenColumnSync(table);
+	}
+
+	// Re-sync foreshadow groups of every main table (toggle changes).
+	function syncAllForeshadow() {
+		if (!isFeatureEnabled()) return;
+		document.querySelectorAll('table.taskTable').forEach(function (t) {
+			if (t.getAttribute('data-tpt-id') === 'TaskTableFeatures') return;
+			if (t.classList.contains(TABLE_CLASS)) return;
+			syncForeshadow(t);
 		});
 	}
 
@@ -1442,6 +1935,10 @@
 			if (e.target && e.target.tagName === 'INPUT') return;
 			// The undo button lives in this cell too and handles itself
 			if (e.target && e.target.closest && e.target.closest('.' + UNDO_BTN_CLASS)) return;
+			// The branch-tag paper note anchors in the row's LAST cell — which is
+			// this very cell once Common.js moves Completed to the tail. Clicking
+			// the note must not complete the task.
+			if (e.target && e.target.closest && e.target.closest('.' + BRANCH_TAG_CLASS)) return;
 			e.preventDefault();
 			e.stopPropagation();
 			var orig = originalCell.querySelector('input[type="checkbox"]');
@@ -1578,6 +2075,13 @@
 				newRow.removeEventListener('animationend', onEnd);
 			};
 			newRow.addEventListener('animationend', onEnd);
+			// The swapped-in task needs its own foreshadow group (fs rows were
+			// dropped at render start); rebuild once the row is in the DOM. The
+			// collapse state follows the progression in BOTH directions (complete
+			// and undo are both in-place swaps).
+			transferFsState(oldRow.getAttribute(TASK_ATTR), newTask.taskId);
+			var mainTable = newTask.rowEl && newTask.rowEl.closest('table');
+			if (mainTable) syncForeshadow(mainTable);
 		}, SWAP_HALF_MS);
 	}
 
@@ -1684,8 +2188,13 @@
 		var linearSwap = (outgoing.length === 1 && incoming.length === 1);
 
 		if (linearSwap) {
+			// Foreshadow rows stay put during a linear swap (no sort runs) — the
+			// old group keeps the section height until the swapped-in task's
+			// group replaces it atomically in the post-swap sync.
 			swapRowInPlace(outgoing[0], incoming[0]);
 		} else {
+			// Foreshadow rows must not participate in the append/sort below
+			removeFsRows(tbody);
 			// Regular outgoing: strikethrough + fade-out + remove
 			outgoing.forEach(function (tr) {
 				tr.classList.add(FADE_OUT_CLASS);
@@ -1726,6 +2235,8 @@
 			}
 		}
 
+		// Rebuild foreshadow groups (also applies token sync to the sub-rows)
+		syncForeshadow(mainTable, model, blocked);
 		// Sync token-column visibility AFTER row inserts
 		applyTokenColumnSync(table);
 		// Pin column widths to the main table AFTER visibility sync (hidden
@@ -1838,6 +2349,21 @@
 				});
 			}).observe(tokensCell, { attributes: true, attributeFilter: ['data-sort-value'] });
 		}
+		// Foreshadow toggles (main + "Ignore Time Locks" sub-row): rebuild the
+		// foreshadow groups of every main table on change.
+		[
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id="' + FS_FEATURE_ROW_ID + '"]',
+			'[data-tpt-id="TaskTableFeatures"] [data-tpt-row-id*="Ignore Time Locks"]'
+		].forEach(function (selector) {
+			var fsInput = document.querySelector(selector);
+			var fsCell = fsInput && fsInput.closest('.table-progress-checkbox-cell');
+			if (fsCell && !fsCell._mmwtFsObserved) {
+				fsCell._mmwtFsObserved = true;
+				new MutationObserver(syncAllForeshadow).observe(fsCell, {
+					attributes: true, attributeFilter: ['data-sort-value']
+				});
+			}
+		});
 	}
 
 	function init() {

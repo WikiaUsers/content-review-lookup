@@ -133,6 +133,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     ];
     var difficulties = ["Pick Dungeon First"];
     var dungeonsNames = dungeons.map(function (a) { return a.name; });
+    var friendCounts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"];
 
     function addLevelCalculator(div) {
         createSpan(div).update("DQ Wiki Level Calculator");
@@ -140,6 +141,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         var boosterCheckBox = createCheckBox("booster", "EXP Potion activated");
         var dungeonField = createSelectField("dungeon", "Pick Dungeon (optional)", dungeonsNames);
         var difficultyField = createSelectField("difficulty", "Pick Difficulty (optional)", difficulties);
+        var friendCountField = createSelectField("friends", "Number of friends in party (optional)", friendCounts);
         var currentField = createField("current", "Your current level");
         var goalField = createField("goal", "Your goal level");
         var submit = document.createElement("button");
@@ -152,6 +154,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             boosterCheckBox.label, boosterCheckBox.input, createBr(),
             dungeonField.label, dungeonField.select, createBr(),
             difficultyField.label, difficultyField.select, createBr(),
+            friendCountField.label, friendCountField.select, createBr(),
             currentField.label, currentField.input, createBr(),
             goalField.label, goalField.input, createBr(),
             submit, createBr()
@@ -180,7 +183,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             });
             var current = parseInt(currentField.input.value);
             var goal = parseInt(goalField.input.value);
-
+            var friendCount = parseInt(friendCountField.select.value);
             var xp = calculateXp(current, goal);
             var xpString = addCommas(xp);
             var modifier = 1;
@@ -190,6 +193,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             if (boosterCheckBox.input.checked) {
                 modifier++;
             }
+            modifier += friendCount * 0.03;
             var amountOfRuns = Math.ceil((xp/modifier/dungeonEXP));
             var amountOfVIPRuns = Math.ceil((xp/(modifier+0.2)/dungeonEXP));
 

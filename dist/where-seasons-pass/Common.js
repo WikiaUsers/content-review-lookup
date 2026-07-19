@@ -3,8 +3,8 @@
     const WEEK_DURATION = 168 * 3600;
     const SEASON_DURATION = 42 * 3600;
 
-    // Current correction: 1 hour and 10 seconds
-    const OFFSET = (60 * 60) + 10;
+    // Current correction: 1 hour
+    const OFFSET = (60 * 60);
 
     const seasonData = [
         {

@@ -268,3 +268,354 @@ $(document).ready(function() {
         }, 8000);
     });
 });
+
+// ===== ЗВУК ПРИ НАВЕДЕНИИ НА ВКЛАДКИ ТАББЕРА =====
+$(document).ready(function() {
+    var audioCtx = null;
+
+    function getAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioCtx;
+    }
+
+    function playHoverBlip() {
+        var ctx = getAudioContext();
+
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(180, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.06);
+
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.08);
+    }
+
+    $(document).on('mouseenter', '.wds-tabs__tab-label', function() {
+        playHoverBlip();
+    });
+});
+
+// ===== ЭФФЕКТ ФОНАРИКА НА ДОСКЕ НАВИГАЦИИ =====
+$(document).ready(function() {
+    var board = $('.probka');
+    if (board.length === 0) return;
+
+    board.css('position', 'relative');
+
+    var flashlight = $('<div class="board-flashlight"></div>');
+    board.append(flashlight);
+
+    board.on('mousemove', function(e) {
+        var rect = this.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+
+        flashlight.css({
+            'background': 'radial-gradient(circle 180px at ' + x + 'px ' + y + 'px, transparent 0%, rgba(0,0,0,0.75) 100%)',
+            'opacity': 1
+        });
+    });
+
+    board.on('mouseleave', function() {
+        flashlight.css('opacity', 0);
+    });
+
+    // ===== 3D-НАКЛОН БУМАЖЕК В СТОРОНУ КУРСОРА =====
+    $('.note-bumajka').each(function() {
+        var note = $(this);
+
+        note.on('mousemove', function(e) {
+            var rect = this.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            var centerX = rect.width / 2;
+            var centerY = rect.height / 2;
+
+            var rotateY = ((x - centerX) / centerX) * 8;
+            var rotateX = ((centerY - y) / centerY) * 8;
+
+            note.css('transform', 'rotate(0deg) scale(1.06) perspective(400px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)');
+        });
+
+        note.on('mouseleave', function() {
+            note.css('transform', '');
+        });
+    });
+});
+
+// ===== РАСШИРЕННЫЕ ЗВУКОВЫЕ ЭФФЕКТЫ =====
+$(document).ready(function() {
+    var audioCtx = null;
+
+    function getAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioCtx;
+    }
+
+    // Универсальный генератор звука
+    function playTone(freqStart, freqEnd, duration, type, volume) {
+        var ctx = getAudioContext();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+
+        osc.type = type || 'square';
+        osc.frequency.setValueAtTime(freqStart, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freqEnd, ctx.currentTime + duration);
+
+        gain.gain.setValueAtTime(volume || 0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration);
+    }
+
+    // 1. Вкладки таббера — короткий блип (уже было)
+    $(document).on('mouseenter', '.wds-tabs__tab-label', function() {
+        playTone(180, 60, 0.08, 'square', 0.06);
+    });
+
+    // 2. Карточки аниматроников/предметов — низкий гулкий рокот
+    $(document).on('mouseenter', '.animatronic-card', function() {
+        playTone(90, 40, 0.15, 'sawtooth', 0.05);
+    });
+
+    // 3. Стрелки навигации (планшет, слайдер) — механический щелчок
+    $(document).on('click', '.gf-nav-arrow', function() {
+        playTone(300, 900, 0.05, 'square', 0.07);
+    });
+
+    // 4. Бумажки на доске — лёгкий деревянный стук
+    $(document).on('mouseenter', '.note-bumajka', function() {
+        playTone(220, 140, 0.06, 'triangle', 0.05);
+    });
+});
+
+// ===== ЭФФЕКТ ФОНАРИКА НА ДОСКЕ НАВИГАЦИИ =====
+$(document).ready(function() {
+    var board = $('.stena');
+    if (board.length === 0) return;
+
+    board.css('position', 'relative');
+
+    var flashlight = $('<div class="board-flashlight"></div>');
+    board.append(flashlight);
+
+    board.on('mousemove', function(e) {
+        var rect = this.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+
+        flashlight.css({
+            'background': 'radial-gradient(circle 220px at ' + x + 'px ' + y + 'px, transparent 0%, rgba(0,0,0,0.75) 100%)',
+            'opacity': 1
+        });
+    });
+
+    board.on('mouseleave', function() {
+        flashlight.css('opacity', 0);
+    });
+
+    // ===== 3D-НАКЛОН БУМАЖЕК В СТОРОНУ КУРСОРА =====
+    $('.note-bumajka').each(function() {
+        var note = $(this);
+
+        note.on('mousemove', function(e) {
+            var rect = this.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            var centerX = rect.width / 2;
+            var centerY = rect.height / 2;
+
+            var rotateY = ((x - centerX) / centerX) * 8;
+            var rotateX = ((centerY - y) / centerY) * 8;
+
+            note.css('transform', 'rotate(0deg) scale(1.06) perspective(400px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)');
+        });
+
+        note.on('mouseleave', function() {
+            note.css('transform', '');
+        });
+    });
+});
+
+
+/* ==========================================================
+   Случайные "выползающие" гифки — раз в 10–15 минут,
+   на любой странице вики, без повторов, пока не покажет все 6.
+   Вставить в MediaWiki:Common.js
+   ========================================================== */
+(function () {
+    'use strict';
+
+    // 1. ВСТАВЬ СЮДА ССЫЛКИ НА СВОИ 6 ФАЙЛОВ (гифки .gif ИЛИ видео .mp4/.webm)
+    var GIF_URLS = [
+        'https://static.wikia.nocookie.net/fazbears-hunt-aktualnaya-vikipediya/images/2/27/2.mp4/revision/latest?cb=20260716212550&path-prefix=ru',
+        'https://static.wikia.nocookie.net/fazbears-hunt-aktualnaya-vikipediya/images/7/74/1.mp4/revision/latest?cb=20260716212550&path-prefix=ru',
+        'https://static.wikia.nocookie.net/fazbears-hunt-aktualnaya-vikipediya/images/f/f3/3.mp4/revision/latest?cb=20260716212550&path-prefix=ru',
+        'https://static.wikia.nocookie.net/fazbears-hunt-aktualnaya-vikipediya/images/2/23/4.mp4/revision/latest?cb=20260716212547&path-prefix=ru',
+        'https://static.wikia.nocookie.net/fazbears-hunt-aktualnaya-vikipediya/images/e/e9/5.mp4/revision/latest?cb=20260716212552&path-prefix=ru',
+        'https://static.wikia.nocookie.net/fazbears-hunt-aktualnaya-vikipediya/images/7/7f/6.mp4/revision/latest?cb=20260716212548&path-prefix=ru'
+    ];
+
+    var MIN_INTERVAL = 10 * 60 * 1000; // 10 минут
+    var MAX_INTERVAL = 15 * 60 * 1000; // 15 минут
+    var DISPLAY_TIME = 6000;           // для гифок — сколько держится на экране; для видео — запасной таймер, если видео вдруг не закончится само (мс)
+    var STORAGE_KEY = 'wikiGifPopupState';
+
+    function randomInterval() {
+        return MIN_INTERVAL + Math.random() * (MAX_INTERVAL - MIN_INTERVAL);
+    }
+
+    function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+        }
+        return a;
+    }
+
+    function loadState() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return null;
+    }
+
+    function saveState(state) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+    }
+
+    function initState() {
+        var state = {
+            queue: shuffle(GIF_URLS.map(function (_, i) { return i; })),
+            nextTime: Date.now() + randomInterval()
+        };
+        saveState(state);
+        return state;
+    }
+
+    // true = видео (mp4/webm), false = картинка/гиф
+    var IS_VIDEO = true;
+
+    function removeOverlay(overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(function () {
+            overlay.remove();
+        }, 600);
+    }
+
+    // Показ гифки/видео на экране
+    function showGif(url) {
+        var overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '999999';
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.6s ease';
+        overlay.style.background = 'transparent';
+
+        var media;
+        if (IS_VIDEO) {
+            media = document.createElement('video');
+            media.src = url;
+            media.autoplay = true;
+            media.muted = true;      // без этого браузер заблокирует автозапуск
+            media.playsInline = true; // важно для мобильных
+            media.loop = false;
+        } else {
+            media = document.createElement('img');
+            media.src = url;
+        }
+
+        media.style.position = 'absolute';
+        media.style.top = '0';
+        media.style.left = '0';
+        media.style.width = '100%';
+        media.style.height = '100%';
+        media.style.objectFit = 'fill'; // растягивает на весь экран без сохранения пропорций
+
+        overlay.appendChild(media);
+        document.body.appendChild(overlay);
+
+        // плавное появление
+        requestAnimationFrame(function () {
+            overlay.style.opacity = '1';
+        });
+
+        if (IS_VIDEO) {
+            // убираем оверлей ровно когда видео закончилось
+            media.addEventListener('ended', function () {
+                removeOverlay(overlay);
+            });
+            // страховка: если autoplay почему-то не сработал/завис —
+            // всё равно уберём оверлей через запасное время
+            setTimeout(function () {
+                if (document.body.contains(overlay)) {
+                    removeOverlay(overlay);
+                }
+            }, DISPLAY_TIME);
+        } else {
+            // для гифок — просто по таймеру
+            setTimeout(function () {
+                removeOverlay(overlay);
+            }, DISPLAY_TIME);
+        }
+    }
+
+    function triggerGif(state) {
+        if (state.queue.length === 0) {
+            state.queue = shuffle(GIF_URLS.map(function (_, i) { return i; }));
+        }
+        var index = state.queue.shift();
+        showGif(GIF_URLS[index]);
+
+        state.nextTime = Date.now() + randomInterval();
+        saveState(state);
+        scheduleNext(state);
+    }
+
+    function scheduleNext(state) {
+        var delay = Math.max(0, state.nextTime - Date.now());
+        setTimeout(function () {
+            var fresh = loadState() || state; // подхватываем актуальное состояние
+            triggerGif(fresh);
+        }, delay);
+    }
+
+    // Инициализация при загрузке любой страницы
+    var state = loadState();
+    if (!state) {
+        state = initState();
+    }
+
+    if (Date.now() >= state.nextTime) {
+        // время уже подошло (например, вкладка была закрыта) — показываем сразу
+        triggerGif(state);
+    } else {
+        scheduleNext(state);
+    }
+
+}());

@@ -197,3 +197,40 @@
         }
     }
 })(window.jQuery, window.mediaWiki);
+
+
+/* Google Form Test */
+
+(function () {
+    function embedGoogleForms() {
+        var containers = document.querySelectorAll('.google-form-embed:not([data-embedded])');
+        containers.forEach(function (el) {
+            var src = el.getAttribute('data-src');
+            if (!src) return;
+
+            var iframe = document.createElement('iframe');
+            iframe.src = src;
+            iframe.width = el.getAttribute('data-width') || '640';
+            iframe.height = el.getAttribute('data-height') || '800';
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('marginheight', '0');
+            iframe.setAttribute('marginwidth', '0');
+            iframe.style.border = '0';
+
+            el.appendChild(iframe);
+            el.setAttribute('data-embedded', 'true');
+        });
+    }
+
+    // Run on initial load
+    if (document.readyState !== 'loading') {
+        embedGoogleForms();
+    } else {
+        document.addEventListener('DOMContentLoaded', embedGoogleForms);
+    }
+
+    // Fandom re-renders content on some navigation (ajax page loads), so re-run then too
+    if (window.mw && mw.hook) {
+        mw.hook('wikipage.content').add(embedGoogleForms);
+    }
+})();

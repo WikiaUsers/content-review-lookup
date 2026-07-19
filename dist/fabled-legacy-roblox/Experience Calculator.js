@@ -14,14 +14,14 @@
 
 /* --------- 1 --------- */
 /* Creating the exp calculator */
-const experienceCalculator = document.getElementById("experienceCalculator");
+var experienceCalculator = document.getElementById("experienceCalculator");
 
 function createRow(spaceID = '', hidden = false) {
   var rowSpacing = document.createElement('div');
   rowSpacing.className = 'exp-calculator-spacing';
   if (spaceID) rowSpacing.id = spaceID;
   if (experienceCalculator.children.length == 0) {
-    rowSpacing.style.marginTop = '15px';
+    rowSpacing.style.marginTop = '5px';
   }
   if (hidden) rowSpacing.style.display = 'none';
   return rowSpacing;
@@ -42,6 +42,18 @@ function createInputField({ labelText, inputFieldID, type = 'number', min = 1, m
   if (placeholder) input.placeholder = placeholder;
 
   rowSpacing.append(label, input);
+  experienceCalculator.append(rowSpacing);
+}
+
+function createHeaderLabel({ labelText, labelID }) {
+  var rowSpacing = createRow();
+  var label = document.createElement('label');
+  label.innerHTML = `${labelText}`;
+  label.className = 'exp-calculator-heading';
+
+  label.id = labelID;
+
+  rowSpacing.append(label);
   experienceCalculator.append(rowSpacing);
 }
 
@@ -176,6 +188,7 @@ var dungeonModifiers = [
 /* -------- 2.2 -------- */
 /* Input fields and checkboxes */
 
+createHeaderLabel({ labelText: 'Dungeon Info', labelID: "header1" });
 // Dungeons
 createSelectField({
   labelText: "Select a Dungeon",
@@ -187,10 +200,20 @@ createSelectField({
 
 // A checker of which dungeons support the calamity mode exp gain
 document.getElementById('dungeonExp').onchange = function () {
+  var calamityCheckbox = document.getElementById('calamityBoost');
+  var calamityLabel = document.querySelector('label[for="calamityBoost"]');
   var selectedText = this.options[this.selectedIndex].text;
   var calamityRowSpacing = document.getElementById('calamityBoost-exp-calculator-spacing');
 
   var supportedChaosDungeons = ["Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos", "Neon District: Chaos", "The First Sanctuary: Chaos"]; // Dungeons that support the calamity exp gain
+
+  var increasedExpGain = ["The First Sanctuary: Chaos"];
+
+  if (increasedExpGain.includes(selectedText)) {
+    calamityCheckbox.dataset.boost = "1";
+  } else {
+    calamityCheckbox.dataset.boost = "0.7";
+  }
 
   if (supportedChaosDungeons.includes(selectedText)) {
     calamityRowSpacing.style.display = 'block';
@@ -198,6 +221,8 @@ document.getElementById('dungeonExp').onchange = function () {
     calamityRowSpacing.style.display = 'none';
     document.getElementById('calamityBoost').checked = false;
   }
+
+  calamityLabel.innerHTML = `Increase dungeon difficulty to <span class="calamity">Calamity</span> (+${Math.round(calamityCheckbox.dataset.boost * 100)}% EXP)`;
 };
 
 // Current Level
@@ -215,6 +240,7 @@ createInputField({
   placeholder: 60
 });
 
+createHeaderLabel({ labelText: 'Boosts', labelID: "header2" });
 // Boosts
 createCheckbox({ labelText: 'Increase dungeon difficulty to <span class="calamity">Calamity</span>', checkboxID: 'calamityBoost', boostValue: 0.7, hidden: true });
 
@@ -388,7 +414,8 @@ calcBtn.onclick = function () {
       baseDungeonExp += 15000000000; // Add 3 additional "Crystalline Ballista" XP values (only spawn in calamity)
     } else if (dungeonName == "Forsaken Limbo: Chaos") {
       baseDungeonExp += 20000000000000; // Add "The Destined Death" XP value (only spawns in calamity)
-    }
+    } 
+
     boostExp += baseDungeonExp * parseFloat(calamityCheckbox.dataset.boost);
   }
 

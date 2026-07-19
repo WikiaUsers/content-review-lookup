@@ -354,23 +354,34 @@ mw.loader.using('jquery').then(function () {
 
 /********/
 (function () {
+    function getOriginalUrl(url) {
+        return url.replace(
+            /(\.(?:png|jpe?g|gif|webp|svg))(?:\/[^?]*)?(\?.*)?$/i,
+            '$1$2'
+        );
+    }
+
     function forceHighRes(img) {
         if (img.classList.contains('high-res-fixed')) return;
 
         var src = img.getAttribute('src') || '';
         var dataSrc = img.getAttribute('data-src') || '';
-
-        var scaleRegex = /\/(scale-to-width-down|thumbnail-down|smart\/width)\/\d+/ig;
         var needsFixing = false;
 
-        if (src.match(scaleRegex)) {
-            img.setAttribute('src', src.replace(scaleRegex, ''));
-            needsFixing = true;
+        if (src) {
+            var newSrc = getOriginalUrl(src);
+            if (newSrc !== src) {
+                img.setAttribute('src', newSrc);
+                needsFixing = true;
+            }
         }
 
-        if (dataSrc.match(scaleRegex)) {
-            img.setAttribute('data-src', dataSrc.replace(scaleRegex, ''));
-            needsFixing = true;
+        if (dataSrc) {
+            var newDataSrc = getOriginalUrl(dataSrc);
+            if (newDataSrc !== dataSrc) {
+                img.setAttribute('data-src', newDataSrc);
+                needsFixing = true;
+            }
         }
 
         if (img.hasAttribute('srcset')) {

@@ -10,3 +10,6 @@ importArticles({
 $("section#UploadPhotosWrapper").load(function() {
         $('select[name="wpLicense"]#wpLicense > option:contains(None selected - this file may be deleted)').attr("value","Delete");
 });
+
+/* Category Rename Auto-update Script */
+importArticles({ type: 'script', articles: [ 'u:dev:MediaWiki:CategoryRenameAuto-update/code.js' ] });

@@ -73,9 +73,9 @@ $(function () {
         var role = button.data("role");
 
         var applications = [
-            "Applications:" + role + "/" + username,
-            "Applications:" + role + "/" + username + " (1)",
-            "Applications:" + role + "/" + username + " (2)"
+            "User Rights Request:" + role + "/" + username,
+            "User Rights Request:" + role + "/" + username + " (1)",
+            "User Rights Request:" + role + "/" + username + " (2)"
         ];
 
         function showError() {
@@ -110,10 +110,9 @@ $(function () {
 
                 error: function (xhr) {
                     if (xhr.status === 404) {
-                        // Page does not exist, open creation editor
                         window.location.href = mw.util.getUrl(applications[index], {
                             action: "edit",
-                            preload: "Template:Application_Template"
+                            preload: "Template:User_Rights_Request_Template"
                         });
                     } else {
                         checkPage(index + 1);

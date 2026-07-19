@@ -1,4 +1,4 @@
-// 01:09, 10 July 2026 (UTC) <nowiki>
+// 14:06, 15 July 2026 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -151,7 +151,7 @@ $(function () {
         });
     });
 });
-// END REPLACE NUMBER SIGNS WITH MUSIC SHARP SIGNS </nowiki>
+// END REPLACE NUMBER SIGNS WITH MUSIC SHARP SIGNS
 
 // CLOSEDWIKI PAGE HEADER TITLE FIX
 $(function () {
@@ -161,7 +161,7 @@ $(function () {
 
     $('.page-header__title').text('Closed Wiki');
         });
-// END CLOSEDWIKI PAGE HEADER TITLE FIX </nowiki>
+// END CLOSEDWIKI PAGE HEADER TITLE FIX
 
 // CLOSEDWIKI TITLE FIX
 $(function () {
@@ -171,4 +171,24 @@ $(function () {
 
     $('title').text((_, old)=>old.replace('⧼closedwiki⧽', 'Closed Wiki'));
         });
-// END CLOSEDWIKI TITLE FIX </nowiki>
+// END CLOSEDWIKI TITLE FIX
+
+// AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'AuthenticationPopupSuccess') {
+        return;
+    }
+
+    $('.page-header__title').text('Signed in');
+        });
+// END AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT
+
+// AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'AuthenticationPopupSuccess') {
+        return;
+    }
+
+    $('title').text((_, old)=>old.replace('Logged in', 'Signed in'));
+        });
+// END AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT </nowiki>

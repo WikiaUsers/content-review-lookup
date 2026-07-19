@@ -1,4 +1,10 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
+
+importArticle({
+    type: 'script',
+    article: 'MediaWiki:MonthlyMatch.js'
+});  //移动端需要
+
 var sceneList = [ '花园', '蚁穴', '沙漠', '蚂蚁地狱', '沼泽', '海洋', '海洋（滤镜）', 'PvP' ,'下水道','地狱','丛林','中心','蠕虫（地图）'];
 
 var map = 
@@ -556,3 +562,138 @@ $(function () {
     }
     mw.hook('wikipage.collapsibleContent').add(show);
 })();
+
+(function () {
+  var root = document.getElementById('cancel-interference-root');
+  if (!root || !root.attachShadow) return;
+
+  var content = document.querySelector('.mw-parser-output');
+  if (!content) return;
+
+
+  var nodes = [];
+  var el = root.nextElementSibling;
+  while (el) {
+    nodes.push(el);
+    el = el.nextElementSibling;
+  }
+
+  var html = nodes.map(function (n) { return n.outerHTML; }).join('');
+
+
+  var shadow = root.attachShadow({ mode: 'closed' });
+  shadow.innerHTML =
+    '<style>' +
+    '*{all:initial;font-family:sans-serif;line-height:1.6;color:#222}' +
+    'body{margin:2rem auto;max-width:900px;padding:1rem;background:#fff}' +
+    'a{color:#06c;text-decoration:underline}' +
+    'img{max-width:100%}' +
+    'table{border-collapse:collapse;width:100%}' +
+    'td,th{border:1px solid #ddd;padding:8px}' +
+    '</style>' +
+    html;
+
+
+  nodes.forEach(function (n) { n.remove(); });
+})();
+
+/* ==================== 主题检测与class切换 ==================== */
+(function () {
+    'use strict';
+
+    function isDarkMode() {
+    return document.body.classList.contains('theme-fandomdesktop-dark');
+}
+
+
+
+    // 给生存难度卡片和导航栏切换class
+    function applyTheme() {
+        var dark = isDarkMode();
+        var sdCards = document.querySelectorAll('.survival-difficulty');
+        var navBars = document.querySelectorAll('.florrooms-head-nav');
+
+        sdCards.forEach(function (el) {
+            el.classList.remove('sd-light', 'sd-dark');
+            el.classList.add(dark ? 'sd-dark' : 'sd-light');
+        });
+
+        navBars.forEach(function (el) {
+            el.classList.remove('nav-light', 'nav-dark');
+            el.classList.add(dark ? 'nav-dark' : 'nav-light');
+        });
+    }
+
+    // 页面加载时执行
+    $(function () {
+        applyTheme();
+    });
+
+    // 监听主题切换（Fandom 切换亮暗色时 html 的 class 会变）
+    var observer = new MutationObserver(function () {
+        applyTheme();
+    });
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+
+})();
+
+
+
+/* ==================== Florrooms 元素统一加 class ==================== */
+$(function () {
+    if (window.location.href.indexOf('Florrooms') === -1) return;
+    
+    
+    $('h2 .mw-headline').each(function () {
+        $(this).closest('h2').addClass('florrooms-title-h2');
+    });
+    $('h3 .mw-headline').each(function () {
+        $(this).closest('h3').addClass('florrooms-title-h3');
+    });
+    $('h4 .mw-headline').each(function () {
+        $(this).closest('h4').addClass('florrooms-title-h4');
+    });
+    $('h1 .mw-headline, h1').each(function () {
+        $(this).closest('h1').addClass('florrooms-title-h1');
+    });
+	$('.mw-parser-output ul').addClass('florrooms-ul');
+    $('.mw-parser-output blockquote').addClass('florrooms-quote');
+    $('.mw-parser-output table').addClass('florrooms-table');
+    $('.mw-parser-output hr').addClass('florrooms-hr');
+    $('.mw-parser-output pre').addClass('florrooms-pre');
+});
+
+/* ========== 黑河档案模板动态效果 ========== */
+$(function() {
+    $('.hha-urvival-difficulty').each(function() {
+        var $card = $(this);
+        
+        // 鼠标悬停增强光效
+        $card.on('mouseenter', function() {
+            $(this).css({
+                'box-shadow': '0 0 35px ' + getComputedStyle(this).getPropertyValue('--hha-sd-color').trim() + ', inset 0 0 30px rgba(0, 255, 0, 0.2)',
+                'transition': 'all 0.3s ease'
+            });
+        });
+        
+        $card.on('mouseleave', function() {
+            $(this).css({
+                'box-shadow': '0 0 20px ' + getComputedStyle(this).getPropertyValue('--hha-sd-color').trim() + ', inset 0 0 20px rgba(0, 255, 0, 0.1)',
+                'transition': 'all 0.3s ease'
+            });
+        });
+        
+        // 扫描线随机移动
+        var $scanline = $card.find('.hha-scanline');
+        setInterval(function() {
+            var randomPos = Math.floor(Math.random() * 100);
+            $scanline.css({
+                'background-position': '0 ' + randomPos + '%',
+                'transition': 'background-position 0.8s ease'
+            });
+        }, 3000);
+    });
+});

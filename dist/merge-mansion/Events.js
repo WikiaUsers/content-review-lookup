@@ -94,6 +94,70 @@
 			+ '<br><span class="mmev-cd-tip-rel" style="opacity:0.65;">' + rel + '</span>';
 	}
 
+	// Client-side mirror of the Lua display order (running events first with the
+	// MOST time left on top, upcoming by soonest start). The parser cache can be
+	// weeks old: a cached page carries the order of its render time — and events
+	// flip between upcoming/running while it sits in cache — so the live tick
+	// data is authoritative. Only the always-visible region is reordered: the
+	// pinned Auto-Merge row stays first, a nested Garage Cleanup moves together
+	// with the segment above it, and the collapsed far-future container (or any
+	// other unknown element) acts as a hard boundary.
+	function reorderSegments() {
+		var now = Date.now() / 1000;
+		var roots = document.querySelectorAll('.mmev-root');
+		for (var ri = 0; ri < roots.length; ri++) {
+			var root = roots[ri];
+			var units = [], boundary = null;
+			var kids = root.children;
+			for (var i = 0; i < kids.length; i++) {
+				var el = kids[i];
+				if (el.classList.contains('mmev-am')) { continue; }   // pinned row
+				if (el.hasAttribute('data-mmev-seg')) {
+					if (el.style.marginLeft) {                        // nested Garage Cleanup
+						if (units.length) { units[units.length - 1].els.push(el); }
+						continue;
+					}
+					units.push({ top: el, els: [el] });
+					continue;
+				}
+				boundary = el;
+				break;
+			}
+			if (units.length < 2) { continue; }
+			for (var u = 0; u < units.length; u++) {
+				var runs = units[u].top.querySelectorAll('.mmev-run');
+				var activeEnd = null, firstStart = null;
+				for (var r = 0; r < runs.length; r++) {
+					var s = parseInt(runs[r].getAttribute('data-start'), 10);
+					var e = parseInt(runs[r].getAttribute('data-end'), 10);
+					if (isNaN(s) || isNaN(e)) { continue; }
+					if (now >= s && now <= e && (activeEnd === null || e > activeEnd)) { activeEnd = e; }
+					if (now <= e && (firstStart === null || s < firstStart)) { firstStart = s; }
+				}
+				units[u].activeEnd = activeEnd;
+				units[u].firstStart = (firstStart === null) ? Infinity : firstStart;
+				units[u].idx = u;
+			}
+			var sorted = units.slice().sort(function (a, b) {
+				var aRun = a.activeEnd !== null, bRun = b.activeEnd !== null;
+				if (aRun !== bRun) { return aRun ? -1 : 1; }          // running before upcoming
+				if (aRun && a.activeEnd !== b.activeEnd) { return b.activeEnd - a.activeEnd; } // most time left first
+				if (a.firstStart !== b.firstStart) { return a.firstStart - b.firstStart; }     // soonest start first
+				return a.idx - b.idx;                                 // stable
+			});
+			var changed = false;
+			for (var c = 0; c < units.length; c++) {
+				if (sorted[c] !== units[c]) { changed = true; break; }
+			}
+			if (!changed) { continue; }
+			for (var m = 0; m < sorted.length; m++) {
+				for (var n = 0; n < sorted[m].els.length; n++) {
+					root.insertBefore(sorted[m].els[n], boundary);
+				}
+			}
+		}
+	}
+
 	function tick() {
 		// Date.now() is true Unix epoch ms; the Lua epochs are built from UTC civil dates, so both
 		// refer to the same absolute instant — no timezone conversion needed.
@@ -158,6 +222,7 @@
 			seg.style.display = anyVisible ? 'flex' : 'none';
 		}
 
+		reorderSegments();
 	}
 
 	// Auto-Merge pinned row — its own 1-second tick (short windows shown with second precision).
@@ -479,4 +544,120 @@
 	}
 	initialTab();
 	setTimeout(initialTab, 250); // re-assert once in case Fandom's tabber init ran after us
+})();
+
+/* == The Daily Scoop: client-side Full Week tab ==
+ * Module:DailyScoop stopped emitting the Full Week tab server-side: its table
+ * duplicated all seven Day panels inside nested tabbers, which counts twice
+ * toward the page's 5 MB unstrip limit and left no headroom (wiki dev log,
+ * 2026-07-17). This block adds the whole tab in the browser -- the tab strip
+ * entry, the panel, and the table built 1:1 by cloning the Day-tab cards.
+ * Where it cannot run (FandomMobile skin, script not loaded) the tab simply
+ * does not exist, so readers never meet an empty "broken" tab. Day tabs use
+ * the one-line card layout (.mm-dst-row); the Full Week columns use the
+ * stacked layout, so that class is stripped from the clones. Cloned expanders
+ * lose their handlers, so makeCollapsible is re-run on them. */
+(function () {
+	function buildTable(days) {
+		var table = document.createElement('table');
+		table.className = 'article-table mm-dst-fwt';
+		var tbody = document.createElement('tbody');
+		var trH = document.createElement('tr');
+		var trB = document.createElement('tr');
+		trB.className = 'valignTop';
+		Array.prototype.forEach.call(days, function (dayDiv, i) {
+			// header cell: day number + totals cloned from the day's total card
+			var th = document.createElement('th');
+			var total = dayDiv.querySelector('.mm-dst-total');
+			var spans = total ? total.querySelectorAll('.mm-dst-rw > span') : [];
+			th.innerHTML = 'Day ' + (i + 1)
+				+ (spans[0] ? '<br><small>' + spans[0].innerHTML + '</small>' : '')
+				+ (spans[1] ? ' ' + spans[1].innerHTML : '');
+			trH.appendChild(th);
+			var td = document.createElement('td');
+			Array.prototype.forEach.call(dayDiv.children, function (child) {
+				// the day-total row stays out: the Full Week totals live in the header
+				if (child.classList && child.classList.contains('mm-dst-total')) { return; }
+				var c = child.cloneNode(true);
+				if (c.classList) { c.classList.remove('mm-dst-row', 'mw-made-collapsible'); }
+				if (c.querySelectorAll) {
+					c.querySelectorAll('.mm-dst-row').forEach(function (n) { n.classList.remove('mm-dst-row'); });
+					c.querySelectorAll('.mw-made-collapsible').forEach(function (n) { n.classList.remove('mw-made-collapsible'); });
+				}
+				td.appendChild(c);
+			});
+			trB.appendChild(td);
+		});
+		tbody.appendChild(trH);
+		tbody.appendChild(trB);
+		table.appendChild(tbody);
+		return table;
+	}
+
+	function addFullWeekTab(tabber) {
+		if (tabber.getAttribute('data-mm-fw-built')) { return; }
+		var tabs = tabber.querySelector('.wds-tabs');
+		var days = tabber.querySelectorAll('.mm-dst-day');
+		if (!tabs || !days.length) { return; }
+		if (tabs.querySelector('[data-hash="Full_Week"]')) { return; }
+		tabber.setAttribute('data-mm-fw-built', '1');
+
+		var li = document.createElement('li');
+		li.className = 'wds-tabs__tab';
+		li.setAttribute('data-hash', 'Full_Week');
+		li.innerHTML = '<div class="wds-tabs__tab-label"><a href="#">Full Week</a></div>';
+		tabs.appendChild(li);
+
+		var panel = document.createElement('div');
+		panel.className = 'wds-tab__content';
+		var wrap = document.createElement('div');
+		wrap.style.overflowX = 'auto';
+		wrap.appendChild(buildTable(days));
+		panel.appendChild(wrap);
+		tabber.appendChild(panel);
+
+		// Fandom's tabber was initialised before this tab existed, so the switching
+		// is handled here: capture phase wins over the native handler for our tab,
+		// and any native tab click deactivates ours (the native code only manages
+		// the panels it knew about at init time).
+		tabs.addEventListener('click', function (e) {
+			var t = e.target.closest && e.target.closest('.wds-tabs__tab');
+			if (!t || !tabs.contains(t)) { return; }
+			if (t === li) {
+				e.preventDefault();
+				e.stopPropagation();
+				tabs.querySelectorAll('.wds-tabs__tab').forEach(function (n) { n.classList.remove('wds-is-current'); });
+				Array.prototype.forEach.call(tabber.children, function (n) {
+					if (n.classList && n.classList.contains('wds-tab__content')) { n.classList.remove('wds-is-current'); }
+				});
+				li.classList.add('wds-is-current');
+				panel.classList.add('wds-is-current');
+			} else {
+				li.classList.remove('wds-is-current');
+				panel.classList.remove('wds-is-current');
+			}
+		}, true);
+
+		if (window.mw && mw.loader && mw.loader.using) {
+			mw.loader.using('jquery.makeCollapsible').then(function () {
+				jQuery(panel).find('.mm-dst-x').makeCollapsible();
+			});
+		}
+	}
+
+	function init() {
+		document.querySelectorAll('.wds-tabber').forEach(function (tabber) {
+			// direct-child check keeps this to the INNER day tabbers -- the outer
+			// week tabber contains the same cards, but only as deeper descendants
+			if (tabber.querySelector(':scope > .wds-tab__content > .mm-dst-day')) {
+				addFullWeekTab(tabber);
+			}
+		});
+	}
+	if (window.mw && mw.hook) { mw.hook('wikipage.content').add(init); }
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
 })();

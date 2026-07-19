@@ -292,13 +292,16 @@
         return;
       }
       var table = tableMatch[0];
-      var tableStart = tableMatch.index;
-      var tableEnd = tableStart + table.length;
+var tableStart = tableMatch.index;
+var tableEnd = tableStart + table.length;
 
-      // Split into rows on "|-"
-      var rows = table.split(/\n\|-\n/);
-      // rows[0] = header block including {| ... and !column headers
-      // rows[1..] = data rows (last one ends with "\n|}")
+// Detach the closing "|}" so it doesn't get glued onto the last
+// data row's final cell when we split on row separators below.
+var closeMarker = '\n|}';
+var tableBody = table.slice(0, table.length - closeMarker.length);
+
+// Split into rows on "|-"
+var rows = tableBody.split(/\n\|-\n/);
 
       var insertIndex = rows.length; // default: before closing |}
 
@@ -324,7 +327,7 @@
 
       rows.splice(insertIndex, 0, newRow);
 
-      var newTable = rows.join('\n|-\n');
+      var newTable = rows.join('\n|-\n') + closeMarker;
       var newWikitext = wikitext.slice(0, tableStart) + newTable + wikitext.slice(tableEnd);
 
       api.postWithToken('csrf', {

@@ -1,7 +1,9 @@
 /* ===== 二创月赛投票区 - 标题 + 投票系统 ===== */
+
 (function () {
     'use strict';
-
+	
+mw.hook('wikipage.content').add(function() {
     if (mw.config.get('wgPageName') !== '二/2026.7二创月赛') return;
 
     var DATA_PAGE = '二/2026.7二创月赛/投票数据';
@@ -430,5 +432,5 @@
         card.appendChild(right);
         return card;
     }
-
+});
 })();

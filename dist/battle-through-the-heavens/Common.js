@@ -66,7 +66,7 @@ window.pPreview.RegExp.noinclude.push('.source-notice');
 (function () {
     function initSearch(nav) {
         var grid  = nav.querySelector(".dh-grid");
-        var cards = nav.querySelectorAll(".dh-grid a");
+        var cards = nav.querySelectorAll(".dh-grid a, .dh-grid .selflink");
         if (!grid || !cards.length) return;
 
         var bar = document.createElement("div");
@@ -94,8 +94,8 @@ window.pPreview.RegExp.noinclude.push('.source-notice');
             var visible = 0;
 
             cards.forEach(function (card) {
-                var m = card.href.match(/Episode[_ ](\d+)(?:$|[^0-9])/);
-                var epNum = m ? m[1] : "";
+                var numEl = card.querySelector(".dh-ep-num");
+                var epNum = numEl ? numEl.textContent.trim() : "";
                 var match = !q || epNum.indexOf(q) !== -1;
 
                 // overriding display:flex

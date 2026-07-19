@@ -1,9 +1,520 @@
+$(function () {
+
+const TARGET_AUDIO = "BrokenSong.mp3";
+const CATBOX_AUDIO = "https://files.catbox.moe/la23ux.mp3";
+
+const SOUL_RED = "https://static.wikia.nocookie.net/calamity-ruin/images/c/c9/SoulDeltarune.png/revision/latest?cb=20260718173618&format=original";
+const SOUL_BLUE = "https://static.wikia.nocookie.net/calamity-ruin/images/c/c6/SoulBroken.png/revision/latest?cb=20260718173642&format=original";
+
+/*========================
+      TIMELINE
+========================*/
+
+const SOUL_APPEAR = 3.1;
+const SOUL_CHANGE = 11.0;
+const FLASH_TIME = 11.3;
+const SOUL_HIDE = 11.4;
+
+/*========================
+      AUDIO
+========================*/
+
+let audio = null;
+let analyser = null;
+let audioCtx = null;
+let source = null;
+let freqData = null;
+let initialized = false;
+
+/*========================
+      CANVAS
+========================*/
+
+const canvas = $("<canvas>")
+.css({
+    position:"fixed",
+    left:0,
+    top:0,
+    width:"100%",
+    height:"100%",
+    pointerEvents:"none",
+    zIndex:9998
+})
+.appendTo("body")[0];
+
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+}
+resizeCanvas();
+
+$(window).on("resize",resizeCanvas);
+
+/*========================
+        SOUL
+========================*/
+
+const soul = $("<img>")
+.attr("src",SOUL_RED)
+.css({
+    position:"fixed",
+    left:"50%",
+    top:"50%",
+    width:"180px",
+    transform:"translate(-50%,-50%) scale(.8)",
+    opacity:0,
+    pointerEvents:"none",
+    zIndex:9999,
+    transition:"opacity .4s ease, transform .4s ease",
+    filter:"drop-shadow(0 0 20px red)"
+})
+.appendTo("body");
+
+/*========================
+        FLASH
+========================*/
+
+const flash = $("<div>")
+.css({
+    position:"fixed",
+    inset:0,
+    background:"#fff",
+    opacity:0,
+    pointerEvents:"none",
+    zIndex:10000,
+    transition:"opacity .15s linear"
+})
+.appendTo("body");
+
+function doFlash(){
+
+    flash.css("opacity",1);
+
+    setTimeout(()=>{
+        flash.css("opacity",0);
+    },120);
+
+}
+
+/*========================
+    AUDIO CONTEXT
+========================*/
+
+function createAudioSystem(audioElement){
+
+    audioCtx = new(window.AudioContext||window.webkitAudioContext)();
+
+    analyser = audioCtx.createAnalyser();
+
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = .82;
+
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+
+    source = audioCtx.createMediaElementSource(audioElement);
+
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+}
+
+/*========================
+   VISUALIZER SETTINGS
+========================*/
+
+let visualizerColor = "#ff3030";
+
+const LINE_WIDTH = 3;
+
+const GLOW = 30;
+
+/*========================
+ DRAW VISUALIZER
+========================*/
+
+function drawHalf(invert){
+
+    ctx.beginPath();
+
+    const centerY = canvas.height / 2;
+
+    const slice = canvas.width / 220;
+
+    for(let i=0;i<220;i++){
+
+        const idx = Math.floor(i * freqData.length / 220);
+
+        const amp =
+            (freqData[idx] / 255) * 170;
+
+        const x = i * slice;
+
+        const y = invert
+            ? centerY - amp
+            : centerY + amp;
+
+        if(i===0)
+            ctx.moveTo(x,y);
+        else
+            ctx.lineTo(x,y);
+
+    }
+
+    ctx.stroke();
+
+}
+
+function drawVisualizer(){
+
+    requestAnimationFrame(drawVisualizer);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    if(!audio || !analyser)
+        return;
+
+    analyser.getByteFrequencyData(freqData);
+
+    ctx.save();
+
+    const grad = ctx.createLinearGradient(
+        0,
+        canvas.height/2-170,
+        0,
+        canvas.height/2+170
+    );
+
+    if(visualizerColor=="#ff2020"){
+
+        grad.addColorStop(0,"#ff9090");
+        grad.addColorStop(.3,"#ff4040");
+        grad.addColorStop(1,"#800000");
+
+    }else{
+
+        grad.addColorStop(0,"#cfffff");
+        grad.addColorStop(.3,"#4ddfff");
+        grad.addColorStop(1,"#0066ff");
+
+    }
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 3;
+
+    ctx.shadowColor = visualizerColor;
+    ctx.shadowBlur = 45;
+
+    drawHalf(true);
+    drawHalf(false);
+
+    ctx.restore();
+
+}
+
+/*========================
+ DETECT AUDIO
+========================*/
+
+document.addEventListener("play",function(e){
+
+    if(e.target.tagName!=="AUDIO")
+        return;
+
+    if(!e.target.src.includes(TARGET_AUDIO))
+        return;
+
+    audio=e.target;
+
+    if(!initialized){
+
+        audio.pause();
+
+        audio.src=CATBOX_AUDIO;
+
+        audio.crossOrigin="anonymous";
+
+        audio.load();
+
+        audio.play();
+
+        createAudioSystem(audio);
+
+        initialized=true;
+
+    }
+
+    if(audioCtx&&audioCtx.state==="suspended")
+        audioCtx.resume();
+
+},true);
+
+/*========================
+ FLAGS
+========================*/
+
+let soulAppeared=false;
+let soulChanged=false;
+let flashDone=false;
+let soulHidden=false;
+
+/*========================
+ SCREEN SHAKE
+========================*/
+
+let shake = 0;
+
+function screenShake(){
+
+    requestAnimationFrame(screenShake);
+
+    if(shake<=0){
+
+        canvas.style.transform="";
+        soul.css("transform",
+            soulHidden
+            ? "translate(-50%,-50%) scale(.7)"
+            : soulAppeared
+                ? "translate(-50%,-50%) scale(1)"
+                : "translate(-50%,-50%) scale(.8)"
+        );
+
+        return;
+
+    }
+
+    shake*=0.9;
+
+    const x=(Math.random()-0.5)*shake;
+    const y=(Math.random()-0.5)*shake;
+
+    canvas.style.transform=`translate(${x}px,${y}px)`;
+
+    soul.css(
+        "transform",
+        `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1)`
+    );
+
+}
+
+screenShake();
+
+/*
+=========================================
+
+PARTE 2 COMEÇA DAQUI
+
+=========================================
+/*========================
+      TIMELINE LOOP
+========================*/
+
+function updateTimeline(){
+
+    requestAnimationFrame(updateTimeline);
+
+    if(!audio) return;
+
+    const t = audio.currentTime;
+
+    /*========================
+        SOUL APPEAR
+    ========================*/
+
+    if(
+        t >= SOUL_APPEAR &&
+        !soulAppeared
+    ){
+
+        soulAppeared = true;
+
+        soul.css({
+            opacity:1,
+            transform:"translate(-50%,-50%) scale(1)"
+        });
+
+        visualizerColor = "#ff2020";
+
+    }
+
+    /*========================
+        SOUL GLOW
+    ========================*/
+
+    if(soulAppeared && !soulHidden){
+
+        const pulse =
+            20 +
+            Math.sin(t*5)*12;
+
+        soul.css(
+            "filter",
+            `drop-shadow(0 0 ${pulse}px ${visualizerColor})`
+        );
+
+    }
+
+    /*========================
+       IMAGE CHANGE
+    ========================*/
+
+    if(
+        t >= SOUL_CHANGE &&
+        !soulChanged
+    ){
+
+        soulChanged = true;
+
+        soul.css("opacity",0);
+
+        setTimeout(function(){
+
+            soul.attr(
+                "src",
+                SOUL_BLUE
+            );
+
+            soul.css({
+                opacity:1,
+                filter:"drop-shadow(0 0 30px #00bfff)"
+            });
+
+        },170);
+
+    }
+
+    /*========================
+         FLASH
+    ========================*/
+
+    if(
+        t >= FLASH_TIME &&
+        !flashDone
+    ){
+
+        flashDone = true;
+
+        doFlash();
+        shake=18;
+        visualizerColor = "#00bfff";
+
+        $("body").css({
+            transition:"filter .18s ease",
+            filter:"brightness(2)"
+        });
+
+        setTimeout(function(){
+
+            $("body").css({
+                filter:"brightness(1)"
+            });
+
+        },180);
+
+    }
+
+    /*========================
+        SOUL HIDE
+    ========================*/
+
+    if(
+        t >= SOUL_HIDE &&
+        !soulHidden
+    ){
+
+        soulHidden = true;
+
+        soul.css({
+            opacity:0,
+            transform:"translate(-50%,-50%) scale(.7)"
+        });
+
+    }
+
+    /*========================
+        RESET
+    ========================*/
+
+    if(t < 0.5){
+
+        soulAppeared = false;
+        soulChanged = false;
+        flashDone = false;
+        soulHidden = false;
+
+        visualizerColor = "#ff2020";
+
+        soul.attr(
+            "src",
+            SOUL_RED
+        );
+
+        soul.css({
+            opacity:0,
+            transform:"translate(-50%,-50%) scale(.8)",
+            filter:"drop-shadow(0 0 20px red)"
+        });
+
+    }
+
+}
+
+updateTimeline();
+
+/*========================
+   STOP / END HANDLING
+========================*/
+
+function resetEverything(){
+
+    soulAppeared = false;
+    soulChanged = false;
+    flashDone = false;
+    soulHidden = false;
+
+    visualizerColor = "#ff2020";
+
+    soul.attr(
+        "src",
+        SOUL_RED
+    );
+
+    soul.css({
+        opacity:0,
+        transform:"translate(-50%,-50%) scale(.8)",
+        filter:"drop-shadow(0 0 20px red)"
+    });
+
+}
+
+document.addEventListener("pause",function(e){
+
+    if(e.target!==audio)
+        return;
+
+    resetEverything();
+
+},true);
+
+document.addEventListener("ended",function(e){
+
+    if(e.target!==audio)
+        return;
+
+    resetEverything();
+
+},true);
+
+});
+
+
 mw.loader.using(['mediawiki.util']).then(() => {
 
     if (mw.config.get('wgPageName') !== 'Home') return;
 
-    // 2%
-    if (Math.random() > 0.02) return;
+    // 0.1%
+    if (Math.random() > 0.001) return;
 
     const content = document.querySelector('.mw-parser-output');
     if (!content) return;
@@ -120,7 +631,7 @@ $(function(){
   const FLASH_END   = 16.6;
   const VIDEO_TIME  = 16.6;
 
-  const CHANCE = 0.01; // 1%
+  const CHANCE = 0.03; // 3%
 
   /* ================= 1% CHANCE CHECK ================= */
 

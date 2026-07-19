@@ -524,83 +524,64 @@ mw.loader.using('jquery', function() {
   });
 
 });
-$(function() {
-
-    'use strict';
-
-    // Не добавляем плашку в служебных списках правок
-
-    if ($('body').hasClass('mw-special-Contributions')) return;
-
-
-    // Функция добавления плашки
-
-    function addBadge() {
-
-        $('a[href$=":Dramz0wen"], a[href$="/Dramz0wen"]').each(function() {
-
-            var $link = $(this);
-
-            // Проверяем, что плашка ещё не добавлена
-
-            if ($link.next('.dramz-admin-badge').length) return;
-
-
-            var $badge = $('<span>')
-
-                .addClass('dramz-admin-badge')
-
-                .css({
-
-                    fontFamily: 'BarboskinsAkzident, monospace',
-
-                    color: '#00ffff',
-
-                    textShadow: '0 0 16px #00ffff, 0 0 10px #00ffff, 0 0 8px #00ffff, 0 0 4px #aa44ff',
-
-                    background: 'linear-gradient(45deg, #000a1a, #001a1a, #000a1a, #001a30, #000a1a, #001a1a, #000a1a, #001a30)',
-
-                    borderRadius: '10px',
-
-                    border: '2.5px solid #00ffff',
-
-                    boxShadow: '0 0 5px #00ffff, 0 0 10px #aa44ff',
-
-                    padding: '2px 6px',
-
-                    fontSize: '0.8em',
-
-                    marginLeft: '5px',
-
-                    verticalAlign: 'middle'
-
-                })
-
-                .text('Администратор, почётный участник');
-
-
-            $link.after($badge);
-
-        });
-
-    }
-
-
-    // Запускаем при первой загрузке
-
-    addBadge();
-
-
     // И при каждом изменении DOM (например, если комментарии подгружаются динамически)
 
-    mw.hook('wikipage.content').add(function($content) {
+    // mw.hook('wikipa
+// Универсальный движок для выборных историй 
+$(function() {
+    'use strict';
 
-        if ($content) {
+    // Ищем контейнер и данные
+    var $container = $('#story-adventure-container');
+    var $dataTag = $('#story-adventure-data');
 
-            addBadge();
+    if (!$container.length || !$dataTag.length) return;
 
+    var story;
+    try {
+        story = JSON.parse($dataTag.text().trim());
+    } catch (e) {
+        $container.html('<p style="color:red;">Ошибка в JSON-сценарии.</p>');
+        return;
+    }
+
+    if (!story.initialNode || !story.nodes) {
+        $container.html('<p style="color:red;">В сценарии нет initialNode или nodes.</p>');
+        return;
+    }
+
+    var nodes = story.nodes;
+
+    // Отрисовка узла
+    function renderNode(nodeId) {
+        var node = nodes[nodeId];
+        if (!node) {
+            $container.html('<p style="color:#ff4444;">Конец сюжета? Узел не найден.</p>');
+            return;
         }
 
-    });
+        var html = '<div class="story-node"><p>' + mw.html.escape(node.text) + '</p>';
 
+        if (node.choices && node.choices.length > 0) {
+            html += '<div class="story-choices" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:15px;">';
+            node.choices.forEach(function(choice) {
+                html += '<button class="story-choice-btn" data-next="' + mw.html.escape(choice.nextNode) + '" style="padding:10px 20px; background:transparent; color:#00ffff; border:2px solid #00ffff; font-family:\'Courier New\',monospace; cursor:pointer; transition:0.3s; letter-spacing:1px;" onmouseover="this.style.background=\'#00ffff\'; this.style.color=\'#000\';" onmouseout="this.style.background=\'transparent\'; this.style.color=\'#00ffff\';">' + mw.html.escape(choice.label) + '</button>';
+            });
+            html += '</div>';
+        } else {
+            html += '<p style="color:#888; font-style:italic; margin-top:15px;">Конец истории.</p>';
+        }
+
+        html += '</div>';
+        $container.html(html);
+    }
+
+    // Старт
+    renderNode(story.initialNode);
+
+    // Клики по выборам
+    $container.on('click', '.story-choice-btn', function() {
+        var nextNodeId = $(this).data('next');
+        if (nextNodeId) renderNode(nextNodeId);
+    });
 });

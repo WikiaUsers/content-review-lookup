@@ -28,7 +28,14 @@ window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.limit = 30;
 
+mw.hook("wikipage.content").add(function () {
+    $("span.import-css").each(function () {
+    	mw.util.addCSS($(this).attr("data-css"));
+    });
+});
+
 /* LockOldDiscussionVotes */
+/* this doesnt work for some reason i will look into this later */
 (function() {
 	if (!/\/f/.test(location.pathname)) return;
 
