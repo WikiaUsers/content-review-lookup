@@ -1,4 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+importScript('MediaWiki:ModStats.js');
 
 /* MapsExtended global config */
 window.mapsExtendedConfig = {

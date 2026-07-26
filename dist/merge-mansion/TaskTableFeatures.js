@@ -539,7 +539,11 @@
  * #3 — Hide Completed Tasks
  * Hides completed task rows; shows up to 2-hop BFS predecessors (via Needs) of
  * each uncompleted task. Inserts a dotted divider with hover-count between
- * visible rows separated by hidden ones.
+ * visible rows separated by hidden ones. While hiding is active the table's
+ * column widths are pinned to their full-content values (measured as if all
+ * rows were visible), so hiding/revealing the widest row never changes the
+ * table's width — and the Active Tasks clone above inherits the same stable
+ * width through its existing sync.
  * ========================================================================== */
 (function () {
 	'use strict';
@@ -748,6 +752,119 @@
 		}
 	}
 
+	// ── Full-content width pin ──────────────────────────────────────────────
+	// Rows hidden via display:none stop contributing to the browser's column
+	// width computation, so whenever the widest row happens to get hidden the
+	// whole table (and the Active Tasks clone mirroring it) visibly shrinks —
+	// and grows back on undo / when arriving with a different completion state.
+	// Instead, measure the widths the table has with ALL rows visible and pin
+	// them (table-layout:fixed + per-header widths). The measurement un-hides
+	// the rows only inside one synchronous block — the browser never paints
+	// mid-block, so nothing flickers. Each table pins its own measured widths,
+	// so every area keeps its individual full-content width.
+
+	function headerCells(table) {
+		var row = table.querySelector('thead tr') || table.querySelector('tr');
+		if (!row) return [];
+		return Array.prototype.slice.call(row.children);
+	}
+
+	// Measure natural per-column widths + total width as if no row were hidden.
+	// Clears any previous pin styles first so auto layout decides freely.
+	function measureFullWidths(table) {
+		var unhidden = [];
+		table.querySelectorAll('tbody > tr').forEach(function (tr) {
+			if (tr.style.display === 'none') {
+				unhidden.push(tr);
+				tr.style.display = '';
+			}
+		});
+		var ths = headerCells(table);
+		table.style.tableLayout = '';
+		table.style.width = '';
+		ths.forEach(function (th) { th.style.width = ''; });
+		void table.offsetWidth; // force layout with everything visible
+		var widths = ths.map(function (th) {
+			return th.getBoundingClientRect().width;
+		});
+		var total = table.getBoundingClientRect().width;
+		unhidden.forEach(function (tr) { tr.style.display = 'none'; });
+		return { widths: widths, total: total };
+	}
+
+	function applyWidthPin(table) {
+		var pin = table._mmwtWidthPin;
+		if (!pin) return;
+		var ths = headerCells(table);
+		if (ths.length !== pin.widths.length) return;
+		table.style.tableLayout = 'fixed';
+		table.style.width = pin.total + 'px';
+		for (var i = 0; i < ths.length; i++) {
+			// hidden columns (Hide Tokens) measure 0 — leave them unstyled
+			ths[i].style.width = pin.widths[i] > 0 ? pin.widths[i] + 'px' : '';
+		}
+	}
+
+	function remeasureWidthPin(table) {
+		table._mmwtWidthPin = measureFullWidths(table);
+		applyWidthPin(table);
+	}
+
+	function removeWidthPin(table) {
+		if (!table._mmwtWidthPin) return;
+		table._mmwtWidthPin = null;
+		table.style.tableLayout = '';
+		table.style.width = '';
+		headerCells(table).forEach(function (th) { th.style.width = ''; });
+	}
+
+	function ensureWidthPin(table) {
+		if (table._mmwtWidthPin) {
+			// Cheap re-assert; revealing rows (undo) never changes the pin —
+			// their widths are already part of the full-content measurement.
+			applyWidthPin(table);
+			return;
+		}
+		remeasureWidthPin(table);
+		attachPinInvalidators(table);
+	}
+
+	// Content metrics can change after the pin was measured — re-measure
+	// (debounced; the un-hide/measure/re-hide block itself stays synchronous).
+	function attachPinInvalidators(table) {
+		if (table._mmwtPinHooks) return;
+		table._mmwtPinHooks = true;
+		var pending = null;
+		function remeasureSoon() {
+			if (pending) clearTimeout(pending);
+			pending = setTimeout(function () {
+				pending = null;
+				if (table._mmwtWidthPin) remeasureWidthPin(table);
+			}, 150);
+		}
+		// Lazy-loaded images finish after measurement; 'load' does not bubble,
+		// so listen in capture phase.
+		table.addEventListener('load', remeasureSoon, true);
+		// Auto layout caps the natural width at the container, so a resized
+		// window can change what "full width" means.
+		window.addEventListener('resize', remeasureSoon);
+		// Web-font swap changes text metrics.
+		if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+			document.fonts.ready.then(remeasureSoon);
+		}
+		// Hide Tokens toggles a whole column on/off (same anchor cell IIFE #1
+		// uses — the FIRST checkbox row of the features table).
+		var tokensCell = document.querySelector(
+			'[data-tpt-id="TaskTableFeatures"] .table-progress-checkbox-cell'
+		);
+		if (tokensCell) {
+			new MutationObserver(remeasureSoon).observe(tokensCell, {
+				attributes: true,
+				attributeFilter: ['data-sort-value']
+			});
+		}
+	}
+
 	function applyVisibility(table, enabled) {
 		// Never apply to the features table itself.
 		if (table.getAttribute('data-tpt-id') === 'TaskTableFeatures') return;
@@ -759,6 +876,7 @@
 		if (!enabled) {
 			model.rows.forEach(function (r) { r.rowEl.style.display = ''; });
 			removeGapRows(table);
+			removeWidthPin(table);
 			return;
 		}
 
@@ -781,6 +899,10 @@
 		} else {
 			insertGapRows(table, model, visible);
 		}
+		// Pin AFTER hiding — the measurement itself is hide-state independent
+		// (it un-hides while measuring), this just keeps the pinned widths the
+		// last style write of the pass.
+		ensureWidthPin(table);
 	}
 
 	function applyAll(enabled) {

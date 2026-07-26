@@ -21,6 +21,9 @@ $(function() {
         var $list = $('<div class="rbx-toc-list"></div>');
         $toc.append($list);
 
+        // ĐÂY LÀ BIẾN KHÓA ĐỂ TRÁNH XUNG ĐỘT GIỮA CLICK VÀ SCROLL
+        var isClickScrolling = false; 
+
         $headings.each(function(i, el) {
             var $h = $(el);
             // Lấy ID thẻ để nhảy trang
@@ -35,6 +38,9 @@ $(function() {
             text = text.replace(/\[edit\]/g, '').trim();
 
             var isH2 = el.tagName.toLowerCase() === 'h2';
+            
+            // KIỂM TRA: Nếu là H2, xem phần tử tiếp theo có phải H3 không
+            var hasH3 = isH2 && $headings.eq(i + 1).is('h3');
 
             // Tạo thẻ A chứa cả dòng
             var $item = $('<a>', {
@@ -46,8 +52,8 @@ $(function() {
             // Chữ bên trái
             $item.append($('<span>', { text: text }));
 
-            // Dấu mũi tên V bên phải (chỉ gán cho thẻ H2)
-            if (isH2) {
+            // Dấu mũi tên (Chỉ gắn cho H2 khi có H3 con)
+            if (isH2 && hasH3) {
                 var $icon = $('<span class="rbx-toc-icon"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path></svg></span>');
                 $item.append($icon);
             }
@@ -58,17 +64,32 @@ $(function() {
         // Chèn vào đầu cột bên phải
         $rightRail.prepend($toc);
 
-        // Click để cuộn trang mượt mà
+        // CẢI TIẾN LẠI SỰ KIỆN CLICK (Kết hợp hoàn hảo với CSS mới)
         $toc.on('click', '.rbx-toc-item', function(e) {
             e.preventDefault();
+            
+            // 1. Tạm thời khóa chức năng lăn chuột (Scroll Spy)
+            isClickScrolling = true;
+
+            // 2. Ép mục vừa click sáng lên NGAY LẬP TỨC
+            $('.rbx-toc-item').removeClass('active-pill');
+            $(this).addClass('active-pill');
+
+            // 3. Cuộn trang mượt mà
             var targetId = $(this).attr('href');
-            $('html, body').animate({
+            $('html, body').stop().animate({
                 scrollTop: $(targetId).offset().top - 80
-            }, 300);
+            }, 300).promise().done(function() {
+                // 4. Mở khóa lại Scroll Spy sau khi đã cuộn xong (sau 300ms)
+                isClickScrolling = false;
+            });
         });
 
         // (4) SCROLL SPY: Lăn chuột đến đâu, sáng kén đến đó
         $(window).on('scroll.rbxToc', function() {
+            // NẾU ĐANG CUỘN BẰNG CLICK CHUỘT THÌ BỎ QUA KHÔNG QUÉT NỮA
+            if (isClickScrolling) return; 
+
             var scrollPos = $(window).scrollTop() + 100; // Đo khoảng cách cuộn
             var activeId = null;
 

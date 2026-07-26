@@ -38,12 +38,20 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 			form.on('submit', (event)=>{
 				event.preventDefault();
 				let rd = $('#wpRedirectFile'),
-					fn = $('#wpDestFile');
-				if ( rd.length>0 && rd.val().length>0 && fn.val().length>0 ) {
-					let openRD = ()=>{window.open( mw.config.get('wgServer')+mw.util.getUrl('File:'+fn.val())+'?redirect=no', '_self');},
+					fn = $('#wpDestFile'),
+					fnVal = fn.val().replace(/[\\\/:\*\?"<>]/g, '');
+				if ( rd.length>0 && rd.val().length>0 && fnVal.length>0 ) {
+					let openRD = ()=>{window.open( mw.config.get('wgServer')+mw.util.getUrl('File:'+fnVal)+'?redirect=no', '_self');},
 						rdContent = (window.dev.BetterUpload.redirectFormat||'#redirect ['+'[File:%TARGET%]]').replace(/%TARGET%/, rd.val());
-					api.create('File:'+fn.val(), {recreate: true}, rdContent).then(openRD);
-					api.edit('File:'+fn.val(), ()=>({ text: rdContent, comment: 'Create redirect' })).then(openRD);
+					api.create(
+						'File:'+fnVal,
+						{recreate: true},
+						rdContent
+					).then(openRD);
+					api.edit(
+						'File:'+fnVal,
+						() => ({ text: rdContent, comment: 'Create redirect' })
+					).then(openRD);
 				} else {
 					BU.saveEdit();
 					BU.attemptUpload();
@@ -318,7 +326,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 		},
 		
 		renderPreview: () => {
-			let filename = document.querySelector('#wpDestFile').value;
+			let filename = document.querySelector('#wpDestFile').value.replace(/[\\\/:\*\?"<>]/g, '');
 			let text = cm.view.state.sliceDoc();
 			let params = {
 				action: 'parse',
@@ -340,7 +348,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 		
 		saveEdit: () => {
 			if (document.querySelector('input#wpUploadSummary')) {
-				let filename = document.querySelector('#wpDestFile').value;
+				let filename = document.querySelector('#wpDestFile').value.replace(/[\\\/:\*\?"<>]/g, '');
 				let summary = document.querySelector('input#wpUploadSummary');
 				let params = {
 					action: 'edit',
@@ -361,7 +369,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 		},
 		
 		attemptUpload: () => {
-			let filename = document.querySelector('#wpDestFile').value;
+			let filename = document.querySelector('#wpDestFile').value.replace(/[\\\/:\*\?"<>]/g, '');
 			let file = document.querySelector('#wpUploadFile').files[0];
 			let comment = document.querySelector('input#wpUploadSummary');
 			let params = {
@@ -438,7 +446,7 @@ mw.hook('dev.CCM.load').add((cmLoader) => {
 		'User:'+config.wgUserName+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
 	];
 	if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
-		titles.push('File:'+document.querySelector('#wpDestFile').value); // File to check if doing a reupload
+		titles.push('File:'+document.querySelector('#wpDestFile').value.replace(/[\\\/:\*\?"<>]/g, '')); // File to check if doing a reupload
 	}
 	api.get({
 		action: 'query',

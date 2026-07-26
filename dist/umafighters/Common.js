@@ -127,3 +127,39 @@ $(document).ready(function() {
         }
     };
 })();
+
+
+ // uhh wiki statics updater ig
+ /**
+ * Dynamic Wiki Statistics Fetcher for UMA FIGHTERS WIKI
+ * Queries the live MediaWiki API to bypass page caching and inject accurate metrics.
+ */
+$(document).ready(function() {
+    // Only fire the script if the user is looking at the actual Main Page
+    if (mw.config.get('wgIsMainPage')) {
+        $.ajax({
+            url: mw.util.wikiScript('api'),
+            data: {
+                action: 'query',
+                meta: 'siteinfo',
+                siprop: 'statistics',
+                format: 'json'
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.query && response.query.statistics) {
+                    var stats = response.query.statistics;
+                    
+                    // Match the values from the API database and inject them into the HTML IDs
+                    $('#uma-stat-edits').text(stats.edits.toLocaleString());
+                    $('#uma-stat-articles').text(stats.articles.toLocaleString());
+                    $('#uma-stat-files').text(stats.images.toLocaleString()); // MediaWiki stores uploaded files as 'images'
+                    $('#uma-stat-active').text(stats.activeusers.toLocaleString());
+                }
+            },
+            error: function(err) {
+                console.error("UMA FIGHTERS WIKI Error: Could not load real-time statistics.", err);
+            }
+        });
+    }
+});

@@ -160,8 +160,8 @@
                     scrollWrapper.style.overflowY = "auto";
                 }
 
-                const actionGroup = document.createElement('div');
-                actionGroup.style.cssText = "display: flex !important; gap: 8px !important; align-items: center !important; z-index: 99999 !important;";
+                const actionGroup = document.createElement('div');	
+				actionGroup.style.cssText = "display: flex !important; gap: 8px !important; align-items: center !important; z-index: 99999 !important; margin-left: auto !important;";
 
                 // Nút Copy
                 const copyButton = document.createElement('button');

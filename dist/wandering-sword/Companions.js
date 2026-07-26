@@ -32,3 +32,25 @@ function initAutoSliders() {
 window.addEventListener('load', initAutoSliders);
 document.addEventListener('DOMContentLoaded', initAutoSliders);
 new MutationObserver(initAutoSliders).observe(document.body, { childList: true, subtree: true });
+
+
+// --------------------------------------------------------------------------------------------
+// Box adjustement
+
+(function(){
+  function updateScrollRibbons(){
+    document.querySelectorAll('.story-text-scroll').forEach(function(box){
+      var ribbon = box.nextElementSibling;
+      if (!ribbon || !ribbon.classList.contains('scroll-ribbon')) return;
+      var hasMore = box.scrollHeight - box.scrollTop - box.clientHeight > 4;
+      ribbon.classList.toggle('visible', hasMore);
+    });
+  }
+  document.addEventListener('scroll', function(e){
+    if (e.target.classList && e.target.classList.contains('story-text-scroll')) updateScrollRibbons();
+  }, true);
+  window.addEventListener('load', updateScrollRibbons);
+  document.addEventListener('DOMContentLoaded', updateScrollRibbons);
+  window.addEventListener('resize', updateScrollRibbons);
+  new MutationObserver(updateScrollRibbons).observe(document.body, { childList:true, subtree:true });
+})();

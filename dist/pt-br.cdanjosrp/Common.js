@@ -172,3 +172,27 @@ mw.hook('wikipage.content').add(function () {
     '</div>';
 });
 /* ── fim Calendário da Home ─────────────────────── */
+$(function() {
+    $('.cda-card-link').css('cursor', 'pointer').on('click', function() {
+        window.open('https://loja.cdanjos.com', '_blank');
+    });
+});
+
+/* ── Discord na página Comunidade ──────────────── */
+mw.hook('wikipage.content').add(function () {
+  if (mw.config.get('wgPageName') !== 'Especial:Comunidade') return;
+  var e = document.querySelector('.community-page-wiki-representative-module');
+  if (!e) return;
+  var f = document.createElement('iframe');
+  f.src = 'https://discord.com/widget?id=1468732759651385426&theme=dark';
+  f.width = '100%';
+  f.height = '350px';
+  f.setAttribute('allowtransparency', 'true');
+  f.setAttribute('frameborder', '0');
+  f.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts');
+  var w = document.createElement('div');
+  w.style.margin = '20px 0';
+  w.appendChild(f);
+  e.p
+
+dev:DiscordIntegrator/code.js

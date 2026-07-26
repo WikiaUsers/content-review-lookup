@@ -18,6 +18,7 @@
 		inprop: ['protection', 'watched'],
 		intestactions: ['delete', 'undelete', 'move', 'protect'],
 		llprop: ['url', 'langname', 'autonym'],
+		llinlanguagecode: config.wgUserLanguage,
 		lllimit: 'max',
 		ppprop: 'notoc',
 	})).query.pages[0];
@@ -51,6 +52,7 @@
 		'accesskey-t-whatlinkshere',
 		'associated-pages',
 		'cactions',
+		'custom-license-description',
 		'fd-notifications-notifications',
 		'interlanguage-link-title',
 		'mainpage',
@@ -117,24 +119,24 @@
 	skinConfig.mainMenu = async parent => {
 		const mainMenu = {};
 		const mainMenuPortlets = [];
+		const systemMessages = [];
 		let activePortlet;
-
 		for (const item of mw.message('sidebar').text().split(/\s*\n/)){
 			if (/^\*\*/.test(item)){
 				const linkMessages = item.replace(/^\*\*+\s*/, '').split('|');
 				mainMenu[activePortlet].push(linkMessages);
-				await api.loadMessagesIfMissing([
+				systemMessages.push(
 					...linkMessages,
 					`accesskey-n-${linkMessages[1]}`,
 					`tooltip-n-${linkMessages[1]}`,
-				]);
+				);
 			} else {
 				activePortlet = item.replace(/^\*\s*/, '');
 				mainMenu[activePortlet] = [];
-				await api.loadMessagesIfMissing(activePortlet);
+				systemMessages.push(activePortlet);
 			}
 		}
-
+		await api.loadMessagesIfMissing(systemMessages);
 		for (const key of Object.keys(mainMenu)){
 			const portlet = buildPortlet(key);
 			mainMenuPortlets.push(portlet);
@@ -143,7 +145,6 @@
 				addPortletLink(key, ...link, 'n');
 			}
 		}
-
 		return mainMenuPortlets;
 	};
 
@@ -623,6 +624,32 @@
 		$(parent).append(toc);
 		mw.util.showPortlet('p-toc');
 		return toc;
+	};
+
+	skinConfig.footer = parent => {
+		const footer = $('<footer>', {id: 'footer'}).append(
+			$('<div>', {
+				id: 'footer-info',
+				html: mw.message('custom-license-description').parse(),
+			}),
+			$('<ul>', {id: 'footer-places'}).append(
+				// TODO
+			),
+			$('<ul>', {id: 'footer-icons'}).append(
+				$('<li>').append($('<a>', {
+					id: 'footer-hostedbyico',
+					title: 'Hosting provided by Fandom',
+					href: 'https://www.fandom.com',
+				})),
+				$('<li>').append($('<a>', {
+					id: 'footer-poweredbyico',
+					title: 'Powered by MediaWiki',
+					href: 'https://www.mediawiki.org',
+				})),
+			),
+		);
+		$(parent).append(footer);
+		return footer;
 	};
 
 	skinConfig.appearance = parent => {

@@ -30,208 +30,245 @@ $(document).ready(function () {
 (function($, mw) {
 	
 	function openAllItemsModal(itemType) {
-    const isAccessory = itemType === 'Accessory';
-    const dataset = isAccessory ? Accessories : Swords;
-    const modalId = 'wiki-hud-modal';
-    
-    // Build the grid items dynamically using flex
-    let listHtml = dataset.map(item => `
-    <div style="display:flex; justify-content:space-between; align-items:center; background:#1c2127; padding:12px 15px; border-radius:6px; margin-bottom:8px; border-left:4px solid #fca311;">
-        <div style="display:flex; align-items:center; gap:15px; flex-grow:1; min-width:0;">
-            <img src="${getFandomImageUrl(item.image)}" width="45" style="border-radius:4px; flex-shrink:0;" />
-            <div style="overflow:hidden;">
-                <strong style="color:#ffffff; font-size:1.1em; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</strong>
-                <span style="font-size:0.85em; color:${uiStyles.rarityColors[item.Rarity]};">${item.Rarity}</span>
-            </div>
-        </div>
+        const isAccessory = itemType === 'Accessory';
+        const dataset = isAccessory ? Accessories : Swords;
+        const modalId = 'wiki-hud-modal';
+        
+        // Build the grid items dynamically using flex
+        let listHtml = dataset.map(item => {
+            // Extract buffs
+            const buffs = (item.obtainment && item.obtainment.buffs) ? item.obtainment.buffs : '';
+            
+            return `
+            <div class="has-tooltip" data-buffs="${buffs}" style="display:flex; justify-content:space-between; align-items:center; background:#1c2127; padding:12px 15px; border-radius:6px; margin-bottom:8px; border-left:4px solid #fca311;">
+                <div style="display:flex; align-items:center; gap:15px; flex-grow:1; min-width:0;">
+                    <img src="${getFandomImageUrl(item.image)}" width="45" style="border-radius:4px; flex-shrink:0;" />
+                    <div style="overflow:hidden;">
+                        <strong style="color:#ffffff; font-size:1.1em; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</strong>
+                        <span style="font-size:0.85em; color:${uiStyles.rarityColors[item.Rarity]};">${item.Rarity}</span>
+                    </div>
+                </div>
 
-        <div style="text-align:right; flex-shrink:0; margin-left:15px;">
-            <div style="font-size:0.85em; color:#8a929a;">Source: ${item.source}</div>
-            <div style="font-size:0.85em; color:#ffffff; margin-bottom:5px;">Level: ${item.level}</div>
-            <button onclick="window.location.href='/wiki/${item.name.replace(/ /g, '_')}'" style="background:#fca311; border:none; color:#000; padding:4px 8px; font-size:0.75em; font-weight:bold; cursor:pointer; border-radius:3px;">VIEW PAGE</button>
-        </div>
-    </div>
-`).join('');
-
-    // Modal structure
-    let modalHtml = `
-    <div id="${modalId}" class="hud-modal-overlay">
-        <div class="hud-modal-content">
-            <div class="hud-modal-header" style="display:flex; justify-content:space-between; padding-bottom:15px; border-bottom:1px solid #333; margin-bottom:15px;">
-                <h2 style="color:#fca311; margin:0;">${itemType.toUpperCase()} ARCHIVE</h2>
-                <button class="hud-modal-close" style="background:none; border:none; color:#fff; font-size:1.5em; cursor:pointer;">×</button>
+                <div style="text-align:right; flex-shrink:0; margin-left:15px;">
+                    <div style="font-size:0.85em; color:#8a929a;">Source: ${item.source}</div>
+                    <div style="font-size:0.85em; color:#ffffff; margin-bottom:5px;">Level: ${item.level}</div>
+                    <button onclick="window.location.href='/wiki/${item.name.replace(/ /g, '_')}'" style="background:#fca311; border:none; color:#000; padding:4px 8px; font-size:0.75em; font-weight:bold; cursor:pointer; border-radius:3px;">VIEW PAGE</button>
+                </div>
             </div>
-            <div class="hud-modal-scroll" style="max-height: 60vh; overflow-y: auto; padding-right:10px;">
-                ${listHtml}
-            </div>
-        </div>
-    </div>`;
+            `;
+        }).join('');
 
-    $('body').append(modalHtml);
-    $('.hud-modal-close').on('click', function() { $('#' + modalId).remove(); });
-}
+        // Modal structure
+        let modalHtml = `
+        <div id="${modalId}" class="hud-modal-overlay">
+            <div class="hud-modal-content">
+                <div class="hud-modal-header" style="display:flex; justify-content:space-between; padding-bottom:15px; border-bottom:1px solid #333; margin-bottom:15px;">
+                    <h2 style="color:#fca311; margin:0;">${itemType.toUpperCase()} ARCHIVE</h2>
+                    <button class="hud-modal-close" style="background:none; border:none; color:#fff; font-size:1.5em; cursor:pointer;">×</button>
+                </div>
+                <div class="hud-modal-scroll" style="max-height: 60vh; overflow-y: auto; padding-right:10px;">
+                    ${listHtml}
+                </div>
+            </div>
+        </div>`;
+
+        $('body').append(modalHtml);
+        $('.hud-modal-close').on('click', function() { $('#' + modalId).remove(); });
+    }
 	
     // Unified Catalogs
     const Accessories = [
         {name: 'Abyssal Necklace', Rarity: 'Mythical', Sea: 3, image: 'Abyssal_Necklace.png', level: '4200+', source: 'Crafting', description: 'A deeply cursed necklace recovered from the trenches.', obtainment: {method: 'crafted',
         	cost: 'Unreleased',
         	npc: 'Doran The Forge',
-        	location: 'Land Of Gods'
+        	location: 'Land Of Gods',
+        	buffs: '+3000 Health +2 Observation Haki +10% All Damage'
         }},
         {name: 'Dominus Messor', Rarity: 'Mythical', Sea: 3, image: 'Dominus_Messor.png', level: '4200+', source: 'Crafting', description: 'The grand crown of the harvest reaper.', obtainment: {method: 'crafted',
         	cost: 'Unreleased',
         	npc: 'Doran The Forge',
-        	location: 'Land Of Gods'
+        	location: 'Land Of Gods',
+        	buffs: '+2500 Health +15% Combat Damage'
         }},
         {name: 'Bandit Eyepatch', Rarity: 'Common', Sea: 1, image: 'BanditEyePatch.Webp', level: '15', source: 'Boss Drop', description: 'The grand eyepatch of the Bandit Leader. (40% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Bandit Boss',
-        	location: 'Starter Island'
+        	location: 'Starter Island',
+        	buffs: '+20 Stamina'
         }},
         {name: 'Green Bandana', Rarity: 'Uncommon', Sea: 1, image: 'GreenBandana.webp', level: '350+', source: 'Boss Drop', description: 'A green bandana worn by an ethusiastic youth. (50% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Dual Swordsman SuperBoss',
-        	location: 'Logue Town Island'
+        	location: 'Logue Town Island',
+        	buffs: '+5% Sword Dmg +45 Stamina'
         }},
         {name: 'Black Shades', Rarity: 'Common', Sea: 1, image: 'Black Shades.webp', level: '1500+', source: 'Boss Drop', description: 'A pair of Black Shades. (2.5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Vergo Boss',
-        	location: 'Half Hot Half Cold Island'
+        	location: 'Half Hot Half Cold Island',
+        	buffs: '+ 3.5% hp regen + 35 stamina'
         }},
         {name: 'Neptune Crown', Rarity: 'Rare', Sea: 1, image: 'NeptuneCrown.webp', level: '1700+', source: 'Boss Drop', description: 'A crown worn by a King. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Neptune Boss',
-        	location: 'Fishman Island'
+        	location: 'Fishman Island',
+        	buffs: '+600 health + Water immunity'
         }},
         {name: 'Thunder Drums', Rarity: 'Rare', Sea: 1, image: 'ThunderDrums.Webp', level: '1100+', source: 'Boss Drop', description: 'A item once worn by an ancient entity. (1% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Thunder God Boss',
-        	location: 'Sky Islands'
+        	location: 'Sky Islands',
+        	buffs: '+500 Health  +5% Fruit Dmg'
         }},
         {name: 'Clown Nose', Rarity: 'Common', Sea: 1, image: 'ClownNose.Webp', level: '60+', source: 'Boss Drop', description: 'A red Nose prop worn by a Pathological liar. (30% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Clown Boss',
-        	location: 'Clown Island'
+        	location: 'Clown Island',
+        	buffs: '+100 Health'
         }},
         {name: 'Coded Mask', Rarity: 'Rare', Sea: 1, image: 'CodedMask.Webp', level: '700+', source: 'Boss Drop', description: 'A  Mask worn by a secretive entity. (100% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Mace Boss',
-        	location: 'Marine Base Town Island'
+        	location: 'Marine Base Town Island',
+        	buffs: '+5% Sword Dmg +500 Health'
         }},
         {name: 'Glasses', Rarity: 'Common', Sea: 1, image: 'Glasses.Webp', level: '400+', source: 'Boss Drop', description: 'A pair of glasses. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Tashii Boss',
-        	location: 'Logue Town Island'
+        	location: 'Logue Town Island',
+        	buffs: '+35 Stamina'
         }},
         {name: 'Sleeping Mask', Rarity: 'Common', Sea: 1, image: 'SleepingMask.Webp', level: '900+', source: 'Boss Drop', description: 'A mask worn by a former Admiral. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Ice Admiral Boss',
-        	location: 'Marine HQ Island'
+        	location: 'Marine HQ Island',
+        	buffs: '+420 Health'
         }},
         {name: 'Pearl Necklace', Rarity: 'Rare', Sea: 1, image: 'PearlNecklace.Webp', level: '???+', source: 'Boss Drop', description: 'A necklace worn by a great entity in the 1st Sea. (100% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'FireFirst Super-Boss',
-        	location: 'Tall Woods Island'
+        	location: 'Tall Woods Island',
+        	buffs: '+80 Stamina +7.5% Fruit Damage'
         }},
         {name: 'Warden Hat', Rarity: 'Common', Sea: 1, image: 'WardenHat.Webp', level: '1400+', source: 'Boss Drop', description: 'A Marine Hat worn by an Warden. (2.5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Warden Boss',
-        	location: 'impel Jail Island'
+        	location: 'impel Jail Island',
+        	buffs: '+50 Stamina'
         }},
         {name: 'Oversized Helmet', Rarity: 'Uncommon', Sea: 1, image: 'OversizedHelmet.Webp', level: '750+', source: 'Boss Drop', description: 'A Spiky Helmet worn by a Minotaur. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Minotaur Boss',
-        	location: 'The Three Islands'
+        	location: 'The Three Islands',
+        	buffs: '+45 Stamina'
         }},
         {name: 'Iron Jaw', Rarity: 'Common', Sea: 1, image: 'IronJaw.Webp', level: '650+', source: 'Boss Drop', description: 'A prosthetic Jaw worn by Marine Captain. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Marine Captain Boss',
-        	location: 'Marine Base Town Island'
+        	location: 'Marine Base Town Island',
+        	buffs: '+2.5% Health Regen +25 Stamina'
         }},
         {name: 'Gold Pauldrons', Rarity: 'Common', Sea: 1, image: 'GoldenPauldrons.Webp', level: '300+', source: 'Boss Drop', description: 'A pair of Pauldrons worn by Don Krieg. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Krieg Boss',
-        	location: 'Sea Restaurant Island'
+        	location: 'Sea Restaurant Island',
+        	buffs: '+2.5% Health Regen'
         }},
         {name: 'Monkey Crown', Rarity: 'Common', Sea: 1, image: 'MonkeyCrown.Webp', level: '550+', source: 'Boss Drop', description: 'A crown worn by the King of The Jungle. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'King Gorilla Boss',
-        	location: 'Tall Woods Island'
+        	location: 'Tall Woods Island',
+        	buffs: '+250 Health'
         }},
         {name: 'Tremor Cloak', Rarity: 'Rare', Sea: 1, image: 'TremorCloak.Webp', level: 'N/A+', source: 'Bellas store', description: 'A tremor cloak worn by the strongest woman.', obtainment: {method: 'Store',
         	cost: '$100k + White Orb boss drop from Tremor Girl (1%)',
         	npc: 'Bella',
-        	location: 'Marine HQ Island'
+        	location: 'Marine HQ Island',
+        	buffs: '+700 Health +7.5% Fruit Damage'
         }},
         {name: 'Blue Scarf', Rarity: 'Rare', Sea: 1, image: 'BlueScarf.Webp', level: '2150+', source: 'Boss Drop', description: 'A scarf worn by an undead beast. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Ryummy Boss',
-        	location: 'Thriller Island'
+        	location: 'Thriller Island',
+        	buffs: '+10 Sword Damage +650 Health + 10 Stamina'
         }},
         {name: 'SeaBeast Armor', Rarity: 'Uncommon', Sea: 1, image: 'SeaBeastArmor.Webp', level: 'N/A+', source: 'BlackSmith', description: 'A Sea Armor reinforcing ones constitution.', obtainment: {method: 'Store',
         	cost: 'Ice Core (dropped from Harpy Boss at HHHC Island) + SeaBeast core (Dropped from Sea Beast)',
         	npc: 'BlackSmith',
-        	location: 'Starter Island'
+        	location: 'Starter Island',
+        	buffs: '+1500 health +15% speed'
         }},
         {name: 'SeaBeast Helmet', Rarity: 'Uncommon', Sea: 1, image: 'SeaBeastHelmet.Webp', level: 'N/A+', source: 'BlackSmith', description: 'A Sea Helmet reinforcing ones constitution.', obtainment: {method: 'Store',
         	cost: 'Ice Core (dropped from Harpy Boss at HHHC Island) + SeaBeast core (Dropped from Sea Beast)',
         	npc: 'BlackSmith',
-        	location: 'Starter Island'
+        	location: 'Starter Island',
+        	buffs: '+100 stamina +15% speed'
         }},
         {name: 'Green Cloak', Rarity: 'Legendary', Sea: 2, image: 'GreenCloak.Webp', level: '2650+', source: 'Boss Drop', description: 'A Green Cloak worn by a great swordsman. (5% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: '3ss Boss',
-        	location: 'Snowy Graveyard Island'
+        	location: 'Snowy Graveyard Island',
+        	buffs: '+10% Sword Damage +1700 Health'
         }},
         {name: 'Dragon Horns', Rarity: 'Legendary', Sea: 2, image: 'DragonHorns.Webp', level: '2850+', source: 'Boss Drop', description: 'A pair of horns. (10% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Dragon Super-Boss',
-        	location: 'Dragon Island'
+        	location: 'Dragon Island',
+        	buffs: '+1800 Health +7.5 Fruit Damage'
         }},
         {name: 'Pumpkin Mask', Rarity: 'Mythical', Sea: 2, image: 'PumpkinMask.Webp', level: 'N/A+', source: 'Event', description: 'A pair of golden Masks from an event. (Currently Unobtainable)', obtainment: {method: 'Event',
         	cost: 'N/A',
         	npc: 'N/A',
-        	location: 'N/A'
+        	location: 'N/A',
+        	buffs: '+2500 Health'
         }},
         {name: 'Dough Scarf', Rarity: 'Legendary', Sea: 2, image: 'DoughScarf.Webp', level: '3300+', source: 'Boss Drop', description: 'A scarf worn by a greater Fruit Wielder. (10% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Dough Super-Boss',
-        	location: 'Mirror World at Dough Island'
+        	location: 'Mirror World at Dough Island',
+        	buffs: '+150 Stamina +10% Fruit Damage +1 Observation Dodge'
         }},
         {name: 'Ice Crown', Rarity: 'Legendary', Sea: 2, image: 'IceCrown.Webp', level: 'N/A+', source: 'Boss Drop', description: 'A Ice Crown dropped from Xmas Boss. (Currently unobtainable)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Xmas Super-Boss',
-        	location: 'Winter Island'
+        	location: 'Winter Island',
+        	buffs: '+5000 Health + Ice Walking Passive'
         }},
         {name: 'Night Hat', Rarity: 'Legendary', Sea: 2, image: 'NightHat.Webp', level: '3600+', source: 'Boss Drop', description: 'A hat worn by a great swordsman. (10% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'DarkBlade V2 Super-Boss',
-        	location: 'Foggy Castle Island'
+        	location: 'Foggy Castle Island',
+        	buffs: '+12.5% Sword Damage +5000 Health'
         }},
         {name: 'Night Necklace', Rarity: 'Mythical', Sea: 2, image: 'NightNecklace.Webp', level: '3600+', source: 'Boss Drop', description: 'A Necklace worn by a great swordsman. (0.1% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'DarkBlade V2 Super-Boss',
-        	location: 'Foggy Castle Island'
+        	location: 'Foggy Castle Island',
+        	buffs: '+15% Sword Damage +6000 Health'
         }},
         {name: 'Snake Earrings', Rarity: 'Rare', Sea: 2, image: 'SnakeEarrings.Webp', level: '3900+', source: 'Boss Drop', description: 'A pair of earrings worn by a great empress. (1% Chance)', obtainment: {method: 'Drop',
         	cost: 'N/A',
         	npc: 'Love Boss',
-        	location: 'Snake Amazon Island'
+        	location: 'Snake Amazon Island',
+        	buffs: '+6000 Health +7.5% Fruit Damage'
         }},
         {name: 'Venom Crown', Rarity: 'Legendary', Sea: 2, image: 'SnakeEarrings.Webp', level: 'N/A+', source: 'Puzzle', description: 'A venom crown for those who use their brains.', obtainment: {method: 'Puzzle',
         	cost: 'Obtained through a mini puzzle in a cave on Venom Island. (Must sacrifice a venom fruit + defeat the boss 20 times. Lets u walk on water with venom puddle + )',
         	npc: 'N/A',
-        	location: 'Venom Island'
+        	location: 'Venom Island',
+        	buffs: '+7500 Health +15% Speed + Venom Walking Passive'
         }},
         {name: 'SeaBeast Helmet V2', Rarity: 'Legendary', Sea: 3, image: 'SeaBeastHelmetV2.Webp', level: '4200+', source: 'Craftable - Doran The Forge', description: 'A personally handcrafted headwear for the User.', obtainment: {method: 'Crafting',
         	cost: '',
         	npc: 'Doran The Forge',
-        	location: 'Land Of Gods'
+        	location: 'Land Of Gods',
+        	buffs: '+150 Stamina +1 Observation Haki +10% Speed'
         }},
         {name: 'SeaBeast Armor V2', Rarity: 'Legendary', Sea: 3, image: 'SeaBeastArmorV2.Webp', level: '4200+', source: 'Craftable - Doran The Forge', description: 'A personally handcrafted armor for the User.', obtainment: {method: 'Crafting',
         	cost: '',
         	npc: 'Doran The Forge',
-        	location: 'Land Of Gods'
+        	location: 'Land Of Gods',
+        	buffs: '+10% Speed +3500 Health'
         }}
     ];
 
@@ -380,8 +417,6 @@ $(document).ready(function () {
         }
     };
     
-    
-
     function getFandomImageUrl(filename) {
         return mw.config.get('wgServer') + mw.config.get('wgScript') + '?title=Special:FilePath/' + encodeURIComponent(filename.replace(/ /g, '_'));
     }
@@ -546,8 +581,11 @@ $(document).ready(function () {
                 const color = uiStyles.rarityColors[item.Rarity] || '#9e9e9e';
                 const isSelected = item.name === featuredItem.name;
                 
+                // Extract buffs safely
+                const buffs = (item.obtainment && item.obtainment.buffs) ? item.obtainment.buffs : '';
+                
                 return `
-                <div class="hud-item-card ${isSelected ? 'active-hud-selection' : ''}" data-name="${encodeURIComponent(item.name)}" style="border: 1px solid ${isSelected ? color : color + '44'}; background-color: ${isSelected ? '#171923' : '#12141c'};">
+                <div class="hud-item-card has-tooltip ${isSelected ? 'active-hud-selection' : ''}" data-buffs="${buffs}" data-name="${encodeURIComponent(item.name)}" style="border: 1px solid ${isSelected ? color : color + '44'}; background-color: ${isSelected ? '#171923' : '#12141c'};">
                     <div class="card-header-tier">
                         <span style="color: ${color};">★ ${item.Rarity.toUpperCase()}</span>
                         <span class="card-star-fav">${isSelected ? '★' : '☆'}</span>
@@ -616,13 +654,11 @@ $(document).ready(function () {
     mw.hook('wikipage.content').add(function($content) {
         const $accDiv = $content.find('#accessoriesBackground');
         const $swdDiv = $content.find('#swordsBackground');
-        const $titleDiv = $content.find('#titles-wiki-app-root'); // Add this
+        const $titleDiv = $content.find('#titles-wiki-app-root'); 
         
         if ($titleDiv.length) {
-        // You would need to add logic here to render your content 
-        // into #titles-wiki-app-root
-        console.log("Titles app root found!");
-		 }
+            console.log("Titles app root found!");
+        }
 
         if ($accDiv.length) {
             $accDiv.css({"background":"none","border":"none","padding":"0"});
@@ -665,22 +701,45 @@ $(document).ready(function () {
         }
     });
     
-  // Updated Listener with Debugging
-$(document).on('click', '.open-modal-trigger', function(e) {
-    e.preventDefault(); // Stop any default link behavior
-    
-    const itemType = $(this).data('type');
-    console.log("Trigger clicked for:", itemType); // Check console for this
-    
-    const dataset = (itemType === 'Accessory') ? Accessories : Swords;
-    
-    if (typeof openAllItemsModal === 'function') {
-        openAllItemsModal(itemType, dataset);
-        console.log("Modal function called");
-    } else {
-        console.error("openAllItemsModal is not defined!");
+    // Updated Listener with Debugging
+    $(document).on('click', '.open-modal-trigger', function(e) {
+        e.preventDefault(); 
+        
+        const itemType = $(this).data('type');
+        console.log("Trigger clicked for:", itemType); 
+        
+        const dataset = (itemType === 'Accessory') ? Accessories : Swords;
+        
+        if (typeof openAllItemsModal === 'function') {
+            openAllItemsModal(itemType, dataset);
+            console.log("Modal function called");
+        } else {
+            console.error("openAllItemsModal is not defined!");
+        }
+    });
+
+    // --- TOOLTIP LOGIC ---
+    // Create the tooltip container if it doesn't exist
+    if (!$('#wiki-buff-tooltip').length) {
+        $('body').append('<div id="wiki-buff-tooltip" style="display:none; position:absolute; background:rgba(28, 33, 39, 0.95); color:#fff; padding:10px; border:1px solid #fca311; border-radius:6px; pointer-events:none; z-index:99999; font-size:12px; max-width:250px; box-shadow:0 4px 6px rgba(0,0,0,0.5);"></div>');
     }
-});
+
+    // Add hover events to anything with the 'has-tooltip' class
+    $(document).on('mouseenter', '.has-tooltip', function(e) {
+        const buffs = $(this).attr('data-buffs');
+        if (buffs && buffs !== 'undefined' && buffs !== '') {
+            $('#wiki-buff-tooltip').html(`<strong style="color:#fca311;">Buffs:</strong><br/>${buffs}`).show();
+        }
+    }).on('mousemove', '.has-tooltip', function(e) {
+        // Offset by 15px so the cursor doesn't cover the tooltip
+        $('#wiki-buff-tooltip').css({
+            top: e.pageY + 15 + 'px',
+            left: e.pageX + 15 + 'px'
+        });
+    }).on('mouseleave', '.has-tooltip', function() {
+        $('#wiki-buff-tooltip').hide();
+    });
+
 })(window.jQuery, window.mediaWiki);
 /*AFTER SWORD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 /* -------------------------------------------------------------------------------------TITLES -----------------------------------------------------------------------------------------------*/
@@ -914,6 +973,9 @@ $(document).ready(function () {
         <div class="titles-main-content">
             <div class="titles-left-side">
                 <div class="filter-bar">
+                    <!-- NEW SEARCH INPUT -->
+                    <input type="text" id="filter-search-input" placeholder="Search titles or descriptions..." style="background: #1c2127; border: 1px solid #4a525a; color: #fff; padding: 6px 12px; border-radius: 4px; flex-grow: 1; max-width: 250px;" />
+                    
                     <select class="filter-select" id="filter-color-dropdown"></select>
                     <select class="filter-select" id="filter-category-dropdown"></select>
                     <span id="titles-counter-display" style="margin-left: auto; color:#8a929a; font-size:0.9em;">Found ${titlesData.length} titles</span>
@@ -940,10 +1002,16 @@ $(document).ready(function () {
 
     <!-- FULL SCREEN INTERACTIVE MODAL OVERLAY -->
     <div id="titles-popup-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center; font-family:sans-serif;">
-        <div style="background:#13171c; width:95%; max-width:700px; border:2px solid #fca311; border-radius:8px; padding:25px; max-height:85vh; overflow-y:auto; position:relative; box-shadow: 0px 0px 20px rgba(252,163,17,0.3);">
-            <span id="close-titles-popup" style="position:absolute; top:12px; right:20px; color:#8a929a; font-size:28px; cursor:pointer; font-weight:bold;">&times;</span>
-            <h2 style="color:#ffffff; margin-top:0; border-bottom:1px solid #222831; padding-bottom:12px; font-size:1.5em;">All Available Titles Master List</h2>
-            <div id="popup-list-content-hook" style="display:flex; flex-direction:column; gap:12px; margin-top:15px;"></div>
+        <!-- Changed to flex column, removed overflow from here -->
+        <div style="background:#13171c; width:95%; max-width:700px; border:2px solid #fca311; border-radius:8px; padding:25px; max-height:85vh; display:flex; flex-direction:column; position:relative; box-shadow: 0px 0px 20px rgba(252,163,17,0.3);">
+            
+            <button id="close-titles-popup" style="position:absolute; top:15px; right:15px; background:transparent; border:none; color:#8a929a; font-size:32px; cursor:pointer; font-weight:bold; z-index:100; line-height:1; padding: 0 10px;">&times;</button>
+            
+            <!-- flex-shrink: 0 ensures the header doesn't get squished -->
+            <h2 style="color:#ffffff; margin-top:0; border-bottom:1px solid #222831; padding-bottom:12px; font-size:1.5em; padding-right: 30px; flex-shrink:0;">All Available Titles Master List</h2>
+            
+            <!-- Moved overflow-y:auto down to the content hook so ONLY the list scrolls -->
+            <div id="popup-list-content-hook" style="display:flex; flex-direction:column; gap:12px; margin-top:15px; overflow-y:auto; padding-right:10px;"></div>
         </div>
     </div>`;
 
@@ -1042,16 +1110,27 @@ $(document).ready(function () {
 
     // --- ROUTER ENGINE FOR CLICK LOGIC CONTROLS ---
 
-    // Filters
-    $('.filter-select').on('change', function() {
+    // Unified Filter Function
+    function applyFilters() {
         const selColor = $('#filter-color-dropdown').val();
         const selCat = $('#filter-category-dropdown').val();
+        const searchText = $('#filter-search-input').val().toLowerCase().trim();
+
         let filtered = titlesData.filter(item => {
-            return (selColor === 'All Colors' || item.color === selColor) && (selCat === 'All Categories' || item.category === selCat);
+            const matchesColor = (selColor === 'All Colors' || item.color === selColor);
+            const matchesCat = (selCat === 'All Categories' || item.category === selCat);
+            const matchesSearch = item.title.toLowerCase().includes(searchText) || item.desc.toLowerCase().includes(searchText);
+
+            return matchesColor && matchesCat && matchesSearch;
         });
         
-        currentPage = 1; // Reset to page 1 on new filter
+        currentPage = 1; // Reset to page 1 on new filter/search
         renderCardsGrid(filtered);
+    }
+
+    // Filters (Dropdowns & Search Input)
+    $('.filter-select, #filter-search-input').on('change input', function() {
+        applyFilters();
     });
 
     // Pagination Buttons
@@ -1097,10 +1176,14 @@ $(document).ready(function () {
         $('#titles-popup-modal').css('display', 'flex');
     });
 
-    $(document).on('click', '#close-titles-popup', function() {
+    // --- CLOSE POPUP LOGIC ---
+    $(document).on('click', '#close-titles-popup', function(e) {
+        e.preventDefault(); // Prevents default button behavior
+        e.stopPropagation(); // Stops the click from registering on elements underneath
         $('#titles-popup-modal').css('display', 'none');
     });
 
+    // Close when clicking the dark background outside the modal box
     $(window).on('click', function(e) {
         if ($(e.target).is('#titles-popup-modal')) {
             $('#titles-popup-modal').css('display', 'none');
@@ -1757,9 +1840,9 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Spawns anywhere with water every 20M-1H',
             drops: [
-                { name: 'SeaBeast Heart', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' },
-                { name: 'SeaBeast Hammer V2', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '3.5%' },
-                { name: 'Blade Fragment', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+                { name: 'SeaBeast Heart', rarity: 'Legendary', amount: 'x1', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/bb/SeaBeast_Heart.png/revision/latest?cb=20260726112547', chance: '25%' },
+                { name: 'SeaBeast Hammer V2', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/SeaBeastHammerV2.png', chance: '3.5%' },
+                { name: 'Blade Fragment', rarity: 'Legendary', amount: 'x1', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/13/Blade_Fragment23.png/revision/latest?cb=20260726112851', chance: '10%' }
             ],
             rewards: { money: '$25,000', Gems: '25' },
             about: 'Starter Boss of 3rd Sea.',
@@ -1779,8 +1862,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Spawns anywhere with water every 20M-1H',
             drops: [
-                { name: 'SeaBeast Core', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '100%' },
-                { name: 'SeaBeast Hammer', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' }
+                { name: 'SeaBeast Core', rarity: 'Legendary', amount: 'x1', img: 'https://trello.com/1/cards/63c453a641091502d21839eb/attachments/63c459798bcaef02d46e4277/download/mkj.png', chance: '100%' },
+                { name: 'SeaBeast Hammer', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/SeaBeastHammer.png', chance: '50%' }
             ],
             rewards: { money: '$25,000', Gems: '30' },
             about: 'Starter Boss of 2nd Seas.',
@@ -1800,8 +1883,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Spawns anywhere with water every 20M-1H',
             drops: [
-                { name: 'SeaBeast Heart', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' },
-                { name: 'SeaBeast Hammer V2', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '3.5%' }
+                { name: 'SeaBeast Heart', rarity: 'Legendary', amount: 'x1', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/bb/SeaBeast_Heart.png/revision/latest?cb=20260726112547', chance: '25%' },
+                { name: 'SeaBeast Hammer V2', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/SeaBeastHammerV2.png', chance: '3.5%' }
             ],
             rewards: { money: '$25,000', Gems: '25' },
             about: 'Starter Boss of 2nd Seas.',
@@ -1821,8 +1904,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Spawned from the DarkBlade Upgrader Quest in Foggy Castle - Can only be spawned every 2 hours.',
             drops: [
-                { name: 'Night Hat', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' },
-                { name: 'Dough Trident', rarity: 'Mythical', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '0.1%' }
+                { name: 'Night Hat', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/NightHat.Webp', chance: '10%' },
+                { name: 'Night Necklace', rarity: 'Mythical', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/NightNecklace.Webp', chance: '0.1%' }
             ],
             rewards: { money: '$25,000', Gems: '25' },
             about: 'Most dangerous boss within the 2nd Seas.',
@@ -1842,8 +1925,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Kill a 1000 Npcs across the Island',
             drops: [
-                { name: 'Dough Scarf', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' },
-                { name: 'Dough Trident', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+                { name: 'Dough Scarf', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/DoughScarf.Webp', chance: '10%' },
+                { name: 'Dough Trident', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/DoughTrident.png', chance: '10%' }
             ],
             rewards: { money: '$30,000', Gems: '25' },
             about: 'Most chill pirate within the 2nd Seas.',
@@ -1863,8 +1946,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Kill a 1000 Npcs across the Island',
             drops: [
-                { name: 'Drums of Liberation', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '100%' },
-                { name: 'Dragon Horns', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+                { name: 'Drums of Liberation', rarity: 'Legendary', amount: 'x1', img: 'https://trello.com/1/cards/6531156de777d4d209401c35/attachments/6531166ed66f56950ce4606c/download/image.png', chance: '100%' },
+                { name: 'Dragon Horns', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/DragonHorns.Webp', chance: '10%' }
             ],
             rewards: { money: '$30,000', Gems: '35' },
             about: 'Most evil pirate within the 2nd Sea.',
@@ -1883,7 +1966,7 @@ mw.hook('wikipage.content').add(function($content) {
             location: 'Flower Capital',
             respawn: '1 Hour',
             drops: [
-                { name: 'Enma', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '10%' }
+                { name: 'Enma', rarity: 'Rare', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/Enma.png', chance: '10%' }
             ],
             rewards: { money: '$25,000', Gems: '25' },
             about: 'The strongest swordsman in the 2nd Sea.',
@@ -1903,8 +1986,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: '',
             respawnmethod: 'Spawn by unlocking her, using the TremorBeard Key dropped from Ice Admiral at Marine HQ.',
             drops: [
-                { name: 'Bisento V2', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' },
-                { name: 'White Orb', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' }
+                { name: 'Bisento V2', rarity: 'Rare', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/BisentoV2.png', chance: '50%' },
+                { name: 'White Orb', rarity: 'Rare', amount: 'x1', img: 'https://trello.com/1/cards/63a6cb5cdf90aa0099fa845c/attachments/63a6f2193ca43300c9046654/download/sjhaj.PNG', chance: '25%' }
             ],
             rewards: { money: '$20,000', Gems: '25' },
             about: 'The strongest swordsman in the 1st Sea.',
@@ -1923,8 +2006,8 @@ mw.hook('wikipage.content').add(function($content) {
             location: 'Marine Base Town Island',
             respawn: '1 Hour',
             drops: [
-                { name: 'Green Bandanna', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' },
-                { name: 'Book', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '50%' }
+                { name: 'Green Bandanna', rarity: 'Rare', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/GreenBandana.webp', chance: '50%' },
+                { name: 'Book', rarity: 'Common', amount: 'x1', img: 'https://trello.com/1/cards/639ece98b5da8d01f6569922/attachments/639ecf0f54b59e03707bbe34/download/wiaai.PNG', chance: '50%' }
             ],
             rewards: { money: '$5,000', Gems: '10' },
             about: 'The strongest swordsman in the 1st Sea.',
@@ -1944,8 +2027,8 @@ mw.hook('wikipage.content').add(function($content) {
             respawn: 'N/A',
             respawnmethod: 'Collect Match from Warden in Impel Jail - (5%) drop, Go to Tall Woods and light a campfire using the match. This will spawn some Pearls, Collect 4 Pearls scattered around Tall Woods, Bring all 4 Pearls and plug them into the 4 Totems behind the campfire.',
             drops: [
-                { name: 'Pearl Necklace', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '100%' },
-                { name: 'Flame Fruit', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '25%' }
+                { name: 'Pearl Necklace', rarity: 'Rare', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/PearlNecklace.Webp', chance: '100%' },
+                { name: 'Flame Fruit', rarity: 'Rare', amount: 'x1', img: 'https://trello.com/1/cards/625ad859f6c73a5a30891cb6/attachments/63ba864e17afde00ecb3a7ad/download/Yi03KuPIStiPKPULNn0Mbw.png', chance: '25%' }
             ],
             rewards: { money: '$40,000', Gems: '25' },
             about: 'The strongest swordsman in the 1st Sea.',
@@ -1964,7 +2047,7 @@ mw.hook('wikipage.content').add(function($content) {
             location: 'Bandit Camp, Starter Island',
             respawn: '30 Seconds',
             drops: [
-                { name: 'EyePatch', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Cloth', chance: '40%' }
+                { name: 'EyePatch', rarity: 'Common', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/BanditEyePatch.Webp', chance: '40%' }
             ],
             rewards: { money: '$600', Exp: '9,000' },
             about: 'The Bandit Leader is the strongest among the bandits on Starter Island.',
@@ -1982,7 +2065,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '60.1', hp: '1,021', recLevel: '60+' },
             location: 'Clown Island',
             respawn: '5 Minutes',
-            drops: [{ name: 'Clown Nose', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Banana', chance: '30%' }],
+            drops: [{ name: 'Clown Nose', rarity: 'Common', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/ClownNose.Webp', chance: '30%' }],
             rewards: { money: '$1,400', Exp: '28,500' },
             about: 'A random guy which happened to eat a funny fruit.',
             tips: ['Avoid using sword skills.']
@@ -1999,7 +2082,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '100', hp: '4,423', recLevel: '300+' },
             location: 'Sea Restaurant',
             respawn: '5 Minutes',
-            drops: [{ name: 'Gold Pauldrons', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Banana', chance: '5%' }],
+            drops: [{ name: 'Gold Pauldrons', rarity: 'Common', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/GoldenPauldrons.Webp', chance: '5%' }],
             rewards: { money: '$3,200', Exp: '551,000' },
             about: 'A random guy which happened to become too egotistical.',
             tips: ['Just beat him up. Has no special qualities.']
@@ -2016,7 +2099,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '39.5', hp: '1,872', recLevel: '120+' },
             location: 'Shark Park',
             respawn: '5 Minutes',
-            drops: [{ name: 'Shark Blade', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '5%' }],
+            drops: [{ name: 'Shark Blade', rarity: 'Common', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/SharkBlade.png', chance: '5%' }],
             rewards: { money: '$2,000', Exp: '94.000' },
             about: 'Commands the Shark Park itself.',
             tips: ['Just face him with the required Level.']
@@ -2050,7 +2133,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '1200', hp: '189,000', recLevel: '2,500+' },
             location: 'shadow Island',
             respawn: '2 Hours and 35 Minutes.',
-            drops: [{ name: 'Zenith', rarity: 'Legendary', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '100%' }],
+            drops: [{ name: 'Zenith', rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/Zenith.png', chance: '100%' }],
             rewards: { money: '25k', gems: '25', bounty: '12,500'},
             about: 'Boss that lurks the seas only during Storms.',
             tips: ['Relatively weak for his grade, simply stunlock him!']
@@ -2084,7 +2167,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '130', hp: '5,841', recLevel: '400+' },
             location: 'Logue Town',
             respawn: '10 Minutes.',
-            drops: [{name: 'Glasses', rarity: 'Common', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
+            drops: [{name: 'Glasses', rarity: 'Common', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/Glasses.Webp', chance: '5%'}],
             rewards: { money: '3,800', Exp: '942,000'},
             about: 'A unruly girl which seeks to become the Worlds strongest swordsman!',
             tips: ['Not needed!']
@@ -2101,7 +2184,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '130', hp: '5,841', recLevel: '400+' },
             location: 'Logue Town',
             respawn: '10 Minutes.',
-            drops: [{name: 'Monkey Crown', rarity: 'Uncommon', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
+            drops: [{name: 'Monkey Crown', rarity: 'Uncommon', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/MonkeyCrown.Webp', chance: '5%'}],
             rewards: { money: '4,600', Exp: '$1,720,000'},
             about: 'A unruly girl which seeks to become the Worlds strongest swordsman!',
             tips: ['Not needed!']
@@ -2118,8 +2201,8 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '345', hp: '15,763', recLevel: '1100+' },
             location: 'Sky Islands',
             respawn: '5 Minutes.',
-            drops: [{name: 'Golden Staff', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '1%'},
-            {name: 'Thunder Drums', rarity: 'Rare', amount: 'x1', img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
+            drops: [{name: 'Golden Staff', rarity: 'Rare', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/GoldenStaff.png', chance: '1%'},
+            {name: 'Thunder Drums', rarity: 'Rare', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/ThunderDrums.Webp', chance: '1%'}],
             rewards: { money: '8,450', Exp: '6,590,000'},
             about: 'Has a rather arrogant personality!',
             tips: ['Avoid getting too close!']
@@ -2136,8 +2219,8 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '204.8', hp: '9,384', recLevel: '650+' },
             location: 'Marine BaseTown',
             respawn: '1 Minute.',
-            drops: [{name: 'Irown Jaw', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
-            {name: 'Lava Ore', chance: '5%', amount: 'x1'}],
+            drops: [{name: 'Irown Jaw', rarity: 'Common', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/IronJaw.Webp', chance: '5%'},
+            {name: 'Lava Ore', chance: '5%', amount: 'x1', img: 'https://trello.com/1/cards/639ece96345c5e0172a92dcc/attachments/639ecec6f1dd5200d0f9344d/download/ppwpwp.PNG'}],
             rewards: { money: '5,200', Exp: '$2,370,000'},
             about: 'Seeks to conquer east blue!',
             tips: ['Not needed!']
@@ -2154,8 +2237,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '204.8', hp: '9,384', recLevel: '750+' },
             location: 'Three Islands',
             respawn: '1 Minute.',
-            drops: [{name: 'Oversized Helmet', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
-            {name: 'Lava Ore', chance: '5%', amount: 'x1'}],
+            drops: [{name: 'Oversized Helmet', rarity: 'Uncommon', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/OversizedHelmet.Webp', chance: '5%'}],
             rewards: { money: '5,800', Exp: '$3,120,000'},
             about: 'Says what his owner tells him to!',
             tips: ['Not needed!']
@@ -2172,8 +2254,8 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '282.7', hp: '12,928', recLevel: '900+' },
             location: 'Marine HQ',
             respawn: '1 Minute.',
-            drops: [{name: 'Sleeping Mask', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
-            {name: 'Tremor Beard Key', chance: '1%', amount: 'x1'}],
+            drops: [{name: 'Sleeping Mask', rarity: 'Common', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/SleepingMask.Webp', chance: '5%'},
+            {name: 'Tremor Beard Key', chance: '1%', amount: 'x1', img: 'https://trello.com/1/cards/62993d5ec8a71587fca81652/attachments/62993d67e6468b19df9e742a/download/7fe41f4664f112aeb6029462118a54c0.png'}],
             rewards: { money: '8,250', Exp: '$4,450,000'},
             about: 'Most chill admiral ever!',
             tips: ['Not needed!']
@@ -2207,8 +2289,8 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '282.7', hp: '12,928', recLevel: '1400+' },
             location: 'Impel Jail',
             respawn: '1 Minute.',
-            drops: [{name: 'Warden Hat', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '2.5%'},
-            {name: 'Match', chance: '5%', amount: 'x1'}],
+            drops: [{name: 'Warden Hat', rarity: 'Common', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/WardenHat.Webp', chance: '2.5%'},
+            {name: 'Match', chance: '5%', amount: 'x1', img: 'https://trello.com/1/cards/639ece9b74c95800701b4306/attachments/639ecef2033170058e305bdd/download/sasas.PNG'}],
             rewards: { money: '8,850', Exp: '$10,500,000'},
             about: 'Do not kill this fraudulent being!',
             tips: ['Not needed!']
@@ -2225,7 +2307,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '436.8', hp: '21,433', recLevel: '1500+' },
             location: 'Hot Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Black Shades', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '2.5%'}],
+            drops: [{name: 'Black Shades', rarity: 'Common', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/Black_Shades.webp', chance: '2.5%'}],
             rewards: { money: '3,650', Exp: '$24,200,000'},
             about: 'Do not kill this fraudulent being!',
             tips: ['Not needed!']
@@ -2242,7 +2324,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '500', hp: '22,142', recLevel: '1550+' },
             location: 'Hot Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Ice Ore', rarity: 'Common', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
+            drops: [{name: 'Ice Ore', rarity: 'Common', amount: 'x1',img: 'https://trello.com/1/cards/63c607030e5f4301e6de3067/attachments/63c60760d6b90102bd794da0/download/dsdsdsds.PNG', chance: '1%'}],
             rewards: { money: '9,050', Exp: '$25,800,000'},
             about: 'Bully me please!',
             tips: ['Not needed!']
@@ -2259,8 +2341,8 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '532.5', hp: '24,268', recLevel: '1700+' },
             location: 'Hot Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Neptune Crown', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'},
-            {name: 'Fork', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
+            drops: [{name: 'Neptune Crown', rarity: 'Rare', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/NeptuneCrown.webp', chance: '5%'},
+            {name: 'Fork', rarity: 'Uncommon', amount: 'x1',img: 'https://trello.com/1/cards/639eceac6dc7ca054afc4ab5/attachments/639ecee3b0a987016386e6f6/download/uusus.PNG', chance: '5%'}],
             rewards: { money: '9,250', Exp: '$31,000,000'},
             about: 'Slightly arrogant!',
             tips: ['Not needed!']
@@ -2277,7 +2359,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '579', hp: '26,394', recLevel: '1850+' },
             location: 'Skull Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Scroll', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
+            drops: [{name: 'Scroll', rarity: 'Rare', amount: 'x1',img: 'https://trello.com/1/cards/639ecef99fbfbf0051de633c/attachments/63a017778a2ada001c1f1647/download/saooiaisoa.PNG', chance: '5%'}],
             rewards: { money: '9,450', Exp: '$36,600,000'},
             about: 'Has too much ego!',
             tips: ['Not needed!']
@@ -2294,7 +2376,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '625.8', hp: '28.521', recLevel: '2000+' },
             location: 'Bubble Island',
             respawn: '1 Minute.',
-            drops: [{name: 'Haki Book', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '0.5%'}],
+            drops: [{name: 'G4 Book', rarity: 'Legendary', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a3/G4Book.png/revision/latest?cb=20260726114831', chance: '0.5%'}],
             rewards: { money: '9,650', Exp: '$42,600,000'},
             about: 'Carefree!',
             tips: ['Not needed!']
@@ -2311,7 +2393,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '625.8', hp: '28.521', recLevel: '2150+' },
             location: 'Thriller Boat',
             respawn: '1 Minute.',
-            drops: [{name: 'Shusui', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
+            drops: [{name: 'Shusui', rarity: 'Rare', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/Shusui.png', chance: '1%'}],
             rewards: { money: '9,850', Exp: '$25,700,000'},
             about: 'Swordsman on his youth full of vigor!',
             tips: ['Not needed!']
@@ -2328,7 +2410,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '828.5', hp: '37.734', recLevel: '2650+' },
             location: 'Thriller Boat',
             respawn: '1 Minute.',
-            drops: [{name: 'Green Cloak', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '5%'}],
+            drops: [{name: 'Green Cloak', rarity: 'Legendary', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/GreenCloak.Webp', chance: '5%'}],
             rewards: { money: '11,500', Exp: '$37,200,000'},
             about: 'Swordsman on his youth full of vigor!',
             tips: ['Not needed!']
@@ -2363,8 +2445,8 @@ mw.hook('wikipage.content').add(function($content) {
             location: 'Marine Base Town',
             respawn: '',
             respawnmethod: 'Unlock the gate by using the Lava key, and drop a Lava ore into the cauldron.',
-            drops: [{name: 'Coded Mask', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '100%'},
-            {name: 'Mace', rarity: 'Uncommon', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '100%'}],
+            drops: [{name: 'Coded Mask', rarity: 'Rare', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/CodedMask.Webp', chance: '100%'},
+            {name: 'Mace', rarity: 'Uncommon', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/Mace.png', chance: '100%'}],
             rewards: { money: '$5,000', Gems: '15'},
             about: 'Insane person.',
             tips: ['Not needed!']
@@ -2381,7 +2463,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '922', hp: '41.987', recLevel: '2.900+' },
             location: 'Dragon Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Purple Orb', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
+            drops: [{name: 'Purple Orb', rarity: 'Rare', amount: 'x1',img: 'https://trello.com/1/cards/65311569a6f78d9c647ddadf/attachments/653116a2fbb390a8f062f421/download/image.png', chance: '1%'}, {name: 'Mace V2', Rarity: 'Legendary', amount: 'x1', img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/MaceV2.png', chance: '1%'}],
             rewards: { money: '13,500', Exp: '46.000.000'},
             about: 'Loves to fight.',
             tips: ['Not needed!']
@@ -2449,7 +2531,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '1109.1', hp: '50.492', recLevel: '3500+' },
             location: 'Cake Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Mirror Fragment', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
+            drops: [{name: 'Mirror Fragment', rarity: 'Rare', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/17/MirrorFragment1.png/revision/latest?cb=20260726115359', chance: '1%'}],
             rewards: { money: '17,500', Exp: '66.500.000'},
             about: 'Loves to humiliate others!',
             tips: ['Not needed!']
@@ -2466,7 +2548,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '1202.7', hp: '54.744', recLevel: '3.800+' },
             location: 'Winter Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Snow orb', rarity: 'Legendary', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: 'Unobtainable'}],
+            drops: [{name: 'Snow orb', rarity: 'Legendary', amount: 'x1',img: 'https://trello.com/1/cards/6586192e3b181c3e90398c02/attachments/65861945b611d1bf3656dfa9/download/image.png', chance: 'Unobtainable'}],
             rewards: { money: '19,500', Exp: '78.200.000'},
             about: 'Loves to fool around!',
             tips: ['Not needed!']
@@ -2475,7 +2557,7 @@ mw.hook('wikipage.content').add(function($content) {
             id: 'Love-Boss',
             name: 'Love Boss',
             sea: 2,
-            level: 'Snake Earrings',
+            level: 3950,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/f4/Love_Boss.webp/revision/latest/scale-to-width-down/267?cb=20250222164156',
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/f4/Love_Boss.webp/revision/latest/scale-to-width-down/267?cb=20250222164156',
             tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
@@ -2483,7 +2565,7 @@ mw.hook('wikipage.content').add(function($content) {
             stats: { atk: '1202.7', hp: '54.744', recLevel: '3.950+' },
             location: 'Snake Amazon Island',
             respawn: '30 Seconds.',
-            drops: [{name: 'Snake Earrings', rarity: 'Rare', amount: 'x1',img: 'https://placehold.co/50?text=Sand', chance: '1%'}],
+            drops: [{name: 'Snake Earrings', rarity: 'Rare', amount: 'x1',img: 'https://haze-piece-official.fandom.com/index.php?title=Special:FilePath/SnakeEarrings.Webp', chance: '1%'}],
             rewards: { money: '20,500', Exp: '84.300.000'},
             about: 'Loves Luffy!',
             tips: ['Not needed!']
@@ -2560,7 +2642,7 @@ mw.hook('wikipage.content').add(function($content) {
             $container.html(`
                 ${tabsHTML}
                 <div class="boss-layout" style="justify-content: center; align-items: center; color: var(--text-muted); min-height: 300px;">
-                    <h2>No ${mw.html.escape(activeCategory)}es added for Sea ${mw.html.escape(activeSea)} yet.</h2>
+                    <h2>No ${activeCategory}es added for Sea ${activeSea} yet.</h2>
                 </div>
             `);
             return;

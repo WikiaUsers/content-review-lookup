@@ -1,1 +1,0 @@
-Rip Josh1|[[File:VerifiedCheck.png|16px|link=]]

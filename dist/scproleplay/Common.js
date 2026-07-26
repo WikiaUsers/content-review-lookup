@@ -2,6 +2,7 @@ importArticles({
     type: "script",
     articles: [
         "MediaWiki:DamageTable.js",
+        "MediaWiki:MiscStatTable.js",
     ]
 });
 

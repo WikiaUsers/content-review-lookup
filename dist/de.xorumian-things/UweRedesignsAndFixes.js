@@ -11,7 +11,7 @@ document.querySelectorAll('li a[data-tracking="explore-images"]').forEach(link =
 // Recent Images ---------------------------------------------------------------
 setTimeout(() => {
     document.querySelectorAll('.card-image img').forEach(img => {
-        img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-width-down/200');
+        img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-height-down/200');
     });
 }, 3000);
 // Later added images
@@ -24,7 +24,7 @@ setTimeout(() => {
 
 						setTimeout(() => {
 							document.querySelectorAll('.card-image img').forEach(img => {
-								img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-width-down/200');
+								img.src = img.src.replace('top-crop/width/300/height/168', 'scale-to-height-down/200');
 							});
 						}, 300);
 					}

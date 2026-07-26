@@ -1,2 +1,1 @@
-console.log("Common.js loaded!");
-alert("Common.js works!");
+window.AddRailModule = [{prepend: true}];

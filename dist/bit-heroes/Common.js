@@ -3,7 +3,9 @@
 importArticles( {
     type: 'script',
     articles: [
-        'MediaWiki:FusionSearch.js'
+        'MediaWiki:FusionSearch.js',
+        'MediaWiki:BuildCalculator.js',
+        'MediaWiki:EventRewards.js'
         // 'MediaWiki:Calculators/Code.js',
         // 'MediaWiki:Calculators/BonusCode.js'  
         // 'MediaWiki:Calculators/Sandbox.js'

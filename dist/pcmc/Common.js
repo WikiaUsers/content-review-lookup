@@ -1,5 +1,18 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Custom block message send with dev script MessageBlock */
+window.MessageBlock = {
+  title : 'You have been blocked from the Philippine Collective Media Corporation Wiki',
+  message : 'You have been blocked from the Philippine Collective Meedia Corporation Wiki by $3 as you violated the wikis policies. As a preventative measure, you have been blocked from editing for $2 due to $1. If you believe this block is unjustified or that there has been a mistake, you may contest this this block on my wall on Community Central.',
+  autocheck : true
+};
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MessageBlock/code.js'
+    ]
+});
+
 // *********************************
 // Positioning for Template:PageTags
 // *********************************

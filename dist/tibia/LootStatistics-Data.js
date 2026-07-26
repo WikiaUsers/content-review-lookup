@@ -44,6 +44,8 @@ window.loot_parser_data = {
 'Goshnar\'s Hatred':'15.23.bf9553',
 'Goshnar\'s Greed':'15.23.bf9553',
 'Goshnar\'s Greed (feeding)':'15.23.bf9553',
+//
+'Grimeleech':'15.12.c7d92c',
 // Norcs nerfs, rootthings buffs
 'Dworc Shadowstalker':'15.11.dd3523',
 'Gloom Maw':'15.11.dd3523',
@@ -730,7 +732,7 @@ window.loot_parser_data = {
 'Choking Fear' : '12.31.9530',
 'Retching Horror': '12.31.9530',
 'Plaguesmith': '12.31.9530',
-'Grimeleech': '12.31.9530',
+//'Grimeleech': '12.31.9530',
 'Rage Squid': '12.31.9530',
 'Burning Book': '12.31.9530',
 'Guardian of Tales': '12.31.9530',

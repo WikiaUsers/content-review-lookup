@@ -15,25 +15,23 @@ $(function() {
 		var searchFilterInput = $('<input type="text" placeholder="Filter search box" class="filter-search-box">');
 		$('#search-filter').append(searchFilterInput);
 		
-		// New Set for filters
-		var filterGroups = {
-			gender: new Set(),
-			phaseQuarter: new Set(),
-			phaseWeek: new Set(),
-			phaseMonth: new Set(),
-			type: new Set(),
-			rank: new Set()
-		};
+		// FilterGroups and FilterCongigs
+		var filterGroups = {};
+		var filterConfigs = [];
 		
-		// FilterCongigs
-		var filterConfigs = [
-			{ id: "gender-filter",	key: "gender" },
-			{ id: "phase-quarter-filter",	key: "phaseQuarter" },
-			{ id: "phase-week-filter",	key: "phaseWeek" },
-			{ id: "phase-month-filter",	key: "phaseMonth" },
-			{ id: "type-filter",	key: "type" },
-			{ id: "rank-filter",	key: "rank" }
-		];
+		$content.find(".filter-group[id]").each(function () {
+			var id = this.id;
+			var key = id
+				.replace(/-filter$/, "")
+				.replace(/-([a-z])/g, function (match, letter) {
+					return letter.toUpperCase();
+				});
+			filterConfigs.push({
+				id: id,
+				key: key
+			});
+			filterGroups[key] = new Set();
+		});
 		
 		// Debounce function
 		function debounce(func, wait) {
@@ -52,7 +50,7 @@ $(function() {
 		
 		// Check initial button states
 		filterConfigs.forEach(function(config) {
-			$("#" + config.id).find(".btn-filter-toggle-checked").each(function() {
+			$content.find("#" + config.id).find(".btn-filter-toggle-checked").each(function() {
 				filterGroups[config.key].add($(this).data("filter"));
 			});
 		});
@@ -64,7 +62,7 @@ $(function() {
 		
 		// Initially show items based on checked filters, include filter search input when searching, count items when visible
 		function filterSelection() {
-			var items = document.getElementsByClassName("filterItem");
+			var items = $content.find(".filterItem");
 			var searchFilterTerm = searchFilterInput.val().toLowerCase();
 			var hasActiveFilters = Object.keys(filterGroups).some(function(key) {
 				return filterGroups[key].size > 0;
@@ -96,7 +94,10 @@ $(function() {
 			}
 			
 			// Update counter display
-			document.getElementById("filter-item-count").textContent = visibleFilterItemCount;
+			var counter = $content.find("#filter-item-count");
+			if (counter.length) {
+				counter.text(visibleFilterItemCount);
+			}
 		}
 		
 		function fadeIn(element) {
@@ -129,7 +130,7 @@ $(function() {
 		
 		// Toggle button click handlers
 		function setupButtonClickHandlers(containerId, filterType) {
-			var btnContainer = $("#" + containerId);
+			var btnContainer = $content.find("#" + containerId);
 			var btns = btnContainer.find(".btn-filter-toggle");
 			
 			btns.on("click", function() {

@@ -1,0 +1,2 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+if (window.location.pathname.endsWith('/')) { var cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname.slice(0, -1) + window.location.search; window.location.replace(cleanUrl); }

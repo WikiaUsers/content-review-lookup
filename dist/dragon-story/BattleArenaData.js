@@ -7,7 +7,7 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"abominable"
 				],
 				"rarity": "common",
-				"unusable": true
+				"unusable": trueh
 			},
 			"aboriginal": {
 				"name": "Aboriginal",
@@ -10296,7 +10296,7 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 			"horus": {
 				"name": "Horus",
 				"colors": [
-					"egyipt",
+					"egypt",
 					"yellow",
 					"black"
 				],

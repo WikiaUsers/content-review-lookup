@@ -1,12 +1,26 @@
  /* Moved from [[MediaWiki:common.js]] */
 
+// actual module flag, outside the hook, to prevent a restart
+// if 'wikipage.content' fires more than once during the same page load
+var prisonCalcInitialized = false;
+
 mw.hook('wikipage.content').add(function ($content) {
-    if ($('#calc-js-loaded').length) return;
     var $placeholder = $('#prison-calc-placeholder');
     var $dataJson = $('#calc-data-json');
     if (!$placeholder.length || !$dataJson.length) return;
+    if (prisonCalcInitialized) return;
+    prisonCalcInitialized = true;
 
     var data = JSON.parse($dataJson.text());
+
+    var INPUT_MAX = 9999;
+    function clampInput($el) {
+        var v = parseInt($el.val(), 10);
+        if (isNaN(v) || v < 0) v = 0;
+        if (v > INPUT_MAX) v = INPUT_MAX;
+        $el.val(v);
+        return v;
+    }
 
     // --- UI ---
     var $container = $('<div id="prison-calc-container"></div>');
@@ -16,7 +30,7 @@ mw.hook('wikipage.content').add(function ($content) {
     var $inputSection = $('<div class="calc-grid-3"></div>');
     function createInputHTML(id, label) {
         return $('<div></div>').append('<label style="display:block;font-size:12px;">' + label + '</label>')
-                               .append('<input type="number" id="' + id + '" class="calc-trigger" value="0" min="0" style="width:100%;padding:5px;box-sizing:border-box;">');
+                               .append('<input type="number" id="' + id + '" class="calc-trigger" value="0" min="0" max="' + INPUT_MAX + '" style="width:100%;padding:5px;box-sizing:border-box;">');
     }
     $inputSection.append(createInputHTML('inp-low', 'Small Security'), createInputHTML('inp-med', 'Medium Security'), createInputHTML('inp-high', 'High Security'));
     $container.append($inputSection);
@@ -54,15 +68,14 @@ mw.hook('wikipage.content').add(function ($content) {
     $placeholder.replaceWith($container);
 
     function updateCalculations() {
-        var low = parseInt($('#inp-low').val()) || 0, med = parseInt($('#inp-med').val()) || 0, high = parseInt($('#inp-high').val()) || 0;
+        var low = clampInput($('#inp-low')), med = clampInput($('#inp-med')), high = clampInput($('#inp-high'));
         var total = low + med + high, theme = $('#sel-theme').val();
         low > 0 ? $('#sports-ui').show() : $('#sports-ui').hide();
 
         var listHTML = "", setupTotal = 0;
 
-        // Staff Logic
-        var guards = total >= 4 ? Math.ceil(total / data.config.staff.guard.ratio) : 0;
-        var chefs = total >= 5 ? Math.ceil(total / 15) : 0; 
+        var guards = total >= data.config.staff.guard.min ? Math.ceil(total / data.config.staff.guard.ratio) : 0;
+        var chefs = total >= data.config.staff.chef.min ? Math.ceil(total / data.config.staff.chef.ratio) : 0;
 
         var hourlyWages = (guards * data.config.staff.guard.salary_per_hour) + (chefs * data.config.staff.chef.salary_per_hour);
 
@@ -106,6 +119,7 @@ mw.hook('wikipage.content').add(function ($content) {
             listHTML += '<tr><td>' + towerNames[theme] + '</td><td>' + twQty + '</td><td>$' + twCost.toLocaleString() + '</td></tr>';
         }
 
+        // TODO Confirm the source of the "*4" multiplier below
         if (low > 0) {
             var sP = parseInt($('#sel-sports-price').val()), sQ = Math.ceil(low / 2.5), sC = (sQ * sP) * 4;
             setupTotal += sC; listHTML += '<tr><td>Small Sec Sports Set</td><td>' + sQ + '</td><td>$' + sC.toLocaleString() + '</td></tr>';
@@ -124,6 +138,8 @@ mw.hook('wikipage.content').add(function ($content) {
         $('#warning-msg').text(total > 100 ? '⚠️ The prisoner limit has been exceeded' : '');
     }
 
-    $(document).on('input change', '.calc-trigger', updateCalculations);
+    // FIX #1: namespaced + off/on para nunca empilhar handlers duplicados
+    $(document).off('input.prisonCalc change.prisonCalc', '.calc-trigger')
+               .on('input.prisonCalc change.prisonCalc', '.calc-trigger', updateCalculations);
     updateCalculations();
 });

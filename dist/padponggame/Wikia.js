@@ -1,1 +1,0 @@
-window.BackToTopText = "Bounce at the Top!";

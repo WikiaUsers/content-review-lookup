@@ -9,6 +9,8 @@ importArticles({
 	        'MediaWiki:Rail.js',
 	        'MediaWiki:RelatedDiscussions.js',
 	        'MediaWiki:ThemeToggler.js',
-	        'MediaWiki:Users.js'
+	        'MediaWiki:Users.js',
+	        'MediaWiki:ArticlePreview.js',
+	        "MediaWiki:CrossWikiActivity.js"
 	    ]
 	});

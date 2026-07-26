@@ -50,17 +50,23 @@ mw.hook('wikipage.content').add(()=>{
 				cycle(data.continue);
 			} else {
 				$('.CWF-progress').text('Generating alphanumerical sections...');
+				let total = 0;
 				let letters = Object.keys(files).sort();
 				let sections = [];
 				letters.forEach((l)=>{
 					sections.push(`\n<h2 id="${l}">${ l==='!' ? 'Others' : l }</h2><div class="mw-collapsible mw-collapsed giw-collapsible" data-expandtext="Show entries" data-collapsetext="Hide entries"><div class="mw-collapsible-content" style="display: none;">${files[l].join('')}\n</div></div>`);
+					total += files[l].length;
 				});
 				
 				$('.CWF-progress').text('Attempting to publish list...');
 				api.post({
 					action: 'edit',
 					title: 'Project:WantedFiles',
-					text: '{{TOC Right}}<templatestyles src="Genshin Impact Wiki:WantedFiles/style.css" />'+sections.join(''),
+					text: 
+						'{{TOC Right}}<templatestyles src="Genshin Impact Wiki:WantedFiles/style.css" />'+
+						'Listing <b>'+total+'</b> wanted files, last updated on {{#time: F d, H:i|{{subst:#time:c}}}}.'+
+						'{{clr}}'+
+						sections.join(''),
 					token: mw.user.tokens.values.csrfToken
 				})
 				.then(

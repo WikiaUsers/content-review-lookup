@@ -35,25 +35,25 @@ importArticles({
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 mw.hook("wikipage.content").add(function () {
     // 单页内联CSS与CSS触发器
-    $("span.import-css").each(function () {
-        var css = mw.util.addCSS($(this).attr("data-css"));
-        $(css.ownerNode).addClass("import-css")
-            .attr("data-css-hash", $(this).attr("data-css-hash"))
-            .attr("data-from", $(this).attr("data-from"))
-            .attr("data-trigger", $(this).attr("data-trigger"));
-        var trigger = $(this).attr("data-trigger");
-        var triggerOpened = false;
-        if (trigger != "none") {
-            css.disabled = true;
-            $(".csstrigger-" + trigger).click(function () {
-                css.disabled = !css.disabled;
-                triggerOpened = true;
-            });
-        }
-        $(".css-toggler").click(function () {
-            if ((trigger != "none" && triggerOpened) || (trigger == "none")) css.disabled = !css.disabled;
-        });
-    });
+    // $("span.import-css").each(function () {
+    //     var css = mw.util.addCSS($(this).attr("data-css"));
+    //     $(css.ownerNode).addClass("import-css")
+    //         .attr("data-css-hash", $(this).attr("data-css-hash"))
+    //         .attr("data-from", $(this).attr("data-from"))
+    //         .attr("data-trigger", $(this).attr("data-trigger"));
+    //     var trigger = $(this).attr("data-trigger");
+    //     var triggerOpened = false;
+    //     if (trigger != "none") {
+    //         css.disabled = true;
+    //         $(".csstrigger-" + trigger).click(function () {
+    //             css.disabled = !css.disabled;
+    //             triggerOpened = true;
+    //         });
+    //     }
+    //     $(".css-toggler").click(function () {
+    //         if ((trigger != "none" && triggerOpened) || (trigger == "none")) css.disabled = !css.disabled;
+    //     });
+    // });
 
     // 播放或暂停所有音频
     $(".audio-toggler").click(function () {
@@ -464,100 +464,100 @@ $('.fandom-community-header__community-name-wrapper').append(
     ));
 
 //
-$(document).ready(function () {
-    mw.hook('wikipage.content').add(function ($content) {
-        // 为每个播放器创建独立的控制器
-        $content.find('.player-container').each(function () {
-            const $player = $(this);
-            const playerState = {
-                isPlaying: false,
-                isDragging: false,
-                progress: $player.find('.progress'),
-                playBtn: $player.find('.play-btn'),
-                audio: new Audio($player.data('audio-src')),
-                volumeControl: $player.find('.volume-control'),
-                volumeContainer: $player.find('.volume-slider-container'),
-                volumeFill: $player.find('.volume-slider-fill'),
-                volumeThumb: $player.find('.volume-slider-thumb'),
-                volumeIcon: $player.find('.volume-icon')
-            };
+// $(document).ready(function () {
+//     mw.hook('wikipage.content').add(function ($content) {
+//         // 为每个播放器创建独立的控制器
+//         $content.find('.player-container').each(function () {
+//             const $player = $(this);
+//             const playerState = {
+//                 isPlaying: false,
+//                 isDragging: false,
+//                 progress: $player.find('.progress'),
+//                 playBtn: $player.find('.play-btn'),
+//                 audio: new Audio($player.data('audio-src')),
+//                 volumeControl: $player.find('.volume-control'),
+//                 volumeContainer: $player.find('.volume-slider-container'),
+//                 volumeFill: $player.find('.volume-slider-fill'),
+//                 volumeThumb: $player.find('.volume-slider-thumb'),
+//                 volumeIcon: $player.find('.volume-icon')
+//             };
 
-            // 设置专辑封面
-            const albumArt = $player.find('.album-art');
-            albumArt.css('background-image', `url(${$player.data('album-art')})`);
-            // 播放/暂停控制
-            playerState.playBtn.on('click', function () {
-                if (playerState.isPlaying) {
-                    playerState.audio.pause();
-                    playerState.isPlaying = false;
-                    $(this).text('▶');
-                } else {
-                    playerState.audio.play();
-                    playerState.isPlaying = true;
-                    $(this).text('⏸');
-                }
-            });
-            // 进度更新
-            $(playerState.audio).on('timeupdate', function () {
-                const percentage = (this.currentTime / this.duration) * 100;
-                playerState.progress.css('width', percentage + '%');
-            });
-            // 进度条点击
-            $player.find('.progress-bar').on('click', function (e) {
-                const percent = e.offsetX / $(this).width();
-                playerState.audio.currentTime = percent * playerState.audio.duration;
-            });
-            // 音量控制函数
-            function updateVolume(e) {
-                const rect = playerState.volumeContainer[0].getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+//             // 设置专辑封面
+//             const albumArt = $player.find('.album-art');
+//             albumArt.css('background-image', `url(${$player.data('album-art')})`);
+//             // 播放/暂停控制
+//             playerState.playBtn.on('click', function () {
+//                 if (playerState.isPlaying) {
+//                     playerState.audio.pause();
+//                     playerState.isPlaying = false;
+//                     $(this).text('▶');
+//                 } else {
+//                     playerState.audio.play();
+//                     playerState.isPlaying = true;
+//                     $(this).text('⏸');
+//                 }
+//             });
+//             // 进度更新
+//             $(playerState.audio).on('timeupdate', function () {
+//                 const percentage = (this.currentTime / this.duration) * 100;
+//                 playerState.progress.css('width', percentage + '%');
+//             });
+//             // 进度条点击
+//             $player.find('.progress-bar').on('click', function (e) {
+//                 const percent = e.offsetX / $(this).width();
+//                 playerState.audio.currentTime = percent * playerState.audio.duration;
+//             });
+//             // 音量控制函数
+//             function updateVolume(e) {
+//                 const rect = playerState.volumeContainer[0].getBoundingClientRect();
+//                 const x = e.clientX - rect.left;
+//                 const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
 
-                playerState.volumeFill.css('transform', `scaleX(${percentage / 100})`);
-                playerState.volumeThumb.css('right', `${100 - percentage}%`);
-                playerState.audio.volume = percentage / 100;
-                updateVolumeIcon(percentage);
-            }
-            // 音量拖动事件
-            playerState.volumeContainer.on('mousedown', function (e) {
-                playerState.isDragging = true;
-                updateVolume(e);
-            });
-            $(document).on('mousemove', function (e) {
-                if (playerState.isDragging) {
-                    updateVolume(e);
-                }
-            });
-            $(document).on('mouseup', function () {
-                playerState.isDragging = false;
-            });
-            // 更新音量图标
-            function updateVolumeIcon(value) {
-                if (value == 0) {
-                    playerState.volumeIcon.text('🔇');
-                } else if (value < 50) {
-                    playerState.volumeIcon.text('🔉');
-                } else {
-                    playerState.volumeIcon.text('🔊');
-                }
-            }
-            // 音量图标双击事件
-            playerState.volumeIcon.on('dblclick', function () {
-                if (playerState.audio.volume > 0) {
-                    playerState.audio.volume = 0;
-                    playerState.volumeFill.css('transform', 'scaleX(0)');
-                    playerState.volumeThumb.css('right', '100%');
-                    playerState.volumeIcon.text('🔇');
-                } else {
-                    playerState.audio.volume = 1;
-                    playerState.volumeFill.css('transform', 'scaleX(1)');
-                    playerState.volumeThumb.css('right', '0%');
-                    playerState.volumeIcon.text('🔊');
-                }
-            });
-        });
-    });
-});
+//                 playerState.volumeFill.css('transform', `scaleX(${percentage / 100})`);
+//                 playerState.volumeThumb.css('right', `${100 - percentage}%`);
+//                 playerState.audio.volume = percentage / 100;
+//                 updateVolumeIcon(percentage);
+//             }
+//             // 音量拖动事件
+//             playerState.volumeContainer.on('mousedown', function (e) {
+//                 playerState.isDragging = true;
+//                 updateVolume(e);
+//             });
+//             $(document).on('mousemove', function (e) {
+//                 if (playerState.isDragging) {
+//                     updateVolume(e);
+//                 }
+//             });
+//             $(document).on('mouseup', function () {
+//                 playerState.isDragging = false;
+//             });
+//             // 更新音量图标
+//             function updateVolumeIcon(value) {
+//                 if (value == 0) {
+//                     playerState.volumeIcon.text('🔇');
+//                 } else if (value < 50) {
+//                     playerState.volumeIcon.text('🔉');
+//                 } else {
+//                     playerState.volumeIcon.text('🔊');
+//                 }
+//             }
+//             // 音量图标双击事件
+//             playerState.volumeIcon.on('dblclick', function () {
+//                 if (playerState.audio.volume > 0) {
+//                     playerState.audio.volume = 0;
+//                     playerState.volumeFill.css('transform', 'scaleX(0)');
+//                     playerState.volumeThumb.css('right', '100%');
+//                     playerState.volumeIcon.text('🔇');
+//                 } else {
+//                     playerState.audio.volume = 1;
+//                     playerState.volumeFill.css('transform', 'scaleX(1)');
+//                     playerState.volumeThumb.css('right', '0%');
+//                     playerState.volumeIcon.text('🔊');
+//                 }
+//             });
+//         });
+//     });
+// });
 
 // 投票偏移量
 (function () {
@@ -692,58 +692,58 @@ mw.hook("wikipage.content").add(function () {
         });
     });
 
-    $.getJSON(mw.util.wikiScript("index"), {
-        title: "User:HyperNervie/竞赛2.json",
-        action: "raw",
-        ctype: "application/json"
-    }).done(function (result, status) {
-        if (status != "success" || typeof (result) != "object") return;
-        var entries_loaded = 0;
-        mw.hook("pollLoader.loaded").add(function () {
-            if (++entries_loaded < result.length) return;
-            result.sort(function (a, b) { return b.rating - a.rating; });
-            $("table.contest-results tbody").empty();
-            result.forEach(function (entry, place) {
-                $("table.contest-results tbody").append(
-                    "<tr>" +
-                    "<td>" + (place + 1) + "</td>" +
-                    "<td>" +
-                    '<a href="' + mw.util.getUrl(entry.name) + '" ' +
-                    'title="' + entry.name + '">' +
-                    (entry.title || entry.name) +
-                    "</a>" +
-                    "</td>" +
-                    "<td>" +
-                    '<a href="' + mw.util.getUrl("User:" + entry.author) + '" ' +
-                    'title="User:' + entry.author + '">' +
-                    entry.author +
-                    "</a>" +
-                    "</td>" +
-                    "<td>" + entry.upvote + "</td>" +
-                    "<td>" + entry.novote + "</td>" +
-                    "<td>" + entry.downvote + "</td>" +
-                    "<td>" + entry.rating.toFixed(4) + "</td>" +
-                    "</tr>"
-                );
-            });
-            $("table.contest-results").makeCollapsible();
-        });
-        result.forEach(function (entry) {
-            $.getJSON(mw.util.wikiScript("wikia"), {
-                controller: "DiscussionThread",
-                method: "getThread",
-                format: "json",
-                threadId: entry.poll_id
-            }).done(function (result, status) {
-                if (status != "success" || typeof (result) != "object") return;
-                entry.upvote = result.poll.answers[0].votes;
-                entry.novote = result.poll.answers[1].votes;
-                entry.downvote = result.poll.answers[2].votes;
-                entry.rating = (entry.upvote - entry.downvote) / result.poll.totalVotes;
-                mw.hook("pollLoader.loaded").fire();
-            });
-        });
-    });
+//     $.getJSON(mw.util.wikiScript("index"), {
+//         title: "User:HyperNervie/竞赛2.json",
+//         action: "raw",
+//         ctype: "application/json"
+//     }).done(function (result, status) {
+//         if (status != "success" || typeof (result) != "object") return;
+//         var entries_loaded = 0;
+//         mw.hook("pollLoader.loaded").add(function () {
+//             if (++entries_loaded < result.length) return;
+//             result.sort(function (a, b) { return b.rating - a.rating; });
+//             $("table.contest-results tbody").empty();
+//             result.forEach(function (entry, place) {
+//                 $("table.contest-results tbody").append(
+//                     "<tr>" +
+//                     "<td>" + (place + 1) + "</td>" +
+//                     "<td>" +
+//                     '<a href="' + mw.util.getUrl(entry.name) + '" ' +
+//                     'title="' + entry.name + '">' +
+//                     (entry.title || entry.name) +
+//                     "</a>" +
+//                     "</td>" +
+//                     "<td>" +
+//                     '<a href="' + mw.util.getUrl("User:" + entry.author) + '" ' +
+//                     'title="User:' + entry.author + '">' +
+//                     entry.author +
+//                     "</a>" +
+//                     "</td>" +
+//                     "<td>" + entry.upvote + "</td>" +
+//                     "<td>" + entry.novote + "</td>" +
+//                     "<td>" + entry.downvote + "</td>" +
+//                     "<td>" + entry.rating.toFixed(4) + "</td>" +
+//                     "</tr>"
+//                 );
+//             });
+//             $("table.contest-results").makeCollapsible();
+//         });
+//         result.forEach(function (entry) {
+//             $.getJSON(mw.util.wikiScript("wikia"), {
+//                 controller: "DiscussionThread",
+//                 method: "getThread",
+//                 format: "json",
+//                 threadId: entry.poll_id
+//             }).done(function (result, status) {
+//                 if (status != "success" || typeof (result) != "object") return;
+//                 entry.upvote = result.poll.answers[0].votes;
+//                 entry.novote = result.poll.answers[1].votes;
+//                 entry.downvote = result.poll.answers[2].votes;
+//                 entry.rating = (entry.upvote - entry.downvote) / result.poll.totalVotes;
+//                 mw.hook("pollLoader.loaded").fire();
+//             });
+//         });
+//     });
 
     $.getJSON(mw.util.wikiScript("api"), {
         action: "query",

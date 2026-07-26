@@ -1,6 +1,6 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 
-/* Исправление для отображения .webm в галереях как гифок (скрытие интерфейса и зацикливание) */
+/* ========== 1. Исправление для отображения .webm в галереях ========== */
 $(function() {
     'use strict';
     
@@ -41,7 +41,7 @@ $(function() {
     $(window).on('hashchange', function() { setTimeout(processWebmAsGif, 100); });
 });
 
-/* Переключение +/− для кастомных кнопок шаблона Names */
+/* ========== 2. Переключение +/− для кастомных кнопок шаблона Names ========== */
 $(function() {
     $('.names-toggle').on('click', function() {
         var $this = $(this);
@@ -55,7 +55,7 @@ $(function() {
     });
 });
 
-/* ========== НОВАЯ СИСТЕМА ТУЛТИПОВ ========== */
+/* ========== 3. СИСТЕМА ТУЛТИПОВ ========== */
 window.tooltips_list = [
 	{
 		classname: 'item-tooltip',
@@ -472,3 +472,396 @@ var tooltips = {
     },
 };
 mw.loader.using( 'mediawiki.util', () => $( tooltips.init ) );
+
+/* ========== 4. СИСТЕМА ФОНОВ ДЛЯ ДИАЛОГОВ ========== */
+$(function() {
+    var $bgHeader = $('.story-summary-header').filter(function() {
+        return $(this).text().trim() === 'Фоны';
+    }).first();
+    
+    var bgMap = {};
+    var charMap = {}; // Слово-метка → Имя персонажа
+    var $storyInfoTable = null;
+    
+// Парсим персонажей из Story Info
+var $charContainer = $('.story-char-container').first();
+if ($charContainer.length) {
+    $charContainer.children('div').each(function() {
+        var $wrapper = $(this);
+        if ($wrapper.css('position') !== 'relative') return;
+        
+        // Пропускаем unknown=true (пустой div с line-height:100px)
+        if ($wrapper.find('div[style*="line-height:100px"]').length) return;
+        
+        var $img = $wrapper.find('img').first();
+        if (!$img.length) return;
+        
+        // Имя персонажа из alt изображения (убираем " icon" с конца)
+        var charName = ($img.attr('alt') || '').replace(/\s*icon\s*$/i, '').trim();
+        if (!charName) return;
+        
+        // Метка (label) — текст в нижней плашке
+        var $labelDiv = $wrapper.find('div[style*="position:absolute"]').first();
+        var label = '';
+        var titleName = '';
+        
+        // Пробуем взять текст из ссылки внутри плашки (обычный случай)
+        var $link = $labelDiv.find('a').first();
+        if ($link.length) {
+            label = $link.text().trim();
+            titleName = $link.attr('title') || '';
+        } else {
+            // nolink=true: ссылки нет, берём текстовое содержимое напрямую
+            label = $labelDiv.text().trim();
+        }
+        
+        if (charName && label) {
+            charMap[label] = charName;
+            if (titleName && titleName !== label && titleName !== charName) {
+                charMap[titleName] = charName;
+            }
+            
+            // Обрабатываем alias (альтернативные имена через запятую)
+            var aliasData = $wrapper.attr('data-alias') || '';
+            if (aliasData) {
+                var aliases = aliasData.split(',');
+                for (var i = 0; i < aliases.length; i++) {
+                    var alias = aliases[i].trim();
+                    if (alias && !charMap[alias]) {
+                        charMap[alias] = charName;
+                    }
+                }
+            }
+        }
+    });
+}
+    
+    if ($bgHeader.length) {
+        $storyInfoTable = $bgHeader.closest('.mrfz-btable');
+        var $bgContainer = $bgHeader.closest('tr').next('tr').find('td > div').first();
+        
+        if ($bgContainer.length) {
+            $bgContainer.children('div').each(function() {
+                var $wrapper = $(this);
+                if ($wrapper.css('position') !== 'relative') return;
+                
+                var bgNumber = $wrapper.find('div[style*="position:absolute"]').first().text().trim();
+                var imageName = ($wrapper.find('img').first().attr('data-image-name') || '').trim();
+                
+                if (bgNumber && imageName) {
+                    bgMap[bgNumber] = imageName;
+                }
+            });
+        }
+    }
+    
+    var SPECIAL = {
+        '__black__':    { type: 'color', value: '#000000' },
+        '__white__':    { type: 'color', value: '#ffffff' },
+        '__fadeout__':  { type: 'fadeout' },
+        '__fadein__':   { type: 'fadein' },
+        '__fadeoutin__':{ type: 'fadeoutin' }
+    };
+    
+    function getBgInfo(bgData) {
+        if (!bgData) return null;
+        if (SPECIAL[bgData]) return SPECIAL[bgData];
+        if (bgData.indexOf('__image__') === 0) {
+            return { type: 'image', value: bgData.replace('__image__', '') + '.png' };
+        }
+        if (bgMap[bgData]) return { type: 'image', value: bgMap[bgData] };
+        return null;
+    }
+    
+    function getRowType($row) {
+        var $cells = $row.find('td');
+        
+        if ($cells.length === 2 && $cells.eq(0).attr('width') === '20%') {
+            return 'talk';
+        }
+        
+        if ($cells.length === 1) {
+            var $cell = $cells.eq(0);
+            var colspan = $cell.attr('colspan');
+            var style = $cell.attr('style') || '';
+            
+            if (colspan === '100%') {
+                if (style.indexOf('background:var(--theme-th-background)') >= 0 &&
+                    (style.indexOf('font-style:italic') >= 0 || style.indexOf('font-style:oblique') >= 0)) {
+                    return 'action';
+                }
+                if (style.indexOf('background:var(--theme-th-background)') === -1 &&
+                    style.indexOf('background:var(--theme-highlight-background)') === -1) {
+                    return 'speech';
+                }
+            }
+        }
+        
+        return 'other';
+    }
+    
+    $('.mrfz-btable').each(function() {
+        var $table = $(this);
+        if ($storyInfoTable && $table.is($storyInfoTable)) return;
+        if (!$table.find('.story-bg-marker').length && !$table.find('.story-flashback-marker').length) return;
+        
+        var currentBgType = 'none';
+        var currentBgValue = null;
+        var savedBgType = 'none';
+        var savedBgValue = null;
+        var groupRows = [];
+        var pendingFadeoutin = false;
+        var inFlashback = false;
+        
+        function applyBgToRow($row, bgType, bgValue, extraDim) {
+            var $cells = $row.find('td');
+            var rowType = getRowType($row);
+            
+            $row.css('background-image', '');
+            $row.css('background-color', '');
+            $row.css('background', '');
+            $row.css('background-attachment', '');
+            $row.css('position', '');
+            $row.css('filter', '');
+            $cells.css('background-color', '');
+            $cells.css('background', '');
+            $cells.css('color', '');
+            $cells.css('text-shadow', '');
+            
+            var normalDim = 'rgba(0,0,0,0.3)';
+            var actionDim = 'rgba(0,0,0,0.5)';
+            var darkDim = 'rgba(0,0,0,0.95)';
+            var blackDim = 'rgba(0,0,0,1)';
+            
+            if (bgType === 'image') {
+                var bgUrl = '/ru/wiki/Special:FilePath/' + bgValue;
+                $row.css('background-image', 'url("' + bgUrl + '")');
+                $row.css('background-size', 'cover');
+                $row.css('background-position', 'center');
+                $row.css('background-repeat', 'no-repeat');
+                $row.css('background-attachment', 'fixed');
+                
+                if (inFlashback) {
+                    $row.css('filter', 'grayscale(1) brightness(1.2) contrast(0.9)');
+                }
+                
+                if (extraDim) {
+                    $cells.css('background', 'linear-gradient(to bottom, ' + blackDim + ' 0%, ' + darkDim + ' 30%, ' + normalDim + ' 100%)');
+                } else if (rowType === 'action') {
+                    $cells.css('background-color', actionDim);
+                } else {
+                    $cells.css('background-color', normalDim);
+                }
+            } else if (bgType === 'color') {
+                if (bgValue === '#000000') {
+                    if (savedBgType === 'image' && savedBgValue) {
+                        var savedUrl = '/ru/wiki/Special:FilePath/' + savedBgValue;
+                        $row.css('background-image', 'url("' + savedUrl + '")');
+                        $row.css('background-size', 'cover');
+                        $row.css('background-position', 'center');
+                        $row.css('background-repeat', 'no-repeat');
+                        $row.css('background-attachment', 'fixed');
+                        
+                        if (inFlashback) {
+                            $row.css('filter', 'grayscale(1) brightness(1.2) contrast(0.9)');
+                        }
+                    }
+                    $cells.css('background-color', darkDim);
+                } else {
+                    $row.css('background-color', bgValue);
+                    if (bgValue === '#ffffff') {
+                        $cells.css('background-color', 'rgba(255,255,255,0.85)');
+                        $cells.css('color', '#000');
+                    }
+                }
+            } else if (bgType === 'fadeoutin_row') {
+                if (currentBgType === 'image' && currentBgValue) {
+                    var fadeUrl = '/ru/wiki/Special:FilePath/' + currentBgValue;
+                    $row.css('background-image', 'url("' + fadeUrl + '")');
+                    $row.css('background-size', 'cover');
+                    $row.css('background-position', 'center');
+                    $row.css('background-repeat', 'no-repeat');
+                    $row.css('background-attachment', 'fixed');
+                    
+                    if (inFlashback) {
+                        $row.css('filter', 'grayscale(1) brightness(1.2) contrast(0.9)');
+                    }
+                }
+                $cells.css('background', 'linear-gradient(to bottom, ' + darkDim + ' 0%, ' + normalDim + ' 100%)');
+            }
+            
+// Добавляем иконку персонажа в левый столбец (только если фон НЕ из mode=image)
+var isImageMode = (currentBgType === 'image' && currentBgValue && currentBgValue.indexOf('Background-') !== 0);
+if (rowType === 'talk' && !isImageMode) {
+    var $nameCell = $cells.eq(0);
+    // Ищем имя: сначала в <b>, потом в <span style="font-weight:bold">
+    var $speakerEl = $nameCell.find('b').first();
+    if (!$speakerEl.length) {
+        $speakerEl = $nameCell.find('span[style*="font-weight:bold"]').first();
+    }
+    var speakerName = $speakerEl.text().trim();
+    
+// Применяем обводку ко всем строкам диалогов
+$nameCell.find('b, span, font').css('text-shadow', '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000');
+
+// Проверяем, есть ли иконка для этого персонажа
+var charName = charMap[speakerName];
+if (charName) {
+    $nameCell.find('.story-char-icon').remove();
+    $nameCell.find('.story-char-spacer').remove();
+    
+    // Оборачиваем содержимое в контейнер с flex
+    var $existingContent = $nameCell.contents().not('.story-char-icon, .story-char-spacer');
+    var $wrapper = $('<div class="story-char-wrapper" style="display: flex; align-items: center; justify-content: center; min-height: 90px; position: relative; z-index: 2;"></div>');
+    $wrapper.append($existingContent);
+    $nameCell.append($wrapper);
+    
+    // Формируем имя файла (заменяем пробелы на подчёркивания)
+    var fileName = charName.replace(/ /g, '_') + '_icon.png';
+    // Используем /ru/wiki/Special:FilePath/ для русской вики
+    var iconUrl = '/ru/wiki/Special:FilePath/' + fileName;
+    
+    var $icon = $('<img class="story-char-icon" src="' + iconUrl + '" style="position: absolute; bottom: 5px; left: 5px; width: 90px; height: 90px; opacity: 0.8; object-fit: contain; z-index: 1;" onerror="this.style.display=\'none\'">');
+    $nameCell.css('position', 'relative');
+    $nameCell.append($icon);
+}
+
+// Минимальная высота для всех строк диалогов
+$row.css('height', '60px');
+$nameCell.css('vertical-align', 'middle');
+}
+            
+            $row.addClass('story-dialog-row');
+        }
+        
+        function flushGroup() {
+            if (groupRows.length === 0) return;
+            
+            var isImageMode = (currentBgType === 'image' && currentBgValue && currentBgValue.indexOf('Background-') !== 0);
+            
+            if (isImageMode) {
+                var nonActionRows = 0;
+                groupRows.forEach(function($row) {
+                    if (getRowType($row) !== 'action') {
+                        nonActionRows++;
+                    }
+                });
+                
+                if (nonActionRows > 0 && nonActionRows < 5) {
+                    var $firstRow = groupRows[0];
+                    var $lastRow = groupRows[groupRows.length - 1];
+                    var totalEmpty = 5 - nonActionRows;
+                    var emptyTop = Math.floor(totalEmpty / 2);
+                    var emptyBottom = Math.ceil(totalEmpty / 2);
+                    
+                    for (var i = 0; i < emptyTop; i++) {
+                        var $emptyRow = $('<tr class="story-empty-row"><td colspan="2" style="height: 3em;"></td></tr>');
+                        $firstRow.before($emptyRow);
+                        applyBgToRow($emptyRow, currentBgType, currentBgValue, false);
+                    }
+                    
+                    for (var j = 0; j < emptyBottom; j++) {
+                        var $emptyRow = $('<tr class="story-empty-row"><td colspan="2" style="height: 3em;"></td></tr>');
+                        $lastRow.after($emptyRow);
+                        applyBgToRow($emptyRow, currentBgType, currentBgValue, false);
+                    }
+                }
+            }
+            
+            groupRows.forEach(function($row) {
+                applyBgToRow($row, currentBgType, currentBgValue, false);
+            });
+            
+            groupRows = [];
+        }
+        
+        $table.find('tr').each(function() {
+            var $row = $(this);
+            var $marker = $row.find('.story-bg-marker');
+            
+            if ($marker.length || $row.find('.story-flashback-marker').length) {
+                if ($row.find('.story-flashback-marker').length) {
+                    flushGroup();
+                    var fbData = $row.find('.story-flashback-marker').attr('data-flashback');
+                    if (fbData === 'start') {
+                        if (currentBgType !== 'none') {
+                            applyBgToRow($row, currentBgType, currentBgValue, false);
+                        }
+                        inFlashback = true;
+                    } else if (fbData === 'end') {
+                        if (currentBgType !== 'none') {
+                            applyBgToRow($row, currentBgType, currentBgValue, false);
+                        }
+                        inFlashback = false;
+                    }
+                    return;
+                }
+                
+                flushGroup();
+                
+                var bgData = $marker.attr('data-bg') || '';
+                var bgInfo = getBgInfo(bgData);
+                
+                if (!bgInfo) {
+                    currentBgType = 'none';
+                    currentBgValue = null;
+                    savedBgType = 'none';
+                    savedBgValue = null;
+                    pendingFadeoutin = false;
+                    return;
+                }
+                
+                if (bgInfo.type === 'fadeout') {
+                    savedBgType = currentBgType;
+                    savedBgValue = currentBgValue;
+                    currentBgType = 'color';
+                    currentBgValue = '#000000';
+                    pendingFadeoutin = false;
+                } else if (bgInfo.type === 'fadein') {
+                    currentBgType = savedBgType;
+                    currentBgValue = savedBgValue;
+                    savedBgType = 'none';
+                    savedBgValue = null;
+                    pendingFadeoutin = false;
+                } else if (bgInfo.type === 'fadeoutin') {
+                    pendingFadeoutin = true;
+                } else {
+                    currentBgType = bgInfo.type;
+                    currentBgValue = bgInfo.value;
+                    savedBgType = 'none';
+                    savedBgValue = null;
+                    pendingFadeoutin = false;
+                }
+                return;
+            }
+            
+            var rowType = getRowType($row);
+            var isDialog = (rowType === 'talk' || rowType === 'speech' || rowType === 'action');
+            
+            if (isDialog && currentBgType !== 'none') {
+                if (pendingFadeoutin && rowType === 'talk') {
+                    applyBgToRow($row, 'fadeoutin_row', null, true);
+                    pendingFadeoutin = false;
+                } else if (pendingFadeoutin) {
+                    pendingFadeoutin = false;
+                    groupRows.push($row);
+                } else {
+                    groupRows.push($row);
+                }
+            } else {
+                flushGroup();
+                pendingFadeoutin = false;
+                if (!isDialog && !$row.hasClass('story-empty-row')) {
+                    $row.css('background-image', '');
+                    $row.css('background-color', '');
+                    $row.css('background', '');
+                    $row.css('background-attachment', '');
+                    $row.css('position', '');
+                    $row.css('filter', '');
+                }
+            }
+        });
+        
+        flushGroup();
+    });
+});

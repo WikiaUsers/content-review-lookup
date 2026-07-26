@@ -240,3 +240,69 @@ $(function () {
 
 	animate();
 });
+
+/* Tabele */
+$(function () {
+	$('table.article-table').each(function () {
+		var table = this;
+		var occupied = [];
+		var cells = [];
+		var maxCols = 0;
+
+		$(table).find('tr').each(function (rowIndex) {
+			var colIndex = 0;
+
+			occupied[rowIndex] = occupied[rowIndex] || [];
+
+			$(this).children('td, th').each(function () {
+				while (occupied[rowIndex][colIndex]) {
+					colIndex++;
+				}
+
+				var cell = this;
+				var colspan = parseInt(cell.getAttribute('colspan'), 10) || 1;
+				var rowspan = parseInt(cell.getAttribute('rowspan'), 10) || 1;
+				var start = colIndex;
+				var end = colIndex + colspan - 1;
+
+				cells.push({
+					cell: cell,
+					start: start,
+					end: end
+				});
+
+				for (var r = rowIndex; r < rowIndex + rowspan; r++) {
+					occupied[r] = occupied[r] || [];
+
+					for (var c = start; c <= end; c++) {
+						occupied[r][c] = true;
+					}
+				}
+
+				maxCols = Math.max(maxCols, end + 1);
+				colIndex += colspan;
+			});
+		});
+
+		cells.forEach(function (item) {
+			var cell = item.cell;
+
+			cell.classList.remove(
+				'article-table-cell-left',
+				'article-table-cell-middle',
+				'article-table-cell-right',
+				'article-table-cell-single'
+			);
+
+			if (item.start === 0 && item.end === maxCols - 1) {
+				cell.classList.add('article-table-cell-single');
+			} else if (item.start === 0) {
+				cell.classList.add('article-table-cell-left');
+			} else if (item.end === maxCols - 1) {
+				cell.classList.add('article-table-cell-right');
+			} else {
+				cell.classList.add('article-table-cell-middle');
+			}
+		});
+	});
+});

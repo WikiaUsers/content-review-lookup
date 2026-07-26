@@ -1,1 +1,0 @@
-importScriptPage('Animal Crossing Wiki:Sandbox/CustomChatTags.js', 'animalcrossing');

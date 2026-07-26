@@ -33,13 +33,13 @@
         {
             name: "Spookinator",
             page: "https://undertale-3d-boss-battles-roblox.fandom.com/wiki/Spookinator",
-            image: "https://static.wikia.nocookie.net/undertale-3d-boss-battles-roblox/images/5/5d/Spookinator.png/revision/latest?cb=20240125154139"
+            image: "https://static.wikia.nocookie.net/undertale-3d-boss-battles-roblox/images/c/c8/SpookinatorBM.png/revision/latest?cb=20260717103535"
         },
 
         {
             name: "Firework Launcher",
             page: "https://undertale-3d-boss-battles-roblox.fandom.com/wiki/Firework_Launcher",
-            image: "https://static.wikia.nocookie.net/undertale-3d-boss-battles-roblox/images/d/d9/Firework_Launcher_%28for_the_third_time.%29.png/revision/latest?cb=20240102132716"
+            image: "https://static.wikia.nocookie.net/undertale-3d-boss-battles-roblox/images/9/95/FireworkLauncherBM.png/revision/latest?cb=20260718105035"
         },
 
         {
@@ -57,7 +57,7 @@
         {
             name: "Golden Bubble Shot",
             page: "https://undertale-3d-boss-battles-roblox.fandom.com/wiki/Golden_Bubble_Shot",
-            image: "https://static.wikia.nocookie.net/undertale-3d-boss-battles-roblox/images/e/ef/GoldenBubbleShotBMTemp.png/revision/latest?cb=20260715155628"
+            image: "https://static.wikia.nocookie.net/undertale-3d-boss-battles-roblox/images/c/c2/GoldenBubbleShotBM.png/revision/latest?cb=20260719095739"
         }
 
     ];
@@ -84,6 +84,10 @@
                 <tr>
                 	<th colspan="3">Today's Stock</th>
                 </tr>
+                <tr>
+                	<th colspan="1" style="text-align:center;">Leaves next refresh</th>
+                	<th colspan="1" style="text-align:center;">Leaves in 2 days</th>
+                	<th colspan="1" style="text-align:center;">Leaves in 3 days</th>
                 <tr>
         `;
 

@@ -359,8 +359,8 @@ $(document).ready(function() {
                 document.head.appendChild(style);
             }
         }
-    };
-})();
+    }
+
 
 // Инициализация виджета
 if (document.readyState === 'loading') {
@@ -388,106 +388,25 @@ mw.loader.using('mediawiki.api').then(function() {
         };
     }
 });
-(function(){
 
-let fire = document.createElement("div");
+document.addEventListener("mousemove", function(e){
 
-fire.id="fire-reveal";
+    let ember = document.createElement("div");
 
+    ember.className = "fw-cursor-ember";
 
-document.body.appendChild(fire);
-
-
-setTimeout(()=>{
-
-    fire.remove();
-
-},1500);
+    ember.style.left = (e.clientX - 4) + "px";
+    ember.style.top = (e.clientY - 4) + "px";
 
 
-})();
-(function(){
-
-let ash = document.createElement("div");
-ash.className="ash-layer";
-document.body.appendChild(ash);
+    document.body.appendChild(ember);
 
 
-let edges = document.createElement("div");
-edges.className="burn-edges";
-document.body.appendChild(edges);
+    setTimeout(function(){
+
+        ember.remove();
+
+    },800);
 
 
-let line = document.createElement("div");
-line.className="fire-top-line";
-document.body.appendChild(line);
-
-
-})();
-
-(function(){
-
-const runes = [
-"جغ",
-"كش",
-"خنةي",
-"پپپغ",
-"غبه",
-"رعر",
-"ننق",
-"جج",
-"عك",
-"وصو",
-"با",
-"شل",
-"قرة",
-"بتغ ش",
-"غش ص",
-"قة ف",
-"طط ط",
-"خةي ي",
-"ضة ك",
-"صه غ",
-"قع ر",
-"ظج"
-];
-
-
-function createRune(){
-
-    let rune = document.createElement("div");
-
-    rune.className="magic-rune";
-
-
-    rune.innerText =
-    runes[Math.floor(Math.random()*runes.length)];
-
-
-    rune.style.left =
-    Math.random()*90 + "%";
-
-
-    rune.style.top =
-    Math.random()*80 + "%";
-
-
-    document.body.appendChild(rune);
-
-
-
-    setTimeout(()=>{
-
-        rune.remove();
-
-    },8000);
-
-
-}
-
-
-
-setInterval(createRune,2500);
-
-
-})();
+});

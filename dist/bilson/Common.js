@@ -119,7 +119,6 @@
 (function () {
     if (mw.config.get('wgPageName') !== 'GL4!TCH') return;
 
-    // ── INJECT CSS ────────────────────────────────────────────────
     var style = document.createElement('style');
     style.textContent = [
         '.gl-wiggle{display:inline-block;animation:glWiggle 0.08s infinite}',
@@ -414,6 +413,7 @@
     brush.style.top = start.y + 'px';
     setTimeout(moveBrush, 600);
 })();
+
 // Subtle flicker effect on the main title, like a glitching signal
 document.addEventListener('DOMContentLoaded', function () {
     var title = document.querySelector('.bilson-title');
@@ -426,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '0 0 ' + glow + 'px #6a4a9c, 0 0 ' + glow2 + 'px #6a4a9c, 0 0 30px rgba(106,74,156,0.4)';
     }, 250);
 });
+
 ( function () {
     'use strict';
 
@@ -439,9 +440,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* -------------------------------------------------------
        INFOBOX FIX
-       Force the character infobox to render above the
-       background div by pulling it out and prepending it
-       before the styled wrapper, then restoring float.
     ------------------------------------------------------- */
     var infobox = document.querySelector( '.portable-infobox, .pi-theme-wikia, table.infobox, .character-infobox, aside' );
     var styledWrapper = document.querySelector( 'div[style*="background-color:#0d0000"]' );
@@ -449,7 +447,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if ( infobox && styledWrapper ) {
         var parent = styledWrapper.parentNode;
         if ( parent ) {
-            /* Move infobox to just before the styled div */
             parent.insertBefore( infobox, styledWrapper );
             infobox.style.position = 'relative';
             infobox.style.zIndex   = '10';
@@ -526,8 +523,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } );
 
     /* -------------------------------------------------------
-       THREAT LEVEL PULSE — recreate the CSS animation
-       via JS since Common.css class selectors are blocked
+       THREAT LEVEL PULSE
     ------------------------------------------------------- */
     var threatSpan = document.querySelector( 'span[style*="ff2020"]' );
     if ( threatSpan ) {
@@ -562,6 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 }() );
+
 ( function () {
     'use strict';
 
@@ -670,7 +667,6 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    /* --- Pass 1: all images --- */
     function scanImages() {
         var imgs = document.querySelectorAll( 'img' );
         imgs.forEach( function ( img ) {
@@ -678,7 +674,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } );
     }
 
-    /* --- Pass 2: text nodes for :sob: and raw emoji --- */
     function scanText() {
         var targets = [ ':sob:', '\uD83D\uDE2D' ];
 
@@ -694,7 +689,6 @@ document.addEventListener('DOMContentLoaded', function () {
             var node;
             while ( ( node = walker.nextNode() ) ) {
                 if ( node.nodeValue && node.nodeValue.indexOf( token ) !== -1 ) {
-                    /* Skip if parent is already a script or style */
                     var tag = node.parentNode && node.parentNode.tagName;
                     if ( tag !== 'SCRIPT' && tag !== 'STYLE' ) {
                         nodes.push( node );
@@ -720,17 +714,14 @@ document.addEventListener('DOMContentLoaded', function () {
         } );
     }
 
-    /* --- Pass 3: MutationObserver for anything Fandom renders late --- */
     function watchForLateRenders() {
         var observer = new MutationObserver( function ( mutations ) {
             mutations.forEach( function ( mutation ) {
                 mutation.addedNodes.forEach( function ( added ) {
                     if ( added.nodeType === 1 ) {
-                        /* Check if the added node itself is a sob img */
                         if ( added.tagName === 'IMG' && isSob( added ) ) {
                             applyToElement( added );
                         }
-                        /* Check children too */
                         var imgs = added.querySelectorAll ? added.querySelectorAll( 'img' ) : [];
                         imgs.forEach( function ( img ) {
                             if ( isSob( img ) ) applyToElement( img );
@@ -743,7 +734,6 @@ document.addEventListener('DOMContentLoaded', function () {
         observer.observe( document.body, { childList: true, subtree: true } );
     }
 
-    /* Run on DOMContentLoaded to be safe */
     if ( document.readyState === 'loading' ) {
         document.addEventListener( 'DOMContentLoaded', function () {
             scanImages();
@@ -757,14 +747,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 }() );
-/* Lapicnirp Page Effects */
 
+/* Lapicnirp Page Effects */
 (function () {
     if (!document.querySelector('.lapicnirp-page')) return;
 
     document.body.classList.add('lapicnirp-active');
 
-    // === JUMPSCARE ===
     var overlay = document.createElement('div');
     overlay.className = 'jumpscare-overlay active';
     var scareText = document.createElement('div');
@@ -778,12 +767,10 @@ document.addEventListener('DOMContentLoaded', function () {
         overlay.style.display = 'none';
     });
 
-    // === FOG OVERLAY ===
     var fog = document.createElement('div');
     fog.className = 'fog-overlay';
     document.body.appendChild(fog);
 
-    // === BLOOD DRIPS ===
     var dripContainer = document.createElement('div');
     dripContainer.className = 'drip-container';
     document.querySelector('.lapicnirp-page').appendChild(dripContainer);
@@ -804,7 +791,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })(i);
     }
 
-    // === SHAKE ON HOVER ===
     var page = document.querySelector('.lapicnirp-page');
     page.addEventListener('mouseenter', function () {
         page.style.animation = 'shake 0.3s infinite';
@@ -813,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function () {
         page.style.animation = '';
     });
 
-    // === RANDOM FLICKER ON TITLE ===
     var title = document.querySelector('.lapicnirp-title');
     if (title) {
         setInterval(function () {
@@ -828,17 +813,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 })();
-/* Vallvet Page Effects */
 
+/* Vallvet Page Effects */
 (function () {
     if (!document.querySelector('.vallvet-page')) return;
 
-    // === FOG OVERLAY ===
     var fog = document.createElement('div');
     fog.className = 'vallvet-fog-overlay';
     document.body.appendChild(fog);
 
-    // === SPARKLES ===
     var page = document.querySelector('.vallvet-page');
     for (var i = 0; i < 15; i++) {
         (function () {
@@ -852,3 +835,55 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 })();
+
+/* ============================================================
+   BED WIKI — {{Audio}} TEMPLATE PLAYER (consolidated, with debug logging)
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.bed-audio-player').forEach(function (box) {
+        var filename = box.getAttribute('data-audio-file');
+        if (!filename) { console.warn('Audio player: no filename set'); return; }
+
+        var apiUrl = mw.util.wikiScript('api') + '?action=query&titles=File:' + encodeURIComponent(filename) + '&prop=imageinfo&iiprop=url&format=json&origin=*';
+
+        fetch(apiUrl)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var pages = data.query.pages;
+                var page = pages[Object.keys(pages)[0]];
+                console.log('Audio debug — file:', filename, page);
+
+                if (!page.imageinfo) {
+                    console.warn('Audio player: file not found on wiki ->', filename);
+                    return;
+                }
+
+                var url = page.imageinfo[0].url;
+                console.log('Audio debug — resolved URL:', url);
+
+                var audio = document.createElement('audio');
+                audio.src = url;
+                audio.loop = (box.getAttribute('data-loop') === 'Yes');
+                audio.controls = true;
+                audio.muted = false;
+                audio.volume = (parseInt(box.getAttribute('data-volume'), 10) || 100) / 100;
+                audio.style.width = '300px';
+                box.appendChild(audio);
+
+                if (box.getAttribute('data-autoplay') === 'Yes') {
+                    var tryPlay = function () {
+                        audio.play().then(function () {
+                            console.log('Audio debug — playing successfully');
+                        }).catch(function (err) {
+                            console.warn('Audio debug — play() blocked:', err);
+                        });
+                        document.removeEventListener('click', tryPlay);
+                    };
+                    document.addEventListener('click', tryPlay);
+                }
+            })
+            .catch(function (err) {
+                console.error('Audio player: API fetch failed', err);
+            });
+    });
+});

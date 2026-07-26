@@ -1,5 +1,5 @@
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 7;
+window.lockOldComments.limit = 30;
 
 window.UserTagsJS = {
     modules: {},
@@ -17,8 +17,11 @@ window.UserTagsJS.modules.custom = {
     'Ducko3': ['dedicated-contributor'],
     'BFDIfan2763290': ['dedicated-contributor'],
     'PM121': ['dedicated-contributor'],
-    'EMIRLACHICA': ['dedicated-contributor'],
-    'Secret Willow': ['dedicated-contributor'],
     'Псина чушпан': ['dedicated-contributor'],
     'Glow Rose38': ['dedicated-contributor']
+};
+window.reportArticleConfig = {
+    group: ['sysop', 'content-moderator'],
+    title: 'Reported article: $1',
+    body: 'An article has been reported: $1\n\nPlease review.'
 };

@@ -631,7 +631,7 @@ $(function(){
   const FLASH_END   = 16.6;
   const VIDEO_TIME  = 16.6;
 
-  const CHANCE = 0.03; // 3%
+  const CHANCE = 1; // 3%
 
   /* ================= 1% CHANCE CHECK ================= */
 

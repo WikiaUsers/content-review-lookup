@@ -1,4 +1,4 @@
-// 14:06, 15 July 2026 (UTC) <nowiki>
+// 09:10, 26 July 2026 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -173,17 +173,37 @@ $(function () {
         });
 // END CLOSEDWIKI TITLE FIX
 
-// AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT
+// AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT FOR SIGNED OUT USERS
 $(function () {
     if (mw.config.get('wgCanonicalSpecialPageName') !== 'AuthenticationPopupSuccess') {
         return;
     }
 
-    $('.page-header__title').text('Signed in');
+    $('.page-header__title').text((_, old)=>old.replace('Not logged in', 'Not signed in'));
         });
-// END AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT
+// END AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT FOR SIGNED OUT USERS
 
-// AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT
+// AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT FOR SIGNED OUT USERS
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'AuthenticationPopupSuccess') {
+        return;
+    }
+
+    $('title').text((_, old)=>old.replace('Not logged in', 'Not signed in'));
+        });
+// END AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT FOR SIGNED OUT USERS
+
+// AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT FOR SIGNED IN USERS
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'AuthenticationPopupSuccess') {
+        return;
+    }
+
+    $('.page-header__title').text((_, old)=>old.replace('Logged in', 'Signed in'));
+        });
+// END AUTHENTICATIONPOPUPSUCCESS PAGE HEADER TITLE REPLACEMENT FOR SIGNED IN USERS
+
+// AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT FOR SIGNED IN USERS
 $(function () {
     if (mw.config.get('wgCanonicalSpecialPageName') !== 'AuthenticationPopupSuccess') {
         return;
@@ -191,4 +211,4 @@ $(function () {
 
     $('title').text((_, old)=>old.replace('Logged in', 'Signed in'));
         });
-// END AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT </nowiki>
+// END AUTHENTICATIONPOPUPSUCCESS TITLE REPLACEMENT FOR SIGNED IN USERS </nowiki>

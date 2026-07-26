@@ -25,18 +25,20 @@
 			el.text(oldButton.attr('value'));
 		el.on('click', function() {
 			mw.loader.using('mediawiki.api', function() {
-				const func = () => {
-					document.querySelector('[title="Toggle code editor"][role="button"].oo-ui-buttonElement-button').click();
-					$('#wpTextbox1').css({display:'none'});
-					document.querySelector('[title="Toggle code editor"][role="button"].oo-ui-buttonElement-button').click();
-					return $('#wpTextbox1').val();
-				};
+				const text = (function(el) {
+					if (el.length < 1) {
+						return $('#wpTextbox1').val();
+					}
+					$('.ace_editor').attr('id', 'CSSEditor-NoError');
+					const editor = window.ace.edit('CSSEditor-NoError');
+					return editor.getSession().getValue();
+				})($('[rel="codeEditor"] > .oo-ui-buttonElement-button[aria-pressed="true"]'));
 				const api = new mw.Api();
 				api.postWithToken('csrf', {
 					action: 'edit',
 					format: 'json',
 					title: window.mwVars.wgPageName,
-					text: $('[title="Toggle code editor"][role="button"].oo-ui-buttonElement-button').attr('aria-pressed') === 'true'? func() : $('#wpTextbox1').val(),
+					text: text,
 					summary: $('#wpSummary').val(),
 					watchlist: document.querySelector('#wpWatchthis').checked ? 'watch' : 'unwatch',
 					minor: document.querySelector('#wpMinoredit').length > 0 && document.querySelector('#wpMinoredit').checked ? true : false

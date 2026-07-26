@@ -42,11 +42,11 @@
                 /* 移除已有标签
                 $masthead.find('[class*="tag"]').remove(); */
                 /* 添加新标签 */
-                userTags.forEach(function (htmlContent) {
-                    if (typeof htmlContent === 'string' && htmlContent.trim()) {
+                userTags.forEach(function (text) {
+                    if (typeof text === 'string' && text.trim()) {
                         var $outerSpan = $('<span>')
                             .addClass('user-identity-header__tag')
-                            .append($.parseHTML(htmlContent.trim()));
+                            .text(text.trim());
                         $masthead.append($outerSpan, ' ');
                     }
                 });

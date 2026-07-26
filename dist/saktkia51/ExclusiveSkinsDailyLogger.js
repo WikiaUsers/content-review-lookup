@@ -9,15 +9,13 @@
 	if (srcContainer && !document.getElementById('ExclusiveSkinsDailyLogger_Container')) {
 		console.log(`[${toolName}] [LOG]: Running script...`);
 		const placeholderImage = "https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/47/Placeholder.png/revision/latest?cb=20220315033423&format=original";
-		const gameVersion = "V17.0";
+		const gameVersion = "V17.1";
 		const weaponsCount = 21;
 		
-		function checkPlural(input, config = {}) {
-			if (input === 1) {
-				return config.singular;
-			} else {
-				return config.plural ?? config.singular;
-			};
+		function checkPlural(input, config) {
+			config ??= {};
+			if (input === 1) return config.singular;
+			return config.plural ?? config.singular;
 		};
 		
 		const materialFiles = {
@@ -79,6 +77,7 @@
 			'equinox':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/c/cc/Weapon_Skins_-_P90_-_Equinox.png/revision/latest?cb=20260412100738&format=original",
 			'toothpaste':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/3/3d/Weapon_Skins_-_P90_-_Toothpaste.png/revision/latest?cb=20260615155802&format=original",
 			'nocturnal':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/6/65/Weapon_Skins_-_P90_-_Nocturnal.png/revision/latest?cb=20260616101212&format=original",
+			'takkerstails':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/72/Weapon_Skins_-_P90_-_Takker%27s_Tails.png/revision/latest?cb=20260720101727&format=original",
 		};
 		function formatMatName(id) {
 			const obj = {
@@ -184,13 +183,11 @@
 				'equinox':{tentacle:2, ice:1, skin:9, fur:3},
 				'toothpaste':{bone:1, skin:4, slime:3, wood:2},
 				'nocturnal':{tie:3, glass:2, skin:12, horn:6},
+				'takkerstails':{rubber:4, brain:2, skin:18, claw:8},
 			};
-			if (obj[id] !== undefined) {
-				return obj[id];
-			} else {
-				console.log(`[${toolName}] [LOG]: Unavailable crafting requirements for skin ID ${id}`);
-				return {};
-			};
+			if (obj[id] !== undefined) return obj[id];
+			console.log(`[${toolName}] [LOG]: Unavailable crafting requirements for skin ID ${id}`);
+			return {};
 		};
 		function getExampleImage(id) {
 			const elem = create('div');
@@ -220,10 +217,9 @@
 				'exotic':'Exotic',
 				'secret':'Secret',
 			};
-			return obj[id] !== undefined ? 'SkinRarity_' + obj[id] : (function() {
-				console.log(`[${toolName}] [LOG]: Unavailable rarity class for skin ID ${id}`);
-				return '';
-			})();
+			if (obj[id] !== undefined) return 'SkinRarity_' + obj[id];
+			console.log(`[${toolName}] [LOG]: Unavailable rarity class for skin ID ${id}`);
+			return '';
 		};
 		(function addSkins() {
 			skins.push(new WeaponSkin({
@@ -391,7 +387,11 @@
 				name:'Nocturnal',
 				rarity:'exotic',
 			}, {craftable:true}));
-			skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
+			skins.push(new WeaponSkin({
+				id:'takkerstails',
+				name:'Takker\'s Tails',
+				rarity:'secret',
+			}, {craftable:true}));
 			// skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			/*
 			skins.push(new WeaponSkin({

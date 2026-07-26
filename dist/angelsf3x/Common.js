@@ -40,44 +40,4 @@ $(function() {
     $("#cat-misc").on("click", function() { window.open("https://angelsf3x.fandom.com/wiki/Category:Misc_Articles", "_blank"); });
 });
 
-// petals(js, should have a corresponding CSS || LARPED W GEMINI AI)
-$(function () {
-    // Create and append the petal container to the body
-    const container = document.createElement("div");
-    container.className = "petal-container";
-    document.body.appendChild(container);
-
-    const maxPetals = 25; // Adjust this number to change density
-
-    function createPetal() {
-        if (container.children.length >= maxPetals) return;
-
-        const petal = document.createElement("div");
-        petal.className = "falling-petal";
-
-        // Randomize size between 15px and 35px
-        const size = Math.random() * 20 + 15;
-        petal.style.width = `${size}px`;
-        petal.style.height = `${size}px`;
-
-        // Randomize horizontal starting position (0% to 100% of screen width)
-        petal.style.left = `${Math.random() * 100}vw`;
-
-        // Randomize fall duration between 6s and 12s (slower = more relaxed)
-        const fallDuration = Math.random() * 6 + 6;
-        petal.style.animationDuration = `${fallDuration}s, ${Math.random() * 2 + 3}s`;
-
-        // Randomize start delay so they don't all fall at once
-        petal.style.animationDelay = `${Math.random() * 5}s`;
-
-        container.appendChild(petal);
-
-        // Remove the petal from DOM after it finishes falling to prevent memory leaks
-        setTimeout(() => {
-            petal.remove();
-        }, (fallDuration + 5) * 1000); // Added safety cushion for delay time
-    }
-
-    // Periodically try to spawn a petal
-    setInterval(createPetal, 300);
-});
+// petals were here, removed now, but happy retirement masteroblox!! - erlhender

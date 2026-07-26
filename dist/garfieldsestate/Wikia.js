@@ -1,1 +1,0 @@
-$.getScript("http://c.statcounter.com/9605394/0/6aae072a/0/");

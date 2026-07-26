@@ -1,4 +1,4 @@
-// 04:03, 23 January 2024 (UTC)
+// 03:12, 22 July 2026 (UTC)
 // <source lang="JavaScript">
 /* Any JavaScript here will be loaded for all users on every page load. */
 
@@ -22,22 +22,16 @@ function addTitleIcons() {
     var iconBar = $('#va-titleicons');
     var previewBar = $('#va-titleicons-preview');
 
-    if (skin != 'monobook' && skin != 'oasis' && skin != 'wikia') {
+    if (skin != 'fandomdesktop') {
         return;
     }
 
     if (iconBar.length > 0 && $('a', previewBar).length > 0) {
-        if (skin == 'oasis' || skin == 'wikia') {
+        if (skin == 'fandomdesktop') {
             var articleDiv = $('#WikiaArticle');
 
             if (articleDiv.length > 0) {
                 iconBar.css('display', 'block').prependTo(articleDiv);
-            }
-        } else if (skin == 'monobook') {
-            var firstHeading = $('#firstHeading').css('position', 'relative');
-
-            if (firstHeading.length > 0) {
-                iconBar.css('display', 'block').appendTo(firstHeading.css('padding-right', previewBar.width() + 25));
             }
         }
 
@@ -147,8 +141,6 @@ function createCollapseButtons() {
 $(createCollapseButtons);
 
 importScriptPage('EditIntroButton/code.js', 'dev');
-
-importScriptPage('PurgeButton/code.js', 'dev');
 
 /** Dynamic Navigation Bars (experimental) *************************************
  *
@@ -283,8 +275,8 @@ $(function catprefix() {
  * This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
  */
 
-if (wgUserName != 'null') {
-    $('.insertusername').html(wgUserName);
+if (mw.config.get('wgUserName') != 'null') {
+    $('.insertusername').html(mw.config.get('wgUserName'));
 }
 
 /* Tooltip script begin */
@@ -485,4 +477,22 @@ importScriptPage('AjaxRC/code.js', 'dev');
     }
 } */
 
-// </source>
+// CLOSEDWIKI PAGE HEADER TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('.page-header__title').text('Closed Wiki');
+        });
+// END CLOSEDWIKI PAGE HEADER TITLE FIX
+
+// CLOSEDWIKI TITLE FIX
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'ClosedWiki') {
+        return;
+    }
+
+    $('title').text((_, old)=>old.replace('⧼closedwiki⧽', 'Closed Wiki'));
+        });
+// END CLOSEDWIKI TITLE FIX </source>

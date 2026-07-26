@@ -15,8 +15,9 @@ mw.hook('wikipage.content').add(() => {
 		.fl-filter-wrapper {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 5px;
-			margin-bottom: 10px;
+			gap: 3px;
+			margin-bottom: 5px;
+			margin-left: 5px;
 			align-items: center;
 		}
 		.fl-filter-group {

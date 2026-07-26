@@ -77,3 +77,126 @@ $(function () {
   openTabFromHash();
   $(window).on('hashchange', openTabFromHash);
 });
+
+/* Shadow Fight social-media dropdowns */
+(function ($, mw) {
+	'use strict';
+
+	function closeSocialDropdowns(exceptDropdown) {
+		$('.sf-social-dropdown.is-open').each(function () {
+			var $dropdown = $(this);
+
+			if (
+				exceptDropdown &&
+				$dropdown.is(exceptDropdown)
+			) {
+				return;
+			}
+
+			$dropdown
+				.removeClass('is-open')
+				.find('.sf-social-trigger')
+				.attr('aria-expanded', 'false');
+		});
+	}
+
+	function initializeSocialDropdowns() {
+		/*
+		 * Delegated events continue working even when Fandom or MediaWiki
+		 * reloads part of the page.
+		 */
+		$(document)
+			.off('click.sfSocialDropdown')
+			.on(
+				'click.sfSocialDropdown',
+				'.sf-social-trigger',
+				function (event) {
+					event.preventDefault();
+					event.stopPropagation();
+
+					var $trigger = $(this);
+					var $dropdown = $trigger.closest(
+						'.sf-social-dropdown'
+					);
+					var shouldOpen = !$dropdown.hasClass(
+						'is-open'
+					);
+
+					closeSocialDropdowns($dropdown);
+
+					$dropdown.toggleClass(
+						'is-open',
+						shouldOpen
+					);
+
+					$trigger.attr(
+						'aria-expanded',
+						shouldOpen ? 'true' : 'false'
+					);
+				}
+			);
+
+		$(document)
+			.off('click.sfSocialDropdownOutside')
+			.on(
+				'click.sfSocialDropdownOutside',
+				function (event) {
+					if (
+						!$(event.target).closest(
+							'.sf-social-dropdown'
+						).length
+					) {
+						closeSocialDropdowns();
+					}
+				}
+			);
+
+		$(document)
+			.off('keydown.sfSocialDropdown')
+			.on(
+				'keydown.sfSocialDropdown',
+				'.sf-social-trigger',
+				function (event) {
+					if (
+						event.key !== 'Enter' &&
+						event.key !== ' '
+					) {
+						return;
+					}
+
+					event.preventDefault();
+					$(this).trigger('click');
+				}
+			);
+
+		$(document)
+			.off('keydown.sfSocialDropdownEscape')
+			.on(
+				'keydown.sfSocialDropdownEscape',
+				function (event) {
+					if (event.key !== 'Escape') {
+						return;
+					}
+
+					var $openTrigger = $(
+						'.sf-social-dropdown.is-open ' +
+						'.sf-social-trigger'
+					).first();
+
+					closeSocialDropdowns();
+
+					if ($openTrigger.length) {
+						$openTrigger.trigger('focus');
+					}
+				}
+			);
+	}
+
+	$(initializeSocialDropdowns);
+
+	if (mw && mw.hook) {
+		mw.hook('wikipage.content').add(
+			initializeSocialDropdowns
+		);
+	}
+}(jQuery, mediaWiki));

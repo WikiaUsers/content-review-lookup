@@ -153,9 +153,7 @@ UserTagsJS.modules.custom = {
 	'RyeThePies': ['wiki-contributor'],
 	'Thethingiforgor': ['wiki-contributor'],
 	'Pro10boy2228': ['wiki-contributor'],
-	'The Dimensional Doctor': ['wiki-contributor'],
 	'Blazarvortexd': ['wiki-contributor'],
-	'Mattiemeowxd': ['wiki-contributor'],
 	'Ameer.Jor': ['wiki-contributor'],
 };
 

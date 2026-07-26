@@ -199,38 +199,32 @@
 })(window.jQuery, window.mediaWiki);
 
 
-/* Google Form Test */
+// Typeform Embed
+$(function () {
 
-(function () {
-    function embedGoogleForms() {
-        var containers = document.querySelectorAll('.google-form-embed:not([data-embedded])');
-        containers.forEach(function (el) {
-            var src = el.getAttribute('data-src');
-            if (!src) return;
+    function loadTypeformEmbed(container) {
+        $(container).html(
+            "<div class='typeform-widget' data-url='https://form.typeform.com/to/XOR6yhrx' style='width: 100%; height: 550px;'></div>"
+        );
 
-            var iframe = document.createElement('iframe');
-            iframe.src = src;
-            iframe.width = el.getAttribute('data-width') || '640';
-            iframe.height = el.getAttribute('data-height') || '800';
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('marginheight', '0');
-            iframe.setAttribute('marginwidth', '0');
-            iframe.style.border = '0';
-
-            el.appendChild(iframe);
-            el.setAttribute('data-embedded', 'true');
-        });
+        if (!document.getElementById('typef_orm')) {
+            var js = document.createElement('script');
+            js.id = 'typef_orm';
+            js.src = 'https://embed.typeform.com/embed.js';
+            document.body.appendChild(js);
+        }
     }
 
-    // Run on initial load
-    if (document.readyState !== 'loading') {
-        embedGoogleForms();
-    } else {
-        document.addEventListener('DOMContentLoaded', embedGoogleForms);
+    // Manual page embeds
+    $('.activations-form-embed').each(function () {
+        loadTypeformEmbed(this);
+    });
+
+    // Inject into wiki rail
+    if ($('#WikiaRail').length) {
+        var railContainer = $("<div style='margin-top:20px'></div>");
+        $('#WikiaRail').append(railContainer);
+        loadTypeformEmbed(railContainer);
     }
 
-    // Fandom re-renders content on some navigation (ajax page loads), so re-run then too
-    if (window.mw && mw.hook) {
-        mw.hook('wikipage.content').add(embedGoogleForms);
-    }
-})();
+});

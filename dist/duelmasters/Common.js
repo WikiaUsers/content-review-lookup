@@ -6,7 +6,7 @@ window.tooltips_list = [
        classname: 'card-tooltip',
        parse: '{'+'{CardTT|<#image#>}}',
    }
-];
+]
 
 //=============== Card Database Test / Advanced Card Search ==================
 function searchJavaScript() 
@@ -118,7 +118,7 @@ function searchJavaScript()
 							power = startsWithNumber? power[0] : power[power.length-1];
 
 							if(!isNaN(power)){//process only if numerical power
-								if(condition.value === "Greater than" && parseInt(power) > number.value){
+								if(condition.value === "Greater than" && parseInt(power) > parseInt(number.value)){
 									categoriesToInclude.push(startsWithNumber?(power+" "+categoryName):(categoryName+" "+power));
 									console.log("dpl:Pushed cat "+(startsWithNumber?(power+" "+categoryName):(categoryName+" "+power)));
 								}

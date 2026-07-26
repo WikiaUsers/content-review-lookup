@@ -21,6 +21,82 @@ applyTooltip(activityHelpButton, "Help", "bottom");
 
 
 
+/* =========================
+	TOOLTIP FADE TRANSITION
+   ========================= */
+// Allows tooltips to fade out using CSS-defined transitions as a basis
+var nativeRemove  = Element.prototype.remove;
+var nativeAppend  = Element.prototype.appendChild;
+var computedStyle = window.getComputedStyle(document.body);
+var removeTimers  = new WeakMap();
+var tooltipFadeSpeed  = computedStyle.getPropertyValue("--custom-tooltip-speed");
+	tooltipFadeSpeed  = parseInt(tooltipFadeSpeed);
+var tooltipFadeOffset = computedStyle.getPropertyValue("--custom-tooltip-offset");
+
+// Intercept tooltip element removal to handle fade transition
+Element.prototype.remove = function() {
+	// Retain native .remove() functionality if not dataset tooltip
+	if (!this.matches(".wds-tooltip")) {
+		return nativeRemove.call(this);
+	}
+	
+	if (removeTimers.has(this)) {
+		return;
+	}
+	
+	var tooltipClasslist = this.classList;
+	this.style.setProperty("opacity", "0");
+	
+	switch (true) {
+		case tooltipClasslist.contains("is-top"):
+			this.style.setProperty("margin-top", tooltipFadeOffset);
+	        break;
+		case tooltipClasslist.contains("is-left"):
+			this.style.setProperty("margin-left", tooltipFadeOffset);
+	        break;
+		case tooltipClasslist.contains("is-right"):
+			this.style.setProperty("margin-left", "calc(" + tooltipFadeOffset + " * -1)");
+	        break;
+	    case tooltipClasslist.contains("is-bottom"):
+			this.style.setProperty("margin-top", "calc(" + tooltipFadeOffset + " * -1)");
+	        break;
+	    default: // Fallback
+	        nativeRemove.call(this);
+	}
+	
+	// Allow time for transition before calling .remove()
+	var tooltipRemoveTimer = setTimeout(() => {
+		removeTimers.delete(this);
+		nativeRemove.call(this);
+	}, tooltipFadeSpeed);
+	
+	removeTimers.set(this, tooltipRemoveTimer);
+};
+
+
+// Intercept tooltip element creation to handle fade transition
+Node.prototype.appendChild = function(child) {
+	if (child instanceof Element && child.matches(".wds-tooltip")) {
+		var tooltipRemoveTimer = removeTimers.get(child);
+		
+		if (!tooltipRemoveTimer || tooltipRemoveTimer == undefined) {
+			return nativeAppend.call(this, child);
+		}
+		
+		clearTimeout(tooltipRemoveTimer);
+		removeTimers.delete(child);
+		child.style.removeProperty("opacity");
+		child.style.removeProperty("margin-top");
+		child.style.removeProperty("margin-left");
+		child.style.removeProperty("margin-right");
+		child.style.removeProperty("margin-bottom");
+	}
+
+	return nativeAppend.call(this, child);
+};
+
+
+
 /* ===========
 	FUNCTIONS
    =========== */
