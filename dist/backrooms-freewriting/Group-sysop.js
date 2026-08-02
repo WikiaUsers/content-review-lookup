@@ -1,0 +1,2 @@
+/* Any JavaScript here will be loaded for sysops only */
+// hey

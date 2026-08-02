@@ -355,3 +355,44 @@ if (document.readyState === 'loading') {
 }
 
 // Importação do script (se já tiver no ImportJS, não precisa repetir aqui)
+
+/* ========================================================== */
+/* ===== INÍCIO - BALANCEDTABBER (troca de abas por clique) === */
+/* ========================================================== */
+(function($) {
+  $(function() {
+    $("ul.tabs__caption").on("click", "li:not(.active)", function() {
+      var $li = $(this);
+      var $ul = $li.closest("ul.tabs__caption");
+      var index = $li.index();
+ 
+      $ul.children("li").removeClass("active");
+      $li.addClass("active");
+ 
+      var $shown = $ul.closest("div.tabs")
+        .children("div.tabs__content")
+        .removeClass("active")
+        .eq(index)
+        .addClass("active");
+ 
+      /* Força o carregamento de imagens "lazyload" que ficaram
+         escondidas (display:none) e por isso nunca foram carregadas
+         pelo IntersectionObserver de lazy load da Fandom. */
+      $shown.find("img.lazyload").each(function() {
+        var $img = $(this);
+        var real = $img.attr("data-src");
+        if (real && $img.attr("src") !== real) {
+          $img.attr("src", real);
+        }
+      });
+ 
+      /* Avisa o resto da página (scroll/resize) que algo mudou de
+         tamanho/visibilidade, pro lazy load geral reavaliar também. */
+      $(window).trigger("scroll");
+      $(window).trigger("resize");
+    });
+  });
+})(jQuery);
+/* ========================================================== */
+/* ===== FIM - BALANCEDTABBER ================================ */
+/* ========================================================== */

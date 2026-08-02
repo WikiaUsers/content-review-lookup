@@ -1,21 +1,21 @@
 mw.hook('wikipage.content').add(function ($content) {
-	var parserOutput = $content.children('.mw-parser-output');
-	var hasHeaders =
-	    parserOutput.find('.mw-headline')
-	        .not('#mw-toc-heading')
-	        .filter(function () {
-	            var p = $(this).parent();
-	            return p.is('h2,h3,h4,h5,h6');
-	        }).length > 0;
-	
-	if (!hasHeaders) return;
-	
-	if ($content.data('collapsibleHeadersRan')) return;
-	$content.data('collapsibleHeadersRan', true);
+    var parserOutput = $content.children('.mw-parser-output');
+    var hasHeaders = parserOutput.find('.mw-headline')
+        .not('#mw-toc-heading')
+        .filter(function () {
+            var p = $(this).parent();
+            return p.is('h2,h3,h4,h5,h6');
+        }).length > 0;
+
+    if (!hasHeaders) return;
+    if ($content.data('collapsibleHeadersRan')) return;
+
+    $content.data('collapsibleHeadersRan', true);
 
     var $parseroutput = $content.children('.mw-parser-output');
     var sections = [];
     var observedWidth = null;
+    var refreshScheduled = false;
 
     var configEl = document.querySelector('.collapsible-headers') || document.documentElement;
     var styles = getComputedStyle(configEl);
@@ -31,13 +31,37 @@ mw.hook('wikipage.content').add(function ($content) {
         return value.indexOf('ms') !== -1 ? num : num * 1000;
     }
 
-    function setToggleContent(toggle, content) {
-        if (content.indexOf('<') !== -1) toggle.html(content);
-        else toggle.text(content);
+    function setToggleContent(target, content) {
+        // if (content.indexOf('<') !== -1) {
+        //     target.html(content);
+        // } else {
+            target.text(content);
+        // }
     }
 
     function getHeaderLevel(header) {
         return parseInt(header.prop('tagName').substring(1));
+    }
+
+    function isInteractiveTarget(target, boundary) {
+        var el = target.closest([
+            'a',
+            'button',
+            'input',
+            'select',
+            'textarea',
+            'summary',
+            '[role="button"]',
+            '[role="link"]',
+            '.mw-editsection',
+            '.section-edit-link',
+            '.chevron-wrapper'
+        ].join(','));
+
+        if (!el) return false;
+        if (boundary && el === boundary) return false;
+
+        return true;
     }
 
     function getBlockHeight(block) {
@@ -48,101 +72,248 @@ mw.hook('wikipage.content').add(function ($content) {
 
         $(inner).children(':visible').each(function () {
             var cs = getComputedStyle(this);
-            if (cs.float !== 'none') return;
+
             if (cs.position === 'absolute') return;
+
             var tag = this.tagName;
-            if (tag === 'IMG' || tag === 'FIGURE') return;
-            if (this.classList.contains('thumb') || this.classList.contains('image')) return;
+            var isMedia = tag === 'IMG' || tag === 'FIGURE' || this.classList.contains('thumb') || this.classList.contains('image');
+
+            if (isMedia) {
+                var isSideAligned = this.classList.contains('mw-halign-left') || this.classList.contains('mw-halign-right') || cs.float !== 'none';
+                if (isSideAligned) return;
+            }
+
             var r = this.getBoundingClientRect();
+
+            if (r.height > 0) {
+                found = true;
+                maxBottom = Math.max(maxBottom, r.bottom + (parseFloat(cs.marginBottom) || 0));
+            }
+        });
+
+        $(inner).find('.mw-collapsible.mw-made-collapsible.mw-collapsed > .mw-collapsible-toggle').each(function () {
+            var r = this.getBoundingClientRect();
+
             if (r.height > 0) {
                 found = true;
                 maxBottom = Math.max(maxBottom, r.bottom);
             }
         });
 
-        $(inner).find('.mw-collapsible.mw-made-collapsible.mw-collapsed > .mw-collapsible-toggle')
-            .each(function () {
-                var r = this.getBoundingClientRect();
-                if (r.height > 0) {
-                    found = true;
-                    maxBottom = Math.max(maxBottom, r.bottom);
-                }
-            });
+        if (!found) return 0;
 
-        if (found) {
-            return Math.ceil(maxBottom - rect.top);
-        }
+        var paddingBottom = parseFloat(getComputedStyle(inner).paddingBottom) || 0;
 
-        return 0;
+        return Math.ceil(maxBottom - rect.top + paddingBottom);
     }
 
     function getHashTarget() {
         var hash = window.location.hash;
         if (!hash) return null;
+
         var id = hash.slice(1);
-        try { id = decodeURIComponent(id); } catch (e) {}
+
+        try {
+            id = decodeURIComponent(id);
+        } catch (e) {}
+
         return document.getElementById(id) || document.getElementsByName(id)[0] || null;
     }
 
-    var refreshScheduled = false;
+    function refreshExpandedHeights() {
+        var expanded = sections.filter(function (section) {
+            return !section.isCollapsed() && !section.isAnimating;
+        });
+
+        expanded.forEach(function (section) {
+            section.prepareForMeasure();
+        });
+
+        expanded
+            .slice()
+            .sort(function (a, b) {
+                return b.level - a.level;
+            })
+            .forEach(function (section) {
+                section.setExpandedHeight();
+            });
+    }
 
     function scheduleRefresh() {
-	    if (refreshScheduled) return;
-	
-	    if (sections.some(s => s.isAnimating)) {
-	        requestAnimationFrame(scheduleRefresh);
-	        return;
-	    }
-	
-	    refreshScheduled = true;
-	    requestAnimationFrame(function () {
-	        refreshScheduled = false;
-	        refreshExpandedHeights();
-	    });
-	}
+        if (refreshScheduled) return;
 
-    function refreshExpandedHeights() {
-        var expanded = sections.filter(s => !s.isCollapsed() && !s.isAnimating);
-        expanded.forEach(s => s.prepareForMeasure());
-        expanded.slice().sort((a, b) => b.level - a.level).forEach(s => {
-            s.setExpandedHeight();
+        if (sections.some(function (section) {
+            return section.isAnimating;
+        })) {
+            requestAnimationFrame(scheduleRefresh);
+            return;
+        }
+
+        refreshScheduled = true;
+
+        requestAnimationFrame(function () {
+            refreshScheduled = false;
+            refreshExpandedHeights();
         });
     }
 
+    function syncAncestorsWhileAnimating(section) {
+        var ancestors = sections.filter(function (s) {
+            return s !== section && s.block.inner.contains(section.header);
+        });
+
+        if (!ancestors.length) return;
+
+        var syncIntervalMs = 80;
+        var lastUpdate = 0;
+
+        function step(now) {
+            if (!section.isAnimating) {
+                ancestors.forEach(function (ancestor) {
+                    ancestor.block.outer.style.overflow = '';
+                });
+                return;
+            }
+
+            if (now - lastUpdate >= syncIntervalMs) {
+                lastUpdate = now;
+
+                ancestors.forEach(function (ancestor) {
+                    if (ancestor.isAnimating || ancestor.isCollapsed()) return;
+
+                    ancestor.block.outer.style.transition = 'none';
+                    ancestor.block.outer.style.overflow = 'hidden';
+                    ancestor.block.outer.style.height = getBlockHeight(ancestor.block) + 'px';
+                });
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(step);
+    }
+
     var defaultArrow =
-        '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">' +
+        '<svg class="wds-icon wds-icon-small chevron" aria-hidden="true" focusable="false">' +
         '<use xlink:href="#wds-icons-menu-control-small"></use>' +
         '</svg>';
 
-    var color = getProp('--ch-color', 'var(--theme-page-text-color)');
+    var color = getProp('--ch-color', 'rgb(230, 230, 230)');
     var arrow = getProp('--ch-arrow', defaultArrow);
-    var arrowRotation = getProp('--ch-arrow-rotation', '180deg');
+    var arrowStartRotation = getProp('--ch-arrow-start-rotation', '180deg');
+    var arrowRotationEnd = getProp('--ch-arrow-rotation-end', getProp('--ch-arrow-rotation', '0deg'));
+    var arrowDuration = getProp('--ch-arrow-animation-duration', '.25s');
+    var arrowEasing = getProp('--ch-arrow-easing-style', 'ease-in-out');
     var duration = getProp('--ch-animation-duration', '0s');
     var easing = getProp('--ch-easing-style', 'linear');
     var collapseAll = getProp('--ch-collapse-all', 'true');
-    var collapseAllContent = getProp('--ch-collapse-all-content', defaultArrow);
+    var collapseAllContent = getProp('--ch-collapse-all-content', '◇');
     var collapseAllTooltip = getProp('--ch-collapse-all-tooltip', 'Expand/collapse all');
 
     if (!window.CollapsibleHeadersCSSLoaded) {
         window.CollapsibleHeadersCSSLoaded = true;
+
         mw.util.addCSS([
-            '.ch-toggle{cursor:pointer;user-select:none;display:inline-block;margin-left:auto;align-self:center;}',
+            '.ch-header-clickable,.ch-header-static{align-items:center;display:flex;overflow-x:hidden;pointer-events:all;}',
+            '.ch-header-clickable{cursor:pointer;}',
+            '.ch-header-clickable .section-header-label,.ch-header-static .section-header-label{flex:1;min-width:0;}',
+            '.ch-header-clickable .section-header-label{cursor:pointer;}',
+            '.ch-header-clickable .section-edit-link,.ch-header-static .section-edit-link{align-items:center;color:var(--theme-link-color);display:flex;height:44px;padding:9px 13px;}',
+            '.ch-header-static .section-edit-link{padding:9px 6px 9px 13px;}',
+            '.ch-header-clickable .vertical-separator{border-left:1px solid var(--theme-border-color);height:26px;width:1px;}',
+            '.ch-header-clickable .chevron-wrapper{align-items:center;background:#0000;border:none;color:var(--ch-color,rgb(230,230,230));cursor:pointer;display:flex;height:44px;outline-color:#0000;overflow:hidden;padding:9px 6px 9px 13px;user-select:none;}',
+            '.ch-header-clickable .chevron-wrapper svg{color:currentColor;fill:currentColor;}',
+            '.ch-header-clickable .ch-toggle-icon{display:inline-flex;transform-origin:center;transition:transform var(--ch-arrow-animation-duration,.25s) var(--ch-arrow-easing-style,ease-in-out);}',
+            '.ch-header-clickable .chevron{pointer-events:none;}',
             '.ch-outer-wrapper{width:100%;overflow:visible;pointer-events:none;}',
             '.ch-outer-wrapper.ch-is-hidden{overflow:hidden;}',
             '.ch-collapse-all{font-size:var(--ch-collapse-all-size,18px);line-height:1;}',
-            '.ch-inner-wrapper a {pointer-events:auto;}',
-            '.ch-header-clickable{cursor:pointer;pointer-events:all;display:flex;overflow-x:hidden;}',
-            '.ch-inner-wrapper .mw-collapsible-toggle{pointer-events:all;}'
+            '.ch-inner-wrapper{pointer-events:auto;padding:1px 0;}',
+            '.ch-inner-wrapper .tabber,.ch-inner-wrapper .tabbernav,.ch-inner-wrapper .tabbertab,.ch-inner-wrapper .wds-tabs,.ch-inner-wrapper .wds-tabs__tab,.ch-inner-wrapper .wds-tabs__tab-label,.ch-inner-wrapper .wds-tab__content{pointer-events:auto;}'
         ].join(''));
+    }
+
+    function buildMobileStyleHeader(header, headline, toggle, sectionId) {
+        var oldEditSection = header[0].querySelector('.mw-editsection');
+        var oldEditLink = oldEditSection ? oldEditSection.querySelector('a') : null;
+        var editLink = oldEditLink ? oldEditLink.cloneNode(true) : null;
+
+        if (oldEditSection) {
+            oldEditSection.remove();
+        }
+
+        var label = document.createElement('div');
+        label.className = 'section-header-label';
+
+        label.appendChild(headline[0]);
+
+        header[0].insertBefore(label, header[0].firstChild);
+
+        if (editLink) {
+            editLink.classList.add('section-edit-link');
+            editLink.classList.remove('mw-editsection-visualeditor');
+            editLink.innerHTML =
+                '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">' +
+                '<use xlink:href="#wds-icons-pencil-small"></use>' +
+                '</svg>';
+
+            header[0].appendChild(editLink);
+
+            var separator = document.createElement('div');
+            separator.className = 'vertical-separator';
+            header[0].appendChild(separator);
+        }
+
+        header[0].appendChild(toggle[0]);
+
+        header
+            .addClass('ch-header-clickable')
+            .attr('role', 'button')
+            .attr('aria-controls', sectionId)
+            .attr('aria-pressed', 'false');
+    }
+
+    function buildStaticHeader(header, headline) {
+        var oldEditSection = header[0].querySelector('.mw-editsection');
+        var oldEditLink = oldEditSection ? oldEditSection.querySelector('a') : null;
+        var editLink = oldEditLink ? oldEditLink.cloneNode(true) : null;
+
+        if (oldEditSection) {
+            oldEditSection.remove();
+        }
+
+        var label = document.createElement('div');
+        label.className = 'section-header-label';
+
+        label.appendChild(headline[0]);
+
+        header[0].insertBefore(label, header[0].firstChild);
+
+        if (editLink) {
+            editLink.classList.add('section-edit-link');
+            editLink.classList.remove('mw-editsection-visualeditor');
+            editLink.innerHTML =
+                '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">' +
+                '<use xlink:href="#wds-icons-pencil-small"></use>' +
+                '</svg>';
+
+            header[0].appendChild(editLink);
+        }
+
+        header.addClass('ch-header-static');
     }
 
     var headlines = $parseroutput.find('.mw-headline')
         .not('#mw-toc-heading')
         .get()
         .sort(function (a, b) {
-            var A = $(a).parent(), B = $(b).parent();
-            var al = getHeaderLevel(A), bl = getHeaderLevel(B);
+            var A = $(a).parent();
+            var B = $(b).parent();
+            var al = getHeaderLevel(A);
+            var bl = getHeaderLevel(B);
+
             if (al !== bl) return bl - al;
+
             if (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_PRECEDING) return 1;
             return -1;
         });
@@ -150,23 +321,31 @@ mw.hook('wikipage.content').add(function ($content) {
     $(headlines).each(function () {
         var headline = $(this);
         var header = headline.parent();
+
         if (!header.is('h2,h3,h4,h5,h6')) return;
         if (header.data('chProcessed')) return;
 
         var customEl = headline.find('.ch-custom')[0];
         var custom = customEl ? customEl.dataset : {};
-        if (custom.chCollapse === 'false') return;
+
+        if (custom.chCollapse === 'false') {
+            buildStaticHeader(header, headline);
+            header.data('chProcessed', true);
+            return;
+        }
 
         var headerColor = custom.chColor || color;
         var headerArrow = custom.chArrow || arrow;
-        var headerArrowRotation = custom.chArrowRotation || arrowRotation;
+        var headerArrowStartRotation = custom.chArrowStartRotation || arrowStartRotation;
+        var headerArrowRotationEnd = custom.chArrowRotationEnd || custom.chArrowRotation || arrowRotationEnd;
         var headerDuration = custom.chAnimationDuration || duration;
         var headerEasing = custom.chEasingStyle || easing;
+        var headerArrowDuration = custom.chArrowAnimationDuration || custom.chAnimationDuration || arrowDuration;
+        var headerArrowEasing = custom.chArrowEasingStyle || custom.chEasingStyle || arrowEasing;
         var headerDurationMs = getDurationMs(headerDuration);
         var startCollapsed = custom.chStartCollapsed === 'true';
 
         var level = getHeaderLevel(header);
-
         var contentEls = [];
         var next = header[0].nextSibling;
 
@@ -181,6 +360,7 @@ mw.hook('wikipage.content').add(function ($content) {
                     next = next.nextSibling;
                     continue;
                 }
+
                 contentEls.push(next);
                 next = next.nextSibling;
                 continue;
@@ -193,34 +373,73 @@ mw.hook('wikipage.content').add(function ($content) {
             next = next.nextSibling;
         }
 
-        if (!contentEls.length) return;
+        if (!contentEls.length) {
+            buildStaticHeader(header, headline);
+            header.data('chProcessed', true);
+            return;
+        }
 
         var inner = document.createElement('div');
         inner.className = 'ch-inner-wrapper';
+
         var outer = document.createElement('div');
         outer.className = 'ch-outer-wrapper';
 
+        var sectionId = (headline.attr('id') || ('ch-section-' + sections.length)) + '-collapsible-section';
+
+        outer.id = sectionId;
+
         var parent = contentEls[0].parentNode;
+
         parent.insertBefore(outer, contentEls[0]);
-        contentEls.forEach(function (el) { inner.appendChild(el); });
+
+        contentEls.forEach(function (el) {
+            inner.appendChild(el);
+        });
+
         outer.appendChild(inner);
 
-        var block = { outer: outer, inner: inner };
+        var block = {
+            outer: outer,
+            inner: inner
+        };
 
-        function setHidden(x) { outer.classList.toggle('ch-is-hidden', x); }
-        function showBlock() { outer.style.display = ''; }
-        function hideBlock() { outer.style.display = 'none'; }
+        function setHidden(hidden) {
+            outer.classList.toggle('ch-is-hidden', hidden);
+        }
+
+        function showBlock() {
+            outer.style.display = '';
+        }
+
+        function hideBlock() {
+            outer.style.display = 'none';
+        }
 
         function prepareForMeasure() {
             showBlock();
             setHidden(false);
             outer.style.height = '';
-            inner.style.transform = 'translateY(0)';
         }
 
         function setExpandedHeight() {
             outer.style.height = getBlockHeight(block) + 'px';
-            inner.style.transform = 'translateY(0)';
+        }
+
+        function setExpandedState(expanded) {
+            header
+                .toggleClass('open-section', expanded)
+                .toggleClass('collapsed', !expanded)
+                .attr('aria-expanded', expanded ? 'true' : 'false')
+                .attr('aria-pressed', expanded ? 'false' : 'true');
+
+            toggle
+                .attr('aria-expanded', expanded ? 'true' : 'false')
+                .attr('aria-pressed', expanded ? 'false' : 'true')
+                .attr('aria-label', expanded ? 'Collapse' : 'Expand');
+
+            toggleIcon.css('transform', 'rotate(' + (expanded ? headerArrowRotationEnd : headerArrowStartRotation) + ')');
+            toggle.data('collapsed', !expanded);
         }
 
         var section = {
@@ -231,22 +450,29 @@ mw.hook('wikipage.content').add(function ($content) {
             isAnimating: false,
             prepareForMeasure: prepareForMeasure,
             setExpandedHeight: setExpandedHeight,
-            isCollapsed: function () { return toggle.data('collapsed') === true; },
-            contains: function (t) {
-                return this.header === t || this.headline === t || this.header.contains(t) || outer.contains(t) || inner.contains(t);
+            isCollapsed: function () {
+                return toggle.data('collapsed') === true;
+            },
+            contains: function (target) {
+                return (
+                    this.header === target ||
+                    this.headline === target ||
+                    this.header.contains(target) ||
+                    outer.contains(target) ||
+                    inner.contains(target)
+                );
             },
             expand: function (instant) {
                 if (!this.isCollapsed()) return;
 
                 showBlock();
                 this.isAnimating = true;
+                syncAncestorsWhileAnimating(this);
 
-                if (headerDurationMs === 0) {
+                if (instant || headerDurationMs === 0) {
                     outer.style.transition = 'none';
-                    inner.style.transition = 'none';
                 } else {
                     outer.style.transition = 'height ' + headerDuration + ' ' + headerEasing;
-                    inner.style.transition = 'transform ' + headerDuration + ' ' + headerEasing;
                 }
 
                 var h = getBlockHeight(block);
@@ -255,12 +481,7 @@ mw.hook('wikipage.content').add(function ($content) {
                 outer.offsetHeight;
 
                 setHidden(true);
-
-                inner.style.transform = 'translateY(0px)';
-
-                toggle.css('transform', '');
-                toggle.attr('aria-expanded', 'true');
-                toggle.data('collapsed', false);
+                setExpandedState(true);
 
                 if (instant || headerDurationMs === 0) {
                     setHidden(false);
@@ -281,27 +502,19 @@ mw.hook('wikipage.content').add(function ($content) {
                 if (this.isCollapsed()) return;
 
                 this.isAnimating = true;
+                syncAncestorsWhileAnimating(this);
 
-                if (headerDurationMs === 0) {
+                if (instant || headerDurationMs === 0) {
                     outer.style.transition = 'none';
-                    inner.style.transition = 'none';
                 } else {
                     outer.style.transition = 'height ' + headerDuration + ' ' + headerEasing;
-                    inner.style.transition = 'transform ' + headerDuration + ' ' + headerEasing;
                 }
 
-                var h = getBlockHeight(block);
-
                 outer.offsetHeight;
-
                 setHidden(true);
 
                 outer.style.height = '0px';
-                inner.style.transform = 'translateY(-' + h + 'px)';
-
-                toggle.css('transform', 'rotate(' + headerArrowRotation + ')');
-                toggle.attr('aria-expanded', 'false');
-                toggle.data('collapsed', true);
+                setExpandedState(false);
 
                 if (instant || headerDurationMs === 0) {
                     hideBlock();
@@ -326,93 +539,106 @@ mw.hook('wikipage.content').add(function ($content) {
             },
             toggle: function (instant) {
                 if (this.isAnimating) return;
-                if (this.isCollapsed()) this.expand(instant);
-                else this.collapse(instant);
+
+                if (this.isCollapsed()) {
+                    this.expand(instant);
+                } else {
+                    this.collapse(instant);
+                }
             }
         };
 
-        var toggle = $('<span>')
-            .addClass('ch-toggle')
-            .attr('role', 'button')
-            .attr('tabindex', '0')
+        var toggle = $('<button>')
+            .addClass('chevron-wrapper')
+            .attr('type', 'button')
+            .attr('aria-controls', sectionId)
             .attr('aria-expanded', startCollapsed ? 'false' : 'true')
+            .attr('aria-pressed', startCollapsed ? 'true' : 'false')
             .css({
-                color: headerColor,
-                transition: headerDurationMs === 0 ? 'none' : 'transform ' + headerDuration + ' ' + headerEasing
+                color: headerColor
             })
             .on('click keydown', function (e) {
                 if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
                 if (e.type === 'keydown') e.preventDefault();
+
+                e.stopPropagation();
                 section.toggle(false);
             })
             .data('collapsed', false);
 
-        setToggleContent(toggle, headerArrow);
-        header.append(toggle);
+        var toggleIcon = $('<span>')
+            .addClass('ch-toggle-icon')
+            .css({
+                transition: 'transform ' + headerArrowDuration + ' ' + headerArrowEasing
+            });
+
+        setToggleContent(toggleIcon, headerArrow);
+        toggle.append(toggleIcon);
+
+        buildMobileStyleHeader(header, headline, toggle, sectionId);
         header.data('chProcessed', true);
 
+        var label = header[0].querySelector('.section-header-label');
+
         if (startCollapsed) {
-            var h = getBlockHeight(block);
             outer.style.height = '0px';
-            inner.style.transform = 'translateY(-' + h + 'px)';
+
+            setHidden(true);
             hideBlock();
-            toggle.css('transform', 'rotate(' + headerArrowRotation + ')');
-            toggle.attr('aria-expanded', 'false');
-            toggle.data('collapsed', true);
+            setExpandedState(false);
         } else {
             setExpandedHeight();
             setHidden(false);
+            setExpandedState(true);
         }
 
-        header[0].classList.add('ch-header-clickable');
-
-        header[0].addEventListener('pointerdown', function (e) {
-            header[0]._chDownX = e.clientX;
-            header[0]._chDownY = e.clientY;
-        });
-
-        header[0].addEventListener('pointerup', function (e) {
-            if (Math.abs(e.clientX - header[0]._chDownX) > 5) return;
-            if (Math.abs(e.clientY - header[0]._chDownY) > 5) return;
-            if (e.button !== 0) return;
-            if (e.target.closest('.ch-toggle')) return;
-            if (e.target.closest('.mw-editsection')) return;
-            if (e.target.closest('.toc-link')) return;
-            if (header[0].closest('.portable-infobox')) return;
-            if (header[0].closest('.right-rail-wrapper')) return;
-            if (section.isAnimating) return;
-            section.toggle(false);
-        });
+        if (label) {
+            header[0].addEventListener('click', function (e) {
+                if (isInteractiveTarget(e.target, header[0])) return;
+                if (header[0].closest('.portable-infobox')) return;
+                if (header[0].closest('.right-rail-wrapper')) return;
+                if (section.isAnimating) return;
+                section.toggle(false);
+            });
+        }
 
         sections.push(section);
 
         var mo = new MutationObserver(function (mutations) {
             for (var i = 0; i < mutations.length; i++) {
                 var m = mutations[i];
+
                 if (m.type === 'childList' && (m.addedNodes.length || m.removedNodes.length)) {
                     scheduleRefresh();
                     return;
                 }
-                if (m.type === 'attributes') {
-                    if (m.attributeName === 'style' || m.attributeName === 'class') {
-                        scheduleRefresh();
-                        return;
-                    }
+
+                if (m.type === 'attributes' && (m.attributeName === 'style' || m.attributeName === 'class')) {
+                    scheduleRefresh();
+                    return;
                 }
             }
         });
-        mo.observe(inner, { childList: true, subtree: true, attributes: true });
+
+        mo.observe(inner, {
+            childList: true,
+            subtree: true,
+            attributes: true
+        });
 
         if (window.ResizeObserver) {
             var lastHeight = inner.getBoundingClientRect().height;
+
             var ro = new ResizeObserver(function (entries) {
                 var entry = entries[0];
                 var h = entry.contentRect.height;
+
                 if (Math.abs(h - lastHeight) > 0.5) {
                     lastHeight = h;
                     scheduleRefresh();
                 }
             });
+
             ro.observe(inner);
         }
 
@@ -425,25 +651,72 @@ mw.hook('wikipage.content').add(function ($content) {
     });
 
     function getAllCollapsibleSections() {
-        return sections.filter(function (s) {
-            return s.header && s.header.querySelector('.ch-toggle');
+        return sections.filter(function (section) {
+            return section.header && section.header.querySelector('.chevron-wrapper');
         });
     }
 
     function getVisibleCollapsibleSections() {
-        return getAllCollapsibleSections().filter(function (s) {
-            return $(s.header).is(':visible');
+        return getAllCollapsibleSections().filter(function (section) {
+            return $(section.header).is(':visible');
         });
     }
 
     function openSectionsForHash() {
         var target = getHashTarget();
         if (!target) return;
+
         sections
-            .filter(function (s) { return s.contains(target); })
-            .sort(function (a, b) { return a.level - b.level; })
-            .forEach(function (s) { s.expand(true); });
-        setTimeout(function () { target.scrollIntoView(); }, 0);
+            .filter(function (section) {
+                return section.contains(target);
+            })
+            .sort(function (a, b) {
+                return a.level - b.level;
+            })
+            .forEach(function (section) {
+                section.expand(true);
+            });
+
+        setTimeout(function () {
+            target.scrollIntoView();
+        }, 0);
+    }
+
+    function openHashLinkBeforeJump(e) {
+        var link = e.target.closest('a[href*="#"]');
+        if (!link) return;
+
+        var href = link.getAttribute('href');
+        if (!href) return;
+
+        var hashIndex = href.indexOf('#');
+        if (hashIndex === -1) return;
+
+        var path = href.slice(0, hashIndex);
+        var currentPath = location.pathname + location.search;
+
+        if (path && path !== location.pathname && path !== currentPath && path !== location.href.split('#')[0]) return;
+
+        var id = href.slice(hashIndex + 1);
+        if (!id) return;
+
+        try {
+            id = decodeURIComponent(id);
+        } catch (err) {}
+
+        var target = document.getElementById(id) || document.getElementsByName(id)[0];
+        if (!target) return;
+
+        sections
+            .filter(function (section) {
+                return section.contains(target);
+            })
+            .sort(function (a, b) {
+                return a.level - b.level;
+            })
+            .forEach(function (section) {
+                section.expand(true);
+            });
     }
 
     function toggleAllHeaders() {
@@ -451,15 +724,16 @@ mw.hook('wikipage.content').add(function ($content) {
         if (!visible.length) return;
 
         var total = visible.length;
-        var collapsedCount = visible.filter(function (s) { return s.isCollapsed(); }).length;
+        var collapsedCount = visible.filter(function (section) {
+            return section.isCollapsed();
+        }).length;
         var shouldExpand = collapsedCount / total >= 0.5;
 
-        var all = getAllCollapsibleSections();
-        all.forEach(function (s) {
+        getAllCollapsibleSections().forEach(function (section) {
             if (shouldExpand) {
-                if (s.isCollapsed()) s.expand(false);
+                if (section.isCollapsed()) section.expand(true);
             } else {
-                if (!s.isCollapsed()) s.collapse(false);
+                if (!section.isCollapsed()) section.collapse(true);
             }
         });
 
@@ -469,9 +743,12 @@ mw.hook('wikipage.content').add(function ($content) {
     function addCollapseAllButton() {
         if (!sections.length) return;
         if (collapseAll === 'false' || window.CollapsibleHeadersCollapseAllLoaded) return;
+
         var sideTools = document.querySelector('.page-side-tools');
         if (!sideTools) return;
+
         window.CollapsibleHeadersCollapseAllLoaded = true;
+
         var button = $('<button>')
             .addClass('page-side-tool ch-collapse-all')
             .attr('type', 'button')
@@ -480,7 +757,9 @@ mw.hook('wikipage.content').add(function ($content) {
             .attr('data-wds-tooltip', collapseAllTooltip)
             .attr('data-wds-tooltip-position', 'right')
             .attr('data-tooltip-attached', '1')
+            .attr('title', collapseAllTooltip)
             .on('click', toggleAllHeaders);
+
         setToggleContent(button, collapseAllContent);
         $(sideTools).append(button);
     }
@@ -494,23 +773,28 @@ mw.hook('wikipage.content').add(function ($content) {
             $parseroutput[0];
 
         if (!target || !window.ResizeObserver || window.CollapsibleHeadersResizeObserverLoaded) return;
-        window.CollapsibleHeadersResizeObserverLoaded = true;
 
-        var lastWidth = target.getBoundingClientRect().width;
+        window.CollapsibleHeadersResizeObserverLoaded = true;
+        observedWidth = target.getBoundingClientRect().width;
 
         var observer = new ResizeObserver(function (entries) {
             var entry = entries[0];
             var width = entry.contentRect.width;
-            if (Math.abs(width - lastWidth) < 0.1) return;
-            lastWidth = width;
+
+            if (Math.abs(width - observedWidth) < 0.1) return;
+
+            observedWidth = width;
             scheduleRefresh();
         });
 
         observer.observe(target);
     }
 
+    document.addEventListener('click', openHashLinkBeforeJump, true);
+
     openSectionsForHash();
     addCollapseAllButton();
     observeResizableContainer();
+
     $(window).on('hashchange', openSectionsForHash);
 });

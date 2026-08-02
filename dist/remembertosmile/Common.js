@@ -188,10 +188,116 @@ function adjustGlow(slideshow) {
 (function () {
     if (typeof mw === 'undefined' || !mw.config) return;
 
+    var themedCategories = ['Checking_In', 'Sightseeing', 'Afterparty', 'Aquarium', 'Atlantis', 'Pastel_Reefs', 'Challenger_Deep', 'Wraithmas_2024'];
     var categories = mw.config.get('wgCategories') || [];
 
     categories.forEach(function (cat) {
         var safeName = cat.replace(/\s+/g, '_');
         document.body.classList.add('cat-' + safeName);
+        if (themedCategories.indexOf(safeName) !== -1) {
+            document.body.classList.add('has-custom-theme');
+        }
     });
+})();
+
+/* Item System */
+(function () {
+    function selectItem(root, panel, item) {
+        panel.querySelectorAll('.item-system-item').forEach(function (i) {
+            i.classList.remove('selected');
+        });
+        item.classList.add('selected');
+
+        var contentId = item.getAttribute('data-content-id');
+        var store = root.querySelector('.item-system-content-store');
+        var contentBox = root.querySelector('.item-system-content');
+        if (contentId && store && contentBox) {
+            var src = store.querySelector('#' + contentId);
+            if (src) {
+                contentBox.innerHTML = src.innerHTML;
+            }
+        }
+    }
+
+    function initItemSystem(root) {
+        var tabs = root.querySelectorAll('.item-system-tab');
+        var panels = root.querySelectorAll('.item-system-panel');
+
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                tabs.forEach(function (t) { t.classList.remove('active'); });
+                panels.forEach(function (p) { p.classList.remove('active'); });
+                tab.classList.add('active');
+
+                var target = root.querySelector('.item-system-panel[data-panel="' + tab.dataset.tab + '"]');
+                if (!target) return;
+                target.classList.add('active');
+
+                var current = target.querySelector('.item-system-item.selected') || target.querySelector('.item-system-item');
+                if (current) selectItem(root, target, current);
+            });
+        });
+
+        panels.forEach(function (panel) {
+            var items = panel.querySelectorAll('.item-system-item');
+            items.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    selectItem(root, panel, item);
+                });
+            });
+        });
+
+        var activePanel = root.querySelector('.item-system-panel.active') || panels[0];
+        if (activePanel) {
+            var initial = activePanel.querySelector('.item-system-item.selected') || activePanel.querySelector('.item-system-item');
+            if (initial) selectItem(root, activePanel, initial);
+        }
+    }
+
+    var tooltip;
+    function ensureTooltip() {
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'item-system-tooltip';
+            document.body.appendChild(tooltip);
+        }
+        return tooltip;
+    }
+
+    function positionTooltip(e, tip) {
+        var offset = 14;
+        tip.style.left = (e.clientX + offset) + 'px';
+        tip.style.top = (e.clientY + offset) + 'px';
+    }
+
+    function initTooltips(root) {
+        var items = root.querySelectorAll('.item-system-item[data-tooltip]');
+        items.forEach(function (item) {
+            item.addEventListener('mouseenter', function (e) {
+                var tip = ensureTooltip();
+                tip.textContent = item.getAttribute('data-tooltip');
+                tip.style.display = 'block';
+                positionTooltip(e, tip);
+            });
+            item.addEventListener('mousemove', function (e) {
+                if (tooltip) positionTooltip(e, tooltip);
+            });
+            item.addEventListener('mouseleave', function () {
+                if (tooltip) tooltip.style.display = 'none';
+            });
+        });
+    }
+
+    function init() {
+        document.querySelectorAll('.item-system-wrapper').forEach(function (root) {
+            initItemSystem(root);
+            initTooltips(root);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

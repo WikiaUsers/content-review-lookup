@@ -1,23 +1,21 @@
 /**
- * @name            ContentReview-Plus
- * @author          [[User:ClodaghelmC]]
- * @description     Adds native styling and a set of quick access tools to a
- *                  script's sidebar
+ * @name ContentReview-Plus
+ * @auth [[User:ClodaghelmC]]
+ * @desc Adds native rail styling and a set of quick
+ *       access tools to a script's sidebar
  */
 (function (window, $, mw) {
     'use strict';
     
-    // Prevent double load
     if (window.contentReviewPlusLoaded) {
         return;
     }
     window.contentReviewPlusLoaded = true;
     
-    // Initialize tool array
     window.addRightSideTool = window.addRightSideTool || [];
     
     /**
-     * Style widget elements and populates the tools array
+     * Style widget elements and populate the tools array
      */
     var init = function () {
         var conf = mw.config.get([
@@ -32,7 +30,7 @@
         var isJSPage = (conf.wgNamespaceNumber === -1 && conf.wgCanonicalSpecialPageName === 'JSPages') ||
                        (conf.wgPageContentModel === 'javascript');
                        
-        // Re-class the widget table
+        // Reclass widget table
         if ($table.length) {
             $table.addClass('wikitable');
         }
@@ -48,25 +46,13 @@
             }
         }
         
-        // Populate tools array for script-related pages
+        // Populate tools array
         if (($oldHelp.length || isJSPage) && !window.crpToolsAdded) {
             if ($oldHelp.length) {
                 $oldHelp.remove();
             }
             
             window.addRightSideTool.push(
-                {
-                    id:   'crp-tool-jspages',
-                    icon: 'preformat-small',
-                    text: 'JavaScript pages',
-                    link: 'Special:JSPages'
-                },
-                {
-                    id:   'crp-tool-importjs',
-                    icon: 'gear-small',
-                    text: 'ImportJS',
-                    link: 'MediaWiki:ImportJS'
-                },
                 {
                     id:   'crp-tool-help',
                     icon: 'question-small',
@@ -93,12 +79,11 @@
         }, {
             type:     'style',
             articles: ['u:clodaghelm:MediaWiki:ContentReview-Plus.css']
+        }).then(function () {
+            mw.hook('wikipage.content').add(init);
+            mw.hook('wikia.rail.ready').add(init);
+            init();
         });
-        
-        mw.hook('wikipage.content').add(init);
-        mw.hook('wikia.rail.ready').add(init);
-        
-        init();
     });
 
 }(window, jQuery, mediaWiki));

@@ -2,6 +2,9 @@
 (() => {
     'use strict';
 
+	// Загружаем скрипт только в основном пространстве (статьи)
+    if (mw.config.get('wgNamespaceNumber') !== 0) return;
+    
     const HOVER_DELAY = 350;
     const HIDE_DELAY = 300;
     const CACHE = new Map();

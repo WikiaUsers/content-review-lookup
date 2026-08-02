@@ -36,3 +36,8 @@
     // makes errors break the script rather than infinitely recurse
     timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
 }
+
+// Викификатор
+if (wikiconfig.wgAction == 'edit' || wikiconfig.wgAction == 'submit') {
+	importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript');
+}

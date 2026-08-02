@@ -181,31 +181,48 @@ addOnloadHook(loadFunc);
  }
  addOnloadHook(forcePreview);
 
-/* Filter Buttons Logic*/
-var questFilterButton = document.querySelector('.filterButton.questFilter');
-if (questFilterButton) questFilterButton.addEventListener('click', toggleQuestDrops);
+function setupFilterButtonToggles() {
+  /* Filter Buttons Logic*/
+  var bound = new WeakSet();
 
-function toggleQuestDrops() {
+  function bind(container) {
+    if (bound.has(container)) return;
+    container.addEventListener('click', toggleMonsterDrops);
+    bound.add(container);
+  }
+  document.querySelectorAll('.filterButton').forEach(bind);
+}
+
+setupFilterButtonToggles();
+
+function toggleMonsterDrops() {
+  let button = this;
+  let filterClass = button.dataset.filterType + 'Drop';
   const table = document.querySelector('.monsterDropsTable');
   const allRows = table.getElementsByTagName('tr');
-  const button = document.querySelector('.filterButton.questFilter');
-  let nonQuestVisible = false;
+  let nonVisible = false;
 
   for (let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
-    if (!row.classList.contains('header') && !row.classList.contains('questDrop') && !row.classList.contains('dnone')) {
-      nonQuestVisible = true;
+    if (
+      !row.classList.contains('header') &&
+      !row.classList.contains(filterClass) &&
+      !row.classList.contains('dnone')
+    ) {
+      nonVisible = true;
       break;
     }
   }
+  
+    document.querySelectorAll('.filterButton').forEach((el) => el.classList.remove('filterEnabled'));
 
   for (let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
     if (row.classList.contains('header')) {
       continue;
     }
-    if (nonQuestVisible) {
-      if (!row.classList.contains('questDrop')) {
+    if (nonVisible) {
+      if (!row.classList.contains(filterClass)) {
         row.classList.add('dnone');
       } else {
         row.classList.remove('dnone');
@@ -221,6 +238,7 @@ function toggleQuestDrops() {
     }
   }
 }
+
 /* Collapsible menu clickable anywhere */
 console.log("Starting with registering a Collapsible Element Listeners");
 console.log(document.querySelectorAll('.mw-collapsible'));

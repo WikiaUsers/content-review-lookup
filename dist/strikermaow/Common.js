@@ -1,22 +1,39 @@
-mw.loader.using(['mediawiki.util'], function () {
-    function initCheckboxes() {
-        document.querySelectorAll('.wiki-checkbox').forEach(function(checkbox) {
-            // Удаляем старые обработчики, чтобы не было дублей
-            checkbox.removeEventListener('click', toggleCheckbox);
-            checkbox.addEventListener('click', toggleCheckbox);
+console.log('COMMON.JS FILE LOADED - v2');
+
+mw.loader.using(['jquery'], function () {
+    var STORAGE_PREFIX = 'wikiCheckbox_';
+
+    function getId(el) {
+        return el.getAttribute('data-id') || 'idx_' + Array.prototype.indexOf.call(
+            document.querySelectorAll('.wiki-checkbox'), el
+        );
+    }
+
+    function applyState(el) {
+        var id = getId(el);
+        var saved = localStorage.getItem(STORAGE_PREFIX + id);
+        if (saved === '1') {
+            el.classList.add('checked');
+            el.textContent = '✓';
+        }
+    }
+
+    function toggle(el) {
+        var id = getId(el);
+        el.classList.toggle('checked');
+        var isChecked = el.classList.contains('checked');
+        el.textContent = isChecked ? '✓' : '';
+        localStorage.setItem(STORAGE_PREFIX + id, isChecked ? '1' : '0');
+    }
+
+    function init() {
+        document.querySelectorAll('.wiki-checkbox').forEach(applyState);
+    }
+
+    $(document).ready(function () {
+        init();
+        $(document).on('click', '.wiki-checkbox', function () {
+            toggle(this);
         });
-    }
-    
-    function toggleCheckbox(e) {
-        e.preventDefault();
-        this.classList.toggle('checked');
-        console.log('Checkbox toggled:', this.classList.contains('checked'));
-    }
-    
-    // Запускаем при загрузке
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCheckboxes);
-    } else {
-        initCheckboxes();
-    }
+    });
 });

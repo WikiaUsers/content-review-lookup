@@ -11,11 +11,11 @@ $(function () {
     //must also be added to Template:MountLink (https://tibia.fandom.com/wiki/Template:MountLink)
     outfiter_mount_names = [ 
       //0
-      'None', 'Widow_Queen', 'Racing_Bird', 'War_Bear', 'Black_Sheep',
+      'None', 'Widow_Queen', 'Racing_Bird', 'War_Bear', 'Black_Sheep_(Mount)',
       //5
       'Midnight_Panther', 'Draptor', 'Titanica', 'Tin_Lizzard', 'Blazebringer',
       //10
-      'Rapid_Boar', 'Stampor', 'Undead_Cavebear', 'Crystal_Wolf', 'Dromedary',
+      'Rapid_Boar', 'Stampor', 'Undead_Cavebear_(Mount)', 'Crystal_Wolf', 'Dromedary',
       //15
       'Kingly_Deer', 'Donkey', 'Scorpion_King', 'Tamed_Panda', 'Tiger_Slug',
       //20

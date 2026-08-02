@@ -11,6 +11,6 @@ importArticles({
 	        'MediaWiki:ThemeToggler.js',
 	        'MediaWiki:Users.js',
 	        'MediaWiki:ArticlePreview.js',
-	        "MediaWiki:CrossWikiActivity.js"
+	        'MediaWiki:EnhanchedEditor.js'
 	    ]
 	});

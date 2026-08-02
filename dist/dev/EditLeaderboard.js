@@ -15,7 +15,7 @@
 		ns = mw.config.get('wgNamespaceNumber'),
 		action = mw.config.get('wgAction');
 	if (
-		!['Leaderboard', 'Specialpages'].includes(specialPage) &&
+		!(['Leaderboard', 'Specialpages'].includes(specialPage) && !$('#LeaderboardTable').length) &&
 		!(page === 'Leaderboard' && ns === 4 && action === 'view')
 	) return; // only run on Special:Leaderboard, Project:Leaderboard, Special:SpecialPages
 

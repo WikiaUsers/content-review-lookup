@@ -8,6 +8,7 @@
  */
 window.AddRailModule = [{
 	page: 'Template:RailModule', // [[Template:RailModule]]
+	prepend: true,
 	maxAge: 0
 }];
 

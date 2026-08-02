@@ -94,9 +94,9 @@ mw.hook('wikipage.content').add(() => {
 		settings.forEach((curr) => {
 			if (curr.toggles) {
 				let togglewrap = $(
-					'<div class="fl-filter-group '+(curr.class||'')+'">'+
+					'<div class="fl-filter-group '+mw.html.escape(curr.class||'')+'">'+
 						'<div class="fl-toggle-label">'+
-							(curr.label ? (curr.label+':') :'')+
+							mw.html.escape(curr.label ? (curr.label+':') :'')+
 							'<div class="fl-toggle-qa">'+
 								'<a class="fl-toggle-qa-all">ALL</a>'+
 								' &mdash; '+
@@ -110,13 +110,13 @@ mw.hook('wikipage.content').add(() => {
 					let opt = $('<label for="fl-toggle-'+flc+'" class="fl-checkbox-label">');
 					let inpt = $('<input id="fl-toggle-'+flc+'" class="fl-checkbox" checked type="checkbox" tabindex="0" />');
 					if (toggle.imgL && $('body[data-theme="light"]').length>0) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgL)}" class="${toggle.imgLClass || toggle.imgClass || ''}" width="24px" />`);
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgL)}" class="${mw.html.escape(toggle.imgLClass || toggle.imgClass || '')}" width="24px" />`);
 					} else if (toggle.imgD && $('body[data-theme="dark"]').length>0) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgD)}" class="${toggle.imgDClass || toggle.imgClass || ''}" width="24px" />`);
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgD)}" class="${mw.html.escape(toggle.imgDClass || toggle.imgClass || '')}" width="24px" />`);
 					} else if (toggle.img) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)}" class="${toggle.imgClass || ''}" width="24px" />`);
+						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)}" class="${mw.html.escape(toggle.imgClass || '')}" width="24px" />`);
 					}
-					if (toggle.label) { opt.append(toggle.label); }
+					if (toggle.label) { opt.append(mw.html.escape(toggle.label)); }
 					if (toggle.alt) { opt.attr('title', toggle.alt); }
 					opt.append(inpt);
 					queries.show[toggle.query] = true; // show by default
@@ -142,13 +142,13 @@ mw.hook('wikipage.content').add(() => {
 			} else if (curr.search) {
 				flc++;
 				let s = curr.search;
-				let labl = $('<label class="fl-search-label fl-filter-group '+(curr.class||'')+'" for="fl-search-'+flc+'">');
-				let inpt = $('<input class="fl-search" id="fl-search-'+flc+'" placeholder="'+(s.placeholder||'Term to filter by')+'" />');
+				let labl = $('<label class="fl-search-label fl-filter-group '+mw.html.escape(curr.class||'')+'" for="fl-search-'+flc+'">');
+				let inpt = $('<input class="fl-search" id="fl-search-'+flc+'" placeholder="'+mw.html.escape(s.placeholder||'Term to filter by')+'" />');
 				inpt.attr('data-fl-search-query', s.query);
 				if (s.img) {labl.append('<img src="'+config.wgServer+mw.util.getUrl(s.img).replace(/^\/wiki\//, '/wiki/Special:Filepath/')+'" width="24px" />');}
 				if (s.source) {inpt.attr('data-fl-search-source', s.source);}
 				if (s.attr) {inpt.attr('data-fl-search-attr', s.attr);}
-				labl.append(curr.label, ': ', inpt);
+				labl.append(mw.html.escape(curr.label), ': ', inpt);
 				inpt.on('change.fls', applyFLs);
 				filters.append(labl);
 			}

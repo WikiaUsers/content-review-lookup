@@ -84,7 +84,6 @@ UserTagsJS.modules.custom = {
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
 	'Kaiyie': ['threadmoderator'],
-	'The Shashophille': ['threadmoderator'],
 	'RXRunner27': ['threadmoderator'],
 	// Junior Discussion Moderators
 
@@ -96,7 +95,6 @@ UserTagsJS.modules.custom = {
 	'ZackRoN00': ['retired-staff'],
 	'MP1Player': ['retired-staff'],
 	'HolyMoa': ['retired-staff'],
-	
 	// Retired Administrators
 	'GrayshaValor': ['retired-staff'],
 	'Man with no name or life': ['retired-staff'],
@@ -143,6 +141,7 @@ UserTagsJS.modules.custom = {
 	'Adogeeats25': ['retired-staff'],
 	'Nexandr': ['retired-staff'],
 	'Hisslandia': ['retired-staff'],
+	'The Shashophille': ['retired-staff'],
 	
 	// RON Senior Staff
 	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
@@ -155,6 +154,8 @@ UserTagsJS.modules.custom = {
 	'Pro10boy2228': ['wiki-contributor'],
 	'Blazarvortexd': ['wiki-contributor'],
 	'Ameer.Jor': ['wiki-contributor'],
+	'The Dimensional Doctor': ['wiki-contributor'],
+	'Spaniard123': ['wiki-contributor'],
 };
 
 //* LockOldComments.js Configuration *//

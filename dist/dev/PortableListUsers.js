@@ -27,6 +27,7 @@
      * @description User groups
      */
     LU.users = {
+        //'adops-contractor': {},
         //'authenticated': {},
         'bot': {},
         //'bot-global': {},
@@ -36,13 +37,11 @@
         'content-moderator': {},
         //'content-reviewer': {},
         //'content-volunteer': {},
-        //'emailconfirmed': {},
         //'fandom-editor': {},
-        //'fandom-star': {},        
         //'global-discussions-moderator': {},
         //'global-edit-reviewer': {},
-        //'image-reporting-csam': {},
         //'imagereviewer': {},
+        //'legal-image-reporting': {},
         //'monetization-reviewer': {},        
         'monetization-team': {},        
         //'notifications-cms-user': {},

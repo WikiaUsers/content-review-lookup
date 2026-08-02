@@ -34,6 +34,8 @@
 		document.head.appendChild(script);
 	}
 
-	loadMonsterVerzeScript('CosmeticFilter.js');
-	loadMonsterVerzeScript('ItemFilter.js');
+loadMonsterVerzeScript('CosmeticFilter.js');
+loadMonsterVerzeScript('ItemFilter.js');
+loadMonsterVerzeScript('UpdateCreator.js');
+loadMonsterVerzeScript('UploadCredits.js');
 }());

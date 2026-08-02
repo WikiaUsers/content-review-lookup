@@ -8,8 +8,8 @@ $(function() {
         var $rightRail = $('.page__right-rail, #right-nav').first();
         if (!$rightRail.length) return;
 
-        // Quét tìm H2, H3
-        var $headings = $('.mw-parser-output').find('h2, h3');
+        // 1. Quét tìm H2, H3, H4, H5
+        var $headings = $('.mw-parser-output').find('h2, h3, h4');
         if ($headings.length < 2) return;
 
         // Xóa TOC cũ (nếu có) để tránh trùng lặp
@@ -37,23 +37,33 @@ $(function() {
             var text = $h.find('.mw-headline').text() || $h.text();
             text = text.replace(/\[edit\]/g, '').trim();
 
-            var isH2 = el.tagName.toLowerCase() === 'h2';
-            
-            // KIỂM TRA: Nếu là H2, xem phần tử tiếp theo có phải H3 không
-            var hasH3 = isH2 && $headings.eq(i + 1).is('h3');
+            // 2. Lấy cấp độ thẻ H hiện tại (h2, h3, h4, h5)
+            var tag = el.tagName.toLowerCase(); 
+            var currentLevel = parseInt(tag.charAt(1)); // Lấy số 2, 3, 4, hoặc 5
 
-            // Tạo thẻ A chứa cả dòng
+            // 3. KIỂM TRA: Xem thẻ tiếp theo có phải thẻ con không (level lớn hơn)
+            var hasChild = false;
+            var $nextHeading = $headings.eq(i + 1);
+            if ($nextHeading.length) {
+                var nextTag = $nextHeading.prop('tagName').toLowerCase();
+                var nextLevel = parseInt(nextTag.charAt(1));
+                if (nextLevel > currentLevel) {
+                    hasChild = true; // Nếu đang là H2 mà thẻ tiếp là H3, H4... thì tính là có thẻ con
+                }
+            }
+
+            // Tạo thẻ A chứa cả dòng - Tự động tạo class h2-item, h3-item, h4-item, h5-item
             var $item = $('<a>', {
                 href: '#' + id,
-                class: 'rbx-toc-item ' + (isH2 ? 'h2-item' : 'h3-item'),
+                class: 'rbx-toc-item ' + tag + '-item', 
                 'data-id': id
             });
 
             // Chữ bên trái
             $item.append($('<span>', { text: text }));
 
-            // Dấu mũi tên (Chỉ gắn cho H2 khi có H3 con)
-            if (isH2 && hasH3) {
+            // Dấu mũi tên (Gắn cho bất kỳ thẻ nào có thẻ con)
+            if (hasChild) {
                 var $icon = $('<span class="rbx-toc-icon"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path></svg></span>');
                 $item.append($icon);
             }
@@ -64,7 +74,7 @@ $(function() {
         // Chèn vào đầu cột bên phải
         $rightRail.prepend($toc);
 
-        // CẢI TIẾN LẠI SỰ KIỆN CLICK (Kết hợp hoàn hảo với CSS mới)
+        // CẢI TIẾN LẠI SỰ KIỆN CLICK
         $toc.on('click', '.rbx-toc-item', function(e) {
             e.preventDefault();
             

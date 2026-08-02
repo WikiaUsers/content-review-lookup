@@ -54,3 +54,10 @@ $(function () {
         $(this).parent().toggleClass("mw-collapsed"); // Toggle the collapsed class
     });
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassEdit/code.js',
+    ]
+});

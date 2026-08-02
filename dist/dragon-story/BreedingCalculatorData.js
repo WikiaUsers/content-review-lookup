@@ -8346,7 +8346,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "confident": {
             	"name": "Confident",
             	"types": [
-            		"valentine",
             		"purple",
             		"blue"
             	],
@@ -8355,20 +8354,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "purple"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "blue"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]
@@ -8990,7 +8975,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "craft": {
             	"name": "Craft",
             	"types": [
-            		"valentine",
             		"black",
             		"red"
             	],
@@ -8999,20 +8983,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "black"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "red"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]
@@ -9585,7 +9555,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "cuddly": {
             	"name": "Cuddly",
             	"types": [
-            		"valentine",
             		"purple",
             		"pink"
             	],
@@ -9594,20 +9563,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "purple"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "pink"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]
@@ -10949,7 +10904,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "dedicated": {
             	"name": "Dedicated",
             	"types": [
-            		"valentine",
             		"purple",
             		"white"
             	],
@@ -10958,20 +10912,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "purple"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "white"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]
@@ -13112,7 +13052,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "emptyheart": {
             	"name": "Emptyheart",
             	"types": [
-            		"valentine",
             		"white",
             		"yellow"
             	],
@@ -13121,20 +13060,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "white"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "yellow"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]
@@ -25447,7 +25372,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "lovesight": {
             	"name": "Lovesight",
             	"types": [
-            		"valentine",
             		"white",
             		"pink"
             	],
@@ -25456,20 +25380,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "white"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "pink"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]
@@ -40483,7 +40393,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             "soft": {
             	"name": "Soft",
             	"types": [
-            		"valentine",
             		"yellow",
             		"white"
             	],
@@ -40492,20 +40401,6 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
             	],
             	"incubation": "4_hours_4",
             	"rarity": 1,
-            	"parents": [
-                    [
-                        [
-                            "types", [
-                                "yellow"
-                            ]
-                        ],
-                        [
-                            "types", [
-                                "white"
-                            ]
-                        ]
-                    ]
-                ],
                 "notes": [
                 	"hidden"
                 ]

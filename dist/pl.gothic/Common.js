@@ -18,6 +18,17 @@ importArticle( {
 } );
 
 /**
+ * Import MassCategorization.js
+ * Odpowiada za masową kategoryzację artykułów
+ */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});
+
+/**
  * Import GlobalFileUsage.js
  * Odpowiada za wyświetlanie globalnego użycia plików na Wiki
  */

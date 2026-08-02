@@ -1,21 +1,16 @@
 /* Фикс фона изображений и загрузка оригиналов */
 (() => {
-	
     if (window.imagesReplacedOriginal) return;
     window.imagesReplacedOriginal = true;
-
+    
     const imageConfigs = [
         {
             selector: ".category-page__member-thumbnail",
-            attributes: {
-                src: /(\/smart\/width\/[\d]*\/height\/[\d]*)/g
-            }
+            attributes: { src: /(\/smart\/width\/[\d]*\/height\/[\d]*)/g }
         },
         {
             selector: ".card-image img",
-            attributes: {
-                src: /(\/top-crop\/width\/300\/height\/[\d]*)/g
-            }
+            attributes: { src: /(\/top-crop\/width\/300\/height\/[\d]*)/g }
         },
         {
             selector: ".category-page__trending-page img",
@@ -25,10 +20,9 @@
             }
         }
     ];
-
+    
     const fixElement = (el) => {
         if (el.nodeType !== 1) return;
-
         imageConfigs.forEach(config => {
             if (el.matches(config.selector)) {
                 for (const [attrName, regex] of Object.entries(config.attributes)) {
@@ -42,10 +36,9 @@
                 }
             }
         });
-
+        
         if (el.matches('.pi-image-thumbnail')) {
             const srcset = el.getAttribute('srcset');
-
             if (srcset && !srcset.includes('format=original')) {
                 const firstSrc = srcset.split(' ')[0];
                 const separator = firstSrc.includes('?') ? '&' : '?';
@@ -53,24 +46,21 @@
             }
         }
     };
-
+    
     const processNode = (node) => {
         if (node.nodeType !== 1) return;
-        
         fixElement(node);
-        
         const allSelectors = imageConfigs.map(c => c.selector).join(', ') + ', .pi-image-thumbnail';
         const innerImages = node.querySelectorAll(allSelectors);
         innerImages.forEach(fixElement);
     };
-
+    
     const processImages = () => {
         processNode(document.body);
     };
-
+    
     const observer = new MutationObserver(mutations => {
         for (const mutation of mutations) {
-
             if (mutation.type === "childList") {
                 mutation.addedNodes.forEach(processNode);
             } else if (mutation.type === "attributes") {
@@ -78,19 +68,17 @@
             }
         }
     });
-
+    
     const config = {
         childList: true,
         subtree: true,
-        attributes: true, 
+        attributes: true,
         attributeFilter: ['src', 'srcset']
     };
-
-    observer.observe(document.body, config);
     
+    observer.observe(document.body, config);
     processImages();
 })();
-
 
 /* Исправление достижений */
 (() => {
@@ -100,38 +88,58 @@
     if (namespace !== 2 && specialPage !== 'Leaderboard') return;
     if (window.isAchievementsFixed) return;
     window.isAchievementsFixed = true;
-
-    // Восстановление недостающих описаний
-    const missingDescriptions = {
-        'welcome':      'Награда за регистрацию на Вики.',
-        'creator':      'Награда за создание Вики. Отличная работа!',
-        'pounce':       'За создание 100 статей на Вики.',
-        'introduction': 'Награда за создание своей страницы участника.',
-        'sayhi':        'Награда за сообщение на чужой стене обсуждения.'
-    };
-
+    
+    // Сюда будут загружены данные из Module:AchievementDescriptions
+    let missingDescriptions = {};
+    
     const getPlural = (number) => {
         const absNum = Math.abs(number);
         const mod10 = absNum % 10;
         const mod100 = absNum % 100;
-        
         if (mod100 >= 11 && mod100 <= 14) return 'изображений в статьи';
         if (mod10 === 1) return 'изображение в статью';
         if (mod10 >= 2 && mod10 <= 4) return 'изображения в статьи';
         return 'изображений в статьи';
     };
 
-    // Функция для безопасного возвращения сломанных тегов Фэндома в рабочий HTML
-    const unescapeSafeHTML = (html) => {
-        return html.replace(/&lt;(\/?(?:strong|br|a)(?:\s+(?:(?!&gt;).)*?)?)&gt;/gi, '<$1>');
+    // Функция-обертка для DOMPurify
+    const sanitizeHTML = (html) => {
+        return (window.DOMPurify && window.DOMPurify.sanitize) 
+            ? window.DOMPurify.sanitize(html) 
+            : html;
     };
 
+    const unescapeSafeHTML = (html) => {
+        const unescaped = html.replace(/&lt;(\/?(?:strong|br|a)(?:\s+(?:(?!&gt;).)*?)?)&gt;/gi, '<$1>');
+        return sanitizeHTML(unescaped);
+    };
+    
+    // Асинхронная загрузка словаря из Lua (строгий ES6 с использованием Promises)
+    const loadDescriptions = () => {
+        const url = mw.util.wikiScript('api') + '?action=query&prop=revisions&titles=Module:AchievementDescriptions&rvprop=content&rvslots=main&formatversion=2&format=json';
+        return fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const pages = data.query && data.query.pages;
+                if (pages && pages[0] && pages[0].revisions) {
+                    const content = pages[0].revisions[0].slots.main.content;
+                    // Парсим Lua-таблицу (ищет форматы ['ключ'] = 'значение')
+                    const regex = /\[\s*['"]([^'"]+)['"]\s*\]\s*=\s*['"]([^'"]+)['"]/g;
+                    let match;
+                    while ((match = regex.exec(content)) !== null) {
+                        missingDescriptions[match[1].toLowerCase()] = match[2];
+                    }
+                }
+            })
+            .catch(e => console.warn('Ошибка при загрузке Module:AchievementDescriptions', e));
+    };
+    
     const fixTooltip = (tooltipNode) => {
         if (tooltipNode.dataset.achievementFixed) return;
         const badgeIcon = tooltipNode.nextElementSibling;
         
         if (badgeIcon && badgeIcon.classList.contains('badge-icon')) {
-            const iconData = badgeIcon.outerHTML.toLowerCase(); 
+            const iconData = badgeIcon.outerHTML.toLowerCase();
             const paragraphs = tooltipNode.querySelectorAll('p');
             
             paragraphs.forEach(p => {
@@ -140,134 +148,117 @@
                     for (let i = 0; i < keys.length; i++) {
                         const internalKey = keys[i];
                         if (iconData.indexOf(internalKey.toLowerCase()) !== -1) {
-                            p.innerHTML = missingDescriptions[internalKey];
+                            p.innerHTML = sanitizeHTML(missingDescriptions[internalKey]);
                             break;
                         }
                     }
                 }
             });
         }
-
-        let content = tooltipNode.innerHTML;
         
+        let content = tooltipNode.innerHTML;
         content = content.replace(/(?:&lt;|<)br\s*\/?(?:&gt;|>)/gi, ' ');
-
-        //  Исправление ошибок перевода
         content = content
             .replace(/categoryselect-addcategory-button/g, 'Добавить категорию')
             .replace(/rte-ck-image-add/g, 'Добавить изображение')
-            .replace(/oasis-signup/g, 'Регистрация') 
-            .replace(/⧼|⧽/g, ''); 
+            .replace(/oasis-signup/g, 'Регистрация')
+            .replace(/⧼|⧽/g, '');
             
         content = content.replace(
             /((?:(?:\d+(?:[\s,.\xA0]|&nbsp;)+)*\d+))\s+(?:изображений|изображения|изображение)\s+в\s+(?:статьи|статью|статей)/gi,
             (match, numStr) => {
-                const cleanNumStr = numStr.replace(/\D/g, ''); 
+                const cleanNumStr = numStr.replace(/\D/g, '');
                 const number = parseInt(cleanNumStr, 10);
                 if (isNaN(number)) return match;
                 return `${numStr} ${getPlural(number)}`;
             }
         );
-
+        
         content = content.replace(/\s{2,}/g, ' ');
-
-        tooltipNode.innerHTML = content.trim();
+        tooltipNode.innerHTML = sanitizeHTML(content.trim());
         tooltipNode.dataset.achievementFixed = "true";
     };
-
+    
     const processAchievements = () => {
-
         const unhandledTooltips = document.querySelectorAll('.profile-hover:not([data-achievement-fixed="true"])');
         unhandledTooltips.forEach(fixTooltip);
         
         const unhandledBadges = document.querySelectorAll('.badge-text:not([data-achievement-fixed="true"])');
         unhandledBadges.forEach(badge => {
             let html = badge.innerHTML;
-            
             html = unescapeSafeHTML(html);
             
-            html = html.replace(/(?:<br\s*\/?>\s*)+([^<]*(?:назад|ago|только\s*что|just\s*now)[^<]*(?:<\/p>\s*)?)$/i, ' &bull; $1');
+            // Восстановление недостающих описаний для боковой панели (ищет 2 переноса строки подряд)
+            const listItem = badge.closest('li');
+            if (listItem) {
+                const iconData = listItem.innerHTML.toLowerCase();
+                const keys = Object.keys(missingDescriptions);
+                for (let i = 0; i < keys.length; i++) {
+                    const internalKey = keys[i];
+                    if (iconData.indexOf(internalKey.toLowerCase()) !== -1) {
+                        html = html.replace(/(<br\s*\/?>\s*){2}/i, `<br />${missingDescriptions[internalKey]}<br />`);
+                        break;
+                    }
+                }
+            }
             
-            badge.innerHTML = html;
+            // Исправление: Сохраняем <br> и добавляем маркер точки строго перед временем
+            html = html.replace(/(?:<br\s*\/?>\s*)+([^<]*(?:назад|ago|только\s*что|just\s*now)[^<]*(?:<\/p>\s*)?)$/i, '<br /> &bull; $1');
+            badge.innerHTML = sanitizeHTML(html);
             badge.dataset.achievementFixed = "true";
         });
     };
-
-    const observer = new MutationObserver((mutations) => {
-        let hasNewNodes = false;
-        for (let i = 0; i < mutations.length; i++) {
-            if (mutations[i].addedNodes.length > 0) {
-                hasNewNodes = true;
-                break;
+    
+    // Дожидаемся загрузки словаря, прежде чем начинать обработку DOM
+    loadDescriptions().then(() => {
+        const observer = new MutationObserver((mutations) => {
+            let hasNewNodes = false;
+            for (let i = 0; i < mutations.length; i++) {
+                if (mutations[i].addedNodes.length > 0) {
+                    hasNewNodes = true;
+                    break;
+                }
             }
-        }
-        if (hasNewNodes) {
-            processAchievements();
-        }
+            if (hasNewNodes) {
+                processAchievements();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        processAchievements();
     });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-    processAchievements();
 })();
 
 /* Доработка поиска */
 ((window, mw) => {
-
     if (window.fandomSearchShortcutsLoaded) return;
     window.fandomSearchShortcutsLoaded = true;
-
-    // Расширенный селектор: охватывает и страницу поиска, и глобальную строку поиска в шапке Fandom
+    
     const searchInputSelector = '.search-app__wrapper > input, .wds-global-navigation__search-input, #searchInput';
-
-    // Получаем локализованные пространства имён один раз
     const ns = mw.config.get('wgFormattedNamespaces');
     const namespaces = {
-        t: ns[10],   // Template
-        mw: ns[8],   // MediaWiki
-        s: ns[-1],   // Special
-        h: ns[12],   // Help
-        m: ns[828],  // Module
-        f: ns[6],    // File
-        u: ns[2],    // User
-        ut: ns[3],   // User talk
-        w: ns[1200], // Message Wall
-        ub: ns[500], // User blog
-        p: ns[4],    // Project
-        c: ns[14],   // Category
-        fo: ns[110]  // Forum
+        t: ns[10], mw: ns[8], s: ns[-1], h: ns[12], m: ns[828],
+        f: ns[6], u: ns[2], ut: ns[3], w: ns[1200], ub: ns[500],
+        p: ns[4], c: ns[14], fo: ns[110]
     };
-
-    // ОПТИМИЗАЦИЯ: Кешируем сеттер React один раз при загрузке скрипта
+    
     const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
         'value'
     ).set;
-
-    // ОПТИМИЗАЦИЯ: Используем нативный 'input' вместо 'keyup'
+    
     document.addEventListener('input', (event) => {
         const target = event.target;
-
-        // Делегирование событий: проверяем, что ввод был именно в строку поиска
         if (!target.matches(searchInputSelector)) return;
-
         const currentVal = target.value;
-        // Флаг 'i' позволяет вводить шорткаты в любом регистре (например, !T или !t)
         const match = currentVal.match(/^\!([a-z]+) /i);
-
+        
         if (match) {
             const shortcut = match[1].toLowerCase();
-            
             if (namespaces.hasOwnProperty(shortcut)) {
-                // Используем шаблонные строки ES6 и современный slice
                 const newText = `${namespaces[shortcut]}:${currentVal.slice(match[0].length)}`;
-
-                // Вызываем закешированный сеттер React
                 nativeInputValueSetter.call(target, newText);
-                
-                // Триггерим событие, чтобы React обновил стейт
                 target.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
     });
-
 })(window, window.mediaWiki);

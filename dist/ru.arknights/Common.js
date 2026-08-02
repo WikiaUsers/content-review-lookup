@@ -721,7 +721,7 @@ if (charName) {
     // Используем /ru/wiki/Special:FilePath/ для русской вики
     var iconUrl = '/ru/wiki/Special:FilePath/' + fileName;
     
-    var $icon = $('<img class="story-char-icon" src="' + iconUrl + '" style="position: absolute; bottom: 5px; left: 5px; width: 90px; height: 90px; opacity: 0.8; object-fit: contain; z-index: 1;" onerror="this.style.display=\'none\'">');
+    var $icon = $('<img class="story-char-icon" src="' + mw.html.escape(iconUrl) + '" style="position: absolute; bottom: 5px; left: 5px; width: 90px; height: 90px; opacity: 0.8; object-fit: contain; z-index: 1;" onerror="this.style.display=\'none\'">');
     $nameCell.css('position', 'relative');
     $nameCell.append($icon);
 }

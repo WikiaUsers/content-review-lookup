@@ -63,9 +63,9 @@ mw.hook('wikipage.content').add(function () {
 		settings.forEach(function(curr) {
 			if (curr.toggles) {
 				var togglewrap = $(
-					'<div class="fl-filter-group '+(curr.class||'')+'">'+
+					'<div class="fl-filter-group '+mw.html.escape(curr.class||'')+'">'+
 						'<div class="fl-toggle-label">'+
-							(curr.label ? (curr.label+':') :'')+
+							mw.html.escape(curr.label ? (curr.label+':') :'')+
 							'<div class="fl-toggle-qa">'+
 								'<a class="fl-toggle-qa-all">CHỌN HẾT</a>'+
 								' &mdash; '+
@@ -87,7 +87,7 @@ mw.hook('wikipage.content').add(function () {
 							'" width="24px" />'
 						);
 					}
-					if (toggle.label) { opt.append(toggle.label); }
+					if (toggle.label) { opt.append(mw.html.escape(toggle.label)); }
 					if (toggle.alt) { opt.attr('title', toggle.alt); }
 					opt.append(inpt);
 					queries.show[toggle.query] = true; // show by default
@@ -113,13 +113,13 @@ mw.hook('wikipage.content').add(function () {
 			} else if (curr.search) {
 				flc++;
 				var s = curr.search;
-				var labl = $('<label class="fl-search-label fl-filter-group '+(curr.class||'')+'" for="fl-search-'+flc+'">');
-				var inpt = $('<input class="fl-search" id="fl-search-'+flc+'" placeholder="'+(s.placeholder||'Term muốn lọc')+'" />');
+				var labl = $('<label class="fl-search-label fl-filter-group '+mw.html.escape(curr.class||'')+'" for="fl-search-'+flc+'">');
+				var inpt = $('<input class="fl-search" id="fl-search-'+flc+'" placeholder="'+mw.html.escape(s.placeholder||'Term muốn lọc')+'" />');
 				inpt.attr('data-fl-search-query', s.query);
 				if (s.img) {labl.append('<img src="'+config.wgServer+mw.util.getUrl(s.img).replace(/^\/wiki\//, '/wiki/Special:Filepath/')+'" width="24px" />');}
 				if (s.source) {inpt.attr('data-fl-search-source', s.source);}
 				if (s.attr) {inpt.attr('data-fl-search-attr', s.attr);}
-				labl.append(curr.label, ': ', inpt);
+				labl.append(mw.html.escape(curr.label), ': ', inpt);
 				inpt.on('change.fls', applyFLs);
 				filters.append(labl);
 			}

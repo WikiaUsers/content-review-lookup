@@ -42,6 +42,12 @@ ShadowTheHedgehog: ['Gründer'] */
 }
 };
 
+#massedit-button, 
+.massedit-dialog, 
+#massedit-ui { 
+    display: none !important; 
+}
+
 /* Countdownzähler
 ----------------------------------------------------
 */

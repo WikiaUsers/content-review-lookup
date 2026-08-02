@@ -513,3 +513,59 @@ mw.loader.using(['mediawiki.api']).then(function () {
             "Couldn't load recent pages.";
     });
 });
+
+/*JS for AddRailModule*/
+window.AddRailModule = [{prepend: true}];
+/*JS for notifications for new people*/
+$(function () {
+    const key = "welcomeSeen";
+
+    if (!localStorage.getItem(key)) {
+        mw.notify(
+            "Hello. Thank you for visiting the wiki. Please stay a while.",
+            {
+                title: "Welcome to the Skybox Wiki!",
+                autoHideSeconds: 30
+            }
+        );
+
+        localStorage.setItem(key, "true");
+    }
+});
+/*JS for users above 1000 edits*/
+$(function () {
+    if (mw.config.get("wgUserEditCount") > 1000) {
+        mw.notify(
+            "Wow! You have a quite a lot of edits!",
+            {
+                title: "Skybox Veteran"
+            }
+        );
+    }
+});
+/*Crasher mascot*/
+$(function () {
+    const mascot = document.createElement("img");
+
+    mascot.src = "https://robloxskyboxwikii.fandom.com/resources-ucp/mw143/resources/assets/file-type-icons/fileicon.png";
+    mascot.id = "wiki-mascot";
+
+    document.body.appendChild(mascot);
+
+    let x = Math.random() * (window.innerWidth - 200);
+    let y = Math.random() * (window.innerHeight - 200);
+
+    mascot.style.left = x + "px";
+    mascot.style.top = y + "px";
+
+    function moveMascot() {
+        x = Math.random() * (window.innerWidth - 200);
+        y = Math.random() * (window.innerHeight - 200);
+
+        mascot.style.left = x + "px";
+        mascot.style.top = y + "px";
+    }
+
+    moveMascot();
+    setInterval(moveMascot, 12000);
+});

@@ -28,6 +28,23 @@
             return thumb ? safeImageSrc(thumb.src) : '';
         }
 
+        // Sets an image on a modal/tooltip img element, with a graceful
+        // dark-themed fallback (instead of a broken-image icon) when there's
+        // no valid src yet, or the src 404s (placeholder URLs, unset art, etc).
+        function setCardImage(wrapEl, imgEl, src) {
+            imgEl.onerror = null;
+            if (!src) {
+                wrapEl.classList.add('isd-no-image');
+                imgEl.removeAttribute('src');
+                return;
+            }
+            wrapEl.classList.remove('isd-no-image');
+            imgEl.onerror = function () {
+                wrapEl.classList.add('isd-no-image');
+            };
+            imgEl.src = src;
+        }
+
         function setObtainmentField(el, price, source) {
             el.textContent = '';
             if (price) {
@@ -56,7 +73,10 @@
                     '<span class="isd-item-modal-title"></span>' +
                     '<span class="isd-item-modal-close">&times;</span>' +
                 '</div>' +
-                '<div class="isd-item-modal-img-wrap"><img class="isd-item-modal-img" src="" alt=""></div>' +
+                '<div class="isd-item-modal-img-wrap">' +
+                    '<img class="isd-item-modal-img" src="" alt="">' +
+                    '<div class="isd-item-modal-img-fallback">No image yet</div>' +
+                '</div>' +
                 '<div class="isd-item-modal-section">' +
                     '<div class="isd-item-modal-value isd-item-modal-rarity"></div>' +
                 '</div>' +
@@ -85,7 +105,11 @@
         function openModal(card) {
             var d = card.dataset;
             overlay.querySelector('.isd-item-modal-title').textContent = d.name || '';
-            overlay.querySelector('.isd-item-modal-img').src = resolveImageSrc(card, d);
+            setCardImage(
+                overlay.querySelector('.isd-item-modal-img-wrap'),
+                overlay.querySelector('.isd-item-modal-img'),
+                resolveImageSrc(card, d)
+            );
             overlay.querySelector('.isd-item-modal-rarity').textContent =
                 (d.rarity ? d.rarity.charAt(0).toUpperCase() + d.rarity.slice(1) : '') +
                 (d.category ? ' ' + d.category.charAt(0).toUpperCase() + d.category.slice(1) : '');
@@ -116,7 +140,10 @@
         tooltip.className = 'isd-item-tooltip';
         tooltip.innerHTML =
             '<div class="isd-item-tooltip-header"></div>' +
-            '<div class="isd-item-tooltip-img-wrap"><img src="" alt=""></div>' +
+            '<div class="isd-item-tooltip-img-wrap">' +
+                '<img src="" alt="">' +
+                '<div class="isd-item-tooltip-img-fallback">No image yet</div>' +
+            '</div>' +
             '<div class="isd-item-tooltip-section">' +
                 '<div class="isd-item-tooltip-rarity"></div>' +
                 '<div class="isd-item-tooltip-category"></div>' +
@@ -152,7 +179,11 @@
         function showTooltip(card) {
             var d = card.dataset;
             tooltip.querySelector('.isd-item-tooltip-header').textContent = d.name || '';
-            tooltip.querySelector('img').src = resolveImageSrc(card, d);
+            setCardImage(
+                tooltip.querySelector('.isd-item-tooltip-img-wrap'),
+                tooltip.querySelector('.isd-item-tooltip-img-wrap img'),
+                resolveImageSrc(card, d)
+            );
 
             var rarityEl = tooltip.querySelector('.isd-item-tooltip-rarity');
             rarityEl.textContent = capitalizeWord(d.rarity);
@@ -343,531 +374,428 @@ mw.hook('wikipage.content').add(function ($content) {
     }
 });
 
-/* ── Forge Calculator (Forge page) ──
-   Renders into <div id="isd-forge-calc"></div>.
-   Ore/weapon data below is pulled from the confirmed forge formula:
-   Final DMG = WeaponBaseATK × (sum of ore ValueMultipliers ÷ slots used)
-   Price = Final DMG × 10
-*/
-(function () {
-    var RARITY = {
-        1: { name: 'Common', color: '#9a9a9a' },
-        2: { name: 'Uncommon', color: '#4caf50' },
-        3: { name: 'Rare', color: '#3b82f6' },
-        4: { name: 'Epic', color: '#a855f7' },
-        5: { name: 'Legendary', color: '#d98c2b' },
-        6: { name: 'Mythic', color: '#ef4444' },
-        7: { name: 'Divine', color: '#ec4899' }
-    };
+/* ====== Forge Calculator module — replace the previous Forge Calculator block in Common.js with this ====== */
+mw.hook('wikipage.content').add(function () {
 
-    var ORE_NAMES = {
-        Kenki: 'Kenki', Apocalypse: 'Apocalypse', DarkBlossom: 'Dark Blossom',
-        Hellstone6: 'Rotten Lotus', Gwindel: 'Gwindel', Corundum: 'Corundum',
-        Heatshell: 'Heatshell', Hellstone4: 'Witherite', Starfall: 'Starfall',
-        Redsunder: 'Redsunder', Earthmaw: 'Earthmaw', VoidcubeCrystal: 'Fluorite',
-        RoseTourmaline: 'Ruby', IgneousCore: 'Topaz', SmokyQuartz: 'Magnetite',
-        Blackhole: 'BlackHole', BloodHeart: 'Blood Heart', CoralReef: 'Coralreef',
-        Hellstone5: 'Eye of Hatred', Glacium: 'Glacium', Hellstone3: 'Torbernite',
-        Voidstar: 'Voidstar', Hellstone2: 'Painstone', BerylFragment: 'Opal',
-        AmethystCluster: 'Moonstone', IceCrystalOre: 'Frostine',
-        Romanstone: 'Romanstone', Aquamarine: 'Aquamarine', Sunflare: 'Sunflare',
-        Hellstone1: 'Darkcube', Raindrop: 'Raindrop', Bloodshard: 'Bloodshard',
-        Jade: 'Jade', Hexbane: 'Hexbane', Verdanite: 'Verdanite',
-        ObsidianChunk: 'Azurite', Pyrite: 'Copper', Sandstone: 'Sand Rock',
-        FlameEye: 'Flame Eye', Saturn: 'Saturn', RustyIron: 'Rusty Iron',
-        Sunstone: 'Sunstone', Epidote: 'Epidote', Genestone: 'Genestone',
-        Rarity7Ore: '??? (Divine)'
-    };
+  var appEl = document.getElementById('fc-app');
+  if (!appEl || appEl.getAttribute('data-fc-init') === '1') return;
+  appEl.setAttribute('data-fc-init', '1');
 
-    // id|rarity|price|mult|quality|hellweight|trade
-    var ORE_RAW = [
-        'Kenki|6|240|85|6|0|true',
-        'Apocalypse|6|220|76|6|0|true',
-        'DarkBlossom|6|200|73|6|0|true',
-        'Blackhole|5|180|70|5|0|true',
-        'BloodHeart|5|160|68|5|0|true',
-        'FlameEye|4|120|60|4|0|true',
-        'Saturn|4|110|55|4|0|true',
-        'RustyIron|3|94|47|3|0|true',
-        'Hellstone6|6|140|66|6|100|false',
-        'Gwindel|6|124|63|6|0|true',
-        'Corundum|6|114|57|6|0|true',
-        'CoralReef|5|104|52|5|0|true',
-        'Hellstone5|5|92|46.5|5|100|false',
-        'Genestone|5|88|45|5|0|true',
-        'Romanstone|4|80|42|4|0|true',
-        'Aquamarine|4|72|38|4|0|true',
-        'Raindrop|3|64|35|3|0|true',
-        'Jade|2|56|31|2|0|true',
-        'Hellstone4|6|68|34|6|100|false',
-        'Starfall|6|60|30|6|0|true',
-        'Redsunder|6|54|27|6|0|true',
-        'Glacium|5|50|25|5|0|true',
-        'Earthmaw|6|46|23|5|0|true',
-        'Hellstone3|5|44|22|5|100|false',
-        'Voidstar|5|40|20|4|0|true',
-        'Sunflare|4|38|19|4|0|true',
-        'Hellstone2|5|26|13|4|100|false',
-        'Hexbane|3|22|11|3|0|true',
-        'Bloodshard|3|18|9|3|0|true',
-        'Verdanite|2|14|7|2|0|true',
-        'VoidcubeCrystal|6|24|12|5|0|true',
-        'RoseTourmaline|6|20|10|5|0|true',
-        'BerylFragment|5|16|8|5|0|true',
-        'IgneousCore|6|14|7|4|0|true',
-        'AmethystCluster|5|12|6|4|0|true',
-        'SmokyQuartz|6|10|5|4|0|true',
-        'Hellstone1|4|9|4.5|3|100|false',
-        'IceCrystalOre|5|8|4|3|0|true',
-        'Sunstone|4|7|3.4|3|0|true',
-        'Epidote|3|5|2.6|3|0|true',
-        'ObsidianChunk|2|4|2|2|0|true',
-        'Pyrite|2|3|1.5|2|0|true',
-        'Sandstone|1|2|1.2|1|0|true',
-        'Rarity7Ore|7|100|60|6|100|false'
-    ];
+  var WEAPONS = {
+    Sword: [
+      {id:'Single_KnightSword_T1_Epiphqny', atk:6, price:65},
+      {id:'Single_AshWarden_T1_Star', atk:7, price:70},
+      {id:'Single_Gray_T1_LK', atk:8, price:75},
+      {id:'Single_TwoEdged_T1_Shaman', atk:9, price:80},
+      {id:'Single_BroadSword_T1_Lava', atk:5, price:60},
+      {id:'Single_HighHeaven', atk:10, price:85},
+      {id:'Single_Hell_T1', atk:12, price:110, hell:true},
+      {id:'Single_HighHell_T1', atk:12.5, price:115, hell:true},
+      {id:'Single_Genji_T1', atk:11, price:100},
+      {id:'Single_RoseRapier_T2', atk:9, price:80},
+      {id:'Single_Claw_Hell_T1', atk:14, price:125, hell:true},
+      {id:'Single_SkySword_S2', atk:1, price:80, special:true}
+    ],
+    Heavy: [
+      {id:'Heavy_Axe_T1_Odin', atk:11, price:90},
+      {id:'Heavy_TwistedAxe_T1_Alchemy', atk:12, price:95},
+      {id:'Heavy_Warhammer_T1_Brownie', atk:13, price:100},
+      {id:'Heavy_OrcAxe_T1_Demon', atk:14, price:105},
+      {id:'Heavy_Hammer_T1_Lava', atk:10, price:85},
+      {id:'Heavy_WingHeaven', atk:15, price:110},
+      {id:'Heavy_Hell_T1', atk:16, price:130, hell:true},
+      {id:'Heavy_WingHell_T1', atk:16.5, price:140, hell:true},
+      {id:'Heavy_Ironman_T1', atk:15, price:110},
+      {id:'Heavy_Claw_Hell_T1', atk:17, price:150, hell:true}
+    ],
+    Staff: [
+      {id:'Staff_Horn_T1_Devil', atk:9, price:80},
+      {id:'Staff_Wing_T1_Cosmo', atk:10, price:85},
+      {id:'Staff_Acient_T1_White', atk:8, price:75},
+      {id:'Staff_Priest_T1', atk:11, price:95},
+      {id:'Staff_Deer_T1', atk:12, price:95},
+      {id:'Staff_Hell_T1', atk:12, price:105, hell:true},
+      {id:'Staff_Lucifer_T1', atk:12.5, price:110, hell:true},
+      {id:'Staff_Claw_Hell_T1', atk:14, price:125, hell:true},
+      {id:'Staff_Dragon_T1', atk:12, price:85, special:true}
+    ],
+    Sickle: [
+      {id:'Sickle_Ordinary_red_T1', atk:13, price:95}
+    ],
+    Bow: [],
+    Fist: [
+      {id:'Fist_Wild_T1_Ice', atk:13, price:95}
+    ]
+  };
 
-    // id|class|atk|baseLv|quality|tier|blueprint|special|hell|price
-    var WEAPON_RAW = [
-        'Single_KnightSword|Sword|6|0.75|1.1|4|false|false|false|65',
-        'Single_KnightSword_T3_Justice|Sword|6|0.75|1.1|3|false|false|false|65',
-        'Single_KnightSword_T2_Betray|Sword|6|0.75|1.1|2|false|false|false|65',
-        'Single_KnightSword_T1_Epiphqny|Sword|6|0.75|1.1|1|false|false|false|65',
-        'Single_Ashwarden|Sword|7|0.8|1.4|4|false|false|false|70',
-        'Single_AshWarden_T3_Gold|Sword|7|0.8|1.4|3|false|false|false|70',
-        'Single_AshWarden_T2_Frost|Sword|7|0.8|1.4|2|false|false|false|70',
-        'Single_AshWarden_T1_Star|Sword|7|0.8|1.4|1|false|false|false|70',
-        'Single_Gray_T4_Rust|Sword|8|0.85|1.7|4|false|false|false|75',
-        'Single_Gray_T3_Halo|Sword|8|0.85|1.7|3|false|false|false|75',
-        'Single_Gray|Sword|8|0.85|1.7|2|false|false|false|75',
-        'Single_Gray_T1_LK|Sword|8|0.85|1.7|1|false|false|false|75',
-        'Single_TwoEdged|Sword|9|0.9|2.1|4|false|false|false|80',
-        'Single_TwoEdged_T3_Angel|Sword|9|0.9|2.1|3|false|false|false|80',
-        'Single_TwoEdged_T2_Augur|Sword|9|0.9|2.1|2|false|false|false|80',
-        'Single_TwoEdged_T1_Shaman|Sword|9|0.9|2.1|1|false|false|false|80',
-        'Single_BroadSword_T3_Copper|Sword|5|0.7|0.8|3|false|false|false|60',
-        'Single_BroadSword_T2_Dark|Sword|5|0.7|0.8|2|false|false|false|60',
-        'Single_BroadSword_T1_Lava|Sword|5|0.7|0.8|1|false|false|false|60',
-        'Single_HighHeaven|Sword|10|0.95|1.7|1|false|false|false|85',
-        'Single_Hell_T4|Sword|9|0.9|1.1|4|false|false|true|80',
-        'Single_Hell_T3|Sword|10|0.95|1.4|3|false|false|true|90',
-        'Single_Hell_T2|Sword|11|1|1.7|2|false|false|true|100',
-        'Single_Hell_T1|Sword|12|1.05|2.1|1|false|false|true|110',
-        'Single_HighHell_T1|Sword|12.5|1.05|2.1|1|false|false|true|115',
-        'Single_Genji_T4|Sword|11|1|2.1|4|false|false|false|100',
-        'Single_Genji_T3|Sword|11|1|2.1|3|false|false|false|100',
-        'Single_Genji_T2|Sword|11|1|2.1|2|false|false|false|100',
-        'Single_Genji_T1|Sword|11|1|2.1|1|false|false|false|100',
-        'Single_RoseRapier_T2|Sword|9|0.9|2.1|1|false|false|false|80',
-        'Single_Claw_Hell_T1|Sword|14|1.06|1.7|1|false|false|true|125',
-        'Single_SilverSword_T2|Sword|1|1|1.1|2|false|true|false|65',
-        'Single_SkySword_S2|Sword|1|1|1|1|false|true|false|80',
-        'DualWield_Dragon_OP|Sword|11|1|1.7|2|true|true|false|80',
-        'Heavy_Axe|Heavy|11|0.75|1.1|4|false|false|false|90',
-        'Heavy_Axe_T3_Viking|Heavy|11|0.75|1.1|3|false|false|false|90',
-        'Heavy_Axe_T2_Thunder|Heavy|11|0.75|1.1|2|false|false|false|90',
-        'Heavy_Axe_T1_Odin|Heavy|11|0.75|1.1|1|false|false|false|90',
-        'Heavy_TwistedAxe|Heavy|12|0.8|1.4|4|false|false|false|95',
-        'Heavy_TwistedAxe_T3_Golem|Heavy|12|0.8|1.4|3|false|false|false|95',
-        'Heavy_TwistedAxe_T2_Royal|Heavy|12|0.8|1.4|2|false|false|false|95',
-        'Heavy_TwistedAxe_T1_Alchemy|Heavy|12|0.8|1.4|1|false|false|false|95',
-        'Heavy_Warhammer|Heavy|13|0.85|1.7|4|false|false|false|100',
-        'Heavy_Warhammer_T3_Kitty|Heavy|13|0.85|1.7|3|false|false|false|100',
-        'Heavy_Warhammer_T2_MilkShake|Heavy|13|0.85|1.7|2|false|false|false|100',
-        'Heavy_Warhammer_T1_Brownie|Heavy|13|0.85|1.7|1|false|false|false|100',
-        'Heavy_OrcAxe|Heavy|14|0.9|2.1|4|false|false|false|105',
-        'Heavy_OrcAxe_T3_Rust|Heavy|14|0.9|2.1|3|false|false|false|105',
-        'Heavy_OrcAxe_T2_Frost|Heavy|14|0.9|2.1|2|false|false|false|105',
-        'Heavy_OrcAxe_T1_Demon|Heavy|14|0.9|2.1|1|false|false|false|105',
-        'Heavy_Hammer_T3_Rust|Heavy|10|0.7|0.8|3|false|false|false|85',
-        'Heavy_Hammer_T2_Abyss|Heavy|10|0.7|0.8|2|false|false|false|85',
-        'Heavy_Hammer_T1_Lava|Heavy|10|0.7|0.8|1|false|false|false|85',
-        'Heavy_WingHeaven|Heavy|15|1|1.7|1|false|false|false|110',
-        'Heavy_Hell_T4|Heavy|13|0.9|1.1|4|false|false|true|95',
-        'Heavy_Hell_T3|Heavy|14|0.95|1.4|3|false|false|true|105',
-        'Heavy_Hell_T2|Heavy|15|1|1.7|2|false|false|true|120',
-        'Heavy_Hell_T1|Heavy|16|1.05|2.1|1|false|false|true|130',
-        'Heavy_WingHell_T1|Heavy|16.5|1.05|2.1|1|false|false|true|140',
-        'Heavy_Ironman_T4|Heavy|15|1|2.1|4|false|false|false|110',
-        'Heavy_Ironman_T3|Heavy|15|1|2.1|3|false|false|false|110',
-        'Heavy_Ironman_T2|Heavy|15|1|2.1|2|false|false|false|110',
-        'Heavy_Ironman_T1|Heavy|15|1|2.1|1|false|false|false|110',
-        'Heavy_Dragon_Warrior|Heavy|15|1|1.7|2|true|true|false|80',
-        'Heavy_Claw_Hell_T1|Heavy|17|1.06|1.7|1|false|false|true|150',
-        'Staff_Horn_T4_Blue|Staff|9|0.8|1.7|4|false|false|false|80',
-        'Staff_Horn_T3_Brown|Staff|9|0.8|1.7|3|false|false|false|80',
-        'Staff_Horn_T2_Gold|Staff|9|0.8|1.7|2|false|false|false|80',
-        'Staff_Horn_T1_Devil|Staff|9|0.8|1.7|1|false|false|false|80',
-        'Staff_Wing_T4_Black|Staff|10|0.85|2.1|4|false|false|false|85',
-        'Staff_Wing_T3_Blue|Staff|10|0.85|2.1|3|false|false|false|85',
-        'Staff_Wing_T2_Gold|Staff|10|0.85|2.1|2|false|false|false|85',
-        'Staff_Wing_T1_Cosmo|Staff|10|0.85|2.1|1|false|false|false|85',
-        'Staff_Acient_T3_Yellow|Staff|8|0.75|1.4|3|false|false|false|75',
-        'Staff_Acient_T2_Red|Staff|8|0.75|1.4|2|false|false|false|75',
-        'Staff_Acient_T1_White|Staff|8|0.75|1.4|1|false|false|false|75',
-        'Staff_Priest_T1|Staff|11|0.9|1.4|1|false|false|false|95',
-        'Staff_Deer_T4|Staff|12|0.95|2.1|4|false|false|false|95',
-        'Staff_Deer_T3|Staff|12|0.95|2.1|3|false|false|false|95',
-        'Staff_Deer_T2|Staff|12|0.95|2.1|2|false|false|false|95',
-        'Staff_Deer_T1|Staff|12|0.95|2.1|1|false|false|false|95',
-        'Staff_Hell_T4|Staff|9|0.8|1.1|4|false|false|true|80',
-        'Staff_Hell_T3|Staff|10|0.85|1.4|3|false|false|true|85',
-        'Staff_Hell_T2|Staff|11|0.9|1.7|2|false|false|true|95',
-        'Staff_Hell_T1|Staff|12|0.95|2.1|1|false|false|true|105',
-        'Staff_Lucifer_T1|Staff|12.5|0.95|2.1|1|false|false|true|110',
-        'Staff_Claw_Hell_T1|Staff|14|1.06|1.7|1|false|false|true|125',
-        'Staff_Dragon_T1|Staff|12|1|2.1|1|false|true|false|85',
-        'Sickle_Ordinary_Blue_T4|Sickle|13|0.85|1.1|4|false|false|false|95',
-        'Sickle_Ordinary_Green_T3|Sickle|13|0.9|1.4|3|false|false|false|95',
-        'Sickle_Ordinary_Purple_T2|Sickle|13|0.95|1.7|2|false|false|false|95',
-        'Sickle_Ordinary_red_T1|Sickle|13|1|2.1|1|false|false|false|95',
-        'SkywingBow_T4|Bow|1|1|1|4|true|true|false|95',
-        'SkywingBow_Limited|Bow|13|1|2.1|4|false|true|false|95',
-        'SkywyrmFist_T4|Fist|13|1|1|4|true|false|false|95',
-        'Fist_Wild_T4_Volcano|Fist|13|1|1.1|4|false|false|false|95',
-        'Fist_Wild_T2_Forest|Fist|13|1|1.7|2|false|false|false|95',
-        'Fist_Wild_T1_Ice|Fist|13|1|2.1|1|false|false|false|95'
-    ];
+  var ORES = [
+    {id:'Kenki', name:'Kenki', rarity:'mythic', price:240, mult:85},
+    {id:'Apocalypse', name:'Apocalypse', rarity:'mythic', price:220, mult:76},
+    {id:'DarkBlossom', name:'Dark Blossom', rarity:'mythic', price:200, mult:73},
+    {id:'Hellstone6', name:'Rotten Lotus', rarity:'mythic', price:140, mult:66, hell:true},
+    {id:'Gwindel', name:'Gwindel', rarity:'mythic', price:124, mult:63},
+    {id:'Corundum', name:'Corundum', rarity:'mythic', price:114, mult:57},
+    {id:'Heatshell', name:'Heatshell', rarity:'mythic', price:96, mult:48},
+    {id:'Hellstone4', name:'Witherite', rarity:'mythic', price:68, mult:34, hell:true},
+    {id:'Starfall', name:'Starfall', rarity:'mythic', price:60, mult:30},
+    {id:'Redsunder', name:'Redsunder', rarity:'mythic', price:54, mult:27},
+    {id:'VoidcubeCrystal', name:'Fluorite', rarity:'mythic', price:24, mult:12},
+    {id:'RoseTourmaline', name:'Ruby', rarity:'mythic', price:20, mult:10},
+    {id:'IgneousCore', name:'Topaz', rarity:'mythic', price:14, mult:7},
+    {id:'SmokyQuartz', name:'Magnetite', rarity:'mythic', price:10, mult:5},
+    {id:'Blackhole', name:'BlackHole', rarity:'legendary', price:180, mult:70},
+    {id:'BloodHeart', name:'Blood Heart', rarity:'legendary', price:160, mult:68},
+    {id:'CoralReef', name:'Coralreef', rarity:'legendary', price:104, mult:52},
+    {id:'Hellstone5', name:'Eye of Hatred', rarity:'legendary', price:92, mult:46.5, hell:true},
+    {id:'Glacium', name:'Glacium', rarity:'legendary', price:50, mult:25},
+    {id:'Earthmaw', name:'Earthmaw', rarity:'legendary', price:46, mult:23},
+    {id:'Hellstone3', name:'Torbernite', rarity:'legendary', price:44, mult:22, hell:true},
+    {id:'Voidstar', name:'Voidstar', rarity:'legendary', price:40, mult:20},
+    {id:'Hellstone2', name:'Painstone', rarity:'legendary', price:26, mult:13, hell:true},
+    {id:'BerylFragment', name:'Opal', rarity:'legendary', price:16, mult:8},
+    {id:'AmethystCluster', name:'Moonstone', rarity:'legendary', price:12, mult:6},
+    {id:'IceCrystalOre', name:'Frostine', rarity:'legendary', price:8, mult:4},
+    {id:'Romanstone', name:'Romanstone', rarity:'epic', price:80, mult:42, lv:48},
+    {id:'Aquamarine', name:'Aquamarine', rarity:'epic', price:72, mult:38, lv:47},
+    {id:'Sunflare', name:'Sunflare', rarity:'epic', price:38, mult:19},
+    {id:'Hellstone1', name:'Darkcube', rarity:'epic', price:9, mult:4.5, hell:true},
+    {id:'FlameEye', name:'Flame Eye', rarity:'epic', price:120, mult:60},
+    {id:'Saturn', name:'Saturn', rarity:'epic', price:110, mult:55},
+    {id:'Sunstone', name:'Sunstone', rarity:'epic', price:7, mult:3.4},
+    {id:'Raindrop', name:'Raindrop', rarity:'rare', price:64, mult:35, lv:45},
+    {id:'Bloodshard', name:'Bloodshard', rarity:'rare', price:18, mult:9},
+    {id:'RustyIron', name:'Rusty Iron', rarity:'rare', price:94, mult:47},
+    {id:'Epidote', name:'Epidote', rarity:'rare', price:5, mult:2.6},
+    {id:'Jade', name:'Jade', rarity:'uncommon', price:56, mult:31, lv:42},
+    {id:'Hexbane', name:'Hexbane', rarity:'uncommon', price:22, mult:11},
+    {id:'Verdanite', name:'Verdanite', rarity:'uncommon', price:14, mult:7},
+    {id:'ObsidianChunk', name:'Azurite', rarity:'uncommon', price:4, mult:2},
+    {id:'Pyrite', name:'Copper', rarity:'uncommon', price:3, mult:1.5},
+    {id:'Sandstone', name:'Sand Rock', rarity:'common', price:2, mult:1.2},
+    {id:'Genestone', name:'Genestone', rarity:'legendary', price:88, mult:45, lv:50},
+    {id:'Rarity7Ore', name:'??? (Divine)', rarity:'divine', price:100, mult:60, hell:true}
+  ];
 
-    var CLASSES = ['Sword', 'Heavy', 'Staff', 'Sickle', 'Bow', 'Fist'];
+  var RARITY_COLORS = {
+    common: '#9a9a9a', uncommon: '#4caf50', rare: '#3b82f6',
+    epic: '#a855f7', legendary: '#d98c2b', mythic: '#ec4899', divine: '#ffffff'
+  };
 
-    function prettyName(id) {
-        var n = id
-            .replace(/^(Single_|Heavy_|Staff_|Sickle_|SkywingBow_|SkywyrmFist_|Fist_|DualWield_)/, '')
-            .replace(/_T\d+/, '')
-            .replace(/_/g, ' ')
-            .trim();
-        return n || id;
+  var CLASS_COLORS = {
+    Sword: '#d98c2b', Heavy: '#ef4444', Staff: '#a855f7',
+    Sickle: '#4caf50', Bow: '#3b82f6', Fist: '#ec4899'
+  };
+
+  var classes = ['Sword', 'Heavy', 'Staff', 'Sickle', 'Bow', 'Fist'];
+
+  var state = {
+    cls: 'Sword',
+    weaponId: WEAPONS.Sword[0].id,
+    stackOrder: [],
+    qty: {},
+    mode: 'weapon',
+    oreSearch: ''
+  };
+
+  function oreById(id) {
+    for (var i = 0; i < ORES.length; i++) { if (ORES[i].id === id) return ORES[i]; }
+    return null;
+  }
+  function weaponById(id) {
+    for (var c = 0; c < classes.length; c++) {
+      var list = WEAPONS[classes[c]];
+      for (var i = 0; i < list.length; i++) { if (list[i].id === id) return list[i]; }
     }
-
-    function parseOre(line) {
-        var p = line.split('|');
-        var id = p[0];
-        return {
-            id: id,
-            name: ORE_NAMES[id] || id,
-            rarity: Number(p[1]),
-            price: Number(p[2]),
-            mult: Number(p[3]),
-            quality: Number(p[4]),
-            hell: Number(p[5]) > 0,
-            trade: p[6] === 'true'
-        };
+    return null;
+  }
+  function totalOreCount() {
+    var total = 0;
+    for (var i = 0; i < state.stackOrder.length; i++) { total += state.qty[state.stackOrder[i]]; }
+    return total;
+  }
+  function weightedAvgMult() {
+    var total = totalOreCount();
+    if (!total) return 0;
+    var sum = 0;
+    for (var i = 0; i < state.stackOrder.length; i++) {
+      var id = state.stackOrder[i];
+      sum += oreById(id).mult * state.qty[id];
     }
+    return sum / total;
+  }
+  function initials(id) {
+    var clean = id.replace(/^(Single_|Heavy_|Staff_|Sickle_|Fist_)/, '').replace(/_/g, ' ');
+    var parts = clean.split(' ');
+    return (parts[0] ? parts[0][0] : '') + (parts[1] ? parts[1][0] : '');
+  }
 
-    function parseWeapon(line) {
-        var p = line.split('|');
-        return {
-            id: p[0],
-            name: prettyName(p[0]),
-            cls: p[1],
-            atk: Number(p[2]),
-            baseLv: Number(p[3]),
-            quality: Number(p[4]),
-            tier: Number(p[5]),
-            blueprint: p[6] === 'true',
-            special: p[7] === 'true',
-            hell: p[8] === 'true',
-            price: Number(p[9])
-        };
-    }
+  appEl.innerHTML =
+    '<h2 class="fc-title">Forge Calculator</h2>' +
+    '<p class="fc-subtitle">v3 &middot; Weapons only &middot; Tier 1 &middot; all weapons share the same forge chance for now &middot; minimum 3 ores required</p>' +
+    '<div class="fc-columns">' +
 
-    var ORES = ORE_RAW.map(parseOre).sort(function (a, b) { return b.mult - a.mult; });
-    var WEAPONS = WEAPON_RAW.map(parseWeapon);
+      '<div class="fc-panel">' +
+        '<div class="fc-panel-head">Weapons <span class="fc-pill" id="fc-class-pill"></span></div>' +
+        '<div class="fc-tabs" id="fc-tabs"></div>' +
+        '<div class="fc-weapon-grid" id="fc-weapon-grid"></div>' +
+      '</div>' +
 
-    function el(tag, className, text) {
-        var e = document.createElement(tag);
-        if (className) e.className = className;
-        if (text !== undefined) e.textContent = text;
-        return e;
-    }
+      '<div class="fc-panel">' +
+        '<div class="fc-panel-head">The Forge</div>' +
+        '<div class="fc-forge-body">' +
+          '<div class="fc-selected-weapon" id="fc-selected-weapon"></div>' +
+          '<div class="fc-slots" id="fc-slots">' +
+            '<div class="fc-slot" data-slot="0">Empty</div>' +
+            '<div class="fc-slot" data-slot="1">Empty</div>' +
+            '<div class="fc-slot" data-slot="2">Empty</div>' +
+            '<div class="fc-slot" data-slot="3">Empty</div>' +
+          '</div>' +
+          '<div class="fc-mult-readout">Multiplier: <b id="fc-mult">0</b></div>' +
+          '<div class="fc-composition" id="fc-composition"></div>' +
+          '<div class="fc-actions">' +
+            '<span class="fc-btn" id="fc-reset">Reset</span>' +
+            '<span class="fc-btn fc-primary fc-disabled" id="fc-forge">Forge</span>' +
+          '</div>' +
+          '<div class="fc-hint">Requires a selected weapon and at least 3 ores total (up to 4 stacked ore types). Tap a stack to remove one.</div>' +
+          '<div class="fc-result" id="fc-result"></div>' +
+        '</div>' +
+      '</div>' +
 
-    function buildForgeCalculator(container) {
-        var state = {
-            slots: [null, null, null, null],
-            oreQuery: '',
-            weaponQuery: '',
-            activeClass: 'Sword',
-            selected: null
-        };
+      '<div class="fc-panel">' +
+        '<div class="fc-panel-head">Ores <span class="fc-toggle" id="fc-toggle">' +
+          '<span class="fc-toggle-btn fc-active" data-mode="weapon">Weapon</span>' +
+          '<span class="fc-toggle-btn" data-mode="armor">Armor</span>' +
+        '</span></div>' +
+        '<div class="fc-search-wrap"><input type="text" class="fc-search-input" id="fc-ore-search" placeholder="Search ore by name..."></div>' +
+        '<div class="fc-ore-grid" id="fc-ore-grid"></div>' +
+      '</div>' +
 
-        var wrap = el('div', 'isd-forge-wrap');
+    '</div>';
 
-        // ===== LEFT: preview / weapon list =====
-        var preview = el('div', 'isd-forge-col isd-forge-preview');
-        var previewHead = el('div', 'isd-forge-head');
-        previewHead.appendChild(el('h3', null, 'Preview'));
-        var pill = el('span', 'isd-forge-pill', '100% —');
-        previewHead.appendChild(pill);
-        preview.appendChild(previewHead);
+  var tabsEl = document.getElementById('fc-tabs');
+  var weaponGridEl = document.getElementById('fc-weapon-grid');
+  var oreGridEl = document.getElementById('fc-ore-grid');
+  var classPillEl = document.getElementById('fc-class-pill');
+  var selectedWeaponEl = document.getElementById('fc-selected-weapon');
+  var multEl = document.getElementById('fc-mult');
+  var compositionEl = document.getElementById('fc-composition');
+  var forgeBtn = document.getElementById('fc-forge');
+  var resetBtn = document.getElementById('fc-reset');
+  var resultEl = document.getElementById('fc-result');
+  var slotEls = appEl.querySelectorAll('.fc-slot');
+  var toggleEl = document.getElementById('fc-toggle');
+  var searchEl = document.getElementById('fc-ore-search');
 
-        var tabs = el('div', 'isd-forge-tabs');
-        var tabButtons = {};
-        CLASSES.forEach(function (c) {
-            var btn = el('button', 'isd-forge-tab', c);
-            if (c === state.activeClass) btn.classList.add('active');
-            btn.addEventListener('click', function () {
-                state.activeClass = c;
-                Object.keys(tabButtons).forEach(function (k) {
-                    tabButtons[k].classList.toggle('active', k === c);
-                });
-                renderWeaponList();
-            });
-            tabButtons[c] = btn;
-            tabs.appendChild(btn);
-        });
-        preview.appendChild(tabs);
-
-        var weaponSearchWrap = el('div', 'isd-forge-searchwrap');
-        var weaponSearch = el('input', 'isd-forge-search');
-        weaponSearch.type = 'text';
-        weaponSearch.placeholder = 'Search weapon...';
-        weaponSearch.addEventListener('input', function () {
-            state.weaponQuery = weaponSearch.value;
-            renderWeaponList();
-        });
-        weaponSearchWrap.appendChild(weaponSearch);
-        preview.appendChild(weaponSearchWrap);
-
-        var weaponList = el('div', 'isd-forge-list');
-        preview.appendChild(weaponList);
-
-        function renderWeaponList() {
-            weaponList.innerHTML = '';
-            var q = state.weaponQuery.toLowerCase();
-            var items = WEAPONS.filter(function (w) {
-                return w.cls === state.activeClass && w.name.toLowerCase().indexOf(q) !== -1;
-            });
-            if (!items.length) {
-                weaponList.appendChild(el('div', 'isd-forge-result-empty', 'No weapons match.'));
-                return;
-            }
-            items.forEach(function (w) {
-                var row = el('button', 'isd-forge-row');
-                if (state.selected && state.selected.id === w.id) row.classList.add('selected');
-                var name = el('span', 'isd-forge-row-name', w.name + (w.hell ? ' \uD83D\uDD25' : ''));
-                var tier = el('span', 'isd-forge-row-tier', 'T' + w.tier);
-                row.appendChild(name);
-                row.appendChild(tier);
-                row.addEventListener('click', function () {
-                    state.selected = w;
-                    pill.textContent = '100% ' + w.cls;
-                    renderWeaponList();
-                    renderResult();
-                });
-                weaponList.appendChild(row);
-            });
-        }
-
-        // ===== CENTER: forge slots + result =====
-        var center = el('div', 'isd-forge-col isd-forge-center');
-
-        var slotsRow = el('div', 'isd-forge-slots');
-        var slotEls = [];
-        for (var i = 0; i < 4; i++) {
-            (function (idx) {
-                var slot = el('div', 'isd-forge-slot');
-                slot.addEventListener('click', function () {
-                    if (state.slots[idx]) {
-                        state.slots[idx] = null;
-                        renderSlots();
-                        renderResult();
-                    }
-                });
-                slotEls.push(slot);
-                slotsRow.appendChild(slot);
-            })(i);
-        }
-        center.appendChild(slotsRow);
-
-        function renderSlots() {
-            state.slots.forEach(function (ore, idx) {
-                var slot = slotEls[idx];
-                slot.innerHTML = '';
-                slot.classList.toggle('filled', !!ore);
-                if (!ore) {
-                    slot.appendChild(el('span', 'isd-forge-slot-empty', 'Empty'));
-                    return;
-                }
-                var dot = el('span', 'isd-forge-dot');
-                dot.style.background = RARITY[ore.rarity].color;
-                dot.style.boxShadow = '0 0 6px ' + RARITY[ore.rarity].color;
-                var name = el('span', 'isd-forge-slot-name', ore.name);
-                var mult = el('span', 'isd-forge-slot-mult', '\u00D7' + ore.mult);
-                var x = el('span', 'isd-forge-slot-x', '\u2715');
-                slot.appendChild(dot);
-                slot.appendChild(name);
-                slot.appendChild(mult);
-                slot.appendChild(x);
-            });
-        }
-
-        var readout = el('div', 'isd-forge-readout');
-        var multText = el('span', 'isd-forge-mult-text');
-        var rarityBadge = el('span', 'isd-forge-rarity');
-        var clearBtn = el('button', 'isd-forge-clear', 'Clear all');
-        clearBtn.addEventListener('click', function () {
-            state.slots = [null, null, null, null];
-            renderSlots();
-            renderResult();
-        });
-        readout.appendChild(multText);
-        readout.appendChild(rarityBadge);
-        readout.appendChild(clearBtn);
-        center.appendChild(readout);
-
-        var forgeBtn = el('div', 'isd-forge-btn', 'Forge');
-        center.appendChild(forgeBtn);
-
-        var result = el('div', 'isd-forge-result');
-        center.appendChild(result);
-
-        function getFilled() {
-            return state.slots.filter(function (o) { return !!o; });
-        }
-
-        function getAvgMult() {
-            var f = getFilled();
-            if (!f.length) return 0;
-            var sum = f.reduce(function (s, o) { return s + o.mult; }, 0);
-            return sum / f.length;
-        }
-
-        function getResultRarity() {
-            var f = getFilled();
-            if (!f.length) return null;
-            var rarities = [];
-            f.forEach(function (o) { if (rarities.indexOf(o.rarity) === -1) rarities.push(o.rarity); });
-            rarities.sort(function (a, b) { return b - a; });
-            for (var i = 0; i < rarities.length; i++) {
-                var r = rarities[i];
-                var atOrAbove = f.filter(function (o) { return o.rarity >= r; }).length;
-                if (atOrAbove / f.length >= 0.5) return r;
-            }
-            return Math.max.apply(null, f.map(function (o) { return o.rarity; }));
-        }
-
-        function renderResult() {
-            var avgMult = getAvgMult();
-            var filled = getFilled();
-            var rar = getResultRarity();
-
-            multText.innerHTML = '';
-            multText.appendChild(document.createTextNode('Multiplier: '));
-            var b = el('b', null, '\u00D7' + avgMult.toFixed(2));
-            b.style.color = '#d98c2b';
-            multText.appendChild(b);
-
-            rarityBadge.style.display = rar ? 'inline-block' : 'none';
-            if (rar) {
-                rarityBadge.textContent = RARITY[rar].name;
-                rarityBadge.style.color = RARITY[rar].color;
-                rarityBadge.style.border = '1px solid ' + RARITY[rar].color + '88';
-                rarityBadge.style.background = RARITY[rar].color + '22';
-            }
-
-            result.innerHTML = '';
-            if (!state.selected) {
-                result.appendChild(el('div', 'isd-forge-result-empty',
-                    'Tap a weapon on the left to preview its forged stats with the current ore mix.'));
-                return;
-            }
-
-            var w = state.selected;
-            var title = el('h3', 'isd-forge-result-title', w.name);
-            result.appendChild(title);
-
-            var tags = el('div', 'isd-forge-result-tags');
-            tags.appendChild(el('span', null, w.cls));
-            tags.appendChild(el('span', null, 'Tier ' + w.tier));
-            if (w.hell) tags.appendChild(el('span', 'isd-forge-hell', '\uD83D\uDD25 Hell'));
-            if (w.special) tags.appendChild(el('span', null, '\u2728 Special'));
-            result.appendChild(tags);
-
-            var finalDmg = w.atk * avgMult;
-            var finalPrice = finalDmg * 10;
-
-            var grid = el('div', 'isd-forge-stat-grid');
-            grid.appendChild(makeStat('Base ATK', String(w.atk), false));
-            grid.appendChild(makeStat('Ore Multiplier', '\u00D7' + avgMult.toFixed(2), false));
-            grid.appendChild(makeStat('Final DMG', filled.length ? finalDmg.toFixed(1) : '\u2014', true));
-            grid.appendChild(makeStat('Price', filled.length ? finalPrice.toFixed(0) + 'g' : '\u2014', false));
-            result.appendChild(grid);
-
-            result.appendChild(el('p', 'isd-forge-footnote',
-                'Assumes a pure ore stack (no mixed-pool variance) and a 100% class match. ' +
-                'Final DMG = Base ATK \u00D7 average ore multiplier. Price = Final DMG \u00D7 10.'));
-        }
-
-        function makeStat(label, value, highlight) {
-            var box = el('div', 'isd-forge-stat');
-            box.appendChild(el('span', 'isd-forge-stat-label', label));
-            box.appendChild(el('span', 'isd-forge-stat-value' + (highlight ? ' highlight' : ''), value));
-            return box;
-        }
-
-        // ===== RIGHT: ore list =====
-        var oresCol = el('div', 'isd-forge-col isd-forge-ores');
-        var oreHead = el('div', 'isd-forge-head');
-        oreHead.appendChild(el('h3', null, 'Ores'));
-        oresCol.appendChild(oreHead);
-        oresCol.appendChild(el('div', 'isd-forge-subtext', 'Tap an ore to drop it into the next empty slot.'));
-
-        var oreSearchWrap = el('div', 'isd-forge-searchwrap');
-        var oreSearch = el('input', 'isd-forge-search');
-        oreSearch.type = 'text';
-        oreSearch.placeholder = 'Search ore...';
-        oreSearch.addEventListener('input', function () {
-            state.oreQuery = oreSearch.value;
-            renderOreList();
-        });
-        oreSearchWrap.appendChild(oreSearch);
-        oresCol.appendChild(oreSearchWrap);
-
-        var oreList = el('div', 'isd-forge-list');
-        oresCol.appendChild(oreList);
-
-        function renderOreList() {
-            oreList.innerHTML = '';
-            var q = state.oreQuery.toLowerCase();
-            ORES.filter(function (o) { return o.name.toLowerCase().indexOf(q) !== -1; })
-                .forEach(function (ore) {
-                    var row = el('button', 'isd-forge-row');
-                    var dot = el('span', 'isd-forge-dot');
-                    dot.style.background = RARITY[ore.rarity].color;
-                    dot.style.boxShadow = '0 0 6px ' + RARITY[ore.rarity].color;
-                    var name = el('span', 'isd-forge-row-name', ore.name + (ore.hell ? ' \uD83D\uDD25' : ''));
-                    var mult = el('span', 'isd-forge-row-mult', '\u00D7' + ore.mult);
-                    row.appendChild(dot);
-                    row.appendChild(name);
-                    row.appendChild(mult);
-                    row.addEventListener('click', function () {
-                        var idx = state.slots.indexOf(null);
-                        if (idx === -1) return;
-                        state.slots[idx] = ore;
-                        renderSlots();
-                        renderResult();
-                    });
-                    oreList.appendChild(row);
-                });
-        }
-
-        wrap.appendChild(preview);
-        wrap.appendChild(center);
-        wrap.appendChild(oresCol);
-        container.appendChild(wrap);
-
-        renderWeaponList();
-        renderSlots();
-        renderResult();
-        renderOreList();
-    }
-
-    mw.hook('wikipage.content').add(function () {
-        var container = document.getElementById('isd-forge-calc');
-        if (container && !container.dataset.isdForgeBuilt) {
-            container.dataset.isdForgeBuilt = 'true';
-            buildForgeCalculator(container);
-        }
+  function renderTabs() {
+    tabsEl.innerHTML = '';
+    classes.forEach(function (c) {
+      var btn = document.createElement('div');
+      btn.className = 'fc-tab' + (c === state.cls ? ' fc-active' : '');
+      btn.textContent = c;
+      btn.addEventListener('click', function () {
+        state.cls = c;
+        state.weaponId = WEAPONS[c].length ? WEAPONS[c][0].id : null;
+        renderTabs();
+        renderWeaponGrid();
+        renderPill();
+        renderSelectedWeapon();
+        renderForgeButtonState();
+      });
+      tabsEl.appendChild(btn);
     });
-})();
+  }
+
+  function renderPill() {
+    classPillEl.textContent = '100% ' + state.cls + ' Weapon';
+  }
+
+  function renderSelectedWeapon() {
+    var w = weaponById(state.weaponId);
+    if (!w) {
+      selectedWeaponEl.innerHTML = 'No weapon selected.';
+      return;
+    }
+    selectedWeaponEl.innerHTML = 'Crafting: <b>' + w.id + '</b> &middot; ATK ' + w.atk + ' &middot; ' + w.price + 'g base';
+  }
+
+  function renderWeaponGrid() {
+    weaponGridEl.innerHTML = '';
+    var list = WEAPONS[state.cls];
+    if (!list.length) {
+      var note = document.createElement('div');
+      note.className = 'fc-empty-note';
+      note.textContent = 'No Tier 1 ' + state.cls + ' weapons in the data yet.';
+      weaponGridEl.appendChild(note);
+      return;
+    }
+    list.forEach(function (w) {
+      var card = document.createElement('div');
+      card.className = 'fc-weapon-card' + (w.id === state.weaponId ? ' fc-selected' : '');
+      card.innerHTML =
+        '<div class="fc-weapon-swatch" style="background:' + CLASS_COLORS[state.cls] + '">' + initials(w.id) + '</div>' +
+        '<span class="fc-weapon-card-name">' + w.id + '</span>' +
+        '<span class="fc-weapon-card-meta">ATK ' + w.atk + ' &middot; ' + w.price + 'g</span>' +
+        (w.hell ? '<span class="fc-tag-hell">HELL</span>' : '') +
+        (w.special ? '<span class="fc-tag-special">SPECIAL</span>' : '');
+      card.addEventListener('click', function () {
+        state.weaponId = w.id;
+        renderWeaponGrid();
+        renderSelectedWeapon();
+        renderForgeButtonState();
+      });
+      weaponGridEl.appendChild(card);
+    });
+  }
+
+  function renderOreGrid() {
+    oreGridEl.innerHTML = '';
+    if (state.mode === 'armor') {
+      var ph = document.createElement('div');
+      ph.className = 'fc-armor-placeholder';
+      ph.textContent = 'Armor forging isn\u2019t modeled yet — the ore pool and formula for armor haven\u2019t been confirmed.';
+      oreGridEl.appendChild(ph);
+      return;
+    }
+    var distinctUsed = state.stackOrder.length;
+    var query = state.oreSearch.trim().toLowerCase();
+    ORES.filter(function (o) {
+      return !query || o.name.toLowerCase().indexOf(query) !== -1;
+    }).forEach(function (o) {
+      var alreadyStacked = state.qty[o.id] > 0;
+      var full = distinctUsed >= 4 && !alreadyStacked;
+      var btn = document.createElement('div');
+      btn.className = 'fc-ore-btn' + (full ? ' fc-disabled' : '');
+      btn.innerHTML =
+        '<div class="fc-ore-swatch" style="background:' + (RARITY_COLORS[o.rarity] || '#302621') + '"></div>' +
+        '<span class="fc-ore-name">' + o.name + '</span>' +
+        '<span class="fc-ore-mult">x' + o.mult + '</span>' +
+        (o.lv ? '<span class="fc-ore-lv">Lv.' + o.lv + '</span>' : '') +
+        (o.hell ? '<span class="fc-ore-hell">HELL</span>' : '');
+      if (!full) {
+        btn.addEventListener('click', function () { addOre(o.id); });
+      }
+      oreGridEl.appendChild(btn);
+    });
+    if (query && !oreGridEl.children.length) {
+      var none = document.createElement('div');
+      none.className = 'fc-empty-note';
+      none.textContent = 'No ores match "' + state.oreSearch + '".';
+      oreGridEl.appendChild(none);
+    }
+  }
+
+  function addOre(oreId) {
+    if (!state.qty[oreId]) {
+      if (state.stackOrder.length >= 4) return;
+      state.stackOrder.push(oreId);
+      state.qty[oreId] = 0;
+    }
+    state.qty[oreId] += 1;
+    renderSlots();
+    renderOreGrid();
+    renderForgeButtonState();
+  }
+
+  function removeOneFromSlot(index) {
+    var oreId = state.stackOrder[index];
+    if (!oreId) return;
+    state.qty[oreId] -= 1;
+    if (state.qty[oreId] <= 0) {
+      delete state.qty[oreId];
+      state.stackOrder.splice(index, 1);
+    }
+    renderSlots();
+    renderOreGrid();
+    renderForgeButtonState();
+  }
+
+  function renderSlots() {
+    slotEls.forEach(function (el, i) {
+      var oreId = state.stackOrder[i];
+      if (oreId) {
+        var o = oreById(oreId);
+        el.classList.add('fc-filled');
+        el.textContent = o.name + ' \u00d7' + state.qty[oreId];
+        el.style.borderColor = RARITY_COLORS[o.rarity] || '#4a3a30';
+      } else {
+        el.classList.remove('fc-filled');
+        el.textContent = 'Empty';
+        el.style.borderColor = '';
+      }
+    });
+    var total = totalOreCount();
+    multEl.textContent = total ? weightedAvgMult().toFixed(1) : '0';
+    renderComposition(total);
+  }
+
+  function renderComposition(total) {
+    if (!total) { compositionEl.innerHTML = ''; return; }
+    var rows = state.stackOrder.map(function (id) {
+      var pct = ((state.qty[id] / total) * 100).toFixed(1);
+      return '<div class="fc-composition-row"><span>' + oreById(id).name + '</span><b>' + pct + '%</b></div>';
+    }).join('');
+    compositionEl.innerHTML = rows;
+  }
+
+  function renderForgeButtonState() {
+    var ok = state.weaponId && totalOreCount() >= 3;
+    if (ok) { forgeBtn.classList.remove('fc-disabled'); }
+    else { forgeBtn.classList.add('fc-disabled'); }
+  }
+
+  slotEls.forEach(function (el, i) {
+    el.addEventListener('click', function () { removeOneFromSlot(i); });
+  });
+
+  resetBtn.addEventListener('click', function () {
+    state.stackOrder = [];
+    state.qty = {};
+    resultEl.classList.remove('fc-show');
+    resultEl.innerHTML = '';
+    renderSlots();
+    renderOreGrid();
+    renderForgeButtonState();
+  });
+
+  forgeBtn.addEventListener('click', function () {
+    if (forgeBtn.classList.contains('fc-disabled')) return;
+    var w = weaponById(state.weaponId);
+    var avgMult = weightedAvgMult();
+    var dmg = w.atk * avgMult;
+    var price = Math.round(dmg * 10);
+    resultEl.innerHTML =
+      '<div class="fc-result-title">' + w.id + '</div>' +
+      '<div class="fc-result-tag">Masterwork(100%)</div>' +
+      '<div class="fc-result-row"><span>Category</span><b>' + state.cls + ' Weapon</b></div>' +
+      '<div class="fc-result-row"><span>Price</span><b>' + price + 'g</b></div>' +
+      '<div class="fc-result-dmg">' + (Math.round(dmg * 100) / 100) + ' DMG</div>' +
+      '<div class="fc-limitation">Substats (Crit Rate / CD Reduction), class-chance gating, crafting-pool variance, and Mastery% are not yet modeled — this is a pure BaseATK &times; weighted-average ore multiplier calculation.</div>';
+    resultEl.classList.add('fc-show');
+  });
+
+  toggleEl.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.fc-toggle-btn') : null;
+    if (!btn) return;
+    var mode = btn.getAttribute('data-mode');
+    if (mode === state.mode) return;
+    state.mode = mode;
+    Array.prototype.forEach.call(toggleEl.querySelectorAll('.fc-toggle-btn'), function (b) {
+      b.classList.toggle('fc-active', b.getAttribute('data-mode') === mode);
+    });
+    renderOreGrid();
+  });
+
+  searchEl.addEventListener('input', function () {
+    state.oreSearch = searchEl.value;
+    renderOreGrid();
+  });
+
+  renderTabs();
+  renderPill();
+  renderWeaponGrid();
+  renderSelectedWeapon();
+  renderOreGrid();
+  renderSlots();
+  renderForgeButtonState();
+});
+/* ====== end Forge Calculator module ====== */

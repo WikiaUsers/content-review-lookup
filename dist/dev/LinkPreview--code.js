@@ -79,7 +79,7 @@
 	}; // stop
 
 	function init() {
-		if (window.pPreview?.version) {
+		if (window.pPreview && window.pPreview.version) {
 			log('init dbl run protection triggered');
 			return;
 		}
@@ -108,15 +108,21 @@
 		Settings.prefetchDelay = Settings.prefetchDelay !== undefined ? Settings.prefetchDelay : 80;
 		Settings.prefetchMax = Settings.prefetchMax !== undefined ? Settings.prefetchMax : 3;
 		Settings.viewportPrefetch = Settings.viewportPrefetch !== undefined ? Settings.viewportPrefetch : false;
+		// warning: viewportPrefetch depends on prefetch being enabled; without it, nothing happens
+		if (Settings.viewportPrefetch && !Settings.prefetch) {
+			log('warning: viewportPrefetch is enabled but prefetch is disabled — no viewport prefetching will occur');
+		}
+		// warning: viewportPrefetch requires browser support for IntersectionObserver
+		if (Settings.viewportPrefetch && !('IntersectionObserver' in window)) {
+			log('viewportPrefetch requested, but IntersectionObserver is not supported in this browser — feature disabled');
+		}
 		// no image found. class: npage-preview-noimage
 		Settings.noimage = Settings.noimage !== undefined ? Settings.noimage : Defaults.noimage;
 		// show 'No Image' placeholder when no thumbnail is available
 		Settings.showNoImagePlaceholder = Settings.showNoImagePlaceholder !== undefined ? Settings.showNoImagePlaceholder : true;
 		// request to perform scaling
-		Settings.scale = Settings.scale !== undefined ? Settings.scale : { r: '?', t: '/scale-to-width-down/350?' };
-		if (Settings.scale && Settings.scale.t === '/scale-to-width-down/350?') {
-			Settings.scale.t = '/scale-to-width-down/450?';
-		}
+		// note: default width is 450; installs with an already-saved Settings.scale are no longer overwritten
+		Settings.scale = Settings.scale !== undefined ? Settings.scale : { r: '?', t: '/scale-to-width-down/450?' };
 		// container (#WikiaMainContent, #mw-content-text etc)
 		Settings.dock = Settings.dock ? Settings.dock : Defaults.dock;
 		// parse whole page. debug purposes mainly
@@ -163,7 +169,8 @@
 		// ensure #mw-content-text is processed
 		Settings.fixContentHook = Settings.fixContentHook !== undefined ? Settings.fixContentHook : true;
 		window.pPreview = Settings;
-		var thisPage = createUri(location)?.truepath;
+		var thisPageUri = createUri(location);
+		var thisPage = thisPageUri ? thisPageUri.truepath : undefined;
 		// should i ignore this page
 		if (!thisPage || nignorePage(thisPage)) {
 			mw.hook('wikipage.content').remove(main);
@@ -226,7 +233,7 @@
 	function main($cont) {
 		// main
 		log('main', $cont);
-		if (Settings.fixContentHook && $cont?.length) {
+		if (Settings.fixContentHook && $cont && $cont.length) {
 			Settings.fixContentHook = false;
 			if (!$cont.is('#mw-content-text')) {
 				log('main fixcontent', $cont);
@@ -250,17 +257,20 @@
 		log('main.c:', $content);
 
 		if ('IntersectionObserver' in window && Settings.prefetch && Settings.viewportPrefetch) {
-			if (!window.ppViewportObserver) {
-				window.ppViewportObserver = new IntersectionObserver((entries) => {
-					entries.forEach((entry) => {
-						if (entry.isIntersecting) {
-							const el = entry.target;
-							prefetchPreview(el);
-							window.ppViewportObserver.unobserve(el); // Cache only once per link
-						}
-					});
-				}, { rootMargin: '150px' }); // Prefetch when link is 150px from screen
+			// recreate the observer on every main(): avoids keeping observers
+			// pinned to elements that already left the DOM (content swapped via AJAX)
+			if (window.ppViewportObserver) {
+				window.ppViewportObserver.disconnect();
 			}
+			window.ppViewportObserver = new IntersectionObserver((entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const el = entry.target;
+						prefetchPreview(el);
+						window.ppViewportObserver.unobserve(el); // cache only once per link
+					}
+				});
+			}, { rootMargin: '150px' }); // prefetch when link is 150px from screen
 		}
 
 		$content.find('a').each(function () {
@@ -273,13 +283,24 @@
 
 				$el.off('.pp');
 				$el.on('mouseenter.pp', function (e) {
+					// Suppress the native title here, on the real link's hover —
+					// avoids restoring/removing the title on the wrong link when
+					// a forced preview (prefetch/viewport) changes currentEl
+					// concurrently.
+					if (Settings.suppressTitle) {
+						const titleAttr = $el.attr('title');
+						if (titleAttr) {
+							$el.data('pp-saved-title', titleAttr);
+							$el.removeAttr('title');
+						}
+					}
 					if (Settings.prefetch) {
 						clearTimeout(prefetchTimers.get(this));
 						prefetchTimers.set(
 							this,
 							setTimeout(() => {
 								prefetchPreview(e.currentTarget);
-							}, Settings.prefetchDelay),
+							}, Settings.prefetchDelay)
 						);
 					}
 					aHover(e);
@@ -313,7 +334,7 @@
 		if (!ahref) return false;
 		ahref = createUri(ahref);
 		// log('elValidate.uri:', ahref);
-		if (!ahref?.truepath || ahref.hostname !== apiUri.hostname || nignoreLink(ahref.truepath)) {
+		if (!ahref || !ahref.truepath || ahref.hostname !== apiUri.hostname || nignoreLink(ahref.truepath)) {
 			return false;
 		}
 		// chk classes
@@ -350,25 +371,41 @@
 		try {
 			url = new URL(src);
 			return /(\.wikia\.(com|org)|\.fandom\.com|\.wikia\.nocookie\.net)$/.test(
-				url.hostname,
+				url.hostname
 			);
 		} catch (_e) {
 			return false;
 		}
 	} // chkimagesrc
 
-	function preprocess(text) {
-		// prep must be non-empty array (script removing at least, added in the init)
-		if (!Array.isArray(Settings.RegExp.prep) || Settings.RegExp.prep.length < 1)
-			return '';
+	function applyPreviewImage($imgEl, src) {
+		// the decision to show the image, 
+		// the 'no image' placeholder (if showNoImagePlaceholder) or
+		// remove the element. Returns true if the element should stay/be
+		// appended to the preview; false if it should be discarded.
+		if (src) {
+			$imgEl.attr('src', src).removeClass('npage-preview-noimage');
+			return true;
+		}
+		if (Settings.showNoImagePlaceholder) {
+			$imgEl.attr('src', Settings.noimage).addClass('npage-preview-noimage');
+			return true;
+		}
+		$imgEl.remove();
+		return false;
+	} // applyPreviewImage
+
+	function preprocess (text) {
+		if (!(Settings.RegExp.prep instanceof Array) || Settings.RegExp.prep.length < 1) return '';
 		var s = text,
 			$s = $('<div>').html(s);
+		// remove TemplateStyles output (<style> blocks) and any linked stylesheets
+		// must run before .text() extraction, since textContent includes <style> content
+		$s.find('style, link[rel="stylesheet"]').remove();
 		// remove noinclude items
-		if (Settings.RegExp.noinclude && Array.isArray(Settings.RegExp.noinclude)) {
-			Settings.RegExp.noinclude.forEach((v) => {
-				$s.find(v).remove();
-			});
-		} // if RegExp.noinclude
+		if (Settings.RegExp.noinclude && (Settings.RegExp.noinclude instanceof Array)) {
+			Settings.RegExp.noinclude.forEach(function(v){$s.find(v).remove();});
+		}// if RegExp.noinclude
 		s = $s.html();
 		// process exclusive items
 		// must be done before trash tag processing. because of reasons
@@ -422,7 +459,7 @@
 		if (h) {
 			try {
 				h.truepath = decodeURIComponent(
-					h.pathname.replace(Settings.RegExp.wiki, ''),
+					h.pathname.replace(Settings.RegExp.wiki, '')
 				);
 				h.interwiki = h.path.split('/wiki/')[0];
 				h.islocal = mwc.wgArticlePath.split('/wiki/')[0] === h.interwiki;
@@ -473,7 +510,7 @@
 			prefetchQueue.delete(el);
 
 			const uri = createUri($(el).attr('href'));
-			if (!uri?.truepath || ncacheOf(uri.truepath)) {
+			if (!uri || !uri.truepath || ncacheOf(uri.truepath)) {
 				continue;
 			}
 
@@ -518,14 +555,13 @@
 		}
 		Settings.throttling = setTimeout(hlpaHover, Settings.throttle);
 		// if link already in process
-		if (currentEl.href === hel?.truepath) {
+		if (currentEl.href === hel.truepath) {
 			return false;
 		}
 		cancelCurrentRequests();
 		currentEl.href = hel.truepath;
 		currentEl.islocal = hel.islocal;
 		currentEl.interwiki = hel.interwiki;
-		currentEl.el = ev.currentTarget; // Store DOM reference for title suppression
 		// if link determined be ignored
 		if (nignoreLink(currentEl.href)) {
 			return true;
@@ -591,7 +627,7 @@
 			// Flex container (see .pp-adaptive in LinkPreview.css)
 			containerDiv
 				.removeClass(
-					'pp-imgonly-landscape pp-imgonly-portrait pp-withtext-landscape pp-withtext-portrait',
+					'pp-imgonly-landscape pp-imgonly-portrait pp-withtext-landscape pp-withtext-portrait'
 				)
 				.addClass('pp-adaptive');
 
@@ -602,7 +638,7 @@
 					$textDiv.hide();
 				}
 				containerDiv.addClass(
-					w > h * 1.15 ? 'pp-imgonly-landscape' : 'pp-imgonly-portrait',
+					w > h * 1.15 ? 'pp-imgonly-landscape' : 'pp-imgonly-portrait'
 				);
 				// Landscape / Banner layout (see .pp-withtext-landscape in CSS)
 			} else if (w > h * 1.15) {
@@ -625,7 +661,7 @@
 				}
 				$textDiv.toggleClass(
 					'pp-text-centered',
-					Settings.centerShortText > 0 && charCount < Settings.centerShortText,
+					Settings.centerShortText > 0 && charCount < Settings.centerShortText
 				);
 			}
 			// set fade-out class if text is too long
@@ -654,14 +690,14 @@
 		}
 
 		// Image already cached
-		if (imgEl[0]?.complete && imgEl[0]?.naturalWidth) {
+		if (imgEl[0] && imgEl[0].complete && imgEl[0].naturalWidth) {
 			applyLayout(imgEl[0].naturalWidth, imgEl[0].naturalHeight);
 		} else {
 			const img = new Image();
 			img.onload = function () {
 				applyLayout(
 					this.naturalWidth || this.width,
-					this.naturalHeight || this.height,
+					this.naturalHeight || this.height
 				);
 			};
 			img.src = imgEl.attr('src');
@@ -681,23 +717,9 @@
 			return;
 		}
 		if (!Settings.apid && !withD) {
-			if (img) {
-				// let vignette do scale
-				im.attr(
-					'src',
-					Settings.scale
-						? img.replace(Settings.scale.r, Settings.scale.t)
-						: img,
-				);
-			} else {
-				// show placeholder only if enabled
-				if (!Settings.showNoImagePlaceholder) {
-					im.remove();
-				} else {
-					im.attr('src', Settings.noimage);
-					im.addClass('npage-preview-noimage');
-				}
-			} // if img
+			// let vignette do scale, if there's an image
+			var scaledSrc = img && Settings.scale ? img.replace(Settings.scale.r, Settings.scale.t) : img;
+			applyPreviewImage(im, scaledSrc);
 		} // if !apid
 
 		var $liveImg = div.find('img');
@@ -716,7 +738,7 @@
 	function ngetPreview(ev, forcepath, withD, prefetch) {
 		var nuri = createUri($(ev.currentTarget).attr('href')) || {};
 		nuri.truepath = forcepath || nuri.truepath;
-		if (!nuri?.truepath) {
+		if (!nuri.truepath) {
 			log('gp no href', ev, forcepath);
 			return;
 		}
@@ -733,7 +755,7 @@
 			currentEl.href,
 			nuri.truepath === currentEl.href,
 			'd:',
-			withD,
+			withD
 		);
 		// withd means fallback request, that should not be cancelled early
 		if (!forcepath && !withD && nuri.truepath !== currentEl.href && !prefetch) {
@@ -780,19 +802,14 @@
 						pp.stop(nuri.truepath, prefetch);
 						return this;
 					}
-					var item = data.items?.[Object.keys(data.items)[0]];
+					var item = data.items ? data.items[Object.keys(data.items)[0]] : undefined;
 					if (!item) {
 						log('gp apid.noitem', nuri, data);
 						Settings.RegExp.ilinks.push(nuri.truepath); // and ignore it
 						pp.stop(nuri.truepath, prefetch);
 						return this;
 					}
-					if (item.thumbnail) {
-						iwrap.attr('src', item.thumbnail);
-						div.append(iwrap);
-					} else if (Settings.showNoImagePlaceholder) {
-						iwrap.attr('src', Settings.noimage);
-						iwrap.addClass('npage-preview-noimage');
+					if (applyPreviewImage(iwrap, item.thumbnail)) {
 						div.append(iwrap);
 					}
 					twrap.text(item.abstract);
@@ -834,7 +851,7 @@
 		request = $.getJSON(apipage)
 			.done(function (data) {
 				// parse: {text: {*: text}, images: []}
-				if (!data?.parse) {
+				if (!data || !data.parse) {
 					log('gp apip. no valid data in', data);
 					Settings.RegExp.ilinks.push(nuri.truepath); // and ignore it
 					pp.stop(nuri.truepath, prefetch);
@@ -851,7 +868,7 @@
 					.filter(Boolean)[0];
 				// img = $(img);
 
-				var text = data.parse.text?.['*'];
+				var text = data.parse.text ? data.parse.text['*'] : undefined;
 				log('gp apip img:', img, 'text:', { text: text });
 				if (!img && !text) {
 					pp.stop(nuri.truepath, prefetch);
@@ -1000,15 +1017,10 @@
 		}
 		log('sp data:', data);
 
-		// Suppress tooltip
-		if (Settings.suppressTitle && currentEl.el) {
-			const $activeLink = $(currentEl.el);
-			const titleAttr = $activeLink.attr('title');
-			if (titleAttr) {
-				$activeLink.data('pp-saved-title', titleAttr);
-				$activeLink.removeAttr('title');
-			}
-		}
+		// note: native title suppression happens on the link's mouseenter
+		// (in main()), not here — avoids using currentEl.el, which can be
+		// stale when a forced preview (prefetch/viewport) runs concurrently
+		// with another hover.
 
 		$('.npage-preview').remove();
 		var $previewBox = $(data); // wrap in variable for interactive binding

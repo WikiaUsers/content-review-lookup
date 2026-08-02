@@ -41,18 +41,14 @@ $(function () {
     }
 
 	function calcTTK(shots, tbs, burstTbs, distance, velocity) {
-    	let time = 0;
+		const travelTime = distance / velocity;
+		let fireTime = 0;
 
-    	if (burstTbs) {
-        	for (let i = 1; i < shots; i++) {
-            	time += (i % 3 === 0) ? (tbs + burstTbs) : tbs;
-        	}
-    	} else {
-        	time = tbs * (shots - 1);
-    	}
-    	
-    	time += (distance / velocity) * shots;
-    	return time;
+		for (let i = 1; i < shots; i++) {
+			fireTime += (burstTbs && i % 3 === 0) ? tbs + burstTbs : tbs;
+		}
+
+		return fireTime + travelTime;
 	}
 
     function createRow(label, multiplier, damage, tbs, burstTbs, weapon, settings) {

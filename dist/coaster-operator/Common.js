@@ -21,6 +21,8 @@ mw.hook('wikipage.content').add(function() {
         check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
         clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
         chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+        user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+        users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
         discord: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>'
     };
 
@@ -78,8 +80,8 @@ mw.hook('wikipage.content').add(function() {
             <nav class="ns-dock-wrapper ns-reveal" style="transition-delay: 0.1s;">
                 <div class="ns-sleek-dock">
                     <a href="/wiki/Gameplay" class="sleek-dock-item interactive-hover"><span class="sdi-icon">${icons.gameplay}</span> Gameplay</a>
-                    <a href="/wiki/Codes" class="sleek-dock-item interactive-hover"><span class="sdi-icon">${icons.codes}</span> Codes</a>
                     <a href="/wiki/Rides" class="sleek-dock-item interactive-hover"><span class="sdi-icon">${icons.rides}</span> Rides</a>
+                    <a href="/wiki/Category:Active_Operators" class="sleek-dock-item interactive-hover"><span class="sdi-icon">${icons.users}</span> Operators</a>
                     <a href="/wiki/Ranks" class="sleek-dock-item interactive-hover"><span class="sdi-icon">${icons.ranks}</span> Ranks</a>
                     <a href="/wiki/Achievements" class="sleek-dock-item interactive-hover"><span class="sdi-icon">${icons.awards}</span> Awards</a>
                 </div>
@@ -99,15 +101,30 @@ mw.hook('wikipage.content').add(function() {
                                 <div class="lc-icon dynamic-icon">${icons.discord}</div>
                                 <div class="lc-data"><strong>Community</strong><span>Discord Server</span></div>
                             </a>
+                            <a href="/wiki/Category:Active_Operators" class="ns-link-card interactive-hover">
+                                <div class="lc-icon dynamic-icon">${icons.users}</div>
+                                <div class="lc-data"><strong>Database</strong><span>Operator Roster</span></div>
+                            </a>
                             <a href="https://www.roblox.com/communities/34173405/Coaster-Studio" target="_blank" class="ns-link-card interactive-hover">
                                 <div class="lc-icon dynamic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div>
                                 <div class="lc-data"><strong>The Studio</strong><span>Roblox Group</span></div>
                             </a>
-                            <a href="https://coasterstudiorblx.com/" target="_blank" class="ns-link-card interactive-hover">
-                                <div class="lc-icon dynamic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
-                                <div class="lc-data"><strong>Website</strong><span>Official Hub</span></div>
-                            </a>
                         </div>
+                    </div>
+                </div>
+
+                <div class="ns-card dynamic-glow ns-reveal" style="transition-delay: 0.25s;">
+                    <div class="ns-card-body flex-header" style="padding: 24px 30px; gap: 20px; flex-wrap: wrap;">
+                        <div style="display:flex; align-items:center; gap: 20px;">
+                            <div class="lc-icon dynamic-icon" style="width: 56px; height: 56px; flex-shrink: 0; background: var(--glow-color); color: var(--neon-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                ${icons.user}
+                            </div>
+                            <div>
+                                <h2 style="margin:0; font-size:22px; color:var(--text-main); font-weight:800; letter-spacing:-0.5px; border:none; padding:0;">CREATE YOUR OPERATOR</h2>
+                                <p style="margin:4px 0 0 0; font-size:14px; color:var(--text-muted); line-height: 1.5;">Design your custom in-game avatar and join the official roster.</p>
+                            </div>
+                        </div>
+                        <a href="/wiki/Create_Operator" class="quiz-btn-primary interactive-hover" style="text-decoration:none; display:inline-block; flex-shrink: 0;">ENTER BUILDER</a>
                     </div>
                 </div>
 
@@ -218,6 +235,8 @@ mw.hook('wikipage.content').add(function() {
                                                 <li>Restraint highlights now automatically fade after 10s.</li>
                                                 <li>Trialling Motor6D restraints tweening on Treetop Drop.</li>
                                                 <li>Major NPC system bug fixes and added variable boarding.</li>
+                                                <li>Fixed The Giant Drop movement system not working in multiplayer servers.</li>
+                                                <li>Published a theoretical fix for Phoenix Rising NPCs not moving from queue to boarding rows.</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -243,7 +262,7 @@ mw.hook('wikipage.content').add(function() {
                     <div class="ns-card dynamic-glow quiz-card ns-reveal" style="transition-delay: 0.5s; display: flex; flex-direction: column;">
                         <div class="ns-card-header flex-header">
                             <h2>OPERATOR EXAM</h2>
-                            <div class="quiz-badge" style="border-color: var(--neon-primary);">DISCORD ROLE REWARD</div>
+                            <div class="quiz-badge" style="border-color: var(--neon-primary);">KNOWLEDGE TEST</div>
                         </div>
 
                         <div id="quiz-header-ui" class="quiz-timeline-top" style="display: none;">
@@ -257,16 +276,16 @@ mw.hook('wikipage.content').add(function() {
                         <div class="ns-card-body quiz-body" id="quiz-container" style="flex-grow: 1;">
                             
                             <div id="quiz-start" class="quiz-section active">
-                                <div class="quiz-icon-large">${icons.discord}</div>
+                                <div class="quiz-icon-large">${icons.awards}</div>
                                 <h3>Get Certified!</h3>
-                                <p>Pass this timed 5-question exam to earn your official <strong>Wiki Coaster Operator</strong> certificate. Show it on Discord to claim your exclusive role!</p>
+                                <p>Pass this timed 5-question exam to earn your official <strong>Wiki Coaster Operator</strong> certificate and prove your knowledge!</p>
                                 <button id="btn-begin" class="quiz-btn-primary interactive-hover">ENTER EXAM</button>
                             </div>
 
                             <div id="quiz-input" class="quiz-section">
                                 <h3>Identify Yourself</h3>
-                                <p>Enter your Discord username so it appears on your official certificate.</p>
-                                <input type="text" id="discord-username" class="quiz-input-field" placeholder="e.g. @coasterfan" autocomplete="off">
+                                <p>Enter your name so it appears on your official certificate.</p>
+                                <input type="text" id="player-name" class="quiz-input-field" placeholder="e.g. CoasterFan" autocomplete="off">
                                 <button id="btn-next-diff" class="quiz-btn-primary interactive-hover" style="margin-top:16px;">NEXT STEP</button>
                             </div>
 
@@ -315,7 +334,7 @@ mw.hook('wikipage.content').add(function() {
                                     <div class="cert-seal">PASS</div>
                                     <div class="cert-footer">COASTER STUDIO</div>
                                 </div>
-                                <p style="margin-top:16px; font-size:13px; font-weight:bold; color:var(--neon-primary); z-index: 1; max-width: 90%; line-height: 1.5;">📸 Screenshot this and send your role request in the dedicated channel available on our Discord server!</p>
+                                <p style="margin-top:16px; font-size:13px; font-weight:bold; color:var(--neon-primary); z-index: 1; max-width: 90%; line-height: 1.5;">📸 Screenshot this and share your achievement with friends!</p>
                                 <button id="btn-replay-quiz" style="margin-top:12px; z-index: 1;" class="quiz-btn-secondary interactive-hover">REPLAY FUN QUIZ</button>
                             </div>
                         </div>
@@ -718,9 +737,9 @@ mw.hook('wikipage.content').add(function() {
         return array;
     }
 
-    let activeQuiz = [], currentQ = 0, score = 0, discordUsername = "", quizTimeLeft = 600, quizInterval, selectedDifficulty = 'easy'; 
+    let activeQuiz = [], currentQ = 0, score = 0, playerName = "", quizTimeLeft = 600, quizInterval, selectedDifficulty = 'easy'; 
 
-    const btnBegin = document.getElementById('btn-begin'), btnNextDiff = document.getElementById('btn-next-diff'), btnRestartFail = document.getElementById('btn-restart-quiz'), btnReplayPass = document.getElementById('btn-replay-quiz'), inputDiscord = document.getElementById('discord-username'), quizHeaderUI = document.getElementById('quiz-header-ui'), barFill = document.getElementById('q-bar-fill');
+    const btnBegin = document.getElementById('btn-begin'), btnNextDiff = document.getElementById('btn-next-diff'), btnRestartFail = document.getElementById('btn-restart-quiz'), btnReplayPass = document.getElementById('btn-replay-quiz'), inputName = document.getElementById('player-name'), quizHeaderUI = document.getElementById('quiz-header-ui'), barFill = document.getElementById('q-bar-fill');
     const secStart = document.getElementById('quiz-start'), secInput = document.getElementById('quiz-input'), secDiff = document.getElementById('quiz-difficulty'), secQuestion = document.getElementById('quiz-question'), secFail = document.getElementById('quiz-fail'), secResult = document.getElementById('quiz-result'), optContainer = document.getElementById('q-options');
 
     function resetQuizUI() {
@@ -728,15 +747,15 @@ mw.hook('wikipage.content').add(function() {
         quizHeaderUI.style.display = 'none'; clearInterval(quizInterval);
     }
 
-    if(btnBegin) btnBegin.addEventListener('click', () => { resetQuizUI(); secInput.classList.add('active'); inputDiscord.value = ""; inputDiscord.focus(); });
+    if(btnBegin) btnBegin.addEventListener('click', () => { resetQuizUI(); secInput.classList.add('active'); inputName.value = ""; inputName.focus(); });
     
     if(btnNextDiff) btnNextDiff.addEventListener('click', () => {
-        discordUsername = inputDiscord.value.trim() || "@Operator";
-        document.getElementById('cert-name').innerText = discordUsername;
+        playerName = inputName.value.trim() || "Operator";
+        document.getElementById('cert-name').innerText = playerName;
         resetQuizUI(); secDiff.classList.add('active');
     });
 
-    if(inputDiscord) inputDiscord.addEventListener('keypress', e => { if (e.key === 'Enter') btnNextDiff.click(); });
+    if(inputName) inputName.addEventListener('keypress', e => { if (e.key === 'Enter') btnNextDiff.click(); });
 
     document.querySelectorAll('.diff-btn').forEach(btn => {
         btn.addEventListener('click', function() {

@@ -65,7 +65,6 @@ mw.hook('wikipage.content').add(()=>{
 					text: 
 						'{{TOC Right}}<templatestyles src="Genshin Impact Wiki:WantedFiles/style.css" />'+
 						'Listing <b>'+total+'</b> wanted files, last updated on {{#time: F d, H:i|{{subst:#time:c}}}}.'+
-						'{{clr}}'+
 						sections.join(''),
 					token: mw.user.tokens.values.csrfToken
 				})

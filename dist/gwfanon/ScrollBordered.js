@@ -4,42 +4,127 @@ mw.hook('wikipage.content').add(function () {
 
         function generateValidClassName(text) {
             return text.trim()
-                       .replace(/\s+/g, '_')     // Replace spaces with underscores
-                       .replace(/[^\w-]/g, '')   // Remove all non-word characters except underscores and hyphens
-                       .replace(/_+$/g, '');     // Remove trailing underscores
+                .replace(/\s+/g, '_')    // Zamienia spacje na podkreślniki
+                .replace(/[^\w-]/g, '')  // Usuwa znaki inne niż litery, cyfry, _ i -
+                .replace(/_+$/g, '');    // Usuwa końcowe podkreślniki
         }
 
         headings.each(function (index) {
             var heading = $(this);
-            var id = heading.attr('id') || generateValidClassName(heading.text());
-            heading.attr('id', id); // Ensure the heading has an ID
+            var id = heading.attr('id') ||
+                generateValidClassName(heading.text());
+
+            // Upewnia się, że nagłówek ma ID
+            heading.attr('id', id);
 
             var nextHeading = headings.eq(index + 1);
-            var content = heading.nextUntil(nextHeading);
+            var content;
 
-            // Find <ul> elements under the headline and add a <div> before each
+            if (nextHeading.length) {
+                content = heading.nextUntil(nextHeading);
+            } else {
+                content = heading.nextAll();
+            }
+
+            // Znajduje listy <ul> bezpośrednio pod danym nagłówkiem
             content.filter('ul').each(function () {
                 var ul = $(this);
-                var div = $('<div>').addClass('section-' + id);
-                ul.before(div);
-                ul.appendTo(div);
+                var sectionClass = 'section-' + id;
+
+                // Zapobiega ponownemu opakowywaniu tej samej listy
+                if (!ul.parent().hasClass(sectionClass)) {
+                    var div = $('<div>').addClass(sectionClass);
+
+                    ul.before(div);
+                    ul.appendTo(div);
+                }
             });
         });
 
-        var maxHeight = 299; // Height threshold here
+        var maxHeight = 299;
 
-        // For elements with class "scrollBorder"
-        $('.scrollBorder').each(function() {
-            if ($(this).height() > maxHeight) {
-                $(this).addClass('scrollBordered');
-            }
-        });
+        /**
+         * Sprawdza wysokość wskazanych elementów.
+         *
+         * Klasa jest wyłącznie dodawana, a nie usuwana,
+         * ponieważ ukryty element może chwilowo mieć wysokość 0.
+         */
+        function updateScrollBorders(scope) {
+            var elements;
 
-        // For elements with class "section-Pojawienia"
-        $('.section-Pojawienia').each(function() {
-            if ($(this).height() > maxHeight) {
-                $(this).addClass('scrollBordered');
+            if (scope && scope.length) {
+                elements = scope
+                    .find('.scrollBorder, .section-Pojawienia')
+                    .add(
+                        scope.filter(
+                            '.scrollBorder, .section-Pojawienia'
+                        )
+                    );
+            } else {
+                elements = $(
+                    '.scrollBorder, .section-Pojawienia'
+                );
             }
-        });
+
+            elements.each(function () {
+                var element = $(this);
+
+                if (element.height() > maxHeight) {
+                    element.addClass('scrollBordered');
+                }
+            });
+        }
+
+        /*
+         * Stary mechanizm:
+         * sprawdza od razu wszystkie istniejące szablony,
+         * dokładnie tak jak wcześniej.
+         */
+        updateScrollBorders($(document));
+
+        /*
+         * Nowy mechanizm:
+         * ponownie sprawdza elementy po rozwinięciu
+         * dowolnego mw-collapsible.
+         */
+        $(document)
+            .off(
+                'afterExpand.mw-collapsible.scrollBorder'
+            )
+            .on(
+                'afterExpand.mw-collapsible.scrollBorder',
+                '.mw-collapsible',
+                function () {
+                    updateScrollBorders($(this));
+                }
+            );
+
+        /*
+         * Zapasowa obsługa dla niestandardowego przełącznika
+         * dolnych sekcji na wypadek, gdyby Fandom nie przekazał
+         * zdarzenia afterExpand do delegowanego handlera.
+         */
+        $(document)
+            .off(
+                'click.scrollBorderFallback',
+                '.dolna-sekcja__nagłówek'
+            )
+            .on(
+                'click.scrollBorderFallback',
+                '.dolna-sekcja__nagłówek',
+                function () {
+                    var section = $(this).closest(
+                        '.dolna-sekcja'
+                    );
+
+                    setTimeout(function () {
+                        if (
+                            !section.hasClass('mw-collapsed')
+                        ) {
+                            updateScrollBorders(section);
+                        }
+                    }, 0);
+                }
+            );
     });
 });

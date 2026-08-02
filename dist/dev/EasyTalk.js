@@ -25,6 +25,7 @@ mw.loader.using([
 	const wrongNamespace = (!talkPage && !extraSigNs) || ns < 0;
 	const addTopicButton = $('#ca-addsection');
 	const noEasyTalk = wrongNamespace && !addTopicButton.length;
+	config.wgMonthNames.shift();
 
 	if (window.EasyTalkLoaded || noEasyTalk){
 		return;
@@ -39,15 +40,15 @@ mw.loader.using([
 	let updatePreview;
 	let msg;
 	let newTopicToolAvailable = true;
-	const version = '2.2.1';
+	const version = '3.0.1';
 	const toolName = 'EasyTalk';
 	const helpPage = 'w:c:memory-alpha:MA Help:EasyTalk';
-	const api = new mw.Api({'parameters': {
-		'action': 'query',
-		'format': 'json',
-		'formatversion': 2,
-		'errorformat': 'plaintext',
-		'uselang': config.wgUserLanguage,
+	const api = new mw.Api({parameters: {
+		action: 'query',
+		format: 'json',
+		formatversion: 2,
+		errorformat: 'plaintext',
+		uselang: config.wgUserLanguage,
 	}});
 	const archived = $(`#${window.dev.DisableArchivedPages.id}`).length;
 	const previewDelay = 1000;
@@ -92,12 +93,12 @@ mw.loader.using([
 	}
 
 	api.loadMessagesIfMissing(messages).then(() => {
-		window.importArticles({'articles': [
+		window.importArticles({articles: [
 			'u:dev:MediaWiki:EasyTalk.css',
 			'u:dev:MediaWiki:I18n-js/code.js',
 		]}).then(() => {
 			mw.hook('dev.i18n').add(i18n => {
-				i18n.loadMessages('EasyTalk', {cacheVersion: 3}).then(i18n => {
+				i18n.loadMessages('EasyTalk', {cacheVersion: 4}).then(i18n => {
 					msg = (...args) => i18n.msg(...args);
 					mw.hook('wikipage.content').add(findComments);
 					if (newTalkPage || newSection || canEditFromReadView){
@@ -125,25 +126,6 @@ mw.loader.using([
 
 		let topic = '';
 		let section = '';
-		const monthNames = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
-		const linkSelectors = {
-			'a[title^="User:"]': /^User:(.+?)(?: ?\/.*)?$/,
-			'a[title^="User talk:"]': /^User talk:(.+?)(?: ?\/.*)?$/,
-			'a[title^="Special:Contributions/"]': /^Special:Contributions\/ ?(?:[uU]ser: ?)?(.+?)(?: ?\/.*)?$/,
-		};
 		const noTalkSelectors = [
 			'.mw-notalk',
 			'blockquote',
@@ -151,7 +133,7 @@ mw.loader.using([
 			'q',
 			`#${editorID}`,
 		];
-		const datetimeRegExp = new RegExp(`^(.*)((\\d\\d:\\d\\d), (\\d?\\d (?:${monthNames.join('|')}) \\d\\d\\d\\d) \\((UTC)\\))(${postDatetimeChars})`);
+		const datetimeRegExp = new RegExp(`^(.*)((\\d\\d:\\d\\d), (\\d?\\d (?:${config.wgMonthNames.join('|')}) \\d\\d\\d\\d) \\((UTC)\\))(${postDatetimeChars})`);
 		content.find('*').each((elementIndex, element) => {
 			if ($(element).is('.mw-headline')){
 				section = $(element).attr('id').replaceAll('_', ' ');
@@ -161,37 +143,44 @@ mw.loader.using([
 				}
 				return;
 			}
-
 			const finalNode = $($(element).contents().toArray().filter(node => node.tagName !== 'DL')).last();
-
 			if (!finalNode.length){
 				return;
 			}
-
 			const nodeType = finalNode.get(0).nodeType;
 			const validDatetime = datetimeRegExp.test(finalNode.text());
-			const userLink = finalNode.prevAll().find('*').addBack().filter(Object.keys(linkSelectors).join(', ')).last();
 			const noTalk = finalNode.parents(noTalkSelectors.join(', ')).length;
-
-			if (nodeType !== 3 || !validDatetime || !userLink.length || noTalk){
+			if (nodeType !== 3 || !validDatetime || noTalk){
 				return;
 			}
-
-			let userRegExp;
-
-			Object.keys(linkSelectors).forEach(selector => {
-				if (userLink.is(selector)){
-					userRegExp = linkSelectors[selector];
+			const links = finalNode.prevAll().find('*').addBack().filter('a[href]').toArray();
+			let user;
+			for (const link of links.reverse()){
+				let title = new URLSearchParams(link.search).get('title');
+				let path = decodeURI(link.pathname);
+				if (title){
+					path = `/wiki/${title}`;
+				} else if (!path){
+					continue;
 				}
-			});
-
+				user = path.replace(
+					/^\/wiki\/[ _]*(?:User(?:[ _]+talk)?[ _]*:|Special[ _]*:[ _]*Contributions\/)[ _]*([^<[{#\n|/}\]>]+?)[ _]*$/i,
+					'$1'
+				).replace(/[ _]+/g, ' ');
+				if (user){
+					break;
+				}
+			}
+			if (!user){
+				return;
+			}
 			const datetimeMw = finalNode.text().replace(datetimeRegExp, '$2');
 			const datetimeIntl = finalNode.text().replace(datetimeRegExp, '$4 $3 $5');
 			const index = content.find(`[data-datetime="${datetimeMw}"]`);
 			const timeElement = $('<time>', {
 				'datetime': new Date(datetimeIntl).toISOString(),
 				'class': 'js-comment-date-time',
-				'data-user': userLink.attr('title').replace(userRegExp, '$1'),
+				'data-user': user,
 				'data-topic': topic,
 				'data-section': section,
 				'data-datetime': datetimeMw,
@@ -242,7 +231,7 @@ mw.loader.using([
 				'data-index': $(comment).data('index'),
 				'tabindex': 0,
 				'text': msg('replybutton').parse(),
-				'on': {'click': activateReplyButton},
+				'on': {click: activateReplyButton},
 			}));
 		});
 	}
@@ -260,8 +249,8 @@ mw.loader.using([
 
 			if (!topics[$(comment).data('topic')]){
 				topics[$(comment).data('topic')] = {
-					'users': [],
-					'datetimes': [],
+					users: [],
+					datetimes: [],
 				};
 			}
 
@@ -293,9 +282,9 @@ mw.loader.using([
 			$('#talk-stats-top-js').html(latestCommentTopText);
 		} else {
 			$('#mw-content-text').before($('<div>', {
-				'class': 'talk-stats-js',
-				'id': 'talk-stats-top-js',
-				'html': latestCommentTopText,
+				class: 'talk-stats-js',
+				id: 'talk-stats-top-js',
+				html: latestCommentTopText,
 			}));
 		}
 
@@ -329,7 +318,7 @@ mw.loader.using([
 		if (button.attr('disabled')){
 			return;
 		}
-		$('.reply-button-js').attr({'tabindex': -1, 'disabled': true});
+		$('.reply-button-js').attr({tabindex: -1, disabled: true});
 		button.attr('id', 'active-reply-button-js');
 		const parent = button.parent();
 		const bNext = button.next();
@@ -347,36 +336,36 @@ mw.loader.using([
 				version
 			).parse()),
 			$('<textarea>', {
-				'placeholder': msg(
+				placeholder: msg(
 					'replywidget-placeholder-reply',
 					button.data('user')
 				).parse(),
-				'required': true,
-				'on': {'input': resizeTextBox},
+				required: true,
+				on: {input: resizeTextBox},
 			}),
 			$('<div>', {
 				'id': 'easy-talk-preview-js',
 				'data-label': msg('replywidget-preview').parse(),
 			}),
-			$('<div>', {'id': 'easy-talk-footer-js'}).append(
+			$('<div>', {id: 'easy-talk-footer-js'}).append(
 				$('<p>', {
-					'id': 'easy-talk-license-js',
-					'html': msg(
+					id: 'easy-talk-license-js',
+					html: msg(
 						'replywidget-terms-click',
-						msg('replywidget-reply').parse(),
-						$('link[rel="license"]').attr('href')
-					).plain(),
+						msg('replywidget-reply').plain(),
+						$('link[rel="license"]').prop('href')
+					).parse(),
 				}),
 				$('<div>').append(
 					$('<button>', {
-						'class': 'wds-button wds-is-secondary',
-						'id': 'reply-cancel-js',
-						'text': msg('replywidget-cancel').parse(),
+						class: 'wds-button wds-is-secondary',
+						id: 'reply-cancel-js',
+						text: msg('replywidget-cancel').parse(),
 					}),
 					$('<button>', {
-						'class': 'wds-button',
-						'id': 'reply-submit-js',
-						'text': msg('replywidget-reply').parse(),
+						class: 'wds-button',
+						id: 'reply-submit-js',
+						text: msg('replywidget-reply').parse(),
 					})
 				)
 			)
@@ -408,10 +397,10 @@ mw.loader.using([
 			}
 			addEventListener('beforeunload', beforeUnloadHandler);
 			const parseParams = {
-				'title': pageName,
-				'revid': revid,
-				'pst': true,
-				'preview': true,
+				title: pageName,
+				revid: revid,
+				pst: true,
+				preview: true,
 			};
 			api.parse(comment, parseParams).then(renderPreview);
 		}, previewDelay);
@@ -449,10 +438,10 @@ mw.loader.using([
 		});
 
 		$('#reply-submit-js').on('click', {
-			'section': button.data('section'),
-			'user': button.data('user'),
-			'datetime': button.data('datetime'),
-			'index': button.data('index'),
+			section: button.data('section'),
+			user: button.data('user'),
+			datetime: button.data('datetime'),
+			index: button.data('index'),
 		}, submitReply);
 	}
 
@@ -469,10 +458,10 @@ mw.loader.using([
 		$(`#${editorID}`).find(elmts).attr('disabled', true);
 
 		const fetchParams = {
-			'titles': pageName,
-			'prop': 'revisions',
-			'rvprop': 'content',
-			'rvslots': 'main',
+			titles: pageName,
+			prop: 'revisions',
+			rvprop: 'content',
+			rvslots: 'main',
 		};
 
 		api.post(fetchParams).then(result => {
@@ -497,14 +486,14 @@ mw.loader.using([
 			}
 
 			const editParams = {
-				'action': 'edit',
-				'title': pageName,
-				'text': finalText,
-				'summary': editSummary,
-				'notminor': true,
-				'watchlist': 'watch',
-				'baserevid': revid,
-				'nocreate': true,
+				action: 'edit',
+				title: pageName,
+				text: finalText,
+				summary: editSummary,
+				notminor: true,
+				watchlist: 'watch',
+				baserevid: revid,
+				nocreate: true,
 			};
 
 			api.postWithEditToken(editParams).then(data => {
@@ -553,10 +542,10 @@ mw.loader.using([
 			return;
 		}
 		newTopicToolAvailable = false;
-		$('.reply-button-js').attr({'tabindex': -1, 'disabled': true});
+		$('.reply-button-js').attr({tabindex: -1, disabled: true});
 		const newTopicBox = $('<form>', {
-			'id': editorID,
-			'on': {'submit': formTopicEvent => formTopicEvent.preventDefault()},
+			id: editorID,
+			on: {submit: formTopicEvent => formTopicEvent.preventDefault()},
 		}).append(
 			$('<label>').html(msg(
 				'replywidget-label',
@@ -564,40 +553,40 @@ mw.loader.using([
 				toolName,
 				version
 			).parse()),
-			$('<h2>', {'id': 'newtopic-sectiontitle-js'}).append($('<input>', {
+			$('<h2>', {id: 'newtopic-sectiontitle-js'}).append($('<input>', {
 				'placeholder': msg('newtopic-placeholder-title').parse(),
 				'aria-label': msg('newtopic-placeholder-title').parse(),
 				'spellcheck': true,
 				'required': true,
 			})),
 			$('<textarea>', {
-				'placeholder': msg('replywidget-placeholder-newtopic').parse(),
-				'required': true,
-				'on': {'input': resizeTextBox},
+				placeholder: msg('replywidget-placeholder-newtopic').parse(),
+				required: true,
+				on: {input: resizeTextBox},
 			}),
 			$('<div>', {
 				'id': 'easy-talk-preview-js',
 				'data-label': msg('replywidget-preview').parse(),
 			}),
-			$('<div>', {'id': 'easy-talk-footer-js'}).append(
+			$('<div>', {id: 'easy-talk-footer-js'}).append(
 				$('<p>', {
-					'id': 'easy-talk-license-js',
-					'html': msg(
+					id: 'easy-talk-license-js',
+					html: msg(
 						'replywidget-terms-click',
-						msg('replywidget-reply').parse(),
-						$('link[rel="license"]').attr('href')
-					).plain(),
+						msg('replywidget-reply').plain(),
+						$('link[rel="license"]').prop('href')
+					).parse(),
 				}),
 				$('<div>').append(
 					$('<button>', {
-						'class': 'wds-button wds-is-secondary',
-						'id': 'newtopic-cancel-js',
-						'text': msg('replywidget-cancel').parse(),
+						class: 'wds-button wds-is-secondary',
+						id: 'newtopic-cancel-js',
+						text: msg('replywidget-cancel').parse(),
 					}),
 					$('<button>', {
-						'class': 'wds-button',
-						'id': 'newtopic-submit-js',
-						'text': msg('replywidget-newtopic').parse(),
+						class: 'wds-button',
+						id: 'newtopic-submit-js',
+						text: msg('replywidget-newtopic').parse(),
 					})
 				)
 			)
@@ -624,12 +613,12 @@ mw.loader.using([
 			}
 			addEventListener('beforeunload', beforeUnloadHandler);
 			const parseParams = {
-				'title': pageName,
-				'pst': true,
-				'section': 'new',
-				'sectiontitle': sectionTitle,
-				'disableeditsection': true,
-				'sectionpreview': true,
+				title: pageName,
+				pst: true,
+				section: 'new',
+				sectiontitle: sectionTitle,
+				disableeditsection: true,
+				sectionpreview: true,
 			};
 			if (revid){
 				parseParams.revid = revid;
@@ -685,14 +674,14 @@ mw.loader.using([
 
 		const editSummary = `/* ${sectionTitle} */ new section (${docRef})`;
 		const editParams = {
-			'action': 'edit',
-			'title': pageName,
-			'text': comment,
-			'summary': editSummary,
-			'notminor': true,
-			'watchlist': 'watch',
-			'section': 'new',
-			'sectiontitle': sectionTitle,
+			action: 'edit',
+			title: pageName,
+			text: comment,
+			summary: editSummary,
+			notminor: true,
+			watchlist: 'watch',
+			section: 'new',
+			sectiontitle: sectionTitle,
 		};
 
 		if (revid){

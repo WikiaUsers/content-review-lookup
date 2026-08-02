@@ -39,7 +39,7 @@ new MutationObserver(initAutoSliders).observe(document.body, { childList: true, 
 
 (function(){
   function updateScrollRibbons(){
-    document.querySelectorAll('.story-text-scroll').forEach(function(box){
+    document.querySelectorAll('.story-text-scroll, .quote-text-scroll').forEach(function(box){
       var ribbon = box.nextElementSibling;
       if (!ribbon || !ribbon.classList.contains('scroll-ribbon')) return;
       var hasMore = box.scrollHeight - box.scrollTop - box.clientHeight > 4;
@@ -47,10 +47,17 @@ new MutationObserver(initAutoSliders).observe(document.body, { childList: true, 
     });
   }
   document.addEventListener('scroll', function(e){
-    if (e.target.classList && e.target.classList.contains('story-text-scroll')) updateScrollRibbons();
+    if (e.target.classList && (e.target.classList.contains('story-text-scroll') || e.target.classList.contains('quote-text-scroll'))) updateScrollRibbons();
   }, true);
   window.addEventListener('load', updateScrollRibbons);
   document.addEventListener('DOMContentLoaded', updateScrollRibbons);
   window.addEventListener('resize', updateScrollRibbons);
   new MutationObserver(updateScrollRibbons).observe(document.body, { childList:true, subtree:true });
 })();
+
+document.addEventListener('wheel', function(e){
+  var box = e.target.closest && e.target.closest('.story-text-scroll, .quote-text-scroll');
+  if (!box) return;
+  e.preventDefault();
+  box.scrollTop += e.deltaY * 0.35; // lower = slower/more controllable, try 0.25–0.45
+}, { passive: false });

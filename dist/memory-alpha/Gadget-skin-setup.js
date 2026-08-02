@@ -16,7 +16,7 @@
 		drvprop: '',
 		drvlimit: 1,
 		inprop: ['protection', 'watched'],
-		intestactions: ['delete', 'undelete', 'move', 'protect'],
+		intestactions: ['block', 'delete', 'move', 'protect', 'undelete'],
 		llprop: ['url', 'langname', 'autonym'],
 		llinlanguagecode: config.wgUserLanguage,
 		lllimit: 'max',
@@ -45,16 +45,25 @@
 		'accesskey-pt-preferences',
 		'accesskey-pt-userpage',
 		'accesskey-pt-watchlist',
+		'accesskey-t-blockip',
+		'accesskey-t-contributions',
 		'accesskey-t-info',
+		'accesskey-t-log',
 		'accesskey-t-permalink',
 		'accesskey-t-print',
 		'accesskey-t-recentchangeslinked',
+		'accesskey-t-userrights',
 		'accesskey-t-whatlinkshere',
 		'associated-pages',
+		'blockip',
 		'cactions',
 		'custom-license-description',
 		'fd-notifications-notifications',
+		'global-footer-company-overview-link-about',
+		'global-footer-site-overview-link-privacy-policy',
+		'global-footer-site-overview-link-terms-of-use',
 		'interlanguage-link-title',
+		'log',
 		'mainpage',
 		'mycontris',
 		'mypreferences',
@@ -70,7 +79,6 @@
 		'pt-login',
 		'pt-userlogout',
 		'recentchangeslinked-toolbox',
-		'sidebar',
 		'skin-action-delete',
 		'skin-action-move',
 		'skin-action-protect',
@@ -83,6 +91,8 @@
 		'skin-view-view',
 		'talk',
 		'toc',
+		'tool-link-contributions',
+		'tool-link-userrights-readonly',
 		'toolbox',
 		'tooltip-ca-delete',
 		'tooltip-ca-edit',
@@ -105,10 +115,14 @@
 		'tooltip-pt-preferences',
 		'tooltip-pt-userpage',
 		'tooltip-pt-watchlist',
+		'tooltip-t-blockip',
+		'tooltip-t-contributions',
 		'tooltip-t-info',
+		'tooltip-t-log',
 		'tooltip-t-permalink',
 		'tooltip-t-print',
 		'tooltip-t-recentchangeslinked',
+		'tooltip-t-userrights',
 		'tooltip-t-whatlinkshere',
 		'unwatch',
 		'views',
@@ -117,11 +131,17 @@
 	]);
 
 	skinConfig.mainMenu = async parent => {
+		let activePortlet;
 		const mainMenu = {};
 		const mainMenuPortlets = [];
 		const systemMessages = [];
-		let activePortlet;
-		for (const item of mw.message('sidebar').text().split(/\s*\n/)){
+		const sidebar = (await api.get({
+			titles: 'MediaWiki:Sidebar',
+			prop: 'revisions',
+			rvprop: 'content',
+			rvslots: 'main',
+		})).query.pages[0].revisions[0].slots.main.content;
+		for (const item of sidebar.split(/\s*\n/)){
 			if (/^\*\*/.test(item)){
 				const linkMessages = item.replace(/^\*\*+\s*/, '').split('|');
 				mainMenu[activePortlet].push(linkMessages);
@@ -166,6 +186,40 @@
 				'recentchangeslinked-toolbox',
 				't',
 				'recentchangeslinked',
+			);
+		}
+		if (config.wgRelevantUserName){
+			addPortletLink(
+				'tb',
+				`Special:Contributions/${config.wgRelevantUserName}`,
+				'tool-link-contributions',
+				't',
+				'contributions',
+				[config.wgRelevantUserName],
+			);
+			addPortletLink(
+				'tb',
+				`Special:Log/${config.wgRelevantUserName}`,
+				'log',
+				't',
+			);
+			if (pageInfo.actions.block){
+				addPortletLink(
+					'tb',
+					`Special:Block/${config.wgRelevantUserName}`,
+					'blockip',
+					't',
+					undefined,
+					[config.wgRelevantUserName],
+				);
+			}
+			addPortletLink(
+				'tb',
+				`Special:UserRights/${config.wgRelevantUserName}`,
+				'tool-link-userrights-readonly',
+				't',
+				'userrights',
+				[config.wgRelevantUserName],
 			);
 		}
 		const printLink = addPortletLink(
@@ -633,16 +687,25 @@
 				html: mw.message('custom-license-description').parse(),
 			}),
 			$('<ul>', {id: 'footer-places'}).append(
-				// TODO
+				$('<li>', {id: 'footer-places-terms'}).append($('<a>', {
+					href: 'https://www.fandom.com/terms-of-use',
+					text: mw.message('global-footer-site-overview-link-terms-of-use').text(),
+				})),
+				$('<li>', {id: 'footer-places-privacy'}).append($('<a>', {
+					href: 'https://www.fandom.com/privacy-policy',
+					text: mw.message('global-footer-site-overview-link-privacy-policy').text(),
+				})),
+				$('<li>', {id: 'footer-places-about'}).append($('<a>', {
+					href: 'https://about.fandom.com/about',
+					text: mw.message('global-footer-company-overview-link-about').text(),
+				})),
 			),
 			$('<ul>', {id: 'footer-icons'}).append(
-				$('<li>').append($('<a>', {
-					id: 'footer-hostedbyico',
+				$('<li>', {id: 'footer-hostedbyico'}).append($('<a>', {
 					title: 'Hosting provided by Fandom',
 					href: 'https://www.fandom.com',
 				})),
-				$('<li>').append($('<a>', {
-					id: 'footer-poweredbyico',
+				$('<li>', {id: 'footer-poweredbyico'}).append($('<a>', {
 					title: 'Powered by MediaWiki',
 					href: 'https://www.mediawiki.org',
 				})),
@@ -672,11 +735,12 @@
 		linkText,
 		prefix,
 		internalName = linkText,
+		args = [],
 	){
 		$(`#${prefix}-${internalName}`).remove();
 		let href = mw.message(String(target));
-		let text = mw.message(linkText);
-		let tooltip = mw.message(`tooltip-${prefix}-${internalName}`);
+		let text = mw.message(linkText, ...args);
+		let tooltip = mw.message(`tooltip-${prefix}-${internalName}`, ...args);
 		let accesskey = mw.message(`accesskey-${prefix}-${internalName}`);
 
 		href = isValid(href) ? href.text() : target;

@@ -14,8 +14,9 @@
 		
 		function checkPlural(input, config) {
 			config ??= {};
-			if (input === 1) return config.singular;
-			return config.plural ?? config.singular;
+			const s = config.singular;
+			const p = config.plural;
+			return input === 1 ? s : p??s;
 		};
 		
 		const materialFiles = {
@@ -392,6 +393,7 @@
 				name:'Takker\'s Tails',
 				rarity:'secret',
 			}, {craftable:true}));
+			skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			// skins.push(new WeaponSkin({id:'unknown-0', name:'Unknown'}, {unknown:true, craftable:true}));
 			/*
 			skins.push(new WeaponSkin({
@@ -489,8 +491,7 @@
 				const delta = alteredDate.getTime() - origDate.getTime();
 				return delta;
 			};
-			let factor = Math.floor((skins.length - 1) / 2);
-			const indexPicked = specificIndex ?? Math.floor(getDelta() / d) % (factor*3) % skins.length;
+			const indexPicked = specificIndex ?? Math.floor(getDelta() / d) % 130 % skins.length;
 			newSkin.dailyNumber = indexPicked + 1;
 			newSkin.whichSkin = skins[indexPicked];
 			return newSkin;

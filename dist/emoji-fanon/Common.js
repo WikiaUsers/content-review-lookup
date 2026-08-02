@@ -52,18 +52,6 @@ window.welcomeMessage = {
   preferTalk: false,
 };
 
-// Custom Edit Buttons
-
-window.mwCustomEditButtons = (window.mwCustomEditButtons || []).concat([
-    {
-        imageFile: 'https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png',
-        speedTip: 'Redirect',
-        tagOpen: '#REDIRECT[[',
-        tagClose: ']]',
-        sampleText: 'Insert Text'
-    }
-]);
-
 // Import from dev
 importArticles({
     type: 'script',
