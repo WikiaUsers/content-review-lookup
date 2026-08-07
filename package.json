@@ -31,7 +31,7 @@
         "eslint": "8.x",
         "eslint-plugin-jsdoc": "50.2.2",
         "eslint-plugin-node": "11.1.0",
-        "eslint-plugin-promise": "7.1.0"
+        "eslint-plugin-promise": "7.2.1"
     },
     "engines": {
         "node": ">=18.0.0"
