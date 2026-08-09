@@ -81,7 +81,7 @@
 
 			'    <div class="mgu-preview-wrap" id="mgu-preview-wrap" hidden>',
 			'      <img id="mgu-preview" class="mgu-preview" src="" alt="Preview">',
-			'      <button class="mgu-clear-file" id="mgu-clear-file" type="button" aria-label="Remove file">&#10006;</button>',
+			'      <button class="mgu-clear-file" id="mgu-clear-file" type="button" aria-label="Remove file">&times;</button>',
 			'    </div>',
 
 			'    <div class="mgu-field">',

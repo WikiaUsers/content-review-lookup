@@ -4,7 +4,7 @@ mw.hook('wikipage.content').add(function ($content) {
         .not('#mw-toc-heading')
         .filter(function () {
             var p = $(this).parent();
-            return p.is('h2,h3,h4,h5,h6');
+            return p.is('h1,h2,h3,h4,h5,h6');
         }).length > 0;
 
     if (!hasHeaders) return;
@@ -31,12 +31,51 @@ mw.hook('wikipage.content').add(function ($content) {
         return value.indexOf('ms') !== -1 ? num : num * 1000;
     }
 
+    var fileExtensionPattern = /\.(svg|png|jpe?g|gif|webp|bmp|ico)$/i;
+    var trustedImageHosts = ['static.wikia.nocookie.net'];
+
+    function isTrustedImageUrl(value) {
+        try {
+            var parsed = new URL(value);
+            return parsed.protocol === 'https:' && trustedImageHosts.indexOf(parsed.hostname) !== -1;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function resolveFileUrl(fileName) {
+        var cleanName = fileName.replace(/^(File|Image):/i, '').trim();
+
+        if (window.mw && mw.util && typeof mw.util.getUrl === 'function') {
+            return mw.util.getUrl('Special:FilePath/' + cleanName);
+        }
+
+        return null;
+    }
+
     function setToggleContent(target, content) {
-        // if (content.indexOf('<') !== -1) {
-        //     target.html(content);
-        // } else {
-            target.text(content);
-        // }
+        var trimmed = content.trim();
+
+        if (isTrustedImageUrl(trimmed)) {
+            target.empty().append($('<img>').attr('src', trimmed).attr('alt', '').css({ width: '1em', height: '1em', 'object-fit': 'contain' }));
+            return;
+        }
+
+        if (fileExtensionPattern.test(trimmed)) {
+            var url = resolveFileUrl(trimmed);
+
+            if (url) {
+                target.empty().append($('<img>').attr('src', url).attr('alt', '').css({ width: '1em', height: '1em', 'object-fit': 'contain' }));
+                return;
+            }
+        }
+
+        if (content === defaultArrow) {
+            target.html(content);
+            return;
+        }
+
+        target.text(content);
     }
 
     function getHeaderLevel(header) {
@@ -74,14 +113,6 @@ mw.hook('wikipage.content').add(function ($content) {
             var cs = getComputedStyle(this);
 
             if (cs.position === 'absolute') return;
-
-            var tag = this.tagName;
-            var isMedia = tag === 'IMG' || tag === 'FIGURE' || this.classList.contains('thumb') || this.classList.contains('image');
-
-            if (isMedia) {
-                var isSideAligned = this.classList.contains('mw-halign-left') || this.classList.contains('mw-halign-right') || cs.float !== 'none';
-                if (isSideAligned) return;
-            }
 
             var r = this.getBoundingClientRect();
 
@@ -164,7 +195,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
         if (!ancestors.length) return;
 
-        var syncIntervalMs = 80;
+        var syncIntervalMs = 150;
         var lastUpdate = 0;
 
         function step(now) {
@@ -194,7 +225,7 @@ mw.hook('wikipage.content').add(function ($content) {
     }
 
     var defaultArrow =
-        '<svg class="wds-icon wds-icon-small chevron" aria-hidden="true" focusable="false">' +
+        '<svg class="wds-icon wds-icon-small chevron" width="12" height="12" aria-hidden="true" focusable="false">' +
         '<use xlink:href="#wds-icons-menu-control-small"></use>' +
         '</svg>';
 
@@ -221,13 +252,13 @@ mw.hook('wikipage.content').add(function ($content) {
             '.ch-header-clickable .section-edit-link,.ch-header-static .section-edit-link{align-items:center;color:var(--theme-link-color);display:flex;height:44px;padding:9px 13px;}',
             '.ch-header-static .section-edit-link{padding:9px 6px 9px 13px;}',
             '.ch-header-clickable .vertical-separator{border-left:1px solid var(--theme-border-color);height:26px;width:1px;}',
-            '.ch-header-clickable .chevron-wrapper{align-items:center;background:#0000;border:none;color:var(--ch-color,rgb(230,230,230));cursor:pointer;display:flex;height:44px;outline-color:#0000;overflow:hidden;padding:9px 6px 9px 13px;user-select:none;}',
+            '.ch-header-clickable .chevron-wrapper{align-items:center;background:#0000;border:none;color:var(--ch-color,rgb(230,230,230));cursor:pointer;display:flex;font-size:inherit;height:44px;outline-color:#0000;overflow:hidden;padding:9px 6px 9px 13px;user-select:none;}',
             '.ch-header-clickable .chevron-wrapper svg{color:currentColor;fill:currentColor;}',
             '.ch-header-clickable .ch-toggle-icon{display:inline-flex;transform-origin:center;transition:transform var(--ch-arrow-animation-duration,.25s) var(--ch-arrow-easing-style,ease-in-out);}',
             '.ch-header-clickable .chevron{pointer-events:none;}',
             '.ch-outer-wrapper{width:100%;overflow:visible;pointer-events:none;}',
             '.ch-outer-wrapper.ch-is-hidden{overflow:hidden;}',
-            '.ch-collapse-all{font-size:var(--ch-collapse-all-size,18px);line-height:1;}',
+            '.ch-collapse-all{font-family:var(--ch-collapse-all-font-family,inherit);font-size:var(--ch-collapse-all-size,18px);line-height:1;}',
             '.ch-inner-wrapper{pointer-events:auto;padding:1px 0;}',
             '.ch-inner-wrapper .tabber,.ch-inner-wrapper .tabbernav,.ch-inner-wrapper .tabbertab,.ch-inner-wrapper .wds-tabs,.ch-inner-wrapper .wds-tabs__tab,.ch-inner-wrapper .wds-tabs__tab-label,.ch-inner-wrapper .wds-tab__content{pointer-events:auto;}'
         ].join(''));
@@ -253,7 +284,7 @@ mw.hook('wikipage.content').add(function ($content) {
             editLink.classList.add('section-edit-link');
             editLink.classList.remove('mw-editsection-visualeditor');
             editLink.innerHTML =
-                '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">' +
+                '<svg class="wds-icon wds-icon-small" width="12" height="12" aria-hidden="true" focusable="false">' +
                 '<use xlink:href="#wds-icons-pencil-small"></use>' +
                 '</svg>';
 
@@ -293,7 +324,7 @@ mw.hook('wikipage.content').add(function ($content) {
             editLink.classList.add('section-edit-link');
             editLink.classList.remove('mw-editsection-visualeditor');
             editLink.innerHTML =
-                '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">' +
+                '<svg class="wds-icon wds-icon-small" width="12" height="12" aria-hidden="true" focusable="false">' +
                 '<use xlink:href="#wds-icons-pencil-small"></use>' +
                 '</svg>';
 
@@ -322,7 +353,7 @@ mw.hook('wikipage.content').add(function ($content) {
         var headline = $(this);
         var header = headline.parent();
 
-        if (!header.is('h2,h3,h4,h5,h6')) return;
+        if (!header.is('h1,h2,h3,h4,h5,h6')) return;
         if (header.data('chProcessed')) return;
 
         var customEl = headline.find('.ch-custom')[0];
@@ -350,9 +381,13 @@ mw.hook('wikipage.content').add(function ($content) {
         var next = header[0].nextSibling;
 
         while (next) {
-            if (next.nodeType === 1 && next.matches('h2,h3,h4,h5,h6')) {
+            if (next.nodeType === 1 && next.matches('h1,h2,h3,h4,h5,h6')) {
                 var nl = getHeaderLevel($(next));
                 if (nl <= level) break;
+            }
+
+            if (next.nodeType === 1 && next.classList.contains('section-stop')) {
+                break;
             }
 
             if (next.nodeType === 3) {
@@ -404,6 +439,8 @@ mw.hook('wikipage.content').add(function ($content) {
             inner: inner
         };
 
+        var isCollapsedFlag = false;
+
         function setHidden(hidden) {
             outer.classList.toggle('ch-is-hidden', hidden);
         }
@@ -439,7 +476,7 @@ mw.hook('wikipage.content').add(function ($content) {
                 .attr('aria-label', expanded ? 'Collapse' : 'Expand');
 
             toggleIcon.css('transform', 'rotate(' + (expanded ? headerArrowRotationEnd : headerArrowStartRotation) + ')');
-            toggle.data('collapsed', !expanded);
+            isCollapsedFlag = !expanded;
         }
 
         var section = {
@@ -451,7 +488,7 @@ mw.hook('wikipage.content').add(function ($content) {
             prepareForMeasure: prepareForMeasure,
             setExpandedHeight: setExpandedHeight,
             isCollapsed: function () {
-                return toggle.data('collapsed') === true;
+                return isCollapsedFlag;
             },
             contains: function (target) {
                 return (
@@ -563,8 +600,7 @@ mw.hook('wikipage.content').add(function ($content) {
 
                 e.stopPropagation();
                 section.toggle(false);
-            })
-            .data('collapsed', false);
+            });
 
         var toggleIcon = $('<span>')
             .addClass('ch-toggle-icon')

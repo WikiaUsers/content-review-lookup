@@ -34,11 +34,29 @@ window.FloatingToc = {
 };
 
 
-// Buildings
+// Buildings namespace Sub-title
 $(function () {
     if (mw.config.get('wgCanonicalNamespace') === 'Building') {
         $('.page-header__title-wrapper').append(
-            '<div class="page-header__page-subtitle">Buildings Page</div>'
+            '<div class="page-header__page-subtitle">Buildings page</div>'
+        );
+    }
+});
+
+// Unit-ship namespace Sub-title
+$(function () {
+    if (mw.config.get('wgCanonicalNamespace') === 'Unit-ship') {
+        $('.page-header__title-wrapper').append(
+            '<div class="page-header__page-subtitle">Land Units and Sea Ships page</div>'
+        );
+    }
+});
+
+// Research namespace Sub-title
+$(function () {
+    if (mw.config.get('wgCanonicalNamespace') === 'Research') {
+        $('.page-header__title-wrapper').append(
+            '<div class="page-header__page-subtitle">Research page</div>'
         );
     }
 });

@@ -410,3 +410,90 @@ mw.hook('wikipage.content').add(function ($content) {
         initSkillTree();
     }
 })();
+
+(function () {
+    function initShop() {
+        var root = document.getElementById('isd-shop-root');
+        if (!root) return;
+
+        var tabs = root.querySelectorAll('.isd-shop-tab');
+        var panels = root.querySelectorAll('.isd-shop-panel');
+        var toolbar = document.getElementById('isd-shop-toolbar');
+
+        // Build search input + category dropdown via DOM (never raw HTML in wikitext)
+        var searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'isd-shop-search-input';
+        searchInput.placeholder = 'Search items...';
+
+        var categorySelect = document.createElement('select');
+        categorySelect.className = 'isd-shop-category-select';
+        var categories = ['All', 'Potions', 'Ores', 'Items'];
+        categories.forEach(function (cat) {
+            var opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            categorySelect.appendChild(opt);
+        });
+
+        toolbar.appendChild(searchInput);
+        toolbar.appendChild(categorySelect);
+
+        function getActivePanel() {
+            return root.querySelector('.isd-shop-panel[data-panel="' +
+                root.querySelector('.isd-shop-tab-active').getAttribute('data-tab') + '"]');
+        }
+
+        function applyFilters() {
+            var query = searchInput.value.trim().toLowerCase();
+            var cat = categorySelect.value;
+            var panel = getActivePanel();
+            if (!panel) return;
+
+            var cards = panel.querySelectorAll('.isd-shop-card');
+            var visibleCount = 0;
+
+            cards.forEach(function (card) {
+                var name = (card.getAttribute('data-name') || '').toLowerCase();
+                var cardCat = card.getAttribute('data-category') || '';
+                var matchesSearch = name.indexOf(query) !== -1;
+                var matchesCat = (cat === 'All') || (cardCat === cat);
+
+                if (matchesSearch && matchesCat) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            var emptyMsg = panel.querySelector('.isd-shop-empty-msg');
+            if (emptyMsg) {
+                emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                tabs.forEach(function (t) { t.classList.remove('isd-shop-tab-active'); });
+                tab.classList.add('isd-shop-tab-active');
+
+                var target = tab.getAttribute('data-tab');
+                panels.forEach(function (panel) {
+                    panel.style.display = (panel.getAttribute('data-panel') === target) ? '' : 'none';
+                });
+
+                applyFilters();
+            });
+        });
+
+        searchInput.addEventListener('input', applyFilters);
+        categorySelect.addEventListener('change', applyFilters);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initShop);
+    } else {
+        initShop();
+    }
+})();

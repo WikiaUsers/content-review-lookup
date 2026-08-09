@@ -2,7 +2,7 @@
 /**
  * TabberEX
  *
- * @version 2.3
+ * @version 2.3.1
  *
  * @author Jono99 <https://phigros.fandom.com/wiki/User:Jono99>
  *
@@ -11,6 +11,11 @@
  */
  
  (function (window, $, mw) {
+	// Abort if localstorage key tabberex_diable_production. Used to allow for testing other versions in personal js.
+	var disable_production = localStorage.getItem("tabberex_disable_production");
+	if (disable_production !== null && disable_production !== "")
+		return;
+
 	// Function called by tabs to switch tabs
 	window.tabberex_switchTab = function(tabber_id, tab)
 	{

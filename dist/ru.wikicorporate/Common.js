@@ -6,11 +6,7 @@ importArticles({
 	        'MediaWiki:Scroll.js',
 	        'MediaWiki:Wikificator.js',
 	        'MediaWiki:FanFeed.js',
-	        'MediaWiki:Rail.js',
-	        'MediaWiki:RelatedDiscussions.js',
 	        'MediaWiki:ThemeToggler.js',
-	        'MediaWiki:Users.js',
-	        'MediaWiki:ArticlePreview.js',
-	        'MediaWiki:EnhanchedEditor.js'
+	        'MediaWiki:CrossWikiActivity.js'
 	    ]
 	});

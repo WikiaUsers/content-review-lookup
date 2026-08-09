@@ -18,6 +18,11 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+//
+'Bony Sea Devil':'15.32.fc9100',
+'Capricious Phantom':'15.32.fc9100',
+'Turbulent Elemental':'15.32.fc9100',
+'Hazardous Phantom':'15.32.fc9100',
 // 
 'Herald of Fire':'15.24.c50b3f',
 'Sea Captain':'15.24.c50b3f',
@@ -128,7 +133,7 @@ window.loot_parser_data = {
 'Ironblight': '14.12.5229e4',
 'High Voltage Elemental': '14.12.5229e4',
 'Lava Lurker': '14.12.5229e4',
-'Turbulent Elemental': '14.12.5229e4',
+//'Turbulent Elemental': '14.12.5229e4',
 //'Foam Stalker': '14.12.5229e4',
 'Sulphur Spouter': '14.12.5229e4',
 'Converter': '14.12.5229e4',
@@ -190,9 +195,9 @@ window.loot_parser_data = {
 'Freakish Lost Soul': '14.12.5229e4',
 //'Cursed Prospector': '14.12.5229e4',
 //'Evil Prospector': '14.12.5229e4',
-'Bony Sea Devil': '14.12.5229e4',
+//'Bony Sea Devil': '14.12.5229e4',
 'Vibrant Phantom': '14.12.5229e4',
-'Capricious Phantom': '14.12.5229e4',
+//'Capricious Phantom': '14.12.5229e4',
 //'Infernal Phantom': '14.12.5229e4',
 'Mould Phantom': '14.12.5229e4',
 'Druid\'s Apparition': '14.12.5229e4',
@@ -235,7 +240,7 @@ window.loot_parser_data = {
 'Meandering Mushroom': '14.00.7103e2',
 //'Bony Sea Devil': '14.00.7103e2',
 //'Capricious Phantom': '14.00.7103e2',
-'Hazardous Phantom': '14.00.7103e2',
+//'Hazardous Phantom': '14.00.7103e2',
 //'Turbulent Elemental': '14.00.7103e2',
 'Headpecker': '14.00.7103e2',
 'Mantosaurus': '14.00.7103e2',

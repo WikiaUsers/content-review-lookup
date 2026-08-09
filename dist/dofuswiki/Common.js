@@ -190,7 +190,7 @@ function setupFilterButtonToggles() {
     container.addEventListener('click', toggleMonsterDrops);
     bound.add(container);
   }
-  document.querySelectorAll('.filterButton').forEach(bind);
+  document.querySelectorAll('.activeFilterButton').forEach(bind);
 }
 
 setupFilterButtonToggles();
@@ -214,7 +214,7 @@ function toggleMonsterDrops() {
     }
   }
   
-    document.querySelectorAll('.filterButton').forEach((el) => el.classList.remove('filterEnabled'));
+    document.querySelectorAll('.activeFilterButton').forEach((el) => el.classList.remove('filterEnabled'));
 
   for (let i = 0; i < allRows.length; i++) {
     const row = allRows[i];

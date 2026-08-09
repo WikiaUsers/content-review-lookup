@@ -1,7 +1,6 @@
 /* jshint esversion: 11 */
 (() => {
     'use strict';
-
     if (window.isCssDoodleAdapterLoaded) return;
     window.isCssDoodleAdapterLoaded = true;
 
@@ -17,43 +16,64 @@
             const script = document.createElement('script');
             script.src = CONFIG.cdnUrl;
             script.onload = resolve;
-            script.onerror = () => reject(new Error('Не удалось загрузить css-doodle.min.js'));
+            script.onerror = () => reject(new Error('Failed to load css-doodle'));
             document.head.append(script);
         });
     };
 
-    const initDoodles = async ($content) => {
-        const parent = $content?.[0] ?? document;
+    const initDoodles = async (hookContent) => {
+        const parent = (hookContent && hookContent[0]) || document;
         const wrappers = parent.querySelectorAll(CONFIG.wrapperSelector);
-        
         if (!wrappers.length) return;
 
         try {
             await loadDoodleLibrary();
-
             wrappers.forEach(wrapper => {
                 const rulesElement = wrapper.querySelector(CONFIG.rulesSelector);
                 if (!rulesElement) return;
+                
+                // Агрессивная фильтрация сетевых запросов и скриптов (CSP)
+                let rulesText = rulesElement.textContent
+                    .replace(/url\s*\(/gi, 'disabled-url(')
+                    .replace(/@import/gi, 'disabled-import')
+                    .replace(/expression\s*\(/gi, 'disabled-expr(');
 
-                let rulesText = rulesElement.textContent;
-                
-                // БЕЗОПАСНОСТЬ: Вырезаем все внешние загрузки для прохождения ревью Fandom.
-                // Блокируем функции url() и @import, чтобы избежать утечки IP-адресов через трекинг-пиксели.
-                rulesText = rulesText
-                    .replace(/url\([^)]+\)/gi, 'none')
-                    .replace(/@import\s+[^;]+;/gi, '');
-                
+                // Блокируем скрипты и инлайн-js
+                if (rulesText.toLowerCase().includes('<script') || rulesText.toLowerCase().includes('javascript:')) {
+                    console.warn('[CSS-Doodle] Blocked potentially unsafe string.');
+                    return;
+                }
+
                 const doodle = document.createElement('css-doodle');
                 doodle.textContent = rulesText;
-                
                 doodle.addEventListener('click', () => doodle.update());
+                
                 wrapper.replaceChildren(doodle);
                 wrapper.classList.add('doodle-loaded');
+
+                // Защита на будущее (Shadow DOM Mutation Observer)
+                setTimeout(() => {
+                    if (doodle.shadowRoot) {
+                        const securityObserver = new MutationObserver((mutations) => {
+                            for (const mutation of mutations) {
+                                for (const node of mutation.addedNodes) {
+                                    if (node.nodeName === 'SCRIPT' || node.nodeName === 'IFRAME') {
+                                        doodle.remove();
+                                        console.error('[CSS-Doodle] Security violation detected. Element destroyed.');
+                                        return;
+                                    }
+                                }
+                            }
+                        });
+                        securityObserver.observe(doodle.shadowRoot, { childList: true, subtree: true });
+                    }
+                }, 200);
             });
         } catch (error) {
-            console.error('[CSS-Doodle Adapter Error]', error);
+            console.error('[CSS-Doodle Error]', error);
         }
     };
-
+    
+    // Хук MediaWiki
     mw.hook('wikipage.content').add(initDoodles);
 })();

@@ -5,7 +5,7 @@
  
     var CALENDAR_ID   = 'marvel-weekly-calendar';
     var CACHE_KEY     = 'marvelCalendarCache';
-    var CACHE_VERSION = 6;
+    var CACHE_VERSION = 7;
 
     // 0. Стили анимации загрузки (Серебряный Сёрфер)
     var SURFER_CSS = [
@@ -14,7 +14,6 @@
         '  50%  { transform: scaleX(-1) translateY(-8px); }',
         '  100% { transform: scaleX(-1) translateY(0px); }',
         '}',
-        // .railModule задаёт flex на .comics-week через boxes.css, но вне rail (Заглавная, трансклюзия) flex отсутствует —', без него order:-1 на .comics-week_title не работает и заголовок недели не отображается',
         '#marvel-weekly-calendar .comics-week {',
         '  display: flex;',
         '  flex-wrap: wrap;',
@@ -400,6 +399,65 @@
         } );
     }
  
+    // 4г. Проверка существования обложек (батч-запрос к API Database, где хранятся файлы)
+    var NO_IMAGE_COVER = 'No_Image_Cover.jpg';
+
+    function checkCoversExist( releasesData ) {
+        // data.picture уже вычислен в parseTitle()/applyExceptions() для всех веток — отдельно пересобирать имя файла не нужно, проверяем его напрямую
+        var filenames = [];
+        var seen = {};
+        releasesData.forEach( function ( d ) {
+            if ( d.picture && !seen[ d.picture ] ) {
+                seen[ d.picture ] = true;
+                filenames.push( d.picture );
+            }
+        } );
+        if ( filenames.length === 0 ) return Promise.resolve( releasesData );
+
+        var batches = [];
+        for ( var i = 0; i < filenames.length; i += 50 ) {
+            batches.push( filenames.slice( i, i + 50 ) );
+        }
+
+        var requests = batches.map( function ( batch ) {
+            var titles = batch.map( function ( f ) { return 'File:' + f; } ).join( '|' );
+            var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( titles ) + '&format=json&formatversion=2&origin=*';
+            return fetch( url ).then( function ( res ) {
+                if ( !res.ok ) throw new Error( 'HTTP ' + res.status );
+                return res.json();
+            } ).then( function ( json ) {
+                var missing = {};
+                var pages = ( json.query && json.query.pages ) ? json.query.pages : [];
+                pages.forEach( function ( p ) {
+                    if ( p.missing ) missing[ p.title.replace( /^File:/, '' ) ] = true;
+                } );
+                return missing;
+            } );
+        } );
+
+        return Promise.all( requests ).then( function ( results ) {
+            var allMissing = {};
+            results.forEach( function ( r ) {
+                Object.keys( r ).forEach( function ( f ) { allMissing[ f ] = true; } );
+            } );
+            releasesData.forEach( function ( d ) {
+                if ( allMissing[ d.picture ] ) {
+                    // Ветки, где имя файла передаётся в {{РГ}} напрямую первым параметром — подменяем его на заглушку
+                    if ( d.isCGDFCBD || d.isOneShot || d.isException || d.seriesLink ) {
+                        d.picture = NO_IMAGE_COVER;
+                    } else {
+                        // Обычная ветка: {{РГ}} сам вычисляет имя файла через в= — передаём заглушку явно через img=
+                        d.noCover = true;
+                    }
+                }
+            } );
+            return releasesData;
+        } ).catch( function ( err ) {
+            console.warn( 'MarvelCalendar: Не удалось проверить существование обложек', err );
+            return releasesData; // при ошибке возвращаем данные как есть, без подмены
+        } );
+    }
+
     // 5. Формирование {{РГ}} и рендер
     function buildRGCall( data ) {
         if ( data.isCGDFCBD ) {
@@ -418,6 +476,9 @@
             return '{{РГ|' + data.picture + '|' + data.series + ' Vol ' + data.vol + ' ' + data.issueStr + '|#' + data.issueStr + '}}';
         }
         var volPart = ( data.vol === 1 ) ? '' : ' ' + data.vol;
+        if ( data.noCover ) {
+            return '{{РГ|' + data.issueStr + volPart + '|в=' + data.series + '|img=' + NO_IMAGE_COVER + '}}';
+        }
         return '{{РГ|' + data.issueStr + volPart + '|в=' + data.series + '}}';
     }
  
@@ -504,6 +565,8 @@
                 return detectOneShotsFromAPI( releasesData );
             } ).then( function ( releasesData ) {
                 return detectStarWarsFromAPI( releasesData );
+            } ).then( function ( releasesData ) {
+                return checkCoversExist( releasesData );
             } ).then( function ( releasesData ) {
                 setCache( releasesData, exceptionsInfo.revid );
                 return renderWithRG( releasesData, calendar );

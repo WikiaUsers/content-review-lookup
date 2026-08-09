@@ -301,3 +301,46 @@ function adjustGlow(slideshow) {
         init();
     }
 })();
+
+/* Building System */
+(function () {
+    function selectUpgrade(root, item) {
+        var grid = item.closest('.upgrade-system-grid');
+        grid.querySelectorAll('.upgrade-item').forEach(function (i) {
+            i.classList.remove('selected');
+        });
+        item.classList.add('selected');
+
+        var contentId = item.getAttribute('data-content-id');
+        var store = root.querySelector('.upgrade-system-content-store');
+        var rightBox = root.querySelector('.upgrade-system-right');
+        if (contentId && store && rightBox) {
+            var src = store.querySelector('#' + contentId);
+            if (src) {
+                rightBox.innerHTML = src.innerHTML;
+            }
+        }
+    }
+
+    function initUpgradeSystem(root) {
+        var items = root.querySelectorAll('.upgrade-item');
+        items.forEach(function (item) {
+            item.addEventListener('click', function () {
+                selectUpgrade(root, item);
+            });
+        });
+
+        var initial = root.querySelector('.upgrade-item.selected') || items[0];
+        if (initial) selectUpgrade(root, initial);
+    }
+
+    function init() {
+        document.querySelectorAll('.upgrade-system').forEach(initUpgradeSystem);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();

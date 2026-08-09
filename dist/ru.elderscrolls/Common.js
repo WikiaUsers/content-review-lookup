@@ -127,15 +127,23 @@ window.mapsExtendedConfigs =
 
 /*---------------------------- Кнопка "Новая страница" -----------------------*/
 $(".wiki-tools__theme-switch").before('<a href="https://elderscrolls.fandom.com/ru/wiki/Служебная:CreatePage" class="wds-button wds-is-secondary" title="Новая страница"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-page-small"></use></svg></a>');
-
 /*----------------------------- Блок "Новые страницы" ------------------------*/
-// Блок правой панели. Всзято с вики "Убежище"
-function addNewPages(){
-	$('<section class="rail-module"></section>')
+function addNewPages() {
+	if ($('#rail-new-pages').length) return;
+
+	$('<section id="rail-new-pages" class="rail-module"></section>')
 		.appendTo('#WikiaRail')
 		.load('/ru/index.php?title=Template:RailModuleNewPages&action=render');
 }
 
+/*----------------------------- Блок "Наш Telegram" ------------------------*/
+function addTelegramRailModule() {
+	if ($('#rail-telegram').length) return;
+
+	$('<section id="rail-telegram" class="rail-module"></section>')
+		.appendTo('#WikiaRail')
+		.load('/ru/index.php?title=Template:RailModuleTelegram&action=render');
+}
 /*----------------------------- Кнопка "Back To Top" -------------------------*/
 // Created by Noemon from Dead Space Wiki
 function hideFade () {
@@ -1049,7 +1057,17 @@ function slideRegenerate(){
 $(document).ready(function() {
 	randomBackground();
 	fixTable();
-	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
-	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
-	setTimeout(function(){ addNewPages(); }, 2000); // Запускаем отложено, т.к. правая панель подгружаются не сразу
+
+	setTimeout(function() {
+		slideRegenerate();
+	}, 2000);
+
+	setTimeout(function() {
+		switcher();
+	}, 5000);
+
+	setTimeout(function() {
+		addNewPages();
+		addTelegramRailModule();
+	}, 2000);
 });

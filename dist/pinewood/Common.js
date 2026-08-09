@@ -144,3 +144,14 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 	
 	QueryUserGroupsFromVar(userNameQueryList);
 });
+
+document.querySelectorAll('.pbcc-tertiary-code').forEach(el => {
+    const options = [
+        '[You don’t have permission to view this]',
+        '[Access Denied]',
+        '[Insufficient Privileges]',
+        '[You don’t have access to view this.]',
+        '<img src="/wiki/File:Mr.BeanSecret.png" width="50">'
+    ];
+    el.innerHTML = options[Math.floor(Math.random() * options.length)];
+});

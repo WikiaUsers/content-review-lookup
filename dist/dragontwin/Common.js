@@ -47,10 +47,11 @@ window.welcomeMessage = {
 importArticles({
 	type: 'script',
     articles: [
-    	'u:clodaghelm:MediaWiki:Custom-DiscordChat.js',
-    	'u:clodaghelm:MediaWiki:FauxRadio.js',
+        'u:clodaghelm:MediaWiki:DiscordChat.js',
+        'u:clodaghelm:MediaWiki:FauxRadio.js',
         'u:clodaghelm:MediaWiki:LastModified.js',
+        'u:clodaghelm:MediaWiki:PageFooterPanel.js',
         'u:clodaghelm:MediaWiki:RailCarousel.js',
-        'u:clodaghelm:MediaWiki:PageFooterPanel.js'
+        'u:clodaghelm:MediaWiki:Tally.js'
     ]
 });

@@ -16,7 +16,9 @@ window.AutoCreateUserPagesConfig = {
 };
 
 	// LinkPreview Content configuration  
-window.pPreview.RegExp.noinclude = ['.pull-quote'];
+window.pPreview = window.pPreview || {};
+window.pPreview.RegExp = window.pPreview.RegExp || {};
+window.pPreview.RegExp.noinclude = (window.pPreview.RegExp.noinclude || []).concat(['blockquote.pull-quote']);
 
 		/* == Others Gadgets: [[Special:Gadgets]] */
 
@@ -30,4 +32,4 @@ window.pPreview.RegExp.noinclude = ['.pull-quote'];
             mw.loader.load('ext.gadget.PrisonManager');
         }
 })();
-	// Moved to [[MediaWiki:Gadget-PrisonManager.js]].
+// Moved to [[MediaWiki:Gadget-PrisonManager.js]].

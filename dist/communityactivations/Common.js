@@ -1,172 +1,228 @@
-/* ============================================================
-   Community Activations Portal — MediaWiki:Common.js
-   Append this block to MediaWiki:Common.js on
-   communityactivations.fandom.com
-
-   Follows the same self-contained IIFE pattern as the
-   James Taylor wiki widgets. Only runs on pages that contain
-   .ca-section (i.e. the main page).
-   ============================================================ */
-
-(function () {
+/**
+ * Multi-instance CustomSlider
+ *
+ * Based on CustomSlider by TRJ-VoRoN and Acirus
+ * Original: https://dev.fandom.com/wiki/CustomSlider
+ *
+ * Modified to support multiple slider instances on a single page.
+ * The original script used shared/global state and page-wide element
+ * lookups, which meant only one #SliderView block per page could work
+ * correctly. This version scopes all state and DOM lookups per-instance
+ * so any number of sliders can run independently on the same page.
+ */
+ 
+(function ($, mw) {
     'use strict';
-
-    /* Only run when the portal is present */
-    if (!document.querySelector('.ca-section')) return;
-
-    /* ── 1. Twinkling stars in the hero ── */
-    (function () {
-        var container = document.getElementById('ca-stars');
-        if (!container) return;
-        var colors = ['#AFA9EC','#FAC775','#9FE1CB','#ED93B1','#EEEDFE','#F0997B','#5DCAA5','#fff'];
-        for (var i = 0; i < 24; i++) {
-            var s = document.createElement('div');
-            s.className = 'ca-star';
-            s.style.left               = (Math.random() * 96).toFixed(1) + '%';
-            s.style.top                = (Math.random() * 88).toFixed(1) + '%';
-            s.style.background         = colors[i % colors.length];
-            s.style.animationDelay     = (Math.random() * 2.5).toFixed(2) + 's';
-            s.style.animationDuration  = (1.4 + Math.random()).toFixed(2) + 's';
-            container.appendChild(s);
+ 
+    mw.hook('wikipage.content').add(function ($content) {
+        $content.find('[id="SliderView"]').each(function () {
+            initSlider($(this));
+        });
+    });
+ 
+    function initSlider($sliderView) {
+        var SlideNow = 1;
+        var SlideCount = 0;
+        var SlideInterval = 3000;
+        var TranslateWidth = 0;
+        var TimerPause = false;
+        var isVertical = false;
+ 
+        // Structural lookups instead of ID selectors - see header comment
+        // for why: duplicate ids across instances make $x.find('#id')
+        // unreliable in some jQuery versions.
+        var $navBtnsUl = $sliderView.children('ul').has('.NavBtn').first();
+        var ele = {
+            sld: $sliderView.find('.Sld'),
+            sliderData: $sliderView.children('div').first(),
+            navBtn: $sliderView.find('.NavBtn'),
+            navBtns: $navBtnsUl,
+            navBtnsLi: $navBtnsUl.find('li'),
+            sliderView: $sliderView,
+            sliderWrapper: $sliderView.children('ul').has('.Sld').first()
+        };
+ 
+        var Slides = 0;
+        var HeightSize = 'auto';
+        var Data = (ele.sliderData.attr('class') || '').split('|');
+        if (Data.length >= 4) {
+            Slides = parseInt(Data[0], 10);
+            SlideInterval = parseInt(Data[1], 10);
+            HeightSize = Data[2];
+            isVertical = Data[3].toLowerCase() === 'down';
+        } else if (Data.length === 3) {
+            Slides = parseInt(Data[0], 10);
+            SlideInterval = parseInt(Data[1], 10);
+            HeightSize = Data[2];
         }
-    }());
-
-    /* ── 2. Scroll-entrance animations + HP bar triggers ── */
-    (function () {
-        var sections = document.querySelectorAll('.ca-section');
-        if (!sections.length) return;
-
-        /* Opt the page into entrance animations now that JS is running */
-        var portal = document.querySelector('.ca-hero');
-        if (portal && portal.parentNode) {
-            portal.parentNode.classList.add('ca-animated');
+        if (!SlideInterval || SlideInterval < 1000) {
+            SlideInterval = 3000;
         }
-
-        var io = new IntersectionObserver(function (entries) {
-            entries.forEach(function (e) {
-                if (!e.isIntersecting) return;
-                e.target.classList.add('ca-visible');
-                /* Animate any HP bars inside this section */
-                e.target.querySelectorAll('.ca-hp-fill').forEach(function (bar) {
-                    setTimeout(function () {
-                        bar.style.width = (bar.getAttribute('data-w') || '80') + '%';
-                    }, 200);
+ 
+        SlideCount = Slides;
+ 
+        ele.sld.each(function (index) {
+            if (index + 1 > SlideCount) { $(this).remove(); }
+        });
+        ele.navBtn.each(function (index) {
+            if (index + 1 > SlideCount) { $(this).remove(); }
+        });
+        // Refresh collections now that extras are gone
+        ele.sld = ele.sliderView.find('.Sld');
+        ele.navBtn = ele.sliderView.find('.NavBtn');
+        ele.navBtnsLi = ele.navBtns.find('li');
+ 
+        if (isVertical) {
+            ele.sliderWrapper.css({ 'height': 100 * SlideCount + '%', 'width': '100%' });
+            ele.sld.css({ 'height': 100 / SlideCount + '%', 'width': '100%' });
+            ele.navBtns.css({
+                'position': 'absolute', 'right': '10px', 'top': '50%',
+                'transform': 'translateY(-50%)', 'list-style': 'none',
+                'margin': '0', 'padding': '0', 'z-index': '10'
+            });
+            ele.navBtnsLi.css({ 'margin': '5px 0' });
+        } else {
+            ele.sliderWrapper.css('width', 100 * SlideCount + '%');
+            ele.sld.css('width', 100 / SlideCount + '%');
+        }
+ 
+        function updateHeight() {
+            var currentSlide = ele.sld.eq(SlideNow - 1);
+            var imgHeight = currentSlide.find('img').outerHeight(true);
+            if (imgHeight > 0) { ele.sliderView.css('height', imgHeight + 'px'); }
+        }
+ 
+        if (HeightSize === 'auto') {
+            $(window).on('load', updateHeight);
+            setTimeout(updateHeight, 100);
+        } else {
+            ele.sliderView.css('height', HeightSize);
+        }
+ 
+        setTimeout(function tick() {
+            if (TimerPause === false) { NextSlide(); }
+            setTimeout(tick, SlideInterval);
+        }, SlideInterval);
+ 
+        ele.sliderView.mouseenter(function () { TimerPause = true; });
+        ele.sliderView.mouseleave(function () { TimerPause = false; });
+ 
+        ele.navBtn.click(function () {
+            var navBtnId = $(this).index();
+            SlideNow = navBtnId + 1;
+            moveWrapper(navBtnId);
+            SelectSlide($(this));
+            updateHeight();
+        });
+ 
+        $(window).trigger('scroll');
+ 
+        if (HeightSize !== 'auto') {
+            var SSliderH = ele.sliderView.outerHeight(true);
+            ele.sld.each(function () {
+                var HSlide = $(this).find('img').outerHeight(false);
+                var RMath = (SSliderH - HSlide) / 2;
+                $(this).find('img').css('transform', 'translateY(' + RMath + 'px)');
+            });
+        }
+ 
+        centerNavButtons();
+ 
+        function centerNavButtons() {
+            var BtnCount = ele.navBtn.length;
+            var Size, BtnSize;
+            if (ele.navBtns.hasClass('nmLeft') || ele.navBtns.hasClass('nmRight')) {
+                Size = ele.navBtns.outerHeight(true);
+                BtnSize = ele.navBtnsLi.outerHeight(true);
+                if (ele.navBtns.hasClass('nmP2')) {
+                    ele.navBtnsLi.css('transform', 'translateY(' + (Size - BtnSize * BtnCount) / 2 + 'px)');
+                } else if (ele.navBtns.hasClass('nmP3')) {
+                    ele.navBtnsLi.css('transform', 'translateY(' + (Size - BtnSize * BtnCount) + 'px)');
+                }
+            } else if (ele.navBtns.hasClass('nmTop') || ele.navBtns.hasClass('nmBottom')) {
+                Size = ele.navBtns.outerWidth(true);
+                BtnSize = ele.navBtnsLi.outerWidth(true);
+                if (ele.navBtns.hasClass('nmP2')) {
+                    ele.navBtnsLi.css('transform', 'translateX(' + (Size - BtnSize * BtnCount) / 2 + 'px)');
+                } else if (ele.navBtns.hasClass('nmP3')) {
+                    ele.navBtnsLi.css('transform', 'translateX(' + (Size - BtnSize * BtnCount) + 'px)');
+                }
+            }
+        }
+ 
+        function moveWrapper(zeroBasedIndex) {
+            if (isVertical) {
+                TranslateWidth = -ele.sliderView.height() * zeroBasedIndex;
+                ele.sliderWrapper.css({
+                    'transform': 'translate(0, ' + TranslateWidth + 'px)',
+                    '-webkit-transform': 'translate(0, ' + TranslateWidth + 'px)',
+                    '-ms-transform': 'translate(0, ' + TranslateWidth + 'px)'
                 });
-                io.unobserve(e.target);
-            });
-        }, { threshold: 0.08 });
-
-        sections.forEach(function (el) { io.observe(el); });
-    }());
-
-    /* ── 3. Coin animation (appreciation section) ── */
-    (function () {
-        var container = document.getElementById('ca-coins');
-        if (!container) return;
-        var colors = ['#FAC775','#EF9F27','#F0997B','#ED93B1','#9FE1CB'];
-
-        setInterval(function () {
-            var coin = document.createElement('div');
-            coin.className = 'ca-coin';
-            coin.style.background = colors[Math.floor(Math.random() * colors.length)];
-            coin.style.left       = (6 + Math.random() * 36).toFixed(0) + 'px';
-            coin.style.bottom     = '0';
-            container.appendChild(coin);
-            setTimeout(function () {
-                if (coin.parentNode) coin.parentNode.removeChild(coin);
-            }, 1300);
-        }, 520);
-    }());
-
-    /* ── 4. Smooth-scroll CTA buttons ── */
-    (function () {
-        document.querySelectorAll('.ca-scroll-to').forEach(function (btn) {
-            function go() {
-                var id = btn.getAttribute('data-target');
-                var target = document.getElementById(id);
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            }
-            btn.addEventListener('click', go);
-            btn.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-            });
-        });
-    }());
-
-    /* ── 5. Radio buttons ── */
-    document.querySelectorAll('.ca-radio').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-            var group = opt.getAttribute('data-group');
-            document.querySelectorAll('.ca-radio[data-group="' + group + '"]').forEach(function (o) {
-                o.classList.remove('ca-radio-sel');
-                var dot = o.querySelector('.ca-rdot');
-                if (dot) dot.classList.remove('ca-rdot-on');
-            });
-            opt.classList.add('ca-radio-sel');
-            var dot = opt.querySelector('.ca-rdot');
-            if (dot) dot.classList.add('ca-rdot-on');
-        });
-    });
-
-    /* ── 6. Checkboxes ── */
-    document.querySelectorAll('.ca-check').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-            var box = opt.querySelector('.ca-cbox');
-            if (box) box.classList.toggle('ca-cbox-on');
-        });
-    });
-
-    /* ── 7. Submit button + confetti ── */
-    var submitBtn  = document.getElementById('ca-submit');
-    var confirmBox = document.getElementById('ca-confirm');
-
-    if (submitBtn && confirmBox) {
-        /* Inject confetti keyframes once */
-        if (!document.getElementById('ca-kf')) {
-            var kf = document.createElement('style');
-            kf.id = 'ca-kf';
-            kf.textContent =
-                '@keyframes ca-spark-out{' +
-                '0%{opacity:1;transform:translate(0,0) scale(1)}' +
-                '100%{opacity:0;transform:translate(var(--ca-tx,0px),var(--ca-ty,-40px)) scale(0)}}';
-            document.head.appendChild(kf);
-        }
-
-        function handleSubmit() {
-            confirmBox.classList.add('ca-show');
-            confirmBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            submitBtn.textContent         = '✓ Sent — thanks!';
-            submitBtn.style.background    = '#1D9E75';
-            submitBtn.style.borderColor   = '#085041';
-            submitBtn.style.boxShadow     = '4px 4px 0 #085041';
-
-            /* Confetti burst */
-            var cols = ['#534AB7','#FAC775','#5DCAA5','#F0997B','#AFA9EC','#1D9E75','#D4537E','#EF9F27'];
-            for (var i = 0; i < 16; i++) {
-                (function (idx) {
-                    var p = document.createElement('div');
-                    var tx = ((Math.random() - 0.5) * 150).toFixed(0);
-                    var ty = (-(40 + Math.random() * 70)).toFixed(0);
-                    p.className = 'ca-spark';
-                    p.style.background      = cols[idx % cols.length];
-                    p.style.left            = (10 + Math.random() * 80).toFixed(0) + '%';
-                    p.style.bottom          = '0';
-                    p.style.setProperty('--ca-tx', tx + 'px');
-                    p.style.setProperty('--ca-ty', ty + 'px');
-                    p.style.animation       = 'ca-spark-out .95s ease-out ' + (idx * 0.055).toFixed(2) + 's forwards';
-                    confirmBox.appendChild(p);
-                    setTimeout(function () {
-                        if (p.parentNode) p.parentNode.removeChild(p);
-                    }, 1400);
-                }(i));
+            } else {
+                TranslateWidth = -ele.sliderView.width() * zeroBasedIndex;
+                ele.sliderWrapper.css({
+                    'transform': 'translate(' + TranslateWidth + 'px, 0)',
+                    '-webkit-transform': 'translate(' + TranslateWidth + 'px, 0)',
+                    '-ms-transform': 'translate(' + TranslateWidth + 'px, 0)'
+                });
             }
         }
+ 
+        function NextSlide() {
+            if (SlideNow === SlideCount) {
+                ele.sliderWrapper.css('transform', 'translate(0, 0)');
+                SlideNow = 1;
+            } else {
+                moveWrapper(SlideNow);
+                SlideNow++;
+            }
+            SelectSlide(ele.navBtn.eq(SlideNow - 1));
+            updateHeight();
+        }
+ 
+        function SelectSlide(ActiveBtn) {
+            $(window).trigger('scroll');
+            ele.navBtn.removeClass('nbActiveLeft nbActiveRight nbActiveTop nbActiveBottom');
+            if (ele.navBtns.hasClass('nmRight')) {
+                ActiveBtn.addClass('nbActiveRight');
+            } else if (ele.navBtns.hasClass('nmTop')) {
+                ActiveBtn.addClass('nbActiveTop');
+            } else if (ele.navBtns.hasClass('nmBottom')) {
+                ActiveBtn.addClass('nbActiveBottom');
+            } else {
+                ActiveBtn.addClass('nbActiveLeft');
+            }
+        }
+    }
+})(window.jQuery, window.mediaWiki);
 
-        submitBtn.addEventListener('click', handleSubmit);
-        submitBtn.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSubmit(); }
-        });
+
+// Typeform Embed
+$(function () {
+
+    function loadTypeformEmbed(container) {
+        $(container).html(
+            "<div class='typeform-widget' data-url='https://form.typeform.com/to/XOR6yhrx' style='width: 100%; height: 550px;'></div>"
+        );
+
+        if (!document.getElementById('typef_orm')) {
+            var js = document.createElement('script');
+            js.id = 'typef_orm';
+            js.src = 'https://embed.typeform.com/embed.js';
+            document.body.appendChild(js);
+        }
     }
 
-}());
+    // Manual page embeds
+    $('.activations-form-embed').each(function () {
+        loadTypeformEmbed(this);
+    });
+
+    // Inject into wiki rail
+    if ($('#WikiaRail').length) {
+        var railContainer = $("<div style='margin-top:20px'></div>");
+        $('#WikiaRail').append(railContainer);
+        loadTypeformEmbed(railContainer);
+    }
+
+});

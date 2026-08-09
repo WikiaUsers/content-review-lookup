@@ -569,3 +569,95 @@ $(function () {
     moveMascot();
     setInterval(moveMascot, 12000);
 });
+/*Scrollbar*/
+(function () {
+    const bar = document.createElement("div");
+    bar.id = "scroll-progress";
+    document.body.appendChild(bar);
+
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        const progress = scrollHeight > 0
+            ? (scrollTop / scrollHeight) * 100
+            : 100;
+
+        bar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress);
+    window.addEventListener("resize", updateProgress);
+    updateProgress();
+})();
+/*Fake Widget*/
+(function () {
+
+    if (document.getElementById("fake-online-widget")) return;
+
+    const widget = document.createElement("div");
+    widget.id = "fake-online-widget";
+
+    widget.innerHTML = `
+        <div class="title">👥 Visitors Online</div>
+        <div class="count">0</div>
+        <div class="status">● Live</div>
+    `;
+
+    document.body.appendChild(widget);
+
+    const count = widget.querySelector(".count");
+
+    const hour = new Date().getHours();
+
+    let min, max;
+
+    if (hour >= 18 && hour <= 22) {
+        min = 70;
+        max = 120;
+    } else if (hour >= 12 && hour < 18) {
+        min = 40;
+        max = 80;
+    } else if (hour >= 8 && hour < 12) {
+        min = 20;
+        max = 50;
+    } else {
+        min = 5;
+        max = 20;
+    }
+
+    let visitors = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function animate(newValue) {
+        const current = parseInt(count.textContent) || 0;
+
+        if (current === newValue) return;
+
+        const step = current < newValue ? 1 : -1;
+
+        const interval = setInterval(() => {
+            let value = parseInt(count.textContent);
+
+            if (value === newValue) {
+                clearInterval(interval);
+                return;
+            }
+
+            count.textContent = value + step;
+
+        }, 25);
+    }
+
+    count.textContent = visitors;
+
+    setInterval(() => {
+
+        visitors += Math.floor(Math.random() * 5) - 2;
+
+        visitors = Math.max(min, Math.min(max, visitors));
+
+        animate(visitors);
+
+    }, 12000);
+
+})();

@@ -69,7 +69,7 @@ mw.hook('wikipage.content').add(() => {
 		let queries = { hide: {}, show: {} };
 		let filterGroups = {}; // Track queries by group
 		let groupHasToggles = {}; // Track which groups have toggles
-		let filters = $('<div class="fl-filter-wrapper"></div>');
+		let filters = $('<div>').addClass('fl-filter-wrapper');
 		let applyFLs = mw.util.debounce(() => {
 			let allCards = $wrap.find('.card-container');
 			let show = $();
@@ -150,31 +150,74 @@ mw.hook('wikipage.content').add(() => {
 				filterGroups[groupName] = [];
 				groupHasToggles[groupName] = true;
 				
-				let togglewrap = $(
-					'<div class="fl-filter-group '+mw.html.escape(curr.class||'')+'" data-group="'+groupName+'">'+
-						'<div class="fl-toggle-label">'+
-							mw.html.escape(curr.label ? (curr.label+':') :'')+
-							(curr.all || curr.none ? '<div class="fl-toggle-qa">' : '')+
-								(curr.all ? '<a class="fl-toggle-qa-all">ALL</a>' : '')+
-								(curr.all && curr.none ? ' &mdash; ' : '')+
-								(curr.none ? '<a class="fl-toggle-qa-none">NONE</a>' : '')+
-							(curr.all || curr.none ? '</div>' : '')+
-						'</div>'+
-					'</div>'
-				);
+				let togglewrap = $('<div>')
+					.addClass('fl-filter-group')
+					.attr('data-group', groupName);
+				if (curr.class) {
+					togglewrap.addClass(curr.class);
+				}
+
+				let toggleLabel = $('<div>').addClass('fl-toggle-label');
+				if (curr.label) {
+					toggleLabel.append(document.createTextNode(curr.label + ':'));
+				}
+				if (curr.all || curr.none) {
+					let quickActions = $('<div>').addClass('fl-toggle-qa');
+					if (curr.all) {
+						quickActions.append($('<a>').addClass('fl-toggle-qa-all').text('ALL'));
+					}
+					if (curr.all && curr.none) {
+						quickActions.append(document.createTextNode(' — '));
+					}
+					if (curr.none) {
+						quickActions.append($('<a>').addClass('fl-toggle-qa-none').text('NONE'));
+					}
+					toggleLabel.append(quickActions);
+				}
+				togglewrap.append(toggleLabel);
 				curr.toggles.forEach((toggle) => {
 					flc++;
 					// console.log('Adding toggle:', toggle.label || 'no-label', 'query:', toggle.query);
-					let opt = $('<label for="fl-toggle-'+flc+'" class="fl-checkbox-label">');
-					let inpt = $('<input id="fl-toggle-'+flc+'" class="fl-checkbox" checked type="checkbox" tabindex="0" />');
+					let opt = $('<label>')
+						.addClass('fl-checkbox-label')
+						.attr('for', 'fl-toggle-' + flc);
+					let inpt = $('<input>')
+						.attr('id', 'fl-toggle-' + flc)
+						.addClass('fl-checkbox')
+						.attr('type', 'checkbox')
+						.attr('tabindex', '0')
+						.prop('checked', true);
+					let imageName = null;
+					let imageClass = '';
 					if (toggle.imgL && $('body[data-theme="light"]').length>0) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgL)}" class="${mw.html.escape(toggle.imgLClass || toggle.imgClass || '')}" width="24px" />`);
+						imageName = toggle.imgL;
+						imageClass = toggle.imgLClass || toggle.imgClass || '';
 					} else if (toggle.imgD && $('body[data-theme="dark"]').length>0) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.imgD)}" class="${mw.html.escape(toggle.imgDClass || toggle.imgClass || '')}" width="24px" />`);
+						imageName = toggle.imgD;
+						imageClass = toggle.imgDClass || toggle.imgClass || '';
 					} else if (toggle.img) {
-						opt.append(`<img src="${config.wgServer+mw.util.getUrl('Special:Filepath/'+toggle.img)}" class="${mw.html.escape(toggle.imgClass || '')}" width="24px" />`);
+						imageName = toggle.img;
+						imageClass = toggle.imgClass || '';
 					}
-					if (toggle.label) { opt.append(mw.html.escape(toggle.label)); }
+					if (imageName) {
+						let iconTarget = null;
+						let img = $('<img>')
+							.attr('src', config.wgServer + mw.util.getUrl('Special:Filepath/' + imageName))
+							.attr('width', '24px');
+						if (imageClass) {
+							img.addClass(imageClass);
+						}
+						if (toggle.pathway) {
+							iconTarget = $('<span>')
+								.addClass('pathway-tooltip')
+								.attr('data-pathway', toggle.pathway)
+								.append(img);
+						} else {
+							iconTarget = img;
+						}
+						opt.append(iconTarget);
+					}
+					if (toggle.label) { opt.append(document.createTextNode(toggle.label)); }
 					if (toggle.alt) { opt.attr('title', toggle.alt); }
 					opt.append(inpt);
 					queries.show[toggle.query] = true; // show by default
@@ -211,18 +254,31 @@ mw.hook('wikipage.content').add(() => {
 			} else if (curr.search) {
 				flc++;
 				let s = curr.search;
-				let labl = $('<label class="fl-search-label fl-filter-group '+mw.html.escape(curr.class||'')+'" for="fl-search-'+flc+'">');
-				let inpt = $('<input class="fl-search" id="fl-search-'+flc+'" placeholder="'+mw.html.escape(s.placeholder||'Term to filter by')+'" />');
+				let labl = $('<label>').addClass('fl-search-label fl-filter-group').attr('for', 'fl-search-'+flc);
+				if (curr.class) {
+					labl.addClass(curr.class);
+				}
+				let inpt = $('<input>').addClass('fl-search').attr('id', 'fl-search-'+flc).attr('placeholder', s.placeholder || 'Term to filter by');
 				inpt.attr('data-fl-search-query', s.query);
-				if (s.img) {labl.append('<img src="'+config.wgServer+mw.util.getUrl(s.img).replace(/^\/wiki\//, '/wiki/Special:Filepath/')+'" width="24px" />');}
+				if (s.img) {
+					labl.append(
+						$('<img>')
+							.attr('src', config.wgServer + mw.util.getUrl(s.img).replace(/^\/wiki\//, '/wiki/Special:Filepath/'))
+							.attr('width', '24px')
+					);
+				}
 				if (s.source) {inpt.attr('data-fl-search-source', s.source);}
 				if (s.attr) {inpt.attr('data-fl-search-attr', s.attr);}
-				labl.append(mw.html.escape(curr.label), ': ', inpt);
+				if (curr.label) {
+					labl.append(document.createTextNode(curr.label));
+				}
+				labl.append(document.createTextNode(': '), inpt);
 				inpt.on('change.fls keyup.fls input.fls', applyFLs);
 				filters.append(labl);
 			}
 		});
 		$wrap.prepend(filters);
+		mw.hook('wikipage.content').fire(filters);
 		// Apply filters on initialization to ensure correct initial state
 		applyFLs();
 	});

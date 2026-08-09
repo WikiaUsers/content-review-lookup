@@ -54,3 +54,8 @@ mw.hook('wikipage.content').add(function() {
 
     $('body').append($button);
 });
+
+/* Skript für einklappbare Tabellen & Navboxen */
+mw.loader.using(['mediawiki.util', 'jquery.client'], function () {
+    importScriptPage('MediaWiki:CollapsibleTables.js', 'dev');
+});

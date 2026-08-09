@@ -113,7 +113,9 @@ $(function () {
       //250
       'Tidal_Seawater_Predator', 'Ashen_Coast_Predator', 'Crimson_Bay_Predator', 'Flame_Bear', 'Guardian_Lion',
       //255
-      'Reliable_Ram', 'Vampiric_Hound', 'Night_Hound', 'Infernal_Hound'
+      'Reliable_Ram', 'Vampiric_Hound', 'Night_Hound', 'Infernal_Hound', 'Djinntaur',
+      //260
+      'Radiant_Nimbus_(Mount)', 'Jaracal_(Mount)', 'Landsailer'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink (https://tibia.fandom.com/wiki/Template:OutfiterLink)
@@ -216,7 +218,9 @@ $(function () {
       //225
       'Martial_Artist', 'Necromancer', 'Illuminator', 'Bat_Knight', 'Feral_Trapper',
       //230
-      'Phoenix_Evoker', 'Aerial_Disciple', 'Vampire_Noble'
+      'Phoenix_Evoker', 'Aerial_Disciple', 'Vampire_Noble', 'Moon_Guardian', 'Illuminated_Warrior',
+      //235
+      'Captains'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -375,7 +379,9 @@ $(function () {
       Death_Phoenix: 8, 
       Soul_Phoenix: 8,
       Battle_Werewolf: 8,
-      Flame_Bear: 8
+      Flame_Bear: 8,
+      'Radiant_Nimbus_(Mount)': 8, 
+      Djinntaur: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -389,7 +395,8 @@ $(function () {
 	  Hell_Demonosaur: true,
 	  Alpha_Demonosaur: true,
 	  'Gloom_Maw_(Mount)': true,
-	  Guardian_Lion: true
+	  Guardian_Lion: true,
+	  Landsailer: true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

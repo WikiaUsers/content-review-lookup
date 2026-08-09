@@ -1,3 +1,4 @@
+/* Загрузчик Preact */
 (() => {
     'use strict';
     if (window.preactAdapterES6Loaded) return;

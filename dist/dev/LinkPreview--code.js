@@ -5,9 +5,9 @@
 /* classes: main: npage-preview, image not found: npage-preview-noimage */
 /* img: <img>, text: <div> */
 (function wrapper($) {
-	var urlVars = new URLSearchParams(location.search);
-	var Settings = window.pPreview || {},
-		mwc = mw.config.get(['wgScriptPath', 'wgSassParams', 'wgArticlePath']);
+	const urlVars = new URLSearchParams(location.search);
+	const Settings = window.pPreview || {},
+		mwc = mw.config.get(['wgSassParams', 'wgArticlePath']);
 	Settings.debug = urlVars.get('debug') || urlVars.get('debug1') || (Settings.debug !== undefined ? Settings.debug : false);
 
 	// killswitch
@@ -15,33 +15,46 @@
 	if (Settings.dontrun) return;
 
 	// default values
-	var Defaults = {
+	const Defaults = {
 		dock: '#mw-content-text, #article-comments',
-		defimage: 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest/scale-to-width-down/350?cb=20170626182120&path-prefix=ru',
-		noimage: 'https://vignette.wikia.nocookie.net/borderlands/images/f/f5/%D0%97%D0%B0%D0%B3%D0%BB%D1%83%D1%88%D0%BA%D0%B0.png/revision/latest/scale-to-width-down/200?cb=20160122074659&path-prefix=ru',
+		defimage:
+			'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest/scale-to-width-down/350?cb=20170626182120&path-prefix=ru',
+		noimage:
+			'https://vignette.wikia.nocookie.net/borderlands/images/f/f5/%D0%97%D0%B0%D0%B3%D0%BB%D1%83%D1%88%D0%BA%D0%B0.png/revision/latest/scale-to-width-down/200?cb=20160122074659&path-prefix=ru',
 	}; // defaults
-	var pp = {};
+	const pp = {};
 	pp.sync = []; // synchronization element
-	var ncache = new Map(); // Map: href -> {href, data}
-	var loc = { lefts: 5, tops: 5 }; // left: x, top: y, lefts: left-shift, clientx
-	var currentEl = {}; // {href, ?data}
-	var apiUri;
-	var prefetchTimers = new WeakMap();
-	var activePrefetch = 0;
-	var currentRequests = new Set(); // active hover
-	var prefetchRequests = new Set(); // background prefetch
-	var hideTimer = null; // sticky timer
-	var hoverTimer = null; // hover timer
+	const ncache = new Map(); // Map: href -> {href, data}
+	const loc = {lefts: 5, tops: 5}; // left: x, top: y, lefts: left-shift, clientx
+	const currentEl = {}; // {href, ?data}
+	let apiUri;
+	const prefetchTimers = new WeakMap();
+	let activePrefetch = 0;
+	const currentRequests = new Set(); // active hover
+	const prefetchRequests = new Set(); // background prefetch
+	const ilinksSet = new Set(); // O(1) memoized cache of confirmed-ignored link hrefs (see nignoreLink)
+	let hideTimer = null; // sticky timer
+	let hoverTimer = null; // hover timer
+	let resizeTimer = null; // window resize debounce timer
 
 	// exports
 	Settings.wrapper = wrapper;
 	Settings.context = this;
 	Settings.f = {
-		init: init, main: main, createuri: createUri, getpreview: ngetPreview,
-		showpreview: nshowPreview, hidepreview: nhidePreview, cache: ncache,
-		ignoreimage: nignoreImage, ignorepage: nignorePage, ignorelink: nignoreLink,
-		cacheof: ncacheOf, chkimagesrc: chkImageSrc, preprocess: preprocess,
-		elvalidate: elValidate
+		init: init,
+		main: main,
+		createuri: createUri,
+		getpreview: ngetPreview,
+		showpreview: nshowPreview,
+		hidepreview: nhidePreview,
+		cache: ncache,
+		ignoreimage: nignoreImage,
+		ignorepage: nignorePage,
+		ignorelink: nignoreLink,
+		cacheof: ncacheOf,
+		chkimagesrc: chkImageSrc,
+		preprocess: preprocess,
+		elvalidate: elValidate,
 	};
 
 	mw.loader.using(['mediawiki.util', 'mediawiki.Uri'], init);
@@ -53,7 +66,7 @@
 	} // log
 
 	pp.start = (e, isPrefetch) => {
-		var hasKey = e !== undefined && e !== null;
+		const hasKey = e !== undefined && e !== null;
 		if (hasKey && pp.sync.indexOf(e) > -1) {
 			return false;
 		}
@@ -66,7 +79,7 @@
 
 	pp.stop = (e, isPrefetch) => {
 		hlpaHover();
-		var epos = pp.sync.indexOf(e);
+		const epos = pp.sync.indexOf(e);
 		if (epos !== -1) {
 			// remove e from sync array
 			pp.sync.splice(epos, 1);
@@ -83,31 +96,42 @@
 			log('init dbl run protection triggered');
 			return;
 		}
-		Settings.version = '1.91';
+		Settings.version = '1.94';
 		log('init vrsn:', Settings.version);
 		apiUri = new URL(mw.util.wikiScript('api'), location.href);
+		function setDefault(key, defaultValue) {
+			// Collapses the repeated "Settings.x !== undefined ? Settings.x : y" pattern
+			if (Settings[key] === undefined) Settings[key] = defaultValue;
+		} // setDefault
+
 		// use api.v1/article/details
-		Settings.apid = Settings.apid !== undefined ? Settings.apid : false;
+		setDefault('apid', false);
 		// show preview delay, ms
-		Settings.delay = Settings.delay !== undefined ? Settings.delay : 350;
+		setDefault('delay', 350);
 		// suppress hover events for x ms
 		// Settings.throttling = timeout until x
-		Settings.throttle = Settings.throttle !== undefined ? Settings.throttle : 100;
+		setDefault('throttle', 100);
 		Settings.throttling = false;
 		Settings.process = false; // processing data
-		Settings.tlen = Settings.tlen !== undefined ? Settings.tlen : 1000; // max text length
+		// max lines of preview text to show (min 1). Drives
+		// -webkit-line-clamp in CSS via --pp-mline (only affects
+		// the default/withtext-landscape layout - pp-withtext-portrait keeps
+		// its own fixed 12-line clamp, unaffected by this).
+		setDefault('mline', 5);
+		Settings.mline = Math.max(Settings.mline, 1);
+		document.documentElement.style.setProperty('--pp-mline', Settings.mline);
 		// do not remove portable infobox on preprocess stage
-		Settings.pibox = Settings.pibox !== undefined ? Settings.pibox : false;
+		setDefault('pibox', false);
 		// do not remove infobox siblings
-		Settings.piboxkeepprev = Settings.piboxkeepprev !== undefined ? Settings.piboxkeepprev : false;
+		setDefault('piboxkeepprev', false);
 		// cache size
-		Settings.csize = Settings.csize !== undefined ? Settings.csize : 100;
-		Settings.defimage = Settings.defimage !== undefined ? Settings.defimage : Defaults.defimage; // default image path
-		// prefetch cache config (KEPT FALSE BY DEFAULT)
-		Settings.prefetch = Settings.prefetch !== undefined ? Settings.prefetch : false;
-		Settings.prefetchDelay = Settings.prefetchDelay !== undefined ? Settings.prefetchDelay : 80;
-		Settings.prefetchMax = Settings.prefetchMax !== undefined ? Settings.prefetchMax : 3;
-		Settings.viewportPrefetch = Settings.viewportPrefetch !== undefined ? Settings.viewportPrefetch : false;
+		setDefault('csize', 100);
+		setDefault('defimage', Defaults.defimage); // default image path
+		// prefetch cache config
+		setDefault('prefetch', false); // enable prefetch
+		setDefault('prefetchDelay', 80); // delay before starting to prefetch
+		setDefault('prefetchMax', 3); // max number of pages to prefetch
+		setDefault('viewportPrefetch', false); // enable viewport prefetch
 		// warning: viewportPrefetch depends on prefetch being enabled; without it, nothing happens
 		if (Settings.viewportPrefetch && !Settings.prefetch) {
 			log('warning: viewportPrefetch is enabled but prefetch is disabled — no viewport prefetching will occur');
@@ -117,60 +141,67 @@
 			log('viewportPrefetch requested, but IntersectionObserver is not supported in this browser — feature disabled');
 		}
 		// no image found. class: npage-preview-noimage
-		Settings.noimage = Settings.noimage !== undefined ? Settings.noimage : Defaults.noimage;
+		setDefault('noimage', Defaults.noimage);
 		// show 'No Image' placeholder when no thumbnail is available
-		Settings.showNoImagePlaceholder = Settings.showNoImagePlaceholder !== undefined ? Settings.showNoImagePlaceholder : true;
+		setDefault('showNoImagePlaceholder', true);
 		// request to perform scaling
 		// note: default width is 450; installs with an already-saved Settings.scale are no longer overwritten
-		Settings.scale = Settings.scale !== undefined ? Settings.scale : { r: '?', t: '/scale-to-width-down/450?' };
+		setDefault('scale', {r: '?', t: '/scale-to-width-down/450?'});
 		// container (#WikiaMainContent, #mw-content-text etc)
 		Settings.dock = Settings.dock ? Settings.dock : Defaults.dock;
 		// parse whole page. debug purposes mainly
 		Settings.wholepage = urlVars.get('wholepage') || (Settings.wholepage !== undefined ? Settings.wholepage : false);
 		// suppress native browser title
-		Settings.suppressTitle = Settings.suppressTitle !== undefined ? Settings.suppressTitle : false;
+		setDefault('suppressTitle', false);
 		// click to navigate
-		Settings.clickToNavigate = Settings.clickToNavigate !== undefined ? Settings.clickToNavigate : false;
+		setDefault('clickToNavigate', false);
 		// sticky config
-		Settings.stickyPreview = Settings.stickyPreview !== undefined ? Settings.stickyPreview : true;
-		Settings.stickyDelay = Settings.stickyDelay !== undefined ? Settings.stickyDelay : 350; // Hold time
+		setDefault('stickyPreview', true);
+		setDefault('stickyDelay', 350); // Hold time
+		// debounce delay for repositioning the open preview on window resize, ms
+		setDefault('resizeDebounce', 150);
+		// fade-out duration, ms - MUST match the CSS animation-duration for
+		// .npage-preview / .npage-preview.is-hiding (LinkPreview.css, currently 0.18s)
+		setDefault('animationDuration', 180);
 		// text align
 		Settings.textAlign = Settings.textAlign || 'justify'; // 'justify', 'left', or 'right'
 		// adaptive layout
-		Settings.adaptiveLayout = Settings.adaptiveLayout !== undefined ? Settings.adaptiveLayout : true;
+		setDefault('adaptiveLayout', true);
 		// Center short text (0 = disabled)
-		Settings.centerShortText = Settings.centerShortText !== undefined ? Settings.centerShortText : 0;
+		setDefault('centerShortText', 0);
+		// cache empty results (no image + no text) to avoid re-hitting the API
+		setDefault('cacheEmpty', true);
 		// regexps
 		Settings.RegExp = Settings.RegExp || {};
+		function setRegExpDefault(key, defaultValue) {
+			// Same idea as setDefault(), but for the nested Settings.RegExp.* group
+			Settings.RegExp[key] = Settings.RegExp[key] || defaultValue;
+		} // setRegExpDefault
 		// images 2 ignore
-		Settings.RegExp.iimages = Settings.RegExp.iimages || [];
+		setRegExpDefault('iimages', []);
 		// pages 2 ignore
-		Settings.RegExp.ipages = Settings.RegExp.ipages || [];
+		setRegExpDefault('ipages', []);
 		// links 2 ignore
-		Settings.RegExp.ilinks = Settings.RegExp.ilinks || [];
+		setRegExpDefault('ilinks', []);
 		// parents to ignore
-		Settings.RegExp.iparents = Settings.RegExp.iparents || ['[id^=flytabs] .tabs'];
+		setRegExpDefault('iparents', ['[id^=flytabs] .tabs']);
 		// classes to ignore
-		Settings.RegExp.iclasses = Settings.RegExp.iclasses || [];
+		setRegExpDefault('iclasses', []);
 		// content to process. non-exclusive inclusion
-		Settings.RegExp.onlyinclude = Settings.RegExp.onlyinclude || [];
+		setRegExpDefault('onlyinclude', []);
 		// content to remove (css-style targets)
-		Settings.RegExp.noinclude = Settings.RegExp.noinclude || [];
+		setRegExpDefault('noinclude', []);
 		// Settings.RegExp.hash = Settings.RegExp.hash || /#.*/;
-		Settings.RegExp.wiki = Settings.RegExp.wiki || /^.*?\/wiki\//i;
+		setRegExpDefault('wiki', /^.*?\/wiki\//i);
 		// delete tags
-		Settings.RegExp.dtag = Settings.RegExp.dtag || /<.*>/gm;
+		setRegExpDefault('dtag', /<.*>/gm);
 		// preprocess data (remove scripts)
-		Settings.RegExp.prep = Settings.RegExp.prep || [];
-		// set len restriction for apid.abstract
-		if (Settings.apid) {
-			Settings.tlen = Settings.tlen > 500 ? 500 : Settings.tlen;
-		}
+		setRegExpDefault('prep', []);
 		// ensure #mw-content-text is processed
-		Settings.fixContentHook = Settings.fixContentHook !== undefined ? Settings.fixContentHook : true;
+		setDefault('fixContentHook', true);
 		window.pPreview = Settings;
-		var thisPageUri = createUri(location);
-		var thisPage = thisPageUri ? thisPageUri.truepath : undefined;
+		const thisPageUri = createUri(location);
+		const thisPage = thisPageUri ? thisPageUri.truepath : undefined;
 		// should i ignore this page
 		if (!thisPage || nignorePage(thisPage)) {
 			mw.hook('wikipage.content').remove(main);
@@ -179,7 +210,7 @@
 		}
 		// run once
 		// dump sass params
-		var sasses = '';
+		let sasses = '';
 		$.each(mwc.wgSassParams, (k, v) => {
 			sasses = `${sasses}--sass-${k}:${v};\n`;
 		}); // each sassparam
@@ -187,15 +218,18 @@
 			sasses = `:root {\n${sasses}}`;
 			mw.util.addCSS(sasses);
 		}
-		log('sasses', { sasses: sasses });
-		importArticle({ type: 'style', article: 'u:dev:MediaWiki:LinkPreview.css', });
+		log('sasses', {sasses: sasses});
+		importArticle({
+			type: 'style',
+			article: 'u:dev:MediaWiki:LinkPreview.css',
+		});
 		log('rmain');
 		if (Settings.debug) {
 			Settings.cache = ncache;
 		}
 		Settings.RegExp.ilinks.push(thisPage); // ignore this page
 		Settings.RegExp.ilinks.push(new RegExp(escapeRegExp(apiUri.pathname))); // ignore unknown
-		var r;
+		let r;
 		if (Settings.RegExp.prep instanceof RegExp) {
 			r = Settings.RegExp.prep;
 			Settings.RegExp.prep = [r];
@@ -214,6 +248,12 @@
 		mw.hook('wikipage.content').add(main);
 		mw.hook('ppreview.ready').fire(Settings);
 
+		// Reposition an open preview after the window is resized (debounced)
+		$(window).on('resize.pp', () => {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(repositionOpenPreview, Settings.resizeDebounce);
+		});
+
 		// load localization, if no local (wiki\user-specific) noimage defined
 		if (Settings.noimage === Defaults.noimage) {
 			log('i18n load');
@@ -221,12 +261,15 @@
 				i18n.loadMessages('LinkPreview').done((i18n) => {
 					log('i18n loaded', i18n);
 					i18n.useContentLang();
-					var img = i18n.msg('no-image').plain();
+					const img = i18n.msg('no-image').plain();
 					Settings.noimage = chkImageSrc(img) ? img : Settings.noimage;
 					log('i18n noimage', Settings.noimage, img);
 				});
 			});
-			importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js', });
+			importArticle({
+				type: 'script',
+				article: 'u:dev:MediaWiki:I18n-js/code.js',
+			});
 		}
 	} // init
 
@@ -240,20 +283,19 @@
 				main($('#mw-content-text'));
 			}
 		}
-		var $content, arr = [];
+		const arr = [];
 		// gather dock sites to one array
 		Settings.dock.split(',').forEach((v) => {
-			var $c = {};
+			v = v.trim();
+			let $c = $();
 			if ($cont) {
-				// if $cont belongs to dock container
-				$c = $cont.is(v) || $cont.parents(v).length ? $cont : {};
+				$c = ($cont.is(v) || $cont.parents(v).length) ? $cont : $();
 			} else {
-				// get whole dock. if main() called w\o params
 				$c = $(v);
-			} // if $cont. instead of $cont ? .is || .len ? : :
+			}
 			$.merge(arr, $c);
 		}); // each dock
-		$content = $(arr);
+		const $content = $(arr);
 		log('main.c:', $content);
 
 		if ('IntersectionObserver' in window && Settings.prefetch && Settings.viewportPrefetch) {
@@ -262,19 +304,22 @@
 			if (window.ppViewportObserver) {
 				window.ppViewportObserver.disconnect();
 			}
-			window.ppViewportObserver = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						const el = entry.target;
-						prefetchPreview(el);
-						window.ppViewportObserver.unobserve(el); // cache only once per link
-					}
-				});
-			}, { rootMargin: '150px' }); // prefetch when link is 150px from screen
+			window.ppViewportObserver = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							const el = entry.target;
+							prefetchPreview(el);
+							window.ppViewportObserver.unobserve(el); // cache only once per link
+						}
+					});
+				},
+				{rootMargin: '150px'}
+			); // prefetch when link is 150px from screen
 		}
 
 		$content.find('a').each(function () {
-			var $el = $(this);
+			const $el = $(this);
 			if (elValidate($el)) {
 				// internal link
 				if (window.ppViewportObserver && Settings.viewportPrefetch) {
@@ -283,10 +328,6 @@
 
 				$el.off('.pp');
 				$el.on('mouseenter.pp', function (e) {
-					// Suppress the native title here, on the real link's hover —
-					// avoids restoring/removing the title on the wrong link when
-					// a forced preview (prefetch/viewport) changes currentEl
-					// concurrently.
 					if (Settings.suppressTitle) {
 						const titleAttr = $el.attr('title');
 						if (titleAttr) {
@@ -328,61 +369,44 @@
 
 	function elValidate($el) {
 		// returns false if element should be ignored
-		var ahref = $el.attr('href'),
-			bstop = false;
-		// log('elValidate. el.h:', ahref);
+		let ahref = $el.attr('href');
 		if (!ahref) return false;
 		ahref = createUri(ahref);
-		// log('elValidate.uri:', ahref);
 		if (!ahref || !ahref.truepath || ahref.hostname !== apiUri.hostname || nignoreLink(ahref.truepath)) {
 			return false;
 		}
 		// chk classes
-		if ($.isArray(Settings.RegExp.iclasses)) {
-			Settings.RegExp.iclasses.forEach((v) => {
-				if ($el.hasClass(v)) {
-					log('elValidate classes', v, ahref.truepath);
-					// Settings.RegExp.ilinks.push(ahref.truepath);
-					bstop = true;
-				}
+		if (Array.isArray(Settings.RegExp.iclasses)) {
+			const bstop = Settings.RegExp.iclasses.some((v) => {
+				const found = $el.hasClass(v);
+				if (found) log('elValidate classes', v, ahref.truepath);
+				return found;
 			});
+			if (bstop) return false;
 		}
-		// log('elValidate classes', bstop);
-		if (bstop) return false;
 		// chk parents
-		if ($.isArray(Settings.RegExp.iparents)) {
-			Settings.RegExp.iparents.forEach((v) => {
-				if ($el.parents(v).length) {
-					log('elValidate parents', v, ahref.truepath);
-					// Settings.RegExp.ilinks.push(ahref.truepath);
-					bstop = true;
-				}
-			});
+		if (Array.isArray(Settings.RegExp.iparents)) {
+			const parent = Settings.RegExp.iparents.find((v) => $el.parents(v).length);
+			if (parent) {
+				log('elValidate parents', parent, ahref.truepath);
+				return false;
+			}
 		}
-		// log('elValidate parents', bstop);
-		if (bstop) return false;
 		return true;
 	} // elValidate
 
 	function chkImageSrc(src) {
 		// is src belongs to wikia
 		if (!src) return false;
-		var url;
 		try {
-			url = new URL(src);
-			return /(\.wikia\.(com|org)|\.fandom\.com|\.wikia\.nocookie\.net)$/.test(
-				url.hostname
-			);
+			const url = new URL(src);
+			return /(\.wikia\.(com|org)|\.fandom\.com|\.wikia\.nocookie\.net)$/.test(url.hostname);
 		} catch (_e) {
 			return false;
 		}
 	} // chkimagesrc
 
 	function applyPreviewImage($imgEl, src) {
-		// the decision to show the image, 
-		// the 'no image' placeholder (if showNoImagePlaceholder) or
-		// remove the element. Returns true if the element should stay/be
-		// appended to the preview; false if it should be discarded.
 		if (src) {
 			$imgEl.attr('src', src).removeClass('npage-preview-noimage');
 			return true;
@@ -395,24 +419,21 @@
 		return false;
 	} // applyPreviewImage
 
-	function preprocess (text) {
-		if (!(Settings.RegExp.prep instanceof Array) || Settings.RegExp.prep.length < 1) return '';
-		var s = text,
+	function preprocess(text) {
+		if (!Array.isArray(Settings.RegExp.prep) || Settings.RegExp.prep.length < 1) return text || '';
+		let s = text,
 			$s = $('<div>').html(s);
-		// remove TemplateStyles output (<style> blocks) and any linked stylesheets
-		// must run before .text() extraction, since textContent includes <style> content
 		$s.find('style, link[rel="stylesheet"]').remove();
 		// remove noinclude items
-		if (Settings.RegExp.noinclude && (Settings.RegExp.noinclude instanceof Array)) {
-			Settings.RegExp.noinclude.forEach(function(v){$s.find(v).remove();});
-		}// if RegExp.noinclude
+		if (Settings.RegExp.noinclude && Array.isArray(Settings.RegExp.noinclude)) {
+			Settings.RegExp.noinclude.forEach((v) => {
+				$s.find(v).remove();
+			});
+		} // if RegExp.noinclude
 		s = $s.html();
 		// process exclusive items
 		// must be done before trash tag processing. because of reasons
-		if (
-			Settings.RegExp.onlyinclude &&
-			Array.isArray(Settings.RegExp.onlyinclude)
-		) {
+		if (Settings.RegExp.onlyinclude && Array.isArray(Settings.RegExp.onlyinclude)) {
 			/* exclusive
 			Settings.RegExp.onlyinclude.forEach(function (v) {
 				var $v = $s.find(v);
@@ -424,7 +445,7 @@
 			s =
 				Settings.RegExp.onlyinclude
 					.map((v) => {
-						var $v = $s.find(v);
+						const $v = $s.find(v);
 						if ($v.length) {
 							$s.find(v).remove();
 							return $v
@@ -432,13 +453,13 @@
 									return this.outerHTML;
 								})
 								.toArray()
-								.join();
+								.join('');
 						} else {
 							return false;
 						}
 					})
 					.filter(Boolean)
-					.join() || s;
+					.join('') || s;
 		} // if RegExp.onlyinclude
 		Settings.RegExp.prep.forEach((v) => {
 			s = s.replace(v, '');
@@ -447,7 +468,7 @@
 	} // preprocess
 
 	function createUri(href) {
-		var h;
+		let h;
 		try {
 			h = new mw.Uri(href.toString());
 			h.pathname = h.path;
@@ -458,9 +479,7 @@
 		}
 		if (h) {
 			try {
-				h.truepath = decodeURIComponent(
-					h.pathname.replace(Settings.RegExp.wiki, '')
-				);
+				h.truepath = decodeURIComponent(h.pathname.replace(Settings.RegExp.wiki, ''));
 				h.interwiki = h.path.split('/wiki/')[0];
 				h.islocal = mwc.wgArticlePath.split('/wiki/')[0] === h.interwiki;
 			} catch (e) {
@@ -484,7 +503,7 @@
 	} // hlpaHover
 
 	function cancelCurrentRequests() {
-		var reqs = Array.from(currentRequests);
+		const reqs = Array.from(currentRequests);
 		currentRequests.clear();
 		reqs.forEach((req) => {
 			if (req && typeof req.abort === 'function') {
@@ -494,23 +513,27 @@
 		// Note: Prefetch Requests are not cleared to keep the background coaching process running.
 	}
 
-	var prefetchQueue = new Set();
+	const prefetchQueue = new Map();
 
 	function prefetchPreview(el) {
 		if (!Settings.prefetch) {
 			return;
 		}
-		prefetchQueue.add(el);
+		const uri = createUri($(el).attr('href'));
+		if (!uri || !uri.truepath || prefetchQueue.has(uri.truepath) || ncacheOf(uri.truepath)) {
+			return;
+		}
+		prefetchQueue.set(uri.truepath, el);
 		processPrefetchQueue();
 	}
 
 	function processPrefetchQueue() {
 		while (activePrefetch < Settings.prefetchMax && prefetchQueue.size > 0) {
-			const el = prefetchQueue.values().next().value;
-			prefetchQueue.delete(el);
+			const href = prefetchQueue.keys().next().value;
+			const el = prefetchQueue.get(href);
+			prefetchQueue.delete(href);
 
-			const uri = createUri($(el).attr('href'));
-			if (!uri || !uri.truepath || ncacheOf(uri.truepath)) {
+			if (ncacheOf(href)) {
 				continue;
 			}
 
@@ -522,7 +545,7 @@
 				clientX: -9999,
 				clientY: -9999,
 			};
-			const request = ngetPreview(fakeEvent, uri.truepath, false, true);
+			const request = ngetPreview(fakeEvent, href, false, true);
 			if (request && typeof request.always === 'function') {
 				request.always(() => {
 					activePrefetch--;
@@ -538,7 +561,7 @@
 		// aHover helper
 		ev.stopPropagation();
 		log('ahover ', Settings.throttling, currentEl.href);
-		var hel = createUri($(ev.currentTarget).attr('href')) || {};
+		const hel = createUri($(ev.currentTarget).attr('href')) || {};
 
 		// Clear preview (Clear delayed hide timer if user re-hovers)
 		if (hideTimer) {
@@ -549,8 +572,7 @@
 			}
 		}
 
-		// suppress some events
-		if (Settings.throttling || Settings.process) {
+		if (Settings.throttling) {
 			return false;
 		}
 		Settings.throttling = setTimeout(hlpaHover, Settings.throttle);
@@ -583,9 +605,9 @@
 
 	function getObj(data, key) {
 		// traverse through object tree
-		var ret = [],
+		let ret = [],
 			r;
-		for (var k in data) {
+		for (const k in data) {
 			if (data[k] instanceof Object) {
 				if (k === key) {
 					ret.push(data[k]);
@@ -599,9 +621,9 @@
 
 	function getVal(data, key) {
 		// travers through object tree
-		var ret = [],
+		let ret = [],
 			r;
-		for (var k in data) {
+		for (const k in data) {
 			if (data[k] instanceof Object) {
 				r = getVal(data[k], key);
 				if (r) {
@@ -617,19 +639,45 @@
 	} // getVal
 
 	// Adaptive layout
-	function applyAdaptiveLayout(imgEl, containerDiv) {
-		if (!Settings.adaptiveLayout) return;
+	function calcPreviewPosition($box, gapX, gapY) {
+		const boxWidth = $box.outerWidth();
+		const boxHeight = $box.outerHeight();
+		const overflowX = loc.clientX + boxWidth > $(window).width();
+		const overflowY = loc.clientY + boxHeight > $(window).height();
+		const left = overflowX ? loc.left - boxWidth - gapX : loc.left + gapX;
+		const top = overflowY ? loc.top - boxHeight - gapY : loc.top + gapY;
+		return {
+			left: Math.max(0, left),
+			top: Math.max(0, top),
+			overflowX: overflowX,
+			overflowY: overflowY,
+		};
+	} // calcPreviewPosition
+
+	function applyBoxPosition($box, pos) {
+		if (pos.overflowX) $box.css('left', pos.left);
+		if (pos.overflowY) $box.css('top', pos.top);
+	} // applyBoxPosition
+
+	function repositionOpenPreview() {
+		// Re-clamp the currently open preview box to the viewport
+		const $box = $('.npage-preview');
+		if (!$box.length) return;
+		applyBoxPosition($box, calcPreviewPosition($box, 0, 0));
+	} // repositionOpenPreview
+
+	function applyAdaptiveLayout(imgEl, containerDiv, onReady) {
+		if (!Settings.adaptiveLayout) {
+			if (onReady) onReady();
+			return;
+		}
 
 		function applyLayout(w, h) {
-			var $textDiv = containerDiv.find('.npage-preview-text');
-			var hasText = $textDiv.length > 0 && $.trim($textDiv.text()).length > 0;
+			const $textDiv = containerDiv.find('.npage-preview-text');
+			const hasText = $textDiv.length > 0 && $.trim($textDiv.text()).length > 0;
 
 			// Flex container (see .pp-adaptive in LinkPreview.css)
-			containerDiv
-				.removeClass(
-					'pp-imgonly-landscape pp-imgonly-portrait pp-withtext-landscape pp-withtext-portrait'
-				)
-				.addClass('pp-adaptive');
+			containerDiv.removeClass('pp-imgonly-landscape pp-imgonly-portrait pp-withtext-landscape pp-withtext-portrait').addClass('pp-adaptive');
 
 			// Image-only layout (see .pp-imgonly-landscape
 			// and .pp-imgonly-portrait in CSS)
@@ -637,9 +685,7 @@
 				if ($textDiv.length) {
 					$textDiv.hide();
 				}
-				containerDiv.addClass(
-					w > h * 1.15 ? 'pp-imgonly-landscape' : 'pp-imgonly-portrait'
-				);
+				containerDiv.addClass(w > h * 1.15 ? 'pp-imgonly-landscape' : 'pp-imgonly-portrait');
 				// Landscape / Banner layout (see .pp-withtext-landscape in CSS)
 			} else if (w > h * 1.15) {
 				if ($textDiv.length) {
@@ -653,90 +699,78 @@
 					$textDiv.show();
 				}
 				containerDiv.addClass('pp-withtext-portrait');
-				// Count characters, then decide if short text should be
-				// vertically centered instead of top-aligned
-				let charCount = 0;
-				if ($textDiv.length) {
-					charCount = $.trim($textDiv.text()).length;
-				}
-				$textDiv.toggleClass(
-					'pp-text-centered',
-					Settings.centerShortText > 0 && charCount < Settings.centerShortText
-				);
+				const charCount = $textDiv.length ? $.trim($textDiv.text()).length : 0;
+				$textDiv.toggleClass('pp-text-centered', Settings.centerShortText > 0 && charCount < Settings.centerShortText);
 			}
-			// set fade-out class if text is too long
-			requestAnimationFrame(() => {
-				var isBoxVisible = containerDiv.is(':visible');
-				if ($textDiv.length && isBoxVisible) {
-					if ($textDiv[0].scrollHeight > $textDiv[0].clientHeight + 2) {
-						$textDiv.addClass('pp-text-fade-out');
-					} else {
-						$textDiv.removeClass('pp-text-fade-out');
-					}
-				}
-
-				if (isBoxVisible) {
-					const boxWidth = containerDiv.outerWidth();
-					const boxHeight = containerDiv.outerHeight();
-
-					if (loc.clientX + boxWidth > $(window).width()) {
-						containerDiv.css('left', Math.max(0, loc.left - boxWidth));
-					}
-					if (loc.clientY + boxHeight > $(window).height()) {
-						containerDiv.css('top', Math.max(0, loc.top - boxHeight));
-					}
-				}
-			});
+			if (onReady) onReady();
 		}
 
+		function handleImageError() {
+			// Image failed to load (404, bad URL, network error, etc).
+			imgEl.remove();
+			if (onReady) onReady();
+		} // handleImageError
+
 		// Image already cached
-		if (imgEl[0] && imgEl[0].complete && imgEl[0].naturalWidth) {
-			applyLayout(imgEl[0].naturalWidth, imgEl[0].naturalHeight);
-		} else {
-			const img = new Image();
-			img.onload = function () {
-				applyLayout(
-					this.naturalWidth || this.width,
-					this.naturalHeight || this.height
-				);
+		const node = imgEl[0];
+		if (node && node.complete && node.naturalWidth) {
+			applyLayout(node.naturalWidth, node.naturalHeight);
+		} else if (node && node.complete) {
+			// complete but naturalWidth is 0 -> already failed to load (e.g.
+			// a broken image URL the browser had cached from an earlier visit)
+			handleImageError();
+		} else if (node) {
+			node.onload = function () {
+				applyLayout(this.naturalWidth || this.width, this.naturalHeight || this.height);
 			};
-			img.src = imgEl.attr('src');
+			node.onerror = handleImageError;
+		} else if (onReady) {
+			onReady();
 		}
 	} //applyLayout
 
 	function hlpPreview(uri, div, img, force, withD, prefetch) {
 		// preview helper
 		// load img and add to div
-		var im, d;
-		im = $('img', div);
+		const im = $('img', div);
 		// check whether the preview contains any text
-		var hasText = $.trim(div.text()).length > 0;
-		var hasImage = typeof img === 'string' ? $.trim(img).length > 0 : !!img;
+		const hasText = $.trim(div.text()).length > 0;
+		const hasImage = typeof img === 'string' ? $.trim(img).length > 0 : !!img;
 		if (!hasImage && !hasText && !Settings.showNoImagePlaceholder) {
+			// re-hovering the same link doesn't keep re-hitting the API every single time
+			if (Settings.cacheEmpty) {
+				ncacheSet(uri.truepath, {href: uri.truepath, data: $(), uri: uri});
+			}
 			pp.stop(uri.truepath, prefetch);
 			return;
 		}
 		if (!Settings.apid && !withD) {
 			// let vignette do scale, if there's an image
-			var scaledSrc = img && Settings.scale ? img.replace(Settings.scale.r, Settings.scale.t) : img;
+			const scaledSrc = img && Settings.scale ? img.replace(Settings.scale.r, Settings.scale.t) : img;
 			applyPreviewImage(im, scaledSrc);
 		} // if !apid
 
-		var $liveImg = div.find('img');
+		pp.stop(uri.truepath, prefetch);
+
+		const reveal = () => {
+			const d = {href: uri.truepath, data: div, uri: uri};
+			ncacheSet(uri.truepath, d);
+			if (Settings.debug) window.pPreview.pdiv = d.data;
+			if (!prefetch || currentEl.href === uri.truepath) {
+				nshowPreview(d.data, d.uri, force);
+			}
+		};
+
+		const $liveImg = div.find('img');
 		if (Settings.adaptiveLayout && $liveImg.length && $liveImg.attr('src')) {
-			applyAdaptiveLayout($liveImg, div);
+			applyAdaptiveLayout($liveImg, div, reveal);
+		} else {
+			reveal();
 		}
-		d = { href: uri.truepath, data: div, uri: uri };
-		ncache.set(uri.truepath, d);
-		if (Settings.debug) window.pPreview.pdiv = d.data;
-		if (!prefetch || currentEl.href === uri.truepath) {
-			nshowPreview(d.data, d.uri, force);
-		}
-		pp.stop(d.href, prefetch);
 	} // hlpPreview
 
 	function ngetPreview(ev, forcepath, withD, prefetch) {
-		var nuri = createUri($(ev.currentTarget).attr('href')) || {};
+		const nuri = createUri($(ev.currentTarget).attr('href')) || {};
 		nuri.truepath = forcepath || nuri.truepath;
 		if (!nuri.truepath) {
 			log('gp no href', ev, forcepath);
@@ -748,51 +782,42 @@
 			return;
 		}
 		// save bandwith
-		log(
-			'gp uri: ',
-			nuri,
-			' curel.href: ',
-			currentEl.href,
-			nuri.truepath === currentEl.href,
-			'd:',
-			withD
-		);
+		log('gp uri: ', nuri, ' curel.href: ', currentEl.href, nuri.truepath === currentEl.href, 'd:', withD);
 		// withd means fallback request, that should not be cancelled early
 		if (!forcepath && !withD && nuri.truepath !== currentEl.href && !prefetch) {
 			pp.stop(nuri.truepath, prefetch);
 			return;
 		}
-		var ndata = ncacheOf(nuri.truepath);
+		const ndata = ncacheOf(nuri.truepath);
 		log('gp x:', loc.left, 'y:', loc.top);
 		if (ndata) {
 			log('gp show preview', ndata);
-			if (!prefetch || currentEl.href === nuri.truepath) {
-				nshowPreview(ndata.data, nuri, forcepath && !prefetch);
+			if (ndata.data && ndata.data.length) {
+				if (!prefetch || currentEl.href === nuri.truepath) {
+					nshowPreview(ndata.data, nuri, forcepath && !prefetch);
+				}
 			}
 			pp.stop(nuri.truepath, prefetch);
 			return false;
 		} // if data
 
-		var targetQueue = prefetch ? prefetchRequests : currentRequests;
+		const targetQueue = prefetch ? prefetchRequests : currentRequests;
 
 		// get data
-		var apipage,
+		let apipage,
 			request,
 			requestImg,
 			requestRedir,
-			iwrap = $('<img>', { src: Settings.defimage }),
-			twrap = $('<div>', { class: 'npage-preview-text' }), // Added class for styling
-			div = $('<div>', { class: 'npage-preview' });
+			iwrap = $('<img>', {src: Settings.defimage}),
+			twrap = $('<div>', {class: 'npage-preview-text'}), // Added class for styling
+			div = $('<div>', {class: 'npage-preview'});
 
 		// Text styling
 		twrap.css('text-align', Settings.textAlign); // User alignment
 
 		if (Settings.apid || withD) {
 			apipage = new mw.Uri(`${nuri.interwiki}/api/v1/Articles/Details`);
-			apipage.extend({
-				titles: nuri.truepath,
-				abstract: Math.min(Settings.tlen, 500),
-			});
+			apipage.extend({titles: nuri.truepath, abstract: 500});
 			log('gp apid', apipage);
 			request = $.getJSON(apipage)
 				.done(function (data) {
@@ -802,7 +827,7 @@
 						pp.stop(nuri.truepath, prefetch);
 						return this;
 					}
-					var item = data.items ? data.items[Object.keys(data.items)[0]] : undefined;
+					const item = data.items ? data.items[Object.keys(data.items)[0]] : undefined;
 					if (!item) {
 						log('gp apid.noitem', nuri, data);
 						Settings.RegExp.ilinks.push(nuri.truepath); // and ignore it
@@ -833,7 +858,7 @@
 			return request;
 		}
 
-		apipage = new mw.Uri({ path: `${nuri.interwiki}/api.php` });
+		apipage = new mw.Uri({path: `${nuri.interwiki}/api.php`});
 		apipage.extend({
 			action: 'parse',
 			page: nuri.truepath,
@@ -845,7 +870,7 @@
 			smaxage: 600,
 			maxage: 600,
 		});
-		if (!Settings.wholepage) apipage.extend({ section: 0 });
+		if (!Settings.wholepage) apipage.extend({section: 0});
 		log('gp apip: ', apipage.toString());
 
 		request = $.getJSON(apipage)
@@ -857,7 +882,7 @@
 					pp.stop(nuri.truepath, prefetch);
 					return this;
 				}
-				var img = (data.parse.images || [])
+				const img = (data.parse.images || [])
 					.map((value, _index) => {
 						if (nignoreImage(value)) {
 							return false;
@@ -866,10 +891,9 @@
 						}
 					})
 					.filter(Boolean)[0];
-				// img = $(img);
 
-				var text = data.parse.text ? data.parse.text['*'] : undefined;
-				log('gp apip img:', img, 'text:', { text: text });
+				let text = data.parse.text ? data.parse.text['*'] : undefined;
+				log('gp apip img:', img, 'text:', {text: text});
 				if (!img && !text) {
 					pp.stop(nuri.truepath, prefetch);
 					if (Settings.apid || withD) {
@@ -897,15 +921,10 @@
 				text = text.text();
 				// text clean up
 				text = text ? text.replace(Settings.RegExp.dtag, '') : '';
-				if (text.length > Settings.tlen) {
-					text = text.substr(0, Settings.tlen).trim();
-					text += '…';
-				}
-				//text = text.trim().substr(0, Settings.tlen);
 				if (Settings.debug) {
 					Settings.pptext = text;
 					Settings.ppdata = data;
-					log('gp img: ', img, ' text: ', { text: text });
+					log('gp img: ', img, ' text: ', {text: text});
 				}
 				if (text.length > 0) {
 					twrap.text(text);
@@ -914,9 +933,8 @@
 				div.prepend(iwrap);
 
 				if (img) {
-					// action=query&titles=file:.jpg&iiprop=url&prop=imageinfo&format=xml
 					const im = `file:${img.trim()}`;
-					const apiimage = new mw.Uri({ path: `${nuri.interwiki}/api.php` });
+					const apiimage = new mw.Uri({path: `${nuri.interwiki}/api.php`});
 					apiimage.extend({
 						action: 'query',
 						redirects: '',
@@ -924,13 +942,21 @@
 						iiprop: 'url',
 						prop: 'imageinfo',
 						format: 'json',
+						smaxage: 600,
+						maxage: 600,
 					});
 					log('gp apii: ', apiimage.toString());
 					requestImg = $.getJSON(apiimage.toString())
 						.done(function (data) {
 							log('gp apii done:', data);
-							var im, d1;
-							d1 = data.query || {};
+							if (data && data.error) {
+								// API returned an explicit error object
+								log('gp apii api-error', data.error);
+								hlpPreview(nuri, div, false, forcepath && !prefetch, withD, prefetch);
+								return;
+							}
+							const d1 = data.query || {};
+							let im;
 							if (d1.redirects) {
 								let imRed = getVal(getObj(d1, 'redirects'), 'to');
 								log('gp img redir to', imRed);
@@ -941,11 +967,11 @@
 									hlpPreview(nuri, div, false, forcepath && !prefetch, withD, prefetch);
 									return;
 								}
-								const apiim = apiimage.clone().extend({ titles: imRed });
+								const apiim = apiimage.clone().extend({titles: imRed});
 								// resolve redirect
 								log('gp resolv redir:', apiim.toString());
 								requestRedir = $.getJSON(apiim.toString(), (data) => {
-									var im = getVal(getObj(data, 'pages'), 'url');
+									let im = getVal(getObj(data, 'pages'), 'url');
 									if (im.length > 0) {
 										im = im[0];
 									} else {
@@ -1017,13 +1043,8 @@
 		}
 		log('sp data:', data);
 
-		// note: native title suppression happens on the link's mouseenter
-		// (in main()), not here — avoids using currentEl.el, which can be
-		// stale when a forced preview (prefetch/viewport) runs concurrently
-		// with another hover.
-
-		$('.npage-preview').remove();
-		var $previewBox = $(data); // wrap in variable for interactive binding
+		const $previewBox = $(data); // wrap in variable for interactive binding
+		$('.npage-preview').not($previewBox).remove();
 		$previewBox.removeClass('is-hiding'); // Reset class to allow fade-in animation
 		// Bind preview (Sticky & Clickable Box)
 		$previewBox.off('.pp');
@@ -1037,7 +1058,7 @@
 
 		$previewBox.on('mouseleave.pp', () => {
 			// Immediate hide
-			nhidePreview(false);
+			nhidePreview(true);
 		});
 
 		if (Settings.clickToNavigate) {
@@ -1054,39 +1075,19 @@
 
 		$('body').append($previewBox);
 
-		$previewBox.css({ left: -10000, top: -10000 });
+		$previewBox.css({left: -10000, top: -10000});
 		$previewBox.show(0, () => {
-			var boxLeft, boxTop;
-			if (loc.clientY + $previewBox.height() > $(window).height()) {
-				boxTop = loc.top - $previewBox.height() - loc.tops;
-			} else {
-				boxTop = loc.top + loc.tops;
-			}
-			if (loc.clientX + $previewBox.width() > $(window).width()) {
-				boxLeft = loc.left - $previewBox.width() - loc.lefts;
-			} else {
-				boxLeft = loc.left + loc.lefts;
-			}
-
-			boxLeft = boxLeft > 0 ? boxLeft : 0;
-			boxTop = boxTop > 0 ? boxTop : 0;
-			log('sp loc', { left: boxLeft, top: boxTop });
+			const pos = calcPreviewPosition($previewBox, loc.lefts, loc.tops);
+			log('sp loc', {left: pos.left, top: pos.top});
 
 			// Prevent (0,0) jump during scroll
-			var isUserHovering = currentEl.href === target.truepath;
-			var useForceCoord = force && !isUserHovering;
+			const isUserHovering = currentEl.href === target.truepath;
+			const useForceCoord = force && !isUserHovering;
 
 			$previewBox.css({
-				left: useForceCoord ? $('body').scrollLeft() : boxLeft,
-				top: useForceCoord ? $('body').scrollTop() : boxTop,
+				left: useForceCoord ? $('body').scrollLeft() : pos.left,
+				top: useForceCoord ? $('body').scrollTop() : pos.top,
 			});
-
-			var $td = $previewBox.find('.npage-preview-text');
-			if ($td.length && $td[0].scrollHeight > $td[0].clientHeight + 2) {
-				$td.addClass('pp-text-fade-out');
-			} else if ($td.length) {
-				$td.removeClass('pp-text-fade-out');
-			}
 
 			mw.hook('ppreview.show').fire(data);
 		});
@@ -1113,14 +1114,14 @@
 		currentEl.href = '';
 		cancelCurrentRequests();
 
-		var $previewBox = $('.npage-preview');
+		const $previewBox = $('.npage-preview');
 		if ($previewBox.length) {
 			if (!$previewBox.hasClass('is-hiding')) {
 				$previewBox.addClass('is-hiding');
 				setTimeout(() => {
 					$previewBox.remove();
 					hlpaHover();
-				}, 180);
+				}, Settings.animationDuration);
 			} else {
 				$previewBox.remove();
 				hlpaHover();
@@ -1142,7 +1143,7 @@
 	} // ignoreImage
 
 	function nignorePage(name) {
-		var a = Settings.RegExp.ipages;
+		const a = Settings.RegExp.ipages;
 		for (let i = 0, len = a.length; i < len; i++) {
 			if (a[i] instanceof RegExp) {
 				if (a[i].test(name)) return true;
@@ -1154,26 +1155,36 @@
 	} // ignorePage
 
 	function nignoreLink(name) {
-		var a = Settings.RegExp.ilinks;
+		if (ilinksSet.has(name)) return true; // fast path for repeat lookups
+		const a = Settings.RegExp.ilinks;
 		for (let i = 0, len = a.length; i < len; i++) {
 			if (a[i] instanceof RegExp) {
 				if (a[i].test(name)) return true;
-			} else {
-				if (name === a[i]) return true;
+			} else if (name === a[i]) {
+				ilinksSet.add(name); // memoize so future lookups are O(1)
+				return true;
 			}
 		}
 		return false;
 	} // ignoreLink
 
 	function ncacheOf(href) {
-		while (ncache.size > Settings.csize) {
-			ncache.delete(ncache.keys().next().value);
-		}
 		if (ncache.has(href)) {
 			const entry = ncache.get(href);
+			ncache.delete(href);
+			ncache.set(href, entry);
 			log('cache found:', href, 'data:', entry.data);
 			return entry;
 		}
 		return null;
 	} // cacheOf
+
+	function ncacheSet(href, data) {
+		if (!ncache.has(href)) {
+			while (ncache.size >= Settings.csize) {
+				ncache.delete(ncache.keys().next().value);
+			}
+		}
+		ncache.set(href, data);
+	} // cacheSet
 })(jQuery);

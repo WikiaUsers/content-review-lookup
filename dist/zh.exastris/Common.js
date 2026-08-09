@@ -157,7 +157,7 @@
         var hoursSpan = '<span class="arl-hours">' + elapsed.hours + '</span>';
         var minsSpan = '<span class="arl-mins">' + elapsed.mins + '</span>';
 
-        var displayHtml = format
+        var displayHtml = mw.html.escape(format)
             .replace('{d}', daysSpan)
             .replace('{h}', hoursSpan)
             .replace('{m}', minsSpan);
@@ -408,3 +408,5 @@
 
 })();
 importScript('MediaWiki:角色轮播.js');
+importScript('MediaWiki:音乐.js');
+importScript('MediaWiki:星铎棋.js');

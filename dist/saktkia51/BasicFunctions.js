@@ -13,13 +13,12 @@ function convertUTCDateToLocal(date) {
 };
 
 function randomBetween(min, max, whole) {
-	const low = Math.min(min, max);
-	const high = Math.max(min, max);
-	if (whole) {
-		return Math.floor(Math.random() * (high - low) + low);
-	} else {
-		return Math.random() * (high - low) + low;
-	};
+	let low = Math.min(min, max);
+	let high = Math.max(min, max);
+	if (whole) high = Math.ceil(high), low = Math.floor(low);
+	const val = Math.random() * (high - low) + low;
+	if (whole) return Math.round(val);
+	return val;
 };
 
 // formatDate source: https://stackoverflow.com/users/361684/gilly3

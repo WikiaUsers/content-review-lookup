@@ -20,17 +20,27 @@ function createRow(spaceID = '', hidden = false) {
   var rowSpacing = document.createElement('div');
   rowSpacing.className = 'exp-calculator-spacing';
   if (spaceID) rowSpacing.id = spaceID;
-  if (experienceCalculator.children.length == 0) {
-    rowSpacing.style.marginTop = '5px';
-  }
   if (hidden) rowSpacing.style.display = 'none';
   return rowSpacing;
+}
+
+function createHeaderLabel({ labelText, labelID }) {
+  var rowSpacing = createRow();
+  var label = document.createElement('span');
+  label.innerHTML = `${labelText}`;
+  label.className = 'exp-calculator-heading';
+
+  label.id = labelID;
+
+  rowSpacing.append(label);
+  experienceCalculator.append(rowSpacing);
 }
 
 function createInputField({ labelText, inputFieldID, type = 'number', min = 1, max = 500, placeholder = '' }) {
   var rowSpacing = createRow();
   var label = document.createElement('label');
-  label.textContent = `${labelText}: `;
+  label.innerHTML = `${labelText}: `;
+  label.htmlFor = inputFieldID;
 
   var input = document.createElement('input');
   input.type = type;
@@ -45,22 +55,11 @@ function createInputField({ labelText, inputFieldID, type = 'number', min = 1, m
   experienceCalculator.append(rowSpacing);
 }
 
-function createHeaderLabel({ labelText, labelID }) {
-  var rowSpacing = createRow();
-  var label = document.createElement('label');
-  label.innerHTML = `${labelText}`;
-  label.className = 'exp-calculator-heading';
-
-  label.id = labelID;
-
-  rowSpacing.append(label);
-  experienceCalculator.append(rowSpacing);
-}
-
 function createSelectField({ labelText, selectFieldID, options, nameKey = 'label', valueKey = 'value' }) {
   var rowSpacing = createRow();
   var label = document.createElement('label');
-  label.textContent = `${labelText}: `;
+  label.innerHTML = `${labelText}: `;
+  label.htmlFor = selectFieldID;
 
   var select = document.createElement('select');
   select.className = 'exp-calculator-inputField';
@@ -174,6 +173,13 @@ var friendBoosts = [
   { friendAmount: "10 (+10% EXP)", friendBonus: "0.1" }
 ];
 
+var weekendBoosts = [
+  { weekendBoostType: "None", eventBonus: "0" },
+  { weekendBoostType: "1.5x EXP", eventBonus: "0.5" },
+  { weekendBoostType: "2x EXP", eventBonus: "1" },
+  { weekendBoostType: "3x EXP", eventBonus: "2" }
+];
+
 var dungeonModifiers = [
   { dungeonModifier: "None", EXPmultiplier: "1" },
   { dungeonModifier: "0.5x EXP", EXPmultiplier: "0.5" },
@@ -240,7 +246,7 @@ createInputField({
   placeholder: 60
 });
 
-createHeaderLabel({ labelText: 'Boosts', labelID: "header2" });
+createHeaderLabel({ labelText: 'Permanent Boosts', labelID: "header2" });
 // Boosts
 createCheckbox({ labelText: 'Increase dungeon difficulty to <span class="calamity">Calamity</span>', checkboxID: 'calamityBoost', boostValue: 0.7, hidden: true });
 
@@ -250,9 +256,7 @@ createCheckbox({ labelText: 'VIP Gamepass activated', checkboxID: 'VIPGamepass',
 
 createCheckbox({ labelText: 'EXP Boost activated', checkboxID: 'EXPBoost', boostValue: 0.5, hidden: false });
 
-createCheckbox({ labelText: 'Weekend Boost activated', checkboxID: 'weekendBoost', boostValue: 0.5, hidden: false });
-
-createInputField({ labelText: "Bonus EXP on a Ring (%)", inputFieldID: "ringSubstatBoost", min: 0, max: 18, placeholder: "0" });
+createInputField({ labelText: '<span style="color: #CA66D1;">Bonus EXP</span> on a Ring (%)', inputFieldID: 'ringSubstatBoost', min: 0, max: 18, placeholder: '0' });
 createSelectField({
   labelText: "Weapon Perk Bonus",
   selectFieldID: "weaponPerkBoost",
@@ -284,6 +288,16 @@ createSelectField({
   options: dungeonModifiers,
   nameKey: "dungeonModifier",
   valueKey: "EXPmultiplier"
+});
+
+createHeaderLabel({ labelText: 'Event Boosts', labelID: "header3" });
+// Bonus Events (weekend boosts, etc)
+createSelectField({
+  labelText: "Weekend Boost",
+  selectFieldID: "weekendBoost",
+  options: weekendBoosts,
+  nameKey: "weekendBoostType",
+  valueKey: "eventBonus"
 });
 
 
@@ -348,13 +362,25 @@ function formatTime(time) {
 
 // Show results by using the button
 calcBtn.onclick = function () {
+  var dungeonName = document.getElementById('dungeonExp').options[document.getElementById('dungeonExp').selectedIndex].text;
+
   var currentLevel = parseInt(document.getElementById('currentLevel').value);
   var goalLevel = parseInt(document.getElementById('goalLevel').value);
   var baseDungeonExp = parseInt(document.getElementById('dungeonExp').value);
-  var weaponPerkBoost = parseFloat(document.getElementById('weaponPerkBoost').value) || 0;
-  var ringSubstatBoost = parseFloat(document.getElementById('ringSubstatBoost').value) || 0;
+
+  var calamityBoost = document.getElementById('calamityBoost');
+  var VIPBoost = document.getElementById('VIPGamepass');
+  var hardcoreBoost = document.getElementById('hardcoreBoost');
+
   var guildExpBoost = parseFloat(document.getElementById('guildExpBoost').value) || 0;
   var friendExpBoost = parseFloat(document.getElementById('friendExpBoost').value) || 0;
+
+  var weaponPerkBoost = parseFloat(document.getElementById('weaponPerkBoost').value) || 0;
+  var ringSubstatBoost = parseFloat(document.getElementById('ringSubstatBoost').value) || 0;
+
+  var weekendBoost = parseFloat(document.getElementById('weekendBoost').value) || 0;
+  var expBoostBonus = document.getElementById('EXPBoost');
+
   var dungeonModifierExpBoost = parseFloat(document.getElementById('dungeonModifierExpBoost').value) || 0;
   
   var avgTime = parseInt(document.getElementById('avgTime').value || document.getElementById('avgTime').placeholder) || 0;
@@ -403,49 +429,48 @@ calcBtn.onclick = function () {
     return;
   }
 
-  var boostExp = 0;
-  var expBoostBonus = 0;
+  var boostExp = 0; // Before ring + perk
+  var boostExp2 = 0; // After ring + perk
 
   // Calamity mode Bonus
-  var dungeonName = document.getElementById('dungeonExp').options[document.getElementById('dungeonExp').selectedIndex].text;
-  var calamityCheckbox = document.getElementById('calamityBoost');
-  if (calamityCheckbox && calamityCheckbox.checked) {
+  if (calamityBoost && calamityBoost.checked) {
     if (dungeonName == "Ethereal Farlands: Chaos") {
       baseDungeonExp += 15000000000; // Add 3 additional "Crystalline Ballista" XP values (only spawn in calamity)
     } else if (dungeonName == "Forsaken Limbo: Chaos") {
       baseDungeonExp += 20000000000000; // Add "The Destined Death" XP value (only spawns in calamity)
     } 
-
-    boostExp += baseDungeonExp * parseFloat(calamityCheckbox.dataset.boost);
+    boostExp += baseDungeonExp * parseFloat(calamityBoost.dataset.boost);
   }
 
-  // Other boost Bonuses
-  var boostCheckboxes = [
-    'hardcoreBoost',
-    'VIPGamepass',
-    'weekendBoost'
-  ];
-  boostCheckboxes.forEach(checkboxID => {
-    var checkbox = document.getElementById(checkboxID);
-    if (checkbox && checkbox.checked) {
-      boostExp += baseDungeonExp * parseFloat(checkbox.dataset.boost);
-    }
-  });
+  // VIP gamepass Bonus
+  if (VIPBoost && VIPBoost.checked) {
+    boostExp += baseDungeonExp * parseFloat(VIPBoost.dataset.boost);
+  }
 
-  // Experience Boost Bonus
-  var expBoostCheckbox = document.getElementById('EXPBoost');
-  if (expBoostCheckbox && expBoostCheckbox.checked) {
-    expBoostBonus = baseDungeonExp * parseFloat(expBoostCheckbox.dataset.boost);
+  // Hardcore mode Bonus
+  if (hardcoreBoost && hardcoreBoost.checked) {
+    boostExp += baseDungeonExp * parseFloat(hardcoreBoost.dataset.boost);
   }
 
   // Guild and Friend Bonuses
   boostExp += baseDungeonExp * guildExpBoost;
   boostExp += baseDungeonExp * friendExpBoost;
 
+  // Experience Boost Bonus
+  if (expBoostBonus && expBoostBonus.checked) {
+    boostExp2 += baseDungeonExp * parseFloat(expBoostBonus.dataset.boost);
+  }
+
+  // Weekend Bonus
+  if (weekendBoost > 0) {
+    if (calamityBoost && calamityBoost.checked) {
+      boostExp += (baseDungeonExp + baseDungeonExp * parseFloat(calamityBoost.dataset.boost)) * weekendBoost;
+    } else boostExp += baseDungeonExp * weekendBoost;
+  }
 
   /* Total Exp - Boosts stack like this:
   Base > Calamity > VIP > Hardcore > Weekend > Guild > Friend > Ring Substats + Weapon Perk > Experience Boost > Dungeon Modifier */
-  var totalExp = ((baseDungeonExp + boostExp) * (1 + (ringSubstatBoost / 100) + weaponPerkBoost) + expBoostBonus) * dungeonModifierExpBoost;
+  var totalExp = ((baseDungeonExp + boostExp) * (1 + (ringSubstatBoost / 100) + weaponPerkBoost) + boostExp2) * dungeonModifierExpBoost;
   var requiredExp = calculateExp(currentLevel, goalLevel);
   var runsNeeded = Math.ceil(requiredExp / totalExp);
   

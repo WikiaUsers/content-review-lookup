@@ -1,9 +1,9 @@
 /**
- * Name:		pseudoxd-viewer
- * Version:		v1.0
- * Author:		t7ru [[User:Gabonnie]]
- * Description:	Allow pseudoxd's spritesheets to be panned.
- 				Forked from [[w:c:dev:MediaWiki:Pseudo3D.js]]
+ * Name:        pseudoxd-viewer
+ * Version:     v1.0
+ * Author:      t7ru [[User:Gabonnie]]
+ * Description: Allow pseudoxd's spritesheets to be panned.
+                Forked from [[w:c:dev:MediaWiki:Pseudo3D.js]]
  */
 (() => {
 	const isXd = (viewport) => viewport.classList.contains("pseudoxd");
@@ -33,7 +33,7 @@
 				: parseInt(viewport.dataset.frameAmount, 10) || 24;
 			const startFrame = parseInt(viewport.dataset.frameStart, 10) || 0;
 			setFrame(viewport, sprite, startFrame);
-		},
+		}
 	);
 
 	const drag = (e, touch) => {
@@ -49,7 +49,7 @@
 			? viewport.closest(".pi-item")
 			: null;
 		const currentBgX = parseFloat(
-			(piItem && piItem.style.backgroundPositionX) || 50,
+			(piItem && piItem.style.backgroundPositionX) || 50
 		);
 
 		const move = (ev) => {
@@ -66,8 +66,8 @@
 					100,
 					Math.max(
 						0,
-						currentBgX - delta * (window.PseudoSkyboxSpeed || 0.01),
-					),
+						currentBgX - delta * (window.PseudoSkyboxSpeed || 0.01)
+					)
 				);
 				piItem.style.backgroundPositionX = `${newBgX}%`;
 			}
@@ -76,7 +76,7 @@
 		const up = () => {
 			document.removeEventListener(
 				touch ? "touchmove" : "mousemove",
-				move,
+				move
 			);
 			document.removeEventListener(touch ? "touchend" : "mouseup", up);
 		};

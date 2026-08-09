@@ -8,7 +8,7 @@
             <div class="cwa-rc">
                 <header class="cwa-rc__header">
                     <div class="cwa-rc__title">
-                        <h2><i class="fa-solid fa-globe"></i> CrossWiki Activity</h2>
+                        <h2><i class="fa-solid fa-globe"></i> Вся активность с любимых Вики в одном месте</h2>
                         <button class="wds-button wds-is-secondary cwa-rc__refresh" @click="fetchData" :disabled="isLoading">
                             <i class="fa-solid fa-rotate-right" :class="{'fa-spin': isLoading}"></i> Обновить
                         </button>
@@ -642,7 +642,7 @@
                             'post': 'fa-solid fa-pen-clip',
                             'post-reply': 'fa-solid fa-pencil',
                             'blog': 'fa-solid fa-pen-nib',
-                            'blog-reply': 'fa-solid fa-pen'
+                            'blog-reply': 'fa-solid fa-pen-ruler'
                         },
                         'delete': {
                             'comment': 'fa-solid fa-trash-can',         

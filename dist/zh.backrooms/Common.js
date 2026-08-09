@@ -59,6 +59,33 @@ mw.hook("wikipage.content").add(function () {
     $(".audio-toggler").click(function () {
         $("audio").get().forEach(function (audio) { if (audio.paused || audio.ended) { audio.play(); } else { audio.pause(); } });
     });
+    
+    // Button Audio修复
+mw.hook("wikipage.content").add(function () {
+
+    $(".t-audio").each(function () {
+
+        var toggle = $(this).attr("data-toggle");
+
+        if (!toggle) return;
+
+        $(".t-audio-toggle-" + toggle).click(function () {
+
+            var audio = $(".t-audio-toggle-" + toggle + " audio")[0];
+
+            if (!audio) return;
+
+            if (audio.paused || audio.ended) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+
+        });
+
+    });
+
+});
 
     // 站点公告切换
     $(".sitenotice-tab-container").each(function () {

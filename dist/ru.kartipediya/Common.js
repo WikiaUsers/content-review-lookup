@@ -75,10 +75,45 @@ prependToRail: false
         var hero = document.querySelector('.kp-hero');
         if (hero) initHero(hero);
         initRandomGroups();
+        initEditCounts();
+        initRandomMapFocus();
     }
  
     tryInit();
     window.addEventListener('load', tryInit);
     var observer = new MutationObserver(tryInit);
     observer.observe(document.body, { childList: true, subtree: true });
+        function pluralPravok(n) {
+        var mod10 = n % 10;
+        var mod100 = n % 100;
+        if (mod10 === 1 && mod100 !== 11) return 'правка';
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'правки';
+        return 'правок';
+    }
+ 
+    function initEditCounts() {
+        document.querySelectorAll('.kp-admin-editcount[data-user]').forEach(function (el) {
+            if (el.dataset.editcountInit) return;
+            el.dataset.editcountInit = '1';
+ 
+            var user = el.getAttribute('data-user');
+            var url = mw.util.wikiScript('api') + '?action=query&list=users&ususers=' +
+                      encodeURIComponent(user) + '&usprop=editcount&format=json';
+ 
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var users = data.query && data.query.users;
+                    if (!users || !users[0] || typeof users[0].editcount !== 'number') {
+                        el.textContent = '';
+                        return;
+                    }
+                    var n = users[0].editcount;
+                    el.textContent = n + ' ' + pluralPravok(n);
+                })
+                .catch(function () {
+                    el.textContent = '';
+                });
+        });
+    }
 })();

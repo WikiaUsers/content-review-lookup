@@ -78,7 +78,7 @@ function triggerTSCalculator() {
 
     // Dit zijn de standaard multipliers op basis van de persoonlijke instellingen van de gebruiker
     var multipliers = {
-        bld:  TS_Bonuses.sam       ? 0.85 : 1.00, // Sam Discount (-15%)
+        bld:  TS_Bonuses.sam       ? 0.90 : 1.00, // Sam Discount (-10%)
         myst: TS_Bonuses.alan      ? 0.90 : 1.00, // Alan Discount (-10%)
         flg:  TS_Bonuses.cornelius ? 0.75 : 1.00, // Cornelius Discount (-25%)
         thm:  TS_Bonuses.exchange  ? 0.80 : 1.00, // Theme input (Stock Exchange -20%)
@@ -88,7 +88,7 @@ function triggerTSCalculator() {
 
     // NIEUW: Dit zijn de vaste kortingen die we ALTIJD gebruiken als de parameter is geforceerd
     var forcedMultipliers = {
-        bld:  0.85,
+        bld:  0.90,
         myst: 0.90,
         flg:  0.75,
         thm:  0.80,

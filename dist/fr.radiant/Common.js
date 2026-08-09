@@ -224,9 +224,8 @@ $(function () {
 	// 1] Ajouter d'une image aléatoire en fond :
 	// Tableau d'images de personnages de Radiant (provenant du site de la NHK, et d'une archive du site de l'animé Radiant)
     var imageArray = [
-        'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/rizerotte.png")',
-        'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/mieri.png")',
-        'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/seto.png")',
+        'url("https://web.archive.org/web/20200629215219if_/https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/rizerotte.png")',
+        'url("https://web.archive.org/web/20200629234653if_/https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/seto.png")',
         'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_aruma.png")',
         'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_bobly.png")',
         'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_doku.png")',

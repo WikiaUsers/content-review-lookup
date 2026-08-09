@@ -6,67 +6,72 @@
  * @author Magiczocker
  */
 
-(function(mw) {
+( () => {
 	'use strict';
-	const config = mw.config.get([
+	const config = mw.config.get( [
 		'wgRestrictionComment',
 		'wgPageName',
 		'wgUserGroups'
-	]);
+	] );
 
 	if (
 		window.commentsToggleLoaded ||
-		!/threadmoderator|sysop|soap|wiki-specialist|staff/.test(config.wgUserGroups.join())
+		!/threadmoderator|sysop|soap|wiki-specialist|staff/.test( config.wgUserGroups.join() )
 	) return;
 	window.commentsToggleLoaded = true;
 
-	var commentArea = document.getElementById('articleComments');
-	if (!commentArea) return;
+	const commentArea = document.getElementById( 'articleComments' ),
+		out = document.createElement( 'span' );
 
-	var buttonInput;
+	if ( !commentArea ) return;
+
+	out.innerHTML =
+		`<input type="checkbox" id="commentToggle" class="wds-toggle__input" checked>
+		<label for="commentToggle" class="wds-toggle__label"></label>`;
+	const buttonInput = out.querySelector( '.wds-toggle__input' ),
+		buttonLabel = out.querySelector( '.wds-toggle__label' );
 
 	/**
 	 * Toggle comment protection.
 	 */
 	function protect() {
-		var api = new mw.Api();
+		const api = new mw.Api();
 		buttonInput.disabled = true;
-		api.get({
+		api.get( {
 			action: 'query',
 			format: 'json',
 			prop: 'info',
 			titles: config.wgPageName,
 			formatversion: 2,
 			inprop: 'protection'
-		}).done(function(data) {
-			const curProtect = data.query.pages[0].protection;
-			var protections = [];
-			var expiry = [];
+		} ).done( ( data ) => {
+			const protections = [],
+				expiry = [];
 
-			for (var i = 0; i < curProtect.length; i++) {
-				if (curProtect[i].type !== 'comment') {
-					protections[protections.length] = curProtect[i].type + '=' + curProtect[i].level;
-					expiry[expiry.length] = curProtect[i].expiry;
+			data.query.pages[0].protection.forEach( ( protection ) => {
+				if ( protection.type !== 'comment' ) {
+					protections.push( `${ protection.type }=${ protection.level }` );
+					expiry.push( protection.expiry );
 				}
+			} );
+
+			if ( !buttonInput.checked ) {
+				protections.push( 'comment=sysop' );
+				expiry.push( 'infinite' );
 			}
-			
-			if (!buttonInput.checked) {
-				protections[protections.length] = 'comment=sysop';
-				expiry[expiry.length] = 'infinite';
-			}
-			
-			api.postWithEditToken({
+
+			api.postWithEditToken( {
 				action: 'protect',
 				format: 'json',
 				title: config.wgPageName,
-				protections: protections.join('|'),
-				expiry: expiry.join('|'),
-				reason: (buttonInput.checked ? 'Enabled' : 'Disabled') + ' comments using [[w:c:dev:CommentsToggle|CommentsToggle]].',
+				protections: protections.join( '|' ),
+				expiry: expiry.join( '|' ),
+				reason: `${ buttonInput.checked ? 'Enabled' : 'Disabled' } comments using [[w:c:dev:CommentsToggle|CommentsToggle]].`,
 				formatversion: 2
-			}).done(function() {
+			} ).done( () => {
 				location.reload();
-			});
-		});
+			} );
+		} );
 	}
 
 	/**
@@ -74,31 +79,22 @@
 	 * @param {object} i18n - Messages from I18n-js dev script.
 	 */
 	function init(i18n) {
-		buttonInput = document.createElement('input');
-		buttonInput.type = 'checkbox';
-		buttonInput.id = 'commentToggle';
-		buttonInput.checked = true;
-		buttonInput.className = 'wds-toggle__input';
-		buttonInput.addEventListener('change', function() {
-			mw.loader.using('mediawiki.api').then(protect);
-		});
+		buttonInput.addEventListener( 'change', () => {
+			mw.loader.using( 'mediawiki.api' ).then( protect );
+		} );
+		if ( config.wgRestrictionComment.length ) buttonInput.checked = false;
 
-		var buttonLabel = document.createElement('label');
-		buttonLabel.htmlFor = 'commentToggle';
-		buttonLabel.className = 'wds-toggle__label';
 		buttonLabel.textContent = i18n.msg('buttonText').plain();
 
-		if (config.wgRestrictionComment.length) buttonInput.checked = false;
-
-		commentArea.before(buttonInput, buttonLabel);
+		commentArea.before( out );
 	}
 
-	mw.hook('dev.i18n').add(function(i18n) {
-		i18n.loadMessages('CommentsToggle').done(init);
-	});
+	mw.hook( 'dev.i18n' ).add( ( i18n ) => {
+		i18n.loadMessages( 'CommentsToggle' ).done( init );
+	} );
 
-	window.importArticle({
+	window.importArticle( {
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
-	});
-})(window.mediaWiki);
+	} );
+} )();

@@ -11,4 +11,3 @@ if (awaitingE != undefined) {
     for (var i=0; i<awaitingE.length; i++) {
         loadLater(awaitingE[i], awaitingE[i].getAttribute("data-during"));
     }
-}

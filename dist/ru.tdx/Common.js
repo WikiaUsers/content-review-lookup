@@ -20,6 +20,8 @@ importArticles({
 	articles:
 	[        
 		'u:dev:MediaWiki:MultiClock.js',
+		'u:dev:MediaWiki:EditorColorPicker.js',
+		'u:dev:MediaWiki:NullEditButton/code.js',
 	]});
 
 mw.hook('wikipage.content').add(function($content) {
