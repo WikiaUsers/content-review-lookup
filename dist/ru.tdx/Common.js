@@ -23,6 +23,21 @@ importArticles({
 		'u:dev:MediaWiki:EditorColorPicker.js',
 		'u:dev:MediaWiki:NullEditButton/code.js',
 	]});
+	
+/* Автоматическое переключение для кастомных табберов .ps-tabber */
+$(document).on('click', '.ps-tabber .ps-tab-button', function() {
+    var $button = $(this);
+    var $tabber = $button.closest('.ps-tabber');
+    var targetId = $button.attr('data-target');
+
+    // Переключаем активный класс у кнопок
+    $tabber.find('.ps-tab-button').removeClass('wds-is-current is-current');
+    $button.addClass('wds-is-current');
+
+    // Переключаем видимость контента
+    $tabber.find('.ps-tab-content').hide();
+    $tabber.find('#' + targetId).show();
+});
 
 mw.hook('wikipage.content').add(function($content) {
     if (!$content.find('.FilterContainer').length) return;

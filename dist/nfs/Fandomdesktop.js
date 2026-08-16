@@ -1,7 +1,6 @@
 // ============================================================
 // LinkPreview
 	window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-	window.pPreview.apid = true;
 	window.pPreview.defimage = 'https://static.wikia.nocookie.net/nfs/images/e/e6/Site-logo.png/revision/latest?cb=20260403160534&path-prefix=en'
 	window.pPreview.noimage = 'https://static.wikia.nocookie.net/nfs/images/e/e6/Site-logo.png/revision/latest?cb=20260403160534&path-prefix=en'
 	window.pPreview.RegExp.noinclude = [".quote", ".notice", ".reference", ".references"];

@@ -86,8 +86,8 @@ $(function FixNsUCPFinalSpan() {
 	}
 });
 
-/* DWA MODUŁY */
-window.AddRailModule = ['Szablon:Aktualności', 'Szablon:Discord'];
+/* DODATKOWY MODUŁ */
+window.AddRailModule = ['Szablon:Aktualności'];
 
 /* WDSICONS */
 importArticle({type:'script', article:'u:dev:MediaWiki:WDSIcons/code.js'});

@@ -3,10 +3,10 @@
 (function() {
     var toolbarLabel = 'WOLFS-ZENTRALE 🐺';
     var toolbarLinks = [
-        { label: 'Übersicht', link: '/wiki/Wolfs-Zentrale' },
-        { label: 'Regeln', link: '/wiki/Regeln' },
-        { label: 'Anmeldung', link: '/wiki/Anmeldung' }
-    ];
+    { label: 'Übersicht', link: '/de/wiki/Wolfs-Zentrale' },
+    { label: 'Regeln', link: '/de/wiki/Regeln' },
+    { label: 'Anmeldung', link: '/de/wiki/Anmeldung' }
+];
 
     var toolbarWrapper = document.querySelector('#WikiaBar .tools')
                       || document.querySelector('#WikiaBar .wikia-bar-anon');
@@ -47,15 +47,17 @@ $(function() {
 mw.hook('wikipage.content').add(function() {
     if ($('#scroll-to-top-button').length) return;
 
-    var $button = $('<div>')
+    $('<div>')
         .attr('id', 'scroll-to-top-button')
-        .text('▲')
-        .attr('title', 'Nach oben scrollen');
-
-    $('body').append($button);
+        .html('&#9650;')
+        .attr('title', 'Nach oben scrollen')
+        .on('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .appendTo('body');
 });
 
-/* Skript für einklappbare Tabellen & Navboxen */
+/* 4. Skript für einklappbare Tabellen & Navboxen */
 mw.loader.using(['mediawiki.util', 'jquery.client'], function () {
     importScriptPage('MediaWiki:CollapsibleTables.js', 'dev');
 });

@@ -26,3 +26,11 @@ importArticles({
     type: 'script',
     articles: ['MediaWiki:PageStatus.js']
 });
+
+if (mw.config.get('wgPageName') === 'Sword_Skins_TEST') {
+	importArticle({ type: 'script', article: 'MediaWiki:HoverTooltip.js' });
+}
+
+if (mw.config.get('wgPageName') === 'Sword_Skins_TEST') {
+	importArticle({ type: 'script', article: 'MediaWiki:SwordFilter.js' });
+}

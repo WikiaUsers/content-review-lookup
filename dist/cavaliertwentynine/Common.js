@@ -17,17 +17,27 @@
   'use strict';
 
   // <-- replace with your Apps Script Web App /exec URL
-  var EXEC_URL = 'https://script.google.com/macros/s/AKfycbw4CiTuaLtf3CT3DbKslAm-3-1E59uIuqpsH_dBocjcwPIM3eyoKptu2GNYvn_SZgtONA/exec';
+  var EXEC_URL = 'https://script.google.com/macros/s/AKfycbwxTyrm14n8RGAxmU9FylTiOMi8O0pm7a06kU9BaH_VJeA7lCmi66vq7-LkasJTwmzxig/exec';
 
   function loadCalendar(container, offset) {
     offset = offset || 0;
-    container.innerHTML = '<div class="ipcal-loading">Loading release calendar&hellip;</div>';
+    // Shown immediately, before the fetch even starts — previously this
+    // step (when it was a separate week-list fetch) showed nothing at
+    // all, which is why the calendar looked broken rather than just slow.
+    container.innerHTML = '<div class="ipcal-loading"><span class="ipcal-spinner"></span>Loading release calendar&hellip;</div>';
 
     var cbName = '__ipcalCallback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
     var script = document.createElement('script');
 
-    window[cbName] = function (weeks) {
-      renderWeeks(container, weeks, offset);
+    window[cbName] = function (payload) {
+      if (payload && payload.error) {
+        container.innerHTML = '<div class="ipcal-error">' +
+          escapeHtml(payload.message || 'Something went wrong loading the calendar.') + '</div>';
+        cleanup();
+        return;
+      }
+      container.__ipcalAvailableWeeks = payload.availableWeeks || [];
+      renderWeeks(container, payload.weeks, offset);
       cleanup();
     };
 
@@ -42,6 +52,9 @@
       cleanup();
     };
 
+    // One request returns both the calendar data AND the available-weeks
+    // list together — this used to be two separate sequential fetches,
+    // which doubled every navigation's round-trip time.
     script.src = EXEC_URL + '?format=jsonp&offset=' + encodeURIComponent(offset) +
       '&callback=' + encodeURIComponent(cbName);
     document.body.appendChild(script);
@@ -52,21 +65,35 @@
 
     var navHtml = '<div class="ipcal-nav">' +
       '<a href="#" class="ipcal-nav-link" data-offset="' + (offset - 1) + '">&larr; earlier</a>' +
-      '<span class="ipcal-label">IP Release Calendar</span>' +
+      '<span class="ipcal-label">Fandom Media Calendar</span>' +
       '<a href="#" class="ipcal-nav-link" data-offset="' + (offset + 1) + '">later &rarr;</a>' +
       '</div>';
 
     var html = navHtml;
-    html += '<div class="ipcal-filter-bar">' +
-      '<button class="ipcal-filter-btn active" data-filter="all">All</button>' +
-      '<button class="ipcal-filter-btn" data-filter="entertainment">Entertainment</button>' +
-      '<button class="ipcal-filter-btn" data-filter="gaming">Gaming</button>' +
-      '</div>';
+    var availableWeeks = container.__ipcalAvailableWeeks || [];
+    var dropdownOptions = availableWeeks.map(function (wk) {
+      var selected = wk.offset === offset ? ' selected' : '';
+      var suffix = wk.relativeLabel ? ' (' + escapeHtml(wk.relativeLabel) + ')' : '';
+      return '<option value="' + wk.offset + '"' + selected + '>' +
+        escapeHtml(wk.weekStart) + ' \u2013 ' + escapeHtml(wk.weekEnd) + suffix + '</option>';
+    }).join('');
+
+    html += '<div class="ipcal-control-row">' +
+      '<div class="ipcal-date-controls">' +
+        '<select class="ipcal-week-jump-select" aria-label="Jump to a specific week">' + dropdownOptions + '</select>' +
+        '<button class="ipcal-today-btn">Return to current week</button>' +
+      '</div>' +
+      '<div class="ipcal-filter-bar">' +
+        '<button class="ipcal-filter-btn active" data-filter="all">All</button>' +
+        '<button class="ipcal-filter-btn" data-filter="entertainment">Entertainment</button>' +
+        '<button class="ipcal-filter-btn" data-filter="gaming">Gaming</button>' +
+      '</div>' +
+    '</div>';
 
     weeks.forEach(function (w, i) {
       html += '<div class="ipcal-week' + (w.isCurrent ? ' current' : '') + '">';
       html += '<div class="ipcal-week-head"><span class="ipcal-dot"></span>' +
-        '<span class="ipcal-eyebrow">' + (w.isCurrent ? 'This week' : (i === 0 ? 'Archive' : '')) + '</span>' +
+        '<span class="ipcal-eyebrow">' + (w.isCurrent ? 'This week' : (w.isPast ? 'Archive' : (w.isFuture ? 'Forthcoming' : ''))) + '</span>' +
         '<span class="ipcal-range">' + escapeHtml(w.weekStart) + ' &ndash; ' + escapeHtml(w.weekEnd) + '</span>' +
         '</div>';
       html += '<div class="ipcal-week-body">';
@@ -75,10 +102,8 @@
         html += '<div class="ipcal-empty">No releases scheduled this week.</div>';
       } else {
         html += '<div class="ipcal-grid">';
-        var count = w.releases.length;
         w.releases.forEach(function (r, j) {
-          var isLastOdd = (count % 2 === 1) && (j === count - 1);
-          html += renderRelease(r, isLastOdd, i, j);
+          html += renderRelease(r, i, j);
         });
         html += '</div>';
         html += '<div class="ipcal-empty ipcal-filtered-empty" style="display:none">No releases in this category this week.</div>';
@@ -123,6 +148,25 @@
         applyFilter_(container, e.currentTarget.getAttribute('data-filter'));
       });
     }
+
+    // ---- Jump to a specific week ----
+    var weekJumpSelect = container.querySelector('.ipcal-week-jump-select');
+    if (weekJumpSelect) {
+      // Explicit, authoritative: guarantees the closed dropdown preview
+      // shows the right week regardless of how reliably the "selected"
+      // attribute survives being parsed from an innerHTML-assigned
+      // string, rather than parsed natively on page load.
+      weekJumpSelect.value = String(offset);
+      weekJumpSelect.addEventListener('change', function () {
+        loadCalendar(container, parseInt(weekJumpSelect.value, 10));
+      });
+    }
+    var todayBtn = container.querySelector('.ipcal-today-btn');
+    if (todayBtn) {
+      todayBtn.addEventListener('click', function () {
+        loadCalendar(container, 0);
+      });
+    }
   }
 
   function applyFilter_(container, category) {
@@ -146,7 +190,7 @@
       for (var t = 0; t < tiles.length; t++) {
         if (tiles[t].style.display !== 'none') { anyVisible = true; break; }
       }
-      grid.style.display = anyVisible ? 'grid' : 'none';
+      grid.style.display = anyVisible ? 'flex' : 'none';
       var filteredEmpty = bodies[b].querySelector('.ipcal-filtered-empty');
       if (filteredEmpty) filteredEmpty.style.display = anyVisible ? 'none' : 'block';
     }
@@ -167,7 +211,7 @@
     if (release) openModal(release);
   }
 
-  function renderRelease(r, isLastOdd, wIndex, rIndex) {
+  function renderRelease(r, wIndex, rIndex) {
     var wiki = r.wiki || {};
     var bg = wiki.imageUrl
       ? '<img class="ipcal-bg" src="' + escapeAttr(wiki.imageUrl) + '" alt="">'
@@ -195,9 +239,11 @@
     if (r.studio) details.push(escapeHtml(r.studio));
     if (r.season) details.push('Season ' + escapeHtml(String(r.season)));
     if (r.platform) details.push(escapeHtml(r.platform));
+    if (r.developer) details.push(escapeHtml(r.developer));
+    if (r.publisher) details.push(escapeHtml(r.publisher));
     if (r.releaseFormat) details.push(escapeHtml(r.releaseFormat));
 
-    return '<div class="ipcal-release' + (isLastOdd ? ' ipcal-centered' : '') + '"' +
+    return '<div class="ipcal-release"' +
       ' data-id="w' + wIndex + '-r' + rIndex + '" data-category="' + escapeAttr(r.category) + '"' +
       ' tabindex="0" role="button"' +
       ' aria-label="View details for ' + escapeAttr(r.ipName) + '">' +
@@ -282,6 +328,8 @@
     if (r.studio) metaParts.push(r.studio);
     if (r.season) metaParts.push('Season ' + r.season);
     if (r.platform) metaParts.push(r.platform);
+    if (r.developer) metaParts.push(r.developer);
+    if (r.publisher) metaParts.push(r.publisher);
     if (r.releaseFormat) metaParts.push(r.releaseFormat);
     if (r.genre) metaParts.push(r.genre);
     m.querySelector('.ipcal-modal-meta').textContent = metaParts.join(' \u00b7 ');

@@ -1,24 +1,46 @@
 // Created by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:MainPageSearch.js
+// Environment dependencies: create(), getLocalJS(), getLocalCSS(), MediaWiki base module's mw object.
+// Import dependencies: "./main.css".
 
-(function() {
-	if (mw.config.get("wgIsMainPage") && document.getElementById("MainPageSearch") !== null) {
-		console.log("[Main Page Search] [LOG]: Template is transcluded and current page is the main page. Running script.");
-
-		document.getElementById("MainPageSearch").setAttribute("style", "border-left:0;border-right:0;border-bottom:0;text-align:center;font-size:24px;border-radius:initial;display:block;");
-		
-		const input = document.getElementById("SearchQuery").appendChild(document.createElement('textarea'));
-		input.setAttribute('id', 'SearchQueryInput');
-		input.setAttribute('style', 'padding:0.5em');
-		
-		const confirmButton = document.getElementById("SearchQueryButton").appendChild(document.createElement('button'));
-		confirmButton.setAttribute('style', 'padding:0.75em;');
-		confirmButton.innerHTML = 'Confirm';
-		confirmButton.addEventListener('click', openSearch);
-		
-		function openSearch() {
-			window.open(`${mw.config.get('wgServer')}/Special:Search?query=${encodeURI(input.value)}`);
-		}
-	} else {
-		console.log("[Main Page Search] [LOG]: Script activation conditions not met. Exiting...");
-	}
+(async function() {
+	"use strict";
+	
+	const initStartTime = performance.now();
+	const srcContainer = document.getElementById('MainPageSearch');
+	const scriptName = 'Main Page Search';
+	const scriptInitCondition = mw.config.get('wgIsMainPage') && srcContainer && !document.getElementById('MainPageSearch_Container');
+	if (!scriptInitCondition) {
+		console.log(`[${scriptName}] [LOG]: Script activation conditions not met. Exiting...`);
+		return;
+	};
+	console.log(`[${scriptName}] [LOG]: Running script...`);
+	const basePageName = "MediaWiki:MainPageSearch.js";
+	
+	const stylesheet = new CSSStyleSheet();
+	document.adoptedStyleSheets.push(stylesheet);
+	const cssText = await getLocalCSS(`${basePageName}/main.css`);
+	await stylesheet.replace(cssText);
+	const container = create('div', srcContainer);
+	container.id = 'MainPageSearch_Container';
+	const topText = create('div', container);
+	topText.innerText = 'Search:';
+	topText.id = 'TopText';
+	
+	const queryContainer = create('div', container);
+	const input = create('textarea', queryContainer);
+	input.id = 'QueryInput';
+	input.setAttribute('placeholder', 'Enter search query...');
+	
+	const buttonContainer = create('div', container);
+	const confirmButton = create('button', buttonContainer);
+	confirmButton.id = 'ConfirmButton';
+	confirmButton.innerText = 'Confirm';
+	confirmButton.addEventListener('click', openSearch);
+	
+	function openSearch() {
+		window.open(`${mw.config.get('wgServer')}/Special:Search?query=${encodeURI(input.value)}`);
+	};
+	const initEndTime = performance.now();
+	const initTotalTime = initEndTime - initStartTime;
+	console.log(`[${scriptName}] [LOG]: Initialisation time: ${initTotalTime} ms`);
 })();

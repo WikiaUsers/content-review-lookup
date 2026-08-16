@@ -49,5 +49,3 @@ importArticles({
         "w:c:dev:MediaWiki:FontAwesome.css"
     ]
 });
-
-mw.loader.load('/index.php?title=MediaWiki:SortButton.js&action=raw&ctype=text/javascript');

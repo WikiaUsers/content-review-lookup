@@ -52,15 +52,15 @@ mw.loader.using('mediawiki.api', () => {
 						startC: '{',
 						endC: '}'
 					});
-					let name = wikitext.match(/^\{\{\s*([^\#<>\[\]\|\{\}]+)\s*/);
+					let name = wikitext.match(/^\{\{([^\#<>\[\]\|\{\}]+)/);
 					if (!wikitext.startsWith('{{') || !name || !name[1] || name[1].trim().length===0) {console.warn('Invalid template!'); return;}
-					name = name[1];
+					name = new mw.Title(name[1].trim(), 10);
 					TW.templateData = null;
 					TW.templateCall = null;
 					TW.paramOrder = [];
 					TW.getTD(name, (data) => {
 						TW.templateData = data || {
-							title: name,
+							title: name.getPrefixedText(),
 							params: {},
 							aliases: {},
 							paramOrder: [],
@@ -133,10 +133,10 @@ mw.loader.using('mediawiki.api', () => {
 				if (!Tdata) {
 					alert('Invalid template.');
 				} else if (id === '-1'){
-					alert('"Template:' + name + '" does not exist.');
+					alert(`"${name.getPrefixedText()}" does not exist.`);
 					ret();
 				} else if (Tdata.notemplatedata) {
-					alert('"Template:' + name + '" does not have templatedata.');
+					alert(`"${name.getPrefixedText()}" does not have templatedata.`);
 					ret();
 				} else {
 					Tdata.paramOrder = Tdata.paramOrder || [];
@@ -161,7 +161,7 @@ mw.loader.using('mediawiki.api', () => {
 			// API call
 			api.get({
 				action: 'templatedata',
-				titles: 'Template:' + name,
+				titles: name.getPrefixedText(),
 				includeMissingTitles: 1,
 				format: 'json'
 			}).then(apiResult);
@@ -523,7 +523,6 @@ mw.loader.using('mediawiki.api', () => {
 					let coded = tempParam.value.split('');
 					let sectioned = [];
 					let index = 0;
-					console.log(coded, 'coded');
 					while (index < coded.length) {
 						if (coded[index] === S.eq && !sectioned[1]) {
 							sectioned = [
@@ -540,7 +539,6 @@ mw.loader.using('mediawiki.api', () => {
 							}
 						}
 					}
-					console.log(sectioned, 'sectioned');
 					let param = {
 						raw: tempParam.value, // entire param string
 						start: tempParam.start, // param string start point

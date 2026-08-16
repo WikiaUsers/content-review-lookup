@@ -84,14 +84,14 @@
 (() => {
     const namespace = mw.config.get('wgNamespaceNumber');
     const specialPage = mw.config.get('wgCanonicalSpecialPageName');
-    
+
     if (namespace !== 2 && specialPage !== 'Leaderboard') return;
     if (window.isAchievementsFixed) return;
     window.isAchievementsFixed = true;
-    
+
     // Сюда будут загружены данные из Module:AchievementDescriptions
     let missingDescriptions = {};
-    
+
     const getPlural = (number) => {
         const absNum = Math.abs(number);
         const mod10 = absNum % 10;
@@ -102,19 +102,14 @@
         return 'изображений в статьи';
     };
 
-    // Функция-обертка для DOMPurify
-    const sanitizeHTML = (html) => {
-        return (window.DOMPurify && window.DOMPurify.sanitize) 
-            ? window.DOMPurify.sanitize(html) 
-            : html;
+    // Точечное и безопасное разэкранирование только разрешенных тегов (a, strong, br, b, i)
+    const unescapeSafeHTML = (html) => {
+        return html
+            .replace(/&lt;(\/?(?:strong|b|i|em|br|a)(?:\s+(?:(?!&gt;).)*?)?)&gt;/gi, '<$1>')
+            .replace(/&amp;/g, '&');
     };
 
-    const unescapeSafeHTML = (html) => {
-        const unescaped = html.replace(/&lt;(\/?(?:strong|br|a)(?:\s+(?:(?!&gt;).)*?)?)&gt;/gi, '<$1>');
-        return sanitizeHTML(unescaped);
-    };
-    
-    // Асинхронная загрузка словаря из Lua (строгий ES6 с использованием Promises)
+    // Загрузка словаря из Lua
     const loadDescriptions = () => {
         const url = mw.util.wikiScript('api') + '?action=query&prop=revisions&titles=Module:AchievementDescriptions&rvprop=content&rvslots=main&formatversion=2&format=json';
         return fetch(url)
@@ -123,7 +118,6 @@
                 const pages = data.query && data.query.pages;
                 if (pages && pages[0] && pages[0].revisions) {
                     const content = pages[0].revisions[0].slots.main.content;
-                    // Парсим Lua-таблицу (ищет форматы ['ключ'] = 'значение')
                     const regex = /\[\s*['"]([^'"]+)['"]\s*\]\s*=\s*['"]([^'"]+)['"]/g;
                     let match;
                     while ((match = regex.exec(content)) !== null) {
@@ -133,37 +127,43 @@
             })
             .catch(e => console.warn('Ошибка при загрузке Module:AchievementDescriptions', e));
     };
-    
+
     const fixTooltip = (tooltipNode) => {
         if (tooltipNode.dataset.achievementFixed) return;
+        tooltipNode.dataset.achievementFixed = "true";
+
+        const textContainer = tooltipNode.querySelector('.profile-hover-text');
+        if (!textContainer) return;
+
         const badgeIcon = tooltipNode.nextElementSibling;
-        
         if (badgeIcon && badgeIcon.classList.contains('badge-icon')) {
             const iconData = badgeIcon.outerHTML.toLowerCase();
-            const paragraphs = tooltipNode.querySelectorAll('p');
-            
+            const paragraphs = textContainer.querySelectorAll('p');
+
             paragraphs.forEach(p => {
                 if (!p.textContent.trim()) {
                     const keys = Object.keys(missingDescriptions);
                     for (let i = 0; i < keys.length; i++) {
                         const internalKey = keys[i];
                         if (iconData.indexOf(internalKey.toLowerCase()) !== -1) {
-                            p.innerHTML = sanitizeHTML(missingDescriptions[internalKey]);
+                            p.innerHTML = missingDescriptions[internalKey];
                             break;
                         }
                     }
                 }
             });
         }
+
+        let content = textContainer.innerHTML;
         
-        let content = tooltipNode.innerHTML;
+        // Очищаем лишние переносы строк и служебные ключи в тексте
         content = content.replace(/(?:&lt;|<)br\s*\/?(?:&gt;|>)/gi, ' ');
         content = content
             .replace(/categoryselect-addcategory-button/g, 'Добавить категорию')
             .replace(/rte-ck-image-add/g, 'Добавить изображение')
             .replace(/oasis-signup/g, 'Регистрация')
             .replace(/⧼|⧽/g, '');
-            
+
         content = content.replace(
             /((?:(?:\d+(?:[\s,.\xA0]|&nbsp;)+)*\d+))\s+(?:изображений|изображения|изображение)\s+в\s+(?:статьи|статью|статей)/gi,
             (match, numStr) => {
@@ -173,22 +173,27 @@
                 return `${numStr} ${getPlural(number)}`;
             }
         );
-        
-        content = content.replace(/\s{2,}/g, ' ');
-        tooltipNode.innerHTML = sanitizeHTML(content.trim());
-        tooltipNode.dataset.achievementFixed = "true";
+
+        content = content.replace(/\s{2,}/g, ' ').trim();
+        textContainer.innerHTML = content;
     };
-    
+
     const processAchievements = () => {
+        // 1. Обработка тултипов при наведении
         const unhandledTooltips = document.querySelectorAll('.profile-hover:not([data-achievement-fixed="true"])');
         unhandledTooltips.forEach(fixTooltip);
-        
+
+        // 2. Обработка списка достижений на странице / лидерборде
         const unhandledBadges = document.querySelectorAll('.badge-text:not([data-achievement-fixed="true"])');
         unhandledBadges.forEach(badge => {
-            let html = badge.innerHTML;
-            html = unescapeSafeHTML(html);
+            badge.dataset.achievementFixed = "true";
             
-            // Восстановление недостающих описаний для боковой панели (ищет 2 переноса строки подряд)
+            let html = badge.innerHTML;
+            
+            // Восстанавливаем экранированные ссылки <a>, <strong> и <br>
+            html = unescapeSafeHTML(html);
+
+            // Восстановление недостающих описаний для боковой панели / лидерборда
             const listItem = badge.closest('li');
             if (listItem) {
                 const iconData = listItem.innerHTML.toLowerCase();
@@ -196,20 +201,22 @@
                 for (let i = 0; i < keys.length; i++) {
                     const internalKey = keys[i];
                     if (iconData.indexOf(internalKey.toLowerCase()) !== -1) {
-                        html = html.replace(/(<br\s*\/?>\s*){2}/i, `<br />${missingDescriptions[internalKey]}<br />`);
+                        if (!html.includes(missingDescriptions[internalKey])) {
+                            html = html.replace(/(<br\s*\/?>\s*){2}/i, `<br />${missingDescriptions[internalKey]}<br />`);
+                        }
                         break;
                     }
                 }
             }
-            
-            // Исправление: Сохраняем <br> и добавляем маркер точки строго перед временем
+
+            // Добавляем маркер точки строго перед временем
             html = html.replace(/(?:<br\s*\/?>\s*)+([^<]*(?:назад|ago|только\s*что|just\s*now)[^<]*(?:<\/p>\s*)?)$/i, '<br /> &bull; $1');
-            badge.innerHTML = sanitizeHTML(html);
-            badge.dataset.achievementFixed = "true";
+            
+            badge.innerHTML = html;
         });
     };
-    
-    // Дожидаемся загрузки словаря, прежде чем начинать обработку DOM
+
+    // Запуск после загрузки словаря
     loadDescriptions().then(() => {
         const observer = new MutationObserver((mutations) => {
             let hasNewNodes = false;

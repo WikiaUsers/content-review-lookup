@@ -661,3 +661,479 @@ $(function () {
     }, 12000);
 
 })();
+/*Recent Wiki Activity Expansion*/
+/* =========================================
+   EXTENDED RECENT WIKI ACTIVITY
+   ========================================= */
+
+(function () {
+
+    function extendRecentActivity() {
+
+        var activity =
+            document.querySelector("#WikiaRecentActivity") ||
+            document.querySelector(".WikiaRecentActivity") ||
+            document.querySelector(".recent-activity");
+
+        if (!activity) {
+            return;
+        }
+
+        /*
+         * Find the activity list.
+         */
+        var list =
+            activity.querySelector(".activity-feed") ||
+            activity.querySelector(".activity-list") ||
+            activity.querySelector("ul");
+
+        if (!list) {
+            return;
+        }
+
+        /*
+         * Remove restrictions that may limit
+         * how many already-loaded activities are visible.
+         */
+        list.style.maxHeight = "900px";
+        list.style.overflowY = "auto";
+
+        activity.style.maxHeight = "none";
+        activity.style.height = "auto";
+
+    }
+
+    /*
+     * Run after the page loads.
+     */
+    document.addEventListener("DOMContentLoaded", function () {
+        extendRecentActivity();
+
+        /*
+         * Fandom can load parts of the page
+         * dynamically, so check again.
+         */
+        setTimeout(extendRecentActivity, 1000);
+        setTimeout(extendRecentActivity, 3000);
+        setTimeout(extendRecentActivity, 5000);
+    });
+
+})();
+/* ==========================================
+   TOP CONTRIBUTORS SIDEBAR
+   ========================================== */
+
+(function () {
+
+	"use strict";
+
+	const LIMIT = 5;
+
+	function getTopContributors() {
+
+		const now = new Date();
+
+		/* Seven days ago */
+		const weekAgo = new Date(
+			now.getTime() - (7 * 24 * 60 * 60 * 1000)
+		);
+
+		const params = new URLSearchParams({
+			action: "query",
+			list: "recentchanges",
+			rcprop: "user|timestamp|ids",
+			rcstart: now.toISOString(),
+			rcend: weekAgo.toISOString(),
+			rclimit: "500",
+			rcnamespace: "0|6|10|14",
+			rcshow: "!bot",
+			format: "json",
+			origin: "*"
+		});
+
+		return fetch(
+			mw.util.getUrl("api.php") + "?" + params.toString()
+		)
+		.then(function (response) {
+			return response.json();
+		})
+		.then(function (data) {
+
+			if (!data.query || !data.query.recentchanges) {
+				throw new Error("No recent changes found.");
+			}
+
+			const changes = data.query.recentchanges;
+
+			const users = {};
+
+			changes.forEach(function (change) {
+
+				const username = change.user;
+
+				if (!username) {
+					return;
+				}
+
+				if (!users[username]) {
+					users[username] = 0;
+				}
+
+				users[username]++;
+			});
+
+			return Object.keys(users)
+				.map(function (username) {
+					return {
+						name: username,
+						edits: users[username]
+					};
+				})
+				.sort(function (a, b) {
+					return b.edits - a.edits;
+				})
+				.slice(0, LIMIT);
+		});
+	}
+
+
+	function getAvatar(username) {
+
+		const params = new URLSearchParams({
+			action: "query",
+			prop: "userinfo",
+			iuuser: username,
+			iuprop: "url",
+			format: "json",
+			origin: "*"
+		});
+
+		/*
+		 * Fandom's avatar endpoint isn't exposed consistently
+		 * through the normal MediaWiki API, so use Fandom's
+		 * standard avatar URL pattern.
+		 */
+
+		return mw.util.getUrl(
+			"Special:Redirect/avatar/" +
+			encodeURIComponent(username)
+		);
+	}
+
+
+	function displayContributors(contributors) {
+
+		const boxes = document.querySelectorAll(
+			".custom-top-contributors"
+		);
+
+		if (!boxes.length) {
+			return;
+		}
+
+		boxes.forEach(function (box) {
+
+			const list = box.querySelector(
+				".custom-top-contributors-list"
+			);
+
+			if (!list) {
+				return;
+			}
+
+			if (!contributors.length) {
+
+				list.innerHTML =
+					'<div class="custom-top-contributors-error">' +
+					'No contributors found this week.' +
+					'</div>';
+
+				return;
+			}
+
+			list.innerHTML = "";
+
+			contributors.forEach(function (user, index) {
+
+				const row = document.createElement("div");
+				row.className = "custom-contributor";
+
+				const rank = document.createElement("span");
+				rank.className = "custom-contributor-rank";
+				rank.textContent = (index + 1) + ".";
+
+				const avatar = document.createElement("img");
+				avatar.className = "custom-contributor-avatar";
+				avatar.src = getAvatar(user.name);
+				avatar.alt = user.name;
+				avatar.loading = "lazy";
+
+				const name = document.createElement("div");
+				name.className = "custom-contributor-name";
+
+				const link = document.createElement("a");
+
+				link.href = mw.util.getUrl(
+					"User:" + user.name.replace(/ /g, "_")
+				);
+
+				link.textContent = user.name;
+
+				const edits = document.createElement("span");
+				edits.className = "custom-contributor-edits";
+				edits.textContent =
+					user.edits +
+					(user.edits === 1 ? " edit" : " edits");
+
+				name.appendChild(link);
+				name.appendChild(edits);
+
+				row.appendChild(rank);
+				row.appendChild(avatar);
+				row.appendChild(name);
+
+				list.appendChild(row);
+			});
+		});
+	}
+
+
+	function loadTopContributors() {
+
+		if (!document.querySelector(
+			".custom-top-contributors"
+		)) {
+			return;
+		}
+
+		getTopContributors()
+			.then(function (contributors) {
+				displayContributors(contributors);
+			})
+			.catch(function (error) {
+
+				console.error(
+					"Top Contributors:",
+					error
+				);
+
+				document
+					.querySelectorAll(
+						".custom-top-contributors-list"
+					)
+					.forEach(function (list) {
+
+						list.innerHTML =
+							'<div class="custom-top-contributors-error">' +
+							'Unable to load contributors.' +
+							'</div>';
+
+					});
+			});
+	}
+
+
+	if (window.mw) {
+
+		mw.hook("wikipage.content")
+			.add(function () {
+				loadTopContributors();
+			});
+
+	}
+
+})();
+/*NewGuys*/
+/* =========================================
+   NEWEST MEMBERS MODULE
+   ========================================= */
+
+(function () {
+
+    function loadNewestMembers() {
+
+        var containers = document.querySelectorAll(
+            ".newest-members-module"
+        );
+
+        if (!containers.length) {
+            return;
+        }
+
+        var api = new mw.Api();
+
+        api.get({
+            action: "query",
+            list: "allusers",
+
+            // Sort by registration date
+            ausort: "registration",
+            audir: "descending",
+
+            // Number of users to display
+            aulimit: 10,
+
+            // Get registration information
+            auprop: "registration|groups",
+
+            format: "json"
+        }).done(function (data) {
+
+            var users = data.query && data.query.allusers;
+
+            if (!users || !users.length) {
+                showError("No members could be found.");
+                return;
+            }
+
+            containers.forEach(function (container) {
+
+                var list = container.querySelector(
+                    ".newest-members-list"
+                );
+
+                var loading = container.querySelector(
+                    ".newest-members-loading"
+                );
+
+                if (loading) {
+                    loading.remove();
+                }
+
+                list.innerHTML = "";
+
+                users.forEach(function (user) {
+
+                    var username = user.name;
+
+                    var member = document.createElement("div");
+                    member.className = "newest-member";
+
+                    /*
+                     * FANDOM user avatar.
+                     *
+                     * Using Special:Redirect/file allows FANDOM
+                     * to handle the actual avatar image.
+                     */
+                    var avatar = document.createElement("img");
+
+                    avatar.className = "newest-member-avatar";
+
+                    avatar.src =
+                        "/wiki/Special:Redirect/file/" +
+                        encodeURIComponent(username) +
+                        ".png";
+
+                    avatar.alt = "";
+
+                    avatar.onerror = function () {
+                        this.style.display = "none";
+                    };
+
+                    var info = document.createElement("div");
+                    info.className = "newest-member-info";
+
+                    var name = document.createElement("div");
+                    name.className = "newest-member-name";
+
+                    var link = document.createElement("a");
+
+                    link.href =
+                        "/wiki/User:" +
+                        encodeURIComponent(username)
+                            .replace(/%20/g, "_");
+
+                    link.textContent = username;
+
+                    name.appendChild(link);
+
+                    var date = document.createElement("div");
+                    date.className = "newest-member-date";
+
+                    if (user.registration) {
+                        date.textContent =
+                            "Joined " +
+                            formatRegistrationDate(
+                                user.registration
+                            );
+                    } else {
+                        date.textContent = "New member";
+                    }
+
+                    info.appendChild(name);
+                    info.appendChild(date);
+
+                    member.appendChild(avatar);
+                    member.appendChild(info);
+
+                    list.appendChild(member);
+
+                });
+
+            });
+
+        }).fail(function () {
+
+            showError(
+                "Unable to load the newest members."
+            );
+
+        });
+
+    }
+
+
+    function formatRegistrationDate(dateString) {
+
+        var date = new Date(dateString);
+
+        if (isNaN(date.getTime())) {
+            return dateString;
+        }
+
+        return date.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+
+    }
+
+
+    function showError(message) {
+
+        document
+            .querySelectorAll(".newest-members-module")
+            .forEach(function (container) {
+
+                var loading = container.querySelector(
+                    ".newest-members-loading"
+                );
+
+                if (loading) {
+                    loading.textContent = message;
+                    loading.className =
+                        "newest-members-error";
+                }
+
+            });
+
+    }
+
+
+    /*
+     * Wait until MediaWiki/FANDOM has loaded.
+     */
+    mw.loader.using(["mediawiki.api"]).then(function () {
+        $(loadNewestMembers);
+    });
+
+})();
+/*Bliss*/
+mw.loader.using(['mediawiki.util']).then(function () {
+    if (document.querySelector('.bliss-xp')) {
+        mw.util.addCSS(
+            '@import url("/load.php?mode=articles&articles=u:dev:MediaWiki:FandomXP.css&only=styles");'
+        );
+    }
+});

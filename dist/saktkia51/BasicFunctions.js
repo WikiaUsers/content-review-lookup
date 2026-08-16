@@ -2,6 +2,13 @@ function log(b, n) {
     return Math.log(n) / Math.log(b);
 };
 
+function checkPlural(input, config) {
+	config ??= {};
+	const s = config.singular;
+	const p = config.plural;
+	return input === 1 ? s : p??s;
+};
+
 function convertUTCDateToLocal(date) {
 	date = new Date(date);
 	var plusOrMinus = date.getTimezoneOffset() > 0 ? 'plus' : 'minus';
@@ -182,4 +189,26 @@ function create(tag, appendLocation) {
 		appendLocation.appendChild(elem);
 	};
 	return elem;
+};
+
+async function getLocalJS(title) {
+	const basePath = `https://saktkia51.fandom.com/index.php`;
+	const params = new URLSearchParams({
+		title:title,
+		action:'raw',
+		ctype:'text/javascript',
+	});
+	const module = await import(`${basePath}?${params}`);
+	return module;
+};
+
+async function getLocalCSS(title) {
+	const basePath = `https://saktkia51.fandom.com/index.php`;
+	const params = new URLSearchParams({
+		title:title,
+		action:'raw',
+		ctype:'text/css',
+	});
+	const response = await fetch(`${basePath}?${params}`);
+	return response.text();
 };

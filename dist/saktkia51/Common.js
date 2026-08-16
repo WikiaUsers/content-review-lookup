@@ -1,43 +1,51 @@
-// -- [ IMPORTS ] --
+// ----------------------------------------------------------------------------------------------------
+// Imports
+
 (function() {
+	"use strict";
+	
+	function localLoader(title) {
+		const baseURL = 'https://saktkia51.fandom.com/index.php';
+		const params = new URLSearchParams({
+			title:title,
+			action:'raw',
+			ctype:'text/javascript',
+		});
+		return mw.loader.getScript(`${baseURL}?${params}`);
+	};
 	// [ Basic Functions ]
 	// Adds some common functions.
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:BasicFunctions.js&action=raw&ctype=text/javascript')
+	localLoader('MediaWiki:BasicFunctions.js')
 	.then(function() {
-	
 	// [ Staff ]
 	// Small stuff pertaining to Wiki Staff.
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:Staff.js&action=raw&ctype=text/javascript');
+	return localLoader('MediaWiki:Staff.js');
+	
 	}).then(function() {
-
 	// [ User Page Notice ]
 	// Script for adding a notice to user sub-pages that the current page is not a main wiki article.
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:UserPageNotice.js&action=raw&ctype=text/javascript');
+	return localLoader('MediaWiki:UserPageNotice.js');
+	
 	}).then(function() {
-
 	// [ Default Upload Summary ]
 	// Set a default value for file upload summaries on Special:Upload. Also allows the user to define a custom summary that applies to all uploads on the page.
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:DefaultUploadSummary.js&action=raw&ctype=text/javascript');
+	return localLoader('MediaWiki:DefaultUploadSummary.js');
+	
 	}).then(function() {
-
-	// [ Daily Fact ]
-	// Outputs a string based on the current day and month.
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:DailyFact.js&action=raw&ctype=text/javascript');
-	}).then(function() {
-
 	// [ Main Page Search ]
-	// Adds a search box to the main page to aid unfamiliar users with the usage of the function.
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
+	// Adds a search box to the main page to aid unfamiliar users with usage of Special:Search.
+	return localLoader('MediaWiki:MainPageSearch.js');
+	
 	}).then(function() {
-
-	// [Exclusive Skins Daily Logger]
+	// [ Exclusive Skins Daily Logger ]
 	// Displays the current exclusive daily skin's various info according to the browser's detected time zone.
-	// See https://saktkia51.fandom.com/wiki/Weapon_Skins
-	mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:ExclusiveSkinsDailyLogger.js&action=raw&ctype=text/javascript');
+	// See also: https://saktkia51.fandom.com/wiki/Weapon_Skins
+	return localLoader('MediaWiki:ExclusiveSkinsDailyLogger.js');
 	});
 })();
 
-// -- [ Other code ] --
+// ----------------------------------------------------------------------------------------------------
+// Other code
 window.BackToTopModern = true;
 
 window.lockOldComments = (window.lockOldComments || {});

@@ -403,3 +403,308 @@ mw.hook('wikipage.content').add(function ($content) {
     }
     mw.hook('wikipage.content').add(initMutTooltip);
 })();
+
+/* Totems hover tooltip */
+(function () {
+    var totemTooltipInitialized = false;
+
+    function initTotemTooltip() {
+        if (totemTooltipInitialized) return;
+
+        var cards = document.querySelectorAll('.cvp-totem-card');
+        if (!cards.length) return;
+
+        totemTooltipInitialized = true;
+
+        var rarityColors = {
+            Common: '#9ca3af',
+            Rare: '#38bdf8',
+            Epic: '#a855f7',
+            Legendary: '#eab308',
+            Mythic: '#ec4899',
+            Divine: '#f97316',
+            Godly: '#eab308',
+            Secret: '#57534e'
+        };
+
+        var tooltip = document.createElement('div');
+        tooltip.className = 'cvp-totem-tooltip';
+        tooltip.innerHTML =
+            '<div class="cvp-totem-tooltip-name"></div>' +
+            '<div class="cvp-totem-tooltip-rarity"></div>' +
+            '<div class="cvp-totem-tooltip-cost"></div>' +
+            '<div class="cvp-totem-tooltip-bounty"></div>' +
+            '<div class="cvp-totem-tooltip-duration"></div>' +
+            '<div class="cvp-totem-tooltip-desc"></div>';
+        document.body.appendChild(tooltip);
+
+        var nameEl = tooltip.querySelector('.cvp-totem-tooltip-name');
+        var rarityEl = tooltip.querySelector('.cvp-totem-tooltip-rarity');
+        var costEl = tooltip.querySelector('.cvp-totem-tooltip-cost');
+        var bountyEl = tooltip.querySelector('.cvp-totem-tooltip-bounty');
+        var durationEl = tooltip.querySelector('.cvp-totem-tooltip-duration');
+        var descEl = tooltip.querySelector('.cvp-totem-tooltip-desc');
+
+        function showTooltip(card) {
+            var d = card.dataset;
+            var nameDiv = card.querySelector('.cvp-totem-name');
+
+            nameEl.textContent = nameDiv ? nameDiv.textContent : '';
+            rarityEl.textContent = d.rarity || '';
+            rarityEl.style.color = rarityColors[d.rarity] || '#1c1917';
+            costEl.textContent = d.cost || '';
+
+            if (d.bounty) {
+                bountyEl.textContent = d.bounty + ' Bounty Tokens';
+                bountyEl.style.display = '';
+            } else {
+                bountyEl.textContent = '';
+                bountyEl.style.display = 'none';
+            }
+
+            durationEl.textContent = d.duration || '';
+            descEl.textContent = d.desc || '';
+
+            var rect = card.getBoundingClientRect();
+            var tooltipWidth = 200;
+            var gap = 12;
+            var left = rect.right + gap;
+
+            if (left + tooltipWidth > window.innerWidth) {
+                left = rect.left - tooltipWidth - gap;
+            }
+            if (left < 5) left = 5;
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = rect.top + 'px';
+            tooltip.classList.add('cvp-active');
+
+            var tooltipRect = tooltip.getBoundingClientRect();
+            var top = rect.top;
+            if (tooltipRect.bottom > window.innerHeight) {
+                top = window.innerHeight - tooltipRect.height - 10;
+            }
+            if (top < 5) top = 5;
+            tooltip.style.top = top + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('cvp-active');
+        }
+
+        cards.forEach(function (card) {
+            card.addEventListener('mouseenter', function () { showTooltip(card); });
+            card.addEventListener('mouseleave', hideTooltip);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTotemTooltip);
+    } else {
+        initTotemTooltip();
+    }
+    mw.hook('wikipage.content').add(initTotemTooltip);
+})();
+
+
+/* Plants hover tooltip */
+(function () {
+    var plantTooltipInitialized = false;
+
+    function initPlantTooltip() {
+        if (plantTooltipInitialized) return;
+
+        var cards = document.querySelectorAll('.cvp-plant-card');
+        if (!cards.length) return;
+
+        plantTooltipInitialized = true;
+
+        var rarityColors = {
+            Common: '#9ca3af',
+            Rare: '#38bdf8',
+            Epic: '#a855f7',
+            Legendary: '#eab308',
+            Mythic: '#ec4899',
+            Divine: '#f97316',
+            Godly: '#eab308',
+            Secret: '#57534e',
+            Boss: '#dc2626'
+        };
+
+        var tooltip = document.createElement('div');
+        tooltip.className = 'cvp-plant-tooltip';
+        tooltip.innerHTML =
+            '<div class="cvp-plant-tooltip-name"></div>' +
+            '<div class="cvp-plant-tooltip-rarity"></div>' +
+            '<div class="cvp-plant-tooltip-mps"></div>' +
+            '<div class="cvp-plant-tooltip-health"></div>';
+        document.body.appendChild(tooltip);
+
+        var nameEl = tooltip.querySelector('.cvp-plant-tooltip-name');
+        var rarityEl = tooltip.querySelector('.cvp-plant-tooltip-rarity');
+        var mpsEl = tooltip.querySelector('.cvp-plant-tooltip-mps');
+        var healthEl = tooltip.querySelector('.cvp-plant-tooltip-health');
+
+        function showTooltip(card) {
+            var d = card.dataset;
+            nameEl.textContent = d.name || '';
+            rarityEl.textContent = d.rarity || '';
+            rarityEl.style.color = rarityColors[d.rarity] || '#1c1917';
+            mpsEl.textContent = 'Money/Sec: ' + (d.mps || '');
+            healthEl.textContent = 'Max Health: ' + (d.health || '');
+
+            var rect = card.getBoundingClientRect();
+            var tooltipWidth = 200;
+            var gap = 12;
+            var left = rect.right + gap;
+
+            if (left + tooltipWidth > window.innerWidth) {
+                left = rect.left - tooltipWidth - gap;
+            }
+            if (left < 5) left = 5;
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = rect.top + 'px';
+            tooltip.classList.add('cvp-active');
+
+            var tooltipRect = tooltip.getBoundingClientRect();
+            var top = rect.top;
+            if (tooltipRect.bottom > window.innerHeight) {
+                top = window.innerHeight - tooltipRect.height - 10;
+            }
+            if (top < 5) top = 5;
+            tooltip.style.top = top + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('cvp-active');
+        }
+
+        cards.forEach(function (card) {
+            card.addEventListener('mouseenter', function () { showTooltip(card); });
+            card.addEventListener('mouseleave', hideTooltip);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPlantTooltip);
+    } else {
+        initPlantTooltip();
+    }
+    mw.hook('wikipage.content').add(initPlantTooltip);
+})();
+
+/* Mutation card effects (no images — pure CSS/JS generated) */
+(function () {
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    function spawn(container, className, count, styleFn) {
+        for (var i = 0; i < count; i++) {
+            var el = document.createElement('div');
+            el.className = className;
+            styleFn(el, i);
+            container.appendChild(el);
+        }
+    }
+
+    function initMutationFX() {
+        var cards = document.querySelectorAll('.cvp-mut-card');
+        if (!cards.length) return;
+
+        cards.forEach(function (card) {
+            var fx = card.querySelector('.cvp-mut-fx');
+            if (!fx || fx.dataset.fxReady) return;
+            fx.dataset.fxReady = '1';
+
+            if (card.classList.contains('cvp-mut-taco')) {
+                spawn(fx, 'cvp-mut-taco-drop', 6, function (el) {
+                    el.textContent = '\uD83C\uDF2E';
+                    el.style.left = rand(5, 85) + '%';
+                    el.style.fontSize = rand(14, 20) + 'px';
+                    el.style.animationDuration = rand(1.8, 3) + 's';
+                    el.style.animationDelay = rand(0, 2.5) + 's';
+                });
+            }
+
+            if (card.classList.contains('cvp-mut-gold')) {
+                spawn(fx, 'cvp-mut-sparkle', 8, function (el) {
+                    el.style.left = rand(10, 90) + '%';
+                    el.style.top = rand(10, 90) + '%';
+                    el.style.animationDuration = rand(1.2, 2.2) + 's';
+                    el.style.animationDelay = rand(0, 2) + 's';
+                });
+            }
+
+            if (card.classList.contains('cvp-mut-glitched')) {
+                var colors = ['#4dffea', '#ff4dd8', '#ffffff', '#000000', '#2effff'];
+                var blocks = [];
+                spawn(fx, 'cvp-mut-glitch-block', 10, function (el) {
+                    blocks.push(el);
+                });
+                function reshuffle() {
+                    blocks.forEach(function (el) {
+                        el.style.left = rand(0, 85) + '%';
+                        el.style.top = rand(0, 85) + '%';
+                        el.style.width = rand(10, 32) + 'px';
+                        el.style.height = rand(3, 8) + 'px';
+                        el.style.background = colors[Math.floor(rand(0, colors.length))];
+                        el.style.opacity = rand(0.3, 0.8);
+                    });
+                }
+                reshuffle();
+                setInterval(reshuffle, 150);
+            }
+
+            if (card.classList.contains('cvp-mut-scorched')) {
+                spawn(fx, 'cvp-mut-ember-dark', 8, function (el) {
+                    el.style.left = rand(15, 85) + '%';
+                    el.style.animationDuration = rand(1.4, 2.2) + 's';
+                    el.style.animationDelay = rand(0, 2) + 's';
+                });
+            }
+
+            if (card.classList.contains('cvp-mut-toasty')) {
+                spawn(fx, 'cvp-mut-ember-orange', 8, function (el) {
+                    el.style.left = rand(15, 85) + '%';
+                    el.style.animationDuration = rand(1.4, 2.2) + 's';
+                    el.style.animationDelay = rand(0, 2) + 's';
+                });
+            }
+
+            if (card.classList.contains('cvp-mut-chilly')) {
+                spawn(fx, 'cvp-mut-snow-flake', 10, function (el) {
+                    el.style.left = rand(5, 95) + '%';
+                    el.style.animationDuration = rand(2, 3.5) + 's';
+                    el.style.animationDelay = rand(0, 3) + 's';
+                });
+            }
+
+            if (card.classList.contains('cvp-mut-shocked')) {
+                var bolt = document.createElement('div');
+                bolt.className = 'cvp-mut-bolt';
+                fx.appendChild(bolt);
+            }
+
+            if (card.classList.contains('cvp-mut-moonlit')) {
+                var moon = document.createElement('div');
+                moon.className = 'cvp-mut-moon';
+                fx.appendChild(moon);
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMutationFX);
+    } else {
+        initMutationFX();
+    }
+    mw.hook('wikipage.content').add(initMutationFX);
+})();
+
+if (card.classList.contains('cvp-mut-mega')) {
+    spawn(fx, 'cvp-mut-mega-bolt', 4, function (el, i) {
+        el.style.left = 50 + rand(-18, 18) + '%';
+        el.style.transform = 'rotate(' + (i * 90) + 'deg)';
+        el.style.animationDelay = rand(0, 1.2) + 's';
+    });
+}

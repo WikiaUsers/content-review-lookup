@@ -1,3 +1,5 @@
+window.tabberLinks = window.tabberLinks || {};
+window.tabberLinks.neverScroll = true;
 mw.loader.using(['mediawiki.util'], function () {
 	$(function() {
     	const originalPageName = mw.config.get('wgPageName') || '';

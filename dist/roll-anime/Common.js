@@ -848,16 +848,17 @@
         var bestUnitList = document.getElementById('best-unit-select');
         var bestUnitToggle = document.getElementById('best-unit-toggle');
         var bestUnitConfig = document.getElementById('best-unit-config');
-        var exclLevelDisplay = document.getElementById('excl-level-display');
         var bestIncomeResult = document.getElementById('best-income-result');
+        var bestPlotIncomeResult = document.getElementById('best-plot-income-result');
         var manipIncomeResult = document.getElementById('manip-unit-income-result');
+        var manipPlotIncomeResult = document.getElementById('manip-plot-income-result');
+        var totalPlotIncomeResult = document.getElementById('total-plot-income-result');
         var bestDamageResult = document.getElementById('best-damage-result');
         var manipDamageResult = document.getElementById('manip-damage-result');
         var bestGroupBoost = document.getElementById('best-group-boost');
         var bestPremiumBoost = document.getElementById('best-premium-boost');
 
         var currentLevel = 0;
-        var currentExclLevel = 0;
         var currentUpgrade = 1.0;
         var groupBoostActive = false;
         var premiumBoostActive = false;
@@ -908,7 +909,10 @@
         function calculate() {
             if (!selectedUnit || !UNIT_DATA[selectedUnit]) {
                 bestIncomeResult.textContent = '0';
+                if (bestPlotIncomeResult) bestPlotIncomeResult.textContent = '0';
                 manipIncomeResult.textContent = '0';
+                if (manipPlotIncomeResult) manipPlotIncomeResult.textContent = '0';
+                if (totalPlotIncomeResult) totalPlotIncomeResult.textContent = '0';
                 bestDamageResult.textContent = '0';
                 manipDamageResult.textContent = '0';
                 return;
@@ -930,20 +934,33 @@
             if (x2IncomeBoostActive) sharedIncomeMult *= 2.0;
             var sharedDamageMult = currentUpgrade * (1 + aura[1] / 100);
 
-            // Best unit income = base x best mutation x best trait x level x shared boosts
+            // Best unit base income (before plot boosts) = base x best mutation x best trait x best level
             var bestLevelScaling = Math.pow(1.25, currentLevel);
-            var bestUnitIncome = BASE * bestMutMult * (1 + bestTrait[0] / 100) * bestLevelScaling * sharedIncomeMult;
+            var bestUnitBase = BASE * bestMutMult * (1 + bestTrait[0] / 100) * bestLevelScaling;
 
-            // Exclusive income = ratio x base x excl mutation x excl trait x excl level x shared boosts
-            var exclLevelScaling = Math.pow(1.25, currentExclLevel);
-            var manipIncome = BASE * EXCLUSIVE_RATIO * exclMutMult * (1 + exclTrait[0] / 100) * exclLevelScaling * sharedIncomeMult;
+            // Best unit plot income = best unit base x shared plot boosts
+            var bestUnitIncome = bestUnitBase * sharedIncomeMult;
 
-            // Damage
-            var bestDamage = BASE * bestMutMult * (1 + bestTrait[1] / 100) * bestLevelScaling * sharedDamageMult;
-            var manipDamage = BASE * EXCLUSIVE_RATIO * exclMutMult * (1 + exclTrait[1] / 100) * exclLevelScaling * sharedDamageMult;
+            // Exclusive unit income = best unit base x ratio x excl mutation x excl trait
+            // Exclusive units do NOT have levels, so no level scaling
+            var manipUnitIncome = bestUnitBase * EXCLUSIVE_RATIO * exclMutMult * (1 + exclTrait[0] / 100);
+
+            // Exclusive plot income = exclusive unit income x shared plot boosts
+            var manipPlotIncome = manipUnitIncome * sharedIncomeMult;
+
+            // Total plot income = best unit plot income + exclusive plot income
+            var totalPlotIncome = bestUnitIncome + manipPlotIncome;
+
+            // Damage (exclusive scales off best unit's damage, no level for exclusive)
+            var bestUnitBaseDmg = BASE * bestMutMult * (1 + bestTrait[1] / 100) * bestLevelScaling;
+            var bestDamage = bestUnitBaseDmg * sharedDamageMult;
+            var manipDamage = bestUnitBaseDmg * EXCLUSIVE_RATIO * exclMutMult * (1 + exclTrait[1] / 100) * sharedDamageMult;
 
             bestIncomeResult.textContent = formatNumber(bestUnitIncome) + '/s';
-            manipIncomeResult.textContent = formatNumber(manipIncome) + '/s';
+            if (bestPlotIncomeResult) bestPlotIncomeResult.textContent = formatNumber(bestUnitIncome) + '/s';
+            manipIncomeResult.textContent = formatNumber(manipUnitIncome) + '/s';
+            if (manipPlotIncomeResult) manipPlotIncomeResult.textContent = formatNumber(manipPlotIncome) + '/s';
+            if (totalPlotIncomeResult) totalPlotIncomeResult.textContent = formatNumber(totalPlotIncome) + '/s';
             bestDamageResult.textContent = formatNumber(bestDamage);
             manipDamageResult.textContent = formatNumber(manipDamage);
         }
@@ -1027,24 +1044,6 @@
                 currentUpgrade = Math.max(1.0, Math.min(9.0, val));
                 currentUpgrade = Math.round(currentUpgrade * 10) / 10;
                 bUpgradeDisplay.textContent = currentUpgrade.toFixed(1) + 'x';
-                calculate();
-            });
-        }
-
-        // Exclusive level controls
-        var eLevelUp = document.getElementById('excl-level-up');
-        var eLevelDown = document.getElementById('excl-level-down');
-        if (eLevelUp) eLevelUp.addEventListener('click', function () { currentExclLevel = Math.min(50, currentExclLevel + 1); exclLevelDisplay.textContent = currentExclLevel; calculate(); });
-        if (eLevelDown) eLevelDown.addEventListener('click', function () { currentExclLevel = Math.max(0, currentExclLevel - 1); exclLevelDisplay.textContent = currentExclLevel; calculate(); });
-        if (exclLevelDisplay) {
-            exclLevelDisplay.style.cursor = 'pointer';
-            exclLevelDisplay.addEventListener('click', function () {
-                var input = prompt('Enter exclusive unit level (0-50):', currentExclLevel);
-                if (input === null) return;
-                var val = parseInt(input);
-                if (isNaN(val)) val = 0;
-                currentExclLevel = Math.max(0, Math.min(50, val));
-                exclLevelDisplay.textContent = currentExclLevel;
                 calculate();
             });
         }

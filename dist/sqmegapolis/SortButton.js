@@ -1,54 +1,81 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var container = document.getElementById("container");
-    var buttons = document.querySelectorAll(".mw-sort-btn");
+$(function () {
+	function getPositions(items) {
+		return items.map(item => {
+			const rect = item.getBoundingClientRect();
+			return { item, top: rect.top, left: rect.left };
+		});
+	}
 
-    if (!container) {
-        console.error('Sorting: #container not found.');
-        return;
-    }
+	function animateFLIPFade(oldPos, newPos) {
+		newPos.forEach((pos, i) => {
+			const old = oldPos[i];
+			const dx = old.left - pos.left;
+			const dy = old.top - pos.top;
 
-    function sortItems(key) {
-        var items = Array.prototype.slice.call(
-            container.querySelectorAll(":scope > .item")
-        );
+			const el = pos.item;
 
-        items.sort(function (a, b) {
-            var elA = a.querySelector("." + key);
-            var elB = b.querySelector("." + key);
+			// Start: alte Position + Fade-Out
+			el.style.transform = `translate(${dx}px, ${dy}px)`;
+			el.style.opacity = "0";
+			el.style.transition = "opacity 0s";
 
-            if (!elA || !elB) {
-                return 0;
-            }
+			requestAnimationFrame(() => {
+				// Bewegung + Fade-In
+				el.style.transform = "translate(0, 0)";
+				el.style.opacity = "1";
+				el.style.transition = "opacity 1000ms ease";
+			});
+		});
+	}
 
-            var valA = elA.getAttribute("data-value") || "";
-            var valB = elB.getAttribute("data-value") || "";
+	function sortItems(key, direction) {
+		var container = document.getElementById("container");
+		var items = Array.from(container.querySelectorAll(":scope > .item"));
 
-            var numA = Number(valA);
-            var numB = Number(valB);
+		const oldPositions = getPositions(items);
 
-            if (valA !== "" && valB !== "" &&
-                Number.isFinite(numA) && Number.isFinite(numB)) {
-                return numA - numB;
-            }
+		items.sort(function (a, b) {
+			var valA = a.querySelector("." + key).dataset.value;
+			var valB = b.querySelector("." + key).dataset.value;
 
-            return valA.localeCompare(valB, undefined, {
-                numeric: true,
-                sensitivity: "base"
-            });
-        });
+			var numA = parseFloat(valA);
+			var numB = parseFloat(valB);
 
-        items.forEach(function (item) {
-            container.appendChild(item);
-        });
-    }
+			let result;
 
-    Array.prototype.forEach.call(buttons, function (btn) {
-        btn.addEventListener("click", function () {
-            var key = btn.getAttribute("data-sort");
-            console.log("Sort by:", key);
-            sortItems(key);
-        });
-    });
+			if (!isNaN(numA) && !isNaN(numB)) {
+				result = numA - numB;
+			} else {
+				result = valA.localeCompare(valB);
+			}
 
-    console.log("Sort function initialized:", buttons.length, "Buttons");
+			return direction === "desc" ? -result : result;
+		});
+
+		items.forEach(item => container.appendChild(item));
+
+		const newPositions = getPositions(items);
+
+		animateFLIPFade(oldPositions, newPositions);
+	}
+
+	const buttons = document.querySelectorAll(".mw-sort-btn");
+
+	buttons.forEach(btn => {
+		btn.dataset.direction = "asc";
+
+		btn.addEventListener("click", () => {
+			const key = btn.dataset.sort;
+
+			btn.dataset.direction = btn.dataset.direction === "asc" ? "desc" : "asc";
+
+			sortItems(key, btn.dataset.direction);
+
+			buttons.forEach(b => {
+				b.textContent = b.dataset.sort;
+			});
+
+			btn.textContent = key + (btn.dataset.direction === "asc" ? " ▲" : " ▼");
+		});
+	});
 });

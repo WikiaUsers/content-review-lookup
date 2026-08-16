@@ -14,7 +14,6 @@ mw.hook("wikipage.content").add(function() {
 		
 		const wait = $(this).attr("data-wait");
 		const portal = $(this).attr("data-portal");
-		var portalOpened = false;
 		
 		if (wait != "none") {
 			css.disabled = true;
@@ -23,29 +22,8 @@ mw.hook("wikipage.content").add(function() {
 		
 		if (portal != "none") {
 			css.disabled = true;
-			$(".t-css-portal-" + portal).click(function() {
-				css.disabled = !css.disabled;
-				portalOpened = true;
-			});
+			$(".t-css-portal-" + portal).click(() => css.disabled = !css.disabled);
 		}
-		
-		$(".theme-toggler").click(function() {
-			switch (true) {
-				case wait != "none":
-					if (timer || css.disabled == false) {
-						clearTimeout(timer);
-						timer = false;
-						css.disabled = true;
-					} else css.disabled = false;
-					break;
-				case portal != "none":
-					if (portalOpened) css.disabled = !css.disabled;
-					break;
-				default:
-					css.disabled = !css.disabled;
-					break;
-			}
-		});
 	});
 	
 	// [[Template:Audio]] toggle
@@ -53,6 +31,7 @@ mw.hook("wikipage.content").add(function() {
 		const toggle = $(this).attr("data-toggle");
 		const toggleFunction = $(this).attr("data-toggle-function");
 		const fadeSteps = Math.round(250 * toggleFunction.replace(/fade-(in|out)-/, ""));
+		
 		if (toggle != "none") {
 			$(".t-audio-toggle-" + toggle).click(function () {
 				const audio = $(`.t-audio-toggle-${toggle} audio`)[0];
@@ -65,7 +44,7 @@ mw.hook("wikipage.content").add(function() {
 						audio.play();
 						(function loop(i) {
 							setTimeout(() => {
-								console.log((-i + fadeSteps) / fadeSteps);
+								audio.volume = ((-i + fadeSteps) / fadeSteps);
 								if (--i > -1) loop(i);
 						    }, 4);
 						})(fadeSteps - 1);
@@ -74,7 +53,7 @@ mw.hook("wikipage.content").add(function() {
 						audio.play();
 						(function loop(i) {
 							setTimeout(() => {
-								console.log((i) / fadeSteps);
+								audio.volume = ((i) / fadeSteps);
 								if (--i > -1) loop(i);
 						    }, 4);
 						})(fadeSteps - 1);

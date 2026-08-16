@@ -22,7 +22,7 @@ mw.hook('wikipage.content').add(() => {
 		}
 		.fl-filter-group {
 			display: flex;
-			gap: 5px;
+			gap: 4px;
 			flex-wrap: wrap;
 			background: var(--theme-page-background-color);
 			padding: 5px;

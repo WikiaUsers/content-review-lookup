@@ -18,7 +18,7 @@ function jstzConvertAll() {
         var utc = l[i].dataset.jstzutc;
         utc = utc && utc.toLowerCase() === "true";
         if(format && (date instanceof Date)) {
-            l[i].innerHTML=jstzFormatDate(date, format, utc);
+            l[i].textContent=jstzFormatDate(date, format, utc);
         }
     }
 }

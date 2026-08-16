@@ -269,6 +269,9 @@ const indicators=viewer.querySelectorAll('.element-indicator');
 const prev=viewer.querySelector('.element-button-left');
 const next=viewer.querySelector('.element-button-right');
 const images=viewer.querySelectorAll('.element-image img');
+const titleList=viewer.querySelector('.element-title-list');
+const titles=titleList?titleList.querySelectorAll('.element-title-item'):[];
+const descriptions=viewer.querySelectorAll('.element-description-item');
 if(!groups.length||!prev||!next)return;
 let current=0;
 function fitImage(image){
@@ -298,12 +301,30 @@ images.forEach(function(image){
 fitImage(image);
 });
 }
+function updateTitles(index){
+if(!titleList||titles.length!==groups.length)return;
+const titleArray=Array.from(titles);
+const selected=titleArray[index];
+if(!selected)return;
+titleArray.splice(index,1);
+titleArray.unshift(selected);
+titleArray.forEach(function(title){
+titleList.appendChild(title);
+});
+titles.forEach(function(title){
+title.classList.remove('active');
+});
+selected.classList.add('active');
+}
 function show(index){
 if(index<0)index=groups.length-1;
 if(index>=groups.length)index=0;
 current=index;
 groups.forEach(function(group,i){
 group.style.display=i===current?'block':'none';
+});
+descriptions.forEach(function(description,i){
+description.style.display=i===current?'block':'none';
 });
 indicators.forEach(function(indicator,i){
 if(i===current){
@@ -322,6 +343,7 @@ const currentNavigation=groups[current].querySelectorAll('.element-navigation-it
 currentNavigation.forEach(function(item,i){
 item.style.setProperty('color',i===current?'#b00000':'#000','important');
 });
+updateTitles(current);
 requestAnimationFrame(function(){
 fitAllImages();
 });
@@ -378,3 +400,15 @@ initElementViewers();
 }else{
 document.addEventListener('DOMContentLoaded',initElementViewers);
 }
+
+/* 核心设定按钮 */
+document.addEventListener("click",function(e){
+const button=e.target.closest(".core-setting-button");
+if(!button)return;
+
+const box=button.closest(".core-setting");
+const content=box.querySelector(".core-setting-content");
+
+button.classList.toggle("active");
+content.classList.toggle("active");
+});

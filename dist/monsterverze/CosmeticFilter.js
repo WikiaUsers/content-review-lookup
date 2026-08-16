@@ -10,6 +10,7 @@
 		return String(value || '')
 			.toLowerCase()
 			.replace(/&nbsp;/g, ' ')
+			.replace(/_/g, ' ')
 			.replace(/\s+/g, ' ')
 			.trim();
 	}
@@ -18,6 +19,13 @@
 		return String(value || '')
 			.replace(/&nbsp;/g, ' ')
 			.replace(/\s+/g, ' ')
+			.trim();
+	}
+
+	function compactText(value) {
+		return cleanText(value)
+			.replace(/\s*\/\s*/g, '/')
+			.replace(/\s*-\s*/g, '-')
 			.trim();
 	}
 
@@ -75,16 +83,17 @@
 			source === 'shop items'
 		) return 'bootique';
 
-		if (source === 'quest items') return 'quest';
+		if (source === 'quest items' || source === 'quest') return 'quest';
 
 		if (
 			source === 'event items' ||
+			source === 'event' ||
 			source === 'competition' ||
 			source === 'competition mode' ||
 			source === 'competition items'
 		) return 'event';
 
-		if (source === 'free items') return 'free';
+		if (source === 'free items' || source === 'free') return 'free';
 
 		return source;
 	}
@@ -104,11 +113,16 @@
 	}
 
 	function normalizeStyle(value) {
-		var style = cleanText(value);
+		var style = compactText(value);
+
+		if (!style || style === 'all' || style === 'any' || style === 'show all') {
+			return '';
+		}
 
 		if (
 			style === 'fem' ||
 			style === 'female' ||
+			style === 'feminine' ||
 			style === 'feminine hair' ||
 			style === 'feminine hairstyles' ||
 			style === 'feminine faces' ||
@@ -118,6 +132,7 @@
 		if (
 			style === 'masc' ||
 			style === 'male' ||
+			style === 'masculine' ||
 			style === 'masculine hair' ||
 			style === 'masculine hairstyles' ||
 			style === 'masculine faces' ||
@@ -125,11 +140,21 @@
 		) return 'masculine';
 
 		if (
+			style === 'feminine/masculine' ||
+			style === 'masculine/feminine' ||
+			style === 'fem/masc' ||
+			style === 'masc/fem' ||
+			style === 'female/male' ||
+			style === 'male/female' ||
+			style === 'feminine-masculine' ||
+			style === 'masculine-feminine' ||
+			style === 'fem-masc' ||
+			style === 'masc-fem'
+		) return 'feminine-masculine';
+
+		if (
 			style === 'uni' ||
-			style === 'unisex' ||
-			style === 'both' ||
-			style === 'all' ||
-			style === 'neutral'
+			style === 'unisex'
 		) return 'unisex';
 
 		return style;
@@ -141,14 +166,34 @@
 		if (value === 'feminine') return 'Feminine';
 		if (value === 'masculine') return 'Masculine';
 		if (value === 'unisex') return 'Unisex';
+		if (value === 'feminine-masculine') return 'Feminine/Masculine';
 
 		return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
 	}
 
 	function styleMatches(cardStyle, wantedStyle) {
+		cardStyle = normalizeStyle(cardStyle);
+		wantedStyle = normalizeStyle(wantedStyle);
+
 		if (!wantedStyle) return true;
+		if (!cardStyle) return false;
+
 		if (cardStyle === wantedStyle) return true;
 
+		/*
+			Feminine/Masculine means the item has both body-base versions.
+			It should show when filtering Feminine or Masculine.
+			It is NOT the same as true Unisex.
+		*/
+		if (cardStyle === 'feminine-masculine' && (wantedStyle === 'feminine' || wantedStyle === 'masculine')) {
+			return true;
+		}
+
+		/*
+			True Unisex means the exact same item/image works for both body bases.
+			It should show when filtering Feminine or Masculine,
+			but selecting Unisex should only show true Unisex items.
+		*/
 		if (cardStyle === 'unisex' && (wantedStyle === 'feminine' || wantedStyle === 'masculine')) {
 			return true;
 		}
@@ -161,11 +206,17 @@
 
 		list.classList.remove('mv-style-feminine');
 		list.classList.remove('mv-style-masculine');
+		list.classList.remove('mv-style-unisex');
+		list.classList.remove('mv-style-feminine-masculine');
 
 		if (styleValue === 'feminine') {
 			list.classList.add('mv-style-feminine');
 		} else if (styleValue === 'masculine') {
 			list.classList.add('mv-style-masculine');
+		} else if (styleValue === 'unisex') {
+			list.classList.add('mv-style-unisex');
+		} else if (styleValue === 'feminine-masculine') {
+			list.classList.add('mv-style-feminine-masculine');
 		}
 	}
 
@@ -273,7 +324,8 @@
 		var order = {
 			feminine: 1,
 			masculine: 2,
-			unisex: 3
+			unisex: 3,
+			'feminine-masculine': 4
 		};
 
 		return order[normalizeStyle(style)] || 999;
@@ -364,6 +416,40 @@
 				'color:#fff!important;' +
 				'font-family:Urbanist,sans-serif!important;' +
 				'font-weight:900!important;' +
+			'}' +
+
+			'.mv-style-feminine .mv-card-image-body-split .mv-card-image-masculine{' +
+				'display:none!important;' +
+			'}' +
+
+			'.mv-style-masculine .mv-card-image-body-split .mv-card-image-feminine{' +
+				'display:none!important;' +
+			'}' +
+
+			'.mv-style-feminine .mv-card-image-body-split,' +
+			'.mv-style-masculine .mv-card-image-body-split{' +
+				'width:110px!important;' +
+				'gap:0!important;' +
+				'justify-content:center!important;' +
+			'}' +
+
+			'.mv-style-feminine .mv-card-image-body-split .mv-card-image-feminine,' +
+			'.mv-style-masculine .mv-card-image-body-split .mv-card-image-masculine{' +
+				'width:110px!important;' +
+				'max-width:110px!important;' +
+			'}' +
+
+			'.mv-style-feminine .mv-card-image-body-split .mv-card-image-feminine .image,' +
+			'.mv-style-feminine .mv-card-image-body-split .mv-card-image-feminine a,' +
+			'.mv-style-masculine .mv-card-image-body-split .mv-card-image-masculine .image,' +
+			'.mv-style-masculine .mv-card-image-body-split .mv-card-image-masculine a{' +
+				'width:110px!important;' +
+				'max-width:110px!important;' +
+			'}' +
+
+			'.mv-style-feminine .mv-card-image-body-split img,' +
+			'.mv-style-masculine .mv-card-image-body-split img{' +
+				'max-width:110px!important;' +
 			'}';
 
 		document.head.appendChild(style);
@@ -435,7 +521,7 @@
 
 		var creditSelect = document.createElement('select');
 		creditSelect.className = 'mv-cosmetic-credit-filter mv-cosmetic-select';
-		creditSelect.appendChild(makeOption('', 'All Credits'));
+		creditSelect.appendChild(makeOption('', 'All Credit(s)'));
 
 		var credits = {};
 		cards.forEach(function (card) {
@@ -651,45 +737,47 @@
 	}
 
 	function initList(list) {
-	var box = list.closest('.mv-filter-box') || list.parentElement;
-	if (!box) return;
+		var box = list.closest('.mv-filter-box') || list.parentElement;
+		if (!box) return;
 
-	// Already wired up. start() runs again on a timer, and rebuilding the
-	// controls would recreate every select at its default value and throw
-	// away whatever the user has picked.
-	if (list.getAttribute('data-mv-cosmetic-filter-ready') === 'true') {
-		return;
-	}
+		/*
+			Already wired up. start() runs again on a timer, and rebuilding the
+			controls would recreate every select at its default value and throw
+			away whatever the user has picked.
+		*/
+		if (list.getAttribute('data-mv-cosmetic-filter-ready') === 'true') {
+			return;
+		}
 
-	var filterMode = cleanText(box.getAttribute('data-filter') || 'show');
+		var filterMode = cleanText(box.getAttribute('data-filter') || 'show');
 
-	if (
-		filterMode === 'none' ||
-		filterMode === 'no' ||
-		filterMode === 'hide' ||
-		filterMode === 'off' ||
-		filterMode === 'false'
-	) {
-		console.log('MonsterVerze cosmetic filter skipped because data-filter is', filterMode);
-		return;
-	}
+		if (
+			filterMode === 'none' ||
+			filterMode === 'no' ||
+			filterMode === 'hide' ||
+			filterMode === 'off' ||
+			filterMode === 'false'
+		) {
+			console.log('MonsterVerze cosmetic filter skipped because data-filter is', filterMode);
+			return;
+		}
 
-	var cards = Array.prototype.slice.call(list.children).filter(function (child) {
-		return child.classList && child.classList.contains('mv-item-card');
-	});
+		var cards = Array.prototype.slice.call(list.children).filter(function (child) {
+			return child.classList && child.classList.contains('mv-item-card');
+		});
 
-	if (!cards.length) {
-		console.log('MonsterVerze cosmetic filter found list but no cards.');
-		return;
-	}
+		if (!cards.length) {
+			console.log('MonsterVerze cosmetic filter found list but no cards.');
+			return;
+		}
 
-	list.setAttribute('data-mv-cosmetic-filter-ready', 'true');
+		list.setAttribute('data-mv-cosmetic-filter-ready', 'true');
 
-	cards.forEach(function (card, index) {
-		card.setAttribute('data-original-index', index);
-	});
+		cards.forEach(function (card, index) {
+			card.setAttribute('data-original-index', index);
+		});
 
-	var controls = buildControls(box, cards);
+		var controls = buildControls(box, cards);
 
 		function update() {
 			applyStyleView(list, controls);
@@ -730,8 +818,107 @@
 		console.log('MonsterVerze cosmetic controls created:', cards.length, 'cards');
 	}
 
+
+	// --------------------------------------------------------
+	// Tooltip positioning: detach from scaled card, re-parent
+	// to body, position using fixed viewport coordinates.
+	// This bypasses all transform/scale coordinate issues.
+	// --------------------------------------------------------
+	function initTooltipFlip() {
+		var cards = document.querySelectorAll('.mv-item-card');
+
+		cards.forEach(function (card) {
+			if (card.getAttribute('data-mv-tooltip-flip') === 'true') {
+				return;
+			}
+
+			card.setAttribute('data-mv-tooltip-flip', 'true');
+
+			var tooltip = card.querySelector('.mv-card-tooltip');
+
+			if (!tooltip) {
+				return;
+			}
+
+			// Move tooltip to body so it is never inside a transformed ancestor.
+			document.body.appendChild(tooltip);
+			tooltip.style.cssText = 'display:none!important;';
+
+			// Shared close timer so moving from card to tooltip doesn't hide it.
+			var hideTimer = null;
+
+			function showTooltip() {
+				if (hideTimer) {
+					window.clearTimeout(hideTimer);
+					hideTimer = null;
+				}
+
+				var TOOLTIP_W = 230;
+				var cardRect  = card.getBoundingClientRect();
+				var vw        = window.innerWidth || document.documentElement.clientWidth;
+
+				// Measure tooltip height with a hidden show.
+				tooltip.style.cssText = 'position:fixed!important;visibility:hidden!important;display:block!important;width:' + TOOLTIP_W + 'px!important;z-index:10000!important;';
+				var tooltipHeight = tooltip.offsetHeight;
+
+				// --- Vertical position ---
+				var topAbove = cardRect.top - tooltipHeight - 8;
+				var topBelow = cardRect.bottom + 8;
+				var useTop   = topAbove >= 0 ? topAbove : topBelow;
+
+				// --- Horizontal position ---
+				var cardMid = cardRect.left + cardRect.width / 2;
+				var leftPos = cardMid - TOOLTIP_W / 2;
+
+				// Clamp to viewport with 8px margin.
+				if (leftPos < 8) { leftPos = 8; }
+				else if (leftPos + TOOLTIP_W > vw - 8) { leftPos = vw - TOOLTIP_W - 8; }
+
+				// Apply final fixed position.
+				tooltip.style.cssText =
+					'position:fixed!important;' +
+					'display:block!important;' +
+					'visibility:visible!important;' +
+					'width:' + TOOLTIP_W + 'px!important;' +
+					'top:' + useTop + 'px!important;' +
+					'left:' + leftPos + 'px!important;' +
+					'bottom:auto!important;' +
+					'right:auto!important;' +
+					'transform:none!important;' +
+					'pointer-events:auto!important;' +
+					'z-index:10000!important;';
+			}
+
+			function scheduleHide() {
+				if (hideTimer) {
+					window.clearTimeout(hideTimer);
+				}
+
+				// Small delay lets the cursor travel from card to tooltip.
+				hideTimer = window.setTimeout(function () {
+					tooltip.style.cssText = 'display:none!important;';
+				}, 250);
+			}
+
+			card.addEventListener('mouseenter', showTooltip);
+			card.addEventListener('mouseleave', scheduleHide);
+
+			// Keep it open while the cursor is over the tooltip itself,
+			// so links inside (like credits) are clickable.
+			tooltip.addEventListener('mouseenter', function () {
+				if (hideTimer) {
+					window.clearTimeout(hideTimer);
+					hideTimer = null;
+				}
+			});
+
+			tooltip.addEventListener('mouseleave', scheduleHide);
+		});
+	}
+
 	function start() {
 		addStyles();
+		initTooltipFlip();
 
 		var lists = document.querySelectorAll('#cosmeticList, #cosmeticlist, .mv-cosmetic-list .mv-gallery-grid');
 

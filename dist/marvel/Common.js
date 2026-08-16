@@ -4,11 +4,11 @@
 window.AddRailModule = [{prepend: true}];
 
 /*
-////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 // Release date sortkey display script by User:Bobogoobo (from https://community.wikia.com/wiki/Thread:918005)
 // fixed and modified by User:Harasar on 21/04/2022 to work again
 // further modified by User:Harasar on 27/03/2024 to display legacy numbers in categories for Legacy Numbers and to change colors of links depending on the medium type (comics, tv episodes, movies, games, novels)
-////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 */
 $(function() {
     if (!(
@@ -305,7 +305,7 @@ var customizeToolbar2 = function () {
 					type: 'encapsulate',
 					options: {
 						pre: "{{Marvel Database:Character Template\n| Image                   = ",
-						post: "\n| Name                    = \n| NameRef                 = \n| CurrentAlias            = \n| CurrentAliasRef         = \n| Codenames               = \n| Nicknames               = \n| Aliases                 = \n\n| Affiliation             = \n| Parents                 = \n| Siblings                = \n| Spouses                 = \n| Children                = \n| Relatives               = \n| MaritalStatus           = \n\n| CharRef                 = \n| Gender                  = \n| Height                  = \n| Weight                  = \n| Eyes                    = \n| Hair                    = \n| UnusualFeatures         = \n\n| Origin                  = \n| Reality                 = \n| PlaceOfBirth            = \n\n| Identity                = \n| Citizenship             = \n| Occupation              = \n| Education               = \n| BaseOfOperations        = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Powers                  = \n| Abilities               = \n| Weaknesses              = \n| AdditionalAttributes    = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
+						post: "\n| Name                    = \n| NameRef                 = \n| CurrentAlias            = \n| CurrentAliasRef         = \n| Codenames               = \n| Nicknames               = \n| Aliases                 = \n\n| Affiliation             = \n| Relatives               = \n| MaritalStatus           = \n\n| CharRef                 = \n| Gender                  = \n| Height                  = \n| Weight                  = \n| Eyes                    = \n| Hair                    = \n| UnusualFeatures         = \n\n| Origin                  = \n| Reality                 = \n| PlaceOfBirth            = \n\n| Identity                = \n| Citizenship             = \n| Occupation              = \n| Education               = \n| BaseOfOperations        = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Powers                  = \n| Abilities               = \n| Weaknesses              = \n| AdditionalAttributes    = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
 			},

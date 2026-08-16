@@ -1,3 +1,5 @@
+alert("El JS de la wiki funciona");
+
 importArticles({
     type: "script",
     articles: [
@@ -1189,3 +1191,44 @@ window.SkinPropagation = {
 
 $(SkinPropagation.init);
 //</nowiki></pre>
+
+/* Ventana flotante (Tooltip) para referencias */
+mw.hook('wikipage.content').add(function ($content) {
+    // Crear el contenedor de la ventana si no existe aún
+    if ($('#ref-tooltip-box').length === 0) {
+        $('<body>').append('<div id="ref-tooltip-box"></div>');
+    }
+
+    var $tooltip = $('#ref-tooltip-box');
+
+    // Detectar cuando el ratón pasa por encima de cualquier referencia
+    $content.find('.reference a, sup.reference a').on('mouseenter', function () {
+        var href = $(this).attr('href');
+        if (!href || href.indexOf('#cite_note') !== 0) return;
+
+        // Obtener el ID exacto sin problemas de sintaxis
+        var targetId = href.substring(1);
+        var refNode = document.getElementById(targetId);
+
+        if (refNode) {
+            var $clone = $(refNode).clone();
+            
+            // Eliminar las flechas de retorno "^"
+            $clone.find('.mw-cite-backlink, .reference-text-backlink').remove();
+
+            // Extraer solo el texto útil de la cita
+            var contenido = $clone.find('.reference-text').html() || $clone.html();
+
+            $tooltip.html(contenido).stop(true, true).fadeIn(150);
+
+            // Calcular posición justo encima de la llamada [1]
+            var offset = $(this).offset();
+            $tooltip.css({
+                top: (offset.top - $tooltip.outerHeight() - 8) + 'px',
+                left: Math.max(10, offset.left - 15) + 'px'
+            });
+        }
+    }).on('mouseleave', function () {
+        $tooltip.stop(true, true).fadeOut(100);
+    });
+});

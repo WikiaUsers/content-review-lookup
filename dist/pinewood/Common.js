@@ -18,9 +18,10 @@ window.UserTagsJS = {
             'PinewoodBuildersSocialMedia': ['owner'],
             'CombatSwift': ['fow'], 
             'Coasterteam': ['facilitator'], 
-            'Moo1210': ['technicalmaintainer'],
-            'CorruptBIOS': ['technicalmaintainer'],
-            'Powershell_exe': ['technicalmaintainer']
+            'Moo1210': ['wdev'],
+            'CorruptBIOS': ['wdev'],
+            'Powershell_exe': ['wdev']
+            'Elphom: ['dedit']
         }
 	},
 	tags: {
@@ -44,15 +45,15 @@ window.UserTagsJS = {
                 u: 'Administrator',
                 order: 6
             },
-            technicalmaintainer: { 
-                u: 'Wiki Technical Manager',
+            wdev: { 
+                u: 'Wiki Developer',
                 order: 7 
             },
             moderator: {
                 u: 'Moderator',
                 order: 8
             },
-            'content-moderator': {
+            content-moderator: {
                 u: 'Content Moderator',
                 order: 10
             },
@@ -63,6 +64,10 @@ window.UserTagsJS = {
             fow: { 
                 u: 'Former Wiki Owner',
                 order: 12
+            },
+            dedit: { 
+                u: 'Dedicated Editor',
+                order: 13
             },
 	}
 };

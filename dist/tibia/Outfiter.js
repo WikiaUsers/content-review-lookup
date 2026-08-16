@@ -13,21 +13,21 @@ $(function () {
       //0
       'None', 'Widow_Queen', 'Racing_Bird', 'War_Bear', 'Black_Sheep_(Mount)',
       //5
-      'Midnight_Panther', 'Draptor', 'Titanica', 'Tin_Lizzard', 'Blazebringer',
+      'Midnight_Panther_(Mount)', 'Draptor_(Mount)', 'Titanica', 'Tin_Lizzard', 'Blazebringer',
       //10
-      'Rapid_Boar', 'Stampor', 'Undead_Cavebear_(Mount)', 'Crystal_Wolf', 'Dromedary',
+      'Rapid_Boar', 'Stampor_(Mount)', 'Undead_Cavebear_(Mount)', 'Crystal_Wolf_(Mount)', 'Dromedary_(Mount)',
       //15
-      'Kingly_Deer', 'Donkey', 'Scorpion_King', 'Tamed_Panda', 'Tiger_Slug',
+      'Kingly_Deer', 'Donkey_(Mount)', 'Scorpion_King', 'Tamed_Panda', 'Tiger_Slug',
       //20
       'Uniwheel', 'Rented_Horse_(A)', 'Rented_Horse_(B)', 'Rented_Horse_(C)', 'Armoured_War_Horse',
       //25
-      'War_Horse', 'Lady_Bug', 'Manta_Ray', 'Shadow_Draptor', 'Gnarlhound',
+      'War_Horse', 'Lady_Bug', 'Manta_Ray_(Mount)', 'Shadow_Draptor', 'Gnarlhound_(Mount)',
       //30
-      'Dragonling', 'Magma_Crawler', 'Ironblight', 'Crimson_Ray', 'Steelbeak',
+      'Dragonling_(Mount)', 'Magma_Crawler_(Mount)', 'Ironblight_(Mount)', 'Crimson_Ray', 'Steelbeak',
       //35
-      'Water_Buffalo', 'Tombstinger', 'Platesaurian', 'Ursagrodon', 'The_Hellgrip',
+      'Water_Buffalo_(Mount)', 'Tombstinger', 'Platesaurian', 'Ursagrodon', 'The_Hellgrip',
       //40
-      'Noble_Lion', 'Desert_King', 'Shock_Head', 'Walker', 'Azudocus',
+      'Noble_Lion_(Mount', 'Desert_King', 'Shock_Head_(Mount)', 'Walker_(Mount)', 'Azudocus',
       //45
       'Carpacosaurus', 'Death_Crawler', 'Flamesteed', 'Jade_Lion', 'Jade_Pincer',
       //50
@@ -49,13 +49,13 @@ $(function () {
       //90
       'Frostflare', 'Cinderhoof', 'Bloodcurl', 'Leafscuttler', 'Mouldpincer',
       //95
-      'Sparkion', 'Swamp_Snapper', 'Mould_Shell', 'Reed_Lurker', 'Neon_Sparkid',
+      'Sparkion_(Mount)', 'Swamp_Snapper', 'Mould_Shell', 'Reed_Lurker', 'Neon_Sparkid',
       //100[]
-      'Vortexion', 'Ivory_Fang', 'Shadow_Claw', 'Snow_Pelt', 'Stone_Rhino',
+      'Vortexion', 'Ivory_Fang', 'Shadow_Claw', 'Snow_Pelt', 'Stone_Rhino_(Mount)',
       //105
       'Arctic_Unicorn', 'Blazing_Unicorn', 'Prismatic_Unicorn', 'Cranium_Spider', 'Cave_Tarantula',
       //110
-      'Gloom_Widow', 'Mole', 'Marsh_Toad', 'Sanguine_Frog', 'Toxic_Toad',
+      'Gloom_Widow', 'Mole_(Mount)', 'Marsh_Toad', 'Sanguine_Frog', 'Toxic_Toad',
       //115
       'Fleeting_Knowledge', 'Ebony_Tiger', 'Feral_Tiger', 'Jungle_Tiger', 'Tawny_Owl',
       //120
@@ -65,7 +65,7 @@ $(function () {
       //130
       'Rabbit_Rickshaw', 'Bunny_Dray', 'Cony_Cart', 'Nightmarish_Crocovile', 'River_Crocovile',
       //135
-      'Swamp_Crocovile', 'Cerberus_Champion', 'Jousting_Eagle', 'Gryphon', 'Battle_Badger',
+      'Swamp_Crocovile', 'Cerberus_Champion', 'Jousting_Eagle', 'Gryphon_(Mount)', 'Battle_Badger',
       //140
       'Ether_Badger', 'Zaoan_Badger', 'Blue_Rolling_Barrel', 'Green_Rolling_Barrel', 'Red_Rolling_Barrel',
       //145

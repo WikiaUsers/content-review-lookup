@@ -7,7 +7,6 @@
  * Ensure the latest content is displayed immediately
  */
 window.AddRailModule = [{
-    page: 'Template:CountdownModule', prepend: true, maxAge: 0 }, { // [[Template:CountdownModule]]
 	page: 'Template:RailModule', prepend: true, maxAge: 0 // [[Template:RailModule]]
 }];
 

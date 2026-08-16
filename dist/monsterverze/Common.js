@@ -6,7 +6,7 @@
 	// Bump this by hand after editing CosmeticFilter.js or ItemFilter.js.
 	// Using Date.now() here made the URL unique on every page load, so the
 	// browser could never cache either script and re-downloaded both every time.
-	var MV_SCRIPT_VERSION = '20260716a';
+	var MV_SCRIPT_VERSION = '205802f';
 
 	window.mvCommonJsLoaded = true;
 	console.log('MonsterVerze Common.js loaded');
@@ -35,7 +35,9 @@
 	}
 
 loadMonsterVerzeScript('CosmeticFilter.js');
-loadMonsterVerzeScript('ItemFilter.js');
 loadMonsterVerzeScript('UpdateCreator.js');
 loadMonsterVerzeScript('UploadCredits.js');
+loadMonsterVerzeScript('UploadCategories.js');
+loadMonsterVerzeScript('DeveloperPagePreload.js');
+loadMonsterVerzeScript('ItemFilter.js');
 }());

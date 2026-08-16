@@ -1,5 +1,32 @@
 // [[Category:Internal]]
 
+(function () {
+	'use strict';
+
+	var TARGET_WIDTH = 600;
+
+	function fixImage(img) {
+		if (img.dataset.resized === '1') return;
+		var src = img.getAttribute('src');
+		if (!src) return;
+		var newSrc = src.replace(/scale-to-width-down\/\d+/, 'scale-to-width-down/' + TARGET_WIDTH);
+		if (newSrc !== src) {
+			img.setAttribute('src', newSrc);
+			img.removeAttribute('srcset');
+		}
+		img.dataset.resized = '1';
+	}
+
+	function run() {
+		var imgs = document.querySelectorAll('main.page__main .page-content .thumbimage:not([data-resized])');
+		imgs.forEach(fixImage);
+	}
+
+	mw.hook('wikipage.content').add(function () {
+		run();
+	});
+}());
+
 // Template dependencies
 mw.hook("wikipage.content").add(function() {
 	
@@ -153,12 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:HTML5Audio/code.js'
-    ]
-});
+
 
 function getOrCreateAudio(player) {
 	var audio = player.querySelector('audio');

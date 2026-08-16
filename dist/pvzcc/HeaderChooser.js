@@ -684,7 +684,6 @@ var possibleTexts = [
     {
         texts: [
             "👻💚 PunjiChocoBerry!",
-            "👻💚 WiLdCaRd2048!",
             "👻🩵 Nuttin' to see here!",
             "👻💜 Creepes.",
             "👻💜 Dartichoke Enjoyer!",
@@ -696,7 +695,6 @@ var possibleTexts = [
     {
         texts: [
             "👻💚💚 PunjiChocoBerry!",
-            "👻💚💚 WiLdCaRd2048!",
             "👻🩵🩵 Nuttin' to see here!",
             "👻💜💜 Creepes.",
             "👻💜💜 Dartichoke Enjoyer!",
@@ -708,7 +706,6 @@ var possibleTexts = [
     {
         texts: [
             "👻💚💚💚 PunjiChocoBerry!",
-            "👻💚💚💚 WiLdCaRd2048!",
             "👻🩵🩵🩵 Nuttin' to see here!",
             "👻💜💜💜 Creepes.",
             "👻💜💜💜 Dartichoke Enjoyer!",

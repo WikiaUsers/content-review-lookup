@@ -1071,3 +1071,415 @@ $(document).ready(function() {
 		addTelegramRailModule();
 	}, 2000);
 });
+
+/* ==========================================================
+   THE ELDER SCROLLS WIKI
+   MOBILE INFOBOX — FINAL CLEAN JS
+   ========================================================== */
+
+(function () {
+	'use strict';
+
+	var MOBILE_QUERY = '(max-width: 768px)';
+
+
+	function isMobile() {
+		return window.matchMedia(MOBILE_QUERY).matches;
+	}
+
+
+	/* ======================================================
+	   MAIN INFOBOX
+	   ====================================================== */
+
+	function initInfobox(box) {
+
+		if (!box || box.dataset.tesMobileReady === '1') {
+			return;
+		}
+
+		box.dataset.tesMobileReady = '1';
+
+
+		var rows = Array.prototype.slice.call(
+			box.querySelectorAll(':scope > tbody > tr')
+		);
+
+
+		if (!rows.length) {
+			return;
+		}
+
+
+		/*
+		 * Первая строка считается основной шапкой.
+		 */
+
+		var headerRow = rows[0];
+
+		headerRow.classList.add('tes-mobile-header-row');
+
+
+		rows.slice(1).forEach(function (row) {
+			row.classList.add('tes-mobile-collapsible-row');
+		});
+
+
+		/*
+		 * Нижняя кнопка.
+		 */
+
+		var toggle = document.createElement('div');
+
+		toggle.className =
+			'tes-mobile-infobox-toggle is-open';
+
+		toggle.setAttribute('role', 'button');
+		toggle.setAttribute('tabindex', '0');
+		toggle.setAttribute(
+			'aria-label',
+			'Свернуть информационный блок'
+		);
+
+		box.insertAdjacentElement('afterend', toggle);
+
+
+		function setState(collapsed) {
+
+			box.classList.toggle(
+				'tes-mobile-collapsed',
+				collapsed
+			);
+
+			toggle.classList.toggle(
+				'is-open',
+				!collapsed
+			);
+
+			toggle.setAttribute(
+				'aria-expanded',
+				collapsed ? 'false' : 'true'
+			);
+
+			toggle.setAttribute(
+				'aria-label',
+				collapsed
+					? 'Развернуть информационный блок'
+					: 'Свернуть информационный блок'
+			);
+		}
+
+
+		function switchState() {
+
+			setState(
+				!box.classList.contains(
+					'tes-mobile-collapsed'
+				)
+			);
+		}
+
+
+		toggle.addEventListener(
+			'click',
+			switchState
+		);
+
+
+		toggle.addEventListener(
+			'keydown',
+			function (event) {
+
+				if (
+					event.key === 'Enter' ||
+					event.key === ' '
+				) {
+					event.preventDefault();
+					switchState();
+				}
+			}
+		);
+
+
+		/*
+		 * Изначально показываем инфобокс развёрнутым.
+		 */
+
+		setState(false);
+	}
+
+
+	/* ======================================================
+	   SUBSECTIONS
+	   План
+	   Коды локации
+	   Ремесленные станции
+	   и аналогичные раскрывающиеся блоки
+	   ====================================================== */
+
+	function initSubsections(root) {
+
+		var candidates = root.querySelectorAll(
+			'.mw-collapsible,' +
+			' .collapsible,' +
+			' .wds-collapsible-panel'
+		);
+
+
+		candidates.forEach(function (section) {
+
+			if (
+				section.dataset.tesSubsectionReady === '1'
+			) {
+				return;
+			}
+
+
+			section.dataset.tesSubsectionReady = '1';
+
+
+			var trigger =
+				section.querySelector(
+					'.mw-collapsible-toggle'
+				) ||
+				section.querySelector(
+					'.wds-collapsible-panel__header'
+				);
+
+
+			var content =
+				section.querySelector(
+					'.mw-collapsible-content'
+				) ||
+				section.querySelector(
+					'.wds-collapsible-panel__content'
+				);
+
+
+			if (!trigger || !content) {
+				return;
+			}
+
+
+			trigger.classList.add(
+				'tes-mobile-subsection-toggle'
+			);
+
+
+			function syncState() {
+
+				var collapsed =
+					section.classList.contains(
+						'mw-collapsed'
+					) ||
+					content.style.display === 'none';
+
+
+				content.classList.toggle(
+					'tes-mobile-subsection-hidden',
+					collapsed
+				);
+			}
+
+
+			trigger.addEventListener(
+				'click',
+				function () {
+
+					window.setTimeout(
+						syncState,
+						0
+					);
+				}
+			);
+
+
+			syncState();
+		});
+	}
+
+
+	/* ======================================================
+	   FALLBACK ДЛЯ FANDOM-БЛОКОВ, ГДЕ НЕТ
+	   НОРМАЛЬНОГО mw-collapsible
+	   ====================================================== */
+
+	function initFallbackSections(root) {
+
+		var textPattern =
+			/^(План|Коды локации|Ремесленные станции)$/i;
+
+
+		var possibleHeaders =
+			root.querySelectorAll(
+				'th, td, div, span'
+			);
+
+
+		possibleHeaders.forEach(function (header) {
+
+			if (
+				header.dataset.tesFallbackReady === '1'
+			) {
+				return;
+			}
+
+
+			var text =
+				(header.textContent || '')
+					.replace(/[▲▼△▽\[\]]/g, '')
+					.trim();
+
+
+			if (!textPattern.test(text)) {
+				return;
+			}
+
+
+			var row =
+				header.closest('tr');
+
+
+			if (!row) {
+				return;
+			}
+
+
+			var next = row.nextElementSibling;
+
+
+			if (!next) {
+				return;
+			}
+
+
+			header.dataset.tesFallbackReady = '1';
+
+			header.classList.add(
+				'tes-mobile-subsection-toggle'
+			);
+
+
+			header.addEventListener(
+				'click',
+				function (event) {
+
+					/*
+					 * Если Fandom уже обработал этот клик,
+					 * даём ему приоритет.
+					 */
+
+					window.setTimeout(
+						function () {
+
+							var hidden =
+								next.classList.contains(
+									'tes-mobile-subsection-hidden'
+								);
+
+
+							next.classList.toggle(
+								'tes-mobile-subsection-hidden',
+								!hidden
+							);
+						},
+						0
+					);
+				}
+			);
+		});
+	}
+
+
+	/* ======================================================
+	   INIT
+	   ====================================================== */
+
+	function initTesMobile() {
+
+		if (!isMobile()) {
+			return;
+		}
+
+
+		var root =
+			document.querySelector(
+				'.mw-parser-output'
+			);
+
+
+		if (!root) {
+			return;
+		}
+
+
+		var boxes =
+			root.querySelectorAll(
+				'table.infobox,' +
+				' table.fandommobile-infobox'
+			);
+
+
+		boxes.forEach(initInfobox);
+
+
+		initSubsections(root);
+		initFallbackSections(root);
+	}
+
+
+	/* ======================================================
+	   MEDIAWIKI / FANDOM
+	   ====================================================== */
+
+	if (
+		typeof mw !== 'undefined' &&
+		mw.hook
+	) {
+
+		mw.hook('wikipage.content').add(
+			function () {
+				initTesMobile();
+			}
+		);
+
+	}
+
+
+	if (document.readyState === 'loading') {
+
+		document.addEventListener(
+			'DOMContentLoaded',
+			initTesMobile
+		);
+
+	} else {
+
+		initTesMobile();
+	}
+
+
+	/*
+	 * Fandom иногда достраивает DOM уже после загрузки.
+	 */
+
+	var observer =
+		new MutationObserver(
+			function () {
+
+				if (isMobile()) {
+					initTesMobile();
+				}
+			}
+		);
+
+
+	observer.observe(
+		document.documentElement,
+		{
+			childList: true,
+			subtree: true
+		}
+	);
+
+})();

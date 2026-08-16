@@ -1,4 +1,4 @@
-/* jshint esversion: 11 */
+/* Test version */
 (async () => {
     'use strict';
     const localRequire = await mw.loader.using(["mediawiki.api", "mediawiki.ForeignApi", "mediawiki.util", "vue"]);
@@ -26,7 +26,7 @@
                 <main class="cwa-rc__content">
                     
                     <div v-if="failedWikis.length > 0" class="cwa-rc__error-box">
-                        <strong><i class="fa-solid fa-triangle-exclamation"></i> Ошибка загрузки с этих Вики (проверьте ссылки в Модуле):</strong>
+                        <strong><i class="fa-solid fa-triangle-exclamation"></i> Ошибка загрузки с этих Вики. Возможно, неправильно указаны ссылки в Модуле или данные проекты или внесены в реестр запрещённых ресурсов РКН:</strong>
                         <ul><li v-for="w in failedWikis" :key="w">{{ w }}</li></ul>
                     </div>
                     
@@ -36,7 +36,7 @@
                     </div>
                     
                     <div v-else-if="editsByDate.length === 0" class="cwa-rc__empty">
-                        В этой категории пока нет новых действий.
+                        В этой категории пока нет новых изменений.
                     </div>
                     
                     <ul v-else class="cwa-rc__list">
@@ -62,8 +62,8 @@
                                     </div>
                                     <div class="cwa-rc__main-info">
                                         <div class="cwa-rc__meta">
-                                            <span class="cwa-rc__time">{{ group.items[0].time }}</span>
                                             <i :class="getIconForType(group.items[0])" class="cwa-rc__type-icon" :title="group.items[0].actionTitle || group.items[0].logaction || group.items[0].type"></i>
+                                            <span class="cwa-rc__time">{{ group.items[0].time }}</span>
                                             <a :href="group.items[0].pageUrl" class="cwa-rc__page-title" target="_blank">{{ group.items[0].title }}</a>
                                             <!-- Действие для социальной активности -->
                                             <span v-if="group.items[0].actionText" class="cwa-rc__action-text">({{ group.items[0].actionText }})</span>
@@ -85,12 +85,12 @@
                                         <button v-if="group.items[0].pageid" class="cwa-rc__action-btn" title="Предпросмотр страницы" @click="openPreviewModal(group.items[0])">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
-                                        <button v-if="group.items[0].old_revid" class="cwa-rc__action-btn" title="Показать дифф" @click="openDiffModal(group.items[0].wikiDomain, group.items[0].old_revid, group.items[0].revid, group.items[0].title)">
+                                        <button v-if="group.items[0].old_revid" class="cwa-rc__action-btn" title="Показать изменения" @click="openDiffModal(group.items[0].wikiDomain, group.items[0].old_revid, group.items[0].revid, group.items[0].title)">
                                             <i class="fa-solid fa-code-compare"></i>
                                         </button>
-                                        <a v-if="group.items[0].undoUrl" :href="group.items[0].undoUrl" class="cwa-rc__action-btn cwa-rc__action-btn--warn" title="Отменить" target="_blank">
+                                        <button v-if="group.items[0].undoUrl" class="cwa-rc__action-btn cwa-rc__action-btn--warn" title="Отменить" @click.stop="openInNewTab(group.items[0].undoUrl)">
                                             <i class="fa-solid fa-rotate-left"></i>
-                                        </a>
+                                        </button>
                                         <button v-if="canRollback && group.items[0].type !== 'log' && group.items[0].type !== 'discussion'" class="cwa-rc__action-btn cwa-rc__action-btn--danger" title="Быстрый откат" @click="doRollback(group.items[0])">
                                             <i class="fa-solid fa-clock-rotate-left"></i>
                                         </button>
@@ -112,13 +112,13 @@
                                         </div>
                                         <div class="cwa-rc__main-info">
                                             <div class="cwa-rc__meta">
-                                                <i :class="expandedGroups[group.key] ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'" class="cwa-rc__toggle-icon"></i>
-                                                <span class="cwa-rc__time">{{ group.items[0].time }}</span>
                                                 <i :class="getIconForType(group.items[0])" class="cwa-rc__type-icon" :title="group.items[0].actionTitle || group.items[0].logaction || group.items[0].type"></i>
+                                                <i class="fa-solid fa-chevron-right cwa-rc__toggle-icon" :class="{'cwa-rc__toggle-icon--expanded': expandedGroups[group.key]}"></i>
+                                                <span class="cwa-rc__time">{{ group.items[0].time }}</span>
                                                 <a :href="group.items[0].pageUrl" class="cwa-rc__page-title" target="_blank" @click.stop>{{ group.title }}</a>
                                                 <!-- Действие для социальной активности -->
                                                 <span v-if="group.items[0].actionText" class="cwa-rc__action-text">({{ group.items[0].actionText }})</span>
-                                                <span class="cwa-rc__group-count">{{ pluralize(group.items.length, ['действие', 'действия', 'действий']) }}</span>
+                                                <span class="cwa-rc__group-count">{{ pluralize(group.items.length, ['изменение', 'изменения', 'изменений']) }}</span>
                                                 <span v-if="group.items[0].type !== 'log' && group.items[0].type !== 'discussion'" class="cwa-rc__size" :class="getSizeClass(group.totalSizeDiff)">
                                                     ({{ group.totalSizeDiff > 0 ? '+' : '' }}{{ group.totalSizeDiff }})
                                                 </span>
@@ -131,7 +131,7 @@
                                             <button v-if="group.items[0].pageid" class="cwa-rc__action-btn" title="Предпросмотр страницы" @click.stop="openPreviewModal(group.items[0])">
                                                 <i class="fa-solid fa-eye"></i>
                                             </button>
-                                            <button v-if="getGroupDiff(group)" class="cwa-rc__action-btn" title="Дифф всех изменений" @click.stop="openDiffModal(group.wikiDomain, getGroupDiff(group).from, getGroupDiff(group).to, group.title)">
+                                            <button v-if="getGroupDiff(group)" class="cwa-rc__action-btn" title="Все изменения" @click.stop="openDiffModal(group.wikiDomain, getGroupDiff(group).from, getGroupDiff(group).to, group.title)">
                                                 <i class="fa-solid fa-code-compare"></i>
                                             </button>
                                         </div>
@@ -148,8 +148,8 @@
                                             
                                             <div class="cwa-rc__main-info">
                                                 <div class="cwa-rc__meta">
-                                                    <span class="cwa-rc__time">{{ subEdit.time }}</span>
                                                     <i :class="getIconForType(subEdit)" class="cwa-rc__type-icon cwa-rc__sub-icon" :title="subEdit.actionTitle || subEdit.logaction || subEdit.type"></i>
+                                                    <span class="cwa-rc__time">{{ subEdit.time }}</span>
                                                     <span v-if="subEdit.type !== 'log' && subEdit.type !== 'discussion'" class="cwa-rc__size" :class="getSizeClass(subEdit.sizeDiff)">
                                                         ({{ subEdit.sizeDiff > 0 ? '+' : '' }}{{ subEdit.sizeDiff }})
                                                     </span>
@@ -167,12 +167,12 @@
                                                 </div>
                                             </div>
                                             <div class="cwa-rc__actions">
-                                                <button v-if="subEdit.old_revid" class="cwa-rc__action-btn" title="Показать дифф" @click="openDiffModal(subEdit.wikiDomain, subEdit.old_revid, subEdit.revid, subEdit.title)">
+                                                <button v-if="subEdit.old_revid" class="cwa-rc__action-btn" title="Показать изменения" @click="openDiffModal(subEdit.wikiDomain, subEdit.old_revid, subEdit.revid, subEdit.title)">
                                                     <i class="fa-solid fa-code-compare"></i>
                                                 </button>
-                                                <a v-if="subEdit.undoUrl" :href="subEdit.undoUrl" class="cwa-rc__action-btn cwa-rc__action-btn--warn" title="Отменить" target="_blank">
+                                                <button v-if="subEdit.undoUrl" class="cwa-rc__action-btn cwa-rc__action-btn--warn" title="Отменить" @click.stop="openInNewTab(subEdit.undoUrl)">
                                                     <i class="fa-solid fa-rotate-left"></i>
-                                                </a>
+                                                </button>
                                                 <button v-if="canRollback && subEdit.type !== 'log' && subEdit.type !== 'discussion'" class="cwa-rc__action-btn cwa-rc__action-btn--danger" title="Быстрый откат" @click="doRollback(subEdit)">
                                                     <i class="fa-solid fa-clock-rotate-left"></i>
                                                 </button>
@@ -264,6 +264,9 @@
             }
         },
         methods: {
+            openInNewTab(url) {
+                window.open(url, '_blank');
+            },
             pluralize(count, words) {
                 const cases = [2, 0, 1, 1, 1, 2];
                 return count + ' ' + words[(count % 100 > 4 && count % 100 < 20) ? 2 : cases[(count % 10 < 5) ? count % 10 : 5]];
@@ -279,11 +282,22 @@
             
             formatWikiUrl(inputUrl) {
                 let url = inputUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                
                 const oldFormatMatch = url.match(/^([a-z\-]{2,3})\.([^\.]+)\.fandom\.com$/);
                 if (oldFormatMatch) {
                     let wikiName = oldFormatMatch[2];
                     url = `${wikiName}.fandom.com/${oldFormatMatch[1]}`;
                 }
+                
+                // Извлекаем чистый домен (без путей вида /ru и без портов)
+                const domain = url.split('/')[0].split(':')[0];
+                
+                // Разрешаем только домены, оканчивающиеся на .fandom.com, либо сам fandom.com
+                if (!domain.endsWith('.fandom.com') && domain !== 'fandom.com') {
+                    throw new Error('Security Error: Only fandom.com domains are allowed.');
+                }
+                // -------------------------------------------------------------
+
                 return url; 
             },
             
@@ -515,13 +529,29 @@
                     }
                 }
 
+				// Локализация системных журналов
+                const logNamesMap = {
+                    'move': 'Журнал переименований',
+                    'rights': 'Журнал прав участника',
+                    'delete': 'Журнал удалений',
+                    'block': 'Журнал блокировок',
+                    'protect': 'Журнал защиты',
+                    'upload': 'Журнал загрузок',
+                    'contentmodel': 'Журнал изменения модели',
+                    'newusers': 'Журнал регистрации',
+                    'patrol': 'Журнал патрулирования',
+                    'import': 'Журнал импорта',
+                    'merge': 'Журнал объединений',
+                    'create': 'Журнал создания страниц'
+                };
+                
                 return {
                     id: rc.rcid || rc.logid || Math.random().toString(36).substring(2, 9),
                     revid: rc.revid, old_revid: rc.old_revid, pageid: rc.pageid,
                     type: rc.type, logtype: rc.logtype, logaction: rc.logaction,
                     ns: rc.ns, title: rc.title, user: rc.user, timestamp: rc.timestamp,
                     time: new Date(rc.timestamp).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
-                    parsedComment: rc.parsedcomment || (rc.type === 'log' ? `Журнал: ${rc.logtype} (${rc.logaction})` : ''),
+                    parsedComment: rc.parsedcomment || (rc.type === 'log' ? (logNamesMap[rc.logtype] || `Журнал: ${rc.logtype} (${rc.logaction})`) : ''),
                     sizeDiff: rc.newlen !== undefined && rc.oldlen !== undefined ? rc.newlen - rc.oldlen : 0,
                     flags: flagsArr, wikiDomain: wikiDomain,
                     wikiFavicon: `${serverUrl}/wiki/Special:FilePath/Site-favicon.ico`,
@@ -567,7 +597,22 @@
                     if (!displayTitle) displayTitle = 'Обсуждение на форуме';
                 }
 
-                let summary = post.snippet || post.rawContent || '(Вложение / Опрос)';
+                let summary = post.snippet || post.rawContent || post.body;
+                
+                // Если API не отдал готовый текст (часто бывает у комментариев к статьям),
+                // безопасно вытаскиваем чистый текст напрямую из структуры jsonModel
+                if (!summary && post.jsonModel) {
+                    try {
+                        let texts = [];
+                        JSON.parse(post.jsonModel, (key, value) => {
+                            if (key === 'text' && typeof value === 'string') texts.push(value);
+                            return value;
+                        });
+                        summary = texts.join(' ').replace(/\s+/g, ' ').trim();
+                    } catch (e) {}
+                }
+
+                summary = summary || '(Вложение / Опрос)';
                 if (summary.length > 85) summary = summary.substring(0, 85) + '...';
 
                 let act = 'Новый';
@@ -817,5 +862,8 @@
         }
     };
     const targetContainer = document.querySelector('#cwa-app-container');
-    if (targetContainer) { Vue.createMwApp(App).mount(targetContainer); }
+    if (targetContainer) { 
+        document.body.classList.add('CrossWikiActivity');
+        Vue.createMwApp(App).mount(targetContainer); 
+    }
 })();

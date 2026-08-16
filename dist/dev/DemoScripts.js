@@ -560,6 +560,11 @@
             styles: 'MediaWiki:OldFandomColors.css',
             scripts: 'MediaWiki:OldFandomColors.js'
         },
+        
+        OldRailRevived: {
+            page: 'OldRailRevived',
+            styles: 'MediaWiki:OldRailRevived.css'
+        },
 
         OldWikiaBar: {
             page: 'OldWikiaBar',

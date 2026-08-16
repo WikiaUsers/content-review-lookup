@@ -1,24 +1,5 @@
-// -- [ IMPORTS ] --
-// [ Astral Calculator ]
-// Script for calculating Astral requirements, both SP and time, including support for Astral Prestige SP requirement scaling, as well as other factors.
-mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:AstralCalculator.js&action=raw&ctype=text/javascript');
-
-// [ Currency Gain Calculator ]
-// Script for calculating base gains of various currencies. Currently no support for currencies beyond Universe 1's Solarians' Souls.
-mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:CurrencyGainCalculator.js&action=raw&ctype=text/javascript');
-
-// [ Charger Calculator ]
-// Script for converting Charge to the Charger's bonuses, including support for Grasshops. (Potentially inaccurate)
-mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:ChargerCalculator.js&action=raw&ctype=text/javascript');
-
-// (==Incomplete==) [ Eclipse Calculator ]
-// Script for calculating the Solar Ray requirement to go from one Eclipse to another.
-mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:EclipseCalculator.js&action=raw&ctype=text/javascript');
-
-// [ Level Calculator ]
-// Script for calculating the requirement to go from one level to another, including support for The Island's three sub-realms (XP) and the Planetoid (Cosmic). Currently no support for Universe 2.
-mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:LevelCalculator.js&action=raw&ctype=text/javascript');
-
+// ----------------------------------------------------------------------------------------------------
+// Imports
 // [ Suffix Converter ]
 // Script that converts its invoked function's value from scientific notation to suffix notation, and vice-versa. Requires Suffix Button to be fully operational, otherwise defaults to scientific notation. Also includes support for an interactive calculator to convert between the two notation types.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixConverter.js&action=raw&ctype=text/javascript');
@@ -47,4 +28,5 @@ mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.p
 // Adds a search box to the main page to aid unfamiliar users with the usage of the function.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
 
-// -- [ Other scripts ] --
+// ----------------------------------------------------------------------------------------------------
+// Other code

@@ -21,7 +21,7 @@ window.UserTagsJS.modules.custom = {
     'Glow Rose38': ['dedicated-contributor']
 };
 window.reportArticleConfig = {
-    group: ['sysop', 'content-moderator'],
+    group: ['sysop'],
     title: 'Reported article: $1',
     body: 'An article has been reported: $1\n\nPlease review.'
 };

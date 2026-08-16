@@ -34,7 +34,7 @@ $.when(
 	getAll("")
 ).done(function() {
 	$.merge( tu, tu2 );
-	var container = ($('.page__right-rail div.right-rail-wrapper').length > 0) ? '.page__right-rail div.right-rail-wrapper' : '.page .page-footer';
+	var container = ($('.page__right-rail div.right-rail-wrapper:not(.WikiaRail)').length > 0) ? '.page__right-rail div.right-rail-wrapper:not(.WikiaRail)' : '.page .page-footer';
 	$(container).prepend(
 		$('<div>', {
 			id: 'TU-Module',

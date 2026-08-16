@@ -1,40 +1,14 @@
-(function() {
-    'use strict';
-
-    function initPkToggle() {
-        if (document.querySelector('.pk-infobox-toggle-btn')) return;
-
-        var btn = document.createElement('div');
-        btn.className = 'pk-infobox-toggle-btn';
-        btn.innerHTML = '<span style="position:relative;z-index:5;">\u2630</span>';
-        btn.title = 'Toggle Infobox';
-        document.body.appendChild(btn);
-
-        btn.addEventListener('click', function() {
-            var infobox = document.querySelector('.pk-infobox');
-            if (!infobox) return;
-
-            var isHidden = parseFloat(getComputedStyle(infobox).opacity) < 0.5;
-
-            if (isHidden) {
-                infobox.style.setProperty('opacity', '1', 'important');
-                infobox.style.setProperty('pointer-events', 'auto', 'important');
-                infobox.style.setProperty('animation', 'none', 'important');
-                infobox.style.setProperty('z-index', '50', 'important');
-            } else {
-                infobox.style.setProperty('opacity', '0.04', 'important');
-                infobox.style.setProperty('pointer-events', 'none', 'important');
-            }
-        });
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initPkToggle);
-    } else {
-        initPkToggle();
-    }
-
-    if (window.mw && mw.hook) {
-        mw.hook('wikipage.content').add(initPkToggle);
-    }
+(function () {
+  var infobox = document.querySelector('.pk-infobox');
+  var railTab = document.querySelector('.rail-tab');
+  if (!infobox || !railTab) return;
+  // reparent into .pk-infobox itself (not .portable-infobox, which has
+  // wildcard rules that would fight our positioning)
+  infobox.appendChild(railTab);
+  railTab.style.setProperty('position', 'absolute', 'important');
+  railTab.style.setProperty('margin', '0', 'important');
+  railTab.style.setProperty('z-index', '9999', 'important');
+  railTab.style.setProperty('will-change', 'auto', 'important');
+  railTab.style.setProperty('top', '-20px', 'important');
+  railTab.style.setProperty('left', '175px', 'important');
 })();

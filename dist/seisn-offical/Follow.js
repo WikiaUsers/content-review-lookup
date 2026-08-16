@@ -1,9 +1,1 @@
-// Configuration for dev:Follow/code.js
-Author: [[User:RomanescoGAG]]
-window.FollowScriptConfig = {
-    // Change to true if you want the follow feed to automatically refresh
-    autoRefresh: true, 
-    // Customise the text displayed on the action buttons
-    followText: 'Follow User',
-    unfollowText: 'Unfollow'
-};
+/* #REDIRECT */mw.loader.load("https://seisn-offical.fandom.com/wiki/MediaWiki:Follow/code.js?action=raw&ctype=text/javascript");

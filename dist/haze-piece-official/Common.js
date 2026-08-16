@@ -3986,3 +3986,164 @@ mw.hook('wikipage.content').add(function($content) {
 
     container.innerHTML = html;
 });
+/*------------------------------------------------------------------------------------- Materials --------------------------------------------------------------------------------------------------*/
+/**
+ * RPG Inventory & Material Filter System 
+ * Fully Featured with Dynamic Rarity Tabs, Tooltips, and Images
+ */
+$(function() {
+    const uiContainer = document.getElementById("rpg-inventory-ui");
+    if (!uiContainer) return;
+
+    // 1. Inject UI Skeleton & Tooltip
+    uiContainer.innerHTML = `
+      <div class="inv-main">
+        <div class="inv-header">
+          <h2>MATERIAL LIST</h2>
+          <p>Materials are items obtained throughout the seas. Used for crafting, upgrades, and more.</p>
+        </div>
+
+        <div class="inv-filters">
+          <input type="text" id="searchFilter" placeholder="Search materials...">
+          <select id="seaFilter">
+            <option value="all">All Seas</option>
+            <option value="1">First Sea</option>
+            <option value="2">Second Sea</option>
+            <option value="3">Third Sea</option>
+          </select>
+          <div class="inv-tabs" id="rarityTabs">
+            <button data-filter="all" class="active">ALL RARITIES</button>
+            <button data-filter="common">COMMON</button>
+            <button data-filter="uncommon">UNCOMMON</button>
+            <button data-filter="rare">RARE</button>
+            <button data-filter="legendary">LEGENDARY</button>
+            <button data-filter="mythical">MYTHICAL</button>
+          </div>
+        </div>
+
+        <div class="inv-grid" id="itemGrid"></div>
+      </div>
+
+      <!-- Hover Tooltip Box -->
+      <div id="custom-item-tooltip" style="display:none; position:fixed; z-index:9999; background:#111318; border:1px solid #30363d; padding:12px; border-radius:8px; color:#fff; pointer-events:none; width:240px; font-size:12px; box-shadow: 0 8px 24px rgba(0,0,0,0.6);"></div>
+    `;
+
+    // Rarity Color Map
+    const rarityColors = {
+        common: "#8b949e",
+        uncommon: "#2ecc71",
+        rare: "#3498db",
+        legendary: "#f39c12",
+        mythical: "#e74c3c"
+    };
+
+    // 2. Material Data Array
+    const materials = [
+        { name: "Presents", sea: "any", rarity: "common", desc: "An old box of presents.", obtain: "Holiday Event", img: "https://static.wikia.nocookie.net/haze-piece-official/images/3/33/PresentIcon.png/revision/latest?cb=20260815000659" },
+        { name: "Green Crystal", sea: "1", rarity: "uncommon", desc: "A small crystal fragment.", obtain: "Shamans (Lv. 50+)", img: "https://via.placeholder.com/60" },
+        { name: "Mystic Orb", sea: "2", rarity: "rare", desc: "An orb filled with energy.", obtain: "Sky Priests (Lv. 150+)", img: "https://via.placeholder.com/60" },
+        { name: "Dragon Scale", sea: "2", rarity: "legendary", desc: "A scale shed by a dragon.", obtain: "Dragon Boss (Lv. 1000+)", img: "https://via.placeholder.com/60" },
+        { name: "Abyssal Core", sea: "3", rarity: "mythical", desc: "The core of abyssal energy.", obtain: "Leviathan (Super Boss)", img: "https://via.placeholder.com/60" }
+    ];
+
+    const itemGrid = document.getElementById("itemGrid");
+    const tooltip = document.getElementById("custom-item-tooltip");
+    
+    // 3. Render items and attach hover events
+    materials.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "inv-card";
+        card.dataset.rarity = item.rarity;
+        card.dataset.sea = item.sea;
+        card.dataset.name = item.name;
+
+        card.innerHTML = `
+            <div class="card-rarity label-${item.rarity}">${item.rarity.toUpperCase()}</div>
+            <img src="${item.img}" alt="${item.name}">
+            <h3>${item.name}</h3>
+            <p>${item.desc}</p>
+        `;
+
+        card.addEventListener("mousemove", (e) => {
+            tooltip.style.display = "block";
+            setTimeout(() => tooltip.classList.add("visible"), 10);
+            
+            const themeColor = rarityColors[item.rarity] || "#f39c12";
+            tooltip.style.borderColor = themeColor;
+            tooltip.style.boxShadow = `0 8px 24px rgba(0,0,0,0.6), 0 0 10px ${themeColor}33`;
+
+            tooltip.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="${item.img}" alt="${item.name}" style="width: 48px; height: 48px; object-fit: contain; background: #15181e; border: 1px solid ${themeColor}; border-radius: 6px; padding: 4px; flex-shrink: 0;">
+                    <div>
+                        <strong style="color: #fff; font-size: 13px; display: block; line-height: 1.2;">${item.name}</strong>
+                        <span style="color: ${themeColor}; font-weight: bold; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px;">${item.rarity}</span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; border-top: 1px solid #21262d; padding-top: 8px;">
+                    <span style="color:${themeColor}; font-weight: bold; font-size: 10px; display:inline-block;">OBTAINED FROM:</span><br>
+                    <span style="color: #c9d1d9; font-size: 11px;">${item.obtain}</span>
+                </div>
+            `;
+            
+            tooltip.style.left = (e.clientX + 15) + "px";
+            tooltip.style.top = (e.clientY + 15) + "px";
+        });
+
+        card.addEventListener("mouseleave", () => {
+            tooltip.classList.remove("visible");
+            setTimeout(() => {
+                if (!tooltip.classList.contains("visible")) {
+                    tooltip.style.display = "none";
+                }
+            }, 150);
+        });
+        
+        itemGrid.appendChild(card);
+    });
+
+    // 4. Filtering Logic
+    const searchFilter = document.getElementById("searchFilter");
+    const seaFilter = document.getElementById("seaFilter");
+    const tabButtons = document.querySelectorAll("#rarityTabs button");
+    
+    let currentRarity = "all";
+
+    function updateGrid() {
+        const searchTerm = searchFilter.value.toLowerCase();
+        const selectedSea = seaFilter.value;
+        const allCards = document.querySelectorAll(".inv-card");
+
+        allCards.forEach(card => {
+            const cardName = card.dataset.name.toLowerCase();
+            const cardSea = card.dataset.sea;
+            const cardRarity = card.dataset.rarity;
+
+            const matchesSearch = cardName.includes(searchTerm);
+            const matchesSea = (selectedSea === "all") || (cardSea === "any") || (cardSea === selectedSea);
+            const matchesRarity = (currentRarity === "all") || (cardRarity === currentRarity);
+
+            if (matchesSearch && matchesSea && matchesRarity) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    searchFilter.addEventListener("input", updateGrid);
+    seaFilter.addEventListener("change", updateGrid);
+
+    tabButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            tabButtons.forEach(btn => btn.classList.remove("active"));
+            const clickedBtn = e.target;
+            clickedBtn.classList.add("active");
+            
+            currentRarity = clickedBtn.dataset.filter;
+            updateGrid();
+        });
+    });
+
+    console.log("RPG Inventory: Color-coded tabs initialized!");
+});

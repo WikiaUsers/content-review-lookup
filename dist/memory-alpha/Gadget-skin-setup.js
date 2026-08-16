@@ -681,6 +681,12 @@
 	};
 
 	skinConfig.footer = parent => {
+		const iconClasses = [
+			'cdx-button',
+			'cdx-button--fake-button',
+			'cdx-button--size-large',
+			'cdx-button--fake-button--enabled',
+		];
 		const footer = $('<footer>', {id: 'footer'}).append(
 			$('<div>', {
 				id: 'footer-info',
@@ -704,10 +710,12 @@
 				$('<li>', {id: 'footer-hostedbyico'}).append($('<a>', {
 					title: 'Hosting provided by Fandom',
 					href: 'https://www.fandom.com',
+					class: iconClasses.join(' '),
 				})),
 				$('<li>', {id: 'footer-poweredbyico'}).append($('<a>', {
 					title: 'Powered by MediaWiki',
 					href: 'https://www.mediawiki.org',
+					class: iconClasses.join(' '),
 				})),
 			),
 		);
