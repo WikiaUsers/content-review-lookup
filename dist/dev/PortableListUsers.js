@@ -46,7 +46,6 @@
         'monetization-team': {},        
         //'notifications-cms-user': {},
         'quick-answers-editor': {},
-        'rbx-tester': {},        
         //'request-to-be-forgotten-admin': {},
         //'restricted-login': {},
         //'restricted-login-exempt': {},

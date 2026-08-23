@@ -1,10 +1,3 @@
-//Replaces {{USERNAME}} with the name of the user browsing the page.
-//For usage with Template:USERNAME.
-$(function () {
-    if (!wgUserName) return;
-    $('span.insertusername').html(wgUserName);
-});
-
 // Tag for users that have been inactive 2+ months
 
 /**
@@ -34,14 +27,4 @@ $('.book').bind('mouseover', function() {
 
 $('.book').bind('mouseoff', function() {
   $('.bookcover').fadeOut();
-});
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WHAM/code.2.js',
-        'u:dev:MediaWiki:Nuke/code.js',
-        'u:dev:MediaWiki:AjaxBatchDelete.js',
-        'u:dev:MediaWiki:RelatedDiscussionsPosts.js',
-    ]
 });

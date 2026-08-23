@@ -20,17 +20,6 @@ window.ArchiveToolConfig = {
    archivePageTemplate: "Archivepage",
 };
 
-/* ######################################################################## */
-/* ### REAL-TIME RECENT CHANGES (RTRC)                                  ### */
-/* ### ---------------------------------------------------------------- ### */
-/* ### Credit: User:Krinkle                                             ### */
-/* ### Documentation: [[m:User:Krinkle/Tools/Real-Time Recent Changes]] ### */
-/* ######################################################################## */
-
-// [[m:RTRC]] [[File:Krinkle_RTRC.js]]
-(mw.loader.getState('ext.gadget.rtrc')
-    ? mw.loader.load('ext.gadget.rtrc')
-    : mw.loader.load('https://www.mediawiki.org/w/load.php?modules=ext.gadget.rtrc&lang=' + mw.config.get('wgUserLanguage', 'en')));
 
 /* ######################################################################## */
 /* ### SHARED CODE                                                      ### */

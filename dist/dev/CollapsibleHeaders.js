@@ -34,6 +34,14 @@ mw.hook('wikipage.content').add(function ($content) {
     var fileExtensionPattern = /\.(svg|png|jpe?g|gif|webp|bmp|ico)$/i;
     var trustedImageHosts = ['static.wikia.nocookie.net'];
 
+    function isFloatedFileFigure(el) {
+        if (!el.classList) return false;
+        if (!(el.classList.contains('mw-halign-right') || el.classList.contains('mw-halign-left'))) return false;
+
+        var typeofAttr = el.getAttribute('typeof');
+        return !!typeofAttr && typeofAttr.indexOf('mw:File') !== -1;
+    }
+
     function isTrustedImageUrl(value) {
         try {
             var parsed = new URL(value);
@@ -113,12 +121,13 @@ mw.hook('wikipage.content').add(function ($content) {
             var cs = getComputedStyle(this);
 
             if (cs.position === 'absolute') return;
+            if (isFloatedFileFigure(this)) return;
 
             var r = this.getBoundingClientRect();
 
             if (r.height > 0) {
                 found = true;
-                maxBottom = Math.max(maxBottom, r.bottom + (parseFloat(cs.marginBottom) || 0));
+                maxBottom = Math.max(maxBottom, r.bottom);
             }
         });
 
@@ -254,12 +263,13 @@ mw.hook('wikipage.content').add(function ($content) {
             '.ch-header-clickable .vertical-separator{border-left:1px solid var(--theme-border-color);height:26px;width:1px;}',
             '.ch-header-clickable .chevron-wrapper{align-items:center;background:#0000;border:none;color:var(--ch-color,rgb(230,230,230));cursor:pointer;display:flex;font-size:inherit;height:44px;outline-color:#0000;overflow:hidden;padding:9px 6px 9px 13px;user-select:none;}',
             '.ch-header-clickable .chevron-wrapper svg{color:currentColor;fill:currentColor;}',
+            '.ch-header-clickable .chevron-wrapper svg,.ch-header-clickable .section-edit-link svg,.ch-header-static .section-edit-link svg{flex-shrink:0;height:12px;width:12px;}',
             '.ch-header-clickable .ch-toggle-icon{display:inline-flex;transform-origin:center;transition:transform var(--ch-arrow-animation-duration,.25s) var(--ch-arrow-easing-style,ease-in-out);}',
             '.ch-header-clickable .chevron{pointer-events:none;}',
             '.ch-outer-wrapper{width:100%;overflow:visible;pointer-events:none;}',
             '.ch-outer-wrapper.ch-is-hidden{overflow:hidden;}',
             '.ch-collapse-all{font-family:var(--ch-collapse-all-font-family,inherit);font-size:var(--ch-collapse-all-size,18px);line-height:1;}',
-            '.ch-inner-wrapper{pointer-events:auto;padding:1px 0;}',
+            '.ch-inner-wrapper{pointer-events:auto;}',
             '.ch-inner-wrapper .tabber,.ch-inner-wrapper .tabbernav,.ch-inner-wrapper .tabbertab,.ch-inner-wrapper .wds-tabs,.ch-inner-wrapper .wds-tabs__tab,.ch-inner-wrapper .wds-tabs__tab-label,.ch-inner-wrapper .wds-tab__content{pointer-events:auto;}'
         ].join(''));
     }
@@ -384,6 +394,11 @@ mw.hook('wikipage.content').add(function ($content) {
             if (next.nodeType === 1 && next.matches('h1,h2,h3,h4,h5,h6')) {
                 var nl = getHeaderLevel($(next));
                 if (nl <= level) break;
+
+                var nextHeadline = next.querySelector('.mw-headline');
+                var nextCustomEl = nextHeadline ? nextHeadline.querySelector('.ch-custom') : null;
+
+                if (nextCustomEl && nextCustomEl.dataset.chSectionStop === 'true') break;
             }
 
             if (next.nodeType === 1 && next.classList.contains('section-stop')) {
@@ -512,6 +527,15 @@ mw.hook('wikipage.content').add(function ($content) {
                     outer.style.transition = 'height ' + headerDuration + ' ' + headerEasing;
                 }
 
+                // Force the browser to register the current (collapsed) height
+                // as an actual rendered frame BEFORE we change it. Without this
+                // reflow here, the display:none -> display:block change and the
+                // height change can get batched into a single layout pass, so
+                // no transition ever starts and "transitionend" never fires -
+                // leaving isAnimating stuck at true and the section permanently
+                // un-toggleable. (This mirrors the order collapse() already uses.)
+                outer.offsetHeight;
+
                 var h = getBlockHeight(block);
 
                 outer.style.height = h + 'px';
@@ -528,12 +552,31 @@ mw.hook('wikipage.content').add(function ($content) {
                 }
 
                 var self = this;
+                var done = false;
 
-                setTimeout(function () {
+                function finish() {
+                    if (done) return;
+                    done = true;
+
+                    outer.removeEventListener('transitionend', onEnd);
+                    clearTimeout(fallback);
+
                     setHidden(false);
                     self.isAnimating = false;
                     scheduleRefresh();
-                }, headerDurationMs);
+                }
+
+                function onEnd(e) {
+                    if (e.target !== outer || e.propertyName !== 'height') return;
+                    finish();
+                }
+
+                outer.addEventListener('transitionend', onEnd);
+
+                // Safety net: if transitionend never fires for any reason
+                // (interrupted transition, a no-op value change, etc.), don't
+                // leave the section stuck mid-animation forever.
+                var fallback = setTimeout(finish, headerDurationMs + 100);
             },
             collapse: function (instant) {
                 if (this.isCollapsed()) return;
@@ -561,18 +604,29 @@ mw.hook('wikipage.content').add(function ($content) {
                 }
 
                 var self = this;
+                var done = false;
 
-                function onEnd(e) {
-                    if (e.propertyName !== 'height') return;
+                function finish() {
+                    if (done) return;
+                    done = true;
 
                     outer.removeEventListener('transitionend', onEnd);
+                    clearTimeout(fallback);
 
                     hideBlock();
                     self.isAnimating = false;
                     scheduleRefresh();
                 }
 
+                function onEnd(e) {
+                    if (e.target !== outer || e.propertyName !== 'height') return;
+                    finish();
+                }
+
                 outer.addEventListener('transitionend', onEnd);
+
+                // Safety net, see expand() for why this matters.
+                var fallback = setTimeout(finish, headerDurationMs + 100);
             },
             toggle: function (instant) {
                 if (this.isAnimating) return;

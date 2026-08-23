@@ -26,12 +26,14 @@
             const TargetComponent = window.FandomPreactComponents[componentName];
             const props = {};
             
-            // Собираем и нативно экранируем все пропсы
-            for (let key in node.dataset) {
-                if (key !== 'processed' && key !== 'component') {
+            // SECURITY FIX: Strict Whitelist for attributes
+            const allowedProps = TargetComponent.allowedProps || [];
+            
+            allowedProps.forEach(key => {
+                if (node.dataset[key] !== undefined) {
                     props[key] = mw.html.escape(String(node.dataset[key] || ''));
                 }
-            }
+            });
             
             preactRender(htmlTag`<${TargetComponent} ...${props} />`, node);
         });

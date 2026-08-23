@@ -36,21 +36,12 @@
                 }
             }
         });
-        
-        if (el.matches('.pi-image-thumbnail')) {
-            const srcset = el.getAttribute('srcset');
-            if (srcset && !srcset.includes('format=original')) {
-                const firstSrc = srcset.split(' ')[0];
-                const separator = firstSrc.includes('?') ? '&' : '?';
-                el.setAttribute('srcset', `${firstSrc}${separator}format=original`);
-            }
-        }
     };
     
     const processNode = (node) => {
         if (node.nodeType !== 1) return;
         fixElement(node);
-        const allSelectors = imageConfigs.map(c => c.selector).join(', ') + ', .pi-image-thumbnail';
+        const allSelectors = imageConfigs.map(c => c.selector).join(', ');
         const innerImages = node.querySelectorAll(allSelectors);
         innerImages.forEach(fixElement);
     };
@@ -109,9 +100,9 @@
             .replace(/&amp;/g, '&');
     };
 
-    // Загрузка словаря из Lua
+    // Загрузка словаря из Lua (Заменили mw.util.wikiScript на безопасный wgScriptPath)
     const loadDescriptions = () => {
-        const url = mw.util.wikiScript('api') + '?action=query&prop=revisions&titles=Module:AchievementDescriptions&rvprop=content&rvslots=main&formatversion=2&format=json';
+        const url = mw.config.get('wgScriptPath') + '/api.php?action=query&prop=revisions&titles=Module:AchievementDescriptions&rvprop=content&rvslots=main&formatversion=2&format=json';
         return fetch(url)
             .then(res => res.json())
             .then(data => {
@@ -235,37 +226,157 @@
     });
 })();
 
-/* Доработка поиска */
-((window, mw) => {
-    if (window.fandomSearchShortcutsLoaded) return;
-    window.fandomSearchShortcutsLoaded = true;
-    
-    const searchInputSelector = '.search-app__wrapper > input, .wds-global-navigation__search-input, #searchInput';
-    const ns = mw.config.get('wgFormattedNamespaces');
-    const namespaces = {
-        t: ns[10], mw: ns[8], s: ns[-1], h: ns[12], m: ns[828],
-        f: ns[6], u: ns[2], ut: ns[3], w: ns[1200], ub: ns[500],
-        p: ns[4], c: ns[14], fo: ns[110]
-    };
-    
-    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        'value'
-    ).set;
-    
-    document.addEventListener('input', (event) => {
-        const target = event.target;
-        if (!target.matches(searchInputSelector)) return;
-        const currentVal = target.value;
-        const match = currentVal.match(/^\!([a-z]+) /i);
-        
-        if (match) {
-            const shortcut = match[1].toLowerCase();
-            if (namespaces.hasOwnProperty(shortcut)) {
-                const newText = `${namespaces[shortcut]}:${currentVal.slice(match[0].length)}`;
-                nativeInputValueSetter.call(target, newText);
-                target.dispatchEvent(new Event('input', { bubbles: true }));
+/* Фикс новой структуры рейла */
+(function() {
+    'use strict';
+
+    // Функция для безопасного извлечения элементов
+    const unwrapElement = (selector, parentContainer) => {
+        try {
+            const wrapper = parentContainer.querySelector(selector);
+            if (!wrapper) return false;
+            
+            const parent = wrapper.parentNode;
+            while (wrapper.firstChild) {
+                parent.insertBefore(wrapper.firstChild, wrapper);
             }
+            parent.removeChild(wrapper);
+            return true;
+        } catch (e) {
+            return false;
         }
+    };
+
+    // Используем хук MediaWiki, чтобы запускать логику только когда контент готов
+    mw.hook('wikipage.content').add(function() {
+        const rail = document.querySelector('.WikiaRail');
+        // Если рейла на странице нет (например, на спец. страницах) — даже не запускаемся
+        if (!rail) return;
+
+        let attempts = 0;
+        const maxAttempts = 15; // Защита от бесконечного цикла
+
+        const observer = new MutationObserver((mutations, obs) => {
+            attempts++;
+
+            // Пытаемся развернуть все три паразитные обертки
+            const eager = unwrapElement('[data-rail-region="legacy-eager-modules"]', rail);
+            const lazy = unwrapElement('[data-rail-region="legacy-lazy-modules"]', rail);
+            const inner = unwrapElement('.right-rail-wrapper:not(.has-rail-tabs)', rail);
+
+            // Если мы успешно развернули главные контейнеры ИЛИ превысили лимит попыток
+            if ((eager || lazy) || attempts >= maxAttempts) {
+                obs.disconnect(); // Убиваем обсервер, спасаем оперативную память юзеров
+            }
+        });
+
+        // Наблюдаем ТОЛЬКО за самим рейлом, а не за всей страницей
+        observer.observe(rail, { childList: true, subtree: true });
     });
-})(window, window.mediaWiki);
+})(); 
+
+/* Исправление локализации */
+(() => {
+    'use strict';
+
+    const initLocalization = () => {
+        // Подключаем оба модуля: обычный API и ForeignApi для кросс-доменных запросов
+        mw.loader.using(['mediawiki.api', 'mediawiki.ForeignApi']).then(() => {
+            
+            // Обращаемся к центральной Вики, а не к текущей локальной
+            const CENTRAL_WIKI_API = 'https://wikicorporate.fandom.com/ru/api.php';
+            const api = new mw.ForeignApi(CENTRAL_WIKI_API, { anonymous: true });
+            
+            api.get({
+                action: 'expandtemplates',
+                text: '{{#invoke:UILocalization|toJSON}}',
+                prop: 'wikitext',
+                formatversion: 2
+            }).then(res => {
+                let dict = {};
+                
+                if (res && res.expandtemplates && res.expandtemplates.wikitext) {
+                    try {
+                        dict = JSON.parse(res.expandtemplates.wikitext.trim());
+                    } catch (parseError) {
+                        console.error('[Localization] Ошибка парсинга словаря:', parseError);
+                        return;
+                    }
+                }
+
+                if (Object.keys(dict).length === 0) return;
+
+                const translateUI = () => {
+                    const widgetTitles = document.querySelectorAll('.wds-widget-frame__title:not(.is-translated)');
+                    
+                    widgetTitles.forEach(title => {
+                        const originalText = title.getAttribute('title') || title.textContent.trim();
+                        if (dict[originalText]) {
+                            title.textContent = dict[originalText];
+                            title.setAttribute('title', dict[originalText]);
+                            title.classList.add('is-translated');
+                        }
+                    });
+
+                    const safeTextElements = document.querySelectorAll(`
+                        .ActionItem_action-item__dll5i:not(.is-translated),
+                        .wds-tabs__tab-label a:not(.is-translated),
+                        .wds-tooltip
+                    `);
+                    
+                    safeTextElements.forEach(item => {
+                        item.childNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE || node.nodeType === 3) {
+                                const originalText = node.nodeValue.trim();
+                                
+                                if (dict[originalText]) {
+                                    node.nodeValue = node.nodeValue.replace(originalText, dict[originalText]);
+                                    item.classList.add('is-translated');
+                                }
+                            }
+                        });
+                    });
+                };
+
+                translateUI();
+
+                const observer = new MutationObserver(mutations => {
+                    let shouldTranslate = false;
+                    for (const mutation of mutations) {
+                        if (mutation.addedNodes.length > 0 || mutation.type === 'characterData') {
+                            shouldTranslate = true;
+                            break;
+                        }
+                    }
+                    if (shouldTranslate) {
+                        translateUI();
+                    }
+                });
+
+                observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+            }).catch(e => {
+                console.error('[Localization] Ошибка загрузки словаря с центральной Вики:', e);
+            });
+        });
+    };
+
+    // БЕЗОПАСНЫЙ ЗАПУСК с предохранителем
+    if (typeof window.mw !== 'undefined') {
+        initLocalization();
+    } else {
+        let attempts = 0;
+        const mwInterval = setInterval(() => {
+            attempts++;
+            if (typeof window.mw !== 'undefined') {
+                clearInterval(mwInterval);
+                initLocalization();
+            } else if (attempts >= 40) { 
+                // 40 попыток * 250 мс = 10 секунд ожидания.
+                // Если за 10 секунд ядро не загрузилось, сдаёмся, чтобы не висеть в памяти.
+                clearInterval(mwInterval);
+                console.warn('[Localization] Ошибка: Ядро MediaWiki не загрузилось за 10 секунд.');
+            }
+        }, 250);
+    }
+})();

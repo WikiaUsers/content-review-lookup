@@ -1,3 +1,4 @@
+
 // config for lock old comments
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 120;

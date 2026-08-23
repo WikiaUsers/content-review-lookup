@@ -192,9 +192,12 @@ importArticle({
 			// Handle seamless loop reset
 			if (animate && useRollOverAnimation) {
 				isTransitioning = true;
-				strip.addEventListener('transitionend', function resetPosition(e) {
-					if (e.target !== strip) return;
-					strip.removeEventListener('transitionend', resetPosition);
+				
+				var hasReset = false;
+				
+				var resetPosition = function() {
+					if (hasReset) return;
+					hasReset = true;
 					
 					requestAnimationFrame(function() {
 						// Instant jump back to the primary set
@@ -208,7 +211,17 @@ importArticle({
 							strip.style.transition = 'transform ' + duration + ' ease-in-out';
 						}, 50);
 					});
+				};
+				
+				strip.addEventListener('transitionend', function(e) {
+					if (e.target !== strip) return;
+					resetPosition();
 				}, { once: true });
+				
+				// Fallback if transitionend does not fire
+				setTimeout(function() {
+					resetPosition();
+				}, 500);
 			}
 			if (!animate && !useRollOverAnimation) {
 				setTimeout(function() {
@@ -232,8 +245,8 @@ importArticle({
 			
 			// Do not interrupt an active loop transition
 			if (!force && isTransitioning) return;
-            
-            if (force) isTransitioning = false;
+			
+			if (force) isTransitioning = false;
 			
 			calculateAndApplyPosition(value, animate);
 		};
@@ -387,8 +400,8 @@ importArticle({
 			var h = Math.floor((totalSeconds / (60 * 60)) % 24);
 			var m = Math.floor((totalSeconds / 60) % 60);
 			var s = Math.floor(totalSeconds % 60);
-            
-            var dayDigitCount = Math.max(3, String(d).length);
+			
+			var dayDigitCount = Math.max(3, String(d).length);
 			
 			if (isComplete) {
 				if (hasFinished) return;

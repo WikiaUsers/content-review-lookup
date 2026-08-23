@@ -1,4 +1,3 @@
-
 // CategoryCSS 
 window.categoryCSS = {
     "Market": "MediaWiki:Market.css",
@@ -526,3 +525,80 @@ function BossTimer() {
 }
 BossTimer();
 setInterval(BossTimer, 1000);
+
+// Tier List Data
+
+$(document).ready(function() {
+
+    $('.list-main-box').each(function() {
+
+        var $wrapper = $(this);
+        var $inspector = $wrapper.find('.item-data');
+        var $icon = $inspector.find('.data-icon');
+        var $title = $inspector.find('.data-title');
+        var $desc = $inspector.find('.data-descrip');
+
+        var defaultIconHTML = '';
+        var defaultTitleText = 'Select a Skill/Item';
+        var defaultDescText = 'Click/tap for more information';
+
+        function resetInspector() {
+            $icon.html(defaultIconHTML);
+            $title.html(defaultTitleText);
+            $desc.html(defaultDescText);
+
+            $wrapper.find('.list-mini-box').removeClass('active');
+        }
+
+        function updateInspector($item) {
+
+            var $data = $item.find('.data1');
+
+            if (!$data.length) {
+                return;
+            }
+
+            var imgSrc = $item.find('img').attr('src');
+            var titleText = $data.find('.data-title').html();
+            var descText = $data.find('.data-descrip').html();
+
+            $icon.html('<img src="' + imgSrc + '">');
+            $title.html(titleText);
+            $desc.html(descText);
+
+            $wrapper.find('.list-mini-box').removeClass('active');
+            $item.addClass('active');
+        }
+
+        function handleSelection(element, e) {
+
+            e.stopPropagation();
+
+            if (e.type === 'touchend') {
+                e.preventDefault();
+            }
+
+            var $item = $(element);
+
+            if ($item.hasClass('active')) {
+                resetInspector();
+            } else {
+                updateInspector($item);
+            }
+        }
+
+        $wrapper.find('.list-mini-box').on('click touchend', function(e) {
+            handleSelection(this, e);
+        });
+
+        $inspector.on('click touchend', function(e) {
+            e.stopPropagation();
+        });
+
+        $(document).on('click touchend', function(e) {
+            resetInspector();
+        });
+
+    });
+
+});

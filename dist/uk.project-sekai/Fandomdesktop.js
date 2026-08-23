@@ -1,66 +1,47 @@
-/* Перемикач займенників Мізукі (універсальний для вкладок/табберів) */
+/* Автоматичне створення перемикача займенників Мізукі */
 (function() {
-    function initMizukiPronouns() {
-        // Шукаємо за ID або класом
-        var containers = document.querySelectorAll('#mizuki-pronoun-selector, .mizuki-pronoun-selector');
-        if (!containers.length) return;
+    function initMizukiSwitchers() {
+        document.querySelectorAll('.mizuki-pronoun-box:not(.initialized)').forEach(function(container) {
+            container.classList.add('initialized');
+            var ep = container.getAttribute('data-ep');
+            
+            container.innerHTML = 
+                '<span style="margin-left: 10px; font-size: 0.9em;">' +
+                    '<span style="font-weight: bold; margin-right: 5px;">Займенники Мізукі:</span>' +
+                    '<select class="mizuki-select">' +
+                        '<option value="m">він/його</option>' +
+                        '<option value="f">вона/її</option>' +
+                        '<option value="nb">вони/їх</option>' +
+                    '</select>' +
+                '</span>';
 
-        var savedPronoun = localStorage.getItem('mizuki_pronouns') || 'm';
+            var select = container.querySelector('.mizuki-select');
+            
+            // Відновлення вибору з пам'яті браузера
+            var saved = localStorage.getItem('mizuki_pronoun') || 'm';
+            select.value = saved;
+            applyPronoun(saved);
 
-        function updatePronouns(val) {
-            localStorage.setItem('mizuki_pronouns', val);
-            var wrappers = document.querySelectorAll('.mizuki-pronoun-wrapper');
-            wrappers.forEach(function(wrapper) {
-                var m = wrapper.querySelectorAll('.mp-m');
-                var f = wrapper.querySelectorAll('.mp-f');
-                var nb = wrapper.querySelectorAll('.mp-nb');
-
-                m.forEach(function(el) { el.style.display = (val === 'm' ? 'inline' : 'none'); });
-                f.forEach(function(el) { el.style.display = (val === 'f' ? 'inline' : 'none'); });
-                nb.forEach(function(el) { el.style.display = (val === 'nb' ? 'inline' : 'none'); });
+            select.addEventListener('change', function() {
+                var val = this.value;
+                localStorage.setItem('mizuki_pronoun', val);
+                // Оновлюємо значення у всіх випадаючих списках на сторінці
+                document.querySelectorAll('.mizuki-select').forEach(function(s) { s.value = val; });
+                applyPronoun(val);
             });
+        });
+    }
+
+    function applyPronoun(val) {
+        document.body.setAttribute('data-mizuki-pronoun', val);
+    }
+
+    // Запуск при завантаженні та при кліках по табберу
+    $(document).ready(initMizukiSwitchers);
+    mw.hook('wikipage.content').add(initMizukiSwitchers);
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.wds-tabs__tab, .tabbernav li')) {
+            setTimeout(initMizukiSwitchers, 100);
         }
-
-        // Оновлюємо текст займенників
-        updatePronouns(savedPronoun);
-
-        // Обробляємо кожен знайдений контейнер (у всіх вкладках)
-        containers.forEach(function(container) {
-            if (!container.querySelector('select.mizuki-select')) {
-                container.innerHTML = '<span style="font-weight: bold;">Займенники Мізукі:</span> ' +
-                    '<select class="mizuki-select" style="margin-left: 8px; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--theme-border-color, #ccc); background: var(--theme-page-background-color, #fff); color: var(--theme-page-text-color, #000); cursor: pointer;">' +
-                        '<option value="m">Чоловічі (він/його)</option>' +
-                        '<option value="f">Жіночі (вона/її)</option>' +
-                        '<option value="nb">Небінарні (вони/їх)</option>' +
-                    '</select>';
-
-                var select = container.querySelector('select.mizuki-select');
-                select.value = savedPronoun;
-
-                select.addEventListener('change', function() {
-                    updatePronouns(this.value);
-                    // Синхронізуємо значення інших селекторів, якщо їх декілька
-                    document.querySelectorAll('select.mizuki-select').forEach(function(s) {
-                        s.value = select.value;
-                    });
-                });
-            }
-        });
-    }
-
-    // Періодична перевірка для табберів
-    var interval = setInterval(initMizukiPronouns, 500);
-    setTimeout(function() { clearInterval(interval); }, 10000); // зупиняємо таймер через 10 сек
-
-    // Запуск через MutationObserver
-    var observer = new MutationObserver(initMizukiPronouns);
-    if (document.body) {
-        observer.observe(document.body, { childList: true, subtree: true });
-    } else {
-        document.addEventListener('DOMContentLoaded', function() {
-            observer.observe(document.body, { childList: true, subtree: true });
-        });
-    }
-
-    initMizukiPronouns();
+    });
 })();

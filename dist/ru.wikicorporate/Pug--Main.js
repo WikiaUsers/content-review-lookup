@@ -5,7 +5,7 @@
     window.isPugAdapterLoaded = true;
 
     const CONFIG = {
-        pugUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pug/2.0.3/pug.min.js',
+        pugUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pug/2.0.4/pug.min.js',
         wrapperSelector: '.pug-wrapper:not(.pug-loaded)',
         registryPage: 'MediaWiki:Custom-PugTemplates',
         apiScript: mw.util.wikiScript('api'),

@@ -14,6 +14,13 @@ importArticle({
 (function ($, mw) {
 	'use strict';
 	
+	// DOUBLE RUN PREVENTION
+	if (window.dev && window.dev.digitScrollerLoaded) {
+		return;
+	}
+	window.dev = window.dev || {};
+	window.dev.digitScrollerLoaded = true;
+	
 	// FORMAT DIGIT WITH SEPARATOR
 	function formatDigits(digits, separator) {
 		if (!separator) return digits;
@@ -49,7 +56,7 @@ importArticle({
 		};
 		var separatorSymbol = separatorMap[separatorKeyword] || separatorKeyword;
 		var formattedDigits = formatDigits(digits, separatorSymbol);
-
+		
 		if (isNegative) {
 			$el.append('<span class="digit-scroller__minus">-</span>');
 		}
@@ -63,6 +70,7 @@ importArticle({
 				
 				if (isNegative) {
 					// REVERSED ORDER (9 to 0)
+					$stack.append('<div>0</div>');
 					for (var d = 9; d >= 0; d--) {
 						$stack.append('<div>' + d + '</div>');
 					}
@@ -71,6 +79,7 @@ importArticle({
 					for (var d = 0; d <= 9; d++) {
 						$stack.append('<div>' + d + '</div>');
 					}
+					$stack.append('<div>0</div>');
 				}
 				
 				$digitViewport.append($stack);
@@ -99,65 +108,67 @@ importArticle({
 			var target = $digit.data('targetDigit') || 0;
 			var $stack = $digit.find('.digit-scroller__digit-strip');
 			
-			var fontSize = $digit.css('font-size');
-			var rowHeight = parseFloat(fontSize);
+			var $firstRow = $stack.children().first();
+			var rowHeight = $firstRow.outerHeight();
+			
 			if (isNaN(rowHeight) || rowHeight < 1) {
 				rowHeight = 16;
-				if (rowHeight === 0) return;
 			}
 			
-			var scrollDown;
+			var direction;
+			
 			if (isNegative) {
-				scrollDown = (dirSettingNegative === 'down');
+				direction = dirSettingNegative;
 			} else {
-				scrollDown = (dirSettingPositive === 'down');
+				direction = dirSettingPositive;
 			}
 			
-			// NEGATIVE SCORE WILL SCROLL DOWN, OTHERWISE SCROLL UP
-			if (scrollDown) {
-				var finalOffset;
-				if (isNegative) {
-					var finalIndex = 9 - target;
+			var finalOffset;
+			var startOffset;
+			var finalIndex;
+			
+			if (isNegative) {
+				if (direction === 'down') {
+					startOffset = -10 * rowHeight;
+					finalIndex = (target === 0) ? 0 : (10 - target);
 					finalOffset = -finalIndex * rowHeight;
 				} else {
-					finalOffset = -target * rowHeight;
+					startOffset = 0;
+					finalIndex = (target === 0) ? 10 : (10 - target);
+					finalOffset = -finalIndex * rowHeight;
 				}
-				
-				var startOffset = isNegative ? (-9 * rowHeight) : 0;
-				
-				var prevTransition = $stack.css('transition');
-				$stack.css('transition', 'none');
-				
-				$stack.css('transform', 'translateY(' + startOffset + 'px)');
-				
-				$stack[0].getBoundingClientRect();
-				
-				if (prevTransition) {
-					$stack.css('transition', prevTransition);
-				} else {
-					$stack.css('transition', '');
-				}
-				
-				setTimeout((function ($stack, finalOffset) {
-					return function () {
-						$stack.css('transform', 'translateY(' + finalOffset + 'px)');
-					};
-				})($stack, finalOffset), index * 80 + 25);
-			
 			} else {
-				var offsetPx = -target * rowHeight;
-				
-				var prevTransition = $stack.css('transition');
-				if (prevTransition === 'none') {
-					$stack.css('transition', '');
+				if (direction === 'up') {
+					startOffset = 0;
+					finalIndex = (target === 0) ? 10 : target;
+					finalOffset = -finalIndex * rowHeight;
+				} else {
+					startOffset = -10 * rowHeight;
+					finalIndex = (target === 0) ? 0 : target;
+					finalOffset = -finalIndex * rowHeight;
 				}
-				
-				setTimeout((function ($stack, offsetPx) {
-					return function () {
-						$stack.css('transform', 'translateY(' + offsetPx + 'px)');
-					};
-				})($stack, offsetPx), index * 80);
 			}
+			
+			var prevTransition = $stack.css('transition');
+			$stack.css('transition', 'none');
+			$stack.css('transform', 'translateY(' + startOffset + 'px)');
+			
+			$stack[0].getBoundingClientRect();
+			
+			if (prevTransition) {
+				$stack.css('transition', prevTransition);
+			} else {
+				$stack.css('transition', '');
+			}
+			
+			setTimeout((function ($stack, finalOffset) {
+				return function () {
+					$stack.css(
+						'transform',
+						'translateY(' + finalOffset + 'px)'
+					);
+				};
+			})($stack, finalOffset), index * 80 + 25);
 		});
 	}
 	

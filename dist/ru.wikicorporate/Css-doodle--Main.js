@@ -5,7 +5,7 @@
     window.isDoodleAdapterLoaded = true;
 
     const CONFIG = {
-        doodleUrl: 'https://cdnjs.cloudflare.com/ajax/libs/css-doodle/0.38.4/css-doodle.min.js',
+        doodleUrl: 'https://cdnjs.cloudflare.com/ajax/libs/css-doodle/0.51.0/css-doodle.min.js',
         wrapperSelector: '.doodle-wrapper:not(.doodle-loaded)',
         registryPage: 'MediaWiki:Custom-DoodleRules',
         rawScript: mw.util.wikiScript()

@@ -6,7 +6,7 @@
     window.isHamlAdapterLoaded = true;
 
     const CONFIG = {
-        hamlUrl: 'https://cdnjs.cloudflare.com/ajax/libs/haml.js/0.3.0/haml.min.js',
+        hamlUrl: 'https://cdnjs.cloudflare.com/ajax/libs/clientside-haml-js/5.4/haml.min.js',
         wrapperSelector: '.haml-wrapper:not(.haml-loaded)',
         registryPage: 'MediaWiki:Custom-HamlTemplates',
         apiScript: mw.util.wikiScript('api'),
@@ -114,7 +114,8 @@
                     
                     // 3. Компиляция Haml
                     // Используем haml.render(шаблон, { locals: данные })
-                    const rawCompiledHtml = haml.render(hamlCode, { locals: safeLocals });
+                    const compiler = haml.compileHaml({ source: hamlCode });
+					const rawCompiledHtml = compiler(safeLocals);
                     
                     // 4. Прогон через MediaWiki Parser
                     const apiParams = new URLSearchParams({

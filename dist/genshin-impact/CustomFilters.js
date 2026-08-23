@@ -1,6 +1,7 @@
 /* jshint undef: true, devel: true, typed: true, jquery: true, strict: true, eqeqeq: true, freeze: true, latedef: true, shadow: outer, varstmt: true, quotmark: single, esversion: 6, futurehostile: true */
+/* global importArticles */
 mw.hook('wikipage.content').add(() => {
-	if(window.dev && window.dev.CustomFilters) {return;}
+	if(window.dev && window.dev.CustomFilters || $('.fl-wrapper').length === 0) {return;}
 	(window.dev = window.dev || {}).CustomFilters=true;
 	let config = mw.config.get(['wgPageName', 'wgServer']);
 	let flc = 0;
@@ -10,47 +11,6 @@ mw.hook('wikipage.content').add(() => {
 		return textarea.value.trim();
 	};
 	
-	mw.util.addCSS(`
-		.fl-filter-wrapper {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 5px;
-			margin-bottom: 10px;
-			align-items: center;
-		}
-		.fl-filter-group {
-			display: flex;
-			gap: 5px;
-			flex-wrap: wrap;
-			background: var(--theme-page-background-color);
-			padding: 5px;
-			border-radius: 3px;
-			border: 2px solid var(--theme-border-color);
-			align-items: center;
-			min-height: 44px;
-		}
-		.fl-checkbox-label {
-			display: inline;
-			border-radius: 8px;
-			padding: 3px;
-			cursor: pointer;
-			user-select: none;
-		}
-		.fl-search {
-			background: var(--theme-color-6);
-			color: var(--theme-page-text-color);
-			border: 0;
-			border-radius: 4px;
-			height: 30px;
-			padding: 4px;
-		}
-		.fl-checkbox { display: none; }
-		.fl-toggle-qa-all, .fl-toggle-qa-none { cursor: pointer; }
-		.fl-checkbox-label:has(.fl-checkbox:checked) { background: rgba(var(--theme-link-color--rgb), 0.2); }
-		.fl-checkbox-label:hover { outline: solid 1px #E9E5DC; }
-		.fl-toggle-label { line-height: 1.2; }
-		.fl-toggle-qa { font-size: 0.6em; }
-	`);
 	$('.fl-wrapper:not(.fl-loaded)').each((_, wrapper) => {
 		wrapper.classList.add('fl-loaded');
 		let $wrap = $(wrapper);
@@ -61,7 +21,7 @@ mw.hook('wikipage.content').add(() => {
 		catch (nope) { console.warn('Invalid JSON at filter: ', wrapper); return; }
 		
 		let queries = { hide: {}, show: {} };
-		let filters = $('<div class="fl-filter-wrapper"></div>');
+		let filters = $('<div style="display: none;" class="fl-filter-wrapper"></div>');
 		let applyFLs = mw.util.debounce(() => {
 			let hide = $wrap.find(Object.keys(queries.hide).join(','));
 			let show = $wrap.find(Object.keys(queries.show).join(','));
@@ -154,5 +114,9 @@ mw.hook('wikipage.content').add(() => {
 			}
 		});
 		$wrap.prepend(filters);
+		importArticles({
+			type:'style',
+			articles: ['MediaWiki:CustomFilters.css']
+		}).then(()=>{filters.show()});
 	});
 });

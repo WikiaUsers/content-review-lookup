@@ -78,3 +78,64 @@
         $(init);
     }
 })();
+
+
+/* ============================================================ */
+/*  АВТО-UNLOCK — добавя червения "Unlock at N★ / Lv.N" на всяка */
+/*  skill-таблица на hero страниците, по фиксирания модел.       */
+/*  Стойността живее ТУК (едно място) — не се пише по страниците.*/
+/*  Слага се в MediaWiki:Common.js.                             */
+/* ============================================================ */
+;(function () {
+  // фиксиран модел по слот → ниво → праг
+  var MAP = {
+    ex:      {            "2": "6★",     "3": "10★" },
+    support: { "1": "Lv.21", "2": "7★",  "3": "11★" },
+    passive: { "1": "Lv.61", "2": "8★",  "3": "12★" },
+    special: { "1": "Lv.100","2": "9★",  "3": "13★" }
+  };
+
+  function slotOf(text) {
+    text = text.toLowerCase().trim();
+    if (/^support skill/.test(text)) return 'support';  // вкл. "Support Skill (2nd-Form EX)"
+    if (/^special skill/.test(text)) return 'special';
+    if (/^ex skill/.test(text))      return 'ex';
+    if (/^passive/.test(text))       return 'passive';
+    return null;                                          // не е skill заглавие → пропусни
+  }
+
+  function run() {
+    var heads = document.querySelectorAll('.mw-parser-output .mw-headline');
+    heads.forEach(function (h) {
+      var slot = slotOf(h.textContent);
+      if (!slot) return;
+
+      // намери следващата таблица под заглавието (спри на следваща секция)
+      var el = h.closest('h1,h2,h3,h4') || h.parentElement, tbl = null;
+      while ((el = el.nextElementSibling)) {
+        if (el.tagName === 'TABLE') { tbl = el; break; }
+        if (/^H[1-4]$/.test(el.tagName)) break;
+      }
+      if (!tbl) return;
+
+      tbl.querySelectorAll('tr').forEach(function (tr) {
+        var cells = tr.children;
+        if (cells.length < 2) return;
+        var m = cells[0].textContent.match(/Lv\.?\s*([123])/i);
+        if (!m) return;
+        var val = MAP[slot][m[1]];
+        if (!val) return;                                  // напр. EX Lv.1 → няма
+        var cell = cells[cells.length - 1];
+        if (cell.querySelector('.skill-unlock')) return;   // вече добавено
+        var span = document.createElement('span');
+        span.className = 'skill-unlock';
+        span.textContent = 'Unlock at ' + val;
+        cell.appendChild(span);
+      });
+    });
+  }
+
+  if (window.mw && mw.hook) mw.hook('wikipage.content').add(run);
+  else if (document.readyState !== 'loading') run();
+  else document.addEventListener('DOMContentLoaded', run);
+})();

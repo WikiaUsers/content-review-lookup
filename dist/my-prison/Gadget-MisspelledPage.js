@@ -112,7 +112,7 @@
                 $listContainer.append(listHtmlBuffer);
                 sortAndColorizePages($listContainer);
             } else {
-                console.log('[MisspelledPage] No page has reached the similarity threshold of ' + similitudeThreshold + '%.');
+                console.warn('[MisspelledPage] No page has reached the similarity threshold of ' + similitudeThreshold + '%.');
             }
         }).fail(function(err) {
             console.error('[MisspelledPage] Error in the API request:', err);
@@ -126,7 +126,7 @@
         console.log('[MisspelledPage] Checking environment::', { hasNoArticleText, hasLogExcerpt, deletedToo: window.deletedToo });
 
         if (!hasNoArticleText || (hasLogExcerpt && !window.deletedToo)) {
-            console.log('[MisspelledPage] Script interrupted: The page either does not contain the text box or has recent deletion records.');
+            console.warn('[MisspelledPage] Script interrupted: The page either does not contain the text box or has recent deletion records.');
             return;
         }
 

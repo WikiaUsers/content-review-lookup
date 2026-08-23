@@ -12,3 +12,12 @@
   railTab.style.setProperty('top', '-20px', 'important');
   railTab.style.setProperty('left', '175px', 'important');
 })();
+
+
+(function () {
+  if (!document.querySelector('.regions-scene')) return;
+  if (!document.body.classList.contains('is-content-expanded')) {
+    var toggle = document.querySelector('.content-size-toggle');
+    if (toggle) toggle.click(); // trigger the native toggle so its own logic handles the state change correctly
+  }
+})();

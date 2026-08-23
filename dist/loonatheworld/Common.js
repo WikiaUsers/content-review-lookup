@@ -39,3 +39,13 @@ function updateList() {
 }
 
 setInterval( updateList, 500 );
+
+/* Standard Edit Summaries */
+window.dev = window.dev || {};
+window.dev.editSummaries = {
+	css: '#stdSummaries { ... }',
+	select: 'MediaWiki:Custom-StandardEditSummaries'
+};
+
+/* UploadMultipleFiles */
+mw.config.set('UMFBypassLicenseCheck', true);

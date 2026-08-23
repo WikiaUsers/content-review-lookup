@@ -17,7 +17,7 @@
   'use strict';
 
   // <-- replace with your Apps Script Web App /exec URL
-  var EXEC_URL = 'https://script.google.com/macros/s/AKfycbwxTyrm14n8RGAxmU9FylTiOMi8O0pm7a06kU9BaH_VJeA7lCmi66vq7-LkasJTwmzxig/exec';
+  var EXEC_URL = 'https://script.google.com/macros/s/AKfycbwqFL2b2e0SrfMbjOEebpiOl-Emm4W_c_23c9EYxGIF-hTNQYfeEe4--FVHoL4kCyof2g/exec';
 
   function loadCalendar(container, offset) {
     offset = offset || 0;
@@ -65,7 +65,7 @@
 
     var navHtml = '<div class="ipcal-nav">' +
       '<a href="#" class="ipcal-nav-link" data-offset="' + (offset - 1) + '">&larr; earlier</a>' +
-      '<span class="ipcal-label">Fandom Media Calendar</span>' +
+      '<span class="ipcal-label">Fandom<br>Premiere Release Tracker</span>' +
       '<a href="#" class="ipcal-nav-link" data-offset="' + (offset + 1) + '">later &rarr;</a>' +
       '</div>';
 
@@ -87,6 +87,7 @@
         '<button class="ipcal-filter-btn active" data-filter="all">All</button>' +
         '<button class="ipcal-filter-btn" data-filter="entertainment">Entertainment</button>' +
         '<button class="ipcal-filter-btn" data-filter="gaming">Gaming</button>' +
+        '<button class="ipcal-filter-btn" data-filter="no-wiki">Start A Wiki</button>' +
       '</div>' +
     '</div>';
 
@@ -106,7 +107,7 @@
           html += renderRelease(r, i, j);
         });
         html += '</div>';
-        html += '<div class="ipcal-empty ipcal-filtered-empty" style="display:none">No releases in this category this week.</div>';
+        html += '<div class="ipcal-empty ipcal-filtered-empty" style="display:none">No releases match this filter this week.</div>';
       }
       html += '</div></div>';
     });
@@ -172,7 +173,14 @@
   function applyFilter_(container, category) {
     var cards = container.querySelectorAll('.ipcal-release');
     for (var i = 0; i < cards.length; i++) {
-      var show = category === 'all' || cards[i].getAttribute('data-category') === category;
+      var show;
+      if (category === 'all') {
+        show = true;
+      } else if (category === 'no-wiki') {
+        show = cards[i].getAttribute('data-has-wiki') === 'false';
+      } else {
+        show = cards[i].getAttribute('data-category') === category;
+      }
       cards[i].style.display = show ? '' : 'none';
     }
 
@@ -245,6 +253,7 @@
 
     return '<div class="ipcal-release"' +
       ' data-id="w' + wIndex + '-r' + rIndex + '" data-category="' + escapeAttr(r.category) + '"' +
+      ' data-has-wiki="' + (wiki.exists ? 'true' : 'false') + '"' +
       ' tabindex="0" role="button"' +
       ' aria-label="View details for ' + escapeAttr(r.ipName) + '">' +
       bg +

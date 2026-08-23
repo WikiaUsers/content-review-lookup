@@ -25,7 +25,8 @@ $(function () {
         "https://static.wikia.nocookie.net/the-walten-files-new/images/0/05/Bye_Bye_Blues_%28Live%29_%28The_Walten_Files_4_-_CyberFun_Tech_OST%29.mp3",
         "https://static.wikia.nocookie.net/the-walten-files-new/images/a/a4/Felice_incontro_%28The_Walten_Files_4_-_CyberFun_Tech_OST%29.mp3",
         "https://static.wikia.nocookie.net/the-walten-files-new/images/a/af/Theme_for_Marilyn_%28The_Walten_Files_4_-_CyberFun_Tech_OST%29.mp3",
-        "https://static.wikia.nocookie.net/the-walten-files-new/images/3/31/Unknown_Instrumental_%28The_Walten_Files_4_-_CyberFun_Tech_OST%29.mp3"
+        "https://static.wikia.nocookie.net/the-walten-files-new/images/3/31/Unknown_Instrumental_%28The_Walten_Files_4_-_CyberFun_Tech_OST%29.mp3",
+        "https://static.wikia.nocookie.net/the-walten-files-new/images/b/bc/Downtown.mp3"
     ];
 
     var containerRight = "20px";

@@ -390,17 +390,19 @@
 	'greater marksman gem' : archfoe_bosses,
 	'greater mystic gem' : archfoe_bosses,
 	'greater sage gem' : archfoe_bosses,
+	'greater spiritualist gem' : archfoe_bosses,
+	'regular gem' : archfoe_bosses,
+	'mystic gem' : archfoe_bosses,
+	'sage gem' : archfoe_bosses,
+	'marksman gem' : archfoe_bosses,
 	'guardian gem' : archfoe_bosses,
+	'spiritualist gem' : archfoe_bosses,
 	'lesser gem' : archfoe_bosses,
-	'lesser guardian gem' : archfoe_bosses,
-	'lesser marksman gem' : archfoe_bosses,
 	'lesser mystic gem' : archfoe_bosses,
 	'lesser sage gem' : archfoe_bosses,
-	'marksman gem' : archfoe_bosses,
-	'mystic gem' : archfoe_bosses,
-	'regular gem' : archfoe_bosses,
-	'sage gem' : archfoe_bosses,
-	'spiritualist gem' : archfoe_bosses
+	'lesser marksman gem' : archfoe_bosses,
+	'lesser guardian gem' : archfoe_bosses,
+	'lesser spiritualist gem' : archfoe_bosses
   },
 
   //loot contents rows

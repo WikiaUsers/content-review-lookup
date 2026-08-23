@@ -1129,11 +1129,93 @@ $(function () {
     });
 
 })();
-/*Bliss*/
-mw.loader.using(['mediawiki.util']).then(function () {
-    if (document.querySelector('.bliss-xp')) {
-        mw.util.addCSS(
-            '@import url("/load.php?mode=articles&articles=u:dev:MediaWiki:FandomXP.css&only=styles");'
-        );
-    }
+/*Project: Engine Quiz*/
+window.quizName = "Project: Engine Quiz";
+window.resultsTextArray = [ 
+    "Holy cow - how'd you do this bad?! Watch the ARG!",
+    "Not too shabby - you can do better though.",
+    "Wow! You're a true fan of Project: Engine!" 
+];
+window.questions = [
+    ["How many layers are there in Project: Engine? (sub-layers included)",
+    "There are 12 layers",
+    "There are 9 layers",
+    "There are 10 layers",
+    "There are 12 sublayers"], 
+
+    ["What is the name of the entity that Triangled and the others had to fight to pass through the Genbox?",
+    "Mr. Genfriend",
+    "Fritz",
+    "Mr. Friend",
+    "Crasher"],
+
+    ["What is the purpose of the Gallbox?",
+    "Used by the admins to test various things.",
+    "It is a safe place that has nice entities",
+    "The Gallbox is just where Gallforms live."],
+    
+    ["What is the purpose of the Skybox, Blackbox, and the Colorbox?",
+    "The Skybox contains the game, the Blackbox is a barrier to stop Explorers from going further, and the Colorbox is used for storing all the colors the game has.",
+    "The Skybox contains the game, the Blackbox stores the color black, and the Colorbox is an anomaly in the code.",
+    "The Skybox contains the Earth, the Blackbox is a barrier to stop Explorers from going further, and the Colorbox is used for storing all the colors the game has."],
+    
+    ["Why did Triangled have to remove the F3X gamepass from Skybox Entity Lab?",
+    "People were killing the entities and SkyGen got mad, so Triangled had to remove the gamepass.",
+    "People were breaking the game by deleting too much of the code that allowed the entities to be grabbed from their respective layers.",
+    "Too many people were buying the gamepass, so Triangled removed it so people wouldn't spend their Robux."]
+];
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Quiz/code.js'
+    ]
 });
+/**
+ * Name:        NotificationsTab
+ * Version:     v2024.07
+ * Description: Adds a tab to user profile pages linking to
+ *              Special:NotificationCenter.
+ */
+(function() {
+    var username = mw.config.get('profileUserName');
+
+    if (window.NotificationsTabLoaded || !username) {
+        return;
+    }
+
+    window.NotificationsTabLoaded = true;
+
+    function findContainer() {
+        var promise = $.Deferred(),
+            interval = setInterval(function() {
+                var $element = $('#userProfileApp .user-profile-navigation');
+
+                if ($element.length) {
+                    clearInterval(interval);
+                    promise.resolve($element);
+                }
+            }, 300);
+
+        return promise;
+    }
+
+    mw.loader.using([
+        'mediawiki.util'
+    ]).then(function() {
+        return findContainer();
+    }).then(function($container) {
+
+        $container.append(
+            $('<li>', {
+                'class': 'user-profile-navigation__link',
+                id: 'notifications-tab'
+            }).append(
+                $('<a>', {
+                    href: mw.util.getUrl('Special:NotificationCenter'),
+                    title: 'Notifications',
+                    text: 'Notifications'
+                })
+            )
+        );
+    });
+})();

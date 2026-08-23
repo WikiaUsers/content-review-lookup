@@ -1,3 +1,5 @@
+window.AddRailModule = [{prepend: true}];
+
 (function () {
     function getOriginalUrl(url) {
         return url.replace(

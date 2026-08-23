@@ -287,3 +287,104 @@ $(function() {
     // Запуск сразу на случай, если контент уже отрендерен
     processInterwikiLinks();
 });
+
+// Сценарий для привлечения внимания к правилам вики через мигание в шапке
+$(function() {
+    mw.loader.using(['mediawiki.storage', 'mediawiki.util']).then(function() {
+        // Название страницы правил
+        var rulesPageName = 'СККФII:Правила';
+        
+        // Ключ для хранилища браузера
+        var storageKey = 'has_read_wiki_rules_fkokf';
+
+        // Проверяем, находится ли пользователь на странице правил прямо сейчас
+        if (mw.config.get('wgPageName') === rulesPageName) {
+            // Если да, записываем в память браузера, что правила прочитаны, и прекращаем работу сценария
+            mw.storage.set(storageKey, 'true');
+            return; 
+        }
+
+        // Если отметки о прочтении нет, запускаем логику мигания
+        if (mw.storage.get(storageKey) !== 'true') {
+            
+            // Добавляем CSS-анимацию
+            mw.util.addCSS(
+                /* Мигание: 50 % времени белый, 50 % желтый */
+                '@keyframes rulesWarningBlinkAbrupt {' +
+                    '0%, 49.9% { color: #ffffff; }' +
+                    '50%, 100% { color: #ffff00; }' +
+                '}' +
+                
+                /* Мигание кнопки «Вики» (когда выпадающее меню не открыто) */
+                '.wiki-warning-dropdown:not(:hover) > .wds-dropdown__toggle .wds-dropdown__placeholder span {' +
+                    'animation: rulesWarningBlinkAbrupt 1s infinite !important;' +
+                '}' +
+                
+                /* Мигание кнопки «Правила» (когда выпадающее меню открыто) */
+                '.wiki-warning-dropdown:hover .rules-warning-link > span {' +
+                    'animation: rulesWarningBlinkAbrupt 1s infinite !important;' +
+                '}'
+            );
+
+            // Функция для поиска нужных кнопок и подстановки знака (!)
+            function applyRulesWarning() {
+                // Ищем все элементы выпадающих списков в навигации
+                var $dropdowns = $('.fandom-community-header__local-navigation > ul > li.wds-dropdown');
+                
+                $dropdowns.each(function() {
+                    var $dropdown = $(this);
+                    var $wikiSpan = $dropdown.find('> .wds-dropdown__toggle .wds-dropdown__placeholder span').first();
+                    var text = $wikiSpan.text().trim();
+                    
+                    // Находим именно пункт «Вики» или уже изменённый «Вики (!)»
+                    if (text === 'Вики' || text === 'Вики (!)') {
+                        if (!$dropdown.hasClass('wiki-warning-dropdown')) {
+                            $dropdown.addClass('wiki-warning-dropdown');
+                            
+                            // Меняем текст на «Вики (!)»
+                            if (text === 'Вики') {
+                                $wikiSpan.text('Вики (!)');
+                            }
+
+                            // Ищем ссылку на правила внутри этого пункта «Вики»
+                            $dropdown.find('.wds-dropdown__content a').each(function() {
+                                var $link = $(this);
+                                var $span = $link.find('span').first();
+                                
+                                if ($span.length) {
+                                    var spanText = $span.text().trim();
+                                    // Если текст внутри ссылки — Правила
+                                    if (spanText === 'Правила' || spanText === 'Правила (!)') {
+                                        $link.addClass('rules-warning-link');
+                                        if (spanText === 'Правила') {
+                                            $span.text('Правила (!)');
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            // Применяем при загрузке страницы
+            applyRulesWarning();
+
+            // Используем MutationObserver для отслеживания динамической загрузки
+            var observer = new MutationObserver(function(mutations) {
+                var shouldApply = false;
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length) {
+                        shouldApply = true;
+                    }
+                });
+                if (shouldApply) {
+                    applyRulesWarning();
+                }
+            });
+
+            // Наблюдаем за всем body
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    });
+});

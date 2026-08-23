@@ -32,3 +32,28 @@ importArticles({
         'u:dev:MediaWiki:MassRename/code.js',
     ]
 });
+mw.hook('DiscordIntegrator.added').add(function ($el) {
+	var categories = mw.config.get('wgCategories') || [];
+
+	if (
+		!categories.includes('Legends of Chima') &&
+		!categories.includes('Legends of Chima Wiki')
+	) {
+		return;
+	}
+
+	var $iframe = $el.find('iframe[src*="discord.com/widget"]');
+
+	if (!$iframe.length) {
+		return;
+	}
+
+	var src = $iframe.attr('src');
+
+    src = src.replace(
+	    /([?&]id=)\d{17,19}/,
+    	'$1' + '488769571076177930'
+    );
+
+	$iframe.attr('src', src);
+});
