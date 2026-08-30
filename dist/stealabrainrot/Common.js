@@ -359,3 +359,32 @@ window.lockOldComments.limit = 14;
     $(renderTabs);
 
 })();
+
+mw.hook('wikipage.content').add(function($content) {
+    var $scoreElements = $content.find('.DynamicUserScore');
+    if (!$scoreElements.length) return;
+    var currentActiveViewer = mw.config.get('wgUserName');
+    if (!currentActiveViewer) {
+        $scoreElements.text("0");
+        return;
+    }
+    $.getJSON(mw.util.wikiScript('api'), {
+        action: 'query',
+        prop: 'revisions',
+        titles: 'Template:UserScoreRegistry',
+        rvprop: 'content',
+        rvslots: 'main',
+        format: 'json'
+    }).done(function(data) {
+        try {
+            var pageId = Object.keys(data.query.pages);
+            var rawContent = data.query.pages[pageId].revisions.slots.main['*'];
+            var masterScoreRegistry = JSON.parse(rawContent);
+            var finalEvaluatedValue = masterScoreRegistry[currentActiveViewer] || "0";
+            $scoreElements.text(finalEvaluatedValue);
+        } catch (e) {
+            console.error("Score Registry Parse Error:", e);
+            $scoreElements.text("0");
+        }
+    });
+});

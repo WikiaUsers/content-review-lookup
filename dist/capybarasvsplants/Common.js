@@ -506,7 +506,6 @@ mw.hook('wikipage.content').add(function ($content) {
     mw.hook('wikipage.content').add(initTotemTooltip);
 })();
 
-
 /* Plants hover tooltip */
 (function () {
     var plantTooltipInitialized = false;
@@ -690,6 +689,14 @@ mw.hook('wikipage.content').add(function ($content) {
                 moon.className = 'cvp-mut-moon';
                 fx.appendChild(moon);
             }
+
+            if (card.classList.contains('cvp-mut-mega')) {
+                spawn(fx, 'cvp-mut-mega-bolt', 4, function (el, i) {
+                    el.style.left = 50 + rand(-18, 18) + '%';
+                    el.style.transform = 'rotate(' + (i * 90) + 'deg)';
+                    el.style.animationDelay = rand(0, 1.2) + 's';
+                });
+            }
         });
     }
 
@@ -701,10 +708,40 @@ mw.hook('wikipage.content').add(function ($content) {
     mw.hook('wikipage.content').add(initMutationFX);
 })();
 
-if (card.classList.contains('cvp-mut-mega')) {
-    spawn(fx, 'cvp-mut-mega-bolt', 4, function (el, i) {
-        el.style.left = 50 + rand(-18, 18) + '%';
-        el.style.transform = 'rotate(' + (i * 90) + 'deg)';
-        el.style.animationDelay = rand(0, 1.2) + 's';
-    });
-}
+/* News tab switching */
+(function () {
+    var newsInitialized = false;
+
+    function initNews() {
+        if (newsInitialized) return;
+
+        var panel = document.querySelector('.cvp-news-panel');
+        if (!panel) return;
+
+        var items = panel.querySelectorAll('.cvp-news-item');
+        var articles = panel.querySelectorAll('.cvp-news-article');
+        if (!items.length) return;
+
+        newsInitialized = true;
+
+        items.forEach(function (item) {
+            item.addEventListener('click', function () {
+                var target = item.getAttribute('data-news');
+
+                items.forEach(function (i) { i.classList.remove('cvp-news-item-active'); });
+                item.classList.add('cvp-news-item-active');
+
+                articles.forEach(function (a) {
+                    a.classList.toggle('cvp-news-active', a.getAttribute('data-news') === target);
+                });
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initNews);
+    } else {
+        initNews();
+    }
+    mw.hook('wikipage.content').add(initNews);
+})();

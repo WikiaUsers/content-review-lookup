@@ -6,47 +6,47 @@
 	var creditOptions = [
 		{ label: 'Unknown', value: 'Unknown' },
 
-		{ label: 'Rey', value: '[[Eekfluencer/ReysArcade|Rey]]' },
-		{ label: '3rdy', value: '[[Developer/3rdy|3rdy]]' },
-		{ label: 'Ayzellz', value: '[[Developer/Ayzellz|Ayzellz]]' },
-		{ label: 'Bee', value: '[[Developer/_iiOmq_Vandushieii|Bee]]' },
-		{ label: 'Blizzy', value: '[[Developer/Blizzy|Blizzy]]' },
-		{ label: 'Boots', value: '[[MonsterVerze Wiki:Developer/Boots|Boots]]' },
-		{ label: 'Edd', value: '[[MonsterVerze Wiki:Developer/Edd|Edd]]' },
-		{ label: 'Emmie', value: '[[MonsterVerze Wiki:Developer/Emmie|Emmie]]' },
-		{ label: 'Ian', value: '[[MonsterVerze Wiki:Developer/Ian|Ian]]' },
-		{ label: 'IImKatt', value: '[[FormerDeveloper/IImKatt|IImKatt]]' },
-		{ label: 'Ike', value: '[[Developer/Ike|Ike]]' },
-		{ label: 'ImNotJustBryan', value: '[[FormerDeveloper/ImNotJustBryan|ImNotJustBryan]]' },
-		{ label: 'INotTiagoXD', value: '[[Developer/INotTiagoXD|INotTiagoXD]]' },
-		{ label: 'Joohyun', value: '[[MonsterVerze Wiki:Developer/Joohyun|Joohyun]]' },
-		{ label: 'K0ifishu', value: '[[Developer/K0ifishu|K0ifishu]]' },
-		{ label: 'Kiel', value: '[[Developer/Kiel|Kiel]]' },
-		{ label: 'Komi', value: '[[MonsterVerze Wiki:Developer/Komi|Komi]]' },
-		{ label: 'Kurishiu', value: '[[FormerDeveloper/Kurishiu|Kurishiu]]' },
-		{ label: 'Manoz', value: '[[FormerDeveloper/Manoz|Manoz]]' },
-		{ label: 'Matt', value: '[[MonsterVerze Wiki:Developer/Matt|Matt]]' },
-		{ label: 'MattCrystal', value: '[[FormerDeveloper/MattCrystal|MattCrystal]]' },
-		{ label: 'Melody', value: '[[FormerDeveloper/Melody|Melody]]' },
-		{ label: 'Mikko', value: '[[Developer/Mikko|Mikko]]' },
-		{ label: 'Mistipix', value: '[[Developer/Mistipix|Mistipix]]' },
-		{ label: 'Myko', value: '[[Developer/Myko|Myko]]' },
-		{ label: 'Mysthelin', value: '[[Developer/Mysthelin|Mysthelin]]' },
-		{ label: 'Nana', value: '[[MonsterVerze Wiki:Developer/Nana|Nana]]' },
-		{ label: 'Nene', value: '[[MonsterVerze Wiki:Developer/Nene|Nene]]' },
-		{ label: 'Optical', value: '[[MonsterVerze Wiki:Developer/Optical|Optical]]' },
-		{ label: 'Panchachi', value: '[[Developer/Panchachi|Panchachi]]' },
-		{ label: 'PeacherinoDoll', value: '[[MonsterVerze Wiki:Developer/PeacherinoDoll|PeacherinoDoll]]' },
-		{ label: 'Plentune', value: '[[Developer/Plentune|Plentune]]' },
-		{ label: 'Ricardo', value: '[[FormerDeveloper/Ricardo|Ricardo]]' },
-		{ label: 'Scarlyx', value: '[[MonsterVerze Wiki:Developer/Scarlyx|Scarlyx]]' },
-		{ label: 'StarzXavier', value: '[[Developer/StarzXavier|StarzXavier]]' },
-		{ label: 'Theo', value: '[[MonsterVerze Wiki:Developer/Theo|Theo]]' },
-		{ label: 'Vex', value: '[[Developer/Vex|Vex]]' },
-		{ label: 'Vivi', value: '[[MonsterVerze Wiki:Developer/Vivi|Vivi]]' },
-		{ label: 'WendyWinter', value: '[[Developer/WendyWinters|WendyWinter]]' },
-		{ label: 'Xavier', value: '[[MonsterVerze Wiki:Developer/Xavier|Xavier]]' }
-	];
+var creditOptions = [
+	{ label: 'Rey', value: '[[Eekfluencer/ReysArcade|Rey]]' },
+
+	{ label: '0ptical', value: '[[Developer/0ptical|Optical]]' },
+	{ label: '3rdy', value: '[[Developer/3rdy|3rdy]]' },
+	{ label: 'Ayzellz', value: '[[Developer/Ayzellz|Ayzellz]]' },
+	{ label: 'Bee', value: '[[Developer/ iiOmq Vandushieii|Bee]]' },
+	{ label: 'Blizzy', value: '[[Developer/Blizzy|Blizzy]]' },
+	{ label: 'Chaos', value: '[[Developer/28kChaos|Chaos]]' },
+	{ label: 'Darkmor', value: '[[Developer/Darkmor|Darkmor]]' },
+	{ label: 'Elli', value: '[[Developer/Elli|Elli]]' },
+	{ label: 'Emmie', value: '[[Developer/EmmieDearest|Emmie]]' },
+	{ label: 'Gvistic', value: '[[Developer/Gvistic|Gvistic]]' },
+	{ label: 'Huan', value: '[[Developer/Huan|Huan]]' },
+	{ label: 'Ike', value: '[[Developer/Ike|Ike]]' },
+	{ label: 'INotTiagoXD', value: '[[Developer/INotTiagoXD|Tiago]]' },
+	{ label: 'Joshua', value: '[[Developer/Joshualags27|Joshua]]' },
+	{ label: 'K0ifishu', value: '[[Developer/K0ifishu|K0ifishu]]' },
+	{ label: 'Kandi', value: '[[Developer/Kandi|Kandi]]' },
+	{ label: 'Kiel', value: '[[Developer/Kiel|Kiel]]' },
+	{ label: 'Komi', value: '[[Developer/Komi|Komi]]' },
+	{ label: 'Mikko', value: '[[Developer/Mikko|Mikko]]' },
+	{ label: 'Mistipix', value: '[[Developer/Mistipix|Mistipix]]' },
+	{ label: 'MrGee', value: '[[Developer/MrGee|MrGee]]' },
+	{ label: 'Myko', value: '[[Developer/Myko|Myko]]' },
+	{ label: 'Mysthelin', value: '[[Developer/Mysthelin|Mysthelin]]' },
+	{ label: 'Nana', value: '[[Developer/Cloudylooove|Nana]]' },
+	{ label: 'Nene', value: '[[Developer/Capri_isawkward|Nene]]' },
+	{ label: 'Panchachi', value: '[[Developer/Panchachi|Panchachi]]' },
+	{ label: 'Peach', value: '[[Developer/PeacherinoDoll|Peach]]' },
+	{ label: 'Plentune', value: '[[Developer/Plentune|Plentune]]' },
+	{ label: 'Scarlyx', value: '[[Developer/Scarlyx|Scarlyx]]' },
+	{ label: 'Xavier', value: '[[Developer/StarzXavier|Xavier]]' },
+	{ label: 'Theo', value: '[[Developer/TheonyBunny|Theo]]' },
+	{ label: 'Vex', value: '[[Developer/Vex|Vex]]' },
+	{ label: 'Vivi', value: '[[Developer/Vivisaintclair|Vivi]]' },
+	{ label: 'WendyWinters', value: '[[Developer/WendyWinters|WendyWinters]]' },
+	{ label: 'Wil', value: '[[Developer/Wil|Wil]]' },
+	{ label: 'Ying', value: '[[Developer/Yingmato|Ying]]' },
+	{ label: 'Serveer', value: '[[Developer/TheRealServeer|Serveer]]' }
+];
 
 	var creditStart = '<!-- MV_UPLOAD_CREDITS_START -->';
 	var creditEnd = '<!-- MV_UPLOAD_CREDITS_END -->';
@@ -252,12 +252,64 @@
 		return null;
 	}
 
+	function hideSummaryHeading(summaryBox) {
+		if (!summaryBox) {
+			return;
+		}
+
+		if (summaryBox.id) {
+			var directLabel = document.querySelector(
+				'label[for="' + summaryBox.id + '"]'
+			);
+
+			if (directLabel) {
+				directLabel.style.display = 'none';
+
+				if (
+					directLabel.parentElement &&
+					directLabel.parentElement.classList &&
+					directLabel.parentElement.classList.contains('mw-label')
+				) {
+					directLabel.parentElement.style.display = 'none';
+				}
+			}
+		}
+
+		var parent = summaryBox.parentElement;
+		var searchArea = parent;
+
+		if (parent && parent.parentElement) {
+			searchArea = parent.parentElement;
+		}
+
+		if (searchArea) {
+			var possibleLabels = Array.prototype.slice.call(
+				searchArea.querySelectorAll('label, .mw-label, th, dt, legend')
+			);
+
+			possibleLabels.forEach(function (element) {
+				var text = (element.textContent || '')
+					.replace(/\s+/g, ' ')
+					.trim()
+					.replace(/:$/, '')
+					.trim();
+
+				if (text === 'Summary') {
+					element.style.display = 'none';
+				}
+			});
+		}
+	}
+
 	function createCreditBox() {
+		var summaryBox = findSummaryBox();
+
+		hideSummaryHeading(summaryBox);
+
 		if (document.getElementById('mv-upload-credit-box')) {
 			return;
 		}
 
-		var summaryBox = findSummaryBox();
 		var location = findInsertLocation(summaryBox);
 
 		if (!location) {
@@ -275,7 +327,7 @@
 				'<button id="mv-upload-credit-add" class="mv-upload-credit-add" type="button">Add</button>' +
 			'</div>' +
 			'<input id="mv-upload-credit-input" class="mv-upload-credit-input" type="text" placeholder="Selected credits will appear here. You can also type custom credits.">' +
-			'<div class="mv-upload-credit-help">This will be added directly to the Summary box as a <code>Credit(s)</code> section.</div>';
+			'<div class="mv-upload-credit-help">The selected credit(s) will be added automatically to the file description.</div>';
 
 		location.parent.insertBefore(wrapper, location.before);
 

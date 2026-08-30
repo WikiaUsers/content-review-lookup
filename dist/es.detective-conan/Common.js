@@ -153,3 +153,8 @@ importScriptPage('Standard_Edit_Summary/code.js', 'dev');
  
 /* chat */
 importScript('MediaWiki:Chat.js');
+
+/*plantillas de sexo*/
+document.querySelectorAll('.dc-sexo-link a').forEach(function (enlace) {
+	enlace.removeAttribute('title');
+});

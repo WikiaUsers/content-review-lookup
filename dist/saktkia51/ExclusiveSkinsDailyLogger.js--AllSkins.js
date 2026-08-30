@@ -343,6 +343,17 @@ export const skins = [
 	},
 	{
 		mainDetails:{
+			id:"sharpcherry",
+			name:"Sharp Cherry",
+			rarity:"expert",
+		},
+		otherDetails:{
+			craftable:true,
+		},
+	},
+	/*
+	{
+		mainDetails:{
 			id:"unknown-0",
 		},
 		otherDetails:{
@@ -350,4 +361,5 @@ export const skins = [
 			craftable:true,
 		},
 	},
+	*/
 ];

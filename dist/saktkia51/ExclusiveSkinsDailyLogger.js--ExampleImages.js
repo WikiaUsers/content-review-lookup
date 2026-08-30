@@ -35,4 +35,5 @@ export const exampleImages = {
 	'toothpaste':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/3/3d/Weapon_Skins_-_P90_-_Toothpaste.png/revision/latest?cb=20260615155802&format=original",
 	'nocturnal':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/6/65/Weapon_Skins_-_P90_-_Nocturnal.png/revision/latest?cb=20260616101212&format=original",
 	'takkerstails':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/7/72/Weapon_Skins_-_P90_-_Takker%27s_Tails.png/revision/latest?cb=20260720101727&format=original",
+	'sharpcherry':"https://static.wikia.nocookie.net/roblox-survive-and-kill-the-killers-in-area-51/images/4/40/Weapon_Skins_-_P90_-_Sharp_Cherry.png/revision/latest?cb=20260825052404&format=original",
 };

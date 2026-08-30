@@ -27,3 +27,48 @@ $(function() {
     });
 });
 // Fin de Modèle:Onglet
+
+/* Problème réglé : Affichage des Succès sur les Pages Utilisateurs (<br />s considérés comme du texte au lieu d'être un élément HTML) - Par LucyKuranSKYDOME */
+function fixBadgeBreaks(root = document) {
+    root.querySelectorAll('.profile-hover-text p').forEach(function (paragraph) {
+        const walker = document.createTreeWalker(
+            paragraph,
+            NodeFilter.SHOW_TEXT
+        );
+
+        const nodes = [];
+
+        while (walker.nextNode()) {
+            nodes.push(walker.currentNode);
+        }
+
+        nodes.forEach(function (node) {
+            node.nodeValue = node.nodeValue.replace(
+                /\s*<br\s*\/?>\s*/gi,
+                ' '
+            );
+        });
+    });
+}
+
+fixBadgeBreaks();
+
+new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+        mutation.addedNodes.forEach(function (node) {
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+                return;
+            }
+
+            if (node.matches('.profile-hover-text')) {
+                fixBadgeBreaks(node.parentNode);
+            } else if (node.querySelector('.profile-hover-text')) {
+                fixBadgeBreaks(node);
+            }
+        });
+    });
+}).observe(document.body, {
+    childList: true,
+    subtree: true
+});
+/**/

@@ -4,3 +4,6 @@ window.DisplayClockJS = {
     interval: 500,
     offset: 0
 };
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

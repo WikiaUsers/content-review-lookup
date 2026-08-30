@@ -167,3 +167,39 @@
         });
     });
 })(mediaWiki, jQuery);
+/* Automated External Database Score Loader */
+mw.hook('wikipage.content').add(function($content) {
+    var $scoreElements = $content.find('.DynamicUserScore');
+    if (!$scoreElements.length) return;
+
+    var currentActiveViewer = mw.config.get('wgUserName');
+    if (!currentActiveViewer) {
+        $scoreElements.text("0");
+        return;
+    }
+
+    // 1. Fetch your custom template text database via the MediaWiki API
+    $.getJSON(mw.util.wikiScript('api'), {
+        action: 'query',
+        prop: 'revisions',
+        titles: 'Template:UserScoreRegistry',
+        rvprop: 'content',
+        rvslots: 'main',
+        format: 'json'
+    }).done(function(data) {
+        try {
+            var pageId = Object.keys(data.query.pages)[0];
+            var rawContent = data.query.pages[pageId].revisions[0].slots.main['*'];
+            
+            // 2. Parse the list you edit into an active JavaScript array
+            var masterScoreRegistry = JSON.parse(rawContent);
+            var finalEvaluatedValue = masterScoreRegistry[currentActiveViewer] || "0";
+            
+            // 3. Automatically output the flat number string anywhere you put the class
+            $scoreElements.text(finalEvaluatedValue);
+        } catch (e) {
+            console.error("Score Registry Parse Error:", e);
+            $scoreElements.text("0");
+        }
+    });
+});

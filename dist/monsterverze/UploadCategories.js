@@ -15,7 +15,7 @@
 		{ value: 'Face Images', label: 'Face Images' },
 		{ value: 'Accessory Images', label: 'Accessory Images' },
 		{ value: 'Top Images', label: 'Top Images' },
-		{ value: 'Full Outfit Images', label: 'Full Outfit Images' },
+		{ value: 'Sets', label: 'Sets' },
 		{ value: 'Arm Images', label: 'Arm Images' },
 		{ value: 'Bottom Images', label: 'Bottom Images' },
 		{ value: 'Footwear Images', label: 'Footwear Images' },

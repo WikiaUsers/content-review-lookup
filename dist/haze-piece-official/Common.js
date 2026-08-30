@@ -84,6 +84,18 @@ $(document).ready(function () {
         	location: 'Land Of Gods',
         	buffs: '+3000 Health +2 Observation Haki +10% All Damage'
         }},
+        {name: 'Gravity Gauntlet', Rarity: 'Mythical', Sea: 3, image: 'Gravity Gauntlet.png', level: '4650+', source: 'Boss Drop', description: 'A pair of Gauntlets extremely op for Melee users!', obtainment: {method: 'Drop',
+        	cost: 'N/A',
+        	npc: 'Saturn Super-Boss',
+        	location: 'EggHead Island',
+        	buffs: '+400 Stamina & +3 SkyWalk'
+        }},
+        {name: 'Emperor Cape', Rarity: 'Mythical', Sea: 3, image: 'Emperor Cape.png', level: '4800+', source: 'Boss Drop', description: 'A pair of Gauntlets extremely op for Melee users!', obtainment: {method: 'Drop',
+        	cost: 'N/A',
+        	npc: 'The Red Emperor Super-Boss',
+        	location: 'Land Of Gods',
+        	buffs: 'All DMG: +7.5%, Stamina: +200, Obs Haki: +1'
+        }},
         {name: 'Dominus Messor', Rarity: 'Mythical', Sea: 3, image: 'Dominus_Messor.png', level: '4200+', source: 'Crafting', description: 'The grand crown of the harvest reaper.', obtainment: {method: 'crafted',
         	cost: 'Unreleased',
         	npc: 'Doran The Forge',
@@ -276,6 +288,11 @@ $(document).ready(function () {
         {name: 'Dark Blade', Rarity: 'Mythical', Sea: 3, image: 'DarkBlade.png', level: '4200', source: 'Shop', type: 'Sword', description: 'A blade forged in darkness. It absorbs the life force of its enemies.', obtainment: {method: 'crafted',
         	cost: 'Unreleased',
         	npc: 'Doran The Forge',
+        	location: 'Land Of Gods'
+        }},
+        {name: 'Gryphon', Rarity: 'Mythical', Sea: 3, image: 'Gryphon.png', level: '4800', source: 'Red Emperor Super-Boss', type: 'Sword', description: 'A blade forged in the pits of Hell. It erases the life force of its enemies.', obtainment: {method: 'BossDrop',
+        	cost: 'N/A',
+        	npc: 'The Red Emperor Super-Boss',
         	location: 'Land Of Gods'
         }},
         {name: 'Katana', Rarity: 'Common', Sea: 1, image: 'Katana.png', level: '10+', source: 'Bandit Leader', type: 'Sword', description: 'A blade forged by an aspiring blacksmith.', obtainment: {method: 'Shop',
@@ -1450,7 +1467,7 @@ mw.hook('wikipage.content').add(function($content) {
             rarity: 'Common',
             sea: 'First Sea',
             desc: 'A powerful fighting style that channels the power of legs into devastating close-range fast paced attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/41/Black_Leg_Icon.png/revision/latest/scale-to-width-down/600?cb=20260628195316', 
             mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
             reqs: { 
@@ -1491,7 +1508,7 @@ mw.hook('wikipage.content').add(function($content) {
             rarity: 'Rare',
             sea: 'Second Sea',
             desc: 'A powerful fighting style that channels the power of machinery into devastating close/Mid/Long Range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/45/Cyborg_V1.png/revision/latest/scale-to-width-down/600?cb=20260628204419', 
             mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/52/Cyborg_Stance.webp/revision/latest?cb=20260704143900', 
             reqs: { 
@@ -1527,7 +1544,7 @@ mw.hook('wikipage.content').add(function($content) {
             rarity: 'Rare',
             sea: 'Second Sea',
             desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2a/Electro_V1.png/revision/latest/scale-to-width-down/600?cb=20260628205651', 
             mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2b/ElectroStance.Webp/revision/latest?cb=20260704165355', 
             reqs: { 
@@ -1563,7 +1580,7 @@ mw.hook('wikipage.content').add(function($content) {
             rarity: 'Uncommon',
             sea: 'Second Sea',
             desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/50/Fishman_Karate_V1.png/revision/latest/scale-to-width-down/600?cb=20260628210418', 
             mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/0a/FishmanStance.Webp/revision/latest?cb=20260704165236', 
             reqs: { 
@@ -1599,7 +1616,7 @@ mw.hook('wikipage.content').add(function($content) {
             rarity: 'Legendary',
             sea: 'Third Sea',
             desc: 'A powerful fighting style that channels the power of dragons into devastating close-range attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a2/Fishman_Karate_V2.png/revision/latest/scale-to-width-down/600?cb=20260628210626', 
             mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/0/0a/FishmanStance.Webp/revision/latest?cb=20260704165236', 
             reqs: { 
@@ -1635,7 +1652,7 @@ mw.hook('wikipage.content').add(function($content) {
             rarity: 'Rare',
             sea: 'Second Sea',
             desc: 'A powerful fighting style that channels the power of dragons into devastating close-mid-long-ranged attacks.',
-            // UPDATE THESE URLS WITH YOUR UPLOADED WIKI IMAGES
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/3c/Dragon_Claw_V1.png/revision/latest/scale-to-width-down/600?cb=20260628211114', 
             mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/b8/DragonClawStance.webp/revision/latest?cb=20260704165046', 
             reqs: { 
@@ -1665,6 +1682,155 @@ mw.hook('wikipage.content').add(function($content) {
                 }
             ]
         },
+        {
+            id: 'Cyborg-V2',
+            name: 'Cyborg V2',
+            rarity: 'Rare',
+            sea: 'Third Sea',
+            desc: 'A powerful fighting style that channels the power of Mechanics into devastating close-mid-long-ranged attacks.',
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/45/Cyborg_V1.png/revision/latest/scale-to-width-down/600?cb=20260628204419', 
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/52/Cyborg_Stance.webp/revision/latest?cb=20260704143900', 
+            reqs: { 
+                money: { val: '$5000000', icon: '💸' }, 
+                gems: { val: 'N/A', icon: '💎' }, 
+                mastery: { val: '300', icon: '⚔️' }, 
+                materials: { val: '2x Saturn Rings', icon: '🎃' },
+                level: {val: 'N/A', icon: '✊'}
+            },
+            obtain: 'Must speak to the Sage Of Combat in Land Of Gods (3rd Sea) and have the Style equipped + at 300 Mastery!',
+            availability: ['Third Sea'],
+            moves: [
+                {
+                    key: 'Z', name: 'Radical Smash', tags: ['Damage', 'Movement', 'AoE'],
+                    desc: 'Rush forward with incredible speed and strike the enemy with a powerful Lightning-infused punch.',
+                    mastery: 0, gif: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWozaTVhdHZnNmJsaXp5ZnZ0OTV0aHlzdXdkZzE2NjAycDhzMGFjNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zuqnVajNiblDwjCiZv/giphy.gif' // Direct GIF link
+                },
+                {
+                    key: 'X', name: 'Radical Beam', tags: ['Damage', 'Projectile'],
+                    desc: 'Let forth massive Heat Beam which burns affected targets.',
+                    mastery: 25, gif: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDN3azNkczM3bmt0NWc0ampnMHl4ZzEwc3pkMGhmbHZxY2ZpNzU0NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ROkqOhFpn1hluOR6vN/giphy.gif'
+                },
+                {
+                    key: 'C', name: 'Radical Barrage', tags: ['Damage', 'Barrage'],
+                    desc: 'Rush forward with incredible speed, effectively damaging them over time while briefly stunning.',
+                    mastery: 50, gif: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHF4eXY3czBlcDF4bzA3ZzhvZmUyeXJqMzZneHp6NmJ0aTRsN3UwZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N0UR62wgDBNgUlrIu3/giphy.gif'
+                }
+            ]
+        },
+        {
+            id: 'Electro V2',
+            name: 'Electro V2',
+            rarity: 'Legendary',
+            sea: 'Third Sea',
+            desc: 'A powerful fighting style that channels the power of Lightning into devastating close-mid-long-ranged attacks.',
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2a/Electro_V1.png/revision/latest/scale-to-width-down/600?cb=20260628205651', 
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2b/ElectroStance.Webp/revision/latest?cb=20260704165355', 
+            reqs: { 
+                money: { val: '$0', icon: '💸' }, 
+                gems: { val: '500', icon: '💎' }, 
+                mastery: { val: '300', icon: '⚔️' }, 
+                materials: { val: '2x Raijin Cores', icon: '🎃' },
+                level: {val: 'N/A', icon: '✊'}
+            },
+            obtain: 'Must speak to the Sage Of Combat in Land Of Gods (3rd Sea) and have the Style equipped + at 300 Mastery!',
+            availability: ['Third Sea'],
+            moves: [
+                {
+                    key: 'Z', name: 'Electrifying Tackle', tags: ['Damage', 'Movement'],
+                    desc: 'Rush forward with incredible speed and drag the enemy with powerful Lightning-infused Strikes.',
+                    mastery: 0, gif: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3plaHRzOGd0NzNzNWRjYWNxYWp3MXA1dXJzaGVyb2lhamRnamw0MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5iJoFJjekAiPVlsDaI/giphy.gif' // Direct GIF link
+                },
+                {
+                    key: 'X', name: 'Electro Thunderclap', tags: ['Damage', 'Movement', 'Barrage'],
+                    desc: 'Teleport forth tackling targets in the way and perform a barrage of attacks stunning them briefly.',
+                    mastery: 25, gif: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDZnajAybGFieDVsbGc0eW8xbDJ6OXV4ZHd2bzBxejF4anRsOGliYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rE1Lr105O060kj00yI/giphy.gif'
+                },
+                {
+                    key: 'C', name: 'Lightning Beast Barrage', tags: ['Damage', 'AoE', 'Projectile'],
+                    desc: 'Charge lightning into both fists and let them forth consecutively causing various explosion impacts in the impacted area.',
+                    mastery: 50, gif: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWs2YTh4c2tuYWZlNGs0bWhrdmJ5cDc2OXR4OHRiY3czaDVibDJsciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CRrt1ENuPyeIRJJVsG/giphy.gif'
+                }
+            ]
+        },
+        {
+            id: 'Dragon-Clawn-V2',
+            name: 'Dragon Claw V2',
+            rarity: 'Legendary',
+            sea: 'Third Sea',
+            desc: 'A powerful fighting style that channels the power of Dragons into devastating close ranged attacks.',
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/3/3c/Dragon_Claw_V1.png/revision/latest/scale-to-width-down/600?cb=20260628211114', 
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/b/b8/DragonClawStance.webp/revision/latest?cb=20260704165046', 
+            reqs: { 
+                money: { val: '$0', icon: '💸' }, 
+                gems: { val: '250', icon: '💎' }, 
+                mastery: { val: '300', icon: '⚔️' }, 
+                materials: { val: '2x Dragon Hearts', icon: '🎃' },
+                level: {val: 'N/A', icon: '✊'}
+            },
+            obtain: 'Must speak to the Sage Of Combat in Land Of Gods (3rd Sea) and have the Style equipped + at 300 Mastery!',
+            availability: ['Third Sea'],
+            moves: [
+                {
+                    key: 'Z', name: 'Dragonic Kick', tags: ['Damage', 'Movement', 'Aoe'],
+                    desc: 'User Dashes forth with incredible speed dragging the enemy causing an impact that which target away.',
+                    mastery: 0, gif: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb202bThrbm15YzdyYXBwbncwanltOGpha2ttenU4OXlpMmZjcXlvcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xQ1dUaT89kzZ7CSZ60/giphy.gif' // Direct GIF link
+                },
+                {
+                    key: 'X', name: 'Dragonic Flames', tags: ['Damage', 'Projectile', 'Barrage'],
+                    desc: 'User foams blue flames in the mouth preparing to blow them forth in a rapid succession dealing insane amounts of burn damage.',
+                    mastery: 25, gif: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExazZlMHJhaHB0Zm4zZTR4bzV0bWY3cXZmbmYyeDhhcmR1Z2dxeTBnaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Bn7U2OCQBRxhi7hY3O/giphy.gif'
+                },
+                {
+                    key: 'C', name: 'Dragonic Vortex', tags: ['Damage', 'AoE'],
+                    desc: "User releases blue flames reeling in anyone who's caught while simultaneously dealing insane amounts of burn damage further accumulating heat and releasing them forth all at once causing an massive explosion.'",
+                    mastery: 50, gif: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenJpZjI4Nnc1N3JuOHZibnNnZW8wMjllNnl5MGhzOXc4Njh0cTU3diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wX07cJ2dZjmM1OOAHq/giphy.gif'
+                }
+            ]
+        },
+        {
+            id: 'Black-Leg-V2',
+            name: 'Black Leg V2',
+            rarity: 'Legendary',
+            sea: 'Third Sea',
+            desc: 'A powerful fighting style that channels all power to the Legs unleashing their full potential.',
+            // UPDATE THESE URLS WITH THE UPLOADED WIKI IMAGES
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/41/Black_Leg_Icon.png/revision/latest/scale-to-width-down/600?cb=20260628195316', 
+            mainImage: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d5/Black_leg_Nova.png/revision/latest?cb=20260628194246', 
+            reqs: { 
+                money: { val: '$5000000', icon: '💸' }, 
+                gems: { val: '0', icon: '💎' }, 
+                mastery: { val: '300', icon: '⚔️' }, 
+                materials: { val: '2x Phantom Lanterns', icon: '🎃' },
+                level: {val: 'N/A', icon: '✊'}
+            },
+            obtain: 'Must speak to the Sage Of Combat in Land Of Gods (3rd Sea) and have the Style equipped + at 300 Mastery!',
+            availability: ['Third Sea'],
+            moves: [
+                {
+                    key: 'Z', name: 'Demonic Crash', tags: ['Damage', 'Movement', 'AoE'],
+                    desc: 'User Dashes forth with incredible speed causing a massive explosion within the affected area.',
+                    mastery: 0, gif: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHFxd2M3ZHJjcHJsMWtzdnNqZzI3OGtzMWxndGczbmkyeHE3NGN0ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SNMxzDJK2b6t72AtiI/giphy.gif' // Direct GIF link
+                },
+                {
+                    key: 'X', name: 'Tempest Whirlwind', tags: ['Damage', 'Movement', 'Stun'],
+                    desc: 'The user spins rapidly on their hands, kicking all nearby enemies in a wide circle while moving freely across the battlefield..',
+                    mastery: 25, gif: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R4c2NuanF4bDExZ24zOGQ1NXIwMmp2MDJia2NoMmY3cXFhdmp5eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pGMSht3Y5UZWdRHaMt/giphy.gif'
+                },
+                {
+                    key: 'C', name: 'Stampede', tags: ['Damage','Movement', 'Barrage'],
+                    desc: "The user launches forward instantly like a teleport, reappearing in front of the target to unleash a rapid-fire barrage of high-speed kicks.'",
+                    mastery: 50, gif: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGFhNGwzZmZwOXg0aGZ5c3lvNGN4ZjNvZXY4cGtodjh6bnFxczl0cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2IgPj2nDd8Vi5KmAvm/giphy.gif'
+                },
+                {
+                    key: 'V', name: 'Azure Inferno', tags: ['Awakening', 'AoE'],
+                    desc: "The user spins rapidly on one leg to ignite their foot with intense friction heat, triggering a fiery explosion that damages and burns all surrounding enemies.'",
+                    mastery: 75, gif: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWFrN2U5YjR1M2tjOGwxa3Fha3VhYXRucWM3dnc0NWxwMnNwemNnbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pQPm4jllcWPrD2RgOZ/giphy.gif'
+                }
+            ]
+        }
     ];
 
     const baseUI = `
@@ -1833,7 +1999,7 @@ mw.hook('wikipage.content').add(function($content) {
             level: 3000,
             image: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/SeaBeast.png/revision/latest/scale-to-width-down/681?cb=20260705203945',
             icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/ff/SeaBeast.png/revision/latest/scale-to-width-down/681?cb=20260705203945',
-            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Second Sea', class: 'tag-blue' }],
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
             desc: 'The notorious predator of the Seas!',
             stats: { atk: '2344', hp: '227,708', recLevel: '3000+' },
             location: 'Anywhere in the ocean.',
@@ -2604,6 +2770,146 @@ mw.hook('wikipage.content').add(function($content) {
             about: 'Loves to poison others.',
             tips: ['Not needed!']
         },
+        {
+            id: 'Leopard-Boss',
+            name: 'Leopard Boss',
+            sea: 3,
+            level: '4450',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2f/Leopard_Boss.png/revision/latest?cb=20260825160816',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2f/Leopard_Boss.png/revision/latest?cb=20260825160816',
+            tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '1390', hp: '63.249', recLevel: '4350+' },
+            location: 'Land Of Gods Island',
+            respawn: '20 Seconds.',
+            drops: [{name: 'N/A'}],
+            rewards: { money: '14,870', Exp: '204.349.930'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'Raigo-Boss',
+            name: 'Raigo Boss',
+            sea: 3,
+            level: '4600',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/15/Raigo_Priest.png/revision/latest/scale-to-width-down/800?cb=20260825161126',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/1/15/Raigo_Priest.png/revision/latest/scale-to-width-down/800?cb=20260825161126',
+            tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '1437', hp: '65.376', recLevel: '4600+' },
+            location: 'Sky Island 3rd Sea',
+            respawn: '20 Seconds.',
+            drops: [{name: 'N/A'}],
+            rewards: { money: '15,350', Exp: '218.278.432'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'Control-Sentinel-Boss',
+            name: 'Control Sentinel Boss',
+            sea: 3,
+            level: '4750',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/58/Control_Sentinel.png/revision/latest?cb=20260825161530',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/5/58/Control_Sentinel.png/revision/latest?cb=20260825161530',
+            tags: [{ label: 'Normal Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '1437', hp: '67.502', recLevel: '4750+' },
+            location: 'EggHead Island',
+            respawn: '20 Seconds.',
+            drops: [{name: 'N/A'}],
+            rewards: { money: '15,850', Exp: '232.660.964'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'Dragon-Hybrid-Boss',
+            name: 'Dragon Hybrid Boss',
+            sea: 3,
+            level: '5000',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d2/Dragon_Hybrid_Boss.png/revision/latest?cb=20260825162122',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d2/Dragon_Hybrid_Boss.png/revision/latest?cb=20260825162122',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '1419', hp: '378.908', recLevel: '4800+' },
+            location: 'Land Of Gods Island',
+            respawn: '',
+            respawnmethod: "Kill 1000 Npc's on Land Of God's Island and then Blow Trumpet, else, You can guarantee 1 from a random chest on the very same island once Every 4 Hours and blow the Trumpet once again!",
+            drops: [{name: 'Dragon Heart', Rarity: 'Mythical', amount: '1x', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/fc/Dragon_Heart.png/revision/latest?cb=20260825150939', chance: '100%'}, {name: 'Blade Fragment', Rarity: 'Legendary', amount: '1x', img: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/28/Blade_Fragments.png/revision/latest?cb=20260825145528', chance: '10%'}],
+            rewards: { money: '50,000', Exp: '2x your amount of Levels', Gems: '50'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'The-Red-Emperor-Boss',
+            name: 'The Red Emperor Super-Boss',
+            sea: 3,
+            level: '9000',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a0/The_Red_Emperor.png/revision/latest?cb=20260825163127',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/a0/The_Red_Emperor.png/revision/latest?cb=20260825163127',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '2553', hp: '681.308', recLevel: '4800+' },
+            location: 'Land Of Gods Island',
+            respawn: '',
+            respawnmethod: "Spawns every 4h at Throne Room - reduced by 10 minutes for each superboss that is killed world wide. max reduction = 2 hours.",
+            drops: [{name: '2x Blade Fragments', rarity: 'Legendary', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/28/Blade_Fragments.png/revision/latest?cb=20260825145528', chance: '100%'}, {name: 'Emperor Cape', rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/4/44/Emperor_Cape.png/revision/latest?cb=20260825164130', chance: '25%'}, {name: 'Gryphon', rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/2f/Gryphon.png/revision/latest?cb=20260825163951', chance: '10%'}],
+            rewards: { money: '50,000', Exp: '2x your current level', Gems: '100'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'Saturn-Boss',
+            name: 'Saturn Super-Boss',
+            sea: 3,
+            level: '7000',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/26/Saturn_Boss.png/revision/latest/scale-to-width-down/715?cb=20260825165221',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/26/Saturn_Boss.png/revision/latest/scale-to-width-down/715?cb=20260825165221',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '2553', hp: '530.108', recLevel: '4800+' },
+            location: 'EggHead Island',
+            respawn: '1H & 15 Minutes!',
+            drops: [{name: 'Saturn Ring', rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/ac/Saturn_Mat.png/revision/latest?cb=20260825151926', chance: '100%'}, {name: 'Gravity Gauntlet', rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/f/fe/Gravity_Gauntlet.png/revision/latest?cb=20260825165919', chance: '15%'}, {name: 'Blade Fragment', rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/28/Blade_Fragments.png/revision/latest?cb=20260825145528', chance: '10%'}],
+            rewards: { money: '50,000', Exp: '2x your current level', Gems: '50'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'Raijin-Boss',
+            name: 'Raijin Super-Boss',
+            sea: 3,
+            level: '5000',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/77/Raijin_Super_Boss.png/revision/latest?cb=20260825172424',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/7/77/Raijin_Super_Boss.png/revision/latest?cb=20260825172424',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '2553', hp: '378.908', recLevel: '4800+' },
+            location: 'Sky Island 3rd Sea',
+            respawn: '',
+            respawnmethod: "All Rainbow Sky Island NPCs have a 0.5% chance to drop a Divine Spark Collect 4. Place one spark into each of the 4 Lightning Pillars scattered across Rainbow Sky Island. Display 4/4 Pillars Charged text on each pillar to track progress. Once all four pillars are charged, VFX will play connecting all four pillars together. Thunder starts striking the charged pillars. A giant lightning bolt crashes into the spawn zone, spawning the superboss. Cooldown of 1 hour before these pillars can be charged again. This prevents AFK people and exploiters from abusing it.",
+            drops: [{name: "Raijin's Core", rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/aa/Raijin_Core.png/revision/latest?cb=20260825151146', chance: '100%'}, {name: 'Blade Fragment', rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/2/28/Blade_Fragments.png/revision/latest?cb=20260825145528', chance: '10%'}],
+            rewards: { money: '50,000', Exp: '2x your current level', Gems: '50'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        },
+        {
+            id: 'Chutulu-Boss',
+            name: 'Chutulu Super-Boss',
+            sea: 3,
+            level: '10000',
+            image: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d3/Chutulu_Boss.png/revision/latest/scale-to-width-down/800?cb=20260825173109',
+            icon: 'https://static.wikia.nocookie.net/haze-piece-official/images/d/d3/Chutulu_Boss.png/revision/latest/scale-to-width-down/800?cb=20260825173109',
+            tags: [{ label: 'Super Boss', class: 'tag-green' }, { label: 'Third Sea', class: 'tag-blue' }],
+            desc: 'Persists to kill all around him.',
+            stats: { atk: '7020', hp: '1.134.908', recLevel: '4800+' },
+            location: 'Sky Island 3rd Sea',
+            respawn: '',
+            respawnmethod: "Cthulu Spawned via prismatic shard during the storm window [every 2H 35M].",
+            drops: [{name: "Abyssal Eye", rarity: 'Mythical', amount: 'x1',img: 'https://static.wikia.nocookie.net/haze-piece-official/images/a/ab/Abyssal_Eye.png/revision/latest?cb=20260825150624', chance: '100%'}, {name: 'Abyssal Haki Color', rarity: 'Mythical', amount: 'x1', chance: '10%'}, {name: 'Guaranteed Leg+ Devil Fruit (Deal most Damage - 80% Legendary/20% Mythical Drop Chance)', rarity: 'Legendary', amount: 'x1', chance: '100%'}],
+            rewards: { money: '50,000', Exp: '2x your current level', Gems: '50'},
+            about: 'Loves to pummel strong opponents.',
+            tips: ['Not needed!']
+        }
     ];
 
     // --- STATE VARIABLES ---
@@ -3612,7 +3918,7 @@ mw.hook('wikipage.content').add(function($content) {
         <!-- HEADER -->
         <div class="tr-header">
             <div class="tr-header-left">
-                <img src="https://static.wikia.nocookie.net/haze-piece-official/images/e/e8/Shrine.png/revision/latest/scale-to-width-down/800?cb=20260706001441" alt="Shrine" class="tr-header-icon">
+                <img src="https://static.wikia.nocookie.net/haze-piece-official/images/e/e8/Shrine.png/revision/latest?cb=20260825175550">
                 <div class="tr-header-info">
                     <h2>Treasure Shrine Raid</h2>
                     <span class="tr-badge-sea">SEA 2</span>
@@ -4040,10 +4346,23 @@ $(function() {
     // 2. Material Data Array
     const materials = [
         { name: "Presents", sea: "any", rarity: "common", desc: "An old box of presents.", obtain: "Holiday Event", img: "https://static.wikia.nocookie.net/haze-piece-official/images/3/33/PresentIcon.png/revision/latest?cb=20260815000659" },
-        { name: "Green Crystal", sea: "1", rarity: "uncommon", desc: "A small crystal fragment.", obtain: "Shamans (Lv. 50+)", img: "https://via.placeholder.com/60" },
-        { name: "Mystic Orb", sea: "2", rarity: "rare", desc: "An orb filled with energy.", obtain: "Sky Priests (Lv. 150+)", img: "https://via.placeholder.com/60" },
-        { name: "Dragon Scale", sea: "2", rarity: "legendary", desc: "A scale shed by a dragon.", obtain: "Dragon Boss (Lv. 1000+)", img: "https://via.placeholder.com/60" },
-        { name: "Abyssal Core", sea: "3", rarity: "mythical", desc: "The core of abyssal energy.", obtain: "Leviathan (Super Boss)", img: "https://via.placeholder.com/60" }
+        { name: "Hearts", sea: "any", rarity: "common", desc: "Used for Valentine's Event", obtain: "Via any Npc's killed during Valentine's Event", img: "https://static.wikia.nocookie.net/haze-piece-official/images/2/26/Hearts.png/revision/latest?cb=20260825144405" },
+        { name: "Candy", sea: "Any", rarity: "common", desc: "Sweets used for a Halloween Event.", obtain: "Killing any Npc during Halloween Event", img: "https://static.wikia.nocookie.net/haze-piece-official/images/1/1c/Candy.png/revision/latest?cb=20260825144708" },
+        { name: "Doughnuts", sea: "2", rarity: "common", desc: "Used to unlock Mirror World!", obtain: "Defeating any NPC's on Peanut, Cake & Dough Island's", img: "https://static.wikia.nocookie.net/haze-piece-official/images/2/25/DoughNut.png/revision/latest?cb=20260825144926" },
+        { name: "Blade Fragment", sea: "3", rarity: "legendary", desc: "Used to craft Ancient Blade Relics (Must combine 5)!", obtain: "10% drop from any sea 3 superboss", img: "https://static.wikia.nocookie.net/haze-piece-official/images/2/28/Blade_Fragments.png/revision/latest?cb=20260825145528" },
+        { name: "Shrine Relic", sea: "2", rarity: "legendary", desc: "Unlocks Max Observation Haki!", obtain: "100% Boss Drop from Shrine Event", img: "https://static.wikia.nocookie.net/haze-piece-official/images/5/5b/Shrine_Relic.png/revision/latest?cb=20260825145728" },
+        { name: "Hydra Venom Core", sea: "3", rarity: "legendary", desc: "N/A", obtain: "N/A", img: "https://static.wikia.nocookie.net/haze-piece-official/images/5/56/Hydra_Venom_Core.png/revision/latest?cb=20260825145812" },
+        { name: "Mirror Fragment", sea: "2", rarity: "legendary", desc: "A Fragment used to unlock Mirror World!", obtain: "2.5% Boss Drop from Big Mom Boss on Cake Island", img: "https://static.wikia.nocookie.net/haze-piece-official/images/8/8c/Mirror_Fragment.png/revision/latest?cb=20260825150011" },
+        { name: "G4 Book", sea: "1", rarity: "legendary", desc: "An Old book used to awaken G4th!", obtain: "5% Boss Drop from G4 Boss", img: "https://static.wikia.nocookie.net/haze-piece-official/images/5/57/Gear4Book.png/revision/latest?cb=20260825150227" },
+        { name: "Abyssal Eye", sea: "3", rarity: "mythical", desc: "A Grimy eye, can be used to Unlock Dual Dark Blade/Free Dark Blade, Race V3 & Craft Abyssal Necklace!", obtain: "Chutulu Boss Drop", img: "https://static.wikia.nocookie.net/haze-piece-official/images/a/ab/Abyssal_Eye.png/revision/latest?cb=20260825150624" },
+        { name: "Dragon Heart", sea: "3", rarity: "mythical", desc: "A Dragon's Heart, used to awaken Dragon Claw Fighting Style & Dragon Hybrid!", obtain: "100% Drop from Hybrid Dragon Boss ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/f/fc/Dragon_Heart.png/revision/latest?cb=20260825150939" },
+        { name: "Raijin Core", sea: "3", rarity: "mythical", desc: "A Mighty Presence's Core, used to awaken Electro Fighting Style and Fruit!", obtain: "100% Drop from Raijin Super-Boss ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/a/aa/Raijin_Core.png/revision/latest?cb=20260825151146" },
+        { name: "SeaBeast Heart", sea: "2 & 3", rarity: "mythical", desc: "Used to Evolve Sea Beast Armor and Fishman Fighting Style", obtain: "25% Drop from Sea2-3 Sea Beasts! ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/7/74/SeaBeast_Heart_Og.png/revision/latest?cb=20260825151529" },
+        { name: "Phantom Lantern", sea: "3", rarity: "mythical", desc: "Used to Evolve Black Leg & Craft Dominus Messor at Doran!", obtain: "100% Ghost Ship Drop! ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7c/Phantom_Lantern.png/revision/latest?cb=20260825151649" },
+        { name: "Saturn's Ring", sea: "3", rarity: "mythical", desc: "Used to evolve Cyborg Fighting Style!", obtain: "100% Saturn Boss Drop! ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/a/ac/Saturn_Mat.png/revision/latest?cb=20260825151926" },
+        { name: "Prismatic Shard", sea: "3", rarity: "mythical", desc: "Used to Spawn Chutulu, Craft Rainbow Title and Rainbow Haki Quest!", obtain: "Crafting at Doran the Forge (5 Different Materials)! ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/5/56/Prismatic_Shard.png/revision/latest?cb=20260825152113" },
+        { name: "Ancient Blade Relic", sea: "3", rarity: "mythical", desc: "Used to Evolve 3SS and Obtain Dual Dark Blade!", obtain: "Bought from Wandering Merchant & Craftable at Doran! ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/3/37/Ancient_Blade_Relic.png/revision/latest?cb=20260825152154" },
+        { name: "Drums Of Liberation", sea: "2", rarity: "mythical", desc: "Used to Awaken Gear 5th", obtain: "100% Boss Drop from Dragon Super_Boss (Sea2)! ", img: "https://static.wikia.nocookie.net/haze-piece-official/images/7/7f/Drums_Of_Liberation.png/revision/latest?cb=20260825152358" }
     ];
 
     const itemGrid = document.getElementById("itemGrid");
@@ -4118,9 +4437,12 @@ $(function() {
             const cardName = card.dataset.name.toLowerCase();
             const cardSea = card.dataset.sea;
             const cardRarity = card.dataset.rarity;
+            const cardSeas = cardSea.split(/[\s&,]+/).map(s => s.trim());
 
             const matchesSearch = cardName.includes(searchTerm);
-            const matchesSea = (selectedSea === "all") || (cardSea === "any") || (cardSea === selectedSea);
+            const matchesSea = (selectedSea === "all") || 
+                   (cardSea === "any") || 
+                   cardSeas.includes(selectedSea);
             const matchesRarity = (currentRarity === "all") || (cardRarity === currentRarity);
 
             if (matchesSearch && matchesSea && matchesRarity) {

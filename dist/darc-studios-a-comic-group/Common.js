@@ -1,0 +1,1 @@
+alert("DARC JS WORKS!");

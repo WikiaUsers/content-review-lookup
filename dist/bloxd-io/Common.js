@@ -35,6 +35,7 @@ function replaceTitles() {
         "Pumpkin placeholder": "Pumpkin_placeholder",
         "Pumpkin Placeholder": "Pumpkin_placeholder",
         "Cherry Door Top": "_Cherry Door Top"
+        "Iceloaf": "iceloaf",
     };
 
     document.querySelectorAll("*").forEach(el => {
@@ -56,6 +57,7 @@ function replaceTitles() {
         .replace(/Cherry Door Top/g, "_Cherry Door Top")
         .replace(/\bTemp\b/g, "temp")
         .replace(/\bStaging.bloxd.io\b/g, "staging.bloxd.io");
+        .replace(/\bIceloaf\b/g, "iceloaf")
 }
 
 replaceTitles();

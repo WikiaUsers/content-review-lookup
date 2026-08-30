@@ -3,7 +3,7 @@
 
 (function() {
 	"use strict";
-	
+
 	function localLoader(title) {
 		const baseURL = 'https://saktkia51.fandom.com/index.php';
 		const params = new URLSearchParams({
@@ -14,39 +14,35 @@
 		return mw.loader.getScript(`${baseURL}?${params}`);
 	};
 	// [ Basic Functions ]
-	// Adds some common functions.
+	// Adds some common functions to the environment. Required before anything else is loaded.
 	localLoader('MediaWiki:BasicFunctions.js')
-	.then(function() {
+	.then(() =>{
 	// [ Staff ]
 	// Small stuff pertaining to Wiki Staff.
-	return localLoader('MediaWiki:Staff.js');
-	
-	}).then(function() {
+	localLoader('MediaWiki:Staff.js');
+
 	// [ User Page Notice ]
 	// Script for adding a notice to user sub-pages that the current page is not a main wiki article.
-	return localLoader('MediaWiki:UserPageNotice.js');
-	
-	}).then(function() {
+	localLoader('MediaWiki:UserPageNotice.js');
+
 	// [ Default Upload Summary ]
 	// Set a default value for file upload summaries on Special:Upload. Also allows the user to define a custom summary that applies to all uploads on the page.
-	return localLoader('MediaWiki:DefaultUploadSummary.js');
-	
-	}).then(function() {
+	localLoader('MediaWiki:DefaultUploadSummary.js');
+
 	// [ Main Page Search ]
 	// Adds a search box to the main page to aid unfamiliar users with usage of Special:Search.
-	return localLoader('MediaWiki:MainPageSearch.js');
-	
-	}).then(function() {
+	localLoader('MediaWiki:MainPageSearch.js');
+
 	// [ Exclusive Skins Daily Logger ]
 	// Displays the current exclusive daily skin's various info according to the browser's detected time zone.
 	// See also: https://saktkia51.fandom.com/wiki/Weapon_Skins
-	return localLoader('MediaWiki:ExclusiveSkinsDailyLogger.js');
+	localLoader('MediaWiki:ExclusiveSkinsDailyLogger.js');
 	});
 })();
 
 // ----------------------------------------------------------------------------------------------------
 // Other code
-window.BackToTopModern = true;
+globalThis.BackToTopModern = true;
 
-window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 90;
+globalThis.lockOldComments = (globalThis.lockOldComments || {});
+globalThis.lockOldComments.limit = 90;

@@ -88,6 +88,7 @@
     const mapContainer = document.getElementById('map-container');
     const playerDiv = document.getElementById('player');
     const flashOverlay = document.getElementById('flash-overlay');
+    const movementHint = document.getElementById('movement-hint');
 
     const canvas = document.createElement('canvas');
     canvas.width = MAP_W;
@@ -440,6 +441,7 @@ function setupEndAudioNearEnd() {
         if (gameOver) return;
         gameOver = true;
         Object.keys(keys).forEach(k => keys[k] = false);
+        document.querySelectorAll('.corner-btn').forEach(btn => btn.classList.add('hidden'));
         if (reason === 'reds') {
             showEndScreen('end-jiejvyi');
             playEndAudio('end-audio-container');
@@ -492,6 +494,10 @@ function checkCollision() {
         gameStartTime = performance.now();
         redDots = spawnDots(DOT_COUNT);
         initAudio();
+
+        if (movementHint) {
+           movementHint.classList.add('visible');
+        }
     }
 
     function onIntroEnded() {
@@ -553,19 +559,31 @@ function checkCollision() {
     }
 
     // ===== 事件监听 =====
-    window.addEventListener('keydown', e => {
-        if (!isGameVisible() || gameOver) return;
-        const k = e.key;
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(k)) e.preventDefault();
-        if (k === 'w' || k === 'W') keys.w = true;
-        if (k === 'a' || k === 'A') keys.a = true;
-        if (k === 's' || k === 'S') keys.s = true;
-        if (k === 'd' || k === 'D') keys.d = true;
-        if (k === 'ArrowUp') keys.ArrowUp = true;
-        if (k === 'ArrowDown') keys.ArrowDown = true;
-        if (k === 'ArrowLeft') keys.ArrowLeft = true;
-        if (k === 'ArrowRight') keys.ArrowRight = true;
-    });
+window.addEventListener('keydown', e => {
+    if (!isGameVisible() || gameOver) return;
+    const k = e.key;
+
+    // 检测是否为移动键
+    const isMoveKey = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(k);
+
+    if (isMoveKey) {
+        e.preventDefault();
+
+        // 首次按下移动键时隐藏提示
+        if (movementHint && movementHint.classList.contains('visible')) {
+            movementHint.classList.remove('visible');
+        }
+    }
+
+    if (k === 'w' || k === 'W') keys.w = true;
+    if (k === 'a' || k === 'A') keys.a = true;
+    if (k === 's' || k === 'S') keys.s = true;
+    if (k === 'd' || k === 'D') keys.d = true;
+    if (k === 'ArrowUp') keys.ArrowUp = true;
+    if (k === 'ArrowDown') keys.ArrowDown = true;
+    if (k === 'ArrowLeft') keys.ArrowLeft = true;
+    if (k === 'ArrowRight') keys.ArrowRight = true;
+});
 
     window.addEventListener('keyup', e => {
         const k = e.key;

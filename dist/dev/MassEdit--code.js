@@ -854,13 +854,43 @@
    * @returns {object} - A new <code>RegExp</code> object
    */
   main.buildRegExp = function (paramTarget, paramIsRegex, paramCaseSensitive) {
-    return new RegExp((paramIsRegex)
-      ? paramTarget // Example formatting: ([A-Z])\w+
+
+    // Declarations
+    var defaultFlags, fullPattern;
+
+    defaultFlags = (paramCaseSensitive ? "g" : "gi") + "m";
+    if (paramIsRegex) {
+
+      /*
+       * Could remove the negative lookahead and cause more caught exceptions in
+       * try...catch.
+       */
+      fullPattern = paramTarget.match(new RegExp(/\/(.*)\/([a-z]*(?!.))/));
+
+      // Example formatting: ([A-Z])\w+
+      if (!fullPattern || paramTarget[0] !== "/") {
+        return new RegExp(paramTarget, defaultFlags);
+      }
+
+      // Example formatting: /([Th]|e){2,7}.*?Seal/si
+      try {
+
+        // Automatic handling of valid flags by the environment.
+        return new RegExp(fullPattern[1], fullPattern[2]);
+
+      } catch (paramError) {
+        if (this.flags.debug) {
+          window.console.error(paramError);
+        }
+      }
+    }
+
+    return new RegExp(((RegExp.escape)
+      ? RegExp.escape(paramTarget)
       : paramTarget
         .replace(/\r/gi, "")
-        .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"),
-      ((paramCaseSensitive) ? "g" : "gi") + "m"
-    );
+        .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")),
+      defaultFlags);
   };
 
   /**

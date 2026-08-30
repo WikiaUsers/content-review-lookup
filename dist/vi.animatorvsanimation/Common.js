@@ -1,13 +1,13 @@
 /* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
 importArticles({
-    type: 'script',
+	type: 'script',
     articles: [
     	'u:dev:MediaWiki:AjaxBatchDelete/code.js',
     	'u:dev:Countdown/code.js',
     	'u:dev:MediaWiki:LastEdited/code.js',
     	'u:dev:MediaWiki:MassEdit/code.js',
-    	'u:dev:MediaWiki:UTCClock/code.js'
-    ],
+    	'u:dev:MediaWiki:UTCClock/code.js',
+	],
 });
 window.ajaxPages = [
 	"Đặc biệt:Thay đổi gần đây",

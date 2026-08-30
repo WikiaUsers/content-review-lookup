@@ -61,6 +61,7 @@ mw.loader.using([
         limit = window.dev.multiupload.options.max || -1,
         defaultlicense = window.dev.multiupload.options.defaultlicense || '',
         defaultdescription = window.dev.multiupload.options.defaultdescription || '',
+        descriptionheader = window.dev.multiupload.options.descriptionheader === '' ? '' : (window.dev.multiupload.options.descriptionheader || true),
         curFile = 0,
         progressBarWidget,
         uploadResultCount = {
@@ -225,7 +226,7 @@ mw.loader.using([
         var filename = $("#wpDestFile" + curFile).val() || files[curFile].name;
         var license = $("#wpLicense" + curFile + " option:selected").prop("title") !== "{{}}" ? "== " + mw.message('license-header').plain() + " ==\n" + $("#wpLicense" + curFile + " option:selected").prop("title") : "";
         var comment = $("#wpUploadDescription" + curFile).val() || "";
-        var description = !!comment ? ("== " + mw.message('filedesc').plain() + " ==\n" + comment) : "";
+        var description = !!comment ? ((descriptionheader === '' ? '' : ("== " + (descriptionheader == true ? mw.message('filedesc').plain() : descriptionheader) + " ==\n")) + comment) : "";
         var watch = $("#wpWatchthis" + curFile).is(":checked") ? 'watch' : 'nochange';
         var ignoreWarnings = $("#wpIgnoreWarning" + curFile).is(":checked");
         var params = {

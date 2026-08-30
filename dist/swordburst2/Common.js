@@ -1,3 +1,6 @@
+mw.loader.load('https://swordburst2.fandom.com/wiki/MediaWiki:ItemDatabase2.js?action=raw&ctype=text/javascript');
+mw.loader.load('https://swordburst2.fandom.com/wiki/MediaWiki:ItemDatabaseUI.js?action=raw&ctype=text/javascript');
+
 // CategoryCSS 
 window.categoryCSS = {
     "Market": "MediaWiki:Market.css",

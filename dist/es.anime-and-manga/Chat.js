@@ -1,1 +1,0 @@
-$(function() { $("#reproductor-chat").appendTo(".Chat"); });

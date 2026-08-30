@@ -1,229 +1,498 @@
-function timer() {
-    for (var i = 4; i > 1; i = i - 1) {
-        $('<span style="font-weight:bold;" id="chance' + i + '"></span>').prependTo('#cookpotWorkSpace');
-        $('<span style="position: relative;"><img class="hiddeningredientcookpot" id="result' + i + '"></span>').prependTo('#cookpotWorkSpace');
+(function () {
+    'use strict';
+
+    var ARROW_IMAGE_URL = 'https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru';
+
+    function selectAll(selector, root) {
+        return Array.prototype.slice.call((root || document).querySelectorAll(selector));
     }
 
-    $('<span style="font-weight:bold;" id="chance1"></span>').prependTo('#cookpotWorkSpace');
-    $('<span style="position: relative;"><img class="result-cell-cookpot" id="result1"></span>').prependTo('#cookpotWorkSpace');
-    $('<span style="position: relative;"><img id="arrowcookpot" class="cookpotarrow" src="https://vignette.wikia.nocookie.net/dont-starve/images/d/d2/Crock_Pot.png/revision/latest?cb=20130110150334&path-prefix=ru"></span>').prependTo('#cookpotWorkSpace');
-    $('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot4" onclick="cookpotDelete(3)"></span>').prependTo('#cookpotWorkSpace');
-    $('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot3" onclick="cookpotDelete(2)"></span>').prependTo('#cookpotWorkSpace');
-    $('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot2" onclick="cookpotDelete(1)"></span>').prependTo('#cookpotWorkSpace');
-    $('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot1" onclick="cookpotDelete(0)"></span>').prependTo('#cookpotWorkSpace');
-
-    $('#cpclear').attr('onclick', 'cookpotDeleteAll()');
-    $(".cookpot .inglist a").each(function() {
-        var src = $(this).children('img').attr('data-src');
-        var title = $(this).attr('title');
-        var name = $(this).children('img').attr('data-image-name');
-        name = name.replace('.png', '');
-        $(this).attr('title', name);
-        $(this).removeAttr('href');
-        $(this).removeClass('image-thumbnail image');
-        $(this).attr('onclick', 'cookpotAdd("' + title + '","' + src + '")');
-    });
-    $(".cookpot .cookpoting a").each(function() {
-        $(this).removeAttr('href');
-        $(this).removeClass('image-thumbnail image');
-    });
-    $("#foods a").each(function() {
-        var id = $(this).attr('title');
-        $(this).attr('id', id);
-        $(this).removeAttr('href');
-        $(this).removeClass('image-thumbnail image');
-    });
-    $('#description > a, #description2 > a, #description3 > a, #description4 > a').each(function() {
-        var src = $(this).children('img').attr('data-src');
-        $(this).children('img').attr('src', src);
-    });
-
-    $('#buttonds').click(function sortds() {
-        $(".ds").css({
-            "display": ""
+    function directChildImages(element) {
+        return Array.prototype.filter.call(element.children, function (child) {
+            return child.tagName === 'IMG';
         });
-        $(".rog, .sw, .h, .dst, .warlydst").css({
-            "display": "none"
-        });
-        $("#buttonds").addClass("buttoncb");
-        $("#buttonrog, #buttonsw, #buttonh, #buttondst").removeClass("buttoncb");
-        cookpotDeleteAll();
-        dlc = 'DS';
-    });
+    }
 
-    $('.result-cell-cookpot').click(function _() {
-        if (event.ctrlKey == true) {
-            var href = $(this).attr('href');
-            if (href != undefined) {
-                window.open(href, '_blank');
+    function callGlobalFunction(name) {
+        var fn = window[name];
+        var args = Array.prototype.slice.call(arguments, 1);
+
+        if (typeof fn !== 'function') {
+            console.error('[cookpot] Не найдена функция ' + name + '().');
+            return undefined;
+        }
+
+        return fn.apply(window, args);
+    }
+
+    function setDisplay(selector, value, root) {
+        selectAll(selector, root).forEach(function (element) {
+            element.style.display = value;
+        });
+    }
+
+    function addClass(selector, className, root) {
+        selectAll(selector, root).forEach(function (element) {
+            element.classList.add(className);
+        });
+    }
+
+    function removeClass(selector, className, root) {
+        selectAll(selector, root).forEach(function (element) {
+            element.classList.remove(className);
+        });
+    }
+
+    function setBackground(selector, value, root) {
+        selectAll(selector, root).forEach(function (element) {
+            element.style.backgroundColor = value;
+        });
+    }
+
+    function markOnce(element, marker) {
+        var attribute = 'data-cookpot-' + marker;
+
+        if (element.getAttribute(attribute) === 'true') {
+            return false;
+        }
+
+        element.setAttribute(attribute, 'true');
+        return true;
+    }
+
+    function bindClick(selector, handler, root, marker) {
+        selectAll(selector, root).forEach(function (element) {
+            if (marker && !markOnce(element, 'bound-' + marker)) {
+                return;
             }
-        }
-    });
 
-    $('.cookpot-name-label').click(function _() {
-        var href = $(this).attr('href');
-        if (href != undefined) {
-            window.open(href, '_blank');
-        }
-    });
+            element.addEventListener('click', handler);
+        });
+    }
 
-    $('#buttonrog').click(function sortrog() {
-        $(".rog").css({
-            "display": ""
-        });
-        $(".ds, .sw, .h, .dst, .warlydst").css({
-            "display": "none"
-        });
-        $("#buttonrog").addClass("buttoncb");
-        $("#buttonds, #buttonsw, #buttonh, #buttondst").removeClass("buttoncb");
-        cookpotDeleteAll();
-        dlc = 'RoG';
-    });
-    $('#buttonsw').click(function sortsw() {
-        $(".sw").css({
-            "display": ""
-        });
-        $(".ds, .rog, .h, .dst, .warlydst").css({
-            "display": "none"
-        });
-        $("#buttonsw").addClass("buttoncb");
-        $("#buttonds, #buttonrog, #buttonh, #buttondst").removeClass("buttoncb");
-        cookpotDeleteAll();
-        dlc = 'SW';
-    });
-    $('#buttonh').click(function sorth() {
-        $(".h").css({
-            "display": ""
-        });
-        $(".ds, .rog, .sw, .dst, .warlydst").css({
-            "display": "none"
-        });
-        $("#buttonh").addClass("buttoncb");
-        $("#buttonds, #buttonrog, #buttonsw, #buttondst").removeClass("buttoncb");
-        cookpotDeleteAll();
-        dlc = 'H';
-    });
-    $('#buttondst').click(function sortdst() {
-        $(".dst").css({
-            "display": ""
-        });
-        $(".ds, .sw, .h, .rog, .warlydst").css({
-            "display": "none"
-        });
-        $("#buttondst").addClass("buttoncb");
-        $("#buttonds, #buttonsw, #buttonh, #buttonrog").removeClass("buttoncb");
-        cookpotDeleteAll();
-        dlc = 'DST';
-        if ($('#buttonwarly').hasClass('buttonwarly')) {
-            $(".warly, .warlydst").css({
-                "display": ""
+    function createChance(number) {
+        var chance = document.createElement('span');
+        chance.id = 'chance' + number;
+        chance.style.fontWeight = 'bold';
+        return chance;
+    }
+
+    function createImageCell(id, className, clickHandler) {
+        var wrapper = document.createElement('span');
+        var image = document.createElement('img');
+
+        wrapper.style.position = 'relative';
+        image.id = id;
+
+        if (className) {
+            image.className = className;
+        }
+
+        if (clickHandler) {
+            image.addEventListener('click', clickHandler);
+        }
+
+        wrapper.appendChild(image);
+        return wrapper;
+    }
+
+    function addCookpotCells(workspace) {
+        var cells = [];
+        var arrowWrapper;
+        var arrow;
+        var number;
+
+        for (number = 1; number <= 4; number += 1) {
+            (function (ingredientIndex) {
+                cells.push(createImageCell(
+                    'cookpot' + (ingredientIndex + 1),
+                    'ingredientcookpot',
+                    function () {
+                        callGlobalFunction('cookpotDelete', ingredientIndex);
+                    }
+                ));
+            }(number - 1));
+        }
+
+        arrowWrapper = document.createElement('span');
+        arrowWrapper.style.position = 'relative';
+
+        arrow = document.createElement('img');
+        arrow.id = 'arrowcookpot';
+        arrow.className = 'cookpotarrow';
+        arrow.src = ARROW_IMAGE_URL;
+        arrow.alt = '';
+        arrowWrapper.appendChild(arrow);
+        cells.push(arrowWrapper);
+
+        for (number = 1; number <= 4; number += 1) {
+            cells.push(createImageCell(
+                'result' + number,
+                number === 1 ? 'result-cell-cookpot' : 'hiddeningredientcookpot'
+            ));
+            cells.push(createChance(number));
+        }
+
+        workspace.prepend.apply(workspace, cells);
+    }
+
+    function prepareIngredientLinks(root) {
+        selectAll('.cookpot .inglist a', root).forEach(function (link) {
+            var image = directChildImages(link)[0];
+            var originalTitle;
+            var source;
+            var rawName;
+            var name;
+
+            if (!image) {
+                return;
+            }
+
+            if (!markOnce(link, 'ingredient-ready')) {
+                return;
+            }
+
+            originalTitle = link.getAttribute('title') || '';
+            source = image.getAttribute('data-src') || image.getAttribute('src') || '';
+            rawName = image.getAttribute('data-image-name') || image.getAttribute('alt') || originalTitle;
+            name = rawName.replace(/\.png$/i, '');
+
+            if (name) {
+                link.setAttribute('title', name);
+            }
+
+            link.removeAttribute('href');
+            link.removeAttribute('onclick');
+            link.classList.remove('image-thumbnail', 'image');
+
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                if (!source) {
+                    console.warn('[cookpot] У изображения ингредиента отсутствуют data-src и src.', image);
+                    return;
+                }
+
+                callGlobalFunction('cookpotAdd', originalTitle || name, source);
             });
-        }
-    });
+        });
+    }
 
-    $('#buttonwarly').click(function sortwarly() {
-        cookpotDeleteAll();
-        if (!$(this).hasClass('buttonwarly')) {
-            $(".warly, .warlydst").css({
-                "display": ""
+    function prepareOtherLinks(root) {
+        selectAll('.cookpot .cookpoting a', root).forEach(function (link) {
+            link.removeAttribute('href');
+            link.classList.remove('image-thumbnail', 'image');
+        });
+
+        selectAll('#foods a', root).forEach(function (link) {
+            var id = link.getAttribute('title');
+
+            if (id) {
+                link.id = id;
+            }
+
+            link.removeAttribute('href');
+            link.classList.remove('image-thumbnail', 'image');
+        });
+    }
+
+    function revealDescriptionImages(root) {
+        selectAll('#description > a, #description2 > a, #description3 > a, #description4 > a', root)
+            .forEach(function (link) {
+                directChildImages(link).forEach(function (image) {
+                    var source = image.getAttribute('data-src') || image.getAttribute('src');
+
+                    if (source) {
+                        image.setAttribute('src', source);
+                    }
+                });
             });
-            $("#buttonwarly").addClass("buttonwarly");
-            warly = true;
-        } else {
-            $(".warly, .warlydst").css({
-                "display": "none"
-            });
-            $(".buttonwarly").removeClass("buttonwarly");
-            warly = false;
+    }
+
+    function setupDlcButton(options, root) {
+        var button = root.querySelector(options.button);
+
+        if (!button || !markOnce(button, 'dlc-bound')) {
+            return;
         }
-    });
 
-    $('#bmeat').click(function meat() {
-        $(".meat, .meatfish").addClass("light");
-        $(".veggie, .fish, .fruit, .other").removeClass("light");
-        $("#bmeat").css({
-            "background-color": "#88684c82"
-        });
-        $("#bveggie, #bfish, #bfruit, #bother").css({
-            "background-color": "transparent"
-        });
-    });
+        button.addEventListener('click', function () {
+            setDisplay(options.show, '', root);
+            setDisplay(options.hide, 'none', root);
+            button.classList.add('buttoncb');
+            removeClass(options.deactivate, 'buttoncb', root);
+            callGlobalFunction('cookpotDeleteAll');
+            window.dlc = options.dlc;
 
-    $('#bfish').click(function fish() {
-        $(".fish, .meatfish").addClass("light");
-        $(".veggie, .meat, .fruit, .other").removeClass("light");
-        $("#bfish").css({
-            "background-color": "#88684c82"
+            if (options.afterChange) {
+                options.afterChange(root);
+            }
         });
-        $("#bveggie, #bmeat, #bfruit, #bother").css({
-            "background-color": "transparent"
-        });
-    });
+    }
 
-    $('#bveggie').click(function veggie() {
-        $(".veggie").addClass("light");
-        $(".meat, .fish, .meatfish, .fruit, .other").removeClass("light");
-        $("#bveggie").css({
-            "background-color": "#88684c82"
-        });
-        $("#bmeat, #bfish, #bfruit, #bother").css({
-            "background-color": "transparent"
-        });
-    });
+    function setupDlcButtons(root) {
+        setupDlcButton({
+            button: '#buttonds',
+            show: '.ds',
+            hide: '.rog, .sw, .h, .dst, .warlydst',
+            deactivate: '#buttonrog, #buttonsw, #buttonh, #buttondst',
+            dlc: 'DS'
+        }, root);
 
-    $('#bfruit').click(function fruit() {
-        $(".fruit").addClass("light");
-        $(".veggie, .meat, .meatfish, .fish, .other").removeClass("light");
-        $("#bfruit").css({
-            "background-color": "#88684c82"
-        });
-        $("#bveggie, #bfish, #bmeat, #bother").css({
-            "background-color": "transparent"
-        });
-    });
+        setupDlcButton({
+            button: '#buttonrog',
+            show: '.rog',
+            hide: '.ds, .sw, .h, .dst, .warlydst',
+            deactivate: '#buttonds, #buttonsw, #buttonh, #buttondst',
+            dlc: 'RoG'
+        }, root);
 
-    $('#bother').click(function other() {
-        $(".other").addClass("light");
-        $(".veggie, .meat, .fruit, .fish, .meatfish").removeClass("light");
-        $("#bother").css({
-            "background-color": "#88684c82"
-        });
-        $("#bveggie, #bmeat, #bfruit, #bfish").css({
-            "background-color": "transparent"
-        });
-    });
+        setupDlcButton({
+            button: '#buttonsw',
+            show: '.sw',
+            hide: '.ds, .rog, .h, .dst, .warlydst',
+            deactivate: '#buttonds, #buttonrog, #buttonh, #buttondst',
+            dlc: 'SW'
+        }, root);
 
-    $('#bclear').click(function clear() {
-        $(".veggie, .meat, .fruit, .fish, .meatfish, .other").removeClass("light");
-        $("#bveggie, #bmeat, #bfruit, #bfish, #bother").css({
-            "background-color": "transparent"
-        });
-    });
+        setupDlcButton({
+            button: '#buttonh',
+            show: '.h',
+            hide: '.ds, .rog, .sw, .dst, .warlydst',
+            deactivate: '#buttonds, #buttonrog, #buttonsw, #buttondst',
+            dlc: 'H'
+        }, root);
 
-    $('#buttonds, #buttonrog, #buttonsw, #buttonh, #buttondst, #buttonwarly').click(function() {
-        $(function() {
-            $(".cookpot img.lzy, .cookpotbutton img.lzy").each(function() {
-                var dataSrc = $(this).attr('data-src');
-                if (dataSrc) {
-                    $(this).attr('src', dataSrc);
+        setupDlcButton({
+            button: '#buttondst',
+            show: '.dst',
+            hide: '.ds, .sw, .h, .rog, .warlydst',
+            deactivate: '#buttonds, #buttonsw, #buttonh, #buttonrog',
+            dlc: 'DST',
+            afterChange: function (contentRoot) {
+                var warlyButton = contentRoot.querySelector('#buttonwarly');
+
+                if (warlyButton && warlyButton.classList.contains('buttonwarly')) {
+                    setDisplay('.warly, .warlydst', '', contentRoot);
+                }
+            }
+        }, root);
+    }
+
+    function setupWarlyButton(root) {
+        var button = root.querySelector('#buttonwarly');
+
+        if (!button || !markOnce(button, 'warly-bound')) {
+            return;
+        }
+
+        button.addEventListener('click', function () {
+            callGlobalFunction('cookpotDeleteAll');
+
+            if (!button.classList.contains('buttonwarly')) {
+                setDisplay('.warly, .warlydst', '', root);
+                button.classList.add('buttonwarly');
+                window.warly = true;
+            } else {
+                setDisplay('.warly, .warlydst', 'none', root);
+                removeClass('.buttonwarly', 'buttonwarly', root);
+                window.warly = false;
+            }
+        });
+    }
+
+    function setupCategoryButton(options, root) {
+        var button = root.querySelector(options.button);
+
+        if (!button || !markOnce(button, 'category-bound')) {
+            return;
+        }
+
+        button.addEventListener('click', function () {
+            addClass(options.highlight, 'light', root);
+            removeClass(options.unhighlight, 'light', root);
+            button.style.backgroundColor = '#88684c82';
+            setBackground(options.resetButtons, 'transparent', root);
+        });
+    }
+
+    function setupCategoryButtons(root) {
+        setupCategoryButton({
+            button: '#bmeat',
+            highlight: '.meat, .meatfish',
+            unhighlight: '.veggie, .fish, .fruit, .other',
+            resetButtons: '#bveggie, #bfish, #bfruit, #bother'
+        }, root);
+
+        setupCategoryButton({
+            button: '#bfish',
+            highlight: '.fish, .meatfish',
+            unhighlight: '.veggie, .meat, .fruit, .other',
+            resetButtons: '#bveggie, #bmeat, #bfruit, #bother'
+        }, root);
+
+        setupCategoryButton({
+            button: '#bveggie',
+            highlight: '.veggie',
+            unhighlight: '.meat, .fish, .meatfish, .fruit, .other',
+            resetButtons: '#bmeat, #bfish, #bfruit, #bother'
+        }, root);
+
+        setupCategoryButton({
+            button: '#bfruit',
+            highlight: '.fruit',
+            unhighlight: '.veggie, .meat, .meatfish, .fish, .other',
+            resetButtons: '#bveggie, #bfish, #bmeat, #bother'
+        }, root);
+
+        setupCategoryButton({
+            button: '#bother',
+            highlight: '.other',
+            unhighlight: '.veggie, .meat, .fruit, .fish, .meatfish',
+            resetButtons: '#bveggie, #bmeat, #bfruit, #bfish'
+        }, root);
+
+        bindClick('#bclear', function () {
+            removeClass('.veggie, .meat, .fruit, .fish, .meatfish, .other', 'light', root);
+            setBackground('#bveggie, #bmeat, #bfruit, #bfish, #bother', 'transparent', root);
+        }, root, 'category-clear');
+    }
+
+    function setupClearButton(root) {
+        selectAll('#cpclear', root).forEach(function (button) {
+            button.removeAttribute('onclick');
+
+            if (!markOnce(button, 'bound-clear')) {
+                return;
+            }
+
+            button.addEventListener('click', function () {
+                callGlobalFunction('cookpotDeleteAll');
+            });
+        });
+    }
+
+    function setupLazyImageLoading(root) {
+        bindClick('#buttonds, #buttonrog, #buttonsw, #buttonh, #buttondst, #buttonwarly', function () {
+            selectAll('.cookpot img.lzy, .cookpotbutton img.lzy', root).forEach(function (image) {
+                var source = image.getAttribute('data-src');
+
+                if (source) {
+                    image.setAttribute('src', source);
                 }
             });
-        });
-    });
+        }, root, 'lazy-images');
+    }
 
-    $('.cookpot > div > p > span > span > a > img').on('click', function() {
-        if (event.ctrlKey == true) {
-            var href = $(this).attr('data-image-name').replace('.png', '');
-            window.open(href, '_blank').focus();
+    function setupResultLinks(root) {
+        bindClick('.result-cell-cookpot', function (event) {
+            var href;
+
+            if (!event.ctrlKey) {
+                return;
+            }
+
+            href = this.getAttribute('href');
+            if (href !== null) {
+                window.open(href, '_blank');
+            }
+        }, root, 'result-link');
+
+        bindClick('.cookpot-name-label', function () {
+            var href = this.getAttribute('href');
+
+            if (href !== null) {
+                window.open(href, '_blank');
+            }
+        }, root, 'name-link');
+
+        bindClick('.cookpot > div > p > span > span > a > img', function (event) {
+            var rawName;
+            var href;
+            var openedWindow;
+
+            if (!event.ctrlKey) {
+                return;
+            }
+
+            rawName = this.getAttribute('data-image-name') || this.getAttribute('alt') || '';
+            href = rawName.replace(/\.png$/i, '');
+
+            if (!href) {
+                return;
+            }
+
+            openedWindow = window.open(href, '_blank');
+            if (openedWindow) {
+                openedWindow.focus();
+            }
+        }, root, 'recipe-link');
+    }
+
+    function findWorkspaces(root) {
+        var workspaces = selectAll('#cookpotWorkSpace', root);
+
+        if (root.nodeType === 1 && root.matches('#cookpotWorkSpace')) {
+            workspaces.unshift(root);
         }
-    });
-}
+
+        return workspaces;
+    }
+
+    function timer(root) {
+        var contentRoot = root && root.querySelector ? root : document;
+        var workspaces = findWorkspaces(contentRoot);
+
+        if (!workspaces.length) {
+            return;
+        }
+
+        workspaces.forEach(function (workspace) {
+            if (workspace.getAttribute('data-cookpot-initialized') === 'true') {
+                return;
+            }
+
+            addCookpotCells(workspace);
+            workspace.setAttribute('data-cookpot-initialized', 'true');
+        });
+
+        setupClearButton(contentRoot);
+        prepareIngredientLinks(contentRoot);
+        prepareOtherLinks(contentRoot);
+        revealDescriptionImages(contentRoot);
+        setupDlcButtons(contentRoot);
+        setupWarlyButton(contentRoot);
+        setupCategoryButtons(contentRoot);
+        setupLazyImageLoading(contentRoot);
+        setupResultLinks(contentRoot);
+    }
+
+    function start() {
+        if (window.mw && typeof window.mw.hook === 'function') {
+            window.mw.hook('wikipage.content').add(function () {
+                timer(document);
+            });
+            return;
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () {
+                timer(document);
+            }, { once: true });
+        } else {
+            timer(document);
+        }
+    }
+
+    window.timer = timer;
+    start();
+}());
+
 
 var dlc = "DS";
 var warly = false;
 var api;
 var cookpot = new Array(4);
-setTimeout(timer, 1000);
 
 mw.hook('wikipage.content').add(function() {
     console.log("Api loaded!");

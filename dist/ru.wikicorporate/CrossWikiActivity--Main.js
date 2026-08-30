@@ -340,18 +340,31 @@
             },
             
             formatWikiUrl(inputUrl) {
-                let url = inputUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
-                
+                // Добавляем протокол для корректного парсинга через нативный URL API
+                const urlToParse = inputUrl.startsWith('http') ? inputUrl : 'https://' + inputUrl;
+                let parsed;
+                try {
+                    parsed = new URL(urlToParse);
+                } catch (e) {
+                    throw new Error('Security Error: Invalid URL format.');
+                }
+
+                // Извлекаем реальный хост (URL API автоматически отсекает логины/пароли вида user:pass@)
+                const hostname = parsed.hostname;
+
+                if (!hostname.endsWith('.fandom.com') && hostname !== 'fandom.com') {
+                    throw new Error('Security Error: Only fandom.com domains are allowed.');
+                }
+
+                // Формируем чистую строку без протокола, аутентификации и лишних слешей
+                let url = parsed.host + parsed.pathname;
+                url = url.replace(/\/$/, '');
+
+                // Поддержка преобразования старого формата (ru.hazbinhotel.fandom.com -> hazbinhotel.fandom.com/ru)
                 const oldFormatMatch = url.match(/^([a-z\-]{2,3})\.([^\.]+)\.fandom\.com$/);
                 if (oldFormatMatch) {
                     let wikiName = oldFormatMatch[2];
                     url = `${wikiName}.fandom.com/${oldFormatMatch[1]}`;
-                }
-                
-                const domain = url.split('/')[0].split(':')[0];
-                
-                if (!domain.endsWith('.fandom.com') && domain !== 'fandom.com') {
-                    throw new Error('Security Error: Only fandom.com domains are allowed.');
                 }
 
                 return url; 
@@ -797,7 +810,7 @@
                         },
                         'undelete': {
                             'comment': 'fa-solid fa-trash-arrow-up',    
-                            'message': 'fa-solid fa-recycle',           
+                            'message': 'fa-solid fa-recycle',            
                             'post': 'fa-solid fa-trash-can-arrow-up',
                             'blog': 'fa-solid fa-trash-arrow-up'
                         },

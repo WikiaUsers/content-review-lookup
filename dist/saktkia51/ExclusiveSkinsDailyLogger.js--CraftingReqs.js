@@ -35,4 +35,5 @@ export const reqs = {
 	'toothpaste':{bone:1, skin:4, slime:3, wood:2},
 	'nocturnal':{tie:3, glass:2, skin:12, horn:6},
 	'takkerstails':{rubber:4, brain:2, skin:18, claw:8},
+	'sharpcherry':{spike:2, brain:1, skin:8, horn:3},
 };

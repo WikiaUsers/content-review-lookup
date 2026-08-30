@@ -10,7 +10,7 @@ window.UserTagsJS = {
 		// ranks
 		founder: { u:'Host', link:'Town of Salem Wiki Staff', order:-1 },
 		bureaucrat: { u:'Mayor', link:'Town of Salem Wiki Staff', order:-1 },
-		sysop: { u:'Jailor', link:'Town of Salem Wiki Staff', order:1 },
+		sysop: { u:'Potion Master', link:'Town of Salem Wiki Staff', order:1 },
 		'content-moderator': { u: 'Trapper', link:'Town of Salem Wiki Staff', order:-1 },
 		threadmoderator: { u:'Transporter', link:'Town of Salem Wiki Staff', order:-1 },
 		rollback: { u:'Retributionist', link:'Town of Salem Wiki Staff', order:1 },
@@ -39,13 +39,16 @@ UserTagsJS.modules.metafilter = { // Remove lower-rank tags from higher-rank use
 	'chatmoderator': ['threadmoderator', "content-moderator", 'sysop', 'bureaucrat', 'founder'],
 	'rollback': ['chatmoderator', 'threadmoderator',"content-moderator", 'sysop', 'bureaucrat', 'founder'],
 	'autoconfirmed': ['townieofthemonth', 'rollback', 'chatmoderator', 'threadmoderator', "content-moderator", 'sysop', 'bureaucrat', 'founder'],
+	'newuser': ['autoconfirmed', 'townieofthemonth', 'rollback', 'chatmoderator', 'threadmoderator', "content-moderator", 'sysop', 'bureaucrat', 'founder'],
 };
 
 UserTagsJS.modules.newuser = {
 	days: 2, // Must have been on the Wiki for 2 days
 	edits: 5, // Must have at least 5 total edits
-	namespace: 1 // Edits must be made to articles to count
+	namespace: 0 // Edits were mistakenly being applied to the Talk namespace, not the Main one
 };                  // These all apply to remove the tag
+
+UserTagsJS.modules.inactive = 60;
 
 importArticles({
     type: "script",

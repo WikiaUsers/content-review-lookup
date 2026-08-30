@@ -1,3 +1,5 @@
+// Environment dependencies: document.
+
 function log(b, n) {
     return Math.log(n) / Math.log(b);
 };
@@ -11,12 +13,10 @@ function checkPlural(input, config) {
 
 function convertUTCDateToLocal(date) {
 	date = new Date(date);
-	var plusOrMinus = date.getTimezoneOffset() > 0 ? 'plus' : 'minus';
-	if (plusOrMinus == 'plus') {
-		return new Date(date.getTime() - (Math.abs(date.getTimezoneOffset()) * 60 * 1e3))
-	} else {
-		return new Date(date.getTime() + (Math.abs(date.getTimezoneOffset()) * 60 * 1e3))
-	};
+	const plusOrMinus = date.getTimezoneOffset() > 0 ? "plus" : "minus";
+	const diff = Math.abs(date.getTimezoneOffset()) * 60 * 1e3;
+	const time = date.getTime();
+	return new Date(plusOrMinus === 'plus' ? time - diff : time + diff);
 };
 
 function randomBetween(min, max, whole) {
@@ -129,34 +129,22 @@ function removeAllKeys(obj) {
 };
 
 function hasTheseItems(targetArr, sourceArr = []) {
-	return targetArr.every(function(item) {
-		return sourceArr.includes(item);
-	});
-};
-function doesNotHaveTheseItems(...args) {
-	return !hasTheseItems.apply(this, args);
+	return targetArr.every(item => sourceArr.includes(item));
 };
 
 function hasTheseKeys(targetObj, sourceArr = []) {
 	const l = sourceArr.length;
-	let bool = true;
 	for (let j = 0; j < l; j++) {
 		const k = sourceArr[j];
-		if (Reflect.has(targetObj, k) === false) {
-			bool = false; break;
+		if (!Reflect.has(targetObj, k)) {
+			return false;
 		};
 	};
-	return bool;
-};
-function doesNotHaveTheseKeys(...args) {
-	return !hasTheseKeys.apply(this, args);
+	return true;
 };
 
 function isNullish(input) {
 	return input === undefined || input === null;
-};
-function isNotNullish(...args) {
-	return !isNullish.apply(this, args);
 };
 
 function isBetween(input, start, end) {
@@ -211,4 +199,26 @@ async function getLocalCSS(title) {
 	});
 	const response = await fetch(`${basePath}?${params}`);
 	return response.text();
+};
+
+class InitLogger {
+	constructor(name) {
+		const src = this;
+		this.startTime = performance.now();
+		this.pending = new Promise(resolve => {
+			src.resolve = ()=> {
+				if (src.resolved) {
+					throw new SyntaxError("Already resolved!");
+				};
+				src.endTime = performance.now();
+				const x = src.totalTime = src.endTime - src.startTime;
+				console.log(`[${name}] [LOG]: Initialisation time: ${x} ms`);
+				Object.defineProperty(src, 'resolved', {
+					value:true,
+				});
+				resolve(x);
+				return x;
+			};
+		});
+	};
 };

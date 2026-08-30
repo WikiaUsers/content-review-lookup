@@ -11,18 +11,8 @@ window.SpoilerAlertJS = {
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:DiscussionsFeed.js',
-        'u:dev:MediaWiki:PageRenameAuto-update/code.js',
     ]
 });
-
-// Banner do Discord
-window.DiscordBannerSettings = {
-    bannerStyle: '1',
-    inviteLink: 'xZX5WRu2Fy',
-    prependToRail: false,
-    noRail: true
-};
 
 // Pop-ups em Referências
 importScriptPage('ReferencePopups/code.js', 'dev');
@@ -42,10 +32,17 @@ window.ajaxPages = [
 /* RailModule */
 window.AddRailModule = [{prepend: true}];
 
+/* Discord Banner */
+window.DiscordBannerSettings = {
+    bannerStyle: '1',
+    inviteLink: 'xZX5WRu2Fy', // Fandom Developers Wiki, EXAMPLE CONFIGURATION
+   noRail: true
+};
+
 // User tags
 window.UserTagsJS = {
 	modules: {
-        inactive: 45,
+        inactive: 90,
 		mwGroups: [
             'bureaucrat',
             'chatmoderator',

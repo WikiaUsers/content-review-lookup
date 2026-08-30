@@ -253,3 +253,8 @@
 		mapsExtended.events.onPopupCreated.subscribe(init);
 	});
 })(window);
+/* Link Previw */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/endfield/images/d/d5/Нет_изображения.png/revision/latest?cb=20260824154319&format=original&path-prefix=ru';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/endfield/images/d/d5/Нет_изображения.png/revision/latest?cb=20260824154319&format=original&path-prefix=ru';
+window.pPreview.RegExp.iparents = ['.custom-tabs', '.wikia-gallery-item'];

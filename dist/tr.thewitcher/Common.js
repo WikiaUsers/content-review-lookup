@@ -189,3 +189,58 @@ $(function () {
         });
     });
 });
+
+/* ══ ANASAYFA (GÖRSEL 3) SIDEBAR NAVİGASYON JS ══ */
+$(function() {
+  $(document).on('click', '.wt-h3-item', function() {
+    var $wrap = $(this).closest('.wt-h3-wrap');
+    var view = $(this).data('view');
+    $wrap.find('.wt-h3-item').removeClass('wt-h3-active');
+    $(this).addClass('wt-h3-active');
+    $wrap.find('.wt-h3-view').removeClass('wt-h3-view-active');
+    $wrap.find('.wt-h3-view[data-view-panel="' + view + '"]').addClass('wt-h3-view-active');
+  });
+});
+
+/* ══ SON AKTİVİTE — DİNAMİK ══ */
+$(function() {
+  var $box = $('#wt-recent-activity');
+  if (!$box.length) return;
+
+  function wtTimeAgo(iso) {
+    var diffMin = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+    if (diffMin < 1) return 'az önce';
+    if (diffMin < 60) return diffMin + ' dk önce';
+    var diffH = Math.floor(diffMin / 60);
+    if (diffH < 24) return diffH + ' saat önce';
+    return Math.floor(diffH / 24) + ' gün önce';
+  }
+
+  $.get(mw.util.wikiScript('api'), {
+    action: 'query',
+    list: 'recentchanges',
+    rcprop: 'title|timestamp|type',
+    rclimit: 5,
+    rcnamespace: 0,
+    rcshow: '!bot',
+    format: 'json'
+  }).done(function(data) {
+    var changes = data.query && data.query.recentchanges;
+    if (!changes || !changes.length) {
+      $box.html('<div class="wt-h3-activity-empty">Henüz aktivite yok.</div>');
+      return;
+    }
+    $box.empty();
+    changes.forEach(function(rc) {
+      var label = (rc.type === 'new' ? 'Yeni sayfa: ' : 'Güncellendi: ') + rc.title;
+      var $item = $('<div class="wt-h3-activity-item"></div>');
+      var $link = $('<a></a>').attr('href', mw.util.getUrl(rc.title))
+        .append($('<span class="wt-h3-activity-name"></span>').text(label));
+      var $time = $('<span class="wt-h3-activity-time"></span>').text(wtTimeAgo(rc.timestamp));
+      $item.append($link, $time);
+      $box.append($item);
+    });
+  }).fail(function() {
+    $box.html('<div class="wt-h3-activity-empty">Aktivite yüklenemedi.</div>');
+  });
+});

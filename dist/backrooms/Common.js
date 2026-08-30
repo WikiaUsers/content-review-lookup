@@ -3,17 +3,14 @@
 // Template dependencies
 mw.hook('wikipage.content').add(function() {
 	
-	// [[Module:CSS]]; [[T:CSS]]
-	$('span.import-css').each(function() {
+	// [[T:CSS]]
+	$('div.t-css').each(function() {
 		const css = mw.util.addCSS($(this).attr('data-css'));
-		$(css.ownerNode).addClass('import-css')
-			.attr('data-css-hash', $(this).attr('data-css-hash'))
-			.attr('data-from', $(this).attr('data-from'))
-			.attr('data-wait', $(this).attr('data-wait'))
-			.attr('data-portal', $(this).attr('data-portal'));
+		$(css.ownerNode).addClass('t-css');
+		Object.assign(css.ownerNode.dataset, this.dataset);
 		
-		const wait = $(this).attr('data-wait');
-		const portal = $(this).attr('data-portal');
+		const wait = this.dataset.wait;
+		const portal = this.dataset.portal;
 		
 		if (wait != 'none') {
 			css.disabled = true;
@@ -74,7 +71,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		inactive: { order: -2 },
-		bot: { link:'Help:Bots', order: -1 },
+		bot: { link: 'Help:Bots', order: -1 },
 		bureaucrat: { order: 0 },
 		sysop: { order: 1 },
 		'content-moderator': { order: 2 },

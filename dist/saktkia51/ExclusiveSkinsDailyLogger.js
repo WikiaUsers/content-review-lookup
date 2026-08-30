@@ -1,15 +1,16 @@
 // Created, and currently maintained, by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:ExclusiveSkinsDailyLogger.js
-// Environment dependencies: getLocalJS(), getLocalCSS(), checkPlural(), create(), formatDate(), MediaWiki base module's mw object.
+// Environment dependencies: document, getLocalJS(), getLocalCSS(), checkPlural(), create(), formatDate(), InitLogger, MediaWiki base module's mw object.
 // Import dependencies: "./AllSkins.js", "./Materials.js", "./ExampleImages.js", "./CraftingReqs.js", "./main.css".
 
 (async function() {
 	"use strict";
-	
-	const initStartTime = performance.now();
-	const srcContainer = document.getElementById('ExclusiveSkinsDailyLogger');
+
 	const scriptName = 'Exclusive Skins Daily Logger';
+	const initLogger = new InitLogger(scriptName);
+	const srcContainer = document.getElementById('ExclusiveSkinsDailyLogger');
 	const scriptInitCondition = srcContainer && !document.getElementById('ExclusiveSkinsDailyLogger_Container');
 	if (!scriptInitCondition) {
+		initLogger.resolve();
 		console.log(`[${scriptName}] [LOG]: Script activation conditions not met. Exiting...`);
 		return;
 	};
@@ -20,7 +21,7 @@
 	const weaponsCount = 21;
 	const getJS = getLocalJS;
 	const getCSS = getLocalCSS;
-	
+
 	const materials = {};
 	await (async function() {
 		const module = await getJS(`${basePageName}/Materials.js`);
@@ -36,13 +37,13 @@
 	function formatMatName(id) {
 		return materials[id]?.name ?? id;
 	};
-	
+
 	const exampleImages = {};
 	await (async function() {
 		const module = await getJS(`${basePageName}/ExampleImages.js`);
 		Object.assign(exampleImages, module.exampleImages);
 	})();
-	
+
 	class WeaponSkin {
 		constructor(mainDetails = {}, otherDetails = {}) {
 			this.id = mainDetails.id;
@@ -61,7 +62,7 @@
 				format.xPlacement ??= 'after';
 			};
 			format.outputSeparator ??= ', ';
-			
+
 			const src = this;
 			const output = [];
 			const reqs = getCraftingReqs(src.id);
@@ -135,21 +136,21 @@
 			adder(skin);
 		};
 	})();
-	
-	const mainContainer = create('div', srcContainer);
-	mainContainer.setAttribute('id', 'ExclusiveSkinsDailyLogger_Container');
-	mainContainer.classList.add('ExclusiveSkinsDailyLogger');
+
 	const stylesheet = new CSSStyleSheet();
 	document.adoptedStyleSheets.push(stylesheet);
 	const cssText = await getCSS(`${basePageName}/main.css`);
 	await stylesheet.replace(cssText);
+	const mainContainer = create('div', srcContainer);
+	mainContainer.setAttribute('id', 'ExclusiveSkinsDailyLogger_Container');
+	mainContainer.classList.add('ExclusiveSkinsDailyLogger');
 	const title = create('div', mainContainer);
 	title.classList.add('title');
 	const body = create('div', mainContainer);
 	body.classList.add('body');
 	const closingNotes = create('div', mainContainer);
 	closingNotes.classList.add('closingNotes');
-	
+
 	let currentSkin = {};
 	function updateInternalData(specificIndex) {
 		const newSkin = {};
@@ -192,7 +193,7 @@
 			};
 		};
 		body.innerHTML = str;
-		
+
 		{
 			const e = body.querySelectorAll('.DblClickImg');
 			const l = e.length;
@@ -226,7 +227,7 @@
 		str +=`<br/>Report tool issues or suggestions on the <a href="https://saktkia51.fandom.com/wiki/Editorial_Noticeboard">Editorial Noticeboard page</a> or contact any <a href="https://saktkia51.fandom.com/wiki/MediaWiki:ExclusiveSkinsDailyLogger.js">tool maintainer</a>.`;
 		closingNotes.innerHTML = str;
 	};
-	
+
 	function updateAll() {
 		const newSkin = updateInternalData();
 		if (newSkin.dailyNumber !== currentSkin.dailyNumber) {
@@ -238,7 +239,5 @@
 	};
 	updateAll();
 	const autoUpdateInterval = setInterval(updateAll, 10e3);
-	const initEndTime = performance.now();
-	const initTotalTime = initEndTime - initStartTime;
-	console.log(`[${scriptName}] [LOG]: Initialisation time: ${initTotalTime} ms`);
+	initLogger.resolve();
 })();

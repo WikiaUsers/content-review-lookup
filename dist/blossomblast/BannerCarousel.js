@@ -20,6 +20,12 @@ mw.hook('wikipage.content').add(function ($content) {
 		var next = $this.find('.banner-carousel__arrow-right')[0];
 		var container = $this.find('.banner-carousel__container')[0];
 		
+		var $dotsContainer = $this.find('.banner-carousel__dots');
+		var $indicator = $('<div class="banner-carousel__dot-indicator"></div>');
+		if ($dotsContainer.length) {
+			$dotsContainer.append($indicator);
+		}
+		
 		if (!track || slides.length === 0) return;
 		
 		var total = slides.length;
@@ -48,19 +54,29 @@ mw.hook('wikipage.content').add(function ($content) {
 		}
 		
 		function updateDots(i) {
+			var activeIndex = i % total;
 			for (var j = 0; j < dots.length; j++) {
-				dots[j].classList.toggle('active', j === (i % total));
+				dots[j].classList.toggle('active', j === activeIndex);
+			}
+			if ($indicator.length && dots[activeIndex]) {
+				var offsetLeft = dots[activeIndex].offsetLeft - dots[0].offsetLeft;
+				$indicator.css('transform', 'translateX(' + offsetLeft + 'px)');
 			}
 		}
 		
 		function goToSlide(i, smooth) {
 			if (smooth === undefined) smooth = true;
-			track.style.transition = smooth ? 'transform 0.6s ease' : 'none';
+			var speed = $this.css('--banner-carousel-speed') || '0.6s ease';
+			track.style.transition = smooth ? 'transform ' + speed : 'none';
 			track.style.transform = 'translateX(-' + (i * slideWidth) + '%)';
 			index = i;
 			
-			updateDots(i);
 			updateContent(i);
+			
+			var speedMs = smooth ? ((parseFloat(speed) || 0.6) * 1000) : 0;
+			setTimeout(function () {
+				updateDots(i);
+			}, speedMs);
 		}
 		
 		function nextSlide() {
@@ -69,11 +85,12 @@ mw.hook('wikipage.content').add(function ($content) {
 			
 			// When carousel scrolled halfway (through first set), reset to start
 			if (index >= total) {
+				var speedMs = (parseFloat($this.css('--banner-carousel-speed')) || 0.6) * 1000;
 				setTimeout(function () {
 					track.style.transition = 'none';
 					index = 0;
 					track.style.transform = 'translateX(0)';
-				}, 600);
+				}, speedMs);
 			}
 		}
 		
@@ -94,13 +111,21 @@ mw.hook('wikipage.content').add(function ($content) {
 		
 		function startAutoPlay() {
 			stopAutoPlay();
-			timer = setInterval(function () {
-				if (!isPaused) nextSlide();
-			}, 5000);
+			function scheduleNext() {
+				var delay = parseInt($this.css('--banner-carousel-delay')) || 5000;
+				timer = setTimeout(function () {
+					if (!isPaused) {
+						nextSlide();
+					}
+					scheduleNext();
+				}, delay);
+			}
+			
+			scheduleNext();
 		}
 		
 		function stopAutoPlay() {
-			if (timer) clearInterval(timer);
+			if (timer) clearTimeout(timer);
 			timer = null;
 		}
 		

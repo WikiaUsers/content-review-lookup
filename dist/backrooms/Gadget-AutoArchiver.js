@@ -13,7 +13,7 @@ window.FCButtons = [
 		summary: 'AutoArchiver: ' + mw.config.get('wgPageName') + ' successfully archived',
 		alwaysDisplay: true,
 		prepend: true,
-		placement: '.page-header__meta'
+		placement: ':is(.ns-0, .ns-2) .page-header__meta'
 	}
 ];
 

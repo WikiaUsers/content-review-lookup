@@ -1,10 +1,54 @@
 /* === BILSON WIKI PAGE EFFECTS === */
 
 /* ============================================================
-   SIN PAGE
+   SINFULLVERSE CATEGORY TAGGING
+   Adds .sinfullverse-page to <body> on ANY page in the
+   "Sinfullverse" category (not just the page literally named
+   "Sin"), so the CSS can theme the whole category at once.
+   This must run before the CSS below relies on the class, but
+   since CSS is loaded separately and re-evaluates automatically,
+   the only real requirement is that this runs on page load.
    ============================================================ */
 (function () {
-    if (mw.config.get('wgPageName') !== 'Sin') return;
+    var cats = mw.config.get('wgCategories') || [];
+    var lowerCats = cats.map(function (c) { return c.toLowerCase(); });
+    // Checks both "Sinfullverse" and "SinfullVerse" (and any other
+    // casing) by comparing lowercase, since the wiki uses both
+    // spellings inconsistently across pages.
+    if (lowerCats.indexOf('sinfullverse') !== -1) {
+        document.body.classList.add('sinfullverse-page');
+    }
+})();
+
+/* ============================================================
+   SIN PAGE
+   Triggers on the page literally named "Sin" OR any page tagged
+   with the Sinfullverse category — so this can't silently do
+   nothing just because the category tag changed.
+   ============================================================ */
+(function () {
+    var isSinPage = mw.config.get('wgPageName') === 'Sin';
+    var cats = mw.config.get('wgCategories') || [];
+    var lowerCats = cats.map(function (c) { return c.toLowerCase(); });
+    var isSinfullverseCat = lowerCats.indexOf('sinfullverse') !== -1;
+    if (!isSinPage && !isSinfullverseCat) return;
+
+    /* Swap community header icon/wordmark <img> to Sinpage.png
+       (new global nav uses a real <img>, not a CSS background)
+       Replace the placeholder URL below with your real uploaded
+       sinpage.png URL before using. */
+    var sinIconUrl = 'https://static.wikia.nocookie.net/bilson/images/X/XX/Sinpage.png';
+    function swapSinIcons() {
+        document.querySelectorAll(
+            '.wds-community-header__wordmark img, .fandom-community-header img.wds-community-header__logo, a.wiki-beacon img'
+        ).forEach(function (img) {
+            if (img.src !== sinIconUrl) img.src = sinIconUrl;
+        });
+    }
+    swapSinIcons();
+    // Header can render async on Fandom's newer skin — watch for it
+    var sinIconObserver = new MutationObserver(swapSinIcons);
+    sinIconObserver.observe(document.body, { childList: true, subtree: true });
 
     var style = document.createElement('style');
     style.textContent = [
@@ -110,6 +154,85 @@
             setTimeout(function () { if (dot.parentNode) dot.parentNode.removeChild(dot); }, 600);
         }, 100);
         if (sinDots.length > 30) { var old = sinDots.shift(); if (old.parentNode) old.parentNode.removeChild(old); }
+    });
+
+    /* --------------------------------------------------------
+       FEAR EFFECTS
+       -------------------------------------------------------- */
+
+    /* Breathing vignette */
+    var vignette = document.createElement('div');
+    vignette.className = 'sin-vignette';
+    document.body.appendChild(vignette);
+
+    /* Recording indicator */
+    var recIndicator = document.createElement('div');
+    recIndicator.className = 'sin-rec-indicator';
+    recIndicator.innerHTML = '<span class="sin-rec-dot"></span><span>REC &middot; YOU ARE BEING OBSERVED</span>';
+    document.body.appendChild(recIndicator);
+
+    /* Static/interference burst — fires occasionally, single quick
+       flash, never sustained or repeating fast enough to strobe */
+    var staticBurst = document.createElement('div');
+    staticBurst.className = 'sin-static-burst';
+    document.body.appendChild(staticBurst);
+    function triggerStaticBurst() {
+        staticBurst.classList.add('sin-active');
+        setTimeout(function () { staticBurst.classList.remove('sin-active'); }, 180);
+        setTimeout(triggerStaticBurst, Math.random() * 20000 + 15000);
+    }
+    setTimeout(triggerStaticBurst, 8000);
+
+    /* Ghost cursor — lags behind the real cursor, slowly drifting
+       toward it, then holding briefly before fading */
+    var ghost = document.createElement('div');
+    ghost.className = 'sin-ghost-cursor';
+    ghost.style.opacity = '0';
+    document.body.appendChild(ghost);
+    var ghostActive = false;
+    function releaseGhost(x, y) {
+        if (ghostActive) return;
+        ghostActive = true;
+        var offsetX = (Math.random() - 0.5) * 220;
+        var offsetY = (Math.random() - 0.5) * 220;
+        ghost.style.transition = 'none';
+        ghost.style.left = (x + offsetX) + 'px';
+        ghost.style.top = (y + offsetY) + 'px';
+        ghost.style.opacity = '0.7';
+        requestAnimationFrame(function () {
+            ghost.style.transition = 'left 1.4s cubic-bezier(0.2,0.8,0.2,1), top 1.4s cubic-bezier(0.2,0.8,0.2,1), opacity 0.6s';
+            ghost.style.left = x + 'px';
+            ghost.style.top = y + 'px';
+        });
+        setTimeout(function () {
+            ghost.style.opacity = '0';
+            ghostActive = false;
+        }, 1800);
+    }
+    var lastMouseX = 0, lastMouseY = 0;
+    document.addEventListener('mousemove', function (e) {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+    });
+    setInterval(function () {
+        if (Math.random() < 0.25) releaseGhost(lastMouseX, lastMouseY);
+    }, 12000);
+
+    /* Scroll-triggered message near the bottom of the page */
+    var endMsg = document.createElement('div');
+    endMsg.className = 'sin-endmsg';
+    endMsg.textContent = 'you made it this far. he noticed.';
+    var contentRoot = document.getElementById('mw-content-text') || document.getElementById('content');
+    if (contentRoot) contentRoot.appendChild(endMsg);
+    var endMsgShown = false;
+    window.addEventListener('scroll', function () {
+        if (endMsgShown) return;
+        var scrollBottom = window.innerHeight + window.scrollY;
+        var pageHeight = document.body.scrollHeight;
+        if (scrollBottom >= pageHeight - 200) {
+            endMsg.classList.add('sin-visible');
+            endMsgShown = true;
+        }
     });
 })();
 
@@ -887,3 +1010,100 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 });
+
+/* ============================================================
+   WATER DANIEL PAGE
+   ============================================================ */
+(function () {
+    if (mw.config.get('wgPageName') !== 'Water_Daniel') return;
+
+    /* "Surfacing" load transition — content blurs in over ~2.8s */
+    document.body.classList.add('wd-surfacing');
+    setTimeout(function () {
+        document.body.classList.remove('wd-surfacing');
+        document.body.classList.add('wd-surfaced');
+    }, 200);
+
+    /* Floating bubbles — slower, bigger, more languid than a first pass */
+    var bubbleLayer = document.createElement('div');
+    bubbleLayer.setAttribute('style',
+        'position:fixed !important;top:0 !important;left:0 !important;' +
+        'width:100% !important;height:100% !important;pointer-events:none !important;' +
+        'z-index:2147483640 !important;overflow:hidden !important;'
+    );
+    document.body.appendChild(bubbleLayer);
+
+    function spawnBubble() {
+        var b = document.createElement('div');
+        var size = Math.random() * 20 + 8;
+        var left = Math.random() * 100;
+        var duration = Math.random() * 10 + 12; // much slower drift, 12-22s
+        b.setAttribute('style',
+            'position:absolute !important;bottom:-30px !important;left:' + left + '% !important;' +
+            'width:' + size + 'px !important;height:' + size + 'px !important;' +
+            'border-radius:50% !important;' +
+            'background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(79,216,255,0.12)) !important;' +
+            'border:1px solid rgba(79,216,255,0.35) !important;' +
+            'transition:none !important;'
+        );
+        bubbleLayer.appendChild(b);
+
+        var start = Date.now();
+        function rise() {
+            var elapsed = (Date.now() - start) / 1000;
+            var progress = elapsed / duration;
+            if (progress >= 1) {
+                if (b.parentNode) b.parentNode.removeChild(b);
+                return;
+            }
+            var sway = Math.sin(progress * Math.PI * 3) * 16;
+            b.style.transform = 'translate(' + sway + 'px, -' + (progress * (window.innerHeight + 60)) + 'px)';
+            b.style.opacity = String(0.7 * (1 - progress * 0.6));
+            requestAnimationFrame(rise);
+        }
+        requestAnimationFrame(rise);
+    }
+
+    setInterval(function () {
+        if (Math.random() < 0.5) spawnBubble();
+    }, 1800);
+
+    /* Heavy-drag cursor blob — lags far behind the real cursor and
+       eases toward it slowly, simulating movement through water
+       resistance instead of a normal snappy trail */
+    var dragBlob = document.createElement('div');
+    dragBlob.className = 'wd-drag-blob';
+    document.body.appendChild(dragBlob);
+    var targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
+    var blobX = targetX, blobY = targetY;
+    document.addEventListener('mousemove', function (e) {
+        targetX = e.clientX;
+        targetY = e.clientY;
+    });
+    function dragLoop() {
+        blobX += (targetX - blobX) * 0.035; // heavy lag, water-resistance feel
+        blobY += (targetY - blobY) * 0.035;
+        dragBlob.style.left = blobX + 'px';
+        dragBlob.style.top = blobY + 'px';
+        requestAnimationFrame(dragLoop);
+    }
+    requestAnimationFrame(dragLoop);
+
+    /* Subtle title ripple — occasional wavy distortion, slower/gentler
+       than before to match the sluggish theme */
+    var wdTitle = document.getElementById('firstHeading');
+    if (wdTitle) {
+        setInterval(function () {
+            if (Math.random() < 0.2) {
+                wdTitle.style.transition = 'transform 2.2s ease-in-out';
+                wdTitle.style.transform = 'skewX(0.8deg)';
+                setTimeout(function () {
+                    wdTitle.style.transform = 'skewX(-0.4deg)';
+                    setTimeout(function () {
+                        wdTitle.style.transform = 'none';
+                    }, 1100);
+                }, 1100);
+            }
+        }, 6000);
+    }
+})();

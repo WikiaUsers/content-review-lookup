@@ -279,6 +279,5 @@ addEventListener("DOMContentLoaded", (event) => {
 	}
 });
 
-
 // ============= // TESTHERE // ============= //
 // Merci de ne pas laisser de code servant à des tests ici, une purge régulière sera faite pour maintenir un environnement stable.
