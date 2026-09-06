@@ -3,7 +3,7 @@
 ( function ( $, mw ) {
     'use strict';
 
-    var MARKER_VERSION     = 1;
+    var MARKER_VERSION      = 1;
     var MARKER_PAGE         = 'Данные:Последний запуск скриптов'; // общая страница для всех скриптов, зависящих от смены недели JSON-содержимое хранится внутри первого HTML-комментария на странице — это скрывает его от обычного просмотра (MediaWiki вырезает комментарии при рендере), но не мешает парсингу, и позволяет держать рядом документацию/<noinclude> без риска её потерять.
     var MARKER_COMMENT_RE   = /<!--([\s\S]*?)-->/;
     var SCRIPT_ID           = 'ListOfMinorCharacters'; // ключ этого скрипта внутри общего JSON — не менять без необходимости, иначе отметка "потеряется"
@@ -12,7 +12,7 @@
     var CONFLICTS_START     = '<!-- TMP-CONFLICTS-START -->';
     var CONFLICTS_END       = '<!-- TMP-CONFLICTS-END -->';
     var LIST_PREFIX         = 'Малозначимые персонажи (';
-    var API_BASE            = 'https://marvel.fandom.com/api.php';
+    var API_BASE            = 'https://marvel.fandom.com/ru/api.php';
     var RIGHTCOLORS_PAGE    = 'MediaWiki:RightColors.css';
     
     // === TMP_REQUIRE_AUTH ===
@@ -452,21 +452,22 @@
     }
 
     function attachManualButton() {
-        var control = document.getElementById( 'tmp-sync-control' );
-        if ( !control ) return;
-        
-        // Если проверка доступа не требуется — показываем кнопку всем
-        if ( !TMP_REQUIRE_AUTH ) {
-            createSyncButton( control );
-            return;
-        }
-        
-        // Иначе проверяем авторизацию
-        isAuthorized().then( function ( ok ) {
-            if ( !ok ) return;
-            createSyncButton( control );
-        } );
-    }
+    	var control = document.getElementById( 'tmp-sync-control' );
+    	if ( !control || control.hasAttribute( 'data-tmp-init' ) ) return;
+    	control.setAttribute( 'data-tmp-init', '1' );
+
+    	// дополнительная страховка на случай, если атрибут уже стоял, а кнопка была удалена
+    	if ( control.querySelector( 'button' ) ) return;
+
+    	if ( !TMP_REQUIRE_AUTH ) {
+        	createSyncButton( control );
+        	return;
+    	}
+    	isAuthorized().then( function ( ok ) {
+        	if ( !ok ) return;
+        	createSyncButton( control );
+    	} );
+	}
 
     mw.loader.using( 'mediawiki.api' ).then( function () {
         maybeAutoRun();

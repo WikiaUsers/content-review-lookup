@@ -1,77 +1,14 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-importArticles({
-    type: "script",
-    articles: [
-        "u:dev:AjaxRC/code.js",
-        "u:dev:LockOldBlogs/code.js",
-        "u:dev:ShowHide/code.js",
-        "u:dev:UserTags/code.js",
-        "MediaWiki:Common.js/icons.js",
-    ]
-});
- 
- 
-/* User Tags */
-window.UserTagsJS = {
-    tags: {
-        bureaucrat: {
-            link: 'Special:ListUsers/bureaucrat'
-        },
-        bot: {
-           link: 'Special:Listusers/bot'
-        },
-        chatmoderator: {
-            link: 'Special:ListUsers/chatmoderator'
-        },
-        threadmoderator: {
-            link: 'Special:ListUsers/threadmoderator'
-        },  
-        "content-moderator": {
-            u:  'content moderator',
-            link: 'Special:ListUsers/content-moderator'
-        },
-        imagecontrol: {
-            u: 'image control',
-            link: 'Special:ListUsers/imagecontrol'
-        },
-        rollback: {
-            link: 'Special:ListUsers/rollback'
-        },
-        sysop: {
-            link: 'Special:ListUsers/sysop'
-        }
-    },
-    modules: {
-        autoconfirmed: true,
-        inactive: {
-            days: 60,
-            namespaces: [0],
-            zeroIsInactive: true
-        },
-        mwGroups: [
-            'bannedfromchat',
-            'bureaucrat',
-            'chatmoderator',
-            'threadmoderator',
-            'content-moderator',
-            'sysop',
-            'rollback',
-            'bot',
-            'imagecontrol'
-        ],
-        newuser: true
-    }
+window.welcomeMessage = {
+    enabled: true,
+    adminUsername: 'Cstfeud',
+    adminNickname: 'Dan',
+
+    messageTitle: 'Welcome to {{SITENAME}}!',
+    messageText: 'Hi, welcome to {{SITENAME}}! You\'re receiving this automated message because you\'ve made your first edit or comment. Thank you for contributing!\n\n[[Special:Userlogin|Please sign in and create a username]]. It\'s an easy way to keep track of your contributions and helps you communicate with the rest of the community. Please take a moment to review our [[:Category:Policy|policies]], and be sure to visit our [[Special:Forum|forums]]!\n\nIf you have any questions or need help with anything, please feel free to leave me a message.',
+
+    debug: false,
+    testAllEdits: false,
+    preferTalk: false
 };
- 
-importScriptPage('DisplayClock/code.js', 'dev');
- 
-/* reference popups */
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});

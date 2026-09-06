@@ -27,7 +27,7 @@ $(function () {
       //35
       'Water_Buffalo_(Mount)', 'Tombstinger', 'Platesaurian', 'Ursagrodon', 'The_Hellgrip',
       //40
-      'Noble_Lion_(Mount', 'Desert_King', 'Shock_Head_(Mount)', 'Walker_(Mount)', 'Azudocus',
+      'Noble_Lion_(Mount)', 'Desert_King', 'Shock_Head_(Mount)', 'Walker_(Mount)', 'Azudocus',
       //45
       'Carpacosaurus', 'Death_Crawler', 'Flamesteed', 'Jade_Lion', 'Jade_Pincer',
       //50
@@ -191,15 +191,15 @@ $(function () {
       'Werelion', 'Pirat', 'Raccoon', 'Tyrant', 'Girtablilu',
       //160
       'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_(A)', 'Naga_(B)',
-      //170
+      //165
       'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist', 'Weretiger',
-      //180
+      //170
       'Werecrocodile', 'Werepanther', 'Merudri', 'Crusader', 'Wyrmling',
-      //185
+      //175
       'Headwalker', 'Shell_Drake'
-      //190
+      //180
       
-      //195
+      //185
       
     ],
     //outfits the array index is the id (starting at 200)
@@ -2403,7 +2403,7 @@ The output would be the following hyperlink: [https://tibia.fandom.com/wiki/Outf
 					messagediv.innerHTML +=  'Error updating page: ' + (editData.error ? editData.error.info : 'Unknown error');
 	            }
 	        }).fail(function(jqXHR, textStatus, errorThrown) {
-				messagedi.innerHTML +='Failed to update the page.' + jqXHR.responseText.text();
+				messagediv.innerHTML +='Failed to update the page.' + jqXHR.responseText.text();
 	        });
 	    }).fail(function() {
 			messagediv +='Failed to fetch CSRF token.';

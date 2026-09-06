@@ -8,26 +8,29 @@ mw.hook('wikipage.content').add(function ($content) {
 
     // SEARCH BAR UI
     var $container = $('<div id="inpage-search"></div>');
-    var $input = $('<input type="search" id="pageSearchInput" placeholder="Filter Change Log (e.g., Winter, V74, Fixed)..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: var(--theme-page-background-color); color: var(--theme-page-text-color); box-sizing: border-box;">');
-    var $status = $('<div id="searchStatus"></div>');
-    
+    var $input = $('<input type="search" id="pageSearchInput" aria-label="Filter Change Log" placeholder="Filter Change Log (e.g., Winter, V74, Fixed)..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: var(--theme-page-background-color); color: var(--theme-page-text-color); box-sizing: border-box;">');
+    var $status = $('<div id="searchStatus" role="status" aria-live="polite"></div>');
+
     $container.append($input, $status);
     $placeholder.replaceWith($container);
 
     function getUpdateGroups() {
-        var groups = [];
+        var result = [];
         // Map only versions (H3)
         $('.mw-parser-output > h3').each(function() {
             var $header = $(this);
             var $contentBetween = $header.nextUntil('h3, h2'); // For the next H3 or next YEAR (H2)
-            groups.push({
+            result.push({
                 header: $header,
                 content: $contentBetween,
                 fullText: ($header.text() + ' ' + $contentBetween.text()).toLowerCase()
             });
         });
-        return groups;
+        return result;
     }
+
+    // no need to re-scan the DOM on every keystroke
+    var groups = getUpdateGroups();
 
     function clearHighlights() {
         $('.page-search-highlight').each(function() {
@@ -37,41 +40,77 @@ mw.hook('wikipage.content').add(function ($content) {
         });
     }
 
-    function applyHighlight($elements, term) {
-        var regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
-        
-        $elements.find('span, li, b, i, code, h3').addBack('h3').not('h2').contents().filter(function() {
-            return this.nodeType === 3 && this.textContent.match(regex);
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function escapeRegex(text) {
+        return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // array of RegExp (one per search term), built once per search
+    // and reused across every group
+    function applyHighlight($elements, regexes) {
+        $elements.find('span, li, b, i, code, h3, a').addBack('h3').not('h2').contents().filter(function() {
+            return this.nodeType === 3;
         }).each(function() {
-            var highlightedText = this.textContent.replace(regex, '<span class="page-search-highlight">$1</span>');
-            $(this).replaceWith(highlightedText);
+            var text = this.textContent;
+            var matched = regexes.some(function(regex) {
+                return text.search(regex) !== -1;
+            });
+
+            if (!matched) return;
+
+            // Escape HTML entities first
+            var highlighted = escapeHtml(text);
+            regexes.forEach(function(regex) {
+                highlighted = highlighted.replace(regex, '<span class="page-search-highlight">$1</span>');
+            });
+
+            $(this).replaceWith(highlighted);
         });
     }
 
     function executeSearch() {
         var query = $input.val().trim().toLowerCase();
-        var groups = getUpdateGroups();
+        var seenTerms = {};
+        var terms = query.split(/\s+/).filter(function(term) {
+            if (!term || seenTerms[term]) return false;
+            seenTerms[term] = true;
+            return true;
+        });
         var matchCount = 0;
 
         clearHighlights();
 
-        if (!query) {
+        if (!terms.length) {
             $('.mw-parser-output > *').show();
             $status.text('');
             return;
         }
 
+        var regexes = terms.map(function(term) {
+            return new RegExp('(' + escapeRegex(term) + ')', 'ig');
+        });
+
         $('.mw-parser-output > *').not('#inpage-search, .log-header, .noprint').hide();
         // Keeps the years (H2) visible only as divisors (without counting as a result)
-        $('.mw-parser-output > h2').show(); 
+        $('.mw-parser-output > h2').show();
 
         groups.forEach(function(group) {
-            // Check if the term is in the version title (H3) or in the items below it
-            if (group.fullText.indexOf(query) !== -1) {
+            // A group matches only if EVERY term is present 
+            var isMatch = terms.every(function(term) {
+                return group.fullText.indexOf(term) !== -1;
+            });
+
+            if (isMatch) {
                 group.header.show();
                 group.content.show();
-                applyHighlight(group.header.add(group.content), query);
-                matchCount++; // It only counts if the term is in H3 or in the content of the version
+                applyHighlight(group.header.add(group.content), regexes);
+                matchCount++;
             }
         });
 

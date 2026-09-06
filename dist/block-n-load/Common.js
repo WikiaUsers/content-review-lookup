@@ -1,5 +1,9 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-console.log("Javascript loaded");
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UploadMultipleFiles.js',
+    ]
+});
 
 /* Start CountUp Timer */
 mw.hook("wikipage.content").add(function () {

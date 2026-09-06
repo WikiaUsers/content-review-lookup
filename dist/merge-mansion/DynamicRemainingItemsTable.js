@@ -1,6 +1,14 @@
 // ==========================
-// DynamicRemainingItemsTable.js  (VERSION 5.10)
+// DynamicRemainingItemsTable.js  (VERSION 5.15)
 // ==========================
+// 5.15: Coins requirements were never subtracted. Module:Areas renders Coins in
+//       the task cell via Template:Coins = ICON-ONLY anchor + plain amount ("1500"),
+//       while regular items carry an icon anchor AND a text anchor. The text-anchor
+//       scan (5.14) therefore skipped Coins entirely. parseItems() now works per
+//       <br>-separated line and recognises the Coins icon anchor. The Coins group
+//       also keeps "-" in Total in L1 (it has no L1 equivalent; Module:Areas leaves
+//       it out of the grand total) and "Area Completed!" keys off "no visible item
+//       rows" instead of "grand total == 0".
 // 5.10: Inverted Next Area row priority. The "All tasks completed!" banner
 //       in MediaWiki:TaskTableFeatures.js is now PRIMARY for rendering Next
 //       Area (under the task table). This script suppresses its own
@@ -200,66 +208,74 @@ mw.hook('wikipage.content').add(function ($content) {
 
         // ========= Quantities & item parsing =========
 
-        // Quantities parsing (strip spans, split by <br>, detect leading "Nx")
-        function extractQuantitiesFromCell(cell) {
-		  const clone = cell.cloneNode(true);
-		  clone.querySelectorAll("span").forEach(s => s.remove());
-		  const parts = clone.innerHTML.split(/<br\s*\/?>/i);
-		  const quantities = parts.map((part, idx) => {
-		    const tmp = document.createElement("div");
-		    tmp.innerHTML = part;
-		    const raw = (tmp.textContent || "").replace(/\u00A0/g, " ").trim();
-		
-		    // 1) původní detekce "Nx" / "N×"  → zůstává
-		    let qty = 1;
-		    let m = raw.match(/(\d+)\s*[x×]/i);
-		    if (m) {
-		      qty = parseInt(m[1], 10);
-		      console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (Nx/× match)`);
-		    } else {
-		      // 2) NOVÁ detekce: čisté číslo na řádku (např. "300" u Coinů)
-		      const mPlain = raw.match(/^(\d+)\s*$/);
-		      if (mPlain) {
-		        qty = parseInt(mPlain[1], 10);
-		        console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (plain number)`);
-		      } else {
-		        console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (fallback = 1)`);
-		      }
-		    }
-		
-		    return qty;
-		  });
-		  return quantities;
-		}
+        // Quantity of ONE requirement line (a <div> holding the line's HTML).
+        // Icons and link wrappers live in <span>s; stripping them leaves the bare
+        // text prefix: "3x " / "5× " for items, or the plain amount "1500" for Coins.
+        function extractQuantityFromLine(lineEl, idx) {
+          const clone = lineEl.cloneNode(true);
+          clone.querySelectorAll("span").forEach(s => s.remove());
+          const raw = (clone.textContent || "").replace(/\u00A0/g, " ").trim();
 
-        // Parse items from task table cell:
-        //  - quantities are parsed from text (3x, 5×, …)
-        //  - anchors = only links to real item pages (ignore Special:Upload "Level N" icons)
+          // 1) "Nx" / "N×" prefix
+          const m = raw.match(/(\d+)\s*[x×]/i);
+          if (m) {
+            const qty = parseInt(m[1], 10);
+            console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (Nx/× match)`);
+            return qty;
+          }
+          // 2) bare number on the line (Coins amount, e.g. "1500" or "1,500")
+          const mPlain = raw.match(/^([\d,]+)\s*$/);
+          if (mPlain) {
+            const qty = parseIntSafe(mPlain[1]);
+            console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=${qty} (plain number)`);
+            return qty;
+          }
+          console.log(`   📏 [RI] Line ${idx + 1}: "${raw}" → qty=1 (fallback = 1)`);
+          return 1;
+        }
+
+        // Parse items from task table cell.
+        // Module:Areas joins the requirements with <br>; every line is ONE of:
+        //  (a) a regular item from utils.ItemLink — icon anchor (<a><img></a>) plus a
+        //      text anchor "Name (L#)", optionally prefixed by "Nx " / "N× ";
+        //  (b) Coins from Template:Coins — an ICON-ONLY anchor to /wiki/Coins followed
+        //      by the plain amount ("1500"). There is no text anchor at all, which is
+        //      why a "text anchors only" scan silently dropped Coins (fixed in 5.15).
+        // Parsing line by line keeps names and quantities aligned when both kinds
+        // share a cell. Special:Upload "Level N" placeholder links are ignored.
+        const COINS_NAME = "Coins";
+        const isCoinsAnchor = (a) => /\/wiki\/Coins(?:[?#]|$)/i.test(a.getAttribute("href") || "");
+
         function parseItems(cell) {
           const items = [];
           if (!cell) return items;
 
-          // Module:Areas now wraps each item via utils.ItemLink which produces TWO
-          // anchors per item: (1) icon anchor (<a><img></a>) and (2) text anchor with
-          // display name. Filter to text anchors via "no <img> child" check (= robust
-          // even when text anchor would happen to be empty due to layout edge cases).
-          const anchors = Array
-            .from(cell.querySelectorAll("a"))
-            .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""))
-            .filter(a => !a.querySelector('img'));
+          const lines = cell.innerHTML.split(/<br\s*\/?>/i);
+          lines.forEach((html, idx) => {
+            const tmp = document.createElement("div");
+            tmp.innerHTML = html;
 
-          const quantities = extractQuantitiesFromCell(cell);
+            const anchors = Array
+              .from(tmp.querySelectorAll("a"))
+              .filter(a => !/\/Special:Upload/i.test(a.getAttribute("href") || ""));
+            const textAnchor = anchors.find(a => !a.querySelector("img"));
 
-          anchors.forEach((a, i) => {
-            const name = a.textContent.trim();
-            const qty = Number.isFinite(quantities[i]) ? quantities[i] : 1;
-            console.log(`➡️ [RI] Item #${i + 1}: ${name}, qty=${qty}`);
+            let name = null;
+            if (textAnchor) {
+              name = textAnchor.textContent.trim();
+            } else if (anchors.some(isCoinsAnchor)) {
+              name = COINS_NAME;
+            }
+            if (!name) {
+              const probe = (tmp.textContent || "").trim();
+              if (probe) console.log(`⚠️ [RI] Line ${idx + 1}: no item anchor in "${probe}" → skipped`);
+              return;
+            }
+
+            const qty = extractQuantityFromLine(tmp, idx);
+            console.log(`➡️ [RI] Item #${items.length + 1}: ${name}, qty=${qty}`);
             items.push({ name, qty });
           });
-
-          if (quantities.length !== anchors.length) {
-            console.log(`⚠️ [RI] Anchors=${anchors.length} vs lines=${quantities.length}. Missing qty = 1.`);
-          }
 
           return items;
         }
@@ -276,6 +292,31 @@ mw.hook('wikipage.content').add(function ($content) {
           if (textAnchor) return textAnchor;
           // Fallback: first non-Special:Upload anchor; absolute last resort = first any
           return anchors[0] || row.querySelector("td:nth-of-type(1) a");
+        }
+
+        // "Total in L1" text for one group. Mirrors Module:Areas: the Coins group has
+        // no L1 equivalent, renders "-" and is left out of the grand total
+        // (parseIntSafe("-") === 0 keeps it out here as well).
+        // skipHidden: ignore rows hidden by the remaining-items filter.
+        function groupTotalText(g, skipHidden) {
+          const headerAnchor = getItemAnchorFromRow(g.headerTr);
+          if (headerAnchor && headerAnchor.textContent.trim() === COINS_NAME) return "-";
+
+          let sum = 0;
+          g.rows.forEach(tr => {
+            if (skipHidden && (tr.style.display === "none" ||
+                tr.classList.contains("area-completed-global") ||
+                tr.classList.contains("area-next-global"))) return;
+            const nameCell = getItemAnchorFromRow(tr);
+            const amountCell = tr.querySelector("td:nth-of-type(2)");
+            if (!nameCell || !amountCell) return;
+            const amount = parseIntSafe(amountCell.textContent);
+            const levelMatch = nameCell.textContent.match(/\(L\s*(\d+)\s*\)/i);
+            const level = levelMatch ? parseInt(levelMatch[1], 10) : 1;
+            const weight = Math.pow(2, Math.max(0, level - 1));
+            sum += amount * weight;
+          });
+          return fmt(sum);
         }
 
         // Build groups from original headers: from each .startOfTheGroup until next header/footer
@@ -313,21 +354,10 @@ mw.hook('wikipage.content').add(function ($content) {
           console.log("🧮 [RI] Recomputing group totals (Total in L1) …");
           const groups = buildGroups();
           groups.forEach((g) => {
-            let sum = 0;
-            g.rows.forEach(tr => {
-              if (tr.style.display === "none" || tr.classList.contains("area-completed-global") || tr.classList.contains("area-next-global")) return;
-              const nameCell = getItemAnchorFromRow(tr);
-              const amountCell = tr.querySelector("td:nth-of-type(2)");
-              if (!nameCell || !amountCell) return;
-              const amount = parseIntSafe(amountCell.textContent);
-              const levelMatch = nameCell.textContent.match(/\(L\s*(\d+)\s*\)/i);
-              const level = levelMatch ? parseInt(levelMatch[1], 10) : 1;
-              const weight = Math.pow(2, Math.max(0, level - 1));
-              sum += amount * weight;
-            });
-            g.headerTh.textContent = fmt(sum);
+            const text = groupTotalText(g, true);
+            g.headerTh.textContent = text;
             const clone = g.rows.map(r => r.querySelector('th.center[data-cloned-total="1"]')).find(Boolean);
-            if (clone) clone.textContent = fmt(sum);
+            if (clone) clone.textContent = text;
           });
         }
 
@@ -484,14 +514,14 @@ mw.hook('wikipage.content').add(function ($content) {
           // Recompute Grand Total (footer)
           recomputeGrandTotal();
 
-          // Global "Area Completed!" if grand total is 0
-          let grand = 0;
-          const footer = Array.from(areaTable.querySelectorAll("tr")).find(isFooterRow);
-          if (footer) {
-            const footerCell = footer.querySelector('th.center:not([rowspan])');
-            if (footerCell) grand = parseIntSafe(footerCell.textContent);
-          }
-          if (grand === 0) {
+          // Global "Area Completed!" once no item row is left visible. (Not "grand
+          // total == 0": the Coins group carries no L1 total, so it must not be
+          // ignored by the completion check.)
+          const anyItemVisible = Array.from(areaTable.querySelectorAll("tr")).some(tr =>
+            !isFooterRow(tr) &&
+            tr.style.display !== "none" &&
+            !!tr.querySelector("td:nth-of-type(2)"));
+          if (!anyItemVisible) {
             ensureGlobalCompletedRow();
           } else {
             removeGlobalCompletedRow();
@@ -565,18 +595,7 @@ mw.hook('wikipage.content').add(function ($content) {
           })();
 
           groups.forEach((g) => {
-            let sum = 0;
-            g.rows.forEach(tr => {
-              const nameCell = getItemAnchorFromRow(tr);
-              const amountCell = tr.querySelector("td:nth-of-type(2)");
-              if (!nameCell || !amountCell) return;
-              const amount = parseIntSafe(amountCell.textContent);
-              const levelMatch = nameCell.textContent.match(/\(L\s*(\d+)\s*\)/i);
-              const level = levelMatch ? parseInt(levelMatch[1], 10) : 1;
-              const weight = Math.pow(2, Math.max(0, level - 1));
-              sum += amount * weight;
-            });
-            g.headerTh.textContent = fmt(sum);
+            g.headerTh.textContent = groupTotalText(g, false);
           });
 
           // Grand total

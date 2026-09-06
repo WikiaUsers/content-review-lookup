@@ -1219,3 +1219,5 @@ importArticles({
         );
     });
 })();
+/*DiscussionsActivity*/
+window.discussionsModuleEmbed = true;

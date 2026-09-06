@@ -658,3 +658,329 @@ if (spacer) {
     }
 })();
 }
+// Rating System hopefully
+mw.loader.using(['mediawiki.api']).then(function () {
+	    if (document.body.classList.contains('is-mobile') || window.innerWidth < 768) {
+        console.log("[EJT Ratings] Mobile view detected.");
+        return;
+    }
+    console.log("[EJT Ratings].");
+
+    const pageName = mw.config.get('wgPageName');
+    const userName = mw.config.get('wgUserName'); 
+    const api = new mw.Api();
+    
+    const namespace = mw.config.get('wgNamespaceNumber');
+    if (namespace !== 0 && namespace !== 2) {
+        console.log("[EJT Ratings] Hidden on non-article namespace pages.");
+        return; 
+    }
+
+    const globalLedgerTitle = 'Project:Sitewide_Ratings_Data_Matrix';
+    let isProcessing = false;
+    let masterLedger = null;
+    let userExistingVote = 0;
+
+    if (!document.getElementById('ejt-ratings-responsive-style')) {
+        const styleBlock = document.createElement('style');
+        styleBlock.id = 'ejt-ratings-responsive-style';
+        styleBlock.innerHTML = `
+            .ejt-rating-tab { margin-left: auto; display: inline-flex; align-items: center; padding: 0 10px; }
+            
+            .ejt-rating-wrapper {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-family: 'Rubik', sans-serif;
+                font-size: 13px;
+                font-weight: bold;
+                border: none;
+                background: none;
+                padding: 0 14px;
+                height: 30px;
+                margin-top: 6px;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .ejt-rating-wrapper::before {
+                content: "";
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background-image: radial-gradient(rgba(255, 255, 255, 1) 50%, transparent 50%);
+                background-size: 4px 4px;
+                opacity: 0.15;
+                z-index: -1;
+                transition: opacity 0.3s ease-in-out !important; /* Smoothly fade opacity values */
+            }
+            
+            .ejt-rating-wrapper:hover::before {
+                opacity: 0.4;
+            }
+            
+            @media screen and (max-width: 1100px) {
+                .fandom-community-header__local-navigation .wds-tabs { flex-wrap: wrap !important; height: auto !important; }
+                .ejt-rating-tab { margin-left: 0 !important; padding: 4px 10px !important; width: 100%; justify-content: flex-start; }
+                .ejt-rating-tab div { margin-top: 4px !important; margin-bottom: 6px !important; }
+            }
+        `;
+        document.head.appendChild(styleBlock);
+    }
+
+    
+    function injectIntoMenu(tabsList) {
+        if (tabsList.querySelector('.ejt-rating-tab')) return;
+
+        const containerListItem = document.createElement('li');
+        containerListItem.className = 'wds-tabs__tab ejt-rating-tab';
+        containerListItem.style.cssText = `
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+        `;
+        
+        tabsList.appendChild(containerListItem);
+        renderItemInterface(containerListItem);
+    }
+
+    function renderItemInterface(item) {
+        if (!userName) {
+            item.innerHTML = "<span style='color: #888; font-size: 11px; font-family: \"Rubik\", sans-serif; opacity: 0.7;'>Log in to rate</span>";
+            return;
+        }
+
+        if (!masterLedger) {
+            item.innerHTML = "<span style='color: #666; font-size: 11px; font-family: \"Rubik\", sans-serif;'>Loading...</span>";
+            return;
+        }
+
+        let pageData = masterLedger[pageName] || { score: 0 };
+        const upActiveColor = userExistingVote === 1 ? '#28a745' : '#bbb';
+        const downActiveColor = userExistingVote === -1 ? '#dc3545' : '#bbb';
+
+        item.innerHTML = `
+            <div class="ejt-rating-wrapper">
+                <span style="color: #fff; font-weight: normal; margin-right: 4px; line-height: 30px; font-family: 'Rubik', sans-serif; -webkit-text-stroke: 2px #000; paint-order: stroke fill; font-weight: bold;">Rating:</span>
+                <button class="ejt-up-btn" style="cursor:pointer; background:none; border:none; padding:2px; font-weight:bold; color: ${upActiveColor}; transition: color 0.2s; font-family: 'Rubik', sans-serif; line-height: 30px; -webkit-text-stroke: 4px #000; paint-order: stroke fill;">+1</button>
+                <span class="ejt-score-val" style="color: #fff; min-width: 14px; text-align: center; line-height: 30px; font-family: 'Rubik', sans-serif; -webkit-text-stroke: 2px #000; paint-order: stroke fill;">${pageData.score >= 0 ? '+' + pageData.score : pageData.score}</span>
+                <button class="ejt-down-btn" style="cursor:pointer; background:none; border:none; padding:2px; font-weight:bold; color: ${downActiveColor}; transition: color 0.2s; font-family: 'Rubik', sans-serif; line-height: 30px; -webkit-text-stroke: 4px #000; paint-order: stroke fill;">-1</button>
+            </div>
+        `;
+
+        item.querySelector('.ejt-up-btn').addEventListener('click', function() { processVote(1); });
+        item.querySelector('.ejt-down-btn').addEventListener('click', function() { processVote(-1); });
+    }
+
+    function refreshAllInterfaces() {
+        document.querySelectorAll('.ejt-rating-tab').forEach(renderItemInterface);
+    }
+
+    const observer = new MutationObserver(function () {
+        document.querySelectorAll('.wds-tabs').forEach(function (tabsList) {
+            if (tabsList.closest('.fandom-community-header') || tabsList.closest('.sticky-header')) {
+                injectIntoMenu(tabsList);
+            }
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    api.get({
+        action: 'query',
+        prop: 'revisions',
+        titles: globalLedgerTitle,
+        rvprop: 'content',
+        formatversion: 2,
+        cb: Date.now()
+    }).done(function (data) {
+        try {
+            const page = data.query.pages[0];
+            if (page && page.revisions && page.revisions[0]) {
+                masterLedger = JSON.parse(page.revisions[0].content);
+            }
+        } catch (e) {
+            console.log("[EJT Ratings] Failed to read ledger, initializing blank array map", e);
+            masterLedger = {};
+        }
+
+        if (!masterLedger) masterLedger = {};
+        if (!masterLedger[pageName]) {
+            masterLedger[pageName] = { score: 0, users: {} };
+        } else if (typeof masterLedger[pageName] === 'number') {
+            masterLedger[pageName] = { score: masterLedger[pageName], users: {} };
+        }
+
+        userExistingVote = masterLedger[pageName].users[userName] || 0;
+        refreshAllInterfaces(); 
+    });
+
+    function processVote(targetVote) {
+        if (isProcessing || !masterLedger) return;
+        let pageData = masterLedger[pageName];
+        
+        if (userExistingVote === targetVote) {
+            pageData.score -= targetVote;
+            delete pageData.users[userName];
+            userExistingVote = 0;
+        } 
+        else if (userExistingVote !== 0) {
+            pageData.score += (targetVote * 2); 
+            pageData.users[userName] = targetVote;
+            userExistingVote = targetVote;
+        } 
+        else {
+            pageData.score += targetVote;
+            pageData.users[userName] = targetVote;
+            userExistingVote = targetVote;
+        }
+
+        isProcessing = true;
+        document.querySelectorAll('.ejt-rating-tab').forEach(el => { el.style.opacity = "0.5"; });
+
+        api.postWithToken('csrf', {
+            action: 'edit',
+            title: globalLedgerTitle,
+            summary: `Rating update for [[${pageName}]] by User:${userName}`,
+            text: JSON.stringify(masterLedger, null, 2)
+        }).done(function () {
+            refreshAllInterfaces(); 
+        }).fail(function (err) {
+            alert("Error saving vote adjustments: " + err);
+        }).always(function () {
+            isProcessing = false;
+            document.querySelectorAll('.ejt-rating-tab').forEach(el => { el.style.opacity = "1"; });
+        });
+    }
+});
+// Popular Pages
+(function() {
+    var targetPage = "JToH's_Joke_Towers_Wiki:Popular_Pages"; 
+    if (mw.config.get('wgPageName') !== targetPage) return;
+
+    var container = document.getElementById('dynamic-top-tabber');
+    if (!container) return;
+
+    var wikiSubdomain = window.location.origin;
+    var jsonUrl = wikiSubdomain + '/wiki/JToH\'s_Joke_Towers_Wiki:Popular_Pages/data.json?action=raw';
+
+    fetch(jsonUrl)
+        .then(function(response) {
+            if (!response.ok) throw new Error('HTTP Status ' + response.status);
+            return response.json();
+        })
+        .then(function(allArticles) {
+            if (!Array.isArray(allArticles) || allArticles.length === 0) return;
+
+            var totalItems = allArticles.slice(0, 250);
+            var chunks = [];
+            for (var i = 0; i < totalItems.length; i += 50) {
+                chunks.push(totalItems.slice(i, i + 50));
+            }
+
+            var tabsHTML = '<div class="top-tab-buttons" style="display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; position: relative; z-index: 2; background: transparent; border-bottom: 4px solid #76654a;">';
+            var panesHTML = '<div class="top-tab-panes" style="border: 4px solid #76654a; border-top: none; background: #fff; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">';
+
+            chunks.forEach(function(chunk, index) {
+                var startNum = (index * 50) + 1;
+                var endNum = startNum + chunk.length - 1;
+                var label = 'Pages ' + startNum + '-' + endNum;
+                var isActive = index === 0;
+
+                var bg = isActive ? 'color-mix(in oklab, var(--theme-link-color) 80%, transparent)' : 'color-mix(in oklab, var(--theme-accent-color) 80%, transparent)';
+                var color = isActive ? '#fff' : '#000';
+                var padding = isActive ? '20px 8px 16px 8px' : '10px 8px';
+                
+                var borderLeft = '4px solid #76654a';
+                var borderRight = '4px solid #76654a';
+                var zIndex = isActive ? '3' : '1';
+                
+                var isLast = (index === chunks.length - 1);
+                var marginRight = isLast ? '0px' : '-4px';
+
+                tabsHTML += '<button class="top-tab-btn" data-tab="' + index + '" style="' +
+                    'padding: ' + padding + ';' +
+                    'cursor: pointer;' +
+                    'border: none;' +
+                    'border-top: 4px solid #76654a;' +
+                    'border-left: ' + borderLeft + ';' +
+                    'border-right: ' + borderRight + ';' +
+                    'background: ' + bg + ';' +
+                    'color: ' + color + ';' +
+                    'font-family: inherit;' +
+                    'font-weight: 500;' +
+                    'font-size: 14px;' +
+                    'text-align: center;' +
+                    'outline: none;' +
+                    'position: relative;' +
+                    'z-index: ' + zIndex + ';' +
+                    'transition: padding 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s, color 0.2s;' +
+                    'box-sizing: border-box;' +
+                    'margin-right: ' + marginRight + ';' +
+                    '">' + label + '</button>';
+                
+                panesHTML += '<div class="top-tab-pane" id="top-pane-' + index + '" style="display: ' + (isActive ? 'block' : 'none') + ';">';
+                panesHTML += '<ol start="' + startNum + '" style="padding-left: 25px; line-height: 1.8; margin: 0;">';
+                
+                chunk.forEach(function(itemTitle) {
+                    if (!itemTitle) return;
+                    var safeTitle = encodeURIComponent(itemTitle.trim());
+                    panesHTML += '<li style="margin-bottom: 8px;"><a href="/wiki/' + safeTitle + '" style="color: var(--theme-link-color, #0645ad); font-weight: 500; text-decoration: none;">' + itemTitle + '</a></li>';
+                });
+                
+                panesHTML += '</ol></div>';
+            });
+
+            tabsHTML += '</div>';
+            panesHTML += '</div>';
+
+            container.innerHTML = tabsHTML + panesHTML;
+
+            var buttons = container.querySelectorAll('.top-tab-btn');
+            var panes = container.querySelectorAll('.top-tab-pane');
+
+            buttons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var clickedTab = this.getAttribute('data-tab');
+                    
+                    buttons.forEach(function(b, idx) {
+                        if (idx == clickedTab) {
+                            b.style.background = '#96815b';
+                            b.style.color = '#fff';
+                            b.style.padding = '20px 8px 16px 8px';
+                            b.style.zIndex = '3';
+                        } else {
+                            b.style.background = '#fff';
+                            b.style.color = '#000';
+                            b.style.padding = '10px 8px';
+                            b.style.zIndex = '1';
+                        }
+                    });
+                    
+                    panes.forEach(function(pane, idx) {
+                        pane.style.display = idx == clickedTab ? 'block' : 'none';
+                    });
+                });
+
+                btn.addEventListener('mouseenter', function() {
+                    if (this.style.background !== 'rgb(150, 129, 91)' && this.style.background !== '#96815b') {
+                        this.style.background = '#76654a';
+                        this.style.color = '#fff';
+                        if(this.style.zIndex !== '3') this.style.zIndex = '2'; 
+                    }
+                });
+
+                btn.addEventListener('mouseleave', function() {
+                    if (container.querySelectorAll('.top-tab-pane')[this.getAttribute('data-tab')].style.display !== 'block') {
+                        this.style.background = '#fff';
+                        this.style.color = '#000';
+                        this.style.zIndex = '1';
+                    }
+                });
+            });
+        })
+        .catch(function(err) {
+            console.error('Tabber Error: ', err);
+        });
+})();

@@ -244,3 +244,139 @@ $(function() {
     $box.html('<div class="wt-h3-activity-empty">Aktivite yüklenemedi.</div>');
   });
 });
+
+
+/* ══ YENİ TASARIM — FEATURED CAROUSEL + SON AKTİVİTE ══ */
+$(function() {
+  $('.wt2-featured').each(function() {
+    var $box = $(this);
+    var $slides = $box.find('.wt2-feat-slide');
+    var $dots = $box.find('.wt2-feat-dot');
+    var idx = 0;
+    function show(i) {
+      idx = (i + $slides.length) % $slides.length;
+      $slides.removeClass('wt2-active').eq(idx).addClass('wt2-active');
+      $dots.removeClass('wt2-active').eq(idx).addClass('wt2-active');
+    }
+    $box.find('.wt2-feat-nav').on('click', function() { show(idx + 1); });
+    $dots.on('click', function() { show($dots.index(this)); });
+    show(0);
+  });
+
+  var $box = $('#wt2-recent-activity');
+  if ($box.length) {
+    function wt2TimeAgo(iso) {
+      var m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+      if (m < 1) return 'az önce';
+      if (m < 60) return m + ' dk önce';
+      var h = Math.floor(m / 60);
+      if (h < 24) return h + ' saat önce';
+      return Math.floor(h / 24) + ' gün önce';
+    }
+    $.get(mw.util.wikiScript('api'), {
+      action: 'query', list: 'recentchanges', rcprop: 'title|timestamp|type',
+      rclimit: 8, rcnamespace: 0, rcshow: '!bot', format: 'json'
+    }).done(function(data) {
+      var changes = data.query && data.query.recentchanges;
+      if (!changes || !changes.length) { $box.html('<div class="wt2-act-loading">Henüz aktivite yok.</div>'); return; }
+      $box.empty();
+      changes.forEach(function(rc) {
+        var label = (rc.type === 'new' ? 'Yeni sayfa: ' : 'Güncellendi: ') + rc.title;
+        var $item = $('<div class="wt2-act-item"></div>');
+        var $link = $('<a></a>').attr('href', mw.util.getUrl(rc.title)).text(label);
+        var $time = $('<span class="wt2-act-time"></span>').text(wt2TimeAgo(rc.timestamp));
+        $item.append($link, $time);
+        $box.append($item);
+      });
+    }).fail(function() { $box.html('<div class="wt2-act-loading">Aktivite yüklenemedi.</div>'); });
+  }
+});
+
+/* ══════════════════════════════════════════════════
+   ANA GÖREVLER — AKORDEON + SEVİYE / KARAKTER / BÖLGE FİLTRESİ
+   (Common.js'in sonuna eklenecek)
+   ══════════════════════════════════════════════════ */
+$(function () {
+    'use strict';
+
+    var $wrap = $('.wt-mq-wrap');
+    if (!$wrap.length) return;
+
+    /* ── 1. Akordeon aç/kapat (mevcut wt-nb / wt-h3 üslubuyla aynı) ── */
+    $(document).on('click', '.wt-mq-section-head', function () {
+        $(this).closest('.wt-mq-section').toggleClass('wt-mq-open');
+    });
+    $(document).on('click', '.wt-mq-subsection-head', function (e) {
+        e.stopPropagation(); // üst section'ın toggle'ını tetiklemesin
+        $(this).closest('.wt-mq-subsection').toggleClass('wt-mq-open');
+    });
+
+    /* ── 2. Filtre seçeneklerini satırlardaki data-* değerlerinden topla ── */
+    function collectValues(attr) {
+        var seen = {};
+        $wrap.find('tr[' + attr + ']').each(function () {
+            var raw = $(this).attr(attr);
+            if (!raw) return;
+            raw.split(',').forEach(function (v) {
+                v = $.trim(v);
+                if (v) seen[v] = true;
+            });
+        });
+        return Object.keys(seen).sort(function (a, b) {
+            return a.localeCompare(b, 'tr');
+        });
+    }
+
+    function fillSelect($select, values) {
+        values.forEach(function (v) {
+            $select.append($('<option></option>').val(v).text(v));
+        });
+    }
+
+    fillSelect($wrap.find('[data-filter="level"]'), collectValues('data-level'));
+    fillSelect($wrap.find('[data-filter="character"]'), collectValues('data-character'));
+    fillSelect($wrap.find('[data-filter="region"]'), collectValues('data-region'));
+
+    /* ── 3. Filtreleme mantığı ── */
+    function matchesMulti(raw, val) {
+        if (!val) return true; // "Tümü" seçiliyse her zaman geç
+        var vals = (raw || '').split(',').map(function (s) { return $.trim(s); });
+        return vals.indexOf(val) !== -1;
+    }
+
+    function applyFilters() {
+        var f = {
+            level: $wrap.find('[data-filter="level"]').val(),
+            character: $wrap.find('[data-filter="character"]').val(),
+            region: $wrap.find('[data-filter="region"]').val()
+        };
+
+        $wrap.find('tr[data-level]').each(function () {
+            var $row = $(this);
+            var ok = matchesMulti($row.attr('data-level'), f.level)
+                && matchesMulti($row.attr('data-region'), f.region)
+                && matchesMulti($row.attr('data-character'), f.character);
+            $row.toggle(ok);
+        });
+
+        /* Alt bölüm (2.1 / 2.2 / 2.3) — sayaç + boşsa gizle */
+        $wrap.find('.wt-mq-subsection').each(function () {
+            var $sub = $(this);
+            var visible = $sub.find('tr[data-level]:visible').length;
+            $sub.toggle(visible > 0);
+            $sub.children('.wt-mq-subsection-head')
+                .find('.wt-mq-count').text(visible + ' görev');
+        });
+
+        /* Ana bölüm (1 / 2 / 3 / 4) — sayaç + boşsa gizle */
+        $wrap.find('.wt-mq-section').each(function () {
+            var $sec = $(this);
+            var visible = $sec.find('tr[data-level]:visible').length;
+            $sec.toggle(visible > 0);
+            $sec.children('.wt-mq-section-head')
+                .find('.wt-mq-count').text(visible + ' görev');
+        });
+    }
+
+    $wrap.on('change', '.wt-mq-select', applyFilters);
+});

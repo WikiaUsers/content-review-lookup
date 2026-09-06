@@ -22,15 +22,9 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 
 // VerifyUser defaults
 window.dev.VerifyUser = {
-	command: '$verify',
+	command: '!wiki verify',
 	channel: 'verification'
 };
-// AUW Bot doesn't support pomelo yet
-window.dev = window.dev || {};
-window.dev.i18n = window.dev.i18n || {};
-window.dev.i18n.overrides = window.dev.i18n.overrides || {};
-window.dev.i18n.overrides['VerifyUser'] = window.dev.i18n.overrides['VerifyUser'] || {};
-window.dev.i18n.overrides['VerifyUser']['verify-instructions'] = 'To verify, please enter your Discord username (IMPORTANT: you must include #0000 at the end to properly link your account) in the box below.';
 
 // We have our own rollbacks
 window.RollbackWikiDisable = true;

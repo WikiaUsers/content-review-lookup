@@ -214,6 +214,8 @@ if (
 var currentSort =
     'az';
 
+var showUnobtainable = true;
+
 var sortButton =
     document.createElement('button');
 
@@ -264,6 +266,42 @@ sortButton.addEventListener(
     }
 );
 
+var unobtainableButton =
+    document.createElement('button');
+
+unobtainableButton.type =
+    'button';
+
+unobtainableButton.textContent =
+    'Unobtainable: ✅';
+
+unobtainableButton.dataset.filter =
+    'unobtainable';
+
+unobtainableButton.addEventListener(
+    'click',
+    function () {
+
+        showUnobtainable =
+            !showUnobtainable;
+
+        unobtainableButton.textContent =
+            showUnobtainable
+                ? 'Unobtainable: ✅'
+                : 'Unobtainable: ❌';
+
+        if (
+            window.itemDatabaseLastItems
+        ) {
+
+            showItems(
+                window.itemDatabaseLastItems
+            );
+
+        }
+
+    }
+);
 
 var levelSort =
     'asc';
@@ -275,7 +313,7 @@ levelButton.type =
     'button';
 
 levelButton.textContent =
-    'Nivel ↑';
+    'Level ↑';
 
 levelButton.dataset.sort =
     'level-asc';
@@ -293,7 +331,7 @@ levelButton.addEventListener(
                 'desc';
 
             levelButton.textContent =
-                'Nivel ↓';
+                'Level ↓';
 
         } else {
 
@@ -301,7 +339,7 @@ levelButton.addEventListener(
                 'asc';
 
             levelButton.textContent =
-                'Nivel ↑';
+                'Level ↑';
 
         }
 
@@ -383,8 +421,140 @@ navigation.appendChild(
     itemCount
 );
 
-navigation.appendChild(
+var sortContainer =
+    document.createElement('div');
+
+sortContainer.className =
+    'item-database-sort-container';
+
+sortContainer.appendChild(
+    levelButton
+);
+
+sortContainer.appendChild(
     sortButton
+);
+
+sortContainer.appendChild(
+    levelButton
+);
+
+sortContainer.appendChild(
+    sortButton
+);
+
+sortContainer.appendChild(
+    unobtainableButton
+);
+
+var topButton =
+    document.createElement('button');
+
+topButton.type =
+    'button';
+
+topButton.textContent =
+    '↑';
+
+topButton.title =
+    'Go to top';
+
+topButton.addEventListener(
+    'click',
+    function () {
+
+        window.scrollTo({
+            top: 320,
+            behavior: 'smooth'
+        });
+
+    }
+);
+
+var bottomButton =
+    document.createElement('button');
+
+bottomButton.type =
+    'button';
+
+bottomButton.textContent =
+    '↓';
+
+bottomButton.title =
+    'Go to bottom';
+
+bottomButton.addEventListener(
+    'click',
+    function () {
+
+        var target =
+            document.querySelector(
+                '[aria-controls="collapsible-content-categories"]'
+            );
+
+        if (
+            !target
+        ) {
+
+            var panels =
+                document.querySelectorAll(
+                    '.wds-collapsible-panel__header'
+                );
+
+            panels.forEach(
+                function (panel) {
+
+                    var text =
+                        String(
+                            panel.textContent || ''
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    if (
+                        text === 'categories'
+                    ) {
+
+                        target = panel;
+
+                    }
+
+                }
+            );
+
+        }
+
+        if (
+            target
+        ) {
+
+            var targetPosition =
+                target.getBoundingClientRect().top +
+                window.scrollY;
+
+            window.scrollTo({
+                top:
+                    targetPosition -
+                    500,
+                behavior:
+                    'smooth'
+            });
+
+        }
+
+    }
+);
+
+sortContainer.appendChild(
+    topButton
+);
+
+sortContainer.appendChild(
+    bottomButton
+);
+
+navigation.appendChild(
+    sortContainer
 );
 
 
@@ -395,8 +565,30 @@ function showItems(items) {
             'item-database-results'
         );
 
-    var sortedItems =
-        items.slice();
+window.itemDatabaseLastItems =
+    items;
+
+var filteredItems =
+    items.filter(
+        function (item) {
+
+            if (
+                showUnobtainable
+            ) {
+                return true;
+            }
+
+            return !item.unobtainable;
+
+        }
+    );
+
+itemCount.textContent =
+    filteredItems.length +
+    ' Items';
+
+var sortedItems =
+    filteredItems.slice();
 
     sortedItems.sort(
         function (a, b) {
@@ -501,9 +693,6 @@ return currentSort === 'az'
     items =
         sortedItems;
 
-window.itemDatabaseLastItems =
-    items;
-
     console.log(
         '===== SHOW ITEMS ====='
     );
@@ -523,8 +712,15 @@ window.itemDatabaseLastItems =
 
     }
 
-    results.innerHTML = '';
+while (
+    results.firstChild
+) {
 
+    results.removeChild(
+        results.firstChild
+    );
+
+}
     if (
         !items ||
         !items.length
@@ -555,15 +751,21 @@ window.itemDatabaseLastItems =
             var icon =
                 document.createElement('img');
 
-            if (item.icon) {
+if (item.icon) {
 
-                icon.src =
-                    mw.util.getUrl(
-                        'Special:Redirect/file/' +
-                        item.icon
-                    );
+    var safeIconUrl =
+        createSafeFileUrl(
+            item.icon
+        );
 
-            }
+    if (safeIconUrl) {
+
+        icon.src =
+            safeIconUrl;
+
+    }
+
+}
 
             icon.alt =
                 item.name || 'Item';
@@ -669,10 +871,10 @@ window.itemDatabaseLastScroll =
         '===== ITEMS DISPLAYED ====='
     );
 
-    console.log(
-        'Items displayed:',
-        items.length
-    );
+console.log(
+    'Items displayed:',
+    filteredItems.length
+);
 
 }
 
@@ -681,314 +883,193 @@ window.itemDatabaseLastScroll =
 
 
 
-function showItemDetails(item) {
+function createSafeFileUrl(fileName) {
 
-var results =
-    document.getElementById(
-        'item-database-results'
+    if (!fileName) {
+        return '';
+    }
+
+    var value =
+        String(fileName)
+            .trim()
+            .replace(/^File:/i, '')
+            .replace(/^Image:/i, '')
+            .trim();
+
+    if (!value) {
+        return '';
+    }
+
+    if (
+        /[\\/:*?"<>|]/.test(value)
+    ) {
+        return '';
+    }
+
+    if (
+        !/^[^.\s][^"]*\.(png|jpg|jpeg|gif|webp)$/i.test(value)
+    ) {
+        return '';
+    }
+
+    return mw.util.getUrl(
+        'Special:Redirect/file/' +
+        value
     );
-
-if (!results) {
-
-    console.error(
-        'Item Database results container not found.'
-    );
-
-    return;
 
 }
 
-results.innerHTML = '';
 
-var backButton =
-    document.createElement('button');
 
-backButton.type =
-    'button';
+function isSafeWikiTarget(target) {
 
-backButton.textContent =
-    '← Back';
+    if (!target) {
+        return false;
+    }
 
-backButton.className =
-    'item-database-back-button';
+    var value =
+        String(target)
+            .trim();
 
-backButton.addEventListener(
-    'click',
-    function () {
+    if (!value) {
+        return false;
+    }
 
-        var previousScroll =
-            window.itemDatabaseLastScroll;
+    if (
+        /^[a-z][a-z0-9+.-]*:/i.test(
+            value
+        )
+    ) {
+        return false;
+    }
+
+    if (
+        /^\/\//.test(value)
+    ) {
+        return false;
+    }
+
+    if (
+        /^https?:\/\//i.test(value)
+    ) {
+        return false;
+    }
+
+    if (
+        /[<>"`]/.test(value)
+    ) {
+        return false;
+    }
+
+    return true;
+
+}
+
+
+
+
+function createTextElement(
+    tagName,
+    text
+) {
+
+    var element =
+        document.createElement(
+            tagName
+        );
+
+    element.textContent =
+        text === undefined ||
+        text === null
+            ? ''
+            : String(text);
+
+    return element;
+
+}
+
+
+function appendSafeWikiText(
+    container,
+    text
+) {
+
+    if (
+        text === undefined ||
+        text === null
+    ) {
+        return;
+    }
+
+    text =
+        String(text);
+
+    var pattern =
+        /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+
+    var lastIndex =
+        0;
+
+    var match;
+
+    while (
+        (match = pattern.exec(text)) !== null
+    ) {
 
         if (
-            window.itemDatabaseLastItems
+            match.index >
+            lastIndex
         ) {
 
-            showItems(
-                window.itemDatabaseLastItems
-            );
-
-            requestAnimationFrame(
-                function () {
-
-                    window.scrollTo({
-                        top: previousScroll,
-                        behavior: 'smooth'
-                    });
-
-                }
+            container.appendChild(
+                document.createTextNode(
+                    text.slice(
+                        lastIndex,
+                        match.index
+                    )
+                )
             );
 
         }
 
-    }
-);
+        var target =
+            String(
+                match[1] || ''
+            ).trim();
 
-results.appendChild(
-    backButton
-);
+        var label =
+            match[2] !== undefined
+                ? String(match[2]).trim()
+                : target;
 
-var card =
-    document.createElement('div');
+        if (
+            /^file:/i.test(target) ||
+            /^image:/i.test(target)
+        ) {
 
-card.className =
-    'item-database-card';
+            var fileName =
+                target
+                    .replace(
+                        /^(file|image):/i,
+                        ''
+                    )
+                    .trim();
 
-var detailsLayout =
-    document.createElement('div');
-
-detailsLayout.className =
-    'item-database-details-layout';
-
-var detailsInfo =
-    document.createElement('div');
-
-detailsInfo.className =
-    'item-database-details-info';
-
-var detailsImage =
-    document.createElement('div');
-
-detailsImage.className =
-    'item-database-details-image';
-
-if (item.icon) {
-
-    var itemIcon =
-        document.createElement('img');
-
-    itemIcon.src =
-        mw.util.getUrl(
-            'Special:Redirect/file/' +
-            item.icon
-        );
-
-    itemIcon.alt =
-        item.name || 'Item';
-
-    itemIcon.className =
-        'item-database-details-icon';
-
-    detailsImage.appendChild(
-        itemIcon
-    );
-
-}
-
-var title =
-    document.createElement('h2');
-
-var itemType =
-    String(
-        item && item.type
-            ? item.type
-            : ''
-    )
-        .trim()
-        .toLowerCase();
-
-var itemName =
-    item && item.name
-        ? item.name
-        : 'Unnamed Item';
-
-var specialPages = [];
-
-if (
-    itemType === 'pet'
-) {
-
-    specialPages = [
-        'Obtainable Companions (Mobs / Quests)'
-    ];
-
-}
-
-else if (
-    itemType === 'aura' ||
-    itemType === 'body aura'
-) {
-
-    specialPages = [
-        'Obtainable Auras (Mobs / Quests)',
-        'Obtainable Auras (Burst Store)'
-    ];
-
-}
-
-title.textContent =
-    itemName;
-
-card.appendChild(
-    title
-);
-
-function createItemTitleLink(
-    targetPage
-) {
-
-    title.textContent = '';
-
-    var link =
-        document.createElement('a');
-
-    link.href =
-        mw.util.getUrl(
-            targetPage
-        );
-
-    link.textContent =
-        itemName;
-
-    title.appendChild(
-        link
-    );
-
-}
-
-if (
-    !specialPages.length
-) {
-
-    createItemTitleLink(
-        itemName
-    );
-
-} else {
-
-    var requests =
-        specialPages.map(
-            function (pageName) {
-
-                return new mw.Api()
-                    .get({
-                        action: 'parse',
-                        page: pageName,
-                        prop: 'wikitext',
-                        formatversion: 2
-                    });
-
-            }
-        );
-
-    Promise.all(requests)
-        .then(
-            function (responses) {
-
-                for (
-                    var i = 0;
-                    i < responses.length;
-                    i++
-                ) {
-
-                    var response =
-                        responses[i];
-
-                    var wikitext =
-                        response &&
-                        response.parse &&
-                        response.parse.wikitext
-                            ? String(
-                                response.parse.wikitext
-                            )
-                            : '';
-
-                    if (
-                        wikitext
-                            .toLowerCase()
-                            .indexOf(
-                                itemName.toLowerCase()
-                            ) !== -1
-                    ) {
-
-                        createItemTitleLink(
-                            specialPages[i]
-                        );
-
-                        return;
-
-                    }
-
-                }
-
-            }
-        )
-        .catch(
-            function (error) {
-
-                console.error(
-                    'SPECIAL ITEM PAGE CHECK ERROR:',
-                    error
+            var fileUrl =
+                createSafeFileUrl(
+                    fileName
                 );
 
-            }
-        );
+            if (fileUrl) {
 
-}
-
-
-card.appendChild(
-    title
-);
-
-var info =
-    document.createElement('div');
-
-info.className =
-    'item-database-info';
-
-function parseWikiLinks(text) {
-
-    if (!text) {
-        return '';
-    }
-
-    text = String(text);
-
-    text = text.replace(
-        /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,
-        function (match, target, label) {
-
-            if (
-                target
-                    .trim()
-                    .toLowerCase()
-                    .indexOf('file:') === 0
-            ) {
-
-                var fileName =
-                    target
-                        .trim()
-                        .replace(
-                            /^file:/i,
-                            ''
-                        );
-
-                var options =
-                    label || '';
+                var img =
+                    document.createElement(
+                        'img'
+                    );
 
                 var sizeMatch =
-                    options.match(
-                        /(\d+)px/i
+                    label.match(
+                        /(?:^|\|)\s*(\d{1,4})px\s*(?:\||$)/i
                     );
 
                 var size =
@@ -996,16 +1077,11 @@ function parseWikiLinks(text) {
                         ? sizeMatch[1] + 'px'
                         : '20px';
 
-                var img =
-                    document.createElement(
-                        'img'
-                    );
-
                 img.src =
-                    mw.util.getUrl(
-                        'Special:Redirect/file/' +
-                        fileName
-                    );
+                    fileUrl;
+
+                img.alt =
+                    fileName;
 
                 img.style.height =
                     size;
@@ -1016,368 +1092,1193 @@ function parseWikiLinks(text) {
                 img.style.verticalAlign =
                     'middle';
 
-                return img.outerHTML;
+                container.appendChild(
+                    img
+                );
+
+            } else {
+
+                container.appendChild(
+                    document.createTextNode(
+                        match[0]
+                    )
+                );
 
             }
 
-            var wikiLink =
-                document.createElement(
-                    'a'
-                );
-
-            wikiLink.href =
-                mw.util.getUrl(
-                    target.trim()
-                );
-
-            wikiLink.textContent =
-                label || target;
-
-            return wikiLink.outerHTML;
-
-        }
-    );
-
-    text = text.replace(
-        /\[([a-z]+:\/\/[^\s\]]+)(?:\s+([^\]]+))?\]/gi,
-        function (match, url, label) {
-
-            var externalLink =
-                document.createElement(
-                    'a'
-                );
-
-            externalLink.href =
-                url;
-
-            externalLink.textContent =
-                label || url;
-
-            externalLink.target =
-                '_blank';
-
-            externalLink.rel =
-                'noopener noreferrer';
-
-            return externalLink.outerHTML;
-
-        }
-    );
-
-    return text;
-
-}
-
-var html = '';
-
-html += `
-    <div>
-        <strong>Type:</strong>
-        ${item.type || 'Unknown'}
-    </div>
-`;
-
-if (item.stats) {
-
-    html += `
-        <div>
-            <strong>Stats:</strong>
-            ${parseWikiLinks(item.stats)}
-        </div>
-    `;
-
-}
-
-if (item.rarity) {
-
-    html += `
-        <div>
-            <strong>Rarity:</strong>
-            ${item.rarity}
-        </div>
-    `;
-
-}
-
-if (item.level) {
-
-    html += `
-        <div>
-            <strong>Level:</strong>
-            ${item.level}
-        </div>
-    `;
-
-}
-
-if (item.dmg) {
-
-    html += `
-        <div>
-            <strong>Damage:</strong>
-            ${String(item.dmg).replace(
-                /\n/g,
-                '<br>'
-            )}
-        </div>
-    `;
-
-}
-
-if (item.def) {
-
-    html += `
-        <div>
-            <strong>Defense:</strong>
-            ${String(item.def).replace(
-                /\n/g,
-                '<br>'
-            )}
-        </div>
-    `;
-
-}
-
-if (item.crit) {
-
-    html += `
-        <div>
-            <strong>Crit:</strong>
-            ${item.crit}
-        </div>
-    `;
-
-}
-
-if (item.abilities) {
-
-    html += `
-        <div>
-            <strong>Abilities:</strong>
-            <ul>
-                ${
-                    String(item.abilities)
-                        .split('\n')
-                        .map(function (ability) {
-
-                            return '<li>' +
-                                parseWikiLinks(
-                                    ability
-                                        .replace(
-                                            /^\s*\*\s*/,
-                                            ''
-                                        )
-                                        .trim()
-                                ) +
-                                '</li>';
-
-                        })
-                        .join('')
-                }
-            </ul>
-        </div>
-    `;
-
-}
-
-if (item.skill) {
-
-    html += `
-        <div>
-            <strong>Skill:</strong>
-            ${parseWikiLinks(item.skill)}
-        </div>
-    `;
-
-}
-
-if (item.chance) {
-
-    html += `
-        <div>
-            <strong>Chance:</strong>
-            ${item.chance}
-        </div>
-    `;
-
-}
-
-if (item.chanceCost) {
-
-    html += `
-        <div>
-            <strong>Chance Cost:</strong>
-            ${parseWikiLinks(item.chanceCost)}
-        </div>
-    `;
-
-}
+        } else {
 
 if (
-    item.cost &&
-    String(item.cost).toLowerCase() !== 'none'
+    isSafeWikiTarget(
+        target
+    )
 ) {
 
-    html += `
-        <div>
-            <strong>Cost:</strong>
-            ${
-                item.store
-                ?
-                `<img
-                    src="${mw.util.getUrl('Special:Redirect/file/RobuxIcon.png')}"
-                    style="height:20px;width:auto;vertical-align:middle;"
-                > ${parseWikiLinks(item.cost)}`
-                :
-                parseWikiLinks(item.cost)
+                var wikiLink =
+                    document.createElement(
+                        'a'
+                    );
+
+                wikiLink.href =
+                    mw.util.getUrl(
+                        target
+                    );
+
+                wikiLink.textContent =
+                    label;
+
+                container.appendChild(
+                    wikiLink
+                );
+
+            } else {
+
+                container.appendChild(
+                    document.createTextNode(
+                        match[0]
+                    )
+                );
+
             }
-        </div>
-    `;
 
-}
+        }
 
-if (item.store) {
+        lastIndex =
+            pattern.lastIndex;
 
-    html += `
-        <div>
-            <strong>Obtain:</strong>
-            ${
-                item.unobtainable
-                ?
-                `
-                <s>
-                    ${
-                        item.bundle
-                        ?
-                        `<a href="${mw.util.getUrl('Bundles')}">Bundle</a>`
-                        :
-                        `<a href="${mw.util.getUrl('Burst Store')}">Shop</a>`
-                    }
-                </s>
+    }
 
-                <br>
+    if (
+        lastIndex <
+        text.length
+    ) {
 
-                <strong>Currently unobtainable</strong>
-                `
-                :
-                (
-                    item.bundle
-                    ?
-                    `<a href="${mw.util.getUrl('Bundles')}">Bundle</a>`
-                    :
-                    `<a href="${mw.util.getUrl('Burst Store')}">Shop</a>`
+        container.appendChild(
+            document.createTextNode(
+                text.slice(
+                    lastIndex
                 )
-            }
-        </div>
-    `;
-
-} else if (item.obtain) {
-
-    if (item.unobtainable) {
-
-        html += `
-            <div>
-                <strong>Obtain:</strong>
-
-                <ul>
-                    ${
-                        String(item.obtain)
-                            .split('\n')
-                            .map(function (obtain) {
-
-                                return '<li><s>' +
-                                    parseWikiLinks(
-                                        obtain
-                                            .replace(
-                                                /^\s*\*\s*/,
-                                                ''
-                                            )
-                                            .trim()
-                                    ) +
-                                    '</s></li>';
-
-                            })
-                            .join('')
-                    }
-                </ul>
-
-                <strong>Currently unobtainable</strong>
-            </div>
-        `;
-
-    } else {
-
-        html += `
-            <div>
-                <strong>Obtain:</strong>
-                ${parseWikiLinks(item.obtain)}
-            </div>
-        `;
+            )
+        );
 
     }
 
 }
 
-if (item.description) {
 
-    html += `
-        <div>
-            <strong>Description:</strong>
-            ${parseWikiLinks(
-                String(item.description).replace(
-                    /\n/g,
-                    '<br>'
+function appendSafeMultilineText(
+    container,
+    text
+) {
+
+    if (
+        text === undefined ||
+        text === null
+    ) {
+        return;
+    }
+
+    var lines =
+        String(text).split('\n');
+
+    lines.forEach(
+        function (line, index) {
+
+            appendSafeWikiText(
+                container,
+                line
+            );
+
+            if (
+                index <
+                lines.length - 1
+            ) {
+
+                container.appendChild(
+                    document.createElement(
+                        'br'
+                    )
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+function showItemDetails(item) {
+
+    console.log(
+        '===== SHOW ITEM DETAILS ====='
+    );
+
+    console.log(
+        'Item:',
+        item
+    );
+
+    var app =
+        document.getElementById(
+            'item-database-app'
+        );
+
+    if (!app) {
+
+        console.error(
+            'Item Database app not found.'
+        );
+
+        return;
+
+    }
+
+    var results =
+        document.getElementById(
+            'item-database-results'
+        );
+
+    if (!results) {
+
+        console.error(
+            'Item Database results container not found.'
+        );
+
+        return;
+
+    }
+
+    var oldDetails =
+        document.getElementById(
+            'item-database-item-details'
+        );
+
+    if (oldDetails) {
+
+        oldDetails.remove();
+
+    }
+
+    var details =
+        document.createElement('div');
+
+    details.id =
+        'item-database-item-details';
+
+    details.className =
+        'item-database-item-details';
+
+    var backButton =
+        document.createElement('button');
+
+    backButton.type =
+        'button';
+
+    backButton.textContent =
+        '← Back';
+
+    backButton.className =
+        'item-database-back-button';
+
+    function closeItemDetails() {
+
+    if (!details.parentNode) {
+        return;
+    }
+
+    details.remove();
+
+    window.removeEventListener(
+        'wheel',
+        handleDetailsWheel
+    );
+
+    document.removeEventListener(
+        'keydown',
+        handleDetailsKeydown
+    );
+
+document.removeEventListener(
+    'touchmove',
+    handleDetailsTouchMove
+);
+
+    document.removeEventListener(
+        'click',
+        handleDetailsOutsideClick
+    );
+
+}
+
+backButton.addEventListener(
+    'click',
+    closeItemDetails
+);
+
+    details.appendChild(
+        backButton
+    );
+
+    var card =
+        document.createElement('div');
+
+    card.className =
+        'item-database-card';
+
+    var detailsLayout =
+        document.createElement('div');
+
+    detailsLayout.className =
+        'item-database-details-layout';
+
+    var detailsInfo =
+        document.createElement('div');
+
+    detailsInfo.className =
+        'item-database-details-info';
+
+    var detailsImage =
+        document.createElement('div');
+
+    detailsImage.className =
+        'item-database-details-image';
+
+    if (item && item.icon) {
+
+        var itemIconUrl =
+            createSafeFileUrl(
+                item.icon
+            );
+
+        if (itemIconUrl) {
+
+            var itemIcon =
+                document.createElement('img');
+
+            itemIcon.src =
+                itemIconUrl;
+
+            itemIcon.alt =
+                item.name || 'Item';
+
+            itemIcon.className =
+                'item-database-details-icon';
+
+            detailsImage.appendChild(
+                itemIcon
+            );
+
+        }
+
+    }
+
+    var title =
+        document.createElement('h2');
+
+    var itemType =
+        String(
+            item && item.type
+                ? item.type
+                : ''
+        )
+            .trim()
+            .toLowerCase();
+
+    var itemName =
+        item && item.name
+            ? String(item.name)
+            : 'Unnamed Item';
+
+    title.textContent =
+        itemName;
+
+    var specialPages = [];
+
+    if (
+        itemType === 'pet'
+    ) {
+
+        specialPages = [
+            'Obtainable Companions (Mobs / Quests)'
+        ];
+
+    } else if (
+        itemType === 'aura' ||
+        itemType === 'body aura'
+    ) {
+
+        specialPages = [
+            'Obtainable Auras (Mobs / Quests)',
+            'Obtainable Auras (Burst Store)'
+        ];
+
+    }
+
+    function createItemTitleLink(
+        targetPage
+    ) {
+
+        title.textContent =
+            '';
+
+        var link =
+            document.createElement('a');
+
+        link.href =
+            mw.util.getUrl(
+                targetPage
+            );
+
+        link.textContent =
+            itemName;
+
+        title.appendChild(
+            link
+        );
+
+    }
+
+    if (
+        !specialPages.length
+    ) {
+
+        createItemTitleLink(
+            itemName
+        );
+
+    } else {
+
+        var requests =
+            specialPages.map(
+                function (pageName) {
+
+                    return new mw.Api()
+                        .get({
+                            action: 'parse',
+                            page: pageName,
+                            prop: 'wikitext',
+                            formatversion: 2
+                        });
+
+                }
+            );
+
+        Promise.all(requests)
+            .then(
+                function (responses) {
+
+                    for (
+                        var i = 0;
+                        i < responses.length;
+                        i++
+                    ) {
+
+                        var response =
+                            responses[i];
+
+                        var wikitext =
+                            response &&
+                            response.parse &&
+                            response.parse.wikitext
+                                ? String(
+                                    response.parse.wikitext
+                                )
+                                : '';
+
+                        if (
+                            wikitext
+                                .toLowerCase()
+                                .indexOf(
+                                    itemName.toLowerCase()
+                                ) !== -1
+                        ) {
+
+                            createItemTitleLink(
+                                specialPages[i]
+                            );
+
+                            return;
+
+                        }
+
+                    }
+
+                }
+            )
+            .catch(
+                function (error) {
+
+                    console.error(
+                        'SPECIAL ITEM PAGE CHECK ERROR:',
+                        error
+                    );
+
+                }
+            );
+
+    }
+
+    var info =
+        document.createElement('div');
+
+    info.className =
+        'item-database-info';
+
+
+    function appendInfoRow(
+        label,
+        value,
+        multiline,
+        wikiText
+    ) {
+
+        if (
+            value === undefined ||
+            value === null ||
+            String(value).trim() === ''
+        ) {
+            return;
+        }
+
+        var row =
+            document.createElement('div');
+
+        var strong =
+            document.createElement('strong');
+
+        strong.textContent =
+            label + ':';
+
+        row.appendChild(
+            strong
+        );
+
+        row.appendChild(
+            document.createTextNode(' ')
+        );
+
+        if (wikiText) {
+
+            if (multiline) {
+
+                appendSafeMultilineText(
+                    row,
+                    value
+                );
+
+            } else {
+
+                appendSafeWikiText(
+                    row,
+                    value
+                );
+
+            }
+
+        } else {
+
+            if (multiline) {
+
+                var lines =
+                    String(value)
+                        .split('\n');
+
+                lines.forEach(
+                    function (line, index) {
+
+                        row.appendChild(
+                            document.createTextNode(
+                                line
+                            )
+                        );
+
+                        if (
+                            index <
+                            lines.length - 1
+                        ) {
+
+                            row.appendChild(
+                                document.createElement(
+                                    'br'
+                                )
+                            );
+
+                        }
+
+                    }
+                );
+
+            } else {
+
+                row.appendChild(
+                    document.createTextNode(
+                        String(value)
+                    )
+                );
+
+            }
+
+        }
+
+        info.appendChild(
+            row
+        );
+
+    }
+
+
+    appendInfoRow(
+        'Type',
+        item.type || 'Unknown',
+        false,
+        false
+    );
+
+
+    appendInfoRow(
+        'Stats',
+        item.stats,
+        false,
+        true
+    );
+
+
+    appendInfoRow(
+        'Rarity',
+        item.rarity,
+        false,
+        false
+    );
+
+
+    appendInfoRow(
+        'Level',
+        item.level,
+        false,
+        false
+    );
+
+
+    appendInfoRow(
+        'Damage',
+        item.dmg,
+        true,
+        false
+    );
+
+
+    appendInfoRow(
+        'Defense',
+        item.def,
+        true,
+        false
+    );
+
+
+    appendInfoRow(
+        'Crit',
+        item.crit,
+        false,
+        false
+    );
+
+
+    if (
+        item.abilities
+    ) {
+
+        var abilitiesRow =
+            document.createElement('div');
+
+        var abilitiesStrong =
+            document.createElement('strong');
+
+        abilitiesStrong.textContent =
+            'Abilities:';
+
+        abilitiesRow.appendChild(
+            abilitiesStrong
+        );
+
+        var abilitiesList =
+            document.createElement('ul');
+
+        String(item.abilities)
+            .split('\n')
+            .forEach(
+                function (ability) {
+
+                    var cleanAbility =
+                        ability
+                            .replace(
+                                /^\s*\*\s*/,
+                                ''
+                            )
+                            .trim();
+
+                    if (!cleanAbility) {
+                        return;
+                    }
+
+                    var li =
+                        document.createElement(
+                            'li'
+                        );
+
+                    appendSafeWikiText(
+                        li,
+                        cleanAbility
+                    );
+
+                    abilitiesList.appendChild(
+                        li
+                    );
+
+                }
+            );
+
+        abilitiesRow.appendChild(
+            abilitiesList
+        );
+
+        info.appendChild(
+            abilitiesRow
+        );
+
+    }
+
+
+    appendInfoRow(
+        'Skill',
+        item.skill,
+        false,
+        true
+    );
+
+
+    appendInfoRow(
+        'Chance',
+        item.chance,
+        false,
+        false
+    );
+
+
+    appendInfoRow(
+        'Chance Cost',
+        item.chanceCost,
+        false,
+        true
+    );
+
+
+    if (
+        item.cost &&
+        String(item.cost)
+            .toLowerCase() !== 'none'
+    ) {
+
+        var costRow =
+            document.createElement('div');
+
+        var costStrong =
+            document.createElement('strong');
+
+        costStrong.textContent =
+            'Cost:';
+
+        costRow.appendChild(
+            costStrong
+        );
+
+        costRow.appendChild(
+            document.createTextNode(' ')
+        );
+
+        if (
+            item.store
+        ) {
+
+            var robuxUrl =
+                createSafeFileUrl(
+                    'RobuxIcon.png'
+                );
+
+            if (robuxUrl) {
+
+                var robuxIcon =
+                    document.createElement(
+                        'img'
+                    );
+
+                robuxIcon.src =
+                    robuxUrl;
+
+                robuxIcon.alt =
+                    'Robux';
+
+                robuxIcon.style.height =
+                    '20px';
+
+                robuxIcon.style.width =
+                    'auto';
+
+                robuxIcon.style.verticalAlign =
+                    'middle';
+
+                costRow.appendChild(
+                    robuxIcon
+                );
+
+                costRow.appendChild(
+                    document.createTextNode(' ')
+                );
+
+            }
+
+        }
+
+        appendSafeWikiText(
+            costRow,
+            item.cost
+        );
+
+        info.appendChild(
+            costRow
+        );
+
+    }
+
+
+    if (
+        item.store
+    ) {
+
+        var obtainRow =
+            document.createElement('div');
+
+        var obtainStrong =
+            document.createElement('strong');
+
+        obtainStrong.textContent =
+            'Obtain:';
+
+        obtainRow.appendChild(
+            obtainStrong
+        );
+
+        obtainRow.appendChild(
+            document.createTextNode(' ')
+        );
+
+        var obtainLink =
+            document.createElement('a');
+
+        if (
+            item.bundle
+        ) {
+
+            obtainLink.href =
+                mw.util.getUrl(
+                    'Bundles'
+                );
+
+            obtainLink.textContent =
+                'Bundle';
+
+        } else {
+
+            obtainLink.href =
+                mw.util.getUrl(
+                    'Burst Store'
+                );
+
+            obtainLink.textContent =
+                'Shop';
+
+        }
+
+        if (
+            item.unobtainable
+        ) {
+
+            var strike =
+                document.createElement(
+                    's'
+                );
+
+            strike.appendChild(
+                obtainLink
+            );
+
+            obtainRow.appendChild(
+                strike
+            );
+
+            obtainRow.appendChild(
+                document.createElement(
+                    'br'
                 )
-            )}
-        </div>
-    `;
+            );
+
+            var unavailable =
+                document.createElement(
+                    'strong'
+                );
+
+            unavailable.textContent =
+                'Currently unobtainable';
+
+            obtainRow.appendChild(
+                unavailable
+            );
+
+        } else {
+
+            obtainRow.appendChild(
+                obtainLink
+            );
+
+        }
+
+        info.appendChild(
+            obtainRow
+        );
+
+    } else if (
+        item.obtain
+    ) {
+
+        var obtainContainer =
+            document.createElement(
+                'div'
+            );
+
+        var obtainStrong =
+            document.createElement('strong');
+
+        obtainStrong.textContent =
+            'Obtain:';
+
+        obtainContainer.appendChild(
+            obtainStrong
+        );
+
+        var obtainList =
+            document.createElement('ul');
+
+        String(item.obtain)
+            .split('\n')
+            .forEach(
+                function (obtain) {
+
+                    var cleanObtain =
+                        obtain
+                            .replace(
+                                /^\s*\*\s*/,
+                                ''
+                            )
+                            .trim();
+
+                    if (!cleanObtain) {
+                        return;
+                    }
+
+                    var li =
+                        document.createElement(
+                            'li'
+                        );
+
+                    if (
+                        item.unobtainable
+                    ) {
+
+                        var strike =
+                            document.createElement(
+                                's'
+                            );
+
+                        appendSafeWikiText(
+                            strike,
+                            cleanObtain
+                        );
+
+                        li.appendChild(
+                            strike
+                        );
+
+                    } else {
+
+                        appendSafeWikiText(
+                            li,
+                            cleanObtain
+                        );
+
+                    }
+
+                    obtainList.appendChild(
+                        li
+                    );
+
+                }
+            );
+
+        obtainContainer.appendChild(
+            obtainList
+        );
+
+        if (
+            item.unobtainable
+        ) {
+
+            obtainContainer.appendChild(
+                document.createElement(
+                    'br'
+                )
+            );
+
+            var unavailable =
+                document.createElement(
+                    'strong'
+                );
+
+            unavailable.textContent =
+                'Currently unobtainable';
+
+            obtainContainer.appendChild(
+                unavailable
+            );
+
+        }
+
+        info.appendChild(
+            obtainContainer
+        );
+
+    }
+
+
+    if (
+        item.description
+    ) {
+
+        var descriptionRow =
+            document.createElement(
+                'div'
+            );
+
+        var descriptionStrong =
+            document.createElement(
+                'strong'
+            );
+
+        descriptionStrong.textContent =
+            'Description:';
+
+        descriptionRow.appendChild(
+            descriptionStrong
+        );
+
+        descriptionRow.appendChild(
+            document.createTextNode(' ')
+        );
+
+        appendSafeMultilineText(
+            descriptionRow,
+            item.description
+        );
+
+        info.appendChild(
+            descriptionRow
+        );
+
+    }
+
+
+    detailsInfo.appendChild(
+        title
+    );
+
+    detailsInfo.appendChild(
+        info
+    );
+
+    detailsLayout.appendChild(
+        detailsInfo
+    );
+
+    detailsLayout.appendChild(
+        detailsImage
+    );
+
+    card.appendChild(
+        detailsLayout
+    );
+
+    details.appendChild(
+        card
+    );
+
+    results.insertAdjacentElement(
+        'beforebegin',
+        details
+    );
+
+function handleDetailsWheel() {
+
+    closeItemDetails();
 
 }
 
-info.innerHTML =
-    html;
+function handleDetailsKeydown(event) {
 
-detailsInfo.appendChild(
-    title
-);
+    if (
+        event.key === 'Escape'
+    ) {
 
-detailsInfo.appendChild(
-    info
-);
+        closeItemDetails();
 
-detailsLayout.appendChild(
-    detailsInfo
-);
-
-detailsLayout.appendChild(
-    detailsImage
-);
-
-card.appendChild(
-    detailsLayout
-);
-
-results.appendChild(
-    card
-);
-
-window.scrollTo({
-    top: results.getBoundingClientRect().top +
-        window.scrollY -
-        60,
-    behavior: 'smooth'
-});
-
-console.log(
-    '===== ITEM DETAILS DISPLAYED ====='
-);
-
-console.log(
-    'Item:',
-    item
-);
+    }
 
 }
+
+function handleDetailsOutsideClick(event) {
+
+    if (
+        !details.contains(
+            event.target
+        )
+    ) {
+
+        closeItemDetails();
+
+    }
+
+}
+
+var touchStartX = 0;
+var touchStartY = 0;
+
+function handleDetailsTouchStart(event) {
+
+    if (
+        !event.touches ||
+        !event.touches.length
+    ) {
+        return;
+    }
+
+    touchStartX =
+        event.touches[0].clientX;
+
+    touchStartY =
+        event.touches[0].clientY;
+
+}
+
+function handleDetailsTouchMove(event) {
+
+    if (
+        !event.touches ||
+        !event.touches.length
+    ) {
+        return;
+    }
+
+    var touch =
+        event.touches[0];
+
+    var deltaX =
+        touch.clientX -
+        touchStartX;
+
+    var deltaY =
+        touch.clientY -
+        touchStartY;
+
+    var distance =
+        Math.sqrt(
+            deltaX * deltaX +
+            deltaY * deltaY
+        );
+
+    if (
+        distance >= 5
+    ) {
+
+        closeItemDetails();
+
+    }
+
+}
+
+window.addEventListener(
+    'wheel',
+    handleDetailsWheel,
+    {
+        passive: true
+    }
+);
+
+document.addEventListener(
+    'keydown',
+    handleDetailsKeydown
+);
+
+setTimeout(
+    function () {
+
+        if (
+            details.parentNode
+        ) {
+
+            document.addEventListener(
+                'click',
+                handleDetailsOutsideClick
+            );
+
+        }
+
+    },
+    0
+);
+
+document.addEventListener(
+    'touchstart',
+    handleDetailsTouchStart,
+    {
+        passive: true
+    }
+);
+
+document.addEventListener(
+    'touchmove',
+    handleDetailsTouchMove,
+    {
+        passive: true
+    }
+);
+
+    console.log(
+        '===== ITEM DETAILS DISPLAYED ABOVE DATABASE ====='
+    );
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1390,18 +2291,6 @@ window.itemDatabaseShowItemDetails =
 
         navigation.id =
             'item-database-category-navigation';
-
-
-        var title =
-            document.createElement('div');
-
-        title.textContent =
-            'Categories';
-
-
-        navigation.appendChild(
-            title
-        );
 
 
 var categories = [
@@ -1438,14 +2327,6 @@ var categories = [
                 button.addEventListener(
                     'click',
                     function () {
-
-if (
-    levelButton.parentNode
-) {
-
-    levelButton.remove();
-
-}
 
                         console.log(
                             '===== CATEGORY SELECTED ====='
@@ -1900,15 +2781,19 @@ showItems(
                         }
 
 if (
-    category !== 'Pets' &&
-    category !== 'Auras / Body Auras' &&
-    category !== 'Miscellaneous' &&
-    category !== 'Needs Review'
+    category === 'Pets' ||
+    category === 'Auras / Body Auras' ||
+    category === 'Miscellaneous' ||
+    category === 'Needs Review'
 ) {
 
-    navigation.appendChild(
-        levelButton
-    );
+    levelButton.style.display =
+        'none';
+
+} else {
+
+    levelButton.style.display =
+        '';
 
 }
 
@@ -1952,6 +2837,11 @@ if (
         );
 
     }
+
+
+
+
+
 
 
 
@@ -2281,9 +3171,13 @@ createCategoryNavigation(
     structure
 );
 
-                    console.log(
-                        '===== DATABASE UI STRUCTURE READY ====='
-                    );
+setupSearchSuggestions(
+    database
+);
+
+console.log(
+    '===== DATABASE UI STRUCTURE READY ====='
+);
 
                 }
             )
@@ -2300,6 +3194,560 @@ createCategoryNavigation(
             );
 
     }
+
+function createSafeSuggestionFileUrl(fileName) {
+
+    if (!fileName) {
+        return '';
+    }
+
+    var value =
+        String(fileName)
+            .trim()
+            .replace(/^File:/i, '')
+            .replace(/^Image:/i, '')
+            .trim();
+
+    if (!value) {
+        return '';
+    }
+
+    if (
+        /[\\/:*?"<>|]/.test(value)
+    ) {
+        return '';
+    }
+
+    if (
+        !/^[^.\s][^"]*\.(png|jpg|jpeg|gif|webp)$/i.test(
+            value
+        )
+    ) {
+        return '';
+    }
+
+    return (
+        '/wiki/Special:Redirect/file/' +
+        encodeURIComponent(value)
+    );
+
+}
+
+function setupSearchSuggestions(database) {
+
+    var searchInput =
+        document.getElementById(
+            'item-database-search-input'
+        );
+
+    if (!searchInput) {
+        console.error(
+            'Item Database search input not found.'
+        );
+        return;
+    }
+
+    var searchButton =
+        document.getElementById(
+            'item-database-search-button'
+        );
+
+   var searchContainer =
+    searchInput.parentNode;
+
+if (!searchContainer) {
+    return;
+}
+
+var existingWrapper =
+    document.getElementById(
+        'item-database-search-wrapper'
+    );
+
+if (existingWrapper) {
+    existingWrapper.remove();
+}
+
+var suggestions =
+    document.createElement('div');
+
+suggestions.id =
+    'item-database-search-suggestions';
+
+suggestions.className =
+    'item-database-search-suggestions';
+
+document.body.appendChild(
+    suggestions
+);
+
+function positionSuggestions() {
+
+    var rect =
+        searchInput.getBoundingClientRect();
+
+    suggestions.style.left =
+        rect.left + 'px';
+
+    suggestions.style.top =
+        rect.bottom + 'px';
+
+    suggestions.style.width =
+        rect.width + 'px';
+
+}
+
+    var names =
+        Object.keys(database);
+
+    function calculateDistance(a, b) {
+
+        var matrix = [];
+
+        for (
+            var i = 0;
+            i <= b.length;
+            i++
+        ) {
+
+            matrix[i] = [i];
+
+        }
+
+        for (
+            var j = 0;
+            j <= a.length;
+            j++
+        ) {
+
+            matrix[0][j] = j;
+
+        }
+
+        for (
+            var i = 1;
+            i <= b.length;
+            i++
+        ) {
+
+            for (
+                var j = 1;
+                j <= a.length;
+                j++
+            ) {
+
+                if (
+                    b.charAt(i - 1) ===
+                    a.charAt(j - 1)
+                ) {
+
+                    matrix[i][j] =
+                        matrix[i - 1][j - 1];
+
+                } else {
+
+                    matrix[i][j] =
+                        Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+
+                }
+
+            }
+
+        }
+
+        return matrix[b.length][a.length];
+
+    }
+
+    function getSuggestions(query) {
+
+var search =
+    query
+        .trim()
+        .toLowerCase()
+        .slice(0, 50);
+
+        if (!search) {
+            return [];
+        }
+
+        return names
+            .map(
+                function (name) {
+
+                    var lowerName =
+                        name.toLowerCase();
+
+                    var score = 99;
+
+                    if (
+                        lowerName ===
+                        search
+                    ) {
+
+                        score = 0;
+
+                    } else if (
+                        lowerName.indexOf(
+                            search
+                        ) === 0
+                    ) {
+
+                        score = 1;
+
+                    } else if (
+                        lowerName
+                            .split(/\s+/)
+                            .some(
+                                function (word) {
+                                    return word.indexOf(
+                                        search
+                                    ) === 0;
+                                }
+                            )
+                    ) {
+
+                        score = 2;
+
+                    } else if (
+                        lowerName.indexOf(
+                            search
+                        ) !== -1
+                    ) {
+
+                        score = 3;
+
+                    } else if (
+                        search.length >= 3
+                    ) {
+
+                        var distance =
+                            calculateDistance(
+                                lowerName,
+                                search
+                            );
+
+                        var allowedDistance =
+                            search.length <= 4
+                                ? 1
+                                : 2;
+
+                        if (
+                            distance <=
+                            allowedDistance
+                        ) {
+
+                            score = 4;
+
+                        }
+
+                    }
+
+                    if (
+                        score === 99
+                    ) {
+
+                        return null;
+
+                    }
+
+                    var distanceFromLength =
+                        Math.abs(
+                            lowerName.length -
+                            search.length
+                        );
+
+                    return {
+                        name: name,
+                        score: score,
+                        distance:
+                            distanceFromLength
+                    };
+
+                }
+            )
+            .filter(
+                function (result) {
+                    return result !== null;
+                }
+            )
+            .sort(
+                function (a, b) {
+
+                    if (
+                        a.score !==
+                        b.score
+                    ) {
+
+                        return (
+                            a.score -
+                            b.score
+                        );
+
+                    }
+
+                    if (
+                        a.distance !==
+                        b.distance
+                    ) {
+
+                        return (
+                            a.distance -
+                            b.distance
+                        );
+
+                    }
+
+                    return a.name.localeCompare(
+                        b.name
+                    );
+
+                }
+            )
+            .slice(0, 5);
+
+    }
+
+    function hideSuggestions() {
+
+        suggestions.innerHTML =
+            '';
+
+        suggestions.style.display =
+            'none';
+
+    }
+
+    function showSuggestions() {
+
+    positionSuggestions();
+
+        var matches =
+            getSuggestions(
+                searchInput.value
+            );
+
+        suggestions.innerHTML =
+            '';
+
+        if (!matches.length) {
+
+            suggestions.style.display =
+                'none';
+
+            return;
+
+        }
+
+        matches.forEach(
+            function (match) {
+
+                var option =
+                    document.createElement(
+                        'button'
+                    );
+
+                option.type =
+                    'button';
+
+                option.className =
+                    'item-database-search-suggestion';
+
+var selectedItem =
+    database[match.name];
+
+if (
+    !selectedItem ||
+    typeof selectedItem.icon !== 'string' ||
+    !selectedItem.icon
+) {
+    return;
+}
+
+var icon =
+    document.createElement('img');
+
+var safeIconUrl =
+    createSafeSuggestionFileUrl(
+        selectedItem.icon
+    );
+
+if (safeIconUrl) {
+    icon.src =
+        safeIconUrl;
+} else {
+    return;
+}
+
+icon.width = 20;
+icon.height = 20;
+icon.alt = '';
+icon.loading = 'lazy';
+
+icon.style.width = '20px';
+icon.style.height = '20px';
+icon.style.objectFit = 'contain';
+icon.style.flexShrink = '0';
+
+var label =
+    document.createElement('span');
+
+label.textContent =
+    match.name;
+
+option.style.display = 'flex';
+option.style.alignItems = 'center';
+option.style.gap = '8px';
+
+option.appendChild(icon);
+option.appendChild(label);
+
+                option.addEventListener(
+                    'click',
+                    function () {
+
+                        var selectedItem =
+                            database[
+                                match.name
+                            ];
+
+                        searchInput.value =
+                            match.name;
+
+                        hideSuggestions();
+
+                        if (
+                            selectedItem
+                        ) {
+
+                            window.itemDatabaseLastScroll =
+                                window.scrollY;
+
+                            showItemDetails(
+                                selectedItem
+                            );
+
+                        }
+
+                    }
+                );
+
+                suggestions.appendChild(
+                    option
+                );
+
+            }
+        );
+
+        suggestions.style.display =
+              'block';
+
+    }
+
+    searchInput.addEventListener(
+        'input',
+        function () {
+
+            showSuggestions();
+
+        }
+    );
+
+    searchInput.addEventListener(
+        'focus',
+        function () {
+
+            if (
+                searchInput.value.trim()
+            ) {
+
+                showSuggestions();
+
+            }
+
+        }
+    );
+
+    searchInput.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key === 'Escape'
+            ) {
+
+                hideSuggestions();
+
+            }
+
+        }
+    );
+
+    document.addEventListener(
+        'click',
+        function (event) {
+
+if (
+    !searchContainer.contains(event.target) &&
+    !suggestions.contains(event.target)
+) {
+    hideSuggestions();
+}
+
+        }
+    );
+
+window.addEventListener(
+    'resize',
+    function () {
+
+        if (
+            suggestions.style.display !==
+            'none'
+        ) {
+
+            positionSuggestions();
+
+        }
+
+    }
+);
+
+window.addEventListener(
+    'scroll',
+    function () {
+
+        if (
+            suggestions.style.display !==
+            'none'
+        ) {
+
+            positionSuggestions();
+
+        }
+
+    },
+    true
+);
+
+    if (searchButton) {
+
+        searchButton.addEventListener(
+            'click',
+            function () {
+
+                hideSuggestions();
+
+            }
+        );
+
+    }
+
+}
 
     testDatabase();
 

@@ -135,7 +135,7 @@
             overlay.classList.add('isd-active');
         }
 
-        // ── Hover tooltip (quick preview, no click needed) ──
+        // ── Hover tooltip ──
         var tooltip = document.createElement('div');
         tooltip.className = 'isd-item-tooltip';
         tooltip.innerHTML =
@@ -329,7 +329,7 @@
     }
 })();
 
-/* ── Copy Code Button (Codes page) ── */
+/* Copy Code Button */
 mw.hook('wikipage.content').add(function ($content) {
     $content.on('click', '.copy-btn', function () {
         var btn = $(this);
@@ -374,7 +374,7 @@ mw.hook('wikipage.content').add(function ($content) {
     }
 });
 
-/* ====== Forge Calculator module — replace the previous Forge Calculator block in Common.js with this ====== */
+/*Forge Calculator */
 mw.hook('wikipage.content').add(function () {
 
   var appEl = document.getElementById('fc-app');
@@ -799,3 +799,205 @@ mw.hook('wikipage.content').add(function () {
   renderForgeButtonState();
 });
 /* ====== end Forge Calculator module ====== */
+
+/* SAE Pet card hover tooltip */
+(function () {
+    var saeTooltipInitialized = false;
+
+    var rarityColors = {
+        Basic: '#d4d4d8', Common: '#9ca3af', Uncommon: '#4ade80', Rare: '#38bdf8',
+        SuperRare: '#22d3ee', Epic: '#a855f7', Mythic: '#ec4899', Mythical: '#fb7185',
+        Legendary: '#eab308', Exotic: '#2dd4bf', Titan: '#94a3b8', Limited: '#fb923c',
+        Eternal: '#ff9900', Celestial: '#7dd3fc', Divine: '#ffe28a', Cosmic: '#a5b4fc',
+        Superior: '#fbbf24', Secret: '#f5f5f5', Exclusive: '#ef4444', BrainrotGod: '#7bc450',
+        Transcendent: '#ffffff', Rainbow: '#ff8fd6', Prismatic: '#c4b5fd', Event: '#fb923c'
+    };
+
+    function initSaeTooltip() {
+        if (saeTooltipInitialized) return;
+
+        var cards = document.querySelectorAll('.sae-item-card');
+        if (!cards.length) return;
+
+        saeTooltipInitialized = true;
+
+        var tooltip = document.createElement('div');
+        tooltip.className = 'sae-item-tooltip';
+        tooltip.innerHTML =
+            '<div class="sae-tooltip-name"></div>' +
+            '<div class="sae-tooltip-rarity"></div>' +
+            '<div class="sae-tooltip-income"></div>' +
+            '<div class="sae-tooltip-biome"></div>';
+        document.body.appendChild(tooltip);
+
+        var nameEl = tooltip.querySelector('.sae-tooltip-name');
+        var rarityEl = tooltip.querySelector('.sae-tooltip-rarity');
+        var incomeEl = tooltip.querySelector('.sae-tooltip-income');
+        var biomeEl = tooltip.querySelector('.sae-tooltip-biome');
+
+        function showTooltip(card) {
+            var d = card.dataset;
+            nameEl.textContent = d.name || '';
+            rarityEl.textContent = d.rarity || '';
+            rarityEl.style.color = rarityColors[d.rarity] || '#eef2e6';
+            incomeEl.textContent = d.income ? 'Income: ' + d.income : '';
+            biomeEl.textContent = d.biome ? 'Biome: ' + d.biome : '';
+
+            var rect = card.getBoundingClientRect();
+            var tooltipWidth = 190;
+            var gap = 12;
+            var left = rect.right + gap;
+
+            if (left + tooltipWidth > window.innerWidth) {
+                left = rect.left - tooltipWidth - gap;
+            }
+            if (left < 5) left = 5;
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = rect.top + 'px';
+            tooltip.classList.add('sae-active');
+
+            var tooltipRect = tooltip.getBoundingClientRect();
+            var top = rect.top;
+            if (tooltipRect.bottom > window.innerHeight) {
+                top = window.innerHeight - tooltipRect.height - 10;
+            }
+            if (top < 5) top = 5;
+            tooltip.style.top = top + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('sae-active');
+        }
+
+        cards.forEach(function (card) {
+            card.addEventListener('mouseenter', function () { showTooltip(card); });
+            card.addEventListener('mouseleave', hideTooltip);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSaeTooltip);
+    } else {
+        initSaeTooltip();
+    }
+    mw.hook('wikipage.content').add(initSaeTooltip);
+})();
+/* SAE Pet gallery search + rarity filter */
+(function () {
+    function initSaeGalleryFilter() {
+        var wraps = document.querySelectorAll('.sae-gallery-wrap');
+        if (!wraps.length) return;
+
+        wraps.forEach(function (wrap) {
+            if (wrap.dataset.filterReady) return;
+            wrap.dataset.filterReady = '1';
+
+            var searchBox = wrap.querySelector('.sae-gallery-search');
+            var chips = wrap.querySelectorAll('.sae-filter-chip');
+            var cards = wrap.querySelectorAll('.sae-item-card');
+            var emptyMsg = wrap.querySelector('.sae-gallery-empty');
+            var activeRarity = 'all';
+
+         
+            if (searchBox) {
+                searchBox.setAttribute('contenteditable', 'true');
+                searchBox.setAttribute('tabindex', '0');
+            }
+
+            function applyFilters() {
+                var query = (searchBox ? searchBox.textContent : '').trim().toLowerCase();
+                var visibleCount = 0;
+
+                cards.forEach(function (card) {
+                    var name = (card.dataset.name || '').toLowerCase();
+                    var rarity = card.dataset.rarity || '';
+
+                    var matchesSearch = !query || name.indexOf(query) !== -1;
+                    var matchesRarity = activeRarity === 'all' || rarity === activeRarity;
+
+                    if (matchesSearch && matchesRarity) {
+                        card.classList.remove('sae-hidden');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('sae-hidden');
+                    }
+                });
+
+                if (emptyMsg) {
+                    emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+                }
+            }
+
+            if (searchBox) {
+                searchBox.addEventListener('input', applyFilters);
+                searchBox.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') e.preventDefault();
+                });
+            }
+
+            chips.forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    chips.forEach(function (c) { c.classList.remove('sae-filter-active'); });
+                    chip.classList.add('sae-filter-active');
+                    activeRarity = chip.dataset.rarity;
+                    applyFilters();
+                });
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSaeGalleryFilter);
+    } else {
+        initSaeGalleryFilter();
+    }
+    mw.hook('wikipage.content').add(initSaeGalleryFilter);
+})();
+/* SAE weekly recurring countdown timer */
+(function () {
+    function initSaeCountdown() {
+        var box = document.getElementById('sae-countdown-target');
+        if (!box || box.dataset.countdownReady) return;
+        box.dataset.countdownReady = '1';
+
+        var anchor = new Date(box.getAttribute('data-target')).getTime();
+        var weekMs = 7 * 24 * 60 * 60 * 1000;
+
+        var daysEl = box.querySelector('.sae-cd-days');
+        var hoursEl = box.querySelector('.sae-cd-hours');
+        var minutesEl = box.querySelector('.sae-cd-minutes');
+        var secondsEl = box.querySelector('.sae-cd-seconds');
+
+        function tick() {
+            var now = Date.now();
+            var target = anchor;
+
+            while (target <= now) {
+                target += weekMs;
+            }
+
+            var diff = target - now;
+
+            var days = Math.floor(diff / (24 * 60 * 60 * 1000));
+            var hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            var minutes = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+            var seconds = Math.floor((diff % (60 * 1000)) / 1000);
+
+            if (daysEl) daysEl.textContent = days;
+            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+            if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+            if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSaeCountdown);
+    } else {
+        initSaeCountdown();
+    }
+    mw.hook('wikipage.content').add(initSaeCountdown);
+})();

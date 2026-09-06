@@ -40,11 +40,11 @@ $(document).ready(function() {
     btn.addEventListener('click', function () {
       const target = btn.getAttribute('data-shop');
 
-      // Alle Buttons & Seiten "deaktivieren"
+      // Deactivate all buttons & pages
       shopBtns.forEach(b => b.classList.remove('active'));
       shopPages.forEach(p => p.classList.remove('active'));
 
-      // Button und passende Seite aktivieren
+      // Activate button and corresponding page
       btn.classList.add('active');
       const targetPage = document.querySelector(`.shop-page[data-shop="${target}"]`);
       if (targetPage) {

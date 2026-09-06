@@ -12,9 +12,7 @@ importArticles({
         'u:dev:ShowHide/code.js',
         'u:dev:DisplayClock/code.js',
         'u:dev:AjaxRC/code.js',
-        'u:dev:ReferencePopups/code.js',
-        'u:dev:ShowHide/code.js',
-    ]
+]
 });
 
 if (mwCustomEditButtons) {
@@ -215,5 +213,5 @@ function owwsitesearch(f){
 }
  
 addOnloadHook(toggleInit);
- 
+
 // </syntax>

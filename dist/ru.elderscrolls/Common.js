@@ -1072,414 +1072,511 @@ $(document).ready(function() {
 	}, 2000);
 });
 
-/* ==========================================================
-   THE ELDER SCROLLS WIKI
-   MOBILE INFOBOX — FINAL CLEAN JS
-   ========================================================== */
+/* =========================================================
+   СЛАЙДЕР ЗАГЛАВНОЙ СТРАНИЦЫ
+   ========================================================= */
 
-(function () {
-	'use strict';
+function initTesMainSliders() {
 
-	var MOBILE_QUERY = '(max-width: 768px)';
+	$('.tes-main-slider[data-tes-main-slider]').each(function () {
 
-
-	function isMobile() {
-		return window.matchMedia(MOBILE_QUERY).matches;
-	}
+		var $slider = $(this);
 
 
-	/* ======================================================
-	   MAIN INFOBOX
-	   ====================================================== */
+		/* -----------------------------------------------------
+		   Не запускаем слайдер повторно
+		   ----------------------------------------------------- */
 
-	function initInfobox(box) {
-
-		if (!box || box.dataset.tesMobileReady === '1') {
+		if ($slider.data('tes-main-slider-ready')) {
 			return;
 		}
 
-		box.dataset.tesMobileReady = '1';
+		$slider.data('tes-main-slider-ready', true);
 
 
-		var rows = Array.prototype.slice.call(
-			box.querySelectorAll(':scope > tbody > tr')
-		);
+		/* -----------------------------------------------------
+		   Элементы
+		   ----------------------------------------------------- */
+
+		var $mediaSlides =
+			$slider.find('.tes-main-slider__media-slide');
+
+		var $infoSlides =
+			$slider.find('.tes-main-slider__info-slide');
+
+		var $media =
+			$slider.find('.tes-main-slider__media');
+
+		var $prev =
+			$slider.find('.tes-main-slider__prev');
+
+		var $next =
+			$slider.find('.tes-main-slider__next');
+
+		var $dotsContainer =
+			$slider.find('.tes-main-slider__dots');
 
 
-		if (!rows.length) {
+		var slideCount =
+			$mediaSlides.length;
+
+
+		if (slideCount === 0) {
 			return;
 		}
 
 
-		/*
-		 * Первая строка считается основной шапкой.
-		 */
-
-		var headerRow = rows[0];
-
-		headerRow.classList.add('tes-mobile-header-row');
+		var currentIndex = 0;
 
 
-		rows.slice(1).forEach(function (row) {
-			row.classList.add('tes-mobile-collapsible-row');
+		/* -----------------------------------------------------
+		   Настройки
+		   ----------------------------------------------------- */
+
+		var autoplayValue =
+			$slider.attr('data-autoplay');
+
+
+		var autoplay =
+			autoplayValue !== '0' &&
+			autoplayValue !== 'нет' &&
+			autoplayValue !== 'false';
+
+
+		var delay =
+			parseInt(
+				$slider.attr('data-delay'),
+				10
+			);
+
+
+		if (
+			isNaN(delay) ||
+			delay < 1500
+		) {
+			delay = 4000;
+		}
+
+
+		/* Здесь хранится текущий timeout */
+
+		var autoplayTimer = null;
+
+
+		/* -----------------------------------------------------
+		   Создание точек
+		   ----------------------------------------------------- */
+
+		$mediaSlides.each(function (index) {
+
+			var $dot =
+				$('<div></div>');
+
+
+			$dot
+				.addClass('tes-main-slider__dot')
+				.attr({
+					role: 'button',
+					tabindex: '0',
+
+					title:
+						'Слайд ' +
+						(index + 1),
+
+					'aria-label':
+						'Перейти к слайду ' +
+						(index + 1)
+				});
+
+
+			$dot.on('click', function () {
+
+				showSlide(index, true);
+			});
+
+
+			$dot.on('keydown', function (event) {
+
+				if (
+					event.key !== 'Enter' &&
+					event.key !== ' '
+				) {
+					return;
+				}
+
+
+				event.preventDefault();
+
+
+				showSlide(index, true);
+			});
+
+
+			$dotsContainer.append($dot);
 		});
 
 
-		/*
-		 * Нижняя кнопка.
-		 */
-
-		var toggle = document.createElement('div');
-
-		toggle.className =
-			'tes-mobile-infobox-toggle is-open';
-
-		toggle.setAttribute('role', 'button');
-		toggle.setAttribute('tabindex', '0');
-		toggle.setAttribute(
-			'aria-label',
-			'Свернуть информационный блок'
-		);
-
-		box.insertAdjacentElement('afterend', toggle);
-
-
-		function setState(collapsed) {
-
-			box.classList.toggle(
-				'tes-mobile-collapsed',
-				collapsed
+		var $dots =
+			$dotsContainer.find(
+				'.tes-main-slider__dot'
 			);
 
-			toggle.classList.toggle(
-				'is-open',
-				!collapsed
-			);
 
-			toggle.setAttribute(
-				'aria-expanded',
-				collapsed ? 'false' : 'true'
-			);
+		/* -----------------------------------------------------
+		   Таймер
+		   ----------------------------------------------------- */
 
-			toggle.setAttribute(
-				'aria-label',
-				collapsed
-					? 'Развернуть информационный блок'
-					: 'Свернуть информационный блок'
+		function clearAutoplay() {
+
+			if (autoplayTimer !== null) {
+
+				window.clearTimeout(
+					autoplayTimer
+				);
+
+
+				autoplayTimer = null;
+			}
+		}
+
+
+		function scheduleAutoplay() {
+
+			clearAutoplay();
+
+
+			if (
+				!autoplay ||
+				slideCount < 2
+			) {
+				return;
+			}
+
+
+			autoplayTimer =
+				window.setTimeout(
+					function () {
+
+						showSlide(
+							currentIndex + 1,
+							false
+						);
+
+					},
+					delay
+				);
+		}
+
+
+		/* -----------------------------------------------------
+		   Показ конкретного слайда
+		   ----------------------------------------------------- */
+
+		function showSlide(index, userAction) {
+
+			/* Зацикливание */
+
+			if (index < 0) {
+
+				index =
+					slideCount - 1;
+			}
+
+
+			if (
+				index >= slideCount
+			) {
+
+				index = 0;
+			}
+
+
+			currentIndex = index;
+
+
+			/* Изображения */
+
+			$mediaSlides
+				.removeClass('is-active')
+				.attr(
+					'aria-hidden',
+					'true'
+				);
+
+
+			$mediaSlides
+				.eq(currentIndex)
+				.addClass('is-active')
+				.attr(
+					'aria-hidden',
+					'false'
+				);
+
+
+			/* Описание */
+
+			$infoSlides
+				.removeClass('is-active')
+				.attr(
+					'aria-hidden',
+					'true'
+				);
+
+
+			$infoSlides
+				.eq(currentIndex)
+				.addClass('is-active')
+				.attr(
+					'aria-hidden',
+					'false'
+				);
+
+
+			/* Точки */
+
+			$dots
+				.removeClass('is-active')
+				.removeAttr(
+					'aria-current'
+				);
+
+
+			$dots
+				.eq(currentIndex)
+				.addClass('is-active')
+				.attr(
+					'aria-current',
+					'true'
+				);
+
+
+			/*
+			 * После КАЖДОГО переключения
+			 * запускаем следующий таймер.
+			 *
+			 * Поэтому автопрокрутка не
+			 * прекращается после первого слайда.
+			 */
+
+			scheduleAutoplay();
+		}
+
+
+		/* -----------------------------------------------------
+		   Следующий / предыдущий
+		   ----------------------------------------------------- */
+
+		function nextSlide() {
+
+			showSlide(
+				currentIndex + 1,
+				true
 			);
 		}
 
 
-		function switchState() {
+		function previousSlide() {
 
-			setState(
-				!box.classList.contains(
-					'tes-mobile-collapsed'
-				)
+			showSlide(
+				currentIndex - 1,
+				true
 			);
 		}
 
 
-		toggle.addEventListener(
+		/* -----------------------------------------------------
+		   Стрелки
+		   ----------------------------------------------------- */
+
+		$next.on(
 			'click',
-			switchState
+			function () {
+
+				nextSlide();
+			}
 		);
 
 
-		toggle.addEventListener(
+		$prev.on(
+			'click',
+			function () {
+
+				previousSlide();
+			}
+		);
+
+
+		/* Клавиатура */
+
+		$prev.add($next).on(
 			'keydown',
 			function (event) {
 
 				if (
-					event.key === 'Enter' ||
-					event.key === ' '
+					event.key !== 'Enter' &&
+					event.key !== ' '
 				) {
-					event.preventDefault();
-					switchState();
+					return;
+				}
+
+
+				event.preventDefault();
+
+
+				if (
+					$(this).hasClass(
+						'tes-main-slider__prev'
+					)
+				) {
+
+					previousSlide();
+
+				} else {
+
+					nextSlide();
 				}
 			}
 		);
 
 
-		/*
-		 * Изначально показываем инфобокс развёрнутым.
-		 */
+		/* -----------------------------------------------------
+		   Свайп
+		   ----------------------------------------------------- */
 
-		setState(false);
-	}
+		var touchStartX = 0;
+		var touchStartY = 0;
 
 
-	/* ======================================================
-	   SUBSECTIONS
-	   План
-	   Коды локации
-	   Ремесленные станции
-	   и аналогичные раскрывающиеся блоки
-	   ====================================================== */
+		$media.on(
+			'touchstart',
+			function (event) {
 
-	function initSubsections(root) {
+				var touches =
+					event.originalEvent
+						.changedTouches;
 
-		var candidates = root.querySelectorAll(
-			'.mw-collapsible,' +
-			' .collapsible,' +
-			' .wds-collapsible-panel'
+
+				if (
+					!touches ||
+					!touches.length
+				) {
+					return;
+				}
+
+
+				touchStartX =
+					touches[0].clientX;
+
+				touchStartY =
+					touches[0].clientY;
+			}
 		);
 
 
-		candidates.forEach(function (section) {
+		$media.on(
+			'touchend',
+			function (event) {
 
-			if (
-				section.dataset.tesSubsectionReady === '1'
-			) {
-				return;
-			}
-
-
-			section.dataset.tesSubsectionReady = '1';
+				var touches =
+					event.originalEvent
+						.changedTouches;
 
 
-			var trigger =
-				section.querySelector(
-					'.mw-collapsible-toggle'
-				) ||
-				section.querySelector(
-					'.wds-collapsible-panel__header'
-				);
-
-
-			var content =
-				section.querySelector(
-					'.mw-collapsible-content'
-				) ||
-				section.querySelector(
-					'.wds-collapsible-panel__content'
-				);
-
-
-			if (!trigger || !content) {
-				return;
-			}
-
-
-			trigger.classList.add(
-				'tes-mobile-subsection-toggle'
-			);
-
-
-			function syncState() {
-
-				var collapsed =
-					section.classList.contains(
-						'mw-collapsed'
-					) ||
-					content.style.display === 'none';
-
-
-				content.classList.toggle(
-					'tes-mobile-subsection-hidden',
-					collapsed
-				);
-			}
-
-
-			trigger.addEventListener(
-				'click',
-				function () {
-
-					window.setTimeout(
-						syncState,
-						0
-					);
+				if (
+					!touches ||
+					!touches.length
+				) {
+					return;
 				}
-			);
 
 
-			syncState();
-		});
-	}
+				var touchEndX =
+					touches[0].clientX;
+
+				var touchEndY =
+					touches[0].clientY;
 
 
-	/* ======================================================
-	   FALLBACK ДЛЯ FANDOM-БЛОКОВ, ГДЕ НЕТ
-	   НОРМАЛЬНОГО mw-collapsible
-	   ====================================================== */
+				var distanceX =
+					touchEndX -
+					touchStartX;
 
-	function initFallbackSections(root) {
-
-		var textPattern =
-			/^(План|Коды локации|Ремесленные станции)$/i;
+				var distanceY =
+					touchEndY -
+					touchStartY;
 
 
-		var possibleHeaders =
-			root.querySelectorAll(
-				'th, td, div, span'
-			);
+				/* Слишком маленький жест */
 
-
-		possibleHeaders.forEach(function (header) {
-
-			if (
-				header.dataset.tesFallbackReady === '1'
-			) {
-				return;
-			}
-
-
-			var text =
-				(header.textContent || '')
-					.replace(/[▲▼△▽\[\]]/g, '')
-					.trim();
-
-
-			if (!textPattern.test(text)) {
-				return;
-			}
-
-
-			var row =
-				header.closest('tr');
-
-
-			if (!row) {
-				return;
-			}
-
-
-			var next = row.nextElementSibling;
-
-
-			if (!next) {
-				return;
-			}
-
-
-			header.dataset.tesFallbackReady = '1';
-
-			header.classList.add(
-				'tes-mobile-subsection-toggle'
-			);
-
-
-			header.addEventListener(
-				'click',
-				function (event) {
-
-					/*
-					 * Если Fandom уже обработал этот клик,
-					 * даём ему приоритет.
-					 */
-
-					window.setTimeout(
-						function () {
-
-							var hidden =
-								next.classList.contains(
-									'tes-mobile-subsection-hidden'
-								);
-
-
-							next.classList.toggle(
-								'tes-mobile-subsection-hidden',
-								!hidden
-							);
-						},
-						0
-					);
+				if (
+					Math.abs(distanceX) <
+					45
+				) {
+					return;
 				}
-			);
-		});
-	}
 
 
-	/* ======================================================
-	   INIT
-	   ====================================================== */
+				/* Пользователь листал страницу
+				   вертикально */
 
-	function initTesMobile() {
+				if (
+					Math.abs(distanceY) >
+					Math.abs(distanceX)
+				) {
+					return;
+				}
 
-		if (!isMobile()) {
-			return;
+
+				if (distanceX > 0) {
+
+					previousSlide();
+
+				} else {
+
+					nextSlide();
+				}
+			}
+		);
+
+
+		/* -----------------------------------------------------
+		   Один слайд
+		   ----------------------------------------------------- */
+
+		if (slideCount === 1) {
+
+			$prev.hide();
+
+			$next.hide();
+
+			$dotsContainer.hide();
 		}
 
 
-		var root =
-			document.querySelector(
-				'.mw-parser-output'
-			);
+		/* -----------------------------------------------------
+		   Запуск
+		   ----------------------------------------------------- */
+
+		showSlide(0, false);
+	});
+}
 
 
-		if (!root) {
-			return;
-		}
+/* Обычная загрузка */
+
+$(function () {
+
+	initTesMainSliders();
+});
 
 
-		var boxes =
-			root.querySelectorAll(
-				'table.infobox,' +
-				' table.fandommobile-infobox'
-			);
+/* Динамическая загрузка Fandom */
 
+mw.hook(
+	'wikipage.content'
+).add(
+	function () {
 
-		boxes.forEach(initInfobox);
-
-
-		initSubsections(root);
-		initFallbackSections(root);
+		initTesMainSliders();
 	}
-
-
-	/* ======================================================
-	   MEDIAWIKI / FANDOM
-	   ====================================================== */
-
-	if (
-		typeof mw !== 'undefined' &&
-		mw.hook
-	) {
-
-		mw.hook('wikipage.content').add(
-			function () {
-				initTesMobile();
-			}
-		);
-
-	}
-
-
-	if (document.readyState === 'loading') {
-
-		document.addEventListener(
-			'DOMContentLoaded',
-			initTesMobile
-		);
-
-	} else {
-
-		initTesMobile();
-	}
-
-
-	/*
-	 * Fandom иногда достраивает DOM уже после загрузки.
-	 */
-
-	var observer =
-		new MutationObserver(
-			function () {
-
-				if (isMobile()) {
-					initTesMobile();
-				}
-			}
-		);
-
-
-	observer.observe(
-		document.documentElement,
-		{
-			childList: true,
-			subtree: true
-		}
-	);
-
-})();
+);

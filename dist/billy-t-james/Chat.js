@@ -1,1 +1,0 @@
-Kia Ora Bro, welcome to the talk

@@ -43,19 +43,25 @@ $(function() {
     }
 });
 
-/* 3. Nach-Oben-Scroll-Button */
-mw.hook('wikipage.content').add(function() {
-    if ($('#scroll-to-top-button').length) return;
+/* 3. Nach-Oben-Scroll-Button in der WikiaBar */
+(function() {
+    var toolbarWrapper = document.querySelector('#WikiaBar .tools') 
+                      || document.querySelector('#WikiaBar .wikia-bar-anon');
+    if (!toolbarWrapper || document.querySelector('#custom-back-to-top')) return;
 
-    $('<div>')
-        .attr('id', 'scroll-to-top-button')
-        .html('&#9650;')
-        .attr('title', 'Nach oben scrollen')
-        .on('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        })
-        .appendTo('body');
-});
+    var backToTopBtn = document.createElement('li');
+    backToTopBtn.id = 'custom-back-to-top';
+    backToTopBtn.classList.add('custom', 'wikiabar-button');
+    
+    backToTopBtn.innerHTML = '<a href="#" class="wds-button wds-is-secondary" style="font-weight: bold;">NACH OBEN ▲</a>';
+
+    backToTopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    toolbarWrapper.appendChild(backToTopBtn);
+})();
 
 /* 4. Skript für einklappbare Tabellen & Navboxen */
 mw.loader.using(['mediawiki.util', 'jquery.client'], function () {

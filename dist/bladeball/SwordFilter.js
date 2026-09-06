@@ -1,7 +1,7 @@
 (function () {
 	var rarities = [
 		"Common", "Rare", "Legendary", "Limited", "LimitedU", "Unique",
-		"Monthly Leaderboard", "Clan War", "Top Spender", "Top Ranked",
+		"Monthly Leaderboard", "Clan War", "Top Spender", "Top Tier", "Top Ranked",
 		"LTM Leaderboard", "Exclusive Merch", "Codes", "Dev Sword", "Secret", "All"
 	];
 
@@ -11,6 +11,7 @@
 	];
 
 	var descriptions = {
+		"All": "Browse every sword skin available in Blade Ball, across all rarities.",
 		"Common": "The easiest sword skins to get, with no unique VFX or SFX. They can be obtained via sword crate at an 89% chance rate, however a 0% chance to be obtained through premium sword crates. ",
 		"Rare": "Fairly harder to get than common but easier to obtain than legendary. All rare swords can be obtained through sword skin crate for a 10% chance and 90% chance throughout premium sword crate.",
 		"Legendary": "Used to be the rarest swords that can be obtained through the sword crate. It can only be obtained for a 1% chance And 10% throughout premium sword crate. All legendary swords glow different colors.",
@@ -19,81 +20,128 @@
 		"Unique": "Characterized by their distinct design quality. They often come from special events, but not every unique sword features special visual or sound effects.",
 		"Monthly Leaderboard": "Rewards that are obtained by placing yourself in the Country Monthly Wins or Battlepass Leaderboard. Every player needs to stay on the leaderboard until the end of the month/season to be eligible.",
 		"Clan War": "Special rewards given to clans that finish at the top of the leaderboard after a clan war. Chosen players will engage in battles with other clans, and every member of the winning clan will receive their rewards once the war is over.",
-		"Top Spender": "obtained by reaching the top in the Daily Race before the refresh. These swords are very valuable since players are required to spend a huge amount of Robux in order to obtain them.",
+		"Top Spender": "Obtained by reaching the top in the Daily Race before the refresh. These swords are very valuable since players are required to spend a huge amount of Robux in order to obtain them.",
+		"Top Tier": "Obtained by reaching the top tier in the Battlepass before the end of the season. Every player needs to stay on the leaderboard until the end of the season to be eligible.",
 		"Top Ranked": "Rewards that are obtained in the Ranked Game mode. Each season lasts around 30–40 days. Every player needs to stay on the leaderboard until the end of the season to be eligible.",
 		"LTM Leaderboard": "Obtainable by placing yourself on the Top Leaderboard of any LTM Event. Due to the limited number of copies available, they are considered one of the rarest swords in the game. Players are given two weeks to place themselves on the leaderboard during each event.",
 		"Exclusive Merch": "Produced in limited quantities and can be acquired by purchasing official Blade Ball Merch, which will provide a unique limited sword with each purchase.",
 		"Codes": "Swords obtained by redeeming codes; the most recent available codes can be found on Blade Ball's Twitter page or the official Discord server. Codes usually last a few weeks before expiring.",
 		"Dev Sword": "Many of these swords are not available or have yet to be released. Previously, some were available through the developers, but that's not the case anymore.",
-		"Secret": "Obtained via sword crate at an 0.02% chance rate, however a 0.8% chance to be obtained through premium sword crates. They can also be obtained through various limited events. Awakened versions have an improved VFX look, while some other swords have a new SFX and VFX upon awakening.",
-		"All": "Browse every sword skin available in Blade Ball, across all rarities."
+		"Secret": "Obtained via sword crate at an 0.02% chance rate, however a 0.8% chance to be obtained through premium sword crates. They can also be obtained through various limited events. Awakened versions have an improved VFX look, while some other swords have a new SFX and VFX upon awakening."
 	};
 
 	var PAGE_SIZE = 100;
 	var DEFAULT_RARITY = 'Common';
 
 	var ALL_RARITIES_LIST = [
-	"Common", "Rare", "Legendary", "Limited", "LimitedU", "Unique",
-	"Monthly Leaderboard", "Clan War", "Top Spender", "Top Ranked",
-	"LTM Leaderboard", "Exclusive Merch", "Codes", "Dev Sword", "Secret"
-];
+		"Common", "Rare", "Legendary", "Limited", "LimitedU", "Unique",
+		"Monthly Leaderboard", "Clan War", "Top Spender", "Top Tier", "Top Ranked",
+		"LTM Leaderboard", "Exclusive Merch", "Codes", "Dev Sword", "Secret"
+	];
 
-function fetchSingleRarityHtml(rarity) {
-	var pageName = 'Sword Skins/' + rarity;
-	var apiUrl = mw.util.wikiScript('api') +
-		'?action=parse&page=' + encodeURIComponent(pageName) +
-		'&format=json&formatversion=2&prop=text&origin=*';
-	return fetch(apiUrl)
-		.then(function (res) { return res.json(); })
-		.then(function (data) {
-			return data && data.parse && data.parse.text ? data.parse.text : '';
-		})
-		.catch(function (err) {
-			console.error('fetchSingleRarityHtml failed for ' + rarity + ':', err);
-			return '';
+	function fetchSingleRarityHtml(rarity) {
+		var pageName = 'Sword Skins/' + rarity;
+		var apiUrl = mw.util.wikiScript('api') +
+			'?action=parse&page=' + encodeURIComponent(pageName) +
+			'&format=json&formatversion=2&prop=text&origin=*';
+		return fetch(apiUrl)
+			.then(function (res) { return res.json(); })
+			.then(function (data) {
+				return data && data.parse && data.parse.text ? data.parse.text : '';
+			})
+			.catch(function (err) {
+				console.error('fetchSingleRarityHtml failed for ' + rarity + ':', err);
+				return '';
+			});
+	}
+
+	var MULTI_PART_RARITIES = {
+	'Unique': ['Unique', 'Unique/2']
+};
+
+function fetchMultiPartRarity(pageNames, callback) {
+	var requests = pageNames.map(function (fullName) {
+		var apiUrl = mw.util.wikiScript('api') +
+			'?action=parse&page=' + encodeURIComponent(fullName) +
+			'&format=json&formatversion=2&prop=text&origin=*';
+		return fetch(apiUrl)
+			.then(function (res) { return res.json(); })
+			.then(function (data) {
+				return data && data.parse && data.parse.text ? data.parse.text : '';
+			})
+			.catch(function () { return ''; });
+	});
+
+	Promise.all(requests).then(function (htmlPieces) {
+		var parser = new DOMParser();
+		var mergedList = document.createElement('div');
+		mergedList.className = 'sword-list';
+
+		htmlPieces.forEach(function (html) {
+			if (!html) return;
+			var doc = parser.parseFromString(html, 'text/html');
+			var innerList = doc.querySelector('.sword-list');
+			if (!innerList) return;
+			Array.prototype.slice.call(innerList.children).forEach(function (card) {
+				mergedList.appendChild(card);
+			});
 		});
+
+		callback(mergedList.outerHTML);
+	}).catch(function (err) {
+		console.error('fetchMultiPartRarity failed:', err);
+		callback(null);
+	});
 }
 
 function fetchRarityCards(rarity, callback) {
-	if (rarity === 'All') {
-		var requests = ALL_RARITIES_LIST.map(fetchSingleRarityHtml);
-		Promise.all(requests).then(function (htmlPieces) {
-			var parser = new DOMParser();
-			var mergedList = document.createElement('div');
-			mergedList.className = 'sword-list';
-
-			htmlPieces.forEach(function (html) {
-				if (!html) return;
-				var doc = parser.parseFromString(html, 'text/html');
-				var innerList = doc.querySelector('.sword-list');
-				if (!innerList) return;
-				Array.prototype.slice.call(innerList.children).forEach(function (card) {
-					mergedList.appendChild(card);
-				});
-			});
-
-			callback(mergedList.outerHTML);
-		}).catch(function (err) {
-			console.error('fetchRarityCards (All) failed:', err);
-			callback(null);
+	if (MULTI_PART_RARITIES[rarity]) {
+		var pageNames = MULTI_PART_RARITIES[rarity].map(function (r) {
+			return 'Sword Skins/' + r;
 		});
+		fetchMultiPartRarity(pageNames, callback);
 		return;
 	}
 
-	var pageName = 'Sword Skins/' + rarity;
-	var apiUrl = mw.util.wikiScript('api') +
-		'?action=parse&page=' + encodeURIComponent(pageName) +
-		'&format=json&formatversion=2&prop=text&origin=*';
-	fetch(apiUrl)
-		.then(function (res) { return res.json(); })
-		.then(function (data) {
-			callback(data && data.parse && data.parse.text ? data.parse.text : null);
-		})
-		.catch(function (err) {
-			console.error('fetchRarityCards failed:', err);
-			callback(null);
-		});
-}
+	if (rarity === 'All') {
+			var requests = ALL_RARITIES_LIST.map(fetchSingleRarityHtml);
+			Promise.all(requests).then(function (htmlPieces) {
+				var parser = new DOMParser();
+				var mergedList = document.createElement('div');
+				mergedList.className = 'sword-list';
+
+				htmlPieces.forEach(function (html) {
+					if (!html) return;
+					var doc = parser.parseFromString(html, 'text/html');
+					var innerList = doc.querySelector('.sword-list');
+					if (!innerList) return;
+					Array.prototype.slice.call(innerList.children).forEach(function (card) {
+						mergedList.appendChild(card);
+					});
+				});
+
+				callback(mergedList.outerHTML);
+			}).catch(function (err) {
+				console.error('fetchRarityCards (All) failed:', err);
+				callback(null);
+			});
+			return;
+		}
+
+		var pageName = 'Sword Skins/' + rarity;
+		var apiUrl = mw.util.wikiScript('api') +
+			'?action=parse&page=' + encodeURIComponent(pageName) +
+			'&format=json&formatversion=2&prop=text&origin=*';
+		fetch(apiUrl)
+			.then(function (res) { return res.json(); })
+			.then(function (data) {
+				callback(data && data.parse && data.parse.text ? data.parse.text : null);
+			})
+			.catch(function (err) {
+				console.error('fetchRarityCards failed:', err);
+				callback(null);
+			});
+	}
 
 	var searchIndexCache = null;
 	function fetchSearchIndex(callback) {
@@ -111,8 +159,6 @@ function fetchRarityCards(rarity, callback) {
 					var parts = line.split('|');
 					return { name: parts[0], rarity: parts[1] };
 				});
-				console.log('Search index loaded:', searchIndexCache.length, 'entries');
-				console.log(searchIndexCache.slice(0, 5));
 				callback(searchIndexCache);
 			})
 			.catch(function (err) {
@@ -177,8 +223,28 @@ function fetchRarityCards(rarity, callback) {
 		searchRow.appendChild(searchResultsBox);
 
 		container.appendChild(tabs);
-		container.appendChild(searchRow);
-		if (descBox) descBox.textContent = descriptions[DEFAULT_RARITY] || '';
+
+        var helpWrapper = document.createElement('div');
+		helpWrapper.id = 'sword-icon-help-wrapper';
+		var helpBtn = document.createElement('div');
+		helpBtn.id = 'sword-icon-help-btn';
+		helpBtn.textContent = '?';
+		var helpPanel = document.createElement('div');
+		helpPanel.id = 'sword-icon-help-panel';
+		helpPanel.innerHTML =
+			helpPanel.innerHTML =
+	'<div class="sword-icon-help-title">Icon Legend</div>' +
+	'<div class="sword-icon-help-row"><img src="https://static.wikia.nocookie.net/bladeball/images/d/da/VFX.png/revision/latest?cb=20241128042916" width="20" height="20"> Has a special visual effect when swung.</div>' +
+	'<div class="sword-icon-help-row"><img src="https://static.wikia.nocookie.net/bladeball/images/7/70/SFX.png/revision/latest?cb=20241128043120" width="20" height="20"> Has a special sound effect when swung.</div>' +
+	'<div class="sword-icon-help-row"><img src="https://static.wikia.nocookie.net/bladeball/images/9/9f/Rare.png/revision/latest?cb=20241128045611" width="20" height="20"> Fewer than 100 copies available.</div>' +
+	'<div class="sword-icon-help-row"><img src="https://static.wikia.nocookie.net/bladeball/images/8/8d/Finishers.png/revision/latest?cb=20241128044507" width="20" height="20"> Has a unique ending animation cutscene.</div>' +
+	'<div class="sword-icon-help-row"><img src="https://static.wikia.nocookie.net/bladeball/images/f/f4/Accessory.png/revision/latest?cb=20250201055738" width="20" height="20"> Comes with an equippable/unequippable cosmetic feature.</div>';
+		helpWrapper.appendChild(helpBtn);
+        helpWrapper.appendChild(helpPanel);
+        searchRow.appendChild(helpWrapper);
+        container.appendChild(searchRow);
+
+        if (descBox) descBox.textContent = descriptions[DEFAULT_RARITY] || '';
 
 		var pagination = document.createElement('div');
 		pagination.id = 'sword-pagination';

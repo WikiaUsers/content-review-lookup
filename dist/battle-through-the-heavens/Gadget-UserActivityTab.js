@@ -1,7 +1,7 @@
 /**
  * UserActivityTab/code.js
  * @file Adds custom profile tab linking to <code>w:Special:UserActivity</code>
- */
+
 (function () {
 
     function getTheme() {
@@ -74,3 +74,4 @@
     }
 
 })();
+ */

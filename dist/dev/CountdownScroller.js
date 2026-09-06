@@ -12,6 +12,14 @@ importArticle({
 });
 
 (function() {
+	// DOUBLE RUN PREVENTION
+	if (window.dev && window.dev.countdownScrollerLoaded) {
+		return;
+	}
+	
+	window.dev = window.dev || {};
+	window.dev.countdownScrollerLoaded = true;
+	
 	// PAD A NUMBER WITH A LEADING ZERO TO A LENGTH OF 2
 	function pad2(n) { return String(n).padStart(2, '0'); }
 	
@@ -686,8 +694,8 @@ importArticle({
 		updateCountdownProgress();
 	}
 	
-	// RUN THE COUNTDOWN	
-	mw.hook('wikipage.content').add(function ($content) {
+	// RUN THE COUNTDOWN
+	function initCountdownScroller($content) {
 		$content.find('.countdown-scroller').each(function() {
 			var scroller = this;
 			var dateStr = scroller.getAttribute('data-countdown');
@@ -728,5 +736,11 @@ importArticle({
 				initCountdownProgress(scroller, targetTime);
 			}, 100);
 		});
+	};
+	
+	mw.hook('wikipage.content').add(initCountdownScroller);
+	
+	$(function() {
+		initCountdownScroller($(document));
 	});
 })();

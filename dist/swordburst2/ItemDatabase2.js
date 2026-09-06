@@ -80,116 +80,42 @@
             'item-database-results'
         );
 
-function parseWikiLinks(text) {
 
-    if (!text) {
+function createSafeFileUrl(fileName) {
+
+    if (!fileName) {
         return '';
     }
 
-    text = text.replace(
-        /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,
-        function (match, target, label) {
+    var value =
+        String(fileName)
+            .trim()
+            .replace(/^File:/i, '')
+            .replace(/^Image:/i, '')
+            .trim();
 
-            if (
-                target
-                    .trim()
-                    .toLowerCase()
-                    .indexOf('file:') === 0
-            ) {
+    if (!value) {
+        return '';
+    }
 
-                var fileName =
-                    target
-                        .trim()
-                        .replace(
-                            /^file:/i,
-                            ''
-                        );
+    if (
+        /[\\/:*?"<>|]/.test(value)
+    ) {
+        return '';
+    }
 
-                var options =
-                    label || '';
+    if (
+        !/^[^.\s][^"]*\.(png|jpg|jpeg|gif|webp)$/i.test(value)
+    ) {
+        return '';
+    }
 
-                var sizeMatch =
-                    options.match(
-                        /(\d+)px/i
-                    );
-
-                var size =
-                    sizeMatch
-                        ? sizeMatch[1] + 'px'
-                        : '20px';
-
-                var img =
-                    document.createElement(
-                        'img'
-                    );
-
-                img.src =
-                    mw.util.getUrl(
-                        'Special:Redirect/file/' +
-                        fileName
-                    );
-
-                img.style.height =
-                    size;
-
-                img.style.width =
-                    'auto';
-
-                img.style.verticalAlign =
-                    'middle';
-
-                return img.outerHTML;
-
-            }
-
-            var link =
-                document.createElement(
-                    'a'
-                );
-
-            link.href =
-                mw.util.getUrl(
-                    target
-                );
-
-            link.textContent =
-                label || target;
-
-            return link.outerHTML;
-
-        }
+    return mw.util.getUrl(
+        'Special:Redirect/file/' +
+        value
     );
-
-    text = text.replace(
-        /\[([a-z]+:\/\/[^\s\]]+)(?:\s+([^\]]+))?\]/gi,
-        function (match, url, label) {
-
-            var link =
-                document.createElement(
-                    'a'
-                );
-
-            link.href =
-                url;
-
-            link.textContent =
-                label || url;
-
-            link.target =
-                '_blank';
-
-            link.rel =
-                'noopener noreferrer';
-
-            return link.outerHTML;
-
-        }
-    );
-
-    return text;
 
 }
-
 
 
 function createItemLink(item) {
@@ -309,15 +235,21 @@ matches.forEach(
         var icon =
             document.createElement('img');
 
-        if (item.icon) {
+if (item.icon) {
 
-            icon.src =
-                mw.util.getUrl(
-                    'Special:Redirect/file/' +
-                    item.icon
-                );
+    var safeIconUrl =
+        createSafeFileUrl(
+            item.icon
+        );
 
-        }
+    if (safeIconUrl) {
+
+        icon.src =
+            safeIconUrl;
+
+    }
+
+}
 
         icon.alt =
             item.name || 'Item';
@@ -418,54 +350,61 @@ results.appendChild(
         }
     );
 
-    var adminPanel =
-        document.getElementById(
-            'item-database-admin'
-        );
+var adminPanel =
+    document.getElementById(
+        'item-database-admin'
+    );
 
-    if (!canUpdate) {
+if (!canUpdate) {
 
-        adminPanel.remove();
+    adminPanel.remove();
 
-        return;
+    return;
 
-    }
+}
 
-    adminPanel.innerHTML = `
+adminPanel.innerHTML = `
 
-        <div class="item-database-admin-panel">
+    <div class="item-database-admin-panel">
 
-            <div class="item-database-admin-title">
-                Database Administration
-            </div>
+        <div class="item-database-admin-title">
+            Database Administration
+        </div>
 
-            <div class="item-database-admin-search">
+        <div class="item-database-admin-search">
 
-                <input
-                    id="item-database-update-search"
-                    type="text"
-                    placeholder="Search item to update..."
-                >
-
-                <button
-                    id="item-database-update-item"
-                >
-                    Update Item
-                </button>
-
-            </div>
-
-            <div class="item-database-divider"></div>
+            <input
+                id="item-database-update-search"
+                type="text"
+                placeholder="Search item to update..."
+            >
 
             <button
-                id="item-database-update-all"
-                class="item-database-update-all"
+                id="item-database-update-item"
             >
-                Update Entire Database
+                Update Item
             </button>
 
+            <button
+                id="item-database-remove-item"
+            >
+                Remove Item
+            </button>
 
-            <div class="item-database-divider"></div>
+        </div>
+
+        <div class="item-database-divider"></div>
+
+        <button
+            id="item-database-update-all"
+            class="item-database-update-all"
+        >
+            Update Entire Database
+        </button>
+
+        <div class="item-database-divider"></div>
+
+        <div class="item-database-scan-row">
 
             <button
                 id="item-database-scan-collectibles"
@@ -474,43 +413,59 @@ results.appendChild(
                 Scan Auras/Body Auras
             </button>
 
-<button
-    id="item-database-scan-pets"
-    class="item-database-update-all"
->
-    Scan Pets
-</button>
+            <button
+                id="item-database-scan-pets"
+                class="item-database-update-all"
+            >
+                Scan Pets
+            </button>
+
+            <button
+                id="item-database-scan-miscellaneous"
+                class="item-database-update-all"
+            >
+                Scan Miscellaneous
+            </button>
+
+        </div>
+
+        <div
+            id="item-database-progress"
+            class="item-database-progress"
+        >
 
             <div
-                id="item-database-progress"
-                class="item-database-progress"
+                id="item-database-progress-text"
+            >
+                Status: Ready
+            </div>
+
+            <div
+                class="item-database-progress-bar"
             >
 
                 <div
-                    id="item-database-progress-text"
-                >
-                    Status: Ready
-                </div>
-
-                <div
-                    class="item-database-progress-bar"
-                >
-
-                    <div
-                        id="item-database-progress-fill"
-                    ></div>
-
-                </div>
-
-                <div
-                    id="item-database-progress-count"
+                    id="item-database-progress-fill"
                 ></div>
 
             </div>
 
+            <div
+                id="item-database-progress-count"
+            ></div>
+
         </div>
 
-    `;
+        <button
+            id="item-database-scan-itemid"
+            class="item-database-update-all"
+        >
+            Scan ItemID
+        </button>
+
+    </div>
+
+`;
 
     var excludedItemNames = new Set([
 
@@ -586,38 +541,6 @@ results.appendChild(
 
     ]);
 
-    var scanItemIDButton =
-        document.createElement('button');
-
-    scanItemIDButton.id =
-        'item-database-scan-itemid';
-
-    scanItemIDButton.textContent =
-        'Scan ItemID';
-
-    scanItemIDButton.style.marginTop =
-        '10px';
-
-    adminPanel
-        .querySelector('.item-database-admin-panel')
-        .appendChild(scanItemIDButton);
-
-var scanMiscellaneousButton =
-    document.createElement('button');
-
-scanMiscellaneousButton.id =
-    'item-database-scan-miscellaneous';
-
-scanMiscellaneousButton.textContent =
-    'Scan Miscellaneous';
-
-scanMiscellaneousButton.style.marginTop =
-    '10px';
-
-adminPanel
-    .querySelector('.item-database-admin-panel')
-    .appendChild(scanMiscellaneousButton);
-
 
     var updateSearch =
         document.getElementById(
@@ -643,21 +566,21 @@ var scanPetsButton =
     document.getElementById(
         'item-database-scan-pets'
     );
+
+var scanItemIDButton =
+    document.getElementById(
+        'item-database-scan-itemid'
+    );
+
+var scanMiscellaneousButton =
+    document.getElementById(
+        'item-database-scan-miscellaneous'
+    );
+
 var removeItemButton =
-    document.createElement('button');
-
-removeItemButton.id =
-    'item-database-remove-item';
-
-removeItemButton.textContent =
-    'Remove Item';
-
-removeItemButton.style.marginTop =
-    '10px';
-
-adminPanel
-    .querySelector('.item-database-admin-panel')
-    .appendChild(removeItemButton);
+    document.getElementById(
+        'item-database-remove-item'
+    );
 
     var progressText =
         document.getElementById(
@@ -4182,53 +4105,59 @@ window.itemDatabaseAPI = {
     removeItem: removeItem
 };
 
-    function saveDatabase(database) {
+function saveDatabase(database) {
 
-        var api =
-            new mw.Api();
+    var api =
+        new mw.Api();
 
-        var json =
-            JSON.stringify(
-                database,
-                null,
-                2
-            );
+    var json =
+        JSON.stringify(
+            database,
+            null,
+            2
+        );
 
-console.log(
-    '===== ATTEMPTING DATABASE SAVE ====='
-);
+    var safeJson =
+        json.replace(
+            /<\/pre/gi,
+            '<\\/pre'
+        );
 
-console.log(
-    'Database entries:',
-    Object.keys(database).length
-);
+    console.log(
+        '===== ATTEMPTING DATABASE SAVE ====='
+    );
 
-console.log(
-    'Save timestamp:',
-    new Date().toISOString()
-);
+    console.log(
+        'Database entries:',
+        Object.keys(database).length
+    );
 
-        return api.postWithToken(
-            'csrf',
-            {
+    console.log(
+        'Save timestamp:',
+        new Date().toISOString()
+    );
 
-                action: 'edit',
+    return api.postWithToken(
+        'csrf',
+        {
 
-                title:
-                    'Template:ItemDatabaseDataTest',
+            action: 'edit',
 
-                text:
-                    '<pre>' +
-                    json +
-                    '</pre>',
+            title:
+                'Template:ItemDatabaseDataTest',
 
-                summary:
-                    'Update Item Database data',
+            text:
+                '<pre>' +
+                safeJson +
+                '</pre>',
 
-                                formatversion: 2
+            summary:
+                'Update Item Database data',
 
-            }
-        )
+            formatversion: 2
+
+        }
+    )
 
         .then(function (data) {
 
@@ -4258,7 +4187,7 @@ console.log(
 
         });
 
-    }
+}
 
 function removeItem(title) {
 

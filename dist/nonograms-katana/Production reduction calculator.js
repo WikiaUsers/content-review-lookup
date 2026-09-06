@@ -1,4 +1,4 @@
-
+/*
 function make_table () {
 	var production_table = document.createElement('table');
 	production_table.style = "text-align:left";
@@ -308,3 +308,4 @@ make_final_time_input ();
 make_booster_time_before_input ();
 make_booster_time_after_input ();
 calculate_time ();
+*/

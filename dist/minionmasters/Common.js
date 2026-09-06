@@ -60,7 +60,7 @@ const innateEffects = {
     "Resonating Construct": { flatManaBonus: 2 },
     "Crystal Construct": Buffs.Haste,
     "Leiliel's Vortex": { flatManaBonus: 1 },
-    "Arcane Barrage": [{ flatManaBonus: 1 }, { damageMultiplier: 2 }],
+    "Arcane Barrage": [{ flatManaBonus: 1 }, { damageMultiplier: 3 }],
     "Resonating Blast Crystal": { flatManaBonus: 2 },
     "Mana Puff Madness": { flatManaBonus: 1 },
     "Border Patrol": { flatManaBonus: 2 },
@@ -120,7 +120,7 @@ const activatedEffects = {
 	"Crystal Construct": { flatManaBonus: -1 },
 	"Lord-Sentinel Thelec": { flatManaBonus: 2 },
 	"Armored Escort": { flatManaBonus: 3 },
-	"Arcane Barrage": { damageMultiplier: 5 },
+	"Arcane Barrage": { damageMultiplier: 3.3333 },
 	"Arcane Bolt": { flatManaBonus: 2 },
 	"Resonating Blast Crystal": { damageMultiplier: 3 },
 	//Empyrean
@@ -285,7 +285,9 @@ const statFieldClassMap = {
     "health": "field_Health",
     "damage": "field_Damage",
     "dps": "field_DPS",
-    "attackSpeed": "field_Attack_Speed"
+    "attackSpeed": "field_Attack_Speed",
+    "movementSpeed": "field_Move_Speed",
+    "range": "field_Range"
 };
 
 var tableStatField = "";
@@ -297,15 +299,17 @@ $("#table-stat-filter-container").html(
         '<option value="">Any stat</option>' +
         '<option value="health">Health</option>' +
         '<option value="damage">Damage</option>' +
+    	'<option value="attackSpeed">Attack Speed</option>' +
         '<option value="dps">DPS</option>' +
-        '<option value="attackSpeed">Attack Speed</option>' +
+        '<option value="movementSpeed">Movement Speed</option>' +
+        '<option value="range">Range</option>' +
     '</select>' +
     '<select id="table-stat-filter-operator">' +
         '<option value=">=">&ge;</option>' +
         '<option value="<=">&le;</option>' +
         '<option value="=">=</option>' +
     '</select>' +
-    '<input type="number" id="table-stat-filter-value" placeholder="Value" />'
+    '<input type="number" id="table-stat-filter-value" placeholder="Value" step="any" />'
 );
 
 $(document).on("change input", "#table-stat-filter-field, #table-stat-filter-operator, #table-stat-filter-value", function () {
@@ -1119,6 +1123,7 @@ function resortCargoTable() {
 		// recalctable and sort again
 		recalcCargoTable(false);
 		resortCargoTable();
+		applyFilters();
 	});
 	
 	$("#btn-activated-stats").on("click", function () {
@@ -1128,6 +1133,7 @@ function resortCargoTable() {
 		// recalctable and sort again
 		recalcCargoTable(true);
 		resortCargoTable();
+		applyFilters();
 	});
 
     // ---- Initial load: show base stats (with the default buffs applied)
@@ -1297,7 +1303,7 @@ $(function () {
 	        entries.forEach(function (entry) {
 	            deckRowStickyEl.classList.toggle("visible", !entry.isIntersecting);
 	        });
-	    }, { threshold: 0, rootMargin: "350px 0px 0px 0px" });
+	    }, { threshold: 0, rootMargin: "150px 0px 0px 0px" });
 	
 	    stickyObserver.observe(deckRowEl);
 	}
@@ -1711,6 +1717,40 @@ $(function () {
     document.body.appendChild(cardTooltip);
     
     
+    // Deck export/import info tooltip
+	const deckInfoHtml =
+	    "<strong>How to export a deck:</strong><br>" +
+	    "1. Build your deck and click the Export Deck button.<br>" +
+	    "2. Copy the deck code from the textbox.<br>" +
+	    "3. Start the game. Open your deck by clicking the deck at the bottom or via Cards in the top navigation bar.<br>" +
+	    "4. Click Import / Share deck in the bottom-left corner.<br>" +
+	    "5. Paste the code (CTRL + V) into the textbox.<br>" +
+	    "6. Press Replace." +
+	    "<br><br>" +
+	    "<strong>How to import a deck:</strong><br>" +
+	    "1. Start the game. Open your deck by clicking the deck at the bottom or via Cards in the top navigation bar.<br>" +
+	    "2. Click Import / Share deck in the bottom-left corner.<br>" +
+	    "3. Copy the code from the textbox.<br>" +
+	    "4. Paste the code into the textbox on this website.<br>" +
+	    "5. Press the Import Deck button on the left.";
+	
+	$(document).on("mouseenter", "#deck-info-btn", function (e) {
+	    cardTooltip.innerHTML = deckInfoHtml;
+	    cardTooltip.classList.add("wide");
+	    cardTooltip.style.display = "block";
+	    positionCardTooltip(e);
+	});
+	
+	$(document).on("mousemove", "#deck-info-btn", function (e) {
+	    positionCardTooltip(e);
+	});
+	
+	$(document).on("mouseleave", "#deck-info-btn", function () {
+	    hideCardTooltip();
+	    cardTooltip.classList.remove("wide");
+	});
+    
+    
 
     const masterSlot = document.getElementById("master-slot");
     const masterSlotSticky = document.getElementById("master-slot-sticky");
@@ -1954,6 +1994,7 @@ $(function () {
 	let collectionStatField = "";
 	let collectionStatOperator = ">=";
 	let collectionStatValue = null;	
+	let collectionSpecialFilters = [];
 	
 	
 	function getCardStatValue($card, field) {
@@ -2041,6 +2082,12 @@ $(function () {
 			    collectionCountFilters.length === 0 ||
 			    collectionCountFilters.includes(count);
 			    
+			const specialTags = String($card.data('special') || '').trim();
+			const cardSpecialTags = specialTags === '' ? [] : specialTags.split('|');
+			const specialMatch =
+			    collectionSpecialFilters.length === 0 ||
+			    collectionSpecialFilters.some(function (tag) { return cardSpecialTags.includes(tag); });
+			    
 			const name = String($card.data('name')).trim().toLowerCase();
 	        const searchMatch =
 			    collectionSearchQuery === "" ||
@@ -2057,7 +2104,8 @@ $(function () {
 			    wildcardMatch &&
 			    searchMatch &&
 			    countMatch &&
-			    statMatch
+			    statMatch &&
+			    specialMatch
 			);
 	    });
 	    updateCollectionResultCount();
@@ -2308,6 +2356,38 @@ $(function () {
 	    applyCollectionFilters();
 	});
 	
+		// Special filter dropdown open/close
+	$(document).on("click", "#special-filter-toggle", function (e) {
+	    e.stopPropagation();
+	    $("#special-filter-dropdown").toggle();
+	});
+
+	$(document).on("click", function (e) {
+	    if (
+	        !$(e.target).closest("#special-filter-dropdown").length &&
+	        !$(e.target).closest("#special-filter-toggle").length
+	    ) {
+	        $("#special-filter-dropdown").hide();
+	    }
+	});
+
+	// Special filter checkbox change
+	$(document).on("change", "#special-filter-dropdown input[type=checkbox]", function () {
+	    collectionSpecialFilters = [];
+	    $("#special-filter-dropdown input[type=checkbox]:checked").each(function () {
+	        collectionSpecialFilters.push($(this).val());
+	    });
+
+	    const $toggle = $("#special-filter-toggle");
+	    if (collectionSpecialFilters.length === 0) {
+	        $toggle.text("All").removeClass("active");
+	    } else {
+	        $toggle.text(collectionSpecialFilters.join(", ")).addClass("active");
+	    }
+
+	    applyCollectionFilters();
+	});
+	
 	// Type
 	$('#deckbuilder-type-filter .filter-btn').on('click', function () {
 	
@@ -2419,6 +2499,55 @@ $(function () {
 	    applyCollectionFilters();
 	});
 	
+	//change card collection view
+	// Generic tooltip helper (reuses the existing card tooltip div)
+	function showSimpleTooltip(text, e) {
+	    cardTooltip.innerHTML = escapeHtml(text);
+	    cardTooltip.style.display = "block";
+	    positionCardTooltip(e);
+	}
+	
+	// View toggle (compact / normal)
+	$("#collection-view-toggle-container").html(
+	    '<button id="collection-view-toggle" type="button">⊞</button>'
+	);
+	
+	$("#special-filter-toggle-container").html(
+	    '<button id="special-filter-toggle" type="button">All</button>'
+	);
+	
+	let compactCollectionView = false;
+	let viewToggleTooltipText = "Switch to compact view";
+	
+	const $viewToggleBtn = $("#collection-view-toggle-container");
+	
+	$viewToggleBtn.on("mouseenter", "#collection-view-toggle", function (e) {
+	    showSimpleTooltip(viewToggleTooltipText, e);
+	});
+	
+	$viewToggleBtn.on("mousemove", "#collection-view-toggle", function (e) {
+	    positionCardTooltip(e);
+	});
+	
+	$viewToggleBtn.on("mouseleave", "#collection-view-toggle", function () {
+	    hideCardTooltip();
+	});
+	
+	$(document).on("click", "#collection-view-toggle", function () {
+	    compactCollectionView = !compactCollectionView;
+	
+	    $(collection).toggleClass("compact-view", compactCollectionView);
+	
+	    viewToggleTooltipText = compactCollectionView ? "Switch to normal view" : "Switch to compact view";
+	
+	    $(this)
+	        .toggleClass("active", compactCollectionView)
+	        .text(compactCollectionView ? "☰" : "⊞");
+	
+	    hideCardTooltip();
+	});
+	
+	
 	// Search
 	$("#collection-search-container").html(
 	    '<input type="text" id="collection-search" placeholder="Search cards..." />'
@@ -2429,15 +2558,17 @@ $(function () {
 	        '<option value="">Any stat</option>' +
 	        '<option value="health">Health</option>' +
 	        '<option value="damage">Damage</option>' +
+	    	'<option value="attackSpeed">Attack Speed</option>' +
 	        '<option value="dps">DPS</option>' +
-	        '<option value="attackSpeed">Attack Speed</option>' +
+	        '<option value="movementSpeed">Movement Speed</option>' +
+	        '<option value="range">Range</option>' +
 	    '</select>' +
 	    '<select id="stat-filter-operator">' +
 	        '<option value=">=">&ge;</option>' +
 	        '<option value="<=">&le;</option>' +
 	        '<option value="=">=</option>' +
 	    '</select>' +
-	    '<input type="number" id="stat-filter-value" placeholder="Value" />'
+	    '<input type="number" id="stat-filter-value" placeholder="Value" step="any" />'
 	);
 
 	$(document).on("input", "#collection-search", function () {
@@ -2450,69 +2581,70 @@ $(function () {
         const v = String(val).trim().toLowerCase();
         return v === "1" || v === "yes" || v === "true";
     }
+    
+    // Escape Cargo-sourced text before inserting into HTML
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+    
     // helper function for hovering over perk tooltip
-        function showPerkTooltip(perkData, perkKey, e) {
-
-	        cardTooltip.innerHTML =
-	            "<strong>" + perkData.name + "</strong><br>" +
-	            perkXpLabels[perkKey];
-	
-	        cardTooltip.style.display = "block";
-	        positionCardTooltip(e);
-	    }
-    // helper function for hovering over tooltip
-	function showCardTooltip(card, e) {
-
-    const hp = parseFloat(card.health);
-    const dmg = parseFloat(card.damage);
-    const atk = parseFloat(card.attackSpeed);
-
-    const dps = (Number.isFinite(dmg) && Number.isFinite(atk) && atk > 0)
-        ? (dmg / atk).toFixed(2)
-        : "-";
-
-    const holdNote = "<span style='opacity:0.7;font-size:11px;'>Hold click to open detailed card info in a new tab</span>";
-
-    if (card.type === "Building") {
-
+    function showPerkTooltip(perkData, perkKey, e) {
         cardTooltip.innerHTML =
-            "<strong>" + card.name + "</strong><br>" +
-            "Type: " + card.type + "<br>" +
-            "Damage: " + (Number.isFinite(dmg) ? dmg : "-") + "<br>" +
-            "Attack Speed: " + (Number.isFinite(atk) ? atk.toFixed(2) : "-") + "<br>" +
-            "DPS: " + dps + "<br>" +
-            "Duration: " + (card.duration !== undefined && card.duration !== "" ? card.duration : "-") + "<br>" +
-            "Production Speed: " + (card.productionspeed !== undefined && card.productionspeed !== "" ? card.productionspeed : "-") + "<br>" +
-            holdNote;
+            "<strong>" + escapeHtml(perkData.name) + "</strong><br>" +
+            escapeHtml(perkXpLabels[perkKey]);
 
-    } else if (card.type === "Spell") {
-
-        cardTooltip.innerHTML =
-            "<strong>" + card.name + "</strong><br>" +
-            "Type: " + card.type + "<br>" +
-            "Damage: " + (Number.isFinite(dmg) ? dmg : "-") + "<br>" +
-            "Master Damage: " + (card.masterdamage !== undefined && card.masterdamage !== "" ? card.masterdamage : "-") + "<br>" +
-            "Radius: " + (card.radius !== undefined && card.radius !== "" ? card.radius : "-") + "<br>" +
-            "Duration: " + (card.duration !== undefined && card.duration !== "" ? card.duration : "-") + "<br>" +
-            holdNote;
-
-    } else {
-
-        // Minion, Flying Minion, and everything else — unchanged
-        cardTooltip.innerHTML =
-            "<strong>" + card.name + "</strong><br>" +
-            "Type: " + card.type + "<br>" +
-            "HP: " + (Number.isFinite(hp) ? hp : "-") + "<br>" +
-            "Damage: " + (Number.isFinite(dmg) ? dmg : "-") + "<br>" +
-            "Attack Speed: " + (Number.isFinite(atk) ? atk.toFixed(2) : "-") + "<br>" +
-            "DPS: " + dps + "<br>" +
-            "Unit Count: " + card.count + "<br>" +
-            holdNote;
+        cardTooltip.style.display = "block";
+        positionCardTooltip(e);
     }
 
-    cardTooltip.style.display = "block";
-    positionCardTooltip(e);
-}
+    // helper function for hovering over tooltip
+    function showCardTooltip(card, e) {
+        const hp     = parseFloat(card.health);
+        const dmg    = parseFloat(card.damage);
+        const atk    = parseFloat(card.attackSpeed);
+        const dps    = (Number.isFinite(dmg) && Number.isFinite(atk) && atk > 0) ? dmg / atk : null;
+
+        const range      = parseFloat(card.rangeVal);
+        const radius     = parseFloat(card.radius);
+        const speed      = parseFloat(card.speed);
+        const heal       = parseFloat(card.heal);
+        const healPerSec = parseFloat(card.healingpersecond);
+
+        const holdNote = "<span style='opacity:0.7;font-size:11px;'>Hold click to open detailed card info in a new tab</span>";
+
+        function hasVal(v) {
+            return v !== undefined && v !== null && v !== "" && v !== "-";
+        }
+
+        const lines = [];
+        lines.push("<strong>" + escapeHtml(card.name) + "</strong>");
+        lines.push("Type: " + escapeHtml(card.type));
+
+        if (Number.isFinite(hp))          lines.push("HP: " + escapeHtml(hp));
+		if (Number.isFinite(dmg))         lines.push("Damage: " + escapeHtml(dmg));
+		if (hasVal(card.masterdamage))    lines.push("Master Damage: " + escapeHtml(card.masterdamage));
+		if (Number.isFinite(atk))         lines.push("Attack Speed: " + escapeHtml(atk.toFixed(2)));
+		if (dps !== null)                 lines.push("DPS: " + escapeHtml(dps.toFixed(2)));
+		if (Number.isFinite(range))       lines.push("Range: " + escapeHtml(range.toFixed(2)));
+		if (Number.isFinite(radius))      lines.push("Radius: " + escapeHtml(radius.toFixed(2)));
+		if (Number.isFinite(speed))       lines.push("Movement Speed: " + escapeHtml(Math.round(speed)));
+		if (Number.isFinite(heal))        lines.push("Heal: " + escapeHtml(Math.round(heal)));
+		if (Number.isFinite(healPerSec))  lines.push("Heal per Second: " + escapeHtml(healPerSec.toFixed(2)));
+		if (hasVal(card.count))           lines.push("Unit Count: " + escapeHtml(card.count));
+		if (hasVal(card.duration))        lines.push("Duration: " + escapeHtml(card.duration));
+		if (hasVal(card.productionspeed)) lines.push("Production Speed: " + escapeHtml(card.productionspeed));
+
+        lines.push(holdNote);
+
+        cardTooltip.innerHTML = lines.join("<br>");
+        cardTooltip.style.display = "block";
+        positionCardTooltip(e);
+    }
 
     function positionCardTooltip(e) {
         cardTooltip.style.left = (e.pageX + 15) + "px";
@@ -2520,8 +2652,9 @@ $(function () {
     }
 
     function hideCardTooltip() {
-        cardTooltip.style.display = "none";
-    }
+	    cardTooltip.style.display = "none";
+	    cardTooltip.classList.remove("wide");
+	}
     
     //helper function for unit count buckets
     function getCountBucket(val) {
@@ -2532,15 +2665,55 @@ $(function () {
     }
     
     // Query Cargo
-    new mw.Api().get({
+    let cardFlagsMap = {}; // cardName -> string[]
+
+    const cardsQuery = new mw.Api().get({
 	    action: "cargoquery",
 	    tables: "Cards2",
-		fields: "name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,duration,productionspeed,masterdamage",
+		fields: "name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond",
 	    where: 'rarity="Common" OR rarity="Rare" OR rarity="Supreme" OR rarity="Legendary"',
 	    limit: 999,
 	    format: "json"
-	}).done(function (data) {
-	
+	});
+
+    const flagsQuery = new mw.Api().get({
+        action: "cargoquery",
+        tables: "CardFlags",
+        fields: "_pageName=cardName,flag",
+        limit: 999,
+        format: "json"
+    });
+
+    $.when(cardsQuery, flagsQuery).done(function (cardsResp, flagsResp) {
+
+        const data = cardsResp[0];
+        const flagsData = flagsResp[0];
+
+        const allSpecialFlags = new Set();
+
+
+
+        (flagsData.cargoquery || []).forEach(function (entry) {
+            const row = entry.title;
+            if (!row.cardName) return;
+            if (!cardFlagsMap[row.cardName]) cardFlagsMap[row.cardName] = [];
+            cardFlagsMap[row.cardName].push(row.flag);
+            if (row.flag) allSpecialFlags.add(row.flag);
+        });
+
+        const $specialDropdown = $("#special-filter-dropdown");
+        $specialDropdown.empty();
+
+        Array.from(allSpecialFlags).sort().forEach(function (flag) {
+            const safeId = "special-flag-" + flag.replace(/[^a-zA-Z0-9]/g, "");
+            const $row = $("<div>", { class: "special-filter-option" });
+            const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: flag });
+            const $label = $("<label>", { for: safeId, text: flag });
+            $row.append($checkbox).append($label);
+            $specialDropdown.append($row);
+        });
+
+
 	    const cards = data.cargoquery.map(function (entry) {
 	        return entry.title;
 	    });
@@ -2589,8 +2762,23 @@ $(function () {
 			wrapper.dataset.health = card.health;
 			wrapper.dataset.damage = card.damage;
 			wrapper.dataset.attackSpeed = card.attackSpeed;
+			wrapper.dataset.movementSpeed = card.speed ;
+			wrapper.dataset.range = card.rangeVal;
 
 
+			// Special tags (space-separated list; more will be added later)
+			const specialTags = [];
+			
+			
+			// Manually-tagged flags from the CardFlags satellite table
+			const manualFlags = cardFlagsMap[card.name];
+			if (manualFlags) {
+			    for (const flag of manualFlags) {
+			        if (!specialTags.includes(flag)) specialTags.push(flag);
+			    }
+			}
+			
+			wrapper.dataset.special = specialTags.join("|");
 
 		
 		    const img = document.createElement("img");
@@ -2827,13 +3015,13 @@ $(function () {
         	renderDeck();
     	}
     	
-    	function updateAvgManaCost() {
-
+		function updateAvgManaCost() {
+		
 		    const wildcardCards = deckWildcards.filter(Boolean);
 		    const allCards = deckList.concat(wildcardCards);
 		
 		    if (allCards.length === 0) {
-		        $('#deck-avg-mana-value').text("0");
+		        $('#deck-avg-mana-value, #deck-avg-mana-value-sticky').text("0");
 		        return;
 		    }
 		
@@ -2843,7 +3031,7 @@ $(function () {
 		
 		    const avg = total / allCards.length;
 		
-		    $('#deck-avg-mana-value').text(avg.toFixed(1));
+		    $('#deck-avg-mana-value, #deck-avg-mana-value-sticky').text(avg.toFixed(1));
 		}
     	
     

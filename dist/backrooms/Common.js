@@ -1,13 +1,13 @@
 // [[Category:Internal]]
 
-// Template dependencies
 mw.hook('wikipage.content').add(function() {
 	
 	// [[T:CSS]]
 	$('div.t-css').each(function() {
-		const css = mw.util.addCSS($(this).attr('data-css'));
+		const css = mw.util.addCSS(this.dataset.css);
 		$(css.ownerNode).addClass('t-css');
 		Object.assign(css.ownerNode.dataset, this.dataset);
+		delete css.ownerNode.dataset.css;
 		
 		const wait = this.dataset.wait;
 		const portal = this.dataset.portal;
@@ -23,10 +23,17 @@ mw.hook('wikipage.content').add(function() {
 		}
 	});
 	
+	// Automatically preview CSS pages; uses T:CSS class to also be affected by ThemeToggler
+	if (mw.config.get('wgPageName').includes('.css')) { 
+		fetch(`/wiki/${mw.config.get('wgPageName')}?action=raw`)
+			.then(data => data.text())
+			.then(css => $(mw.util.addCSS(css).ownerNode).addClass('t-css'));
+	}
+	
 	// [[Template:Audio]] toggle
 	$('.t-audio').each(function() {
-		const toggle = $(this).attr('data-toggle');
-		const toggleFunction = $(this).attr('data-toggle-function');
+		const toggle = this.dataset.toggle;
+		const toggleFunction = this.dataset['toggle-function'];
 		const fadeSteps = Math.round(250 * toggleFunction.replace(/fade-(in|out)-/, ''));
 		
 		if (toggle != 'none') {

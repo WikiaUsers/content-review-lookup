@@ -85,7 +85,7 @@ document.querySelectorAll(".unix-time").forEach(el => {
 (function () {
   var API_BASE = "https://project-fezug.vercel.app/api/gamestats";
 
-  var REFRESH_INTERVAL = 300000; // 5 minutes
+  var REFRESH_INTERVAL = 60000; // 1 minute
 
   function formatNumber(num) {
     if (num === undefined || num === null) return "0";

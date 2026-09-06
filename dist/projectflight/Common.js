@@ -6,3 +6,10 @@ mw.hook("wikipage.content").add(function () {
         mw.util.addCSS($(this).attr("data-css"));
     });
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});

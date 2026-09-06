@@ -163,3 +163,28 @@ letters.forEach((letter, index) => {
   document.querySelectorAll('.ColorChange-Illusionary')
     .forEach(initRandomColors);
 })();
+
+/* Gradiented Text Strokes */
+document.querySelectorAll('.GradientedTextStroke').forEach((element) => {
+  const direction = element.dataset.gradient.toLowerCase();
+  const colors = element.dataset.colors.toLowerCase();
+  const width = element.dataset.width;  
+
+  if (colors.includes('url') || colors.includes('element') || colors.includes('paint') || direction.includes('url') || direction.includes('element') || direction.includes('paint')) {
+
+    element.style.background = "none";
+    element.style.backgroundClip = "initial";
+    element.style.webkitTextFillColor = "";
+    element.style.webkitTextStrokeColor = "";
+    element.style.webkitTextStrokeWidth = "";
+  } else {
+
+    element.style.background = `linear-gradient(${direction}, ${colors})`;
+    element.style.setProperty("--data-text", `"${element.dataset.textstroke}"`);
+    element.style.backgroundClip = "text";
+    element.style.webkitTextFillColor = "transparent";
+    element.style.webkitTextStrokeColor = "transparent";
+    element.style.webkitTextStrokeWidth = `${width}px`;
+    element.style.position = "absolute";
+  }
+});

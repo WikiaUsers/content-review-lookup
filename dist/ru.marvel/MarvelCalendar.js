@@ -38,7 +38,22 @@
         '.mc-loading span {',
         '  font-size: 0.95em;',
         '  opacity: 0.75;',
-        '}'
+        '}',
+        '#marvel-weekly-calendar {',
+    		'  max-width: 100%;',
+    		'  box-sizing: border-box;',
+    		'  overflow-x: hidden;',
+    	'}',
+    	'#marvel-weekly-calendar .comics-week,',
+    	'#marvel-weekly-calendar .comics-table,',
+    	'#marvel-weekly-calendar .mw-collapsible,',
+    	'#marvel-weekly-calendar .mw-collapsible-content {',
+    	'  max-width: 100%;',
+    	'  box-sizing: border-box;',
+    	'}',
+    	'#marvel-weekly-calendar .comics-table {',
+    	'  overflow-x: auto;',
+    	'}'
     ].join( '\n' );
 
     ( function injectSurferStyles() {

@@ -599,6 +599,9 @@ $(function(){
     });
 
 });
+/*==================================================
+=               BUSCADOR Objetos Mágicos                 =
+==================================================*/
 $(function(){
 
     crearBuscador({
@@ -636,6 +639,98 @@ $(function(){
                 automatico:true,
                 ordenar:true
             }
+
+        ]
+
+    });
+
+});
+/*==================================================
+=               BUSCADOR Prueba                 =
+==================================================*/
+$(function(){
+
+    crearBuscador({
+
+        contenedor: "contenedorBuscadorPrueba",
+
+        tabla: "tablaPrueba",
+
+        placeholder: "🔍 Buscar Pez...",
+
+        columnaNombre: 1,
+
+        filtros: [
+
+            {
+                id:"localización",
+                titulo:"Todas las localizaciones",
+                columna:2,
+                automatico:true,
+                ordenar:true
+            },
+            
+            {
+                id:"estacion",
+                titulo:"Todas las estaciones",
+                columna:4,
+                automatico:true,
+                ordenar:true
+            },
+
+            {
+                id:"clima",
+                titulo:"Todos los climas",
+                columna:5,
+                automatico:true,
+                ordenar:true
+            },
+
+        ]
+
+    });
+
+});
+/*==================================================
+=               BUSCADOR Prueba 2                =
+==================================================*/
+$(function(){
+
+    crearBuscador({
+
+        contenedor: "contenedorBuscadorPrueba2",
+
+        tabla: "tablaPrueba2",
+
+        placeholder: "🔍 Buscar Pez...",
+
+        columnaNombre: 1,
+
+        filtros: [
+
+            {
+                id:"localización",
+                titulo:"Todas las localizaciones",
+                columna:2,
+                automatico:true,
+                ordenar:true
+            },
+            
+            {
+                id:"estacion",
+                titulo:"Todas las estaciones",
+                columna:4,
+                automatico:true,
+                ordenar:true
+            },
+
+            {
+                id:"clima",
+                titulo:"Todos los climas",
+                columna:5,
+                automatico:true,
+                ordenar:true
+            },
 
         ]
 

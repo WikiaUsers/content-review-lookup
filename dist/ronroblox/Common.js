@@ -26,7 +26,6 @@ window.tooltips_config = {
 };
 // end of tooltip thing
 
-//* UserTags *//
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -39,11 +38,11 @@ window.UserTagsJS = {
 		'dual-moderator': {u:'Dual Moderator', order:2},
 		'threadmoderator': {u:'Discussions Moderator', order:2},
 		'content-moderator': {u:'Content Moderator', order:2},
+		'ron-hos': {u:'RON Head of Staff', order:3},
+		'ron-senior-administrator': {u:'RON Senior Administrator', order:3},
 		// non-staff tags
-		'wiki-contributor': {u:'Wiki Contributor', order:9e9},
-		'retired-staff': {u:'Former Wiki Staff', order:9e9},
-		'ron-hos': {u:'RON Head of Staff', order:9e9},
-		'ron-senior-administrator': {u:'RON Senior Administrator', order:9e9},
+		'wiki-contributor': {u:'Wiki Contributor', order:4},
+		'retired-staff': {u:'Former Wiki Staff', order:5},
 	}
 };
 
@@ -69,8 +68,8 @@ UserTagsJS.modules.custom = {
 	// Bureaucrats
 	'SuperGlitchyTheo': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
-	'Standoffiish': ['bureaucrat'],
 	// Administrators
+    'Standoffiish': ['administrator','wiki-contributor'],
 	'Dxrknrg': ['administrator','wiki-contributor'],
 	'Antiverta': ['administrator','wiki-contributor'],
 	
@@ -87,6 +86,21 @@ UserTagsJS.modules.custom = {
 	'RXRunner27': ['threadmoderator'],
 	// Junior Discussion Moderators
 
+	// RON Senior Staff
+	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
+	
+	// Wiki Contributors
+	'Cipherusxzy': ['wiki-contributor'],
+	'HaHaBlah': ['wiki-contributor'],
+	'RyeThePies': ['wiki-contributor'],
+	'Thethingiforgor': ['wiki-contributor'],
+	'Pro10boy2228': ['wiki-contributor'],
+	'Blazarvortexd': ['wiki-contributor'],
+	'Ameer.Jor': ['wiki-contributor'],
+	'The Dimensional Doctor': ['wiki-contributor'],
+	'Fish The 4th': ['wiki-contributor'],
+	'Phillybillygraves': ['wiki-contributor'],
+	
 	// Retired Wiki Staff
 	// Retired Bureaucrats
 	'RabbyDevs': ['retired-staff'],
@@ -142,22 +156,6 @@ UserTagsJS.modules.custom = {
 	'Nexandr': ['retired-staff'],
 	'Hisslandia': ['retired-staff'],
 	'The Shashophille': ['retired-staff'],
-	
-	// RON Senior Staff
-	'FamicomBruv': ['ron-senior-administrator','retired-staff'],
-	
-	// Wiki Contributors
-	'Cipherusxzy': ['wiki-contributor'],
-	'HaHaBlah': ['wiki-contributor'],
-	'RyeThePies': ['wiki-contributor'],
-	'Thethingiforgor': ['wiki-contributor'],
-	'Pro10boy2228': ['wiki-contributor'],
-	'Blazarvortexd': ['wiki-contributor'],
-	'Ameer.Jor': ['wiki-contributor'],
-	'The Dimensional Doctor': ['wiki-contributor'],
-	'Spaniard123': ['wiki-contributor'],
-	'Fish The 4th': ['wiki-contributor'],
-	'Phillybillygraves': ['wiki-contributor']
 };
 
 //* LockOldComments.js Configuration *//
