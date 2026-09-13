@@ -488,6 +488,7 @@ registerCopyText();
 function registerCopyText() {
     $('body').on('click.ct', copyTextClass, function copyText(event) {
         var textContent = event.currentTarget.getAttribute('data-text') || '';
+        textContent = textContent.replaceAll("\\n", "\n");
         $input = $('<textarea>', { type: 'text' }).val(textContent).appendTo('body').select();
         var success = document.execCommand('Copy');
         $input.remove();
@@ -495,7 +496,7 @@ function registerCopyText() {
             mw.notify('Copied the text: ' + textContent); //Optional
         } else {
             if (window.navigator && navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function () {
+                navigator.clipboard.writeText(textContent).then(function () {
                     mw.notify('Copied the text: ' + textContent); //Optional
                 });
             }

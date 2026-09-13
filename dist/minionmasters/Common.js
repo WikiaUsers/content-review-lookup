@@ -59,7 +59,7 @@ const innateEffects = {
     "High-Mage Leiliel": [ Buffs.Marksmanship, { flatManaBonus: 2 }],
     "Resonating Construct": { flatManaBonus: 2 },
     "Crystal Construct": Buffs.Haste,
-    "Leiliel's Vortex": { flatManaBonus: 1 },
+    "Leiliel's Vortex": { flatManaBonus: 2 },
     "Arcane Barrage": [{ flatManaBonus: 1 }, { damageMultiplier: 3 }],
     "Resonating Blast Crystal": { flatManaBonus: 2 },
     "Mana Puff Madness": { flatManaBonus: 1 },
@@ -317,6 +317,10 @@ $(document).on("change input", "#table-stat-filter-field, #table-stat-filter-ope
     tableStatOperator = $("#table-stat-filter-operator").val();
     const raw = $("#table-stat-filter-value").val();
     tableStatValue = raw === "" ? null : parseFloat(raw);
+
+    const isActive = tableStatField !== "" && tableStatValue !== null;
+    $("#table-stat-filter-container").toggleClass("active", isActive);
+
     applyFilters();
 });
 
@@ -1124,6 +1128,10 @@ function resortCargoTable() {
 		recalcCargoTable(false);
 		resortCargoTable();
 		applyFilters();
+		const query = $("#table-search").val().toLowerCase();
+	    if (query !== "") {
+	        applySearch(query);
+	    }
 	});
 	
 	$("#btn-activated-stats").on("click", function () {
@@ -1134,6 +1142,10 @@ function resortCargoTable() {
 		recalcCargoTable(true);
 		resortCargoTable();
 		applyFilters();
+		const query = $("#table-search").val().toLowerCase();
+	    if (query !== "") {
+	        applySearch(query);
+	    }
 	});
 
     // ---- Initial load: show base stats (with the default buffs applied)
@@ -2003,17 +2015,30 @@ $(function () {
 	        const atk = parseFloat($card.data("attackSpeed"));
 	        return (Number.isFinite(dmg) && Number.isFinite(atk) && atk > 0) ? dmg / atk : null;
 	    }
+	    if (field === "totalDps") {
+	        const dmg = parseFloat($card.data("damage"));
+	        const atk = parseFloat($card.data("attackSpeed"));
+	        const count = parseFloat($card.data("unitCount"));
+	        if (!Number.isFinite(dmg) || !Number.isFinite(atk) || atk <= 0 || !Number.isFinite(count)) {
+	            return null;
+	        }
+	        return (dmg / atk) * count;
+	    }
 	    const v = parseFloat($card.data(field));
 	    return Number.isFinite(v) ? v : null;
 	}
 	
 	$(document).on("change input", "#stat-filter-field, #stat-filter-operator, #stat-filter-value", function () {
-			    collectionStatField = $("#stat-filter-field").val();
-			    collectionStatOperator = $("#stat-filter-operator").val();
-			    const raw = $("#stat-filter-value").val();
-			    collectionStatValue = raw === "" ? null : parseFloat(raw);
-			    applyCollectionFilters();
-			});
+	    collectionStatField = $("#stat-filter-field").val();
+	    collectionStatOperator = $("#stat-filter-operator").val();
+	    const raw = $("#stat-filter-value").val();
+	    collectionStatValue = raw === "" ? null : parseFloat(raw);
+	
+	    const isActive = collectionStatField !== "" && collectionStatValue !== null;
+	    $("#stat-filter-container").toggleClass("active", isActive);
+	
+	    applyCollectionFilters();
+	});
 	
 	// include Puffs to ground minions
 	const typeGroupAliases = {
@@ -2086,7 +2111,19 @@ $(function () {
 			const cardSpecialTags = specialTags === '' ? [] : specialTags.split('|');
 			const specialMatch =
 			    collectionSpecialFilters.length === 0 ||
-			    collectionSpecialFilters.some(function (tag) { return cardSpecialTags.includes(tag); });
+			    collectionSpecialFilters.every(function (tag) { return cardSpecialTags.includes(tag); });
+			    
+			const buffTags = String($card.data('buffs') || '').trim();
+			const cardBuffTags = buffTags === '' ? [] : buffTags.split('|');
+			const buffMatch =
+			    collectionBuffFilters.length === 0 ||
+			    collectionBuffFilters.every(function (tag) { return cardBuffTags.includes(tag); });
+			    
+			const debuffTags = String($card.data('debuffs') || '').trim();
+			const cardDebuffTags = debuffTags === '' ? [] : debuffTags.split('|');
+			const debuffMatch =
+			    collectionDebuffFilters.length === 0 ||
+			    collectionDebuffFilters.every(function (tag) { return cardDebuffTags.includes(tag); });
 			    
 			const name = String($card.data('name')).trim().toLowerCase();
 	        const searchMatch =
@@ -2105,7 +2142,9 @@ $(function () {
 			    searchMatch &&
 			    countMatch &&
 			    statMatch &&
-			    specialMatch
+			    specialMatch &&
+			    buffMatch &&
+			    debuffMatch
 			);
 	    });
 	    updateCollectionResultCount();
@@ -2357,11 +2396,6 @@ $(function () {
 	});
 	
 		// Special filter dropdown open/close
-	$(document).on("click", "#special-filter-toggle", function (e) {
-	    e.stopPropagation();
-	    $("#special-filter-dropdown").toggle();
-	});
-
 	$(document).on("click", function (e) {
 	    if (
 	        !$(e.target).closest("#special-filter-dropdown").length &&
@@ -2386,6 +2420,114 @@ $(function () {
 	    }
 
 	    applyCollectionFilters();
+	});
+	
+	// Buff Filter button
+	$("#buff-filter-toggle-container").html(
+	    '<button id="buff-filter-toggle" type="button">All</button>'
+	);
+	
+	$(document).on("click", function (e) {
+	    if (
+	        !$(e.target).closest("#buff-filter-dropdown").length &&
+	        !$(e.target).closest("#buff-filter-toggle").length
+	    ) {
+	        $("#buff-filter-dropdown").hide();
+	    }
+	});
+	
+	let collectionBuffFilters = [];
+	let collectionDebuffFilters = [];
+
+	$(document).on("change", "#buff-filter-dropdown input[type=checkbox]", function () {
+	    collectionBuffFilters = [];
+	    $("#buff-filter-dropdown input[type=checkbox]:checked").each(function () {
+	        collectionBuffFilters.push($(this).val());
+	    });
+	
+	    const $toggle = $("#buff-filter-toggle");
+	    if (collectionBuffFilters.length === 0) {
+	        $toggle.text("All").removeClass("active");
+	    } else {
+	        $toggle.text(collectionBuffFilters.join(", ")).addClass("active");
+	    }
+	
+	    applyCollectionFilters();
+	});
+	
+	// Debuff Filter button
+	$("#debuff-filter-toggle-container").html(
+	    '<button id="debuff-filter-toggle" type="button">All</button>'
+	);
+	
+	$(document).on("click", function (e) {
+	    if (
+	        !$(e.target).closest("#debuff-filter-dropdown").length &&
+	        !$(e.target).closest("#debuff-filter-toggle").length
+	    ) {
+	        $("#debuff-filter-dropdown").hide();
+	    }
+	});
+	
+	$(document).on("change", "#debuff-filter-dropdown input[type=checkbox]", function () {
+	    collectionDebuffFilters = [];
+	    $("#debuff-filter-dropdown input[type=checkbox]:checked").each(function () {
+	        collectionDebuffFilters.push($(this).val());
+	    });
+	
+	    const $toggle = $("#debuff-filter-toggle");
+	    if (collectionDebuffFilters.length === 0) {
+	        $toggle.text("All").removeClass("active");
+	    } else {
+	        $toggle.text(collectionDebuffFilters.join(", ")).addClass("active");
+	    }
+	
+	    applyCollectionFilters();
+	});
+	
+	//close button list for special buff and debuff if clicking outside
+	
+	function closeAllFilterDropdowns(except) {
+	    if (except !== 'special') $("#special-filter-dropdown").hide();
+	    if (except !== 'buff')    $("#buff-filter-dropdown").hide();
+	    if (except !== 'debuff')  $("#debuff-filter-dropdown").hide();
+	}
+	
+	// Special
+	$(document).on("click", "#special-filter-toggle", function (e) {
+	    e.stopPropagation();
+	    const isOpen = $("#special-filter-dropdown").is(":visible");
+	    closeAllFilterDropdowns();
+	    if (!isOpen) $("#special-filter-dropdown").show();
+	});
+	
+	// Buff
+	$(document).on("click", "#buff-filter-toggle", function (e) {
+	    e.stopPropagation();
+	    const isOpen = $("#buff-filter-dropdown").is(":visible");
+	    closeAllFilterDropdowns();
+	    if (!isOpen) $("#buff-filter-dropdown").show();
+	});
+	
+	// Debuff
+	$(document).on("click", "#debuff-filter-toggle", function (e) {
+	    e.stopPropagation();
+	    const isOpen = $("#debuff-filter-dropdown").is(":visible");
+	    closeAllFilterDropdowns();
+	    if (!isOpen) $("#debuff-filter-dropdown").show();
+	});
+	
+	// Single outside-click handler for all three
+	$(document).on("click", function (e) {
+	    if (
+	        !$(e.target).closest(
+	            "#special-filter-dropdown, #special-filter-toggle, " +
+	            "#buff-filter-dropdown, #buff-filter-toggle, " +
+	            "#debuff-filter-dropdown, #debuff-filter-toggle"
+	        ).length
+	    ) {
+	        closeAllFilterDropdowns();
+	    }
 	});
 	
 	// Type
@@ -2547,6 +2689,162 @@ $(function () {
 	    hideCardTooltip();
 	});
 	
+	// Tooltip for Ascending/descing toggle
+	let sortDirectionTooltipText = "Ascending";
+
+	$("#collection-sort-container").on("mouseenter", "#collection-sort-direction", function (e) {
+	    showSimpleTooltip(sortDirectionTooltipText, e);
+	});
+	
+	$("#collection-sort-container").on("mousemove", "#collection-sort-direction", function (e) {
+	    positionCardTooltip(e);
+	});
+	
+	$("#collection-sort-container").on("mouseleave", "#collection-sort-direction", function () {
+	    hideCardTooltip();
+	});
+	
+	// Sort control (mana cost / hp / damage / dps + asc/desc toggle)
+	$("#collection-sort-container").html(
+	    '<select id="collection-sort-field">' +
+	        '<option value="mana">Sort: Mana Cost</option>' +
+	        '<option value="health">Sort: HP</option>' +
+	        '<option value="damage">Sort: Damage</option>' +
+	        '<option value="attackSpeed">Sort: Attack Speed</option>' +
+	        '<option value="dps">Sort: DPS</option>' +
+	        '<option value="totalDps">Sort: Total DPS</option>' +
+	        '<option value="movementSpeed">Sort: Movement Speed</option>' +
+        	'<option value="range">Sort: Range</option>' +
+	    '</select>' +
+	    '<button id="collection-sort-direction" type="button">↑</button>'
+	);
+	
+	let collectionSortField = "mana";
+	let collectionSortDirection = "asc";
+	
+	// Reuses existing getCardStatValue() for health/damage/dps;
+	// mana cost is handled separately since its dataset key is "mana", not "manaCost"
+	function getCollectionSortValue($card) {
+	    if (collectionSortField === "mana") {
+	        const v = parseFloat($card.data('mana'));
+	        return Number.isFinite(v) ? v : null;
+	    }
+	    return getCardStatValue($card, collectionSortField);
+	}
+	
+	function sortCollection() {
+	
+	    const $cards = $(collection).find('.card-wrapper').toArray();
+	
+	    $cards.sort(function (a, b) {
+	    const $a = $(a);
+	    const $b = $(b);
+	
+	    const va = getCollectionSortValue($a);
+	    const vb = getCollectionSortValue($b);
+	
+	    const aValid = Number.isFinite(va);
+	    const bValid = Number.isFinite(vb);
+	
+	    if (!aValid && !bValid) return 0;
+	    if (!aValid) return 1;
+	    if (!bValid) return -1;
+	
+	    let primaryDiff = va - vb;
+	
+	    // Only flip the primary comparison, not the tie-breaker
+	    if (collectionSortDirection === "desc") {
+	        primaryDiff = -primaryDiff;
+	    }
+	
+	    if (primaryDiff !== 0) {
+	        return primaryDiff;
+	    }
+	
+	    // Tie-breaker: always alphabetical A→Z, independent of sort direction
+	    const nameA = String($a.data('name')).toLowerCase();
+	    const nameB = String($b.data('name')).toLowerCase();
+	    return nameA.localeCompare(nameB);
+	});
+	
+	    // The mana-row-break separators only make sense when sorted by mana cost
+	    $(collection).find('.mana-row-break').remove();
+	
+	    $cards.forEach(function (card) {
+	        collection.appendChild(card);
+	    });
+	
+	    // Fields that get a visual line break between groups (dataset key = same as field name)
+		// Optional bucketing function per field. Fields not listed here use the exact value.
+		const breakBucketFns = {
+		    health: function (v) {
+		        if (v > 1000) return 1001;
+		        if (v >= 100) return Math.floor(v / 100) * 100;
+		        return Math.floor(v / 10) * 10;
+		    },
+		    damage: function (v) {
+		        if (v >= 300) return 300;
+		        if (v >= 100) return Math.floor(v / 50) * 50;
+		        return Math.floor(v / 10) * 10;
+		    },
+		    dps: function (v) {
+		        return Math.floor(v / 10) * 10;
+		    },
+		    totalDps: function (v) {
+		        return Math.floor(v / 10) * 10;
+		    },
+		    attackSpeed: function (v) {                       
+		        return Math.floor(v * 10 + 1e-9) / 10;
+		    }
+		};
+		
+		const breakableFields = ["mana", "movementSpeed", "range", "health", "damage", "dps", "totalDps", "attackSpeed"];
+		
+		if (breakableFields.includes(collectionSortField)) {
+		    let lastGroupKey = null;
+		    const bucketFn = breakBucketFns[collectionSortField];
+		
+		    $cards.forEach(function (card) {
+		        const raw = getCollectionSortValue($(card)); // was: parseFloat($(card).data(collectionSortField))
+		        let groupKey;
+		
+		        if (!Number.isFinite(raw)) {
+		            groupKey = "n/a";
+		        } else {
+		            groupKey = bucketFn ? bucketFn(raw) : raw;
+		        }
+		
+		        if (lastGroupKey !== null && groupKey !== lastGroupKey) {
+		            const breakEl = document.createElement("div");
+		            breakEl.className = "mana-row-break";
+		            collection.insertBefore(breakEl, card);
+		        }
+		
+		        lastGroupKey = groupKey;
+		    });
+		}
+	}
+	
+	$(document).on("change", "#collection-sort-field", function () {
+	    collectionSortField = $(this).val();
+	    sortCollection();
+	});
+	
+	$(document).on("click", "#collection-sort-direction", function () {
+	    collectionSortDirection = collectionSortDirection === "asc" ? "desc" : "asc";
+	
+	    sortDirectionTooltipText = collectionSortDirection === "asc" ? "Ascending" : "Descending";
+	
+	    $(this).text(collectionSortDirection === "asc" ? "↑" : "↓");
+	
+	    sortCollection();
+	    hideCardTooltip();
+	});
+	
+	
+	
+	
+	
 	
 	// Search
 	$("#collection-search-container").html(
@@ -2560,6 +2858,7 @@ $(function () {
 	        '<option value="damage">Damage</option>' +
 	    	'<option value="attackSpeed">Attack Speed</option>' +
 	        '<option value="dps">DPS</option>' +
+	        '<option value="totalDps">Total DPS</option>' +
 	        '<option value="movementSpeed">Movement Speed</option>' +
 	        '<option value="range">Range</option>' +
 	    '</select>' +
@@ -2608,6 +2907,8 @@ $(function () {
         const dmg    = parseFloat(card.damage);
         const atk    = parseFloat(card.attackSpeed);
         const dps    = (Number.isFinite(dmg) && Number.isFinite(atk) && atk > 0) ? dmg / atk : null;
+        const count  = parseFloat(card.count);
+		const totalDps = (dps !== null && Number.isFinite(count)) ? dps * count : null;
 
         const range      = parseFloat(card.rangeVal);
         const radius     = parseFloat(card.radius);
@@ -2625,19 +2926,20 @@ $(function () {
         lines.push("<strong>" + escapeHtml(card.name) + "</strong>");
         lines.push("Type: " + escapeHtml(card.type));
 
-        if (Number.isFinite(hp))          lines.push("HP: " + escapeHtml(hp));
-		if (Number.isFinite(dmg))         lines.push("Damage: " + escapeHtml(dmg));
-		if (hasVal(card.masterdamage))    lines.push("Master Damage: " + escapeHtml(card.masterdamage));
-		if (Number.isFinite(atk))         lines.push("Attack Speed: " + escapeHtml(atk.toFixed(2)));
-		if (dps !== null)                 lines.push("DPS: " + escapeHtml(dps.toFixed(2)));
-		if (Number.isFinite(range))       lines.push("Range: " + escapeHtml(range.toFixed(2)));
-		if (Number.isFinite(radius))      lines.push("Radius: " + escapeHtml(radius.toFixed(2)));
-		if (Number.isFinite(speed))       lines.push("Movement Speed: " + escapeHtml(Math.round(speed)));
-		if (Number.isFinite(heal))        lines.push("Heal: " + escapeHtml(Math.round(heal)));
-		if (Number.isFinite(healPerSec))  lines.push("Heal per Second: " + escapeHtml(healPerSec.toFixed(2)));
-		if (hasVal(card.count))           lines.push("Unit Count: " + escapeHtml(card.count));
-		if (hasVal(card.duration))        lines.push("Duration: " + escapeHtml(card.duration));
-		if (hasVal(card.productionspeed)) lines.push("Production Speed: " + escapeHtml(card.productionspeed));
+        if (Number.isFinite(hp))        		lines.push("HP: " + escapeHtml(hp));
+		if (Number.isFinite(dmg))       		lines.push("Damage: " + escapeHtml(dmg));
+		if (hasVal(card.masterdamage))  		lines.push("Master Damage: " + escapeHtml(card.masterdamage));
+		if (Number.isFinite(atk))       		lines.push("Attack Speed: " + escapeHtml(atk.toFixed(2)));
+		if (dps !== null)               		lines.push("DPS: " + escapeHtml(dps.toFixed(2)));
+		if (totalDps !== null && count > 1) 	lines.push("Total DPS: " + escapeHtml(totalDps.toFixed(2)));
+		if (Number.isFinite(range))     		lines.push("Range: " + escapeHtml(range.toFixed(2)));
+		if (Number.isFinite(radius))    		lines.push("Radius: " + escapeHtml(radius.toFixed(2)));
+		if (Number.isFinite(speed))     		lines.push("Movement Speed: " + escapeHtml(Math.round(speed)));
+		if (Number.isFinite(heal))      		lines.push("Heal: " + escapeHtml(Math.round(heal)));
+		if (Number.isFinite(healPerSec))		lines.push("Heal per Second: " + escapeHtml(healPerSec.toFixed(2)));
+		if (hasVal(card.count))         		lines.push("Unit Count: " + escapeHtml(card.count));
+		if (hasVal(card.duration))      		lines.push("Duration: " + escapeHtml(card.duration));
+		if (hasVal(card.productionspeed))		lines.push("Production Speed: " + escapeHtml(card.productionspeed));
 
         lines.push(holdNote);
 
@@ -2666,11 +2968,13 @@ $(function () {
     
     // Query Cargo
     let cardFlagsMap = {}; // cardName -> string[]
+    let cardBuffsMap = {};
+    let cardDebuffsMap = {}; 
 
     const cardsQuery = new mw.Api().get({
 	    action: "cargoquery",
 	    tables: "Cards2",
-		fields: "name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond",
+		fields: "_pageName=pageName,name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond",
 	    where: 'rarity="Common" OR rarity="Rare" OR rarity="Supreme" OR rarity="Legendary"',
 	    limit: 999,
 	    format: "json"
@@ -2683,13 +2987,35 @@ $(function () {
         limit: 999,
         format: "json"
     });
+    
+    const buffsQuery = new mw.Api().get({
+	    action: "cargoquery",
+	    tables: "CardBuffs",
+	    fields: "_pageName=cardName,buff_name",
+	    limit: 999,
+	    format: "json"
+	});
+	
+	const debuffsQuery = new mw.Api().get({
+	    action: "cargoquery",
+	    tables: "CardDebuffs",
+	    fields: "_pageName=cardName,debuff_name",
+	    limit: 999,
+	    format: "json"
+	});
 
-    $.when(cardsQuery, flagsQuery).done(function (cardsResp, flagsResp) {
+    $.when(cardsQuery, flagsQuery, buffsQuery, debuffsQuery).done(function (cardsResp, flagsResp, buffsResp, debuffsResp) {
 
         const data = cardsResp[0];
         const flagsData = flagsResp[0];
+        const buffsData = buffsResp[0];
+        const debuffsData = debuffsResp[0];
+        
+
 
         const allSpecialFlags = new Set();
+        const allBuffNames = new Set();
+        const allDebuffNames = new Set(); 
 
 
 
@@ -2700,9 +3026,31 @@ $(function () {
             cardFlagsMap[row.cardName].push(row.flag);
             if (row.flag) allSpecialFlags.add(row.flag);
         });
+        
+        (buffsData.cargoquery || []).forEach(function (entry) {
+	        const row = entry.title;
+	        if (!row.cardName) return;
+	        if (!cardBuffsMap[row.cardName]) cardBuffsMap[row.cardName] = [];
+	        cardBuffsMap[row.cardName].push(row["buff name"]);
+			if (row["buff name"]) allBuffNames.add(row["buff name"]);
+	    });
+	    
+	    (debuffsData.cargoquery || []).forEach(function (entry) {
+	        const row = entry.title;
+	        if (!row.cardName) return;
+	        if (!cardDebuffsMap[row.cardName]) cardDebuffsMap[row.cardName] = [];
+	        cardDebuffsMap[row.cardName].push(row["debuff name"]);
+	        if (row["debuff name"]) allDebuffNames.add(row["debuff name"]);
+	    });
 
         const $specialDropdown = $("#special-filter-dropdown");
         $specialDropdown.empty();
+        
+        const $buffDropdown = $("#buff-filter-dropdown");
+	    $buffDropdown.empty();
+	    
+		const $debuffDropdown = $("#debuff-filter-dropdown");   
+    	$debuffDropdown.empty();                               
 
         Array.from(allSpecialFlags).sort().forEach(function (flag) {
             const safeId = "special-flag-" + flag.replace(/[^a-zA-Z0-9]/g, "");
@@ -2712,6 +3060,24 @@ $(function () {
             $row.append($checkbox).append($label);
             $specialDropdown.append($row);
         });
+        
+        Array.from(allBuffNames).sort().forEach(function (buffName) {
+	        const safeId = "buff-filter-" + buffName.replace(/[^a-zA-Z0-9]/g, "");
+	        const $row = $("<div>", { class: "buff-filter-option" });
+	        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: buffName });
+	        const $label = $("<label>", { for: safeId, text: buffName });
+	        $row.append($checkbox).append($label);
+	        $buffDropdown.append($row);
+	    });
+	    
+	    Array.from(allDebuffNames).sort().forEach(function (debuffName) {
+	        const safeId = "debuff-filter-" + debuffName.replace(/[^a-zA-Z0-9]/g, "");
+	        const $row = $("<div>", { class: "debuff-filter-option" });
+	        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: debuffName });
+	        const $label = $("<label>", { for: safeId, text: debuffName });
+	        $row.append($checkbox).append($label);
+	        $debuffDropdown.append($row);
+	    });
 
 
 	    const cards = data.cargoquery.map(function (entry) {
@@ -2751,6 +3117,7 @@ $(function () {
 		    wrapper.dataset.targets = card.targets;
 		    wrapper.dataset.wildcards = card.copies;
 		    wrapper.dataset.count = getCountBucket(card.count);
+		    wrapper.dataset.unitCount = card.count; // raw value, needed for Total DPS math
 		    wrapper.dataset.name = card.name;
 		    const radiusVal = String(card.radius).trim();
 		    wrapper.dataset.aoe =
@@ -2771,7 +3138,7 @@ $(function () {
 			
 			
 			// Manually-tagged flags from the CardFlags satellite table
-			const manualFlags = cardFlagsMap[card.name];
+			const manualFlags = cardFlagsMap[card.pageName];
 			if (manualFlags) {
 			    for (const flag of manualFlags) {
 			        if (!specialTags.includes(flag)) specialTags.push(flag);
@@ -2779,6 +3146,12 @@ $(function () {
 			}
 			
 			wrapper.dataset.special = specialTags.join("|");
+			
+			const buffTags = cardBuffsMap[card.pageName] || [];
+			wrapper.dataset.buffs = buffTags.join("|");
+			
+			const debuffTags = cardDebuffsMap[card.pageName] || [];
+			wrapper.dataset.debuffs = debuffTags.join("|");
 
 		
 		    const img = document.createElement("img");
@@ -2801,7 +3174,7 @@ $(function () {
 			    holdTimer = setTimeout(function () {
 			        holdTriggered = true;
 			
-			        const pageName = card.name.trim().replace(/ /g, "_");
+			        const pageName = card.pageName.trim().replace(/ /g, "_");
 			        const url = "https://minionmasters.fandom.com/wiki/" +
 			            encodeURIComponent(pageName).replace(/%2F/g, "/");
 			
@@ -2918,7 +3291,7 @@ $(function () {
 		            deckHoldTimer = setTimeout(function () {
 		                deckHoldTriggered = true;
 		
-		                const pageName = card.name.trim().replace(/ /g, "_");
+		                const pageName = card.pageName.trim().replace(/ /g, "_");
 		                const url = "https://minionmasters.fandom.com/wiki/" +
 		                    encodeURIComponent(pageName).replace(/%2F/g, "/");
 		

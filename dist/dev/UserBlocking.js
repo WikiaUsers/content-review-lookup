@@ -7,7 +7,7 @@
    @Dependencies: https://dev.fandom.com/wiki/MediaWiki:IgnoreNotifications.js
 */
 
-mw.loader.using('mediawiki.api', function() {
+mw.loader.using([ 'mediawiki.api','mediawiki.ForeignApi' ], function() {
 	'use strict';
 	if (window.UserBlockingLoaded) return;
 	window.UserBlockingLoaded = true;
@@ -206,11 +206,13 @@ mw.loader.using('mediawiki.api', function() {
 	    }
 	};
 	
-	const api = new mw.Api();
-	const page = mw.config.get('wgCityId') !== 177 ? `{{w::User:${mw.config.get('wgUserName')}/blockedusers.json}}` : `{{:User:${mw.config.get('wgUserName')}/blockedusers.json}}`;
+	const api = new mw.ForeignApi('https://community.fandom.com/api.php', {
+		anonymous: true
+	});
+	const page = `User:${mw.config.get('wgUserName')}/blockedusers.json`;
 	api.get({
 		action: 'parse',
-		text: page,
+		page: page,
 		format: 'json'
 	}).then(res => {
 		if (res.error) {

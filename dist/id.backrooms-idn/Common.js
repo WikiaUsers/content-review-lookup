@@ -2,6 +2,7 @@
 
 mw.hook('wikipage.content').add(function() {
 	
+	/*
 	// [[Templat:CSS]]
 	$('div.t-css').each(function() {
 		const css = mw.util.addCSS(this.dataset.css);
@@ -22,6 +23,7 @@ mw.hook('wikipage.content').add(function() {
 			$('.t-css-portal-' + portal).click(() => css.disabled = !css.disabled);
 		}
 	});
+	*/
 	
 	// Automatically preview CSS pages; uses T:CSS class to also be affected by ThemeToggler
 	if (mw.config.get('wgPageName').includes('.css')) { 

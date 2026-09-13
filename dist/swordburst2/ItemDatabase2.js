@@ -80,7 +80,6 @@
             'item-database-results'
         );
 
-
 function createSafeFileUrl(fileName) {
 
     if (!fileName) {
@@ -116,7 +115,6 @@ function createSafeFileUrl(fileName) {
     );
 
 }
-
 
 function createItemLink(item) {
 
@@ -158,8 +156,6 @@ function createItemLink(item) {
     return link;
 
 }
-
-
 
     searchButton.addEventListener(
         'click',
@@ -355,9 +351,16 @@ var adminPanel =
         'item-database-admin'
     );
 
+window.itemDatabaseAPI = {
+    getDatabase: getDatabase,
+    removeItem: removeItem
+};
+
 if (!canUpdate) {
 
-    adminPanel.remove();
+    if (adminPanel) {
+        adminPanel.remove();
+    }
 
     return;
 
@@ -4100,11 +4103,6 @@ return {
 
     }
 
-window.itemDatabaseAPI = {
-    getDatabase: getDatabase,
-    removeItem: removeItem
-};
-
 function saveDatabase(database) {
 
     var api =
@@ -4726,9 +4724,6 @@ getDatabase()
 
 
 }
-
-
-
 
     updateItemButton.addEventListener(
         'click',

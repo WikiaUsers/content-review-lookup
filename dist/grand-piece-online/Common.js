@@ -14,7 +14,7 @@
     var slots = [];
     pattern.forEach(function (cap, r) {
       var off = (cap === maxCap) ? 0 : 0.75;
-      for (var j = 0; j < cap; j++) slots.push({ r: r, x: off + j * 1.28 });
+      for (var j = 0; j < cap; j++) slots.push({ r: r, x: off + j * 1.5 });
     });
     slots.sort(function (a, b) { return (a.x - b.x) || (a.r - b.r); });
 
@@ -55,7 +55,7 @@
 		if (!grids.length) return;
 
 		Array.prototype.forEach.call(grids, function (grid) {
-			if (grid.dataset.gpoSearch) return;   // não re-inicializa
+			if (grid.dataset.gpoSearch) return;   // don't re-init
 			grid.dataset.gpoSearch = '1';
 
 			var cards = grid.querySelectorAll('.gpo-item-card');
@@ -67,7 +67,7 @@
 				if (frame) { var m = frame.className.match(/gpo-r-([a-z]+)/); if (m) rar = m[1]; }
 				card.dataset.rarity = rar;
 				present[rar] = true;
-				// texto de busca = nome + conteúdo do popup (que continua no card, via CSS)
+				// search text = item name + popup content (still in the card via CSS)
 				card.dataset.search = card.textContent.replace(/\s+/g, ' ').toLowerCase();
 			});
 
@@ -105,4 +105,65 @@
 	if (window.mw && mw.hook) mw.hook('wikipage.content').add(initGrids);
 	else if (document.readyState !== 'loading') initGrids();
 	else document.addEventListener('DOMContentLoaded', initGrids);
+})();
+
+/* ===== Trade Guide — click-to-open modal + category filter =====
+   Reuses .gpo-item-card (same visuals). Grid must have class tg-click-mode. */
+(function () {
+	function init() {
+		var grids = document.querySelectorAll('.gpo-item-grid.tg-click-mode');
+		if (!grids.length) return;
+
+		// click a card to open/close its popup; click inside popup keeps it open; click outside closes
+		document.querySelectorAll('.gpo-item-grid.tg-click-mode .gpo-item-card').forEach(function (card) {
+			if (card.dataset.tgInit) return; card.dataset.tgInit = '1';
+			card.addEventListener('click', function (e) {
+			    if (e.target.closest('.gpo-item-popup')) return;
+			    e.preventDefault();
+			    var wasOpen = card.classList.contains('tg-open');
+			    document.querySelectorAll('.gpo-item-card.tg-open').forEach(function (c) { c.classList.remove('tg-open'); });
+			    if (!wasOpen) card.classList.add('tg-open');
+			});
+		});
+		if (!document.body.dataset.tgOutside) {
+			document.body.dataset.tgOutside = '1';
+			document.addEventListener('click', function (e) {
+				if (!e.target.closest('.gpo-item-card')) {
+					document.querySelectorAll('.gpo-item-card.tg-open').forEach(function (c) { c.classList.remove('tg-open'); });
+				}
+			});
+		}
+
+		// inject a category filter per trade grid (search bar comes from the item-grid script)
+		grids.forEach(function (grid) {
+			if (grid.dataset.tgCat) return; grid.dataset.tgCat = '1';
+			var cards = grid.querySelectorAll('.gpo-item-card');
+			var cats = {};
+			cards.forEach(function (c) {
+				var w = c.closest('.tg-item') || c.parentElement;
+				var cat = (w && w.dataset && w.dataset.cat) || '';
+				c.dataset.tgcat = cat;
+				if (cat) cats[cat] = 1;
+			});
+			var order = ['weapon', 'fruit', 'accessory', 'cosmetic', 'item'];
+			var sel = document.createElement('select'); sel.className = 'gpo-rarity tg-cat';
+			var all = document.createElement('option'); all.value = 'all'; all.textContent = 'All categories'; sel.appendChild(all);
+			order.forEach(function (c) { if (cats[c]) { var o = document.createElement('option'); o.value = c; o.textContent = c.charAt(0).toUpperCase() + c.slice(1); sel.appendChild(o); } });
+
+			// place the category select next to the search bar the item-grid script injects
+			var bar = grid.previousElementSibling;
+			if (bar && bar.classList.contains('gpo-controls')) bar.appendChild(sel);
+			else grid.parentNode.insertBefore(sel, grid);
+
+			sel.addEventListener('change', function () {
+				var c = sel.value;
+				cards.forEach(function (card) {
+					card.style.display = (c === 'all' || card.dataset.tgcat === c) ? '' : 'none';
+				});
+			});
+		});
+	}
+	if (window.mw && mw.hook) mw.hook('wikipage.content').add(init);
+	else if (document.readyState !== 'loading') init();
+	else document.addEventListener('DOMContentLoaded', init);
 })();

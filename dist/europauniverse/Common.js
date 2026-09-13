@@ -147,7 +147,6 @@ $(function() {
     }
 });
 
-
 /* 
 ////////////////////////////////////////////////////////////////////
 // THE BELOW CODE ADDS CUSTOM BUTTONS TO THE JAVASCRIPT EDIT TOOLBAR
@@ -289,7 +288,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Character Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Character Template\n| Image                   = ",
 						post: "\n| Name                    = \n| NameRef                 = \n| CurrentAlias            = \n| CurrentAliasRef         = \n| Codenames               = \n| Nicknames               = \n| Aliases                 = \n\n| Affiliation             = \n| Parents                 = \n| Siblings                = \n| Spouses                 = \n| Children                = \n| Relatives               = \n| MaritalStatus           = \n\n| CharRef                 = \n| Gender                  = \n| Height                  = \n| Weight                  = \n| Eyes                    = \n| Hair                    = \n| UnusualFeatures         = \n\n| Origin                  = \n| Reality                 = \n| PlaceOfBirth            = \n\n| Identity                = \n| Citizenship             = \n| Occupation              = \n| Education               = \n| BaseOfOperations        = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Powers                  = \n| Abilities               = \n| Weaknesses              = \n| AdditionalAttributes    = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -301,7 +300,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Team Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Team Template\n| Image                   = ",
 						post: "\n| Name                    = \n| NameRef                 = \n| EditorialNames          = \n| Aliases                 = \n\n| Leaders                 = \n| CurrentMembers          = \n| FormerMembers           = \n\n| Identity                = \n| Affiliation             = \n| Allies                  = \n| Enemies                 = \n\n| Origin                  = \n| Status                  = \n| Reality                 = \n| BaseOfOperations        = \n| PlaceOfFormation        = \n| PlaceOfDissolution      = \n\n| Creators                = \n| First                   = \n| Last                    = \n\n| History                 = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -313,7 +312,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Location Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Location Template\n| Image                   = ",
 						post: "\n| Name                    = \n| NameRef                 = \n| Aliases                 = \n\n| Reality                 = \n| Galaxy                  = \n| StarSystem              = \n| Planet                  = \n| Continent               = \n| Country                 = \n| Region                  = \n| State                   = \n| City                    = \n| Locale                  = \n\n| Population              = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| PointsOfInterest        = \n| Residents               = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -325,7 +324,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Item Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Item Template\n| Image                   = ",
 						post: "\n| Name                    = \n| NameRef                 = \n| Aliases                 = \n\n| CurrentOwner            = \n| PreviousOwners          = \n| AlternateOwners         = \n\n| Type                    = \n| Material                = \n| Dimensions              = \n| Weight                  = \n\n| Origin                  = \n| Reality                 = \n| LeadDesigner            = \n| AdditionalDesigners     = \n| PlaceOfCreation         = \n| PlaceOfDestruction      = \n\n| Creators                = \n| First                   = \n\n| History                 = \n| Properties              = \n| AlternateVersions       = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -337,7 +336,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Reality Template\n| Title                   = \n| Image                   = ",
+						pre: "{{Europa Wiki:Reality Template\n| Title                   = \n| Image                   = ",
 						post: "\n| EarthNumber             = \n| EarthNumberRef          = \n| Aliases                 = \n| Status                  = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Residents               = \n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -349,7 +348,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Race Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Race Template\n| Image                   = ",
 						post: "\n| Name                    = \n| NameRef                 = \n| Aliases                 = \n\n| Identity                = \n| Affiliation             = \n\n| BodyType                = \n| AvgHeight               = \n| AvgWeight               = \n| Eyes                    = \n| Hair                    = \n| Skin                    = \n| NumberOfLimbs           = \n| NumberOfFingers         = \n| NumberOfToes            = \n| SpecialAdaptations      = \n| UnusualFeatures         = \n\n| Origin                  = \n| Status                  = \n| Reality                 = \n| GalaxyOfOrigin          = \n| StarSystemOfOrigin      = \n| HomePlanet              = \n| BaseOfOperations        = \n| PlaceOfBirth            = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Habitat                 = \n| Gravity                 = \n| Atmosphere              = \n| Population              = \n\n| Powers                  = \n| Abilities               = \n| AvgStrength             = \n| Weaknesses              = \n\n| GovernmentType          = \n| TechnologyLevel         = \n| CulturalTraits          = \n| Representatives         = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -361,7 +360,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Vehicle Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Vehicle Template\n| Image                   = ",
 						post: "\n| Name                    = \n| NameRef                 = \n| Aliases                 = \n\n| CurrentOwner            = \n| PreviousOwners          = \n\n| TransportMethod         = \n| CurrentModel            = \n| PreviousModels          = \n| Dimensions              = \n\n| Origin                  = \n| Reality                 = \n| Status                  = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 					}
 				}
@@ -373,7 +372,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Comic Template\n| Image1              = ",
+						pre: "{{Europa Wiki:Comic Template\n| Image1              = ",
 						post: "\n| Image1_Artist1      = \n| Image2              = \n| Image2_Text         = \n| Image2_Artist1      = \n\n| ReleaseDate         = \n| Month               = \n| Year                = \n\n| Editor-in-Chief     = \n| Pages               = \n| Rating              = \n| OriginalPrice       = \n\n| Quotation           = \n| Speaker             = \n\n| StoryTitle1         = \n| Writer1_1           = \n| Penciler1_1         = \n| Inker1_1            = \n| Colorist1_1         = \n| Letterer1_1         = \n| Editor1_1           = \n\n|  Appearing1         = \n'''Featured Characters:'''\n* <br/>\n'''Supporting Characters:'''\n* <br/>\n'''Antagonists:'''\n* <br/>\n'''Other Characters:'''\n* <br/>\n'''Races and Species:'''\n* <br/>\n'''Locations:'''\n* <br/>\n'''Items:'''\n* <br/>\n'''Vehicles:'''\n* <br/>\n\n| Synopsis1           = \n\n| Solicit             = \n\n| Notes               = \n| Trivia              = \n| Recommended         = \n| Links               = \n}}"
 					}
 				}
@@ -385,7 +384,7 @@ var customizeToolbar2 = function () {
 				action: {
 				type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Volume Template\n| volume_logo             = \n| PreviousVol             = \n| NextVol                 = \n| publisher               = \n| format                  = \n| type                    = \n| genres                  = \n| featured                = \n\n| SeeAlso                 = \n\n",
+						pre: "{{Europa Wiki:Volume Template\n| volume_logo             = \n| PreviousVol             = \n| NextVol                 = \n| publisher               = \n| format                  = \n| type                    = \n| genres                  = \n| featured                = \n\n| SeeAlso                 = \n\n",
 						post: "}}"
 					}
 				}
@@ -397,7 +396,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Image Template\n| License                 = ",
+						pre: "{{Europa Wiki:Image Template\n| License                 = ",
 						post: "\n| ImageType               = \n\n| Reality                 = \n| Subject1                = \n| Subject2                = \n| Subject3                = \n| Subject4                = \n| Subject5                = \n\n| Source                  = \n| CoverArtist1            = \n| Penciler1               = \n| Inker1                  = \n| Colorist1               = \n| Letterer1               = \n}}"
 					}
 				}
@@ -409,7 +408,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Gallery Template\n| GalleryType             = \n| GalleryData             = \n\n==Comics==\n===Interior Art===\n<gallery position=\"center\" captionalign=\"center\">\n",
+						pre: "{{Europa Wiki:Gallery Template\n| GalleryType             = \n| GalleryData             = \n\n==Comics==\n===Interior Art===\n<gallery position=\"center\" captionalign=\"center\">\n",
 						post: "\n</gallery>\n\n| SeeAlso                 = \n}}"
 					}
 				}
@@ -421,7 +420,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Episode Template\n| Image               = ",
+						pre: "{{Europa Wiki:Episode Template\n| Image               = ",
 						post: "\n| Day                 = \n| Month               = \n| Year                = \n\n| Director1           = \n| Producer1           = \n| Writer1             = \n\n| Quotation           = \n| Speaker             = \n\n| EpisodeTitle        = \n| Synopsis            = \n\n| Appearing           = \n'''Featured Characters:'''\n* <br/>\n'''Supporting Characters:'''\n* <br/>\n'''Antagonists:'''\n* <br/>\n'''Other Characters:'''\n* <br/>\n'''Locations:'''\n* <br/>\n'''Items:'''\n* <br/>\n'''Vehicles:'''\n* <br/>\n\n| Notes               = \n| Trivia              = \n| Recommended         = \n| Links               = \n}}"
 					}
 				}
@@ -433,7 +432,7 @@ var customizeToolbar2 = function () {
 				action: {
 					type: 'encapsulate',
 					options: {
-						pre: "{{Donuts Wiki:Creator Template\n| Image                   = ",
+						pre: "{{Europa Wiki:Creator Template\n| Image                   = ",
 						post: "\n| Name                    = \n| Pseudonyms              = \n\n| Gender                  = \n| DateOfBirth             = \n| PlaceOfBirth            = \n\n| Employers               = \n| Titles                  = \n| First                   = \n| Last                    = \n| NotableCreations        = \n\n| PersonalHistory         = \n| ProfessionalHistory     = \n\n| Notes                   = \n| Trivia                  = \n| OfficialWebsite         = \n| Links                   = \n}}"
 					}
 				}

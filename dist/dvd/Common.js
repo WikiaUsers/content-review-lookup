@@ -4,7 +4,7 @@ if(mw.config.get('wgUserName')) {
     window.DiscordIntegratorConfig = {
         siderail: {
             title: "Discord Server",
-            id: "220223330081308674"
+            id: "1471257275657355435"
         }
     };
 }

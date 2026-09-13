@@ -596,3 +596,68 @@ var rarityColors = {
     }
     mw.hook('wikipage.content').add(initSaeEventsSlider);
 })();
+/* SAE slider */
+(function () {
+    var eventsSliderInitialized = false;
+    function initSaeEventsSlider() {
+        if (eventsSliderInitialized) return;
+        var slider = document.querySelector('.sae-events-slider');
+        if (!slider) return;
+        var slides = slider.querySelectorAll('.sae-events-slide');
+        var dots = document.querySelectorAll('.sae-events-dot');
+        var leftArrow = slider.querySelector('.sae-events-arrow-left');
+        var rightArrow = slider.querySelector('.sae-events-arrow-right');
+        if (slides.length < 2) return;
+        eventsSliderInitialized = true;
+        var current = 0;
+        var timer;
+
+        function goTo(index) {
+            slides.forEach(function (s) { s.classList.remove('sae-slide-active'); });
+            dots.forEach(function (d) { d.classList.remove('sae-dot-active'); });
+            slides[index].classList.add('sae-slide-active');
+            dots[index].classList.add('sae-dot-active');
+            current = index;
+        }
+
+        function next() {
+            goTo((current + 1) % slides.length);
+        }
+        function prev() {
+            goTo((current - 1 + slides.length) % slides.length);
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timer = setInterval(next, 5000);
+        }
+
+        dots.forEach(function (dot, i) {
+            dot.addEventListener('click', function () {
+                goTo(i);
+                resetTimer();
+            });
+        });
+
+        if (leftArrow) {
+            leftArrow.addEventListener('click', function () {
+                prev();
+                resetTimer();
+            });
+        }
+        if (rightArrow) {
+            rightArrow.addEventListener('click', function () {
+                next();
+                resetTimer();
+            });
+        }
+
+        resetTimer();
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSaeEventsSlider);
+    } else {
+        initSaeEventsSlider();
+    }
+    mw.hook('wikipage.content').add(initSaeEventsSlider);
+})();

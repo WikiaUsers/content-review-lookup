@@ -72,23 +72,25 @@ window.spoilerTags = { unspoil: true, selection: true, tooltip: false, };
 window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 	(function($, mw) {
 		
-		var uiConfig = {
-			clickSoundUrl: 'https://static.wikia.nocookie.net/incredibox/images/2/2c/Clickfast.ogg/revision/latest?cb=20260803083657',
-			clickSoundEnabled: true,
-			showCursorPointer: true,
+		const $soundContainer = $('.ButtonTrigger, [data-click-sound-url]').first();
+		
+		const uiConfig = {
+			clickSoundUrl: $soundContainer.attr('data-click-sound-url') || 'https://static.wikia.nocookie.net/incredibox/images/2/2c/Clickfast.ogg/revision/latest?cb=20260803083657',
+			clickSoundEnabled: $soundContainer.attr('data-click-sound-enabled') !== 'false',
+			showCursorPointer: $soundContainer.attr('data-show-cursor') !== 'false',
+			muteClicks: $soundContainer.attr('data-mute-clicks') === 'true',
 		};
+		
+		function playClickSound() {
+			if (!uiConfig.clickSoundEnabled || !uiConfig.clickSoundUrl || uiConfig.muteClicks) return;
+			new Audio(uiConfig.clickSoundUrl).play();
+		}
 		
 		$(document).ready(function() {
 			
-			function playClickSound() {
-				if (uiConfig.clickSoundEnabled && uiConfig.clickSoundUrl) {
-					new Audio(uiConfig.clickSoundUrl).play().catch(function(){});
-				}
-			}
-			
-			var audioCache = {};
-			var pendingRequests = {};
-			var clickAudioCache = null;
+			const audioCache = {};
+			const pendingRequests = {};
+			let clickAudioCache = null;
 			if (uiConfig.clickSoundEnabled && uiConfig.clickSoundUrl) {
 				clickAudioCache = new Audio(uiConfig.clickSoundUrl);
 				clickAudioCache.load();
@@ -100,7 +102,7 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 							clickAudioCache.pause();
 							clickAudioCache.volume = 1;
 							clickAudioCache.currentTime = 0;
-						}).catch(function(){});
+						});
 					}
 				});
 			}
@@ -180,18 +182,16 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 					},
 					dataType: 'json',
 				}).then(function(apiResponse) {
-					var pages = apiResponse.query.pages;
-					var pageId = Object.keys(pages)[0];
+					const pages = apiResponse.query.pages;
+					const pageId = Object.keys(pages)[0];
 					if (pageId !== "-1" && pages[pageId].imageinfo) {
-						var directAudioUrl = pages[pageId].imageinfo[0].url;
+						const directAudioUrl = pages[pageId].imageinfo[0].url;
 						audioCache[soundName] = directAudioUrl;
 						return directAudioUrl;
 					}
 					
 					audioCache[soundName] = 'PENSIVE';
 					return 'PENSIVE';
-				}).catch(function() {
-					return null;
 				});
 				
 				if (callback) {
@@ -203,10 +203,10 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 			}
 			
 			function showText($clickedLink) {
-				var notificationText = $clickedLink.attr('data-text');
+				const notificationText = $clickedLink.attr('data-text');
 				if (!notificationText) return;
 				
-				var $notificationStack = $('#textStack');
+				let $notificationStack = $('#textStack');
 				if (!$notificationStack.length) {
 					$notificationStack = $('<div>', {id: 'textStack'}).css({
 						'position': 'fixed', 'z-index': '9999', 'top': '63px', 'left': '50%',
@@ -215,8 +215,16 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 					}).appendTo('body');
 				}
 				
-				var border = $clickedLink.attr('data-border') || "transparent";
-				$('<div>', { 'class': 'textCustomizability', 'text': notificationText }).css({
+				const border = $clickedLink.attr('data-border') || "transparent";
+				const $notificationItem = $('<div>', { 'class': 'textCustomizability' });
+				
+				if (notificationText.includes('<img')) {
+					$notificationItem.html(notificationText);
+				} else {
+					$notificationItem.text(notificationText);
+				}
+				
+				$notificationItem.css({
 					'font-family': 'Montserrat, sans-serif', 'font-weight': 'bold', 'text-align': 'center', 'word-break': 'break-word', 'max-width': '100%', 'padding': '3px 8px',
 					'font-size': $clickedLink.attr('data-size') || "52px",
 					'color': $clickedLink.attr('data-color') || "#ffffff",
@@ -231,23 +239,25 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 				if ($lockObject.data('locked')) return false;
 				$lockObject.data('locked', true).addClass('cooldown-active button-transparent');
 				
-				var secondsLeft = Math.ceil(durationMs / 1000);
-				var hideTimerText = $lockObject.attr('data-notext') === 'true';
-				var $timerOverlay = null;
+				let secondsLeft = Math.ceil(durationMs / 1000);
+				const hideTimerText = $lockObject.attr('data-notext') === 'true' || $lockObject.attr('data-once') === 'true';
+				let $timerOverlay = null;
 				
 				if (!hideTimerText) {
 					if ($lockObject.css('position') === 'static') $lockObject.css('position', 'relative');
 					$timerOverlay = $('<span>', { 'class': 'timer-anchor', 'text': secondsLeft + 's' }).appendTo($lockObject);
 				}
 				
-				var countdownInterval = setInterval(function() {
+				const countdownInterval = setInterval(function() {
 					secondsLeft--;
 					
 					if ($lockObject.data('skipCooldown') || secondsLeft <= 0) {
 						clearInterval(countdownInterval);
 						if ($timerOverlay) $timerOverlay.remove();
 						
-						$lockObject.removeClass('cooldown-active button-transparent');
+						$lockObject.removeClass('cooldown-active');
+						if (!$lockObject.hasClass('used-once')) $lockObject.removeClass('button-transparent');
+						
 						$lockObject.removeData('locked activeInterval skipCooldown');
 						
 						if (afterLock) afterLock();
@@ -262,13 +272,13 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 			
 			// Handle audio, text or redirect
 			function handleLinkAction(event, $clickedLink) {
-				var soundName = $clickedLink.attr('data-audio');
-				var destinationPage = $clickedLink.attr('data-link');
-				var durationSeconds = $clickedLink.attr('data-duration');
-				var totalMs = durationSeconds !== undefined ? parseInt(durationSeconds, 10) * 1000 : 4000;
-				var delaySeconds = $clickedLink.attr('data-delay');
-				var delayMs = delaySeconds ? parseInt(delaySeconds, 10) * 1000 : null;
-				var destinationLink = destinationPage ? mw.util.getUrl(destinationPage) : null;
+				const soundName = $clickedLink.attr('data-audio');
+				const destinationPage = $clickedLink.attr('data-link');
+				const durationSeconds = $clickedLink.attr('data-duration');
+				const totalMs = durationSeconds !== undefined ? parseInt(durationSeconds, 10) * 1000 : 4000;
+				const delaySeconds = $clickedLink.attr('data-delay');
+				const delayMs = delaySeconds ? parseInt(delaySeconds, 10) * 1000 : null;
+				const destinationLink = destinationPage ? mw.util.getUrl(destinationPage) : null;
 				
 				if ($clickedLink.hasClass('disabled-switch') || $clickedLink.hasClass('used-once')) return;
 				if (totalMs !== 0 && ($clickedLink.data('locked') || $clickedLink.data('fetching'))) return;
@@ -281,71 +291,128 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 				
 				playClickSound();
 				
-				var isMuteToggle = $clickedLink.is('#mute-toggle');
-				var isCurrentlyDisabled = $clickedLink.data('disabled-state') === true;
+				const isMuteToggle = $clickedLink.is('#mute-toggle');
+				const isCurrentlyDisabled = $clickedLink.data('disabled-state') === true;
 				
 				if (!(isMuteToggle && isCurrentlyDisabled)) {
 					showText($clickedLink);
 				}
 				
-				var connectedButtons = $clickedLink.attr('data-connect');
+				const backgroundImage = $clickedLink.attr('data-background-image');
+				if (backgroundImage) {
+					$('<div>').css({
+						'position': 'fixed', 'top': 0, 'left': 0, 'width': '100vw', 'height': '100vh',
+						'background': 'url(' + backgroundImage + ') center/cover no-repeat', 'z-index': 1,
+						'pointer-events': 'none', 'display': 'none',
+					}).appendTo('body').fadeIn(300).delay(totalMs || 3000).fadeOut(300, function() {
+						$(this).remove();
+					});
+				}
+				
+				const particleImage = $clickedLink.attr('data-particle-image');
+				if (particleImage) {
+					const particleDirection = $clickedLink.attr('data-particle-direction') || 'bottom';
+					const particleInterval = setInterval(function() {
+						if ($clickedLink.data('locked') === false || $clickedLink.hasClass('cooldown-active') === false) {
+							clearInterval(particleInterval);
+							return;
+						}
+						
+						const spawnParticles = {
+							'position': 'fixed', 'width': '40px', 'height': 'auto',
+							'z-index': 9999, 'pointer-events': 'none', 'transition': 'all 3s linear',
+						};
+						const endParticles = { 'opacity': 0 };
+						const particleOffset = Math.random() * 360;
+						
+						if (particleDirection === 'left') {
+							spawnParticles.left = '-50px'; spawnParticles.top = (Math.random() * 100) + 'vh';
+							endParticles.transform = 'translateX(110vw) rotate(' + particleOffset + 'deg)';
+						} else if (particleDirection === 'right') {
+							spawnParticles.right = '-50px'; spawnParticles.top = (Math.random() * 100) + 'vh';
+							endParticles.transform = 'translateX(-110vw) rotate(' + particleOffset + 'deg)';
+						} else if (particleDirection === 'top') {
+							spawnParticles.top = '-50px'; spawnParticles.left = (Math.random() * 100) + 'vw';
+							endParticles.transform = 'translateY(110vh) rotate(' + particleOffset + 'deg)';
+						} else {
+							spawnParticles.bottom = '-50px'; spawnParticles.left = (Math.random() * 100) + 'vw';
+							endParticles.transform = 'translateY(-110vh) rotate(' + particleOffset + 'deg)';
+						}
+						
+						const $particle = $('<img>', { src: particleImage }).css(spawnParticles).appendTo('body');
+						
+						setTimeout(function() { $particle.css(endParticles); }, 50);
+						setTimeout(function() { $particle.remove(); }, 3050);
+					}, 150);
+					$clickedLink.data('activeInterval', particleInterval);
+				}
+				
+				const connectedButtons = $clickedLink.attr('data-connect');
 				if (connectedButtons) {
-					var activeChain = $clickedLink.data('chainReaction') || [];
+					const activeChain = $clickedLink.data('chainReaction') || [];
 					if (activeChain.length >= 500) {
 						$clickedLink.removeData('chainReaction');
 						return;
 					}
 					
 					connectedButtons.split(',').forEach(function(item) {
-						var chainData = item.trim().split(':');
-						var chainSelector = chainData[0].trim();
-						var chainDelaySec = parseFloat(chainData[1]) || 0;
+						const parts = item.split(':');
+						const chainSelector = parts[0]?.trim();
+						if (!chainSelector) return;
 						
-						if (chainSelector) {
-							var chainTimeoutId = setTimeout(function() {
-								var $nextButton = $(chainSelector);
-								var nextChain = activeChain.concat([chainSelector]);
+						const chainDelaySec = parseFloat(parts[1]) || 0;
+						const chainTimeoutId = setTimeout(function() {
+								const $nextButton = $(chainSelector);
+								const nextChain = activeChain.concat([chainSelector]);
 								$nextButton.data('chainReaction', nextChain);
-								var chainEvent = $.Event('click');
-								var buttonId = $clickedLink.attr('id');
-								chainEvent.clickedBy = buttonId ? '#' + buttonId : null;
-								$nextButton.trigger(chainEvent);
+								$nextButton.trigger($.extend($.Event('click'), {
+									clickedBy: $clickedLink.attr('id') ? '#' + $clickedLink.attr('id') : null
+								}));
 								$nextButton.removeData('chainReaction');
 								
-								var currentActiveTimeouts = $nextButton.data('incomingChainTimeouts') || [];
-								var timeoutIndex = currentActiveTimeouts.indexOf(chainTimeoutId);
+								const currentActiveTimeouts = $nextButton.data('incomingChainTimeouts') || [];
+								let timeoutIndex = currentActiveTimeouts.indexOf(chainTimeoutId);
 								if (timeoutIndex > -1) {
 									currentActiveTimeouts.splice(timeoutIndex, 1);
 									$nextButton.data('incomingChainTimeouts', currentActiveTimeouts);
 								}
 							}, chainDelaySec * 1000);
 							
-							var $targetChoiceButton = $(chainSelector);
-							var existingTimeouts = $targetChoiceButton.data('incomingChainTimeouts') || [];
+							const $targetChoiceButton = $(chainSelector);
+							const existingTimeouts = $targetChoiceButton.data('incomingChainTimeouts') || [];
 							existingTimeouts.push(chainTimeoutId);
 							$targetChoiceButton.data('incomingChainTimeouts', existingTimeouts);
-						}
 					});
 				}
 				
-				var injectString = $clickedLink.attr('data-inject');
+				const injectString = $clickedLink.attr('data-inject');
 				if (injectString) {
-					var injectParts = injectString.split(':');
-					var injectElement = injectParts[0] ? injectParts[0].trim() : null;
-					var injectId = injectParts[1] ? injectParts[1].trim() : null;
+					const injectParts = injectString.split(':');
+					const injectElement = injectParts[0] ? injectParts[0].trim() : null;
+					const injectId = injectParts[1] ? injectParts[1].trim() : null;
+					
 					if (injectElement && injectId) {
-						$(injectElement).attr('data-require', injectId);
+						const $target = $(injectElement);
+						const currentRequirement = $target.attr('data-require');
+						
+						if (currentRequirement && currentRequirement.trim() === injectId.trim()) {
+							$target.removeAttr('data-require');
+							$target.removeAttr('data-locked-text');
+						}
 					}
 				}
 				
-				var cleanUpAndRedirect = function() {
-					var activeInterval = $clickedLink.data('activeInterval');
+				const cleanUpAndRedirect = function() {
+					const activeInterval = $clickedLink.data('activeInterval');
 					if (activeInterval) clearInterval(activeInterval);
-					
-					var safetyTimeout = $clickedLink.data('safetyTimeout');
+					const safetyTimeout = $clickedLink.data('safetyTimeout');
 					if (safetyTimeout) clearTimeout(safetyTimeout);
 					
-					$clickedLink.removeClass('cooldown-active button-transparent');
+					if (!$clickedLink.hasClass('used-once')) {
+						$clickedLink.removeClass('cooldown-active button-transparent');
+					} else {
+						$clickedLink.removeClass('cooldown-active');
+					}
 					$clickedLink.removeData('skipCooldown locked activeInterval safetyTimeout');
 					
 					if (destinationLink) {
@@ -361,7 +428,7 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 						buttonCooldown($clickedLink, totalMs, (destinationLink && delayMs === null) ? null : cleanUpAndRedirect);
 					}
 					
-					var nativeTrack = new Audio();
+					const nativeTrack = new Audio();
 					
 					$clickedLink.data('activeAudioInstance', nativeTrack);
 					
@@ -374,11 +441,20 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 							return;
 						}
 						
-						if (!audioUrl || audioUrl === 'PENSIVE') {
-							cleanUpAndRedirect();
-							return;
+						let nativeTrack = audioCache[soundName] instanceof Audio ? audioCache[soundName] : null;
+						if (!nativeTrack) {
+							if (!audioUrl || audioUrl === 'PENSIVE') {
+								cleanUpAndRedirect();
+								return;
+							}
+							nativeTrack = new Audio(audioUrl);
+							audioCache[soundName] = nativeTrack;
+						} else {
+							nativeTrack.pause();
+							nativeTrack.currentTime = 0;
 						}
-						nativeTrack.src = audioUrl;
+						$clickedLink.removeData('fetching');
+						$clickedLink.data('activeAudioInstance', nativeTrack);
 						
 						if (delayMs !== null) {
 							nativeTrack.play().catch(function() {
@@ -386,8 +462,10 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 							});
 							$clickedLink.data('safetyTimeout', setTimeout(cleanUpAndRedirect, delayMs));
 						} else {
-							var fallbackTimer = setTimeout(cleanUpAndRedirect, Math.min(totalMs === 0 ? 6000 : totalMs, 6000));
+							const safetyLimit = totalMs === 0 ? 3600000 : totalMs;
+							const fallbackTimer = setTimeout(cleanUpAndRedirect, safetyLimit);
 							$clickedLink.data('safetyTimeout', fallbackTimer);
+							nativeTrack.onended = null;
 							nativeTrack.play().then(function() {
 								nativeTrack.onended = function() {
 									clearTimeout(fallbackTimer);
@@ -400,16 +478,21 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 						}
 					});
 				} else {
-					if (totalMs !== 0) buttonCooldown($clickedLink, totalMs, (delayMs === null) ? cleanUpAndRedirect : null);
-					if (delayMs !== null) $clickedLink.data('safetyTimeout', setTimeout(cleanUpAndRedirect, delayMs));
-					else if (totalMs === 0) cleanUpAndRedirect();
+					if (!isMuteToggle) {
+						if (totalMs !== 0) buttonCooldown($clickedLink, totalMs, (delayMs === null) ? cleanUpAndRedirect : null);
+						if (delayMs !== null) $clickedLink.data('safetyTimeout', setTimeout(cleanUpAndRedirect, delayMs));
+						else if (totalMs === 0) cleanUpAndRedirect();
+					} else {
+						$clickedLink.removeClass('cooldown-active button-transparent');
+						$clickedLink.removeData('fetching');
+					}
 				}
 			}
 			
 			// Toggle buttons and handle cooldown states
 			function toggleButtonTriggers(selector, shouldDisable) {
 				$(selector).not('#mute-toggle').each(function() {
-					var $switchElement = $(this);
+					const $switchElement = $(this);
 					if ($switchElement.hasClass('used-once')) return;
 					if (shouldDisable) {
 						$switchElement.addClass('disabled-switch').css('opacity', '0.5');
@@ -424,66 +507,65 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 			}
 			
 			$(document).off('click', '.ButtonTrigger').on('click', '.ButtonTrigger', function(event) {
-				var $lockedButton = $(this);
+				const $lockedButton = $(this);
 				if ($lockedButton.hasClass('used-once')) {
 					event.preventDefault();
 					return;
 				}
 				
-				var buttonStopper = $lockedButton.attr('data-stop-button');
+				const buttonStopper = $lockedButton.attr('data-stop-button');
 				if (buttonStopper !== undefined) {
 					event.preventDefault();
 					
-					var isMasterMuted = $('#mute-toggle').data('disabled-state') === true;
+					const isMasterMuted = $('#mute-toggle').data('disabled-state') === true;
 					if (!isMasterMuted) {
 						playClickSound();
 					}
 					
-					var $activeButtons = (buttonStopper === 'all' || buttonStopper === '' || buttonStopper === 'true')
+					const $activeButtons = (buttonStopper === 'all' || buttonStopper === '' || buttonStopper === 'true')
 					? $('.ButtonTrigger')
 					: $(buttonStopper);
 					
 					$activeButtons.each(function() {
-						var $stuckButton = $(this);
+						const $stuckButton = $(this);
 						
-						$stuckButton.data('skipCooldown', true);
-						$stuckButton.data('audioCancelled', true);
-						
-						var pendingChains = $stuckButton.data('incomingChainTimeouts') || [];
-						pendingChains.forEach(function(timeoutId) {
-							clearTimeout(timeoutId);
-						});
+						$stuckButton.data({ 'skipCooldown': true, 'audioCancelled': true });
+						($stuckButton.data('incomingChainTimeouts') || []).forEach(clearTimeout);
 						$stuckButton.removeData('incomingChainTimeouts');
 						
-						var countdownClock = $stuckButton.data('activeInterval');
+						const countdownClock = $stuckButton.data('activeInterval');
 						if (countdownClock) clearInterval(countdownClock);
 						
-						var backupTimer = $stuckButton.data('safetyTimeout');
+						const backupTimer = $stuckButton.data('safetyTimeout');
 						if (backupTimer) clearTimeout(backupTimer);
 						
-						var activeAudio = $stuckButton.data('activeAudioInstance');
+						const activeAudio = $stuckButton.data('activeAudioInstance');
 						if (activeAudio) {
 							activeAudio.pause();
 							activeAudio.currentTime = 0;
 						}
 						
 						$stuckButton.find('.timer-anchor').remove();
-						$stuckButton.removeClass('cooldown-active button-transparent');
-						$stuckButton.removeData('locked activeInterval safetyTimeout fetching chainReaction');
+						$stuckButton.removeClass('cooldown-active button-transparent').removeData('locked activeInterval safetyTimeout fetching chainReaction');
 					});
 					return;
 				}
-				var requiredId = $lockedButton.attr('data-require');
+				const requiredId = $lockedButton.attr('data-require');
 				if (requiredId && requiredId.trim() !== "") {
-					var idCheck = event.clickedBy;
-					if (!idCheck || idCheck.trim() !== requiredId.trim()) {
-						event.preventDefault();
-						if ($lockedButton.attr('data-locked-text')) {
-							$lockedButton.attr('data-text', $lockedButton.attr('data-locked-text'));
-							showText($lockedButton);
-						}
-						return;
+					event.preventDefault();
+					
+					playClickSound();
+					
+					const lockedText = $lockedButton.attr('data-locked-text');
+					if (lockedText) {
+						const originalText = $lockedButton.attr('data-text');
+						
+						$lockedButton.attr('data-text', lockedText);
+						showText($lockedButton);
+						
+						$lockedButton.attr('data-text', originalText || null);
 					}
+					return;
 				}
 				handleLinkAction(event, $lockedButton);
 			});
@@ -491,9 +573,13 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 			$(document).off('click', '#mute-toggle').on('click', '#mute-toggle', function(event) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				var $toggleButton = $(this);
+				
+				const $toggleButton = $(this);
 				if ($toggleButton.hasClass('used-once')) return;
-				if (!$toggleButton.hasClass('ButtonTrigger') && !$toggleButton.data('fetching') && !$toggleButton.data('locked')) {
+				if ($toggleButton.data('locked') || $toggleButton.hasClass('cooldown-active')) {
+					return;
+				}
+				if (!$toggleButton.hasClass('ButtonTrigger') && !$toggleButton.data('fetching')) {
 					playClickSound();
 				}
 				if ($toggleButton.attr('data-once') === 'true') {
@@ -502,18 +588,27 @@ window.mediaWiki.loader.using(['mediawiki.util', 'jquery']).then(function() {
 				if (!$toggleButton.data('mwOriginalToggleText')) {
 					$toggleButton.data('mwOriginalToggleText', $toggleButton.html());
 				}
+				const durationSeconds = $toggleButton.attr('data-duration');
+				const totalMs = durationSeconds !== undefined ? parseInt(durationSeconds, 10) * 1000 : 4000;
+				const applyToggleState = function() {
+					const isButtonsDisabled = $toggleButton.data('disabled-state') !== true;
+					$toggleButton.data('disabled-state', isButtonsDisabled);
+					toggleButtonTriggers('.ButtonTrigger', isButtonsDisabled);
+					$toggleButton.toggleClass('toggle-active-fade', isButtonsDisabled).css('opacity', '');
+					
+					if (isButtonsDisabled) {
+						const disabledText = $toggleButton.attr('data-disabled-text');
+						const escapedText = mw.html ? mw.html.escape(disabledText) : '';
+						$toggleButton.html(escapedText || $toggleButton.data('mwOriginalToggleText') || "Enable Buttons");
+					} else {
+						$toggleButton.html($toggleButton.data('mwOriginalToggleText'));
+					}
+				};
 				
-				var isButtonsDisabled = $toggleButton.data('disabled-state') !== true;
-				$toggleButton.data('disabled-state', isButtonsDisabled);
-				toggleButtonTriggers('.ButtonTrigger', isButtonsDisabled);
-				$toggleButton.toggleClass('toggle-active-fade', isButtonsDisabled).css('opacity', '');
-				
-				if (isButtonsDisabled) {
-					var disabledText = $toggleButton.attr('data-disabled-text');
-					var escapedText = mw.html ? mw.html.escape(disabledText) : '';
-					$toggleButton.html(escapedText || $toggleButton.data('mwOriginalToggleText') || "Enable Buttons");
+				if (totalMs !== 0) {
+					buttonCooldown($toggleButton, totalMs, applyToggleState);
 				} else {
-					$toggleButton.html($toggleButton.data('mwOriginalToggleText'));
+					applyToggleState();
 				}
 			});
 		});

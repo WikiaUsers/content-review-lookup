@@ -1,5 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.batchDeleteDelay = 100;
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+    ]
+});
+
 // Configuration for dev:PreloadFileDescription.js. See MediaWiki:ImportJS
 PFD_templates = [
     {

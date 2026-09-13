@@ -1,14 +1,17 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
 // Test Tabber
-$(document).on('click', '.GJtabber-tab-btn', function () {
-    var $btn = $(this);
-    var $tabber = $btn.closest('.mytabber');
-    var idx = $btn.data('tab');
-    $tabber.find('.GJtabber-tab-btn').removeClass('active');
-    $tabber.find('.GJtabber-panel').removeClass('active');
-    $btn.addClass('active');
-    $tabber.find('.GJtabber-panel[data-tab="' + idx + '"]').addClass('active');
+mw.hook('wikipage.content').add(function ($content) {
+    $content.find('.GJtabber').each(function () {
+        var $tabber = $(this);
+        $tabber.find('.GJtabber-tab-btn').on('click', function () {
+            var idx = $(this).data('tab');
+            $tabber.find('.GJtabber-tab-btn').removeClass('active');
+            $tabber.find('.GJtabber-panel').removeClass('active');
+            $(this).addClass('active');
+            $tabber.find('.GJtabber-panel[data-tab="' + idx + '"]').addClass('active');
+        });
+    });
 });
 
 // Викификатор

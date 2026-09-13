@@ -1,16 +1,15 @@
-/* 
-Fire wikipage.content after Fandom's right rail has loaded.
-The native toggle-all collapsibles handler runs during the initial
-wikipage.content event before the Page Tools portlet (#p-tb) exists,
-so it cannot create the collapsible toggle links. 
-
-Firing the hook again after the right rail has loaded allows the native handler to initialize.
-This is the same general pattern used by AddRailModule.js on dev.fandom when dynamically attaching rail content.
+/*
+Fire wikipage.content after Fandom's right rail has loaded so the native
+collapsible toggle can initialize after #p-tb exists. Use a temporary
+attached div as the content context to avoid re-processing existing page
+components such as slideshow galleries.
 */
 mw.hook('fandom.rightrail.loaded').add(function () {
     var $content = $('#mw-content-text');
     if ($content.length) {
-        mw.hook('wikipage.content').fire($content);
+        var $context = $('<div>').appendTo($content);
+        mw.hook('wikipage.content').fire($context);
+        $context.remove();
     }
 });
 /* 

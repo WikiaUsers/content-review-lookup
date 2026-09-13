@@ -11,9 +11,9 @@ importArticle({
 	article: 'u:dev:MediaWiki:DigitScroller.css',
 });
 
-(function() {
+(function ($, mw) {
 	'use strict';
-
+	
 	// DOUBLE RUN PREVENTION
 	if (window.dev && window.dev.digitScrollerLoaded) {
 		return;
@@ -179,15 +179,19 @@ importArticle({
 			
 			// ONLY BUILD STRUCTURE ONCE
 			if ($el.data('digitScrollerInit')) return;
-			buildDigitScroller($el);
 			$el.data('digitScrollerInit', true);
+			
+			buildDigitScroller($el);
 			
 			// OBSERVE FOR VISIBILITY
 			var observer = new IntersectionObserver(function (entries) {
 				entries.forEach(function (entry) {
 					if (entry.isIntersecting) {
-						observer.unobserve(entry.target);
 						animateDigitScroller($el);
+						setTimeout(function() {
+							animateDigitScroller($el);
+						}, 500);
+						observer.unobserve(entry.target); // RUN ONCE ONLY
 					}
 				});
 			}, { threshold: 0.2 });
@@ -198,44 +202,24 @@ importArticle({
 	
 	// EXPOSE FOR CONSOLE
 	window.runDigitScroller = function () {
-		$('.digit-scroller').each(function () {
-			var $el = $(this);
-			
-			if (!$el.data('digitScrollerInit')) {
-				buildDigitScroller($el);
-				$el.data('digitScrollerInit', true);
-			}
-			
-			animateDigitScroller($el);
-		});
+		initDigitScroller($(document));
 	};
 	
-	// MAIN EXECUTION
-	mw.loader.using(['mediawiki.util', 'jquery']).then(function () {
-		var pageLoaded = false;
-		
-		function runInit($container) {
-			initDigitScroller($container || $(document));
-		}
-		
-		// LOAD SCRIPT AFTER PAGE LOAD
-		$(function () {
-			pageLoaded = true;
-			runInit();
-		});
-		
-		// LOAD SCRIPT WHEN EDITING
-		mw.hook('wikipage.content').add(function ($content) {
-			if (pageLoaded) {
-				runInit($content);
-			}
-		});
-		
-		// RECALCULATE POSITION ON RESIZE
-		$(window).on('resize', function () {
-			$('.digit-scroller').each(function () {
-				animateDigitScroller($(this));
-			});
+	// LOAD SCRIPT WHEN EDITING
+	mw.hook('wikipage.content').add(function ($content) {
+		initDigitScroller($content);
+	});
+	
+	// LOAD SCRIPT AFTER PAGE LOAD
+	$(window).on('load', function () {
+		initDigitScroller($(document));
+	});
+	
+	// RECALCULATE POSITION ON RESIZE
+	$(window).on('resize', function () {
+		$('.digit-scroller').each(function () {
+			animateDigitScroller($(this));
 		});
 	});
-})();
+	
+})(jQuery, mw);

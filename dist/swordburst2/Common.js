@@ -1,5 +1,10 @@
-mw.loader.load('https://swordburst2.fandom.com/wiki/MediaWiki:ItemDatabase2.js?action=raw&ctype=text/javascript');
-mw.loader.load('https://swordburst2.fandom.com/wiki/MediaWiki:ItemDatabaseUI.js?action=raw&ctype=text/javascript');
+mw.loader.getScript(
+    'https://swordburst2.fandom.com/wiki/MediaWiki:ItemDatabase2.js?action=raw&ctype=text/javascript'
+).then(function () {
+    return mw.loader.getScript(
+        'https://swordburst2.fandom.com/wiki/MediaWiki:ItemDatabaseUI.js?action=raw&ctype=text/javascript&v=2'
+    );
+});
 
 // CategoryCSS 
 window.categoryCSS = {

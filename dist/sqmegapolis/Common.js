@@ -49,3 +49,34 @@ importArticles({
         "w:c:dev:MediaWiki:FontAwesome.css"
     ]
 });
+
+// prevent data-hash by tabber
+(function () {
+    'use strict';
+
+    function removeTabberHash() {
+        if (!window.location.hash) {
+            return;
+        }
+
+        history.replaceState(
+            history.state,
+            document.title,
+            window.location.pathname + window.location.search
+        );
+    }
+
+    document.addEventListener('click', function (event) {
+        var tabLink = event.target.closest(
+            '.wds-tabber .wds-tabs__tab-label a'
+        );
+
+        if (!tabLink) {
+            return;
+        }
+
+        window.setTimeout(removeTabberHash, 0);
+        window.setTimeout(removeTabberHash, 50);
+        window.setTimeout(removeTabberHash, 200);
+    });
+})();

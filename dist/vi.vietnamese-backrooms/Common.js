@@ -1,80 +1,232 @@
 // [[Category:Internal]]
 
+// ===== Page Rating System (v2) =====
 (function () {
-	'use strict';
+    'use strict';
 
-	var TARGET_WIDTH = 600;
+    const VERSION = 'pagerating-v2';
+    console.log(`[${VERSION}] Script loaded. ns=${mw.config.get('wgNamespaceNumber')}, groups=`, mw.config.get('wgUserGroups'));
 
-	function fixImage(img) {
-		if (img.dataset.resized === '1') return;
-		var src = img.getAttribute('src');
-		if (!src) return;
-		var newSrc = src.replace(/scale-to-width-down\/\d+/, 'scale-to-width-down/' + TARGET_WIDTH);
-		if (newSrc !== src) {
-			img.setAttribute('src', newSrc);
-			img.removeAttribute('srcset');
+    if (mw.config.get('wgNamespaceNumber') !== 0) {
+        console.log(`[${VERSION}] Bỏ qua: không phải mainspace.`);
+        return;
+    }
+    if (!mw.config.get('wgUserGroups', []).includes('autoconfirmed')) {
+        console.log(`[${VERSION}] Bỏ qua: user chưa autoconfirmed.`);
+        return;
+    }
+
+    const GLOBAL_PAGE = 'Wiki_Vietnamese_Backrooms:Ratings.json';
+    const rawUrl = title => mw.util.getUrl(title, { action: 'raw' });
+
+    mw.hook('wikipage.content').add(function () {
+        console.log(`[${VERSION}] wikipage.content fired.`);
+
+        const $meta = $('.page-header__meta');
+        console.log(`[${VERSION}] .page-header__meta tìm thấy:`, $meta.length);
+        if (!$meta.length) return;
+
+        const api = new mw.Api();
+        const page = mw.config.get('wgPageName');
+        const localPage = `User:${mw.config.get('wgUserName')}/ratings.json`;
+
+        const sort = obj => Object.keys(obj)
+            .sort((a, b) => obj[b] - obj[a])
+            .reduce((acc, k) => (acc[k] = obj[k], acc), {});
+
+        let up = [], down = [], globalUp = {}, globalDown = {};
+
+        function loadJson(title, fallback) {
+            return fetch(rawUrl(title))
+                .then(r => {
+                    console.log(`[${VERSION}] GET ${title} → HTTP ${r.status}`);
+                    return r.ok ? r.json() : fallback;
+                })
+                .catch(e => {
+                    console.error(`[${VERSION}] Lỗi đọc ${title}:`, e);
+                    return fallback;
+                });
+        }
+
+        Promise.all([
+            loadJson(localPage, { up: [], down: [] }),
+            loadJson(GLOBAL_PAGE, { globalUp: {}, globalDown: {} })
+        ]).then(([local, global]) => {
+            up = local.up || [];
+            down = local.down || [];
+            globalUp = global.globalUp || {};
+            globalDown = global.globalDown || {};
+            render();
+        });
+
+        function render() {
+		    $meta.find('.page-rating').remove();
+		    $meta.append(`<div class="page-rating">Rating:
+		        <span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[page] || 0}</span>
+		        <span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[page] || 0}</span>
+		        <span class="rating-cancel" title="Hủy vote">⛌</span>
+		    </div>`);
+		    console.log(`[${VERSION}] Đã render widget rating.`);
+		
+		    $meta.find('.rating-up, .rating-down').on('click', onVote);
+		    $meta.find('.rating-cancel').on('click', onCancel);
 		}
-		img.dataset.resized = '1';
-	}
+		function onCancel() {
+		    const $box = $meta.find('.page-rating');
+		    if ($box.hasClass('busy')) return;
+		
+		    const isUp = up.includes(page);
+		    const isDown = down.includes(page);
+		    if (!isUp && !isDown) return; // chưa vote thì không có gì để hủy
+		
+		    $box.addClass('busy');
+		    setTimeout(() => $box.removeClass('busy'), 1500);
+		
+		    const dec = obj => (obj[page] && obj[page] > 1) ? obj[page]-- : delete obj[page];
+		    let vote = '';
+		
+		    if (isUp) {
+		        up.splice(up.indexOf(page), 1);
+		        $meta.find('.rating-up').removeClass('voted')[0].textContent--;
+		        dec(globalUp);
+		        vote = 'revoked upvote from';
+		    } else {
+		        down.splice(down.indexOf(page), 1);
+		        $meta.find('.rating-down').removeClass('voted')[0].textContent--;
+		        dec(globalDown);
+		        vote = 'revoked downvote from';
+		    }
+		
+		    console.log(`[${VERSION}] Vote: ${vote} "${page}"`);
+		
+		    Promise.all([
+		        api.postWithEditToken({
+		            action: 'edit', format: 'json',
+		            title: localPage,
+		            text: JSON.stringify({ up, down }, null, '\t'),
+		            summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" locally`,
+		            tags: 'page-rating'
+		        }),
+		        api.postWithEditToken({
+		            action: 'edit', format: 'json',
+		            title: GLOBAL_PAGE,
+		            text: JSON.stringify({ globalUp: sort(globalUp), globalDown: sort(globalDown) }, null, '\t'),
+		            summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" globally`,
+		            tags: 'page-rating'
+		        })
+		    ])
+		    .then(() => console.log(`[${VERSION}] Lưu thành công.`))
+		    .catch(e => console.error(`[${VERSION}] Lỗi khi lưu:`, e));
+		}
+        function onVote() {
+            const el = this;
+            const $el = $(el);
+            const votedUp = el.className.includes('up');
+            const $box = $meta.find('.page-rating');
 
-	function run() {
-		var imgs = document.querySelectorAll('main.page__main .page-content .thumbimage:not([data-resized])');
-		imgs.forEach(fixImage);
-	}
+            if ($box.hasClass('busy')) return;
+            $box.addClass('busy');
+            setTimeout(() => $box.removeClass('busy'), 1500);
 
-	mw.hook('wikipage.content').add(function () {
-		run();
-	});
-}());
+            const lastVoted = dir => $meta.find('.rating-' + dir).hasClass('voted');
+            const inc = obj => obj[page] ? obj[page]++ : obj[page] = 1;
+            const dec = obj => (obj[page] && obj[page] > 1) ? obj[page]-- : delete obj[page];
+            let vote = '';
+
+            switch (true) {
+                case votedUp && lastVoted('down'):
+                    $meta.find('.rating-down').removeClass('voted')[0].textContent--;
+                    el.textContent++;
+                    down.splice(down.indexOf(page), 1);
+                    up.push(page);
+                    vote = 'upvoted';
+                    dec(globalDown); inc(globalUp);
+                    break;
+                case !votedUp && lastVoted('up'):
+                    $meta.find('.rating-up').removeClass('voted')[0].textContent--;
+                    el.textContent++;
+                    up.splice(up.indexOf(page), 1);
+                    down.push(page);
+                    vote = 'downvoted';
+                    dec(globalUp); inc(globalDown);
+                    break;
+                case votedUp && lastVoted('up'):
+                    el.textContent--;
+                    up.splice(up.indexOf(page), 1);
+                    vote = 'revoked upvote from';
+                    dec(globalUp);
+                    break;
+                case !votedUp && lastVoted('down'):
+                    el.textContent--;
+                    down.splice(down.indexOf(page), 1);
+                    vote = 'revoked downvote from';
+                    dec(globalDown);
+                    break;
+                default:
+                    el.textContent++;
+                    if (votedUp) { up.push(page); vote = 'upvoted'; inc(globalUp); }
+                    else { down.push(page); vote = 'downvoted'; inc(globalDown); }
+            }
+
+            $el.toggleClass('voted');
+            console.log(`[${VERSION}] Vote: ${vote} "${page}"`);
+
+            Promise.all([
+                api.postWithEditToken({
+                    action: 'edit', format: 'json',
+                    title: localPage,
+                    text: JSON.stringify({ up, down }, null, '\t'),
+                    summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" locally`,
+                    tags: 'page-rating'
+                }),
+                api.postWithEditToken({
+                    action: 'edit', format: 'json',
+                    title: GLOBAL_PAGE,
+                    text: JSON.stringify({ globalUp: sort(globalUp), globalDown: sort(globalDown) }, null, '\t'),
+                    summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" globally`,
+                    tags: 'page-rating'
+                })
+            ])
+            .then(() => console.log(`[${VERSION}] Lưu thành công.`))
+            .catch(e => console.error(`[${VERSION}] Lỗi khi lưu:`, e));
+        }
+    });
+})();
 
 // Template dependencies
 mw.hook("wikipage.content").add(function() {
+	$('span.import-css').each(function () {
+	    mw.util.addCSS($(this).attr('data-css'));
+	});
 	
-	// [[Module:CSS]]; [[T:CSS]]
-	$("span.import-css").each(function() {
-		const css = mw.util.addCSS($(this).attr("data-css"));
-		$(css.ownerNode).addClass("import-css")
-			.attr("data-css-hash", $(this).attr("data-css-hash"))
-			.attr("data-from", $(this).attr("data-from"))
-			.attr("data-wait", $(this).attr("data-wait"))
-			.attr("data-portal", $(this).attr("data-portal"));
+		// [[T:CSS]]
+	$('div.t-css').each(function() {
+		const css = mw.util.addCSS(this.dataset.css);
+		$(css.ownerNode).addClass('t-css');
+		Object.assign(css.ownerNode.dataset, this.dataset);
+		delete css.ownerNode.dataset.css;
 		
-		const wait = $(this).attr("data-wait");
-		const portal = $(this).attr("data-portal");
-		var portalOpened = false;
+		const wait = this.dataset.wait;
+		const portal = this.dataset.portal;
 		
-		if (wait != "none") {
+		if (wait != 'none') {
 			css.disabled = true;
 			var timer = setTimeout(() => css.disabled = false, wait);
 		}
 		
-		if (portal != "none") {
+		if (portal != 'none') {
 			css.disabled = true;
-			$(".t-css-portal-" + portal).click(function() {
-				css.disabled = !css.disabled;
-				portalOpened = true;
-			});
+			$('.t-css-portal-' + portal).click(() => css.disabled = !css.disabled);
 		}
-		
-		$(".theme-toggler").click(function() {
-			switch (true) {
-				case wait != "none":
-					if (timer || css.disabled == false) {
-						clearTimeout(timer);
-						timer = false;
-						css.disabled = true;
-					} else css.disabled = false;
-					break;
-				case portal != "none":
-					if (portalOpened) css.disabled = !css.disabled;
-					break;
-				default:
-					css.disabled = !css.disabled;
-					break;
-			}
-		});
 	});
 	
+	// Automatically preview CSS pages; uses T:CSS class to also be affected by ThemeToggler
+	if (mw.config.get('wgPageName').includes('.css')) { 
+		fetch(`/wiki/${mw.config.get('wgPageName')}?action=raw`)
+			.then(data => data.text())
+			.then(css => $(mw.util.addCSS(css).ownerNode).addClass('t-css'));
+	}
+
 	// [[Template:Audio]] toggle
 	$(".t-audio").each(function() {
 		const toggle = $(this).attr("data-toggle");

@@ -40,7 +40,23 @@
 
     var STORAGE_KEY = 'bs_build_v1';
 
-    function statIcon(key) { return ICONS[key] || ICONS.generic; }
+    // ---- Güvenlik: BuildJSON şablonundan (Modül:Build Verisi) gelen TÜM
+    // string değerler untrusted kabul edilir ve HTML'e basılmadan önce
+    // buradan geçirilir. Sadece bu dosyada hardcoded olan sabitler (ICONS,
+    // SLOTS, tabDefs, buton etiketleri vb.) escape'siz kullanılabilir. ----
+    function escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function statIcon(key) {
+        return (Object.prototype.hasOwnProperty.call(ICONS, key) && ICONS[key]) || ICONS.generic;
+    }
 
     function loadData(cb) {
         if (itemsData) { cb(itemsData); return; }
@@ -129,6 +145,7 @@
 }
 
     function iconBox(name, cls) {
+        // cls yalnızca bu dosyadaki sabit class isimleriyle çağrılır (hardcoded), escape gerekmez.
         var box = $('<div class="bs-icon-box ' + (cls || '') + '"></div>');
         if (!name) { box.html('<span class="bs-plus">+</span>'); return box; }
         if (iconCache[name]) box.html('<img src="' + iconCache[name] + '">');
@@ -206,8 +223,8 @@
         var statsGrid = $('<div class="bs-summary-grid"></div>');
         computeSummary(items).forEach(function (s) {
             var cell = $('<div class="bs-summary-cell"></div>');
-            cell.append('<div class="bs-summary-lbl">' + statIcon(s.icon) + '<span>' + s.label + '</span></div>');
-            cell.append('<div class="bs-summary-val">' + (s.value === null ? '—' : s.value) + '</div>');
+            cell.append('<div class="bs-summary-lbl">' + statIcon(s.icon) + '<span>' + escapeHtml(s.label) + '</span></div>');
+            cell.append('<div class="bs-summary-val">' + (s.value === null ? '—' : escapeHtml(s.value)) + '</div>');
             statsGrid.append(cell);
         });
         statsBox.append(statsGrid);
@@ -220,8 +237,8 @@
             bonuses.forEach(function (b) {
                 var row = $('<div class="bs-bonus-row"></div>');
                 row.append('<div class="bs-bonus-icon">' + wolfMedallion() + '</div>');
-                row.append('<div class="bs-bonus-info"><div class="bs-bonus-name">' + b.school + ' Okulu Bonusu (' + b.count + '/' + SET_SLOT_COUNT + ')</div>' +
-                    '<div class="bs-bonus-detail"><span class="bs-bonus-val">' + b.tier.value + '</span> ' + b.tier.label + '</div></div>');
+                row.append('<div class="bs-bonus-info"><div class="bs-bonus-name">' + escapeHtml(b.school) + ' Okulu Bonusu (' + b.count + '/' + SET_SLOT_COUNT + ')</div>' +
+                    '<div class="bs-bonus-detail"><span class="bs-bonus-val">' + escapeHtml(b.tier.value) + '</span> ' + escapeHtml(b.tier.label) + '</div></div>');
                 bonusBox.append(row);
             });
         }
@@ -237,7 +254,7 @@
         var equippedIt = equippedName ? items[equippedName] : null;
 
         var head = $('<div class="bs-detail-head"></div>');
-        head.append('<div><div class="bs-detail-name">' + name + '</div>' + (it.school ? '<div class="bs-detail-type">' + it.school + ' Okulu</div>' : '') + '</div>');
+        head.append('<div><div class="bs-detail-name">' + escapeHtml(name) + '</div>' + (it.school ? '<div class="bs-detail-type">' + escapeHtml(it.school) + ' Okulu</div>' : '') + '</div>');
         panel.append(head);
 
         panel.append($('<div class="bs-detail-icon-wrap"></div>').append(iconBox(it.icon, 'bs-detail-icon')));
@@ -249,15 +266,15 @@
                 if (!isNaN(d) && d !== 0) delta = d;
             }
             var primWrap = $('<div class="bs-detail-primary"></div>');
-            primWrap.append('<span class="bs-detail-primary-val">' + it.primary.value + '</span>');
-            if (delta !== null) primWrap.append('<span class="bs-delta ' + (delta > 0 ? 'bs-delta-up' : 'bs-delta-down') + '">' + (delta > 0 ? '+' : '') + delta + ' ' + (delta > 0 ? '▲' : '▼') + '</span>');
-            primWrap.append('<span class="bs-detail-primary-lbl">' + it.primary.label.toUpperCase() + '</span>');
+            primWrap.append('<span class="bs-detail-primary-val">' + escapeHtml(it.primary.value) + '</span>');
+            if (delta !== null) primWrap.append('<span class="bs-delta ' + (delta > 0 ? 'bs-delta-up' : 'bs-delta-down') + '">' + (delta > 0 ? '+' : '') + escapeHtml(delta) + ' ' + (delta > 0 ? '▲' : '▼') + '</span>');
+            primWrap.append('<span class="bs-detail-primary-lbl">' + escapeHtml(String(it.primary.label).toUpperCase()) + '</span>');
             panel.append(primWrap);
         }
         if (it.weightClass || it.level) {
             var meta = $('<div class="bs-detail-meta"></div>');
-            if (it.weightClass) meta.append('<span>' + it.weightClass + '</span>');
-            if (it.level) meta.append('<span>Gerekli Seviye ' + it.level + '</span>');
+            if (it.weightClass) meta.append('<span>' + escapeHtml(it.weightClass) + '</span>');
+            if (it.level) meta.append('<span>Gerekli Seviye ' + escapeHtml(it.level) + '</span>');
             panel.append(meta);
         }
 
@@ -265,13 +282,13 @@
             var list = $('<div class="bs-detail-stats"></div>');
             it.detail.forEach(function (row) {
                 var line = $('<div class="bs-detail-stat"></div>');
-                line.append('<span class="bs-detail-stat-lbl">' + statIcon(row.icon) + row.label + '</span>');
-                var right = $('<span class="bs-detail-stat-val">' + row.value + '</span>');
+                line.append('<span class="bs-detail-stat-lbl">' + statIcon(row.icon) + escapeHtml(row.label) + '</span>');
+                var right = $('<span class="bs-detail-stat-val">' + escapeHtml(row.value) + '</span>');
                 if (equippedIt && equippedName !== name) {
                     var oldRow = (equippedIt.detail || []).filter(function (r) { return r.label === row.label; })[0];
                     if (oldRow) {
                         var dd = parseNum(row.value) - parseNum(oldRow.value);
-                        if (!isNaN(dd) && dd !== 0) right.append(' <span class="bs-delta ' + (dd > 0 ? 'bs-delta-up' : 'bs-delta-down') + '">' + (dd > 0 ? '+' : '') + dd + '</span>');
+                        if (!isNaN(dd) && dd !== 0) right.append(' <span class="bs-delta ' + (dd > 0 ? 'bs-delta-up' : 'bs-delta-down') + '">' + (dd > 0 ? '+' : '') + escapeHtml(dd) + '</span>');
                     }
                 }
                 line.append(right);
@@ -279,7 +296,7 @@
             });
             panel.append(list);
         }
-        if (it.desc) panel.append('<div class="bs-detail-desc">' + it.desc + '</div>');
+        if (it.desc) panel.append('<div class="bs-detail-desc">' + escapeHtml(it.desc) + '</div>');
 
         var btnLabel = (equippedName === name) ? 'KUŞANILDI ✓' : 'KUŞAN';
         var equipBtn = $('<button class="bs-equip-btn' + (equippedName === name ? ' bs-equipped-btn' : '') + '">' + btnLabel + '</button>');
@@ -294,13 +311,17 @@
         panel.empty();
         var names = itemsForSlot(items, slotKey);
         var headRow = $('<div class="bs-list-head"></div>');
-        headRow.append('<div class="bs-panel-title">' + label.toUpperCase() + ' SEÇ</div>');
+        // label, SLOTS içindeki hardcoded etiketlerden gelir (güvenli), yine de escape'liyoruz.
+        headRow.append('<div class="bs-panel-title">' + escapeHtml(String(label).toUpperCase()) + ' SEÇ</div>');
         panel.append(headRow);
 
         var controls = $('<div class="bs-list-controls"></div>');
         var types = Array.from(new Set(names.map(function (n) { return items[n].weightClass; }).filter(Boolean)));
         var filterSel = $('<select class="bs-select"><option value="">Tüm Seçenekler</option></select>');
-        types.forEach(function (t) { filterSel.append('<option value="' + t + '">' + t + '</option>'); });
+        types.forEach(function (t) {
+            var safeT = escapeHtml(t);
+            filterSel.append('<option value="' + safeT + '">' + safeT + '</option>');
+        });
         filterSel.val(activeFilter[slotKey] || '');
         filterSel.on('change', function () { activeFilter[slotKey] = $(this).val(); drawList(); });
 
@@ -334,20 +355,20 @@
                 if (sortKey === 'value') return (parseNum(items[b].primary && items[b].primary.value) || 0) - (parseNum(items[a].primary && items[a].primary.value) || 0);
                 return (items[a].level || 0) - (items[b].level || 0);
             });
-            countLbl.text(filtered.length + ' eşya bulundu');
+            countLbl.text(filtered.length + ' eşya bulundu'); // .text() zaten güvenli, escape gerekmez
             filtered.forEach(function (n) {
                 var it = items[n];
                 var row = $('<div class="bs-item-row"></div>');
                 if (equipped[slotKey] === n) row.addClass('bs-selected');
                 row.append(iconBox(it.icon));
                 var info = $('<div class="bs-item-info"></div>');
-                info.append('<div class="bs-item-name">' + n + '</div>');
-                if (it.school) info.append('<div class="bs-item-type">' + it.school + ' Okulu</div>');
+                info.append('<div class="bs-item-name">' + escapeHtml(n) + '</div>');
+                if (it.school) info.append('<div class="bs-item-type">' + escapeHtml(it.school) + ' Okulu</div>');
                 row.append(info);
-                if (it.primary) row.append('<div class="bs-item-primary"><span class="bs-item-primary-val">' + it.primary.value + '</span><span class="bs-item-primary-lbl">' + it.primary.label.toUpperCase() + '</span></div>');
+                if (it.primary) row.append('<div class="bs-item-primary"><span class="bs-item-primary-val">' + escapeHtml(it.primary.value) + '</span><span class="bs-item-primary-lbl">' + escapeHtml(String(it.primary.label).toUpperCase()) + '</span></div>');
                 var chips = $('<div class="bs-chip-row"></div>');
                 (it.chips || []).slice(0, 3).forEach(function (c) {
-                    chips.append('<div class="bs-chip"><span class="bs-chip-val">' + c.value + '</span><span class="bs-chip-lbl">' + c.label + '</span></div>');
+                    chips.append('<div class="bs-chip"><span class="bs-chip-val">' + escapeHtml(c.value) + '</span><span class="bs-chip-lbl">' + escapeHtml(c.label) + '</span></div>');
                 });
                 row.append(chips);
                 var selectBtn = $('<button class="bs-select-btn">SEÇ</button>');
@@ -383,6 +404,7 @@
         var leftCol = $('<div class="bs-left-col"><div class="bs-left-title">SEÇİLEN EKİPMAN</div></div>');
         var grid = $('<div class="bs-slot-grid"></div>');
         SLOTS.forEach(function (s) {
+            // s.label ve s.key bu dosyada hardcoded (SLOTS sabiti), escape gerekmez.
             var box = $('<div class="bs-slot-box"></div>');
             box.append('<div class="bs-slot-label">' + s.label + '</div>');
             var slotEl = $('<div class="bs-slot" data-slot="' + s.key + '"><span class="bs-plus">+</span></div>');
@@ -493,7 +515,7 @@
             var it = items[x.name];
             var row = $('<div class="bs-stats-equip-row"></div>');
             row.append(iconBox(it.icon));
-            row.append('<div class="bs-item-info"><div class="bs-item-name">' + x.name + '</div><div class="bs-item-type">' + (it.school || '') + '</div></div>');
+            row.append('<div class="bs-item-info"><div class="bs-item-name">' + escapeHtml(x.name) + '</div><div class="bs-item-type">' + escapeHtml(it.school || '') + '</div></div>');
             left.append(row);
         });
 
@@ -501,7 +523,7 @@
         right.append('<div class="bs-panel-title">TOPLAM İSTATİSTİKLER</div>');
         var table = $('<div class="bs-stats-table"></div>');
         computeSummary(items).forEach(function (s) {
-            table.append('<div class="bs-stats-row"><span>' + statIcon(s.icon) + s.label + '</span><span>' + (s.value === null ? '—' : s.value) + '</span></div>');
+            table.append('<div class="bs-stats-row"><span>' + statIcon(s.icon) + escapeHtml(s.label) + '</span><span>' + (s.value === null ? '—' : escapeHtml(s.value)) + '</span></div>');
         });
         right.append(table);
 

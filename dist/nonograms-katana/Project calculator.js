@@ -14,7 +14,7 @@ function delete_table_projects(){
 
 // Calculates how many investments are still needed.
 function project_calculator_f(){
-	var player_projects_completed = document.getElementById("current_projects").value;
+	var player_projects_completed = Number(document.getElementById("current_projects").value);
 	
 	// Calculates the maximum number of inputs, based on the amount of projects.
 	var total_projects = document.getElementById("amount_of_projects").innerHTML;

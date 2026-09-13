@@ -228,3 +228,37 @@ $(function () {
     }
 
 });
+
+/** Video thumbnail test **/
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('video.mw-file-element').forEach(function (video) {
+        var figure = video.closest('figure');
+
+        if (!figure || figure.classList.contains('custom-video-wrapper')) {
+            return;
+        }
+
+        figure.classList.add('custom-video-wrapper');
+
+        var thumbnail = document.createElement('img');
+        thumbnail.className = 'custom-video-thumbnail';
+        thumbnail.src = 'https://static.wikia.nocookie.net/bobiverse/images/2/2e/AUD_Bobiverse_Book6_TheInfiniteExtent.jpg';
+
+        var playButton = document.createElement('div');
+        playButton.className = 'custom-video-play';
+        playButton.innerHTML = '▶';
+
+        figure.appendChild(thumbnail);
+        figure.appendChild(playButton);
+
+        function startVideo() {
+            thumbnail.remove();
+            playButton.remove();
+            video.play();
+        }
+
+        thumbnail.addEventListener('click', startVideo);
+        playButton.addEventListener('click', startVideo);
+    });
+});

@@ -1,1 +1,1 @@
-alert("DARC JS WORKS!");
+alert("Common.js is working!");

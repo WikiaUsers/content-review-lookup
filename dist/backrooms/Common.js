@@ -34,7 +34,7 @@ mw.hook('wikipage.content').add(function() {
 	$('.t-audio').each(function() {
 		const toggle = this.dataset.toggle;
 		const toggleFunction = this.dataset['toggle-function'];
-		const fadeSteps = Math.round(250 * toggleFunction.replace(/fade-(in|out)-/, ''));
+		const fadeTime = toggleFunction.replace(/fade-(in|out)-/, '');
 		
 		if (toggle != 'none') {
 			$('.t-audio-toggle-' + toggle).click(function() {
@@ -46,21 +46,17 @@ mw.hook('wikipage.content').add(function() {
 						break;
 					case toggleFunction.includes('fade-in'):
 						audio.play();
-						(function loop(i) {
-							setTimeout(() => {
-								audio.volume = ((-i + fadeSteps) / fadeSteps);
-								if (--i > -1) loop(i);
-						    }, 4);
-						})(fadeSteps - 1);
+						const fadeIn = setInterval(() => {
+							audio.volume += 0.004 / fadeTime;
+							if (audio.volume == 1) clearInterval(fadeIn);
+						}, 4);
 						break;
 					case toggleFunction.includes('fade-out'):
 						audio.play();
-						(function loop(i) {
-							setTimeout(() => {
-								audio.volume = ((i) / fadeSteps);
-								if (--i > -1) loop(i);
-						    }, 4);
-						})(fadeSteps - 1);
+						const fadeOut = setInterval(() => {
+							audio.volume -= 0.004 / fadeTime;
+							if (audio.volume == 0) clearInterval(fadeOut);
+						}, 4);
 						break;
 					default:
 						audio.paused ? audio.play() : audio.pause();

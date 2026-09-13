@@ -659,66 +659,31 @@ if (spacer) {
 })();
 }
 // Rating System hopefully
-mw.loader.using(['mediawiki.api']).then(function () {
-	    if (document.body.classList.contains('is-mobile') || window.innerWidth < 768) {
-        console.log("[EJT Ratings] Mobile view detected.");
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
+    if (document.body.classList.contains('is-mobile') || window.innerWidth < 768) {
         return;
     }
-    console.log("[EJT Ratings].");
 
     const pageName = mw.config.get('wgPageName');
-    const userName = mw.config.get('wgUserName'); 
+    const userName = mw.config.get('wgUserName');
     const api = new mw.Api();
-    
     const namespace = mw.config.get('wgNamespaceNumber');
-    if (namespace !== 0 && namespace !== 2) {
-        console.log("[EJT Ratings] Hidden on non-article namespace pages.");
-        return; 
-    }
+
+    if (namespace !== 0) return;
 
     const globalLedgerTitle = 'Project:Sitewide_Ratings_Data_Matrix';
     let isProcessing = false;
-    let masterLedger = null;
     let userExistingVote = 0;
+    let currentPageScore = 0;
 
     if (!document.getElementById('ejt-ratings-responsive-style')) {
         const styleBlock = document.createElement('style');
         styleBlock.id = 'ejt-ratings-responsive-style';
         styleBlock.innerHTML = `
             .ejt-rating-tab { margin-left: auto; display: inline-flex; align-items: center; padding: 0 10px; }
-            
-            .ejt-rating-wrapper {
-                position: relative;
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                font-family: 'Rubik', sans-serif;
-                font-size: 13px;
-                font-weight: bold;
-                border: none;
-                background: none;
-                padding: 0 14px;
-                height: 30px;
-                margin-top: 6px;
-                border-radius: 4px;
-                overflow: hidden;
-            }
-
-            .ejt-rating-wrapper::before {
-                content: "";
-                position: absolute;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background-image: radial-gradient(rgba(255, 255, 255, 1) 50%, transparent 50%);
-                background-size: 4px 4px;
-                opacity: 0.15;
-                z-index: -1;
-                transition: opacity 0.3s ease-in-out !important; /* Smoothly fade opacity values */
-            }
-            
-            .ejt-rating-wrapper:hover::before {
-                opacity: 0.4;
-            }
-            
+            .ejt-rating-wrapper { position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: 'Rubik', sans-serif; font-size: 13px; font-weight: bold; border: none; background: none; padding: 0 14px; height: 30px; margin-top: 6px; border-radius: 4px; overflow: hidden; }
+            .ejt-rating-wrapper::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(rgba(255, 255, 255, 1) 50%, transparent 50%); background-size: 4px 4px; opacity: 0.25; z-index: -1; transition: opacity 0.3s ease-in-out !important; }
+            .ejt-rating-wrapper:hover::before { opacity: 0.6; }
             @media screen and (max-width: 1100px) {
                 .fandom-community-header__local-navigation .wds-tabs { flex-wrap: wrap !important; height: auto !important; }
                 .ejt-rating-tab { margin-left: 0 !important; padding: 4px 10px !important; width: 100%; justify-content: flex-start; }
@@ -728,19 +693,10 @@ mw.loader.using(['mediawiki.api']).then(function () {
         document.head.appendChild(styleBlock);
     }
 
-    
     function injectIntoMenu(tabsList) {
         if (tabsList.querySelector('.ejt-rating-tab')) return;
-
         const containerListItem = document.createElement('li');
         containerListItem.className = 'wds-tabs__tab ejt-rating-tab';
-        containerListItem.style.cssText = `
-            margin-left: auto;
-            display: inline-flex;
-            align-items: center;
-            padding: 0 10px;
-        `;
-        
         tabsList.appendChild(containerListItem);
         renderItemInterface(containerListItem);
     }
@@ -751,26 +707,24 @@ mw.loader.using(['mediawiki.api']).then(function () {
             return;
         }
 
-        if (!masterLedger) {
-            item.innerHTML = "<span style='color: #666; font-size: 11px; font-family: \"Rubik\", sans-serif;'>Loading...</span>";
-            return;
-        }
-
-        let pageData = masterLedger[pageName] || { score: 0 };
         const upActiveColor = userExistingVote === 1 ? '#28a745' : '#bbb';
-        const downActiveColor = userExistingVote === -1 ? '#dc3545' : '#bbb';
+        
+        // Default the displayed score to 0 if it is negative
+        const displayedScore = currentPageScore < 0 ? 0 : currentPageScore;
+        // Format score text: prepend '+' only if score is greater than 0
+        const formattedScore = displayedScore > 0 ? '+' + displayedScore : displayedScore;
 
         item.innerHTML = `
             <div class="ejt-rating-wrapper">
                 <span style="color: #fff; font-weight: normal; margin-right: 4px; line-height: 30px; font-family: 'Rubik', sans-serif; -webkit-text-stroke: 2px #000; paint-order: stroke fill; font-weight: bold;">Rating:</span>
                 <button class="ejt-up-btn" style="cursor:pointer; background:none; border:none; padding:2px; font-weight:bold; color: ${upActiveColor}; transition: color 0.2s; font-family: 'Rubik', sans-serif; line-height: 30px; -webkit-text-stroke: 4px #000; paint-order: stroke fill;">+1</button>
-                <span class="ejt-score-val" style="color: #fff; min-width: 14px; text-align: center; line-height: 30px; font-family: 'Rubik', sans-serif; -webkit-text-stroke: 2px #000; paint-order: stroke fill;">${pageData.score >= 0 ? '+' + pageData.score : pageData.score}</span>
-                <button class="ejt-down-btn" style="cursor:pointer; background:none; border:none; padding:2px; font-weight:bold; color: ${downActiveColor}; transition: color 0.2s; font-family: 'Rubik', sans-serif; line-height: 30px; -webkit-text-stroke: 4px #000; paint-order: stroke fill;">-1</button>
+                <span class="ejt-score-val" style="color: #fff; min-width: 14px; text-align: center; line-height: 30px; font-family: 'Rubik', sans-serif; -webkit-text-stroke: 2px #000; paint-order: stroke fill;">${formattedScore}</span>
             </div>
         `;
 
-        item.querySelector('.ejt-up-btn').addEventListener('click', function() { processVote(1); });
-        item.querySelector('.ejt-down-btn').addEventListener('click', function() { processVote(-1); });
+        item.querySelector('.ejt-up-btn').addEventListener('click', function() {
+            processVote(1);
+        });
     }
 
     function refreshAllInterfaces() {
@@ -784,7 +738,6 @@ mw.loader.using(['mediawiki.api']).then(function () {
             }
         });
     });
-
     observer.observe(document.body, { childList: true, subtree: true });
 
     api.get({
@@ -795,68 +748,149 @@ mw.loader.using(['mediawiki.api']).then(function () {
         formatversion: 2,
         cb: Date.now()
     }).done(function (data) {
+        let content = "";
         try {
-            const page = data.query.pages[0];
-            if (page && page.revisions && page.revisions[0]) {
-                masterLedger = JSON.parse(page.revisions[0].content);
+            if (data.query && data.query.pages) {
+                const keys = Object.keys(data.query.pages);
+                const page = data.query.pages[keys[0]];
+                if (page && page.revisions && page.revisions[0]) {
+                    content = page.revisions[0].content;
+                }
             }
         } catch (e) {
-            console.log("[EJT Ratings] Failed to read ledger, initializing blank array map", e);
-            masterLedger = {};
+            content = "";
         }
 
-        if (!masterLedger) masterLedger = {};
-        if (!masterLedger[pageName]) {
-            masterLedger[pageName] = { score: 0, users: {} };
-        } else if (typeof masterLedger[pageName] === 'number') {
-            masterLedger[pageName] = { score: masterLedger[pageName], users: {} };
-        }
+        let lines = content.split('\n');
+        let userVotesMap = {};
+        let scoresMap = {};
 
-        userExistingVote = masterLedger[pageName].users[userName] || 0;
-        refreshAllInterfaces(); 
+        lines.forEach(function(line) {
+            if (!line || !line.includes('|')) return;
+            let parts = line.split('|');
+            if (parts.length < 3) return;
+            let pName = parts[0].trim();
+            let uName = parts[1].trim();
+            let vVal = parseInt(parts[2].trim(), 10);
+
+            if (!scoresMap[pName]) scoresMap[pName] = 0;
+            if (!userVotesMap[pName]) userVotesMap[pName] = {};
+
+            let oldVote = userVotesMap[pName][uName] || 0;
+            scoresMap[pName] -= oldVote;
+            userVotesMap[pName][uName] = vVal;
+            scoresMap[pName] += vVal;
+        });
+
+        currentPageScore = scoresMap[pageName] || 0;
+        userExistingVote = (userVotesMap[pageName] && userVotesMap[pageName][userName]) || 0;
+        refreshAllInterfaces();
     });
 
     function processVote(targetVote) {
-        if (isProcessing || !masterLedger) return;
-        let pageData = masterLedger[pageName];
-        
+        if (isProcessing) return;
+        let newVoteValue = targetVote;
         if (userExistingVote === targetVote) {
-            pageData.score -= targetVote;
-            delete pageData.users[userName];
-            userExistingVote = 0;
-        } 
-        else if (userExistingVote !== 0) {
-            pageData.score += (targetVote * 2); 
-            pageData.users[userName] = targetVote;
-            userExistingVote = targetVote;
-        } 
-        else {
-            pageData.score += targetVote;
-            pageData.users[userName] = targetVote;
-            userExistingVote = targetVote;
+            newVoteValue = 0;
         }
 
         isProcessing = true;
-        document.querySelectorAll('.ejt-rating-tab').forEach(el => { el.style.opacity = "0.5"; });
-
-        api.postWithToken('csrf', {
-            action: 'edit',
-            title: globalLedgerTitle,
-            summary: `Rating update for [[${pageName}]] by User:${userName}`,
-            text: JSON.stringify(masterLedger, null, 2)
-        }).done(function () {
-            refreshAllInterfaces(); 
-        }).fail(function (err) {
-            alert("Error saving vote adjustments: " + err);
-        }).always(function () {
-            isProcessing = false;
-            document.querySelectorAll('.ejt-rating-tab').forEach(el => { el.style.opacity = "1"; });
+        document.querySelectorAll('.ejt-rating-tab').forEach(el => {
+            el.style.opacity = "0.5";
         });
-    }
-});
+
+        api.get({
+            action: 'query',
+            prop: 'revisions',
+            titles: globalLedgerTitle,
+            rvprop: 'content|timestamp',
+            formatversion: 2,
+            cb: Date.now()
+        }).done(function(data) {
+            let content = "";
+            let baseTimestamp = "";
+            let startTimestamp = data.querytime || new Date().toISOString();
+            try {
+                if (data.query && data.query.pages) {
+                    const keys = Object.keys(data.query.pages);
+                    const page = data.query.pages[keys[0]];
+                    if (page && page.revisions && page.revisions[0]) {
+                        content = page.revisions[0].content;
+                        baseTimestamp = page.revisions[0].timestamp;
+                    }
+                }
+            } catch (e) {
+                content = "";
+            }
+
+            let lines = content.split('\n');
+            let ledgerData = {};
+            lines.forEach(function(line) {
+                let cleanLine = line.replace("<p>", "").replace("</p>", "").trim();
+                if (!cleanLine || !cleanLine.includes('|')) return;
+                let parts = cleanLine.split('|');
+                if (parts.length >= 3) {
+                    let pName = parts[0].trim();
+                    let uName = parts[1].trim();
+                    let vVal = parts[2].trim();
+                    ledgerData[pName + "|||" + uName] = vVal;
+                }
+            });
+
+            let mapKey = pageName + "|||" + userName;
+            if (newVoteValue === 0) {
+                delete ledgerData[mapKey];
+            } else {
+                ledgerData[mapKey] = newVoteValue.toString();
+            }
+
+            let newMatrixLines = [];
+            for (let k in ledgerData) {
+                let keySplit = k.split("|||");
+                newMatrixLines.push(`${keySplit[0]} | ${keySplit[1]} | ${ledgerData[k]}`);
+            }
+
+            let newMatrixText = newMatrixLines.join("\n");
+
+            api.postWithToken('csrf', {
+                action: 'edit',
+                title: globalLedgerTitle,
+                summary: `Rating update for [[${pageName}]]`,
+                text: newMatrixText,
+                minor: true,
+                basetimestamp: baseTimestamp,
+                starttimestamp: startTimestamp
+            }).done(function () {
+                currentPageScore = currentPageScore - userExistingVote + newVoteValue;
+                userExistingVote = newVoteValue;
+                refreshAllInterfaces();
+            }).fail(function (code, err) {
+                if (code === "editconflict") {
+                    console.warn("Edit conflict caught! Retrying calculation immediately...");
+                    isProcessing = false;
+                    processVote(targetVote);
+                } else {
+                    alert("Error sending vote request: " + (err.error ? err.error.info : code));
+                }
+            }).always(function () {
+                if (isProcessing) {
+                    isProcessing = false;
+                    document.querySelectorAll('.ejt-rating-tab').forEach(el => {
+                        el.style.opacity = "1";
+                    });
+                }
+            });
+        }).fail(function() {
+            alert("Could not load fresh ledger database rows.");
+            isProcessing = false;
+            document.querySelectorAll('.ejt-rating-tab').forEach(el => {
+                el.style.opacity = "1";
+            });
+});}});
+
 // Popular Pages
 (function() {
-    var targetPage = "JToH's_Joke_Towers_Wiki:Popular_Pages"; 
+    var targetPage = "JToH's_Joke_Towers_Wiki:Popular_Pages";
     if (mw.config.get('wgPageName') !== targetPage) return;
 
     var container = document.getElementById('dynamic-top-tabber');
@@ -879,8 +913,8 @@ mw.loader.using(['mediawiki.api']).then(function () {
                 chunks.push(totalItems.slice(i, i + 50));
             }
 
-            var tabsHTML = '<div class="top-tab-buttons" style="display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; position: relative; z-index: 2; background: transparent; border-bottom: 4px solid #76654a;">';
-            var panesHTML = '<div class="top-tab-panes" style="border: 4px solid #76654a; border-top: none; background: #fff; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">';
+            var tabsHTML = '<div class="top-tab-buttons" style="display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; position: relative; z-index: 2; background: transparent; border-bottom: 4px solid #fff;">';
+            var panesHTML = '<div class="top-tab-panes" style="border: 4px solid #fff; border-top: none; background: color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-page-background-color)); padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">';
 
             chunks.forEach(function(chunk, index) {
                 var startNum = (index * 50) + 1;
@@ -888,14 +922,18 @@ mw.loader.using(['mediawiki.api']).then(function () {
                 var label = 'Pages ' + startNum + '-' + endNum;
                 var isActive = index === 0;
 
-                var bg = isActive ? 'color-mix(in oklab, var(--theme-link-color) 80%, transparent)' : 'color-mix(in oklab, var(--theme-accent-color) 80%, transparent)';
-                var color = isActive ? '#fff' : '#000';
+                var bg = isActive 
+                    ? 'var(--theme-link-color)' 
+                    : 'linear-gradient(to top, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 0%, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 50%, var(--theme-accent-color) 50%, var(--theme-accent-color) 100%)';
+                
+                var bgSize = isActive ? 'auto' : '100% 200%';
+                var bgPos = isActive ? 'auto' : '0% 0%';
+                
+                var color = '#fff';
                 var padding = isActive ? '20px 8px 16px 8px' : '10px 8px';
-                
-                var borderLeft = '4px solid #76654a';
-                var borderRight = '4px solid #76654a';
+                var borderLeft = '4px solid #fff';
+                var borderRight = '4px solid #fff';
                 var zIndex = isActive ? '3' : '1';
-                
                 var isLast = (index === chunks.length - 1);
                 var marginRight = isLast ? '0px' : '-4px';
 
@@ -903,10 +941,12 @@ mw.loader.using(['mediawiki.api']).then(function () {
                     'padding: ' + padding + ';' +
                     'cursor: pointer;' +
                     'border: none;' +
-                    'border-top: 4px solid #76654a;' +
+                    'border-top: 4px solid #fff;' +
                     'border-left: ' + borderLeft + ';' +
                     'border-right: ' + borderRight + ';' +
                     'background: ' + bg + ';' +
+                    'background-size: ' + bgSize + ';' +
+                    'background-position: ' + bgPos + ';' +
                     'color: ' + color + ';' +
                     'font-family: inherit;' +
                     'font-weight: 500;' +
@@ -915,26 +955,27 @@ mw.loader.using(['mediawiki.api']).then(function () {
                     'outline: none;' +
                     'position: relative;' +
                     'z-index: ' + zIndex + ';' +
-                    'transition: padding 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s, color 0.2s;' +
+                    'transition: padding 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-position 0.15s ease-out, background-color 0.1s, color 0.2s;' +
                     'box-sizing: border-box;' +
                     'margin-right: ' + marginRight + ';' +
                     '">' + label + '</button>';
-                
+
                 panesHTML += '<div class="top-tab-pane" id="top-pane-' + index + '" style="display: ' + (isActive ? 'block' : 'none') + ';">';
                 panesHTML += '<ol start="' + startNum + '" style="padding-left: 25px; line-height: 1.8; margin: 0;">';
-                
                 chunk.forEach(function(itemTitle) {
                     if (!itemTitle) return;
                     var safeTitle = encodeURIComponent(itemTitle.trim());
-                    panesHTML += '<li style="margin-bottom: 8px;"><a href="/wiki/' + safeTitle + '" style="color: var(--theme-link-color, #0645ad); font-weight: 500; text-decoration: none;">' + itemTitle + '</a></li>';
+                    var hasCustomStyles = /<[a-z][\s\S]*>/i.test(itemTitle);
+                    var linkColorStyle = hasCustomStyles ? '' : 'color: var(--theme-link-color, #0645ad);';
+                    panesHTML += '<li style="margin-bottom: 8px;">' +
+                        '<a href="/wiki/' + safeTitle + '" style="' + linkColorStyle + ' font-weight: 500;">' + mw.html.escape(itemTitle) + '</a>' +
+                        '</li>';
                 });
-                
                 panesHTML += '</ol></div>';
             });
 
             tabsHTML += '</div>';
             panesHTML += '</div>';
-
             container.innerHTML = tabsHTML + panesHTML;
 
             var buttons = container.querySelectorAll('.top-tab-btn');
@@ -943,38 +984,40 @@ mw.loader.using(['mediawiki.api']).then(function () {
             buttons.forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     var clickedTab = this.getAttribute('data-tab');
-                    
                     buttons.forEach(function(b, idx) {
                         if (idx == clickedTab) {
-                            b.style.background = '#96815b';
+                            b.style.background = 'var(--theme-link-color)';
+                            b.style.backgroundSize = 'auto';
+                            b.style.backgroundPosition = 'auto';
                             b.style.color = '#fff';
                             b.style.padding = '20px 8px 16px 8px';
                             b.style.zIndex = '3';
                         } else {
-                            b.style.background = '#fff';
-                            b.style.color = '#000';
+                            b.style.background = 'linear-gradient(to top, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 0%, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 50%, var(--theme-accent-color) 50%, var(--theme-accent-color) 100%)';
+                            b.style.backgroundSize = '100% 200%';
+                            b.style.backgroundPosition = '0% 0%';
+                            b.style.color = '#fff';
                             b.style.padding = '10px 8px';
                             b.style.zIndex = '1';
                         }
                     });
-                    
                     panes.forEach(function(pane, idx) {
                         pane.style.display = idx == clickedTab ? 'block' : 'none';
                     });
                 });
 
                 btn.addEventListener('mouseenter', function() {
-                    if (this.style.background !== 'rgb(150, 129, 91)' && this.style.background !== '#96815b') {
-                        this.style.background = '#76654a';
-                        this.style.color = '#fff';
-                        if(this.style.zIndex !== '3') this.style.zIndex = '2'; 
+                    var currentPane = container.querySelectorAll('.top-tab-pane')[this.getAttribute('data-tab')];
+                    if (currentPane.style.display !== 'block') {
+                        this.style.backgroundPosition = '0% 100%';
+                        if (this.style.zIndex !== '3') this.style.zIndex = '2';
                     }
                 });
 
                 btn.addEventListener('mouseleave', function() {
-                    if (container.querySelectorAll('.top-tab-pane')[this.getAttribute('data-tab')].style.display !== 'block') {
-                        this.style.background = '#fff';
-                        this.style.color = '#000';
+                    var currentPane = container.querySelectorAll('.top-tab-pane')[this.getAttribute('data-tab')].style.display;
+                    if (currentPane !== 'block') {
+                        this.style.backgroundPosition = '0% 0%';
                         this.style.zIndex = '1';
                     }
                 });
@@ -984,3 +1027,172 @@ mw.loader.using(['mediawiki.api']).then(function () {
             console.error('Tabber Error: ', err);
         });
 })();
+// Beloved Pages
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
+    var targetPage = "JToH's_Joke_Towers_Wiki:Beloved_Pages";
+    if (mw.config.get('wgPageName') !== targetPage) return;
+
+    var container = document.getElementById('dynamic-top-tabber');
+    if (!container) return;
+
+    var api = new mw.Api();
+    var globalLedgerTitle = 'Project:Sitewide_Ratings_Data_Matrix';
+
+    api.get({
+        action: 'query',
+        prop: 'revisions',
+        titles: globalLedgerTitle,
+        rvprop: 'content',
+        formatversion: 2,
+        cb: Date.now()
+    }).done(function(data) {
+        let content = "";
+        try {
+            if (data.query && data.query.pages) {
+                var keys = Object.keys(data.query.pages);
+                var page = data.query.pages[keys[0]];
+                if (page && page.revisions && page.revisions[0]) {
+                    content = page.revisions[0].content;
+                }
+            }
+        } catch (e) {
+            content = "";
+        }
+
+        if (!content) {
+            container.innerHTML = "<div style='color:red; padding:20px;'>Failed to read data from matrix page.</div>";
+            return;
+        }
+
+        var lines = content.split('\n');
+        var scoresMap = {};
+
+        lines.forEach(function(line) {
+            var cleanLine = line.replace("<p>", "").replace("</p>", "").trim();
+            if (!cleanLine || !cleanLine.includes('|')) return;
+            var parts = cleanLine.split('|');
+            if (parts.length < 3) return;
+            var pName = parts[0].trim();
+            var vVal = parseInt(parts[2].trim(), 10);
+            if (isNaN(vVal)) return;
+
+            if (!scoresMap[pName]) scoresMap[pName] = 0;
+            scoresMap[pName] += vVal;
+        });
+
+        var sortedPages = [];
+        for (var pageNameKey in scoresMap) {
+            // ONLY include pages with a score of 0 or greater
+            if (scoresMap[pageNameKey] < 0) continue;
+            
+            sortedPages.push({
+                title: pageNameKey,
+                score: scoresMap[pageNameKey]
+            });
+        }
+
+        sortedPages.sort(function(a, b) {
+            return b.score - a.score;
+        });
+
+        if (sortedPages.length === 0) {
+            container.innerHTML = "<div style='padding:20px; color:#fff;'>No ratings recorded yet.</div>";
+            return;
+        }
+
+        var totalItems = sortedPages.slice(0, 250);
+        var chunks = [];
+        for (var i = 0; i < totalItems.length; i += 50) {
+            chunks.push(totalItems.slice(i, i + 50));
+        }
+
+        var tabsHTML = '<div class="top-tab-buttons" style="display: grid; grid-template-columns: repeat(' + chunks.length + ', 1fr); align-items: end; position: relative; z-index: 2; background: transparent; border-bottom: 4px solid #fff;">';
+        var panesHTML = '<div class="top-tab-panes" style="border: 4px solid #fff; border-top: none; background: color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-page-background-color)); padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">';
+
+        chunks.forEach(function(chunk, index) {
+            var startNum = (index * 50) + 1;
+            var endNum = startNum + chunk.length - 1;
+            var label = 'Pages ' + startNum + '-' + endNum;
+            var isActive = index === 0;
+            var bg = isActive ? 'var(--theme-link-color)' : 'linear-gradient(to top, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 0%, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 50%, var(--theme-accent-color) 50%, var(--theme-accent-color) 100%)';
+            var bgSize = isActive ? 'auto' : '100% 200%';
+            var bgPos = isActive ? 'auto' : '0% 0%';
+            var padding = isActive ? '20px 8px 16px 8px' : '10px 8px';
+            var zIndex = isActive ? '3' : '1';
+            var marginRight = (index === chunks.length - 1) ? '0px' : '-4px';
+
+            tabsHTML += '<button class="top-tab-btn" data-tab="' + index + '" style="' + 'padding: ' + padding + ';' + 'cursor: pointer;' + 'border: none;' + 'border-top: 4px solid #fff;' + 'border-left: 4px solid #fff;' + 'border-right: 4px solid #fff;' + 'background: ' + bg + ';' + 'background-size: ' + bgSize + ';' + 'background-position: ' + bgPos + ';' + 'color: #fff;' + 'font-family: inherit;' + 'font-weight: 500;' + 'font-size: 14px;' + 'text-align: center;' + 'outline: none;' + 'position: relative;' + 'z-index: ' + zIndex + ';' + 'transition: padding 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-position 0.15s ease-out, background-color 0.1s, color 0.2s;' + 'box-sizing: border-box;' + 'margin-right: ' + marginRight + ';' + '">' + label + '</button>';
+
+            panesHTML += '<div class="top-tab-pane" id="top-pane-' + index + '" style="display: ' + (isActive ? 'block' : 'none') + ';">';
+            panesHTML += '<ol start="' + startNum + '" style="padding-left: 25px; line-height: 1.8; margin: 0;">';
+
+            chunk.forEach(function(item) {
+                if (!item || !item.title) return;
+                var safeTitle = encodeURIComponent(item.title.trim());
+                var cleanDisplayTitle = item.title.replace(/_/g, ' ');
+                
+                // Format score display: prepend '+' only if score is strictly greater than 0
+                var displayScore = item.score > 0 ? '+' + item.score : item.score;
+
+                panesHTML += '<li style="margin-bottom: 8px; color: var(--theme-page-text-color, #fff); font-weight: 500;">' +
+                    '<a href="/wiki/' + safeTitle + '" style="color: var(--theme-link-color, #0645ad); font-weight: 500; margin-right: 8px;">' + mw.html.escape(cleanDisplayTitle) + '</a>' +
+                    '<span style="font-size: 12px; opacity: 0.85; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 3px; font-family: monospace;">' + displayScore + '</span>' +
+                    '</li>';
+            });
+
+            panesHTML += '</ol></div>';
+        });
+
+        tabsHTML += '</div>';
+        panesHTML += '</div>';
+        container.innerHTML = tabsHTML + panesHTML;
+
+        var buttons = container.querySelectorAll('.top-tab-btn');
+        var panes = container.querySelectorAll('.top-tab-pane');
+
+        buttons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var clickedTab = this.getAttribute('data-tab');
+                buttons.forEach(function(b, idx) {
+                    if (idx == clickedTab) {
+                        b.style.background = 'var(--theme-link-color)';
+                        b.style.backgroundSize = 'auto';
+                        b.style.backgroundPosition = 'auto';
+                        b.style.padding = '20px 8px 16px 8px';
+                        b.style.zIndex = '3';
+                    } else {
+                        b.style.background = 'linear-gradient(to top, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 0%, color-mix(in oklab, var(--theme-accent-color) 50%, var(--theme-link-color)) 50%, var(--theme-accent-color) 50%, var(--theme-accent-color) 100%)';
+                        b.style.backgroundSize = '100% 200%';
+                        b.style.backgroundPosition = '0% 0%';
+                        b.style.padding = '10px 8px';
+                        b.style.zIndex = '1';
+                    }
+                });
+
+                panes.forEach(function(pane, idx) {
+                    pane.style.display = idx == clickedTab ? 'block' : 'none';
+                });
+            });
+
+            btn.addEventListener('mouseenter', function() {
+                var currentPane = container.querySelectorAll('.top-tab-pane')[this.getAttribute('data-tab')];
+                if (currentPane.style.display !== 'block') {
+                    this.style.backgroundPosition = '0% 100%';
+                    if (this.style.zIndex !== '3') this.style.zIndex = '2';
+                }
+            });
+
+            btn.addEventListener('mouseleave', function() {
+                var currentPane = container.querySelectorAll('.top-tab-pane')[this.getAttribute('data-tab')].style.display;
+                if (currentPane !== 'block') {
+                    this.style.backgroundPosition = '0% 0%';
+                    this.style.zIndex = '1';
+                }
+            });
+        });
+
+    }).fail(function(err) {
+        console.error('Leaderboard Fetch Error: ', err);
+        container.innerHTML = "<div style='color:red; padding:20px;'>API error loading data matrix.</div>";
+    });
+});

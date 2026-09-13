@@ -100,6 +100,7 @@ UserTagsJS.modules.custom = {
 	'The Dimensional Doctor': ['wiki-contributor'],
 	'Fish The 4th': ['wiki-contributor'],
 	'Phillybillygraves': ['wiki-contributor'],
+	'IvoryCreamy': ['wiki-contributor'],
 	
 	// Retired Wiki Staff
 	// Retired Bureaucrats

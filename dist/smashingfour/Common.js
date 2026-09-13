@@ -7,6 +7,8 @@
 
   var INIT_ATTR = "data-s4wc-initialized";
 
+  // Emergency fallbacks.
+  // Normal values are loaded from Module:S4GameConfig.
   var DEFAULT_DAMAGE_WEIGHT = 4;
   var DEFAULT_SCALE = 1800;
 
@@ -122,11 +124,46 @@
       });
     }
 
+    function fetchCalculatorDefaults() {
+      return Promise.all([
+        api.parse("{{#invoke:S4GameConfig|calcDamageWeight}}"),
+        api.parse("{{#invoke:S4GameConfig|calcScale}}")
+      ]).then(function (results) {
+
+        var dmgW =
+          parseFloat(parseApiText(results[0]));
+
+        var scale =
+          parseFloat(parseApiText(results[1]));
+
+        if (!dmgW || dmgW <= 0) {
+          throw new Error(
+            "Invalid calculator damage weight returned by S4GameConfig."
+          );
+        }
+
+        if (!scale || scale <= 0) {
+          throw new Error(
+            "Invalid calculator probability scale returned by S4GameConfig."
+          );
+        }
+
+        DEFAULT_DAMAGE_WEIGHT = dmgW;
+        DEFAULT_SCALE = scale;
+      });
+    }
+
     function fetchCalculatorData() {
 
-      return fetchHeroList().then(function () {
-        return fetchMaxHeroLevel();
-      });
+      // Keep startup sequential and deterministic:
+      // hero list -> max level -> calculator calibration.
+      return fetchHeroList()
+        .then(function () {
+          return fetchMaxHeroLevel();
+        })
+        .then(function () {
+          return fetchCalculatorDefaults();
+        });
     }
 
     // ------------------------------------------------------------

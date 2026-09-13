@@ -12,7 +12,7 @@ mw.hook('wikipage.content').add(function() {
 	
 	Promise.all([
 		fetch(`/wiki/${localRatingsPage}?action=raw`).then(response => response.ok && response.json()),
-		fetch('/wiki/Backrooms_Wiki:Ratings.json?action=raw').then(response => response.json())
+		fetch('/wiki/Backrooms_Indonesia_Wiki:Ratings.json?action=raw').then(response => response.json())
 	]).then(ratings => (ratings[0] && (up = ratings[0].up, down = ratings[0].down), (globalUp = ratings[1].globalUp, globalDown = ratings[1].globalDown)))
 	.then(() => {
 		$('.page-header__meta').append(`<div class="page-rating">Rating:
@@ -26,7 +26,7 @@ mw.hook('wikipage.content').add(function() {
 			$('.page-rating').addClass('busy');
 			setTimeout(() => $('.page-rating').removeClass('busy'), 1500);
 			
-			fetch('/wiki/Backrooms_Wiki:Ratings.json?action=raw')
+			fetch('/wiki/Backrooms_Indonesia_Wiki:Ratings.json?action=raw')
 				.then(response => response.json())
 				.then(ratings => ratings && (globalUp = ratings.globalUp, globalDown = ratings.globalDown))
 				.then(() => {
@@ -108,7 +108,7 @@ mw.hook('wikipage.content').add(function() {
 					api.postWithEditToken({
 						action: 'edit',
 						format: 'json',
-						title: 'Backrooms_Wiki:Ratings.json',
+						title: 'Backrooms_Indonesia_Wiki:Ratings.json',
 						text: JSON.stringify({globalUp: sort(globalUp), globalDown: sort(globalDown)}, null, '\t'),
 						summary: `PageRating: ${vote} “[[${page.replace(/_/g, ' ')}]]” ${deletedInGlobal ? deleted : ''} globally\u200b`,
 						tags: 'page-rating'

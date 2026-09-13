@@ -1,12 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-// Configure the Custom "Bureaucat" Tag
-window.UserTagsJS = {
-    modules: {},
-    tags: {
-        founder: { u: 'Bureaucat', link: 'Project:Bureaucrats' }
-    }
-};
-
 /* custom staff ranks */
 // Custom Moderator Rank Script for Skybox Escape Industry's Santernal Nation Wiki
 // This script applies custom visual tags to designated community members and gives them quick access to moderation tools.
@@ -124,3 +116,34 @@ importArticles({
         'u:dev:MediaWiki:Follow.js',
     ]
 });
+// Define the users and their specific tags
+const userTags = {
+    "Witherstormisdabest": "Bureaucat",
+    "Alankid123": "Former Bureaucat",
+    "RomanescoGAG": "Co-Founder"
+};
+
+/**
+ * Functions to get a user's full formatted tag string
+ * @param {string} username - The name of the user to look up
+ * @returns {string} The formatted [user] - [tag] string, or a default message
+ */
+function getUserTagString(username) {
+    const tag = userTags[username];
+    
+    if (tag) {
+        return `${username} - ${tag}`;
+    } else {
+        return `${username} - No Tag Found`;
+    }
+}
+
+// --- Examples of how to use it ---
+console.log(getUserTagString("Witherstormisdabest")); 
+// Output: Witherstormisdabest - Bureaucat
+
+console.log(getUserTagString("RomanescoGAG"));        
+// Output: RomanescoGAG - Co-Founder
+
+console.log(getUserTagString("UnknownUser"));        
+// Output: UnknownUser - No Tag Found

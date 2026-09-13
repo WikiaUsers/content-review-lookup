@@ -36,7 +36,12 @@ $(document).ready(function() {
     $("span#ampOptionsHarness").html('<div id="ampOptions"> <div id="ampOptionsInner"> <div id="numOfAmpsOption"> Number of Damage Amplifiers affecting the Defense: <select name="numOfAmps" id="numOfAmps"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select> </div> <div id="firstAmpOption" style="display: none;"> <span id="firstAmpFirstWord" style="display: none;">First </span>Damage Amplifier\'s Mark: <select name="firstAmp" id="firstAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="secondAmpOption" style="display: none;"> Second Damage Amplifier\'s Mark: <select name="secondAmp" id="secondAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="thirdAmpOption" style="display: none;"> Third Damage Amplifier\'s Mark: <select name="thirdAmp" id="thirdAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fourthAmpOption" style="display: none;"> Fourth Damage Amplifier\'s Mark: <select name="fourthAmp" id="fourthAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fifthAmpOption" style="display: none;"> Fifth Damage Amplifier\'s Mark: <select name="fifthAmp" id="fifthAmp"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> </div> </div> <center> <span id="showAmpOptions" class="ampOptionsTrigger">Show Damage Amplifier Options</span> <span id="hideAmpOptions" class="ampOptionsTrigger ampOptionsTriggerHidden">Hide Damage Amplifier Options</span> </center>');
     $("span#generatorOptionsHarness").html('<div id="generatorOptions"> <div id="generatorOptionsInner"> <div id="numOfGeneratorsOption"> Number of Shield Generators on the Base: <select name="numOfGenerators" id="numOfGenerators"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select> </div> <div id="firstGeneratorOption" style="display: none;"> <span id="firstGeneratorFirstWord" style="display: none;">First </span>Shield Generator\'s Mark: <select name="firstGenerator" id="firstGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="secondGeneratorOption" style="display: none;"> Second Shield Generator\'s Mark: <select name="secondGenerator" id="secondGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="thirdGeneratorOption" style="display: none;"> Third Shield Generator\'s Mark: <select name="thirdGenerator" id="thirdGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fourthGeneratorOption" style="display: none;"> Fourth Shield Generator\'s Mark: <select name="fourthGenerator" id="fourthGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> <div id="fifthGeneratorOption" style="display: none;"> Fifth Shield Generator\'s Mark: <select name="fifthGenerator" id="fifthGenerator"> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select> </div> </div> </div> <center> <span id="showGeneratorOptions" class="generatorOptionsTrigger">Show Shield Generator Options</span> <span id="hideGeneratorOptions" class="generatorOptionsTrigger generatorOptionsTriggerHidden">Hide Shield Generator Options</span> </center>');
     /* Squad Leader Lt. Julius Mass WIP */
-    $("span#TalentOptionsHarness").html('<div id="talentOptions"> <div id="talentOptionsInner"> <div id="talentOption"> Talent from Lt. Julius Mass: <select name="talentToggle" id="talentToggle"> <option value="0">NO TALENT</option> <option value="1">TALENT</option> </select> </div> </div> </div>');
+    /*$("span#TalentOptionsHarness").html('<div id="talentOptions"> <div id="talentOptionsInner"> <div id="talentOption"> Talent from Lt. Julius Mass: <select name="talentToggle" id="talentToggle"> <option value="0">NO TALENT</option> <option value="1">TALENT</option> </select> </div> </div> </div>');*/
+    /* Squad Leader Lt. Julius Mass */
+	$("span#TalentOptionsJuliusMassHarness").html('<div id="juliusMassTalentOptions"> <div id		="juliusMassTalentOptionsInner"> <div id="juliusMassTalentOption"> Talent from Lt. Julius Mass: <select name="juliusMassTalentToggle" id="juliusMassTalentToggle"> <option value="0">NO TALENT</option> <option value="1">TALENT</option> </select> </div> </div> </div>');
+	/* Squad Leader Julia Weights */
+	$("span#TalentOptionsJuliaWeightsHarness").html(
+    '<div id="juliaWeightsTalentOptions"> <div id="juliaWeightsTalentOptionsInner"> <div id="juliaWeightsTalentOption"> Talent from Julia Weights: <select name="juliaWeightsTalentToggle" id="juliaWeightsTalentToggle"> <option value="0">NO TALENT</option> <option value="1">TALENT</option> </select> </div> </div> </div>');
     /* Remove margin from an automatically created p element */
     $("span#ampOptionsHarness").parent("p").css({"margin": "0"});
     /* Get the initial cell values, remove commas, and 
@@ -70,57 +75,16 @@ $(document).ready(function() {
             $(".GBE").addClass("StatModified");
         }
       });
-      /*$(".TH").each(function() {
-         var cellValueTH = $(this).attr("title") * 1;
-         var calcNewTH = Math.round(cellValueTH * (1 + (getInputTH / 100)));
-         $(this).text(calcNewTH.format("#,##0[.]###"));
-        if ((roundNum(3, calcNewTH)) === (roundNum(3, cellValueTH))) {
-            $(".TH").removeClass("StatModified");
-        } else {
-            $(".TH").addClass("StatModified");
-        }
-      });
-      $(".TH").each(function() {
-    var cellValueTH = $(this).attr("title") * 1;
-    var calcBoostedTH = Math.round(cellValueTH * (1 + (getInputTH / 100)));
-    var talentActive = $("#talentToggle").val() * 1;
-    if (talentActive == 1) {
-        var talentBonusAmount = calcBoostedTH * (300 / 100);
-    } else {
-        var talentBonusAmount = 0;
-    }*/
-     /* $(".TH").each(function() {
-    var cellValueTH = $(this).attr("title") * 1;
-    var talentActive = $("#talentToggle").val() * 1;
-    var totalPercentTH = getInputTH;
-    if (talentActive == 1) {
-        totalPercentTH += 300;
-    }
-    var calcNewTH = Math.round(cellValueTH * (1 + (totalPercentTH / 100)));
-    $(this).text(calcNewTH.format("#,##0[.]###"));
-    if ((roundNum(3, calcNewTH)) === (roundNum(3, cellValueTH))) {
-        $(".TH").removeClass("StatModified");
-    } else {
-        $(".TH").addClass("StatModified");
-    }
-    if (talentActive == 1) {
-        $(".TH").addClass("StatModifiedTalent");
-    } else {
-        $(".TH").removeClass("StatModifiedTalent");
-    }
-    });
-    Just in case the new code is leading to wrong calculations
-    */
     $(".TH").each(function() {
     var cellValueTH = $(this).attr("title") * 1;
-    var talentActive = $("#talentToggle").val() * 1;
+    var talentActiveJuliusMass = $("#juliusMassTalentToggle").val() * 1;
     var totalPercentTH = getInputTH;
 
     // Without Talent
     var calcNewTH = Math.round(cellValueTH * (1 + (totalPercentTH / 100)));
 
     // With Talent
-    if (talentActive == 1) {
+    if (talentActiveJuliusMass == 1) {
         calcNewTH = Math.round(calcNewTH * 4);
     }
 
@@ -132,13 +96,13 @@ $(document).ready(function() {
         $(".TH").addClass("StatModified");
     }
 
-    if (talentActive == 1) {
+    if (talentActiveJuliusMass == 1) {
         $(".TH").addClass("StatModifiedTalent");
     } else {
         $(".TH").removeClass("StatModifiedTalent");
     }
 });
-      $(".TD").each(function() {
+      /*$(".TD").each(function() {
          var cellValueTD = $(this).attr("title") * 1;
          var calcNewTD = roundNum(3, cellValueTD * (1 + (getInputTD / 100)));
          $(this).text(calcNewTD.format("#,##0[.]###"));
@@ -147,7 +111,36 @@ $(document).ready(function() {
         } else {
             $(".TD").addClass("StatModified");
         }
-      });
+      });*/
+     /*WIP*/ 
+    $(".TD").each(function() {
+	var cellValueTD = $(this).attr("title") * 1;
+	var talentActiveJuliaWeights = $("#juliaWeightsTalentToggle").val() * 1;
+	var totalPercentTD = getInputTD;
+
+    // Without Talent
+    var calcNewTD = roundNum(3, cellValueTD * (1 + (totalPercentTD / 100))
+    );
+
+	    // With Julia Weights Talent
+	    if (talentActiveJuliaWeights == 1) {
+	    	calcNewTD = roundNum(3, calcNewTD * 4);
+    }
+
+    $(this).text(calcNewTD.format("#,##0[.]###"));
+
+    if (roundNum(3, calcNewTD) === roundNum(3, cellValueTD)) {
+        $(".TD").removeClass("StatModified");
+    } else {
+        $(".TD").addClass("StatModified");
+    }
+
+    if (talentActiveJuliaWeights == 1) {
+        $(".TD").addClass("StatModifiedTalent");
+    } else {
+        $(".TD").removeClass("StatModifiedTalent");
+    }
+});
       $(".BH").each(function() {
         var cellValueBH = $(this).attr("title") * 1;
         var calcBoostedBH = Math.round(cellValueBH * (1 + (getInputBH / 100)));
@@ -356,7 +349,7 @@ $(document).ready(function() {
         $(".bonusInput").attr("value", "0");
         $("#changeBonusButton").text("Apply");
         $("#numOfAmps, #numOfGenerators").val("0").change();
-        $("#talentToggle").val("0");
+        $("#juliusMassTalentToggle, #juliaWeightsTalentToggle").val("0");
         $(".StatueStat").each(function() {
             var returnInitial = $(this).attr("title") * 1;
             $(this).text(returnInitial.format("#,##0[.]###"));

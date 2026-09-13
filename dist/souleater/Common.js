@@ -59,3 +59,36 @@ if ($('.page-User_TheCarrotSaysYumYum').length !== 0) {
 window.SpoilerAlert = {
   categories: "Spoiler",
 };
+
+/* Article Comments Rules notice */
+(function () {
+    function addArticleCommentsNotice() {
+        var comments = document.querySelector('#articleComments');
+
+        if (!comments || document.querySelector('#article-comments-rules-notice')) {
+            return;
+        }
+
+        var notice = document.createElement('div');
+        notice.id = 'article-comments-rules-notice';
+        notice.innerHTML =
+            '<strong>Article comments:</strong> ' +
+            'Please use this section to for possible corrections, additions, sources, or other issues with this article. ' +
+            'For general discussion about the subject, please use the appropriate community discussion area instead.';
+
+        comments.parentNode.insertBefore(notice, comments);
+    }
+
+    /* Run when the page initially loads */
+    addArticleCommentsNotice();
+
+    /* Run again if Fandom loads the comments dynamically */
+    var observer = new MutationObserver(function () {
+        addArticleCommentsNotice();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+})();

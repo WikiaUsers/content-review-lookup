@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:Windows11StreamingScreen/code.js?action=raw&ctype=text/javascript");
