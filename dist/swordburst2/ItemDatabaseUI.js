@@ -1,6 +1,5 @@
 (function () {
 
-
     if (mw.config.get('wgPageName') !== 'Item_Database_(New)') {
         return;
     }
@@ -169,6 +168,8 @@ guide: {
 
     database: [],
 
+    auraCosts: {},
+
     isLoading: true,
 
     currentView: CONFIG.views.detailed,
@@ -180,10 +181,12 @@ guide: {
     detailed: {
         sortBy: CONFIG.detailed.defaultSort,
         sortDirection: CONFIG.detailed.defaultSortDirection,
+
 filters: {
     levelMin: CONFIG.detailed.filters.levelMin,
     levelMax: CONFIG.detailed.filters.levelMax,
     rarity: null,
+    type: null,
     obtainable: 'all'
 }
     },
@@ -234,20 +237,27 @@ filters: {
             return;
         }
 
-        waitForDatabaseAPI()
-            .then(function () {
-                return loadDatabase();
-            })
+waitForDatabaseAPI()
+    .then(function () {
+        return loadDatabase();
+    })
 
-.then(function (database) {
+    .then(function (database) {
 
-    state.database = validateDatabase(database);
+        state.database =
+            validateDatabase(database);
 
-    state.isLoading = false;
+        return loadAuraCostsIntoState();
 
-    renderDatabase();
+    })
 
-})
+    .then(function () {
+
+        state.isLoading = false;
+
+        renderDatabase();
+
+    })
 
             .catch(function (error) {
 
@@ -315,6 +325,122 @@ function loadDatabase() {
     }
 }
 
+async function loadAuraCostsIntoState() {
+
+    state.auraCosts =
+        await loadAuraCosts();
+
+}
+
+function getItemStoreCost(item) {
+
+    if (!item) {
+        return null;
+    }
+
+    var obtain =
+        typeof item.obtain === 'string'
+            ? item.obtain.trim()
+            : '';
+
+    var pageName = '';
+
+    var match =
+        obtain.match(
+            /^\[\[([^|\]]+)/
+        );
+
+    if (match) {
+
+        pageName =
+            match[1]
+                .split('#')[0]
+                .trim();
+    }
+
+    if (
+        pageName &&
+        state.auraCosts[pageName]
+    ) {
+        return state.auraCosts[pageName];
+    }
+
+    var itemName =
+        typeof item.name === 'string'
+            ? item.name.trim()
+            : '';
+
+    if (
+        itemName &&
+        state.auraCosts[itemName]
+    ) {
+        return state.auraCosts[itemName];
+    }
+
+    return null;
+}
+
+function renderAuraCost(cost) {
+
+    var container =
+        document.createElement('span');
+
+    container.className =
+        'item-database-aura-cost';
+
+    container.appendChild(
+        document.createTextNode(' (')
+    );
+
+    var image =
+        document.createElement('img');
+
+    image.className =
+        'item-database-cost-icon';
+
+    image.alt = '';
+
+    if (cost.currency === 'R') {
+
+        container.appendChild(
+            document.createTextNode(
+                cost.amount + ' '
+            )
+        );
+
+        image.src =
+            '/images/RobuxIcon.png';
+
+        image.width = 15;
+
+        container.appendChild(image);
+
+    } else if (cost.currency === 'V') {
+
+        image.src =
+            '/images/ShopVelIcon.png';
+
+        image.width = 20;
+
+        container.appendChild(image);
+
+        container.appendChild(
+            document.createTextNode(
+                ' ' + cost.amount
+            )
+        );
+
+    } else {
+
+        return container;
+    }
+
+    container.appendChild(
+        document.createTextNode(')')
+    );
+
+    return container;
+}
 
 function validateDatabase(database) {
     if (
@@ -330,6 +456,7 @@ function validateDatabase(database) {
         'name',
         'icon',
         'type',
+        'category',
         'rarity',
         'level',
         'dmg',
@@ -885,7 +1012,7 @@ content
     }
 
 
-    function setCurrentCategory(categoryId) {
+function setCurrentCategory(categoryId) {
 
     var category =
         getCategoryById(categoryId);
@@ -894,8 +1021,43 @@ content
         return;
     }
 
-state.currentCategory =
-    category.id;
+    state.currentCategory =
+        category.id;
+
+    var currentType =
+        state.detailed.filters.type;
+
+    if (currentType) {
+
+        var availableTypes =
+            itemSubtypeKeywords[category.id] || [];
+
+        if (category.id === 'miscellaneous') {
+
+            availableTypes = [
+                'Crafting Material',
+                'Material',
+                'Currency',
+                'Others',
+                'Gift'
+            ];
+
+        } else if (category.id === 'auras') {
+
+            availableTypes = [
+                'Aura',
+                'Body Aura'
+            ];
+        }
+
+        if (
+            category.id === 'companions' ||
+            !availableTypes.includes(currentType)
+        ) {
+            state.detailed.filters.type =
+                null;
+        }
+    }
 
     state.cards.selectedItems =
         [];
@@ -903,6 +1065,49 @@ state.currentCategory =
     renderDatabase();
 }
 
+function updateItemCount() {
+
+    var itemCount =
+        document.querySelector(
+            '.item-database-item-count'
+        );
+
+    if (!itemCount) {
+        return;
+    }
+
+    var allItems =
+        Object.values(
+            state.database
+        );
+
+    var categoryItems =
+        getItemsForCategory(
+            state.currentCategory
+        );
+
+    var filteredItems;
+
+    if (
+        state.currentView ===
+        CONFIG.views.cards
+    ) {
+        filteredItems =
+            filterCardItems(
+                categoryItems
+            );
+    } else {
+        filteredItems =
+            filterDetailedItems(
+                categoryItems
+            );
+    }
+
+    itemCount.textContent =
+        filteredItems.length.toLocaleString('en-US') +
+        ' / ' +
+        allItems.length.toLocaleString('en-US');
+}
 
    function renderDatabaseNavigation() {
 
@@ -912,11 +1117,11 @@ state.currentCategory =
         'item-database-navigation';
 
 
-    var searchContainer =
-        document.createElement('div');
+var searchContainer =
+    document.createElement('div');
 
-    searchContainer.className =
-        'item-database-search-container';
+searchContainer.className =
+    'item-database-search-container';
 
 var searchCategoryCounts =
     document.createElement('div');
@@ -928,8 +1133,8 @@ searchContainer.appendChild(
     searchCategoryCounts
 );
 
-    var searchInput =
-        document.createElement('input');
+var searchInput =
+    document.createElement('input');
 
     searchInput.type = 'search';
 
@@ -964,10 +1169,12 @@ renderSearchCategoryCounts(
     searchCategoryCounts
 );
 
-        if (
-            state.currentView ===
-            CONFIG.views.cards
-        ) {
+updateItemCount();
+
+if (
+    state.currentView ===
+    CONFIG.views.cards
+) {
             refreshCardsView();
             return;
         }
@@ -983,6 +1190,17 @@ renderSearchCategoryCounts(
 
 searchContainer.appendChild(
     searchInput
+);
+
+
+var itemCount =
+    document.createElement('div');
+
+itemCount.className =
+    'item-database-item-count';
+
+searchContainer.appendChild(
+    itemCount
 );
 
 renderSearchCategoryCounts(
@@ -1256,6 +1474,210 @@ navigation.appendChild(
 
         return null;
     }
+
+var itemSubtypeKeywords = {
+    longswords: [
+        'Dagger',
+        'Hammer',
+        'Axe',
+        'Fan',
+        'Scythe',
+        'Fist',
+        'Cross',
+        'Pillar'
+    ],
+
+    greatswords: [
+        'Hammer',
+        'Axe'
+    ],
+
+    katanas: [],
+
+    rapiers: [
+        'Lance',
+        'Sabre'
+    ],
+
+    spears: [
+        'Stave'
+    ],
+
+    scythes: [],
+
+    armor: [
+        'Attire'
+    ],
+
+    accessories: [
+        'Cape',
+        'Helmet',
+        'Mask',
+        'Hat',
+        'Shield',
+        'Egg',
+        'Lantern',
+        'Necklace',
+        'Wings',
+        'Scarf',
+        'Tail'
+    ],
+
+    companions: [],
+
+    auras: [
+        'Aura',
+        'Body Aura'
+    ],
+
+    miscellaneous: [
+        'Crafting Material',
+        'Material',
+        'Currency',
+        'Others',
+        'Gift'
+    ]
+
+};
+
+var itemSubtypeLabels = {
+    longswords: {
+        Dagger: 'Daggers',
+        Hammer: 'Hammers',
+        Axe: 'Axes',
+        Fan: 'Fans',
+        Scythe: 'Scythes',
+        Fist: 'Fists',
+        Cross: 'Crosses',
+        Pillar: 'Pillars'
+    },
+
+    greatswords: {
+        Hammer: 'Hammers',
+        Axe: 'Axes'
+    },
+
+    katanas: {},
+
+    rapiers: {
+        Lance: 'Lances',
+        Sabre: 'Sabres'
+    },
+
+    spears: {
+        Stave: 'Staves'
+    },
+
+    scythes: {},
+
+    armor: {
+        Attire: 'Attire'
+    },
+
+    accessories: {
+        Cape: 'Capes',
+        Helmet: 'Helmets',
+        Mask: 'Masks',
+        Hat: 'Hats',
+        Shield: 'Shields',
+        Egg: 'Eggs',
+        Lantern: 'Lanterns',
+        Necklace: 'Necklaces',
+        Wings: 'Wings',
+        Scarf: 'Scarves',
+        Tail: 'Tails'
+    },
+
+    companions: {},
+
+    auras: {
+        Aura: 'Auras',
+        'Body Aura': 'Body Auras'
+    },
+
+    miscellaneous: {
+        'Crafting Material': 'Crafting Materials',
+        Material: 'Materials',
+        Currency: 'Currencies',
+        Others: 'Others',
+        Gift: 'Gifts'
+    }
+};
+
+
+function getItemSubtype(item) {
+    if (
+        !item ||
+        typeof item.type !== 'string'
+    ) {
+        return null;
+    }
+
+    var category = getItemCategory(item);
+
+    if (!category) {
+        return null;
+    }
+
+    if (category === 'companions') {
+        return null;
+    }
+
+    if (category === 'auras') {
+        return item.type.trim() || null;
+    }
+
+    if (category === 'miscellaneous') {
+        if (
+            typeof item.category !== 'string' ||
+            !item.category.trim()
+        ) {
+            return null;
+        }
+
+        return item.category.trim();
+    }
+
+    var type = item.type.toLowerCase();
+    var keywords = itemSubtypeKeywords[category] || [];
+
+    var sortedKeywords = keywords.slice().sort(function (a, b) {
+        return b.length - a.length;
+    });
+
+    for (var i = 0; i < sortedKeywords.length; i++) {
+        var keyword = sortedKeywords[i];
+
+        var escapedKeyword = keyword.replace(
+            /[.*+?^${}()|[\]\\]/g,
+            '\\$&'
+        );
+
+        if (
+            new RegExp(
+                '\\b' +
+                escapedKeyword +
+                '\\b',
+                'i'
+            ).test(type)
+        ) {
+            return keyword;
+        }
+    }
+
+    var categoryNames = {
+        longswords: 'Longsword',
+        greatswords: 'Greatsword',
+        katanas: 'Katana',
+        rapiers: 'Rapier',
+        spears: 'Spear',
+        scythes: 'Scythe',
+        armor: 'Armor',
+        accessories: 'Accessory'
+    };
+
+    return categoryNames[category] || null;
+}
 
     function getItemsForCategory(categoryId) {
 
@@ -1549,6 +1971,8 @@ if (categoryId === 'miscellaneous') {
 
 
 function renderDetailedList() {
+
+updateItemCount();
 
     var container = document.getElementById(
         'item-database-detailed-list'
@@ -1901,7 +2325,31 @@ if (
     var obtainCell =
         document.createElement('td');
 
-    if (item.obtain) {
+    if (
+        typeof item.cost === 'string' &&
+        (
+            item.cost.includes(
+                '[[File:ShopVelIcon.png|20px]]'
+            ) ||
+            item.cost.includes(
+                '[[File:RobuxIcon.png|15px]]'
+            )
+        )
+    ) {
+
+        obtainCell.appendChild(
+            renderCost(
+                item.cost,
+                item.obtain
+            )
+        );
+
+        if (item.unobtainable) {
+            obtainCell.style.textDecoration =
+                'line-through';
+        }
+
+    } else if (item.obtain) {
 
         obtainCell.appendChild(
             renderObtain(
@@ -1914,6 +2362,22 @@ if (
 
         obtainCell.textContent = '—';
     }
+
+if (
+    categoryId === 'auras' ||
+    categoryId === 'companions'
+) {
+
+    var itemStoreCost =
+        getItemStoreCost(item);
+
+    if (itemStoreCost) {
+
+        obtainCell.appendChild(
+            renderAuraCost(itemStoreCost)
+        );
+    }
+}
 
     row.appendChild(obtainCell);
 }
@@ -1971,7 +2435,11 @@ if (
 var rarity =
     state.detailed.filters.rarity;
 
-    return items.filter(function (item) {
+var type =
+    state.detailed.filters.type;
+
+return items.filter(function (item) {
+
 
 if (
     search &&
@@ -2019,6 +2487,13 @@ if (
     state.currentCategory !== 'companions' &&
     state.currentCategory !== 'auras' &&
     item.rarity !== rarity
+) {
+    return false;
+}
+
+if (
+    type &&
+    getItemSubtype(item) !== type
 ) {
     return false;
 }
@@ -2224,6 +2699,13 @@ function filterCardItems(items) {
             return false;
         }
 
+if (
+    filters.type &&
+    getItemSubtype(item) !== filters.type
+) {
+    return false;
+}
+
         var stat =
             getCardStatValue(item);
 
@@ -2369,6 +2851,109 @@ function formatDamage(damage) {
     }
 
     return clean || max || damage.trim();
+}
+
+function renderCost(content, obtain) {
+
+    var container =
+        document.createElement('span');
+
+    if (
+        typeof content !== 'string' ||
+        !content.trim()
+    ) {
+        container.textContent = '—';
+        return container;
+    }
+
+    var link =
+        document.createElement('a');
+
+    if (
+        typeof obtain === 'string' &&
+        obtain.trim()
+    ) {
+
+var cleanObtain =
+    obtain
+        .replace(/<s>/gi, '')
+        .replace(/<\/s>/gi, '')
+        .replace(/^\s*\*\s*/gm, '');
+
+var obtainMatch =
+    cleanObtain.match(
+        /\[\[([^|\]]+)/
+    );
+
+if (obtainMatch) {
+
+    link.href =
+        getSafeWikiUrl(
+            obtainMatch[1].trim()
+        );
+}
+    }
+
+    var iconName =
+        'ShopVelIcon.png';
+
+    var iconWidth =
+        20;
+
+    if (
+        content.includes(
+            '[[File:RobuxIcon.png|15px]]'
+        )
+    ) {
+
+        iconName =
+            'RobuxIcon.png';
+
+        iconWidth =
+            15;
+    }
+
+    var image =
+        document.createElement('img');
+
+    image.src =
+        '/images/' + iconName;
+
+    image.alt =
+        '';
+
+    image.className =
+        'item-database-cost-icon';
+
+    image.width =
+        iconWidth;
+
+    link.appendChild(image);
+
+    var costText =
+        content
+            .replace(
+                '[[File:ShopVelIcon.png|20px]]',
+                ''
+            )
+            .replace(
+                '[[File:RobuxIcon.png|15px]]',
+                ''
+            )
+            .trim();
+
+    if (costText) {
+
+        link.appendChild(
+            document.createTextNode(
+                costText
+            )
+        );
+    }
+
+    container.appendChild(link);
+
+    return container;
 }
 
 function renderObtain(content, unobtainable) {
@@ -2952,6 +3537,8 @@ state.detailed.filters.levelMax =
         ? null
         : maxValue;
 
+updateItemCount();
+
 preserveScrollUpdate(
     renderDetailedList,
     true
@@ -2996,14 +3583,6 @@ preserveScrollUpdate(
             option.textContent =
                 rarity;
 
-            if (
-                rarity !== 'All Rarities' &&
-                CONFIG.rarityColors[rarity]
-            ) {
-                option.style.color =
-                    CONFIG.rarityColors[rarity];
-            }
-
             raritySelect.appendChild(option);
         });
 
@@ -3017,10 +3596,10 @@ preserveScrollUpdate(
                 state.detailed.filters.rarity =
                     raritySelect.value || null;
 
-preserveScrollUpdate(
-    renderDetailedList,
-    true
-);
+                preserveScrollUpdate(
+                    renderDetailedList,
+                    true
+                );
             }
         );
 
@@ -3028,6 +3607,83 @@ preserveScrollUpdate(
 
         hasFilters = true;
     }
+
+    var typeOptions =
+        itemSubtypeKeywords[state.currentCategory] || [];
+    itemSubtypeKeywords[state.currentCategory] || [];
+
+if (
+    state.currentCategory === 'miscellaneous'
+) {
+    typeOptions = [
+        'Crafting Material',
+        'Material',
+        'Currency',
+        'Others',
+        'Gift'
+    ];
+}
+
+if (
+    state.currentCategory === 'auras'
+) {
+    typeOptions = [
+        'Aura',
+        'Body Aura'
+    ];
+}
+
+if (typeOptions.length > 0) {
+
+    var typeSelect =
+        document.createElement('select');
+
+    var allOption =
+        document.createElement('option');
+
+    allOption.value = '';
+    allOption.textContent = 'All Types';
+
+    typeSelect.appendChild(
+        allOption
+    );
+
+    typeOptions.forEach(function (type) {
+
+        var option =
+            document.createElement('option');
+
+        option.value = type;
+
+        option.textContent =
+            itemSubtypeLabels[
+                state.currentCategory
+            ]?.[type] || type;
+
+        typeSelect.appendChild(option);
+    });
+
+    typeSelect.value =
+        state.detailed.filters.type || '';
+
+    typeSelect.addEventListener(
+        'change',
+        function () {
+
+            state.detailed.filters.type =
+                typeSelect.value || null;
+
+            preserveScrollUpdate(
+                renderDetailedList,
+                true
+            );
+        }
+    );
+
+    filters.appendChild(typeSelect);
+
+    hasFilters = true;
+}
 
 var obtainabilitySelect =
     document.createElement('select');
@@ -3083,6 +3739,50 @@ filters.appendChild(
 );
 
 hasFilters = true;
+
+var clearFiltersButton =
+    document.createElement('button');
+
+clearFiltersButton.type =
+    'button';
+
+clearFiltersButton.className =
+    'item-database-detailed-filter-clear';
+
+clearFiltersButton.textContent =
+    'Clear Filters';
+
+clearFiltersButton.addEventListener(
+    'click',
+    function () {
+
+        state.detailed.filters.levelMin =
+            null;
+
+        state.detailed.filters.levelMax =
+            null;
+
+        state.detailed.filters.rarity =
+            null;
+
+        state.detailed.filters.type =
+            null;
+
+        state.detailed.filters.obtainable =
+            'all';
+
+        preserveScrollUpdate(
+            renderDetailedList,
+            true
+        );
+
+        renderDatabase();
+    }
+);
+
+filters.appendChild(
+    clearFiltersButton
+);
 
 if (hasFilters) {
 
@@ -3192,6 +3892,69 @@ if (category === 'miscellaneous') {
         secondary: '',
         type: 'default'
     };
+}
+
+async function loadAuraCosts() {
+
+    var api =
+        new mw.Api();
+
+    var response =
+        await api.get({
+            action: 'query',
+            prop: 'revisions',
+            titles: 'Template:Item_Database/Aura_Costs',
+            rvprop: 'content',
+            rvslots: 'main',
+            formatversion: 2
+        });
+
+    var page =
+        response?.query?.pages?.[0];
+
+    if (
+        !page ||
+        page.missing ||
+        !page.revisions ||
+        !page.revisions.length
+    ) {
+        return {};
+    }
+
+    var content =
+        page.revisions[0]?.slots?.main?.content || '';
+
+    var auraCosts = {};
+
+    content
+        .split(/\r?\n/)
+        .forEach(function (line) {
+
+            var match =
+                line.match(
+                    /^(.+?)\s*=\s*([\d,]+)\s*([RV])$/i
+                );
+
+            if (!match) {
+                return;
+            }
+
+            var name =
+                match[1].trim();
+
+            var amount =
+                match[2].trim();
+
+            var currency =
+                match[3].toUpperCase();
+
+            auraCosts[name] = {
+                amount: amount,
+                currency: currency
+            };
+        });
+
+    return auraCosts;
 }
 
 function renderCardSecondary(content, unobtainable) {
@@ -3667,6 +4430,8 @@ function sortCardItems(items) {
 
 function refreshCardsView() {
 
+updateItemCount();
+
     var cardsContainer =
         document.querySelector(
             '.item-database-cards-view'
@@ -3766,6 +4531,30 @@ var showRarityFilter =
     state.currentCategory !== 'companions' &&
     state.currentCategory !== 'auras' &&
     state.currentCategory !== 'miscellaneous';
+
+var typeOptions =
+    itemSubtypeKeywords[state.currentCategory] || [];
+
+if (
+    state.currentCategory === 'miscellaneous'
+) {
+    typeOptions = [
+        'Crafting Material',
+        'Material',
+        'Currency',
+        'Others',
+        'Gift'
+    ];
+}
+
+if (
+    state.currentCategory === 'auras'
+) {
+    typeOptions = [
+        'Aura',
+        'Body Aura'
+    ];
+}
 
 var showStatsFilter =
     state.currentCategory === 'accessories' ||
@@ -4107,17 +4896,41 @@ if (showRarityFilter) {
     'Burst'
 ].forEach(function (rarity) {
 
-    var option =
-        document.createElement('button');
+var option =
+    document.createElement('button');
 
-    option.type =
-        'button';
+option.type =
+    'button';
 
-    option.className =
-        'item-database-rarity-option';
+option.className =
+    'item-database-rarity-option';
 
-    option.textContent =
-        rarity;
+option.textContent =
+    rarity;
+
+var rarityColors = {
+    Common: '#9E9E9E',
+    Uncommon: '#4CAF50',
+    Rare: '#42A5F5',
+    Legendary: '#AB47BC',
+    Tribute: '#FFD54F',
+    Burst: '#EF5350'
+};
+
+if (
+    rarityColors[rarity]
+) {
+    option.style.color =
+        rarityColors[rarity];
+}
+
+if (
+    rarity !== 'All' &&
+    CONFIG.rarityColors[rarity]
+) {
+    option.style.color =
+        CONFIG.rarityColors[rarity];
+}
 
     if (
         rarity === 'All' &&
@@ -4228,24 +5041,61 @@ if (showRarityFilter) {
 
 });
 
-    function updateRarityButton() {
+function updateRarityButton() {
 
-        if (
-            filters.rarities.length === 0
-        ) {
+    rarityButton.replaceChildren();
 
-            rarityButton.textContent =
-                'All ▼';
-
-            return;
-        }
+    if (
+        filters.rarities.length === 0
+    ) {
 
         rarityButton.textContent =
-            filters.rarities.join(
-                ', '
-            ) +
-            ' ▼';
+            'All ▼';
+
+        return;
     }
+
+    var rarityColors = {
+        Common: '#9E9E9E',
+        Uncommon: '#4CAF50',
+        Rare: '#42A5F5',
+        Legendary: '#AB47BC',
+        Tribute: '#FFD54F',
+        Burst: '#EF5350'
+    };
+
+    filters.rarities.forEach(
+        function (rarity, index) {
+
+            var rarityText =
+                document.createElement('span');
+
+            rarityText.textContent =
+                rarity;
+
+            rarityText.style.color =
+                rarityColors[rarity] || '';
+
+            rarityButton.appendChild(
+                rarityText
+            );
+
+            if (
+                index <
+                filters.rarities.length - 1
+            ) {
+
+                rarityButton.appendChild(
+                    document.createTextNode(', ')
+                );
+            }
+        }
+    );
+
+    rarityButton.appendChild(
+        document.createTextNode(' ▼')
+    );
+}
 
     updateRarityButton();
 
@@ -4273,6 +5123,94 @@ if (showRarityFilter) {
 
     primaryFiltersRow.appendChild(
         rarityGroup
+    );
+}
+
+if (typeOptions.length > 0) {
+
+    var typeGroup =
+        document.createElement('div');
+
+    typeGroup.className =
+        'item-database-card-filter-group';
+
+    var typeLabel =
+        document.createElement('span');
+
+    typeLabel.textContent =
+        'Type';
+
+    typeGroup.appendChild(
+        typeLabel
+    );
+
+    var typeSelect =
+        document.createElement('select');
+
+    typeSelect.className =
+        'item-database-card-filter-type';
+
+    var allTypeOption =
+        document.createElement('option');
+
+    allTypeOption.value =
+        '';
+
+    allTypeOption.textContent =
+        'All';
+
+    typeSelect.appendChild(
+        allTypeOption
+    );
+
+    typeOptions.forEach(function (type) {
+
+        var option =
+            document.createElement('option');
+
+        option.value =
+            type;
+
+        option.textContent =
+            itemSubtypeLabels[
+                state.currentCategory
+            ]?.[type] || type;
+
+        typeSelect.appendChild(
+            option
+        );
+    });
+
+var validType =
+    typeOptions.indexOf(filters.type) !== -1;
+
+if (!validType) {
+    filters.type = null;
+}
+
+typeSelect.value =
+    filters.type || '';
+
+    typeSelect.addEventListener(
+        'change',
+        function () {
+
+            filters.type =
+                typeSelect.value || null;
+
+            preserveScrollUpdate(
+                refreshCardsView,
+                true
+            );
+        }
+    );
+
+    typeGroup.appendChild(
+        typeSelect
+    );
+
+    primaryFiltersRow.appendChild(
+        typeGroup
     );
 }
 
@@ -4419,10 +5357,11 @@ primaryFiltersRow.appendChild(
 
             filters.levelMin = null;
             filters.levelMax = null;
-            filters.rarities = [];
-            filters.minStat = null;
-            filters.maxStat = null;
-            filters.obtainable = 'all';
+filters.rarities = [];
+filters.type = null;
+filters.minStat = null;
+filters.maxStat = null;
+filters.obtainable = 'all';
 
 preserveScrollUpdate(
     refreshCardsView,
@@ -6554,6 +7493,8 @@ if (
 app.appendChild(
     renderDatabaseNavigation()
 );
+
+updateItemCount();
 
 if (state.currentView === CONFIG.views.detailed) {
 

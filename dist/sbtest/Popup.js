@@ -1,1 +1,0 @@
-alert("I am an alert box! Steve@Fandom test site sbagnall@fandom.com");

@@ -53,6 +53,7 @@
 
     function formatDate(date) {
         if (!date) return 'Never';
+        if (date.toDateString() === new Date().toDateString()) return 'Today';
         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 

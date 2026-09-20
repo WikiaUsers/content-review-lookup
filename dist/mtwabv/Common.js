@@ -1,3 +1,19 @@
+/* ============================================================================
+ * MY THREE WIVES ARE BEAUTIFUL VAMPIRES WIKI — COMMON.JS
+ * CLEAN CONSOLIDATED VERSION
+ *
+ * Includes:
+ *   01. Reading progress / Back-to-top / section-link controls
+ *   02. Article hover previews
+ *       - Automatically skipped inside the homepage Character Directory
+ *   03. Elderblood affiliation badge
+ *   04. Lineage viewer with Fit / manual zoom
+ *       - Duplicate older lineage implementation removed
+ *   05. Homepage character portrait floating pop-out
+ *
+ * Replace the ENTIRE contents of MediaWiki:Common.js with this file.
+ * ============================================================================ */
+
 (function () {
     'use strict';
     if (!window.mw || window.__mtwCommonLoaded) { return; }
@@ -373,7 +389,8 @@
         if (
             !target ||
             !target.closest ||
-            target.closest('.mtw-no-preview')
+            target.closest('.mtw-no-preview') ||
+            target.closest('.mtw-home-characters')
         ) {
             return null;
         }
@@ -1484,2878 +1501,2079 @@
     }
 }());
 
+/* Elderblood affiliation badge — append to MediaWiki:Common.js */
+(function (mw, $) {
+    'use strict';
+    if (!mw || !$ || window.mtwElderbloodBadgeLoaded) return;
+    window.mtwElderbloodBadgeLoaded = true;
 
-/* ========================================================================
- * MTW REVIEWER v4
- * Background scanning + per-page review + safe automatic mechanical fixes.
- * ======================================================================== */
+    var eligible = [
+        'harem', 'daughters', 'harem and daughters',
+        'dragon nest', 'dragons nest', "dragon's nest",
+        'clan alucard', 'alucard clan',
+        'clan elderblood', 'elderblood clan'
+    ];
+    function normalise(value) {
+        return String(value).replace(/^Category:/i, '')
+            .replace(/_/g, ' ').replace(/[’‘]/g, "'")
+            .replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+    function install() {
+        if (mw.config.get('wgNamespaceNumber') !== 0 ||
+            mw.config.get('wgAction') !== 'view') return;
+        if (document.getElementById('mtw-elderblood-badge')) return;
+
+        var categories = (mw.config.get('wgCategories') || []).map(normalise);
+        if (!categories.some(function (name) {
+            return eligible.indexOf(name) !== -1;
+        })) return;
+
+        /* Prevent faction/location articles from receiving a character badge. */
+        var isCharacter = categories.some(function (name) {
+            return ['characters', 'character', 'male characters',
+                'female characters', 'main character'].indexOf(name) !== -1;
+        }) || document.querySelector(
+            '.portable-infobox.pi-theme-mtw-character, ' +
+            '.portable-infobox.pi-type-character, ' +
+            '.portable-infobox.pi-type-Character'
+        );
+        if (!isCharacter) return;
+
+        var heading = document.querySelector('.page-header__title') ||
+            document.getElementById('firstHeading');
+        if (!heading) return;
+
+        var button = document.createElement('button');
+        button.id = 'mtw-elderblood-badge';
+        button.className = 'mtw-elderblood-badge';
+        button.type = 'button';
+        button.setAttribute('aria-label', 'Elderblood affiliation');
+        button.setAttribute('aria-describedby', 'mtw-elderblood-tooltip');
+        button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" ' +
+            'viewBox="0 0 96 96" aria-hidden="true" focusable="false">' +
+            '<defs>' +
+            '<linearGradient id="mtw-seal-metal" x2="0" y2="1">' +
+            '<stop stop-color="#ffe0a3"/><stop offset=".5" stop-color="#b38349"/>' +
+            '<stop offset="1" stop-color="#edc88d"/></linearGradient>' +
+            '<linearGradient id="mtw-seal-membrane" x2="0" y2="1">' +
+            '<stop stop-color="#9b304b"/><stop offset="1" stop-color="#250e21"/>' +
+            '</linearGradient>' +
+            '<radialGradient id="mtw-seal-ruby" cx=".35" cy=".3">' +
+            '<stop stop-color="#fff0e3"/><stop offset=".22" stop-color="#ff8ca7"/>' +
+            '<stop offset=".6" stop-color="#dc254c"/><stop offset="1" stop-color="#710f31"/>' +
+            '</radialGradient></defs>' +
+            '<g class="mtw-seal-halo">' +
+            '<path d="M20 27A35 35 0 0 1 39 14M57 14A35 35 0 0 1 76 27M82 42A35 35 0 0 1 62 79M34 79A35 35 0 0 1 14 42"/>' +
+            '<path d="M48 4 51 9 48 14 45 9ZM48 82 51 87 48 92 45 87Z"/>' +
+            '</g>' +
+            '<g class="mtw-seal-wings">' +
+            '<path d="M39 40C27 24 12 29 3 15L8 38 18 35 12 54 26 45 23 64 39 53Z"/>' +
+            '<path d="M57 40C69 24 84 29 93 15L88 38 78 35 84 54 70 45 73 64 57 53Z"/>' +
+            '</g>' +
+            '<g class="mtw-seal-veins">' +
+            '<path d="M9 24 39 45 18 38M39 45 26 52M87 24 57 45 78 38M57 45 70 52"/>' +
+            '</g>' +
+            '<path class="mtw-seal-horns" d="M37 33C27 27 26 15 29 7L39 23 44 27H52L57 23 67 7C70 15 69 27 59 33L56 39H40Z"/>' +
+            '<path class="mtw-seal-head" d="M48 22 62 34 59 50 53 57 48 63 43 57 37 50 34 34Z"/>' +
+            '<path class="mtw-seal-brow" d="M36 35 46 39 48 29 50 39 60 35M40 49 48 53 56 49"/>' +
+            '<path class="mtw-seal-eyes" d="M39 40 46 43 43 46 39 44ZM57 40 50 43 53 46 57 44Z"/>' +
+            '<path class="mtw-seal-cradle" d="M34 58 38 72 48 83 58 72 62 58 55 64 48 74 41 64Z"/>' +
+            '<path class="mtw-seal-heart" d="M48 55C45 61 41 64 41 68a7 7 0 0 0 14 0c0-4-4-7-7-13Z"/>' +
+            '</svg>';
+
+        var tip = document.createElement('span');
+        tip.id = 'mtw-elderblood-tooltip';
+        tip.className = 'mtw-elderblood-tooltip';
+        tip.setAttribute('role', 'tooltip');
+        tip.hidden = true;
+        var label = document.createElement('strong');
+        label.textContent = 'ELDERBLOOD SEAL';
+        var detail = document.createElement('span');
+        detail.textContent = 'This character is affiliated with the Elderblood family or Dragons Nest.';
+        tip.appendChild(label);
+        tip.appendChild(detail);
+        document.body.appendChild(tip);
+        var row = document.createElement('div');
+        row.className = 'mtw-elderblood-indicator-row';
+        row.appendChild(button);
+        var header = heading.closest('.page-header') || heading.parentNode;
+        header.insertBefore(row, header.firstChild);
+
+        var timer;
+        function show() {
+            clearTimeout(timer);
+            tip.hidden = false;
+            var rect = button.getBoundingClientRect();
+            var width = tip.offsetWidth;
+            var height = tip.offsetHeight;
+            tip.style.left = Math.max(12, Math.min(
+                rect.left + rect.width / 2 - width / 2,
+                window.innerWidth - width - 12
+            )) + 'px';
+            tip.style.top = Math.max(12,
+                rect.bottom + height + 12 < window.innerHeight ?
+                    rect.bottom + 8 : rect.top - height - 8
+            ) + 'px';
+        }
+        function hide() { clearTimeout(timer); tip.hidden = true; }
+        function later() { timer = setTimeout(hide, 150); }
+        button.addEventListener('mouseenter', show);
+        button.addEventListener('mouseleave', later);
+        button.addEventListener('focus', show);
+        button.addEventListener('blur', later);
+        button.addEventListener('click', show);
+        tip.addEventListener('mouseenter', function () { clearTimeout(timer); });
+        tip.addEventListener('mouseleave', later);
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') hide();
+        });
+        document.addEventListener('click', function (event) {
+            if (!button.contains(event.target) && !tip.contains(event.target)) hide();
+        });
+        window.addEventListener('resize', hide);
+        window.addEventListener('scroll', hide, true);
+    }
+    $(install);
+    mw.hook('wikipage.content').add(install);
+}(window.mediaWiki, window.jQuery));
+
+/* =========================================================
+ * MTW LINEAGE VIEWER
+ * Auto-fit + manual zoom
+ * ========================================================= */
 
 (function () {
     'use strict';
 
+    var MIN_SCALE = 0.05;
+    var MAX_SCALE = 1.50;
+    var ZOOM_STEP = 0.05;
+    var FIT_MARGIN = 12;
+
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function initLineage(root) {
+        if (!root || root.dataset.mtwLineageReady === '1') {
+            return;
+        }
+
+        var fitEnabled =
+            root.classList.contains('mtw-lineage--fit') &&
+            root.getAttribute('data-lineage-fit') !== 'no';
+
+        var viewport =
+            root.querySelector('.mtw-lineage__viewport');
+
+        var stage =
+            root.querySelector('.mtw-lineage__stage');
+
+        var canvas =
+            root.querySelector('.mtw-lineage__canvas');
+
+        var table =
+            root.querySelector('.mtw-lineage__table');
+
+        if (!viewport || !stage || !canvas || !table) {
+            return;
+        }
+
+        root.dataset.mtwLineageReady = '1';
+
+        if (!fitEnabled) {
+            stage.style.width = '';
+            stage.style.height = '';
+            canvas.style.transform = '';
+
+            root.classList.add(
+                'mtw-lineage--ready'
+            );
+
+            return;
+        }
+
+        var scale = 1;
+        var naturalWidth = 0;
+        var naturalHeight = 0;
+
+        var resizeTimer = null;
+        var imageTimer = null;
+
+        var userChangedZoom = false;
+
+        /* -------------------------
+         * Controls
+         * ------------------------- */
+
+        var controls =
+            document.createElement('div');
+
+        controls.className =
+            'mtw-lineage-controls';
+
+        var controlsLabel =
+            document.createElement('span');
+
+        controlsLabel.className =
+            'mtw-lineage-controls__label';
+
+        controlsLabel.textContent =
+            'Family tree';
+
+        var zoomOut =
+            document.createElement('button');
+
+        zoomOut.type = 'button';
+        zoomOut.textContent = '−';
+        zoomOut.title = 'Zoom out';
+
+        zoomOut.setAttribute(
+            'aria-label',
+            'Zoom family tree out'
+        );
+
+        var fitButton =
+            document.createElement('button');
+
+        fitButton.type = 'button';
+        fitButton.textContent = 'Fit';
+
+        fitButton.title =
+            'Fit the entire family tree to the available width';
+
+        var actualButton =
+            document.createElement('button');
+
+        actualButton.type = 'button';
+        actualButton.textContent = '100%';
+
+        actualButton.title =
+            'Show the family tree at its original size';
+
+        var zoomIn =
+            document.createElement('button');
+
+        zoomIn.type = 'button';
+        zoomIn.textContent = '+';
+        zoomIn.title = 'Zoom in';
+
+        zoomIn.setAttribute(
+            'aria-label',
+            'Zoom family tree in'
+        );
+
+        var zoomValue =
+            document.createElement('span');
+
+        zoomValue.className =
+            'mtw-lineage-zoom-value';
+
+        zoomValue.setAttribute(
+            'aria-live',
+            'polite'
+        );
+
+        zoomValue.textContent = '100%';
+
+        var hint =
+            document.createElement('div');
+
+        hint.className =
+            'mtw-lineage-controls__hint';
+
+        hint.textContent =
+            'Fit shows the complete tree. Zoom in to inspect portraits and branches.';
+
+        controls.appendChild(
+            controlsLabel
+        );
+
+        controls.appendChild(
+            zoomOut
+        );
+
+        controls.appendChild(
+            fitButton
+        );
+
+        controls.appendChild(
+            actualButton
+        );
+
+        controls.appendChild(
+            zoomIn
+        );
+
+        controls.appendChild(
+            zoomValue
+        );
+
+        controls.appendChild(
+            hint
+        );
+
+        root.insertBefore(
+            controls,
+            viewport
+        );
+
+        /* -------------------------
+         * Measurements
+         * ------------------------- */
+
+        function measureNaturalSize() {
+            var oldTransform =
+                canvas.style.transform;
+
+            canvas.style.transform =
+                'none';
+
+            naturalWidth = Math.max(
+                table.scrollWidth || 0,
+                table.offsetWidth || 0,
+                canvas.scrollWidth || 0,
+                canvas.offsetWidth || 0
+            );
+
+            naturalHeight = Math.max(
+                table.scrollHeight || 0,
+                table.offsetHeight || 0,
+                canvas.scrollHeight || 0,
+                canvas.offsetHeight || 0
+            );
+
+            canvas.style.transform =
+                oldTransform;
+
+            return (
+                naturalWidth > 0 &&
+                naturalHeight > 0
+            );
+        }
+
+        function updateButtons() {
+            zoomOut.disabled =
+                scale <= MIN_SCALE + 0.001;
+
+            zoomIn.disabled =
+                scale >= MAX_SCALE - 0.001;
+        }
+
+        function updateLabel() {
+            zoomValue.textContent =
+                Math.round(scale * 100) + '%';
+
+            updateButtons();
+        }
+
+        function applyScale(
+            newScale,
+            preserveCentre
+        ) {
+            if (
+                !naturalWidth ||
+                !naturalHeight
+            ) {
+                if (!measureNaturalSize()) {
+                    return;
+                }
+            }
+
+            var oldStageWidth =
+                stage.offsetWidth ||
+                (naturalWidth * scale);
+
+            var oldCentre =
+                viewport.scrollLeft +
+                viewport.clientWidth / 2;
+
+            scale = clamp(
+                newScale,
+                MIN_SCALE,
+                MAX_SCALE
+            );
+
+            var shownWidth =
+                Math.max(
+                    1,
+                    naturalWidth * scale
+                );
+
+            var shownHeight =
+                Math.max(
+                    1,
+                    naturalHeight * scale
+                );
+
+            stage.style.width =
+                shownWidth + 'px';
+
+            stage.style.height =
+                shownHeight + 'px';
+
+            canvas.style.transform =
+                'scale(' +
+                scale.toFixed(5) +
+                ')';
+
+            updateLabel();
+
+            if (
+                preserveCentre &&
+                oldStageWidth > 0
+            ) {
+                window.requestAnimationFrame(
+                    function () {
+                        var ratio =
+                            shownWidth /
+                            oldStageWidth;
+
+                        var target =
+                            (
+                                oldCentre *
+                                ratio
+                            ) -
+                            (
+                                viewport.clientWidth /
+                                2
+                            );
+
+                        viewport.scrollLeft =
+                            Math.max(
+                                0,
+                                target
+                            );
+                    }
+                );
+            }
+        }
+
+        function fitTree(
+            markAsAutomatic
+        ) {
+            if (!measureNaturalSize()) {
+                return;
+            }
+
+            var available =
+                viewport.clientWidth -
+                FIT_MARGIN;
+
+            if (available <= 0) {
+                return;
+            }
+
+            var fitScale =
+                Math.min(
+                    1,
+                    available /
+                    naturalWidth
+                );
+
+            applyScale(
+                fitScale,
+                false
+            );
+
+            window.requestAnimationFrame(
+                function () {
+                    var remaining =
+                        viewport.scrollWidth -
+                        viewport.clientWidth;
+
+                    viewport.scrollLeft =
+                        remaining > 0
+                            ? remaining / 2
+                            : 0;
+                }
+            );
+
+            if (markAsAutomatic) {
+                userChangedZoom = false;
+            }
+        }
+
+        function showActualSize() {
+            userChangedZoom = true;
+
+            applyScale(
+                1,
+                false
+            );
+
+            window.requestAnimationFrame(
+                function () {
+                    var remaining =
+                        viewport.scrollWidth -
+                        viewport.clientWidth;
+
+                    viewport.scrollLeft =
+                        remaining > 0
+                            ? remaining / 2
+                            : 0;
+                }
+            );
+        }
+
+        function changeZoom(delta) {
+            userChangedZoom = true;
+
+            applyScale(
+                scale + delta,
+                true
+            );
+        }
+
+        /* -------------------------
+         * Buttons
+         * ------------------------- */
+
+        zoomOut.addEventListener(
+            'click',
+            function () {
+                changeZoom(
+                    -ZOOM_STEP
+                );
+            }
+        );
+
+        zoomIn.addEventListener(
+            'click',
+            function () {
+                changeZoom(
+                    ZOOM_STEP
+                );
+            }
+        );
+
+        fitButton.addEventListener(
+            'click',
+            function () {
+                userChangedZoom = false;
+                fitTree(true);
+            }
+        );
+
+        actualButton.addEventListener(
+            'click',
+            function () {
+                showActualSize();
+            }
+        );
+
+        /* -------------------------
+         * Image loading
+         * ------------------------- */
+
+        Array.prototype.forEach.call(
+            root.querySelectorAll('img'),
+            function (image) {
+                if (image.complete) {
+                    return;
+                }
+
+                image.addEventListener(
+                    'load',
+                    function () {
+                        clearTimeout(
+                            imageTimer
+                        );
+
+                        imageTimer =
+                            setTimeout(
+                                function () {
+                                    if (
+                                        !userChangedZoom
+                                    ) {
+                                        fitTree(
+                                            true
+                                        );
+                                    } else {
+                                        measureNaturalSize();
+
+                                        applyScale(
+                                            scale,
+                                            false
+                                        );
+                                    }
+                                },
+                                50
+                            );
+                    },
+                    {
+                        once: true
+                    }
+                );
+            }
+        );
+
+        /* -------------------------
+         * Resizing
+         * ------------------------- */
+
+        function handleResize() {
+            clearTimeout(
+                resizeTimer
+            );
+
+            resizeTimer =
+                setTimeout(
+                    function () {
+                        if (
+                            userChangedZoom
+                        ) {
+                            measureNaturalSize();
+
+                            applyScale(
+                                scale,
+                                false
+                            );
+                        } else {
+                            fitTree(
+                                true
+                            );
+                        }
+                    },
+                    100
+                );
+        }
+
+        if (
+            'ResizeObserver' in
+            window
+        ) {
+            var observer =
+                new ResizeObserver(
+                    handleResize
+                );
+
+            observer.observe(
+                viewport
+            );
+        } else {
+            window.addEventListener(
+                'resize',
+                handleResize
+            );
+        }
+
+        /* -------------------------
+         * Initial Fit
+         * ------------------------- */
+
+        root.classList.add(
+            'mtw-lineage--ready'
+        );
+
+        window.requestAnimationFrame(
+            function () {
+                window.requestAnimationFrame(
+                    function () {
+                        fitTree(
+                            true
+                        );
+                    }
+                );
+            }
+        );
+
+        setTimeout(
+            function () {
+                if (
+                    !userChangedZoom
+                ) {
+                    fitTree(
+                        true
+                    );
+                }
+            },
+            250
+        );
+
+        setTimeout(
+            function () {
+                if (
+                    !userChangedZoom
+                ) {
+                    fitTree(
+                        true
+                    );
+                }
+            },
+            900
+        );
+    }
+
+    function initAll(container) {
+        var scope =
+            container || document;
+
+        var roots =
+            scope.querySelectorAll(
+                '.mtw-lineage'
+            );
+
+        Array.prototype.forEach.call(
+            roots,
+            initLineage
+        );
+    }
+
     if (
-        !window.mw ||
-        window.__mtwReviewerLoaded
+        window.mw &&
+        mw.hook
     ) {
+        mw.hook(
+            'wikipage.content'
+        ).add(
+            function ($content) {
+                var container =
+                    $content &&
+                    $content[0]
+                        ? $content[0]
+                        : document;
+
+                initAll(
+                    container
+                );
+            }
+        );
+    }
+
+    initAll(document);
+
+})();
+
+/* ============================================================================
+ * MTW — HOMEPAGE CHARACTER PORTRAIT POP-OUT
+ *
+ * Works with the matching CSS:
+ *     MTW_True_Character_Popout_FIXED.css
+ *
+ * The ORIGINAL gallery image never leaves its card.
+ * This script creates a temporary floating clone directly under <body>,
+ * allowing it to rise smoothly above Fandom galleries and tabbers.
+ * ============================================================================ */
+
+(function () {
+    'use strict';
+
+    if (window.__mtwCharacterFloatLoaded) {
         return;
     }
 
-    window.__mtwReviewerLoaded =
-        true;
+    window.__mtwCharacterFloatLoaded = true;
 
-    var R = {
-        key:
-            'mtwReviewerState:v4c',
+    var FLOAT_SCALE = 1.34;
+    var VIEWPORT_MARGIN = 18;
+    var EXTRA_RISE = 16;
+    var HIDE_DELAY = 45;
+    var SOURCE_RELEASE_DELAY = 190;
 
-        ns:
-            0,
+    var floating = null;
+    var floatingImage = null;
+    var floatingName = null;
+    var activeCard = null;
+    var leaveTimer = null;
+    var showFrame = null;
+    var globalListenersInstalled = false;
 
-        batch:
-            10,
-
-        firstDelay:
-            2500,
-
-        batchDelay:
-            5000,
-
-        editDelay:
-            12000,
-
-        maxEditsSession:
-            20,
-
-        maxFixesEdit:
-            30,
-
-        maxStored:
-            1800,
-
-        maxIssues:
-            24,
-
-        authorizedGroups: [
-            'sysop',
-            'bureaucrat',
-            'bot',
-            'content-moderator'
-        ],
-
-        exclude: [
-            'Main Page'
-        ]
-    };
-
-    var apiP =
-        null;
-
-    var timer =
-        null;
-
-    var editTimer =
-        null;
-
-    var scanning =
-        false;
-
-    var editBusy =
-        false;
-
-    var queued =
-        [];
-
-    var queuedTitles =
-        new Set();
-
-    var editsThisSession =
-        0;
-
-    var lastEditAt =
-        0;
-
-    var widget;
-    var body;
-    var dot;
-    var status;
-    var progress;
-    var stats;
-    var recent;
-    var activity;
-    var pauseBtn;
-    var fixBtn;
-    var currentBtn;
-    var report;
-
-    function baseState() {
-        return {
-            version:
-                4,
-
-            enabled:
-                true,
-
-            autoFixEnabled:
-                true,
-
-            collapsed:
-                true,
-
-            cursor:
-                null,
-
-            cycle:
-                1,
-
-            lastScanAt:
-                null,
-
-            lastError:
-                '',
-
-            pages:
-                {},
-
-            autoEdits:
-                0,
-
-            autoFixes:
-                0,
-
-            activity:
-                []
-        };
-    }
-
-    function loadState() {
-        try {
-            var x =
-                JSON.parse(
-                    localStorage.getItem(
-                        R.key
-                    ) ||
-                    'null'
-                );
-
-            if (
-                !x ||
-                x.version !==
-                4
-            ) {
-                return baseState();
-            }
-
-            x.pages =
-                x.pages ||
-                {};
-
-            x.activity =
-                x.activity ||
-                [];
-
-            if (
-                x.enabled !==
-                false
-            ) {
-                x.enabled =
-                    true;
-            }
-
-            if (
-                x.autoFixEnabled !==
-                false
-            ) {
-                x.autoFixEnabled =
-                    true;
-            }
-
-            return Object.assign(
-                baseState(),
-                x
-            );
-        } catch (e) {
-            return baseState();
-        }
-    }
-
-    var state =
-        loadState();
-
-    function save() {
-        var keys =
-            Object.keys(
-                state.pages
-            );
-
-        if (
-            keys.length >
-            R.maxStored
-        ) {
-            keys.sort(function (a, b) {
-                return String(
-                    state.pages[a]
-                        .checkedAt ||
-                    ''
-                ).localeCompare(
-                    String(
-                        state.pages[b]
-                            .checkedAt ||
-                        ''
-                    )
-                );
-            });
-
-            while (
-                keys.length >
-                R.maxStored
-            ) {
-                delete state.pages[
-                    keys.shift()
-                ];
-            }
+    function hoverCapable() {
+        if (!window.matchMedia) {
+            return true;
         }
 
-        try {
-            localStorage.setItem(
-                R.key,
-                JSON.stringify(
-                    state
-                )
-            );
-        } catch (e) {
-            state.lastError =
-                'Browser storage is full.';
-        }
-    }
-
-    function api() {
-        if (!apiP) {
-            apiP =
-                Promise.resolve(
-                    mw.loader.using(
-                        'mediawiki.api'
-                    )
-                ).then(function () {
-                    return new mw.Api();
-                }).catch(function (e) {
-                    apiP = null;
-                    throw e;
-                });
-        }
-
-        return apiP;
-    }
-
-    function titleNow() {
-        return String(
-            mw.config.get(
-                'wgPageName'
-            ) ||
-            ''
-        ).replace(
-            /_/g,
-            ' '
+        return !(
+            window.matchMedia('(hover: none)').matches ||
+            window.matchMedia('(pointer: coarse)').matches
         );
     }
 
-    function revNow() {
-        return Number(
-            mw.config.get(
-                'wgRevisionId'
-            )
-        ) || 0;
-    }
-
-    function articleView() {
-        return (
-            mw.config.get(
-                'wgAction'
-            ) ===
-                'view' &&
-            mw.config.get(
-                'wgNamespaceNumber'
-            ) ===
-                R.ns &&
-            !!titleNow()
-        );
-    }
-
-    function key(title) {
-        return encodeURIComponent(
-            title ||
-            ''
-        );
-    }
-
-    function getRecord(title) {
-        return state.pages[
-            key(title)
-        ] || null;
-    }
-
-    function setRecord(
-        title,
-        rec
-    ) {
-        state.pages[
-            key(title)
-        ] = rec;
-    }
-
-    function now() {
-        return new Date()
-            .toISOString();
-    }
-
-    function canAutoEdit() {
-        var groups =
-            mw.config.get(
-                'wgUserGroups'
-            ) || [];
-
-        if (
-            !mw.config.get(
-                'wgUserName'
-            )
-        ) {
-            return false;
+    function createFloatingLayer() {
+        if (floating && floating.isConnected) {
+            return;
         }
 
-        return R.authorizedGroups.some(
-            function (g) {
-                return (
-                    groups.indexOf(
-                        g
-                    ) !== -1
-                );
-            }
+        floating = document.createElement('div');
+        floating.id = 'mtw-character-float';
+        floating.setAttribute('aria-hidden', 'true');
+
+        floatingImage = document.createElement('img');
+        floatingImage.alt = '';
+
+        floatingName = document.createElement('div');
+        floatingName.id = 'mtw-character-float-name';
+
+        floating.appendChild(floatingImage);
+        floating.appendChild(floatingName);
+        document.body.appendChild(floating);
+    }
+
+    function getCard(directory, target) {
+        if (!directory || !target || !target.closest) {
+            return null;
+        }
+
+        var card = target.closest(
+            '.gallerybox, .wikia-gallery-item'
+        );
+
+        return card && directory.contains(card) ? card : null;
+    }
+
+    function getImage(card) {
+        if (!card) {
+            return null;
+        }
+
+        return card.querySelector(
+            '.thumb img, a.image img, img'
         );
     }
 
-    function revisionText(rev) {
-        if (!rev) {
+    function getCharacterName(card, img) {
+        if (!card) {
             return '';
         }
 
-        if (
-            rev.slots &&
-            rev.slots.main
-        ) {
-            return (
-                rev.slots.main.content ||
-                rev.slots.main['*'] ||
-                ''
-            );
+        var node = card.querySelector(
+            '.gallerytext a, .gallerytext, ' +
+            '.title a, .title, ' +
+            '.caption a, .caption'
+        );
+
+        var text = node ?
+            node.textContent.replace(/\s+/g, ' ').trim() :
+            '';
+
+        if (!text && img) {
+            text = (img.alt || '').replace(/\s+/g, ' ').trim();
+        }
+
+        return text;
+    }
+
+    function getImageSource(img) {
+        if (!img) {
+            return '';
         }
 
         return (
-            rev.content ||
-            rev['*'] ||
+            img.currentSrc ||
+            img.getAttribute('data-src') ||
+            img.getAttribute('src') ||
             ''
         );
     }
 
-    function addIssue(
-        list,
-        severity,
-        code,
-        message,
-        line,
-        sample
-    ) {
-        if (
-            list.length >=
-            R.maxIssues
-        ) {
-            return;
-        }
+    function calculateTarget(rect) {
+        var availableWidth =
+            window.innerWidth - (VIEWPORT_MARGIN * 2);
 
-        list.push({
-            severity:
-                severity,
+        var availableHeight =
+            window.innerHeight - (VIEWPORT_MARGIN * 2);
 
-            code:
-                code,
+        var scale = Math.min(
+            FLOAT_SCALE,
+            availableWidth / rect.width,
+            availableHeight / rect.height
+        );
 
-            message:
-                message,
+        scale = Math.max(1, scale);
 
-            line:
-                line ||
-                null,
+        var width = rect.width * scale;
+        var height = rect.height * scale;
 
-            sample:
-                sample ?
-                    String(sample)
-                        .trim()
-                        .slice(
-                            0,
-                            150
-                        ) :
-                    ''
-        });
-    }
+        var left =
+            rect.left -
+            ((width - rect.width) / 2);
 
-    /*
-     * Protect wikitext areas from the mechanical auto-fixer.
-     */
-    function protect(text) {
-        var slots =
-            [];
+        var top =
+            rect.top -
+            ((height - rect.height) * 0.74) -
+            EXTRA_RISE;
 
-        function take(match) {
-            var token =
-                '\u0002MTW' +
-                slots.length +
-                '\u0003';
+        left = Math.max(
+            VIEWPORT_MARGIN,
+            Math.min(
+                left,
+                window.innerWidth - width - VIEWPORT_MARGIN
+            )
+        );
 
-            slots.push(
-                match
-            );
-
-            return token;
-        }
-
-        var out =
-            String(
-                text ||
-                ''
-            );
-
-        out =
-            out.replace(
-                /<!--[\s\S]*?-->/g,
-                take
-            );
-
-        out =
-            out.replace(
-                /<(nowiki|pre|source|syntaxhighlight|code|math|gallery)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
-                take
-            );
-
-        out =
-            out.replace(
-                /<ref\b[^>]*\/>/gi,
-                take
-            );
-
-        out =
-            out.replace(
-                /<ref\b[^>]*>[\s\S]*?<\/ref\s*>/gi,
-                take
-            );
-
-        out =
-            out.replace(
-                /\{\{[\s\S]*?\}\}/g,
-                take
-            );
-
-        out =
-            out.replace(
-                /\[\[[\s\S]*?\]\]/g,
-                take
-            );
-
-        out =
-            out.replace(
-                /\[(?:https?:)?\/\/[^\]\s]+(?:\s[^\]]*)?\]/gi,
-                take
-            );
-
-        out =
-            out.replace(
-                /https?:\/\/[^\s<>"']+/gi,
-                take
-            );
+        top = Math.max(
+            VIEWPORT_MARGIN,
+            Math.min(
+                top,
+                window.innerHeight - height - VIEWPORT_MARGIN
+            )
+        );
 
         return {
-            text:
-                out,
-
-            slots:
-                slots
+            left: left,
+            top: top,
+            width: width,
+            height: height
         };
     }
 
-    function restore(
-        text,
-        slots
-    ) {
-        return text.replace(
-            /\u0002MTW(\d+)\u0003/g,
-            function (_, n) {
-                return (
-                    slots[
-                        Number(n)
-                    ] ||
-                    ''
+    function setRect(rect) {
+        if (!floating) {
+            return;
+        }
+
+        floating.style.left = rect.left + 'px';
+        floating.style.top = rect.top + 'px';
+        floating.style.width = rect.width + 'px';
+        floating.style.height = rect.height + 'px';
+    }
+
+    function clearShowFrame() {
+        if (!showFrame) {
+            return;
+        }
+
+        window.cancelAnimationFrame(showFrame);
+        showFrame = null;
+    }
+
+    function releaseCard(card) {
+        if (card && card.isConnected) {
+            card.classList.remove(
+                'mtw-character-source-active'
+            );
+        }
+    }
+
+    function hideFloat(immediate) {
+        window.clearTimeout(leaveTimer);
+        leaveTimer = null;
+
+        clearShowFrame();
+
+        if (!floating) {
+            releaseCard(activeCard);
+            activeCard = null;
+            return;
+        }
+
+        var oldCard = activeCard;
+        activeCard = null;
+
+        floating.classList.remove(
+            'mtw-character-float--visible'
+        );
+
+        if (immediate) {
+            floating.style.opacity = '0';
+            releaseCard(oldCard);
+            return;
+        }
+
+        if (oldCard) {
+            var img = getImage(oldCard);
+
+            if (img && img.isConnected) {
+                setRect(
+                    img.getBoundingClientRect()
                 );
             }
-        );
-    }
 
-    /*
-     * Deliberately conservative auto-fix dictionary.
-     */
-    var typo = {
-        recieve:
-            'receive',
-
-        recieved:
-            'received',
-
-        recieves:
-            'receives',
-
-        recieving:
-            'receiving',
-
-        seperate:
-            'separate',
-
-        seperated:
-            'separated',
-
-        seperately:
-            'separately',
-
-        definately:
-            'definitely',
-
-        becuase:
-            'because',
-
-        thier:
-            'their',
-
-        occurrance:
-            'occurrence'
-    };
-
-    function caseLike(
-        from,
-        to
-    ) {
-        if (
-            from ===
-            from.toUpperCase()
-        ) {
-            return to.toUpperCase();
-        }
-
-        if (
-            from.charAt(0) ===
-            from.charAt(0)
-                .toUpperCase()
-        ) {
-            return (
-                to.charAt(0)
-                    .toUpperCase() +
-                to.slice(1)
-            );
-        }
-
-        return to;
-    }
-
-    function safeFix(text) {
-        var p =
-            protect(text);
-
-        var src =
-            p.text;
-
-        var changes =
-            [];
-
-        Object.keys(
-            typo
-        ).forEach(function (wrong) {
-            var re =
-                new RegExp(
-                    '\\b' +
-                    wrong +
-                    '\\b',
-                    'gi'
-                );
-
-            src =
-                src.replace(
-                    re,
-                    function (m) {
-                        var r =
-                            caseLike(
-                                m,
-                                typo[wrong]
-                            );
-
-                        changes.push(
-                            m +
-                            ' → ' +
-                            r
-                        );
-
-                        return r;
-                    }
-                );
-        });
-
-        src =
-            src.replace(
-                /[ \t]+([,.!?;:])/g,
-                function (_, mark) {
-                    changes.push(
-                        'Removed space before ' +
-                        mark
-                    );
-
-                    return mark;
-                }
-            );
-
-        src =
-            src.replace(
-                /[ \t]+(?=\r?\n|$)/g,
+            window.setTimeout(
                 function () {
-                    changes.push(
-                        'Removed trailing whitespace'
-                    );
-
-                    return '';
-                }
-            );
-
-        var fixed =
-            restore(
-                src,
-                p.slots
-            );
-
-        return {
-            text:
-                fixed,
-
-            changes:
-                changes.slice(
-                    0,
-                    R.maxFixesEdit +
-                    1
-                ),
-
-            count:
-                changes.length
-        };
-    }
-
-    /*
-     * Structural fingerprint to prevent the auto-fixer from
-     * unexpectedly changing important wiki markup.
-     */
-    function fingerprint(text) {
-        function c(re) {
-            return (
-                String(text)
-                    .match(re) ||
-                []
-            ).length;
-        }
-
-        return [
-            c(/\[\[/g),
-            c(/\]\]/g),
-            c(/\{\{/g),
-            c(/\}\}/g),
-            c(/<ref\b/gi),
-            c(/<\/ref\s*>/gi),
-            c(/\|-?/g)
-        ].join(':');
-    }
-
-    function analyze(
-        title,
-        text,
-        revId,
-        timestamp
-    ) {
-        var src =
-            String(
-                text ||
-                ''
-            );
-
-        var masked =
-            protect(
-                src
-            ).text;
-
-        var issues =
-            [];
-
-        var lines =
-            masked.split(
-                '\n'
-            );
-
-        lines.forEach(
-            function (
-                line,
-                i
-            ) {
-                var n =
-                    i + 1;
-
-                var t =
-                    line.trim();
-
-                if (!t) {
-                    return;
-                }
-
-                var r =
-                    /\b([A-Za-z]{3,})\s+\1\b/i.exec(
-                        line
-                    );
-
-                if (r) {
-                    addIssue(
-                        issues,
-                        'minor',
-                        'repeat',
-                        'Repeated word: “' +
-                            r[1] +
-                            '”.',
-                        n,
-                        line
-                    );
-                }
-
-                if (
-                    /\b(?:TODO|TBD|FIXME)\b/i.test(
-                        line
-                    )
-                ) {
-                    addIssue(
-                        issues,
-                        'warning',
-                        'todo',
-                        'Unresolved TODO/TBD/FIXME marker.',
-                        n,
-                        line
-                    );
-                }
-
-                if (
-                    /[A-Za-z0-9\)\]]\s+[,.!?;]/.test(
-                        line
-                    )
-                ) {
-                    addIssue(
-                        issues,
-                        'minor',
-                        'space-punctuation',
-                        'Possible unwanted space before punctuation.',
-                        n,
-                        line
-                    );
-                }
-
-                Object.keys(
-                    typo
-                ).some(function (w) {
-                    if (
-                        new RegExp(
-                            '\\b' +
-                                w +
-                                '\\b',
-                            'i'
-                        ).test(
-                            line
-                        )
-                    ) {
-                        addIssue(
-                            issues,
-                            'minor',
-                            'typo',
-                            'Possible typo: “' +
-                                w +
-                                '” → “' +
-                                typo[w] +
-                                '”.',
-                            n,
-                            line
-                        );
-
-                        return true;
-                    }
-
-                    return false;
-                });
-            }
-        );
-
-        var opens =
-            src.match(
-                /<ref\b[^>]*>/gi
-            ) || [];
-
-        var self =
-            opens.filter(
-                function (x) {
-                    return /\/\s*>$/.test(
-                        x
-                    );
-                }
-            ).length;
-
-        var normalOpen =
-            opens.length -
-            self;
-
-        var closes =
-            (
-                src.match(
-                    /<\/ref\s*>/gi
-                ) ||
-                []
-            ).length;
-
-        if (
-            normalOpen !==
-            closes
-        ) {
-            addIssue(
-                issues,
-                'major',
-                'refs',
-                'Unbalanced <ref> tags: ' +
-                    normalOpen +
-                    ' opening and ' +
-                    closes +
-                    ' closing.'
-            );
-        }
-
-        if (
-            /<ref\b[^>]*>\s*<\/ref\s*>/i.test(
-                src
-            )
-        ) {
-            addIssue(
-                issues,
-                'warning',
-                'empty-ref',
-                'At least one empty reference was found.'
-            );
-        }
-
-        if (
-            /<ref\b[^>]*>\s*(?:chapter\s*)?\d+(?:\s*[-–]\s*\d+)?\s*<\/ref\s*>/i.test(
-                src
-            )
-        ) {
-            addIssue(
-                issues,
-                'warning',
-                'number-ref',
-                'A citation contains only a chapter number/range.'
-            );
-        }
-
-        var ol =
-            (
-                masked.match(
-                    /\[\[/g
-                ) ||
-                []
-            ).length;
-
-        var cl =
-            (
-                masked.match(
-                    /\]\]/g
-                ) ||
-                []
-            ).length;
-
-        if (
-            ol !==
-            cl
-        ) {
-            addIssue(
-                issues,
-                'major',
-                'links',
-                'Possible unbalanced wiki links: ' +
-                    ol +
-                    ' opening and ' +
-                    cl +
-                    ' closing.'
-            );
-        }
-
-        var prose =
-            src
-                .replace(
-                    /<!--[\s\S]*?-->/g,
-                    ' '
-                )
-                .replace(
-                    /<ref\b[^>]*\/>/gi,
-                    ' '
-                )
-                .replace(
-                    /<ref\b[^>]*>[\s\S]*?<\/ref\s*>/gi,
-                    ' '
-                )
-                .replace(
-                    /\{\{[\s\S]*?\}\}/g,
-                    ' '
-                )
-                .replace(
-                    /<[^>]+>/g,
-                    ' '
-                )
-                .replace(
-                    /\[\[[^\]|]+\|([^\]]+)\]\]/g,
-                    '$1'
-                )
-                .replace(
-                    /\[\[([^\]]+)\]\]/g,
-                    '$1'
-                )
-                .replace(
-                    /\s+/g,
-                    ' '
-                )
-                .trim()
-                .length;
-
-        if (
-            prose >=
-            1400 &&
-            opens.length ===
-            0
-        ) {
-            addIssue(
-                issues,
-                'major',
-                'no-refs',
-                'Substantial article with no inline citations detected.'
-            );
-        } else if (
-            prose >=
-            4500 &&
-            opens.length <
-            3
-        ) {
-            addIssue(
-                issues,
-                'warning',
-                'few-refs',
-                'Long article with very few inline citations (' +
-                    opens.length +
-                    ').'
-            );
-        }
-
-        if (
-            prose >=
-            1000 &&
-            src
-                .toLowerCase()
-                .indexOf(
-                    '[[category:'
-                ) ===
-                -1
-        ) {
-            addIssue(
-                issues,
-                'minor',
-                'category',
-                'No category link detected on this substantial article.'
-            );
-        }
-
-        var count = {
-            minor:
-                0,
-
-            warning:
-                0,
-
-            major:
-                0
-        };
-
-        issues.forEach(
-            function (x) {
-                count[
-                    x.severity
-                ]++;
-            }
-        );
-
-        var fix =
-            safeFix(
-                src
-            );
-
-        return {
-            title:
-                title,
-
-            revisionId:
-                Number(
-                    revId
-                ) ||
-                0,
-
-            revisionTimestamp:
-                timestamp ||
-                null,
-
-            checkedAt:
-                now(),
-
-            totalIssues:
-                issues.length,
-
-            minor:
-                count.minor,
-
-            warning:
-                count.warning,
-
-            major:
-                count.major,
-
-            issues:
-                issues,
-
-            autoCandidate:
-                fix.count >
-                    0 &&
-                fix.count <=
-                    R.maxFixesEdit,
-
-            fixCount:
-                fix.count,
-
-            fixedText:
-                fix.text,
-
-            originalText:
-                src
-        };
-    }
-
-    function summarize() {
-        var vals =
-            Object.keys(
-                state.pages
-            ).map(
-                function (k) {
-                    return state.pages[
-                        k
-                    ];
-                }
-            );
-
-        return {
-            reviewed:
-                vals.length,
-
-            flagged:
-                vals.filter(
-                    function (r) {
-                        return (
-                            r &&
-                            r.totalIssues >
-                            0
-                        );
-                    }
-                ).length,
-
-            issues:
-                vals.reduce(
-                    function (s, r) {
-                        return (
-                            s +
-                            (
-                                r &&
-                                r.totalIssues ||
-                                0
-                            )
-                        );
-                    },
-                    0
-                )
-        };
-    }
-
-    function pushActivity(
-        kind,
-        text
-    ) {
-        state.activity.unshift({
-            time:
-                now(),
-
-            kind:
-                kind,
-
-            text:
-                text
-        });
-
-        state.activity =
-            state.activity.slice(
-                0,
-                12
-            );
-
-        save();
-        renderWidget();
-    }
-
-    function excluded(
-        title,
-        text
-    ) {
-        return (
-            R.exclude.indexOf(
-                title
-            ) !==
-                -1 ||
-            String(
-                text ||
-                ''
-            ).indexOf(
-                'MTW-REVIEWER-NOAUTOFIX'
-            ) !==
-                -1
-        );
-    }
-
-    function queueFix(rec) {
-        if (
-            !state.autoFixEnabled ||
-            !canAutoEdit() ||
-            rec.major >
-                0 ||
-            !rec.autoCandidate ||
-            excluded(
-                rec.title,
-                rec.originalText
-            )
-        ) {
-            return;
-        }
-
-        if (
-            queuedTitles.has(
-                rec.title
-            )
-        ) {
-            return;
-        }
-
-        if (
-            fingerprint(
-                rec.originalText
-            ) !==
-            fingerprint(
-                rec.fixedText
-            )
-        ) {
-            return;
-        }
-
-        queuedTitles.add(
-            rec.title
-        );
-
-        queued.push(
-            rec
-        );
-
-        scheduleEditWorker(
-            300
-        );
-    }
-
-    function store(rec) {
-        setRecord(
-            rec.title,
-            rec
-        );
-
-        save();
-        renderWidget();
-
-        if (
-            articleView() &&
-            rec.title ===
-            titleNow()
-        ) {
-            renderReport();
-        }
-
-        queueFix(
-            rec
-        );
-    }
-
-    function reviewPage(page) {
-        if (
-            !page ||
-            page.missing ||
-            page.invalid ||
-            page.ns !==
-                R.ns ||
-            !page.revisions ||
-            !page.revisions[0]
-        ) {
-            return;
-        }
-
-        var rev =
-            page.revisions[0];
-
-        var id =
-            Number(
-                rev.revid
-            ) ||
-            0;
-
-        var old =
-            getRecord(
-                page.title
-            );
-
-        if (
-            old &&
-            old.revisionId ===
-            id
-        ) {
-            return;
-        }
-
-        store(
-            analyze(
-                page.title,
-                revisionText(
-                    rev
-                ),
-                id,
-                rev.timestamp
-            )
-        );
-    }
-
-    function scheduleScan(delay) {
-        clearTimeout(
-            timer
-        );
-
-        if (!state.enabled) {
-            return;
-        }
-
-        timer =
-            setTimeout(
-                scanBatch,
-                Math.max(
-                    500,
-                    delay ||
-                    R.batchDelay
-                )
-            );
-    }
-
-    function scanBatch() {
-        if (
-            !state.enabled ||
-            scanning
-        ) {
-            return;
-        }
-
-        scanning =
-            true;
-
-        renderWidget();
-
-        api().then(
-            function (a) {
-                var p = {
-                    action:
-                        'query',
-
-                    generator:
-                        'allpages',
-
-                    gapnamespace:
-                        R.ns,
-
-                    gapfilterredir:
-                        'nonredirects',
-
-                    gaplimit:
-                        R.batch,
-
-                    prop:
-                        'revisions',
-
-                    rvprop:
-                        'ids|timestamp|content',
-
-                    rvslots:
-                        'main',
-
-                    formatversion:
-                        2,
-
-                    format:
-                        'json'
-                };
-
-                if (
-                    state.cursor
-                ) {
-                    p.gapcontinue =
-                        state.cursor;
-                }
-
-                return a.get(
-                    p
-                );
-            }
-        ).then(function (data) {
-            (
-                data &&
-                data.query &&
-                data.query.pages ||
-                []
-            ).forEach(
-                reviewPage
-            );
-
-            if (
-                data &&
-                data.continue &&
-                data.continue.gapcontinue
-            ) {
-                state.cursor =
-                    data.continue.gapcontinue;
-            } else {
-                state.cursor =
-                    null;
-
-                state.cycle++;
-            }
-
-            state.lastScanAt =
-                now();
-
-            state.lastError =
-                '';
-
-            save();
-        }).catch(function (e) {
-            state.lastError =
-                e.message ||
-                'Background scan failed.';
-
-            save();
-
-            pushActivity(
-                'error',
-                state.lastError
-            );
-        }).finally(function () {
-            scanning =
-                false;
-
-            renderWidget();
-
-            scheduleScan(
-                R.batchDelay
-            );
-        });
-    }
-
-    function scheduleEditWorker(delay) {
-        clearTimeout(
-            editTimer
-        );
-
-        if (
-            !state.enabled ||
-            !state.autoFixEnabled ||
-            !canAutoEdit()
-        ) {
-            return;
-        }
-
-        editTimer =
-            setTimeout(
-                editWorker,
-                Math.max(
-                    250,
-                    delay ||
-                    R.editDelay
-                )
-            );
-    }
-
-    function editWorker() {
-        if (
-            editBusy ||
-            !queued.length ||
-            editsThisSession >=
-                R.maxEditsSession ||
-            !state.enabled ||
-            !state.autoFixEnabled ||
-            !canAutoEdit()
-        ) {
-            return;
-        }
-
-        var wait =
-            R.editDelay -
-            (
-                Date.now() -
-                lastEditAt
-            );
-
-        if (
-            wait >
-            0
-        ) {
-            scheduleEditWorker(
-                wait
-            );
-
-            return;
-        }
-
-        var rec =
-            queued.shift();
-
-        queuedTitles.delete(
-            rec.title
-        );
-
-        editBusy =
-            true;
-
-        renderWidget();
-
-        api().then(function (a) {
-            return a.postWithToken(
-                'csrf',
-                {
-                    action:
-                        'edit',
-
-                    title:
-                        rec.title,
-
-                    text:
-                        rec.fixedText,
-
-                    summary:
-                        'MTW Reviewer: automatic spelling/punctuation cleanup',
-
-                    baserevid:
-                        rec.revisionId,
-
-                    basetimestamp:
-                        rec.revisionTimestamp ||
-                        undefined,
-
-                    nocreate:
-                        1,
-
-                    minor:
-                        1,
-
-                    assert:
-                        'user',
-
-                    formatversion:
-                        2
-                }
-            );
-        }).then(function (data) {
-            var edit =
-                data &&
-                data.edit;
-
-            if (
-                !edit ||
-                edit.result !==
-                'Success'
-            ) {
-                throw new Error(
-                    'Edit was not accepted.'
-                );
-            }
-
-            editsThisSession++;
-
-            lastEditAt =
-                Date.now();
-
-            state.autoEdits++;
-
-            state.autoFixes +=
-                rec.fixCount;
-
-            var fresh =
-                analyze(
-                    rec.title,
-                    rec.fixedText,
-                    Number(
-                        edit.newrevid
-                    ) ||
-                    rec.revisionId,
-                    null
-                );
-
-            fresh.autoFix = {
-                applied:
-                    true,
-
-                fromRevisionId:
-                    rec.revisionId,
-
-                fixes:
-                    rec.fixCount,
-
-                at:
-                    now()
-            };
-
-            setRecord(
-                rec.title,
-                fresh
-            );
-
-            save();
-
-            pushActivity(
-                'fix',
-                rec.title +
-                    ': auto-fixed ' +
-                    rec.fixCount +
-                    ' issue' +
-                    (
-                        rec.fixCount ===
-                        1 ?
-                            '' :
-                            's'
-                    ) +
-                    '.'
-            );
-
-            if (
-                articleView() &&
-                titleNow() ===
-                rec.title
-            ) {
-                renderReport();
-            }
-        }).catch(function (e) {
-            var msg =
-                e &&
-                e.message ||
-                'Automatic edit failed.';
-
-            pushActivity(
-                'error',
-                rec.title +
-                    ': ' +
-                    msg
-            );
-        }).finally(function () {
-            editBusy =
-                false;
-
-            renderWidget();
-
-            if (
-                queued.length
-            ) {
-                scheduleEditWorker(
-                    R.editDelay
-                );
-            }
-        });
-    }
-
-    function reviewTitle(
-        title,
-        force
-    ) {
-        if (!title) {
-            return Promise.resolve(
-                null
-            );
-        }
-
-        return api().then(
-            function (a) {
-                return a.get({
-                    action:
-                        'query',
-
-                    prop:
-                        'revisions',
-
-                    titles:
-                        title,
-
-                    rvprop:
-                        'ids|timestamp|content',
-
-                    rvslots:
-                        'main',
-
-                    formatversion:
-                        2,
-
-                    format:
-                        'json'
-                });
-            }
-        ).then(function (data) {
-            var page =
-                data &&
-                data.query &&
-                data.query.pages &&
-                data.query.pages[0];
-
-            if (
-                !page ||
-                page.missing ||
-                !page.revisions ||
-                !page.revisions[0]
-            ) {
-                throw new Error(
-                    'Page could not be reviewed.'
-                );
-            }
-
-            var rev =
-                page.revisions[0];
-
-            var id =
-                Number(
-                    rev.revid
-                ) ||
-                0;
-
-            var old =
-                getRecord(
-                    page.title
-                );
-
-            if (
-                !force &&
-                old &&
-                old.revisionId ===
-                id
-            ) {
-                return old;
-            }
-
-            var rec =
-                analyze(
-                    page.title,
-                    revisionText(
-                        rev
-                    ),
-                    id,
-                    rev.timestamp
-                );
-
-            store(
-                rec
-            );
-
-            return rec;
-        });
-    }
-
-    function human(x) {
-        if (!x) {
-            return 'Never';
-        }
-
-        var d =
-            new Date(x);
-
-        return isNaN(
-            d.getTime()
-        ) ?
-            'Unknown' :
-            d.toLocaleString();
-    }
-
-    function wikiLink(title) {
-        var a =
-            document.createElement(
-                'a'
-            );
-
-        a.href =
-            mw.util &&
-            mw.util.getUrl ?
-                mw.util.getUrl(
-                    title
-                ) :
-                '/wiki/' +
-                encodeURIComponent(
-                    title.replace(
-                        / /g,
-                        '_'
-                    )
-                );
-
-        a.textContent =
-            title;
-
-        return a;
-    }
-
-    function injectCss() {
-        if (
-            document.getElementById(
-                'mtw-reviewer-css'
-            )
-        ) {
-            return;
-        }
-
-        var s =
-            document.createElement(
-                'style'
-            );
-
-        s.id =
-            'mtw-reviewer-css';
-
-        s.textContent =
-            '#mtw-reviewer{' +
-                'position:fixed;' +
-                'right:18px;' +
-                'bottom:18px;' +
-                'z-index:10000;' +
-                'width:min(350px,calc(100vw - 30px));' +
-                'font:13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;' +
-                'background:rgba(19,20,26,.97);' +
-                'color:#f4f4f6;' +
-                'border:1px solid rgba(255,255,255,.14);' +
-                'border-radius:12px;' +
-                'box-shadow:0 12px 38px rgba(0,0,0,.35);' +
-                'overflow:hidden' +
-            '}' +
-
-            '.mtwr-head{' +
-                'display:flex;' +
-                'align-items:center;' +
-                'gap:8px;' +
-                'width:100%;' +
-                'padding:10px 12px;' +
-                'background:transparent;' +
-                'border:0;' +
-                'color:inherit;' +
-                'cursor:pointer;' +
-                'text-align:left' +
-            '}' +
-
-            '.mtwr-head b{flex:1}' +
-
-            '.mtwr-dot{' +
-                'width:9px;' +
-                'height:9px;' +
-                'border-radius:50%;' +
-                'background:#8d929e' +
-            '}' +
-
-            '.mtwr-dot.active{background:#66d17a}' +
-            '.mtwr-dot.work{background:#f0c75e}' +
-            '.mtwr-dot.error{background:#ed6a6a}' +
-
-            '.mtwr-body{' +
-                'padding:11px 12px;' +
-                'border-top:1px solid rgba(255,255,255,.1)' +
-            '}' +
-
-            '.mtwr-small{' +
-                'font-size:12px;' +
-                'opacity:.72;' +
-                'margin:3px 0' +
-            '}' +
-
-            '.mtwr-controls{' +
-                'display:flex;' +
-                'gap:6px;' +
-                'flex-wrap:wrap;' +
-                'margin:9px 0' +
-            '}' +
-
-            '.mtwr-btn{' +
-                'border:1px solid rgba(255,255,255,.16);' +
-                'background:rgba(255,255,255,.08);' +
-                'color:inherit;' +
-                'border-radius:7px;' +
-                'padding:6px 9px;' +
-                'cursor:pointer' +
-            '}' +
-
-            '.mtwr-btn:disabled{opacity:.45}' +
-
-            '.mtwr-sub{' +
-                'font-size:11px;' +
-                'text-transform:uppercase;' +
-                'letter-spacing:.07em;' +
-                'opacity:.58;' +
-                'margin:10px 0 4px' +
-            '}' +
-
-            '.mtwr-row{' +
-                'display:flex;' +
-                'gap:7px;' +
-                'align-items:center;' +
-                'padding:3px 0' +
-            '}' +
-
-            '.mtwr-row a{' +
-                'color:#d9e5ff!important;' +
-                'flex:1;' +
-                'overflow:hidden;' +
-                'text-overflow:ellipsis;' +
-                'white-space:nowrap' +
-            '}' +
-
-            '.mtwr-badge{' +
-                'min-width:20px;' +
-                'text-align:center;' +
-                'border-radius:10px;' +
-                'padding:1px 5px;' +
-                'background:#8d7023' +
-            '}' +
-
-            '.mtwr-act{' +
-                'font-size:12px;' +
-                'padding:3px 0' +
-            '}' +
-
-            '.mtwr-fix{color:#bfe7c7}' +
-            '.mtwr-error{color:#f0aaaa}' +
-
-            '#mtw-review-report{' +
-                'margin:0 0 18px;' +
-                'padding:12px 14px;' +
-                'border-radius:9px;' +
-                'border:1px solid rgba(120,130,150,.35);' +
-                'background:rgba(120,130,150,.08);' +
-                'font-size:14px;' +
-                'line-height:1.45' +
-            '}' +
-
-            '.mtwr-report-head{' +
-                'display:flex;' +
-                'gap:10px;' +
-                'align-items:center;' +
-                'flex-wrap:wrap;' +
-                'margin-bottom:7px' +
-            '}' +
-
-            '.mtwr-report-head span{' +
-                'font-size:12px;' +
-                'opacity:.72' +
-            '}' +
-
-            '.mtwr-issues{' +
-                'margin:8px 0 0 20px;' +
-                'padding:0' +
-            '}' +
-
-            '.mtwr-issue{' +
-                'margin:6px 0' +
-            '}' +
-
-            '.mtwr-sev{' +
-                'font-size:10px;' +
-                'font-weight:700;' +
-                'margin-right:7px;' +
-                'padding:1px 5px;' +
-                'border-radius:4px;' +
-                'background:rgba(255,255,255,.1)' +
-            '}' +
-
-            '.mtwr-note{' +
-                'opacity:.72;' +
-                'margin:6px 0' +
-            '}' +
-
-            '.mtwr-report-btn{' +
-                'margin-top:9px;' +
-                'border:1px solid currentColor;' +
-                'background:transparent;' +
-                'color:inherit;' +
-                'border-radius:6px;' +
-                'padding:5px 9px;' +
-                'cursor:pointer' +
-            '}' +
-
-            '@media(max-width:700px){' +
-                '#mtw-reviewer{' +
-                    'right:10px;' +
-                    'bottom:10px;' +
-                    'width:min(330px,calc(100vw - 20px))' +
-                '}' +
-            '}';
-
-        document.head.appendChild(
-            s
-        );
-    }
-
-    function createWidget() {
-        if (widget) {
-            return;
-        }
-
-        widget =
-            document.createElement(
-                'aside'
-            );
-
-        widget.id =
-            'mtw-reviewer';
-
-        var head =
-            document.createElement(
-                'button'
-            );
-
-        head.type =
-            'button';
-
-        head.className =
-            'mtwr-head';
-
-        dot =
-            document.createElement(
-                'span'
-            );
-
-        dot.className =
-            'mtwr-dot';
-
-        var name =
-            document.createElement(
-                'b'
-            );
-
-        name.textContent =
-            'MTW Reviewer v4';
-
-        status =
-            document.createElement(
-                'span'
-            );
-
-        status.textContent =
-            'Starting…';
-
-        var chev =
-            document.createElement(
-                'span'
-            );
-
-        chev.textContent =
-            '▾';
-
-        head.appendChild(
-            dot
-        );
-
-        head.appendChild(
-            name
-        );
-
-        head.appendChild(
-            status
-        );
-
-        head.appendChild(
-            chev
-        );
-
-        body =
-            document.createElement(
-                'div'
-            );
-
-        body.className =
-            'mtwr-body';
-
-        progress =
-            document.createElement(
-                'div'
-            );
-
-        stats =
-            document.createElement(
-                'div'
-            );
-
-        stats.className =
-            'mtwr-small';
-
-        var controls =
-            document.createElement(
-                'div'
-            );
-
-        controls.className =
-            'mtwr-controls';
-
-        pauseBtn =
-            document.createElement(
-                'button'
-            );
-
-        pauseBtn.className =
-            'mtwr-btn';
-
-        pauseBtn.type =
-            'button';
-
-        fixBtn =
-            document.createElement(
-                'button'
-            );
-
-        fixBtn.className =
-            'mtwr-btn';
-
-        fixBtn.type =
-            'button';
-
-        currentBtn =
-            document.createElement(
-                'button'
-            );
-
-        currentBtn.className =
-            'mtwr-btn';
-
-        currentBtn.type =
-            'button';
-
-        currentBtn.textContent =
-            'Scan current';
-
-        var reset =
-            document.createElement(
-                'button'
-            );
-
-        reset.className =
-            'mtwr-btn';
-
-        reset.type =
-            'button';
-
-        reset.textContent =
-            'Restart pass';
-
-        controls.appendChild(
-            pauseBtn
-        );
-
-        controls.appendChild(
-            fixBtn
-        );
-
-        controls.appendChild(
-            currentBtn
-        );
-
-        controls.appendChild(
-            reset
-        );
-
-        var rh =
-            document.createElement(
-                'div'
-            );
-
-        rh.className =
-            'mtwr-sub';
-
-        rh.textContent =
-            'Flagged pages';
-
-        recent =
-            document.createElement(
-                'div'
-            );
-
-        var ah =
-            document.createElement(
-                'div'
-            );
-
-        ah.className =
-            'mtwr-sub';
-
-        ah.textContent =
-            'Latest activity';
-
-        activity =
-            document.createElement(
-                'div'
-            );
-
-        body.appendChild(
-            progress
-        );
-
-        body.appendChild(
-            stats
-        );
-
-        body.appendChild(
-            controls
-        );
-
-        body.appendChild(
-            rh
-        );
-
-        body.appendChild(
-            recent
-        );
-
-        body.appendChild(
-            ah
-        );
-
-        body.appendChild(
-            activity
-        );
-
-        widget.appendChild(
-            head
-        );
-
-        widget.appendChild(
-            body
-        );
-
-        document.body.appendChild(
-            widget
-        );
-
-        head.addEventListener(
-            'click',
-            function () {
-                state.collapsed =
-                    !state.collapsed;
-
-                save();
-                renderWidget();
-            }
-        );
-
-        pauseBtn.addEventListener(
-            'click',
-            function () {
-                state.enabled =
-                    !state.enabled;
-
-                save();
-
-                if (
-                    state.enabled
-                ) {
-                    scheduleScan(
-                        300
-                    );
-
-                    scheduleEditWorker(
-                        300
-                    );
-                } else {
-                    clearTimeout(
-                        timer
-                    );
-
-                    clearTimeout(
-                        editTimer
-                    );
-                }
-
-                renderWidget();
-            }
-        );
-
-        fixBtn.addEventListener(
-            'click',
-            function () {
-                if (
-                    !canAutoEdit()
-                ) {
-                    return;
-                }
-
-                state.autoFixEnabled =
-                    !state.autoFixEnabled;
-
-                save();
-                renderWidget();
-
-                if (
-                    state.autoFixEnabled
-                ) {
-                    scheduleEditWorker(
-                        250
-                    );
-                }
-            }
-        );
-
-        currentBtn.addEventListener(
-            'click',
-            function () {
-                if (
-                    !articleView()
-                ) {
-                    return;
-                }
-
-                currentBtn.disabled =
-                    true;
-
-                reviewTitle(
-                    titleNow(),
-                    true
-                ).catch(function (e) {
-                    pushActivity(
-                        'error',
-                        e.message
-                    );
-                }).finally(function () {
-                    currentBtn.disabled =
-                        false;
-
-                    renderReport();
-                });
-            }
-        );
-
-        reset.addEventListener(
-            'click',
-            function () {
-                state.cursor =
-                    null;
-
-                state.cycle++;
-
-                save();
-
-                scheduleScan(
-                    250
-                );
-
-                renderWidget();
-            }
-        );
-    }
-
-    function renderWidget() {
-        if (!widget) {
-            return;
-        }
-
-        body.hidden =
-            !!state.collapsed;
-
-        var ok =
-            canAutoEdit();
-
-        dot.className =
-            'mtwr-dot ' +
-            (
-                state.lastError ?
-                    'error' :
-                    (
-                        scanning ||
-                        editBusy ?
-                            'work' :
-                            (
-                                state.enabled ?
-                                    'active' :
-                                    ''
-                            )
-                    )
-            );
-
-        status.textContent =
-            state.lastError ?
-                'Warning' :
-                (
-                    state.enabled ?
-                        (
-                            scanning ?
-                                'Scanning' :
-                                (
-                                    editBusy ?
-                                        'Editing' :
-                                        'Active'
-                                )
-                        ) :
-                        'Paused'
-                );
-
-        var s =
-            summarize();
-
-        progress.textContent =
-            'Cycle ' +
-            state.cycle +
-            (
-                state.cursor ?
-                    ' • continuing through wiki' :
-                    ' • pass boundary'
-            );
-
-        stats.textContent =
-            s.reviewed +
-            ' reviewed • ' +
-            s.flagged +
-            ' flagged • ' +
-            s.issues +
-            ' issues • ' +
-            state.autoEdits +
-            ' auto edits • ' +
-            state.autoFixes +
-            ' fixes';
-
-        pauseBtn.textContent =
-            state.enabled ?
-                'Pause' :
-                'Resume';
-
-        fixBtn.disabled =
-            !ok;
-
-        fixBtn.textContent =
-            ok ?
-                (
-                    'Auto-fix: ' +
-                    (
-                        state.autoFixEnabled ?
-                            'ON' :
-                            'OFF'
-                    )
-                ) :
-                'Auto-fix: no permission';
-
-        currentBtn.disabled =
-            !articleView();
-
-        recent.textContent =
-            '';
-
-        Object.keys(
-            state.pages
-        ).map(function (k) {
-            return state.pages[
-                k
-            ];
-        }).filter(function (r) {
-            return (
-                r &&
-                r.totalIssues >
-                0
-            );
-        }).sort(function (a, b) {
-            return (
-                (
-                    b.major -
-                    a.major
-                ) ||
-                (
-                    b.warning -
-                    a.warning
-                ) ||
-                String(
-                    b.checkedAt
-                ).localeCompare(
-                    String(
-                        a.checkedAt
-                    )
-                )
-            );
-        }).slice(
-            0,
-            6
-        ).forEach(function (r) {
-            var row =
-                document.createElement(
-                    'div'
-                );
-
-            row.className =
-                'mtwr-row';
-
-            row.appendChild(
-                wikiLink(
-                    r.title
-                )
-            );
-
-            var badge =
-                document.createElement(
-                    'span'
-                );
-
-            badge.className =
-                'mtwr-badge';
-
-            badge.textContent =
-                r.totalIssues;
-
-            row.appendChild(
-                badge
-            );
-
-            recent.appendChild(
-                row
-            );
-        });
-
-        if (
-            !recent.childNodes.length
-        ) {
-            recent.textContent =
-                'No flagged pages stored yet.';
-        }
-
-        activity.textContent =
-            '';
-
-        state.activity
-            .slice(
-                0,
-                6
-            )
-            .forEach(
-                function (a) {
-                    var d =
-                        document.createElement(
-                            'div'
-                        );
-
-                    d.className =
-                        'mtwr-act ' +
-                        (
-                            a.kind ===
-                            'fix' ?
-                                'mtwr-fix' :
-                                (
-                                    a.kind ===
-                                    'error' ?
-                                        'mtwr-error' :
-                                        ''
-                                )
-                        );
-
-                    d.textContent =
-                        new Date(
-                            a.time
-                        ).toLocaleTimeString(
-                            [],
-                            {
-                                hour:
-                                    '2-digit',
-
-                                minute:
-                                    '2-digit'
-                            }
-                        ) +
-                        ' — ' +
-                        a.text;
-
-                    activity.appendChild(
-                        d
-                    );
-                }
-            );
-
-        if (
-            !activity.childNodes.length
-        ) {
-            activity.textContent =
-                'No activity yet.';
-        }
-    }
-
-    function renderReport() {
-        if (
-            report &&
-            report.parentNode
-        ) {
-            report.remove();
-        }
-
-        report =
-            null;
-
-        if (
-            !articleView()
-        ) {
-            return;
-        }
-
-        var parser =
-            document.querySelector(
-                '.page-content .mw-parser-output'
-            ) ||
-            document.querySelector(
-                '.mw-parser-output'
-            );
-
-        if (
-            !parser ||
-            !parser.parentNode
-        ) {
-            return;
-        }
-
-        var rec =
-            getRecord(
-                titleNow()
-            );
-
-        var stale =
-            !!(
-                rec &&
-                revNow() &&
-                rec.revisionId &&
-                rec.revisionId !==
-                revNow()
-            );
-
-        report =
-            document.createElement(
-                'section'
-            );
-
-        report.id =
-            'mtw-review-report';
-
-        var h =
-            document.createElement(
-                'div'
-            );
-
-        h.className =
-            'mtwr-report-head';
-
-        var b =
-            document.createElement(
-                'strong'
-            );
-
-        b.textContent =
-            'MTW Reviewer';
-
-        var sum =
-            document.createElement(
-                'span'
-            );
-
-        h.appendChild(
-            b
-        );
-
-        h.appendChild(
-            sum
-        );
-
-        report.appendChild(
-            h
-        );
-
-        var box =
-            document.createElement(
-                'div'
-            );
-
-        report.appendChild(
-            box
-        );
-
-        if (!rec) {
-            sum.textContent =
-                'Not reviewed yet';
-
-            box.textContent =
-                'This article is queued for a browser-side review.';
-        } else if (stale) {
-            sum.textContent =
-                'Review outdated';
-
-            box.textContent =
-                'This article changed after the stored review. A fresh scan is being requested.';
-        } else {
-            sum.textContent =
-                rec.totalIssues +
-                ' issue' +
-                (
-                    rec.totalIssues ===
-                    1 ?
-                        '' :
-                        's'
-                ) +
-                ' • ' +
-                rec.minor +
-                ' minor • ' +
-                rec.warning +
-                ' warning • ' +
-                rec.major +
-                ' major';
-
-            if (
-                rec.autoFix &&
-                rec.autoFix.applied
-            ) {
-                var fx =
-                    document.createElement(
-                        'div'
-                    );
-
-                fx.className =
-                    'mtwr-note mtwr-fix';
-
-                fx.textContent =
-                    '✓ ' +
-                    rec.autoFix.fixes +
-                    ' safe automatic correction' +
-                    (
-                        rec.autoFix.fixes ===
-                        1 ?
-                            '' :
-                            's'
-                    ) +
-                    ' applied on ' +
-                    human(
-                        rec.autoFix.at
-                    ) +
-                    '.';
-
-                box.appendChild(
-                    fx
-                );
-            }
-
-            var note =
-                document.createElement(
-                    'div'
-                );
-
-            note.className =
-                'mtwr-note';
-
-            note.textContent =
-                'Last checked ' +
-                human(
-                    rec.checkedAt
-                ) +
-                '. Automated review does not verify canon/lore accuracy.';
-
-            box.appendChild(
-                note
-            );
-
-            if (
-                rec.issues.length
-            ) {
-                var ul =
-                    document.createElement(
-                        'ul'
-                    );
-
-                ul.className =
-                    'mtwr-issues';
-
-                rec.issues.forEach(
-                    function (x) {
-                        var li =
-                            document.createElement(
-                                'li'
-                            );
-
-                        li.className =
-                            'mtwr-issue';
-
-                        var sev =
-                            document.createElement(
-                                'span'
-                            );
-
-                        sev.className =
-                            'mtwr-sev';
-
-                        sev.textContent =
-                            x.severity.toUpperCase();
-
-                        li.appendChild(
-                            sev
-                        );
-
-                        li.appendChild(
-                            document.createTextNode(
-                                (
-                                    x.line ?
-                                        'Line ' +
-                                        x.line +
-                                        ': ' :
-                                        ''
-                                ) +
-                                x.message
-                            )
-                        );
-
-                        ul.appendChild(
-                            li
-                        );
-                    }
-                );
-
-                box.appendChild(
-                    ul
-                );
-            }
-        }
-
-        var btn =
-            document.createElement(
-                'button'
-            );
-
-        btn.type =
-            'button';
-
-        btn.className =
-            'mtwr-report-btn';
-
-        btn.textContent =
-            rec ?
-                'Rescan this article' :
-                'Review this article now';
-
-        btn.addEventListener(
-            'click',
-            function () {
-                btn.disabled =
-                    true;
-
-                reviewTitle(
-                    titleNow(),
-                    true
-                ).finally(function () {
-                    btn.disabled =
-                        false;
-
-                    renderReport();
-                });
-            }
-        );
-
-        report.appendChild(
-            btn
-        );
-
-        parser.parentNode.insertBefore(
-            report,
-            parser
-        );
-
-        if (
-            !rec ||
-            stale
-        ) {
-            setTimeout(
-                function () {
-                    reviewTitle(
-                        titleNow(),
-                        false
-                    ).catch(
-                        function () {}
-                    );
+                    releaseCard(oldCard);
                 },
-                500
+                SOURCE_RELEASE_DELAY
+            );
+        }
+    }
+
+    function showFloat(card) {
+        if (!card || card === activeCard) {
+            return;
+        }
+
+        var img = getImage(card);
+
+        if (!img) {
+            return;
+        }
+
+        var rect = img.getBoundingClientRect();
+
+        if (
+            rect.width < 20 ||
+            rect.height < 20 ||
+            rect.bottom <= 0 ||
+            rect.top >= window.innerHeight
+        ) {
+            return;
+        }
+
+        var src = getImageSource(img);
+
+        if (!src) {
+            return;
+        }
+
+        createFloatingLayer();
+
+        window.clearTimeout(leaveTimer);
+        leaveTimer = null;
+
+        clearShowFrame();
+
+        if (activeCard && activeCard !== card) {
+            releaseCard(activeCard);
+        }
+
+        activeCard = card;
+        card.classList.add(
+            'mtw-character-source-active'
+        );
+
+        floatingImage.src = src;
+        floatingName.textContent =
+            getCharacterName(card, img);
+
+        floating.style.opacity = '';
+        floating.classList.remove(
+            'mtw-character-float--visible'
+        );
+
+        setRect(rect);
+
+        /*
+         * Force the browser to commit the source geometry.
+         * This makes the clone visibly grow from the portrait's
+         * exact original position instead of appearing at full size.
+         */
+        floating.getBoundingClientRect();
+
+        var target =
+            calculateTarget(rect);
+
+        showFrame =
+            window.requestAnimationFrame(
+                function () {
+                    showFrame =
+                        window.requestAnimationFrame(
+                            function () {
+                                setRect(target);
+
+                                floating.classList.add(
+                                    'mtw-character-float--visible'
+                                );
+
+                                showFrame = null;
+                            }
+                        );
+                }
+            );
+    }
+
+    function scheduleHide() {
+        window.clearTimeout(leaveTimer);
+
+        leaveTimer =
+            window.setTimeout(
+                function () {
+                    hideFloat(false);
+                },
+                HIDE_DELAY
+            );
+    }
+
+    function initDirectory(directory) {
+        if (
+            !directory ||
+            !directory.dataset ||
+            directory.dataset.mtwCharacterFloatReady === '1'
+        ) {
+            return;
+        }
+
+        if (!hoverCapable()) {
+            return;
+        }
+
+        directory.dataset.mtwCharacterFloatReady = '1';
+
+        document.documentElement.classList.add(
+            'mtw-character-float-ready'
+        );
+
+        createFloatingLayer();
+
+        directory.addEventListener(
+            'mouseover',
+            function (event) {
+                var card =
+                    getCard(
+                        directory,
+                        event.target
+                    );
+
+                if (!card) {
+                    return;
+                }
+
+                if (
+                    event.relatedTarget &&
+                    card.contains(
+                        event.relatedTarget
+                    )
+                ) {
+                    return;
+                }
+
+                showFloat(card);
+            }
+        );
+
+        directory.addEventListener(
+            'mouseout',
+            function (event) {
+                var card =
+                    getCard(
+                        directory,
+                        event.target
+                    );
+
+                if (!card || card !== activeCard) {
+                    return;
+                }
+
+                if (
+                    event.relatedTarget &&
+                    card.contains(
+                        event.relatedTarget
+                    )
+                ) {
+                    return;
+                }
+
+                scheduleHide();
+            }
+        );
+
+        directory.addEventListener(
+            'click',
+            function (event) {
+                if (
+                    event.target.closest &&
+                    event.target.closest(
+                        '.wds-tabs__tab'
+                    )
+                ) {
+                    hideFloat(true);
+                }
+            }
+        );
+    }
+
+    function initDirectories(container) {
+        if (!hoverCapable()) {
+            return;
+        }
+
+        var scope = container || document;
+        var directories = [];
+
+        if (
+            scope.matches &&
+            scope.matches('.mtw-home-characters')
+        ) {
+            directories.push(scope);
+        }
+
+        if (scope.querySelectorAll) {
+            Array.prototype.push.apply(
+                directories,
+                scope.querySelectorAll(
+                    '.mtw-home-characters'
+                )
+            );
+        }
+
+        directories.forEach(
+            initDirectory
+        );
+
+        if (
+            directories.length &&
+            !globalListenersInstalled
+        ) {
+            globalListenersInstalled = true;
+
+            window.addEventListener(
+                'scroll',
+                function () {
+                    hideFloat(true);
+                },
+                { passive: true }
+            );
+
+            window.addEventListener(
+                'resize',
+                function () {
+                    hideFloat(true);
+                },
+                { passive: true }
+            );
+
+            document.addEventListener(
+                'visibilitychange',
+                function () {
+                    if (document.hidden) {
+                        hideFloat(true);
+                    }
+                }
+            );
+
+            document.addEventListener(
+                'keydown',
+                function (event) {
+                    if (
+                        event.key === 'Escape' &&
+                        activeCard
+                    ) {
+                        hideFloat(true);
+                    }
+                }
             );
         }
     }
 
     function start() {
-        injectCss();
-        createWidget();
+        initDirectories(document);
 
         if (
-            !canAutoEdit()
+            window.mw &&
+            mw.hook
         ) {
-            state.autoFixEnabled =
-                false;
-
-            save();
-        }
-
-        renderWidget();
-        renderReport();
-
-        if (mw.hook) {
             mw.hook(
                 'wikipage.content'
             ).add(
-                function () {
-                    setTimeout(
-                        renderReport,
-                        0
+                function ($content) {
+                    var container =
+                        $content &&
+                        $content[0] ?
+                            $content[0] :
+                            document;
+
+                    initDirectories(
+                        container
                     );
                 }
             );
         }
+    }
+
+    if (
+        document.readyState === 'loading'
+    ) {
+        document.addEventListener(
+            'DOMContentLoaded',
+            start,
+            { once: true }
+        );
+    } else {
+        start();
+    }
+})();
+
+/* ============================================================================
+ * MTW — VICTOR ELDERBLOOD GALLERY V3
+ * Robust standalone enhancer for:
+ *     Victor Elderblood/Gallery
+ *
+ * Improvements over V2:
+ * - Finds H2 headings even when Fandom nests them inside <center>/wrapper tags.
+ * - Safely inserts the archive header before the first gallery section.
+ * - Numbers all gallery H2 sections.
+ * - Detects portrait / square / landscape slideshow artwork.
+ * - Keeps sizing classification updated after slideshow navigation.
+ * - Works with late-rendered Fandom slideshow markup.
+ * - Old-style syntax for better Fandom/JSHint compatibility.
+ * ============================================================================ */
+
+(function () {
+    'use strict';
+
+    if (window.__mtwVictorGalleryV3Loaded) {
+        return;
+    }
+
+    window.__mtwVictorGalleryV3Loaded = true;
+
+    var GALLERY_PAGE = 'Victor_Elderblood/Gallery';
+    var RATIO_PORTRAIT = 'mtw-vg2-ratio--portrait';
+    var RATIO_SQUARE = 'mtw-vg2-ratio--square';
+    var RATIO_LANDSCAPE = 'mtw-vg2-ratio--landscape';
+
+    function isVictorGallery() {
+        var pageName = '';
+        var path = '';
+
+        try {
+            if (window.mw && mw.config) {
+                pageName = mw.config.get('wgPageName') || '';
+            }
+        } catch (ignore) {}
+
+        if (pageName === GALLERY_PAGE) {
+            return true;
+        }
+
+        path = window.location.pathname || '';
+
+        try {
+            path = decodeURIComponent(path);
+        } catch (ignore2) {}
+
+        path = path.replace(/\/+$/, '');
+
+        return /\/wiki\/Victor_Elderblood\/Gallery$/i.test(path);
+    }
+
+    function cleanText(value) {
+        return String(value || '')
+            .replace(/\s+/g, ' ')
+            .replace(/^\s+|\s+$/g, '');
+    }
+
+    function padNumber(number) {
+        number = String(number);
+
+        return number.length < 2 ?
+            '0' + number :
+            number;
+    }
+
+    function getOutput() {
+        return (
+            document.querySelector(
+                '.page-content .mw-parser-output'
+            ) ||
+            document.querySelector(
+                '.mw-parser-output'
+            )
+        );
+    }
+
+    function getHeadline(heading) {
+        if (!heading) {
+            return null;
+        }
+
+        return (
+            heading.querySelector(
+                '.mw-headline[id]'
+            ) ||
+            heading
+        );
+    }
+
+    function isUsableSectionHeading(heading) {
+        var headline;
+        var text;
 
         if (
-            state.enabled
+            !heading ||
+            !heading.tagName ||
+            heading.tagName.toLowerCase() !== 'h2'
         ) {
-            scheduleScan(
-                R.firstDelay
+            return false;
+        }
+
+        headline = getHeadline(heading);
+
+        text = cleanText(
+            headline ?
+                headline.textContent :
+                heading.textContent
+        );
+
+        if (!text) {
+            return false;
+        }
+
+        return text.toLowerCase() !== 'references';
+    }
+
+    function collectSectionHeadings(output) {
+        var all;
+        var result;
+        var i;
+
+        result = [];
+
+        if (!output) {
+            return result;
+        }
+
+        all = output.querySelectorAll('h2');
+
+        for (i = 0; i < all.length; i++) {
+            if (isUsableSectionHeading(all[i])) {
+                result.push(all[i]);
+            }
+        }
+
+        return result;
+    }
+
+    function topLevelChild(node, output) {
+        var currentNode;
+
+        if (!node || !output) {
+            return null;
+        }
+
+        currentNode = node;
+
+        while (
+            currentNode.parentNode &&
+            currentNode.parentNode !== output
+        ) {
+            currentNode = currentNode.parentNode;
+        }
+
+        return currentNode.parentNode === output ?
+            currentNode :
+            null;
+    }
+
+    function addSectionNumbers(output) {
+        var headings;
+        var i;
+
+        headings = collectSectionHeadings(output);
+
+        for (i = 0; i < headings.length; i++) {
+            headings[i].setAttribute(
+                'data-mtw-vg-number',
+                padNumber(i + 1)
+            );
+        }
+    }
+
+    function buildHeader(output) {
+        var headings;
+        var firstHeading;
+        var insertionPoint;
+        var header;
+        var eyebrow;
+        var title;
+        var description;
+        var nav;
+        var i;
+        var headline;
+        var text;
+        var id;
+        var link;
+
+        if (
+            !output ||
+            output.querySelector(
+                '.mtw-vg2-header'
+            )
+        ) {
+            return;
+        }
+
+        headings = collectSectionHeadings(output);
+
+        if (!headings.length) {
+            return;
+        }
+
+        firstHeading = headings[0];
+
+        insertionPoint =
+            topLevelChild(
+                firstHeading,
+                output
+            ) ||
+            firstHeading;
+
+        header =
+            document.createElement('div');
+
+        header.className =
+            'mtw-vg2-header';
+
+        eyebrow =
+            document.createElement('div');
+
+        eyebrow.className =
+            'mtw-vg2-header__eyebrow';
+
+        eyebrow.appendChild(
+            document.createTextNode(
+                'Victor Elderblood · Visual Archive'
+            )
+        );
+
+        title =
+            document.createElement('div');
+
+        title.className =
+            'mtw-vg2-header__title';
+
+        title.appendChild(
+            document.createTextNode(
+                'Gallery'
+            )
+        );
+
+        description =
+            document.createElement('div');
+
+        description.className =
+            'mtw-vg2-header__text';
+
+        description.appendChild(
+            document.createTextNode(
+                'Browse Victor’s character sheets, forms, transformations, equipment and miscellaneous artwork.'
+            )
+        );
+
+        nav =
+            document.createElement('nav');
+
+        nav.className =
+            'mtw-vg2-index';
+
+        nav.setAttribute(
+            'aria-label',
+            'Victor gallery sections'
+        );
+
+        for (i = 0; i < headings.length; i++) {
+            headline =
+                getHeadline(
+                    headings[i]
+                );
+
+            if (!headline) {
+                continue;
+            }
+
+            text =
+                cleanText(
+                    headline.textContent
+                );
+
+            id =
+                headline.id ||
+                headings[i].id ||
+                '';
+
+            if (!text || !id) {
+                continue;
+            }
+
+            link =
+                document.createElement('a');
+
+            link.href =
+                '#' + id;
+
+            link.appendChild(
+                document.createTextNode(
+                    text
+                )
             );
 
-            scheduleEditWorker(
-                1000
+            nav.appendChild(link);
+        }
+
+        header.appendChild(
+            eyebrow
+        );
+
+        header.appendChild(
+            title
+        );
+
+        header.appendChild(
+            description
+        );
+
+        if (nav.childNodes.length) {
+            header.appendChild(
+                nav
             );
         }
 
-        setInterval(
-            renderWidget,
-            30000
+        if (
+            insertionPoint &&
+            insertionPoint.parentNode
+        ) {
+            insertionPoint.parentNode.insertBefore(
+                header,
+                insertionPoint
+            );
+        }
+    }
+
+    function getSlides(slideshow) {
+        if (!slideshow) {
+            return [];
+        }
+
+        return slideshow.querySelectorAll(
+            '.wikia-slideshow-images > li'
         );
+    }
+
+    function isVisibleSlide(slide) {
+        var style;
+        var rect;
+
+        if (!slide) {
+            return false;
+        }
+
+        try {
+            style =
+                window.getComputedStyle(
+                    slide
+                );
+        } catch (e) {
+            style = null;
+        }
+
+        if (style) {
+            if (
+                style.display === 'none' ||
+                style.visibility === 'hidden' ||
+                parseFloat(
+                    style.opacity || '1'
+                ) <= 0.01
+            ) {
+                return false;
+            }
+        }
+
+        rect =
+            slide.getBoundingClientRect();
+
+        return (
+            rect.width > 1 &&
+            rect.height > 1
+        );
+    }
+
+    function getVisibleImage(slideshow) {
+        var slides;
+        var i;
+        var img;
+
+        slides =
+            getSlides(slideshow);
+
+        for (i = 0; i < slides.length; i++) {
+            if (!isVisibleSlide(slides[i])) {
+                continue;
+            }
+
+            img =
+                slides[i].querySelector(
+                    'img'
+                );
+
+            if (img) {
+                return img;
+            }
+        }
+
+        /*
+         * Fallback for Fandom variants where active slides are
+         * positioned/clipped in a way that makes visibility tests unreliable.
+         */
+        return slideshow.querySelector(
+            '.wikia-slideshow-images img'
+        );
+    }
+
+    function clearRatioClasses(slideshow) {
+        slideshow.classList.remove(
+            RATIO_PORTRAIT
+        );
+
+        slideshow.classList.remove(
+            RATIO_SQUARE
+        );
+
+        slideshow.classList.remove(
+            RATIO_LANDSCAPE
+        );
+    }
+
+    function updateRatio(slideshow) {
+        var img;
+        var ratio;
+
+        if (!slideshow) {
+            return;
+        }
+
+        img =
+            getVisibleImage(
+                slideshow
+            );
+
+        if (
+            !img ||
+            !img.naturalWidth ||
+            !img.naturalHeight
+        ) {
+            return;
+        }
+
+        clearRatioClasses(
+            slideshow
+        );
+
+        ratio =
+            img.naturalWidth /
+            img.naturalHeight;
+
+        if (ratio >= 1.28) {
+            slideshow.classList.add(
+                RATIO_LANDSCAPE
+            );
+        } else if (ratio >= 0.86) {
+            slideshow.classList.add(
+                RATIO_SQUARE
+            );
+        } else {
+            slideshow.classList.add(
+                RATIO_PORTRAIT
+            );
+        }
+    }
+
+    function handleGalleryImageLoad(event) {
+        var img;
+        var slideshow;
+
+        img =
+            event.currentTarget;
+
+        if (
+            !img ||
+            !img.closest
+        ) {
+            return;
+        }
+
+        slideshow =
+            img.closest(
+                '.wikia-slideshow'
+            );
+
+        if (slideshow) {
+            updateRatio(
+                slideshow
+            );
+        }
+    }
+
+    function prepareGalleryImage(img, slideshow) {
+        if (!img) {
+            return;
+        }
+
+        if (
+            img.complete &&
+            img.naturalWidth &&
+            img.naturalHeight
+        ) {
+            updateRatio(
+                slideshow
+            );
+
+            return;
+        }
+
+        img.addEventListener(
+            'load',
+            handleGalleryImageLoad,
+            {
+                once: true
+            }
+        );
+    }
+
+    function refreshSlideshowSoon(event) {
+        var slideshow;
+
+        slideshow =
+            event.currentTarget;
+
+        window.setTimeout(
+            function () {
+                updateRatio(
+                    slideshow
+                );
+            },
+            70
+        );
+
+        window.setTimeout(
+            function () {
+                updateRatio(
+                    slideshow
+                );
+            },
+            240
+        );
+    }
+
+    function handleSlideshowMutation(records, observer) {
+        var slideshow;
+
+        if (
+            !records ||
+            !records.length ||
+            !observer
+        ) {
+            return;
+        }
+
+        slideshow =
+            observer._mtwSlideshow;
+
+        if (!slideshow) {
+            return;
+        }
+
+        window.requestAnimationFrame(
+            function () {
+                updateRatio(
+                    slideshow
+                );
+            }
+        );
+    }
+
+    function countSlideshowImages(slideshow) {
+        var slides;
+        var images;
+
+        slides =
+            getSlides(slideshow);
+
+        if (slides.length) {
+            return slides.length;
+        }
+
+        images =
+            slideshow.querySelectorAll(
+                '.wikia-slideshow-images img'
+            );
+
+        return images.length;
+    }
+
+    function enhanceSlideshow(slideshow) {
+        var count;
+        var images;
+        var imageList;
+        var observer;
+        var i;
+
+        if (
+            !slideshow ||
+            slideshow.getAttribute(
+                'data-mtw-gallery-v3-ready'
+            ) === '1'
+        ) {
+            return;
+        }
+
+        slideshow.setAttribute(
+            'data-mtw-gallery-v3-ready',
+            '1'
+        );
+
+        count =
+            countSlideshowImages(
+                slideshow
+            );
+
+        if (count <= 1) {
+            slideshow.classList.add(
+                'mtw-vg2-single'
+            );
+        } else {
+            slideshow.classList.remove(
+                'mtw-vg2-single'
+            );
+        }
+
+        images =
+            slideshow.querySelectorAll(
+                '.wikia-slideshow-images img'
+            );
+
+        for (i = 0; i < images.length; i++) {
+            prepareGalleryImage(
+                images[i],
+                slideshow
+            );
+        }
+
+        updateRatio(
+            slideshow
+        );
+
+        slideshow.addEventListener(
+            'click',
+            refreshSlideshowSoon,
+            false
+        );
+
+        imageList =
+            slideshow.querySelector(
+                '.wikia-slideshow-images'
+            );
+
+        if (
+            imageList &&
+            window.MutationObserver
+        ) {
+            observer =
+                new MutationObserver(
+                    handleSlideshowMutation
+                );
+
+            observer._mtwSlideshow =
+                slideshow;
+
+            observer.observe(
+                imageList,
+                {
+                    attributes: true,
+                    childList: true,
+                    subtree: true,
+                    attributeFilter: [
+                        'class',
+                        'style',
+                        'src'
+                    ]
+                }
+            );
+        }
+    }
+
+    function enhanceSlideshows(output) {
+        var slideshows;
+        var i;
+
+        if (!output) {
+            return;
+        }
+
+        slideshows =
+            output.querySelectorAll(
+                '.wikia-slideshow'
+            );
+
+        for (i = 0; i < slideshows.length; i++) {
+            enhanceSlideshow(
+                slideshows[i]
+            );
+        }
+    }
+
+    function enhance() {
+        var output;
+
+        if (!isVictorGallery()) {
+            return;
+        }
+
+        if (document.documentElement) {
+            document.documentElement.classList.add(
+                'mtw-victor-gallery-js-ready'
+            );
+        }
+
+        if (document.body) {
+            document.body.classList.add(
+                'mtw-victor-gallery-v2'
+            );
+        }
+
+        output =
+            getOutput();
+
+        if (!output) {
+            return;
+        }
+
+        addSectionNumbers(
+            output
+        );
+
+        buildHeader(
+            output
+        );
+
+        enhanceSlideshows(
+            output
+        );
+    }
+
+    function handleWikiContent() {
+        enhance();
+    }
+
+    function start() {
+        enhance();
+
+        /*
+         * Fandom often finishes constructing slideshow markup
+         * after the normal article DOM is already available.
+         */
+        window.setTimeout(
+            enhance,
+            250
+        );
+
+        window.setTimeout(
+            enhance,
+            650
+        );
+
+        window.setTimeout(
+            enhance,
+            1200
+        );
+
+        window.setTimeout(
+            enhance,
+            2200
+        );
+
+        try {
+            if (
+                window.mw &&
+                mw.hook
+            ) {
+                mw.hook(
+                    'wikipage.content'
+                ).add(
+                    handleWikiContent
+                );
+            }
+        } catch (ignore) {}
     }
 
     if (
@@ -4365,9 +3583,7 @@
         document.addEventListener(
             'DOMContentLoaded',
             start,
-            {
-                once: true
-            }
+            false
         );
     } else {
         start();

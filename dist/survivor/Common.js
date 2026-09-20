@@ -1,3 +1,4 @@
+console.log('Common.js loaded');
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /*<source lang="javascript">*/
@@ -708,3 +709,23 @@ window.rwaOptions = {
 	namespaces: [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
 	autoInit: true 
 };
+
+// For Template:Confessional/Multilanguage
+mw.loader.using(['jquery'], function () {
+    $(document).on('click', '.confessional-toggle-btn', function () {
+        var $btn        = $(this);
+        var $container  = $btn.parent();
+        var $original   = $container.find('.confessional-original');
+        var $translated = $container.find('.confessional-translated');
+
+        if ($original.is(':visible')) {
+            $original.hide();
+            $translated.show();
+            $btn.text('[Show Original]');
+        } else {
+            $translated.hide();
+            $original.show();
+            $btn.text('[Translate to English]');
+        }
+    });
+});

@@ -1,18 +1,3 @@
-/*UserTag Stuff*/
-window.UserTagsJS = {
-	modules: {},
-	tags: {},
-	oasisPlaceBefore: ''
-};
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		cofounder: { u:'Co-Founder' },
-		founder : { u: 'Founder' },
-	}
-};
 if (wgUserName != 'null') {
 	$('.insertusername').text(wgUserName);
 }
@@ -1221,3 +1206,34 @@ importArticles({
 })();
 /*DiscussionsActivity*/
 window.discussionsModuleEmbed = true;
+/*UserTags Stuff*/
+window.UserTagsJS = {
+	modules: UserTagsJS.modules.custom = {
+	'!Davin012613': ['catalyst'], 
+	'MarkoRBLXDEV': ['nexus'], 
+	'JacksonGreenwayy': ['nullsysop'], 
+	'TestNPC': ['nullsysop'], 
+	'PryoSyntax': ['paragon'],
+	'Skyprotogen': ['logoist'],
+	'GDPSxGD': ['moderator'],
+	'Terraformation lover': ['test']
+},
+	tags: {
+		// group: { associated tag data }
+		catalyst: { u:'Catalyst' },
+		nexus: { u:'Nexus' },
+		nullsysop: { u:'NullSysop' },
+		paragon: { u:'Paragon' },
+		logoist: { u:'Logoist'},
+		moderator: { u:'Moderator'},
+		test: { u:'test'}
+	}
+};
+/*Icon Stuff*/
+$(function () {
+	var icons = $('#icons');
+    if (icons.length) {
+        $('.page-header__meta').after(icons);
+        icons.show();
+    }
+});

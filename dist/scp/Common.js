@@ -61,7 +61,7 @@ $(function () {
 // License thing for creative commons
 $(function() {
     // Custom license text (modify as needed)
-    var customText = 'Unless otherwise stated, the content of this page is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 License</a>, excluding other content such as images, code, additional information, etc., which are licensed under the same licenses determined by their respective authors, meaning you may or may not include them in your own work. Others may share and adapt the work (e.g. translations), though it is required to credit all of the authors above including applying the same license to your derivative work.';
+    var customText = 'Unless otherwise stated, the text of this page is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 License</a>, excluding other content such as images, code, additional information, etc., which are licensed under the same licenses determined by their respective authors, meaning you may or may not include them in your own work. Others may share and adapt the work (e.g. translations), though it is required to credit all of the authors above including applying the same license to your derivative work.';
 
     // Set up a MutationObserver to detect changes in the footer
     var observer = new MutationObserver(function(mutations) {

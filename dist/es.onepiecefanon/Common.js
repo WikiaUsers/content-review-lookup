@@ -176,3 +176,34 @@ $(function() {
         }
     });
 });
+/* Permite cambiar el título visible de una página mediante {{MOSTRARTITULO|Título}} */
+(function ($, mw) {
+	'use strict';
+
+	function mostrarTituloPersonalizado() {
+		var nuevoTitulo = document.getElementById('titulo-personalizado-wiki');
+
+		if (!nuevoTitulo) {
+			return;
+		}
+
+		var tituloActual =
+			document.querySelector('.page-header h1') ||
+			document.querySelector('h1.page-header__title') ||
+			document.getElementById('firstHeading') ||
+			document.getElementById('firstheading');
+
+		if (!tituloActual) {
+			return;
+		}
+
+		tituloActual.innerHTML = nuevoTitulo.innerHTML;
+	}
+
+	/* Cuando MediaWiki termina de cargar el contenido */
+	mw.hook('wikipage.content').add(mostrarTituloPersonalizado);
+
+	/* También lo intentamos en la carga inicial */
+	$(mostrarTituloPersonalizado);
+
+}(jQuery, mediaWiki));

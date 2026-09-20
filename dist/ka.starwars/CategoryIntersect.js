@@ -21,29 +21,29 @@ $(function () {
 		// კატეგორიების გვერდებზე ბმულების დამატება
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			const baseUrl = '/ka/wiki/' + intersectionPage + '?category1=' + category;
+			const baseUrl = '/ka/wiki/' + intersectionPage + '?category1=' + encodeURIComponent(category);
 			const canonUrl = baseUrl + '&category2=სტატიები_კანონიკურ_საკითხებზე&category3=';
 			const legendsUrl = baseUrl + '&category2=სტატიები_ლეგენდების_საკითხებზე&category3=';
 			const noncanonUrl = baseUrl + '&category2=სტატიები_არაკანონიკურ_საკითხებზე&category3=';
        	    const noncanonlegendsUrl = baseUrl + '&category2=სტატიები_ლეგენდების_არაკანონიკურ_საკითხებზე&category3=';
 			var filters = '<div class="dpl-filter-container">';
-			filters += '<a href="' + baseUrl + '">კატეგორიების გადაკვეთა</a>';
+			filters += '<a href="' + mw.html.escape(baseUrl) + '">კატეგორიების გადაკვეთა</a>';
 			filters += '<ul>';
 			filters += '<li>';
-			filters += '<a href="' + canonUrl + '" title="მხოლოდ კანონთან დაკავშირებული სტატიები">';
+			filters += '<a href="' + mw.html.escape(canonUrl) + '" title="მხოლოდ კანონთან დაკავშირებული სტატიები">';
 			filters += '<img alt="მხოლოდ კანონთან დაკავშირებული სტატიები" src="/ka/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '<li>';
-			filters += '<a href="' + legendsUrl + '" title="მხოლოდ ლეგენდებთან დაკავშირებული სტატიები">';
+			filters += '<a href="' + mw.html.escape(legendsUrl) + '" title="მხოლოდ ლეგენდებთან დაკავშირებული სტატიები">';
 			filters += '<img alt="მხოლოდ ლეგენდებთან დაკავშირებული სტატიები" src="/ka/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
-			filters += '<a href="' + noncanonUrl + '" title="მხოლოდ არაკანონიკურ საკითხებთან დაკავშირებული სტატიები">';
+			filters += '<a href="' + mw.html.escape(noncanonUrl) + '" title="მხოლოდ არაკანონიკურ საკითხებთან დაკავშირებული სტატიები">';
 			filters += '<img alt="მხოლოდ არაკანონიკურ საკითხებთან დაკავშირებული სტატიები" src="/ka/wiki/Special:FilePath/Premium-Eras-NCC.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
-			filters += '<a href="' + noncanonlegendsUrl + '" title="მხოლოდ ლეგენდების არაკანონიკურ საკითხებთან დაკავშირებული სტატიები">';
+			filters += '<a href="' + mw.html.escape(noncanonlegendsUrl) + '" title="მხოლოდ ლეგენდების არაკანონიკურ საკითხებთან დაკავშირებული სტატიები">';
 			filters += '<img alt="მხოლოდ ლეგენდების არაკანონიკურ საკითხებთან დაკავშირებული სტატიები" src="/ka/wiki/Special:FilePath/Premium-Eras-NCL.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
@@ -62,7 +62,7 @@ $(function () {
 
 			document.title = title;
 			$('#firstHeading').html(title);
-			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + pageUrl + '">კატეგორიების გადაკვეთის ახალი მოთხოვნა</a>');
+			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + mw.html.escape(pageUrl) + '">კატეგორიების გადაკვეთის ახალი მოთხოვნა</a>');
 			$('#mw-content-text').empty();
 
 			// Style results like category page
@@ -130,9 +130,9 @@ $(function () {
 				contentmodel: 'wikitext'
 			}).catch(function (code, result) {
 				if (code === 'http') {
-					$('#mw-content-text').html('<p>გადაკვეთის შედეგების მოძიებისას შეცდომა HTTP-ში: ' + result.textStatus + '</p>');
+					$('#mw-content-text').html('<p>გადაკვეთის შედეგების მოძიებისას შეცდომა HTTP-ში: ' + mw.html.escape(result.textStatus) + '</p>');
 				} else {
-					$('#mw-content-text').html('<p>გადაკვეთის შედეგების მოძიებისას შეცდომა API-ში: ' + result.error.info + '</p>');
+					$('#mw-content-text').html('<p>გადაკვეთის შედეგების მოძიებისას შეცდომა API-ში: ' + mw.html.escape(result.error.info) + '</p>');
 				}
 				return Promise.reject();
 			});
@@ -166,15 +166,15 @@ $(function () {
 					var pagination = '<div class="dpl-pagination">';
 					pagination += '<b>გადასვლა:</b> ';
 					if (currentPage > 2 && startPage > 1) {
-						pagination += '<a href="' + basePaginationLink + '" aria-label="გვერდი 1">1</a>';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink) + '" aria-label="გვერდი 1">1</a>';
 						pagination += startPage > 2 ? pageSeparator : ' ';
 					}
 					for (var page = startPage; page <= endPage; page++) {
-						pagination += '<a href="' + basePaginationLink + '&page=' + page + '" aria-label="გვერდი ' + page + (page === currentPage ? ' (ეს გვერდი)' : '') + '">' + (page === currentPage ? '<b>' + page + '</b>' : page) + '</a> ';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink + '&page=' + page) + '" aria-label="გვერდი ' + mw.html.escape(page + (page === currentPage ? ' (ეს გვერდი)' : '')) + '">' + (page === currentPage ? '<b>' + mw.html.escape(page) + '</b>' : mw.html.escape(page)) + '</a> ';
 					}
 					if (currentPage < maxPage - 1 && endPage < maxPage) {
 						pagination += endPage < maxPage - 1 ? pageSeparator : ' ';
-						pagination += '<a href="' + basePaginationLink + '&page=' + maxPage + '" aria-label="გვერდი ' + maxPage + '">' + maxPage + '</a>';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink + '&page=' + maxPage) + '" aria-label="გვერდი ' + mw.html.escape(maxPage) + '">' + mw.html.escape(maxPage) + '</a>';
 					}
 					pagination += '</div>';
 					$('#mw-content-text').prepend(pagination);

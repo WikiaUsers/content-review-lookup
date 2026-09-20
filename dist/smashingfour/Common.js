@@ -5,12 +5,18 @@
   // Smashing Four Win Calculator UI
   // ------------------------------------------------------------
 
-  var INIT_ATTR = "data-s4wc-initialized";
+  var INIT_ATTR = "data-s4wc-user-initialized";
+  var LIVE_INIT_ATTR = "data-s4wc-initialized";
 
   // Emergency fallbacks.
   // Normal values are loaded from Module:S4GameConfig.
   var DEFAULT_DAMAGE_WEIGHT = 4;
   var DEFAULT_SCALE = 1800;
+  var DEFAULT_HP_REF = 4500;
+  var DEFAULT_HP_EXPONENT = 0.85;
+  var DEFAULT_COMPOUND_PRESSURE_K = 0.40;
+  var DEFAULT_COMPOUND_PRESSURE_EXPONENT = 2.0;
+  var DEFAULT_COMPOUND_REALIZATION_FLOOR = 0.55;
 
   // ------------------------------------------------------------
   // Shared helpers
@@ -72,6 +78,10 @@
 
     mount.setAttribute(INIT_ATTR, "1");
 
+    // Prevent the public/live calculator script from replacing this personal
+    // calibration UI if it initializes after the user script.
+    mount.setAttribute(LIVE_INIT_ATTR, "1");
+
     var api = new mw.Api();
 
     var pageName = mw.config.get("wgPageName") || "";
@@ -127,7 +137,12 @@
     function fetchCalculatorDefaults() {
       return Promise.all([
         api.parse("{{#invoke:S4GameConfig|calcDamageWeight}}"),
-        api.parse("{{#invoke:S4GameConfig|calcScale}}")
+        api.parse("{{#invoke:S4GameConfig|calcScale}}"),
+        api.parse("{{#invoke:S4GameConfig|calcHpRef}}"),
+        api.parse("{{#invoke:S4GameConfig|calcHpExponent}}"),
+        api.parse("{{#invoke:S4GameConfig|calcCompoundPressureK}}"),
+        api.parse("{{#invoke:S4GameConfig|calcCompoundPressureExponent}}"),
+        api.parse("{{#invoke:S4GameConfig|calcCompoundRealizationFloor}}")
       ]).then(function (results) {
 
         var dmgW =
@@ -135,6 +150,21 @@
 
         var scale =
           parseFloat(parseApiText(results[1]));
+
+        var hpRef =
+          parseFloat(parseApiText(results[2]));
+
+        var hpExponent =
+          parseFloat(parseApiText(results[3]));
+
+        var pressureK =
+          parseFloat(parseApiText(results[4]));
+
+        var pressureExponent =
+          parseFloat(parseApiText(results[5]));
+
+        var realizationFloor =
+          parseFloat(parseApiText(results[6]));
 
         if (!dmgW || dmgW <= 0) {
           throw new Error(
@@ -148,8 +178,47 @@
           );
         }
 
+        if (!hpRef || hpRef <= 0) {
+          throw new Error(
+            "Invalid HP reference returned by S4GameConfig."
+          );
+        }
+
+        if (!hpExponent || hpExponent <= 0) {
+          throw new Error(
+            "Invalid HP exponent returned by S4GameConfig."
+          );
+        }
+
+        if (!isFinite(pressureK) || pressureK < 0) {
+          throw new Error(
+            "Invalid compound pressure K returned by S4GameConfig."
+          );
+        }
+
+        if (!pressureExponent || pressureExponent <= 0) {
+          throw new Error(
+            "Invalid compound pressure exponent returned by S4GameConfig."
+          );
+        }
+
+        if (
+          !isFinite(realizationFloor) ||
+          realizationFloor < 0 ||
+          realizationFloor > 1
+        ) {
+          throw new Error(
+            "Invalid compound realization floor returned by S4GameConfig."
+          );
+        }
+
         DEFAULT_DAMAGE_WEIGHT = dmgW;
         DEFAULT_SCALE = scale;
+        DEFAULT_HP_REF = hpRef;
+        DEFAULT_HP_EXPONENT = hpExponent;
+        DEFAULT_COMPOUND_PRESSURE_K = pressureK;
+        DEFAULT_COMPOUND_PRESSURE_EXPONENT = pressureExponent;
+        DEFAULT_COMPOUND_REALIZATION_FLOOR = realizationFloor;
       });
     }
 
@@ -291,6 +360,62 @@
               'step="1" ' +
               'value="' +
               DEFAULT_SCALE +
+            '">' +
+          "</label>" +
+
+          '<label class="s4wc-setting">' +
+            '<span>HP Reference</span>' +
+            '<input id="s4wc-hpref" ' +
+              'type="number" ' +
+              'min="1" ' +
+              'step="1" ' +
+              'value="' +
+              DEFAULT_HP_REF +
+            '">' +
+          "</label>" +
+
+          '<label class="s4wc-setting">' +
+            '<span>HP Exponent</span>' +
+            '<input id="s4wc-hpexp" ' +
+              'type="number" ' +
+              'min="0.01" ' +
+              'step="0.01" ' +
+              'value="' +
+              DEFAULT_HP_EXPONENT +
+            '">' +
+          "</label>" +
+
+          '<label class="s4wc-setting">' +
+            '<span>Pressure K</span>' +
+            '<input id="s4wc-pressure-k" ' +
+              'type="number" ' +
+              'min="0" ' +
+              'step="0.01" ' +
+              'value="' +
+              DEFAULT_COMPOUND_PRESSURE_K +
+            '">' +
+          "</label>" +
+
+          '<label class="s4wc-setting">' +
+            '<span>Pressure Exponent</span>' +
+            '<input id="s4wc-pressure-exp" ' +
+              'type="number" ' +
+              'min="0.01" ' +
+              'step="0.01" ' +
+              'value="' +
+              DEFAULT_COMPOUND_PRESSURE_EXPONENT +
+            '">' +
+          "</label>" +
+
+          '<label class="s4wc-setting">' +
+            '<span>Realization Floor</span>' +
+            '<input id="s4wc-realization-floor" ' +
+              'type="number" ' +
+              'min="0" ' +
+              'max="1" ' +
+              'step="0.01" ' +
+              'value="' +
+              DEFAULT_COMPOUND_REALIZATION_FLOOR +
             '">' +
           "</label>";
       }
@@ -726,6 +851,21 @@
       var scaleInput =
         document.getElementById("s4wc-scale");
 
+      var hpRefInput =
+        document.getElementById("s4wc-hpref");
+
+      var hpExpInput =
+        document.getElementById("s4wc-hpexp");
+
+      var pressureKInput =
+        document.getElementById("s4wc-pressure-k");
+
+      var pressureExpInput =
+        document.getElementById("s4wc-pressure-exp");
+
+      var realizationFloorInput =
+        document.getElementById("s4wc-realization-floor");
+
       var dmgW =
         dmgWInput
           ? String(dmgWInput.value || DEFAULT_DAMAGE_WEIGHT).trim()
@@ -736,12 +876,57 @@
           ? String(scaleInput.value || DEFAULT_SCALE).trim()
           : String(DEFAULT_SCALE);
 
+      var hpRef =
+        hpRefInput
+          ? String(hpRefInput.value || DEFAULT_HP_REF).trim()
+          : String(DEFAULT_HP_REF);
+
+      var hpExp =
+        hpExpInput
+          ? String(hpExpInput.value || DEFAULT_HP_EXPONENT).trim()
+          : String(DEFAULT_HP_EXPONENT);
+
+      var pressureK =
+        pressureKInput
+          ? String(pressureKInput.value || DEFAULT_COMPOUND_PRESSURE_K).trim()
+          : String(DEFAULT_COMPOUND_PRESSURE_K);
+
+      var pressureExp =
+        pressureExpInput
+          ? String(pressureExpInput.value || DEFAULT_COMPOUND_PRESSURE_EXPONENT).trim()
+          : String(DEFAULT_COMPOUND_PRESSURE_EXPONENT);
+
+      var realizationFloor =
+        realizationFloorInput
+          ? String(realizationFloorInput.value || DEFAULT_COMPOUND_REALIZATION_FLOOR).trim()
+          : String(DEFAULT_COMPOUND_REALIZATION_FLOOR);
+
       params.push(
         "dmgW=" + dmgW
       );
 
       params.push(
         "scale=" + scale
+      );
+
+      params.push(
+        "hpRef=" + hpRef
+      );
+
+      params.push(
+        "hpExp=" + hpExp
+      );
+
+      params.push(
+        "pressureK=" + pressureK
+      );
+
+      params.push(
+        "pressureExp=" + pressureExp
+      );
+
+      params.push(
+        "realizationFloor=" + realizationFloor
       );
 
       params.push(
@@ -899,6 +1084,51 @@
           el.value =
             String(
               DEFAULT_SCALE
+            );
+        }
+
+        if (
+          el.id === "s4wc-hpref"
+        ) {
+          el.value =
+            String(
+              DEFAULT_HP_REF
+            );
+        }
+
+        if (
+          el.id === "s4wc-hpexp"
+        ) {
+          el.value =
+            String(
+              DEFAULT_HP_EXPONENT
+            );
+        }
+
+        if (
+          el.id === "s4wc-pressure-k"
+        ) {
+          el.value =
+            String(
+              DEFAULT_COMPOUND_PRESSURE_K
+            );
+        }
+
+        if (
+          el.id === "s4wc-pressure-exp"
+        ) {
+          el.value =
+            String(
+              DEFAULT_COMPOUND_PRESSURE_EXPONENT
+            );
+        }
+
+        if (
+          el.id === "s4wc-realization-floor"
+        ) {
+          el.value =
+            String(
+              DEFAULT_COMPOUND_REALIZATION_FLOOR
             );
         }
       });

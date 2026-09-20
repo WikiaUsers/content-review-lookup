@@ -1,259 +1,144 @@
-mw.loader.using(['mediawiki.api'], function() {
-	if(mw.config.get('wgNamespaceNumber') == 0 || mw.config.get('wgNamespaceNumber') == 4) {
-		$('#p-views').append(`<div id="ratingparent" style="position: absolute;background:#ababab; z-index:3;top:106px;right:40px; height:40px; width:190px; padding:5px; text-align:center; vertical-align:center; color:black; font-size:12px; font-family:Georgia; border-radius:5px;;">
-		<big>
-		<span style="float:left"><span style="opacity:0">_</span>Rating: <span id="total">0</span></span>
-		<span style="float:right"><span id="upvoteparent" style="color:green"></span> || <span id="downvoteparent" style="color:red"></span><span style="opacity:0">_</span></span>
-		</big>
+/*Credits to Pexy0 from the Backrooms Wiki for this!*/
+
+mw.hook('wikipage.content').add(function() {
+	const api = new mw.Api();
+	const page = mw.config.get('wgTitle');
+	const localRatingsPage = `User:${mw.config.get('wgUserName')}/ratings.json`;
+	const lastVoted = x => $('.rating-'+ x).hasClass('voted');
+	const inc = x => x[' ' + page] ? x[' ' + page]++ : x[' ' + page] = 1;
+	const dec = x => x[' ' + page] && x[' ' + page] > 1 ? x[' ' + page]-- : delete x[' ' + page];
+	const sort = x => Object.fromEntries(Object.entries(x).sort((a, b) => b[1] - a[1]));
+	var up = [];
+	var down = [];
+	var deleted = '';
+	var globalUp, globalDown, deletedInLocal, deletedInGlobal, vote;
+	
+	Promise.all([
+		fetch(`/wiki/${localRatingsPage}?action=raw`).then(response => response.ok && response.json()),
+		fetch('/wiki/Backrooms_Wiki:Ratings.json?action=raw').then(response => response.json())
+	]).then(ratings => {
+		if (ratings) {
+			up = ratings[0].up;
+			down = ratings[0].down;
+			globalUp = ratings[1].globalUp;
+			globalDown = ratings[1].globalDown;
+		}
+	})
+	.then(() => {
+		// Temporary converter to new entry format for old ratings.json pages
+		up = up.map(entry => entry.replace(/_/g, ' '));
+		down = down.map(entry => entry.replace(/_/g, ' '));
+		globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+		globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+		// ----
+		$('.page-header__meta').append(`<div class="page-rating">Rating:
+			<span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[' ' + page] || 0}</span>
+			<span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[' ' + page] || 0}</span>
 		</div>`);
-		$('body').append`<style>
-		#upvote {background:#8c8c8c !important;color:green !important;border:solid #8c8c8c 1px !important;border-radius:5px !important;cursor:pointer;}
-		#downvote {background:#8c8c8c !important;color:red !important;border:solid #8c8c8c 1px !important; border-radius:5px !important;cursor:pointer;}
-		[disabled] {cursor:not-allowed !important;}
-		#content {margin-top:5%;}
-		</style>`;
-	}
-    function getPageRatingJsonPages(cb, sroffset = 0, allPages = []) {
-        let api = new mw.Api();
-        let params = {
-            action: 'query',
-            list: 'search',
-            srsearch: 'pageRating.json',
-            srnamespace: 2,
-            srlimit: 500,
-            sroffset: sroffset,
-            format: 'json'
-        };
-
-        api.get(params).done(function(data) {
-            let pages = data.query.search;
-            allPages = allPages.concat(pages.map(page => page.title));
-
-            if (data.continue && data.continue.sroffset) {
-                getPageRatingJsonPages(cb, data.continue.sroffset, allPages);
-            } else {
-                cb(allPages);
-            }
-        }).fail(function() {
-            console.error('API call failed to fetch search results.');
-            cb([]);
-        });
-    }
-
-    function fetchUserRatings(username, cb) {
-        let userPage = 'User:' + username + '/pageRating.json';
-        let api = new mw.Api();
-        api.get({
-            action: 'query',
-            prop: 'revisions',
-            titles: userPage,
-            rvprop: 'content',
-            format: 'json'
-        }).done(function(data) {
-            let pages = data.query.pages;
-            let pageId = Object.keys(pages)[0];
-            let pageObj = pages[pageId];
-            let exists = !(pageObj.missing);
-            let content = '';
-            if (pageObj && Array.isArray(pageObj.revisions) && pageObj.revisions.length > 0 && pageObj.revisions[0]['*']) {
-                content = pageObj.revisions[0]['*'];
-            }
-            let isEmpty = content.trim() === '';
-            let jsonStart = content.indexOf('{');
-            let jsonEnd = content.lastIndexOf('}');
-            if (jsonStart !== -1 && jsonEnd !== -1) {
-                try {
-                    let jsonString = content.substring(jsonStart, jsonEnd + 1);
-                    cb(JSON.parse(jsonString), exists, isEmpty);
-                } catch (e) {
-                    console.error('Error parsing user ratings:', e, content);
-                    cb(null, exists, isEmpty);
-                }
-            } else {
-                cb(null, exists, isEmpty);
-            }
-        }).fail(function() {
-            cb(null, false, true);
-        });
-    }
-
-    function fetchPageContent(pageName) {
-        let api = new mw.Api();
-        return api.get({
-            action: 'query',
-            prop: 'revisions',
-            titles: pageName,
-            rvprop: 'content',
-            format: 'json'
-        }).then(function(data) {
-            let pages = data.query.pages;
-            let pageId = Object.keys(pages)[0];
-            return (pages[pageId] && pages[pageId].revisions && pages[pageId].revisions[0]['*']) || '';
-        });
-    }
-
-    function waitForElement(selector, cb, timeout) {
-        timeout = timeout || 3000;
-        let start = Date.now();
-        (function check() {
-            let el = document.querySelector(selector);
-            if (el) return cb(el);
-            if (Date.now() - start > timeout) return cb(null);
-            setTimeout(check, 50);
-        })();
-    }
-
-    function core() {
-        getPageRatingJsonPages(function(pagenames) {
-            if (pagenames.length === 0) {
-                console.log('No .json files found.');
-                return;
-            }
-            
-            let contentPromises = pagenames.map(name => fetchPageContent(name));
-
-            Promise.all(contentPromises).then(function(contents) {
-                let Page = mw.config.get('wgPageName');
-                let upvotes = 0, downvotes = 0;
-                const pageJsonRegex = /{[\s\S]*}/;
-                for (const content of contents) {
-                    const match = pageJsonRegex.exec(content);
-                    if (match) {
-                        try {
-                            const json = JSON.parse(match[0]);
-                            if (Array.isArray(json.upvoted) && json.upvoted.includes(Page)) { upvotes++; }
-                            if (Array.isArray(json.downvoted) && json.downvoted.includes(Page)) { downvotes++; }
-                        } catch (e) {
-                            console.error('Error parsing content:', e, content);
-                        }
-                    }
-                }
-                let score = upvotes - downvotes;
-                waitForElement('#upvoteparent', function(upvoteParent) {
-                    if (!upvoteParent) return;
-                    waitForElement('#downvoteparent', function(downvoteParent) {
-                        if (!downvoteParent) return;
-                        waitForElement('#total', function(totalEl) {
-                            if (!totalEl) return;
-                            let oldUp = document.querySelector('#upvote');
-                            if (oldUp) oldUp.parentNode.removeChild(oldUp);
-                            let oldDown = document.querySelector('#downvote');
-                            if (oldDown) oldDown.parentNode.removeChild(oldDown);
-                            let upVote = document.createElement('button');
-                            upVote.setAttribute('voting', '');
-                            upVote.id = 'upvote';
-                            upVote.innerHTML = '+';
-                            let downVote = document.createElement('button');
-                            downVote.setAttribute('voting', '');
-                            downVote.id = 'downvote';
-                            downVote.innerHTML = '-';
-                            upvoteParent.appendChild(upVote);
-                            downvoteParent.appendChild(downVote);
-                            totalEl.innerHTML = score;
-                            let username = mw.config.get('wgUserName');
-                            let userUpvoted = false;
-                            let userDownvoted = false;
-                            function onRatingsLoaded(userRatings, exists, isEmpty) {
-                                if (!exists || isEmpty) {
-                                    const initialContent = {
-                                        upvoted: [],
-                                        downvoted: []
-                                    };
-                                    const fileText = JSON.stringify(initialContent, null, 4);
-                                    new mw.Api().postWithToken('csrf', {
-                                        action: 'edit',
-                                        title: 'User:' + username + '/pageRating.json',
-                                        text: fileText,
-                                        summary: '',
-                                        format: 'json'
-                                    }).done(function() {
-                                        fetchUserRatings(username, onRatingsLoaded);
-                                    });
-                                    return;
-                                }
-                                if (userRatings) {
-                                    if (Array.isArray(userRatings.upvoted) && userRatings.upvoted.includes(Page)) {
-                                        userUpvoted = true;
-                                    }
-                                    if (Array.isArray(userRatings.downvoted) && userRatings.downvoted.includes(Page)) {
-                                        userDownvoted = true;
-                                    }
-                                }
-                                downVote.disabled = userDownvoted;
-                                upVote.disabled = userUpvoted;
-                                if (!userUpvoted && !userDownvoted) {
-                                    upVote.disabled = false;
-                                    downVote.disabled = false;
-                                }
-                                function upvoting(username, pageName) {
-                                    fetchUserRatings(username, function(userRatings) {
-                                        userRatings = userRatings || { upvoted: [], downvoted: [] };
-                                        if (!userRatings.upvoted.includes(pageName)) {
-                                            userRatings.upvoted.push(pageName);
-                                        }
-                                        upVote.disabled = true;
-                                        downVote.disabled = false;
-                                        userRatings.downvoted = userRatings.downvoted.filter(p => p !== pageName);
-                                        const fileText = JSON.stringify(userRatings, null, 4);
-                                        new mw.Api().postWithToken('csrf', {
-                                            action: 'edit',
-                                            title: 'User:' + username + '/pageRating.json',
-                                            text: fileText,
-                                            summary: 'Upvoted page: ' + pageName,
-                                            format: 'json'
-                                        }).done(function() {
-                                            score += 1;
-                                            totalEl.innerHTML = score;
-                                            upVote.disabled = true;
-                                            downVote.disabled = false;
-                                        });
-                                    });
-                                    setInterval(console.log('interval done'), 5000);
-                                }
-                                function downvoting(username, pageName) {
-                                    fetchUserRatings(username, function(userRatings) {
-                                        userRatings = userRatings || { upvoted: [], downvoted: [] };
-                                        if (!userRatings.downvoted.includes(pageName)) {
-                                            userRatings.downvoted.push(pageName);
-                                        }
-                                        downVote.disabled = true;
-                                        upVote.disabled = false;
-                                        userRatings.upvoted = userRatings.upvoted.filter(p => p !== pageName);
-                                        const fileText = JSON.stringify(userRatings, null, 4);
-                                        new mw.Api().postWithToken('csrf', {
-                                            action: 'edit',
-                                            title: 'User:' + username + '/pageRating.json',
-                                            text: fileText,
-                                            summary: 'Downvoted page: ' + pageName,
-                                            format: 'json'
-                                        }).done(function() {
-                                            score -= 1;
-                                            totalEl.innerHTML = score;
-                                            downVote.disabled = true;
-                                            upVote.disabled = false;
-                                        });
-                                    });
-                                    setInterval(console.log('interval done'), 5000);
-                                }
-                                upVote.addEventListener('click', function() {
-                                    upvoting(username, Page);
-                                });
-                                downVote.addEventListener('click', function() {
-                                    downvoting(username, Page);
-                                });
-                            }
-                            if (username) {
-                                fetchUserRatings(username, onRatingsLoaded);
-                            }
-                        });
-                    });
-                });
-            }).catch(function(error) {
-                console.error('One of the fetch requests failed:', error);
-            });
-        });
-    }
-
-    core();
-    console.log('main-rating.js loaded');
+		
+		$('[class*="rating-"]').click(function() {
+			const votedUp = this.className.includes('up');
+			if ($('.page-rating').hasClass('busy')) return;
+			$('.page-rating').addClass('busy');
+			setTimeout(() => $('.page-rating').removeClass('busy'), 1500);
+			
+			fetch('/wiki/Backrooms_Wiki:Ratings.json?action=raw')
+				.then(response => response.json())
+				.then(ratings => {
+					if (ratings) {
+						globalUp = ratings.globalUp;
+						globalDown = ratings.globalDown;
+					}
+					
+					// Temporary converter to new entry format for old ratings.json pages
+					globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+					globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+					// ----
+					return Promise.all([...Object.keys(globalUp), ...Object.keys(globalDown)].join('|').match(/([^|]*\|){1,50}/g)
+						.map(chunk => fetch(`/api.php?action=query&titles=${chunk.slice(0, -1)}&format=json`)
+						.then(response => response.json())
+						.then(json => Object.entries(json.query.pages).flat().filter(entry => entry.missing == '').map(entry => entry.title))));
+				})
+				.then(titles => {
+					if (titles.flat().length) {
+						deleted = 'and removed ratings for deleted pages ';
+						titles.flat().forEach(title => {
+							if (up.includes(title) || down.includes(title)) deletedInLocal = true;
+							if (globalUp[' ' + title] || globalDown[' ' + title]) deletedInGlobal = true;
+							up = up.filter(entry => entry != title);
+							down = down.filter(entry => entry != title);
+							delete globalUp[' ' + title];
+							delete globalDown[' ' + title];
+							deleted += `“[[${title}]]”, `;
+						});
+						deleted = deleted.slice(0, -2);
+					}
+					
+					switch (true) {
+						case votedUp && lastVoted('down'):
+							$('.rating-down').removeClass('voted');
+							$('.rating-down')[0].textContent--;
+							this.textContent++;
+							down.splice(down.indexOf(page), 1);
+							up.push(page);
+							vote = 'upvoted';
+							dec(globalDown);
+							inc(globalUp);
+							break;
+						case !votedUp && lastVoted('up'):
+							$('.rating-up').removeClass('voted');
+							$('.rating-up')[0].textContent--;
+							this.textContent++;
+							up.splice(up.indexOf(page), 1);
+							down.push(page);
+							vote = 'downvoted';
+							dec(globalUp);
+							inc(globalDown);
+							break;
+						case votedUp && lastVoted('up'):
+							this.textContent--;
+							up.splice(up.indexOf(page), 1);
+							vote = 'revoked upvote from';
+							dec(globalUp);
+							break;
+						case !votedUp && lastVoted('down'):
+							this.textContent--;
+							down.splice(down.indexOf(page), 1);
+							vote = 'revoked downvote from';
+							dec(globalDown);
+							break;
+						default:
+							this.textContent++;
+							if (votedUp) {
+								up.push(page);
+								vote = 'upvoted';
+								inc(globalUp);
+							} else {
+								down.push(page);
+								vote = 'downvoted';
+								inc(globalDown);
+							} break;
+					}
+					
+					$(this).toggleClass('voted');
+					api.postWithEditToken({
+						action: 'edit',
+						format: 'json',
+						title: localRatingsPage,
+						text: JSON.stringify({up, down}, null, '\t'),
+						summary: `PageRating: ${vote} “[[${page}]]” ${deletedInLocal ? deleted : ''} locally`,
+						tags: 'page-rating'
+					});
+					api.postWithEditToken({
+						action: 'edit',
+						format: 'json',
+						title: 'Backrooms_Wiki:Ratings.json',
+						text: JSON.stringify({globalUp: sort(globalUp), globalDown: sort(globalDown)}, null, '\t'),
+						summary: `PageRating: ${vote} “[[${page}]]” ${deletedInGlobal ? deleted : ''} globally\u200b`,
+						tags: 'page-rating',
+						watchlist: 'unwatch'
+					});
+				});
+			});
+		});
 });

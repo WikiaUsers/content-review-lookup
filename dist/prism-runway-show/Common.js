@@ -1,6 +1,6 @@
 window.AddRailModule = [{prepend: true}];
 
-(function () {
+/*(function () {
     function getOriginalUrl(url) {
         return url.replace(
             /(\.(?:png|jpe?g|gif|webp|svg))(?:\/[^?]*)?(\?.*)?$/i,
@@ -82,7 +82,7 @@ window.AddRailModule = [{prepend: true}];
         attributes: true,
         attributeFilter: ['src']
     });
-})();
+})();*/
 
 
 

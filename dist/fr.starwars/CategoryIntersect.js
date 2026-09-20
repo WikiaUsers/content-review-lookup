@@ -20,19 +20,19 @@ $(function () {
 		// Add links to category pages
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			const baseUrl = '/fr/wiki/' + intersectionPage + '?category1=' + category;
+			const baseUrl = '/fr/wiki/' + intersectionPage + '?category1=' + encodeURIComponent(category);
 			const canonUrl = baseUrl + '&category2=Articles_Canon';
 			const legendsUrl = baseUrl + '&category2=Articles_Légendes';
 			var filters = '<div class="dpl-filter-container">';
-			filters += '<a href="' + baseUrl + '">Intersection de catégorie</a>';
+			filters += '<a href="' + mw.html.escape(baseUrl) + '">Intersection de catégorie</a>';
 			filters += '<ul>';
 			filters += '<li>';
-			filters += '<a href="' + canonUrl + '" title="Voir seulement les articles Canon">';
+			filters += '<a href="' + mw.html.escape(canonUrl) + '" title="Voir seulement les articles Canon">';
 			filters += '<img alt="Voir seulement les articles Canon" src="/fr/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '<li>';
-			filters += '<a href="' + legendsUrl + '" title="Voir seulement les articles Légendes">';
+			filters += '<a href="' + mw.html.escape(legendsUrl) + '" title="Voir seulement les articles Légendes">';
 			filters += '<img alt="Voir seulement les articles Légendes" src="/fr/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
@@ -105,9 +105,9 @@ $(function () {
 				contentmodel: 'wikitext'
 			}).catch(function (code, result) {
 				if (code === 'http') {
-					$('#mw-content-text').html('<p>HTTP error fetching intersection results: ' + result.textStatus + '</p>');
+					$('#mw-content-text').html('<p>HTTP error fetching intersection results: ' + mw.html.escape(result.textStatus) + '</p>');
 				} else {
-					$('#mw-content-text').html('<p>API error fetching intersection results: ' + result.error.info + '</p>');
+					$('#mw-content-text').html('<p>API error fetching intersection results: ' + mw.html.escape(result.error.info) + '</p>');
 				}
 				return Promise.reject();
 			});
@@ -141,15 +141,15 @@ $(function () {
 					var pagination = '<div class="dpl-pagination">';
 					pagination += '<b>Aller sur la page :</b> ';
 					if (currentPage > 2 && startPage > 1) {
-						pagination += '<a href="' + basePaginationLink + '" aria-label="Page 1">1</a>';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink) + '" aria-label="Page 1">1</a>';
 						pagination += startPage > 2 ? pageSeparator : ' ';
 					}
 					for (var page = startPage; page <= endPage; page++) {
-						pagination += '<a href="' + basePaginationLink + '&page=' + page + '" aria-label="Page ' + page + (page === currentPage ? ' (current)' : '') + '">' + (page === currentPage ? '<b>' + page + '</b>' : page) + '</a> ';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink + '&page=' + page) + '" aria-label="Page ' + mw.html.escape(page + (page === currentPage ? ' (current)' : '')) + '">' + (page === currentPage ? '<b>' + mw.html.escape(page) + '</b>' : mw.html.escape(page)) + '</a> ';
 					}
 					if (currentPage < maxPage - 1 && endPage < maxPage) {
 						pagination += endPage < maxPage - 1 ? pageSeparator : ' ';
-						pagination += '<a href="' + basePaginationLink + '&page=' + maxPage + '" aria-label="Page ' + maxPage + '">' + maxPage + '</a>';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink + '&page=' + maxPage) + '" aria-label="Page ' + mw.html.escape(maxPage) + '">' + mw.html.escape(maxPage) + '</a>';
 					}
 					pagination += '</div>';
 					$('#mw-content-text').prepend(pagination);

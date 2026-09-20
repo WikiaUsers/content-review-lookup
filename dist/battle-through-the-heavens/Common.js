@@ -62,53 +62,134 @@ window.pPreview.RegExp.iimages.push(/^2015060816373561467\.gif$/i);
 window.pPreview.RegExp.noinclude = window.pPreview.RegExp.noinclude || [];
 window.pPreview.RegExp.noinclude.push('.source-notice');
 
-//For Adding Search Button on DonghuaEpisodes Template
+//For Adding Search Button + Season dropdown on DonghuaEpisodes Template
 (function () {
-    function initSearch(nav) {
-        var grid  = nav.querySelector(".dh-grid");
-        var cards = nav.querySelectorAll(".dh-grid a, .dh-grid .selflink");
-        if (!grid || !cards.length) return;
+    var SEASONS = {
+        "Season 1":         { base: "Donghua Season 1/Episode", total: 12 },
+        "Season 1: Remake": { base: "Donghua Season 1 Remake: Battle Through The Heavens: Origin/Episode", total: 3 },
+        "Season 2":         { base: "Donghua Season 2/Episode", total: 12 },
+        "Season 2 Special": { base: "Donghua Season 2 Special/Episode", total: 3 },
+        "Season 3":         { base: "Donghua Season 3/Episode", total: 12 },
+        "Season 4":         { base: "Donghua Season 4/Episode", total: 24 },
+        "Season 4 Special": { base: "Donghua Special 3 Years Agreement/Episode", total: 13 },
+        "Season 5":         { base: "Donghua Season 5/Episode", total: 219 }
+    };
+
+    function createEpCard(base, num) {
+        var a = document.createElement("a");
+        a.href = "/wiki/" + encodeURIComponent(base + " " + num);
+        a.title = base + " " + num;
+        a.innerHTML = '<span class="dh-ep-tag">EP</span><span class="dh-ep-num">' + num + '</span>';
+        return a;
+    }
+
+    function initNav(nav) {
+        var body = nav.querySelector(".dh-body");
+        var head = nav.querySelector(".dh-head");
+        var grid = nav.querySelector(".dh-grid");
+        if (!grid) return;
+
+        var titleEl = nav.querySelector("#dh-season-title");
+        var initialSeason = "Season 5";
+        if (titleEl) {
+            var rawText = titleEl.textContent || "";
+            for (var s in SEASONS) {
+                if (rawText.indexOf(s) !== -1) {
+                    initialSeason = s;
+                    break;
+                }
+            }
+        }
+
+        var existingBar = nav.querySelector(".dh-bar");
+        if (existingBar) {
+            existingBar.parentNode.removeChild(existingBar);
+        }
 
         var bar = document.createElement("div");
         bar.className = "dh-bar";
+
+        var optionsHtml = "";
+        for (var sName in SEASONS) {
+            var sData = SEASONS[sName];
+            var sel = (sName === initialSeason) ? ' selected="selected"' : '';
+            optionsHtml += '<option value="' + sName + '"' + sel + '>' + sName + ' (' + sData.total + ' Eps)</option>';
+        }
+
         bar.innerHTML =
+            '<div class="dh-season-select-wrapper">' +
+                '<label class="dh-season-label">Season:</label>' +
+                '<select class="dh-season-dropdown">' + optionsHtml + '</select>' +
+            '</div>' +
             '<div class="dh-sw">' +
                 '<span class="dh-si">⌕</span>' +
                 '<input class="dh-search" type="text" placeholder="Search episode…">' +
             '</div>' +
             '<span class="dh-count-bar">' +
-                '<b class="dh-shown">' + cards.length + '</b>' +
-                ' / ' +
-                '<b class="dh-total">' + cards.length + '</b>' +
-                ' episodes' +
+                '<b class="dh-shown">0</b> / <b class="dh-total">0</b> episodes' +
             '</span>';
 
-        var body = nav.querySelector(".dh-body");
-        nav.insertBefore(bar, body);
+        if (body) {
+            nav.insertBefore(bar, body);
+        } else if (head && head.nextSibling) {
+            nav.insertBefore(bar, head.nextSibling);
+        } else {
+            nav.appendChild(bar);
+        }
 
-        var input = bar.querySelector(".dh-search");
-        var shown = bar.querySelector(".dh-shown");
+        var dropdown = bar.querySelector(".dh-season-dropdown");
+        var searchInput = bar.querySelector(".dh-search");
+        var shownEl = bar.querySelector(".dh-shown");
+        var totalEl = bar.querySelector(".dh-total");
 
-        input.addEventListener("input", function () {
-            var q = this.value.trim();
+        dropdown.addEventListener("change", function () {
+            var selectedSeason = this.value;
+            var sData = SEASONS[selectedSeason];
+            if (!sData) return;
+
+            var activeGrid = nav.querySelector(".dh-grid");
+            if (!activeGrid) return;
+
+            activeGrid.innerHTML = "";
+            for (var i = 1; i <= sData.total; i++) {
+                activeGrid.appendChild(createEpCard(sData.base, i));
+            }
+
+            var pillEl = nav.querySelector("#dh-season-pill");
+            var footEl = nav.querySelector("#dh-foot-label");
+
+            if (titleEl) titleEl.textContent = selectedSeason + " — Episodes";
+            if (pillEl) pillEl.textContent = sData.total + " Episodes";
+            if (footEl) footEl.textContent = "Donghua • " + selectedSeason;
+
+            searchInput.value = "";
+            updateFilter();
+        });
+
+        function updateFilter() {
+            var cards = nav.querySelectorAll(".dh-grid a, .dh-grid .selflink");
+            var q = searchInput.value.trim();
             var visible = 0;
 
             cards.forEach(function (card) {
                 var numEl = card.querySelector(".dh-ep-num");
                 var epNum = numEl ? numEl.textContent.trim() : "";
                 var match = !q || epNum.indexOf(q) !== -1;
-
-                // overriding display:flex
                 card.style.setProperty("display", match ? "flex" : "none", "important");
                 if (match) visible++;
             });
 
-            shown.textContent = visible;
-        });
+            if (shownEl) shownEl.textContent = visible;
+            if (totalEl) totalEl.textContent = cards.length;
+        }
+
+        searchInput.addEventListener("input", updateFilter);
+        updateFilter();
     }
 
     function init() {
-        document.querySelectorAll(".dh-nav").forEach(initSearch);
+        var navs = document.querySelectorAll(".dh-nav");
+        navs.forEach(initNav);
     }
 
     if (document.readyState === "loading") {

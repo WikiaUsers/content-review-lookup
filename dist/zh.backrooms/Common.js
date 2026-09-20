@@ -1,37 +1,27 @@
-// Fandom Compass图标
 (function () {
+    // Fandom Compass图标
     var img = $('<img>', { title: '本站点已是Fandom Compass计划的成员之一。' }).css({ 'height': '70px', 'position': 'relative', 'top': '20px', 'user-select': 'none' });
     $('<a>', { class: 'compass-wiki-badge', href: '//community.fandom.com/wiki/Fandom_Compass' }).append(img)
         .appendTo('.fandom-community-header__community-name-wrapper');
     function changeSrc() { img.attr('src', $('body').attr('data-theme') === 'dark' ? 'https://static.wikia.nocookie.net/backrooms/images/c/ca/Fandom_Compass_dark.png/revision/latest?cb=20250412193710&format=original&path-prefix=zh' : 'https://static.wikia.nocookie.net/backrooms/images/1/18/Fandom_Compass_light.png/revision/latest?cb=20250412193642&format=original&path-prefix=zh'); }
     changeSrc();
     new MutationObserver(changeSrc).observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
-})();
 
-// 遥控音频
-(function () {
-    $('.js-action-play').each(function () {
-        var button = this;
-        $(button).css('cursor', 'pointer');
-        var targetId = $(button).attr('data-media-id');
-        if (!targetId) return;
-        var target = $('.media-id-' + targetId + ' .mw-file-element')[0];
-        if (!target) return;
-        $(button).on('click', function () {
-            if (target.paused || target.ended) target.play();
-            else target.pause();
-        });
-    });
+    // 修复用户页链接
+    function removeNew() { $('a.new.userlink').removeClass('new'); }
+    removeNew();
+    new MutationObserver(removeNew).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
 })();
 
 mw.loader.load(['mediawiki.util']);
 mw.hook('wikipage.content').add(function () {
     // [[Template:JSImport]]
-    $('span.import-js').each(function () {
-        var articles = $(this).attr('data-articles').split('|');
-        importArticles({ type: 'script', articles: articles });
-        // 'importArticles' only supports articles in MediaWiki namespace
-    });
+    if (mw.config.get('wgCategories').includes('引入JS脚本的页面'))
+        $('span.import-js').each(function () {
+            var articles = $(this).attr('data-articles').split('|');
+            importArticles({ type: 'script', articles: articles });
+            // 'importArticles' only supports articles in MediaWiki namespace
+        });
 
     // [[Template:CSS]]
     $('span.import-css').each(function () {
@@ -65,6 +55,20 @@ mw.hook('wikipage.content').add(function () {
         $('audio').each(function () {
             if (this.paused || this.ended) this.play();
             else this.pause();
+        });
+    });
+
+    // 遥控音频
+    $('.js-action-play').each(function () {
+        var button = this;
+        $(button).css('cursor', 'pointer');
+        var targetId = $(button).attr('data-media-id');
+        if (!targetId) return;
+        var target = $('.media-id-' + targetId + ' .mw-file-element')[0];
+        if (!target) return;
+        $(button).on('click', function () {
+            if (target.paused || target.ended) target.play();
+            else target.pause();
         });
     });
 
@@ -103,9 +107,8 @@ mw.hook('wikipage.content').add(function () {
     // 修复讨论板链接
     $('a[target="_blank"]').each(function () {
         var $a = $(this);
-        var href = $a.attr('href');
         try {
-            var url = new URL(href, location.origin);
+            var url = new URL($a.attr('href'), location.origin);
             if (url.origin === location.origin && (url.pathname === '/zh/f' || url.pathname.startsWith('/zh/f/')))
                 $a.removeAttr('target');
         } catch (e) { }
@@ -115,25 +118,15 @@ mw.hook('wikipage.content').add(function () {
 // CSS预览
 (function () {
     var page = mw.config.get('wgPageName');
-    var model = mw.config.get('wgPageContentModel');
-    if (!page || model !== 'css') return;
-    var key = 'cssPreview:' + page;
-    var selector = 'style[data-injected-from="' + CSS.escape(page) + '"]';
-    if (window[key] || $(selector).length) return;
-    window[key] = true;
-    fetch(mw.util.getUrl(page, { action: 'raw', ctype: 'text/css' }),
-        { credentials: 'same-origin' })
+    if (!page || mw.config.get('wgPageContentModel') !== 'css' || $('style[data-injected-from="' + page + '"]').length) return;
+    fetch(mw.util.getUrl(page, { action: 'raw', ctype: 'text/css' }), { credentials: 'same-origin' })
         .then(function (res) {
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.text();
         })
         .then(function (css) {
-            if (!css || $(selector).length) return;
-            $('<style>', { 'data-injected-from': page, text: css })
-                .appendTo('head');
+            if (!css) return;
+            $('<style>', { 'data-injected-from': page, text: css }).appendTo('head');
         })
-        .catch(function (err) {
-            delete window[key];
-            console.error('加载CSS源失败: ', page, err);
-        });
+        .catch(function (err) { });
 }());

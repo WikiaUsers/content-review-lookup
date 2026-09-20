@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://robloxskyboxwikii.fandom.com/wiki/MediaWiki:Gadget-SandboxTab.js?action=raw&ctype=text/javascript");

@@ -155,7 +155,7 @@
             return;
         }
 
-        var delay = Number(window.nullEditDelay) || 1000;
+        var delay = Number(window.nullEditDelay) || 1500;
 
         // assume extremely low custom delays (less than 0.1 seconds) are
         // meant to be seconds, to avoid being repeatedly rate-limited

@@ -164,6 +164,26 @@ window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;
 
+//* Page Purge *//
+mw.loader.using('mediawiki.api').then(function () {
+    var busy = false;
+    $(document).on('click', '.purge-button', function (e) {
+        e.preventDefault();
+        if (busy) return;
+        busy = true;
+        var $btn = $(this);
+        $btn.text('Refreshing…');
+        new mw.Api().post({
+            action: 'purge',
+            titles: mw.config.get('wgPageName')
+        }).then(function () {
+            location.reload();
+        }, function () {
+            $btn.text('Refresh failed, try again');
+            setTimeout(function () { busy = false; }, 5000);
+        });
+    });
+});
 /* =============================================
    MODIFIER CALCULATOR
    ============================================= */

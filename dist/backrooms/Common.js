@@ -33,7 +33,7 @@ mw.hook('wikipage.content').add(function() {
 	// [[Template:Audio]] toggle
 	$('.t-audio').each(function() {
 		const toggle = this.dataset.toggle;
-		const toggleFunction = this.dataset['toggle-function'];
+		const toggleFunction = this.dataset.toggleFunction;
 		const fadeTime = toggleFunction.replace(/fade-(in|out)-/, '');
 		
 		if (toggle != 'none') {

@@ -13,9 +13,9 @@ mw.hook('ext.CodeMirror.ready').add(() => {
 
 // Custom script settings
 window.dev = window.dev || {};
-(window.dev.BetterUpload = {}).redirectFormat = {
+window.dev.BetterUpload = {
 	'default': '==การอนุญาตใช้สิทธิ==\n{{Fairuse}}',
-	redirectFormat: '#redirect [[File:%TARGET%]]\n[[Category:หน้าเปลี่ยนทาง]]'
+	redirectFormat: '#redirect ['+'[File:%TARGET%]]\n[[Category:หน้าเปลี่ยนทาง]]'
 };
 
 // Fix the search field not updating when ctrl+f with text selected (should be removed when/if fandom fixes it in native)
@@ -93,3 +93,29 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 		});
 	});
 });
+
+// Custom tpt page-level checks for achievs (test)
+mw.hook('wikipage.content').add(()=>{
+	const api = new mw.Rest();
+	$('.tpt-instance:empty').each((_, el) => {
+		const $el = $(el);
+		const catID = el.dataset.category;
+		const pageID = el.dataset.pageid;
+		const inpt = $('<input>', { id: catID+'-'+pageID, type: 'checkbox' });
+		const labl = $('<label>', { 'for': catID+'-'+pageID });
+		const url = '/progress-tracking/table/'+catID+'/Achievement';
+		inpt.on('change', (e) => {
+			api[inpt.prop('checked') ? 'post' : 'delete'](url, { entityId: pageID });
+		});
+		api 
+		.get(url, {}, { 'Content-Type': 'application/json' })
+		.then((arr)=>{
+			if (arr.includes(pageID)) {inpt.get(0).checked = true;}
+			$el.append(inpt, labl);
+			$el.before('ปลดล็อกแล้ว? ');
+		});
+	});
+});
+
+
+/* extra spacing for editor convenience */

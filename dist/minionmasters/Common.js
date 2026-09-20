@@ -141,6 +141,7 @@ const activatedEffects = {
 	"Boom Buggy": Buffs.Marksmanship,
 	"Zipp's Zappinator": { damageMultiplier: 4 },
 	"Wartrack Dreadnaught": [{ flatManaBonus: 4 }, { damageMultiplier: 2 }, { flatHealthBonus: 350}],
+	"Laser Turret": {attackSpeedMultiplier: 5.5 ** -1},
 	//Slither
 	"Taloc, the Vessel": { damageMultiplier: 1.5 },
 	"Soul Stealer": {attackSpeedMultiplier: 2.5 ** -1},
@@ -2125,6 +2126,12 @@ $(function () {
 			    collectionDebuffFilters.length === 0 ||
 			    collectionDebuffFilters.every(function (tag) { return cardDebuffTags.includes(tag); });
 			    
+			const mechanicTagsRaw = String($card.data('mechanics') || '').trim();
+			const cardMechanicTags = mechanicTagsRaw === '' ? [] : mechanicTagsRaw.split('|');
+			const mechanicMatch =
+			    collectionMechanicFilters.length === 0 ||
+			    collectionMechanicFilters.every(function (tag) { return cardMechanicTags.includes(tag); });
+			    
 			const name = String($card.data('name')).trim().toLowerCase();
 	        const searchMatch =
 			    collectionSearchQuery === "" ||
@@ -2144,7 +2151,8 @@ $(function () {
 			    statMatch &&
 			    specialMatch &&
 			    buffMatch &&
-			    debuffMatch
+			    debuffMatch&&
+			    mechanicMatch
 			);
 	    });
 	    updateCollectionResultCount();
@@ -2485,12 +2493,45 @@ $(function () {
 	    applyCollectionFilters();
 	});
 	
+	// Faction Mechanics Filter button
+	$("#faction-mechanics-filter-toggle-container").html(
+	    '<button id="faction-mechanics-filter-toggle" type="button">All</button>'
+	);
+	
+	$(document).on("click", function (e) {
+	    if (
+	        !$(e.target).closest("#faction-mechanics-filter-dropdown").length &&
+	        !$(e.target).closest("#faction-mechanics-filter-toggle").length
+	    ) {
+	        $("#faction-mechanics-filter-dropdown").hide();
+	    }
+	});
+	
+	let collectionMechanicFilters = [];
+
+	$(document).on("change", "#faction-mechanics-filter-dropdown input[type=checkbox]", function () {
+	    collectionMechanicFilters = [];
+	    $("#faction-mechanics-filter-dropdown input[type=checkbox]:checked").each(function () {
+	        collectionMechanicFilters.push($(this).val());
+	    });
+	
+	    const $toggle = $("#faction-mechanics-filter-toggle");
+	    if (collectionMechanicFilters.length === 0) {
+	        $toggle.text("All").removeClass("active");
+	    } else {
+	        $toggle.text(collectionMechanicFilters.join(", ")).addClass("active");
+	    }
+	
+	    applyCollectionFilters();
+	});
+	
 	//close button list for special buff and debuff if clicking outside
 	
 	function closeAllFilterDropdowns(except) {
 	    if (except !== 'special') $("#special-filter-dropdown").hide();
 	    if (except !== 'buff')    $("#buff-filter-dropdown").hide();
 	    if (except !== 'debuff')  $("#debuff-filter-dropdown").hide();
+	    if (except !== 'mechanic') $("#faction-mechanics-filter-dropdown").hide();
 	}
 	
 	// Special
@@ -2517,13 +2558,22 @@ $(function () {
 	    if (!isOpen) $("#debuff-filter-dropdown").show();
 	});
 	
-	// Single outside-click handler for all three
+	// Faction Mechanics
+	$(document).on("click", "#faction-mechanics-filter-toggle", function (e) {
+	    e.stopPropagation();
+	    const isOpen = $("#faction-mechanics-filter-dropdown").is(":visible");
+	    closeAllFilterDropdowns();
+	    if (!isOpen) $("#faction-mechanics-filter-dropdown").show();
+	});
+	
+	// Single outside-click handler for all four
 	$(document).on("click", function (e) {
 	    if (
 	        !$(e.target).closest(
 	            "#special-filter-dropdown, #special-filter-toggle, " +
 	            "#buff-filter-dropdown, #buff-filter-toggle, " +
-	            "#debuff-filter-dropdown, #debuff-filter-toggle"
+	            "#debuff-filter-dropdown, #debuff-filter-toggle, " +
+	            "#faction-mechanics-filter-dropdown, #faction-mechanics-filter-toggle"
 	        ).length
 	    ) {
 	        closeAllFilterDropdowns();
@@ -2891,6 +2941,31 @@ $(function () {
             .replace(/'/g, "&#39;");
     }
     
+    // Converts a wikitext-formatted Cargo field (bold/italic/links/br) into safe HTML
+	function formatCardDescription(text) {
+	    if (!text) return "";
+	
+	    let out = String(text);
+	
+	    out = out
+	        .replace(/&/g, "&amp;")
+	        .replace(/</g, "&lt;")
+	        .replace(/>/g, "&gt;");
+	
+	    out = out.replace(/&lt;br\s*\/?&gt;/gi, "<br>");
+	    out = out.replace(/'''(.*?)'''/g, "<strong>$1</strong>");
+	    out = out.replace(/''(.*?)''/g, "<em>$1</em>");
+	
+	    // Wiki links: [[Target|Label]] -> bold Label, [[Target]] -> bold Target
+	    out = out.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "<strong>$2</strong>");
+	    out = out.replace(/\[\[([^\]]+)\]\]/g, "<strong>$1</strong>");
+	
+	    // Final safety net: strip any tag that isn't in the allow-list.
+	    out = out.replace(/<(?!\/?(strong|em|br)\b)[^>]*>/gi, "");
+	
+	    return out;
+	}
+    
     // helper function for hovering over perk tooltip
     function showPerkTooltip(perkData, perkKey, e) {
         cardTooltip.innerHTML =
@@ -2923,8 +2998,8 @@ $(function () {
         }
 
         const lines = [];
-        lines.push("<strong>" + escapeHtml(card.name) + "</strong>");
-        lines.push("Type: " + escapeHtml(card.type));
+		lines.push("<strong>" + escapeHtml(card.name) + "</strong>");
+		lines.push("Type: " + escapeHtml(card.type));
 
         if (Number.isFinite(hp))        		lines.push("HP: " + escapeHtml(hp));
 		if (Number.isFinite(dmg))       		lines.push("Damage: " + escapeHtml(dmg));
@@ -2940,6 +3015,9 @@ $(function () {
 		if (hasVal(card.count))         		lines.push("Unit Count: " + escapeHtml(card.count));
 		if (hasVal(card.duration))      		lines.push("Duration: " + escapeHtml(card.duration));
 		if (hasVal(card.productionspeed))		lines.push("Production Speed: " + escapeHtml(card.productionspeed));
+		if (hasVal(card.description)) {
+		    lines.push("Description: " + formatCardDescription(card.description));
+		}		
 
         lines.push(holdNote);
 
@@ -2970,11 +3048,12 @@ $(function () {
     let cardFlagsMap = {}; // cardName -> string[]
     let cardBuffsMap = {};
     let cardDebuffsMap = {}; 
+    let cardMechanicsMap = {};
 
     const cardsQuery = new mw.Api().get({
 	    action: "cargoquery",
 	    tables: "Cards2",
-		fields: "_pageName=pageName,name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond",
+		fields: "_pageName=pageName,name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond,description",
 	    where: 'rarity="Common" OR rarity="Rare" OR rarity="Supreme" OR rarity="Legendary"',
 	    limit: 999,
 	    format: "json"
@@ -3003,19 +3082,29 @@ $(function () {
 	    limit: 999,
 	    format: "json"
 	});
+	
+	const mechanicsQuery = new mw.Api().get({
+	    action: "cargoquery",
+	    tables: "CardFactionMechanics",
+	    fields: "_pageName=cardName,mechanic_name",
+	    limit: 999,
+	    format: "json"
+	});
 
-    $.when(cardsQuery, flagsQuery, buffsQuery, debuffsQuery).done(function (cardsResp, flagsResp, buffsResp, debuffsResp) {
+    $.when(cardsQuery, flagsQuery, buffsQuery, debuffsQuery, mechanicsQuery).done(function (cardsResp, flagsResp, buffsResp, debuffsResp, mechanicsResp) {
 
         const data = cardsResp[0];
         const flagsData = flagsResp[0];
         const buffsData = buffsResp[0];
         const debuffsData = debuffsResp[0];
+        const mechanicsData = mechanicsResp[0];
         
 
 
         const allSpecialFlags = new Set();
         const allBuffNames = new Set();
         const allDebuffNames = new Set(); 
+        const allMechanicNames = new Set();
 
 
 
@@ -3042,6 +3131,14 @@ $(function () {
 	        cardDebuffsMap[row.cardName].push(row["debuff name"]);
 	        if (row["debuff name"]) allDebuffNames.add(row["debuff name"]);
 	    });
+	    
+	    (mechanicsData.cargoquery || []).forEach(function (entry) {
+	        const row = entry.title;
+	        if (!row.cardName) return;
+	        if (!cardMechanicsMap[row.cardName]) cardMechanicsMap[row.cardName] = [];
+	        cardMechanicsMap[row.cardName].push(row["mechanic name"]);
+	        if (row["mechanic name"]) allMechanicNames.add(row["mechanic name"]);
+	    });
 
         const $specialDropdown = $("#special-filter-dropdown");
         $specialDropdown.empty();
@@ -3050,7 +3147,10 @@ $(function () {
 	    $buffDropdown.empty();
 	    
 		const $debuffDropdown = $("#debuff-filter-dropdown");   
-    	$debuffDropdown.empty();                               
+    	$debuffDropdown.empty();
+    	
+    	const $mechanicsDropdown = $("#faction-mechanics-filter-dropdown");
+    	$mechanicsDropdown.empty();                         
 
         Array.from(allSpecialFlags).sort().forEach(function (flag) {
             const safeId = "special-flag-" + flag.replace(/[^a-zA-Z0-9]/g, "");
@@ -3060,6 +3160,15 @@ $(function () {
             $row.append($checkbox).append($label);
             $specialDropdown.append($row);
         });
+        
+        Array.from(allMechanicNames).sort().forEach(function (mechanicName) {
+	        const safeId = "faction-mechanics-filter-" + mechanicName.replace(/[^a-zA-Z0-9]/g, "");
+	        const $row = $("<div>", { class: "faction-mechanics-filter-option" });
+	        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: mechanicName });
+	        const $label = $("<label>", { for: safeId, text: mechanicName });
+	        $row.append($checkbox).append($label);
+	        $mechanicsDropdown.append($row);
+	    });
         
         Array.from(allBuffNames).sort().forEach(function (buffName) {
 	        const safeId = "buff-filter-" + buffName.replace(/[^a-zA-Z0-9]/g, "");
@@ -3152,6 +3261,9 @@ $(function () {
 			
 			const debuffTags = cardDebuffsMap[card.pageName] || [];
 			wrapper.dataset.debuffs = debuffTags.join("|");
+			
+			const mechanicTags = cardMechanicsMap[card.pageName] || [];
+			wrapper.dataset.mechanics = mechanicTags.join("|");
 
 		
 		    const img = document.createElement("img");

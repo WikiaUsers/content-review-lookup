@@ -347,7 +347,7 @@
 						
 						if ( typeof parsed === "number" ) { 
 							list = match[ 2 ].split( ";" );
-							if ( !( parsed > 1 && parsed < list.length ) ) parsed = list.length - 1;
+							if ( parsed < 0 || parsed >= list.length ) parsed = list.length - 1;
 							parsed = list[ parsed ];
 						}
 					} else if ( typeof parsed === "object" ) { 

@@ -1,31 +1,53 @@
+(function(window) {
+    window.wiki = window.wiki || {}
+    window.wiki._locks = window.wiki._locks || {}
+    window.wiki._locks.loadSubscribeButton = false
+
+    /**
+     * Fire Google's platform script to display the YouTube subscribe button
+     * @param retries 
+     */
+    window.loadSubscribeButton = function(retries) {
+        if (window.wiki._locks.loadSubscribeButton) return
+        window.wiki._locks.loadSubscribeButton = true
+
+        const platformJS = 'https://apis.google.com/js/platform.js'
+
+        console.debug("[Wikitubia] Running subscribe button loader...")
+
+        // Check if the `.g-ytsubscribe` element exists
+        if (
+            !document.querySelector("div.g-ytsubscribe")
+        ) return
+
+        let i = 0;
+        
+        const handler = setInterval(function() {
+            i++
+            mw.loader.load(platformJS);
+            console.count("[Wikitubia] Firing payload");
+
+            if (
+                !document.querySelector("div.g-ytsubscribe")
+                || i > retries
+            ) {
+                console.debug("[Wikitubia] Stopping retries")
+
+                // Change PI label
+                document.querySelector("[data-source='username'] > h3.pi-data-label.pi-secondary-font")
+                    .innerText = "Subscribers"
+
+                clearInterval(handler)
+            }
+        }, 1000)
+
+        window.wiki._locks.loadSubscribeButton = false
+        return
+    }
+})(this)
+
 /**
- * Periodically fire Google's platform script for the YouTube Subscribe button
- * @param delay Delay between load trial
- * @param maxIter Maximum number of iteration before it gives up (default: 10)
+ * ==== Invocation line ====
+ * Scripts from above should be called below this marker
  */
-function subButtonLoad(delay, maxIter) {
-  const platformJS = 'https://apis.google.com/js/platform.js';
-  let iter = 0;
-
-  if (mw.config.get('wgNamespaceNumber') === 0 && document.querySelector("div.g-ytsubscribe")) {
-    const handler = setInterval(function () {
-      mw.loader.load(platformJS);
-      console.count("[Wikitubia] Firing payload");
-      iter++;
-
-      if (!document.querySelector("div.g-ytsubscribe") || iter >= maxIter) {
-        console.debug("[Wikitubia] Stopping sub button payload firing at iteration: ".concat(iter.toString()));
-        clearInterval(handler);
-      }
-    }, delay)
-  } else {
-    return
-  }
-}
-
-/** Change PI label */
-$('.pi-data-label:contains("Username")').replaceWith('<h3 class="pi-data-label pi-secondary-font">Subscribers</h3>');
-
-// ==== Invocation line ====
-// Scripts from above should be called below this marker
-subButtonLoad(1000, 10);
+window.loadSubscribeButton(10)

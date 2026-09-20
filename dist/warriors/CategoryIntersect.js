@@ -20,9 +20,9 @@ $(function () {
 		// Add links to category pages
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
+			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + encodeURIComponent(category);
 			var filters = '<div class="dpl-filter-container">';
-			filters += '<a href="' + baseUrl + '">Category intersection</a>';
+			filters += '<a href="' + mw.html.escape(baseUrl) + '">Category intersection</a>';
 			filters += '<ul>';
 			filters += '</ul>';
 			filters += '</div>';
@@ -39,7 +39,7 @@ $(function () {
 
 			document.title = title;
 			$('#firstHeading').html(title);
-			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + pageUrl + '">New category intersection query</a>');
+			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + mw.html.escape( pageUrl ) + '">New category intersection query</a>');
 			$('#mw-content-text').empty();
 
 			// Style results like category page
@@ -107,9 +107,9 @@ $(function () {
 				contentmodel: 'wikitext'
 			}).catch(function (code, result) {
 				if (code === 'http') {
-					$('#mw-content-text').html('<p>HTTP error fetching intersection results: ' + result.textStatus + '</p>');
+					$('#mw-content-text').html('<p>HTTP error fetching intersection results: ' + mw.html.escape( result.textStatus ) + '</p>');
 				} else {
-					$('#mw-content-text').html('<p>API error fetching intersection results: ' + result.error.info + '</p>');
+					$('#mw-content-text').html('<p>API error fetching intersection results: ' + mw.html.escape( result.error.info ) + '</p>');
 				}
 				return Promise.reject();
 			});
@@ -143,15 +143,15 @@ $(function () {
 					var pagination = '<div class="dpl-pagination">';
 					pagination += '<b>Go to page:</b> ';
 					if (currentPage > 2 && startPage > 1) {
-						pagination += '<a href="' + basePaginationLink + '" aria-label="Page 1">1</a>';
+						pagination += '<a href="' + mw.html.escape( basePaginationLink ) + '" aria-label="Page 1">1</a>';
 						pagination += startPage > 2 ? pageSeparator : ' ';
 					}
 					for (var page = startPage; page <= endPage; page++) {
-						pagination += '<a href="' + basePaginationLink + '&page=' + page + '" aria-label="Page ' + page + (page === currentPage ? ' (current)' : '') + '">' + (page === currentPage ? '<b>' + page + '</b>' : page) + '</a> ';
+						pagination += '<a href="' + mw.html.escape( basePaginationLink + '&page=' + page ) + '" aria-label="Page ' + mw.html.escape(page + (page === currentPage ? ' (current)' : '')) + '">' + (page === currentPage ? '<b>' + mw.html.escape( page ) + '</b>' : mw.html.escape( page )) + '</a> ';
 					}
 					if (currentPage < maxPage - 1 && endPage < maxPage) {
 						pagination += endPage < maxPage - 1 ? pageSeparator : ' ';
-						pagination += '<a href="' + basePaginationLink + '&page=' + maxPage + '" aria-label="Page ' + maxPage + '">' + maxPage + '</a>';
+						pagination += '<a href="' + mw.html.escape( basePaginationLink + '&page=' + maxPage ) + '" aria-label="Page ' + mw.html.escape( maxPage ) + '">' + mw.html.escape( maxPage ) + '</a>';
 					}
 					pagination += '</div>';
 					$('#mw-content-text').prepend(pagination);

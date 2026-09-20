@@ -82,3 +82,12 @@ mw.hook('dev.usertags').add(function() {
         $overseerTag.prepend($icon);
     }
 });
+
+
+// ===== Welcome, from the Forsaken wiki ====== 
+$(function () {
+  const currentUser = mw.config.get("wgUserName");
+  if (currentUser) {
+    $(".insertusername").text(currentUser);
+  }
+});

@@ -27,7 +27,7 @@ window.MultiClockConfig = {
 
 This script only renders the clocks and handles formatting.
 */
-(function ($, mw, window, Date) {
+(function ($, mw, window) {
     "use strict";
 
     // Prevent double execution
@@ -37,6 +37,9 @@ This script only renders the clocks and handles formatting.
     const cfg = window.MultiClockConfig || {};
     const oldConfig = $.extend({}, window.DisplayClockJS, window.UTCClockConfig);
     const lang = mw.config.get("wgUserLanguage") || "en";
+
+    // Label separator (defaults to colon)
+    const separator = cfg.separator || ":";
 
     // If the clocks array is empty, create default clocks based on old UTCClock configs
     if (!cfg.clocks || cfg.clocks.length === 0) {
@@ -52,9 +55,6 @@ This script only renders the clocks and handles formatting.
         }];
     }
 
-    // Label separator (defaults to colon)
-    const separator = cfg.separator || ":";
-
     // Target mounting point in the Fandom Community Header
     const $target = $(".fandom-community-header__local-navigation");
     if (!$target.length) {
@@ -65,22 +65,20 @@ This script only renders the clocks and handles formatting.
     // Preparing container styles
     $target.css("position", "relative");
 
-    const $container = $("<div>")
-        .attr("id", "multi-clock-container")
-        .css({
-            display: "flex",
-            flexDirection: "column",
-            position: "absolute",
-            right: "0",
-            top: "0",
-            marginTop: "2px",
-            gap: "2px",
-            fontFamily: cfg.fontFamily || "Rubik, Arial, sans-serif",
-            fontSize: "11px",
-            textAlign: "right",
-            paddingRight: "4px",
-            zIndex: "10"
-        });
+    const $container = $("<div>", { id: "multi-clock-container" }).css({
+        display: "flex",
+        flexDirection: "column",
+        position: "absolute",
+        right: "0",
+        top: "0",
+        marginTop: "2px",
+        gap: "2px",
+        fontFamily: cfg.fontFamily || "Rubik, Arial, sans-serif",
+        fontSize: "11px",
+        textAlign: "right",
+        paddingRight: "4px",
+        zIndex: "10"
+    });
 
     // Additional CSS tweaks for Fandom header responsiveness
     mw.util.addCSS(`
@@ -102,8 +100,7 @@ This script only renders the clocks and handles formatting.
 
     // Creating DOM elements for each configured clock
     const elements = cfg.clocks.map(clock => {
-        const $el = $("<div>")
-            .addClass("multi-clock-item")
+        const $el = $("<div>", { class: "multi-clock-item" })
             .css({
                 color: clock.color || "#fff",
                 fontWeight: "bold"
@@ -117,18 +114,18 @@ This script only renders the clocks and handles formatting.
     // FORMATTING ENGINE
     function createFormatter(monthsLong, monthsShort) {
         const cases = {
-            "%": function() { return "%"; },
-            d: function(d) { const r = d.getDate(); return { v: r, i: r - 1 }; },
-            H: function(d) { return d.getHours(); },
-            I: function(d) { const r = d.getHours() % 12; return { i: r, v: r || 12 }; },
-            m: function(d) { const r = d.getMonth(); return { i: r, v: r + 1 }; },
-            M: function(d) { return d.getMinutes(); },
-            p: function(d) { return d.getHours() < 12 ? "AM" : "PM"; },
-            S: function(d) { return d.getSeconds(); },
-            y: function(d) { return d.getFullYear() % 100; },
-            Y: function(d) { return d.getFullYear(); },
+            "%": () => "%",
+            d: (d) => d.getDate(),
+            H: (d) => d.getHours(),
+            I: (d) => d.getHours() % 12 || 12,
+            m: (d) => d.getMonth() + 1,
+            M: (d) => d.getMinutes(),
+            p: (d) => d.getHours() < 12 ? "AM" : "PM",
+            S: (d) => d.getSeconds(),
+            y: (d) => d.getFullYear() % 100,
+            Y: (d) => d.getFullYear(),
             // Complex ISO flags from the original script
-            G: function(d) {
+            G: (d) => {
                 let r = d.getFullYear(), day = d.getDate(), month = d.getMonth();
                 if (month === 0 && day < 4) {
                     day = d.getDay();
@@ -139,44 +136,40 @@ This script only renders the clocks and handles formatting.
                 }
                 return r;
             },
-            g: function(d) { return cases.G(d) % 100; },
-            j: function(d, ys) { const r = (d - ys) / 864e5 | 0; return { i: r, v: r + 1 }; },
-            u: function(d) { const r = (d.getDay() + 6) % 7; return { i: r, v: r + 1 }; },
-            w: function(d) { const r = d.getDay(); return { i: r, v: r + 1 }; },
-            U: function(d, ys) { let doy = cases.j(d, ys).i; doy += ys.getDay() || 7; return (doy / 7) | 0; },
-            W: function(d, ys) { let doy = cases.j(d, ys).i; doy += (ys.getDay() + 6) % 7 || 7; return (doy / 7) | 0; },
-            X: function(d) { return d.toLocaleTimeString(); },
-            x: function(d) { return d.toLocaleDateString(); }
+            g: (d) => cases.G(d) % 100,
+            j: (d, ys) => Math.floor((d - ys) / 864e5) + 1,
+            u: (d) => ((d.getDay() + 6) % 7) + 1,
+            w: (d) => d.getDay(),
+            U: (d, ys) => Math.floor((Math.floor((d - ys) / 864e5) + (ys.getDay() || 7)) / 7),
+            W: (d, ys) => Math.floor((Math.floor((d - ys) / 864e5) + ((ys.getDay() + 6) % 7 || 7)) / 7),
+            X: (d) => d.toLocaleTimeString(),
+            x: (d) => d.toLocaleDateString()
         };
 
-        if (monthsLong) cases.B = function(d) { return monthsLong[d.getMonth()]; };
-        if (monthsShort) cases.b = function(d) { return monthsShort[d.getMonth()]; };
-
-        function pad(s, l, c) {
-            c = c || (typeof s === "number" ? "0" : " ");
-            l = l - (s += "").length | 0;
-            if (l <= 0) return s;
-            do { if ((l & 1) === 1) s = c + s; c += c; } while ((l >>>= 1) !== 0);
-            return s;
-        }
+        if (monthsLong) cases.B = (d) => monthsLong[d.getMonth()];
+        if (monthsShort) cases.b = (d) => monthsShort[d.getMonth()];
 
         return function(date, string) {
             const pattern = /%([0-9]*)(?:\{([^\}]*)\})?([A-Za-z%])/gi;
-            let result = "", start = new Date(date.getFullYear(), 0, 1), lastIndex = 0, match, parsed, dispatcher;
+            let result = "", start = new Date(date.getFullYear(), 0, 1), lastIndex = 0, match;
             
             while ((match = pattern.exec(string)) !== null) {
                 result += string.substring(lastIndex, match.index);
                 lastIndex = pattern.lastIndex;
-                dispatcher = cases[match[3]];
+                
+                const dispatcher = cases[match[3]];
                 if (typeof dispatcher !== "function") {
                     result += '¿' + match[3] + '?';
                     continue;
                 }
-                parsed = dispatcher(date, start);
-                if (typeof parsed === "object") parsed = parsed.v;
-                result += pad(parsed, parseInt(match[1], 10)); 
+                
+                const parsed = dispatcher(date, start);
+                const padLength = parseInt(match[1], 10) || 0;
+                
+                // Using modern native padStart instead of old slow bitwise loops
+                result += String(parsed).padStart(padLength, "0");
             }
-            result += string.substr(lastIndex);
+            result += string.substring(lastIndex);
             return result;
         };
     }
@@ -192,21 +185,21 @@ This script only renders the clocks and handles formatting.
             // Self-correcting teardown if the container is abruptly removed from DOM by external scripts
             if (!$.contains(document.documentElement, $container[0])) {
                 if (clockInterval) {
-                    window.clearInterval(clockInterval);
+                    clearInterval(clockInterval);
                     clockInterval = null;
                 }
                 return;
             }
 
+            const now = new Date();
+
             elements.forEach($el => {
                 const clock = $el.data("clock");
                 if (!clock) return; // Protection if the data was wiped by external scripts
 
-                const d = new Date();
-                
-                // Correct calculation for fractional and standard offsets (e.g. +5.5)
+                // Correct calculation for fractional and standard offsets without mutating global date object
                 const offsetMinutes = (typeof clock.offset === "number" ? clock.offset : 0) * 60;
-                d.setMinutes(d.getMinutes() + d.getTimezoneOffset() + offsetMinutes);
+                const targetTime = new Date(now.getTime() + (now.getTimezoneOffset() + offsetMinutes) * 60000);
 
                 // Handling localizable label objects or strings
                 let label = clock.label || "";
@@ -215,38 +208,21 @@ This script only renders the clocks and handles formatting.
                 }
 
                 const prefix = label ? `${label}${separator} ` : "";
-                $el.text(`${prefix}${formatTime(d, clock.format || "%2H:%2M:%2S")}`);
+                $el.text(`${prefix}${formatTime(targetTime, clock.format || "%2H:%2M:%2S")}`);
             });
         }
 
         // Setting update loop (sampling at 2Hz for precise 1s tick rendering)
         const intervalTime = Math.max(500, Math.min(cfg.interval || 500, Infinity));
-        clockInterval = window.setInterval(update, intervalTime);
+        clockInterval = setInterval(update, intervalTime);
         update();
     });
 
     // Export public module API for global availability and dependency linking
-    const instance = {
+    window.MultiClock = {
         config: cfg,
         elements: elements,
         container: $container
     };
 
-    window.MultiClock = instance;
-    
-    // Creating standard mock object to satisfy legacy scripts looking for UTCClock
-    window.UCX = window.UCX || {};
-    window.UTCClock = window.UCX.UTCClock = $.extend({
-        killClock: function() { 
-            if (clockInterval) {
-                window.clearInterval(clockInterval);
-                clockInterval = null;
-            }
-            $container.remove(); 
-        }
-    }, instance);
-
-    mw.hook("dev.multi-clock").fire(window.MultiClock);
-    mw.hook("dev.utc-clock").fire(window.UTCClock);
-
-})(jQuery, mediaWiki, window, Date);
+})(jQuery, mediaWiki, window);

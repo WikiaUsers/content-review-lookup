@@ -15,3 +15,5 @@ window.DiscussionTemplates = {
         },
     },
 };
+
+window.AddRailModule = [{prepend: false}];

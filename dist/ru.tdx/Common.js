@@ -39,94 +39,123 @@ $(document).on('click', '.ps-tabber .ps-tab-button', function() {
     $tabber.find('#' + targetId).show();
 });
 
-mw.hook('wikipage.content').add(function($content) {
-    if (!$content.find('.FilterContainer').length) return;
+(function($) {
+    mw.hook('wikipage.content').add(function($content) {
+        // Ищем главный контейнер фильтра
+        var $container = $content.find('.FilterContainer');
+        if (!$container.length) return;
 
-    // Добавляем стиль для скрытия прямо через JS, чтобы не править CSS файл
-    if (!$('#filter-hide-style').length) {
-        $('<style id="filter-hide-style">.filtrable-item.is-hidden { display: none !important; }</style>').appendTo('head');
-    }
-
-    var activeFilters = {};
-
-    function updateFilters() {
-        $content.find('.filtrable-item').each(function() {
-            var item = $(this);
-            var show = true;
-
-            $.each(activeFilters, function(group, filterValues) {
-                if (filterValues && filterValues.length > 0) {
-                    var itemDataValue = String(item.attr('data-' + group) || '');
-                    var itemDataArray = itemDataValue.split(' ');
-                    var hasMatchInGroup = false;
-
-                    $.each(filterValues, function(i, val) {
-                        if (itemDataArray.indexOf(String(val)) !== -1) {
-                            hasMatchInGroup = true;
-                        }
-                    });
-
-                    if (!hasMatchInGroup) {
-                        show = false;
-                    }
-                }
-            });
-
-            // Вместо toggle() используем строгий класс
-            if (show) {
-                item.removeClass('is-hidden');
-            } else {
-                item.addClass('is-hidden');
-            }
+        var $descBox = $container.find('#filter-description-box');
+        var $selects = $container.find('.PseudoSelect');
+        
+        // Автоматически сохраняем дефолтный текст для всех списков
+        $selects.each(function() {
+            var $sel = $(this);
+            var defaultText = $sel.find('.SelectedOption').text();
+            $sel.data('default-text', defaultText);
         });
-    }
 
-    // Клик по кнопкам-иконкам
-    $content.find('.filter-btn').on('click', function() {
-        $(this).toggleClass('is-active');
-        var g = $(this).attr('data-group');
-        activeFilters[g] = $content.find('.filter-btn[data-group="'+g+'"].is-active').map(function(){
-            return String($(this).attr('data-value'));
-        }).get();
-        updateFilters();
-    });
+        var activeFilters = {};
 
-    // Клик по пунктам в выпадающих списках
-    $content.find('.opt').on('click', function(e) {
-        e.stopPropagation();
-        var parent = $(this).closest('.PseudoSelect');
-        var g = parent.attr('data-group');
-        var v = $(this).attr('data-value');
-        
-        parent.find('.SelectedOption').text($(this).text());
-        
-        if (v && v !== "") {
-            parent.addClass('is-active-select');
-            activeFilters[g] = [String(v)];
-        } else {
-            parent.removeClass('is-active-select');
-            activeFilters[g] = [];
+        // Функция динамического обновления (без жесткого кэша на старте)
+        function updateFilters() {
+            // Ищем элементы КРАЙНЕ быстро только внутри целевого контейнера вывода
+            var $items = $container.find('.filtrable-item');
+            
+            $items.each(function() {
+                var $item = $(this);
+                var show = true;
+
+                $.each(activeFilters, function(group, filterValues) {
+                    if (filterValues && filterValues.length > 0) {
+                        var itemDataValue = String($item.attr('data-' + group) || '').trim();
+                        
+                        // Если в кнопке "Все" (пустое значение), пропускаем эту группу
+                        if (filterValues.length === 1 && filterValues[0] === "") {
+                            return true; 
+                        }
+
+                        var itemDataArray = itemDataValue.split(/\s+/); // деление по любым пробелам
+                        var hasMatchInGroup = false;
+
+                        for (var i = 0; i < filterValues.length; i++) {
+                            var currentFilterVal = filterValues[i];
+                            if (currentFilterVal !== "" && itemDataArray.indexOf(currentFilterVal) !== -1) {
+                                hasMatchInGroup = true;
+                                break;
+                            }
+                        }
+
+                        if (!hasMatchInGroup) {
+                            show = false;
+                            return false; // Выход из $.each для этой карточки
+                        }
+                    }
+                });
+
+                // Мгновенное скрытие/отображение через CSS класс
+                $item.toggleClass('is-hidden', !show);
+            });
         }
-        updateFilters();
-    });
 
-    // Кнопка полного сброса
-    $content.find('#filter-reset').on('click', function() {
-        $content.find('.filter-btn').removeClass('is-active');
-        $content.find('.PseudoSelect').removeClass('is-active-select');
-        $content.find('.PseudoSelect[data-group="place"] .SelectedOption').text('Размещение');
-        $content.find('.PseudoSelect[data-group="season"] .SelectedOption').text('Сезон БП');
-        activeFilters = {};
-        $content.find('.filtrable-item').removeClass('is-hidden');
-    });
+        // Клик по кнопкам-иконкам
+        $container.off('click', '.filter-btn').on('click', '.filter-btn', function() {
+            var $btn = $(this);
+            $btn.toggleClass('is-active');
+            
+            var g = $btn.attr('data-group');
+            
+            activeFilters[g] = $container.find('.filter-btn[data-group="' + g + '"].is-active').map(function() {
+                return String($(this).attr('data-value')).trim();
+            }).get();
+            
+            updateFilters();
+        });
 
-    // Наведение мыши
-    $content.find('.filter-btn').on('mouseenter', function() {
-        var desc = $(this).attr('data-desc');
-        if (desc) {
-            $content.find('#filter-description-box').text(desc).addClass('is-active-desc');
-        }
-    }).on('mouseleave', function() {
-        $content.find('#filter-description-box').text("Наведите на иконку").removeClass('is-active-desc');
+        // Клик по пунктам в выпадающих списках
+        $container.off('click', '.opt').on('click', '.opt', function(e) {
+            e.stopPropagation();
+            var $opt = $(this);
+            var $parent = $opt.closest('.PseudoSelect');
+            var g = $parent.attr('data-group');
+            var v = $opt.attr('data-value');
+            
+            $parent.find('.SelectedOption').text($opt.text());
+            
+            if (v && v !== "") {
+                $parent.addClass('is-active-select');
+                activeFilters[g] = [String(v).trim()];
+            } else {
+                $parent.removeClass('is-active-select');
+                activeFilters[g] = []; // Если выбрали "Все", очищаем группу
+            }
+            updateFilters();
+        });
+
+        // Кнопка полного сброса
+        $container.off('click', '#filter-reset').on('click', '#filter-reset', function() {
+            $container.find('.filter-btn').removeClass('is-active');
+            
+            $selects.removeClass('is-active-select').each(function() {
+                var $sel = $(this);
+                $sel.find('.SelectedOption').text($sel.data('default-text'));
+            });
+            
+            activeFilters = {};
+            $container.find('.filtrable-item').removeClass('is-hidden');
+            $descBox.text("Наведите на иконку").removeClass('is-active-desc');
+        });
+
+        // Наведение мыши на кнопки
+        $container.off('mouseenter mouseleave', '.filter-btn')
+            .on('mouseenter', '.filter-btn', function() {
+                var desc = $(this).attr('data-desc');
+                if (desc) {
+                    $descBox.text(desc).addClass('is-active-desc');
+                }
+            })
+            .on('mouseleave', '.filter-btn', function() {
+                $descBox.text("Наведите на иконку").removeClass('is-active-desc');
+            });
     });
-});
+})(jQuery);

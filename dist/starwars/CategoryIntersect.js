@@ -1,6 +1,6 @@
 /**
  * Adds a category intersection page using DynamicPageList and links to category pages to intersect with Canon and Legends articles.
- * 
+ *
  * Uses OOUI and MediaWiki core JS, see https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui and https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw for details.
  * 1/18/25 - modified for three-category support & ncl + ncc links
  */
@@ -17,41 +17,41 @@ $(function () {
 			return param === 'category1' || param === 'category2' || param === 'category3';
 		}).length === 3;
 		const isFormPage = pageName === intersectionPage && !isResultsPage;
-		
+
 		// Add links to category pages
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
+			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + encodeURIComponent(category);
 			const canonUrl = baseUrl + '&category2=Canon_articles&category3=';
 			const legendsUrl = baseUrl + '&category2=Legends_articles&category3=';
 			const noncanonUrl = baseUrl + '&category2=Non-canon_articles&category3=';
-       	    const noncanonlegendsUrl = baseUrl + '&category2=Non-canon_Legends_articles&category3=';
+			const noncanonlegendsUrl = baseUrl + '&category2=Non-canon_Legends_articles&category3=';
 			var filters = '<div class="dpl-filter-container">';
-			filters += '<a href="' + baseUrl + '">Category intersection</a>';
+			filters += '<a href="' + mw.html.escape(baseUrl) + '">Category intersection</a>';
 			filters += '<ul>';
 			filters += '<li>';
-			filters += '<a href="' + canonUrl + '" title="View Canon articles only">';
+			filters += '<a href="' + mw.html.escape(canonUrl) + '" title="View Canon articles only">';
 			filters += '<img alt="View Canon articles only" src="/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '<li>';
-			filters += '<a href="' + legendsUrl + '" title="View Legends articles only">';
+			filters += '<a href="' + mw.html.escape(legendsUrl) + '" title="View Legends articles only">';
 			filters += '<img alt="View Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
-			filters += '<a href="' + noncanonUrl + '" title="View non-canon articles only">';
+			filters += '<a href="' + mw.html.escape(noncanonUrl) + '" title="View non-canon articles only">';
 			filters += '<img alt="View non-canon articles only" src="/wiki/Special:FilePath/Premium-Eras-NCC.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
-			filters += '<a href="' + noncanonlegendsUrl + '" title="View non-canon Legends articles only">';
-			filters += '<img alt="View Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-NCL.png" decoding="async">';
+			filters += '<a href="' + mw.html.escape(noncanonlegendsUrl) + '" title="View non-canon Legends articles only">';
+			filters += '<img alt="View non-canon Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-NCL.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '</ul>';
 			filters += '</div>';
 			$('.mw-parser-output').append(filters);
 		}
-		
+
 		// Results page
 		if (isResultsPage) {
 			const pageUrl = window.location.origin + window.location.pathname;
@@ -62,7 +62,7 @@ $(function () {
 
 			document.title = title;
 			$('#firstHeading').html(title);
-			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + pageUrl + '">New category intersection query</a>');
+			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + mw.html.escape(pageUrl) + '">New category intersection query</a>');
 			$('#mw-content-text').empty();
 
 			// Style results like category page
@@ -130,9 +130,9 @@ $(function () {
 				contentmodel: 'wikitext'
 			}).catch(function (code, result) {
 				if (code === 'http') {
-					$('#mw-content-text').html('<p>HTTP error fetching intersection results: ' + result.textStatus + '</p>');
+					$('#mw-content-text').html('<p>HTTP error fetching intersection results: ' + mw.html.escape(result.textStatus) + '</p>');
 				} else {
-					$('#mw-content-text').html('<p>API error fetching intersection results: ' + result.error.info + '</p>');
+					$('#mw-content-text').html('<p>API error fetching intersection results: ' + mw.html.escape(result.error.info) + '</p>');
 				}
 				return Promise.reject();
 			});
@@ -166,29 +166,29 @@ $(function () {
 					var pagination = '<div class="dpl-pagination">';
 					pagination += '<b>Go to page:</b> ';
 					if (currentPage > 2 && startPage > 1) {
-						pagination += '<a href="' + basePaginationLink + '" aria-label="Page 1">1</a>';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink) + '" aria-label="Page 1">1</a>';
 						pagination += startPage > 2 ? pageSeparator : ' ';
 					}
 					for (var page = startPage; page <= endPage; page++) {
-						pagination += '<a href="' + basePaginationLink + '&page=' + page + '" aria-label="Page ' + page + (page === currentPage ? ' (current)' : '') + '">' + (page === currentPage ? '<b>' + page + '</b>' : page) + '</a> ';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink + '&page=' + page) + '" aria-label="Page ' + page + (page === currentPage ? ' (current)' : '') + '">' + (page === currentPage ? '<b>' + page + '</b>' : page) + '</a> ';
 					}
 					if (currentPage < maxPage - 1 && endPage < maxPage) {
 						pagination += endPage < maxPage - 1 ? pageSeparator : ' ';
-						pagination += '<a href="' + basePaginationLink + '&page=' + maxPage + '" aria-label="Page ' + maxPage + '">' + maxPage + '</a>';
+						pagination += '<a href="' + mw.html.escape(basePaginationLink + '&page=' + maxPage) + '" aria-label="Page ' + maxPage + '">' + maxPage + '</a>';
 					}
 					pagination += '</div>';
 					$('#mw-content-text').prepend(pagination);
 				}
 			});
 		}
-		
+
 		// Intersect any category form
 		if (isFormPage) {
 			document.title = title;
 			$('#firstHeading').html(title);
 			const mwContentText = $('#mw-content-text');
 			mwContentText.empty();
-		
+
 			importArticles({
 				type: "script",
 				articles: [
@@ -208,11 +208,11 @@ $(function () {
 					form.addItems([
 						new OO.ui.FieldLayout(new mw.widgets.TitleInputWidget({
 							id: 'dpl-cat' + index,
-							name: 'category' + index,
-							namespace: 14,
-							required: false,
-							value: searchParams.has('category' + index) ? searchParams.get('category' + index).replaceAll('_', ' ') : undefined,
-							$overlay: true
+								name: 'category' + index,
+								namespace: 14,
+								required: false,
+								value: searchParams.has('category' + index) ? searchParams.get('category' + index).replaceAll('_', ' ') : undefined,
+								$overlay: true
 						}), {
 							label: 'Category:',
 							align: 'top'

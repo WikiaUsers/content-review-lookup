@@ -11,6 +11,7 @@
  * - Achievement summaries for marked achievement/progress-tracking areas.
  * - Toggle panels for expandable wikitext sections.
  * - Collapsible containers with generated toggle buttons for scrollable sections.
+ * - Gallery shells that reuse the collapsible, filter, and counter behaviours.
  * - Filters and counters for marked lists, cards, rows, and catalog-style content.
  * - Current-page link highlighting for Magical Princess navigation links.
  * - Read-more text for long plain-text notes.
@@ -49,8 +50,8 @@
  */
   var SCRIPT = {
     name: 'Magical Princess Content Logic',
-    version: '6.0.1',
-    features: 'wikitext-behaviours-featured-article-rotator-collapsible-containers-full-article-spoiler-consent-gate-no-leaks'
+    version: '6.1.1',
+    features: 'wikitext-behaviours-featured-article-rotator-collapsible-containers-gallery-shells-full-article-spoiler-consent-gate-no-leaks'
   };
   SCRIPT.buildIdentifier = 'mp-content-logic:' + SCRIPT.features + ':' + SCRIPT.version;
 
@@ -445,14 +446,15 @@
       '.mp-js-achievement-summary', '.mp-js-achievement-step-check', '.mp-entry-like.advanced-tooltip',
       '.mp-js-toggle', '.mp-js-toggle-panel',
       '.mp-js-collapsible', '.mp-js-collapse', '.mp-js-collapse-toggle', '.mp-js-collapse-body',
+      '.mp-native-gallery', '.mp-gallery-section', '.mp-gallery-filter', '.mp-gallery-count',
       '.mp-js-filter', '.mp-js-filter-list', '.mp-js-filter-item',
       '.mp-js-count', '.mp-js-current-link', '.mp-navigationbar-link',
       '.mp-js-readmore', '.mp-js-spoiler-gate', '.mp-spoiler-shell', '.mp-spoiler-page-gate',
       '.mp-js-reveal', '.mp-js-reveal-repeat'
     ].join(', '),
     refresh: [
-      '.mp-js-achievement-summary', '.mp-js-count', '.mp-js-count-group',
-      'table-progress-tracking', '.mp-achievement-list-wrap', '.mp-achievement-list'
+      '.mp-js-achievement-summary', '.mp-js-count', '.mp-js-count-group', '.mp-gallery-count',
+      'table-progress-tracking', '.mp-achievement-list-wrap', '.mp-achievement-list', '.mp-gallery-section'
     ].join(', '),
     rotator: '.mp-js-rotator, .mp-js-rotate',
     rotatorItem: '.mp-js-rotator-item, .mp-js-rotate-item',
@@ -460,14 +462,16 @@
     achievementStepCheck: '.mp-js-achievement-step-check',
     toggle: '.mp-js-toggle',
     togglePanel: '.mp-js-toggle-panel',
-    collapsible: '.mp-js-collapsible, .mp-js-collapse',
-    collapseHeader: '.mp-js-collapse-heading, .mp-achievement-list-title',
-    collapseToggle: '.mp-js-collapse-toggle',
-    collapseBody: '.mp-js-collapse-body',
-    filter: '.mp-js-filter',
-    filterList: '.mp-js-filter-list',
-    filterItem: '.mp-js-filter-item',
-    count: '.mp-js-count',
+    collapsible: '.mp-js-collapsible, .mp-js-collapse, .mp-gallery-section',
+    collapseHeader: '.mp-js-collapse-heading, .mp-achievement-list-title, .mp-gallery-heading',
+    collapseToggle: '.mp-js-collapse-toggle, .mp-gallery-toggle',
+    collapseBody: '.mp-js-collapse-body, .mp-gallery-body',
+    galleryRoot: '.mw-parser-output',
+    gallery: '.wikia-gallery, ul.gallery',
+    filter: '.mp-js-filter, .mp-gallery-filter',
+    filterList: '.mp-js-filter-list, .mp-gallery-body, .mp-gallery-grid',
+    filterItem: '.mp-js-filter-item, .mp-gallery-item, .gallerybox, .wikia-gallery-item',
+    count: '.mp-js-count, .mp-gallery-count',
     currentLink: '.mp-js-current-link a, .mp-navigationbar-link a',
     readMore: '.mp-js-readmore',
     spoilerGate: '.mp-js-spoiler-gate, .mp-spoiler-shell',
@@ -656,6 +660,7 @@
       var childItems = query(rotator, rotator.dataset.mpRotateItemSelector || SELECTOR.rotatorItem);
       var pool = values.length ? values : childItems;
       var index = Math.max(number(rotator.dataset.mpRotateStart || rotator.dataset.mpRotatorStart, 0), 0);
+      var progress = rotator.querySelector('[data-mp-rotate-progress]');
 
       if (rotator.dataset.mpRotatorReady === '1' || !pool.length) {
         return;
@@ -669,6 +674,7 @@
       index = index % pool.length;
       rotator.dataset.mpRotatorReady = '1';
       rotator.classList.add('is-mp-rotator-ready');
+      rotator.style.setProperty('--mp-rotator-interval', interval + 'ms');
       var pointerPaused = false;
       var focusPaused = false;
       cleanup(function () {
@@ -720,6 +726,14 @@
 
           rotator.classList.remove('is-mp-rotator-changing', 'is-mp-rotating-text-changing');
           rotator.classList.add('is-mp-rotator-active');
+
+          if (progress) {
+            progress.classList.remove('is-mp-rotator-progress-running');
+            /* Force one layout read so the deterministic CSS timer restarts
+             * exactly when the newly selected article becomes visible. */
+            void progress.offsetWidth;
+            progress.classList.add('is-mp-rotator-progress-running');
+          }
         }, 120);
       }
 
@@ -1228,12 +1242,12 @@
       openLabel =
         section.dataset.mpCollapseOpenLabel ||
         section.dataset.mpCollapseCollapseLabel ||
-        'Collapse';
+        (section.classList.contains('mp-gallery-section') ? 'Hide gallery' : 'Collapse');
 
       closedLabel =
         section.dataset.mpCollapseClosedLabel ||
         section.dataset.mpCollapseExpandLabel ||
-        'Expand';
+        (section.classList.contains('mp-gallery-section') ? 'Show gallery' : 'Expand');
 
       if (!toggle) {
         toggle = document.createElement('button');
@@ -1306,6 +1320,320 @@
     });
   }
 
+
+  /* ---------------------------------------------------------------------- */
+
+  function isGalleryPage() {
+    var page =
+      mw && mw.config && typeof mw.config.get === 'function'
+        ? String(mw.config.get('wgPageName') || '')
+        : '';
+
+    if (/(?:^|\/)Gallery$/i.test(page)) {
+      return true;
+    }
+
+    return !!(
+      document.body &&
+      /(?:^|\s)page-\S*_Gallery(?:\s|$)/.test(document.body.className || '')
+    );
+  }
+
+  function galleryContext(gallery) {
+    return isGalleryPage() || !!gallery.closest('.mp-native-gallery, .mp-gallery-section');
+  }
+
+  function galleryHeadingLevel(heading) {
+    if (!heading || !heading.matches) {
+      return 0;
+    }
+
+    if (heading.matches('h2, .mw-heading2')) {
+      return 2;
+    }
+
+    if (heading.matches('h3, .mw-heading3')) {
+      return 3;
+    }
+
+    return 0;
+  }
+
+  function galleryHeading(gallery) {
+    var heading = gallery.previousElementSibling;
+    var skipped = 0;
+
+    /* VisualEditor and the parser can leave an empty bridge node between the
+     * section heading and gallery. Skip only empty nodes so real content still
+     * ends the heading/gallery pairing. */
+    while (heading && skipped < 3 &&
+        (heading.classList.contains('mw-empty-elt') || !String(heading.textContent || '').trim())) {
+      heading = heading.previousElementSibling;
+      skipped += 1;
+    }
+
+    return galleryHeadingLevel(heading) ? heading : null;
+  }
+
+  function galleryItems(gallery) {
+    return unique(query(gallery, '.wikia-gallery-item, li.gallerybox')).filter(function (item) {
+      var parentGallery = item.parentElement && item.parentElement.closest('.wikia-gallery, ul.gallery');
+      return parentGallery === gallery;
+    });
+  }
+
+  function galleryTitle(heading) {
+    var title = heading.querySelector('.mw-headline, h2, h3');
+    return String((title || heading).textContent || '').trim() || 'Gallery';
+  }
+
+  function gallerySectionNodes(heading) {
+    var nodes = [];
+    var node = heading && heading.nextElementSibling;
+
+    while (node && galleryHeadingLevel(node) !== 2) {
+      nodes.push(node);
+      node = node.nextElementSibling;
+    }
+
+    return nodes;
+  }
+
+  function nodeContainsGallery(node) {
+    return !!(
+      node && node.matches &&
+      (node.matches(SELECTOR.gallery) ||
+        (node.querySelector && node.querySelector(SELECTOR.gallery)))
+    );
+  }
+
+  function initGalleryCategories(root) {
+    mountEach(root, 'galleryCategories', SELECTOR.galleryRoot, function (parser) {
+      var headings;
+
+      if (parser.dataset.mpGalleryCategoriesReady === '1' || !isGalleryPage()) {
+        return;
+      }
+
+      if (document.body) {
+        document.body.classList.add('mp-is-gallery-page');
+      }
+
+      headings = arr(parser.children).filter(function (child) {
+        return galleryHeadingLevel(child) === 2;
+      });
+
+      headings.forEach(function (heading, index) {
+        var nodes;
+        var body;
+        var toggle;
+        var title;
+        var controls;
+        var defaultOpen;
+
+        if (heading.dataset.mpGalleryCategoryReady === '1') {
+          return;
+        }
+
+        nodes = gallerySectionNodes(heading);
+
+        if (!nodes.length || !nodes.some(nodeContainsGallery)) {
+          return;
+        }
+
+        /* Keep the simple H2 + one native gallery case on the direct-gallery
+         * path so it retains the image-count label. Parent category wrapping is
+         * only needed when the H2 owns H3 subsections, multiple galleries, or
+         * intervening real content. */
+        var sectionGalleryCount = nodes.reduce(function (total, node) {
+          if (node.matches && node.matches(SELECTOR.gallery)) {
+            return total + 1;
+          }
+          return total + (node.querySelectorAll ? node.querySelectorAll(SELECTOR.gallery).length : 0);
+        }, 0);
+        var hasSubheading = nodes.some(function (node) {
+          return galleryHeadingLevel(node) === 3;
+        });
+        var firstMeaningful = nodes.filter(function (node) {
+          return !(node.classList && node.classList.contains('mw-empty-elt')) &&
+            String(node.textContent || '').trim();
+        })[0] || nodes[0];
+
+        if (!hasSubheading && sectionGalleryCount === 1 && firstMeaningful &&
+            firstMeaningful.matches && firstMeaningful.matches(SELECTOR.gallery)) {
+          return;
+        }
+
+        body = document.createElement('div');
+        body.className = 'mp-gallery-content mp-gallery-category-content is-mp-gallery-ready';
+        heading.parentNode.insertBefore(body, nodes[0]);
+        nodes.forEach(function (node) {
+          body.appendChild(node);
+        });
+
+        title = galleryTitle(heading);
+        toggle = heading.querySelector('.mp-gallery-toggle');
+
+        if (!toggle) {
+          toggle = document.createElement('button');
+          toggle.type = 'button';
+          toggle.className = 'mp-gallery-toggle mp-gallery-category-toggle';
+          heading.appendChild(toggle);
+        } else {
+          toggle.classList.add('mp-gallery-category-toggle');
+        }
+
+        controls = ensureCollapseIds([body], 'gallery-category-' + index);
+        defaultOpen = !/^(closed|collapsed|false|0)$/i.test(String(
+          heading.dataset.mpGalleryDefault || 'open'
+        ));
+
+        heading.dataset.mpGalleryCategoryReady = '1';
+        heading.classList.add(
+          'mp-gallery-heading',
+          'mp-gallery-category-heading',
+          'is-mp-gallery-ready'
+        );
+        toggle.setAttribute('aria-controls', controls.join(' '));
+
+        function updateToggleLabel(isOpen) {
+          var action = isOpen ? 'Hide section' : 'Show section';
+          var galleryCount = query(body, SELECTOR.gallery).length;
+
+          toggle.dataset.mpGalleryCount = String(galleryCount);
+          text(toggle, action);
+          toggle.setAttribute('aria-label', action + ': ' + title);
+        }
+
+        function setOpen(isOpen) {
+          heading.classList.toggle('is-mp-expanded', isOpen);
+          heading.classList.toggle('is-mp-collapsed', !isOpen);
+          body.classList.toggle('is-mp-expanded', isOpen);
+          body.classList.toggle('is-mp-collapsed', !isOpen);
+          toggle.classList.toggle('is-mp-expanded', isOpen);
+          toggle.classList.toggle('is-mp-collapsed', !isOpen);
+          toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          body.hidden = !isOpen;
+          body.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+          updateToggleLabel(isOpen);
+          emit(body, 'mp:gallerycategorycollapsechange', {
+            open: isOpen,
+            heading: heading
+          });
+        }
+
+        bindActivation(toggle, function (event) {
+          event.preventDefault();
+          setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+        });
+
+        if (toggle.hasAttribute('aria-expanded')) {
+          defaultOpen = toggle.getAttribute('aria-expanded') === 'true';
+        }
+
+        setOpen(defaultOpen);
+      });
+
+      parser.dataset.mpGalleryCategoriesReady = '1';
+    });
+  }
+
+  function initGalleries(root) {
+    if (isGalleryPage() && document.body) {
+      document.body.classList.add('mp-is-gallery-page');
+    }
+
+    mountEach(root, 'galleries', SELECTOR.gallery, function (gallery, ctx) {
+      var owner;
+      var heading;
+      var toggle;
+      var title;
+      var controls;
+      var defaultOpen;
+
+      if (gallery.dataset.mpGalleryReady === '1' || !galleryContext(gallery)) {
+        return;
+      }
+
+      /* A deliberately marked generic collapsible owns its whole body. Avoid
+       * adding a second control to a native gallery nested inside it. */
+      owner = gallery.closest('.mp-native-gallery, .mp-js-collapsible, .mp-js-collapse, .mp-gallery-section');
+      if (owner && owner !== gallery && owner.dataset.mpCollapseReady === '1') {
+        return;
+      }
+
+      heading = galleryHeading(gallery);
+      if (!heading) {
+        return;
+      }
+
+      title = galleryTitle(heading);
+      toggle = heading.querySelector('.mp-gallery-toggle');
+
+      if (!toggle) {
+        toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'mp-gallery-toggle';
+        heading.appendChild(toggle);
+      }
+
+      controls = ensureCollapseIds([gallery], 'gallery');
+      defaultOpen = !/^(closed|collapsed|false|0)$/i.test(String(
+        gallery.dataset.mpGalleryDefault ||
+        (owner && owner.dataset.mpGalleryDefault) ||
+        'open'
+      ));
+
+      gallery.dataset.mpGalleryReady = '1';
+      gallery.classList.add('mp-gallery-content', 'is-mp-gallery-ready');
+      heading.classList.add('mp-gallery-heading', 'is-mp-gallery-ready');
+      toggle.setAttribute('aria-controls', controls.join(' '));
+
+      function updateToggleLabel(isOpen) {
+        var count = galleryItems(gallery).length;
+        var action = isOpen ? 'Hide gallery' : 'Show gallery';
+        var itemLabel = count === 1 ? 'image' : 'images';
+
+        toggle.dataset.mpGalleryCount = String(count);
+        text(toggle, action + (count ? ' · ' + count : ''));
+        toggle.setAttribute(
+          'aria-label',
+          action + ': ' + title + (count ? ' (' + count + ' ' + itemLabel + ')' : '')
+        );
+      }
+
+      function setOpen(isOpen) {
+        heading.classList.toggle('is-mp-expanded', isOpen);
+        heading.classList.toggle('is-mp-collapsed', !isOpen);
+        gallery.classList.toggle('is-mp-expanded', isOpen);
+        gallery.classList.toggle('is-mp-collapsed', !isOpen);
+        toggle.classList.toggle('is-mp-expanded', isOpen);
+        toggle.classList.toggle('is-mp-collapsed', !isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        gallery.hidden = !isOpen;
+        gallery.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        updateToggleLabel(isOpen);
+        emit(gallery, 'mp:gallerycollapsechange', { open: isOpen, heading: heading });
+      }
+
+      bindActivation(toggle, function (event) {
+        event.preventDefault();
+        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+      });
+
+      if (window.MutationObserver) {
+        ctx.observe(gallery, { childList: true, subtree: true }, function () {
+          updateToggleLabel(toggle.getAttribute('aria-expanded') === 'true');
+        });
+      }
+
+      if (toggle.hasAttribute('aria-expanded')) {
+        defaultOpen = toggle.getAttribute('aria-expanded') === 'true';
+      }
+
+      setOpen(defaultOpen);
+    });
+  }
 
   /* ---------------------------------------------------------------------- */
 
@@ -1406,11 +1734,25 @@
   function initFilters(root) {
     mountEach(root, 'filters', SELECTOR.filter, function (filter) {
       var input;
+      var galleryBody;
 
-      if (
-        filter.dataset.mpFilterReady === '1' ||
-        (!filter.dataset.mpFilterTarget && !filter.dataset.mpFilterList)
-      ) {
+      if (filter.dataset.mpFilterReady === '1') {
+        return;
+      }
+
+      /* Gallery controls may omit a target. Bind them to the nearest gallery
+       * body after the collapsible adapter has assigned its stable id. */
+      if (!filter.dataset.mpFilterTarget && !filter.dataset.mpFilterList &&
+          filter.classList.contains('mp-gallery-filter')) {
+        galleryBody = filter.closest('.mp-gallery-section');
+        galleryBody = galleryBody && galleryBody.querySelector('.mp-gallery-body');
+
+        if (galleryBody) {
+          filter.dataset.mpFilterTarget = ensureCollapseIds([galleryBody], 'gallery-filter')[0];
+        }
+      }
+
+      if (!filter.dataset.mpFilterTarget && !filter.dataset.mpFilterList) {
         return;
       }
 
@@ -1455,7 +1797,9 @@
 
     var selector =
       counter.dataset.mpCountItems ||
-      '.mp-js-count-item, .mp-js-filter-item, tr, li';
+      (counter.classList.contains('mp-gallery-count')
+        ? '.mp-gallery-item, .gallerybox, .wikia-gallery-item'
+        : '.mp-js-count-item, .mp-js-filter-item, tr, li');
 
     var targets = targetList(
       key,
@@ -1464,6 +1808,15 @@
     );
 
     var items = [];
+
+    if (!targets.length && counter.classList.contains('mp-gallery-count')) {
+      var gallery = counter.closest('.mp-gallery-section');
+      var galleryBody = gallery && gallery.querySelector('.mp-gallery-body');
+
+      if (galleryBody) {
+        targets = [galleryBody];
+      }
+    }
 
     if (!targets.length && counter.parentElement) {
       targets = [counter.parentElement];
@@ -2750,6 +3103,8 @@
     { legacyProgressWidth: true });
   adapter('toggles', SELECTOR.toggle, 'mpToggleReady', initToggles);
   adapter('collapsibles', SELECTOR.collapsible, 'mpCollapseReady', initCollapsibles);
+  adapter('galleryCategories', SELECTOR.galleryRoot, 'mpGalleryCategoriesReady', initGalleryCategories);
+  adapter('galleries', SELECTOR.gallery, 'mpGalleryReady', initGalleries);
   adapter('achievementSteps', SELECTOR.achievementStepCheck, 'mpStepCheckReady', initAchievementStepChecks);
   adapter('tooltips', '.mp-entry-like.advanced-tooltip', 'mpTooltipReady', initEntryTooltips);
   adapter('filters', SELECTOR.filter, 'mpFilterReady', initFilters, { mode: 'contains' });
@@ -2787,6 +3142,7 @@
     number: number, booleanValue: booleanValue, targetList: targetList };
   /* Preserve published entry points. They share the same ownership/enable checks. */
   logic.initCollapsibles = function (content) { rootsOf(content).forEach(function (root) { run('collapsibles', root); }); };
+  logic.initGalleries = function (content) { rootsOf(content).forEach(function (root) { run('galleries', root); }); };
   logic.initAchievementStepChecks = function (content) { rootsOf(content).forEach(function (root) { run('achievementSteps', root); }); };
   logic.initSpoilerGates = function (content) { rootsOf(content).forEach(function (root) { run('spoilerPages', root); run('spoilers', root); }); };
   logic.initSpoilerPageGates = function (content) { rootsOf(content).forEach(function (root) { run('spoilerPages', root); }); };
