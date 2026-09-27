@@ -11,6 +11,9 @@ so screen readers can announce the behavior.
 $(function() {
     "use strict"; // safe mode
 
+    // Skip all links on Special: pages (e.g. WhatLinksHere)
+    if (mw.config.get('wgNamespaceNumber') === -1) return;
+
     $('a').each(function() {
         const $link = $(this);
         const href = $link.attr('href');

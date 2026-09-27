@@ -56,6 +56,13 @@ $(function () {
 					defaultHeight = 120;
 					break;
 
+				// Apple Music: Playlist
+				case 'applemusic:playlist':
+					iframe.src = 'https://embed.music.apple.com/us/playlist/pl.' + element.data('id');
+					defaultWidth = 300;
+					defaultHeight = 450;
+					break;
+
 				// Apple Podcasts: Show
 				case 'applepodcasts':
 				case 'applepodcasts:show':

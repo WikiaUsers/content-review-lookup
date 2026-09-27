@@ -433,3 +433,182 @@ window.dev.editSummaries = {
         fixCustomWikiNav();
     }
 })();
+
+
+
+mw.hook('wikipage.content').add(function () {
+    var $container = $('#cnsdr-recent-edits');
+    if (!$container.length) return;
+
+    $.getJSON(mw.util.wikiScript('api'), {
+        action: 'query',
+        list: 'recentchanges',
+        rclimit: 15,
+        rcnamespace: 0,
+        rcprop: 'title|user|timestamp',
+        format: 'json'
+    }).done(function (data) {
+        var changes = data.query.recentchanges;
+        if (!changes || changes.length === 0) {
+            $container.html('<span style="color: #ffffff;">No recent edits found.</span>');
+            return;
+        }
+
+        var mainPageTitle = mw.config.get('wgMainPageTitle') || 'Combat Noobs Siege Defense: Reborn Wiki';
+        var groupedByDate = {};
+
+        changes.forEach(function (edit) {
+            var dateObj = new Date(edit.timestamp);
+            var dateKey = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            if (!groupedByDate[dateKey]) {
+                groupedByDate[dateKey] = [];
+            }
+            groupedByDate[dateKey].push(edit);
+        });
+
+        var html = '';
+
+        for (var dateHeader in groupedByDate) {
+            html += '<div style="margin-top: 10px; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.3); padding-bottom: 3px;">' + mw.html.escape(dateHeader) + '</div>';
+            html += '<ul style="list-style: none; margin: 0 0 10px 0; padding: 0;">';
+            
+            groupedByDate[dateHeader].forEach(function (edit) {
+                var time = new Date(edit.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                var pageUrl = mw.util.getUrl(edit.title);
+                var userUrl = mw.util.getUrl('User:' + edit.user);
+                
+                var rawTitle = edit.title === mainPageTitle ? 'Main Page' : edit.title;
+                var displayTitle = rawTitle.length > 18 ? rawTitle.substring(0, 18) + '...' : rawTitle;
+
+                html += '<li style="padding: 4px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); font-size: 12px; line-height: 1.4; color: #ffffff;">';
+                html += '<span style="color: #ffffff; margin-right: 6px;">' + time + '</span>';
+                html += '<a href="' + pageUrl + '" title="' + mw.html.escape(edit.title) + '" style="font-weight: bold; text-decoration: none; margin-right: 6px;">' + mw.html.escape(displayTitle) + '</a>';
+                html += '<span style="color: #ffffff; margin-right: 6px;">edited by</span>';
+                html += '<a href="' + userUrl + '" style="font-weight: bold; text-decoration: none;">' + mw.html.escape(edit.user) + '</a>';
+                html += '</li>';
+            });
+
+            html += '</ul>';
+        }
+
+        $container.html(html);
+    }).fail(function () {
+        $container.html('<span style="color: #ffffff;">Failed to load recent edits.</span>');
+    });
+});
+
+mw.loader.using(['mediawiki.api'], function() {
+    var container = document.getElementById('cnsdr-latest-patch');
+    if (!container) return;
+
+    var ACTIVE_BG = '#00b4d8'; 
+
+    new mw.Api().get({
+        action: 'parse',
+        page: 'Update Logs',
+        prop: 'text',
+        format: 'json',
+        disablepp: true
+    }).done(function(data) {
+        if (!data || !data.parse || !data.parse.text) {
+            container.innerHTML = '<span style="color:#ff4d4d;">No data returned.</span>';
+            return;
+        }
+
+        var rawHtml = data.parse.text['*'];
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = rawHtml;
+
+        var tables = tempDiv.querySelectorAll('table.wikitable');
+        if (!tables || tables.length === 0) {
+            container.innerHTML = '<span style="color:#cccccc;">No update tables found.</span>';
+            return;
+        }
+
+        var majorTable = null;
+        var patchTable = null;
+
+        tables.forEach(function(table) {
+            var th = table.querySelector('th');
+            var titleText = th ? th.textContent.toLowerCase() : '';
+            var listItems = table.querySelectorAll('li');
+
+            if (!patchTable && (titleText.includes('fix') || titleText.includes('hotfix') || (titleText.includes('patch') && listItems.length <= 3))) {
+                patchTable = table;
+            } else if (!majorTable) {
+                majorTable = table;
+            }
+        });
+
+        if (!majorTable) majorTable = tables[0];
+        if (!patchTable) patchTable = tables[tables.length > 1 ? 1 : 0];
+
+        function renderTableContent(targetTable) {
+            var header = targetTable.querySelector('th');
+            var patchTitle = header ? header.innerHTML.trim() : 'Update Log';
+            
+            var contentCell = targetTable.querySelector('td') || targetTable;
+            var clone = contentCell.cloneNode(true);
+
+            var garbage = clone.querySelectorAll('th, #toc, .toc, .mw-headline-number');
+            garbage.forEach(function(el) { el.remove(); });
+
+            if (!clone.textContent.trim()) {
+                return '<div style="font-size: 13px; font-weight: bold; color: #ffcc00; margin-bottom: 6px;">' + patchTitle + '</div><span style="color:#cccccc; font-size: 13px;">No details listed.</span>';
+            }
+
+            var out = '<div style="font-size: 13px; font-weight: bold; color: #ffcc00; margin-bottom: 8px; border-bottom: 1px solid rgba(255,204,0,0.2); padding-bottom: 4px;">' + patchTitle + '</div>';
+            out += '<div class="cnsd-patch-body" style="color: #ffffff; font-size: 13px; line-height: 1.5;">' + clone.innerHTML + '</div>';
+            return out;
+        }
+
+        var majorHtml = renderTableContent(majorTable);
+        var patchHtml = renderTableContent(patchTable);
+
+        var tabUi = '<div style="display: flex; gap: 6px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px;">' +
+            '<button id="cnsd-tab-major" style="flex: 1; background: ' + ACTIVE_BG + '; color: #ffffff; border: none; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;">Major Updates</button>' +
+            '<button id="cnsd-tab-patch" style="flex: 1; background: rgba(255,255,255,0.1); color: #cccccc; border: none; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;">Patches & Fixes</button>' +
+            '</div>' +
+            '<div id="cnsd-tab-content" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">' + majorHtml + '</div>';
+
+        container.innerHTML = tabUi;
+
+        var styleTag = document.getElementById('cnsd-patch-style');
+        if (!styleTag) {
+            styleTag = document.createElement('style');
+            styleTag.id = 'cnsd-patch-style';
+            styleTag.innerHTML = 
+                '#cnsd-tab-content h3 { font-size: 13px !important; color: #00b4d8 !important; margin: 6px 0 2px 0 !important; border: none !important; padding: 0 !important; }\n' +
+                '#cnsd-tab-content ul { margin: 0 0 6px 14px !important; padding: 0 !important; color: #ffffff !important; }\n' +
+                '#cnsd-tab-content li { margin-bottom: 2px !important; color: #ffffff !important; }\n' +
+                '#cnsd-tab-content b, #cnsd-tab-content strong { color: #ffffff !important; }\n' +
+                '#cnsd-tab-content #toc, #cnsd-tab-content .toc { display: none !important; }';
+            document.head.appendChild(styleTag);
+        }
+
+        var btnMajor = document.getElementById('cnsd-tab-major');
+        var btnPatch = document.getElementById('cnsd-tab-patch');
+        var contentDiv = document.getElementById('cnsd-tab-content');
+
+        btnMajor.addEventListener('click', function() {
+            contentDiv.innerHTML = majorHtml;
+            btnMajor.style.background = ACTIVE_BG;
+            btnMajor.style.color = '#ffffff';
+            btnPatch.style.background = 'rgba(255,255,255,0.1)';
+            btnPatch.style.color = '#cccccc';
+        });
+
+        btnPatch.addEventListener('click', function() {
+            contentDiv.innerHTML = patchHtml;
+            btnPatch.style.background = ACTIVE_BG;
+            btnPatch.style.color = '#ffffff';
+            btnMajor.style.background = 'rgba(255,255,255,0.1)';
+            btnMajor.style.color = '#cccccc';
+        });
+
+    }).fail(function(err) {
+        console.error('CNSD Patch Notes Error:', err);
+        container.innerHTML = '<span style="color:#ff4d4d;">Error loading patch notes.</span>';
+    });
+});

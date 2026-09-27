@@ -111,7 +111,7 @@ futurehostile: true
 					if (opt && opt.val()  !== '' && lines !== null && lines.length > 0) {
 						for (let i = 0; i < lines.length - 1; i++) {
 							if (lines[i].textContent !== null && lines[i].textContent.indexOf('licensing=') > 0) {
-								lines[i].innerHTML = '<span class="cm-mw-template-ground cm-mw-template-delimiter">|</span><span class="cm-mw-template-ground cm-mw-template-argument-name">licensing=</span><span class="cm-mw-template2-ground cm-mw-pagename cm-mw-template-name">' + opt.attr('title') + '</span>';
+								lines[i].innerHTML = '<span class="cm-mw-template-ground cm-mw-template-delimiter">|</span><span class="cm-mw-template-ground cm-mw-template-argument-name">licensing=</span><span class="cm-mw-template2-ground cm-mw-pagename cm-mw-template-name">' + mw.html.escape(opt.attr('title')) + '</span>';
 								break;
 							}
 						}

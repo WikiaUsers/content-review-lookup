@@ -146,3 +146,88 @@
         }
     });
 }());
+
+/* =========================================================
+
+ * LUCK CALCULATOR BY GHOSTT
+ * More info soon and WILL be optimized as I learn more JScript
+ 
+ * ========================================================= *
+ 
+ // This is purely JScript without an adaption to Fandom
+ 
+ * ========================================================= */
+ 
+ /*	-	-	-	-	-	-	-	
+	Classes for luck items
+-	-	-	-	-	-	-	*/
+ class Potions {
+ 	constructor(name, luck, multi) {
+ 		this.name = name;
+ 		this.luck = luck;
+        this.multi = multi;
+ 	}
+ }
+ 
+ class Relics {
+ 	constructor(name, luck) {
+ 		this.name = name;
+ 		this.luck = luck;
+ 	}
+ }
+ 
+ class Candles {
+ 	constructor(name, luck) {
+ 		this.name = name;
+ 		this.luck = luck;
+ 	}
+ }
+ 
+ class Aura {
+ 	constructor(name, rarity) {
+ 		this.name = name;
+ 		this.rarity = rarity;
+ 	}
+ }
+ /* -	-	-	-
+	luck items
+-	-	-	-	*/	
+ 
+ // Potions
+ potions1 = new Potions('Luck Potions', 3, 1);
+ 
+ // Auras
+aura1 = new Aura('Basic Huzz', 1000000000);
+
+ /* -	-	-	-	-	-	-	-
+	Calculator Logic
+-	-	-	-	-	-	-	-	*/
+
+// Variables
+let rollMulti = 2;
+let friendMulti = 1;
+let candleLuck = 235//Candles.luck;
+let potionLuck = 250000//Potions.luck + candleLuck;
+let potionMulti = 2.5//Potions.multi;
+let relicLuck = 999 //Relics.luck;
+
+let auraRarity = 100000000//Aura.rarity;
+
+// Calc Math
+const initialLuck = parseFloat( (potionLuck + relicLuck).toFixed(2) );
+const modifiedLuck = initialLuck * (potionMulti + friendMulti + ((1/2) * rollMulti) );
+
+const luckNumerator = parseFloat(modifiedLuck);
+const luckDenomerator = auraRarity;
+
+// Percentage Form
+const luckPercentage = parseFloat( ((luckNumerator / luckDenomerator) * 100).toFixed(2) );
+
+/*
+(Relic LuckxRollMulti)+PotionLuck=Totalluckx(PotionMultis+FriendMultis+1/2Rollmulti) The Luck Boost Logic in the Actual Game Script
+*/
+
+// Final calculations
+luckCalc = `${luckNumerator}/${luckDenomerator} or ${luckPercentage}% more chance of getting ${aura1.name}`; // change the aura name to user input
+
+console.log(luckCalc);

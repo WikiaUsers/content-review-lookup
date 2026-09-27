@@ -1,84 +1,84 @@
 /* CopyCode function, used for Template:CopyCode */
 
 (function () {
-    'use strict';
+	'use strict';
 
-    function copyText(text) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            return navigator.clipboard.writeText(text);
-        }
+	function copyText(text) {
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			return navigator.clipboard.writeText(text);
+		}
 
-        return new Promise(function (resolve, reject) {
-            var textarea = document.createElement('textarea');
+		return new Promise(function (resolve, reject) {
+			var textarea = document.createElement('textarea');
 
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.left = '-9999px';
+			textarea.value = text;
+			textarea.style.position = 'fixed';
+			textarea.style.left = '-9999px';
 
-            document.body.appendChild(textarea);
+			document.body.appendChild(textarea);
 
-            textarea.focus();
-            textarea.select();
+			textarea.focus();
+			textarea.select();
 
-            try {
-                document.execCommand('copy');
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
+			try {
+				document.execCommand('copy');
+				resolve();
+			} catch (e) {
+				reject(e);
+			}
 
-            document.body.removeChild(textarea);
-        });
-    }
+			document.body.removeChild(textarea);
+		});
+	}
 
-    function activate(button) {
-        var label = button.querySelector('.code-copy-label');
-        var before = button.querySelector('.code-copy-before');
-        var after = button.querySelector('.code-copy-after');
-        var value = button.querySelector('.code-copy-value');
+	function activate(button) {
+		var label = button.querySelector('.code-copy-label');
+		var before = button.querySelector('.code-copy-before');
+		var after = button.querySelector('.code-copy-after');
+		var value = button.querySelector('.code-copy-value');
 
-        if (!label || !before || !after || !value) {
-            return;
-        }
+		if (!label || !before || !after || !value) {
+			return;
+		}
 
-        var duration = parseInt(
-            button.getAttribute('data-copy-duration'),
-            10
-        ) || 1500;
+		var duration = parseInt(
+			button.getAttribute('data-copy-duration'),
+			10
+		) || 1500;
 
-        copyText(value.textContent).then(function () {
-            clearTimeout(button.copyCodeTimer);
+		copyText(value.textContent).then(function () {
+			clearTimeout(button.copyCodeTimer);
 
-            label.textContent = after.textContent;
-            button.classList.add('code-copy-success');
+			label.textContent = after.textContent;
+			button.classList.add('code-copy-success');
 
-            button.copyCodeTimer = setTimeout(function () {
-                label.textContent = before.textContent;
-                button.classList.remove('code-copy-success');
-            }, duration);
-        });
-    }
+			button.copyCodeTimer = setTimeout(function () {
+				label.textContent = before.textContent;
+				button.classList.remove('code-copy-success');
+			}, duration);
+		});
+	}
 
-    document.addEventListener('click', function (event) {
-        var button = event.target.closest('.code-copy-button');
+	document.addEventListener('click', function (event) {
+		var button = event.target.closest('.code-copy-button');
 
-        if (button) {
-            activate(button);
-        }
-    });
+		if (button) {
+			activate(button);
+		}
+	});
 
-    document.addEventListener('keydown', function (event) {
-        var button = event.target.closest('.code-copy-button');
+	document.addEventListener('keydown', function (event) {
+		var button = event.target.closest('.code-copy-button');
 
-        if (!button) {
-            return;
-        }
+		if (!button) {
+			return;
+		}
 
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            activate(button);
-        }
-    });
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			activate(button);
+		}
+	});
 })();
 
 /* ######### CALCULATOR ######### */
@@ -90,10 +90,25 @@
  * Styles:    MediaWiki:Common.css  (.lvlcalc block)
  * Template:  Template:LevelCalc    (inserts <div class="lvlcalc">)
  *
- * Formulas derived from measurements; see the template's talk page.
- *   income: base x 1.0352^(L-1) up to 100, then x1.0081 to 250, then x1.0028
- *   food:   base x 1.1337^(L-2) up to 76, x1.03 to 151, x1.016 to 300,
- *           x1.0081 to 501, then x1.025
+ * Exact formulas:
+ *   income cashpersec:
+ *     Levels 1 -> 100:  x1.0352 per level (99 steps)
+ *     Levels 100 -> 250: x1.0081 per level (150 steps)
+ *     Levels 250 -> 750: x1.0028 per level (500 steps)
+ *     Levels 750+:      x1.0023 per level
+ *
+ *   food (Level Up Cost):
+ *     Base cost: Common=2, Uncommon=5, Rare=2, Epic=4, Legendary=5,
+ *                Mythical=8, Cosmic=16, Secret=22, Rainbow=40, Ascended=72,
+ *                Divine=225, Supreme=740, Celestial=1250, Ancient=4000,
+ *                God=8800, Omniscient=12500, Transcendent=17500, Exclusive=20
+ *     multiplier (applied to previous level):
+ *       Levels 1 -> 75:   x1.134 per level (74 steps)
+ *       Levels 75 -> 150:  x1.03  per level (75 steps)
+ *       Levels 150 -> 300: x1.016 per level (150 steps)
+ *       Levels 300 -> 500: x1.008 per level (200 steps)
+ *       Levels 500 -> 750: x1.025 per level (250 steps)
+ *       Levels 750+:      x1.12  per level
  * ========================================================================== */
 
 (function () {
@@ -101,31 +116,29 @@
 
 	var DATA_PAGE = 'Module:CharData/data.json';
 
-	/* Rarities: label, colour and food base. All bases are measured; the three
-	   top tiers (Omniscient / Transcendent / Exclusive) have no data yet. */
-	/* Order here = order in the rarity filter, strongest first.
-	   food: null means the food base has not been measured yet. */
+	/* Rarities: label, colour and exact base food */
 	var RARITY = {
-		exclusive:    { n: 'Exclusive',    c: '#8a8a93', food: null },
-		transcendent: { n: 'Transcendent', c: '#f0f0f5', food: null },
-		omniscient:   { n: 'Omniscient',   c: '#b8a0e8', food: 2872 },
-		god:          { n: 'God',          c: '#d4a72c', food: 1993 },
-		ancient:      { n: 'Ancient',      c: '#c9743a', food: 911 },
-		celestial:    { n: 'Celestial',    c: '#5aa9dd', food: 284 },
-		supreme:      { n: 'Supreme',      c: '#e06a3a', food: 168 },
-		divine:       { n: 'Divine',       c: '#d9a521', food: 51.3 },
-		ascended:     { n: 'Ascended',     c: '#9b6fe0', food: 16.3 },
-		rainbow:      { n: 'Rainbow',      c: '#3f9fd4', food: 9.19 },
-		secret:       { n: 'Secret',       c: '#e04f8e', food: 5 },
-		cosmic:       { n: 'Cosmic',       c: '#4f7fd4', food: 3.66 },
-		mythical:     { n: 'Mythical',     c: '#e0574a', food: 1.83 },
-		legendary:    { n: 'Legendary',    c: '#d9a33a', food: null },
-		epic:         { n: 'Epic',         c: '#a06fd0', food: null },
-		rare:         { n: 'Rare',         c: '#4a90d9', food: null },
-		uncommon:     { n: 'Uncommon',     c: '#4a9d6b', food: null },
-		common:       { n: 'Common',       c: '#8a8a93', food: null }
+		exclusive: { n: 'Exclusive', c: '#8a8a93', food: 20 },
+		transcendent: { n: 'Transcendent', c: '#f0f0f5', food: 17500 },
+		omniscient: { n: 'Omniscient', c: '#b8a0e8', food: 12500 },
+		god: { n: 'God', c: '#d4a72c', food: 8800 },
+		ancient: { n: 'Ancient', c: '#c9743a', food: 4000 },
+		celestial: { n: 'Celestial', c: '#5aa9dd', food: 1250 },
+		supreme: { n: 'Supreme', c: '#e06a3a', food: 740 },
+		divine: { n: 'Divine', c: '#d9a521', food: 225 },
+		ascended: { n: 'Ascended', c: '#9b6fe0', food: 72 },
+		rainbow: { n: 'Rainbow', c: '#3f9fd4', food: 40 },
+		secret: { n: 'Secret', c: '#e04f8e', food: 22 },
+		cosmic: { n: 'Cosmic', c: '#4f7fd4', food: 16 },
+		mythical: { n: 'Mythical', c: '#e0574a', food: 8 },
+		legendary: { n: 'Legendary', c: '#d9a33a', food: 5 },
+		epic: { n: 'Epic', c: '#a06fd0', food: 4 },
+		rare: { n: 'Rare', c: '#4a90d9', food: 2 },
+		uncommon: { n: 'Uncommon', c: '#4a9d6b', food: 5 },
+		common: { n: 'Common', c: '#8a8a93', food: 2 }
 	};
 
+	/* mutation */
 	var MUT = [
 		['No mutation', 1], ['Demonic', 10], ['Dracula', 8], ['Nightmare', 7],
 		['Angelic', 6], ['Mars', 6], ['Void', 6], ['Sinister', 5],
@@ -137,43 +150,81 @@
 
 	/* ---------- maths ---------- */
 
+	var CashPerSeconds = [
+		{ steps: 99, rate: 1.0352 },
+		{ steps: 150, rate: 1.0081 },
+		{ steps: 500, rate: 1.0028 },
+		{ steps: 9999, rate: 1.0023 }
+	];
+
+	function getCpsCurveMultiplier(lvl) {
+		var rem = Math.max(1, Math.floor(lvl)) - 1;
+		if (rem <= 0) { return 1; }
+		var mult = 1;
+		for (var i = 0; i < CashPerSeconds.length; i++) {
+			var seg = CashPerSeconds[i];
+			var take = Math.min(rem, seg.steps);
+			mult *= Math.pow(seg.rate, take);
+			rem -= take;
+			if (rem <= 0) { break; }
+		}
+		return mult;
+	}
+
 	function incomeAt(base, L) {
-		var v = base, l;
-		for (l = 2; l <= L; l++) {
-			v *= l <= 100 ? 1.0352 : (l <= 250 ? 1.0081 : 1.0028);
-		}
-		return v;
+		return base * getCpsCurveMultiplier(L);
 	}
 
-	function foodAt(base, L) {
-		if (L < 2) { return 0; }
-		var v = base, l;
-		for (l = 3; l <= L; l++) {
-			v *= l <= 76 ? 1.1337
-				: (l <= 151 ? 1.03
-				: (l <= 300 ? 1.016
-				: (l <= 501 ? 1.0081 : 1.025)));
+	var FoodsMultiplier = [
+		{ steps: 74, rate: 1.134 },
+		{ steps: 75, rate: 1.03 },
+		{ steps: 150, rate: 1.016 },
+		{ steps: 200, rate: 1.008 },
+		{ steps: 250, rate: 1.025 },
+		{ steps: 9999, rate: 1.12 } /* fallback for +750 level, no change after that */
+	];
+
+	function getLevelCurveMultiplier(lvl) {
+		var rem = Math.max(1, Math.floor(lvl)) - 1;
+		if (rem <= 0) { return 1; }
+		var mult = 1;
+		for (var i = 0; i < FoodsMultiplier.length; i++) {
+			var seg = FoodsMultiplier[i];
+			var take = Math.min(rem, seg.steps);
+			mult *= Math.pow(seg.rate, take);
+			rem -= take;
+			if (rem <= 0) { break; }
 		}
-		return v;
+		return mult;
 	}
 
-	function foodSum(base, a, b) {
+	function foodAt(rarityKey, lvl) {
+		var r = (rarityKey || '').toLowerCase();
+		var base = (RARITY[r] && RARITY[r].food != null) ? RARITY[r].food : 0;
+		if (!base) { return 0; }
+		return Math.max(1, Math.floor(base * getLevelCurveMultiplier(lvl) + 0.5));
+	}
+
+	function foodSum(rarityKey, a, b) {
 		var s = 0, l;
-		for (l = Math.max(2, a + 1); l <= b; l++) { s += foodAt(base, l); }
+		for (l = a; l < b; l++) {
+			s += foodAt(rarityKey, l);
+		}
 		return s;
 	}
 
-	/* Short-scale suffixes, the same ladder the game itself uses. */
-	var SUFFIX = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No',
-		'Dc', 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', 'Vg'];
+	/* Short-scale suffixes */
+	var Suffix = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No',
+		'Dc', 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', 'Vg',
+		'Uvg', 'Dvg', 'Tvg', 'Qavg', 'Qivg', 'Sxvg', 'Spvg', 'Ocvg', 'Novg'];
 
 	function shrt(n) {
 		if (!isFinite(n)) { return '\u221e'; }
 		if (n < 1000) { return String(Math.round(n)); }
 		var tier = Math.floor(Math.log10(n) / 3);
-		if (tier >= SUFFIX.length) { tier = SUFFIX.length - 1; }
+		if (tier >= Suffix.length) { tier = Suffix.length - 1; }
 		var v = n / Math.pow(10, tier * 3);
-		return (v >= 100 ? v.toFixed(0) : v.toFixed(2)) + SUFFIX[tier];
+		return (v >= 100 ? v.toFixed(0) : v.toFixed(2)) + Suffix[tier];
 	}
 
 	function exact(n) {
@@ -191,16 +242,12 @@
 		return e;
 	}
 
-	/* Special:FilePath serves the original file; ?width= makes MediaWiki
-	   return a scaled thumbnail instead, which is what we want for a list. */
 	function artUrl(name, width) {
 		return mw.config.get('wgScriptPath') + '/index.php?title=' +
 			encodeURIComponent('Special:FilePath/' + name + '.png') +
 			'&width=' + width;
 	}
 
-	/* Rebuilds the markup of Template:Item so the calculator reuses the
-	   rarity frames, halftone and gradients already defined in Common.css. */
 	function itemNode(c, size) {
 		var wrap = el('div', 'item item-' + c.r);
 		wrap.style.setProperty('--size', size + 'px');
@@ -400,19 +447,28 @@
 			if (!cur) { return; }
 			var a = lvl(inA), b = lvl(inB);
 			var k = (parseFloat(selMut.value) || 1) * (swIn.checked && cur.pair ? 3 : 1);
+			var r = (cur.r || 'common').toLowerCase();
+
+			if (cur.key === 'clona') {
+				incK.textContent = 'Income at level ' + b;
+				incBig.textContent = '25% of best stand';
+				incExact.textContent = '(Copies top plot character)';
+				incNow.textContent = 'Special ability (no cash per seconds)';
+				modOut.textContent = '';
+			} else {
+				var atB = incomeAt(cur.inc, b) * k;
+				var atA = incomeAt(cur.inc, a) * k;
+
+				incK.textContent = 'Income at level ' + b;
+				incBig.textContent = '~$' + shrt(atB) + '/s';
+				incExact.textContent = '(~$' + exact(atB) + '/s)';
+				incNow.textContent = 'now: $' + shrt(atA) + '/s (Lvl. ' + a + ')';
+
+				var ex = extraMult();
+				modOut.textContent = ex === 1 ? '' : '= ~$' + shrt(atB * ex) + '/s';
+			}
+
 			var fb = (RARITY[cur.r] || {}).food;
-
-			var atB = incomeAt(cur.inc, b) * k;
-			var atA = incomeAt(cur.inc, a) * k;
-
-			incK.textContent = 'Income at level ' + b;
-			incBig.textContent = '~$' + shrt(atB) + '/s';
-			incExact.textContent = '(~$' + exact(atB) + '/s)';
-			incNow.textContent = 'now: $' + shrt(atA) + '/s (Lvl. ' + a + ')';
-
-			var ex = extraMult();
-			modOut.textContent = ex === 1 ? '' : '= ~$' + shrt(atB * ex) + '/s';
-
 			if (!fb) {
 				foodK.textContent = 'Food';
 				foodBig.textContent = 'no data';
@@ -421,8 +477,9 @@
 					((RARITY[cur.r] || {}).n || cur.r) + ' not measured yet';
 				return;
 			}
+
 			if (b > a) {
-				var total = foodSum(fb, a, b);
+				var total = foodSum(r, a, b);
 				foodK.textContent = 'Food ' + a + ' \u2192 ' + b;
 				foodBig.textContent = '~' + shrt(total);
 				foodExact.textContent = '(~' + exact(total) + ')';
@@ -433,7 +490,7 @@
 			}
 			foodNext.textContent = a >= 1000
 				? ''
-				: 'next level: ~' + shrt(foodAt(fb, a + 1)) + ' (Lvl. ' + (a + 1) + ')';
+				: 'next level: ~' + shrt(foodAt(r, a)) + ' (Lvl. ' + (a + 1) + ')';
 		}
 
 		function setChar(c) {
@@ -444,7 +501,7 @@
 			dotEl.className = 'lvlcalc-dot rarity-text item-' + c.r;
 			rareEl.textContent = r.n;
 			rareEl.className = 'lvlcalc-tag rarity-text item-' + c.r;
-			baseEl.textContent = '(' + shrt(c.inc) + '/s)';
+			baseEl.textContent = c.key === 'clona' ? '(25% best)' : '(' + shrt(c.inc) + '/s)';
 			slotArt.textContent = '';
 			slotArt.appendChild(itemNode(c, 104));
 			swLbl.hidden = !c.pair;
@@ -474,7 +531,8 @@
 				var nm = el('span', 'lvlcalc-nm');
 				nm.appendChild(el('span', 'rarity-text item-' + c.r, c.name));
 				nm.appendChild(el('em', 'rarity-text item-' + c.r, r.n));
-				nm.appendChild(el('i', 'lvlcalc-cash', shrt(c.inc) + '/s'));
+				var cashTxt = c.key === 'clona' ? '25% best' : shrt(c.inc) + '/s';
+				nm.appendChild(el('i', 'lvlcalc-cash', cashTxt));
 				btn.appendChild(th);
 				btn.appendChild(nm);
 				btn.addEventListener('click', function () {
@@ -538,8 +596,7 @@
 					pair: !!e.pair
 				});
 			});
-			/* strongest rarity first (RARITY is declared in that order),
-			   then by income inside each rarity */
+
 			var order = {};
 			Object.keys(RARITY).forEach(function (k, i) { order[k] = i; });
 			out.sort(function (x, y) {

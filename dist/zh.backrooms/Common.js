@@ -16,12 +16,18 @@
 mw.loader.load(['mediawiki.util']);
 mw.hook('wikipage.content').add(function () {
     // [[Template:JSImport]]
-    if (mw.config.get('wgCategories').includes('引入JS脚本的页面'))
+    if (mw.config.get('wgCategories').includes('引入JS脚本的页面')) {
+        var wgScript = mw.config.get('wgScript');
         $('span.import-js').each(function () {
-            var articles = $(this).attr('data-articles').split('|');
-            importArticles({ type: 'script', articles: articles });
-            // 'importArticles' only supports articles in MediaWiki namespace
+            $(this).attr('data-articles').split('|').forEach(function (article) { // No need 'index'
+                article = article.trim();
+                if (!/^MediaWiki:/i.test(article)) return; // Only *MediaWiki* namespace in *THIS* wiki
+                $('script[data-from]').filter(function () { return $(this).attr('data-from') === article; }).remove(); // Reloading
+                var url = wgScript + '?action=raw&ctype=text/javascript&title=' + encodeURIComponent(article); // JS URL
+                $('<script>', { type: 'text/javascript', src: url }).attr('data-from', article).appendTo('head');
+            });
         });
+    }
 
     // [[Template:CSS]]
     $('span.import-css').each(function () {

@@ -118,51 +118,367 @@ guide: {
     activeSection: 'overview',
 
     sections: [
-                {
-                    id: 'overview',
-                    title: 'Overview'
-                },
-                {
-                    id: 'rarity',
-                    title: 'Rarity'
-                },
-                {
-                    id: 'forge',
-                    title: 'Forge / Upgrade Crystals'
-                },
-                {
-                    id: 'weapon-types',
-                    title: 'Weapon Types'
-                },
-                {
-                    id: 'armor',
-                    title: 'Armor'
-                },
-                {
-                    id: 'accessories',
-                    title: 'Accessories'
-                },
-                {
-                    id: 'companions',
-                    title: 'Companions'
-                },
-                {
-                    id: 'auras',
-                    title: 'Auras'
-                },
-                {
-                    id: 'miscellaneous',
-                    title: 'Miscellaneous'
-                }
-            ]
+        {
+            id: 'overview',
+            title: 'Overview'
+        },
+        {
+            id: 'rarity',
+            title: 'Rarity'
+        },
+        {
+            id: 'forge',
+            title: 'Forge / Upgrade Crystals'
+        },
+        {
+            id: 'weapon-types',
+            title: 'Weapon Types'
+        },
+        {
+            id: 'armor',
+            title: 'Armor'
+        },
+        {
+            id: 'accessories',
+            title: 'Accessories'
+        },
+        {
+            id: 'companions',
+            title: 'Companions'
+        },
+        {
+            id: 'auras',
+            title: 'Auras'
+        },
+        {
+            id: 'miscellaneous',
+            title: 'Miscellaneous'
         }
+    ]
+},
 
-    };
+persistence: {
+    storageKey: 'item-database-position'
+}
+
+};
 
 
     /* =========================================================
        2. APPLICATION STATE
        ========================================================= */
+
+function saveDatabasePosition() {
+
+    try {
+
+        localStorage.setItem(
+            CONFIG.persistence.storageKey,
+            JSON.stringify({
+                view: state.currentView,
+                category: state.currentCategory,
+                search: state.search,
+
+                detailed: {
+                    sortBy:
+                        state.detailed.sortBy,
+
+                    sortDirection:
+                        state.detailed.sortDirection,
+
+                    filters: {
+                        levelMin:
+                            state.detailed.filters.levelMin,
+
+                        levelMax:
+                            state.detailed.filters.levelMax,
+
+                        rarity:
+                            state.detailed.filters.rarity,
+
+                        type:
+                            state.detailed.filters.type,
+
+                        obtainable:
+                            state.detailed.filters.obtainable
+                    }
+                },
+
+                cards: {
+                    view:
+                        state.cards.view,
+
+                    sortBy:
+                        state.cards.sortBy,
+
+                    sortDirection:
+                        state.cards.sortDirection,
+
+                    filters: {
+                        levelMin:
+                            state.cards.filters.levelMin,
+
+                        levelMax:
+                            state.cards.filters.levelMax,
+
+                        rarities:
+                            state.cards.filters.rarities.slice(),
+
+                        minStat:
+                            state.cards.filters.minStat,
+
+                        maxStat:
+                            state.cards.filters.maxStat,
+
+                        obtainable:
+                            state.cards.filters.obtainable
+                    }
+                },
+
+                scrollY:
+                    window.scrollY
+            })
+        );
+
+    } catch (error) {
+    }
+}
+
+function loadDatabasePosition() {
+
+    try {
+
+        var saved =
+            localStorage.getItem(
+                CONFIG.persistence.storageKey
+            );
+
+        if (!saved) {
+            return null;
+        }
+
+        var data =
+            JSON.parse(saved);
+
+        if (!data || typeof data !== 'object') {
+            return null;
+        }
+
+        if (
+            data.view === CONFIG.views.detailed ||
+            data.view === CONFIG.views.cards
+        ) {
+            state.currentView =
+                data.view;
+        }
+
+        if (
+            getCategoryById(data.category)
+        ) {
+            state.currentCategory =
+                data.category;
+        }
+
+        if (
+            typeof data.search === 'string'
+        ) {
+            state.search =
+                data.search;
+        }
+
+        if (
+            data.detailed &&
+            typeof data.detailed === 'object'
+        ) {
+
+            if (
+                typeof data.detailed.sortBy === 'string'
+            ) {
+                state.detailed.sortBy =
+                    data.detailed.sortBy;
+            }
+
+            if (
+                data.detailed.sortDirection === 'asc' ||
+                data.detailed.sortDirection === 'desc'
+            ) {
+                state.detailed.sortDirection =
+                    data.detailed.sortDirection;
+            }
+
+            if (
+                data.detailed.filters &&
+                typeof data.detailed.filters === 'object'
+            ) {
+
+                var detailedFilters =
+                    data.detailed.filters;
+
+                if (
+                    detailedFilters.levelMin === null ||
+                    typeof detailedFilters.levelMin === 'number'
+                ) {
+                    state.detailed.filters.levelMin =
+                        detailedFilters.levelMin;
+                }
+
+                if (
+                    detailedFilters.levelMax === null ||
+                    typeof detailedFilters.levelMax === 'number'
+                ) {
+                    state.detailed.filters.levelMax =
+                        detailedFilters.levelMax;
+                }
+
+                if (
+                    detailedFilters.rarity === null ||
+                    typeof detailedFilters.rarity === 'string'
+                ) {
+                    state.detailed.filters.rarity =
+                        detailedFilters.rarity;
+                }
+
+                if (
+                    detailedFilters.type === null ||
+                    typeof detailedFilters.type === 'string'
+                ) {
+                    state.detailed.filters.type =
+                        detailedFilters.type;
+                }
+
+                if (
+                    detailedFilters.obtainable === 'all' ||
+                    detailedFilters.obtainable === 'yes' ||
+                    detailedFilters.obtainable === 'no'
+                ) {
+                    state.detailed.filters.obtainable =
+                        detailedFilters.obtainable;
+                }
+            }
+        }
+
+        if (
+            data.cards &&
+            typeof data.cards === 'object'
+        ) {
+
+            if (
+                data.cards.view === 'cards' ||
+                data.cards.view === 'compact'
+            ) {
+                state.cards.view =
+                    data.cards.view;
+            }
+
+            if (
+                typeof data.cards.sortBy === 'string'
+            ) {
+                state.cards.sortBy =
+                    data.cards.sortBy;
+            }
+
+            if (
+                data.cards.sortDirection === 'asc' ||
+                data.cards.sortDirection === 'desc'
+            ) {
+                state.cards.sortDirection =
+                    data.cards.sortDirection;
+            }
+
+            if (
+                data.cards.filters &&
+                typeof data.cards.filters === 'object'
+            ) {
+
+                var cardFilters =
+                    data.cards.filters;
+
+                if (
+                    cardFilters.levelMin === null ||
+                    typeof cardFilters.levelMin === 'number'
+                ) {
+                    state.cards.filters.levelMin =
+                        cardFilters.levelMin;
+                }
+
+                if (
+                    cardFilters.levelMax === null ||
+                    typeof cardFilters.levelMax === 'number'
+                ) {
+                    state.cards.filters.levelMax =
+                        cardFilters.levelMax;
+                }
+
+                if (
+                    Array.isArray(cardFilters.rarities)
+                ) {
+                    state.cards.filters.rarities =
+                        cardFilters.rarities.slice();
+                }
+
+                if (
+                    cardFilters.minStat === null ||
+                    typeof cardFilters.minStat === 'number'
+                ) {
+                    state.cards.filters.minStat =
+                        cardFilters.minStat;
+                }
+
+                if (
+                    cardFilters.maxStat === null ||
+                    typeof cardFilters.maxStat === 'number'
+                ) {
+                    state.cards.filters.maxStat =
+                        cardFilters.maxStat;
+                }
+
+                if (
+                    cardFilters.obtainable === 'all' ||
+                    cardFilters.obtainable === 'yes' ||
+                    cardFilters.obtainable === 'no'
+                ) {
+                    state.cards.filters.obtainable =
+                        cardFilters.obtainable;
+                }
+            }
+        }
+
+        return data;
+
+    } catch (error) {
+
+        return null;
+    }
+}
+
+function restoreDatabasePosition(savedPosition) {
+
+    if (
+        !savedPosition ||
+        typeof savedPosition.scrollY !== 'number'
+    ) {
+        return;
+    }
+
+    var targetScroll =
+        Math.max(
+            0,
+            savedPosition.scrollY
+        );
+
+    requestAnimationFrame(function () {
+
+        requestAnimationFrame(function () {
+
+            window.scrollTo({
+                top: targetScroll,
+                behavior: 'auto'
+            });
+
+        });
+
+    });
+}
 
  var state = {
 
@@ -220,55 +536,88 @@ filters: {
 
     };
 
+var saveScrollTimeout = null;
+
+function handleDatabaseScroll() {
+
+    if (saveScrollTimeout) {
+        return;
+    }
+
+    saveScrollTimeout =
+        setTimeout(function () {
+
+            saveScrollTimeout = null;
+
+            if (!state.isLoading) {
+                saveDatabasePosition();
+            }
+
+        }, 150);
+}
+
+window.addEventListener(
+    'scroll',
+    handleDatabaseScroll,
+    { passive: true }
+);
+
     /* =========================================================
        3. INITIALIZATION
        ========================================================= */
 
-    function initialize() {
+function initialize() {
 
-        var app = document.getElementById(
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    var app =
+        document.getElementById(
             CONFIG.databaseContainerId
         );
 
-        if (!app) {
-            console.error(
-                'Item Database container not found.'
-            );
-            return;
-        }
-
-waitForDatabaseAPI()
-    .then(function () {
-        return loadDatabase();
-    })
-
-    .then(function (database) {
-
-        state.database =
-            validateDatabase(database);
-
-        return loadAuraCostsIntoState();
-
-    })
-
-    .then(function () {
-
-        state.isLoading = false;
-
-        renderDatabase();
-
-    })
-
-            .catch(function (error) {
-
-                state.isLoading = false;
-
-                console.error(
-                    'Item Database initialization failed:',
-                    error
-                );
-            });
+    if (!app) {
+        console.error(
+            'Item Database container not found.'
+        );
+        return;
     }
+
+    waitForDatabaseAPI()
+        .then(function () {
+            return loadDatabase();
+        })
+        .then(function (database) {
+
+            state.database =
+                validateDatabase(database);
+
+            return loadAuraCostsIntoState();
+        })
+        .then(function () {
+
+            var savedPosition =
+                loadDatabasePosition();
+
+            state.isLoading = false;
+
+            renderDatabase();
+
+            restoreDatabasePosition(
+                savedPosition
+            );
+        })
+        .catch(function (error) {
+
+            state.isLoading = false;
+
+            console.error(
+                'Item Database initialization failed:',
+                error
+            );
+        });
+}
 
 
     function waitForDatabaseAPI() {
@@ -1006,9 +1355,12 @@ content
             return;
         }
 
-        state.currentView = view;
+state.currentView = view;
 
-        renderDatabase();
+saveDatabasePosition();
+
+renderDatabase();
+
     }
 
 
@@ -1023,6 +1375,8 @@ function setCurrentCategory(categoryId) {
 
     state.currentCategory =
         category.id;
+
+saveDatabasePosition();
 
     var currentType =
         state.detailed.filters.type;
@@ -3368,6 +3722,7 @@ function focusDatabaseSearchAnchor() {
     });
 }
 
+
 function preserveScrollUpdate(callback, scrollToTop) {
 
     callback();
@@ -3610,8 +3965,6 @@ preserveScrollUpdate(
 
     var typeOptions =
         itemSubtypeKeywords[state.currentCategory] || [];
-    itemSubtypeKeywords[state.currentCategory] || [];
-
 if (
     state.currentCategory === 'miscellaneous'
 ) {
@@ -4734,6 +5087,8 @@ nameButton.addEventListener(
                 'asc';
         }
 
+saveDatabasePosition();
+
         refreshCardsView();
     }
 );
@@ -4759,6 +5114,8 @@ levelButton.addEventListener(
             state.cards.sortDirection =
                 'asc';
         }
+
+        saveDatabasePosition();
 
         refreshCardsView();
     }
@@ -5028,6 +5385,8 @@ if (
 
             updateRarityButton();
 
+saveDatabasePosition();
+
             preserveScrollUpdate(
                 refreshCardsView,
                 true
@@ -5195,13 +5554,16 @@ typeSelect.value =
         'change',
         function () {
 
-            filters.type =
-                typeSelect.value || null;
+filters.type =
+    typeSelect.value || null;
 
-            preserveScrollUpdate(
-                refreshCardsView,
-                true
-            );
+saveDatabasePosition();
+
+preserveScrollUpdate(
+    refreshCardsView,
+    true
+);
+
         }
     );
 
@@ -5322,8 +5684,10 @@ if (showStatsFilter) {
         'change',
         function () {
 
-            filters.obtainable =
-                obtainSelect.value;
+filters.obtainable =
+    obtainSelect.value;
+
+saveDatabasePosition();
 
 preserveScrollUpdate(
     refreshCardsView,
@@ -5363,6 +5727,8 @@ filters.minStat = null;
 filters.maxStat = null;
 filters.obtainable = 'all';
 
+saveDatabasePosition();
+
 preserveScrollUpdate(
     refreshCardsView,
     true
@@ -5397,6 +5763,8 @@ function applyLevelFilters() {
             ? null
             : maxValue;
 
+saveDatabasePosition();
+
     preserveScrollUpdate(
         refreshCardsView,
         true
@@ -5421,6 +5789,8 @@ function applyStatFilters() {
         maxValue < 0
             ? null
             : maxValue;
+
+saveDatabasePosition();
 
     preserveScrollUpdate(
         refreshCardsView,
@@ -5487,6 +5857,8 @@ function setCardsView(view) {
     }
 
     state.cards.view = view;
+
+    saveDatabasePosition();
 
     refreshCardsView();
 }

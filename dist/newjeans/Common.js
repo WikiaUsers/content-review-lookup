@@ -204,3 +204,52 @@ $(function () {
 		});
 	}, true);
 });
+
+document.addEventListener("click", function (e) {
+    const button = e.target.closest(".inline-audio");
+    if (!button) return;
+
+    const file = button.dataset.audio;
+    if (!file) return;
+
+    // If this button is controlling the currently playing audio
+    if (window.fandomAudioPlayer && window.fandomAudioButton === button) {
+        if (window.fandomAudioPlayer.paused) {
+            window.fandomAudioPlayer.play();
+            button.classList.add("playing");
+        } else {
+            window.fandomAudioPlayer.pause();
+            button.classList.remove("playing");
+        }
+        return;
+    }
+
+    // Stop any other audio
+    if (window.fandomAudioPlayer) {
+        window.fandomAudioPlayer.pause();
+        window.fandomAudioPlayer.currentTime = 0;
+
+        if (window.fandomAudioButton) {
+            window.fandomAudioButton.classList.remove("playing");
+        }
+    }
+
+    // Create the new audio player
+    const audio = new Audio(
+        "/wiki/Special:Redirect/file/" + encodeURIComponent(file)
+    );
+
+    window.fandomAudioPlayer = audio;
+    window.fandomAudioButton = button;
+
+    audio.play().then(function () {
+        button.classList.add("playing");
+    }).catch(function (error) {
+        console.error("Audio playback failed:", error);
+    });
+
+    // Reset button when audio finishes
+    audio.addEventListener("ended", function () {
+        button.classList.remove("playing");
+    });
+});

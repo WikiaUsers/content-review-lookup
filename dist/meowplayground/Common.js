@@ -23,3 +23,6 @@ $(function () {
 
 // allows to bypass the license check when uploading multiple files
 mw.config.set('UMFBypassLicenseCheck', true);
+
+// m:RTRC File:Krinkle_RTRC.js
+(mw.loader.getState('ext.gadget.rtrc') ? mw.loader.load('ext.gadget.rtrc') : mw.loader.load('https://www.mediawiki.org/w/load.php?modules=ext.gadget.rtrc&lang=' + mw.config.get('wgUserLanguage', 'en')));

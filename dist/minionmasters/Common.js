@@ -81,7 +81,7 @@ const innateEffects = {
     "Slitherbound Lancer": { poisonDuration: 1.5, poisonTickDamage: 10 },
     "Slitherbound Darter": { poisonDuration: 1.5, poisonTickDamage: 10 },
     "Spiderlings": { poisonDuration: 1.3, poisonTickDamage: 10 },
-    "Rabid Prowler": { poisonDuration: 2, poisonTickDamage: 10 },
+    "Rabid Prowler": { poisonDuration: 1, poisonTickDamage: 10 },
     "Akinlep's Gong of Pestilence": { poisonDuration: 4, poisonTickDamage: 10 },
     "Poison Strike": { poisonDuration: 8, poisonTickDamage: 10 },
     
@@ -107,6 +107,7 @@ const activatedEffects = {
 	"The Revenant": [ Buffs.Rage, Buffs.Haste],
 	"Tombstone": { flatHealthBonus: 1000 },
 	"Harmful Souls": { damageMultiplier: 1.6 },
+	"Nyrvir Slumbers": { flatManaBonus: -4 },
 	//Crystal Elf
 	"Lone Scout":  [Buffs.Haste, Buffs.ManaSurge] ,
 	"Mana Chaser": [ { flatManaBonus: 3 }, { flatCountBonus: 2 }],
@@ -1763,7 +1764,29 @@ $(function () {
 	    cardTooltip.classList.remove("wide");
 	});
     
-    
+    // Saved Decks storage-explanation tooltip
+	const savedDecksInfoHtml =
+	    "<strong>Where are saved decks stored?</strong><br><br>" +
+	    "<strong>This browser (local storage):</strong><br>" +
+	    "Saved decks are always kept in this browser's local storage first. This works even if you're not logged in, but the decks only exist on this device/browser — clearing browser data or switching browsers loses them.<br><br>" +
+	    "<strong>Your account (profile sync):</strong><br>" +
+	    "If you're logged in to the wiki, your decks are also synced to your user profile a few seconds after you save, rename, delete, or reorder one. This lets the same decks show up on any device you log in from. If you're not logged in, this part is skipped and decks stay local-only.";
+	
+	$(document).on("mouseenter", "#saved-decks-info-btn", function (e) {
+	    cardTooltip.innerHTML = savedDecksInfoHtml;
+	    cardTooltip.classList.add("wide");
+	    cardTooltip.style.display = "block";
+	    positionCardTooltip(e);
+	});
+	
+	$(document).on("mousemove", "#saved-decks-info-btn", function (e) {
+	    positionCardTooltip(e);
+	});
+	
+	$(document).on("mouseleave", "#saved-decks-info-btn", function () {
+	    hideCardTooltip();
+	    cardTooltip.classList.remove("wide");
+	});
 
     const masterSlot = document.getElementById("master-slot");
     const masterSlotSticky = document.getElementById("master-slot-sticky");
@@ -3044,302 +3067,421 @@ $(function () {
         return String(num);
     }
     
-    // Query Cargo
-    let cardFlagsMap = {}; // cardName -> string[]
-    let cardBuffsMap = {};
-    let cardDebuffsMap = {}; 
-    let cardMechanicsMap = {};
+// ---------------------------
+// Card data cache (avoids hitting Cargo's anon rate limit on every page load)
+// ---------------------------
+
+const CARD_DATA_CACHE_KEY = "mm_card_data_cache";
+const CARD_DATA_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min — raise this if card data rarely changes, lower it if you want fresher data sooner
+
+const LAST_API_CALL_KEY = "mm_last_api_call_at";
+const API_CALL_MIN_GAP_MS = 65000; // don't stack a new burst of mw.Api() calls within this window of the previous one
+
+function getLastApiCallAt() {
+    const raw = localStorage.getItem(LAST_API_CALL_KEY);
+    const n = raw ? parseInt(raw, 10) : 0;
+    return Number.isFinite(n) ? n : 0;
+}
+
+function markApiCallNow() {
+    try {
+        localStorage.setItem(LAST_API_CALL_KEY, String(Date.now()));
+    } catch (e) {}
+}
+
+// Guards against two rapid page loads/refreshes both firing an API burst
+// before the first one has finished and cached — anon users only.
+const CARD_DATA_LOADING_KEY = "mm_card_data_loading";
+const CARD_DATA_LOADING_TTL_MS = 20000; // treat a lock older than this as abandoned (failed/interrupted load)
+
+function isAnon() {
+    return !mw.config.get('wgUserName');
+}
+
+function isCardDataLoadElsewhere() {
+    const raw = localStorage.getItem(CARD_DATA_LOADING_KEY);
+    const loadingSince = raw ? parseInt(raw, 10) : 0;
+    if (!Number.isFinite(loadingSince) || loadingSince === 0) return false;
+    return (Date.now() - loadingSince) < CARD_DATA_LOADING_TTL_MS;
+}
+
+function markCardDataLoadStarted() {
+    try {
+        localStorage.setItem(CARD_DATA_LOADING_KEY, String(Date.now()));
+    } catch (e) {}
+}
+
+function clearCardDataLoadLock() {
+    try {
+        localStorage.removeItem(CARD_DATA_LOADING_KEY);
+    } catch (e) {}
+}
+
+// Same as getCachedCardData, but ignores the TTL — only used as an emergency fallback
+function getStaleCardData() {
+    try {
+        const raw = localStorage.getItem(CARD_DATA_CACHE_KEY);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.fetchedAt || !Array.isArray(parsed.cards)) return null;
+
+        return parsed;
+    } catch (e) {
+        return null;
+    }
+}
+
+function getCachedCardData() {
+    try {
+        const raw = localStorage.getItem(CARD_DATA_CACHE_KEY);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.fetchedAt) return null;
+        if (Date.now() - parsed.fetchedAt > CARD_DATA_CACHE_TTL_MS) return null; // stale
+
+        return parsed;
+    } catch (e) {
+        return null;
+    }
+}
+
+function setCachedCardData(payload) {
+    try {
+        localStorage.setItem(CARD_DATA_CACHE_KEY, JSON.stringify(payload));
+    } catch (e) {
+        // storage full or disabled — not fatal, just means every load re-fetches
+    }
+}
+
+// Query Cargo
+let cardFlagsMap = {}; // cardName -> string[]
+let cardBuffsMap = {};
+let cardDebuffsMap = {};
+let cardMechanicsMap = {};
+
+function renderCardData(payload) {
+
+    cardFlagsMap = payload.cardFlagsMap;
+    cardBuffsMap = payload.cardBuffsMap;
+    cardDebuffsMap = payload.cardDebuffsMap;
+    cardMechanicsMap = payload.cardMechanicsMap;
+
+    const $specialDropdown = $("#special-filter-dropdown");
+    $specialDropdown.empty();
+
+    const $buffDropdown = $("#buff-filter-dropdown");
+    $buffDropdown.empty();
+
+    const $debuffDropdown = $("#debuff-filter-dropdown");
+    $debuffDropdown.empty();
+
+    const $mechanicsDropdown = $("#faction-mechanics-filter-dropdown");
+    $mechanicsDropdown.empty();
+
+    payload.allSpecialFlags.forEach(function (flag) {
+        const safeId = "special-flag-" + flag.replace(/[^a-zA-Z0-9]/g, "");
+        const $row = $("<div>", { class: "special-filter-option" });
+        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: flag });
+        const $label = $("<label>", { for: safeId, text: flag });
+        $row.append($checkbox).append($label);
+        $specialDropdown.append($row);
+    });
+
+    payload.allMechanicNames.forEach(function (mechanicName) {
+        const safeId = "faction-mechanics-filter-" + mechanicName.replace(/[^a-zA-Z0-9]/g, "");
+        const $row = $("<div>", { class: "faction-mechanics-filter-option" });
+        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: mechanicName });
+        const $label = $("<label>", { for: safeId, text: mechanicName });
+        $row.append($checkbox).append($label);
+        $mechanicsDropdown.append($row);
+    });
+
+    payload.allBuffNames.forEach(function (buffName) {
+        const safeId = "buff-filter-" + buffName.replace(/[^a-zA-Z0-9]/g, "");
+        const $row = $("<div>", { class: "buff-filter-option" });
+        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: buffName });
+        const $label = $("<label>", { for: safeId, text: buffName });
+        $row.append($checkbox).append($label);
+        $buffDropdown.append($row);
+    });
+
+    payload.allDebuffNames.forEach(function (debuffName) {
+        const safeId = "debuff-filter-" + debuffName.replace(/[^a-zA-Z0-9]/g, "");
+        const $row = $("<div>", { class: "debuff-filter-option" });
+        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: debuffName });
+        const $label = $("<label>", { for: safeId, text: debuffName });
+        $row.append($checkbox).append($label);
+        $debuffDropdown.append($row);
+    });
+
+    allCardsData = payload.cards;
+
+    let lastManaCost = null;
+
+    payload.cards.forEach(function (card) {
+
+        const currentManaCost = Number(card.manaCost);
+
+        if (lastManaCost !== null && currentManaCost !== lastManaCost) {
+            const breakEl = document.createElement("div");
+            breakEl.className = "mana-row-break";
+            collection.appendChild(breakEl);
+        }
+
+        lastManaCost = currentManaCost;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "card-wrapper";
+
+        wrapper.dataset.mana = card.manaCost;
+        wrapper.dataset.faction = card.faction;
+        wrapper.dataset.rarity = card.rarity;
+        wrapper.dataset.type = card.type;
+        wrapper.dataset.targets = card.targets;
+        wrapper.dataset.wildcards = card.copies;
+        wrapper.dataset.count = getCountBucket(card.count);
+        wrapper.dataset.unitCount = card.count;
+        wrapper.dataset.name = card.name;
+        const radiusVal = String(card.radius).trim();
+        wrapper.dataset.aoe =
+            (radiusVal !== '' && radiusVal !== '0' && radiusVal !== 'undefined' && radiusVal !== 'null')
+                ? 'Yes' : 'No';
+        wrapper.dataset.attacktype =
+            isRangedTrue(card.isRanged) ? "Yes" : "No";
+        wrapper.dataset.health = card.health;
+        wrapper.dataset.damage = card.damage;
+        wrapper.dataset.attackSpeed = card.attackSpeed;
+        wrapper.dataset.movementSpeed = card.speed;
+        wrapper.dataset.range = card.rangeVal;
+
+        const specialTags = [];
+        const manualFlags = cardFlagsMap[card.pageName];
+        if (manualFlags) {
+            for (const flag of manualFlags) {
+                if (!specialTags.includes(flag)) specialTags.push(flag);
+            }
+        }
+        wrapper.dataset.special = specialTags.join("|");
+
+        const buffTags = cardBuffsMap[card.pageName] || [];
+        wrapper.dataset.buffs = buffTags.join("|");
+
+        const debuffTags = cardDebuffsMap[card.pageName] || [];
+        wrapper.dataset.debuffs = debuffTags.join("|");
+
+        const mechanicTags = cardMechanicsMap[card.pageName] || [];
+        wrapper.dataset.mechanics = mechanicTags.join("|");
+
+        const img = document.createElement("img");
+        img.alt = card.name;
+        img.className = "card-img";
+        img.src = mw.util.getUrl("Special:Redirect/file/" + card.image);
+
+        let holdTimer = null;
+        let holdTriggered = false;
+
+        img.addEventListener("mousedown", function (e) {
+            if (e.button !== 0) return;
+            holdTriggered = false;
+            holdTimer = setTimeout(function () {
+                holdTriggered = true;
+                const pageName = card.pageName.trim().replace(/ /g, "_");
+                const url = "https://minionmasters.fandom.com/wiki/" +
+                    encodeURIComponent(pageName).replace(/%2F/g, "/");
+                window.open(url, "_blank");
+            }, 700);
+        });
+
+        img.addEventListener("mouseup", function (e) {
+            if (e.button !== 0) return;
+            clearTimeout(holdTimer);
+        });
+
+        img.addEventListener("mouseleave", function () {
+            clearTimeout(holdTimer);
+        });
+
+        img.addEventListener("click", function (e) {
+            if (holdTriggered) {
+                holdTriggered = false;
+                return;
+            }
+            addToDeck(card);
+        });
+
+        img.addEventListener("mouseenter", function (e) {
+            showCardTooltip(card, e);
+        });
+
+        img.addEventListener("mousemove", function (e) {
+            positionCardTooltip(e);
+        });
+
+        img.addEventListener("mouseleave", function () {
+            hideCardTooltip();
+        });
+
+        const manaBadge = document.createElement("span");
+        manaBadge.className = "card-mana-badge";
+        manaBadge.textContent = card.manaCost;
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(manaBadge);
+        collection.appendChild(wrapper);
+    });
+
+    updateCollectionResultCount();
+    renderSavedDecksPanel();
+}
+
+function loadCardData() {
+
+    const cached = getCachedCardData();
+    if (cached) {
+        renderCardData(cached);
+        return;
+    }
+
+    if (isAnon()) {
+
+        // Too soon since the last completed API burst — don't refire, fall back instead
+        if (Date.now() - getLastApiCallAt() < API_CALL_MIN_GAP_MS) {
+            const stale = getStaleCardData();
+            if (stale) {
+                renderCardData(stale);
+                showNotification("Refreshed too recently — showing cached card data for now.", "info");
+            } else {
+                showNotification("Please wait a minute before refreshing again.", "info");
+            }
+            return;
+        }
+
+        // A concurrent/very recent load is already in-flight
+        if (isCardDataLoadElsewhere()) {
+            const stale = getStaleCardData();
+            if (stale) {
+                renderCardData(stale);
+            } else {
+                showNotification("Card data is loading — please wait a moment and refresh.", "info");
+            }
+            return;
+        }
+
+        markCardDataLoadStarted();
+    }
+
+    markApiCallNow();
 
     const cardsQuery = new mw.Api().get({
-	    action: "cargoquery",
-	    tables: "Cards2",
-		fields: "_pageName=pageName,name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond,description",
-	    where: 'rarity="Common" OR rarity="Rare" OR rarity="Supreme" OR rarity="Legendary"',
-	    limit: 999,
-	    format: "json"
-	});
-
-    const flagsQuery = new mw.Api().get({
         action: "cargoquery",
-        tables: "CardFlags",
-        fields: "_pageName=cardName,flag",
+        tables: "Cards2",
+        fields: "_pageName=pageName,name,image,faction,type,rarity,manaCost,isRanged,targets,radius,copies,count,health,damage,attackSpeed,speed,rangeVal,duration,productionspeed,masterdamage,heal,healingpersecond,description",
+        where: 'rarity="Common" OR rarity="Rare" OR rarity="Supreme" OR rarity="Legendary"',
         limit: 999,
         format: "json"
     });
-    
-    const buffsQuery = new mw.Api().get({
-	    action: "cargoquery",
-	    tables: "CardBuffs",
-	    fields: "_pageName=cardName,buff_name",
-	    limit: 999,
-	    format: "json"
-	});
-	
-	const debuffsQuery = new mw.Api().get({
-	    action: "cargoquery",
-	    tables: "CardDebuffs",
-	    fields: "_pageName=cardName,debuff_name",
-	    limit: 999,
-	    format: "json"
-	});
-	
-	const mechanicsQuery = new mw.Api().get({
-	    action: "cargoquery",
-	    tables: "CardFactionMechanics",
-	    fields: "_pageName=cardName,mechanic_name",
-	    limit: 999,
-	    format: "json"
-	});
 
-    $.when(cardsQuery, flagsQuery, buffsQuery, debuffsQuery, mechanicsQuery).done(function (cardsResp, flagsResp, buffsResp, debuffsResp, mechanicsResp) {
+    const tagsQuery = new mw.Api().get({
+        action: "cargoquery",
+        tables: "CardTags",
+        fields: "_pageName=cardName,tag_type=tagType,tag_name=tagName",
+        limit: 999,
+        format: "json"
+    });
+
+    $.when(cardsQuery, tagsQuery).done(function (cardsResp, tagsResp) {
+
+        if (isAnon()) clearCardDataLoadLock();
 
         const data = cardsResp[0];
-        const flagsData = flagsResp[0];
-        const buffsData = buffsResp[0];
-        const debuffsData = debuffsResp[0];
-        const mechanicsData = mechanicsResp[0];
-        
+        const tagsData = tagsResp[0];
 
+        const newCardFlagsMap = {};
+        const newCardBuffsMap = {};
+        const newCardDebuffsMap = {};
+        const newCardMechanicsMap = {};
 
         const allSpecialFlags = new Set();
         const allBuffNames = new Set();
-        const allDebuffNames = new Set(); 
+        const allDebuffNames = new Set();
         const allMechanicNames = new Set();
 
-
-
-        (flagsData.cargoquery || []).forEach(function (entry) {
+        (tagsData.cargoquery || []).forEach(function (entry) {
             const row = entry.title;
-            if (!row.cardName) return;
-            if (!cardFlagsMap[row.cardName]) cardFlagsMap[row.cardName] = [];
-            cardFlagsMap[row.cardName].push(row.flag);
-            if (row.flag) allSpecialFlags.add(row.flag);
+            if (!row.cardName || !row.tagType || !row.tagName) return;
+
+            switch (row.tagType) {
+                case "special":
+                    if (!newCardFlagsMap[row.cardName]) newCardFlagsMap[row.cardName] = [];
+                    newCardFlagsMap[row.cardName].push(row.tagName);
+                    allSpecialFlags.add(row.tagName);
+                    break;
+                case "buff":
+                    if (!newCardBuffsMap[row.cardName]) newCardBuffsMap[row.cardName] = [];
+                    newCardBuffsMap[row.cardName].push(row.tagName);
+                    allBuffNames.add(row.tagName);
+                    break;
+                case "debuff":
+                    if (!newCardDebuffsMap[row.cardName]) newCardDebuffsMap[row.cardName] = [];
+                    newCardDebuffsMap[row.cardName].push(row.tagName);
+                    allDebuffNames.add(row.tagName);
+                    break;
+                case "faction_mechanic":
+                    if (!newCardMechanicsMap[row.cardName]) newCardMechanicsMap[row.cardName] = [];
+                    newCardMechanicsMap[row.cardName].push(row.tagName);
+                    allMechanicNames.add(row.tagName);
+                    break;
+            }
         });
-        
-        (buffsData.cargoquery || []).forEach(function (entry) {
-	        const row = entry.title;
-	        if (!row.cardName) return;
-	        if (!cardBuffsMap[row.cardName]) cardBuffsMap[row.cardName] = [];
-	        cardBuffsMap[row.cardName].push(row["buff name"]);
-			if (row["buff name"]) allBuffNames.add(row["buff name"]);
-	    });
-	    
-	    (debuffsData.cargoquery || []).forEach(function (entry) {
-	        const row = entry.title;
-	        if (!row.cardName) return;
-	        if (!cardDebuffsMap[row.cardName]) cardDebuffsMap[row.cardName] = [];
-	        cardDebuffsMap[row.cardName].push(row["debuff name"]);
-	        if (row["debuff name"]) allDebuffNames.add(row["debuff name"]);
-	    });
-	    
-	    (mechanicsData.cargoquery || []).forEach(function (entry) {
-	        const row = entry.title;
-	        if (!row.cardName) return;
-	        if (!cardMechanicsMap[row.cardName]) cardMechanicsMap[row.cardName] = [];
-	        cardMechanicsMap[row.cardName].push(row["mechanic name"]);
-	        if (row["mechanic name"]) allMechanicNames.add(row["mechanic name"]);
-	    });
 
-        const $specialDropdown = $("#special-filter-dropdown");
-        $specialDropdown.empty();
-        
-        const $buffDropdown = $("#buff-filter-dropdown");
-	    $buffDropdown.empty();
-	    
-		const $debuffDropdown = $("#debuff-filter-dropdown");   
-    	$debuffDropdown.empty();
-    	
-    	const $mechanicsDropdown = $("#faction-mechanics-filter-dropdown");
-    	$mechanicsDropdown.empty();                         
-
-        Array.from(allSpecialFlags).sort().forEach(function (flag) {
-            const safeId = "special-flag-" + flag.replace(/[^a-zA-Z0-9]/g, "");
-            const $row = $("<div>", { class: "special-filter-option" });
-            const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: flag });
-            const $label = $("<label>", { for: safeId, text: flag });
-            $row.append($checkbox).append($label);
-            $specialDropdown.append($row);
+        const cards = data.cargoquery.map(function (entry) {
+            return entry.title;
         });
-        
-        Array.from(allMechanicNames).sort().forEach(function (mechanicName) {
-	        const safeId = "faction-mechanics-filter-" + mechanicName.replace(/[^a-zA-Z0-9]/g, "");
-	        const $row = $("<div>", { class: "faction-mechanics-filter-option" });
-	        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: mechanicName });
-	        const $label = $("<label>", { for: safeId, text: mechanicName });
-	        $row.append($checkbox).append($label);
-	        $mechanicsDropdown.append($row);
-	    });
-        
-        Array.from(allBuffNames).sort().forEach(function (buffName) {
-	        const safeId = "buff-filter-" + buffName.replace(/[^a-zA-Z0-9]/g, "");
-	        const $row = $("<div>", { class: "buff-filter-option" });
-	        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: buffName });
-	        const $label = $("<label>", { for: safeId, text: buffName });
-	        $row.append($checkbox).append($label);
-	        $buffDropdown.append($row);
-	    });
-	    
-	    Array.from(allDebuffNames).sort().forEach(function (debuffName) {
-	        const safeId = "debuff-filter-" + debuffName.replace(/[^a-zA-Z0-9]/g, "");
-	        const $row = $("<div>", { class: "debuff-filter-option" });
-	        const $checkbox = $("<input>", { type: "checkbox", id: safeId, value: debuffName });
-	        const $label = $("<label>", { for: safeId, text: debuffName });
-	        $row.append($checkbox).append($label);
-	        $debuffDropdown.append($row);
-	    });
+
+        cards.sort(function (a, b) {
+            return Number(a.manaCost) - Number(b.manaCost);
+        });
+
+        const payload = {
+            fetchedAt: Date.now(),
+            cards: cards,
+            cardFlagsMap: newCardFlagsMap,
+            cardBuffsMap: newCardBuffsMap,
+            cardDebuffsMap: newCardDebuffsMap,
+            cardMechanicsMap: newCardMechanicsMap,
+            allSpecialFlags: Array.from(allSpecialFlags).sort(),
+            allBuffNames: Array.from(allBuffNames).sort(),
+            allDebuffNames: Array.from(allDebuffNames).sort(),
+            allMechanicNames: Array.from(allMechanicNames).sort()
+        };
+
+        setCachedCardData(payload);
+        renderCardData(payload);
+
+    }).fail(function (error) {
+
+        if (isAnon()) clearCardDataLoadLock();
+
+        console.error("Cargo query failed:", error);
+
+        const stale = getStaleCardData();
+
+        if (stale) {
+            renderCardData(stale);
+            const ageMinutes = Math.round((Date.now() - stale.fetchedAt) / 60000);
+            showNotification(
+                "Couldn't refresh card data — showing a cached version from " + ageMinutes + " min ago.",
+                "error"
+            );
+        } else {
+            showNotification("Couldn't load card data — please refresh in a moment.", "error");
+        }
+    });
+}
 
 
-	    const cards = data.cargoquery.map(function (entry) {
-	        return entry.title;
-	    });
-	
-	    // Sort by mana cost
-	    cards.sort(function (a, b) {
-	        return Number(a.manaCost) - Number(b.manaCost);
-	    });
-	    
-		allCardsData = cards;
-	
-	    // Render collection
-	    let lastManaCost = null;
-
-		cards.forEach(function (card) {
-		
-		    const currentManaCost = Number(card.manaCost);
-		
-		    if (lastManaCost !== null && currentManaCost !== lastManaCost) {
-		        const breakEl = document.createElement("div");
-		        breakEl.className = "mana-row-break";
-		        collection.appendChild(breakEl);
-		    }
-		
-		    lastManaCost = currentManaCost;
-		
-		    const wrapper = document.createElement("div");
-		    wrapper.className = "card-wrapper";
-		
-		    // Store mana cost on the wrapper
-		    wrapper.dataset.mana = card.manaCost;
-		    wrapper.dataset.faction = card.faction;
-		    wrapper.dataset.rarity = card.rarity;
-		    wrapper.dataset.type = card.type;
-		    wrapper.dataset.targets = card.targets;
-		    wrapper.dataset.wildcards = card.copies;
-		    wrapper.dataset.count = getCountBucket(card.count);
-		    wrapper.dataset.unitCount = card.count; // raw value, needed for Total DPS math
-		    wrapper.dataset.name = card.name;
-		    const radiusVal = String(card.radius).trim();
-		    wrapper.dataset.aoe =
-			    (radiusVal !== '' && radiusVal !== '0' && radiusVal !== 'undefined' && radiusVal !== 'null')
-			        ? 'Yes' : 'No';
-		    wrapper.dataset.attacktype =
-			    isRangedTrue(card.isRanged) ? "Yes" : "No";
-			//for dynamic filter
-			wrapper.dataset.health = card.health;
-			wrapper.dataset.damage = card.damage;
-			wrapper.dataset.attackSpeed = card.attackSpeed;
-			wrapper.dataset.movementSpeed = card.speed ;
-			wrapper.dataset.range = card.rangeVal;
-
-
-			// Special tags (space-separated list; more will be added later)
-			const specialTags = [];
-			
-			
-			// Manually-tagged flags from the CardFlags satellite table
-			const manualFlags = cardFlagsMap[card.pageName];
-			if (manualFlags) {
-			    for (const flag of manualFlags) {
-			        if (!specialTags.includes(flag)) specialTags.push(flag);
-			    }
-			}
-			
-			wrapper.dataset.special = specialTags.join("|");
-			
-			const buffTags = cardBuffsMap[card.pageName] || [];
-			wrapper.dataset.buffs = buffTags.join("|");
-			
-			const debuffTags = cardDebuffsMap[card.pageName] || [];
-			wrapper.dataset.debuffs = debuffTags.join("|");
-			
-			const mechanicTags = cardMechanicsMap[card.pageName] || [];
-			wrapper.dataset.mechanics = mechanicTags.join("|");
-
-		
-		    const img = document.createElement("img");
-		
-		    img.alt = card.name;
-		    img.className = "card-img";
-		
-		    img.src = mw.util.getUrl(
-		        "Special:Redirect/file/" + card.image
-		    );
-		
-		    let holdTimer = null;
-			let holdTriggered = false;
-			
-			img.addEventListener("mousedown", function (e) {
-			    if (e.button !== 0) return; // Left mouse button only
-			
-			    holdTriggered = false;
-			
-			    holdTimer = setTimeout(function () {
-			        holdTriggered = true;
-			
-			        const pageName = card.pageName.trim().replace(/ /g, "_");
-			        const url = "https://minionmasters.fandom.com/wiki/" +
-			            encodeURIComponent(pageName).replace(/%2F/g, "/");
-			
-			        window.open(url, "_blank");
-			    }, 700); // 700ms hold
-			});
-			
-			img.addEventListener("mouseup", function (e) {
-			    if (e.button !== 0) return;
-			
-			    clearTimeout(holdTimer);
-			});
-			
-			img.addEventListener("mouseleave", function () {
-			    clearTimeout(holdTimer);
-			});
-			
-			img.addEventListener("click", function (e) {
-			    // Don't add the card if this click came from a hold
-			    if (holdTriggered) {
-			        holdTriggered = false;
-			        return;
-			    }
-			
-			    addToDeck(card);
-			});
-		    
-		    img.addEventListener("mouseenter", function (e) {
-		        showCardTooltip(card, e);
-		    });
-
-		    img.addEventListener("mousemove", function (e) {
-		        positionCardTooltip(e);
-		    });
-
-		    img.addEventListener("mouseleave", function () {
-		        hideCardTooltip();
-		    });
-		
-		    const manaBadge = document.createElement("span");
-		    manaBadge.className = "card-mana-badge";
-		    manaBadge.textContent = card.manaCost;
-		
-		    wrapper.appendChild(img);
-		    wrapper.appendChild(manaBadge);
-		    collection.appendChild(wrapper);
-		});
-	
-	    updateCollectionResultCount();
-	
-	}).fail(function (error) {
-	    console.error("Cargo query failed:", error);
-	});
 
 
     function addToDeck(card) {
@@ -3700,115 +3842,1030 @@ $(function () {
 	// import button
 	
 	        $(document).on("click", "#import-deck-btn", function () {
-
-		        if (!masterSlot || !deck) return;
-		
-		        const raw = $("#export-deck-output").val().trim();
-		        if (!raw) {
-		        	showNotification("Please paste a deck code first.", "error");
-		            return;
-		        }
-		
-		        const match = raw.match(/\[Code:(.+)\]/);
-		        const code = match ? match[1] : raw;
-		
-		        let payload;
-				try {
-				    payload = decodeDeckCode(code);
-				} catch (e) {
-				    showNotification("Invalid deck code.", "error");
-				    return;
-				}
-		
-		        const master = mastersData.find(function (m) { return m.name === payload.m; });
-		        if (!master) {
-		            showNotification("Unknown master: " + payload.m, "error");
-		            return;
-		        }
-		
-		        const isEmpty = !selectedMaster && deckList.length === 0;
-		
-		        const currentCardNames = deckList
-		            .concat(deckWildcards.filter(Boolean))
-		            .map(function (c) { return c.name; })
-		            .sort();
-		
-		        const importCardNames = (payload.c || []).slice().sort();
-		
-		        const isSameMaster = selectedMaster && selectedMaster.name === payload.m;
-		
-		        const isSameCards =
-		            currentCardNames.length === importCardNames.length &&
-		            currentCardNames.every(function (name, i) { return name === importCardNames[i]; });
-		
-		        const isSameDeck = isSameMaster && isSameCards;
-		
-		        function performImport() {
-				    selectedMaster = master;
-				    resetPerkChoices();
-		
-		        if (masterPerks[master.name] && Array.isArray(payload.p)) {
-		            ["perk1", "perk2", "perk3"].forEach(function (perkKey) {
-		                const perkData = masterPerks[master.name][perkKey];
-		                if (perkData && perkData.alt && payload.p.includes(perkData.alt.name)) {
-		                    selectedPerkChoices[perkKey] = "alt";
-		                }
-		            });
-		        }
-		
-		        deckList.length = 0;
-		        deckWildcards[0] = null;
-		        deckWildcards[1] = null;
-		
-		        const seenCounts = {};
-		        let wildcardSlotIndex = 0;
-		
-		        (payload.c || []).forEach(function (name) {
-		
-		            const cardData = allCardsData.find(function (c) { return c.name === name; });
-		            if (!cardData) return;
-		
-		            seenCounts[name] = (seenCounts[name] || 0) + 1;
-		
-		            if (seenCounts[name] === 1) {
-		                if (deckList.length < 10) deckList.push(cardData);
-		            } else if (wildcardSlotIndex < 2) {
-		                deckWildcards[wildcardSlotIndex] = cardData;
-		                wildcardSlotIndex++;
-		            }
-		        });
-		
-		        deckList.sort(function (a, b) {
-		            const manaDifference = Number(a.manaCost) - Number(b.manaCost);
-		            if (manaDifference !== 0) return manaDifference;
-		                const idA = cardIdMap[a.name];
-					    const idB = cardIdMap[b.name];
-					
-					    return idA - idB;
-		        });
-		
-		        renderMasterSlot();
-			    renderPerkSelector();
-			    renderDeck();
-			    renderWildcardSlots();
-			}
-			
-			if (!isEmpty && !isSameDeck) {
-			    showConfirm(
-			        "This will overwrite your current deck. Continue?",
-			        function () {
-			            performImport();
-			        }
-			    );
-			} else {
-			    performImport();
-			}
-			
+			    importDeckFromCode($("#export-deck-output").val());
 			});
+			
+// ---------------------------
+// Saved Decks (localStorage)
+// ---------------------------
+
+const SAVED_DECKS_KEY = "mm_saved_decks";
+const SAVED_DECKS_ORDER_KEY = "mm_saved_decks_order";
+
+let savedDecksSearchQuery = "";
+
+$("#saved-decks-search-container").html(
+    '<input type="text" id="saved-decks-search" placeholder="Search by deck, master, or card name..." />'
+);
+
+$(document).on("input", "#saved-decks-search", function () {
+    savedDecksSearchQuery = $(this).val().toLowerCase().trim();
+    renderSavedDecksPanel();
+});
+
+const SAVED_DECKS_DELETED_KEY = "mm_saved_decks_deleted";
+
+function getDeletedDecks() {
+    try {
+        return JSON.parse(localStorage.getItem(SAVED_DECKS_DELETED_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function setDeletedDecks(deletedMap) {
+    try {
+        localStorage.setItem(SAVED_DECKS_DELETED_KEY, JSON.stringify(deletedMap));
+    } catch (e) {
+        // not fatal
+    }
+}
+
+function recordDeckDeleted(id) {
+    const deleted = getDeletedDecks();
+    deleted[id] = Date.now();
+    setDeletedDecks(deleted);
+}
+
+function deckMatchesSearch(deckName, code, query) {
+
+    if (!query) return true;
+
+    if (deckName.toLowerCase().includes(query)) return true;
+
+    let payload;
+    try {
+        payload = decodeDeckCode(code);
+    } catch (e) {
+        return false;
+    }
+
+    const master = mastersData.find(function (m) { return m.name === payload.m; });
+    if (master && master.name.toLowerCase().includes(query)) return true;
+
+    const cardNames = payload.c || [];
+    return cardNames.some(function (cardName) {
+        return cardName.toLowerCase().includes(query);
+    });
+}
+
+function getSavedDecks() {
+    try {
+        return JSON.parse(localStorage.getItem(SAVED_DECKS_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function setSavedDecks(decks) {
+    try {
+        localStorage.setItem(SAVED_DECKS_KEY, JSON.stringify(decks));
+    } catch (e) {
+        showNotification("Couldn't save — your browser storage may be full or disabled.", "error");
+    }
+}
+
+// Returns deck names in saved (custom) order, reconciled against what actually exists
+function getSavedDecksOrder(decks) {
+    let order = [];
+    try {
+        order = JSON.parse(localStorage.getItem(SAVED_DECKS_ORDER_KEY)) || [];
+    } catch (e) {
+        order = [];
+    }
+
+    const deckNames = Object.keys(decks);
+
+    // Drop names that were deleted
+    order = order.filter(function (name) {
+        return deckNames.includes(name);
+    });
+
+    // Prepend any deck not yet tracked (new saves go to the top)
+    deckNames.forEach(function (name) {
+        if (!order.includes(name)) {
+            order.unshift(name); // was: order.push(name)
+        }
+    });
+
+    return order;
+}
+
+const SAVED_DECKS_ORDER_UPDATED_KEY = "mm_saved_decks_order_updated_at";
+
+function setSavedDecksOrder(order) {
+    try {
+        localStorage.setItem(SAVED_DECKS_ORDER_KEY, JSON.stringify(order));
+        localStorage.setItem(SAVED_DECKS_ORDER_UPDATED_KEY, String(Date.now()));
+    } catch (e) {
+        showNotification("Couldn't save the deck order — your browser storage may be full or disabled.", "error");
+    }
+}
+
+function getSavedDecksOrderUpdatedAt() {
+    const raw = localStorage.getItem(SAVED_DECKS_ORDER_UPDATED_KEY);
+    const n = raw ? parseInt(raw, 10) : 0;
+    return Number.isFinite(n) ? n : 0;
+}
+
+function getAccountDecksPageTitle() {
+    const userName = mw.config.get('wgUserName');
+    if (!userName) return null;
+    return "User:" + userName + "/Decks.json";
+}
+
+function fetchAccountDecks() {
+
+    const title = getAccountDecksPageTitle();
+    const deferred = $.Deferred();
+
+    if (!title) {
+        return deferred.resolve({ decks: {}, order: [], deleted: {}, orderUpdatedAt: 0 }).promise();
+    }
+
+    new mw.Api().get({
+        action: "query",
+        titles: title,
+        prop: "revisions",
+        rvslots: "main",
+        rvprop: "content",
+        format: "json"
+    }).done(function (resp) {
+
+        const pages = resp.query && resp.query.pages;
+        const page = pages ? pages[Object.keys(pages)[0]] : null;
+
+        if (!page || page.missing || !page.revisions) {
+            deferred.resolve({ decks: {}, order: [], deleted: {}, orderUpdatedAt: 0 });
+            return;
+        }
+
+        try {
+            const content = page.revisions[0].slots.main["*"];
+            const parsed = JSON.parse(content);
+            deferred.resolve({
+                decks: parsed.decks || {},
+                order: parsed.order || [],
+                deleted: parsed.deleted || {},
+                orderUpdatedAt: parsed.orderUpdatedAt || 0
+            });
+        } catch (e) {
+            deferred.resolve({ decks: {}, order: [], deleted: {}, orderUpdatedAt: 0 });
+        }
+
+    }).fail(function () {
+        deferred.resolve({ decks: {}, order: [], deleted: {}, orderUpdatedAt: 0 });
+    });
+
+    return deferred.promise();
+}
+
+function pushAccountDecks(decks, order, deleted, orderUpdatedAt) {
+    const title = getAccountDecksPageTitle();
+    if (!title) return $.Deferred().reject().promise();
+
+    return new mw.Api().postWithToken("csrf", {
+        action: "edit",
+        title: title,
+        text: JSON.stringify({ decks: decks, order: order, deleted: deleted, orderUpdatedAt: orderUpdatedAt }),
+        contentmodel: "json",
+        summary: "Auto-sync deck data",
+        format: "json"
+    });
+}
+
+const TOMBSTONE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+function pruneTombstones(deletedMap) {
+    const cutoff = Date.now() - TOMBSTONE_MAX_AGE_MS;
+    const pruned = {};
+    Object.keys(deletedMap).forEach(function (name) {
+        if (deletedMap[name] > cutoff) {
+            pruned[name] = deletedMap[name];
+        }
+    });
+    return pruned;
+}
+
+function mergeSavedDecks(localDecks, localOrder, remoteDecks, remoteOrder, localDeleted, remoteDeleted, localOrderUpdatedAt, remoteOrderUpdatedAt) {
+
+    // --- Build id -> {name, deckData} maps from both sides ---
+    function toIdMap(decksObj) {
+        const map = {};
+        Object.keys(decksObj).forEach(function (name) {
+            const d = decksObj[name];
+            const id = d.id || ("legacy:" + name); // fallback for pre-ID decks, see migration note
+            map[id] = { name: name, data: d };
+        });
+        return map;
+    }
+
+    const localById = toIdMap(localDecks);
+    const remoteById = toIdMap(remoteDecks);
+
+    // --- Tombstones stay ID-based too ---
+    const mergedDeletedRaw = {};
+    const deletedIds = new Set(Object.keys(localDeleted || {}).concat(Object.keys(remoteDeleted || {})));
+    deletedIds.forEach(function (id) {
+        const l = (localDeleted && localDeleted[id]) || 0;
+        const r = (remoteDeleted && remoteDeleted[id]) || 0;
+        mergedDeletedRaw[id] = Math.max(l, r);
+    });
+    const mergedDeleted = pruneTombstones(mergedDeletedRaw);
+
+    // --- Merge deck data by ID (same deck edited on two devices = last write wins) ---
+    const mergedById = {};
+    const allIds = new Set(Object.keys(localById).concat(Object.keys(remoteById)));
+
+    allIds.forEach(function (id) {
+        const local = localById[id];
+        const remote = remoteById[id];
+
+        let winner;
+        if (local && remote) {
+            winner = (local.data.savedAt || 0) >= (remote.data.savedAt || 0) ? local : remote;
+        } else {
+            winner = local || remote;
+        }
+
+        const deletedAt = mergedDeleted[id] || 0;
+        if (deletedAt && (winner.data.savedAt || 0) <= deletedAt) {
+            return; // stays deleted
+        }
+
+        mergedById[id] = winner; // { name, data }
+    });
+
+    // --- Resolve name collisions: two DIFFERENT ids with the same name ---
+    const usedNames = {};
+    Object.keys(mergedById).forEach(function (id) {
+        let name = mergedById[id].name;
+        let finalName = name;
+        let n = 2;
+        while (usedNames[finalName] && usedNames[finalName] !== id) {
+            finalName = name + " (" + n + ")";
+            n++;
+        }
+        usedNames[finalName] = id;
+        mergedById[id].name = finalName;
+    });
+
+    // --- Rebuild the name-keyed decks object ---
+    const mergedDecks = {};
+    Object.keys(mergedById).forEach(function (id) {
+        mergedDecks[mergedById[id].name] = mergedById[id].data;
+    });
+
+    // --- Order: same "most-recently-touched side wins wholesale" logic as before,
+    //     but now working with ids internally, then mapped back to final names ---
+    function orderToIds(order, decksObj) {
+        return order
+            .map(function (name) {
+                const d = decksObj[name];
+                if (!d) return null;
+                return d.id || ("legacy:" + name);
+            })
+            .filter(Boolean);
+    }
+
+    const localOrderIds = orderToIds(localOrder, localDecks);
+    const remoteOrderIds = orderToIds(remoteOrder, remoteDecks);
+
+    const localIsNewer = (localOrderUpdatedAt || 0) >= (remoteOrderUpdatedAt || 0);
+    const baseOrderIds = localIsNewer ? localOrderIds : remoteOrderIds;
+    const fallbackOrderIds = localIsNewer ? remoteOrderIds : localOrderIds;
+
+    const orderedIds = baseOrderIds.filter(function (id) { return id in mergedById; });
+    const seen = {};
+    orderedIds.forEach(function (id) { seen[id] = true; });
+
+    fallbackOrderIds.forEach(function (id) {
+        if (mergedById[id] && !seen[id]) {
+            orderedIds.push(id);
+            seen[id] = true;
+        }
+    });
+
+    Object.keys(mergedById).forEach(function (id) {
+        if (!seen[id]) {
+            orderedIds.push(id);
+            seen[id] = true;
+        }
+    });
+
+    const mergedOrder = orderedIds.map(function (id) { return mergedById[id].name; });
+
+    return {
+        mergedDecks: mergedDecks,
+        mergedOrder: mergedOrder,
+        mergedDeleted: mergedDeleted,
+        mergedOrderUpdatedAt: Math.max(localOrderUpdatedAt || 0, remoteOrderUpdatedAt || 0)
+    };
+}
+
+let syncInProgress = false;
+
+function syncWithAccount() {
+
+    if (!mw.config.get('wgUserName')) return;
+    if (syncInProgress) return;
+
+    syncInProgress = true;
+
+    fetchAccountDecks().done(function (remote) {
+
+        const localDecks = getSavedDecks();
+        const localOrder = getSavedDecksOrder(localDecks);
+        const localDeleted = getDeletedDecks();
+        const localOrderUpdatedAt = getSavedDecksOrderUpdatedAt();
+
+        const merged = mergeSavedDecks(
+            localDecks, localOrder,
+            remote.decks, remote.order,
+            localDeleted, remote.deleted,
+            localOrderUpdatedAt, remote.orderUpdatedAt
+        );
+
+        // --- Skip the write if merge produced nothing new vs. what's already remote ---
+        const remoteSerialized = JSON.stringify({
+            decks: remote.decks,
+            order: remote.order,
+            deleted: remote.deleted,
+            orderUpdatedAt: remote.orderUpdatedAt
+        });
+        const mergedSerialized = JSON.stringify({
+            decks: merged.mergedDecks,
+            order: merged.mergedOrder,
+            deleted: merged.mergedDeleted,
+            orderUpdatedAt: merged.mergedOrderUpdatedAt
+        });
+
+        if (mergedSerialized === remoteSerialized) {
+            // Nothing changed remotely — still update local storage in case
+            // the merge pulled in something new from remote that wasn't local yet.
+            setSavedDecks(merged.mergedDecks);
+            setSavedDecksOrder(merged.mergedOrder);
+            localStorage.setItem(SAVED_DECKS_ORDER_UPDATED_KEY, String(merged.mergedOrderUpdatedAt));
+            setDeletedDecks(merged.mergedDeleted);
+            renderSavedDecksPanel();
+
+            syncInProgress = false;
+            return;
+        }
+
+        pushAccountDecks(
+            merged.mergedDecks, merged.mergedOrder,
+            merged.mergedDeleted, merged.mergedOrderUpdatedAt
+        ).done(function () {
+
+            setSavedDecks(merged.mergedDecks);
+            setSavedDecksOrder(merged.mergedOrder);
+            localStorage.setItem(SAVED_DECKS_ORDER_UPDATED_KEY, String(merged.mergedOrderUpdatedAt));
+            setDeletedDecks(merged.mergedDeleted);
+            renderSavedDecksPanel();
+            // no success notification either — this now runs silently in the background
+
+        }).fail(function () {
+            showNotification("Couldn't save to your account — please try again shortly.", "error");
+        }).always(function () {
+            syncInProgress = false;
+        });
+
+    });
+}
+
+// Same logic Export button already builds — just returns the code instead of writing to the textarea
+function buildCurrentDeckCode() {
+
+    if (!selectedMaster) return null;
+    if (deckList.length === 0) return null;
+
+    const wildcardCards = deckWildcards.filter(Boolean);
+    const allCards = deckList.concat(wildcardCards);
+
+    allCards.sort(function (a, b) {
+        const manaDifference = Number(a.manaCost) - Number(b.manaCost);
+        if (manaDifference !== 0) return manaDifference;
+        return a.name.localeCompare(b.name);
+    });
+
+    const cardNames = allCards.map(function (c) { return c.name; });
+
+    const altPerkKeysSelected = [];
+    if (masterPerks[selectedMaster.name]) {
+        ["perk1", "perk2", "perk3"].forEach(function (perkKey) {
+            if (selectedPerkChoices[perkKey] === "alt") altPerkKeysSelected.push(perkKey);
+        });
+    }
+
+    return encodeDeckCode(selectedMaster.name, cardNames, altPerkKeysSelected);
+}
+
+// Pulled out of #import-deck-btn handler, unchanged, just made reusable
+function importDeckFromCode(raw, savedName) {
+
+    if (!masterSlot || !deck) return;
+
+    raw = (raw || "").trim();
+    if (!raw) {
+        showNotification("Please paste a deck code first.", "error");
+        return;
+    }
+
+    const match = raw.match(/\[Code:(.+)\]/);
+    const code = match ? match[1] : raw;
+
+    let payload;
+    try {
+        payload = decodeDeckCode(code);
+    } catch (e) {
+        showNotification("Invalid deck code.", "error");
+        return;
+    }
+
+    const master = mastersData.find(function (m) { return m.name === payload.m; });
+    if (!master) {
+        showNotification("Unknown master: " + payload.m, "error");
+        return;
+    }
+
+    const isEmpty = !selectedMaster && deckList.length === 0;
+
+    const currentCardNames = deckList
+        .concat(deckWildcards.filter(Boolean))
+        .map(function (c) { return c.name; })
+        .sort();
+
+    const importCardNames = (payload.c || []).slice().sort();
+
+    const isSameMaster = selectedMaster && selectedMaster.name === payload.m;
+
+    const isSameCards =
+        currentCardNames.length === importCardNames.length &&
+        currentCardNames.every(function (name, i) { return name === importCardNames[i]; });
+
+    const isSameDeck = isSameMaster && isSameCards;
+
+    function performImport() {
+        selectedMaster = master;
+        resetPerkChoices();
+
+        if (masterPerks[master.name] && Array.isArray(payload.p)) {
+            ["perk1", "perk2", "perk3"].forEach(function (perkKey) {
+                const perkData = masterPerks[master.name][perkKey];
+                if (perkData && perkData.alt && payload.p.includes(perkData.alt.name)) {
+                    selectedPerkChoices[perkKey] = "alt";
+                }
+            });
+        }
+
+        deckList.length = 0;
+        deckWildcards[0] = null;
+        deckWildcards[1] = null;
+
+        const seenCounts = {};
+        let wildcardSlotIndex = 0;
+
+        (payload.c || []).forEach(function (name) {
+
+            const cardData = allCardsData.find(function (c) { return c.name === name; });
+            if (!cardData) return;
+
+            seenCounts[name] = (seenCounts[name] || 0) + 1;
+
+            if (seenCounts[name] === 1) {
+                if (deckList.length < 10) deckList.push(cardData);
+            } else if (wildcardSlotIndex < 2) {
+                deckWildcards[wildcardSlotIndex] = cardData;
+                wildcardSlotIndex++;
+            }
+        });
+
+        deckList.sort(function (a, b) {
+            const manaDifference = Number(a.manaCost) - Number(b.manaCost);
+            if (manaDifference !== 0) return manaDifference;
+            const idA = cardIdMap[a.name];
+            const idB = cardIdMap[b.name];
+            return idA - idB;
+        });
+
+        renderMasterSlot();
+        renderPerkSelector();
+        renderDeck();
+        renderWildcardSlots();
+        switchToDeckbuilderTab();
+        $("#save-deck-name-input").val(savedName || "");
+    }
+
+    if (!isEmpty && !isSameDeck) {
+        showConfirm("This will overwrite your current deck. Continue?", performImport);
+    } else {
+        performImport();
+    }
+}
+
+// ---------------------------
+// Saved Decks UI
+// ---------------------------
+function buildSavedDeckPreview(code) {
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "saved-deck-preview-row";
+
+    let payload;
+    try {
+        payload = decodeDeckCode(code);
+    } catch (e) {
+        return wrapper;
+    }
+
+    const masterSlotEl = document.createElement("div");
+    masterSlotEl.className = "master-slot saved-deck-master-slot";
+
+    const master = mastersData.find(function (m) { return m.name === payload.m; });
+    if (master) {
+        const masterImg = document.createElement("img");
+        masterImg.className = "master-img";
+        masterImg.src = mw.util.getUrl("Special:Redirect/file/" + master.image);
+        masterImg.alt = master.name;
+        masterSlotEl.appendChild(masterImg);
+    }
+    wrapper.appendChild(masterSlotEl);
+
+    // Count occurrences so wildcards (duplicate names) become a badge, not a second slot
+    const cardCounts = {};
+    const orderedNames = [];
+    (payload.c || []).forEach(function (cardName) {
+        if (!cardCounts[cardName]) {
+            cardCounts[cardName] = 0;
+            orderedNames.push(cardName);
+        }
+        cardCounts[cardName]++;
+    });
+
+    const cardRow = document.createElement("div");
+    cardRow.className = "saved-deck-cards";
+
+    let manaSum = 0;
+    let manaCount = 0;
+
+    orderedNames.forEach(function (cardName) {
+
+        const cardData = allCardsData.find(function (c) { return c.name === cardName; });
+        if (!cardData) return;
+
+        const slot = document.createElement("div");
+        slot.className = "deck-card";
+
+        const img = document.createElement("img");
+        img.className = "deck-img";
+        img.src = mw.util.getUrl("Special:Redirect/file/" + cardData.image);
+        img.alt = cardData.name;
+
+        const manaBadge = document.createElement("span");
+        manaBadge.className = "card-mana-badge";
+        manaBadge.textContent = cardData.manaCost;
+
+        slot.appendChild(img);
+        slot.appendChild(manaBadge);
+
+        if (cardCounts[cardName] > 1) {
+            const wildcardBadge = document.createElement("span");
+            wildcardBadge.className = "saved-deck-wildcard-badge";
+            wildcardBadge.textContent = "×" + cardCounts[cardName];
+            slot.appendChild(wildcardBadge);
+        }
+
+        cardRow.appendChild(slot);
+
+        // Average still counts every copy (including wildcards), matching the live avg-mana calc
+        const manaVal = Number(cardData.manaCost);
+        if (Number.isFinite(manaVal)) {
+            manaSum += manaVal * cardCounts[cardName];
+            manaCount += cardCounts[cardName];
+        }
+    });
+
+    wrapper.appendChild(cardRow);
+
+    const avgWrap = document.createElement("div");
+    avgWrap.className = "saved-deck-avg-mana";
+
+    const avgBadge = document.createElement("span");
+    avgBadge.className = "avg-mana-badge";
+    avgBadge.textContent = manaCount > 0 ? (manaSum / manaCount).toFixed(1) : "0";
+
+    avgWrap.appendChild(avgBadge);
+    wrapper.appendChild(avgWrap);
+
+    return wrapper;
+}
+
+function attachSavedDeckDragHandlers(container) {
+
+    let draggedName = null;
+
+    $(container).off("dragstart dragend dragover dragleave drop");
+
+    $(container).on("dragstart", ".saved-deck-row", function (e) {
+        draggedName = $(this).data("deckName");
+        $(this).addClass("dragging");
+        e.originalEvent.dataTransfer.effectAllowed = "move";
+        e.originalEvent.dataTransfer.setData("text/plain", draggedName); // needed for Firefox
+    });
+
+    $(container).on("dragend", ".saved-deck-row", function () {
+        $(this).removeClass("dragging");
+        $(container).find(".saved-deck-row").removeClass("drag-over");
+    });
+
+    $(container).on("dragover", ".saved-deck-row", function (e) {
+        e.preventDefault();
+        e.originalEvent.dataTransfer.dropEffect = "move";
+        $(this).addClass("drag-over");
+    });
+
+    $(container).on("dragleave", ".saved-deck-row", function () {
+        $(this).removeClass("drag-over");
+    });
+
+    $(container).on("drop", ".saved-deck-row", function (e) {
+        e.preventDefault();
+
+        const targetName = $(this).data("deckName");
+        $(this).removeClass("drag-over");
+
+        if (!draggedName || draggedName === targetName) return;
+
+        const decks = getSavedDecks();
+        const order = getSavedDecksOrder(decks);
+
+        const fromIndex = order.indexOf(draggedName);
+        const toIndex = order.indexOf(targetName);
+        if (fromIndex === -1 || toIndex === -1) return;
+
+        order.splice(fromIndex, 1);
+        order.splice(toIndex, 0, draggedName);
+
+        setSavedDecksOrder(order);
+        renderSavedDecksPanel();
+        scheduleSync();
+    });
+}
+
+function startEditingName(labelEl, oldName) {
+
+    const row = labelEl.closest(".saved-deck-row");
+    if (row) row.draggable = false;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "saved-deck-name-input";
+    input.maxLength = 40;
+    input.value = oldName;
+
+    labelEl.replaceWith(input);
+    input.focus();
+    input.select();
+
+    let committed = false;
+
+    function cancel() {
+        committed = true;
+        renderSavedDecksPanel();
+    }
+
+    function commit() {
+        if (committed) return;
+        committed = true;
+
+        const newName = input.value.trim();
+
+        if (!newName || newName === oldName) {
+            renderSavedDecksPanel();
+            return;
+        }
+
+        if (newName === "__proto__" || newName === "constructor" || newName === "prototype") {
+            showNotification("Please enter a valid deck name.", "error");
+            renderSavedDecksPanel();
+            return;
+        }
+
+        const decks = getSavedDecks();
+
+        if (Object.prototype.hasOwnProperty.call(decks, newName)) {
+            showConfirm('A saved deck named "' + newName + '" already exists. Overwrite it?', function () {
+                performRename(oldName, newName, decks);
+            });
+            renderSavedDecksPanel(); // reset the input while the confirm dialog is up
+        } else {
+            performRename(oldName, newName, decks);
+        }
+    }
+
+    function performRename(oldName, newName, decks) {
+        const deckData = decks[oldName];
+        delete decks[oldName];
+        deckData.savedAt = Date.now(); 
+        decks[newName] = deckData;
+        setSavedDecks(decks);
+
+        const order = getSavedDecksOrder(decks); // oldName already gone from decks, so it's dropped
+        const insertIndex = order.length; // newName wasn't tracked yet if it's brand new to the order
+        // Preserve position: put newName where oldName used to be
+        const priorOrder = (function () {
+            try {
+                return JSON.parse(localStorage.getItem(SAVED_DECKS_ORDER_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        })();
+        const oldIndex = priorOrder.indexOf(oldName);
+        let finalOrder = order.filter(function (n) { return n !== newName; }); // avoid dup if overwritten
+        if (oldIndex !== -1 && oldIndex <= finalOrder.length) {
+            finalOrder.splice(oldIndex, 0, newName);
+        } else {
+            finalOrder.unshift(newName);
+        }
+
+        setSavedDecksOrder(finalOrder);
+        renderSavedDecksPanel();
+        showNotification('Deck renamed to "' + newName + '".');
+        scheduleSync();
+    }
+
+    input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            input.blur();
+        } else if (e.key === "Escape") {
+            cancel();
+        }
+    });
+
+    input.addEventListener("blur", commit);
+    input.addEventListener("click", function (e) { e.stopPropagation(); });
+    input.addEventListener("mousedown", function (e) { e.stopPropagation(); });
+}
+
+function startEditingPosition(positionEl, name, currentIndex, total) {
+
+    const row = positionEl.closest(".saved-deck-row");
+    if (row) row.draggable = false; // avoid drag interfering while typing
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.className = "saved-deck-position-input";
+    input.min = "1";
+    input.max = String(total);
+    input.value = String(currentIndex + 1);
+
+    positionEl.replaceWith(input);
+    input.focus();
+    input.select();
+
+    let committed = false;
+
+    function commit() {
+        if (committed) return;
+        committed = true;
+
+        const raw = parseInt(input.value, 10);
+        let newIndex = Number.isFinite(raw) ? raw - 1 : currentIndex;
+        newIndex = Math.max(0, Math.min(total - 1, newIndex));
+
+        if (newIndex !== currentIndex) {
+            const decks = getSavedDecks();
+            const order = getSavedDecksOrder(decks);
+            const fromIndex = order.indexOf(name);
+
+            if (fromIndex !== -1) {
+                order.splice(fromIndex, 1);
+                order.splice(newIndex, 0, name);
+                setSavedDecksOrder(order);
+                scheduleSync();
+            }
+        }
+
+        renderSavedDecksPanel();
+    }
+
+    input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            input.blur(); // triggers commit via blur handler
+        } else if (e.key === "Escape") {
+            committed = true; // skip commit
+            renderSavedDecksPanel();
+        }
+    });
+
+    input.addEventListener("blur", commit);
+
+    input.addEventListener("click", function (e) { e.stopPropagation(); });
+    input.addEventListener("mousedown", function (e) { e.stopPropagation(); });
+}
+
+function renderSavedDecksPanel() {
+
+    const container = document.getElementById("saved-decks-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const decks = getSavedDecks();
+    const allNames = getSavedDecksOrder(decks);
+
+    const names = allNames.filter(function (name) {
+        return deckMatchesSearch(name, decks[name].code, savedDecksSearchQuery);
+    });
+
+    const countLabel = names.length + " deck" + (names.length === 1 ? "" : "s") +
+        (savedDecksSearchQuery && names.length !== allNames.length
+            ? " (of " + allNames.length + ")"
+            : "");
+
+    $("#saved-decks-count").text(countLabel);
+
+    if (names.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "saved-decks-empty";
+        empty.textContent = savedDecksSearchQuery
+            ? "No decks match your search."
+            : "No saved decks yet.";
+        container.appendChild(empty);
+        return;
+    }
+
+    names.forEach(function (name) {
+
+        const trueIndex = allNames.indexOf(name);
+
+        const row = document.createElement("div");
+        row.className = "saved-deck-row";
+        row.draggable = true;
+        row.dataset.deckName = name;
+
+        const position = document.createElement("span");
+        position.className = "saved-deck-position";
+        position.textContent = String(trueIndex + 1);
+        position.title = "Click to change position";
+        position.addEventListener("click", function (e) {
+            e.stopPropagation();
+            startEditingPosition(position, name, trueIndex, allNames.length);
+        });
+
+        const info = document.createElement("div");
+        info.className = "saved-deck-info";
+
+        const nameRow = document.createElement("div");
+        nameRow.className = "saved-deck-name-row";
+
+        const label = document.createElement("span");
+		label.className = "saved-deck-name";
+		label.textContent = name;
+		label.title = "Click to rename";
+		label.addEventListener("click", function (e) {
+		    e.stopPropagation();
+		    startEditingName(label, name);
+		});
+
+        nameRow.appendChild(position);
+        nameRow.appendChild(label);
+
+        info.appendChild(nameRow);
+        info.appendChild(buildSavedDeckPreview(decks[name].code));
+
+        const actions = document.createElement("div");
+        actions.className = "saved-deck-actions";
+
+        const loadBtn = document.createElement("span");
+        loadBtn.className = "export-btn saved-deck-load-btn";
+        loadBtn.setAttribute("role", "button");
+        loadBtn.setAttribute("tabindex", "0");
+        loadBtn.textContent = "Load";
+        loadBtn.addEventListener("click", function () {
+            importDeckFromCode(decks[name].code, name);
+        });
+
+        const deleteBtn = document.createElement("span");
+        deleteBtn.className = "export-btn saved-deck-delete-btn";
+        deleteBtn.setAttribute("role", "button");
+        deleteBtn.setAttribute("tabindex", "0");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", function () {
+		    const current = getSavedDecks();
+		    const deckId = current[name] && current[name].id ? current[name].id : ("legacy:" + name);
+		    delete current[name];
+		    setSavedDecks(current);
+		    setSavedDecksOrder(getSavedDecksOrder(current));
+		    recordDeckDeleted(deckId); // ← tombstone by id, not name
+		    renderSavedDecksPanel();
+		    scheduleSync();
+		});
+
+        actions.appendChild(loadBtn);
+        actions.appendChild(deleteBtn);
+
+        row.appendChild(info);
+        row.appendChild(actions);
+        container.appendChild(row);
+    });
+
+    attachSavedDeckDragHandlers(container);
+}
+
+let syncDebounceTimer = null;
+
+function scheduleSync() {
+    if (!mw.config.get('wgUserName')) return; // no-op for anonymous users — no timer, no API call
+    clearTimeout(syncDebounceTimer);
+    syncDebounceTimer = setTimeout(function () {
+        syncWithAccount();
+    }, 3000); // batch rapid edits into one sync, 3s after the last change
+}
+
+$("#deck-name-row").html(
+    '<input type="text" id="save-deck-name-input" placeholder="Your Deck" maxlength="40" />' +
+    '<span id="save-deck-btn" class="export-btn" role="button" tabindex="0">Save Deck</span>'
+);
+
+$(document).on("click", "#save-deck-btn", function () {
+
+    const name = $("#save-deck-name-input").val().trim();
+
+    if (!name || name === "__proto__" || name === "constructor" || name === "prototype") {
+        showNotification("Please enter a valid deck name.", "error");
+        return;
+    }
+
+    const code = buildCurrentDeckCode();
+    if (!code) {
+        showNotification("Select a Master and add at least one card first.", "error");
+        return;
+    }
+
+    const decks = getSavedDecks();
+    const isOverwrite = Object.prototype.hasOwnProperty.call(decks, name);
+    
+    function generateDeckId() {
+	    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+	}
+
+    function doSave() {
+	    const existing = decks[name];
+	    decks[name] = {
+	        code: code,
+	        savedAt: Date.now(),
+	        id: existing ? existing.id : generateDeckId()
+	    };
+	    setSavedDecks(decks);
+	    setSavedDecksOrder(getSavedDecksOrder(decks));
+	    $("#save-deck-name-input").val("");
+	    renderSavedDecksPanel();
+	    showNotification('Deck "' + name + '" saved.');
+	    scheduleSync(); 
+	}
+
+    if (isOverwrite) {
+        showConfirm('A saved deck named "' + name + '" already exists. Overwrite it?', doSave);
+    } else {
+        doSave();
+    }
+});
+
+loadCardData();
+
+syncWithAccount(); // initial sync on page load — no-ops instantly for anonymous users
 
 }); 
 
+// ---------------------------
+// Deckbuilder / Saved Decks tab switch
+// ---------------------------
 
+function switchToDeckbuilderTab() {
+    $("#deckbuilder-tabs .filter-btn").removeClass("active");
+    $("#deckbuilder-tabs .filter-btn[data-view='build']").addClass("active");
+    $("#saved-decks-view").hide();
+    $("#deckbuilder-view").show();
+}
+
+$(document).on("click", "#deckbuilder-tabs .filter-btn", function () {
+
+    const view = $(this).data("view");
+
+    $("#deckbuilder-tabs .filter-btn").removeClass("active");
+    $(this).addClass("active");
+
+    if (view === "saved") {
+        $("#deckbuilder-view").hide();
+        $("#saved-decks-view").show();
+        renderSavedDecksPanel();
+    } else {
+        $("#saved-decks-view").hide();
+        $("#deckbuilder-view").show();
+    }
+});
 
 // copy clipboard button
 $(document).on("click", "#copy-deck-btn", function () {

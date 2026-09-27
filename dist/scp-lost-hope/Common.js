@@ -91,3 +91,51 @@ $(function () {
     $(".insertusername").text(currentUser);
   }
 });
+
+// ===== From the Alter Ego wiki ====== 
+function navigateTo(url) {
+  window.location.href = url;
+}
+
+window.tooltips_config = {
+    events: ['CustomEvent'],
+    noCSS: true,
+    offsetX: 5,
+    offsetY: 10,
+    waitForImages: true,
+}
+
+window.tooltips_config = {
+    offsetY: 10,
+    offsetX: 10,
+    className: 'custom-tooltip-wrapper'
+};
+
+window.tooltips_list = [
+    {
+        classname: 'custom-tooltip-parse',
+        text: '<div class="custom-popup"><div class="popup-content"><strong><#title#></strong><p><#description#></p></div></div>'
+    }
+];
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Tooltips.js'
+    ]
+});
+
+window.tooltips_config = {
+    offsetX: 10,
+    offsetY: 10,
+    className: 'custom-tooltip-wrapper'
+};
+
+$(document).on('DOMNodeInserted', '#tf-tooltip, .tf-tooltip', function() {
+    $(this).css({
+        'background': 'transparent',
+        'border': 'none',
+        'box-shadow': 'none',
+        'padding': '0'
+    });
+});

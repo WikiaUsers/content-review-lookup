@@ -99,7 +99,6 @@ UserTagsJS.modules.custom = {
 	'Ameer.Jor': ['wiki-contributor'],
 	'The Dimensional Doctor': ['wiki-contributor'],
 	'Fish The 4th': ['wiki-contributor'],
-	'Phillybillygraves': ['wiki-contributor'],
 	'IvoryCreamy': ['wiki-contributor'],
 	
 	// Retired Wiki Staff
@@ -2880,7 +2879,7 @@ function initCalculator($el, DATA, allowCatsArr, allowModsArr, pageTitle, fullCa
         <div id="mc-loaded-chips" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;"></div>
 
         <div class="mc-row">
-          <span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21.\nAll further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Diplomatic Actions: 2\n- Stability Hit on Offensive Wars: 0\n- Base Unrest Reduction: Unknown, varies\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability.\nHowever, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall."></span></span>
+          <span class="mc-label">Base value <span class="info-icon" title="This is your Base value. All modifiers are applied to this number unless a modifier explicitly changes the Base itself.\n\nExample: If Base Research is 15 and you gain +6 Base from Education Spending, the Base becomes 21.\nAll further modifiers now apply to 21 instead of 15.\n\nThere is a select amount of Base modifiers:\n- Base Political Power Gain: 1.8\n- Base Research Gain: 15\n- Base Stability: 50\n- War Exhaustion Gain: -0.025\n- Corruption Gain: -0.25\n- Base Population Growth: 2\n- Project Capacity: 2\n- Political Leader Cap: 7\n- Develop City Cap: 8\n- Diplomatic Actions: 2\n- Stability Hit on Offensive Wars: 0\n- Base Unrest Reduction: 1.2\n- Base Political Leader XP Gain: Unknown, varies\n\nThe last two modifiers are currently unknown because they are difficult to calculate due to their unpredictability.\nHowever, if you determine the correct values, feel free to contact User:Dxrknrg on their message wall."></span></span>
           <input class="mc-base-input" type="number" id="mc-base" value="0" min="0" step="any">
         </div>
         <div class="mc-row">

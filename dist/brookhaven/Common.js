@@ -1,3 +1,9 @@
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassEdit.js'
+    ]
+});
 
 // config for lock old comments
 window.lockOldComments = (window.lockOldComments || {});
@@ -5,7 +11,7 @@ window.lockOldComments.limit = 120;
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.namespaceNumbers = [0];
 
-/* Related Discussions*/
+/* Related Discussions */
 
 importArticles({
     type: 'script',
@@ -16,40 +22,86 @@ importArticles({
 
 // Wrap inside a window load function to prevent race conditions
 $(window).on('load', function () {
-    mw.loader.using('mediawiki.config', function () {
-        var namespaceId = mw.config.get('wgNamespaceNumber');
-        var isTalkPage = mw.config.get('wgIsTalkPage');
 
-        if (namespaceId !== 4 && !isTalkPage) {
-            var $embedContainer = $('<div>', { 'class': 'discussions-embed' });
-            $('#mw-content-text').append($embedContainer);
+    mw.loader.using('mediawiki.config', function () {
+
+        var namespaceId =
+            mw.config.get('wgNamespaceNumber');
+
+        var isTalkPage =
+            mw.config.get('wgIsTalkPage');
+
+        if (
+            namespaceId !== 4 &&
+            !isTalkPage
+        ) {
+
+            var $embedContainer =
+                $('<div>', {
+                    'class':
+                        'discussions-embed'
+                });
+
+            $('#mw-content-text')
+                .append(
+                    $embedContainer
+                );
         }
+
     });
+
 });
 
 
 // prevents existing tags from being hidden
-(window.dev = window.dev || {}).profileTags = { noHideTags: true };
+(window.dev = window.dev || {}).profileTags = {
+    noHideTags: true
+};
 
-mw.loader.using('ext.discuss.featured').then(function () {
-  if (mw.config.get('wgNamespaceNumber') === 0) {
-    const articleId = mw.config.get('wgArticleId');
-    const $target = $('<div class="related-discussions-box"></div>');
-    $('.mw-parser-output').append($target);
-    window.DiscussionFeed = window.DiscussionFeed || [];
-    window.DiscussionFeed.push({
-      el: $target[0],
-      articleId: articleId,
-      limit: 3
+
+mw.loader
+    .using('ext.discuss.featured')
+    .then(function () {
+
+        if (
+            mw.config.get('wgNamespaceNumber') === 0
+        ) {
+
+            const articleId =
+                mw.config.get('wgArticleId');
+
+            const $target =
+                $('<div class="related-discussions-box"></div>');
+
+            $('.mw-parser-output')
+                .append($target);
+
+            window.DiscussionFeed =
+                window.DiscussionFeed || [];
+
+            window.DiscussionFeed.push({
+                el: $target[0],
+                articleId: articleId,
+                limit: 3
+            });
+
+        }
+
     });
-  }
-});
 
-// rubik font
 
-(function() {
-    var link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap';
-    link.rel = 'stylesheet';
+// Rubik font
+(function () {
+
+    var link =
+        document.createElement('link');
+
+    link.href =
+        'https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap';
+
+    link.rel =
+        'stylesheet';
+
     document.head.appendChild(link);
+
 })();

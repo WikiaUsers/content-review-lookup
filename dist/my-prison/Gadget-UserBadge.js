@@ -1,4 +1,4 @@
-// Simplified version of the “UserBadge” script from the Fandom Developers Wiki.
+// Simplified version of the "UserBadge" script from the Fandom Developers Wiki.
 
 (function(mw, $) {
     'use strict';

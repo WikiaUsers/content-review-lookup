@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.5 FAST UI + INLINE DETAILS REVIEW READY
+LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.9.35 STARTUP ORDER + EMPTY PROFILE + HALL FRESH + INTERNAL EDIT FIX
 Страница Fandom: MediaWiki:LofarianAchievements/Engine/Core.js
 
 НАЗНАЧЕНИЕ ЭТОГО ФАЙЛА
@@ -36,6 +36,8 @@ RC11 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + КАТАЛОГ
 - Для новых участников серверно фиксируется Unix-время нажатия «Принять участие»;
   исторические правки/создания/загрузки/Discussions до этой отметки не засчитываются.
 - Старые участники мигрируются без обнуления уже существующих достижений.
+- Пустой/ещё не созданный User:профиль получает только клиентский DOM-host; сама User-страница не создаётся и не редактируется.
+- Страница Зала славы строится по свежим данным; получение награды сбрасывает локальный Hall cache.
 
 ХРАНЕНИЕ И СОВМЕСТИМОСТЬ
 - Официальные записи остаются на этой же вики в Project:LofarianAchievementsUsers/00..ff.
@@ -98,6 +100,30 @@ RC11 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + КАТАЛОГ
     function initReadingTracker() { return I.invoke('initReadingTracker', arguments); }
     function inspectUser() { return I.invoke('inspectUser', arguments); }
     function installGivenLikeTracker() { return I.invoke('installGivenLikeTracker', arguments); }
+    var HALL_CACHE_STORAGE_KEY = 'lof-achievements-hall-cache-v3';
+
+    function invalidateLocalHallCache() {
+        try {
+            localStorage.removeItem(HALL_CACHE_STORAGE_KEY);
+        } catch (error) {
+            /* localStorage может быть недоступен. */
+        }
+    }
+
+    function isCurrentHallPage() {
+        var pageName = String(mw.config.get('wgPageName') || '')
+            .replace(/_/g, ' ')
+            .trim()
+            .toLocaleLowerCase('ru');
+
+        var hallPage = String(HALL_PAGE || '')
+            .replace(/_/g, ' ')
+            .trim()
+            .toLocaleLowerCase('ru');
+
+        return !!pageName && !!hallPage && pageName === hallPage;
+    }
+
     function isPlainObject() { return I.invoke('isPlainObject', arguments); }
     function openRarityPreview() { return I.invoke('openRarityPreview', arguments); }
     function readCatalog() { return I.invoke('readCatalog', arguments); }
@@ -106,13 +132,24 @@ RC11 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + КАТАЛОГ
     function readUserProgress() { return I.invoke('readUserProgress', arguments); }
     function readUserSegment() { return I.invoke('readUserSegment', arguments); }
     function removeProfileAchievementsOverlay() { return I.has('removeProfileAchievementsOverlay') ? I.invoke('removeProfileAchievementsOverlay', arguments) : undefined; }
-    function renderHallOfFame() { return I.has('renderHallOfFame') ? I.invoke('renderHallOfFame', arguments) : Promise.resolve(); }
+    function renderHallOfFame() {
+        if (isCurrentHallPage()) {
+            invalidateLocalHallCache();
+        }
+
+        return I.has('renderHallOfFame')
+            ? I.invoke('renderHallOfFame', arguments)
+            : Promise.resolve();
+    }
     function renderProfileAchievements() { return I.has('renderProfileAchievements') ? I.invoke('renderProfileAchievements', arguments) : Promise.resolve(); }
     function resolveUser() { return I.invoke('resolveUser', arguments); }
     function revokeFrom() { return I.invoke('revokeFrom', arguments); }
     function scoreFor() { return I.invoke('scoreFor', arguments); }
     function segmentFor() { return I.invoke('segmentFor', arguments); }
-    function showAchievementPopup() { return I.invoke('showAchievementPopup', arguments); }
+    function showAchievementPopup() {
+        invalidateLocalHallCache();
+        return I.invoke('showAchievementPopup', arguments);
+    }
     function topUsers() { return I.invoke('topUsers', arguments); }
     function userCanAdmin() { return I.invoke('userCanAdmin', arguments); }
     function publishNews() { return I.invoke('publishNews', arguments); }
@@ -402,6 +439,101 @@ function getAchievementPoints(achievement) {
     }
 
 
+    /*
+     * RC11.9.33 — пустой/ещё не созданный User:профиль.
+     * Создаётся только DOM-контейнер в браузере; action=edit не вызывается.
+     */
+    function isTopLevelUserProfilePage() {
+        if (Number(mw.config.get('wgNamespaceNumber')) !== 2) {
+            return false;
+        }
+
+        var title = String(mw.config.get('wgTitle') || '').trim();
+        return !!title && title.indexOf('/') === -1;
+    }
+
+    function ensureProfileRenderHost() {
+        if (!isTopLevelUserProfilePage()) {
+            return document.querySelector('.mw-parser-output');
+        }
+
+        var existing = document.querySelector('.mw-parser-output');
+        if (existing) {
+            return existing;
+        }
+
+        var generated = document.getElementById('lof-profile-generated-parser-output');
+        if (generated) {
+            return generated;
+        }
+
+        var selectors = [
+            '.page__main-column .page-content',
+            '.page__main-column',
+            '.page__main .page-content',
+            '.page__main',
+            '#content',
+            'main'
+        ];
+
+        var host = null;
+        for (var i = 0; i < selectors.length; i++) {
+            var candidate = document.querySelector(selectors[i]);
+            if (candidate && !candidate.closest('.page__right-rail')) {
+                host = candidate;
+                break;
+            }
+        }
+
+        if (!host) {
+            return null;
+        }
+
+        generated = document.createElement('div');
+        generated.id = 'lof-profile-generated-parser-output';
+        generated.className = 'mw-parser-output lof-profile-generated-parser-output';
+        generated.setAttribute('data-lof-generated-profile-host', '1');
+
+        if (host.firstChild) {
+            host.insertBefore(generated, host.firstChild);
+        } else {
+            host.appendChild(generated);
+        }
+
+        return generated;
+    }
+
+    function renderProfileAchievementsWithEmptyProfileFallback(catalog) {
+        if (!isTopLevelUserProfilePage()) {
+            return Promise.resolve(renderProfileAchievements(catalog));
+        }
+
+        var attempts = 0;
+        var maxAttempts = 40;
+        var retryDelayMs = 250;
+
+        function attempt() {
+            attempts += 1;
+            var host = ensureProfileRenderHost();
+
+            if (!host) {
+                if (attempts >= maxAttempts) {
+                    return Promise.resolve(false);
+                }
+
+                return new Promise(function (resolve) {
+                    window.setTimeout(resolve, retryDelayMs);
+                }).then(attempt);
+            }
+
+            return Promise.resolve(renderProfileAchievements(catalog))
+                .then(function () { return true; });
+        }
+
+        return attempt();
+    }
+
+
     function showJoinWelcomeIfNeeded(catalog) {
         if (!I.participation || I.participation.justJoined !== true) {
             return false;
@@ -472,9 +604,24 @@ function getAchievementPoints(achievement) {
             ? Promise.resolve(quickUserInfo)
             : getUserInfo();
 
+        /*
+         * RC11.9.35: Participation запускает first_login sync неблокирующе,
+         * чтобы ранний participation gate не зависел от ещё не загруженного
+         * Services/Storage. К моменту старта Core зависимости уже доступны,
+         * поэтому перед профилем/Залом славы дожидаемся этой короткой операции.
+         * Ошибка синхронизации не валит весь runtime — она повторится позже.
+         */
+        var welcomeReadyPromise =
+            I.participation && I.participation.welcomeReady
+                ? Promise.resolve(I.participation.welcomeReady).catch(function () {
+                    return false;
+                })
+                : Promise.resolve(true);
+
         return Promise.all([
             userInfoPromise,
-            readCatalog(false)
+            readCatalog(false),
+            welcomeReadyPromise
         ]).then(function (results) {
             var userInfo = results[0];
             var catalog = results[1];
@@ -852,8 +999,8 @@ function getAchievementPoints(achievement) {
                         return compactAllProgressSegments();
                     },
 
-                    publishNews: function (title, message) {
-                        return publishNews(title, message);
+                    publishNews: function (title, message, pinned) {
+                        return publishNews(title, message, pinned === true);
                     },
 
                     clearNews: function () {
@@ -862,6 +1009,17 @@ function getAchievementPoints(achievement) {
 
                     newsStatus: function () {
                         return newsStatus();
+                    },
+
+                    inboxStatus: function () {
+                        return I.has('inboxStatus') ? I.invoke('inboxStatus', []) : { enabled: false };
+                    },
+
+                    inboxPreview: function () {
+                        if (!I.has('inboxPreview')) {
+                            throw new Error('ChronicleInbox preview недоступен.');
+                        }
+                        return I.invoke('inboxPreview', []);
                     },
 
                     protectCatalog: function () {
@@ -919,7 +1077,9 @@ function getAchievementPoints(achievement) {
              * Визуальный список достижений и его loading-state запускаются
              * сразу; трекер продолжает инициализироваться параллельно.
              */
-            Promise.resolve(renderProfileAchievements(catalog)).catch(function (error) {
+            Promise.resolve(
+                renderProfileAchievementsWithEmptyProfileFallback(catalog)
+            ).catch(function (error) {
                 console.warn(
                     '[Lofarian Achievements] ' +
                     'Ошибка отображения достижений профиля:',

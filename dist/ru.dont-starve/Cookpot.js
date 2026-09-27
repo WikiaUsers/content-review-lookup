@@ -489,8 +489,8 @@
 }());
 
 
-var dlc = "DS";
-var warly = false;
+window.dlc = "DS";
+window.warly = false;
 var api;
 var cookpot = new Array(4);
 
@@ -572,7 +572,7 @@ window.cookpotAdd = function(title, src) { //Добавляет ингридие
             api.abort();
             api.get({
                 action: 'expandtemplates',
-                text: '{{#invoke:Cookpot|cookpotCalculate|' + dlc + '|' + warly + '|' + cookpot[0] + '|' + cookpot[1] + '|' + cookpot[2] + '|' + cookpot[3] + '}}',
+                text: '{{#invoke:Cookpot|cookpotCalculate|' + window.dlc + '|' + window.warly + '|' + cookpot[0] + '|' + cookpot[1] + '|' + cookpot[2] + '|' + cookpot[3] + '}}',
                 smaxage: 600,
                 maxage: 600
             }).done(updateResult);

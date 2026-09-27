@@ -123,3 +123,134 @@ $( function () {
         $( this ).closest( '.hltv-rankcard' ).toggleClass( 'is-expanded' );
     } );
 } );
+/* TFA OrgTree */
+(function () {
+  'use strict';
+  var requested = false;
+
+  function loadChart(content) {
+    var node = content && content.jquery ? content[0] : content;
+    node = node || document;
+    if (requested || !node.querySelector) {
+      return;
+    }
+    if ((node.matches && node.matches('.tfa-org')) || node.querySelector('.tfa-org')) {
+      requested = true;
+      mw.loader.load(mw.util.getUrl('MediaWiki:TFAOrgChart.js', {
+        action: 'raw',
+        ctype: 'text/javascript'
+      }));
+    }
+  }
+
+  mw.loader.using('mediawiki.util').then(function () {
+    mw.hook('wikipage.content').add(loadChart);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { loadChart(document); });
+    } else {
+      loadChart(document);
+    }
+  });
+}());
+/* Only .tfa-relations diagrams are affected. */
+(function () {
+    'use strict';
+
+    if (window.tfaRelationsScaler) {
+        window.tfaRelationsScaler.refresh(document);
+        return;
+    }
+
+    var designWidth = 1600;
+    var designHeight = 1120;
+    var items = [];
+    var observer;
+
+    function update(item) {
+        if (!document.documentElement.contains(item.root)) {
+            return;
+        }
+        var width = item.root.clientWidth;
+        if (!width || width === item.width) {
+            return;
+        }
+        item.width = width;
+        var scale = Math.min(1, width / designWidth);
+        item.canvas.style.transform = 'scale(' + scale + ')';
+        item.root.style.height = (designHeight * scale) + 'px';
+    }
+
+    function updateAll() {
+        items = items.filter(function (item) {
+            if (!document.documentElement.contains(item.root)) {
+                if (observer) {
+                    observer.unobserve(item.root);
+                }
+                return false;
+            }
+            update(item);
+            return true;
+        });
+    }
+
+    function bind(root) {
+        if (root.getAttribute('data-tfa-scaler') === 'ready') {
+            return;
+        }
+        var canvas = root.querySelector('.tfa-r001');
+        if (!canvas) {
+            return;
+        }
+        root.setAttribute('data-tfa-scaler', 'ready');
+        root.style.position = 'relative';
+        root.style.overflow = 'hidden';
+        canvas.style.position = 'absolute';
+        canvas.style.left = '0';
+        canvas.style.top = '0';
+        canvas.style.width = designWidth + 'px';
+        canvas.style.height = designHeight + 'px';
+        canvas.style.transformOrigin = '0 0';
+        var item = { root: root, canvas: canvas, width: null };
+        items.push(item);
+        update(item);
+        if (observer) {
+            observer.observe(root);
+        }
+    }
+
+    function refresh(scope) {
+        if (scope && scope.jquery) {
+            scope = scope[0];
+        }
+        scope = scope || document;
+        if (scope.nodeType === 1 && scope.classList.contains('tfa-relations')) {
+            bind(scope);
+        }
+        var roots = scope.querySelectorAll('.tfa-relations');
+        for (var i = 0; i < roots.length; i++) {
+            bind(roots[i]);
+        }
+        updateAll();
+    }
+
+    if (window.ResizeObserver) {
+        observer = new window.ResizeObserver(updateAll);
+    } else {
+        // Also detect sidebar/layout changes that do not fire a window resize.
+        window.setInterval(updateAll, 300);
+    }
+
+    window.tfaRelationsScaler = { refresh: refresh };
+    window.addEventListener('resize', updateAll);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            refresh(document);
+        });
+    } else {
+        refresh(document);
+    }
+
+    if (window.mw && window.mw.hook) {
+        window.mw.hook('wikipage.content').add(refresh);
+    }
+}());

@@ -199,13 +199,21 @@ modal.create();
 $('#cbook_show').click(function() {
 modal.show();
 });
-$('#cbook_content').load('https://dont-starve.fandom.com/ru/wiki/Шаблон:CBcontent .cookbook', function() {
-importScriptPage( 'MediaWiki:Cookbook.js');
-importArticle({
-    type: 'script',
-    article: 'u:dev:MediaWiki:Selector.js'
-});
-});
+$('#cbook_content').load(
+    'https://dont-starve.fandom.com/ru/wiki/Шаблон:CBcontent .cookbook',
+    function (response, status) {
+        if (status === 'error') return;
+
+        importScriptPage('MediaWiki:Cookbook.js');
+
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:Selector.js'
+        });
+
+        mw.hook('wikipage.content').fire($(this));
+    }
+);
 });
 break;
 }
@@ -239,7 +247,7 @@ $(function(){
                     $(this).wrap('<a href="' + config.wgScriptPath + '/Участник:' + username + '"></a>');
                     });
                 });
-            };
+            }
         }
 });
 

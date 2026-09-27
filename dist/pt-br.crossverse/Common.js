@@ -249,6 +249,212 @@ mw.hook('wikipage.content').add(function ($content) {
 });
 /* Fim do Pergaminho */
 
+/* Textos Bahlavan */
+(function() {
+    let animacaoShuraExecutada = false;
+
+    const dialogosShura = [
+        {
+            jp: '「なあ、おい貴様。自分がもっとも強いと信じるなら、なぜ戦うのだ」',
+            pt: '「Ei, você aí. Se acredita ser o mais forte, por que luta?」'
+        },
+        {
+            jp: '「出会えば殺す。誰であろうと皆殺す。しかし互いに認めなければ手を出さんのは、不意 打ちだからか? 卑怯だとでも? どちらが強いか分からなくなるなどという戯言を、自 称最強がなぜ口にする」',
+            pt: '「Vê alguém, mata. Mata todos sem exceção. Mas quando não há reconhecimento mútuo, você não ataca, é por achar que seria uma emboscada? Que seria covarde? Por que um autoproclamado “mais forte” fala essa idiotice de “ficar sem saber qual dos dois é mais forte”?」'
+        },
+        {
+            jp: '「貴様は単に殺し合うのが好きなだけだ」',
+            pt: '「No fim, você só gosta do ato de matar」'
+        },
+        {
+            jp: '「自分が最強だと謳った舌の根も乾かん内に、最強の座を掴むと言う。地位を守っている のか目指しているのかいったいどっちだ? 一貫性がないんだよ、ゆえにぶれる。正直意 味不明だったが、貴様も気付いていない戒律があるのは理解した。察するに、生まれる前の話だろう」',
+            pt: '「Mal secou a língua com que você proclamou ser o mais forte, e já diz que vai conquistar o Trono do mais forte. Afinal, está defendendo essa posição ou tentando alcançá-la? Qual dos dois? Não há coerência, por isso você vacila. Para ser honesto, era algo sem sentido, mas percebi que existe um Mandamento do qual nem você mesmo tem consciência. Suponho que seja algo de antes de você nascer」'
+        },
+        {
+            jp: '「理屈はともかく、貴様は貴様だけの世界で一度最強とやらの座を取ったようだな。そし てそれに無自覚だ。王者と挑戦者の両面がある原因はそこだと見るが、まあ勝手にしろ。 俺が言いたいのは、戦うのが好きなことと勝つのが好きなことは、必ずしも一致せんという話だ」',
+            pt: '「Lógica à parte, parece que você já tomou esse tal Trono do mais forte em um mundo só seu. E nem percebeu. A causa de você carregar simultaneamente o lado do rei e o do desafiante está aí, mas faça como quiser. O que quero dizer é simples: gostar de lutar e gostar de vencer não são, necessariamente, a mesma coisa」'
+        },
+        {
+            jp: '「 これが礼だ。貴様程度に勝てんようでは、しょせん俺も高が知れる」',
+            pt: '「Isto é o meu presente. Se eu não conseguir vencer alguém do teu nível, então, no fim das contas, eu também não valho muito」'
+        },
+        {
+            jp: '「俺は戦うのが好きなわけじゃない」',
+            pt: '「Sabe, eu não gosto de lutar」'
+        },
+        {
+            jp: '「殺しも特に好んではいない」',
+            pt: '「Nem gosto especialmente de matar」'
+        },
+        {
+            jp: '「だが負けん。俺の道は生涯不敗——」',
+            pt: '「Mas não perderei. Meu caminho é invicto por toda a vida——」'
+        },
+        {
+            jp: '「それこそ俺の不変なるもの。貴様らの無知さ無力さ愚かさを、ああ肯定しよう―――例外 なく呑み込んでやる」',
+            pt: '「Isso é o meu “eu” Imutável. A ignorância, a impotência e a estupidez de vocês･･････ Eu as afirmarei, engolirei tudo sem exceção」'
+        },
+        {
+            jp: '「一緒にするなと言ったはずだが?･･････まあいい、めでたい頭に俺が誰かをぶち込んでやる」',
+            pt: '「Eu disse para não me colocar ao seu lado, não disse? ･･････Muito bem. Vou enfiar na sua cabeça dura quem eu realmente sou」'
+        }
+    ];
+
+    let indiceAtual = 0;
+    let podeAvancar = false;
+
+    mw.hook('wikipage.content').add(function() {
+        if (window.shuraListenerAttached) return;
+        window.shuraListenerAttached = true;
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#shura-tabber-wrapper')) return;
+
+            const tab = e.target.closest('.wds-tabs__tab, .tabbernav li, a, .wds-tabs__tab-label');
+            if (tab && tab.textContent.includes('O Conceito de Shura')) {
+                if (!animacaoShuraExecutada) {
+                    animacaoShuraExecutada = true;
+                    iniciarTelaPreta();
+                } else {
+                    revelarAba();
+                }
+            }
+        });
+    });
+
+    function iniciarTelaPreta() {
+        let overlay = document.getElementById('shura-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'shura-overlay';
+            
+            overlay.innerHTML = `
+                <div class="shura-jp-container" id="jp-box"></div>
+                <div class="shura-traducao" id="pt-box"></div>
+                <div class="shura-instrucao" id="instrucao-box">[ Pressione ENTER ou TOQUE NA TELA ]</div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        setTimeout(() => {
+            overlay.classList.add('ativo');
+        }, 50);
+
+        setTimeout(() => {
+            tocarDialogo(indiceAtual);
+        }, 2000); 
+    }
+
+    function tocarDialogo(index) {
+        podeAvancar = false;
+        const jpBox = document.getElementById('jp-box');
+        const ptBox = document.getElementById('pt-box');
+        const instrucaoBox = document.getElementById('instrucao-box');
+
+        jpBox.innerHTML = '';
+        ptBox.innerHTML = '';
+        instrucaoBox.classList.remove('visivel');
+
+        const fraseJp = dialogosShura[index].jp;
+        const frasePt = dialogosShura[index].pt;
+
+        fraseJp.split('').forEach((char) => {
+            let span = document.createElement('span');
+            span.className = 'shura-char';
+            span.textContent = char;
+            jpBox.appendChild(span);
+        });
+
+        const palavrasPt = frasePt.split(' ');
+        palavrasPt.forEach((palavra, pIdx) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.style.display = 'inline-block';
+            wordSpan.style.whiteSpace = 'nowrap';
+
+            palavra.split('').forEach((char) => {
+                const charSpan = document.createElement('span');
+                charSpan.className = 'shura-pt-char';
+                charSpan.textContent = char;
+                wordSpan.appendChild(charSpan);
+            });
+
+            ptBox.appendChild(wordSpan);
+
+            if (pIdx < palavrasPt.length - 1) {
+                const spaceSpan = document.createElement('span');
+                spaceSpan.className = 'shura-pt-char';
+                spaceSpan.innerHTML = '&nbsp;';
+                ptBox.appendChild(spaceSpan);
+            }
+        });
+
+        let tempoAtrasoJp = 0;
+        jpBox.querySelectorAll('.shura-char').forEach((el) => {
+            setTimeout(() => {
+                el.classList.add('animar');
+            }, tempoAtrasoJp);
+            tempoAtrasoJp += 35; 
+        });
+
+        let tempoAtrasoPt = tempoAtrasoJp + 150; 
+        ptBox.querySelectorAll('.shura-pt-char').forEach((el) => {
+            setTimeout(() => {
+                el.classList.add('animar');
+            }, tempoAtrasoPt);
+            tempoAtrasoPt += 20; 
+        });
+
+        setTimeout(() => {
+            instrucaoBox.classList.add('visivel');
+            podeAvancar = true;
+            habilitarAvanco();
+        }, tempoAtrasoPt + 500);
+    }
+
+    function habilitarAvanco() {
+        const overlay = document.getElementById('shura-overlay');
+        
+        const avancarScript = (e) => {
+            if (!podeAvancar) return;
+            
+            if (e.type === 'click' || (e.type === 'keydown' && e.key === 'Enter')) {
+                document.removeEventListener('keydown', avancarScript);
+                overlay.removeEventListener('click', avancarScript);
+                
+                indiceAtual++;
+                
+                if (indiceAtual < dialogosShura.length) {
+                    document.getElementById('jp-box').innerHTML = '';
+                    document.getElementById('pt-box').innerHTML = '';
+                    document.getElementById('instrucao-box').classList.remove('visivel');
+                    
+                    setTimeout(() => {
+                        tocarDialogo(indiceAtual);
+                    }, 400); 
+                } else {
+                    overlay.classList.remove('ativo');
+                    revelarAba();
+                    setTimeout(() => overlay.remove(), 2500);
+                }
+            }
+        };
+
+        document.addEventListener('keydown', avancarScript);
+        overlay.addEventListener('click', avancarScript);
+    }
+
+    function revelarAba() {
+        const segredo = document.getElementById('shura-conteudo-secreto');
+        if (segredo) {
+            segredo.style.display = 'block';
+            setTimeout(() => {
+                segredo.classList.add('revelado');
+            }, 50);
+        }
+    }
+})();
+/* Fim de Textos Bahlavan */
+
 /* ===== LAZY LOAD KUMAGAWA ===== */
 (function(){
   if(document.body.className.indexOf('kumagawarework') === -1) return;

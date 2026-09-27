@@ -99,6 +99,21 @@
     var empty    = page.querySelector('.tv-empty');
     var kind     = 'all';
 
+    /* Pair every section with the MediaWiki "== heading ==" that sits just
+       before it. The heading is emitted OUTSIDE .tv-section, so without this
+       a filter that empties a section leaves its bare title floating on the
+       page with nothing underneath. They hide and show together. */
+    sections.forEach(function (s) {
+      var h = s.previousElementSibling, hops = 0;
+      while (h && hops < 3) {
+        var n = h.nodeName;
+        var mw = h.classList && h.classList.contains('mw-heading');
+        if (mw || n === 'H2' || n === 'H3' || n === 'H4') { s._h = h; return; }
+        if (n !== 'P' || h.textContent.trim()) return;
+        h = h.previousElementSibling; hops++;
+      }
+    });
+
     /* drop-cap the opening paragraph of each section */
     sections.forEach(function (s) {
       var body = s.querySelector('.tv-secbody');
@@ -200,7 +215,9 @@
       }
 
       sections.forEach(function (s) {
-        s.classList.toggle('tv-hide', Boolean(filtering && !s.querySelector('.tv-rule:not(.tv-hide)')));
+        var hide = Boolean(filtering && !s.querySelector('.tv-rule:not(.tv-hide)'));
+        s.classList.toggle('tv-hide', hide);
+        if (s._h) s._h.classList.toggle('tv-hide', hide);
       });
       parts.forEach(function (p) { p.classList.toggle('tv-hide', Boolean(filtering)); });
 
@@ -237,6 +254,13 @@
     function setChip(c, on) {
       c.classList.toggle('on', on);
       c.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+
+    function clearFilters() {
+      if (search) search.value = '';
+      kind = 'all';
+      chips.forEach(function (c) { setChip(c, c.dataset.t === 'all'); });
+      apply();
     }
 
     /* ══════════ input + keyboard ══════════ */
@@ -296,6 +320,13 @@
         apply();
       });
     });
+
+    /* clicking the "nothing matches" strip clears the filter */
+    if (empty) {
+      empty.style.cursor = 'pointer';
+      empty.title = 'Clear the search and show every rule';
+      empty.addEventListener('click', clearFilters);
+    }
 
     /* ══════════ toast — nodes only, never a built HTML string ══════════ */
     var toastEl = null, toastT;
@@ -366,7 +397,11 @@
 
       var a = e.target.closest('a[href^="#"]');
       if (a) {
-        var dest = document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));
+        var id = decodeURIComponent(a.getAttribute('href').slice(1));
+        var dest = document.getElementById(id);
+        /* a jump into a rule the current filter is hiding would land on
+           nothing — drop the filter first, then go */
+        if (dest && dest.classList.contains('tv-hide')) clearFilters();
         if (dest) setTimeout(function () { flash(dest); }, 320);
       }
     });
@@ -546,7 +581,14 @@
     tickHere();
 
     if (location.hash) {
-      var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      var hid = decodeURIComponent(location.hash.slice(1));
+      var target = document.getElementById(hid);
+      /* arriving on a deep link that the restored filter hides — the whole
+         reason ?q=…&k=…#CODE looked broken. Drop the filter, then jump. */
+      if (target && target.closest && target.closest('.tv-hide')) {
+        clearFilters();
+        target = document.getElementById(hid);
+      }
       if (target) setTimeout(function () { target.scrollIntoView(); flash(target); }, 120);
     }
   }

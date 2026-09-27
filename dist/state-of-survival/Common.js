@@ -36,6 +36,123 @@ importArticles({
     }
 
 
+/* =====================================================
+   SORT CATALOG CARDS A-Z
+   ===================================================== */
+
+function sortCatalogCards(cards) {
+
+    var groups = [];
+
+    /*
+     * Group cards by their parent container.
+     * This keeps the system compatible with
+     * different catalog pages and grids.
+     */
+
+    Array.prototype.forEach.call(
+        cards,
+        function (card) {
+
+            var parent = card.parentNode;
+            var group = null;
+
+            for (
+                var i = 0;
+                i < groups.length;
+                i++
+            ) {
+
+                if (
+                    groups[i].parent === parent
+                ) {
+
+                    group = groups[i];
+                    break;
+
+                }
+
+            }
+
+
+            if (!group) {
+
+                group = {
+                    parent: parent,
+                    cards: []
+                };
+
+                groups.push(group);
+
+            }
+
+
+            group.cards.push(card);
+
+        }
+    );
+
+
+    /*
+     * Sort every group alphabetically
+     * using the card data-name.
+     */
+
+    groups.forEach(
+        function (group) {
+
+            group.cards.sort(
+                function (a, b) {
+
+                    var nameA =
+                        normalizeText(
+                            a.getAttribute(
+                                'data-name'
+                            ) || ''
+                        );
+
+                    var nameB =
+                        normalizeText(
+                            b.getAttribute(
+                                'data-name'
+                            ) || ''
+                        );
+
+
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+
+                    return 0;
+
+                }
+            );
+
+
+            /*
+             * Reinsert the cards in
+             * alphabetical order.
+             */
+
+            group.cards.forEach(
+                function (card) {
+
+                    group.parent.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
     /* =====================================================
        CREATE SEARCH + A-Z TOOLS
        ===================================================== */
@@ -237,15 +354,22 @@ importArticles({
 
 
         if (!cards.length) {
-            return;
-        }
+    return;
+}
 
 
-        catalog.setAttribute(
-            'data-sos-catalog-ready',
-            'yes'
-        );
+/*
+ * Automatically sort all cards A-Z
+ * before activating search and filters.
+ */
 
+sortCatalogCards(cards);
+
+
+catalog.setAttribute(
+    'data-sos-catalog-ready',
+    'yes'
+);
 
         var activeLetter = 'ALL';
 
@@ -522,3 +646,298 @@ importArticles({
     }
 
 })();
+
+
+/* =========================================================
+   CATEGORY LIBRARY 2026
+   Universal category filtering system
+   ========================================================= */
+
+$(function () {
+
+    $('.sos-category-library').each(function () {
+
+        const library = $(this);
+
+        const grid =
+            library.find('.sos-category-library-grid').first();
+
+        const cards =
+            grid.find('[data-name][data-subcategory]');
+
+        const subcategoryHost =
+            library.find('.sos-category-library-subcategory-host').first();
+
+        const searchHost =
+            library.find('.sos-category-library-search-host').first();
+
+        const countDisplay =
+            library.find('.sos-category-library-count').first();
+
+        const noResults =
+            library.find('.sos-category-library-no-results').first();
+
+
+        /* =====================================================
+           SUBCATEGORY DATA
+           ===================================================== */
+
+        const subcategoryData =
+            subcategoryHost.attr('data-subcategories') || '';
+
+        const subcategoryLabel =
+            subcategoryHost.attr('data-label') ||
+            'All Subcategories';
+
+        const subcategories =
+            subcategoryData
+                .split(';;')
+                .map(function (item) {
+                    return item.trim();
+                })
+                .filter(Boolean);
+
+
+        /* =====================================================
+           CREATE DROPDOWN
+           ===================================================== */
+
+        const select = $('<select>', {
+            class: 'sos-category-library-subcategory-select'
+        });
+
+
+        select.append(
+            $('<option>', {
+                value: 'all',
+                text: subcategoryLabel
+            })
+        );
+
+
+        subcategories.forEach(function (subcategory) {
+
+            select.append(
+                $('<option>', {
+                    value: subcategory,
+                    text: subcategory
+                })
+            );
+
+        });
+
+
+        subcategoryHost.append(select);
+
+
+        /* =====================================================
+           CREATE SEARCH FIELD
+           ===================================================== */
+
+        const searchPlaceholder =
+            searchHost.attr('data-placeholder') ||
+            'Search...';
+
+
+        const search = $('<input>', {
+            type: 'text',
+            class: 'sos-category-library-search',
+            placeholder: searchPlaceholder
+        });
+
+
+        searchHost.append(search);
+
+
+        /* =====================================================
+           NORMALIZE TEXT
+           ===================================================== */
+
+        function normalizeText(text) {
+
+            return String(text || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+
+        }
+
+
+        /* =====================================================
+           AUTOMATIC ALPHABETICAL ORDER
+           ===================================================== */
+
+        const sortedCards = cards.get().sort(function (a, b) {
+
+            const nameA =
+                normalizeText($(a).attr('data-name'));
+
+            const nameB =
+                normalizeText($(b).attr('data-name'));
+
+            return nameA.localeCompare(nameB);
+
+        });
+
+
+        $(sortedCards).detach().appendTo(grid);
+
+
+        /* =====================================================
+           FILTER STATE
+           ===================================================== */
+
+        let activeLetter = 'all';
+
+
+        /* =====================================================
+           APPLY FILTERS
+           ===================================================== */
+
+        function applyFilters() {
+
+            const selectedSubcategory =
+                normalizeText(select.val());
+
+            const searchTerm =
+                normalizeText(search.val());
+
+            let visibleCount = 0;
+
+
+            $(sortedCards).each(function () {
+
+                const card = $(this);
+
+                const rawName =
+                    card.attr('data-name') || '';
+
+                const name =
+                    normalizeText(rawName);
+
+                const subcategory =
+                    normalizeText(
+                        card.attr('data-subcategory')
+                    );
+
+
+                /* SUBCATEGORY */
+
+                const subcategoryMatch =
+                    selectedSubcategory === 'all' ||
+                    subcategory === selectedSubcategory;
+
+
+                /* SEARCH */
+
+                const searchMatch =
+                    !searchTerm ||
+                    name.indexOf(searchTerm) !== -1;
+
+
+                /* LETTER */
+
+                let letterMatch = true;
+
+
+                if (activeLetter !== 'all') {
+
+                    const firstCharacter =
+                        normalizeText(rawName)
+                            .charAt(0)
+                            .toUpperCase();
+
+
+                    if (activeLetter === '#') {
+
+                        letterMatch =
+                            !/^[A-Z]$/.test(firstCharacter);
+
+                    } else {
+
+                        letterMatch =
+                            firstCharacter === activeLetter;
+
+                    }
+
+                }
+
+
+                /* FINAL RESULT */
+
+                const visible =
+                    subcategoryMatch &&
+                    searchMatch &&
+                    letterMatch;
+
+
+                card.toggle(visible);
+
+
+                if (visible) {
+                    visibleCount++;
+                }
+
+            });
+
+
+            /* COUNT */
+
+            countDisplay.text(
+                visibleCount +
+                (visibleCount === 1 ? ' item' : ' items')
+            );
+
+
+            /* NO RESULTS */
+
+            if (visibleCount === 0) {
+                noResults.show();
+            } else {
+                noResults.hide();
+            }
+
+        }
+
+
+        /* =====================================================
+           EVENTS
+           ===================================================== */
+
+        select.on('change', applyFilters);
+
+        search.on('input', applyFilters);
+
+
+        library
+            .find('.sos-category-library-filter')
+            .on('click', function () {
+
+                const filter = $(this);
+
+                activeLetter =
+                    filter.attr('data-letter') || 'all';
+
+
+                library
+                    .find('.sos-category-library-filter')
+                    .removeClass('is-active');
+
+
+                filter.addClass('is-active');
+
+                applyFilters();
+
+            });
+
+
+        /* =====================================================
+           INITIAL DISPLAY
+           ===================================================== */
+
+        applyFilters();
+
+    });
+
+});

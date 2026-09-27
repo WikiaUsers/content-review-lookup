@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://robloxskyboxwikii.fandom.com/wiki/MediaWiki:Gadget-RailModule.js?action=raw&ctype=text/javascript");

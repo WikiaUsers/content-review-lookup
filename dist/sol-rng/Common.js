@@ -58,6 +58,7 @@ importArticles({
 /* Rail Module */
 window.AddRailModule = [
     {page: 'Template:RandomPage', prepend: true},
+    {page: 'Template:ImportantLinks2', prepend: true},
     'Template:AdminList',
 ];
 

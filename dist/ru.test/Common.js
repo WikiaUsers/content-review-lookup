@@ -13,6 +13,26 @@ mw.hook('wikipage.content').add(function ($content) {
         });
     });
 });
+// Test2
+document.addEventListener('click', function (e) {
+  var img = e.target.closest('.fw-icons img');
+  if (!img) return;
+
+  var name = img.alt
+    .replace(/^False Frights\s*-\s*/i, '')   // Убирает префикс False Frights
+    .replace(/\s*(FW\s*)?Icon\s*$/i, '')     // То же, но префикс FW или Icon
+    .trim();
+
+  document.querySelectorAll('.fw-panel-wrap .fw-slide').forEach(function (slide) {
+    slide.style.display = (slide.dataset.name === name) ? 'block' : 'none';
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  var first = document.querySelector('.fw-panel-wrap .fw-slide');
+  if (first) first.style.display = 'block';
+});
+
 
 // Викификатор
 if (wikiconfig.wgAction == 'edit' || wikiconfig.wgAction == 'submit') {

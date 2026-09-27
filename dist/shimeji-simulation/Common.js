@@ -14,7 +14,9 @@ $(function () {
         '.manga-volume',          
         '.location-card',        
         '.location-card-minor',
-        '.world-test-item'
+        '.world-test-item',
+        '.chapter-card',
+        '.chapters-list-item'
     ];
 
     var selector = cardSelectors.join(', ');

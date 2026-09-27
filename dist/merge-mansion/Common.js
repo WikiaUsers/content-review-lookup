@@ -191,8 +191,51 @@ importScript('MediaWiki:Events.js');
         table.classList.toggle("mm-uses-stuck", stuck);
       }, { threshold: [0], rootMargin: "-" + OFFSET + "px 0px 0px 0px" });
       io.observe(sentinel);
+      wideTables.push(table);
+    });
+    scheduleWide();
+  }
+
+  /* Wide tables: FandomDesktop wraps a too-wide table into an overflow-x:auto div,
+     which traps position:sticky (the header sits OFFSET px below the wrapper's top
+     for good). Such tables get .mm-uses-jssticky (Common.css turns native sticky off)
+     and the header cells follow the page scroll via translateY instead. Re-checked
+     on every frame of scroll/resize, since the wrapper comes and goes with width. */
+  var wideTables = [];
+  var wideQueued = false;
+  function clippingAncestor(table) {
+    for (var el = table.parentElement; el && el !== document.body; el = el.parentElement) {
+      if (el.classList.contains("page-content")) return null;
+      if (getComputedStyle(el).overflowX !== "visible") return el;
+    }
+    return null;
+  }
+  function updateWide() {
+    wideQueued = false;
+    wideTables.forEach(function (table) {
+      var cells = table.querySelectorAll(":scope > * > tr > th");
+      if (!cells.length) return;
+      var wrapped = !!clippingAncestor(table);
+      table.classList.toggle("mm-uses-jssticky", wrapped);
+      var dy = 0;
+      if (wrapped) {
+        var rect = table.getBoundingClientRect();
+        var headH = cells[0].parentNode.offsetHeight;
+        dy = Math.max(0, Math.min(OFFSET - rect.top, rect.height - headH));
+      }
+      var t = dy ? "translateY(" + dy + "px)" : "";
+      Array.prototype.forEach.call(cells, function (th) { th.style.transform = t; });
     });
   }
+  function scheduleWide() {
+    if (wideQueued || !wideTables.length) return;
+    wideQueued = true;
+    requestAnimationFrame(updateWide);
+  }
+  window.addEventListener("scroll", scheduleWide, { passive: true });
+  window.addEventListener("resize", scheduleWide);
+  window.addEventListener("load", scheduleWide); // the wrapper may appear after init
+
   if (window.mw && mw.hook) {
     mw.hook("wikipage.content").add(function ($content) {
       initUsesStuck(($content && $content[0]) ? $content[0] : document);

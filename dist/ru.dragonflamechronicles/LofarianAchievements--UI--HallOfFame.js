@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.5 HALL WIKITEXT + INLINE DETAILS
+LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.9.35 CUMULATIVE — HALL FORCE-FRESH + INLINE DETAILS
 Страница Fandom: MediaWiki:LofarianAchievements/UI/HallOfFame.js
 
 НАЗНАЧЕНИЕ ЭТОГО ФАЙЛА
@@ -2322,9 +2322,13 @@ RC11 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + КАТАЛОГ
 
         return Promise.all([
             Promise.race([
+                /*
+                 * RC11.9.33: сам Зал славы не имеет права показывать
+                 * старый localStorage/in-memory рейтинг.
+                 */
                 getLeaderboardRowsCached(
                     catalog,
-                    false
+                    true
                 ),
                 hardTimeout
             ]),
@@ -2554,52 +2558,28 @@ RC11 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + КАТАЛОГ
                     ? Math.max(0, Number(rowAbove.score || 0) - Number(currentRow.score || 0) + 1)
                     : 0;
 
-                var ownStepEarned = Number(currentRow.stepStats && currentRow.stepStats.earned || 0);
-                var ownStepTotal = Number(systemStepStats.total || 0);
-                var ownStepPercent = ownStepTotal > 0
-                    ? Math.max(0, Math.min(100, Math.round((ownStepEarned / ownStepTotal) * 1000) / 10))
-                    : 0;
-
                 ownPlace.innerHTML =
                     '<div class="lof-hall-own-place-rank">' +
                         '<small>Ваше место</small>' +
                         '<strong>#' + escapeHtml(String(currentRow.rank)) + '</strong>' +
                     '</div>' +
-                    '<div class="lof-hall-own-place-main">' +
-                        '<div class="lof-hall-own-place-heading">' +
-                            '<strong>' + escapeHtml(currentRow.name) + '</strong>' +
-                            '<small>' +
-                                escapeHtml(
-                                    currentRow.rank === 1
-                                        ? 'Вы возглавляете Зал славы.'
-                                        : pointsToAbove + ' очк. до следующего места'
-                                ) +
-                            '</small>' +
-                        '</div>' +
-                        '<div class="lof-hall-own-place-metrics">' +
-                            '<div class="lof-hall-own-place-metric">' +
-                                '<span>Опыт</span>' +
-                                '<strong>' + escapeHtml(formatPoints(currentRow.score)) + '</strong>' +
-                                '<small>очков</small>' +
-                            '</div>' +
-                            '<div class="lof-hall-own-place-metric">' +
-                                '<span>Коллекция</span>' +
-                                '<strong>' + escapeHtml(String(currentRow.count)) + '</strong>' +
-                                '<small>достижений</small>' +
-                            '</div>' +
-                            '<div class="lof-hall-own-place-metric is-steps">' +
-                                '<span>Ступени Летописи</span>' +
-                                '<strong>' + escapeHtml(formatCatalogInteger(ownStepEarned)) + ' / ' +
-                                    escapeHtml(formatCatalogInteger(ownStepTotal)) + '</strong>' +
-                                '<small>' + escapeHtml(String(ownStepPercent).replace('.', ',')) + '% пройдено</small>' +
-                                '<div class="lof-hall-own-place-step-track" aria-hidden="true"><i style="width:' +
-                                    escapeHtml(String(ownStepPercent)) + '%"></i></div>' +
-                            '</div>' +
-                        '</div>' +
+                    '<div class="lof-hall-own-place-copy">' +
+                        '<strong>' + escapeHtml(currentRow.name) + '</strong>' +
+                        '<span>' + escapeHtml(formatPoints(currentRow.score)) + ' очков · ' +
+                            escapeHtml(String(currentRow.count)) + ' достижений · ' +
+                            escapeHtml(formatCatalogInteger(currentRow.stepStats && currentRow.stepStats.earned || 0)) + '/' +
+                            escapeHtml(formatCatalogInteger(systemStepStats.total || 0)) + ' рубежей</span>' +
+                        '<small>' +
+                            escapeHtml(
+                                currentRow.rank === 1
+                                    ? 'Вы возглавляете Зал славы.'
+                                    : pointsToAbove + ' очк. до следующего места'
+                            ) +
+                        '</small>' +
                     '</div>' +
                     '<div class="lof-hall-own-place-actions">' +
-                        '<button type="button" data-hall-action="nearby"><span>Окружение</span><small>Рядом со мной</small></button>' +
-                        '<button type="button" data-hall-action="collection"><span>Профиль</span><small>Моя коллекция</small></button>' +
+                        '<button type="button" data-hall-action="nearby">Рядом со мной</button>' +
+                        '<button type="button" data-hall-action="collection">Моя коллекция</button>' +
                     '</div>';
 
                 ownPlace.querySelector('[data-hall-action="nearby"]').addEventListener(

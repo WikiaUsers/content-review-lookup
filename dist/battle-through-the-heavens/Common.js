@@ -52,6 +52,19 @@ $(function() {
   setInterval(updateCountdown, 60000); // Refresh every minute to handle weekly reset
 });
 
+//For random selection of articles using class count
+$(document).ready(function() {
+    $('.refresh-feed').each(function() {
+        var $items = $(this).find('.feed-item');
+        var total = $items.length;
+        
+        if (total > 0) {
+            var randomIndex = Math.floor(Math.random() * total);
+            $items.eq(randomIndex).css('display', 'block');
+        }
+    });
+});
+
 // For filtering source material template's gif
 window.pPreview = window.pPreview || {};
 window.pPreview.RegExp = window.pPreview.RegExp || {};

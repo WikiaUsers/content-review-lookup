@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.5 PARTICIPATION COPY / OPT-IN
+LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.9.35 LOAD-ORDER SAFE FIRST_LOGIN + HALL CACHE INVALIDATION
 Страница Fandom: MediaWiki:LofarianAchievements/Participation.js
 
 НАЗНАЧЕНИЕ ЭТОГО ФАЙЛА
@@ -11,9 +11,12 @@ LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.5 PARTICIPA
 ДАННЫЕ / I/O
 - Согласие зарегистрированного пользователя хранится штатным MediaWiki
   action=options в user-script preference `userjs-lofarian-achievements-participation`.
-- Для НОВОГО участника там же сохраняется только Unix-время opt-in в
+- Для НОВОГО участника там же сохраняется Unix-время opt-in в
   `userjs-lofarian-achievements-started-at`; оно является нижней границей
   исторических метрик и не содержит содержимого действий пользователя.
+- В момент подтверждённого opt-in в официальном Users-сегменте фиксируется
+  `first_login`; поэтому «Добро пожаловать» означает именно участие в программе,
+  а новый участник сразу становится видимым источникам Зала славы.
 - Для Discussions сохраняется только числовой общий postCount на момент opt-in
   (`userjs-lofarian-achievements-discussion-baseline-total`), чтобы вычесть
   старые сообщения из будущего общего счётчика.
@@ -51,6 +54,9 @@ Achievements не загружается. Полный runtime подключа�
     var PARTICIPATION_STARTED_OPTION = 'userjs-lofarian-achievements-started-at';
     var DISCUSSION_BASELINE_OPTION = 'userjs-lofarian-achievements-discussion-baseline-total';
     var INVITE_OPTION = 'userjs-lofarian-achievements-invite';
+    var FIRST_LOGIN_SYNC_OPTION = 'userjs-lofarian-achievements-first-login-synced';
+    var FIRST_LOGIN_ID = 'first_login';
+    var HALL_CACHE_STORAGE_KEY = 'lof-achievements-hall-cache-v3';
     var JOIN_SESSION_KEY = 'lof-achievements-just-joined-v1';
     var INVITE_STORAGE_PREFIX = 'lof-achievements-invite-state-v1:';
 
@@ -168,6 +174,144 @@ Achievements не загружается. Полный runtime подключа�
             updateLocalOption(name, String(value));
             return result;
         });
+    }
+
+    /*
+     * RC11.6 — «Добро пожаловать» = подтверждённое участие в программе.
+     *
+     * first_login хранится как обычная официальная награда в Users-сегменте.
+     * Это важно не только для профиля: Зал славы собирает кандидатов в том числе
+     * из Users-сегментов, поэтому новый участник обнаруживается сразу, даже если
+     * он ещё не читал статьи и не получил никаких других достижений.
+     */
+    function invalidateLocalHallCache() {
+        try {
+            localStorage.removeItem(HALL_CACHE_STORAGE_KEY);
+        } catch (error) {
+            /* localStorage может быть недоступен. */
+        }
+    }
+
+    function ensureParticipationWelcomeAchievement(startedAt) {
+        var userId = currentUserId();
+        if (!userId) {
+            return Promise.resolve({ created: false, reason: 'not-logged-in' });
+        }
+
+        var earnedAt = normalizeStartedAt(startedAt) || 1;
+        var key = String(userId);
+
+        return I.invoke('readUserSegment', [userId, true]).then(function (loaded) {
+            if (!loaded || !loaded.data) {
+                throw new Error('Не удалось открыть Users-сегмент для first_login.');
+            }
+
+            if (!loaded.data.users || typeof loaded.data.users !== 'object' || Array.isArray(loaded.data.users)) {
+                loaded.data.users = {};
+            }
+
+            var map = loaded.data.users[key];
+            if (!map || typeof map !== 'object' || Array.isArray(map)) {
+                map = {};
+                loaded.data.users[key] = map;
+            }
+
+            var existing = Math.floor(Number(map[FIRST_LOGIN_ID]) || 0);
+            if (existing > 0) {
+                return {
+                    created: false,
+                    earnedAt: existing
+                };
+            }
+
+            map[FIRST_LOGIN_ID] = earnedAt;
+
+            return I.invoke('saveSegment', [loaded]).then(function () {
+                /*
+                 * Новый участник уже имеет first_login и 5 очков.
+                 * Старый рейтинг этого браузера больше недействителен.
+                 */
+                invalidateLocalHallCache();
+
+                return {
+                    created: true,
+                    earnedAt: earnedAt
+                };
+            });
+        });
+    }
+
+    var participationWelcomeSyncPromise = null;
+    var WELCOME_STORAGE_WAIT_MS = 20000;
+    var WELCOME_STORAGE_POLL_MS = 40;
+
+    function waitForWelcomeStorageFunctions() {
+        var started = Date.now();
+
+        return new Promise(function (resolve, reject) {
+            function check() {
+                if (
+                    I &&
+                    typeof I.has === 'function' &&
+                    I.has('readUserSegment') &&
+                    I.has('saveSegment')
+                ) {
+                    resolve(true);
+                    return;
+                }
+
+                if (Date.now() - started >= WELCOME_STORAGE_WAIT_MS) {
+                    reject(new Error(
+                        'Storage-модуль не зарегистрировал readUserSegment/saveSegment вовремя.'
+                    ));
+                    return;
+                }
+
+                window.setTimeout(check, WELCOME_STORAGE_POLL_MS);
+            }
+
+            check();
+        });
+    }
+
+    function ensureParticipationWelcomeSynced(startedAt) {
+        if (!isLoggedIn()) {
+            return Promise.resolve(false);
+        }
+
+        if (optionValue(FIRST_LOGIN_SYNC_OPTION) === '1') {
+            return Promise.resolve(true);
+        }
+
+        /*
+         * RC11.9.35: Participation загружается раньше Services/Storage.
+         * Нельзя вызывать readUserSegment синхронно во время participation gate:
+         * Bootstrap ещё не успел зарегистрировать Storage-функции.
+         * Ждём их НЕ БЛОКИРУЯ initParticipationGate(), чтобы Bootstrap мог
+         * продолжить загрузку остальных модулей.
+         */
+        if (!participationWelcomeSyncPromise) {
+            participationWelcomeSyncPromise = waitForWelcomeStorageFunctions()
+                .then(function () {
+                    return ensureParticipationWelcomeAchievement(startedAt);
+                })
+                .then(function () {
+                    return setUserOption(FIRST_LOGIN_SYNC_OPTION, '1');
+                })
+                .then(function () {
+                    return true;
+                })
+                .catch(function (error) {
+                    console.warn(
+                        '[Lofarian Achievements] Отложенная синхронизация first_login не выполнена:',
+                        error
+                    );
+                    participationWelcomeSyncPromise = null;
+                    return false;
+                });
+        }
+
+        return participationWelcomeSyncPromise;
     }
 
     function localInviteKey() {
@@ -787,7 +931,8 @@ Achievements не загружается. Полный runtime подключа�
                 setUserOption(PARTICIPATION_OPTION, '0'),
                 setUserOption(PARTICIPATION_STARTED_OPTION, ''),
                 setUserOption(DISCUSSION_BASELINE_OPTION, ''),
-                setUserOption(INVITE_OPTION, '')
+                setUserOption(INVITE_OPTION, ''),
+                setUserOption(FIRST_LOGIN_SYNC_OPTION, '')
             ]).then(function () {
                 clearLocalParticipationData();
                 I.participation.active = false;
@@ -911,6 +1056,11 @@ Achievements не загружается. Полный runtime подключа�
                 .then(function () {
                     return setUserOption(DISCUSSION_BASELINE_OPTION, String(discussionBaseline));
                 })
+                /*
+                 * RC11.9.35: Storage на лёгком opt-in экране ещё может быть
+                 * не загружен. Сначала включаем участие и перезагружаемся;
+                 * first_login будет записан уже после регистрации Storage.
+                 */
                 .then(function () {
                     return setUserOption(PARTICIPATION_OPTION, '1');
                 });
@@ -984,6 +1134,17 @@ Achievements не загружается. Полный runtime подключа�
                 dismissForNow: dismissTemporarily,
                 neverShowInvite: dismissForever
             };
+
+            /*
+             * RC11.9.35 — НЕ блокируем participation gate ожиданием Storage.
+             * Иначе Bootstrap ждёт завершения Participation, а Participation
+             * ждёт функцию readUserSegment из ещё не загруженного Storage.
+             * Запускаем синхронизацию в фоне; Core ниже дождётся welcomeReady
+             * уже после загрузки зависимостей.
+             */
+            I.participation.welcomeReady = active
+                ? ensureParticipationWelcomeSynced(startedAt)
+                : Promise.resolve(true);
 
             renderInfoPage(I.participation);
             if (shouldShowInvite(active)) {

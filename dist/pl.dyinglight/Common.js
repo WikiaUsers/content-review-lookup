@@ -20,32 +20,25 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/* Licznik do przeceny */
-$(document).ready(function() {
+/* tŁUMACZENIE */
+$(function () {
 
-  $('.countdown').each(function() {
-    var el = this;
-    var targetDate = new Date($(el).data('date'));
+    $(document).on("click", ".dl-translation-button", function () {
 
-    function updateTimer() {
-      var now = new Date();
-      var diff = targetDate - now;
+        var box = $(this).closest(".dl-translation");
+        var polish = box.find(".dl-translation-polish");
+        var english = box.find(".dl-translation-english");
 
-      if (diff <= 0) {
-        el.innerHTML = "Koniec promocji";
-        return;
-      }
+        if (polish.is(":visible")) {
+            polish.hide();
+            english.show();
+            $(this).text("ENGLISH");
+        } else {
+            english.hide();
+            polish.show();
+            $(this).text("POLSKI");
+        }
 
-      var d = Math.floor(diff / (1000 * 60 * 60 * 24));
-      var h = Math.floor(diff / (1000 * 60 * 60) % 24);
-      var m = Math.floor(diff / (1000 * 60) % 60);
-      var s = Math.floor(diff / 1000 % 60);
-
-      el.innerHTML = d + "d " + h + "g " + m + "m " + s + "s";
-    }
-
-    updateTimer();
-    setInterval(updateTimer, 1000);
-  });
+    });
 
 });

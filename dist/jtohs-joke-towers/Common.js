@@ -1197,161 +1197,146 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
     });
 });
 // CSS toggle
-mw.loader.using(['mediawiki.util']).then(function () {
+mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(function () {
     if (document.body.classList.contains('is-mobile') || window.innerWidth < 768) {
         return;
     }
 
-    const namespace = mw.config.get('wgNamespaceNumber');
-    if (namespace !== 0) return;
-    
+    const currentPage = mw.config.get('wgPageName').replace(/ /g, '_');
     const STORAGE_KEY = 'ejt-disable-custom-css';
     let isCssDisabled = localStorage.getItem(STORAGE_KEY) === 'true';
 
-    if (!document.getElementById('ejt-css-toggle-responsive-style')) {
-        const styleBlock = document.createElement('style');
-        styleBlock.id = 'ejt-css-toggle-responsive-style';
-        styleBlock.innerHTML = `
-            .ejt-css-tab { display: inline-flex; align-items: center; padding: 0 10px; margin-left: 4px; }
-            .ejt-css-wrapper { position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: 'Rubik', sans-serif; font-size: 13px; font-weight: bold; border: none; background: none; padding: 0 14px; height: 30px; margin-top: 6px; border-radius: 4px; overflow: hidden; user-select: none; }
-            .ejt-css-wrapper::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(rgba(255, 255, 255, 1) 50%, transparent 50%); background-size: 4px 4px; opacity: 0.25; z-index: -1; transition: opacity 0.3s ease-in-out !important; }
-            .ejt-css-wrapper:hover::before { opacity: 0.6; }
-            
-            .ejt-toggle-label { cursor: pointer; color: #fff; -webkit-text-stroke: 2px #000; paint-order: stroke fill; font-weight: bold; margin-right: 4px; line-height: 30px; }
-            
-            .ejt-switch { position: relative; display: inline-block; width: 34px; height: 18px; margin-top: 0px; top: 1px; }
-            .ejt-switch input { opacity: 0; width: 0; height: 0; }
-            .ejt-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border: 2px solid #000; transition: .2s; border-radius: 18px; }
-            
-            .ejt-slider:before { position: absolute; content: ""; height: 10px; width: 10px; left: 2px; top: 50%; transform: translateY(-50%); background-color: white; border: 1px solid #000; transition: .2s; border-radius: 50%; }
-            input:checked + .ejt-slider { background-color: #28a745; }
-            
-            input:checked + .ejt-slider:before { transform: translate(16px, -50%); }
-
-            @media screen and (max-width: 1100px) {
-                .ejt-css-tab { margin-left: 0 !important; padding: 4px 10px !important; width: 100%; justify-content: flex-start; }
-                .ejt-css-wrapper { margin-top: 4px !important; margin-bottom: 6px !important; }
-            }
-            
-            body.ejt-hide-custom-css .template-design,
-            body.ejt-hide-custom-css [data-template="Design"],
-            body.ejt-hide-custom-css [data-template="CSS"] {
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(styleBlock);
+    if (isCssDisabled) {
+        document.querySelectorAll('.import-css, [data-css]').forEach(function (span) {
+            span.removeAttribute('data-css');
+            span.style.setProperty('display', 'none', 'important');
+        });
     }
 
-    function applyCssOverride() {
-        if (isCssDisabled) {
-            document.body.classList.add('ejt-hide-custom-css');
-        } else {
-            document.body.classList.remove('ejt-hide-custom-css');
+    const api = new mw.Api();
+    api.get({
+        action: 'parse',
+        page: "JToH's_Joke_Towers_Wiki:AlwaysCSSPages",
+        prop: 'wikitext',
+        formatversion: 2
+    }).done(function (data) {
+        if (!data || !data.parse || !data.parse.wikitext) {
+            runGadgetInit();
+            return;
         }
 
-        const importSpans = document.querySelectorAll('.import-css, [data-css]');
-        
-        importSpans.forEach(function (span) {
-            const originalRawCSS = span.getAttribute('data-css') || span.getAttribute('data-purged-css') || '';
+        const rawWikitext = data.parse.wikitext;
 
-            if (isCssDisabled) {
-                if (!span.hasAttribute('data-purged-css')) {
-                    span.setAttribute('data-purged-css', span.getAttribute('data-css') || '');
-                }
-                span.removeAttribute('data-css');
-                span.style.setProperty('display', 'none', 'important');
-            } else {
-                if (span.hasAttribute('data-purged-css')) {
-                    span.setAttribute('data-css', span.getAttribute('data-purged-css'));
-                }
+        const alwaysCssPages = rawWikitext
+            .replace(/\[\[\vert{}\]\]/g, '') 
+            .split(/[\s\n]+/)         
+            .map(function (page) { return page.trim().replace(/ /g, '_'); })
+            .filter(Boolean);          
+
+        alwaysCssPages.push("JToH's_Joke_Towers_Wiki:AlwaysCSSPages");
+
+        if (alwaysCssPages.includes(currentPage)) {
+            document.querySelectorAll('.import-css, [data-css]').forEach(function (span) {
                 span.style.removeProperty('display');
+            });
+            return; 
+        }
+
+        runGadgetInit();
+    });
+
+    function runGadgetInit() {
+        const namespace = mw.config.get('wgNamespaceNumber');
+        if (namespace !== 0) return;
+
+        if (!document.getElementById('ejt-css-toggle-responsive-style')) {
+            const styleBlock = document.createElement('style');
+            styleBlock.id = 'ejt-css-toggle-responsive-style';
+            styleBlock.textContent = `
+                .ejt-css-tab { display: inline-flex; align-items: center; padding: 0 10px; margin-left: 4px; }
+                .ejt-css-wrapper { position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: 'Rubik', sans-serif; font-size: 13px; font-weight: bold; border: none; background: none; padding: 0 14px; height: 30px; margin-top: 6px; border-radius: 4px; overflow: hidden; user-select: none; }
+                .ejt-css-wrapper::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(rgba(255, 255, 255, 1) 50%, transparent 50%); background-size: 4px 4px; opacity: 0.25; z-index: -1; transition: opacity 0.3s ease-in-out !important; }
+                .ejt-css-wrapper:hover::before { opacity: 0.6; }
+                
+                .ejt-toggle-label { cursor: pointer; color: #fff; -webkit-text-stroke: 2px #000; paint-order: stroke fill; font-weight: bold; margin-right: 4px; line-height: 30px; }
+                
+                .ejt-switch { position: relative; display: inline-block; width: 34px; height: 18px; margin-top: 0px; top: 1px; }
+                .ejt-switch input { opacity: 0; width: 0; height: 0; }
+                .ejt-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border: 2px solid #000; transition: .2s; border-radius: 18px; }
+                
+                .ejt-slider:before { position: absolute; content: ""; height: 10px; width: 10px; left: 2px; top: 50%; transform: translateY(-50%); background-color: white; border: 1px solid #000; transition: .2s; border-radius: 50%; }
+                input:checked + .ejt-slider { background-color: #28a745; }
+                input:checked + .ejt-slider:before { transform: translate(16px, -50%); }
+
+                @media screen and (max-width: 1100px) {
+                    .ejt-css-tab { margin-left: 0 !important; padding: 4px 10px !important; width: 100%; justify-content: flex-start; }
+                    .ejt-css-wrapper { margin-top: 4px !important; margin-bottom: 6px !important; }
+                }
+            `;
+            document.head.appendChild(styleBlock);
+        }
+
+        function injectIntoMenu(tabsList) {
+            if (tabsList.querySelector('.ejt-css-tab')) return;
+            
+            const containerListItem = document.createElement('li');
+            containerListItem.className = 'wds-tabs__tab ejt-css-tab';
+            
+            const checkedAttribute = isCssDisabled ? '' : 'checked';
+
+            containerListItem.innerHTML = `
+                <div class="ejt-css-wrapper">
+                    <span class="ejt-toggle-label">CSS:</span>
+                    <label class="ejt-switch">
+                        <input type="checkbox" class="ejt-css-toggle-input" ${checkedAttribute}>
+                        <span class="ejt-slider"></span>
+                    </label>
+                </div>
+            `;
+
+            containerListItem.querySelector('.ejt-css-toggle-input').addEventListener('change', function (e) {
+                localStorage.setItem(STORAGE_KEY, !e.target.checked);
+                location.reload();
+            });
+
+            const ratingTab = tabsList.querySelector('.ejt-rating-tab');
+            if (ratingTab) {
+                tabsList.insertBefore(containerListItem, ratingTab);
+            } else {
+                tabsList.appendChild(containerListItem);
+            }
+        }
+
+        const targetContentContainer = document.getElementById('mw-content-text') || document.body;
+        const observer = new MutationObserver(function (mutations) {
+            let layoutChanged = false;
+            for (let i = 0; i < mutations.length; i++) {
+                if (mutations[i].addedNodes.length > 0) {
+                    layoutChanged = true;
+                    break;
+                }
             }
 
-            if (originalRawCSS.trim().length > 0) {
-                document.querySelectorAll('head style').forEach(function(styleTag) {
-                    if (styleTag.id && styleTag.id.startsWith('ejt-')) return;
-
-                    if (styleTag.innerHTML.trim() === originalRawCSS.trim() || styleTag.hasAttribute('data-purged-by-ejt')) {
-                        if (isCssDisabled) {
-                            if (!styleTag.hasAttribute('data-purged-inner')) {
-                                styleTag.setAttribute('data-purged-inner', styleTag.innerHTML);
-                                styleTag.setAttribute('data-purged-by-ejt', 'true');
-                            }
-                            styleTag.innerHTML = '';
-                        } else if (styleTag.hasAttribute('data-purged-inner')) {
-                            styleTag.innerHTML = styleTag.getAttribute('data-purged-inner');
-                        }
+            if (layoutChanged) {
+                document.querySelectorAll('.wds-tabs').forEach(function (tabsList) {
+                    if (tabsList.closest('.fandom-community-header') || tabsList.closest('.sticky-header')) {
+                        injectIntoMenu(tabsList);
                     }
                 });
-            }
-        });
-
-        document.querySelectorAll('style').forEach(function(styleTag) {
-            if (styleTag.id && styleTag.id.startsWith('ejt-')) return;
-
-            if (styleTag.hasAttribute('data-css-hash') || styleTag.id.includes('import-css') || styleTag.className.includes('custom-css')) {
+                
                 if (isCssDisabled) {
-                    if (!styleTag.hasAttribute('data-purged-inner')) {
-                        styleTag.setAttribute('data-purged-inner', styleTag.innerHTML);
-                    }
-                    styleTag.innerHTML = '';
-                } else if (styleTag.hasAttribute('data-purged-inner')) {
-                    styleTag.innerHTML = styleTag.getAttribute('data-purged-inner');
+                    targetContentContainer.querySelectorAll('.import-css, [data-css]').forEach(function (span) {
+                        span.removeAttribute('data-css');
+                    });
                 }
             }
         });
-    }
+        observer.observe(document.body, { childList: true, subtree: true });
 
-    function injectIntoMenu(tabsList) {
-        if (tabsList.querySelector('.ejt-css-tab')) return;
-
-        const containerListItem = document.createElement('li');
-        containerListItem.className = 'wds-tabs__tab ejt-css-tab';
-        
-        const ratingTab = tabsList.querySelector('.ejt-rating-tab');
-        if (ratingTab && ratingTab.nextSibling) {
-            tabsList.insertBefore(containerListItem, ratingTab.nextSibling);
-        } else {
-            tabsList.appendChild(containerListItem);
-        }
-
-        renderInterface(containerListItem);
-    }
-
-    function renderInterface(item) {
-        const checkedAttribute = isCssDisabled ? '' : 'checked';
-
-        item.innerHTML = `
-            <div class="ejt-css-wrapper">
-                <span class="ejt-toggle-label">CSS:</span>
-                <label class="ejt-switch">
-                    <input type="checkbox" class="ejt-css-toggle-input" ${checkedAttribute}>
-                    <span class="ejt-slider"></span>
-                </label>
-            </div>
-        `;
-
-        item.querySelector('.ejt-css-toggle-input').addEventListener('change', function (e) {
-            isCssDisabled = !e.target.checked;
-            localStorage.setItem(STORAGE_KEY, isCssDisabled);
-            applyCssOverride();
-            
-            document.querySelectorAll('.ejt-css-toggle-input').forEach(input => {
-                input.checked = e.target.checked;
-            });
-        });
-    }
-
-    const observer = new MutationObserver(function () {
         document.querySelectorAll('.wds-tabs').forEach(function (tabsList) {
             if (tabsList.closest('.fandom-community-header') || tabsList.closest('.sticky-header')) {
                 injectIntoMenu(tabsList);
             }
         });
-        
-        applyCssOverride();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    applyCssOverride();
+    }
 });

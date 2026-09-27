@@ -664,3 +664,28 @@ format are intentionally unchanged.
     };
     I.registerModule('Config', { constants: Object.keys(I.config), progressRecordVersion: I.config.PROGRESS_RECORD_VERSION });
 })(window);
+/* =========================================================
+ * LOFARIAN CHRONICLE INBOX
+ * Отдельный add-on. Основную систему достижений не изменяет.
+ * ========================================================= */
+
+mw.loader.using('mediawiki.util').then(function () {
+    if (typeof window.importArticles !== 'function') {
+        console.error(
+            '[Lofarian Chronicle Inbox] importArticles недоступен.'
+        );
+        return;
+    }
+
+    return window.importArticles({
+        type: 'script',
+        articles: [
+            'MediaWiki:LofarianAchievementsChronicleInbox.js'
+        ]
+    });
+}).catch(function (error) {
+    console.error(
+        '[Lofarian Chronicle Inbox] Не удалось загрузить модуль:',
+        error
+    );
+});

@@ -191,3 +191,98 @@ function convertPurgeToNull() {
 }
 
 mw.hook('wikipage.content').add(mainPageSeriesCarousel).add(convertPurgeToNull);
+
+window.UserTagsJS = {
+	modules: {
+		autoconfirmed: true,
+		custom: {
+			'Lythronax': ['botowner', 'jshelper', 'csshelper', 'templatehelper', 'luahelper'],
+			
+			// Former staff
+			'Solar Dragon-fduser': ['founder', 'formerstaff'],
+			'Eladkse': ['formerstaff'],
+			'Soapslover96': ['formerstaff'],
+			'Dannysage96': ['formerstaff'],
+			'Sforster123': ['formerstaff'],
+			'EastEndersLover123': ['formerstaff'],
+			'Titan95': ['formerstaff'],
+			'RhysDavies27': ['formerstaff'],
+			'WeylandHaulage': ['formerstaff'],
+		},
+		inactive: {
+			days: 180,
+			namespaces: [ 0, 'Talk', 'User talk', 'Template', 'Module' ],
+			zeroIsInactive: false,
+		},
+		isblocked: true,
+		metafilter: {
+			'content-moderator': ['sysop'],
+			'threadmoderator': ['sysop'],
+			'rollback': ['sysop', 'content-moderator'],
+		},
+		mwGroups: ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'rollback', 'bot'],
+		newuser: {
+			days: 30,
+			edits: 50
+		},
+		nonuser: true,
+	},
+	tags: {
+		// Staff tags
+		bureaucrat: { u:'Director', link:'Project:Administrators', title: 'This user is a bureaucrat.' },
+		sysop: { u:'Consultant', link: 'Project:Administrators', title: 'This user is an administrator.' },
+		'content-moderator': { u:'Registrar', link: 'Project:Administrators', title: 'This user is a content moderator.' },
+		threadmoderator: { u:'Human Resources', link: 'Project:Administrators', title: 'This user is a thread moderator.' },
+		rollback: { u:'Nurse', link: 'Project:Administrators', title: 'This user is a rollbacker.' },
+		formerstaff: { u: 'Former Staff', link: 'Project:Administrators', title: 'This user is a former staff member.' },
+		
+		// Blocked
+		blocked: { u: 'Struck Off', link: 'Project:Blocking policy', title: 'This user is blocked from editing the wiki.' },
+		
+		// New user tag
+		newuser: { u: 'Trainee', title: 'This user recently joined the wiki.' },
+		
+		// Bot flag
+		bot: { u: 'Bot', link: 'Help:Bots', title: 'This user is a bot.' },
+		botowner: { u: 'Telesurgeon', link: 'Help:Bots', title: 'This user owns a bot.', order: 50 },
+		
+		// Founder
+		founder: { u: 'Holby Wiki Founder', title: 'This user founded the Holby Wiki.' },
+		
+		// Signifiers
+		jshelper: { u: 'JavaScript', order: 100, title: 'This user is adapt at JavaScript.' },
+		csshelper: { u: 'CSS', order: 101, title: 'This user is adapt at CSS.' },
+		templatehelper: { u: 'Templates', order: 102, title: 'This user is adapt at writing and maintaining wiki templates.' },
+		luahelper: { u: 'Lua', order: 103, title: 'This user is adapt at writing and maintaining Lua modules.' },
+	}
+};
+
+(function ($, mw) {
+	mw.hook('fandom.masthead').add(function (elem) {
+		var $elem = $(elem);
+
+		var format = function () {
+			var $counts = $elem.find('ul.user-identity-stats a strong');
+			if (!$counts.length) {
+				return false;
+			}
+			observer.disconnect(); // stop watching before we mutate
+			$counts.each(function () {
+				var editCount = parseInt($(this).text(), 10);
+				if (!isNaN(editCount)) {
+					$(this).text(editCount.toLocaleString());
+				}
+			});
+			return true;
+		};
+
+		if (format()) {
+			return; // stats were already present at hook time
+		}
+
+		var observer = new MutationObserver(function () {
+			format();
+		});
+		observer.observe(elem, { childList: true, subtree: true });
+	});
+})(jQuery, mediaWiki);

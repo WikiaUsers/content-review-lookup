@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC10 PARTICIPATION CUTOFF REVIEW READY
+LOFARIAN ACHIEVEMENTS TEST 1.16.3 — FANDOM JS REVIEW NOTE — RC11.9.35 CUMULATIVE — INTERNAL SERVICE EDIT EXCLUSION
 Страница Fandom: MediaWiki:LofarianAchievements/Metrics/Editing.js
 
 НАЗНАЧЕНИЕ ЭТОГО ФАЙЛА
@@ -929,6 +929,40 @@ RC10 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + CUTOFF
     }
 
 
+    /*
+     * RC11.9.33 — внутренние записи самой системы не являются
+     * пользовательской технической работой.
+     *
+     * API может вернуть namespace Project под локализованным именем,
+     * поэтому проверяем имя страницы после первого двоеточия.
+     */
+    function isLofarianInternalServiceContribution(item) {
+        item = item || {};
+
+        if (Number(item.ns) !== 4) {
+            return false;
+        }
+
+        var title = String(item.title || '')
+            .replace(/_/g, ' ')
+            .trim()
+            .toLocaleLowerCase('ru');
+
+        var colonIndex = title.indexOf(':');
+        var pageName = (
+            colonIndex >= 0
+                ? title.slice(colonIndex + 1)
+                : title
+        ).trim();
+
+        return (
+            pageName.indexOf('lofarianachievements') === 0 ||
+            pageName === 'lofarianloginledger' ||
+            pageName === 'lofarianrolesdata'
+        );
+    }
+
+
     function analyzeTechnicalContributions(
         user,
         contributions
@@ -958,6 +992,14 @@ RC10 — ДОБРОВОЛЬНОЕ УЧАСТИЕ / OPT-IN + CUTOFF
         contributions.forEach(function (item) {
             item =
                 item || {};
+
+            /*
+             * Users/Progress/Data/News и прочие служебные страницы системы
+             * не увеличивают «Архивариуса» и другие технические метрики.
+             */
+            if (isLofarianInternalServiceContribution(item)) {
+                return;
+            }
 
             var unix =
                 timestampToUnix(
