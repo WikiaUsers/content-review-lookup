@@ -1,16 +1,25 @@
 (function () {
     // Fandom Compass图标
-    var img = $('<img>', { title: '本站点已是Fandom Compass计划的成员之一。' }).css({ 'height': '70px', 'position': 'relative', 'top': '20px', 'user-select': 'none' });
-    $('<a>', { class: 'compass-wiki-badge', href: '//community.fandom.com/wiki/Fandom_Compass' }).append(img)
+    var img = $('<img>', {
+        title: '本站点已是Fandom Compass计划的成员之一。',
+        style: 'height: 70px; position: relative; top: 20px; user-select: none;'
+    });
+    $('<a>', {
+        class: 'compass-wiki-badge',
+        href: '//community.fandom.com/wiki/Fandom_Compass'
+    }).append(img)
         .appendTo('.fandom-community-header__community-name-wrapper');
-    function changeSrc() { img.attr('src', $('body').attr('data-theme') === 'dark' ? 'https://static.wikia.nocookie.net/backrooms/images/c/ca/Fandom_Compass_dark.png/revision/latest?cb=20250412193710&format=original&path-prefix=zh' : 'https://static.wikia.nocookie.net/backrooms/images/1/18/Fandom_Compass_light.png/revision/latest?cb=20250412193642&format=original&path-prefix=zh'); }
+    function changeSrc() {
+        img.attr('src', $('body').attr('data-theme') === 'dark' ?
+            '//images.wikia.nocookie.net/backrooms/zh/images/c/ca/Fandom_Compass_dark.png' // [[File:Fandom Compass dark.png]]
+            : '//images.wikia.nocookie.net/backrooms/zh/images/1/18/Fandom_Compass_light.png' // [[File:Fandom Compass light.png]]
+        );
+    }
     changeSrc();
-    new MutationObserver(changeSrc).observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
-
-    // 修复用户页链接
-    function removeNew() { $('a.new.userlink').removeClass('new'); }
-    removeNew();
-    new MutationObserver(removeNew).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    new MutationObserver(changeSrc).observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+    });
 })();
 
 mw.loader.load(['mediawiki.util']);
@@ -19,12 +28,17 @@ mw.hook('wikipage.content').add(function () {
     if (mw.config.get('wgCategories').includes('引入JS脚本的页面')) {
         var wgScript = mw.config.get('wgScript');
         $('span.import-js').each(function () {
-            $(this).attr('data-articles').split('|').forEach(function (article) { // No need 'index'
+            $.each($(this).attr('data-articles').split('|'), function (_, article) {
                 article = article.trim();
-                if (!/^MediaWiki:/i.test(article)) return; // Only *MediaWiki* namespace in *THIS* wiki
+                if (!/^MediaWiki:/i.test(article)) return; // Only scripts in *MediaWiki* namespace of *THIS* wiki
                 $('script[data-from]').filter(function () { return $(this).attr('data-from') === article; }).remove(); // Reloading
-                var url = wgScript + '?action=raw&ctype=text/javascript&title=' + encodeURIComponent(article); // JS URL
-                $('<script>', { type: 'text/javascript', src: url }).attr('data-from', article).appendTo('head');
+                var url = wgScript + '?action=raw&ctype=text/javascript&title=' + encodeURIComponent(article);
+                $('<script>', {
+                    class: 'import-js',
+                    type: 'text/javascript',
+                    src: url,
+                    'data-from': article
+                }).appendTo('head');
             });
         });
     }
@@ -67,12 +81,10 @@ mw.hook('wikipage.content').add(function () {
     // 遥控音频
     $('.js-action-play').each(function () {
         var button = this;
-        $(button).css('cursor', 'pointer');
         var targetId = $(button).attr('data-media-id');
-        if (!targetId) return;
         var target = $('.media-id-' + targetId + ' .mw-file-element')[0];
-        if (!target) return;
-        $(button).on('click', function () {
+        if (!targetId || !target) return;
+        $(button).css('cursor', 'pointer').on('click', function () {
             if (target.paused || target.ended) target.play();
             else target.pause();
         });
@@ -115,8 +127,7 @@ mw.hook('wikipage.content').add(function () {
         var $a = $(this);
         try {
             var url = new URL($a.attr('href'), location.origin);
-            if (url.origin === location.origin && (url.pathname === '/zh/f' || url.pathname.startsWith('/zh/f/')))
-                $a.removeAttr('target');
+            if (url.origin === location.origin && (url.pathname === '/zh/f' || url.pathname.startsWith('/zh/f/'))) $a.removeAttr('target');
         } catch (e) { }
     });
 });
@@ -125,14 +136,20 @@ mw.hook('wikipage.content').add(function () {
 (function () {
     var page = mw.config.get('wgPageName');
     if (!page || mw.config.get('wgPageContentModel') !== 'css' || $('style[data-injected-from="' + page + '"]').length) return;
-    fetch(mw.util.getUrl(page, { action: 'raw', ctype: 'text/css' }), { credentials: 'same-origin' })
+    fetch(mw.util.getUrl(page, {
+        action: 'raw',
+        ctype: 'text/css'
+    }), { credentials: 'same-origin' })
         .then(function (res) {
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.text();
         })
         .then(function (css) {
             if (!css) return;
-            $('<style>', { 'data-injected-from': page, text: css }).appendTo('head');
+            $('<style>', {
+                'data-injected-from': page,
+                text: css
+            }).appendTo('head');
         })
         .catch(function (err) { });
 }());

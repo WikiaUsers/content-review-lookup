@@ -452,3 +452,54 @@ $(document).ready(function() {
         });
     });
 });
+
+
+mw.hook('wikipage.content').add(function ($content) {
+  // 1. group consecutive slots and wrap each group into a board
+  var groups = [], cur = null;
+  $content.find('.it-slot').each(function () {
+    if ($(this).closest('.it').length) return;
+    if (cur && cur[cur.length - 1].nextElementSibling === this) cur.push(this);
+    else { cur = [this]; groups.push(cur); }
+  });
+
+  groups.forEach(function (slots) {
+    var root = document.createElement('div');
+    root.className = 'it';
+    root.innerHTML =
+      '<div class="it-bar"><div class="it-arrow" data-dir="-1">◀</div>' +
+      '<div class="it-strip"></div>' +
+      '<div class="it-arrow" data-dir="1">▶</div></div>' +
+      '<div class="it-card it-pic"></div>';
+    slots[0].parentNode.insertBefore(root, slots[0]);
+    var strip = root.querySelector('.it-strip');
+    slots.forEach(function (s) { strip.appendChild(s); });
+
+    // 2. behaviour
+    var pic = root.querySelector('.it-pic');
+
+    function show(el) {
+      slots.forEach(function (s) { s.classList.toggle('on', s === el); });
+      pic.innerHTML = el.querySelector('.it-big').innerHTML;
+      [].forEach.call(pic.querySelectorAll('img'), function (img) {
+        if (img.dataset.src) img.src = img.dataset.src;
+      });
+    }
+
+    slots.forEach(function (s) {
+      s.tabIndex = 0;
+      s.title = s.querySelector('.it-n').textContent;
+      ['mouseenter', 'focus', 'click'].forEach(function (ev) {
+        s.addEventListener(ev, function () { show(s); });
+      });
+    });
+
+    [].forEach.call(root.querySelectorAll('.it-arrow'), function (b) {
+      b.addEventListener('click', function () {
+        strip.scrollBy({ left: b.dataset.dir * 320, behavior: 'smooth' });
+      });
+    });
+
+    show(slots[0]);
+  });
+});

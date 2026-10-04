@@ -21,8 +21,40 @@ mw.hook('wikipage.content').add(() => {
 		let queries = { hide: {}, show: {} };
 		let filters = $('<div style="display: none;" class="fl-filter-wrapper"></div>');
 		let applyFLs = mw.util.debounce(() => {
+			let toggleButtonStatuses = new Map();
+			// every query key may have an associated value, which is the name of the radio button that controls the match mode (any/all)
+			// many or all of these names may be dups, so use a map to check each just once and store the values for later lookup
+			let toggleButtonNames = Object.values(queries.hide).concat(Object.values(queries.show));
+			for (const toggleButtonIndex in toggleButtonNames) {
+				const toggleButtonName = toggleButtonNames[toggleButtonIndex];
+				if (toggleButtonStatuses.get(toggleButtonName) === undefined) {
+					let matchAll = false;
+					const matchAllRadioButton = document.querySelectorAll(
+						'input[id="' + toggleButtonName + '"]'
+					);
+					if (matchAllRadioButton.length == 1 && matchAllRadioButton[0].checked) {
+						matchAll = true;
+					}
+					toggleButtonStatuses.set(toggleButtonName, matchAll);
+				}
+			}
+			let matchAnyQueries = [];
+			let matchAllQueries = [];
+			for(queryIndex in queries.show) {
+				let toggleButtonName = queries.show[queryIndex];
+				if(toggleButtonStatuses.get(toggleButtonName) === true) {
+					matchAllQueries.push(queryIndex);
+				} else {
+					matchAnyQueries.push(queryIndex);
+				}
+			}
 			let hide = $wrap.find(Object.keys(queries.hide).join(','));
-			let show = $wrap.find(Object.keys(queries.show).join(','));
+			let show = $wrap.find(matchAnyQueries.join(','));
+			for(queryIndex in matchAllQueries) {
+				let query = matchAllQueries[queryIndex];
+				$.merge(hide, show.not(query));
+				show = show.filter(query);
+			}
 			if (filters.find('.fl-search')) {
 				$wrap.find('.fl-search').each((__, inpt) => {
 					if (inpt.value.trim().length===0) {return;}
@@ -63,6 +95,11 @@ mw.hook('wikipage.content').add(() => {
 						'</div>'+
 					'</div>'
 				);
+				if (curr.anyAllToggle) {
+					curr.toggles.forEach((toggle) => {
+					toggle.radioButtonName = curr.label + 'MatchAll';
+					});
+				}
 				curr.toggles.forEach((toggle) => {
 					flc++;
 					let opt = $('<label for="fl-toggle-'+flc+'" class="fl-checkbox-label">');
@@ -77,14 +114,16 @@ mw.hook('wikipage.content').add(() => {
 					if (toggle.label) { opt.append(mw.html.escape(toggle.label)); }
 					if (toggle.alt) { opt.attr('title', toggle.alt); }
 					opt.append(inpt);
-					queries.show[toggle.query] = true; // show by default
+					// store the name of the radio button that determines whether this query is in 'match all' or 'match any' mode in the values
+					// applyFLs only uses the keys' presence in either the hide/show object to do the filtering
+					queries.show[toggle.query] = toggle.radioButtonName ? toggle.radioButtonName : ''; // show by default
 					inpt.on('change.fls', (e) => {
 						if (inpt.is(':checked')) {
 							delete queries.hide[toggle.query];
-							queries.show[toggle.query] = true;
+							queries.show[toggle.query] = toggle.radioButtonName ? toggle.radioButtonName : '';
 						} else {
 							delete queries.show[toggle.query];
-							queries.hide[toggle.query] = true;
+							queries.hide[toggle.query] = toggle.radioButtonName ? toggle.radioButtonName : '';
 						}
 						applyFLs();
 					});
@@ -96,6 +135,33 @@ mw.hook('wikipage.content').add(() => {
 					checks.prop('checked', e.currentTarget.classList.contains('fl-toggle-qa-all'));
 					checks.trigger('change');
 				});
+				if (curr.anyAllToggle) {
+					let matchAnyAll = $(
+						'<input type="radio" name="' +
+						curr.label +
+						'MatchAnyAll" id="' +
+						curr.label +
+						'MatchAny" value="' +
+						curr.label +
+						'MatchAny" checked></input>' +
+						'<label for="' +
+						curr.label +
+						'MatchAny">Match Any</label>' +
+						'<input type="radio" name="' +
+						curr.label +
+						'MatchAnyAll" id="' +
+						curr.label +
+						'MatchAll" value="' +
+						curr.label +
+						'MatchAll"></input>' +
+						'<label for="' +
+						curr.label +
+						'MatchAll">Match All</label>'
+					);
+					matchAnyAll.on('change.fls', applyFLs);
+					// flex break element to put the radio buttons on a new line
+					togglewrap.append('<div class="fl-toggle-flex-break"></div>', matchAnyAll);
+				}
 				filters.append(togglewrap);
 			} else if (curr.search) {
 				flc++;

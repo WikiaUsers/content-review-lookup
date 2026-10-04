@@ -1,23 +1,37 @@
 mw.hook('wikipage.content').add(function() {
 	const api = new mw.Api();
-	const page = mw.config.get('wgPageName');
+	const page = mw.config.get('wgTitle');
 	const localRatingsPage = `User:${mw.config.get('wgUserName')}/ratings.json`;
 	const lastVoted = x => $('.rating-'+ x).hasClass('voted');
-	const inc = x => x[page] ? x[page]++ : x[page] = 1;
-	const dec = x => x[page] && x[page] > 1 ? x[page]-- : delete x[page];
-	const sort = x => Object.keys(x).sort((a, b) => x[b] - x[a]).reduce((newX, key) => (newX[key] = x[key], newX), {});
+	const inc = x => x[' ' + page] ? x[' ' + page]++ : x[' ' + page] = 1;
+	const dec = x => x[' ' + page] && x[' ' + page] > 1 ? x[' ' + page]-- : delete x[' ' + page];
+	const sort = x => Object.fromEntries(Object.entries(x).sort((a, b) => b[1] - a[1]));
 	var up = [];
 	var down = [];
-	var globalUp, globalDown, deleted, deletedInLocal, deletedInGlobal, vote;
+	var deleted = '';
+	var globalUp, globalDown, deletedInLocal, deletedInGlobal, vote;
 	
 	Promise.all([
-		fetch(`/vi/wiki/${localRatingsPage}?action=raw`).then(response => response.ok && response.json()),
-		fetch('/vi/wiki/Wiki_Vietnamese_Backrooms:Ratings.json?action=raw').then(response => response.json())
-	]).then(ratings => (ratings[0] && (up = ratings[0].up, down = ratings[0].down), (globalUp = ratings[1].globalUp, globalDown = ratings[1].globalDown)))
+		fetch(`vi/wiki/${localRatingsPage}?action=raw`).then(response => response.ok && response.json()),
+		fetch('vi/wiki/Wiki_Vietnamese_Backrooms:Ratings.json?action=raw').then(response => response.json())
+	]).then(ratings => {
+		if (ratings) {
+			up = ratings[0].up;
+			down = ratings[0].down;
+			globalUp = ratings[1].globalUp;
+			globalDown = ratings[1].globalDown;
+		}
+	})
 	.then(() => {
+		// Công cụ chuyển đổi tạm thời sang định dạng mục mới cho các tệp ratings.json cũ.
+		up = up.map(entry => entry.replace(/_/g, ' '));
+		down = down.map(entry => entry.replace(/_/g, ' '));
+		globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+		globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+		// ----
 		$('.page-header__meta').append(`<div class="page-rating">Rating:
-			<span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[page] || 0}</span>
-			<span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[page] || 0}</span>
+			<span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[' ' + page] || 0}</span>
+			<span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[' ' + page] || 0}</span>
 		</div>`);
 		
 		$('[class*="rating-"]').click(function() {
@@ -26,26 +40,34 @@ mw.hook('wikipage.content').add(function() {
 			$('.page-rating').addClass('busy');
 			setTimeout(() => $('.page-rating').removeClass('busy'), 1500);
 			
-			fetch('/vi/wiki/Wiki_Vietnamese_Backrooms:Ratings.json?action=raw')
+			fetch('vi/wiki/Wiki_Vietnamese_Backrooms:Ratings.json?action=raw')
 				.then(response => response.json())
-				.then(ratings => ratings && (globalUp = ratings.globalUp, globalDown = ratings.globalDown))
-				.then(() => {
-					deleted = '';
-					return Promise.all([...Object.keys(globalUp), ...Object.keys(globalDown)].join('|').match(/([^|]*\|){1,50}/g).map(chunk => fetch(`/vi/api.php?action=query&titles=${chunk.slice(0, -1)}&format=json`)
+				.then(ratings => {
+					if (ratings) {
+						globalUp = ratings.globalUp;
+						globalDown = ratings.globalDown;
+					}
+					
+					// Công cụ chuyển đổi tạm thời sang định dạng mục mới cho các tệp ratings.json cũ.
+					globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+					globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+					// ----
+					return Promise.all([...Object.keys(globalUp), ...Object.keys(globalDown)].join('|').match(/([^|]*\|){1,50}/g)
+						.map(chunk => fetch(`/api.php?action=query&titles=${chunk.slice(0, -1)}&format=json`)
 						.then(response => response.json())
-						.then(json => Object.entries(json.query.pages).flat().filter(entry => entry.missing == '').map(entry => entry.title.replace(/\s/g, '_')))));
+						.then(json => Object.entries(json.query.pages).flat().filter(entry => entry.missing == '').map(entry => entry.title))));
 				})
 				.then(titles => {
 					if (titles.flat().length) {
 						deleted = 'and removed ratings for deleted pages ';
 						titles.flat().forEach(title => {
 							if (up.includes(title) || down.includes(title)) deletedInLocal = true;
-							if (globalUp[title] || globalDown[title]) deletedInGlobal = true;
+							if (globalUp[' ' + title] || globalDown[' ' + title]) deletedInGlobal = true;
 							up = up.filter(entry => entry != title);
 							down = down.filter(entry => entry != title);
-							delete globalUp[title];
-							delete globalDown[title];
-							deleted += `“[[${title.replace(/_/g, ' ')}]]”, `;
+							delete globalUp[' ' + title];
+							delete globalDown[' ' + title];
+							deleted += `“[[${title}]]”, `;
 						});
 						deleted = deleted.slice(0, -2);
 					}
@@ -102,7 +124,7 @@ mw.hook('wikipage.content').add(function() {
 						format: 'json',
 						title: localRatingsPage,
 						text: JSON.stringify({up, down}, null, '\t'),
-						summary: `PageRating: ${vote} “[[${page.replace(/_/g, ' ')}]]” ${deletedInLocal ? deleted : ''} locally`,
+						summary: `PageRating: ${vote} “[[${page}]]” ${deletedInLocal ? deleted : ''} locally`,
 						tags: 'page-rating'
 					});
 					api.postWithEditToken({
@@ -110,8 +132,9 @@ mw.hook('wikipage.content').add(function() {
 						format: 'json',
 						title: 'Wiki_Vietnamese_Backrooms:Ratings.json',
 						text: JSON.stringify({globalUp: sort(globalUp), globalDown: sort(globalDown)}, null, '\t'),
-						summary: `PageRating: ${vote} “[[${page.replace(/_/g, ' ')}]]” ${deletedInGlobal ? deleted : ''} globally\u200b`,
-						tags: 'page-rating'
+						summary: `PageRating: ${vote} “[[${page}]]” ${deletedInGlobal ? deleted : ''} globally\u200b`,
+						tags: 'page-rating',
+						watchlist: 'unwatch'
 					});
 				});
 			});

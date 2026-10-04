@@ -1,5 +1,3 @@
-// dont submit
-
 function importcss(url) {
     return new Promise((resolve, reject) => {
         const style = document.createElement("link");

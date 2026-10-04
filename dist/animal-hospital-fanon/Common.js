@@ -11,10 +11,8 @@ mw.loader.getScript("https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemo
         }
     }
 
-    // Initial page load
     convertEmoji();
 
-    // Catch Fandom dynamic content (comments, widgets, etc.)
     const observer = new MutationObserver(function () {
         convertEmoji();
     });
@@ -93,19 +91,3 @@ importArticles({
         'u:dev:MediaWiki:UTCClock/code.js',
     ]
 });
-
-(function () {
-  var script = document.createElement("script");
-
-  script.src =
-    "https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/dist/twemoji.min.js";
-
-  script.onload = function () {
-    twemoji.parse(document.body, {
-      folder: "svg",
-      ext: ".svg"
-    });
-  };
-
-  document.head.appendChild(script);
-})();

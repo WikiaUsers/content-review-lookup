@@ -1,3 +1,5 @@
+
+
 /* ===== HERO FILTER + SEARCH (Fandom-safe) ===== */
 /* Rank & Role match on data-val (button) <-> data-rank / data-role (card),
    so the full ladder works: all · n · r · sr · ssr · ssrplus · ur           */

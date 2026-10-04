@@ -13,6 +13,6 @@ window.dev.i18n.overrides['LinkPreview']['no-image'] = 'https://nocookie.net';
 
 /* LockOldComments */
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 75;
+window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.namespaceNumbers = [0];

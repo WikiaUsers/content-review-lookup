@@ -23,12 +23,6 @@ mw.hook('wikipage.content').add(function() {
 		}
 	})
 	.then(() => {
-		// Temporary converter to new entry format for old ratings.json pages
-		up = up.map(entry => entry.replace(/_/g, ' '));
-		down = down.map(entry => entry.replace(/_/g, ' '));
-		globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
-		globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
-		// ----
 		$('.page-header__meta').append(`<div class="page-rating">Rating:
 			<span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[' ' + page] || 0}</span>
 			<span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[' ' + page] || 0}</span>
@@ -48,10 +42,6 @@ mw.hook('wikipage.content').add(function() {
 						globalDown = ratings.globalDown;
 					}
 					
-					// Temporary converter to new entry format for old ratings.json pages
-					globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
-					globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
-					// ----
 					return Promise.all([...Object.keys(globalUp), ...Object.keys(globalDown)].join('|').match(/([^|]*\|){1,50}/g)
 						.map(chunk => fetch(`/api.php?action=query&titles=${chunk.slice(0, -1)}&format=json`)
 						.then(response => response.json())

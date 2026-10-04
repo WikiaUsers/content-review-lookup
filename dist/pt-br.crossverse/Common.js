@@ -329,6 +329,9 @@ mw.hook('wikipage.content').add(function ($content) {
             overlay.id = 'shura-overlay';
             
             overlay.innerHTML = `
+                <img id="shura-img-left" class="shura-side-img" src="https://static.wikia.nocookie.net/animeverso/images/6/65/Magsarion.webp/revision/latest/scale-to-width-down/381?cb=20260929204944&path-prefix=pt-br">
+                <img id="shura-img-right" class="shura-side-img" src="https://static.wikia.nocookie.net/animeverso/images/6/65/Magsarion.webp/revision/latest/scale-to-width-down/381?cb=20260929204944&path-prefix=pt-br">
+                
                 <div class="shura-jp-container" id="jp-box"></div>
                 <div class="shura-traducao" id="pt-box"></div>
                 <div class="shura-instrucao" id="instrucao-box">[ Pressione ENTER ou TOQUE NA TELA ]</div>
@@ -350,10 +353,33 @@ mw.hook('wikipage.content').add(function ($content) {
         const jpBox = document.getElementById('jp-box');
         const ptBox = document.getElementById('pt-box');
         const instrucaoBox = document.getElementById('instrucao-box');
+        
+        const imgLeft = document.getElementById('shura-img-left');
+        const imgRight = document.getElementById('shura-img-right');
 
         jpBox.innerHTML = '';
         ptBox.innerHTML = '';
         instrucaoBox.classList.remove('visivel');
+
+        // LÓGICA DE FADE IN E FADE OUT
+        if (index >= 0 && index <= 4) {
+            // Inicia o movimento e faz o Fade In na esquerda
+            imgLeft.classList.add('animacao-esquerda');
+            imgLeft.classList.add('visivel');
+            // Garante que a direita está invisível
+            imgRight.classList.remove('visivel');
+        } else if (index >= 5 && index <= 9) {
+            // Faz o Fade Out na esquerda (sem quebrar o movimento dela)
+            imgLeft.classList.remove('visivel');
+            
+            // Inicia o movimento e faz o Fade In na direita
+            imgRight.classList.add('animacao-direita');
+            imgRight.classList.add('visivel');
+        } else {
+            // Frase final: Faz o Fade Out na direita lentamente
+            imgLeft.classList.remove('visivel');
+            imgRight.classList.remove('visivel');
+        }
 
         const fraseJp = dialogosShura[index].jp;
         const frasePt = dialogosShura[index].pt;
@@ -602,3 +628,322 @@ if (document.readyState === 'loading') {
 /* ========================================================== */
 /* ===== FIM - BALANCEDTABBER ================================ */
 /* ========================================================== */
+
+(function ($, mw) {
+    'use strict';
+
+    /* =========================================================
+       CONFIGURACAO
+       ========================================================= */
+
+    var milestones = [
+        '10?',
+        '100?',
+        '1.000?',
+        '10.000?',
+        '\u221E'
+    ];
+
+    var counterInterval = 2000;
+    var fadeDuration = 300;
+
+
+    /* =========================================================
+       SPOTLIGHT
+       ========================================================= */
+
+    function updateSpotlight(element, event) {
+        var rect = element.getBoundingClientRect();
+
+        if (!rect.width || !rect.height) {
+            return;
+        }
+
+        var x =
+            ((event.clientX - rect.left) / rect.width) * 100;
+
+        var y =
+            ((event.clientY - rect.top) / rect.height) * 100;
+
+
+        /* Limita entre 0 e 100 */
+
+        x = Math.max(0, Math.min(100, x));
+        y = Math.max(0, Math.min(100, y));
+
+
+        /*
+         * Evita executar varias alteracoes
+         * no mesmo frame durante o mousemove.
+         */
+
+        if (element.ftSpotlightFrame) {
+            window.cancelAnimationFrame(
+                element.ftSpotlightFrame
+            );
+        }
+
+
+        element.ftSpotlightFrame =
+            window.requestAnimationFrame(function () {
+
+                element.style.setProperty(
+                    '--ft-mx',
+                    x + '%'
+                );
+
+                element.style.setProperty(
+                    '--ft-my',
+                    y + '%'
+                );
+
+                element.ftSpotlightFrame = null;
+            });
+    }
+
+
+    function resetSpotlight(element) {
+        element.style.setProperty(
+            '--ft-mx',
+            '50%'
+        );
+
+        element.style.setProperty(
+            '--ft-my',
+            '50%'
+        );
+    }
+
+
+    /*
+     * Event delegation.
+     *
+     * Isso significa que nao precisamos
+     * adicionar um listener individual
+     * sempre que o Fandom recarregar
+     * parte do artigo.
+     */
+
+    $(document)
+        .off(
+            'mousemove.ftSpotlight',
+            '.ft-spotlight .ft-spotlight-inner'
+        )
+        .on(
+            'mousemove.ftSpotlight',
+            '.ft-spotlight .ft-spotlight-inner',
+            function (event) {
+                updateSpotlight(this, event);
+            }
+        );
+
+
+    $(document)
+        .off(
+            'mouseleave.ftSpotlight',
+            '.ft-spotlight .ft-spotlight-inner'
+        )
+        .on(
+            'mouseleave.ftSpotlight',
+            '.ft-spotlight .ft-spotlight-inner',
+            function () {
+                resetSpotlight(this);
+            }
+        );
+
+
+    /* =========================================================
+       FAMILY COUNTER
+       ========================================================= */
+
+    function startCounter(element) {
+        var $element = $(element);
+
+
+        /*
+         * Impede que o mesmo contador
+         * receba varios setInterval.
+         */
+
+        if ($element.data('ftCounterBound')) {
+            return;
+        }
+
+
+        $element.data(
+            'ftCounterBound',
+            true
+        );
+
+
+        var index = 0;
+
+
+        /*
+         * Define o primeiro valor.
+         */
+
+        $element.text(
+            milestones[index]
+        );
+
+
+        var timer = window.setInterval(
+            function () {
+
+                /*
+                 * Se o Fandom substituiu o conteudo
+                 * durante preview/AJAX, encerramos
+                 * o timer antigo.
+                 */
+
+                if (
+                    !document.documentElement.contains(
+                        element
+                    )
+                ) {
+                    window.clearInterval(timer);
+
+                    return;
+                }
+
+
+                $element.addClass(
+                    'ft-fade'
+                );
+
+
+                window.setTimeout(
+                    function () {
+
+                        if (
+                            !document.documentElement.contains(
+                                element
+                            )
+                        ) {
+                            return;
+                        }
+
+
+                        index =
+                            (index + 1) %
+                            milestones.length;
+
+
+                        $element.text(
+                            milestones[index]
+                        );
+
+
+                        $element.removeClass(
+                            'ft-fade'
+                        );
+
+                    },
+                    fadeDuration
+                );
+
+            },
+            counterInterval
+        );
+
+
+        $element.data(
+            'ftCounterTimer',
+            timer
+        );
+    }
+
+
+    /* =========================================================
+       INICIALIZACAO DOS CONTADORES
+       ========================================================= */
+
+    function initFamilyCounters($content) {
+
+        /*
+         * O hook wikipage.content fornece
+         * um objeto jQuery.
+         *
+         * Ainda assim normalizamos para evitar
+         * problemas caso a funcao seja chamada
+         * manualmente.
+         */
+
+        if (
+            !$content ||
+            !$content.jquery
+        ) {
+            $content = $(
+                $content || document
+            );
+        }
+
+
+        var selector =
+            '.ft-family-counter-number';
+
+
+        /*
+         * .find() procura dentro do conteudo.
+         *
+         * .filter() cobre o caso em que
+         * o proprio elemento recebido pelo
+         * hook seja o contador.
+         */
+
+        var $counters =
+            $content
+                .find(selector)
+                .add(
+                    $content.filter(selector)
+                );
+
+
+        $counters.each(
+            function () {
+                startCounter(this);
+            }
+        );
+    }
+
+
+    /* =========================================================
+       MEDIAWIKI / FANDOM
+       ========================================================= */
+
+    function initContent($content) {
+        initFamilyCounters($content);
+    }
+
+
+    if (
+        mw &&
+        typeof mw.hook === 'function'
+    ) {
+
+        mw.hook(
+            'wikipage.content'
+        ).add(
+            initContent
+        );
+
+    } else {
+
+        /*
+         * Fallback.
+         *
+         * Normalmente nao sera necessario
+         * dentro do Fandom.
+         */
+
+        $(function () {
+            initContent(
+                $(document)
+            );
+        });
+
+    }
+
+
+}(jQuery, window.mw));

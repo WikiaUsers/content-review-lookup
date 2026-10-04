@@ -12,5 +12,5 @@ window.BackToTopStart = 800;
 /* Modèle: LockOldComments */
 window.lockOldComments = (window.lockOldComments || {});
 	window.lockOldComments.limit = 120;
-	window.lockOldComments.addNoteAbove = true;
-	window.lockOldComments.namespaceNumbers = [0];
+	window.lockOldComments.addNoteAbove = false;
+	window.lockOldComments.namespaceNumbers = [500];

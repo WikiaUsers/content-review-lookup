@@ -510,12 +510,25 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                     return;
                 }
                 const score =
-                    calculateScore(users);
-                newMatrixLines.push(
-                    `${pName} | ${userEntries.join(',') } | ${score}`
-                );
-                newMatrixLines.push('');
-            });
+    calculateScore(users);
+
+const linkedPage =
+    `[[${pName}]]`;
+
+const linkedUsers =
+    userEntries.map(function (entry) {
+        const separator = entry.lastIndexOf(':');
+        const username = entry.substring(0, separator);
+        const vote = entry.substring(separator);
+
+        return `[[User:${username}|${username}]]${vote}`;
+    });
+
+newMatrixLines.push(
+    `${linkedPage} | ${linkedUsers.join(',')} | ${score}`
+);
+
+newMatrixLines.push('');
 
 
             const newMatrixText =
@@ -604,5 +617,4 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                     el.style.opacity = "1";
                 });
         });
-    }
-});
+    });

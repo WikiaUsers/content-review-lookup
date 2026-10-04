@@ -12,1968 +12,730 @@ Assets (CSS, icons, strings) are loaded from user subpages:
 
 (function() {
     'use strict';
-    
     if (window.__ActivityAdvancedLoaded) return;
     window.__ActivityAdvancedLoaded = true;
 
-    function waitForMw() {
+    const waitForMw = () => {
         if (window.mw && mw.loader && typeof mw.loader.using === 'function') {
-            mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).done(init).fail(function(err) {
+            mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).done(init).fail((err) => {
                 console.error('[ActAdv] Module load failed:', err);
             });
         } else {
             setTimeout(waitForMw, 100);
         }
-    }
+    };
 
     function init() {
-        if (!/\.fandom\.com$/.test(location.hostname)) return;
-        if (!window.mw || !mw.Api || !mw.config) return;
-        if (window.top !== window.self) return;
+        if (!/\.fandom\.com$/.test(location.hostname) || !window.mw || !mw.Api || !mw.config || window.top !== window.self) return;
 
-        var ASSET_PAGES = {
-            css: 'MediaWiki:ActivityAdvanced.css',
-            icons: 'MediaWiki:ActivityAdvanced.css/icons.css',
-            json: 'ActivityAdvanced/ActivityAdvanced.json'
+        // --- Constants & Config ---
+        const LANG = ((mw.config.get('wgUserLanguage') || 'en') + '').indexOf('ru') === 0 ? 'ru' : 'en';
+        const FALLBACK_STRINGS = {
+            ru: { pageTitle: 'Активность вики', subtitle: 'Служебная страница', loading: 'Загрузка…', settings: 'Настройки', close: 'Закрыть', sourcesFailed: 'Не удалось загрузить: {list}. Показаны остальные данные.', sourceRc: 'правки', sourceLog: 'логи', sourcePost: 'обсуждения' },
+            en: { pageTitle: 'Wiki activity', subtitle: 'Special page', loading: 'Loading…', settings: 'Settings', close: 'Close', sourcesFailed: 'Failed to load: {list}. Showing the rest.', sourceRc: 'recent changes', sourceLog: 'logs', sourcePost: 'discussions' }
         };
-        
-        var LANG = ((mw.config.get('wgUserLanguage') || 'en') + '').indexOf('ru') === 0 ? 'ru' : 'en';
-
-        var FALLBACK_STRINGS = {
-            ru: { 
-                pageTitle: 'Активность вики', 
-                subtitle: 'Служебная страница', 
-                loading: 'Загрузка…', 
-                settings: 'Настройки', 
-                close: 'Закрыть',
-                sourcesFailed: 'Не удалось загрузить: {list}. Показаны остальные данные.',
-                sourceRc: 'правки', 
-                sourceLog: 'логи', 
-                sourcePost: 'обсуждения'
-            },
-            en: { 
-                pageTitle: 'Wiki activity', 
-                subtitle: 'Special page', 
-                loading: 'Loading…', 
-                settings: 'Settings', 
-                close: 'Close',
-                sourcesFailed: 'Failed to load: {list}. Showing the rest.',
-                sourceRc: 'recent changes', 
-                sourceLog: 'logs', 
-                sourcePost: 'discussions'
-            }
-        };
-
-        var STR = {};
-        var els = {};
-        var observer = null;
-        var cardIndexByUser = new Map();
-
-        var api = new mw.Api();
-
-        function fetchRawPage(pageTitle) {
-            var params = new URLSearchParams({
-                action: 'query', prop: 'revisions', rvprop: 'content', rvslots: 'main',
-                format: 'json', formatversion: 2, titles: pageTitle,
-                origin: '*'
-            });
-            
-            return fetch('https://yandere-simulator.fandom.com/ru/api.php?' + params.toString(), {
-                method: 'GET', 
-                headers: { 'Accept': 'application/json' }
-            }).then(function(res) {
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                return res.json();
-            }).then(function(data) {
-                var pages = data.query.pages;
-                var pageId = Object.keys(pages)[0];
-                if (!pageId || !pages[pageId].revisions || !pages[pageId].revisions.length) {
-                    console.warn('[ActAdv] Page not found or empty: ' + pageTitle);
-                    return null;
-                }
-                return pages[pageId].revisions[0].slots.main.content;
-            }).catch(function(e) {
-                console.error('[ActAdv] Failed to fetch ' + pageTitle + ':', e);
-                return null;
-            });
-        }
-
-        function loadAssets() {
-            var PAGE_CSS = 'Участница:Ŝenezala/debugging.css';
-            var PAGE_ICONS = 'Участница:Ŝenezala/icons.css';
-            var PAGE_JSON = 'Участница:Ŝenezala/debugging.json';
-
-            return fetchRawPage(PAGE_CSS).then(function(cssText) {
-                if (cssText) {
-                    var styleEl = document.createElement('style');
-                    styleEl.id = 'actAdv-style-ext';
-                    styleEl.textContent = cssText;
-                    document.head.appendChild(styleEl);
-                }
-                return fetchRawPage(PAGE_ICONS);
-            }).then(function(iconsText) {
-                if (iconsText) {
-                    var iconsEl = document.createElement('style');
-                    iconsEl.id = 'actAdv-style-icons';
-                    iconsEl.textContent = iconsText;
-                    document.head.appendChild(iconsEl);
-                }
-                return fetchRawPage(PAGE_JSON);
-            }).then(function(jsonText) {
-                var jsonData = {};
-                if (jsonText) {
-                    try { 
-                        jsonData = JSON.parse(jsonText); 
-                    } catch (parseErr) { 
-                        console.error('[ActAdv] Invalid JSON syntax in debugging.json', parseErr); 
-                    }
-                }
-
-                STR = {};
-                var fallback = FALLBACK_STRINGS[LANG] || {};
-                var jsonLang = jsonData[LANG] || {};
-                
-                for (var key in fallback) {
-                    if (fallback.hasOwnProperty(key)) STR[key] = fallback[key];
-                }
-                for (var key2 in jsonLang) {
-                    if (jsonLang.hasOwnProperty(key2)) STR[key2] = jsonLang[key2];
-                }
-                
-                if (!jsonText || !jsonData[LANG]) {
-                    console.warn('[ActAdv] JSON strings failed to load, using minimal fallback.');
-                }
-            }).catch(function(err) {
-                console.error('[ActAdv] Critical failure loading assets:', err);
-                STR = {};
-                var fb = FALLBACK_STRINGS[LANG] || {};
-                for (var k in fb) {
-                    if (fb.hasOwnProperty(k)) STR[k] = fb[k];
-                }
-            });
-        }
-
-        function T(key, params) {
-            var s = STR[key] || (FALLBACK_STRINGS[LANG] && FALLBACK_STRINGS[LANG][key]) || key;
-            if (params) {
-                for (var k in params) {
-                    if (params.hasOwnProperty(k)) {
-                        s = s.replace(new RegExp('\\{' + k + '\\}', 'g'), params[k]);
-                    }
-                }
-            }
-            return s;
-        }
-
-        function plural(forms, n) {
-            if (!forms) return String(n);
-            var f = forms.split('|');
-            if (LANG !== 'ru') {
-                return (f[1] || f[0]).replace('{n}', n);
-            }
-            var m10 = n % 10, m100 = n % 100;
-            var idx = 2;
-            if (m10 === 1 && m100 !== 11) idx = 0;
-            else if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) idx = 1;
-            var template = f[idx] || f[f.length - 1] || '{n}';
-            return template.replace('{n}', n);
-        }
-
-        var LS_KEY = 'actAdv-settings';
-        var DEFAULTS = {
+        const DEFAULTS = {
             filters: { edit: true, new: true, log: true, af: true, forum: true, wall: true, comment: true, newusers: false, patrol: false },
             excludeUsers: [], includeUsers: [], namespaces: [], ignoreTalk: true,
-            limit: 100, showBots: false, expandDetails: false, autoLoad: true, hideRail: false,
-            onlyUnpatrolled: false,
+            limit: 100, showBots: false, expandDetails: false, autoLoad: true, hideRail: false, onlyUnpatrolled: false
+        };
+        const FILTER_KEYS = ['edit', 'new', 'log', 'af', 'forum', 'wall', 'comment'];
+        const ACTION_ICON = { edit: 'edit', new: 'new', delete: 'delete', restore: 'restore', protect: 'protect', unprotect: 'protect', move: 'move', block: 'block', unblock: 'block', reblock: 'block', rights: 'rights', upload: 'upload', newusers: 'newusers', patrol: 'patrol', other: 'quiz', forum: 'forum', wall: 'wall', comment: 'comment', poll: 'poll', quiz: 'quiz', af: 'shield' };
+        const FILTER_ICON = { edit: 'edit', new: 'new', log: 'quiz', af: 'shield', forum: 'forum', wall: 'wall', comment: 'comment', poll: 'poll' };
+        const FILTER_OF_TYPE = { edit: 'edit', new: 'new', log: 'log', af: 'af', forum: 'forum', wall: 'wall', comment: 'comment', poll: 'forum', quiz: 'forum' };
+        const LOG_ACTIONS = { delete: 1, restore: 1, protect: 1, unprotect: 1, move: 1, block: 1, unblock: 1, reblock: 1, rights: 1, upload: 1, newusers: 1, patrol: 1, other: 1 };
+        const FALLBACK_NAMESPACES = [
+            { id: 0, name: '(Main)' }, { id: 1, name: 'Talk' }, { id: 2, name: 'User' }, { id: 3, name: 'User talk' }, { id: 4, name: 'Project' }, { id: 5, name: 'Project talk' }, { id: 6, name: 'File' }, { id: 7, name: 'File talk' }, { id: 8, name: 'MediaWiki' }, { id: 9, name: 'MediaWiki talk' }, { id: 10, name: 'Template' }, { id: 11, name: 'Template talk' }, { id: 12, name: 'Help' }, { id: 13, name: 'Help talk' }, { id: 14, name: 'Category' }, { id: 15, name: 'Category talk' }, { id: 110, name: 'Forum' }, { id: 111, name: 'Forum talk' }, { id: 420, name: 'GeoJson' }, { id: 421, name: 'GeoJson talk' }, { id: 500, name: 'User blog' }, { id: 501, name: 'User blog comment' }, { id: 502, name: 'Blog' }, { id: 503, name: 'Blog talk' }, { id: 828, name: 'Module' }, { id: 829, name: 'Module talk' }, { id: 1200, name: 'Message Wall' }, { id: 1201, name: 'Thread' }, { id: 1202, name: 'Message Wall Greeting' }, { id: 1203, name: 'Message Wall Greeting Talk' }, { id: 2000, name: 'Board' }, { id: 2001, name: 'Board Thread' }, { id: 2002, name: 'Topic' }, { id: 2900, name: 'Map' }, { id: 2901, name: 'Map talk' }
+        ];
+
+        // --- State & Utilities ---
+        let STR = {};
+        let els = {};
+        let observer = null;
+        const cardIndexByUser = new Map();
+        const api = new mw.Api();
+        const esc = (s) => mw.html.escape(String(s == null ? '' : s));
+        const wikiId = mw.config.get('wgCityId');
+        const state = { pool: [], seen: {}, rendered: 0, lastDayKey: '', loading: false, errors: [], railDone: false, sources: { rc: { cont: null, done: false, patrolAllowed: null }, log: { cont: null, done: false }, post: { page: 0, done: false }, af: { cont: null, done: false, allowed: null } } };
+
+        // --- Cache Class ---
+        class TTLCache {
+            constructor(storageKey, ttlMs, maxItems = 0) {
+                this.key = storageKey;
+                this.ttl = ttlMs;
+                this.max = maxItems;
+                this.data = new Map();
+                this.load();
+            }
+            load() {
+                try {
+                    const raw = localStorage.getItem(this.key);
+                    if (!raw) return;
+                    const parsed = JSON.parse(raw);
+                    const now = Date.now();
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(([k, v]) => { if (v && v.ts && (now - v.ts) < this.ttl) this.data.set(k, v); });
+                    } else if (parsed && typeof parsed === 'object') {
+                        Object.keys(parsed).forEach(k => { if (parsed[k] && parsed[k].ts && (now - parsed[k].ts) < this.ttl) this.data.set(k, parsed[k]); });
+                    }
+                } catch (e) { console.warn('[ActAdv] Cache load fail:', e); }
+            }
+            save() {
+                try {
+                    const obj = {};
+                    this.data.forEach((v, k) => obj[k] = v);
+                    localStorage.setItem(this.key, JSON.stringify(obj));
+                } catch (e) {}
+            }
+            get(key) {
+                const entry = this.data.get(key);
+                if (!entry) return undefined;
+                if ((Date.now() - entry.ts) >= this.ttl) { this.data.delete(key); return undefined; }
+                return entry.val;
+            }
+            set(key, val) {
+                if (this.max && this.data.size >= this.max && !this.data.has(key)) {
+                    const firstKey = this.data.keys().next().value;
+                    this.data.delete(firstKey);
+                }
+                this.data.set(key, { val, ts: Date.now() });
+            }
+            clear() { this.data.clear(); try { localStorage.removeItem(this.key); } catch(e){} }
+        }
+
+        const avatarCache = new TTLCache('actAdv-avatar-cache', 24 * 60 * 60 * 1000, 500);
+        const rightsCacheKey = 'actAdv-user-rights-' + (mw.config.get('wgCityId') || location.hostname);
+        const rightsCache = new TTLCache(rightsCacheKey, 60 * 60 * 1000);
+        let patrolToken = null;
+
+        // --- Localization & Settings ---
+        const T = (key, params) => {
+            let s = STR[key] || (FALLBACK_STRINGS[LANG] && FALLBACK_STRINGS[LANG][key]) || key;
+            if (params) Object.keys(params).forEach(k => s = s.replace(new RegExp('\\{' + k + '\\}', 'g'), params[k]));
+            return s;
+        };
+        const plural = (forms, n) => {
+            if (!forms) return String(n);
+            const f = forms.split('|');
+            if (LANG !== 'ru') return (f[1] || f[0]).replace('{n}', n);
+            const m10 = n % 10, m100 = n % 100;
+            let idx = 2;
+            if (m10 === 1 && m100 !== 11) idx = 0;
+            else if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) idx = 1;
+            return (f[idx] || f[f.length - 1] || '{n}').replace('{n}', n);
         };
 
-        var Store = {
+        const Store = {
             settings: null,
-            load: function() {
-                var s = {};
-                try { 
-                    var raw = localStorage.getItem(LS_KEY);
-                    if (raw) s = JSON.parse(raw) || {};
-                } catch (e) { 
-                    s = {}; 
-                }
-                
-                this.settings = {};
-                for (var k in DEFAULTS) {
-                    if (DEFAULTS.hasOwnProperty(k)) this.settings[k] = DEFAULTS[k];
-                }
-                for (var k2 in s) {
-                    if (s.hasOwnProperty(k2)) this.settings[k2] = s[k2];
-                }
-                
-                this.settings.filters = {};
-                for (var fk in DEFAULTS.filters) {
-                    if (DEFAULTS.filters.hasOwnProperty(fk)) this.settings.filters[fk] = DEFAULTS.filters[fk];
-                }
-                if (s.filters) {
-                    for (var fk2 in s.filters) {
-                        if (s.filters.hasOwnProperty(fk2)) this.settings.filters[fk2] = s.filters[fk2];
-                    }
-                }
-                
-                if (typeof this.settings.limit !== 'number' || this.settings.limit < 10) this.settings.limit = 100;
-                this.settings.limit = Math.min(this.settings.limit, 500);
-                
-                ['excludeUsers', 'includeUsers'].forEach(function(key) {
-                    if (!Array.isArray(this.settings[key])) this.settings[key] = [];
-                    this.settings[key] = this.settings[key].map(function(u) { return String(u).trim(); }).filter(Boolean);
-                }, this);
-                
+            load() {
+                let user = {};
+                try { user = JSON.parse(localStorage.getItem('actAdv-settings')) || {}; } catch (e) {}
+                this.settings = Object.assign({}, DEFAULTS, user);
+                this.settings.filters = Object.assign({}, DEFAULTS.filters, user.filters || {});
+                this.settings.limit = Math.min(Math.max(parseInt(this.settings.limit, 10) || 100, 10), 500);
+                ['excludeUsers', 'includeUsers'].forEach(k => {
+                    if (!Array.isArray(this.settings[k])) this.settings[k] = [];
+                    this.settings[k] = this.settings[k].map(u => String(u).trim()).filter(Boolean);
+                });
                 if (!Array.isArray(this.settings.namespaces)) this.settings.namespaces = [];
-                this.settings.namespaces = this.settings.namespaces.map(Number).filter(function(n) { return !isNaN(n); });
-                
+                this.settings.namespaces = this.settings.namespaces.map(Number).filter(n => !isNaN(n));
                 return this.settings;
             },
-            save: function() {
-                try { 
-                    localStorage.setItem(LS_KEY, JSON.stringify(this.settings)); 
-                } catch (e) {}
-            },
+            save() { try { localStorage.setItem('actAdv-settings', JSON.stringify(this.settings)); } catch (e) {} }
         };
 
-        function normalizeUserList(str) {
-            return String(str || '').split(/[\n,]+/).map(function(s) { return s.trim(); }).filter(Boolean);
-        }
-
-        var FALLBACK_NAMESPACES = [
-            { id: 0, name: '(Main)' }, { id: 1, name: 'Talk' }, { id: 2, name: 'User' },
-            { id: 3, name: 'User talk' }, { id: 4, name: 'Project' }, { id: 5, name: 'Project talk' },
-            { id: 6, name: 'File' }, { id: 7, name: 'File talk' }, { id: 8, name: 'MediaWiki' },
-            { id: 9, name: 'MediaWiki talk' }, { id: 10, name: 'Template' }, { id: 11, name: 'Template talk' },
-            { id: 12, name: 'Help' }, { id: 13, name: 'Help talk' }, { id: 14, name: 'Category' },
-            { id: 15, name: 'Category talk' }, { id: 110, name: 'Forum' }, { id: 111, name: 'Forum talk' },
-            { id: 420, name: 'GeoJson' }, { id: 421, name: 'GeoJson talk' },
-            { id: 500, name: 'User blog' }, { id: 501, name: 'User blog comment' },
-            { id: 502, name: 'Blog' }, { id: 503, name: 'Blog talk' },
-            { id: 828, name: 'Module' }, { id: 829, name: 'Module talk' },
-            { id: 1200, name: 'Message Wall' }, { id: 1201, name: 'Thread' },
-            { id: 1202, name: 'Message Wall Greeting' }, { id: 1203, name: 'Message Wall Greeting Talk' },
-            { id: 2000, name: 'Board' }, { id: 2001, name: 'Board Thread' }, { id: 2002, name: 'Topic' },
-            { id: 2900, name: 'Map' }, { id: 2901, name: 'Map talk' },
-        ];
-        
-        var NS_LIST = [];
-
-        function fetchNamespaces() {
-            return api.get({
-                action: 'query', meta: 'siteinfo', siprop: 'namespaces',
-                uselang: mw.config.get('wgUserLanguage') || 'en',
-                format: 'json', formatversion: 2
-            }).then(function(res) {
-                var arr = (res && res.query && res.query.namespaces) || null;
-                if (!arr || !arr.length) return null;
-                return arr.map(function(n) { 
-                    return { id: n.id, name: n.name, canonical: n.canonical }; 
-                });
-            }).catch(function(e) {
-                console.warn('[ActAdv] Failed to fetch namespaces:', e);
-                return null;
-            });
-        }
-
-        function buildNsList() {
-            if (!els.nsList) return;
-            var ignoreTalk = Store.settings.ignoreTalk !== false;
-            var selected = Store.settings.namespaces || [];
-            var list = NS_LIST.filter(function(n) { return !ignoreTalk || n.id % 2 === 0; });
-            
-            els.nsList.innerHTML = list.map(function(n) {
-                var label = n.id === 0 ? T('nsMain') : (n.canonical || n.name || ('NS ' + n.id));
-                var checked = selected.indexOf(n.id) !== -1 ? ' checked' : '';
-                return '<label class="actAdv-ns-item"><input type="checkbox" data-ns="' + n.id + '"' + checked + '> ' + esc(label) + '</label>';
-            }).join('');
-        }
-
-        function initNamespaces() {
-            return fetchNamespaces().then(function(fetched) {
-                NS_LIST = (fetched && fetched.length ? fetched : FALLBACK_NAMESPACES).slice().sort(function(a, b) { return a.id - b.id; });
-                buildNsList();
-            });
-        }
-
-        var state = {
-            pool: [],
-            seen: {},
-            rendered: 0,
-            lastDayKey: '',
-            loading: false,
-            sources: {
-                rc: { cont: null, done: false, patrolAllowed: null },
-                log: { cont: null, done: false },
-                post: { page: 0, done: false },
-                af: { cont: null, done: false, allowed: null },
-            },
-            errors: [],
-            railDone: false,
+        // --- Asset Loading ---
+        const fetchRawPage = (title) => {
+            const params = new URLSearchParams({ action: 'query', prop: 'revisions', rvprop: 'content', rvslots: 'main', format: 'json', formatversion: 2, titles: title, origin: '*' });
+            return fetch(`https://yandere-simulator.fandom.com/ru/api.php?${params}`, { headers: { 'Accept': 'application/json' } })
+                .then(r => r.ok ? r.json() : Promise.reject(r.status))
+                .then(d => { const p = d.query.pages; const id = Object.keys(p)[0]; return (p[id] && p[id].revisions && p[id].revisions[0]) ? p[id].revisions[0].slots.main.content : null; })
+                .catch(() => null);
         };
 
-        var esc = function(s) { return mw.html.escape(String(s == null ? '' : s)); };
-        var wikiId = mw.config.get('wgCityId');
+        const loadAssets = () => {
+            const PAGE_CSS = 'Участница:Ŝenezala/debugging.css';
+            const PAGE_ICONS = 'Участница:Ŝenezala/icons.css';
+            const PAGE_JSON = 'Участница:Ŝenezala/debugging.json';
 
-        var AVATAR_CACHE_KEY = 'actAdv-avatar-cache';
-        var AVATAR_CACHE_TTL = 24 * 60 * 60 * 1000;
-        var MAX_AVATAR_CACHE = 500;
-        var avatarCache = new Map();
-        var pendingAvatars = {};
+            return fetchRawPage(PAGE_CSS).then(css => { if (css) { const s = document.createElement('style'); s.id = 'actAdv-style-ext'; s.textContent = css; document.head.appendChild(s); } return fetchRawPage(PAGE_ICONS); })
+                .then(icons => { if (icons) { const s = document.createElement('style'); s.id = 'actAdv-style-icons'; s.textContent = icons; document.head.appendChild(s); } return fetchRawPage(PAGE_JSON); })
+                .then(jsonText => {
+                    let jsonData = {};
+                    if (jsonText) try { jsonData = JSON.parse(jsonText); } catch (e) {}
+                    const fb = FALLBACK_STRINGS[LANG] || {};
+                    const jl = jsonData[LANG] || {};
+                    STR = Object.assign({}, fb, jl);
+                })
+                .catch(() => { STR = Object.assign({}, FALLBACK_STRINGS[LANG] || {}); });
+        };
 
-        var USER_RIGHTS_CACHE_PREFIX = 'actAdv-user-rights-';
-        var USER_RIGHTS_CACHE_TTL = 60 * 60 * 1000;
-        var userRightsCache = null;
-        var userRightsCacheKey = USER_RIGHTS_CACHE_PREFIX + (mw.config.get('wgCityId') || location.hostname);
+        // --- Unified Fetch Driver ---
+        const normalizeUser = (name) => {
+            const anon = !!name && mw.util.isIPAddress(name);
+            return { name: name || T('deletedUser'), anonymous: anon, url: anon ? mw.util.getUrl('Special:Contributions/' + name) : mw.util.getUrl('User:' + name), avatarUrl: null };
+        };
 
-        function loadAvatarCache() {
-            try {
-                var raw = localStorage.getItem(AVATAR_CACHE_KEY);
-                if (!raw) return;
-                var data = JSON.parse(raw);
-                var now = Date.now();
-                for (var username in data) {
-                    if (data.hasOwnProperty(username)) {
-                        var entry = data[username];
-                        if (entry && typeof entry.ts === 'number' && (now - entry.ts) < AVATAR_CACHE_TTL) {
-                            if (avatarCache.size < MAX_AVATAR_CACHE) {
-                                avatarCache.set(username, entry);
-                            }
-                        }
-                    }
+        const SOURCE_CONFIG = {
+            rc: {
+                checkRights: () => {
+					if (state.sources.rc.patrolAllowed !== null) return Promise.resolve(state.sources.rc.patrolAllowed);
+					return api.get({ action: 'query', meta: 'userinfo', uiprop: 'rights', formatversion: 2 })
+						.then(r => { state.sources.rc.patrolAllowed = (r.query.userinfo.rights || []).includes('patrol'); return state.sources.rc.patrolAllowed; })
+						.catch(() => { state.sources.rc.patrolAllowed = false; return false; });
+				},
+                buildParams: (cont, allowed) => {
+                    const base = 'title|timestamp|ids|flags|comment|redirect|tags|userid|user|sizes|parsedcomment';
+                    const p = { action: 'query', list: 'recentchanges', rcprop: allowed ? base + '|patrolled' : base, rclimit: Math.min(Math.max(Store.settings.limit, 10), 500), rctype: 'edit|new', formatversion: 2 };
+                    if (!Store.settings.showBots) p.rcshow = '!bot';
+                    if (cont) p.rccontinue = cont;
+                    return p;
+                },
+                extract: (res) => res.query.recentchanges || [],
+                contKey: 'rccontinue',
+                normalize: (rc) => {
+                    if (!rc || !rc.title || rc.type === 'log') return null;
+                    const ts = Math.floor(Date.parse(rc.timestamp) / 1000);
+                    if (!ts) return null;
+                    const isNew = rc.type === 'new';
+                    return { id: `rc:${rc.rcid || rc.revid || rc.title + ts}`, type: isNew ? 'new' : 'edit', action: isNew ? 'new' : 'edit', ns: rc.ns, title: rc.title, titleUrl: mw.util.getUrl(rc.title), user: normalizeUser(rc.user), timestamp: ts, sizeDelta: (typeof rc.newlen === 'number' && typeof rc.oldlen === 'number') ? rc.newlen - rc.oldlen : null, oldSize: rc.oldlen, newSize: rc.newlen, comment: rc.parsedcomment, tags: rc.tags, extra: { revid: rc.revid, diffUrl: mw.util.getUrl('Special:Diff/' + rc.revid), isFile: rc.ns === 6, fileName: rc.ns === 6 ? rc.title : null, unpatrolled: !!rc.unpatrolled, autopatrolled: !!rc.autopatrolled } };
+                },
+                onResult: (res, src) => { src.patrolAllowed = state.sources.rc.patrolAllowed; }
+            },
+            log: {
+                buildParams: (cont) => {
+                    const p = { action: 'query', list: 'logevents', lelimit: Math.min(Math.max(Store.settings.limit, 10), 500), leprop: 'ids|title|type|user|timestamp|comment|parsedcomment|details|tags|userid', formatversion: 2 };
+                    if (cont) p.lecontinue = cont;
+                    return p;
+                },
+                extract: (res) => res.query.logevents || [],
+                contKey: 'lecontinue',
+                normalize: (le) => {
+                    if (!le || !le.logid) return null;
+                    const ts = Math.floor(Date.parse(le.timestamp) / 1000);
+                    if (!ts) return null;
+                    const lt = le.logtype || le.type;
+                    const la = le.logaction || le.action || '';
+                    if (le.ns === 6 && lt === 'create') return null;
+                    let action = 'other';
+                    if (lt === 'delete') action = la === 'restore' ? 'restore' : 'delete';
+                    else if (lt === 'move') action = 'move';
+                    else if (lt === 'protect') action = la === 'unprotect' ? 'unprotect' : 'protect';
+                    else if (lt === 'block') action = la === 'unblock' ? 'unblock' : (la === 'reblock' ? 'reblock' : 'block');
+                    else if (lt === 'rights') action = 'rights';
+                    else if (lt === 'upload') action = 'upload';
+                    else if (lt === 'newusers') action = 'newusers';
+                    else if (lt === 'patrol') action = 'patrol';
+                    if (!LOG_ACTIONS[action]) action = 'other';
+                    const p = le.params || {};
+                    const isFile = lt === 'upload' || (le.ns === 6 && lt === 'modify');
+                    let displayTitle = le.title || T('logOther');
+                    if (action === 'move' && le.title) displayTitle = T('renamedTitle', { t: le.title });
+                    else if (action === 'patrol' && le.title) displayTitle = T('patrolledTitle', { t: le.title });
+                    return { id: `log:${le.logid}`, type: 'log', action, ns: le.ns, title: displayTitle, titleUrl: le.title ? mw.util.getUrl(le.title) : '#', user: normalizeUser(le.user), timestamp: ts, sizeDelta: null, oldSize: null, newSize: null, comment: le.parsedcomment, tags: le.tags, extra: { logType: lt, isFile, fileName: isFile ? le.title : null, userId: le.userid, params: { target: p.target_title || p.target, duration: p.duration || p.expiry, oldGroups: p.oldgroups, newGroups: p.newgroups, description: p.description } } };
                 }
-            } catch (e) {
-                console.warn('[ActAdv] Failed to load avatar cache:', e);
+            },
+            af: {
+                checkRights: () => {
+					if (state.sources.af.allowed !== null) return Promise.resolve(state.sources.af.allowed);
+					return api.get({ action: 'query', meta: 'userinfo', uiprop: 'rights', formatversion: 2 })
+						.then(r => { const rights = r.query.userinfo.rights || []; state.sources.af.allowed = rights.includes('abusefilter-view') || rights.includes('abusefilter-log'); return state.sources.af.allowed; })
+						.catch(() => { state.sources.af.allowed = false; return false; });
+				},
+                buildParams: (cont) => {
+                    const p = { action: 'query', list: 'abuselog', aflimit: Math.min(Math.max(Store.settings.limit, 10), 500), aflprop: 'ids|filter|user|title|action|result|timestamp|hidden|ns', formatversion: 2 };
+                    if (cont) p.aflstart = cont;
+                    return p;
+                },
+                extract: (res) => res.query.abuselog || [],
+                contKey: 'aflstart',
+                normalize: (af) => {
+                    if (!af || !af.id || af.hidden) return null;
+                    const ts = Math.floor(Date.parse(af.timestamp) / 1000);
+                    if (!ts) return null;
+                    const result = af.result || '';
+                    let desc = T('afOther', { r: result });
+                    if (result === 'disallow') desc = T('afDisallow');
+                    else if (result === 'warn') desc = T('afWarn');
+                    else if (result === 'tag') desc = T('afTag');
+                    else if (result === 'block') desc = T('afBlock');
+                    else if (result === 'degroup') desc = T('afDegroup');
+                    return { id: `af:${af.id}`, type: 'af', action: 'af', ns: af.ns, title: af.title || T('logOther'), titleUrl: af.title ? mw.util.getUrl(af.title) : '#', user: normalizeUser(af.user), timestamp: ts, sizeDelta: null, oldSize: null, newSize: null, comment: null, tags: null, extra: { filterId: af.filter_id, afAction: af.action, afResult: result, afDescription: desc, isFile: af.ns === 6, fileName: af.ns === 6 ? af.title : null } };
+                },
+                skipIfNoRights: true
             }
-        }
+        };
 
-        function saveAvatarCache() {
-            try {
-                var data = {};
-                avatarCache.forEach(function(entry, username) {
-                    data[username] = entry;
-                });
-                localStorage.setItem(AVATAR_CACHE_KEY, JSON.stringify(data));
-            } catch (e) {}
-        }
-
-        function loadUserRightsCache() {
-            try {
-                var raw = localStorage.getItem(userRightsCacheKey);
-                if (!raw) return;
-                var data = JSON.parse(raw);
-                if (data && typeof data.ts === 'number' && Array.isArray(data.rights)) {
-                    if ((Date.now() - data.ts) < USER_RIGHTS_CACHE_TTL) {
-                        userRightsCache = data;
-                    }
-                }
-            } catch (e) {}
-        }
-
-        function saveUserRightsCache(rights) {
-            userRightsCache = { rights: rights, ts: Date.now() };
-            try {
-                localStorage.setItem(userRightsCacheKey, JSON.stringify(userRightsCache));
-            } catch (e) {}
-        }
-
-        function clearAllCache() {
-            try {
-                localStorage.removeItem(AVATAR_CACHE_KEY);
-                avatarCache.clear();
-
-                var keysToRemove = [];
-                for (var i = 0; i < localStorage.length; i++) {
-                    var key = localStorage.key(i);
-                    if (key && key.indexOf(USER_RIGHTS_CACHE_PREFIX) === 0) {
-                        keysToRemove.push(key);
-                    }
-                }
-                keysToRemove.forEach(function(key) { localStorage.removeItem(key); });
-                userRightsCache = null;
-
-                return true;
-            } catch (e) {
-                console.warn('[ActAdv] Failed to clear cache:', e);
-                return false;
-            }
-        }
-
-        function fetchUserRights() {
-            if (userRightsCache && (Date.now() - userRightsCache.ts) < USER_RIGHTS_CACHE_TTL) {
-                return Promise.resolve(userRightsCache.rights);
-            }
-            return api.get({
-                action: 'query', meta: 'userinfo', format: 'json', formatversion: 2,
-                uiprop: 'rights'
-            }).then(function(res) {
-                var rights = (res && res.query && res.query.userinfo && res.query.userinfo.rights) || [];
-                saveUserRightsCache(rights);
-                return rights;
-            }).catch(function(e) {
-                console.warn('[ActAdv] Failed to fetch user rights:', e);
-                return [];
-            });
-        }
-
-        var patrolToken = null;
-
-        function getPatrolToken() {
-            if (patrolToken) return Promise.resolve(patrolToken);
-            return api.get({
-                action: 'query', meta: 'tokens', type: 'watch|patrol',
-                format: 'json', formatversion: 2
-            }).then(function(res) {
-                patrolToken = res && res.query && res.query.tokens && res.query.tokens.patroltoken;
-                return patrolToken;
-            }).catch(function(e) {
-                console.warn('[ActAdv] Failed to get patrol token:', e);
-                return null;
-            });
-        }
-
-        function patrolRevision(revid, btn) {
-            if (!revid || !btn) return;
-            btn.disabled = true;
-            btn.classList.add('actAdv-patrol-loading');
-            
-            return getPatrolToken().then(function(token) {
-                if (!token) throw new Error('No patrol token');
-                return api.post({
-                    action: 'patrol',
-                    revid: revid,
-                    token: token,
-                    format: 'json', formatversion: 2
-                });
-            }).then(function() {
-                btn.classList.remove('actAdv-patrol-loading');
-                btn.classList.add('actAdv-patrolled');
-                btn.title = '✓ Patrolled';
-                btn.setAttribute('aria-label', 'Patrolled');
-                
-                for (var i = 0; i < state.pool.length; i++) {
-                    var entry = state.pool[i];
-                    if (entry.extra && entry.extra.revid === revid) {
-                        entry.extra.unpatrolled = false;
-                        entry.extra.autopatrolled = true;
-                        break;
-                    }
-                }
-            }).catch(function(e) {
-                console.warn('[ActAdv] Patrol failed:', e);
-                btn.disabled = false;
-                btn.classList.remove('actAdv-patrol-loading');
-                btn.title = 'Patrol failed — click to retry';
-            });
-        }
-
-        function checkAfRights() {
-            return fetchUserRights().then(function(rights) {
-                return rights.indexOf('abusefilter-view') !== -1 || rights.indexOf('abusefilter-log') !== -1;
-            });
-        }
-
-        function checkPatrolRights() {
-            return fetchUserRights().then(function(rights) {
-                return rights.indexOf('patrol') !== -1 || rights.indexOf('patrolmarks') !== -1;
-            });
-        }
-
-        function getCachedAvatar(username) {
-            var entry = avatarCache.get(username);
-            if (!entry) return undefined;
-            var now = Date.now();
-            if ((now - entry.ts) >= AVATAR_CACHE_TTL) {
-                avatarCache.delete(username);
-                return undefined;
-            }
-            return entry.url;
-        }
-
-        function setCachedAvatar(username, url) {
-            if (avatarCache.has(username)) {
-                avatarCache.delete(username);
-            } else if (avatarCache.size >= MAX_AVATAR_CACHE) {
-                var oldest = avatarCache.keys().next().value;
-                avatarCache.delete(oldest);
-            }
-            avatarCache.set(username, { url: url, ts: Date.now() });
-        }
-
-        function userInfo(name) {
-            var anon = !!name && mw.util && mw.util.isIPAddress ? mw.util.isIPAddress(name) : false;
-            var raw = name || '';
-            return {
-                name: name || T('deletedUser'),
-                anonymous: anon,
-                url: anon ? mw.util.getUrl('Special:Contributions/' + raw) : mw.util.getUrl('User:' + raw),
-                avatarUrl: null
-            };
-        }
-
-        function resolveAvatarsAsync(entries) {
-            var toResolve = [];
-            var idToUsername = new Map();
-
-            entries.forEach(function(e) {
-                if (!e.user || e.user.anonymous || e.user.avatarUrl) return;
-                var uname = e.user.name;
-
-                var cachedAvatar = getCachedAvatar(uname);
-                if (cachedAvatar !== undefined) {
-                    e.user.avatarUrl = cachedAvatar;
-                    return;
-                }
-
-                if (pendingAvatars[uname]) return;
-
-                if (e.extra && e.extra.userId) {
-                    idToUsername.set(e.extra.userId, uname);
-                    pendingAvatars[uname] = true;
-                } else if (toResolve.indexOf(uname) === -1) {
-                    toResolve.push(uname);
-                    pendingAvatars[uname] = true;
-                }
-            });
-
-            if (toResolve.length === 0 && idToUsername.size === 0) return;
-
-            var usernameToId = new Map();
-
-            function resolveIds() {
-                var idPromise = Promise.resolve();
-                
-                if (toResolve.length > 0) {
-                    var chunks = [];
-                    for (var i = 0; i < toResolve.length; i += 50) {
-                        chunks.push(toResolve.slice(i, i + 50));
-                    }
-
-                    var chunkPromises = chunks.map(function(chunk) {
-                        return api.get({
-                            action: 'query', list: 'users', ususers: chunk.join('|'),
-                            format: 'json', formatversion: 2
-                        }).then(function(res) {
-                            var users = (res && res.query && res.query.users) || [];
-                            users.forEach(function(u) {
-                                if (u.userid && u.name) usernameToId.set(u.name, u.userid);
-                            });
-                        }).catch(function() {});
-                    });
-                    idPromise = Promise.all(chunkPromises);
-                }
-
-                return idPromise.then(function() {
-                    var allIds = [];
-                    idToUsername.forEach(function(uname, uid) { allIds.push(uid); });
-                    usernameToId.forEach(function(uid) { allIds.push(uid); });
-                    var uniqueIds = allIds.filter(function(v, i, a) { return a.indexOf(v) === i; });
-
-                    if (uniqueIds.length > 0) {
-                        var CONCURRENCY = 5;
-                        var index = 0;
-                        
-                        function processBatch() {
-                            if (index >= uniqueIds.length) return Promise.resolve();
-                            var batch = uniqueIds.slice(index, index + CONCURRENCY);
-                            index += CONCURRENCY;
-                            
-                            var promises = batch.map(function(uid) {
-                                return fetch('/wikia.php?controller=UserProfile&method=getUserData&format=json&userId=' + uid, { 
-                                    credentials: 'same-origin' 
-                                }).then(function(r) { 
-                                    return r.ok ? r.json() : null; 
-                                }).then(function(d) {
-                                    var av = d && d.userData && d.userData.avatar ? d.userData.avatar : null;
-                                    var unameById = idToUsername.get(uid);
-                                    if (unameById) {
-                                        setCachedAvatar(unameById, av);
-                                        delete pendingAvatars[unameById];
-                                    }
-
-                                    usernameToId.forEach(function(mappedId, mappedName) {
-                                        if (mappedId === uid) {
-                                            setCachedAvatar(mappedName, av);
-                                            delete pendingAvatars[mappedName];
-                                        }
-                                    });
-                                }).catch(function() {
-                                    var unameById = idToUsername.get(uid);
-                                    if (unameById) delete pendingAvatars[unameById];
-                                    usernameToId.forEach(function(mappedId, mappedName) {
-                                        if (mappedId === uid) delete pendingAvatars[mappedName];
-                                    });
-                                });
-                            });
-                            
-                            return Promise.all(promises).then(processBatch);
-                        }
-                        
-                        return processBatch();
-                    }
-                }).then(function() {
-                    saveAvatarCache();
-                    updateRenderedAvatars();
-                });
-            }
-
-            resolveIds();
-        }
-
-        function updateRenderedAvatars() {
-            if (!els.feed || cardIndexByUser.size === 0) return;
-
-            var updates = [];
-
-            cardIndexByUser.forEach(function(cards, username) {
-                var avatarUrl = getCachedAvatar(username);
-                if (!avatarUrl) return;
-
-                cards.forEach(function(card) {
-                    var avatarSpan = card.querySelector('.actAdv-avatar');
-                    if (avatarSpan && !avatarSpan.querySelector('img')) {
-                        updates.push({ span: avatarSpan, url: avatarUrl });
-                    }
-                });
-            });
-
-            updates.forEach(function(u) {
-                u.span.innerHTML = '<img src="' + esc(u.url) + '" alt="" loading="lazy">';
-            });
-        }
-
-        function rebuildCardIndex() {
-            cardIndexByUser.clear();
-            if (!els.feed) return;
-
-            var cards = els.feed.querySelectorAll('.actAdv-card');
-            for (var i = 0; i < cards.length; i++) {
-                var card = cards[i];
-                var userLink = card.querySelector('.actAdv-user');
-                if (!userLink) continue;
-                var username = userLink.textContent;
-                if (!username) continue;
-
-                if (!cardIndexByUser.has(username)) {
-                    cardIndexByUser.set(username, []);
-                }
-                cardIndexByUser.get(username).push(card);
-            }
-        }
-
-        function fetchRc() {
-            var src = state.sources.rc;
+        const fetchSource = (name) => {
+            const src = state.sources[name];
+            const cfg = SOURCE_CONFIG[name];
             if (src.done) return Promise.resolve([]);
 
-            var patrolCheck = src.patrolAllowed === null ? 
-                checkPatrolRights().catch(function(e) {
-                    console.warn('[ActAdv] Patrol rights check failed:', e);
-                    return false;
-                }) : 
-                Promise.resolve(src.patrolAllowed);
-
-            return patrolCheck.then(function(allowed) {
-                src.patrolAllowed = allowed;
-                
-                var baseRcprop = 'title|timestamp|ids|flags|comment|redirect|tags|userid|user|sizes|parsedcomment';
-                var params = {
-                    action: 'query', list: 'recentchanges', format: 'json', formatversion: 2,
-                    rcprop: src.patrolAllowed ? baseRcprop + '|patrolled' : baseRcprop,
-                    rclimit: Math.min(Math.max(Store.settings.limit, 10), 500),
-                    rctype: 'edit|new'
-                };
-                if (!Store.settings.showBots) params.rcshow = '!bot';
-                if (src.cont) params.rccontinue = src.cont;
-
-                return api.get(params).then(function(res) {
-                    var list = (res && res.query && res.query.recentchanges) || [];
-                    if (res && res.continue && res.continue.rccontinue) src.cont = res.continue.rccontinue;
+            const runFetch = (allowed) => {
+                if (cfg.skipIfNoRights && !allowed) { src.done = true; return Promise.resolve([]); }
+                const params = cfg.buildParams(src.cont, allowed);
+                return api.get(params).then(res => {
+                    const list = cfg.extract(res);
+                    if (res.continue && res.continue[cfg.contKey]) src.cont = res.continue[cfg.contKey];
                     else src.done = true;
-                    return list.map(normalizeRc).filter(Boolean);
-                }).catch(function(e) {
-                    if (src.patrolAllowed && e && typeof e === 'object' && e.code === 'permissiondenied') {
-                        console.warn('[ActAdv] patrolled flag rejected, retrying without it');
+                    if (cfg.onResult) cfg.onResult(res, src);
+                    return list.map(cfg.normalize).filter(Boolean);
+                }).catch(e => {
+                    if (name === 'rc' && allowed && e && e.code === 'permissiondenied') {
                         src.patrolAllowed = false;
-                        params.rcprop = baseRcprop;
-                        return api.get(params).then(function(res) {
-                            var list = (res && res.query && res.query.recentchanges) || [];
-                            if (res && res.continue && res.continue.rccontinue) src.cont = res.continue.rccontinue;
-                            else src.done = true;
-                            return list.map(normalizeRc).filter(Boolean);
-                        });
+                        return runFetch(false);
                     }
                     throw e;
                 });
-            });
-        }
-
-        function normalizeRc(rc) {
-            if (!rc || !rc.title) return null;
-            if (rc.type === 'log') return null;
-            var ts = Math.floor(Date.parse(rc.timestamp) / 1000);
-            if (!ts) return null;
-            var isNew = rc.type === 'new';
-            var isFileNs = (rc.ns === 6);
-            return {
-                id: 'rc:' + (rc.rcid || rc.revid || rc.title + ts),
-                type: isNew ? 'new' : 'edit',
-                action: isNew ? 'new' : 'edit',
-                ns: (typeof rc.ns === 'number') ? rc.ns : null,
-                title: rc.title,
-                titleUrl: mw.util.getUrl(rc.title),
-                user: userInfo(rc.user),
-                timestamp: ts,
-                sizeDelta: (typeof rc.newlen === 'number' && typeof rc.oldlen === 'number') ? rc.newlen - rc.oldlen : null,
-                oldSize: typeof rc.oldlen === 'number' ? rc.oldlen : null,
-                newSize: typeof rc.newlen === 'number' ? rc.newlen : null,
-                comment: rc.parsedcomment || null,
-                tags: rc.tags || null,
-                extra: { 
-                    revid: rc.revid, 
-                    diffUrl: mw.util.getUrl('Special:Diff/' + rc.revid),
-                    isFile: isFileNs,
-                    fileName: isFileNs ? rc.title : null,
-                    unpatrolled: !!rc.unpatrolled,
-                    autopatrolled: !!rc.autopatrolled,
-                },
             };
-        }
 
-        function fetchLogs() {
-            var src = state.sources.log;
-            if (src.done) return Promise.resolve([]);
-            
-            var params = {
-                action: 'query', list: 'logevents', format: 'json', formatversion: 2,
-                lelimit: Math.min(Math.max(Store.settings.limit, 10), 500),
-                leprop: 'ids|title|type|user|timestamp|comment|parsedcomment|details|tags|userid',
-            };
-            if (src.cont) params.lecontinue = src.cont;
-            
-            return api.get(params).then(function(res) {
-                var list = (res && res.query && res.query.logevents) || [];
-                if (res && res.continue && res.continue.lecontinue) src.cont = res.continue.lecontinue;
-                else src.done = true;
-                return list.map(normalizeLog).filter(Boolean);
-            });
-        }
+            const rightsPromise = cfg.checkRights ? cfg.checkRights().catch(() => false) : Promise.resolve(true);
+            return rightsPromise.then(runFetch);
+        };
 
-        var LOG_ACTIONS = { delete:1, restore:1, protect:1, unprotect:1, move:1, block:1, unblock:1, reblock:1, rights:1, upload:1, newusers:1, patrol:1, other:1 };
-
-        function normalizeLog(le) {
-            if (!le || !le.logid) return null;
-            var ts = Math.floor(Date.parse(le.timestamp) / 1000);
-            if (!ts) return null;
-            var lt = le.logtype || le.type; 
-            var la = le.logaction || le.action || ''; 
-
-            if (le.ns === 6 && lt === 'create') return null;
-
-            var action = 'other';
-            if (lt === 'delete') action = la === 'restore' ? 'restore' : 'delete';
-            else if (lt === 'move') action = 'move';
-            else if (lt === 'protect') action = la === 'unprotect' ? 'unprotect' : 'protect';
-            else if (lt === 'block') action = la === 'unblock' ? 'unblock' : (la === 'reblock' ? 'reblock' : 'block');
-            else if (lt === 'rights') action = 'rights';
-            else if (lt === 'upload') action = 'upload';
-            else if (lt === 'newusers') action = 'newusers';
-            else if (lt === 'patrol') action = 'patrol';
-            if (!LOG_ACTIONS[action]) action = 'other';
-            
-            var p = le.params || {};
-            var isFileUpload = (lt === 'upload') || (le.ns === 6 && lt === 'modify');
-            var displayTitle = le.title || T('logOther');
-            
-            if (action === 'move' && le.title) {
-                displayTitle = T('renamedTitle', { t: le.title });
-            } else if (action === 'patrol' && le.title) {
-                displayTitle = T('patrolledTitle', { t: le.title });
-            }
-            
-            return {
-                id: 'log:' + le.logid,
-                type: 'log',
-                action: action,
-                ns: (typeof le.ns === 'number') ? le.ns : null,
-                title: displayTitle,
-                titleUrl: le.title ? mw.util.getUrl(le.title) : '#',
-                user: userInfo(le.user),
-                timestamp: ts,
-                sizeDelta: null, oldSize: null, newSize: null,
-                comment: le.parsedcomment || null,
-                tags: le.tags || null,
-                extra: {
-                    logType: lt,
-                    isFile: isFileUpload, 
-                    fileName: isFileUpload ? le.title : null, 
-                    userId: le.userid || null,
-                    params: {
-                        target: p.target_title || p.target || null,
-                        duration: p.duration || p.expiry || null,
-                        oldGroups: p.oldgroups || null,
-                        newGroups: p.newgroups || null,
-                        description: p.description || null,
-                    },
-                },
-            };
-        }
-
-        function fetchAf() {
-            var src = state.sources.af;
-            if (src.done) return Promise.resolve([]);
-
-            var rightsCheck = src.allowed === null ? 
-                checkAfRights().catch(function(e) {
-                    console.warn('[ActAdv] AF rights check failed:', e);
-                    return false;
-                }) : 
-                Promise.resolve(src.allowed);
-
-            return rightsCheck.then(function(allowed) {
-                src.allowed = allowed;
-                if (!src.allowed) {
-                    src.done = true;
-                    return [];
-                }
-
-                var params = {
-                    action: 'query', list: 'abuselog', format: 'json', formatversion: 2,
-                    aflimit: Math.min(Math.max(Store.settings.limit, 10), 500),
-                    aflprop: 'ids|filter|user|title|action|result|timestamp|hidden|ns',
-                };
-                if (src.cont) params.aflstart = src.cont;
-                
-                return api.get(params).then(function(res) {
-                    var list = (res && res.query && res.query.abuselog) || [];
-                    if (res && res.continue && res.continue.aflstart) {
-                        src.cont = res.continue.aflstart;
-                    } else {
-                        src.done = true;
-                    }
-                    return list.map(normalizeAf).filter(Boolean);
-                });
-            });
-        }
-
-        function normalizeAf(af) {
-            if (!af || !af.id) return null;
-            var ts = Math.floor(Date.parse(af.timestamp) / 1000);
-            if (!ts) return null;
-            if (af.hidden) return null;
-
-            var result = af.result || '';
-            var action = af.action || '';
-
-            var description = '';
-            if (result === 'disallow') description = T('afDisallow');
-            else if (result === 'warn') description = T('afWarn');
-            else if (result === 'tag') description = T('afTag');
-            else if (result === 'block') description = T('afBlock');
-            else if (result === 'degroup') description = T('afDegroup');
-            else description = T('afOther', { r: result });
-
-            return {
-                id: 'af:' + af.id,
-                type: 'af',
-                action: 'af',
-                ns: (typeof af.ns === 'number') ? af.ns : null,
-                title: af.title || T('logOther'),
-                titleUrl: af.title ? mw.util.getUrl(af.title) : '#',
-                user: userInfo(af.user),
-                timestamp: ts,
-                sizeDelta: null, oldSize: null, newSize: null,
-                comment: null,
-                tags: null,
-                extra: {
-                    filterId: af.filter_id || null,
-                    afAction: action,
-                    afResult: result,
-                    afDescription: description,
-                    isFile: af.ns === 6,
-                    fileName: af.ns === 6 ? af.title : null,
-                },
-            };
-        }
-
-        function fetchPosts() {
-            var src = state.sources.post;
-            if (src.done || !wikiId) { 
-                if (!wikiId) src.done = true; 
-                return Promise.resolve([]); 
-            }
-            
-            var arrayLength = Math.min(Math.max(Store.settings.limit, 10), 100);
-            
-            return new Promise(function(resolve) {
-                $.ajax({
-                    url: mw.util.wikiScript("wikia"),
-                    type: "GET", 
-                    dataType: "json",
-                    xhrFields: { withCredentials: true },
-                    data: {
-                        controller: "DiscussionPost", 
-                        method: "getPosts",
-                        viewableOnly: true, 
-                        sortKey: "creation_date",
-                        limit: arrayLength, 
-                        format: "json"
-                    }
-                }).done(resolve).fail(function(e) {
-                    console.warn('[ActAdv] Post fetch failed:', e);
-                    src.done = true;
-                    resolve([]);
-                });
-            }).then(function(res) {
-                var list = [];
-                if (res && res._embedded && res._embedded["doc:posts"]) list = res._embedded["doc:posts"];
-                else if (res && res.items) list = res.items;
-                else if (Array.isArray(res)) list = res;
-
-                if (!list.length) { 
-                    src.done = true; 
-                    return []; 
-                }
-
-                var posts = list.map(normalizePost).filter(Boolean);
-
-                var commentsNeedingTitles = posts.filter(function(p) { 
-                    return p.type === 'comment' && 
-                        (p.title === '__ENRICH_COMMENT__' || p.title === T('untitled') || p.title === 'commentOn') &&
-                        p.extra.forumId;
-                });
-
-                if (commentsNeedingTitles.length > 0) {
-                    var pageIds = [];
-                    commentsNeedingTitles.forEach(function(c) { 
-                        if (pageIds.indexOf(c.extra.forumId) === -1) pageIds.push(c.extra.forumId); 
-                    });
-                    
-                    if (pageIds.length > 0) {
-                        return new Promise(function(resolve) {
-                            $.ajax({
-                                url: mw.util.wikiScript("wikia"),
-                                type: "GET", 
-                                dataType: "json",
-                                xhrFields: { withCredentials: true },
-                                data: {
-                                    controller: "FeedsAndPosts", 
-                                    method: "getArticleNamesAndUsernames",
-                                    stablePageIds: pageIds.join(','), 
-                                    format: "json"
-                                }
-                            }).done(resolve).fail(function() { resolve(null); });
-                        }).then(function(enrichRes) {
-                            if (enrichRes && enrichRes.articleNames) {
-                                commentsNeedingTitles.forEach(function(post) {
-                                    var pageInfo = enrichRes.articleNames[post.extra.forumId];
-                                    if (pageInfo && pageInfo.title) {
-                                        post.title = T('commentOn', { page: pageInfo.title });
-                                        var baseUrl = pageInfo.relativeUrl || mw.util.getUrl(pageInfo.title);
-                                        var commentId = post.extra.threadId || post.extra.postId;
-                                        post.titleUrl = baseUrl + '?commentId=' + encodeURIComponent(commentId);
-                                        post.extra.pageTitle = pageInfo.title;
-                                        post.extra.relativeUrl = pageInfo.relativeUrl;
-                                    } else {
-                                        post.title = T('commentOn', { page: T('untitled') });
-                                        post.titleUrl = '#';
-                                    }
-                                });
-                            }
-                            if (list.length < arrayLength) src.done = true;
+        // Posts require special handling due to Wikia API
+        const fetchPosts = () => {
+            const src = state.sources.post;
+            if (src.done || !wikiId) { src.done = true; return Promise.resolve([]); }
+            const limit = Math.min(Math.max(Store.settings.limit, 10), 100);
+            return new Promise(resolve => {
+                $.ajax({ url: mw.util.wikiScript("wikia"), type: "GET", dataType: "json", xhrFields: { withCredentials: true }, data: { controller: "DiscussionPost", method: "getPosts", viewableOnly: true, sortKey: "creation_date", limit, format: "json" } }).done(resolve).fail(() => { src.done = true; resolve([]); });
+            }).then(res => {
+                let list = (res && res._embedded && res._embedded["doc:posts"]) || (res && res.items) || (Array.isArray(res) ? res : []);
+                if (!list.length) { src.done = true; return []; }
+                const posts = list.map(normalizePost).filter(Boolean);
+                const needingTitles = posts.filter(p => p.type === 'comment' && (p.title === '__ENRICH_COMMENT__' || p.title === T('untitled')) && p.extra.forumId);
+                if (needingTitles.length > 0) {
+                    const ids = [...new Set(needingTitles.map(c => c.extra.forumId))];
+                    return new Promise(r => $.ajax({ url: mw.util.wikiScript("wikia"), type: "GET", dataType: "json", xhrFields: { withCredentials: true }, data: { controller: "FeedsAndPosts", method: "getArticleNamesAndUsernames", stablePageIds: ids.join(','), format: "json" } }).done(r).fail(() => r(null)))
+                        .then(enrich => {
+                            if (enrich && enrich.articleNames) needingTitles.forEach(post => {
+                                const info = enrich.articleNames[post.extra.forumId];
+                                if (info && info.title) { post.title = T('commentOn', { page: info.title }); post.titleUrl = (info.relativeUrl || mw.util.getUrl(info.title)) + '?commentId=' + encodeURIComponent(post.extra.threadId || post.extra.postId); post.extra.pageTitle = info.title; }
+                                else { post.title = T('commentOn', { page: T('untitled') }); post.titleUrl = '#'; }
+                            });
+                            if (list.length < limit) src.done = true;
                             return posts;
                         });
-                    }
                 }
-
-                if (list.length < arrayLength) src.done = true;
+                if (list.length < limit) src.done = true;
                 return posts;
             });
-        }
+        };
 
-        function normalizePost(p) {
+        const normalizePost = (p) => {
             if (!p || !p.id) return null;
-            var ts = 0;
-            if (p.creationDate && typeof p.creationDate.epochSecond === 'number') ts = p.creationDate.epochSecond;
+            const ts = p.creationDate && typeof p.creationDate.epochSecond === 'number' ? p.creationDate.epochSecond : 0;
             if (!ts) return null;
+            const authorName = (p.createdBy && p.createdBy.name) ? p.createdBy.name : T('deletedUser');
+            const threadData = (p._embedded && Array.isArray(p._embedded.thread) && p._embedded.thread[0]) || {};
+            const containerType = (threadData.containerType || '').toUpperCase();
+            let type = 'forum', pageTitle = null, wallOwner = null, title = p.title || threadData.title;
+            if (containerType === 'WALL') { type = 'wall'; const fn = p.forumName || ''; wallOwner = fn.endsWith(' Message Wall') ? fn.replace(/ Message Wall$/, '') : (fn || authorName); }
+            else if (containerType === 'ARTICLE_COMMENT' || containerType === 'PAGE_COMMENT') { type = 'comment'; if (threadData.tags && threadData.tags[0] && threadData.tags[0].articleTitle) pageTitle = threadData.tags[0].articleTitle; }
+            const threadId = p.threadId || (threadData.id) || null;
+            if (type === 'comment') title = pageTitle ? T('commentOn', { page: pageTitle }) : '__ENRICH_COMMENT__';
+            else if (type === 'wall' && !title) title = T('msgWall') + ': ' + (wallOwner || authorName);
+            else if (!title) title = T('untitled');
+            let text = p.rawContent || '';
+            if (!text && p.jsonModel) try { const m = JSON.parse(p.jsonModel); if (m.content && Array.isArray(m.content)) text = m.content.map(b => (b.content || []).map(c => c.text || '').join('')).join('\n'); } catch(e){}
+            const atts = (p._embedded && p._embedded.attachments && p._embedded.attachments[0]) || threadData.attachments || {};
+            const images = (atts.contentImages || []).map(i => i.url).filter(Boolean);
+            let titleUrl = '#';
+            if (type === 'comment' && pageTitle) titleUrl = mw.util.getUrl(pageTitle) + '?commentId=' + encodeURIComponent(threadId || p.id);
+            else if (type === 'wall' && wallOwner) titleUrl = mw.util.getUrl('Message Wall:' + wallOwner) + '?threadId=' + encodeURIComponent(threadId || p.id);
+            else if (type === 'forum' && threadId) titleUrl = mw.config.get('wgScriptPath') + '/f/p/' + threadId;
+            return { id: `post:${p.id}`, type, action: type, ns: null, title, titleUrl, user: normalizeUser(authorName), timestamp: ts, sizeDelta: null, oldSize: null, newSize: null, comment: null, tags: (threadData.tags || []).map(t => t.articleTitle || t.tag || '').filter(Boolean), extra: { postId: p.id, threadId, forumId: p.forumId, forumName: p.forumName, text, images: images.slice(0, 20), upvotes: p.upvoteCount, poll: (p.poll && Array.isArray(p.poll.answers)) ? { answers: p.poll.answers.map(a => ({ text: a.text || a.label || '', votes: a.votes || 0 })) } : null, pageTitle, isReply: !!p.isReply, userId: p.createdBy && p.createdBy.id } };
+        };
 
-            var authorName = (p.createdBy && p.createdBy.name) ? p.createdBy.name : T('deletedUser');
-            var userObj = userInfo(authorName);
-            var userId = (p.createdBy && p.createdBy.id) ? p.createdBy.id : null;
-
-            var embThreadArr = p._embedded && Array.isArray(p._embedded.thread) ? p._embedded.thread : [];
-            var threadData = embThreadArr.length > 0 ? embThreadArr[0] : {};
-            var containerType = (threadData.containerType || '').toUpperCase();
-            var threadTitle = threadData.title || '';
-            var tags = threadData.tags || [];
-
-            var type = 'forum';
-            var pageTitle = null;
-            var wallOwner = null;
-
-            if (containerType === 'WALL') {
-                type = 'wall';
-                var fName = p.forumName || '';
-                if (fName.endsWith(' Message Wall')) wallOwner = fName.replace(/ Message Wall$/, '');
-                else wallOwner = fName || authorName;
-            } else if (containerType === 'ARTICLE_COMMENT' || containerType === 'PAGE_COMMENT') {
-                type = 'comment';
-                if (tags.length > 0 && tags[0].articleTitle) pageTitle = tags[0].articleTitle;
-            }
-
-            var title = p.title || threadTitle;
-            var threadId = p.threadId || (embThreadArr[0] && embThreadArr[0].id) || null;
-
-            if (type === 'comment') {
-                title = pageTitle ? T('commentOn', { page: pageTitle }) : '__ENRICH_COMMENT__';
-            } else if (type === 'wall' && !title) {
-                title = T('msgWall') + ': ' + (wallOwner || authorName);
-            } else if (!title) {
-                title = T('untitled');
-            }
-
-            var text = p.rawContent || '';
-            if (!text && p.jsonModel) {
-                try {
-                    var model = JSON.parse(p.jsonModel);
-                    if (model.content && Array.isArray(model.content)) {
-                        var parts = [];
-                        for (var i = 0; i < model.content.length; i++) {
-                            var block = model.content[i];
-                            if (block.content) {
-                                var texts = [];
-                                for (var j = 0; j < block.content.length; j++) {
-                                    texts.push(block.content[j].text || '');
-                                }
-                                parts.push(texts.join(''));
-                            }
-                        }
-                        text = parts.join('\n');
-                    }
-                } catch (e) {}
-            }
-
-            var images = [];
-            var atts = (p._embedded && p._embedded.attachments && p._embedded.attachments[0]) || (threadData.attachments) || {};
-            if (atts.contentImages && Array.isArray(atts.contentImages)) {
-                images = atts.contentImages.map(function(img) { return img.url; }).filter(Boolean);
-            }
-
-            var titleUrl = '#';
-            if (type === 'comment' && pageTitle) {
-                titleUrl = mw.util.getUrl(pageTitle) + '?commentId=' + encodeURIComponent(threadId || p.id);
-            } else if (type === 'wall') {
-                var wallTitle = wallOwner ? 'Message Wall:' + wallOwner : null;
-                if (wallTitle) titleUrl = mw.util.getUrl(wallTitle) + '?threadId=' + encodeURIComponent(threadId || p.id);
-            } else if (type === 'forum' && threadId) {
-                titleUrl = mw.config.get('wgScriptPath') + '/f/p/' + threadId;
-            }
-
-            return {
-                id: 'post:' + p.id,
-                type: type, 
-                action: type,
-                ns: null,
-                title: title, 
-                titleUrl: titleUrl,
-                user: userObj,
-                timestamp: ts,
-                sizeDelta: null, 
-                oldSize: null, 
-                newSize: null,
-                comment: null,
-                tags: tags.map(function(t) { return t.articleTitle || t.tag || ''; }).filter(Boolean),
-                extra: {
-                    postId: p.id, 
-                    threadId: threadId,
-                    forumId: p.forumId || null, 
-                    forumName: p.forumName || '',
-                    text: text, 
-                    images: images.slice(0, 20),
-                    upvotes: typeof p.upvoteCount === 'number' ? p.upvoteCount : null,
-                    poll: (p.poll && Array.isArray(p.poll.answers)) ? {
-                        answers: p.poll.answers.map(function(a) { 
-                            return { text: a.text || a.label || '', votes: a.votes || 0 }; 
-                        }),
-                    } : null,
-                    pageTitle: pageTitle,
-                    isReply: !!p.isReply,
-                    userId: userId
-                },
-            };
-        }
-
-        function fetchRailData() {
-            return fetch(location.origin + '/wikia.php?controller=FeedsAndPosts&method=getAll', { 
-                credentials: 'same-origin' 
-            }).then(function(res) {
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                return res.json();
-            }).catch(function() { 
-                return null; 
+        // --- Avatar Resolution ---
+        const resolveAvatarsAsync = (entries) => {
+            const toResolve = [];
+            const idToUsername = new Map();
+            entries.forEach(e => {
+                if (!e.user || e.user.anonymous || e.user.avatarUrl) return;
+                const uname = e.user.name;
+                const cached = avatarCache.get(uname);
+                if (cached !== undefined) { e.user.avatarUrl = cached; return; }
+                if (e.extra && e.extra.userId) idToUsername.set(e.extra.userId, uname);
+                else if (toResolve.indexOf(uname) === -1) toResolve.push(uname);
             });
-        }
+            if (!toResolve.length && !idToUsername.size) return;
 
-        function fetchCommunityCorner() {
-            return api.get({ 
-                action: 'parse', 
-                page: 'MediaWiki:Community-corner', 
-                prop: 'text', 
-                format: 'json', 
-                formatversion: 2 
-            }).then(function(res) {
-                var html = res && res.parse && res.parse.text;
-                if (!html || html.replace(/<[^>]*>/g, '').trim().length < 10) return null;
-                return html;
-            }).catch(function() { 
-                return null; 
+            const usernameToId = new Map();
+            const chunks = [];
+            for (let i = 0; i < toResolve.length; i += 50) chunks.push(toResolve.slice(i, i + 50));
+            Promise.all(chunks.map(chunk => api.get({ action: 'query', list: 'users', ususers: chunk.join('|'), formatversion: 2 }).then(r => (r.query.users || []).forEach(u => { if (u.userid && u.name) usernameToId.set(u.name, u.userid); })).catch(() => {})))
+                .then(() => {
+                    const uniqueIds = [...new Set([...idToUsername.keys(), ...usernameToId.values()])];
+                    if (!uniqueIds.length) return;
+                    const CONCURRENCY = 5;
+                    let index = 0;
+                    const processBatch = () => {
+                        if (index >= uniqueIds.length) return Promise.resolve();
+                        const batch = uniqueIds.slice(index, index + CONCURRENCY);
+                        index += CONCURRENCY;
+                        return Promise.all(batch.map(uid => fetch(`/wikia.php?controller=UserProfile&method=getUserData&format=json&userId=${uid}`, { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(d => {
+                            const av = d && d.userData && d.userData.avatar;
+                            const unameById = idToUsername.get(uid);
+                            if (unameById) avatarCache.set(unameById, av);
+                            usernameToId.forEach((mappedId, mappedName) => { if (mappedId === uid) avatarCache.set(mappedName, av); });
+                        }).catch(() => {}))).then(processBatch);
+                    };
+                    return processBatch();
+                })
+                .then(() => { avatarCache.save(); updateRenderedAvatars(); });
+        };
+
+        const updateRenderedAvatars = () => {
+            if (!els.feed || !cardIndexByUser.size) return;
+            cardIndexByUser.forEach((cards, username) => {
+                const url = avatarCache.get(username);
+                if (!url) return;
+                cards.forEach(card => {
+                    const span = card.querySelector('.actAdv-avatar');
+                    if (span && !span.querySelector('img')) span.innerHTML = `<img src="${esc(url)}" alt="" loading="lazy">`;
+                });
             });
-        }
-
-        var ROOT_ID = 'actAdv-root';
-        var FILTER_KEYS = ['edit', 'new', 'log', 'af', 'forum', 'wall', 'comment'];
-
-        var FILTER_ICON = {
-            edit: 'edit', new: 'new', log: 'quiz', af: 'shield', forum: 'forum',
-            wall: 'wall', comment: 'comment', poll: 'poll',
-        };
-        
-        var ACTION_ICON = {
-            edit: 'edit', new: 'new',
-            delete: 'delete', restore: 'restore', protect: 'protect', unprotect: 'protect',
-            move: 'move', block: 'block', unblock: 'block', reblock: 'block',
-            rights: 'rights', upload: 'upload', newusers: 'newusers', patrol: 'patrol', other: 'quiz',
-            forum: 'forum', wall: 'wall', comment: 'comment', poll: 'poll', quiz: 'quiz',
-            af: 'shield',
-        };
-        
-        var FILTER_OF_TYPE = { 
-            edit: 'edit', new: 'new', log: 'log', af: 'af', forum: 'forum', 
-            wall: 'wall', comment: 'comment', poll: 'forum', quiz: 'forum' 
         };
 
-        function iconSvg(name, cls) {
-            return '<span class="actAdv-icon ' + cls + ' actAdv-icon--' + name + '" aria-hidden="true"></span>';
-        }
-
-        function two(n) { return (n < 10 ? '0' : '') + n; }
-        
-        function dayKey(ts) { 
-            var d = new Date(ts * 1000); 
-            return d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate()); 
-        }
-        
-        function timeHM(ts) { 
-            var d = new Date(ts * 1000); 
-            return two(d.getHours()) + ':' + two(d.getMinutes()); 
-        }
-
-        var DATE_FMT = new Intl.DateTimeFormat(LANG === 'ru' ? 'ru-RU' : 'en-US', { 
-            day: 'numeric', month: 'long', year: 'numeric' 
-        });
-
-        function formatNumber(num) {
-            if (num === undefined || num === null) return '';
-            return new Intl.NumberFormat(LANG === 'ru' ? 'ru-RU' : 'en-US').format(num);
-        }
-
-        function relativeTime(ts) {
-            var diff = Date.now() / 1000 - ts;
+        // --- HTML Generators ---
+        const iconSvg = (name, cls) => `<span class="actAdv-icon ${cls} actAdv-icon--${name}" aria-hidden="true"></span>`;
+        const two = (n) => (n < 10 ? '0' : '') + n;
+        const dayKey = (ts) => { const d = new Date(ts * 1000); return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`; };
+        const timeHM = (ts) => { const d = new Date(ts * 1000); return `${two(d.getHours())}:${two(d.getMinutes())}`; };
+        const DATE_FMT = new Intl.DateTimeFormat(LANG === 'ru' ? 'ru-RU' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+        const formatNumber = (num) => num == null ? '' : new Intl.NumberFormat(LANG === 'ru' ? 'ru-RU' : 'en-US').format(num);
+        const relativeTime = (ts) => {
+            const diff = Date.now() / 1000 - ts;
             if (diff < 60) return T('justNow');
             if (diff < 3600) return plural(T('minAgo'), Math.floor(diff / 60));
             if (diff < 86400) return plural(T('hourAgo'), Math.floor(diff / 3600));
             if (diff < 172800) return T('yesterday', { t: timeHM(ts) });
             if (diff < 7 * 86400) return plural(T('daysAgo'), Math.floor(diff / 86400));
             return DATE_FMT.format(new Date(ts * 1000));
-        }
+        };
+        const timeTag = (ts, linkUrl) => {
+            const d = new Date(ts * 1000);
+            const inner = esc(relativeTime(ts));
+            const attrs = `datetime="${d.toISOString()}" title="${esc(d.toLocaleString())}"`;
+            return linkUrl ? `<a class="actAdv-timelink" href="${esc(linkUrl)}"><time ${attrs}>${inner}</time></a>` : `<time ${attrs}>${inner}</time>`;
+        };
+        const formatPostText = (raw) => {
+            let s = esc(String(raw == null ? '' : raw).replace(/\r\n?/g, '\n').replace(/\n{2,}/g, '\n').replace(/^\n+|\n+$/g, '').slice(0, 250));
+            if (String(raw || '').length > 250) s += '…';
+            return s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>').replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>').replace(/\n/g, '<br>');
+        };
 
-        function timeTag(ts, linkUrl) {
-            var d = new Date(ts * 1000);
-            var inner = esc(relativeTime(ts));
-            var attrs = 'datetime="' + d.toISOString() + '" title="' + esc(d.toLocaleString()) + '"';
-            if (linkUrl) {
-                return '<a class="actAdv-timelink" href="' + esc(linkUrl) + '"><time ' + attrs + '>' + inner + '</time></a>';
-            }
-            return '<time ' + attrs + '>' + inner + '</time>';
-        }
+        const userLineHtml = (e) => {
+            let avatar = '<span class="actAdv-avatar"></span>';
+            if (e.user && e.user.avatarUrl) avatar = `<span class="actAdv-avatar"><img src="${esc(e.user.avatarUrl)}" alt="" loading="lazy"></span>`;
+            else if (e.user && !e.user.anonymous) { const c = avatarCache.get(e.user.name); if (c) { e.user.avatarUrl = c; avatar = `<span class="actAdv-avatar"><img src="${esc(c)}" alt="" loading="lazy"></span>`; } }
+            const un = e.user.name;
+            return `<div class="actAdv-userline">${avatar} <a class="actAdv-user" href="${esc(e.user.url)}">${esc(un)}</a> <span class="actAdv-userlinks"><a href="${esc(mw.util.getUrl('User_talk:' + un))}">${esc(T('msgWall'))}</a> | <a href="${esc(mw.util.getUrl('Special:Contributions/' + un))}">${esc(T('contribs'))}</a> | <a href="${esc(mw.util.getUrl('Special:Block/' + un))}">${esc(T('blockUser'))}</a></span></div>`;
+        };
 
-        function formatPostText(raw) {
-            var normalized = String(raw == null ? '' : raw)
-                .replace(/\r\n?/g, '\n')
-                .replace(/\n{2,}/g, '\n')
-                .replace(/^\n+|\n+$/g, '');
-            var cut = normalized.length > 250 ? normalized.slice(0, 250) + '…' : normalized;
-            var s = esc(cut);
-            s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
-                 .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>')
-                 .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
-            return s.replace(/\n/g, '<br>');
-        }
-
-        function userLineHtml(e) {
-            var avatar = '<span class="actAdv-avatar"></span>';
-            if (e.user && e.user.avatarUrl) {
-                avatar = '<span class="actAdv-avatar"><img src="' + esc(e.user.avatarUrl) + '" alt="" loading="lazy"></span>';
-            } else if (e.user && !e.user.anonymous) {
-                var cachedAv = getCachedAvatar(e.user.name);
-                if (cachedAv) {
-                    e.user.avatarUrl = cachedAv;
-                    avatar = '<span class="actAdv-avatar"><img src="' + esc(cachedAv) + '" alt="" loading="lazy"></span>';
-                }
-            }
-            var name = '<a class="actAdv-user" href="' + esc(e.user.url) + '">' + esc(e.user.name) + '</a>';
-            var un = e.user.name;
-            var links = '<span class="actAdv-userlinks">' +
-                '<a href="' + esc(mw.util.getUrl('User_talk:' + un)) + '">' + esc(T('msgWall')) + '</a>' +
-                ' | <a href="' + esc(mw.util.getUrl('Special:Contributions/' + un)) + '">' + esc(T('contribs')) + '</a>' +
-                ' | <a href="' + esc(mw.util.getUrl('Special:Block/' + un)) + '">' + esc(T('blockUser')) + '</a>' +
-            '</span>';
-            return '<div class="actAdv-userline">' + avatar + ' ' + name + ' ' + links + '</div>';
-        }
-
-        function tagsLineHtml(e) {
-            if (!e.tags || !e.tags.length) return '';
-            return '<div class="actAdv-tagsline">(' + esc(T('tagsLabel')) + ': ' + esc(e.tags.join(', ')) + ')</div>';
-        }
-
-        function deltaHtml(e) {
-            if (e.sizeDelta === null) return '';
-            var cls, txt;
-            if (e.sizeDelta > 0) { cls = 'actAdv-delta--pos'; txt = '+' + e.sizeDelta; }
-            else if (e.sizeDelta < 0) { cls = 'actAdv-delta--neg'; txt = String(e.sizeDelta); }
-            else { cls = 'actAdv-delta--zero'; txt = '0'; }
-            var tip = (e.oldSize !== null && e.newSize !== null)
-                ? ' title="' + esc(T('sizeTip', { old: e.oldSize, new: e.newSize })) + '"' : '';
-            return ' <span class="actAdv-delta ' + cls + '"' + tip + '>' + esc(txt) + '</span>';
-        }
-
-        function cleanSummary(html) {
-            if (!html) return '';
-            return String(html)
-                .replace(/(<br\s*\/?>\s*){2,}/gi, '<br>')
-                .replace(/^(\s*<br\s*\/?>\s*)+/i, '')
-                .replace(/(\s*<br\s*\/?>\s*)+$/i, '');
-        }
-
-        function bodyContentHtml(e) {
-            var parts = [];
-            if (e.comment) {
-                parts.push('<div class="actAdv-summaryline"><strong>' + esc(T('summaryLabel')) + '</strong> ' + cleanSummary(e.comment) + '</div>');
-            }
-            if (e.extra && e.extra.isFile && e.action !== 'delete') {
-                var safeFileName = encodeURIComponent(e.extra.fileName);
-                var imgUrl = location.origin + '/wiki/Special:Redirect/file?wpvalue=' + safeFileName;
-                parts.unshift(
-                    '<div class="actAdv-file-preview">' +
-                        '<a href="' + esc(e.titleUrl) + '" target="_blank" rel="noopener noreferrer">' +
-                            '<img src="' + esc(imgUrl) + '" alt="' + esc(e.title) + '" loading="lazy" onerror="this.parentNode&&this.parentNode.parentNode&&this.parentNode.parentNode.removeChild(this.parentNode.parentNode)" />' +
-                        '</a>' +
-                    '</div>'
-                );
-            }
+        const bodyContentHtml = (e) => {
+            const parts = [];
+            if (e.comment) parts.push(`<div class="actAdv-summaryline"><strong>${esc(T('summaryLabel'))}</strong> ${e.comment.replace(/(<br\s*\/?>\s*){2,}/gi, '<br>').replace(/^(\s*<br\s*\/?>\s*)+/i, '').replace(/(\s*<br\s*\/?>\s*)+$/i, '')}</div>`);
+            if (e.extra && e.extra.isFile && e.action !== 'delete') parts.unshift(`<div class="actAdv-file-preview"><a href="${esc(e.titleUrl)}" target="_blank" rel="noopener noreferrer"><img src="${location.origin}/wiki/Special:Redirect/file?wpvalue=${encodeURIComponent(e.extra.fileName)}" alt="${esc(e.title)}" loading="lazy" onerror="this.parentNode&&this.parentNode.parentNode&&this.parentNode.parentNode.removeChild(this.parentNode.parentNode)" /></a></div>`);
             if (e.type === 'log' && e.extra.params) {
-                var p = e.extra.params, bits = [];
-                if (e.action === 'move' && p.target) bits.push('<strong>' + esc(T('newTitleLabel')) + ':</strong> ' + esc(p.target));
+                const p = e.extra.params, bits = [];
+                if (e.action === 'move' && p.target) bits.push(`<strong>${esc(T('newTitleLabel'))}:</strong> ${esc(p.target)}`);
                 if ((e.action === 'block' || e.action === 'reblock') && p.duration) bits.push(esc(T('blockDuration', { d: p.duration })));
-                if (e.action === 'rights' && (p.oldGroups || p.newGroups))
-                    bits.push(esc(T('rightsFromTo', { a: (p.oldGroups||[]).join(', ')||'—', b: (p.newGroups||[]).join(', ')||'—' })));
-                if (bits.length) parts.push('<div class="actAdv-logparams">' + bits.join('<br>') + '</div>');
+                if (e.action === 'rights' && (p.oldGroups || p.newGroups)) bits.push(esc(T('rightsFromTo', { a: (p.oldGroups || []).join(', ') || '—', b: (p.newGroups || []).join(', ') || '—' })));
+                if (bits.length) parts.push(`<div class="actAdv-logparams">${bits.join('<br>')}</div>`);
             }
             if (e.type === 'af' && e.extra) {
-                var bits = [];
+                const bits = [];
                 if (e.extra.filterId) bits.push(esc(T('afFilterLabel', { n: e.extra.filterId })));
                 if (e.extra.afAction) bits.push(esc(T('afActionLabel', { a: e.extra.afAction })));
                 if (e.extra.afDescription) bits.push(esc(e.extra.afDescription));
-                if (bits.length) parts.push('<div class="actAdv-logparams">' + bits.join('<br>') + '</div>');
+                if (bits.length) parts.push(`<div class="actAdv-logparams">${bits.join('<br>')}</div>`);
             }
-            if (e.extra.text) {
-                parts.push('<div class="actAdv-posttext">' + formatPostText(e.extra.text) + '</div>');
-            }
+            if (e.extra.text) parts.push(`<div class="actAdv-posttext">${formatPostText(e.extra.text)}</div>`);
             if (e.extra.images && e.extra.images.length) {
-                var shown = e.extra.images.slice(0, 3);
-                var rem = e.extra.images.length - 3;
-                var g = '<div class="actAdv-gallery">';
-                shown.forEach(function(src) {
-                    g += '<a href="' + esc(e.titleUrl) + '" class="actAdv-thumb" target="_blank" rel="noopener"><img loading="lazy" src="' + esc(src) + '" alt="" onerror="this.parentNode&&this.parentNode.removeChild(this.parentNode)"></a>';
-                });
-                if (rem > 0) {
-                    g += '<a href="' + esc(e.titleUrl) + '" class="actAdv-morelink">' + esc(T('moreImages', { n: rem })) + '</a>';
-                }
-                g += '</div>';
-                parts.push(g);
+                const shown = e.extra.images.slice(0, 3);
+                const rem = e.extra.images.length - 3;
+                let g = '<div class="actAdv-gallery">';
+                shown.forEach(src => g += `<a href="${esc(e.titleUrl)}" class="actAdv-thumb" target="_blank" rel="noopener"><img loading="lazy" src="${esc(src)}" alt="" onerror="this.parentNode&&this.parentNode.removeChild(this.parentNode)"></a>`);
+                if (rem > 0) g += `<a href="${esc(e.titleUrl)}" class="actAdv-morelink">${esc(T('moreImages', { n: rem }))}</a>`;
+                parts.push(g + '</div>');
             }
             if (e.type === 'poll' && e.extra.poll && e.extra.poll.answers.length) {
-                var total = e.extra.poll.answers.reduce(function(a, x) { return a + (x.votes || 0); }, 0);
-                var pol = '<div class="actAdv-poll"><div class="actAdv-poll-title">' + esc(T('pollResults')) + '</div>';
-                e.extra.poll.answers.forEach(function(a) {
-                    var pct = total > 0 ? Math.round((a.votes / total) * 100) : 0;
-                    pol += '<div class="actAdv-poll-row"><span class="actAdv-poll-text">' + esc(a.text) + '</span>' +
-                        '<span class="actAdv-poll-track"><span class="actAdv-poll-bar" style="width:' + pct + '%"></span></span>' +
-                        '<span class="actAdv-poll-pct">' + pct + '%</span></div>';
-                });
-                pol += '<div class="actAdv-poll-votes">' + esc(T('votes', { n: total })) + '</div></div>';
-                parts.push(pol);
+                const total = e.extra.poll.answers.reduce((a, x) => a + (x.votes || 0), 0);
+                let pol = `<div class="actAdv-poll"><div class="actAdv-poll-title">${esc(T('pollResults'))}</div>`;
+                e.extra.poll.answers.forEach(a => { const pct = total > 0 ? Math.round((a.votes / total) * 100) : 0; pol += `<div class="actAdv-poll-row"><span class="actAdv-poll-text">${esc(a.text)}</span><span class="actAdv-poll-track"><span class="actAdv-poll-bar" style="width:${pct}%"></span></span><span class="actAdv-poll-pct">${pct}%</span></div>`; });
+                parts.push(pol + `<div class="actAdv-poll-votes">${esc(T('votes', { n: total }))}</div></div>`);
             }
             return parts.join('');
-        }
+        };
 
-        function actionsHtml(e) {
+        const actionsHtml = (e) => {
             if (e.type !== 'edit' && e.type !== 'new') return '';
+            const revid = e.extra && e.extra.revid;
+            const links = [];
+            if (e.extra && e.extra.unpatrolled === true) links.push(`<button type="button" class="actAdv-act-btn actAdv-patrol-btn" data-revid="${esc(revid)}" title="${esc(T('actPatrol'))}" aria-label="${esc(T('actPatrol'))}">${iconSvg('shield', 'actAdv-act-svg')}</button>`);
+            links.push(`<a class="actAdv-act-btn" href="${esc(mw.util.getUrl(e.title))}?action=edit" target="_blank" rel="noopener noreferrer" title="${esc(T('actEdit'))}">${iconSvg('edit', 'actAdv-act-svg')}</a>`);
+            if (e.extra.diffUrl) links.push(`<a class="actAdv-act-btn" href="${esc(e.extra.diffUrl)}" target="_blank" rel="noopener noreferrer" title="${esc(T('actDiff'))}">${iconSvg('eye', 'actAdv-act-svg')}</a>`);
+            if (revid) links.push(`<a class="actAdv-act-btn" href="${esc(mw.util.getUrl('Special:Thanks/' + revid))}" target="_blank" rel="noopener noreferrer" title="${esc(T('actThanks'))}">${iconSvg('heart', 'actAdv-act-svg')}</a>`);
+            links.push(`<a class="actAdv-act-btn" href="${esc(mw.util.getUrl(e.title))}?action=history" target="_blank" rel="noopener noreferrer" title="${esc(T('actHistory'))}">${iconSvg('history', 'actAdv-act-svg')}</a>`);
+            return `<div class="actAdv-card-actions">${links.join('')}</div>`;
+        };
 
-            var revid = e.extra && e.extra.revid;
-            var diffUrl = e.extra && e.extra.diffUrl;
+        const cardHtml = (e) => {
+            const iconName = ACTION_ICON[e.type === 'log' ? e.action : e.type] || 'quiz';
+            const delta = e.sizeDelta !== null ? `<span class="actAdv-delta ${e.sizeDelta > 0 ? 'actAdv-delta--pos' : e.sizeDelta < 0 ? 'actAdv-delta--neg' : 'actAdv-delta--zero'}" ${(e.oldSize !== null && e.newSize !== null) ? `title="${esc(T('sizeTip', { old: e.oldSize, new: e.newSize }))}"` : ''}>${esc(e.sizeDelta > 0 ? '+' + e.sizeDelta : String(e.sizeDelta))}</span>` : '';
+            const body = bodyContentHtml(e);
+            return `<article class="actAdv-card actAdv-card--${esc(e.type)}" data-id="${esc(e.id)}"><span class="actAdv-ico">${iconSvg(iconName, 'actAdv-ico-svg')}</span><div class="actAdv-card-body"><div class="actAdv-card-top"><div class="actAdv-card-info"><div class="actAdv-titleline"><a class="actAdv-title" href="${esc(e.titleUrl)}">${esc(e.title)}</a>${delta}${delta ? ' <span class="actAdv-star">*</span>' : ''} ${timeTag(e.timestamp, (e.type === 'edit' || e.type === 'new') ? e.extra.diffUrl : null)}</div>${userLineHtml(e)}${e.tags && e.tags.length ? `<div class="actAdv-tagsline">(${esc(T('tagsLabel'))}: ${esc(e.tags.join(', '))})</div>` : ''}</div>${actionsHtml(e)}</div>${body ? `<hr class="actAdv-hr">${body}` : ''}</div></article>`;
+        };
 
-            var links = [];
-            
-            if (e.extra && e.extra.unpatrolled === true) {
-                links.push('<button type="button" class="actAdv-act-btn actAdv-patrol-btn" data-revid="' + esc(revid) + '" title="' + esc(T('actPatrol')) + '" aria-label="' + esc(T('actPatrol')) + '">' + iconSvg('shield', 'actAdv-act-svg') + '</button>');
-            }
-            
-            links.push('<a class="actAdv-act-btn" href="' + esc(mw.util.getUrl(e.title)) + '?action=edit" target="_blank" rel="noopener noreferrer" title="' + esc(T('actEdit')) + '">' + iconSvg('edit', 'actAdv-act-svg') + '</a>');
-            
-            if (diffUrl) {
-                links.push('<a class="actAdv-act-btn" href="' + esc(diffUrl) + '" target="_blank" rel="noopener noreferrer" title="' + esc(T('actDiff')) + '">' + iconSvg('eye', 'actAdv-act-svg') + '</a>');
-            }
-            
-            if (revid) {
-                links.push('<a class="actAdv-act-btn" href="' + esc(mw.util.getUrl('Special:Thanks/' + revid)) + '" target="_blank" rel="noopener noreferrer" title="' + esc(T('actThanks')) + '">' + iconSvg('heart', 'actAdv-act-svg') + '</a>');
-            }
-            
-            links.push('<a class="actAdv-act-btn" href="' + esc(mw.util.getUrl(e.title)) + '?action=history" target="_blank" rel="noopener noreferrer" title="' + esc(T('actHistory')) + '">' + iconSvg('history', 'actAdv-act-svg') + '</a>');
-
-            return '<div class="actAdv-card-actions">' + links.join('') + '</div>';
-        }
-
-        function cardHtml(e) {
-            var iconName = ACTION_ICON[e.type === 'log' ? e.action : e.type] || 'quiz';
-            var titleLink = '<a class="actAdv-title" href="' + esc(e.titleUrl) + '">' + esc(e.title) + '</a>';
-            var delta = deltaHtml(e);
-            var star = delta ? ' <span class="actAdv-star">*</span>' : '';
-            var diffUrl = (e.type === 'edit' || e.type === 'new') ? e.extra.diffUrl : null;
-            var body = bodyContentHtml(e);
-            var hasBody = body.length > 0;
-            
-            return '<article class="actAdv-card actAdv-card--' + esc(e.type) + '" data-id="' + esc(e.id) + '">' +
-                '<span class="actAdv-ico">' + iconSvg(iconName, 'actAdv-ico-svg') + '</span>' +
-                '<div class="actAdv-card-body">' +
-                    '<div class="actAdv-card-top">' +
-                        '<div class="actAdv-card-info">' +
-                            '<div class="actAdv-titleline">' + titleLink + delta + star + ' ' + timeTag(e.timestamp, diffUrl) + '</div>' +
-                            userLineHtml(e) +
-                            tagsLineHtml(e) +
-                        '</div>' +
-                        actionsHtml(e) +
-                    '</div>' +
-                    (hasBody ? '<hr class="actAdv-hr">' + body : '') +
-                '</div></article>';
-        }
-
-        function buildShell() {
-            var content = document.getElementById('mw-content-text') || document.body;
-            var old = document.getElementById(ROOT_ID);
+        // --- Shell & Events ---
+        const buildShell = () => {
+            const content = document.getElementById('mw-content-text') || document.body;
+            const old = document.getElementById('actAdv-root');
             if (old) old.remove();
-            
-            var children = content.querySelectorAll(':scope > *:not(script)');
-            for (var i = 0; i < children.length; i++) {
-                if (children[i].id !== 'actAdv-root') children[i].remove();
-            }
-
-            var root = document.createElement('div');
-            root.id = ROOT_ID;
+            [...content.querySelectorAll(':scope > *:not(script)')].forEach(c => { if (c.id !== 'actAdv-root') c.remove(); });
+            const root = document.createElement('div');
+            root.id = 'actAdv-root';
             root.className = 'actAdv' + (Store.settings.hideRail ? ' actAdv-hide-rail' : '');
-
-            var chipsHtml = FILTER_KEYS.map(function(k) {
-                return '<button type="button" class="actAdv-chip" data-filter="' + k + '"' +
-                    ' aria-pressed="' + (!!Store.settings.filters[k]) + '"' +
-                    ' title="' + esc(T('filter' + k.charAt(0).toUpperCase() + k.slice(1))) + '">' +
-                    iconSvg(FILTER_ICON[k] || 'quiz', 'actAdv-chip-svg') +
-                    '</button>';
-            }).join('');
-
-            root.innerHTML = 
-                '<div class="actAdv-head">' +
-                    '<div class="actAdv-head-left">' +
-                        '<h1 class="actAdv-heading">' + esc(T('pageTitle')) + '</h1>' +
-                        '<span class="actAdv-subtitle">' + esc(T('subtitle')) + '</span>' +
-                    '</div>' +
-                    '<div class="actAdv-head-right">' +
-                        '<div class="actAdv-chips" role="group">' + chipsHtml + '</div>' +
-                        '<button type="button" class="actAdv-settings-btn" aria-label="' + esc(T('openSettings')) + '">' +
-                            iconSvg('settings', 'actAdv-chip-svg') +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="actAdv-errors"></div>' +
-                '<div class="actAdv-layout">' +
-                    '<div class="actAdv-main">' +
-                        '<div class="actAdv-feed" role="feed"></div>' +
-                        '<div class="actAdv-morewrap"><button type="button" class="actAdv-more">' + esc(T('loadMore')) + '</button></div>' +
-                        '<div class="actAdv-loading" style="display:none">' + esc(T('loading')) + '</div>' +
-                        '<div class="actAdv-allloaded" style="display:none">' + esc(T('allLoaded')) + '</div>' +
-                        '<div class="actAdv-sentinel" style="height:1px"></div>' +
-                    '</div>' +
-                    '<aside class="actAdv-rail">' +
-                        '<div class="actAdv-box actAdv-rail-stats" style="display:none">' +
-                            '<h2>' + esc(T('communityStats')) + '</h2>' +
-                            '<div class="actAdv-stats-avatars"></div>' +
-                            '<div class="actAdv-stats-counts"></div>' +
-                        '</div>' +
-                        '<div class="actAdv-box actAdv-rail-top" style="display:none"><h2>' + esc(T('popularPages')) + '</h2><ol class="actAdv-toplist"></ol></div>' +
-                        '<div class="actAdv-box actAdv-rail-corner actAdv-corner" style="display:none"><h2>' + esc(T('communityCorner')) + '</h2><div class="actAdv-corner-body"></div></div>' +
-                    '</aside>' +
-                '</div>' +
-                '<div class="actAdv-overlay">' +
-                    '<div class="actAdv-modal" role="dialog" aria-modal="true">' +
-                        '<h2>' + esc(T('settings')) + '</h2>' +
-                        '<label><input type="checkbox" data-set="showBots"> ' + esc(T('setShowBots')) + '</label>' +
-                        '<label><input type="checkbox" data-set="expandDetails"> ' + esc(T('setExpand')) + '</label>' +
-                        '<label><input type="checkbox" data-set="autoLoad"> ' + esc(T('setAutoLoad')) + '</label>' +
-                        '<label><input type="checkbox" data-set="hideRail"> ' + esc(T('setHideRail')) + '</label>' +
-                        '<label>' + esc(T('setLimit')) + ' <input type="number" min="10" max="500" step="10" data-set="limit"></label>' +
-                        '<div class="actAdv-modal-subhead">' + esc(T('setFilters')) + '</div>' +
-                        '<label><input type="checkbox" data-filter="newusers"> ' + esc(T('filterNewusers')) + '</label>' +
-                        '<label><input type="checkbox" data-set="onlyUnpatrolled"> ' + esc(T('setOnlyUnpatrolled')) + '</label>' +
-                        '<label><input type="checkbox" data-filter="patrol"> ' + esc(T('filterPatrol')) + '</label>' +
-                        '<label class="actAdv-modal-userfilter">' + esc(T('setExcludeUsers')) + '<input type="text" data-set="excludeUsers" placeholder="' + esc(T('usersPlaceholder')) + '"></label>' +
-                        '<label class="actAdv-modal-userfilter">' + esc(T('setIncludeUsers')) + '<input type="text" data-set="includeUsers" placeholder="' + esc(T('usersPlaceholder')) + '"></label>' +
-                        '<label><input type="checkbox" data-set="ignoreTalk"> ' + esc(T('setIgnoreTalk')) + '</label>' +
-                        '<details class="actAdv-ns-details">' +
-                            '<summary>' + esc(T('setNamespaces')) + '</summary>' +
-                            '<div class="actAdv-modal-note">' + esc(T('nsHint')) + '</div>' +
-                            '<div class="actAdv-ns-list"></div>' +
-                        '</details>' +
-                        '<div class="actAdv-modal-note">' + esc(T('setApplyNext')) + '</div>' +
-                        '<button type="button" class="actAdv-modal-close actAdv-clear-cache">' + esc(T('clearCache')) + '</button>' +
-                        '<button type="button" class="actAdv-modal-close">' + esc(T('close')) + '</button>' +
-                    '</div>' +
-                '</div>';
-
+            const chips = FILTER_KEYS.map(k => `<button type="button" class="actAdv-chip" data-filter="${k}" aria-pressed="${!!Store.settings.filters[k]}" title="${esc(T('filter' + k.charAt(0).toUpperCase() + k.slice(1)))}">${iconSvg(FILTER_ICON[k] || 'quiz', 'actAdv-chip-svg')}</button>`).join('');
+            root.innerHTML = `<div class="actAdv-head"><div class="actAdv-head-left"><h1 class="actAdv-heading">${esc(T('pageTitle'))}</h1><span class="actAdv-subtitle">${esc(T('subtitle'))}</span></div><div class="actAdv-head-right"><div class="actAdv-chips" role="group">${chips}</div><button type="button" class="actAdv-settings-btn" aria-label="${esc(T('openSettings'))}">${iconSvg('settings', 'actAdv-chip-svg')}</button></div></div><div class="actAdv-errors"></div><div class="actAdv-layout"><div class="actAdv-main"><div class="actAdv-feed" role="feed"></div><div class="actAdv-morewrap"><button type="button" class="actAdv-more">${esc(T('loadMore'))}</button></div><div class="actAdv-loading" style="display:none">${esc(T('loading'))}</div><div class="actAdv-allloaded" style="display:none">${esc(T('allLoaded'))}</div><div class="actAdv-sentinel" style="height:1px"></div></div><aside class="actAdv-rail"><div class="actAdv-box actAdv-rail-stats" style="display:none"><h2>${esc(T('communityStats'))}</h2><div class="actAdv-stats-avatars"></div><div class="actAdv-stats-counts"></div></div><div class="actAdv-box actAdv-rail-top" style="display:none"><h2>${esc(T('popularPages'))}</h2><ol class="actAdv-toplist"></ol></div><div class="actAdv-box actAdv-rail-corner actAdv-corner" style="display:none"><h2>${esc(T('communityCorner'))}</h2><div class="actAdv-corner-body"></div></div></aside></div><div class="actAdv-overlay"><div class="actAdv-modal" role="dialog" aria-modal="true"><h2>${esc(T('settings'))}</h2><label><input type="checkbox" data-set="showBots"> ${esc(T('setShowBots'))}</label><label><input type="checkbox" data-set="expandDetails"> ${esc(T('setExpand'))}</label><label><input type="checkbox" data-set="autoLoad"> ${esc(T('setAutoLoad'))}</label><label><input type="checkbox" data-set="hideRail"> ${esc(T('setHideRail'))}</label><label>${esc(T('setLimit'))} <input type="number" min="10" max="500" step="10" data-set="limit"></label><div class="actAdv-modal-subhead">${esc(T('setFilters'))}</div><label><input type="checkbox" data-filter="newusers"> ${esc(T('filterNewusers'))}</label><label><input type="checkbox" data-set="onlyUnpatrolled"> ${esc(T('setOnlyUnpatrolled'))}</label><label><input type="checkbox" data-filter="patrol"> ${esc(T('filterPatrol'))}</label><label class="actAdv-modal-userfilter">${esc(T('setExcludeUsers'))}<input type="text" data-set="excludeUsers" placeholder="${esc(T('usersPlaceholder'))}"></label><label class="actAdv-modal-userfilter">${esc(T('setIncludeUsers'))}<input type="text" data-set="includeUsers" placeholder="${esc(T('usersPlaceholder'))}"></label><label><input type="checkbox" data-set="ignoreTalk"> ${esc(T('setIgnoreTalk'))}</label><details class="actAdv-ns-details"><summary>${esc(T('setNamespaces'))}</summary><div class="actAdv-modal-note">${esc(T('nsHint'))}</div><div class="actAdv-ns-list"></div></details><div class="actAdv-modal-note">${esc(T('setApplyNext'))}</div><button type="button" class="actAdv-modal-close actAdv-clear-cache">${esc(T('clearCache'))}</button><button type="button" class="actAdv-modal-close">${esc(T('close'))}</button></div></div>`;
             content.appendChild(root);
-            
-            els = {
-                root: root,
-                feed: root.querySelector('.actAdv-feed'),
-                chips: Array.prototype.slice.call(root.querySelectorAll('.actAdv-chip')),
-                moreBtn: root.querySelector('.actAdv-more'),
-                loading: root.querySelector('.actAdv-loading'),
-                allLoaded: root.querySelector('.actAdv-allloaded'),
-                sentinel: root.querySelector('.actAdv-sentinel'),
-                errorsBox: root.querySelector('.actAdv-errors'),
-                overlay: root.querySelector('.actAdv-overlay'),
-                railStats: root.querySelector('.actAdv-rail-stats'),
-                railStatsAvatars: root.querySelector('.actAdv-stats-avatars'),
-                railStatsCounts: root.querySelector('.actAdv-stats-counts'),
-                railTop: root.querySelector('.actAdv-rail-top'),
-                railCorner: root.querySelector('.actAdv-rail-corner'),
-                nsList: root.querySelector('.actAdv-ns-list'),
-            };
-            
+            els = { root, feed: root.querySelector('.actAdv-feed'), chips: [...root.querySelectorAll('.actAdv-chip')], moreBtn: root.querySelector('.actAdv-more'), loading: root.querySelector('.actAdv-loading'), allLoaded: root.querySelector('.actAdv-allloaded'), sentinel: root.querySelector('.actAdv-sentinel'), errorsBox: root.querySelector('.actAdv-errors'), overlay: root.querySelector('.actAdv-overlay'), railStats: root.querySelector('.actAdv-rail-stats'), railStatsAvatars: root.querySelector('.actAdv-stats-avatars'), railStatsCounts: root.querySelector('.actAdv-stats-counts'), railTop: root.querySelector('.actAdv-rail-top'), railCorner: root.querySelector('.actAdv-rail-corner'), nsList: root.querySelector('.actAdv-ns-list') };
             bindEvents();
-        }
+        };
 
-        function bindEvents() {
-            els.chips.forEach(function(ch) {
-                ch.addEventListener('click', function() {
-                    var k = ch.getAttribute('data-filter');
-                    Store.settings.filters[k] = !Store.settings.filters[k];
+        const bindEvents = () => {
+            els.chips.forEach(ch => ch.addEventListener('click', () => { const k = ch.dataset.filter; Store.settings.filters[k] = !Store.settings.filters[k]; Store.save(); ch.setAttribute('aria-pressed', String(!!Store.settings.filters[k])); renderAll(); }));
+            els.feed.addEventListener('click', (e) => { const btn = e.target.closest('.actAdv-patrol-btn'); if (!btn || btn.disabled) return; const revid = parseInt(btn.dataset.revid, 10); if (revid) patrolRevision(revid, btn); });
+            els.moreBtn.addEventListener('click', loadMore);
+            const modal = els.root.querySelector('.actAdv-modal');
+            modal.addEventListener('change', (e) => {
+                const inp = e.target;
+                const setKey = inp.dataset.set;
+                const filterKey = inp.dataset.filter;
+                if (setKey) {
+                    if (inp.type === 'checkbox') { Store.settings[setKey] = inp.checked; if (setKey === 'hideRail') els.root.classList.toggle('actAdv-hide-rail', inp.checked); if (setKey === 'showBots') resetSource('rc'); if (setKey === 'ignoreTalk') buildNsList(); if (setKey === 'onlyUnpatrolled') renderAll(); }
+                    else if (inp.type === 'number') { Store.settings[setKey] = Math.min(Math.max(parseInt(inp.value, 10) || 100, 10), 500); inp.value = Store.settings[setKey]; }
+                    else { Store.settings[setKey] = String(inp.value || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean); inp.value = Store.settings[setKey].join(', '); renderAll(); }
                     Store.save();
-                    ch.setAttribute('aria-pressed', String(!!Store.settings.filters[k]));
-                    renderAll();
-                });
-            });
-            
-            els.feed.addEventListener('click', function(e) {
-                var btn = e.target.closest('.actAdv-patrol-btn');
-                if (!btn || btn.disabled) return;
-                var revid = parseInt(btn.getAttribute('data-revid'), 10);
-                if (revid) patrolRevision(revid, btn);
-            });
-            
-            els.moreBtn.addEventListener('click', function() { loadMore(); });
-
-            var modal = els.root.querySelector('.actAdv-modal');
-            var inputs = modal.querySelectorAll('[data-set]');
-            
-            for (var i = 0; i < inputs.length; i++) {
-                (function(inp) {
-                    var key = inp.getAttribute('data-set');
-                    if (inp.type === 'checkbox') inp.checked = !!Store.settings[key];
-                    else if (inp.type === 'number') inp.value = Store.settings[key];
-                    else inp.value = (Store.settings[key] || []).join(', ');
-                    
-                    inp.addEventListener('change', function() {
-                        if (inp.type === 'checkbox') {
-                            Store.settings[key] = inp.checked;
-                            if (key === 'hideRail') els.root.classList.toggle('actAdv-hide-rail', inp.checked);
-                            if (key === 'showBots') resetSource('rc');
-                            if (key === 'ignoreTalk') buildNsList();
-                            if (key === 'onlyUnpatrolled') renderAll();
-                        } else if (inp.type === 'number') {
-                            Store.settings[key] = Math.max(10, Math.min(500, parseInt(inp.value, 10) || 100));
-                            inp.value = Store.settings[key];
-                        } else {
-                            Store.settings[key] = normalizeUserList(inp.value);
-                            inp.value = Store.settings[key].join(', ');
-                            renderAll();
-                        }
-                        Store.save();
-                    });
-                })(inputs[i]);
-            }
-
-            var filterInputs = modal.querySelectorAll('[data-filter]');
-            for (var j = 0; j < filterInputs.length; j++) {
-                (function(inp) {
-                    var k = inp.getAttribute('data-filter');
-                    inp.checked = !!Store.settings.filters[k];
-                    inp.addEventListener('change', function() {
-                        Store.settings.filters[k] = inp.checked;
-                        Store.save();
-                        renderAll();
-                    });
-                })(filterInputs[j]);
-            }
-
-            if (els.nsList) {
-                els.nsList.addEventListener('change', function(ev) {
-                    var cb = ev.target.closest('[data-ns]');
-                    if (!cb) return;
-                    var id = parseInt(cb.getAttribute('data-ns'), 10);
-                    var arr = Store.settings.namespaces;
-                    var idx = arr.indexOf(id);
-                    if (cb.checked && idx === -1) arr.push(id);
-                    else if (!cb.checked && idx !== -1) arr.splice(idx, 1);
-                    Store.save();
-                    renderAll();
-                });
-            }
-
-            els.root.querySelector('.actAdv-settings-btn').addEventListener('click', function() {
-                els.overlay.classList.add('actAdv-open');
-            });
-            
-            var closeBtn = els.root.querySelector('.actAdv-modal-close:not(.actAdv-clear-cache)');
-            if (closeBtn) closeBtn.addEventListener('click', closeModal);
-            
-            els.root.querySelector('.actAdv-clear-cache').addEventListener('click', function(e) {
-                e.stopPropagation();
-                var ok = clearAllCache();
-                state.railDone = false;
-                if (els.railStats) {
-                    els.railStats.style.display = 'none';
-                    if (els.railStatsAvatars) els.railStatsAvatars.innerHTML = '';
-                    if (els.railStatsCounts) els.railStatsCounts.innerHTML = '';
+                } else if (filterKey) { Store.settings.filters[filterKey] = inp.checked; Store.save(); renderAll(); }
+                else if (inp.dataset.ns) {
+                    const id = parseInt(inp.dataset.ns, 10);
+                    const arr = Store.settings.namespaces;
+                    const idx = arr.indexOf(id);
+                    if (inp.checked && idx === -1) arr.push(id);
+                    else if (!inp.checked && idx !== -1) arr.splice(idx, 1);
+                    Store.save(); renderAll();
                 }
+            });
+            els.root.querySelector('.actAdv-settings-btn').addEventListener('click', () => els.overlay.classList.add('actAdv-open'));
+            els.root.querySelector('.actAdv-modal-close:not(.actAdv-clear-cache)').addEventListener('click', closeModal);
+            els.root.querySelector('.actAdv-clear-cache').addEventListener('click', (e) => {
+                e.stopPropagation();
+                avatarCache.clear(); rightsCache.clear(); state.railDone = false;
+                if (els.railStats) { els.railStats.style.display = 'none'; els.railStatsAvatars.innerHTML = ''; els.railStatsCounts.innerHTML = ''; }
                 renderRail();
-                this.textContent = ok ? T('cacheCleared') : T('clearCache');
-                var self = this;
-                setTimeout(function() { self.textContent = T('clearCache'); }, 2000);
+                e.target.textContent = T('cacheCleared'); setTimeout(() => e.target.textContent = T('clearCache'), 2000);
             });
-            
-            els.overlay.addEventListener('click', function(e) { 
-                if (e.target === els.overlay) closeModal(); 
-            });
-            
+            els.overlay.addEventListener('click', (e) => { if (e.target === els.overlay) closeModal(); });
             document.addEventListener('keydown', onEsc);
-
-            if (els.feed) {
-                els.feed.addEventListener('error', handleImageError, true);
-            }
-
+            els.feed.addEventListener('error', handleImageError, true);
             if (observer) observer.disconnect();
             observer = new IntersectionObserver(onIntersect, { rootMargin: '800px 0px' });
             observer.observe(els.sentinel);
-        }
+        };
 
-        function closeModal() { 
-            if (els.overlay) els.overlay.classList.remove('actAdv-open'); 
-        }
-        
-        function onEsc(e) { 
-            if (e.key === 'Escape') closeModal(); 
-        }
-        
-        function onIntersect(entries) {
-            if (!Store.settings.autoLoad || state.loading) return;
-            for (var i = 0; i < entries.length; i++) {
-                if (entries[i].isIntersecting) {
-                    loadMore();
-                    break;
-                }
-            }
-        }
-
-        function handleImageError(event) {
-            var img = event.target;
-            if (!img || img.tagName !== 'IMG') return;
-            if (!els.feed || !els.feed.contains(img)) return;
-
-            if (img.dataset.actAdvErrorHandled) return;
+		const onEsc = (e) => { if (e.key === 'Escape') closeModal(); };
+        const closeModal = () => { if (els.overlay) els.overlay.classList.remove('actAdv-open'); };
+        const onIntersect = (entries) => { if (Store.settings.autoLoad && !state.loading && entries.some(e => e.isIntersecting)) loadMore(); };
+        const handleImageError = (event) => {
+            const img = event.target;
+            if (!img || img.tagName !== 'IMG' || !els.feed.contains(img) || img.dataset.actAdvErrorHandled) return;
             img.dataset.actAdvErrorHandled = '1';
+            const parent = img.parentElement;
+            if (parent && (parent.classList.contains('actAdv-thumb') || parent.classList.contains('actAdv-avatar') || parent.classList.contains('actAdv-top-thumb'))) parent.remove();
+            else if (parent && parent.parentElement && parent.parentElement.classList.contains('actAdv-file-preview')) parent.parentElement.remove();
+            else img.remove();
+            const card = img.closest('.actAdv-card');
+            if (card) { const hr = card.querySelector('.actAdv-hr'); if (hr && (!hr.nextElementSibling || !hr.nextElementSibling.textContent.trim())) hr.remove(); }
+        };
 
-            var card = img.closest('.actAdv-card');
-            var parent = img.parentElement;
-
-            if (parent && parent.classList.contains('actAdv-thumb')) {
-                parent.remove();
-            } else if (parent && parent.parentElement && parent.parentElement.classList.contains('actAdv-file-preview')) {
-                parent.parentElement.remove();
-            } else if (parent && parent.classList.contains('actAdv-avatar')) {
-                img.remove();
-            } else if (parent && parent.classList.contains('actAdv-top-thumb')) {
-                parent.remove();
-            } else {
-                img.remove();
-            }
-
-            if (card) {
-                var hr = card.querySelector('.actAdv-hr');
-                if (hr) {
-                    var next = hr.nextElementSibling;
-                    if (!next || next.textContent.trim() === '') {
-                        hr.remove();
-                    }
-                }
-            }
-        }
-
-        function cleanupBrokenImages() {
-            if (!els.feed) return;
-            var imgs = els.feed.querySelectorAll('img');
-            for (var i = 0; i < imgs.length; i++) {
-                if (imgs[i].complete && imgs[i].naturalWidth === 0 && !imgs[i].dataset.actAdvErrorHandled) {
-                    handleImageError({ target: imgs[i] });
-                }
-            }
-        }
-
-        function renderErrors() {
-            if (!els.errorsBox) return;
-            els.errorsBox.innerHTML = state.errors.length
-                ? '<div class="actAdv-error">' + esc(T('sourcesFailed', { list: state.errors.join(', ') })) + '</div>'
-                : '';
-        }
-
-        function sourcesExhausted() {
-            var s = state.sources;
-            return s.rc.done && s.log.done && s.post.done && s.af.done;
-        }
-
-        function updateFooter() {
-            var fe = filteredEntries();
-            var exhausted = sourcesExhausted();
-            var nothingLeft = exhausted && state.rendered >= fe.length;
-            els.moreBtn.style.display = nothingLeft ? 'none' : '';
-            els.allLoaded.style.display = nothingLeft && fe.length ? '' : 'none';
-        }
-
-        function filteredEntries() {
-            var f = Store.settings.filters;
-            var inc = (Store.settings.includeUsers || []).map(function(s) { return s.toLowerCase(); });
-            var exc = (Store.settings.excludeUsers || []).map(function(s) { return s.toLowerCase(); });
-            var nsSel = Store.settings.namespaces || [];
-            var ignoreTalk = Store.settings.ignoreTalk !== false;
-            
-            return state.pool.filter(function(e) {
+        // --- Rendering & Logic ---
+        const filteredEntries = () => {
+            const f = Store.settings.filters;
+            const inc = (Store.settings.includeUsers || []).map(s => s.toLowerCase());
+            const exc = (Store.settings.excludeUsers || []).map(s => s.toLowerCase());
+            const nsSel = Store.settings.namespaces || [];
+            const ignoreTalk = Store.settings.ignoreTalk !== false;
+            return state.pool.filter(e => {
                 if (e.type === 'log' && e.action === 'newusers') return f.log !== false && f.newusers !== false;
                 if (e.type === 'log' && e.action === 'patrol') return f.log !== false && f.patrol !== false;
-                
                 if (Store.settings.onlyUnpatrolled) {
-                    if (e.type === 'edit' || e.type === 'new') {
-                        var ex = e.extra || {};
-                        var isPatrolled = ex.autopatrolled === true || ex.unpatrolled === false;
-                        if (isPatrolled) return false;
-                    } else if (e.type === 'log' && e.action === 'patrol') {
-                        return false;
-                    }
+                    if ((e.type === 'edit' || e.type === 'new') && (e.extra.autopatrolled === true || e.extra.unpatrolled === false)) return false;
+                    if (e.type === 'log' && e.action === 'patrol') return false;
                 }
-                
-                var filterKey = FILTER_OF_TYPE[e.type] || e.type;
-                if (f[filterKey] === false) return false;
-                
-                var uname = ((e.user && e.user.name) || '').toLowerCase();
+                const fk = FILTER_OF_TYPE[e.type] || e.type;
+                if (f[fk] === false) return false;
+                const uname = ((e.user && e.user.name) || '').toLowerCase();
                 if (inc.length && inc.indexOf(uname) === -1) return false;
                 if (exc.length && exc.indexOf(uname) !== -1) return false;
-                
-                if (e.ns != null) {
-                    if (ignoreTalk && (e.ns % 2 === 1)) return false;
-                    if (nsSel.length && nsSel.indexOf(e.ns) === -1) return false;
-                }
+                if (e.ns != null) { if (ignoreTalk && e.ns % 2 === 1) return false; if (nsSel.length && nsSel.indexOf(e.ns) === -1) return false; }
                 return true;
             });
-        }
+        };
 
-        function renderAll() {
+        const renderAll = () => {
             if (!els.feed) return;
-            els.feed.innerHTML = '';
-            cardIndexByUser.clear();
-            state.rendered = 0;
-            state.lastDayKey = '';
-            appendChunk(100);
-            updateFooter();
-        }
+            els.feed.innerHTML = ''; cardIndexByUser.clear(); state.rendered = 0; state.lastDayKey = '';
+            appendChunk(100); updateFooter();
+        };
 
-        function appendChunk(n) {
-            var fe = filteredEntries();
-            var slice = fe.slice(state.rendered, state.rendered + n);
+        const appendChunk = (n) => {
+            const fe = filteredEntries();
+            const slice = fe.slice(state.rendered, state.rendered + n);
             if (!slice.length) { updateFooter(); return; }
-            
-            var frag = document.createDocumentFragment();
-            slice.forEach(function(e) {
-                var dk = dayKey(e.timestamp);
-                if (dk !== state.lastDayKey) {
-                    state.lastDayKey = dk;
-                    var div = document.createElement('div');
-                    div.className = 'actAdv-daydivider';
-                    div.textContent = DATE_FMT.format(new Date(e.timestamp * 1000));
-                    frag.appendChild(div);
-                }
-                var wrap = document.createElement('div');
-                wrap.innerHTML = cardHtml(e);
-                frag.appendChild(wrap.firstElementChild);
+            const frag = document.createDocumentFragment();
+            slice.forEach(e => {
+                const dk = dayKey(e.timestamp);
+                if (dk !== state.lastDayKey) { state.lastDayKey = dk; const div = document.createElement('div'); div.className = 'actAdv-daydivider'; div.textContent = DATE_FMT.format(new Date(e.timestamp * 1000)); frag.appendChild(div); }
+                const wrap = document.createElement('div'); wrap.innerHTML = cardHtml(e); frag.appendChild(wrap.firstElementChild);
             });
-            
             state.rendered += slice.length;
             els.feed.appendChild(frag);
-            rebuildCardIndex();
-            updateFooter();
+            rebuildCardIndex(); updateFooter();
+            requestAnimationFrame(() => { if (!els.feed) return; els.feed.querySelectorAll('img').forEach(img => { if (img.complete && img.naturalWidth === 0 && !img.dataset.actAdvErrorHandled) handleImageError({ target: img }); }); });
+        };
 
-            requestAnimationFrame(cleanupBrokenImages);
-        }
-
-        function renderRail() {
-            if (state.railDone) return;
-            state.railDone = true;
-
-            fetchRailData().then(function(data) {
-                if (!data) return;
-
-                var details = data.wikiDetails || {};
-                var topUsers = details.topUsers || [];
-                var editCount = details.editCount;
-                var pageCount = details.pageCount;
-
-                if (topUsers.length > 0 || editCount || pageCount) {
-                    var avatarsHtml = '';
-                    
-                    if (topUsers.length > 0) {
-                        avatarsHtml = topUsers.slice(0, 5).map(function(u) {
-                            var un = u.name || '';
-                            var av = u.avatarUrl || '';
-                            
-                            if (av) {
-                                setCachedAvatar(un, av);
-                                saveAvatarCache();
-                            }
-                            
-                            var imgSrc = av ? esc(av) : 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400'; 
-                            return '<a href="' + esc(mw.util.getUrl('User:' + un)) + '" title="' + esc(un) + '">' +
-                                   '<img loading="lazy" src="' + imgSrc + '" alt="' + esc(un) + '" onerror="this.onerror=null;this.src=\'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400\'">' +
-                                   '</a>';
-                        }).join('');
-                    }
-                    
-                    var countsHtml = '';
-                    if (editCount || pageCount) {
-                        countsHtml = '<div class="actAdv-stats-row">' +
-                                     (editCount ? '<span>' + formatNumber(editCount) + ' ' + esc(T('edits')) + '</span>' : '') +
-                                     (editCount && pageCount ? ' <span class="actAdv-separator">•</span> ' : '') +
-                                     (pageCount ? '<span>' + formatNumber(pageCount) + ' ' + esc(T('articles')) + '</span>' : '') +
-                                     '</div>';
-                    }
-
-                    if (avatarsHtml || countsHtml) {
-                        els.railStatsAvatars.innerHTML = '<div class="actAdv-avatars-row">' + avatarsHtml + '</div>';
-                        els.railStatsCounts.innerHTML = countsHtml;
-                        els.railStats.style.display = '';
-                    }
-                }
-
-                var topArticles = data.topArticles || [];
-                if (Array.isArray(topArticles) && topArticles.length) {
-                    var listHtml = topArticles.slice(0, 10).map(function(a) {
-                        var t = a.title || '';
-                        var u = a.url || mw.util.getUrl(t);
-                        var img = a.image || '';
-                        
-                        var thumbHtml = img
-                            ? '<div class="actAdv-top-thumb"><img loading="lazy" src="' + esc(img) + '" alt="" onerror="this.parentNode&&this.parentNode.removeChild(this.parentNode)"></div>'
-                            : '<div class="actAdv-top-thumb actAdv-top-thumb--empty"></div>';
-
-                        return '<li>' + thumbHtml + '<a class="actAdv-top-title" href="' + esc(u) + '">' + esc(t) + '</a></li>';
-                    }).join('');
-
-                    els.railTop.querySelector('.actAdv-toplist').innerHTML = listHtml;
-                    els.railTop.style.display = '';
-                }
-                
-                fetchCommunityCorner().then(function(html) {
-                    if (html) {
-                        els.railCorner.querySelector('.actAdv-corner-body').innerHTML = html;
-                        els.railCorner.style.display = '';
-                    }
-                }).catch(function() {});
-
-            }).catch(function() {});
-        }
-
-        function mergeEntries(list) {
-            var added = 0;
-            list.forEach(function(e) {
-                if (!e || state.seen[e.id]) return;
-                state.seen[e.id] = true;
-                state.pool.push(e);
-                added++;
+        const rebuildCardIndex = () => {
+            cardIndexByUser.clear(); if (!els.feed) return;
+            els.feed.querySelectorAll('.actAdv-card').forEach(card => {
+                const link = card.querySelector('.actAdv-user'); if (!link) return;
+                const un = link.textContent; if (!un) return;
+                if (!cardIndexByUser.has(un)) cardIndexByUser.set(un, []);
+                cardIndexByUser.get(un).push(card);
             });
-            if (added) state.pool.sort(function(a, b) { return b.timestamp - a.timestamp; });
-            return added;
-        }
+        };
 
-        function resetSource(which) {
-            var s = state.sources[which];
-            s.cont = null; 
-            s.done = false;
+        const updateFooter = () => {
+            const fe = filteredEntries();
+            const exhausted = state.sources.rc.done && state.sources.log.done && state.sources.post.done && state.sources.af.done;
+            const nothingLeft = exhausted && state.rendered >= fe.length;
+            els.moreBtn.style.display = nothingLeft ? 'none' : '';
+            els.allLoaded.style.display = nothingLeft && fe.length ? '' : 'none';
+        };
+
+        const renderErrors = () => { if (els.errorsBox) els.errorsBox.innerHTML = state.errors.length ? `<div class="actAdv-error">${esc(T('sourcesFailed', { list: state.errors.join(', ') }))}</div>` : ''; };
+
+        const mergeEntries = (list) => {
+            let added = 0;
+            list.forEach(e => { if (e && !state.seen[e.id]) { state.seen[e.id] = true; state.pool.push(e); added++; } });
+            if (added) state.pool.sort((a, b) => b.timestamp - a.timestamp);
+            return added;
+        };
+
+        const resetSource = (which) => {
+            const s = state.sources[which];
+            s.cont = null; s.done = false;
             if (which === 'post') s.page = 0;
             if (which === 'af') s.allowed = null;
             if (which === 'rc') s.patrolAllowed = null;
-            
-            var prefix = which === 'rc' ? 'rc:' : which === 'log' ? 'log:' : which === 'af' ? 'af:' : 'post:';
-            state.pool = state.pool.filter(function(e) { return e.id.indexOf(prefix) !== 0; });
-            state.seen = {};
-            state.pool.forEach(function(e) { state.seen[e.id] = true; });
-            state.railDone = false;
-            initialLoad();
-        }
+            const prefix = which === 'rc' ? 'rc:' : which === 'log' ? 'log:' : which === 'af' ? 'af:' : 'post:';
+            state.pool = state.pool.filter(e => e.id.indexOf(prefix) !== 0);
+            state.seen = {}; state.pool.forEach(e => state.seen[e.id] = true);
+            state.railDone = false; initialLoad();
+        };
 
-        function initialLoad() {
-            state.loading = true;
-            els.loading.style.display = '';
-            renderErrors();
-
-            var rcCheck = state.sources.rc.patrolAllowed === null ? 
-                checkPatrolRights().catch(function() { return false; }) : 
-                Promise.resolve(state.sources.rc.patrolAllowed);
-                
-            var afCheck = state.sources.af.allowed === null ? 
-                checkAfRights().catch(function() { return false; }) : 
-                Promise.resolve(state.sources.af.allowed);
-
-            return Promise.all([rcCheck, afCheck]).then(function(results) {
-                state.sources.rc.patrolAllowed = results[0];
-                state.sources.af.allowed = results[1];
-                if (!state.sources.af.allowed) state.sources.af.done = true;
-
-                return Promise.all([
-                    fetchRc().catch(function() { failSource('rc'); return []; }),
-                    fetchLogs().catch(function() { failSource('log'); return []; }),
-                    fetchPosts().catch(function() { failSource('post'); return []; }),
-                    fetchAf().catch(function() { failSource('af'); return []; })
-                ]);
-            }).then(function(results) {
-                results.forEach(function(list) { mergeEntries(list); });
-
-                state.loading = false;
-                els.loading.style.display = 'none';
-                renderAll();
-                renderErrors();
-
-                resolveAvatarsAsync(state.pool);
-            });
-        }
-
-        function failSource(which) {
-            var labelKey = { rc: 'sourceRc', log: 'sourceLog', post: 'sourcePost', af: 'sourceAf', rail: 'sourceRail', corner: 'sourceCorner' }[which];
-            var label = T(labelKey);
+        const failSource = (which) => {
+            const label = T({ rc: 'sourceRc', log: 'sourceLog', post: 'sourcePost', af: 'sourceAf' }[which]);
             if (state.errors.indexOf(label) === -1) state.errors.push(label);
             if (state.sources[which]) state.sources[which].done = true;
-        }
+        };
 
-        function loadMore() {
+        const patrolRevision = (revid, btn) => {
+            if (!revid || !btn) return;
+            btn.disabled = true; btn.classList.add('actAdv-patrol-loading');
+            const getToken = () => patrolToken ? Promise.resolve(patrolToken) : api.get({ action: 'query', meta: 'tokens', type: 'watch|patrol', formatversion: 2 }).then(r => { patrolToken = r.query.tokens.patroltoken; return patrolToken; }).catch(() => null);
+            getToken().then(token => {
+                if (!token) throw new Error('No token');
+                return api.post({ action: 'patrol', revid, token, formatversion: 2 });
+            }).then(() => {
+                btn.classList.remove('actAdv-patrol-loading'); btn.classList.add('actAdv-patrolled'); btn.title = '✓ Patrolled'; btn.setAttribute('aria-label', 'Patrolled');
+                const entry = state.pool.find(e => e.extra && e.extra.revid === revid);
+                if (entry) { entry.extra.unpatrolled = false; entry.extra.autopatrolled = true; }
+            }).catch(() => { btn.disabled = false; btn.classList.remove('actAdv-patrol-loading'); btn.title = 'Patrol failed — click to retry'; });
+        };
+
+        const initialLoad = () => {
+            state.loading = true; els.loading.style.display = ''; renderErrors();
+            Promise.all([fetchSource('rc').catch(() => { failSource('rc'); return []; }), fetchSource('log').catch(() => { failSource('log'); return []; }), fetchPosts().catch(() => { failSource('post'); return []; }), fetchSource('af').catch(() => { failSource('af'); return []; })])
+                .then(results => { results.forEach(l => mergeEntries(l)); state.loading = false; els.loading.style.display = 'none'; renderAll(); renderErrors(); resolveAvatarsAsync(state.pool); });
+        };
+
+        const loadMore = () => {
             if (state.loading) return;
-            var fe = filteredEntries();
+            const fe = filteredEntries();
             if (state.rendered < fe.length) { appendChunk(100); return; }
-            if (sourcesExhausted()) { updateFooter(); return; }
-
-            state.loading = true;
-            els.loading.style.display = '';
-            els.moreBtn.disabled = true;
-
-            return Promise.all([
-                fetchRc().catch(function() { failSource('rc'); return []; }),
-                fetchLogs().catch(function() { failSource('log'); return []; }),
-                fetchPosts().catch(function() { failSource('post'); return []; }),
-                fetchAf().catch(function() { failSource('af'); return []; })
-            ]).then(function(results) {
-                var newEntries = [];
-                results.forEach(function(list) { 
-                    var added = mergeEntries(list);
-                    if (added) newEntries = newEntries.concat(list);
+            if (state.sources.rc.done && state.sources.log.done && state.sources.post.done && state.sources.af.done) { updateFooter(); return; }
+            state.loading = true; els.loading.style.display = ''; els.moreBtn.disabled = true;
+            Promise.all([fetchSource('rc').catch(() => { failSource('rc'); return []; }), fetchSource('log').catch(() => { failSource('log'); return []; }), fetchPosts().catch(() => { failSource('post'); return []; }), fetchSource('af').catch(() => { failSource('af'); return []; })])
+                .then(results => {
+                    const newEntries = []; results.forEach(l => { if (mergeEntries(l)) newEntries.push(...l); });
+                    state.loading = false; els.loading.style.display = 'none'; els.moreBtn.disabled = false; renderAll(); renderErrors();
+                    if (newEntries.length) resolveAvatarsAsync(newEntries);
                 });
+        };
 
-                state.loading = false;
-                els.loading.style.display = 'none';
-                els.moreBtn.disabled = false;
-                renderAll();
-                renderErrors();
+        // --- Rail & Namespaces ---
+        const fetchNamespaces = () => api.get({ action: 'query', meta: 'siteinfo', siprop: 'namespaces', uselang: mw.config.get('wgUserLanguage') || 'en', formatversion: 2 }).then(r => (r.query.namespaces || []).map(n => ({ id: n.id, name: n.name, canonical: n.canonical }))).catch(() => null);
+        const buildNsList = () => {
+            if (!els.nsList) return;
+            const ignoreTalk = Store.settings.ignoreTalk !== false;
+            const selected = Store.settings.namespaces || [];
+            const list = (NS_LIST || []).filter(n => !ignoreTalk || n.id % 2 === 0);
+            els.nsList.innerHTML = list.map(n => `<label class="actAdv-ns-item"><input type="checkbox" data-ns="${n.id}"${selected.indexOf(n.id) !== -1 ? ' checked' : ''}> ${esc(n.id === 0 ? T('nsMain') : (n.canonical || n.name || ('NS ' + n.id)))}</label>`).join('');
+        };
+        let NS_LIST = [];
+        const initNamespaces = () => fetchNamespaces().then(f => { NS_LIST = (f && f.length ? f : FALLBACK_NAMESPACES).slice().sort((a, b) => a.id - b.id); buildNsList(); });
 
-                if (newEntries.length > 0) {
-                    resolveAvatarsAsync(newEntries);
+        const renderRail = () => {
+            if (state.railDone) return;
+            state.railDone = true;
+            fetch(mw.util.wikiScript('wikia') + '?controller=FeedsAndPosts&method=getAll', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).catch(() => null).then(data => {
+                if (!data) return;
+                const details = data.wikiDetails || {};
+                const topUsers = details.topUsers || [];
+                if (topUsers.length || details.editCount || details.pageCount) {
+                    const avatars = topUsers.slice(0, 5).map(u => { if (u.avatarUrl) avatarCache.set(u.name, u.avatarUrl); return `<a href="${esc(mw.util.getUrl('User:' + u.name))}" title="${esc(u.name)}"><img loading="lazy" src="${esc(u.avatarUrl || 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400')}" alt="${esc(u.name)}" onerror="this.onerror=null;this.src='https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400'"></a>`; }).join('');
+                    const counts = (details.editCount || details.pageCount) ? `<div class="actAdv-stats-row">${details.editCount ? `<span>${formatNumber(details.editCount)} ${esc(T('edits'))}</span>` : ''}${details.editCount && details.pageCount ? ' <span class="actAdv-separator">•</span> ' : ''}${details.pageCount ? `<span>${formatNumber(details.pageCount)} ${esc(T('articles'))}</span>` : ''}</div>` : '';
+                    if (avatars || counts) { els.railStatsAvatars.innerHTML = `<div class="actAdv-avatars-row">${avatars}</div>`; els.railStatsCounts.innerHTML = counts; els.railStats.style.display = ''; }
+                    avatarCache.save();
+                }
+                const topArticles = data.topArticles || [];
+                if (Array.isArray(topArticles) && topArticles.length) {
+                    els.railTop.querySelector('.actAdv-toplist').innerHTML = topArticles.slice(0, 10).map(a => `<li>${a.image ? `<div class="actAdv-top-thumb"><img loading="lazy" src="${esc(a.image)}" alt="" onerror="this.parentNode&&this.parentNode.removeChild(this.parentNode)"></div>` : '<div class="actAdv-top-thumb actAdv-top-thumb--empty"></div>'}<a class="actAdv-top-title" href="${esc(a.url || mw.util.getUrl(a.title))}">${esc(a.title)}</a></li>`).join('');
+                    els.railTop.style.display = '';
                 }
             });
-        }
+        };
 
-        function cleanup() {
-            if (observer) { 
-                observer.disconnect(); 
-                observer = null; 
-            }
-            document.removeEventListener('keydown', onEsc);
-            cardIndexByUser.clear();
-            var root = document.getElementById(ROOT_ID);
-            if (root) root.remove();
-        }
-
-        function isMaPage() {
-            if (mw.config.get('wgNamespaceNumber') !== -1 && mw.config.get('wgCanonicalNamespace') !== 'Special') return false;
-            var title = mw.config.get('wgTitle') || '';
-            return title === 'ActivityAdvanced' || title === 'AA';
-        }
-
-        function start() {
-            if (!isMaPage()) return;
-            
-            if (mw.config.get('wgTitle') === 'AA') {
-                try { 
-                    history.replaceState(history.state, '', mw.util.getUrl('Special:ActivityAdvanced')); 
-                } catch (e) {}
-            }
-            
-            fetch(location.origin + '/wikia.php?controller=FeedsAndPosts&method=getAll', { credentials: 'same-origin' })
-                .then(function(r) { return r.ok ? r.json() : null; })
-                .then(function(d) {
-                    var name = d && d.wikiVariables && d.wikiVariables.name;
-                    if (name) document.title = 'Activity Advanced | ' + name;
-                })
-                .catch(function() {});
-                
-            Store.load();
-            loadAvatarCache();
-            loadUserRightsCache();
-            cleanup();
-            
-            loadAssets().then(function() {
-                buildShell();
-                renderErrors();
-                initNamespaces();
-                initialLoad();
-                renderRail();
-            });
-        }
+        // --- Init ---
+        const cleanup = () => { if (observer) { observer.disconnect(); observer = null; } document.removeEventListener('keydown', onEsc); cardIndexByUser.clear(); const root = document.getElementById('actAdv-root'); if (root) root.remove(); };
+        const start = () => {
+            if (mw.config.get('wgNamespaceNumber') !== -1 && mw.config.get('wgCanonicalNamespace') !== 'Special') return;
+            const title = mw.config.get('wgTitle') || '';
+            if (title !== 'ActivityAdvanced' && title !== 'AA') return;
+            if (title === 'AA') try { history.replaceState(history.state, '', mw.util.getUrl('Special:ActivityAdvanced')); } catch (e) {}
+            fetch(mw.util.wikiScript('wikia') + '?controller=FeedsAndPosts&method=getAll', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(d => { if (d && d.wikiVariables && d.wikiVariables.name) document.title = 'Activity Advanced | ' + d.wikiVariables.name; }).catch(() => {});
+            Store.load(); cleanup();
+            loadAssets().then(() => { buildShell(); renderErrors(); initNamespaces(); initialLoad(); renderRail(); });
+        };
 
         window.ActivityAdvanced = window.ActivityAdvanced || {};
         window.ActivityAdvanced.init = start;
         window.ActivityAdvanced.cleanup = cleanup;
         window.ActivityAdvanced._state = state;
-
         start();
     }
 

@@ -67,7 +67,7 @@ if (config.profileUserName && ($user[1] ? $user[1] : $user[0]) === config.wgUser
 			var interval = setInterval(function() {
 			    if ($('#userProfileApp').length) {
 			        clearInterval(interval);
-	                $('.user-identity-header__button').after($statusLink);
+	                $('.user-identity-header__button').first().after($statusLink);
 			    }
 			}, 1000);                            
             $statusLink.append($statusDropdown);

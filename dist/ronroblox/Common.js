@@ -183,6 +183,13 @@ mw.loader.using('mediawiki.api').then(function () {
         });
     });
 });
+
+// Load Pseudo3d.js
+importArticle({
+	type: "script",
+	article: "MediaWiki:Pseudo3d.js"
+});
+
 /* =============================================
    MODIFIER CALCULATOR
    ============================================= */

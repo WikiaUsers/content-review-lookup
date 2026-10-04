@@ -92,19 +92,22 @@
     var targetPage = WEAPON_TYPE_TO_PAGE[weaponType];
     if (!targetPage) return null;
 
-    var skillLevel = extractNumber((params.skill_level || '').trim());
+     var skillLevel = extractNumber((params.skill_level || '').trim());
     var damage = extractNumber((params.damage || '').trim());
     var location = (params.location || '').trim();
 
     if (skillLevel === null || damage === null) return null;
 
-    var row = '|' + skillLevel + '\n' +
-              '|' + damage + '\n' +
+    var skillIsMax = /max/i.test(params.skill_level || '');
+    var damageIsMax = /max/i.test(params.damage || '');
+    var maxTag = " '''[Max]'''";
+
+    var row = '|' + skillLevel + (skillIsMax ? maxTag : '') + '\n' +
+              '|' + damage + (damageIsMax ? maxTag : '') + '\n' +
               '|' + location + '\n';
 
     return { targetPage: targetPage, row: row, sortValue: parseFloat(skillLevel) };
   }
-
   function tryArmor(wikitext) {
     var startIndex = wikitext.search(/\{\{\s*Armor\b/i);
     if (startIndex === -1) return null;
@@ -305,16 +308,24 @@ var rows = tableBody.split(/\n\|-\n/);
 
       var insertIndex = rows.length; // default: before closing |}
 
+            var newIsMax = /\[Max\]/i.test(row);
+
       for (var i = 1; i < rows.length; i++) {
         var rowText = rows[i];
         var cells = rowText.split('\n|');
-        // cells[0] starts with "|[[Name]]" (1st col), cells[1] = sort column (Skill/Level), etc.
         if (cells.length < 2) continue;
 
         var sortCellRaw = cells[1].split('\n')[0].trim();
+        var rowIsMax = /\[Max\]/i.test(sortCellRaw);
         var sortVal = parseFloat(sortCellRaw.replace(/'''/g, '').replace(/\[Max\]/i, '').trim());
 
         if (isNaN(sortVal)) continue;
+
+        if (rowIsMax && !newIsMax) {
+          insertIndex = i;
+          break;
+        }
+        if (!rowIsMax && newIsMax) continue;
 
         if (sortValue < sortVal) {
           insertIndex = i;

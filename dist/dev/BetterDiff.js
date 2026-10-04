@@ -14,13 +14,13 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
     });
     let quickview, settings, // for global use once defined
 		config = mw.config.values,
-		lApi,
-			tokens = {
+		lApi = new mw.Api(), // local api
+		tokens = {
 			patrol: '',
 			rollback: '',
 			wpET: ''// Cannot get through mw.api or mw.user.tokens as they dont work with action=markpatrolled for some reason
 		},
-		can = {
+		can = { // Presumption, updated below if the API verifies that the user indeed has perms
 			patrol: config.wgUserGroups.some((group) => {return ['sysop', 'content-moderator'].includes(group);}),
 			rollback: config.wgUserGroups.some((group) => {return ['sysop', 'content-moderator', 'rollback'].includes(group);})
 		},
@@ -33,9 +33,6 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
 			
 			// Make methods public for any desired use past the offered here
 			window.dev.BetterDiffMethods = betterDiff;
-			
-			// Local api
-			lApi = new mw.Api();
 			
 			// Get tokens
 			lApi.get({
@@ -1334,6 +1331,23 @@ mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles'], () => {
     	}
 	};
 	
-	// Load styles and start when API is loaded
-	betterDiff.init();
+	// First update permissions to be more accurate as some wikis have unique perm grants
+	lApi.get({
+		'action': 'query',
+		'format': 'json',
+		'prop': 'info',
+		'intestactions': 'rollback|patrol',
+		'intestactionsdetail': 'quick', // quick as full check while more accurate could result in rate limiting
+		'titles': config.wgPageName,
+		'formatversion': 2
+	}).done((result) => {
+		can.rollback = result.query.pages[0].actions['rollback'].length === 0;
+		can.patrol = result.query.pages[0].actions['patrol'].length === 0;
+		
+		// Then load styles and start when API is loaded
+		betterDiff.init();
+	}).fail(() => {
+		// If request fails we still have the presumption of permissions
+		betterDiff.init();	
+	});
 });

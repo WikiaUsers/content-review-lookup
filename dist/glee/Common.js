@@ -103,3 +103,5 @@ importArticles({
   type: 'script',
   articles: ['dev:MediaWiki:WelcomeMessage.js']
 });
+
+window.enableReadProgressBarOnArticles = true;

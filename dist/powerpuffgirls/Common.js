@@ -7,3 +7,5 @@ importArticles({
         'u:dev:SignatureCheck/code.js'
     ]
 });
+
+window.AddRailModule = ['Template:RailModule'];

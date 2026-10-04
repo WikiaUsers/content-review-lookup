@@ -10,13 +10,19 @@ mw.loader.using('mediawiki.api').then(function() {
         'wgArticleId',
         'wgPageName',
         'wgNamespaceNumber',
-        'wgIsMainPage'
+        'wgIsMainPage',
+        'wgIsRedirect',
+        'wgAction'
     ]);
 
     var $comments = $('#articleComments');
     
-    // Don't display on main page and non-existent articles.
-    if (wg.wgIsMainPage || wg.wgArticleId === 0) return;
+    // Don't display on main page, non-existent articles, or redirect pages.
+    if (wg.wgIsMainPage || wg.wgArticleId === 0 || wg.wgIsRedirect) return;
+    
+    // Don't display if the user isn't "view"ing the page (no history, purge, etc.)
+    // Also don't run if `veaction` is set (it coopts the `view` action)
+    if (wg.wgAction !== 'view' || new URL(location).searchParams.has('veaction')) return;
 
     if ($comments.length === 0) {
         // Check if the namespace would normally have comments

@@ -313,5 +313,4 @@ mw.loader.using(['mediawiki.util'], function () {
         render();
         marker.appendChild(container);
     });
-
 });

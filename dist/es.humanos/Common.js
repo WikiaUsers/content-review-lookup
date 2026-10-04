@@ -365,3 +365,101 @@
     });
 
 })();
+mw.loader.using('mediawiki.util').then(function () {
+  function slug(t) {
+    return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  // Lee MediaWiki:ProfileTags (acepta <pre>, <br> y saltos de línea)
+  function parse(text) {
+    var map = {};
+    text = text.replace(/<\/?(pre|nowiki)[^>]*>/gi, '\n');
+    text.split(/<br\s*\/?>|\r?\n/i).forEach(function (line) {
+      line = line.trim();
+      if (!line || line.charAt(0) === '#') return;
+      var p = line.split('|');
+      if (p.length < 2) return;
+      var name = p[0].trim().replace(/_/g, ' ').toLowerCase();
+      var tags = p[1].split(',').map(function (t) { return t.trim(); }).filter(Boolean);
+      map[name] = (map[name] || []).concat(tags);
+    });
+    return map;
+  }
+
+  // Etiquetas pequeñas para historial, cambios recientes y artículos
+  function badges(tags) {
+    var $w = $('<span class="wtags"></span>');
+    tags.forEach(function (t) {
+      $w.append($('<span></span>').addClass('wtag wtag-' + slug(t)).text(t));
+    });
+    return $w;
+  }
+
+  // Etiquetas en el encabezado del perfil (reemplazan a las nativas de Fandom)
+  function addProfileTags(map) {
+    var $attr = $('.user-identity-header__attributes').first();
+    if (!$attr.length) return false;
+
+    var name = $attr.find('h1').first().text().trim().replace(/_/g, ' ').toLowerCase();
+    if (!name) return false;
+
+    var tags = map[name];
+    if (!tags) return true; // usuario sin entrada: se dejan las de Fandom
+
+    function apply() {
+      // quita las nativas (las nuestras llevan la clase wtag-*)
+      $attr.find('.user-identity-header__tag').not('[class*="wtag-"]').remove();
+
+      // agrega las nuestras si todavía no están
+      if (!$attr.find('[class*="wtag-"]').length) {
+        var $anchor = $attr.find('h1').first();
+        tags.forEach(function (t) {
+          var $tag = $('<span></span>')
+            .addClass('user-identity-header__tag wtag-' + slug(t))
+            .text(t);
+          $anchor.after($tag);
+          $anchor = $tag;
+        });
+      }
+    }
+
+    apply();
+
+    // si Fandom vuelve a dibujar el encabezado, se repite
+    if (!$attr.data('wtobs')) {
+      $attr.data('wtobs', true);
+      new MutationObserver(apply).observe($attr[0], { childList: true, subtree: true });
+    }
+    return true;
+  }
+
+  function waitForProfile(map) {
+    var tries = 0;
+    (function loop() {
+      if (addProfileTags(map)) return;
+      if (++tries < 40) setTimeout(loop, 250);
+    })();
+  }
+
+  $.get(mw.util.wikiScript('index'), {
+    title: 'MediaWiki:ProfileTags',
+    action: 'raw',
+    ctype: 'text/plain'
+  }).done(function (text) {
+    var map = parse(text);
+
+    // Encabezado del perfil
+    waitForProfile(map);
+
+    // Enlaces de usuario y <span class="wtag-user">Nombre</span>
+    mw.hook('wikipage.content').add(function ($c) {
+      $c.find('a.mw-userlink, .wtag-user').each(function () {
+        var $el = $(this);
+        if ($el.data('wtagged')) return;
+        var tags = map[$el.text().trim().toLowerCase()];
+        if (tags) { $el.data('wtagged', true).after(badges(tags)); }
+      });
+    });
+  });
+});

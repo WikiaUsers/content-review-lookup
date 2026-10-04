@@ -1,141 +1,128 @@
-// ===== Imported JS ======
-mw.loader.load('/index.php?title=MediaWiki:Common.css&action=raw&ctype=text/css', 'text/css');
+// ===== Standalone Tooltips =====
+(function initStandaloneTooltips() {
+    function processTooltips(container) {
+        const triggers = (container || document).querySelectorAll('.advanced-tooltip, .tooltips-init-complete, [data-title]');
+        triggers.forEach((trigger) => {
+            if (trigger.id === 'ot-sdk-btn-floating' || trigger.classList.contains('ot-floating-button')) return;
+            if (trigger.classList.contains('standalone-tooltip-active')) return;
+            trigger.classList.add('standalone-tooltip-active');
 
-// ===== Card =====
-mw.hook('wikipage.content').add(function($content) {
-    var $carousel = $content.find('.cover-flow');
-    var $cards = $carousel.find('.card');
-    var $prev = $carousel.find('.carousel-prev');
-    var $next = $carousel.find('.carousel-next');
+            const title = trigger.getAttribute('data-title') || 'SCP-035';
+            const imageFile = trigger.getAttribute('data-image') || '035AnimatedRender.gif';
+            const description = trigger.getAttribute('data-description') || '';
 
-    if (!$cards.length) {
-        return;
+            const popup = document.createElement('div');
+            popup.className = 'tooltip-contents scp-card';
+
+            const imgId = 'tooltip-img-' + Math.random().toString(36).substring(2, 9);
+            popup.innerHTML = `
+            <div class="scp-card-container">
+                <div class="scp-card-image tooltip-img-fit">
+                    <img id="${imgId}" src="" alt="${mw.html.escape(title)}" />
+                </div>
+                <div class="scp-card-content">
+                    <div class="scp-card-title">${mw.html.escape(title)}</div>
+                    <div class="scp-card-description">${mw.html.escape(description)}</div>
+                </div>
+            </div>`;
+
+            trigger.appendChild(popup);
+
+            let cachedImageUrl = '';
+            const cleanFileName = imageFile.replace(/^(File:|Image:)/i, '');
+
+            // Fetch direct original image URL from MediaWiki API
+            fetch(`/api.php?action=query&titles=File:${encodeURIComponent(cleanFileName)}&prop=imageinfo&iiprop=url&format=json`)
+                .then(res => res.json())
+                .then(data => {
+                    const pages = data.query?.pages || {};
+                    const pageId = Object.keys(pages)[0];
+                    if (pageId && pageId !== "-1" && pages[pageId].imageinfo) {
+                        cachedImageUrl = pages[pageId].imageinfo[0].url;
+                        const imgElem = document.getElementById(imgId);
+                        if (imgElem) {
+                            imgElem.src = cachedImageUrl;
+                        }
+                    }
+                })
+                .catch(err => console.error("Error fetching image URL:", err));
+
+            trigger.addEventListener('mouseenter', () => {
+                popup.classList.add('is-active');
+                const imgElem = document.getElementById(imgId);
+
+                if (imgElem && cachedImageUrl) {
+                    const delimiter = cachedImageUrl.includes('?') ? '&' : '?';
+                    imgElem.src = cachedImageUrl + delimiter + 't=' + new Date().getTime();
+                }
+            });
+
+            trigger.addEventListener('mouseleave', () => {
+                popup.classList.remove('is-active');
+            });
+        });
     }
 
-    var classes = ['hidden-left', 'left', 'center', 'right', 'hidden-right'];
-    var positions = [];
+    processTooltips();
 
-    $cards.each(function(i) {
-        positions.push(i);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => processTooltips());
+    }
+
+    const observer = new MutationObserver(() => {
+        processTooltips();
     });
+    observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+    });
+})();
 
-    function updateCarousel() {
-        $cards.each(function(index) {
-            var $card = $(this);
-            $card.removeClass('hidden-left left center right hidden-right');
+mw.hook('ppreview.show').add(function(popup) {
+    var $popup = $(popup);
+    
+    $popup.css({
+        'background-color': '#000000',
+        'background': '#000000',
+        'border': '1px solid #333333',
+        'color': '#ffffff'
+    });
+    
+    $popup.find('.npage-preview-title, h3, a').css({
+        'color': '#ffffff'
+    });
+});
+
+
+// ===== Tooltip Animations =====
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltips = document.querySelectorAll('.advanced-tooltip');
+
+    tooltips.forEach(tooltip => {
+        tooltip.addEventListener('click', function(e) {
+            e.stopPropagation();
             
-            var posIndex = positions[index];
-            if (posIndex < classes.length) {
-                $card.addClass(classes[posIndex]);
-            } else {
-                $card.addClass('hidden-right');
-            }
-        });
-    }
+            tooltips.forEach(t => {
+                if (t !== tooltip) t.classList.remove('is-active');
+            });
 
-    $next.off('click.coverflow').on('click.coverflow', function(e) {
-        e.preventDefault();
-        positions.unshift(positions.pop()); // Moves cards right-to-left visually
-        updateCarousel();
+            this.classList.toggle('is-active');
+        });
     });
 
-    $prev.off('click.coverflow').on('click.coverflow', function(e) {
-        e.preventDefault();
-        positions.push(positions.shift()); // Moves cards left-to-right visually
-        updateCarousel();
+    document.addEventListener('click', function() {
+        tooltips.forEach(tooltip => tooltip.classList.remove('is-active'));
     });
-
-    updateCarousel();
 });
 
-
-// ======= Creating and Assigning UserTags =========
-
-window.UserTagsJS = {
-    modules: {
-        custom: {
-            'Iostinstargazings': ['overseer'],
-            'Archfactor Spiresplitter': ['overseer']
-        },
-    },
-    tags: {
-        overseer: { u: 'Overseer' }
-    },
-    oasisPlaceBefore: ''
-};
-
-// ===== Miscellaneous ======
-mw.hook('dev.usertags').add(function() {
-    var $overseerTag = $('.user-identity-header__tag.usergroup-overseer');
-
-    if ($overseerTag.length) {
-        var $icon = $('<img>', {
-            src: 'https://static.wikia.nocookie.net/scp-lost-hope/images/1/1f/O5_Council.webp',
-            css: {
-                width: '16px',
-                height: '16px',
-                'margin-right': '5px',
-                'vertical-align': 'middle'
-            }
-        });
-
-        $overseerTag.prepend($icon);
-    }
-});
-
-
-// ===== Welcome, from the Forsaken wiki ====== 
-$(function () {
-  const currentUser = mw.config.get("wgUserName");
-  if (currentUser) {
-    $(".insertusername").text(currentUser);
-  }
-});
-
-// ===== From the Alter Ego wiki ====== 
-function navigateTo(url) {
-  window.location.href = url;
-}
-
-window.tooltips_config = {
-    events: ['CustomEvent'],
-    noCSS: true,
-    offsetX: 5,
-    offsetY: 10,
-    waitForImages: true,
-}
-
-window.tooltips_config = {
-    offsetY: 10,
-    offsetX: 10,
-    className: 'custom-tooltip-wrapper'
-};
-
-window.tooltips_list = [
-    {
-        classname: 'custom-tooltip-parse',
-        text: '<div class="custom-popup"><div class="popup-content"><strong><#title#></strong><p><#description#></p></div></div>'
-    }
-];
+mw.loader.using( 'mediawiki.user' ).then( function() {
+    mw.user.tokens.set( 'patrolToken', '...' ); 
+} );
 
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:Tooltips.js'
+        'u:dev:MediaWiki:ArticlePreview.js'
     ]
-});
-
-window.tooltips_config = {
-    offsetX: 10,
-    offsetY: 10,
-    className: 'custom-tooltip-wrapper'
-};
-
-$(document).on('DOMNodeInserted', '#tf-tooltip, .tf-tooltip', function() {
-    $(this).css({
-        'background': 'transparent',
-        'border': 'none',
-        'box-shadow': 'none',
-        'padding': '0'
-    });
 });

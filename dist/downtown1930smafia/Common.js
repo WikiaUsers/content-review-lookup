@@ -11,6 +11,12 @@ importArticles({
 	    'u:dev:MediaWiki:PatrolPanel.js',
 	]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:templates:MediaWiki:Tabs.js',
+    ]
+});
 
 /********* UTC Clock Format Starts HERE **********/
 (function () {

@@ -172,7 +172,7 @@
 						selectHax(this);
 					});
 				} else if ($('#mw-whatlinkshere-list').length) { // WhatLinksHere
-					$('#mw-whatlinkshere-list > li > a').each(function() {
+					$('#mw-whatlinkshere-list > li > a, #mw-whatlinkshere-list > li > bdi > a').each(function() {
 						$(this).before($chk.clone());
 						selectHax(this);
 					});
@@ -317,6 +317,9 @@
 			mw.notify('Successfully deleted ' + page);
 			logger.log('Successfully deleted ' + page);
 			var $target = specialPageType === 3 ? $link.parent().parent().parent() : $link.parent();
+			if (specialPage === 'Whatlinkshere') {
+				$target = $link.closest('li');
+			}
 			$target.remove();
 
 			if (cur === count) {

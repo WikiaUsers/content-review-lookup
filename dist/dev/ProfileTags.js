@@ -34,6 +34,8 @@
         // variable to not hide existing tags
         noHideTags = !!((window.dev || {}).profileTags || {}).noHideTags;
 
+    const IS_GAMEPEDIA = $('.is-gamepedia').length > 0;
+
     if (conf.wgCanonicalNamespace === 'MediaWiki' && conf.wgTitle === 'ProfileTags') {
         var content = $('#mw-content-text .mw-parser-output');
         if (!content.length) {
@@ -116,25 +118,40 @@
      * @param tags {array} The tags to add to the user masthead.
      */
     function addProfileTags(tags) {
-        var $masthead = $('.user-identity-box .user-identity-header__attributes'),
-            linkTestRe = /\[\[.+?\|.+?\]\]/;
+        var $masthead;
+        if (IS_GAMEPEDIA) {
+            $masthead = $('.curseprofile .grouptags');
+        } else {
+            $masthead = $('.user-identity-box .user-identity-header__attributes');
+        }
+        var linkTestRe = /\[\[.+?\|.+?\]\]/;
 
         if (!noHideTags) {
             hideTags($masthead);
         }
 
         tags.forEach(function (tag) {
-            var $span = $('<span>').addClass('user-identity-header__tag');
-
-            if (linkTestRe.test(tag)) {
-                $span = getLinkTag($span, tag);
+            if (IS_GAMEPEDIA) {
+                var $li = $('<li>');
+                if (linkTestRe.test(tag)) {
+                    $li = getLinkTag($li, tag);
+                } else {
+                    $li.addClass(getTagClass(tag)).text(tag);
+                }
+                $masthead.append($li);
             } else {
-                $span.addClass(getTagClass(tag)).text(tag);
-            }
+                var $span = $('<span>').addClass('user-identity-header__tag');
+    
+                if (linkTestRe.test(tag)) {
+                    $span = getLinkTag($span, tag);
+                } else {
+                    $span.addClass(getTagClass(tag)).text(tag);
+                }
 
-            // add a space because otherwise the padding isn't right
-            // when existing tags aren't hidden
-            $masthead.append($span, ' ');
+                // add a space because otherwise the padding isn't right
+                // when existing tags aren't hidden
+                $masthead.append($span, ' ');
+            }
         });
         mw.hook('dev.profile-tags').fire();
     }
@@ -202,6 +219,7 @@
                 }
             });
 
+            console.log(userTags);
             if (userTags.length > 0) {
                 addProfileTags(userTags);
             }
@@ -213,7 +231,7 @@
      */
     function init() {
         var __init = function() {
-            if ($('.user-identity-box').length) {
+            if ($('.user-identity-box').length || (IS_GAMEPEDIA && $('.curseprofile').length)) {
                 getUserTags();
             } else {
                 setTimeout(__init, 500);
