@@ -1,3 +1,12 @@
+/* Для цветных ников */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Highlight.js'
+    ]
+});
+
+
 /*Скрипт альтернативного виджета Discord*/
 $(function () {
  

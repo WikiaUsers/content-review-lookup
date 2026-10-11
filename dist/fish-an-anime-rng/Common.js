@@ -139,6 +139,8 @@
  *     Cosmic 16, Secret 22, Rainbow 40, Ascended 72, Divine 225,
  *     Supreme 740, Celestial 1250, Ancient 4000, God 8800,
  *     Omniscient 12500, Transcendent 17500, Exclusive 20
+ *   Apex is missing: the rarity arrived after these were measured and its
+ *   base is still unknown. One level-2 price for an Apex fills it in.
  *   Uncommon is an exact copy of Legendary and Common an exact copy of
  *   Rare — that is the game's own data, not a typo here, and it means
  *   Uncommon really does cost more to level than the rarer Rare.
@@ -155,6 +157,11 @@
 	var RARITY = {
 		exclusive:    { n: 'Exclusive',    c: '#8a8a93', food: 20 },
 		transcendent: { n: 'Transcendent', c: '#f0f0f5', food: 17500 },
+		/* Apex sits between Transcendent and Omniscient by income (7.6B and
+		   7B against 16B above and 3.8B below). Its food base has not been
+		   measured, so the widget says "no data" for food until someone
+		   reports the price of an Apex level 2; nothing else needs changing. */
+		apex:         { n: 'Apex',         c: '#ff5c3a' },
 		omniscient:   { n: 'Omniscient',   c: '#b8a0e8', food: 12500 },
 		god:          { n: 'God',          c: '#d4a72c', food: 8800 },
 		ancient:      { n: 'Ancient',      c: '#c9743a', food: 4000 },

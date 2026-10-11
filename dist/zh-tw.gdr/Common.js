@@ -38,3 +38,10 @@ if (mw.config.get("wgPageName") === "物品掉落搜尋器") {
 if (mw.config.get("wgPageName") === "物品分頁查詢") {
  importArticles({type:"script", articles:["MediaWiki:ItemPagination.js"]});
 }
+/* 查詢工具：限定工具頁載入，所有操作僅讀取同站資料。 */
+jQuery(function () {
+if (["圖鑑搜尋", "物品取得查詢", "裝備與寵物比較", "養成素材計算器", "副本查詢"].indexOf(mw.config.get("wgPageName")) !== -1) {
+    importArticles({type: "script", article: "MediaWiki:GuideTools.js"});
+}
+
+});

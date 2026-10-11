@@ -36,6 +36,34 @@ importArticles({
 
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 mw.hook("wikipage.content").add(function () {
+	// 导入经过审查的JS页面
+	if (mw.config.get('wgCategories').includes('引入JS脚本的页面')) {
+        var wgScript = mw.config.get('wgScript');
+        $('span.import-js').each(function () {
+            $.each($(this).attr('data-articles').split('|'), function (_, article) {
+                article = article.trim();
+                var url;
+                if (/^MediaWiki:/i.test(article)){ // Scripts in *MediaWiki* namespace of *THIS* wiki
+                	$('script[data-from]').filter(function () { return $(this).attr('data-from') === article; }).remove(); // Reloading
+                	url = wgScript + '?action=raw&ctype=text/javascript&title=' + encodeURIComponent(article);
+                }
+                /*else if (/^u:dev:Mediawiki:/i.test(article)){ // Scripts in dev.fandom.com
+                	$('script[data-from]').filter(function () { return $(this).attr('data-from') === article; }).remove(); // Reloading
+                	url = 'https://dev.fandom.com/wiki/' + article.substr(6) + '?action=raw&ctype=text/javascript';
+                }*/
+                else{
+                	return;
+                }
+                $('<script>', {
+                    class: 'import-js',
+                    type: 'text/javascript',
+                    src: url,
+                    'data-from': article
+                }).appendTo('head');
+            });
+        });
+    }
+	
     // 单页内联CSS与CSS触发器
     $("span.import-css").each(function () {
         var css = mw.util.addCSS($(this).attr("data-css"));

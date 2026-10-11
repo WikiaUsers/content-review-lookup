@@ -847,8 +847,8 @@
             msgExists = msg !== false;
 
         if (!msgExists) {
-            // use name wrapped in < > for missing message, per MediaWiki convention
-            msg = '<' + descriptiveMsgName + '>';
+            // use name wrapped in ⧼ ⧽ for missing message, per MediaWiki convention
+            msg = '⧼' + descriptiveMsgName + '⧽';
         }
 
         if (conf.wgUserLanguage === 'qqx' && msgExists) {

@@ -1,0 +1,2 @@
+/* ここにあるすべてのJavaScriptは、すべてのページ読み込みですべての利用者に対して読み込まれます */
+window.AddRailModule = [ { prepend : true } ] ;

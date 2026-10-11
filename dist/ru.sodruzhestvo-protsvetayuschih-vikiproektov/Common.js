@@ -18,7 +18,7 @@ window.MultiClockConfig = {
             label: "Местное время",
             offset: -(new Date().getTimezoneOffset() / 60),
             color: "#226f92", 
-            format: "%2H:%2M:%2S" 
+            format: "%2H:%2M:%2S %d %b %Y" 
         }
     ]
 };

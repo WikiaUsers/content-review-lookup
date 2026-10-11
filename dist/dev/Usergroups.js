@@ -8,19 +8,6 @@
 mw.loader.using([ 'mediawiki.api', 'mediawiki.jqueryMsg' ], function() {
 	let isIP = mw.util.isIPAddress;
 	const IS_GAMEPEDIA = $('.is-gamepedia').length > 0;
-	/* Load CSS */
-	$.get(mw.config.get("wgScriptPath") + "/api.php", {
-		"action": "query",
-		"format": "json",
-		"titles": "MediaWiki:Usergroups.css",
-		"formatversion": 2
-	}).done(function(result) {
-		if (result.query.pages[0].missing) {
-			mw.loader.load(`https://dev.fandom.com/index.php?title=MediaWiki:Usergroups.css&action=raw&ctype=text/css`, "text/css");
-		} else {
-			mw.loader.load(`${window.location.origin + mw.config.get("wgScriptPath")}/index.php?title=MediaWiki:Usergroups.css&action=raw&ctype=text/css`, "text/css");
-		}
-	});
 	if (!window.userGroupsLoaded) {
 		window.userGroupsLoaded = true;
 		// cache to prevent extraneous API calls
@@ -73,7 +60,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.jqueryMsg' ], function() {
 										$(".user-identity-header .user-identity-header__attributes").append($('<span class="usergroups"></span>'));
 										if (userdata.blockid || blockdata) {
 											// readd block information
-											$(".usergroups").prepend(`<span class="usergroup usergroupblocked user-identity-header__tag user-identity-header__tag-blocked_user"><a href="${mw.config.get("wgScriptPath")}/index.php?title=Special:BlockList&wpTarget=${user}">${mw.message(`blockedtitle`)}</b></span>`);
+											$(".usergroups").prepend(`<span class="usergroup usergroupblocked user-identity-header__tag user-identity-header__tag-blocked_user"><a href="${mw.config.get("wgScriptPath")}/index.php?title=Special:BlockList&wpTarget=${user}">${mw.message(`blockedtitle`).parse()}</b></span>`);
 										}
 									} else { // gamepedia
 										$(".userinfo .grouptags li").remove();
@@ -81,7 +68,7 @@ mw.loader.using([ 'mediawiki.api', 'mediawiki.jqueryMsg' ], function() {
 										$(".curseprofile .blocked").remove();
 										if (userdata.blockid || blockdata) {
 											// readd block information
-											$(".userinfo .profile-info .grouptags").prepend(`<li class="usergroup usergroupblocked"><a href="${mw.config.get("wgScriptPath")}/index.php?title=Special:BlockList&wpTarget=${user}">${mw.message(`blockedtitle`)}</a></li>`);
+											$(".userinfo .profile-info .grouptags").prepend(`<li class="usergroup usergroupblocked"><a href="${mw.config.get("wgScriptPath")}/index.php?title=Special:BlockList&wpTarget=${user}">${mw.message(`blockedtitle`).parse()}</a></li>`);
 										}
 									}
 									if (userdata.invalid === null || userdata.invalid === undefined) {

@@ -8,7 +8,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
     const api = new mw.Api();
     const namespace = mw.config.get('wgNamespaceNumber');
 
-    if (namespace !== 0) return;
+if (namespace !== 0 && namespace !== 2) return;
 
     const globalLedgerTitle = 'Project:Ratings';
 
@@ -491,44 +491,35 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                 ratings[pageName][userName] =
                     newVoteValue;
             }
-            let newMatrixLines = [];
+let newMatrixLines = [];
 
-            Object.keys(ratings).forEach(function (pName) {
+Object.keys(ratings).forEach(function (pName) {
 
-                const users =
-                    ratings[pName];
+    const users =
+        ratings[pName];
 
-                const userEntries = [];
+    const userEntries = [];
 
-                Object.keys(users).forEach(function (uName) {
+    Object.keys(users).forEach(function (uName) {
 
-                    userEntries.push(
-                        `${uName}:${users[uName]}`
-                    );
-                });
-                if (userEntries.length === 0) {
-                    return;
-                }
-                const score =
-    calculateScore(users);
-
-const linkedPage =
-    `[[${pName}]]`;
-
-const linkedUsers =
-    userEntries.map(function (entry) {
-        const separator = entry.lastIndexOf(':');
-        const username = entry.substring(0, separator);
-        const vote = entry.substring(separator);
-
-        return `[[User:${username}|${username}]]${vote}`;
+        userEntries.push(
+            `${uName}:${users[uName]}`
+        );
     });
 
-newMatrixLines.push(
-    `${linkedPage} | ${linkedUsers.join(',')} | ${score}`
-);
+    if (userEntries.length === 0) {
+        return;
+    }
 
-newMatrixLines.push('');
+    const score =
+        calculateScore(users);
+
+    newMatrixLines.push(
+        `${pName} | ${userEntries.join(',') } | ${score}`
+    );
+
+    newMatrixLines.push('');
+});
 
 
             const newMatrixText =
@@ -617,4 +608,5 @@ newMatrixLines.push('');
                     el.style.opacity = "1";
                 });
         });
-    });
+    }
+});

@@ -1,7 +1,7 @@
 // Introduce functionality in [[Project:WantedFiles]]
 // <nowiki>
 mw.hook('wikipage.content').add(()=>{
-	if (mw.config.values.wgPageName !== 'Genshin_Impact_Wiki:WantedFiles') {return;}
+	if (!['Genshin_Impact_Wiki:WantedFiles', 'Genshin_Impact_Wiki:WantedFiles/VO'].includes(mw.config.values.wgPageName)) {return;}
 	const wrap = $('<div>', {
 		'class': 'CWF-wrapper',
 		html: [
@@ -21,6 +21,7 @@ mw.hook('wikipage.content').add(()=>{
 	});
 	const api = new mw.Api();
 	const files = {};
+	const filesVO = {};
 	const cycle = (continueFrom) => {
 		var params = {
 			action: 'query',
@@ -41,8 +42,14 @@ mw.hook('wikipage.content').add(()=>{
 						$('.CWF-progress').html('Last file checked: <code>'+f.title.substring(5)+'</code>');
 						let lead = f.title.substring(5,6);
 						if (lead.match(/[^\w\d]/) !== null) {lead = '!'} // Group all non-alphanumerical
-						files[lead] = files[lead] || [];
-						files[lead].push(`{{subst:#if:{{subst:filepath:${f.title.replace(/^File:/i, '')}}}||<nowiki/>\n# [[:${f.title}|${f.title.replace(/^File:/i, '')}]] ([[Special:WhatLinksHere/${f.title}|WLH]])}}`);
+						if (f.title.match(/^File:VO[\s_]/i) !== null) {
+							lead = f.title.substring(8,9);
+							filesVO[lead] = filesVO[lead] || [];
+							filesVO[lead].push(`{{subst:#if:{{subst:filepath:${f.title.replace(/^File:/i, '')}}}||<nowiki/>\n# [[:${f.title}|${f.title.replace(/^File:VO[\s_]/i, '')}]] ([[Special:WhatLinksHere/${f.title}|WLH]])}}`);
+						} else {
+							files[lead] = files[lead] || [];
+							files[lead].push(`{{subst:#if:{{subst:filepath:${f.title.replace(/^File:/i, '')}}}||<nowiki/>\n# [[:${f.title}|${f.title.replace(/^File:/i, '')}]] ([[Special:WhatLinksHere/${f.title}|WLH]])}}`);
+						}
 					}
 				});
 			}
@@ -51,20 +58,38 @@ mw.hook('wikipage.content').add(()=>{
 			} else {
 				$('.CWF-progress').text('Generating alphanumerical sections...');
 				let total = 0;
+				let totalVO = 0;
 				let letters = Object.keys(files).sort();
+				let lettersVO = Object.keys(filesVO).sort();
 				let sections = [];
+				let sectionsVO = [];
 				letters.forEach((l)=>{
 					sections.push(`\n<h2 id="${l}">${ l==='!' ? 'Others' : l }</h2><div class="mw-collapsible mw-collapsed giw-collapsible" data-expandtext="Show entries" data-collapsetext="Hide entries"><div class="mw-collapsible-content" style="display: none;">${files[l].join('')}\n</div></div>`);
 					total += files[l].length;
 				});
+				lettersVO.forEach((l)=>{
+					sectionsVO.push(`\n<h2 id="${l}">${ l==='!' ? 'Others' : l }</h2><div class="mw-collapsible mw-collapsed giw-collapsible" data-expandtext="Show entries" data-collapsetext="Hide entries"><div class="mw-collapsible-content" style="display: none;">${filesVO[l].join('')}\n</div></div>`);
+					totalVO += filesVO[l].length;
+				});
 				
 				$('.CWF-progress').text('Attempting to publish list...');
+				// Voice-Over files
+				api.post({
+					action: 'edit',
+					title: 'Project:WantedFiles/VO',
+					text: 
+						'{{TOC Right}}<templatestyles src="Genshin Impact Wiki:WantedFiles/style.css" />'+
+						'Listing <b>'+totalVO+'</b> voice-over wanted files, last updated on {{#time: F d, H:i|{{subst:#time:c}}}}.<br>The <code>VO_</code> prefix from files has been omitted for ease of sorting.'+
+						sectionsVO.join(''),
+					token: mw.user.tokens.values.csrfToken
+				});
+				// Normal files
 				api.post({
 					action: 'edit',
 					title: 'Project:WantedFiles',
 					text: 
 						'{{TOC Right}}<templatestyles src="Genshin Impact Wiki:WantedFiles/style.css" />'+
-						'Listing <b>'+total+'</b> wanted files, last updated on {{#time: F d, H:i|{{subst:#time:c}}}}.'+
+						'Listing <b>'+total+'</b> wanted files, excluding [[/VO|voice-over files]], last updated on {{#time: F d, H:i|{{subst:#time:c}}}}.'+
 						sections.join(''),
 					token: mw.user.tokens.values.csrfToken
 				})

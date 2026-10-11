@@ -1,0 +1,142 @@
+/**
+ * MakeCommentsHeadersGreatAgain
+ * Original: [[w:c:dev:ArticleCommentsHeader]]
+ *
+ * Brings back custom comment box headers
+ * @author Dorumin
+ * 
+ * Edited by User:Eleiyas due to issues with CountdownTimer JS.
+ */
+
+mw.loader.using('mediawiki.api').then(function() {
+    var wg = mw.config.get([
+        'wgArticleId',
+        'wgPageName',
+        'wgNamespaceNumber',
+        'wgIsMainPage',
+        'wgIsRedirect',
+        'wgAction',
+        'wgDiffOldId',
+        'wgDiffNewId'
+    ]);
+
+    var $comments = $('#articleComments');
+    
+    // Don't display on main page, non-existent articles, or redirect pages.
+    if (wg.wgIsMainPage || wg.wgArticleId === 0 || wg.wgIsRedirect) return;
+    
+    // Don't display if the user isn't "view"ing the page (no history, purge, etc.)
+    // Also don't run if `veaction` is set (it coopts the `view` action)
+    if (wg.wgAction !== 'view' || new URL(location).searchParams.has('veaction')) return;
+    
+    // Don't display on revision comparison page (diff=123, diff=prev, or oldid=123)
+    if (wg.wgDiffOldId || wg.wgDiffNewId) return;
+
+    if ($comments.length === 0) {
+        // Check if the namespace would normally have comments
+        if (wg.wgNamespaceNumber !== 0) return;
+
+        // If there would be comments, but none were found, insert them synthetically
+        // This behavior is for wikis that decide to have a bottom banner where the old comments would have been, but were disabled
+        // Maybe to redirect viewers to a discord or something that doesn't suck, I dunno
+
+        $comments = $('<div>', {
+            id: 'ArticleCommentsHeader-container'
+        });
+
+        $('#WikiaMainContentContainer, .page-footer').append($comments);
+    }
+
+    function getHeader() {
+        return $.Deferred(function(def) {
+            var cached = sessionStorage.getItem('CachedCommentsHeader');
+
+            if (cached !== null) {
+                def.resolve(cached);
+                return;
+            }
+
+            new mw.Api().get({
+                action: 'query',
+                meta: 'allmessages',
+                ammessages: 'Custom-comments-header',
+                amargs: wg.wgPageName,
+                // Cache message contents on the CDN for 10 minutes for anonymous users
+                smaxage: 600,
+                maxage: 600
+            }).then(function(res) {
+                var message = res.query.allmessages[0];
+
+                if (!message || message.hasOwnProperty('missing')) {
+                    sessionStorage.setItem('CachedCommentsHeader', '');
+                    def.resolve('');
+                    return;
+                }
+
+                new mw.Api().get({
+                    action: 'parse',
+                    title: wg.wgPageName,
+                    text: message['*'],
+                    // Cache rendered message on the CDN for 10 minutes for anonymous users
+                    smaxage: 600,
+                    maxage: 600
+                }).then(function(res) {
+                    var html = res.parse.text['*'];
+
+                    sessionStorage.setItem('CachedCommentsHeader', html);
+                    def.resolve(html);
+                }).fail(function(e) {
+                    if (e.error) {
+                        sessionStorage.setItem('CachedCommentsHeader', '');
+                        def.resolve('');
+                        return;
+                    }
+                });
+            }).fail(function(e) {
+                if (e.error) {
+                    sessionStorage.setItem('CachedCommentsHeader', '');
+                    def.resolve('');
+                    return;
+                }
+            });
+        });
+    }
+
+    getHeader().then(function(html) {
+        var $container = $('<div>', {
+            class: 'ArticleCommentsHeader-container',
+            css: {
+                marginBottom: '20px'
+            }
+        });
+
+        // SAFETY: html comes straight out of the mw parser, pre-sanitized
+        $container.html(html);
+
+        $comments.before($container);
+
+        // This line will expose the newly inserted parser output in the document
+        // to hooks expecting it to add features and whatever, like collapsibles
+        // This may bring issues with overriding the last seen event,
+        // but that's not my problem to solve
+
+		// @Eleiyas: On its own, this breaks CountdownTimer JS.
+        // Initialise features within the newly inserted header.
+        mw.hook('wikipage.content').fire($container);
+
+		// @Eleiyas additions:
+        // Restore the normal article content as the most recent hook payload.
+        // This matters for scripts that register their handlers asynchronously,
+        // such as Countdown while loading its i18n messages.
+        var $pageContent = $('#mw-content-text');
+
+        // Fallback for skins where the standard MediaWiki container is absent.
+        if (!$pageContent.length) {
+            $pageContent = $('#WikiaArticle');
+        }
+
+        if ($pageContent.length) {
+            mw.hook('wikipage.content').fire($pageContent);
+        }
+    });
+});

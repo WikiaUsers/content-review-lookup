@@ -138,24 +138,24 @@ mw.hook('wikipage.content').add(() => {
 				if (curr.anyAllToggle) {
 					let matchAnyAll = $(
 						'<input type="radio" name="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAnyAll" id="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAny" value="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAny" checked></input>' +
 						'<label for="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAny">Match Any</label>' +
 						'<input type="radio" name="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAnyAll" id="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAll" value="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAll"></input>' +
 						'<label for="' +
-						curr.label +
+						mw.html.escape(curr.label) +
 						'MatchAll">Match All</label>'
 					);
 					matchAnyAll.on('change.fls', applyFLs);

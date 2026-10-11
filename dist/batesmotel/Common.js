@@ -1,26 +1,115 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Function to wrap a random letter in a span with blinking effect
-  function wrapRandomLetterWithSpan(word) {
-    const letters = word.split('');
-    const blinkingIndex = Math.floor(Math.random() * letters.length);
 
-    const wrappedLetters = letters.map((letter, index) => {
-      if (index === blinkingIndex) {
-        return `<span class="blinking">${letter}</span>`;
-      }
-      return letter;
-    });
+(function () {
+    'use strict';
 
-    return wrappedLetters.join('');
-  }
+    const HEADER_SELECTOR = '.page-header__title';
+    const BLINK_CHANCE = 0.7;
 
-  // Try to get the title element
-  const titleElement = document.querySelector('.mw-page-title-main');
+    function applyBlinking(header) {
+        if (!header || header.dataset.neonProcessed === '1') {
+            return;
+        }
 
-  if (titleElement) {
-    const words = titleElement.textContent.split(' ');
+        // Avoid interfering with titles containing complex markup.
+        if (header.querySelector('span.blinking')) {
+            header.dataset.neonProcessed = '1';
+            return;
+        }
 
-    const wrappedWords = words.map((word) => wrapRandomLetterWithSpan(word));
-    titleElement.innerHTML = wrappedWords.join(' ');
-  }
-});
+        const walker = document.createTreeWalker(
+            header,
+            NodeFilter.SHOW_TEXT
+        );
+
+        const textNodes = [];
+        while (walker.nextNode()) {
+            textNodes.push(walker.currentNode);
+        }
+
+        textNodes.forEach(function (node) {
+            const text = node.nodeValue;
+
+            if (!/\p{L}/u.test(text)) {
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            const wordRegex = /\S+|\s+/gu;
+
+            for (const match of text.matchAll(wordRegex)) {
+                const word = match[0];
+
+                if (
+                    /^\s+$/u.test(word) ||
+                    Math.random() >= BLINK_CHANCE
+                ) {
+                    fragment.appendChild(
+                        document.createTextNode(word)
+                    );
+                    continue;
+                }
+
+                const letters = [...word.matchAll(/\p{L}/gu)];
+
+                if (!letters.length) {
+                    fragment.appendChild(
+                        document.createTextNode(word)
+                    );
+                    continue;
+                }
+
+                const selected = letters[
+                    Math.floor(Math.random() * letters.length)
+                ];
+
+                const index = selected.index;
+                const letter = selected[0];
+
+                fragment.appendChild(
+                    document.createTextNode(word.slice(0, index))
+                );
+
+                const span = document.createElement('span');
+                span.className = 'blinking';
+                span.textContent = letter;
+                fragment.appendChild(span);
+
+                fragment.appendChild(
+                    document.createTextNode(
+                        word.slice(index + letter.length)
+                    )
+                );
+            }
+
+            node.replaceWith(fragment);
+        });
+
+        header.dataset.neonProcessed = '1';
+    }
+
+    function initializeNeonTitles() {
+        document.querySelectorAll(HEADER_SELECTOR)
+            .forEach(applyBlinking);
+    }
+
+    function start() {
+        initializeNeonTitles();
+
+        const observer = new MutationObserver(function () {
+            initializeNeonTitles();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', start, {
+            once: true
+        });
+    } else {
+        start();
+    }
+})();

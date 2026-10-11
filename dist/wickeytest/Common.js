@@ -287,3 +287,68 @@ renderRaritySelect();
 renderPetGrid();
 renderTiles();
 })();
+
+
+
+mw.hook('wikipage.content').add(function ($content) {
+  $content.find('.rt-wrap').each(function () {
+    var $wrap = $(this);
+    if ($wrap.data('rt-init')) return;
+    $wrap.data('rt-init', true);
+
+
+    $wrap.find('.rt-tab').on('click', function () {
+      var id = $(this).attr('data-tab');
+      $wrap.find('.rt-tab').removeClass('rt-active');
+      $(this).addClass('rt-active');
+      $wrap.find('.rt-panel').removeClass('rt-show');
+      $wrap.find('.rt-panel[data-panel="' + id + '"]').addClass('rt-show');
+    });
+
+  
+    $wrap.find('.rt-toggle-link').on('click', function () {
+      $wrap.toggleClass('rt-collapsed');
+      $(this).text($wrap.hasClass('rt-collapsed') ? 'Expand' : 'Collapse');
+    });
+  });
+});
+
+
+
+/* ===== Flipcard: tap / click / keyboard to flip ===== */
+mw.hook('wikipage.content').add(function ($content) {
+  $content.find('.flipcard').each(function () {
+    var $card = $(this);
+
+    // Only set up each card once
+    if ($card.data('flipcardReady')) return;
+    $card.data('flipcardReady', true);
+
+    // Accessibility: make the card focusable and announce it as a button
+    $card.attr({
+      tabindex: '0',
+      role: 'button',
+      'aria-pressed': 'false'
+    });
+
+    function toggle() {
+      var flipped = $card.toggleClass('flipped').hasClass('flipped');
+      $card.attr('aria-pressed', flipped ? 'true' : 'false');
+    }
+
+    $card.on('click', function (e) {
+      // Let links inside the card (like the expand button) work without flipping
+      if ($(e.target).closest('a').length) return;
+      toggle();
+    });
+
+    $card.on('keydown', function (e) {
+      // Let links inside the card handle their own Enter key
+      if ($(e.target).closest('a').length) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+});

@@ -2,11 +2,12 @@ mw.hook('wikipage.content').add($c => $c.find('.crafting-table:not(.crafting-rea
 	const y = $(t).find('.crafting-result').data('amount'), l = +t.dataset.limit || 99;
 	if (2 * y > l) return;
 	const format = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	const short = n => n >= 1e6 ? +(n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? +(n / 1e3).toFixed(1) + 'K' : String(n);
 	const $result = $(t).find('.crafting-result .card-text-sup');
 	const materials = $(t).find('.crafting-material').map((_, e) => ({
 		amount: +e.dataset.amount,
 		stack: +e.dataset.stack || Infinity,
-		prefix: e.dataset.stack ? format(+e.dataset.stack) + '/' : '',
+		prefix: e.dataset.stack ? short(+e.dataset.stack) + '/' : '',
 		$count: $(e).find('.crafting-count')
 	})).get();
 	const disable = (b, d) => b.prop('disabled', d).toggleClass('bfw-button-blue', !d).toggleClass('bfw-button-grey', d);

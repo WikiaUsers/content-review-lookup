@@ -3865,3 +3865,678 @@ clanSelect.addEventListener(
 			'</div>';
 	});
 });
+
+// =========================================================
+// Feature Hero Add Form
+// =========================================================
+
+(function () {
+	"use strict";
+
+	mw.loader.using([
+		"mediawiki.api",
+		"mediawiki.util"
+	]).then(function () {
+
+		$(function () {
+
+			var mount = document.getElementById("s4-featured-hero-add");
+
+			if (!mount) {
+				return;
+			}
+
+			var DATA_PAGE = "Module:FeaturedHeroData";
+
+			var NOTE_MAP = {
+				observed: "Observed in-game.",
+				announcement: "Confirmed by official announcement.",
+				vote: "Confirmed by official vote.",
+				screenshot: "Confirmed by in-game screenshot."
+			};
+
+			var api = new mw.Api();
+
+// =========================================================
+// MAINTENANCE EDITOR AUTHORIZATION
+// Administrators, bureaucrats, and content moderators; no user IDs.
+// =========================================================
+
+var currentUserGroups = mw.config.get("wgUserGroups") || [];
+var allowedGroups = ["sysop", "bureaucrat", "content-moderator"];
+
+var isAuthorized = allowedGroups.some(function (group) {
+    return currentUserGroups.indexOf(group) !== -1;
+});
+
+if (!isAuthorized) {
+    return;
+}
+
+initializeFeaturedHeroForm();
+
+function initializeFeaturedHeroForm() {
+
+			// =========================================================
+			// TEMPORARY FORM STYLING
+			//
+			// Can later be moved to Common.css.
+			// =========================================================
+
+			mw.util.addCSS(
+				[
+					"#s4-featured-hero-add {",
+					"  margin: 12px 0 16px;",
+					"}",
+
+					".s4-fh-form-scroll {",
+					"  overflow-x: auto;",
+					"  padding-bottom: 2px;",
+					"}",
+
+					".s4-fh-form {",
+					"  display: flex;",
+					"  align-items: center;",
+					"  gap: 8px;",
+					"  min-width: 720px;",
+					"}",
+
+					".s4-fh-form select,",
+					".s4-fh-form input,",
+					".s4-fh-form button {",
+					"  box-sizing: border-box;",
+					"  height: 36px;",
+					"}",
+
+					".s4-fh-hero {",
+					"  width: 190px;",
+					"}",
+
+					".s4-fh-date {",
+					"  width: 160px;",
+					"}",
+
+					".s4-fh-evidence {",
+					"  width: 245px;",
+					"}",
+
+					".s4-fh-add {",
+					"  white-space: nowrap;",
+					"  padding: 0 14px;",
+					"}",
+					
+					".s4-fh-clear {",
+					"  white-space: nowrap;",
+					"  padding: 0 14px;",
+					"}",
+
+					".s4-fh-message {",
+					"  margin-top: 8px;",
+					"  padding: 8px 10px;",
+					"  border: 1px solid currentColor;",
+					"  border-radius: 3px;",
+					"}",
+
+					".s4-fh-message[hidden] {",
+					"  display: none;",
+					"}",
+
+					".s4-fh-warning-actions {",
+					"  margin-top: 8px;",
+					"}",
+
+					".s4-fh-warning-actions button {",
+					"  margin-right: 8px;",
+					"}"
+				].join("\n")
+			);
+
+			// =========================================================
+			// HELPERS
+			// =========================================================
+
+			function parseApiText(res) {
+
+				var html = "";
+
+				if (typeof res === "string") {
+					html = res;
+				} else if (
+					res &&
+					res.text &&
+					typeof res.text["*"] === "string"
+				) {
+					html = res.text["*"];
+				} else if (
+					res &&
+					typeof res.parsedtext === "string"
+				) {
+					html = res.parsedtext;
+				}
+
+				return String(html)
+					.replace(/<[^>]*>/g, "")
+					.replace(/&amp;/g, "&")
+					.replace(/&#039;/g, "'")
+					.replace(/&quot;/g, '"')
+					.trim();
+			}
+
+
+			function validDate(value) {
+
+				if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+					return false;
+				}
+
+				var d = new Date(value + "T00:00:00Z");
+
+				if (isNaN(d.getTime())) {
+					return false;
+				}
+
+				return d.toISOString().slice(0, 10) === value;
+			}
+
+
+			function escapeLuaString(value) {
+
+				return String(value)
+					.replace(/\\/g, "\\\\")
+					.replace(/"/g, '\\"')
+					.replace(/\r?\n/g, " ");
+			}
+
+
+			function setMessage(text) {
+
+				message.innerHTML = "";
+				message.textContent = text;
+				message.hidden = false;
+			}
+
+
+			function clearMessage() {
+
+				message.innerHTML = "";
+				message.hidden = true;
+			}
+			
+			
+			function clearForm() {
+
+	heroSelect.selectedIndex = 0;
+	dateInput.value = "";
+	evidenceSelect.selectedIndex = 0;
+
+	clearMessage();
+
+	addButton.disabled = false;
+	addButton.textContent = "Add Featured Hero";
+}
+
+
+			// =========================================================
+			// BUILD FORM
+			// =========================================================
+
+			var scroll = document.createElement("div");
+			scroll.className = "s4-fh-form-scroll";
+
+			var form = document.createElement("div");
+			form.className = "s4-fh-form";
+
+
+			var heroSelect = document.createElement("select");
+			heroSelect.className = "s4-fh-hero";
+			heroSelect.setAttribute("aria-label", "Featured Hero");
+
+			var heroPlaceholder = document.createElement("option");
+			heroPlaceholder.value = "";
+			heroPlaceholder.textContent = "Select Hero";
+			heroPlaceholder.selected = true;
+			heroPlaceholder.disabled = true;
+
+			heroSelect.appendChild(heroPlaceholder);
+
+
+			var dateInput = document.createElement("input");
+			dateInput.type = "date";
+			dateInput.className = "s4-fh-date";
+			dateInput.setAttribute("aria-label", "Hero Event date");
+
+
+			var evidenceSelect = document.createElement("select");
+evidenceSelect.className = "s4-fh-evidence";
+evidenceSelect.setAttribute("aria-label", "Evidence");
+
+var evidencePlaceholder = document.createElement("option");
+evidencePlaceholder.value = "";
+evidencePlaceholder.textContent = "Select Evidence";
+evidencePlaceholder.selected = true;
+evidencePlaceholder.disabled = true;
+
+evidenceSelect.appendChild(evidencePlaceholder);
+
+[
+	["observed", "Observed in-game"],
+	["announcement", "Official announcement"],
+	["vote", "Official vote"],
+	["screenshot", "In-game screenshot"]
+].forEach(function (item) {
+
+				var option = document.createElement("option");
+
+				option.value = item[0];
+				option.textContent = item[1];
+
+				evidenceSelect.appendChild(option);
+			});
+
+
+			var addButton = document.createElement("button");
+			addButton.type = "button";
+			addButton.className = "s4-fh-add";
+			addButton.textContent = "Add Featured Hero";
+			
+			var clearButton = document.createElement("button");
+			clearButton.type = "button";
+			clearButton.className = "s4-fh-clear";
+			clearButton.textContent = "Clear";
+
+
+			form.appendChild(heroSelect);
+			form.appendChild(dateInput);
+			form.appendChild(evidenceSelect);
+			form.appendChild(addButton);
+			form.appendChild(clearButton);
+
+			scroll.appendChild(form);
+			mount.appendChild(scroll);
+
+
+			var message = document.createElement("div");
+			message.className = "s4-fh-message";
+			message.hidden = true;
+
+			mount.appendChild(message);
+
+
+			// =========================================================
+			// LOAD HERO LIST
+			// =========================================================
+
+			api.parse(
+				"{{#invoke:HeroData|heroList}}"
+			).then(function (res) {
+
+				var heroes = parseApiText(res)
+					.split("|")
+					.map(function (hero) {
+						return hero.trim();
+					})
+					.filter(Boolean)
+					.sort(function (a, b) {
+						return a.localeCompare(b);
+					});
+
+
+				heroes.forEach(function (hero) {
+
+					var option = document.createElement("option");
+
+					option.value = hero;
+					option.textContent = hero;
+
+					heroSelect.appendChild(option);
+				});
+
+
+				if (!heroes.length) {
+					throw new Error("Hero list returned no heroes.");
+				}
+
+			}).catch(function (err) {
+
+				setMessage(
+					"Unable to load HeroData: " +
+					(err.message || err)
+				);
+
+				addButton.disabled = true;
+			});
+
+
+			// =========================================================
+			// READ FEATURED HERO DATA
+			// =========================================================
+
+			function loadFeaturedHeroData() {
+
+				return api.get({
+					action: "query",
+					prop: "revisions",
+					titles: DATA_PAGE,
+					rvprop: "content|timestamp",
+					rvslots: "main",
+					curtimestamp: 1,
+					formatversion: 2
+				}).then(function (res) {
+
+					var page =
+						res &&
+						res.query &&
+						res.query.pages &&
+						res.query.pages[0];
+
+					if (
+						!page ||
+						page.missing ||
+						!page.revisions ||
+						!page.revisions.length
+					) {
+						throw new Error(
+							"Could not read " + DATA_PAGE + "."
+						);
+					}
+
+					var revision = page.revisions[0];
+
+					var source =
+						revision.slots &&
+						revision.slots.main &&
+						revision.slots.main.content;
+
+					if (typeof source !== "string") {
+						throw new Error(
+							"Could not retrieve FeaturedHeroData source."
+						);
+					}
+
+					return {
+						source: source,
+						baseTimestamp: revision.timestamp,
+						startTimestamp: res.curtimestamp
+					};
+				});
+			}
+
+
+			// =========================================================
+			// FIND EXISTING ENTRIES FOR DATE
+			// =========================================================
+
+			function heroesOnDate(source, date) {
+
+				var heroes = [];
+
+				var recordRegex =
+					/\{[^{}]*hero\s*=\s*"([^"]+)"[^{}]*date\s*=\s*"([^"]+)"[^{}]*\}/g;
+
+				var match;
+
+				while ((match = recordRegex.exec(source)) !== null) {
+
+					if (match[2] === date) {
+						heroes.push(match[1]);
+					}
+				}
+
+				return heroes;
+			}
+
+
+			// =========================================================
+			// SAVE ENTRY
+			// =========================================================
+
+			function saveEntry(forceDuplicate) {
+
+				clearMessage();
+
+				var hero = heroSelect.value;
+				var date = dateInput.value;
+				var evidence = evidenceSelect.value;
+				var note = NOTE_MAP[evidence];
+
+
+				if (!hero) {
+					setMessage("Select a Hero.");
+					return;
+				}
+
+
+				if (!validDate(date)) {
+					setMessage("Enter a valid event date.");
+					return;
+				}
+
+
+				if (!note) {
+					setMessage("Select an evidence type.");
+					return;
+				}
+
+
+				addButton.disabled = true;
+				addButton.textContent = "Checking...";
+
+
+				loadFeaturedHeroData()
+					.then(function (data) {
+
+						var existingHeroes =
+							heroesOnDate(data.source, date);
+
+
+						if (
+							existingHeroes.length &&
+							!forceDuplicate
+						) {
+
+							addButton.disabled = false;
+							addButton.textContent =
+								"Add Featured Hero";
+
+							showDuplicateWarning(
+								hero,
+								date,
+								existingHeroes
+							);
+
+							return null;
+						}
+
+
+						var returnMatch =
+							/return\s*\{/.exec(data.source);
+
+
+						if (!returnMatch) {
+							throw new Error(
+								'Could not locate "return {" in ' +
+								DATA_PAGE +
+								"."
+							);
+						}
+
+
+						var insertAt =
+							returnMatch.index +
+							returnMatch[0].length;
+
+
+						var entry =
+							'\n\t{ hero = "' +
+							escapeLuaString(hero) +
+							'", date = "' +
+							date +
+							'", note = "' +
+							escapeLuaString(note) +
+							'" },';
+
+
+						var newSource =
+							data.source.slice(0, insertAt) +
+							entry +
+							data.source.slice(insertAt);
+
+
+						addButton.textContent = "Saving...";
+
+
+						return api.postWithToken(
+							"csrf",
+							{
+								action: "edit",
+								title: DATA_PAGE,
+								text: newSource,
+								summary:
+									"Add Featured Hero: " +
+									hero +
+									" (" +
+									date +
+									")",
+								basetimestamp:
+									data.baseTimestamp,
+								starttimestamp:
+									data.startTimestamp,
+								nocreate: 1
+							}
+						);
+					})
+					.then(function (res) {
+
+						// Duplicate warning stopped the save.
+						if (!res) {
+							return;
+						}
+
+
+						setMessage(
+							hero +
+							" added for " +
+							date +
+							"."
+						);
+
+
+						addButton.textContent = "Saved";
+
+
+						setTimeout(function () {
+							window.location.reload();
+						}, 1000);
+					})
+					.catch(function (err) {
+
+						addButton.disabled = false;
+						addButton.textContent =
+							"Add Featured Hero";
+
+						setMessage(
+							"Unable to save Featured Hero: " +
+							(err.message || err)
+						);
+					});
+			}
+
+
+			// =========================================================
+			// DUPLICATE DATE WARNING
+			// =========================================================
+
+			function showDuplicateWarning(
+				newHero,
+				date,
+				existingHeroes
+			) {
+
+				message.innerHTML = "";
+				message.hidden = false;
+
+
+				var text = document.createElement("div");
+
+				text.textContent =
+					"An entry already exists for " +
+					date +
+					": " +
+					existingHeroes.join(", ") +
+					". Add " +
+					newHero +
+					" to the same date anyway?";
+
+				message.appendChild(text);
+
+
+				var actions =
+					document.createElement("div");
+
+				actions.className =
+					"s4-fh-warning-actions";
+
+
+				var continueButton =
+					document.createElement("button");
+
+				continueButton.type = "button";
+				continueButton.textContent = "Continue";
+
+
+				var cancelButton =
+					document.createElement("button");
+
+				cancelButton.type = "button";
+				cancelButton.textContent = "Cancel";
+
+
+				continueButton.addEventListener(
+					"click",
+					function () {
+
+						clearMessage();
+						saveEntry(true);
+					}
+				);
+
+
+				cancelButton.addEventListener(
+					"click",
+					function () {
+
+						clearMessage();
+					}
+				);
+
+
+				actions.appendChild(continueButton);
+				actions.appendChild(cancelButton);
+
+				message.appendChild(actions);
+			}
+
+
+			// =========================================================
+			// EVENTS
+			// =========================================================
+
+			addButton.addEventListener(
+				"click",
+				function () {
+					saveEntry(false);
+				}
+			);
+			
+			clearButton.addEventListener(
+				"click",
+				function () {
+					clearForm();
+				}
+			);
+}
+
+		});
+	});
+
+})();

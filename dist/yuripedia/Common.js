@@ -185,7 +185,12 @@ $(function() {
 
     function fixRedLink(link) {
         if (!link.hasAttribute('href')) {
-            const page = link.getAttribute('title') || link.textContent.trim();
+            // Get the title attribute or text content
+            let page = link.getAttribute('title') || link.textContent.trim();
+            
+            // Clean up the " (page does not exist)" suffix that MediaWiki appends to red link titles
+            page = page.replace(/\s\((page\sdoes\snot\sexist|stránka\sneexistuje)\)$/i, '');
+
             link.setAttribute('href', wikiBase + encodeURIComponent(page));
             link.setAttribute('rel', 'nofollow');
         }
@@ -198,7 +203,7 @@ $(function() {
             m.addedNodes.forEach(node => {
                 if (node.nodeType === 1) { // element
                     if (node.matches('a.new')) fixRedLink(node);
-                    node.querySelectorAll && node.querySelectorAll('a.new').forEach(fixRedLink);
+                    if (node.querySelectorAll) node.querySelectorAll('a.new').forEach(fixRedLink);
                 }
             });
         });
@@ -206,6 +211,7 @@ $(function() {
 
     observer.observe(document.body, { childList: true, subtree: true });
 })();
+
 
 /* ==================================================
     HD Gallery Class
@@ -327,7 +333,6 @@ window.NoLicenseWarning = {
     ]
 };
 
-l
 /* ==================================================
     Topic Block Log
 ================================================== */

@@ -12,7 +12,9 @@ mw.loader.using('mediawiki.api').then(function() {
         'wgNamespaceNumber',
         'wgIsMainPage',
         'wgIsRedirect',
-        'wgAction'
+        'wgAction',
+        'wgDiffOldId',
+        'wgDiffNewId'
     ]);
 
     var $comments = $('#articleComments');
@@ -23,6 +25,9 @@ mw.loader.using('mediawiki.api').then(function() {
     // Don't display if the user isn't "view"ing the page (no history, purge, etc.)
     // Also don't run if `veaction` is set (it coopts the `view` action)
     if (wg.wgAction !== 'view' || new URL(location).searchParams.has('veaction')) return;
+    
+    // Don't display on revision comparison page (diff=123, diff=prev, or oldid=123)
+    if (wg.wgDiffOldId || wg.wgDiffNewId) return;
 
     if ($comments.length === 0) {
         // Check if the namespace would normally have comments

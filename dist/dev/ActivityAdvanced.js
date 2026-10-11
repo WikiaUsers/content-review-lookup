@@ -145,31 +145,77 @@ Assets (CSS, icons, strings) are loaded from user subpages:
         };
 
         // --- Asset Loading ---
-        const fetchRawPage = (title) => {
-            const params = new URLSearchParams({ action: 'query', prop: 'revisions', rvprop: 'content', rvslots: 'main', format: 'json', formatversion: 2, titles: title, origin: '*' });
-            return fetch(`https://yandere-simulator.fandom.com/ru/api.php?${params}`, { headers: { 'Accept': 'application/json' } })
-                .then(r => r.ok ? r.json() : Promise.reject(r.status))
-                .then(d => { const p = d.query.pages; const id = Object.keys(p)[0]; return (p[id] && p[id].revisions && p[id].revisions[0]) ? p[id].revisions[0].slots.main.content : null; })
-                .catch(() => null);
-        };
-
-        const loadAssets = () => {
-            const PAGE_CSS = 'Участница:Ŝenezala/debugging.css';
-            const PAGE_ICONS = 'Участница:Ŝenezala/icons.css';
-            const PAGE_JSON = 'Участница:Ŝenezala/debugging.json';
-
-            return fetchRawPage(PAGE_CSS).then(css => { if (css) { const s = document.createElement('style'); s.id = 'actAdv-style-ext'; s.textContent = css; document.head.appendChild(s); } return fetchRawPage(PAGE_ICONS); })
-                .then(icons => { if (icons) { const s = document.createElement('style'); s.id = 'actAdv-style-icons'; s.textContent = icons; document.head.appendChild(s); } return fetchRawPage(PAGE_JSON); })
-                .then(jsonText => {
-                    let jsonData = {};
-                    if (jsonText) try { jsonData = JSON.parse(jsonText); } catch (e) {}
-                    const fb = FALLBACK_STRINGS[LANG] || {};
-                    const jl = jsonData[LANG] || {};
-                    STR = Object.assign({}, fb, jl);
-                })
-                .catch(() => { STR = Object.assign({}, FALLBACK_STRINGS[LANG] || {}); });
-        };
-
+	    const fetchDevPageContent = (title) => {
+	        const params = new URLSearchParams({
+	            action: 'query',
+	            prop: 'revisions',
+	            rvprop: 'content',
+	            rvslots: 'main',
+	            format: 'json',
+	            formatversion: 2,
+	            titles: title,
+	            origin: '*'
+	        });
+	        
+	        return fetch(`https://dev.fandom.com/api.php?${params}`, {
+	            headers: { 'Accept': 'application/json' },
+	            mode: 'cors' // Explicitly enable CORS
+	        })
+	        .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status} for ${title}`)))
+	        .then(d => {
+	            const p = d.query.pages;
+	            const id = Object.keys(p)[0];
+	            // Check if page exists and has revisions
+	            if (p[id] && p[id].missing) return null;
+	            return (p[id] && p[id].revisions && p[id].revisions[0]) 
+	                ? p[id].revisions[0].slots.main.content 
+	                : null;
+	        })
+	        .catch(err => {
+	            console.warn('[ActAdv] Failed to load asset from dev.fandom.com:', err);
+	            return null;
+	        });
+	    };
+    
+	    const loadAssets = () => {
+	        const PAGE_CSS = 'MediaWiki:ActivityAdvanced.css';
+	        const PAGE_ICONS = 'MediaWiki:ActivityAdvanced.css/icons.css';
+	        const PAGE_JSON = 'ActivityAdvanced/ActivityAdvanced.json';
+	
+	        return fetchDevPageContent(PAGE_CSS).then(css => {
+	            if (css) {
+	                const s = document.createElement('style');
+	                s.id = 'actAdv-style-ext';
+	                s.textContent = css;
+	                document.head.appendChild(s);
+	            }
+	            return fetchDevPageContent(PAGE_ICONS);
+	        }).then(icons => {
+	            if (icons) {
+	                const s = document.createElement('style');
+	                s.id = 'actAdv-style-icons';
+	                s.textContent = icons;
+	                document.head.appendChild(s);
+	            }
+	            return fetchDevPageContent(PAGE_JSON);
+	        }).then(jsonText => {
+	            let jsonData = {};
+	            if (jsonText) {
+	                try {
+	                    jsonData = JSON.parse(jsonText);
+	                } catch (e) {
+	                    console.error('[ActAdv] Invalid JSON in ActivityAdvanced.json', e);
+	                }
+	            }
+	            
+	            const fb = FALLBACK_STRINGS[LANG] || {};
+	            const jl = jsonData[LANG] || {};
+	            STR = Object.assign({}, fb, jl);
+	        }).catch(() => {
+	            STR = Object.assign({}, FALLBACK_STRINGS[LANG] || {});
+	        });
+	    };
+    
         // --- Unified Fetch Driver ---
         const normalizeUser = (name) => {
             const anon = !!name && mw.util.isIPAddress(name);

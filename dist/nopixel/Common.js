@@ -79,3 +79,51 @@ window.enableReadProgressBarOnArticles = true;
 if (mw.config.get('wgNamespaceNumber') === 2900) {
 	importArticle({ type: 'script', article: 'u:dev:MediaWiki:MapsExtended.js' });
 }
+
+/* Colors compatibility */
+(function () {
+	if (mw.config.get('wgUserGroups').indexOf('sysop') === -1 || mw.config.get('wgSassParams')) return;
+	function resolve(name, fallback) {
+		var probe = document.createElement('span');
+		probe.style.color = 'var(' + name + ', var(' + fallback + '))';
+		document.body.appendChild(probe);
+		var color = getComputedStyle(probe).color;
+		probe.remove();
+		var ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, 1, 1);
+		var px = ctx.getImageData(0, 0, 1, 1).data;
+		return 'rgb(' + px[0] + ', ' + px[1] + ', ' + px[2] + ')';
+	}
+	function setParams() {
+		mw.config.set('wgSassParams', {
+			'color-body': resolve('--theme-body-background-color', '--theme-page-background-color'),
+			'color-body-middle': resolve('--theme-body-background-color', '--theme-page-background-color'),
+			'color-page': resolve('--theme-page-background-color', '--theme-body-background-color'),
+			'color-buttons': resolve('--theme-accent-color', '--theme-link-color'),
+			'color-community-header': resolve('--theme-header-background-color', '--theme-body-background-color'),
+			'color-links': resolve('--theme-link-color', '--theme-link-color')
+		});
+	}
+	if (document.body) {
+		setParams();
+	} else {
+		$(setParams);
+	}
+})();
+
+/* Admin tools */
+if (mw.config.get('wgUserGroups').indexOf('sysop') !== -1) {
+	importArticle({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:AddBlockUserTag/code.js',
+			'u:dev:MediaWiki:AdminDashboard_block/code.js',
+			'u:dev:MediaWiki:User Admin Tools.js',
+			'u:dev:MediaWiki:MassEdit/code.js',
+			'u:dev:MediaWiki:MassProtect/code.js',
+			'u:dev:MediaWiki:RedirectManagement/code.js',
+			'u:dev:MediaWiki:DupImageList/code.js'
+		]
+	});
+}

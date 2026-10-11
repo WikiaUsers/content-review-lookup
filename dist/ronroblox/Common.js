@@ -82,7 +82,6 @@ UserTagsJS.modules.custom = {
 
 	// Discussions Moderators
 	'YugoMafia': ['threadmoderator'],
-	'Kaiyie': ['threadmoderator'],
 	'RXRunner27': ['threadmoderator'],
 	// Junior Discussion Moderators
 

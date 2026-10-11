@@ -134,10 +134,17 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 	});
 });
 
+window.lockOldComments = (window.lockOldComments || {});
+
+window.lockOldComments.limit = 42;
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.namespaceNumbers = [0];
+
 //Shared image repository managing for interwikis
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:GlobalFileUsage.js',
+        'u:dev:MediaWiki:LockOldComments.js',
     ]
 });

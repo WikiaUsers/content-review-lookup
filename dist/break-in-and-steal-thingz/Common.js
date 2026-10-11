@@ -115,3 +115,9 @@ mw.hook('wikipage.content').add(function() {
 document.getElementById('mirror-proceed-btn').addEventListener('click', function () {
     document.getElementById('mirror-warning-overlay').style.display = 'none';
 });
+/* Old comments thingy */
+window.lockOldComments = (window.lockOldComments || {});
+
+window.lockOldComments.limit = 35;
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.namespaceNumbers = [0];

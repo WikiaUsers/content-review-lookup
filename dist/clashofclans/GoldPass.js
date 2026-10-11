@@ -391,6 +391,7 @@ $(document).ready(function() {
     	"Noble Iron": {level: 18, type: 0},
     	"Dark Crown": {level: 27, type: 1},
     	"Meteor Staff": {level: 27, type: 1},
+    	"Portal Pendant": {level: 27, type: 1},
     	"Eternal Tome": {level: 1, type: 0}, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Life Gem": {level: 18, type: 0},
     	"Rage Gem": {level: 18, type: 0},
@@ -410,6 +411,7 @@ $(document).ready(function() {
     	"Stun Blaster": {level: 18, type: 0},
     	"Electro Fangs": {level: 18, type: 0},
     	"Rocket Backpack": {level: 27, type: 1},
+    	"Revenge Deck": {level: 27, type: 1},
     };
     // Equipment level penalty is a 2D array - first entry is for Common equipment, second entry for Epic equipment
 		var difficultyEquipLevelPenalty = [[0,0,0,0,3],[0,0,0,0,6]];
@@ -424,7 +426,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Monolith Arrow"];
     		break;
     	case ("Minion Prince"):
-    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff"];
+    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Portal Pendant"];
     		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch"];
@@ -433,10 +435,10 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots", "Frost Flake"];
     		break;
     	case ("Dragon Duke"):
-    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
+    		heroGearOptions = ["Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack", "Revenge Deck"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Monolith Arrow", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Stick Horse", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Action Figure", "Monolith Arrow", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Noble Iron", "Dark Crown", "Meteor Staff", "Portal Pendant", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Heroic Torch", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Frost Flake", "Fire Heart", "Flame Blower", "Stun Blaster", "Electro Fangs", "Rocket Backpack", "Reveng Deck"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1262,6 +1264,7 @@ $(document).ready(function() {
 			"Stun Blaster": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],
 			"Electro Fangs": [400,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],
 			"Rocket Backpack": [900,988,1077,1165,1254,1342,1431,1519,1608,1696,1785,1873,1962,2050,2139,2227,2316,2404,2493,2581,2670,2758,2847,2935,3024,3112,3200],
+			"Revenge Deck": [900,988,1077,1165,1254,1342,1431,1519,1608,1696,1785,1873,1962,2050,2139,2227,2316,2404,2493,2581,2670,2758,2847,2935,3024,3112,3200],
 		};
 		var dictHPRecoveryBonus = {
 			"Barbarian Puppet": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
@@ -1270,6 +1273,7 @@ $(document).ready(function() {
 			"Magic Mirror": [198,229,250,271,294,317,344,372,397,423,448,474,498,529,560,591,622,652,679,706,732,759,784,811,838,864,891],
 			"Henchmen Puppet": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
 			"Metal Pants": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
+			"Portal Pendant": [558,587,615,644,673,704,730,759,788,817,845,874,903,932,960,989,1018,1047,1107,1139,1171,1205,1239,1273,1309,1345,1381],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
 			"Heroic Torch": [110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,285,295,305,320,330,340,355,365,375,390],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],

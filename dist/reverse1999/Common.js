@@ -60,6 +60,7 @@ mw.hook('wikipage.content').add(function($content) {
 
 // Back to top button
 window.BackToTopModern = true;
+window.BackToTopSpeed = 100;
 // to use modern
 
 importArticles({

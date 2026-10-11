@@ -5,3 +5,4 @@ importArticles({
         "u:dev:MediaWiki:User_Avatar_Finder/code.js"
     ]
 });
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

@@ -152,7 +152,7 @@
                 btn.type = 'button';
                 btn.className = 'cw-header-btn wds-button wds-is-text';
                 btn.innerHTML = svgIcon + '<span style="margin-left:5px;font-weight:700;letter-spacing:0.5px;font-size:12px;text-transform:uppercase;white-space:nowrap;display:inline-block !important;">' + text + '</span>';
-                
+
                 btn.onclick = onClick;
                 btnWrapper.appendChild(btn);
 
@@ -193,7 +193,7 @@
             }, false);
 
             btnGroup.appendChild(sourceBtn);
-            
+
             actionHeader.insertBefore(btnGroup, actionHeader.firstChild);
         }
 
@@ -240,7 +240,7 @@
             if (heading.querySelector('.cw-heading-anchor')) return;
             var headline = heading.querySelector('.mw-headline');
             var id = headline ? headline.id : heading.id;
-            
+
             if (id) {
                 var anchor = document.createElement('a');
                 anchor.className = 'cw-heading-anchor';
@@ -297,7 +297,7 @@
                 secondsSpent++;
                 var mins = Math.floor(secondsSpent / 60);
                 var secs = secondsSpent % 60;
-                
+
                 if (mins > 0) {
                     badge.innerHTML = '⏱️ Reading Time: ' + mins + 'm ' + secs + 's';
                 } else {
@@ -379,6 +379,7 @@ window.dev.editSummaries = {
         '* Added images\n' +
         '* Updated patch notes'
 };
+
 (function () {
     'use strict';
 
@@ -434,181 +435,264 @@ window.dev.editSummaries = {
     }
 })();
 
+// ===================== Main page widgets =====================
+// These run on every 'wikipage.content' event (normal page load, edit
+// preview, closing the editor), so they also load after you leave the
+// edit menu instead of staying on "Loading...".
 
+function cnsdrFind($content, selector) {
+    var el = ($content && $content.find) ? $content.find(selector)[0] : null;
+    return el || document.querySelector(selector);
+}
 
-mw.hook('wikipage.content').add(function () {
-    var $container = $('#cnsdr-recent-edits');
-    if (!$container.length) return;
+// Returns true only the first time an element is seen (prevents double loads)
+function cnsdrOnce(el) {
+    if (!el || el.getAttribute('data-cnsdr-loaded')) return false;
+    el.setAttribute('data-cnsdr-loaded', '1');
+    return true;
+}
 
-    $.getJSON(mw.util.wikiScript('api'), {
-        action: 'query',
-        list: 'recentchanges',
-        rclimit: 15,
-        rcnamespace: 0,
-        rcprop: 'title|user|timestamp',
-        format: 'json'
-    }).done(function (data) {
-        var changes = data.query.recentchanges;
-        if (!changes || changes.length === 0) {
-            $container.html('<span style="color: #ffffff;">No recent edits found.</span>');
-            return;
-        }
+// ---------- Recent edits box ----------
+mw.hook('wikipage.content').add(function ($content) {
+    var el = cnsdrFind($content, '#cnsdr-recent-edits');
+    if (!cnsdrOnce(el)) return;
+    var $container = $(el);
 
-        var mainPageTitle = mw.config.get('wgMainPageTitle') || 'Combat Noobs Siege Defense: Reborn Wiki';
-        var groupedByDate = {};
-
-        changes.forEach(function (edit) {
-            var dateObj = new Date(edit.timestamp);
-            var dateKey = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
-            
-            if (!groupedByDate[dateKey]) {
-                groupedByDate[dateKey] = [];
+    mw.loader.using(['mediawiki.util'], function () {
+        $.getJSON(mw.util.wikiScript('api'), {
+            action: 'query',
+            list: 'recentchanges',
+            rclimit: 15,
+            rcnamespace: 0,
+            rcprop: 'title|user|timestamp',
+            format: 'json'
+        }).done(function (data) {
+            var changes = data.query.recentchanges;
+            if (!changes || changes.length === 0) {
+                $container.html('<span style="color: #ffffff;">No recent edits found.</span>');
+                return;
             }
-            groupedByDate[dateKey].push(edit);
-        });
 
-        var html = '';
+            var mainPageTitle = mw.config.get('wgMainPageTitle') || 'Combat Noobs Siege Defense: Reborn Wiki';
+            var groupedByDate = {};
 
-        for (var dateHeader in groupedByDate) {
-            html += '<div style="margin-top: 10px; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #ffffff; border-bottom: 1px solid rgba(255, 255, 255, 0.3); padding-bottom: 3px;">' + mw.html.escape(dateHeader) + '</div>';
-            html += '<ul style="list-style: none; margin: 0 0 10px 0; padding: 0;">';
-            
-            groupedByDate[dateHeader].forEach(function (edit) {
-                var time = new Date(edit.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                var pageUrl = mw.util.getUrl(edit.title);
-                var userUrl = mw.util.getUrl('User:' + edit.user);
-                
-                var rawTitle = edit.title === mainPageTitle ? 'Main Page' : edit.title;
-                var displayTitle = rawTitle.length > 18 ? rawTitle.substring(0, 18) + '...' : rawTitle;
-
-                html += '<li style="padding: 4px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); font-size: 12px; line-height: 1.4; color: #ffffff;">';
-                html += '<span style="color: #ffffff; margin-right: 6px;">' + time + '</span>';
-                html += '<a href="' + pageUrl + '" title="' + mw.html.escape(edit.title) + '" style="font-weight: bold; text-decoration: none; margin-right: 6px;">' + mw.html.escape(displayTitle) + '</a>';
-                html += '<span style="color: #ffffff; margin-right: 6px;">edited by</span>';
-                html += '<a href="' + userUrl + '" style="font-weight: bold; text-decoration: none;">' + mw.html.escape(edit.user) + '</a>';
-                html += '</li>';
+            changes.forEach(function (edit) {
+                var dateObj = new Date(edit.timestamp);
+                var dateKey = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+                if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+                groupedByDate[dateKey].push(edit);
             });
 
-            html += '</ul>';
-        }
+            var html = '';
 
-        $container.html(html);
-    }).fail(function () {
-        $container.html('<span style="color: #ffffff;">Failed to load recent edits.</span>');
+            for (var dateHeader in groupedByDate) {
+                html += '<div style="margin-top: 10px; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #ffffff; border-bottom: 1px solid #3a3a3a; padding-bottom: 3px;">' + mw.html.escape(dateHeader) + '</div>';
+                html += '<ul style="list-style: none; margin: 0 0 10px 0; padding: 0;">';
+
+                groupedByDate[dateHeader].forEach(function (edit) {
+                    var time = new Date(edit.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    var pageUrl = mw.util.getUrl(edit.title);
+                    var userUrl = mw.util.getUrl('User:' + edit.user);
+
+                    var rawTitle = edit.title === mainPageTitle ? 'Main Page' : edit.title;
+                    var displayTitle = rawTitle.length > 18 ? rawTitle.substring(0, 18) + '...' : rawTitle;
+
+                    html += '<li style="padding: 4px 0; border-bottom: 1px solid #2c2c2c; font-size: 12px; line-height: 1.4; color: #ffffff;">';
+                    html += '<span style="color: #999999; margin-right: 6px;">' + time + '</span>';
+                    html += '<a href="' + pageUrl + '" title="' + mw.html.escape(edit.title) + '" style="font-weight: bold; text-decoration: none; margin-right: 6px;">' + mw.html.escape(displayTitle) + '</a>';
+                    html += '<span style="color: #ffffff; margin-right: 6px;">edited by</span>';
+                    html += '<a href="' + userUrl + '" style="font-weight: bold; text-decoration: none;">' + mw.html.escape(edit.user) + '</a>';
+                    html += '</li>';
+                });
+
+                html += '</ul>';
+            }
+
+            $container.html(html);
+        }).fail(function () {
+            $container.html('<span style="color: #ffffff;">Failed to load recent edits.</span>');
+        });
     });
 });
 
-mw.loader.using(['mediawiki.api'], function() {
-    var container = document.getElementById('cnsdr-latest-patch');
-    if (!container) return;
+// ---------- Latest Patch Notes widget ----------
+mw.hook('wikipage.content').add(function ($content) {
+    var container = cnsdrFind($content, '#cnsdr-latest-patch');
+    if (!cnsdrOnce(container)) return;
 
-    var ACTIVE_BG = '#00b4d8'; 
+    mw.loader.using(['mediawiki.api'], function () {
+        var ACTIVE_BG = '#00b4d8';
 
-    new mw.Api().get({
-        action: 'parse',
-        page: 'Update Logs',
-        prop: 'text',
-        format: 'json',
-        disablepp: true
-    }).done(function(data) {
-        if (!data || !data.parse || !data.parse.text) {
-            container.innerHTML = '<span style="color:#ff4d4d;">No data returned.</span>';
-            return;
-        }
-
-        var rawHtml = data.parse.text['*'];
-        var tempDiv = document.createElement('div');
-        tempDiv.innerHTML = rawHtml;
-
-        var tables = tempDiv.querySelectorAll('table.wikitable');
-        if (!tables || tables.length === 0) {
-            container.innerHTML = '<span style="color:#cccccc;">No update tables found.</span>';
-            return;
-        }
-
-        var majorTable = null;
-        var patchTable = null;
-
-        tables.forEach(function(table) {
-            var th = table.querySelector('th');
-            var titleText = th ? th.textContent.toLowerCase() : '';
-            var listItems = table.querySelectorAll('li');
-
-            if (!patchTable && (titleText.includes('fix') || titleText.includes('hotfix') || (titleText.includes('patch') && listItems.length <= 3))) {
-                patchTable = table;
-            } else if (!majorTable) {
-                majorTable = table;
-            }
-        });
-
-        if (!majorTable) majorTable = tables[0];
-        if (!patchTable) patchTable = tables[tables.length > 1 ? 1 : 0];
-
-        function renderTableContent(targetTable) {
-            var header = targetTable.querySelector('th');
-            var patchTitle = header ? header.innerHTML.trim() : 'Update Log';
-            
-            var contentCell = targetTable.querySelector('td') || targetTable;
-            var clone = contentCell.cloneNode(true);
-
-            var garbage = clone.querySelectorAll('th, #toc, .toc, .mw-headline-number');
-            garbage.forEach(function(el) { el.remove(); });
-
-            if (!clone.textContent.trim()) {
-                return '<div style="font-size: 13px; font-weight: bold; color: #ffcc00; margin-bottom: 6px;">' + patchTitle + '</div><span style="color:#cccccc; font-size: 13px;">No details listed.</span>';
+        new mw.Api().get({
+            action: 'parse',
+            page: 'Update Logs',
+            prop: 'text',
+            format: 'json',
+            disablepp: true
+        }).done(function (data) {
+            if (!data || !data.parse || !data.parse.text) {
+                container.innerHTML = '<span style="color:#ff4d4d;">No data returned.</span>';
+                return;
             }
 
-            var out = '<div style="font-size: 13px; font-weight: bold; color: #ffcc00; margin-bottom: 8px; border-bottom: 1px solid rgba(255,204,0,0.2); padding-bottom: 4px;">' + patchTitle + '</div>';
-            out += '<div class="cnsd-patch-body" style="color: #ffffff; font-size: 13px; line-height: 1.5;">' + clone.innerHTML + '</div>';
-            return out;
-        }
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.parse.text['*'];
 
-        var majorHtml = renderTableContent(majorTable);
-        var patchHtml = renderTableContent(patchTable);
+            var tables = Array.from(tempDiv.querySelectorAll('table.wikitable'));
 
-        var tabUi = '<div style="display: flex; gap: 6px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px;">' +
-            '<button id="cnsd-tab-major" style="flex: 1; background: ' + ACTIVE_BG + '; color: #ffffff; border: none; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;">Major Updates</button>' +
-            '<button id="cnsd-tab-patch" style="flex: 1; background: rgba(255,255,255,0.1); color: #cccccc; border: none; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;">Patches & Fixes</button>' +
-            '</div>' +
-            '<div id="cnsd-tab-content" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">' + majorHtml + '</div>';
+            var majorTable = null;
+            var patchTable = null;
 
-        container.innerHTML = tabUi;
+            function getHeaderTitle(table) {
+                var th = table.querySelector('th');
+                return th ? th.textContent.replace(/\[edit\]/gi, '').trim() : '';
+            }
 
-        var styleTag = document.getElementById('cnsd-patch-style');
-        if (!styleTag) {
-            styleTag = document.createElement('style');
-            styleTag.id = 'cnsd-patch-style';
-            styleTag.innerHTML = 
-                '#cnsd-tab-content h3 { font-size: 13px !important; color: #00b4d8 !important; margin: 6px 0 2px 0 !important; border: none !important; padding: 0 !important; }\n' +
-                '#cnsd-tab-content ul { margin: 0 0 6px 14px !important; padding: 0 !important; color: #ffffff !important; }\n' +
-                '#cnsd-tab-content li { margin-bottom: 2px !important; color: #ffffff !important; }\n' +
-                '#cnsd-tab-content b, #cnsd-tab-content strong { color: #ffffff !important; }\n' +
-                '#cnsd-tab-content #toc, #cnsd-tab-content .toc { display: none !important; }';
-            document.head.appendChild(styleTag);
-        }
+            // A table is a patch if its header mentions patch / fix / hotfix.
+            // Everything else counts as a major update.
+            function isPatchType(title) {
+                return /patch|fix|hotfix/i.test(title);
+            }
 
-        var btnMajor = document.getElementById('cnsd-tab-major');
-        var btnPatch = document.getElementById('cnsd-tab-patch');
-        var contentDiv = document.getElementById('cnsd-tab-content');
+            // Scan newest-first (last table on the page = newest entry)
+            for (var i = tables.length - 1; i >= 0; i--) {
+                var t = tables[i];
+                var title = getHeaderTitle(t);
+                if (!title) continue;
 
-        btnMajor.addEventListener('click', function() {
-            contentDiv.innerHTML = majorHtml;
-            btnMajor.style.background = ACTIVE_BG;
-            btnMajor.style.color = '#ffffff';
-            btnPatch.style.background = 'rgba(255,255,255,0.1)';
-            btnPatch.style.color = '#cccccc';
+                if (isPatchType(title)) {
+                    if (!patchTable) patchTable = t;
+                } else {
+                    if (!majorTable) majorTable = t;
+                }
+
+                if (majorTable && patchTable) break;
+            }
+
+            function renderTable(table) {
+                if (!table) return null;
+
+                var header = table.querySelector('th');
+                var patchTitle = header ? header.textContent.replace(/\[edit\]/gi, '').trim() : 'Update Log';
+
+                var contentCell = table.querySelector('td') || table;
+                var clone = contentCell.cloneNode(true);
+
+                var garbage = clone.querySelectorAll('th, #toc, .toc, .mw-headline-number, .mw-editsection');
+                garbage.forEach(function (el) { el.remove(); });
+
+                if (!clone.textContent.trim()) return null;
+
+                var out = '<div style="font-size: 13px; font-weight: bold; color: #ffcc00; margin-bottom: 8px; border-bottom: 1px solid rgba(255,204,0,0.2); padding-bottom: 4px;">' + mw.html.escape(patchTitle) + '</div>';
+                out += '<div class="cnsd-patch-body" style="color: #ffffff; font-size: 13px; line-height: 1.5;">' + clone.innerHTML + '</div>';
+                return out;
+            }
+
+            var majorHtml = renderTable(majorTable) || '<span style="color:#cccccc; font-size: 13px;">No major updates found.</span>';
+            var patchHtml = renderTable(patchTable) || '<span style="color:#cccccc; font-size: 13px;">No patch details found.</span>';
+
+            var tabUi = '<div style="display: flex; gap: 6px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px;">' +
+                '<button class="cnsd-tab-major" style="flex: 1; background: ' + ACTIVE_BG + '; color: #ffffff; border: none; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;">Major Updates</button>' +
+                '<button class="cnsd-tab-patch" style="flex: 1; background: rgba(255,255,255,0.1); color: #cccccc; border: none; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;">Patches & Fixes</button>' +
+                '</div>' +
+                '<div id="cnsd-tab-content" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">' + majorHtml + '</div>';
+
+            container.innerHTML = tabUi;
+
+            if (!document.getElementById('cnsd-patch-style')) {
+                var styleTag = document.createElement('style');
+                styleTag.id = 'cnsd-patch-style';
+                styleTag.innerHTML =
+                    '#cnsd-tab-content h3 { font-size: 13px !important; color: #00b4d8 !important; margin: 6px 0 2px 0 !important; border: none !important; padding: 0 !important; }\n' +
+                    '#cnsd-tab-content ul { margin: 0 0 6px 14px !important; padding: 0 !important; color: #ffffff !important; }\n' +
+                    '#cnsd-tab-content li { margin-bottom: 2px !important; color: #ffffff !important; }\n' +
+                    '#cnsd-tab-content b, #cnsd-tab-content strong { color: #ffffff !important; }\n' +
+                    '#cnsd-tab-content #toc, #cnsd-tab-content .toc { display: none !important; }';
+                document.head.appendChild(styleTag);
+            }
+
+            var btnMajor = container.querySelector('.cnsd-tab-major');
+            var btnPatch = container.querySelector('.cnsd-tab-patch');
+            var contentDiv = container.querySelector('#cnsd-tab-content');
+
+            btnMajor.addEventListener('click', function () {
+                contentDiv.innerHTML = majorHtml;
+                btnMajor.style.background = ACTIVE_BG;
+                btnMajor.style.color = '#ffffff';
+                btnPatch.style.background = 'rgba(255,255,255,0.1)';
+                btnPatch.style.color = '#cccccc';
+            });
+
+            btnPatch.addEventListener('click', function () {
+                contentDiv.innerHTML = patchHtml;
+                btnPatch.style.background = ACTIVE_BG;
+                btnPatch.style.color = '#ffffff';
+                btnMajor.style.background = 'rgba(255,255,255,0.1)';
+                btnMajor.style.color = '#cccccc';
+            });
+
+        }).fail(function (err) {
+            console.error('CNSDR Patch Notes Error:', err);
+            container.innerHTML = '<span style="color:#ff4d4d;">Error loading patch notes.</span>';
         });
+    });
+});
 
-        btnPatch.addEventListener('click', function() {
-            contentDiv.innerHTML = patchHtml;
-            btnPatch.style.background = ACTIVE_BG;
-            btnPatch.style.color = '#ffffff';
-            btnMajor.style.background = 'rgba(255,255,255,0.1)';
-            btnMajor.style.color = '#cccccc';
+// ---------- Banner: link to the newest MAJOR update ----------
+mw.hook('wikipage.content').add(function ($content) {
+    var linkSpan = cnsdrFind($content, '#cnsdr-banner-update-link');
+    if (!cnsdrOnce(linkSpan)) return;
+
+    mw.loader.using(['mediawiki.api', 'mediawiki.util'], function () {
+        new mw.Api().get({
+            action: 'parse',
+            page: 'Update Logs',
+            prop: 'text',
+            format: 'json',
+            disablepp: true
+        }).done(function (data) {
+            if (!data || !data.parse || !data.parse.text) return;
+
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.parse.text['*'];
+
+            var tables = Array.from(tempDiv.querySelectorAll('table.wikitable'));
+            if (tables.length === 0) return;
+
+            function getHeaderTitle(table) {
+                var th = table.querySelector('th');
+                return th ? th.textContent.replace(/\[edit\]/gi, '').trim() : '';
+            }
+
+            function isPatchType(title) {
+                return /patch|fix|hotfix/i.test(title);
+            }
+
+            // Newest first (last table on the page = newest); skip patches
+            var majorTable = null;
+            for (var i = tables.length - 1; i >= 0; i--) {
+                var title = getHeaderTitle(tables[i]);
+                if (title && !isPatchType(title)) {
+                    majorTable = tables[i];
+                    break;
+                }
+            }
+            if (!majorTable) return; // no major update yet: banner keeps its default text
+
+            var th = majorTable.querySelector('th');
+            linkSpan.textContent = getHeaderTitle(majorTable);
+
+            var parentAnchor = linkSpan.closest('a');
+            if (parentAnchor) {
+                var targetUrl = mw.util.getUrl('Update_Logs');
+                var headline = th.querySelector('.mw-headline');
+                if (headline && headline.id) {
+                    targetUrl += '#' + encodeURIComponent(headline.id);
+                }
+                parentAnchor.setAttribute('href', targetUrl);
+            }
+        }).fail(function (err) {
+            console.error('Banner Update Fetch Error:', err);
         });
-
-    }).fail(function(err) {
-        console.error('CNSD Patch Notes Error:', err);
-        container.innerHTML = '<span style="color:#ff4d4d;">Error loading patch notes.</span>';
     });
 });

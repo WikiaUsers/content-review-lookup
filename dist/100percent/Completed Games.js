@@ -47,6 +47,20 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 		var content = '';
 		var completed = false;
 
+		function showNotification(message) {
+			var notification = $('<div>')
+				.addClass('completed-notification')
+				.text('✓ ' + message);
+
+			$('#content').prepend(notification);
+
+			setTimeout(function() {
+				notification.fadeOut(300, function() {
+					notification.remove();
+				});
+			}, 5000);
+		}
+
 		function setButtonState() {
 			if (completed) {
 				button
@@ -56,7 +70,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 					.css('cursor', 'pointer');
 			} else {
 				button
-					.text('Mark as Completed')
+					.text('Add to Completed List')
 					.removeClass('completed-button--completed')
 					.prop('disabled', false)
 					.css('cursor', 'pointer');
@@ -100,6 +114,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 				content = newContent;
 				completed = true;
 				setButtonState();
+
+				showNotification('Game completed! This game has been added to your 100% completed games on your user profile.');
 
 				initializeUserPage();
 			}).fail(function() {
@@ -166,6 +182,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 					content = newContent;
 					completed = false;
 					setButtonState();
+
+					showNotification('Removed from your completed games.');
 				} else {
 					setButtonState();
 				}

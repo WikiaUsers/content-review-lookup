@@ -1,3 +1,10 @@
+// 自定快捷重定向
+mw.hook('wikiEditor.toolbarReady').add(function () {
+    var redirectTool = $('.tool[rel="redirect"]').data().action.options;
+    redirectTool.peri = '目标页面';
+    redirectTool.post = ']]\n[[Category:重定向页面]]';
+});
+
 (function () {
     // Fandom Compass图标
     var img = $('<img>', {

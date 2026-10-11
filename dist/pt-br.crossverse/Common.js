@@ -161,6 +161,511 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 /* Fim do Texto Invertido */
 
+/* Simo Haya */
+(function() {
+    // Verifica se é a página do Simo Häyhä (usamos 'includes' para evitar problemas com o 'ä' na URL)
+    const pageName = mw.config.get("wgPageName");
+    if (!pageName || !pageName.includes("Simo_H") || !pageName.includes("Shuumatsu")) {
+        return;
+    }
+
+    // Evita duplicar se já estiver a rodar
+    if (document.getElementById("simo-intro-overlay")) return;
+
+    // 1. ESTILOS DA EMBOSCADA (Tiros, Fumaça e Tremores)
+    const styleEl = document.createElement("style");
+    styleEl.innerHTML = `
+        /* Overlay que serve como o "vidro" do monitor */
+        .simo-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 2147483647; /* Acima de tudo na Fandom */
+            pointer-events: none; /* Deixa ver a página por trás, mas os tiros ficam em cima */
+            background-color: transparent;
+            overflow: hidden;
+            transition: opacity 1.5s ease;
+        }
+        .simo-overlay.fade-out {
+            opacity: 0;
+        }
+
+        /* O clarão do tiro do rifle */
+        .simo-flash {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff; opacity: 0; pointer-events: none; z-index: 5;
+        }
+        .simo-flash.active {
+            animation: sniperFlash 0.15s ease-out;
+        }
+        @keyframes sniperFlash {
+            0% { opacity: 0.9; }
+            100% { opacity: 0; }
+        }
+
+        /* Tremor violento na tela inteira */
+        body.simo-shake-active {
+            animation: sniperShake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes sniperShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-15px, 15px) rotate(-1deg); }
+            40% { transform: translate(15px, -15px) rotate(1.5deg); }
+            60% { transform: translate(-10px, 10px) rotate(-0.5deg); }
+            80% { transform: translate(10px, -10px) rotate(0.5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* O buraco e estilhaços de vidro */
+        .simo-crack {
+            position: absolute; transform: translate(-50%, -50%) scale(0);
+            pointer-events: none; z-index: 2;
+            animation: crackAppear 0.05s ease-out forwards;
+            filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.8));
+        }
+        @keyframes crackAppear {
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Fumaça do impacto da bala */
+        .simo-smoke {
+            position: absolute; transform: translate(-50%, -50%) scale(0.2);
+            width: 140px; height: 140px;
+            background: radial-gradient(circle, rgba(230, 235, 240, 0.9) 0%, rgba(180, 180, 180, 0.5) 40%, rgba(0,0,0,0) 70%);
+            border-radius: 50%; pointer-events: none; z-index: 3;
+            opacity: 1; filter: blur(5px);
+            animation: smokeExpand 2.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+        @keyframes smokeExpand {
+            0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; filter: blur(2px); }
+            50% { transform: translate(-50%, -70%) scale(1.5); opacity: 0.6; filter: blur(10px); }
+            100% { transform: translate(-50%, -100%) scale(2.5); opacity: 0; filter: blur(20px); }
+        }
+    `;
+    document.head.appendChild(styleEl);
+
+    const overlay = document.createElement("div");
+    overlay.id = "simo-intro-overlay";
+    overlay.className = "simo-overlay";
+
+    const flash = document.createElement("div");
+    flash.className = "simo-flash";
+    overlay.appendChild(flash);
+    document.body.appendChild(overlay);
+
+    // Função que gera as rachaduras em formato de teia de aranha (SVG)
+    function getCrackSVG(rot) {
+        return `
+        <svg viewBox="0 0 200 200" style="transform: rotate(${rot}deg); width: 100%; height: 100%;">
+            <!-- Buraco central da bala -->
+            <circle cx="100" cy="100" r="4" fill="#000" />
+            <circle cx="100" cy="100" r="8" fill="rgba(0,0,0,0.7)" />
+            <circle cx="100" cy="100" r="10" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" />
+            
+            <!-- Rachaduras principais -->
+            <path d="M100 100 L20 20 M100 100 L180 30 M100 100 L170 180 M100 100 L30 160 M100 100 L50 90 M100 100 L100 15 M100 100 L190 100" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" stroke-linecap="round" fill="none" />
+            
+            <!-- Estilhaços secundários -->
+            <path d="M100 100 L5 50 M100 100 L150 5 M100 100 L195 195 M100 100 L5 195" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-linecap="round" fill="none" />
+            
+            <!-- Ligações transversais da teia de vidro -->
+            <path d="M50 90 L20 20 M180 30 L190 100 M170 180 L30 160" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none" />
+        </svg>
+        `;
+    }
+
+    // Função que executa um tiro
+    function fireShot(x, y, isHeadshot) {
+        // 1. Tremor na tela
+        document.body.classList.remove("simo-shake-active");
+        void document.body.offsetWidth; // Força o reflow do navegador para reiniciar a animação
+        document.body.classList.add("simo-shake-active");
+
+        // 2. Clarão branco
+        flash.classList.remove("active");
+        void flash.offsetWidth;
+        flash.classList.add("active");
+
+        // 3. Rachadura do Vidro
+        const crack = document.createElement("div");
+        crack.className = "simo-crack";
+        crack.style.left = x + "vw";
+        crack.style.top = y + "vh";
+        
+        // Se for o tiro final (Headshot no centro), o estrago no vidro é maior
+        const size = isHeadshot ? 450 : (Math.random() * 100 + 200); 
+        crack.style.width = size + "px";
+        crack.style.height = size + "px";
+        crack.innerHTML = getCrackSVG(Math.random() * 360);
+        overlay.appendChild(crack);
+
+        // 4. Fumaça saindo do buraco
+        const smoke = document.createElement("div");
+        smoke.className = "simo-smoke";
+        smoke.style.left = x + "vw";
+        smoke.style.top = y + "vh";
+        if (isHeadshot) {
+            smoke.style.width = "200px"; 
+            smoke.style.height = "200px";
+        }
+        overlay.appendChild(smoke);
+    }
+
+    // Cronograma dos tiros (5 tiros no total)
+    // Coordenadas espalhadas para simular o atirador ajustando a mira, com o último bem no centro.
+    const shots = [
+        { delay: 300,  x: 20 + Math.random()*15, y: 30 + Math.random()*20, final: false }, // Superior esquerdo
+        { delay: 900,  x: 75 + Math.random()*10, y: 25 + Math.random()*15, final: false }, // Superior direito
+        { delay: 1500, x: 80 + Math.random()*10, y: 70 + Math.random()*15, final: false }, // Inferior direito
+        { delay: 2100, x: 30 + Math.random()*15, y: 75 + Math.random()*10, final: false }, // Inferior esquerdo
+        { delay: 2800, x: 50, y: 50, final: true } // Tiro Final Perfeito no Centro
+    ];
+
+    // Dispara a sequência
+    shots.forEach(shot => {
+        setTimeout(() => {
+            fireShot(shot.x, shot.y, shot.final);
+        }, shot.delay);
+    });
+
+    // 2 Segundos após o ÚLTIMO tiro (2800ms + 2000ms de espera = 4800ms)
+    setTimeout(() => {
+        // Dissolve os estilhaços e a fumaça
+        overlay.classList.add("fade-out");
+        
+        // Remove a classe de tremor do body por segurança
+        document.body.classList.remove("simo-shake-active");
+        
+        // Destrói os elementos após o fade out para não pesar a página
+        setTimeout(() => {
+            overlay.remove();
+        }, 1500);
+    }, 4800);
+
+})();
+/* fim do simo */
+
+/* Começa de Ihwa */
+(function() {
+    const TARGET_PAGE = "Blog_de_usuário:Whitekl/Ihwa"; 
+    const TARGET_HREF = "Whitekl/Ihwa";
+    const isTargetPage = mw.config.get("wgPageName") === TARGET_PAGE;
+
+    // ==========================================
+    // 1. ESTILOS GLOBAIS (EXPLOSÃO E TRANSIÇÃO)
+    // ==========================================
+    if (!document.getElementById("iwha-global-styles")) {
+        const globalStyles = document.createElement("style");
+        globalStyles.id = "iwha-global-styles";
+        globalStyles.innerHTML = `
+            .iwha-explosion-wrapper {
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                z-index: 2147483647; pointer-events: none;
+                display: flex; align-items: center; justify-content: center;
+                overflow: hidden; background: transparent;
+            }
+            .iwha-explosion-wrapper.black-bg { background: #000000; }
+            
+            .iwha-slash-line {
+                position: absolute; height: 3px; background: #ff0033;
+                box-shadow: 0 0 20px #ff0033, 0 0 40px #990000;
+                top: 50%; left: 50%; transform-origin: center;
+                animation: iwhaSlashDraw 0.5s ease-out forwards, iwhaSlashGather 0.6s cubic-bezier(0.8, 0, 0.2, 1) var(--delay-gather) forwards;
+            }
+            @keyframes iwhaSlashDraw { 
+                0% { width: 0; opacity: 0; transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(0); } 
+                100% { width: 150vw; opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(1); } 
+            }
+            @keyframes iwhaSlashGather { 
+                0% { transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(1); opacity: 1; } 
+                100% { transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(0); opacity: 1; } 
+            }
+            
+            .iwha-blast-core {
+                position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                width: 0; height: 0; border-radius: 50%; background: #ffffff;
+                box-shadow: 0 0 100px 50px #ff0033, 0 0 200px 100px #880015; opacity: 0;
+                animation: iwhaBlastOut 0.8s ease-out 1.5s forwards;
+            }
+            @keyframes iwhaBlastOut {
+                0% { width: 0; height: 0; opacity: 1; }
+                30% { width: 80vw; height: 80vw; background: #ffffff; opacity: 1; }
+                100% { width: 300vw; height: 300vw; background: #000000; box-shadow: none; opacity: 1; }
+            }
+        `;
+        document.head.appendChild(globalStyles);
+    }
+
+    // Função que gera a Explosão Visual nas outras páginas
+    function triggerExplosion(isBlackBg, callback) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "iwha-explosion-wrapper" + (isBlackBg ? " black-bg" : "");
+        
+        for(let i=0; i<12; i++) {
+            const slash = document.createElement("div");
+            slash.className = "iwha-slash-line";
+            slash.style.setProperty('--rot', (Math.random() * 180) + 'deg');
+            slash.style.animationDelay = (Math.random() * 0.2) + 's';
+            slash.style.setProperty('--delay-gather', (1.0 + Math.random() * 0.2) + 's');
+            wrapper.appendChild(slash);
+        }
+
+        const blast = document.createElement("div");
+        blast.className = "iwha-blast-core";
+        wrapper.appendChild(blast);
+        
+        document.body.appendChild(wrapper);
+
+        setTimeout(() => { if(callback) callback(wrapper); }, 2300);
+    }
+
+    // ==========================================
+    // 2. INTERCEPTADOR GLOBAL
+    // ==========================================
+    if (!isTargetPage) {
+        document.addEventListener("click", function(e) {
+            const link = e.target.closest("a");
+            if (link && link.href.includes(TARGET_HREF)) {
+                if (e.button === 0 && !e.ctrlKey && !e.shiftKey && !e.metaKey) {
+                    e.preventDefault();
+                    triggerExplosion(false, function() {
+                        sessionStorage.setItem("iwha_transition_done", "true");
+                        window.location.href = link.href; 
+                    });
+                }
+            }
+        });
+        return; 
+    }
+
+    // ==========================================
+    // 3. O PERFIL DA IHWA
+    // ==========================================
+
+    if (document.getElementById("iwha-intro-overlay")) return;
+
+    // Remove o scroll da página enquanto a intro rola
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    const eyeStyles = document.createElement("style");
+    eyeStyles.innerHTML = `
+        .iwha-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000000 !important; /* CORRIGIDO: Preto absoluto para barrar vazamento */
+            z-index: 2147483646;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; transition: opacity 1.2s ease;
+        }
+        .iwha-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+        .iwha-eye-container::before {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 150vw; height: 150vh;
+            background: radial-gradient(circle at center, rgba(160, 0, 25, 0.25) 0%, rgba(50, 0, 10, 0.1) 30%, rgba(0,0,0,0) 65%);
+            z-index: -1; pointer-events: none; animation: pulseMassiveAura 4s infinite alternate ease-in-out;
+        }
+        @keyframes pulseMassiveAura {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+
+        @keyframes iwhaShake {
+            0%, 100% { transform: translate(0, 0); }
+            15% { transform: translate(-3px, 2px); }
+            30% { transform: translate(3px, -2px); }
+            45% { transform: translate(-2px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            75% { transform: translate(-3px, -1px); }
+            90% { transform: translate(2px, 2px); }
+        }
+        .iwha-eye-container { position: relative; z-index: 3; animation: iwhaShake 0.4s infinite ease-in-out; }
+        .iwha-eye-svg { width: 600px; max-width: 95vw; height: auto; overflow: visible; }
+
+        .iwha-cut-line { animation: iwhaFlashLine 1.4s ease-in-out forwards; }
+        @keyframes iwhaFlashLine {
+            0% { opacity: 0; stroke-width: 1px; }
+            30% { opacity: 1; stroke-width: 6px; filter: drop-shadow(0 0 20px #ff0033); }
+            60% { opacity: 1; stroke-width: 3px; }
+            100% { opacity: 0; stroke-width: 0; }
+        }
+
+        .iwha-eyelid-top { transform: translateY(0); transition: transform 2.5s cubic-bezier(0.8, 0, 0.2, 1); }
+        .iwha-eyelid-bottom { transform: translateY(0); transition: transform 2.5s cubic-bezier(0.8, 0, 0.2, 1); }
+        
+        .iwha-eyelid-top.is-open { transform: translateY(-130px); }
+        .iwha-eyelid-bottom.is-open { transform: translateY(130px); }
+        
+        .iwha-eyelid-top.is-closed { transform: translateY(0); transition: transform 0.4s cubic-bezier(0.7, 0, 0.1, 1); }
+        .iwha-eyelid-bottom.is-closed { transform: translateY(0); transition: transform 0.4s cubic-bezier(0.7, 0, 0.1, 1); }
+
+        .iwha-iris, .iwha-iris-inner { opacity: 0; animation: iwhaFadeInElement 1.5s ease 0.6s forwards; }
+        .iwha-pupil { opacity: 0; transform-origin: 300px 150px; animation: iwhaFadeInElement 1.5s ease 0.6s forwards, pupilTwitch 4s infinite ease-in-out 2s; }
+        @keyframes iwhaFadeInElement { 0% { opacity: 0; transform: scale(0.7); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes pupilTwitch {
+            0%, 100% { transform: scale(1); } 25% { transform: scale(1.15); }
+            30% { transform: scale(0.9); } 50% { transform: scale(1.05); } 80% { transform: scale(0.95); }
+        }
+
+        .flare-line { stroke-dasharray: 200; stroke-dashoffset: 200; animation: shootFlares 2.5s infinite ease-out; }
+        @keyframes shootFlares {
+            0% { stroke-dashoffset: 200; opacity: 0; }
+            20% { opacity: var(--flare-opacity, 0.8); }
+            80% { stroke-dashoffset: -50; opacity: 0; }
+            100% { stroke-dashoffset: -200; opacity: 0; }
+        }
+
+        .iwha-background-chaos { position: absolute; width: 100vw; height: 100vh; top: 0; left: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+        .chaos-text-fragment {
+            position: absolute; font-family: 'Courier New', monospace; font-weight: 900;
+            color: rgba(255, 0, 51, 0.15); text-shadow: 0 0 10px rgba(255, 0, 51, 0.4); white-space: nowrap; opacity: 0;
+        }
+        @keyframes driftAndFade {
+            0% { opacity: 0; transform: translate(0, 0) scale(0.9); filter: blur(2px); }
+            30% { opacity: var(--max-opacity, 0.4); filter: blur(0px); }
+            70% { opacity: var(--max-opacity, 0.4); filter: blur(0px); }
+            100% { opacity: 0; transform: translate(var(--move-x), var(--move-y)) scale(1.1); filter: blur(4px); }
+        }
+
+        .iwha-dialogue {
+            position: absolute; bottom: 18%; z-index: 4; font-size: 2.2rem; font-weight: bold; color: #ffffff;
+            text-shadow: 0 0 15px #ff0033, 0 0 30px #990011; opacity: 0; animation: iwhaDialogueShow 2.5s ease 1.5s forwards;
+            font-family: sans-serif; letter-spacing: 1px;
+        }
+        .iwha-dialogue ruby rt { font-size: 0.85rem; color: #ff4d6d; font-weight: bold; }
+        @keyframes iwhaDialogueShow {
+            0% { opacity: 0; transform: translateY(25px); filter: blur(5px); }
+            25% { opacity: 1; transform: translateY(0); filter: blur(0px); }
+            100% { opacity: 0.9; transform: translateY(-5px); }
+        }
+
+        .iwha-prompt {
+            position: absolute; bottom: 6%; z-index: 4; font-size: 0.9rem; color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px; font-family: 'Courier New', monospace; opacity: 0;
+            animation: iwhaFadeInElement 0.5s ease 2s forwards, iwhaBlinkPrompt 1.5s infinite ease-in-out 2s;
+        }
+        @keyframes iwhaBlinkPrompt { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+    `;
+    document.head.appendChild(eyeStyles);
+
+    function startEyeSequence() {
+        const overlay = document.createElement("div");
+        overlay.id = "iwha-intro-overlay";
+        overlay.className = "iwha-overlay";
+        
+        const chaosContainer = document.createElement("div");
+        chaosContainer.className = "iwha-background-chaos";
+        const frasesDooms = ["온몸에 식은땀이 흘러내렸다.", "그의 머릿속은 한순간 새하얗게 비어버렸다……", "불가능. 불가능. 불가능. 불가능.", "승리할 가능성: 없음 없음 없음", "오직 하나만이 떠올랐다."];
+        for (let i = 0; i < 30; i++) {
+            const span = document.createElement("div");
+            span.className = "chaos-text-fragment";
+            span.innerText = frasesDooms[Math.floor(Math.random() * frasesDooms.length)];
+            span.style.top = (Math.random() * 110 - 5) + "%"; span.style.left = (Math.random() * 110 - 5) + "%";
+            span.style.fontSize = (Math.random() * 1.5 + 1.2) + "rem";
+            span.style.setProperty('--move-x', (Math.random() * 20 - 10) + 'vw');
+            span.style.setProperty('--move-y', (Math.random() * 20 - 10) + 'vh');
+            span.style.setProperty('--max-opacity', (Math.random() * 0.4 + 0.15));
+            if (Math.random() > 0.6) span.style.writingMode = "vertical-rl";
+            span.style.animation = `driftAndFade ${Math.random() * 6 + 5}s infinite ease-in-out ${Math.random() * 4}s`;
+            chaosContainer.appendChild(span);
+        }
+        overlay.appendChild(chaosContainer);
+
+        let flaresHTML = '';
+        for (let i = 0; i < 24; i++) {
+            flaresHTML += `<path class="flare-line" d="M 300 150 C ${300 + Math.random()*80} ${100 + Math.random()*80}, ${400 + Math.random()*50} ${200 - Math.random()*50}, 580 150" stroke="#ff0033" stroke-width="${Math.random() * 3 + 1.5}" fill="none" style="transform-origin: 300px 150px; transform: rotate(${Math.random() * 360}deg); animation-duration: ${Math.random() * 1.5 + 1.5}s; animation-delay: ${Math.random() * 2 + 1}s; --flare-opacity: ${Math.random() * 0.5 + 0.5};" />`;
+        }
+
+        const eyeWrapper = document.createElement("div");
+        eyeWrapper.className = "iwha-eye-container";
+        eyeWrapper.innerHTML = `
+            <svg class="iwha-eye-svg" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="iwha-iris-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur1" />
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur2" />
+                        <feMerge><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                    <radialGradient id="socket-shadow" cx="50%" cy="50%" r="50%">
+                        <stop offset="50%" stop-color="#0a0002" /> <stop offset="85%" stop-color="#140003" /> <stop offset="100%" stop-color="#000000" />
+                    </radialGradient>
+                </defs>
+                <g filter="url(#iwha-iris-glow)">${flaresHTML}</g>
+                <ellipse cx="300" cy="150" rx="160" ry="75" fill="url(#socket-shadow)" class="iwha-eyeball" />
+                <circle cx="300" cy="150" r="52" fill="#880015" class="iwha-iris" filter="url(#iwha-iris-glow)" />
+                <circle cx="300" cy="150" r="42" fill="#ff1a3c" class="iwha-iris-inner" />
+                <circle cx="300" cy="150" r="35" fill="#ff4d6d" opacity="0.9" />
+                <circle cx="300" cy="150" r="14" fill="#000000" class="iwha-pupil" />
+                
+                <path d="M -3000 150 C 180 60, 420 70, 3600 150 L 3600 -3000 L -3000 -3000 Z" fill="#000000" class="iwha-eyelid-top" />
+                <path d="M -3000 150 C 180 240, 420 230, 3600 150 L 3600 3000 L -3000 3000 Z" fill="#000000" class="iwha-eyelid-bottom" />
+                <path d="M 120 150 C 200 145, 400 155, 480 150" stroke="#ff0033" stroke-width="5" fill="none" stroke-linecap="round" class="iwha-cut-line" />
+            </svg>
+        `;
+        overlay.appendChild(eyeWrapper);
+
+        const dialogue = document.createElement("div");
+        dialogue.className = "iwha-dialogue";
+        dialogue.innerHTML = `헬로. <ruby>헬<rt>Hell</rt></ruby>로 가라고.`;
+        overlay.appendChild(dialogue);
+
+        const prompt = document.createElement("div");
+        prompt.className = "iwha-prompt";
+        prompt.innerText = "[ PRESSIONE ENTER OU TOQUE NA TELA ]";
+        overlay.appendChild(prompt);
+
+        document.body.appendChild(overlay);
+
+        setTimeout(() => {
+            const topLid = document.querySelector('.iwha-eyelid-top');
+            const bottomLid = document.querySelector('.iwha-eyelid-bottom');
+            if(topLid) topLid.classList.add('is-open');
+            if(bottomLid) bottomLid.classList.add('is-open');
+        }, 900);
+
+        function dismissOverlay() {
+            const topLid = document.querySelector('.iwha-eyelid-top');
+            const bottomLid = document.querySelector('.iwha-eyelid-bottom');
+            if(topLid) { topLid.classList.remove('is-open'); topLid.classList.add('is-closed'); }
+            if(bottomLid) { bottomLid.classList.remove('is-open'); bottomLid.classList.add('is-closed'); }
+            
+            setTimeout(() => {
+                overlay.classList.add("fade-out");
+                
+                // GATILHO QUE AVISA O CSS PARA REVELAR A PÁGINA
+                document.body.classList.add("reveal-ihwa-profile");
+                
+                document.body.style.overflow = "auto";
+                document.documentElement.style.overflow = "auto";
+                
+                setTimeout(() => overlay.remove(), 1200);
+            }, 450);
+        }
+
+        overlay.addEventListener("click", dismissOverlay);
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") dismissOverlay();
+        });
+    }
+
+    function initIhwaPage() {
+        if (sessionStorage.getItem("iwha_transition_done")) {
+            sessionStorage.removeItem("iwha_transition_done");
+            startEyeSequence();
+        } else {
+            triggerExplosion(true, function(wrapper) {
+                wrapper.remove(); 
+                startEyeSequence();
+            });
+        }
+    }
+
+    if (document.body) {
+        initIhwaPage();
+    } else {
+        document.addEventListener("DOMContentLoaded", initIhwaPage);
+    }
+})();
+/* Fim da Ihwa */
+
 /* Texto de Visual Novel */
 mw.hook('wikipage.content').add(function($content) {
     var observer = new IntersectionObserver(function(entries) {

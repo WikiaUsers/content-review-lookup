@@ -102,45 +102,48 @@ function createCheckbox({ labelText, checkboxID, boostValue, hidden = false }) {
 /* -------- 2.1 -------- */
 /* Options for the select input fields */
 var dungeonList = [
-  { name: "Raided Village: Normal", baseEXP: 283 },
-  { name: "Raided Village: Expert", baseEXP: 416 },
-  { name: "Raided Village: Chaos", baseEXP: 672 },
-  { name: "Sunken Fortress: Normal", baseEXP: 1923 },
-  { name: "Sunken Fortress: Expert", baseEXP: 3390 },
+  { name: "Raided Village: Normal", baseEXP: 434 },
+  { name: "Raided Village: Expert", baseEXP: 507 },
+  { name: "Raided Village: Chaos", baseEXP: 649 },
+  { name: "Sunken Fortress: Normal", baseEXP: 1480 },
+  { name: "Sunken Fortress: Expert", baseEXP: 2960 },
   { name: "Sunken Fortress: Chaos", baseEXP: 8175 },
-  { name: "Cursed Marshes: Normal", baseEXP: 23275 },
-  { name: "Cursed Marshes: Expert", baseEXP: 46550 },
-  { name: "Cursed Marshes: Chaos", baseEXP: 119000 },
-  { name: "Ragnarök's Descent: Normal", baseEXP: 327000 },
+  { name: "Cursed Marshes: Normal", baseEXP: 17850 },
+  { name: "Cursed Marshes: Expert", baseEXP: 35700 },
+  { name: "Cursed Marshes: Chaos", baseEXP: 71400 },
+  { name: "Ragnarök's Descent: Normal", baseEXP: 247600 },
   { name: "Ragnarök's Descent: Expert", baseEXP: 654000 },
-  { name: "Ragnarök's Descent: Chaos", baseEXP: 1740000 },
-  { name: "Thundering Peaks: Normal", baseEXP: 5120000 },
-  { name: "Thundering Peaks: Expert", baseEXP: 10240000 },
-  { name: "Thundering Peaks: Chaos", baseEXP: 30100000 },
-  { name: "Fallen Paradise: Normal", baseEXP: 79000000 },
-  { name: "Fallen Paradise: Expert", baseEXP: 158000000 },
-  { name: "Fallen Paradise: Chaos", baseEXP: 346000000 },
+  { name: "Ragnarök's Descent: Chaos", baseEXP: 1040800 },
+  { name: "Thundering Peaks: Normal", baseEXP: 3824000 },
+  { name: "Thundering Peaks: Expert", baseEXP: 7500000 },
+  { name: "Thundering Peaks: Chaos", baseEXP: 14680000 },
+  { name: "Fallen Paradise: Normal", baseEXP: 54600000 },
+  { name: "Fallen Paradise: Expert", baseEXP: 107200000 },
+  { name: "Fallen Paradise: Chaos", baseEXP: 113400000 },
   { name: "Eternal Domain: Normal", baseEXP: 1075000000 },
-  { name: "Eternal Domain: Expert", baseEXP: 2150000000 },
-  { name: "Eternal Domain: Chaos", baseEXP: 5650000000 },
-  { name: "Stardust Citadel: Normal", baseEXP: 15900000000 },
-  { name: "Stardust Citadel: Expert", baseEXP: 31800000000 },
-  { name: "Stardust Citadel: Chaos", baseEXP: 87400000000 },
-  { name: "Ethereal Farlands: Normal", baseEXP: 274000000000 },
-  { name: "Ethereal Farlands: Expert", baseEXP: 548000000000 },
-  { name: "Ethereal Farlands: Chaos", baseEXP: 1145000000000 },
-  { name: "Hellbound Sanctum: Normal", baseEXP: 3000000000000 },
-  { name: "Hellbound Sanctum: Expert", baseEXP: 6000000000000 },
-  { name: "Hellbound Sanctum: Chaos", baseEXP: 14100000000000 },
-  { name: "Forsaken Limbo: Normal", baseEXP: 39300000000000 },
-  { name: "Forsaken Limbo: Expert", baseEXP: 78600000000000 },
-  { name: "Forsaken Limbo: Chaos", baseEXP: 143000000000000 },
-  { name: "Neon District: Normal", baseEXP: 592500000000000 },
-  { name: "Neon District: Expert", baseEXP: 1185000000000000 },
-  { name: "Neon District: Chaos", baseEXP: 2457000000000000 },
-  { name: "The First Sanctuary: Normal", baseEXP: 9117000000000000 },
-  { name: "The First Sanctuary: Expert", baseEXP: 13906500000000000 },
-  { name: "The First Sanctuary: Chaos", baseEXP: 26400000000000000 }
+  { name: "Eternal Domain: Expert", baseEXP: 1625000000 },
+  { name: "Eternal Domain: Chaos", baseEXP: 3300000000 },
+  { name: "Stardust Citadel: Normal", baseEXP: 12641000000 },
+  { name: "Stardust Citadel: Expert", baseEXP: 25040000000 },
+  { name: "Stardust Citadel: Chaos", baseEXP: 50480000000 },
+  { name: "Ethereal Farlands: Normal", baseEXP: 170300000000 },
+  { name: "Ethereal Farlands: Expert", baseEXP: 340600000000 },
+  { name: "Ethereal Farlands: Chaos", baseEXP: 693200000000 },
+  { name: "Hellbound Sanctum: Normal", baseEXP: 1935000000000 },
+  { name: "Hellbound Sanctum: Expert", baseEXP: 3765000000000 },
+  { name: "Hellbound Sanctum: Chaos", baseEXP: 7665000000000 },
+  { name: "Forsaken Limbo: Normal", baseEXP: 30720000000000 },
+  { name: "Forsaken Limbo: Expert", baseEXP: 61080000000000 },
+  { name: "Forsaken Limbo: Chaos", baseEXP: 111000000000000 },
+  { name: "Neon District: Normal", baseEXP: 467500000000000 },
+  { name: "Neon District: Expert", baseEXP: 935000000000000 },
+  { name: "Neon District: Chaos", baseEXP: 2040000000000000 },
+  { name: "The First Sanctuary: Normal", baseEXP: 8331000000000000 },
+  { name: "The First Sanctuary: Expert", baseEXP: 16500000000000000 },
+  { name: "The First Sanctuary: Chaos", baseEXP: 25360000000000000 },
+  { name: "Subliminal Dreamscape: Normal", baseEXP: 86500000000000000 },
+  { name: "Subliminal Dreamscape: Expert", baseEXP: 170000000000000000 },
+  { name: "Subliminal Dreamscape: Chaos", baseEXP: 251000000000000000 }
 ];
   
 var weaponPerks = [
@@ -211,7 +214,7 @@ document.getElementById('dungeonExp').onchange = function () {
   var selectedText = this.options[this.selectedIndex].text;
   var calamityRowSpacing = document.getElementById('calamityBoost-exp-calculator-spacing');
 
-  var supportedChaosDungeons = ["Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos", "Neon District: Chaos", "The First Sanctuary: Chaos"]; // Dungeons that support the calamity exp gain
+  var supportedChaosDungeons = ["Raided Village: Chaos", "Sunken Fortress: Chaos", "Cursed Marshes: Chaos", "Ragnarök's Descent: Chaos", "Thundering Peaks: Chaos", "Fallen Paradise: Chaos", "Eternal Domain: Chaos", "Stardust Citadel: Chaos", "Ethereal Farlands: Chaos", "Hellbound Sanctum: Chaos", "Forsaken Limbo: Chaos", "Neon District: Chaos", "The First Sanctuary: Chaos"]; // Dungeons that support the calamity exp gain
 
   var increasedExpGain = ["The First Sanctuary: Chaos"];
 
@@ -387,7 +390,7 @@ calcBtn.onclick = function () {
   
   var modifierExceptionText = document.getElementById('dungeonExp');
   var selectedText = modifierExceptionText.options[modifierExceptionText.selectedIndex].text;
-  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
+  var modifierExceptions = ["Raided Village: Normal", "Raided Village: Expert", "Raided Village: Chaos", "Subliminal Dreamscape: Normal", "Subliminal Dreamscape: Expert", "Subliminal Dreamscape: Chaos"]; // Dungeons + difficulties that do not support dungeon modifiers
 
 
   // Error messages
@@ -435,9 +438,9 @@ calcBtn.onclick = function () {
   // Calamity mode Bonus
   if (calamityBoost && calamityBoost.checked) {
     if (dungeonName == "Ethereal Farlands: Chaos") {
-      baseDungeonExp += 15000000000; // Add 3 additional "Crystalline Ballista" XP values (only spawn in calamity)
+      baseDungeonExp += 6800000000; // Add 3 additional "Crystalline Ballista" XP values (only spawn in calamity)
     } else if (dungeonName == "Forsaken Limbo: Chaos") {
-      baseDungeonExp += 20000000000000; // Add "The Destined Death" XP value (only spawns in calamity)
+      baseDungeonExp += 16000000000000; // Add "The Destined Death" XP value (only spawns in calamity)
     } 
     boostExp += baseDungeonExp * parseFloat(calamityBoost.dataset.boost);
   }

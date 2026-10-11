@@ -11,7 +11,7 @@ mw.hook('wikipage.content').add(function () {
     const ratingsPage = 'Backrooms_Wiki:Ratings.json';
     const username = mw.config.get('wgUserName');
     const groups = mw.config.get('wgUserGroups') || [];
-    const canCreateByGroup = false /* groups.includes('sysop') || groups.includes('content-moderator') */;
+    const canCreateByGroup = groups.includes('sysop') || groups.includes('content-moderator');
     let globalUp = {}, globalDown = {};
     const rawUrl = title => `${mw.config.get('wgScript')}?title=${encodeURIComponent(title)}&action=raw`;
     const sort = obj => Object.fromEntries(Object.entries(obj).sort((a, b) => b[1].length - a[1].length));

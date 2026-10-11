@@ -12,7 +12,6 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'SpongeBot678': ['assistant'],
-    'AndromedaMapping1': ['assistant'],
     'WoofWoofGam3r': ['discord']
 };
 
@@ -26,6 +25,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'patroller', 'rollback', 'bannedfro
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.namespaceNumbers = [0];
 
 /* End of LockOldComments */
 

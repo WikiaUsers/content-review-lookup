@@ -11,7 +11,8 @@ window.UserTagsJS = {
 		rollback: { u:'Vandestroyer'},
 		threadmoderator: { u:'Sentinel'},
 		votecheck: { u:'Votechecker' },
-		specialist: { u:'Specialist' }
+		specialist: { u:'Specialist' },
+		reviewer: { u:'Rating Reviewer' }
 		
     },
     modules: {

@@ -1,38 +1,41 @@
 /* REBORN pet lookup. Database supplied by Module:REBORN寵物; no remote requests. */
 (function () {
     'use strict';
-    function combinations(main, vice, wanted) {
-        if (wanted.length !== 3 || new Set(wanted).size !== 3) return [];
-        if (
-            !vice.slice(0, 2).every(function (s) {
-                return wanted.indexOf(s) !== -1;
-            })
-        )
-            return [];
+    // First two slots inherit from the same slot; the third remains the main pet's.
+    // A blank target is unrestricted. The second selector, when used, fixes slot 2.
+    function combinations(main, vice, wanted, fixedSecond) {
+        if (wanted.length < 2 || wanted.length > 3 || new Set(wanted).size !== wanted.length) return [];
         var found = [];
-        for (var a = 0; a < 2; a++)
+        for (var a = 0; a < 2; a++) {
             for (var b = 0; b < 2; b++) {
                 var row = [a ? vice[0] : main[0], b ? vice[1] : main[1], main[2]];
-                if (
-                    new Set(row).size === 3 &&
-                    row.every(function (s) {
-                        return wanted.indexOf(s) !== -1;
-                    })
-                ) {
-                    if (
-                        !found.some(function (x) {
-                            return x.join('|') === row.join('|');
-                        })
-                    )
-                        found.push(row);
-                }
+                if (row.some(function (id) { return !id || id === '0'; }) || new Set(row).size !== 3) continue;
+                if (fixedSecond && row[1] !== fixedSecond) continue;
+                if (!wanted.every(function (id) { return row.indexOf(id) !== -1; })) continue;
+                if (!found.some(function (x) { return x.join('|') === row.join('|'); })) found.push(row);
             }
+        }
         return found;
+    }
+    function mainMatches(main, wanted) {
+        return wanted.filter(function (id) { return main.slice(0, 3).indexOf(id) !== -1; }).length;
+    }
+    function slotOptions(pets, skills, key, slot) {
+        var unique = new Set();
+        pets.forEach(function (p) {
+            (slot === 1 ? [p[key][1]] : [p[key][0], p[key][2]]).forEach(function (id) {
+                if (!skills[id]) return;
+                // Slot 2 exposes numerical stat bonuses, excluding attacks and reactive procs.
+                if (slot === 1 && !/提高|加成/.test(skills[id].d)) return;
+                unique.add(id);
+            });
+        });
+        return Array.from(unique).sort(function (a, b) { return skills[a].n.localeCompare(skills[b].n, 'zh-Hant'); });
     }
     // Export helpers only in Node.js tests. Fandom may expose a CommonJS-like
     // `module` object in the browser, so also require the absence of `window`.
     if (typeof window === 'undefined' && typeof module === 'object' && module.exports) {
-        module.exports = { combinations: combinations };
+        module.exports = { combinations: combinations, mainMatches: mainMatches, slotOptions: slotOptions };
         return;
     }
     function init(root) {
@@ -57,7 +60,7 @@
             return x;
         }
         function name(id) {
-            return skills[id] ? skills[id].n : '待核對（' + id + '）';
+            return skills[id] ? skills[id].n : '技能待核對';
         }
         function select(parent, title, options) {
             var label = el('label', title, parent),
@@ -92,7 +95,7 @@
             }
             function update(id) {
                 value = id;
-                selectedName.textContent = id ? name(id) : '任意';
+                selectedName.textContent = id ? (options.find(function (o) { return o[0] === id; }) || [id, name(id)])[1] : '任意';
                 selectedEffect.textContent = id ? effect(id) : '展開查看技能效果';
                 entries.forEach(function (entry) {
                     entry.button.setAttribute('aria-pressed', String(entry.id === id));
@@ -181,7 +184,7 @@
                         '：' +
                         (skills[id]
                             ? skills[id].d
-                            : '此代碼尚未對到固定技能，可能為技能池；不作配對依據。'),
+                            : '尚未對到固定技能；不作配對依據。'),
                     ul
                 );
             });
@@ -315,67 +318,21 @@
             filter();
         } else {
             var controls = el('div', undefined, ui, 'gdr-pet-controls');
-            function side(title, quality, cls) {
-                var f = el('fieldset', undefined, controls, cls);
-                el('legend', title, f);
-                var eligible = pets
-                    .filter(function (p) {
-                        return p.qs.indexOf(quality) !== -1;
-                    })
-                    .sort(function (a, b) {
-                        return a.n.localeCompare(b.n, 'zh-Hant') || a.id.localeCompare(b.id);
-                    });
-                var pet = select(
-                    f,
-                    '寵物',
-                    [['', '任意寵物']].concat(
-                        eligible.map(function (p) {
-                            return [p.id, p.n + '〔' + p.t + '／' + p.q + '〕'];
-                        })
-                    )
-                );
-                var max = input(f, '等級上限（舊版參考）', 'number', '99');
-                max.min = '1';
-                max.max = '999';
-                var src = select(f, '取得方式', [
-                    ['', '任意取得'],
-                    ['商城收藏冊', '商城收藏冊（錄影核對）'],
-                    ['捕捉', '捕捉（舊版參考）'],
-                    ['副本', '副本（舊版參考）'],
-                    ['其他', '其他／未知']
-                ]);
-                return { pet: pet, max: max, src: src, eligible: eligible };
-            }
-            var m = side('主寵：藍品質', '藍', 'gdr-pet-main'),
-                v = side('副寵：綠品質', '綠', 'gdr-pet-vice'),
-                skillField = el('fieldset', undefined, controls);
-            el('legend', '選滿 3 項戰鬥或 3 項附身技能', skillField);
+            var skillField = el('fieldset', undefined, controls);
+            skillField.style.gridColumn = '1 / -1';
+            el('legend', '選擇 2 或 3 項戰鬥／附身技能', skillField);
             var groups = el('div', undefined, skillField, 'gdr-pet-skill-group'),
                 ss = { f: [], e: [] },
                 key = 'e';
             ['f', 'e'].forEach(function (k) {
-                var col = el('div', undefined, groups),
-                    unique = new Set();
-                pets.forEach(function (p) {
-                    p[k].slice(0, 3).forEach(function (i) {
-                        if (skills[i]) unique.add(i);
-                    });
-                });
-                var opts = [['', '任意']].concat(
-                    Array.from(unique)
-                        .sort(function (a, b) {
-                            return name(a).localeCompare(name(b), 'zh-Hant');
-                        })
-                        .map(function (i) {
-                            return [i, name(i)];
-                        })
-                );
+                var col = el('div', undefined, groups);
                 for (var j = 0; j < 3; j++) {
-                    var s = skillSelect(
-                        col,
-                        (k === 'f' ? '戰鬥' : '附身') + '技能 ' + (j + 1),
-                        opts
-                    );
+                    var opts = [['', '任意']].concat(slotOptions(pets, skills, k, j).map(function (id) {
+                        var label = name(id);
+                        if (j === 1) label = skills[id].d.replace(/^寵物天性[，,]|^與寵物融合後/, '').trim() + '（' + label + '）';
+                        return [id, label];
+                    }));
+                    var s = skillSelect(col, (k === 'f' ? '戰鬥' : '附身') + '技能 ' + (j + 1) + (j === 1 ? '（固定第二格數值）' : ''), opts);
                     ss[k].push(s);
                     s.addEventListener('change', function () {
                         if (this.value) {
@@ -389,7 +346,7 @@
             });
             el(
                 'p',
-                '切換技能類別會清空另一組。技能選擇順序不限；結果依原始技能格位檢查。',
+                '選 2 招即可搜尋，未選的欄位不限。第二招固定為第二格數值加成；其他目標不限定選擇順序。切換類別會清空另一組。',
                 skillField
             );
             button(ui, '搜尋配對', search);
@@ -404,21 +361,16 @@
                 search();
             });
             button(ui, '重設', function () {
-                [m, v].forEach(function (s) {
-                    s.pet.value = '';
-                    s.max.value = '99';
-                    s.src.value = '';
-                });
                 ss.f.concat(ss.e).forEach(function (s) {
                     s.value = '';
                 });
                 found = [];
                 current = 0;
-                message.textContent = '請選擇三項不同的戰鬥或附身技能。';
+                message.textContent = '請選擇同一類別的 2 或 3 項不同技能。';
                 results.replaceChildren();
                 updatePager();
             });
-            message = el('div', '請選擇三項不同的戰鬥或附身技能。', ui, 'gdr-pet-message');
+            message = el('div', '請選擇同一類別的 2 或 3 項不同技能。', ui, 'gdr-pet-message');
             message.setAttribute('role', 'status');
             results = el('div', undefined, ui, 'gdr-pet-results');
             function renderPairs() {
@@ -431,8 +383,9 @@
                     });
                     found.slice(current * limit, (current + 1) * limit).forEach(function (pair) {
                         var tr = el('tr', undefined, t);
-                        petCell(tr, pair.m, 3, key);
-                        petCell(tr, pair.v, 2, key);
+                        var mainCell = petCell(tr, pair.m, 3, pair.key);
+                        el('strong', '主寵符合 ' + pair.matches + '／' + pair.targetCount + ' 項目標技能', mainCell);
+                        petCell(tr, pair.v, 2, pair.key);
                         el(
                             'td',
                             pair.paths
@@ -452,74 +405,48 @@
             }
             pageButtons(renderPairs);
             updatePager();
-            function available(p, side) {
-                var max = Number(side.max.value),
-                    src = side.src.value;
-                return (
-                    (!side.pet.value || p.id === side.pet.value) &&
-                    (!p.l || p.l <= max) &&
-                    (!src ||
-                        (src === '商城收藏冊'
-                            ? p.s === src
-                            : src === '捕捉'
-                              ? /補抓|捕捉/.test(p.g)
-                              : src === '副本'
-                                ? /副本/.test(p.g)
-                                : p.s !== '商城收藏冊' && !/補抓|捕捉|副本/.test(p.g)))
-                );
-            }
             function search() {
-                var wanted = ss[key].map(function (s) {
-                    return s.value;
-                });
+                var targets = ss[key].map(function (s) { return s.value; });
+                var wanted = targets.filter(Boolean), fixedSecond = targets[1];
                 found = [];
                 current = 0;
-                if (
-                    wanted.some(function (s) {
-                        return !s;
-                    }) ||
-                    new Set(wanted).size !== 3
-                ) {
-                    message.textContent = '請選滿同一類別的 3 項不同技能。';
+                if (wanted.length < 2 || new Set(wanted).size !== wanted.length) {
+                    message.textContent = '請選擇同一類別的 2 或 3 項不同技能；其餘保留任意。';
                     renderPairs();
                     return;
                 }
-                if (
-                    [m, v].some(function (s) {
-                        var n = Number(s.max.value);
-                        return !Number.isInteger(n) || n < 1 || n > 999;
-                    })
-                ) {
-                    message.textContent = '等級上限請填 1 至 999 的整數。';
-                    renderPairs();
-                    return;
-                }
-                var mains = m.eligible.filter(function (p) {
-                        return available(p, m) && wanted.indexOf(p[key][2]) !== -1;
-                    }),
-                    vices = v.eligible.filter(function (p) {
-                        return (
-                            available(p, v) &&
-                            p[key].slice(0, 2).every(function (i) {
-                                return wanted.indexOf(i) !== -1;
-                            })
-                        );
-                    });
+                var mains = pets.filter(function (p) {
+                    return p.qs.indexOf('藍') !== -1 && p[key].slice(0, 3).every(function (id) { return skills[id]; });
+                });
+                var vices = pets.filter(function (p) {
+                    return p.qs.indexOf('綠') !== -1 && p[key].slice(0, 2).every(function (id) { return skills[id]; });
+                });
+                // Reuse calculations for pets with identical skill tuples.
+                var cache = new Map();
                 mains.forEach(function (main) {
                     vices.forEach(function (vice) {
-                        var paths = combinations(main[key], vice[key], wanted);
-                        if (paths.length) found.push({ m: main, v: vice, paths: paths });
+                        var mainSkills = main[key].slice(0, 3), viceSkills = vice[key].slice(0, 2);
+                        var all = mainSkills.concat(viceSkills);
+                        if (!wanted.every(function (id) { return all.indexOf(id) !== -1; })) return;
+                        if (fixedSecond && mainSkills[1] !== fixedSecond && viceSkills[1] !== fixedSecond) return;
+                        var signature = mainSkills.concat(viceSkills).join('|');
+                        if (!cache.has(signature)) cache.set(signature, combinations(mainSkills, viceSkills, wanted, fixedSecond));
+                        var paths = cache.get(signature);
+                        if (paths.length) found.push({ m: main, v: vice, paths: paths, matches: mainMatches(mainSkills, wanted), key: key, targetCount: wanted.length });
                     });
+                });
+                found.sort(function (a, b) {
+                    return b.matches - a.matches || a.m.n.localeCompare(b.m.n, 'zh-Hant') || a.m.id.localeCompare(b.m.id) || a.v.n.localeCompare(b.v.n, 'zh-Hant') || a.v.id.localeCompare(b.v.id);
                 });
                 message.textContent =
                     '找到 ' +
                     found.length +
-                    ' 組技能候選配對。依舊站同格繼承模型推算，非 REBORN 實測保證；品質、取得、星等與等級條件仍須在遊戲確認。等級未知者保留顯示。';
+                    ' 組技能候選配對。依舊站同格繼承模型推算，非 REBORN 實測保證；品質、取得、星等與等級條件仍須在遊戲確認。按藍主寵符合目標技能數由多至少排序；未指定的技能格不限。';
                 renderPairs();
             }
         }
         root.querySelector('.gdr-pets-status').textContent =
-            'REBORN 客戶端資料 · 2026-09-30 · ' + pets.length + ' 筆。資料存在不代表目前開放取得。';
+            'REBORN 客戶端資料 · 2026-10-09 · ' + pets.length + ' 筆。資料存在不代表目前開放取得。';
         root.querySelector('.gdr-pets-fallback').hidden = true;
     }
     function run() {

@@ -242,10 +242,10 @@
 	// Find the ResourceLoader module with the Timeago export (we can't rely on the module name since it changes)
 	var timeagoModule = Object.entries(mw.loader.moduleRegistry).find(function(obj)
 	{
-		if (obj[0].startsWith("index-"))
+		if (obj[0].startsWith("Timeago-"))
 		{
 			var m = obj[1];
-			return m.module && m.module.exports && m.module.exports.Timeago;
+			return m.module && m.module.exports && m.module.exports.t;
 		}
 	});
 	
@@ -265,7 +265,7 @@
 	{
 		var exports = require(timeagoModule);
 		
-		var Timeago = exports.Timeago;
+		var Timeago = exports.t;
 		var TimeagoNew = function(e)
 		{
 			var iso = new Date(e.datetime).toISOString();

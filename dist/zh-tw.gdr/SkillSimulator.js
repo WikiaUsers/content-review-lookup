@@ -685,7 +685,7 @@ SkillSim.prototype.addJob = function(pos, jobName, jobSkillData) {
   if (currPossJob != jobName) {
     this.removeJob(currPossJob);
   }
-  this.tables[jobName] = new SkillTable(jobSkillData);
+  this.tables[jobName] = new SkillTable(jobSkillData, pos);
   this.poss[pos] = jobName;
 };
 
@@ -821,14 +821,14 @@ SkillSim.prototype.SetLearnedSkill = function(learnedSkill) {
 }
 
 // SkillTable Constructor Function
-function SkillTable(jobSkillData) {
+function SkillTable(jobSkillData, jobPosition) {
   this.SkillData = jobSkillData;
   this.Skills = [];
   this.maxRow = 0;
   this.maxCol = 0;
   for (var key in this.SkillData) {
     if (this.SkillData.hasOwnProperty(key)) {
-      var skill = new Skill(this.SkillData[key]);
+      var skill = new Skill(this.SkillData[key], jobPosition);
       this.Skills[key] = skill;
 
       if (this.maxRow < skill.Y) {
@@ -846,6 +846,10 @@ SkillTable.prototype.CalPoints = function() {
   var usedP = 0;
   for (var key in this.Skills) {
     if (this.Skills.hasOwnProperty(key)) {
+      // Second advancement book skills keep their levels, but spend no points.
+      if (this.Skills[key].isSkillBook) {
+        continue;
+      }
       var level = this.Skills[key].level;
       for (var i = 0; i < level; i++) {
         var reqLevel = this.Skills[key].getReqLevel(i);
@@ -870,13 +874,16 @@ SkillTable.prototype.getFee = function() {
 };
 
 // Skill Constructor Function
-function Skill(skillData) {
+function Skill(skillData, jobPosition) {
   this.data = skillData;
   this.minLevel = this.data['最小等級'];
   this.maxLevel = this.data['最大等級'];
   this.level = this.minLevel;
   this.X = this.data['位置']['X'];
   this.Y = this.data['位置']['Y'];
+  // Only the two rightmost book slots in the second advancement are free.
+  this.isSkillBook = Number(jobPosition) === 2 && Number(this.X) === 7 &&
+    (Number(this.Y) === 1 || Number(this.Y) === 2);
 }
 
 Skill.prototype.GetCurrCds = function() {
@@ -918,7 +925,8 @@ Skill.prototype.getNextInfo = function() {
     if (this.level < this.maxLevel && this.level > 0) {
       idx = this.level;
     } else if (this.level <= 0 || this.level < this.minLevel) {
-      idx = this.minLevel + 1;
+      // Description arrays are zero-indexed: an unlearned skill previews level 1.
+      idx = Math.max(0, this.minLevel);
     }
     if (length <= idx) {
       idx = length - 1;
