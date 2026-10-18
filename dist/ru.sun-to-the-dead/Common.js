@@ -1,7 +1,32 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-window.AddRailModule = [
-    'Template:NewPagesModule'
-];
+
+window.UTCClockConfig = {
+    offset: 420,
+    format: '%2H:%2M:%2S %d %b %Y (UTC+7)',
+    hoverText: 'Обновить страницу'
+};
+
+(function () {
+    function place() {
+        var clock = document.getElementById('UTCClock');
+        var counter = document.querySelector('.fandom-community-header .page-counter');
+        if (!clock || !counter) return false;
+        var stack = counter.parentNode.querySelector(':scope > .sttd-counter-stack');
+        if (!stack) {
+            stack = document.createElement('div');
+            stack.className = 'sttd-counter-stack';
+            counter.parentNode.insertBefore(stack, counter);
+            stack.appendChild(counter);
+        }
+        if (clock.parentNode !== stack) stack.appendChild(clock);
+        return true;
+    }
+    var tries = 0;
+    var timer = setInterval(function () {
+        if (place() || ++tries > 50) clearInterval(timer);
+    }, 200);
+})();
+
 (function () {
     var parts = [
         'Избранные_статьи',
@@ -35,3 +60,27 @@ window.AddRailModule = [
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
     else run();
 })();
+
+/* Новые статьи в правой колонке */
+window.AddRailModule = [
+    'Template:NavRail',
+    'Template:RailModuleNewPages'
+];
+
+mw.hook('AddRailModule.module').add(function () {
+    function place() {
+        var rail = document.querySelector('.right-rail-wrapper, .page__right-rail');
+        if (!rail) return;
+        var photos = rail.querySelector(
+            '[class*="recent-images"], [class*="RecentImages"], .LatestPhotosModule, .rail-recentImages-module, #ph-recentImages-container'
+        );
+        var nav = rail.querySelector('[data-add-rail-module-page="Template:NavRail"]');
+        var articles = rail.querySelector('[data-add-rail-module-page="Template:RailModuleNewPages"]');
+        if (!photos) return;
+        if (nav) photos.insertAdjacentElement('afterend', nav);
+        if (articles) (nav || photos).insertAdjacentElement('afterend', articles);
+    }
+    place();
+    setTimeout(place, 400);
+    setTimeout(place, 1200);
+});

@@ -1,26 +1,71 @@
-mw.hook('wikipage.content').add($c => $c.find('.crafting-table:not(.crafting-ready)').addClass('crafting-ready').each((_, t) => {
-	const y = $(t).find('.crafting-result').data('amount'), l = +t.dataset.limit || 99;
-	if (2 * y > l) return;
-	const format = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-	const short = n => n >= 1e6 ? +(n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? +(n / 1e3).toFixed(1) + 'K' : String(n);
-	const $result = $(t).find('.crafting-result .card-text-sup');
-	const materials = $(t).find('.crafting-material').map((_, e) => ({
-		amount: +e.dataset.amount,
-		stack: +e.dataset.stack || Infinity,
-		prefix: e.dataset.stack ? short(+e.dataset.stack) + '/' : '',
-		$count: $(e).find('.crafting-count')
-	})).get();
-	const disable = (b, d) => b.prop('disabled', d).toggleClass('bfw-button-blue', !d).toggleClass('bfw-button-grey', d);
-	let q = 1;
-	const [minus, plus] = ['-', '+'].map((s, i) => $(`<button type="button" aria-label="${i ? 'In' : 'De'}crease quantity">${s}</button>`).on('click', () => {
-		q += i ? 1 : -1;
-		for (const m of materials) {
-			const n = m.amount * q;
-			m.$count.text(m.prefix + format(n)).toggleClass('crafting-over', n > m.stack).toggleClass('crafting-short', n > m.stack + 6);
-		}
-		$result.text(y * q + 'x');
-		disable(minus, q < 2);
-		disable(plus, (q + 1) * y > l);
-	}));
-	$(t).find('.crafting-controls').append(disable(minus, true), disable(plus, false));
-}));
+mw.hook('wikipage.content').add(($content) => {
+    const formatShort = (number) => {
+        if (number >= 1e6) return +(number / 1e6).toFixed(1) + 'M';
+        if (number >= 1e3) return +(number / 1e3).toFixed(1) + 'K';
+        return String(number);
+    };
+
+    const setDisabled = ($button, disabled) => {
+        $button
+            .prop('disabled', disabled)
+            .toggleClass('bfw-button-blue', !disabled)
+            .toggleClass('bfw-button-grey', disabled);
+    };
+
+    $content
+        .find('.crafting-table:not(.crafting-ready)')
+        .addClass('crafting-ready')
+        .each((_, table) => {
+            const $table = $(table);
+            const resultAmount = +$table.find('.crafting-result').data('amount');
+            const limit = +table.dataset.limit || 99;
+
+            const materials = $table.find('.crafting-material').get().map((element) => {
+                const stack = +element.dataset.stack;
+
+                return {
+                    amount: +element.dataset.amount,
+                    stack: stack || Infinity,
+                    prefix: stack ? formatShort(stack) + '/' : '',
+                    $count: $(element).find('.crafting-count')
+                };
+            });
+
+            const updateCounts = (quantity) => {
+                for (const { amount, stack, prefix, $count } of materials) {
+                    const total = amount * quantity;
+
+                    $count
+                        .text(prefix + formatShort(total))
+                        .toggleClass('crafting-over', total > stack)
+                        .toggleClass('crafting-short', total > stack + 6);
+                }
+            };
+
+            updateCounts(1);
+
+            if (2 * resultAmount > limit) {
+                return;
+            }
+
+            const $result = $table.find('.crafting-result .card-text-sup');
+            const $minus = $('<button type="button" aria-label="Decrease quantity">-</button>');
+            const $plus = $('<button type="button" aria-label="Increase quantity">+</button>');
+            let quantity = 1;
+
+            const setQuantity = (value) => {
+                quantity = value;
+                updateCounts(quantity);
+                $result.text(`${resultAmount * quantity}x`);
+                setDisabled($minus, quantity < 2);
+                setDisabled($plus, (quantity + 1) * resultAmount > limit);
+            };
+
+            $minus.on('click', () => setQuantity(quantity - 1));
+            $plus.on('click', () => setQuantity(quantity + 1));
+
+            $table.find('.crafting-controls').append($minus, $plus);
+            setDisabled($minus, true);
+            setDisabled($plus, false);
+        });
+});

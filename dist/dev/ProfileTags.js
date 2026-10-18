@@ -237,25 +237,6 @@
                 setTimeout(__init, 500);
             }
         };
-        // Fix for when the user clicks on the "Edit Profile" button
-        // Only needed on Fandom Wikis from what I know
-        if (!IS_GAMEPEDIA) {
-	        var observerCallback = function (mutationsList) {
-	        	if (mutationsList.some((mutation) => {
-	        		return mutation.type === 'childList' 
-				    	&& mutation.addedNodes 
-				    	&& mutation.addedNodes.values().some(elem => elem.classList
-				    													 .contains('user-identity-box__wrapper'));
-	        	})) {
-				   __init();
-				}
-			};
-	        const observer = new MutationObserver(observerCallback);
-	
-			observer.observe(document.querySelector('#userProfileApp'), {
-				childList: true
-			});
-        }
         __init();
     }
 

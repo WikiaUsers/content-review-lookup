@@ -16,4 +16,10 @@ window.MessageBlock = {
 	title : 'Blocked',
 	message : 'You have been given a block by the wiki administration for the duration of $2, due to the reason given by staff.\n\nYou block reason is given as $1.\n\nPlease read the wiki rules to avoid any sort of blocks in the future. If you believe that this block was unjustified, please respond to this message with an appeal message, and it will be reviewed accordingly.',
 	autocheck : true
-};
+}; //Automatically locks comments over 60 days old
+
+window.lockOldComments =
+(window.lockOldComments || {});
+window.lockOldComments.limit = 60;
+window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.namespaceNumbers = [0];

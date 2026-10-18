@@ -17,7 +17,7 @@
         return;
     }
     window.dev.wds = {};
-    
+
     /**
      * Numeric size map for iconsets.
      * @type        {Object.<Number>}
@@ -97,34 +97,36 @@
      */
     function init() {
         // Caching logic.
-        var c = JSON.parse(localStorage.wdsIconsCache || '{}'),
-            t = new Date().getTime(),
+		var c;
+		try {
+			c = JSON.parse(localStorage.wdsIconsCache || '{}');
+		} catch (e) {
+			c = {};
+		}
+        var t = new Date().getTime(),
             a = Number(c.age || +t-21600000),
             s = (Object.keys(c).length === 0 || typeof c.data === 'undefined'),
             $spriteLoaded = $.Deferred();
         // Post-loading sprite logic.
         $spriteLoaded.done(function(d) {
             // Initialize icon system.
-            var $sprite = $(d.rootElement)
-                .removeAttr('style')
-                .attr({
-                    'id': 'dev-wds-sprite',
-                    'style': 'position: absolute; height: 0px; width: 0px; overflow: hidden;',
-                });
+            var $sprite = $(d.rootElement).attr('id', 'dev-wds-sprite');
             // Restriction to valid assets.
-            $sprite.children('symbol#wds-player-icon-play').remove();
-            // Remove clipping paths for some icons that were being cut off.
-            $sprite.find('symbol g[clip-path="url(#clip0)"]').attr('clip-path', null);
-            // Populate registry.
-            $.each(prefix, function(t, p) {
-                registry[t] = [].slice.call($sprite.children())
-                    .map(function(e) {
-                        return e.id;
-                    }).filter(function(i) {
-                        var r = new RegExp('^' + p);
-                        return r.test(i);
-                    });
-            });
+			$sprite.find('symbol#wds-player-icon-play').remove();
+
+			// Populate registry.
+			var symbols = $sprite.find('symbol').toArray();
+
+			$.each(symbols, function(_, e) {
+				var id = e.id;
+
+				$.each(prefix, function(t, p) {
+					if (id.indexOf(p) === 0) {
+						registry[t].push(id);
+					}
+				});
+			});
+
             iconset = registry.icon;
             // Sprite embedding.
             $sprite.prependTo(document.body);
@@ -278,7 +280,7 @@
         return asset(i, $.extend({}, {
                 'data-id': i,
                 'viewBox': [0, 0, s, s].join(' '),
-                'class': 'wds-icon wds-is-stroke-icon' + (!c.length ? '' : ' ' + c)
+				'class': 'wds-icon' + (!c.length ? '' : ' ' + c)
             }, o));
     }
 
@@ -289,10 +291,9 @@
      * @returns      {jQuery.<Node>}
      */
     function render(s) {
-        $.each(prefix, function(t, p) {
-            $(s).find('[id^="dev-' + p + '"]').each(function() {
-                var r = new RegExp('^dev-' + p + '([\\s\\S]+)$'),
-                    n = this.id.match(r)[1];
+		$.each(prefix, function(t, p) {
+			$(s).find('[id^="dev-' + p + '"]').each(function() {
+				var n = this.id.slice(('dev-' + p).length);
                 // Remove developer class and identifier.
                 if (t === 'icon') {
                     this.classList.remove('dev-wds-icon');

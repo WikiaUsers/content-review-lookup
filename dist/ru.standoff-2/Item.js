@@ -1,47 +1,87 @@
 ( function () {
     'use strict';
 
-    function updateCountdown( el ) {
-        var day = parseInt( el.getAttribute( 'data-release-day' ), 10 );
-        var month = parseInt( el.getAttribute( 'data-release-month' ), 10 );
-        var year = parseInt( el.getAttribute( 'data-release-year' ), 10 );
-        var offset = parseInt( el.getAttribute( 'data-release-offset' ), 10 ) || 0;
-        var raw = el.getAttribute( 'data-release-raw' );
+    function setUnit( el, unit, value ) {
+        var nodes = el.querySelectorAll( '.item-release-' + unit );
+        for ( var i = 0; i < nodes.length; i++ ) {
+            nodes[ i ].textContent = value;
+        }
+    }
 
-        if ( !day || !month || !year ) {
+    function update( el ) {
+        var target = parseInt( el.getAttribute( 'data-release' ), 10 );
+        if ( !target ) {
             return;
         }
 
-        var target = Date.UTC( year, month - 1, day, 0, 0, 0 ) + offset * 1000;
-        var diff = target - Date.now();
+        var diff = target - Math.floor( Date.now() / 1000 );
+        var cl = el.classList;
 
-        if ( diff > 0 ) {
-            var totalSeconds = Math.floor( diff / 1000 );
-            var days = Math.floor( totalSeconds / 86400 );
-            var hours = Math.floor( ( totalSeconds % 86400 ) / 3600 );
+        if ( diff <= 0 ) {
+            cl.remove( 'upcoming', 'upcoming-days', 'upcoming-hours' );
+            return;
+        }
 
-            el.classList.add( 'upcoming' );
-            if ( days > 0 ) {
-                el.textContent = 'До выхода на рынок: ' + days + ' д. ' + hours + ' ч.';
-            } else {
-                el.textContent = 'До выхода на рынок: ' + hours + ' ч.';
+        var days = Math.floor( diff / 86400 );
+
+        setUnit( el, 'd', days );
+        setUnit( el, 'h', Math.floor( ( diff % 86400 ) / 3600 ) );
+        cl.add( 'upcoming' );
+        cl.toggle( 'upcoming-days', days > 0 );
+        cl.toggle( 'upcoming-hours', days === 0 );
+    }
+
+    function updateAll() {
+        var elements = document.querySelectorAll( '.item-release-date[data-release]' );
+        for ( var i = 0; i < elements.length; i++ ) {
+            update( elements[ i ] );
+        }
+    }
+
+    function fallbackCopy( text ) {
+        var area = document.createElement( 'textarea' );
+        area.value = text;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild( area );
+        area.select();
+        try {
+            document.execCommand( 'copy' );
+        } catch ( e ) {}
+        document.body.removeChild( area );
+    }
+
+    function copyText( text ) {
+        if ( navigator.clipboard && navigator.clipboard.writeText ) {
+            navigator.clipboard.writeText( text ).then( null, function () {
+                fallbackCopy( text );
+            } );
+        } else {
+            fallbackCopy( text );
+        }
+    }
+
+    document.addEventListener( 'click', function ( e ) {
+        var target = e.target.closest && e.target.closest( '.item-copy, .item-image a' );
+        if ( !target ) {
+            return;
+        }
+
+        if ( target.classList.contains( 'item-copy' ) ) {
+            var box = target.closest( '.item-box' );
+            var name = box && box.querySelector( '.item-name' );
+            if ( name ) {
+                copyText( name.getAttribute( 'title' ) || name.textContent );
             }
         } else {
-            el.classList.remove( 'upcoming' );
-            el.textContent = 'Дата выхода на рынок: ' + raw;
+            e.preventDefault();
+            window.open( target.href, '_blank', 'noopener' );
         }
-    }
-
-    function updateAllCountdowns() {
-        var elements = document.querySelectorAll( '.item-release-date[data-release-day]' );
-        for ( var i = 0; i < elements.length; i++ ) {
-            updateCountdown( elements[ i ] );
-        }
-    }
+    } );
 
     function init() {
-        updateAllCountdowns();
-        setInterval( updateAllCountdowns, 60 * 1000 );
+        updateAll();
+        setInterval( updateAll, 60 * 1000 );
     }
 
     if ( document.readyState === 'loading' ) {
@@ -51,6 +91,6 @@
     }
 
     if ( window.mw && mw.hook ) {
-        mw.hook( 'wikipage.content' ).add( updateAllCountdowns );
+        mw.hook( 'wikipage.content' ).add( updateAll );
     }
 }() );

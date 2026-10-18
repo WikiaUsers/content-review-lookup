@@ -706,3 +706,5 @@ $(function () {
     }
   });
 });
+
+/* [[Category:Interface resources]] */

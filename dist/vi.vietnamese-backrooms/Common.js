@@ -1,205 +1,152 @@
 // [[Category:Internal]]
 
-// ===== Page Rating System (v2) =====
-(function () {
-    'use strict';
-
-    const VERSION = 'pagerating-v2';
-    console.log(`[${VERSION}] Script loaded. ns=${mw.config.get('wgNamespaceNumber')}, groups=`, mw.config.get('wgUserGroups'));
-
-    if (mw.config.get('wgNamespaceNumber') !== 0) {
-        console.log(`[${VERSION}] Bỏ qua: không phải mainspace.`);
-        return;
-    }
-    if (!mw.config.get('wgUserGroups', []).includes('autoconfirmed')) {
-        console.log(`[${VERSION}] Bỏ qua: user chưa autoconfirmed.`);
-        return;
-    }
-
-    const GLOBAL_PAGE = 'Wiki_Vietnamese_Backrooms:Ratings.json';
-    const rawUrl = title => mw.util.getUrl(title, { action: 'raw' });
-
-    mw.hook('wikipage.content').add(function () {
-        console.log(`[${VERSION}] wikipage.content fired.`);
-
-        const $meta = $('.page-header__meta');
-        console.log(`[${VERSION}] .page-header__meta tìm thấy:`, $meta.length);
-        if (!$meta.length) return;
-
-        const api = new mw.Api();
-        const page = mw.config.get('wgPageName');
-        const localPage = `User:${mw.config.get('wgUserName')}/ratings.json`;
-
-        const sort = obj => Object.keys(obj)
-            .sort((a, b) => obj[b] - obj[a])
-            .reduce((acc, k) => (acc[k] = obj[k], acc), {});
-
-        let up = [], down = [], globalUp = {}, globalDown = {};
-
-        function loadJson(title, fallback) {
-            return fetch(rawUrl(title))
-                .then(r => {
-                    console.log(`[${VERSION}] GET ${title} → HTTP ${r.status}`);
-                    return r.ok ? r.json() : fallback;
-                })
-                .catch(e => {
-                    console.error(`[${VERSION}] Lỗi đọc ${title}:`, e);
-                    return fallback;
-                });
-        }
-
-        Promise.all([
-            loadJson(localPage, { up: [], down: [] }),
-            loadJson(GLOBAL_PAGE, { globalUp: {}, globalDown: {} })
-        ]).then(([local, global]) => {
-            up = local.up || [];
-            down = local.down || [];
-            globalUp = global.globalUp || {};
-            globalDown = global.globalDown || {};
-            render();
-        });
-
-        function render() {
-		    $meta.find('.page-rating').remove();
-		    $meta.append(`<div class="page-rating">Rating:
-		        <span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[page] || 0}</span>
-		        <span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[page] || 0}</span>
-		        <span class="rating-cancel" title="Hủy vote">⛌</span>
-		    </div>`);
-		    console.log(`[${VERSION}] Đã render widget rating.`);
-		
-		    $meta.find('.rating-up, .rating-down').on('click', onVote);
-		    $meta.find('.rating-cancel').on('click', onCancel);
-		}
-		function onCancel() {
-		    const $box = $meta.find('.page-rating');
-		    if ($box.hasClass('busy')) return;
-		
-		    const isUp = up.includes(page);
-		    const isDown = down.includes(page);
-		    if (!isUp && !isDown) return; // chưa vote thì không có gì để hủy
-		
-		    $box.addClass('busy');
-		    setTimeout(() => $box.removeClass('busy'), 1500);
-		
-		    const dec = obj => (obj[page] && obj[page] > 1) ? obj[page]-- : delete obj[page];
-		    let vote = '';
-		
-		    if (isUp) {
-		        up.splice(up.indexOf(page), 1);
-		        $meta.find('.rating-up').removeClass('voted')[0].textContent--;
-		        dec(globalUp);
-		        vote = 'revoked upvote from';
-		    } else {
-		        down.splice(down.indexOf(page), 1);
-		        $meta.find('.rating-down').removeClass('voted')[0].textContent--;
-		        dec(globalDown);
-		        vote = 'revoked downvote from';
-		    }
-		
-		    console.log(`[${VERSION}] Vote: ${vote} "${page}"`);
-		
-		    Promise.all([
-		        api.postWithEditToken({
-		            action: 'edit', format: 'json',
-		            title: localPage,
-		            text: JSON.stringify({ up, down }, null, '\t'),
-		            summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" locally`,
-		            tags: 'page-rating'
-		        }),
-		        api.postWithEditToken({
-		            action: 'edit', format: 'json',
-		            title: GLOBAL_PAGE,
-		            text: JSON.stringify({ globalUp: sort(globalUp), globalDown: sort(globalDown) }, null, '\t'),
-		            summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" globally`,
-		            tags: 'page-rating'
-		        })
-		    ])
-		    .then(() => console.log(`[${VERSION}] Lưu thành công.`))
-		    .catch(e => console.error(`[${VERSION}] Lỗi khi lưu:`, e));
-		}
-        function onVote() {
-            const el = this;
-            const $el = $(el);
-            const votedUp = el.className.includes('up');
-            const $box = $meta.find('.page-rating');
-
-            if ($box.hasClass('busy')) return;
-            $box.addClass('busy');
-            setTimeout(() => $box.removeClass('busy'), 1500);
-
-            const lastVoted = dir => $meta.find('.rating-' + dir).hasClass('voted');
-            const inc = obj => obj[page] ? obj[page]++ : obj[page] = 1;
-            const dec = obj => (obj[page] && obj[page] > 1) ? obj[page]-- : delete obj[page];
-            let vote = '';
-
-            switch (true) {
-                case votedUp && lastVoted('down'):
-                    $meta.find('.rating-down').removeClass('voted')[0].textContent--;
-                    el.textContent++;
-                    down.splice(down.indexOf(page), 1);
-                    up.push(page);
-                    vote = 'upvoted';
-                    dec(globalDown); inc(globalUp);
-                    break;
-                case !votedUp && lastVoted('up'):
-                    $meta.find('.rating-up').removeClass('voted')[0].textContent--;
-                    el.textContent++;
-                    up.splice(up.indexOf(page), 1);
-                    down.push(page);
-                    vote = 'downvoted';
-                    dec(globalUp); inc(globalDown);
-                    break;
-                case votedUp && lastVoted('up'):
-                    el.textContent--;
-                    up.splice(up.indexOf(page), 1);
-                    vote = 'revoked upvote from';
-                    dec(globalUp);
-                    break;
-                case !votedUp && lastVoted('down'):
-                    el.textContent--;
-                    down.splice(down.indexOf(page), 1);
-                    vote = 'revoked downvote from';
-                    dec(globalDown);
-                    break;
-                default:
-                    el.textContent++;
-                    if (votedUp) { up.push(page); vote = 'upvoted'; inc(globalUp); }
-                    else { down.push(page); vote = 'downvoted'; inc(globalDown); }
-            }
-
-            $el.toggleClass('voted');
-            console.log(`[${VERSION}] Vote: ${vote} "${page}"`);
-
-            Promise.all([
-                api.postWithEditToken({
-                    action: 'edit', format: 'json',
-                    title: localPage,
-                    text: JSON.stringify({ up, down }, null, '\t'),
-                    summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" locally`,
-                    tags: 'page-rating'
-                }),
-                api.postWithEditToken({
-                    action: 'edit', format: 'json',
-                    title: GLOBAL_PAGE,
-                    text: JSON.stringify({ globalUp: sort(globalUp), globalDown: sort(globalDown) }, null, '\t'),
-                    summary: `PageRating: ${vote} "[[${page.replace(/_/g, ' ')}]]" globally`,
-                    tags: 'page-rating'
-                })
-            ])
-            .then(() => console.log(`[${VERSION}] Lưu thành công.`))
-            .catch(e => console.error(`[${VERSION}] Lỗi khi lưu:`, e));
-        }
-    });
-})();
-
-// Template dependencies
-mw.hook("wikipage.content").add(function() {
-	$('span.import-css').each(function () {
-	    mw.util.addCSS($(this).attr('data-css'));
-	});
+// ===== Page Rating System (from fandom backrooms) =====
+mw.hook('wikipage.content').add(function() {
+	const api = new mw.Api();
+	const page = mw.config.get('wgTitle');
+	const localRatingsPage = `User:${mw.config.get('wgUserName')}/ratings.json`;
+	const lastVoted = x => $('.rating-'+ x).hasClass('voted');
+	const inc = x => x[' ' + page] ? x[' ' + page]++ : x[' ' + page] = 1;
+	const dec = x => x[' ' + page] && x[' ' + page] > 1 ? x[' ' + page]-- : delete x[' ' + page];
+	const sort = x => Object.fromEntries(Object.entries(x).sort((a, b) => b[1] - a[1]));
+	var up = [];
+	var down = [];
+	var deleted = '';
+	var globalUp, globalDown, deletedInLocal, deletedInGlobal, vote;
 	
-		// [[T:CSS]]
+	Promise.all([
+		fetch(`vi/wiki/${localRatingsPage}?action=raw`).then(response => response.ok && response.json()),
+		fetch('vi/wiki/Wiki_Vietnamese_Backrooms:Ratings.json?action=raw').then(response => response.json())
+	]).then(ratings => {
+		if (ratings) {
+			up = ratings[0].up;
+			down = ratings[0].down;
+			globalUp = ratings[1].globalUp;
+			globalDown = ratings[1].globalDown;
+		}
+	})
+	.then(() => {
+		// Công cụ chuyển đổi tạm thời sang định dạng mục mới cho các tệp ratings.json cũ.
+		up = up.map(entry => entry.replace(/_/g, ' '));
+		down = down.map(entry => entry.replace(/_/g, ' '));
+		globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+		globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+		// ----
+		$('.page-header__meta').append(`<div class="page-rating">Rating:
+			<span class="rating-up${up.includes(page) ? ' voted' : ''}">${+globalUp[' ' + page] || 0}</span>
+			<span class="rating-down${down.includes(page) ? ' voted' : ''}">${+globalDown[' ' + page] || 0}</span>
+		</div>`);
+		
+		$('[class*="rating-"]').click(function() {
+			const votedUp = this.className.includes('up');
+			if ($('.page-rating').hasClass('busy')) return;
+			$('.page-rating').addClass('busy');
+			setTimeout(() => $('.page-rating').removeClass('busy'), 1500);
+			
+			fetch('vi/wiki/Wiki_Vietnamese_Backrooms:Ratings.json?action=raw')
+				.then(response => response.json())
+				.then(ratings => {
+					if (ratings) {
+						globalUp = ratings.globalUp;
+						globalDown = ratings.globalDown;
+					}
+					
+					// Công cụ chuyển đổi tạm thời sang định dạng mục mới cho các tệp ratings.json cũ.
+					globalUp = Object.fromEntries(Object.entries(globalUp).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+					globalDown = Object.fromEntries(Object.entries(globalDown).map(([key, value]) => [' ' + key.replace(/_/g, ' ').trim(), value]));
+					// ----
+					return Promise.all([...Object.keys(globalUp), ...Object.keys(globalDown)].join('|').match(/([^|]*\|){1,50}/g)
+						.map(chunk => fetch(`/api.php?action=query&titles=${chunk.slice(0, -1)}&format=json`)
+						.then(response => response.json())
+						.then(json => Object.entries(json.query.pages).flat().filter(entry => entry.missing == '').map(entry => entry.title))));
+				})
+				.then(titles => {
+					if (titles.flat().length) {
+						deleted = 'and removed ratings for deleted pages ';
+						titles.flat().forEach(title => {
+							if (up.includes(title) || down.includes(title)) deletedInLocal = true;
+							if (globalUp[' ' + title] || globalDown[' ' + title]) deletedInGlobal = true;
+							up = up.filter(entry => entry != title);
+							down = down.filter(entry => entry != title);
+							delete globalUp[' ' + title];
+							delete globalDown[' ' + title];
+							deleted += `“[[${title}]]”, `;
+						});
+						deleted = deleted.slice(0, -2);
+					}
+					
+					switch (true) {
+						case votedUp && lastVoted('down'):
+							$('.rating-down').removeClass('voted');
+							$('.rating-down')[0].textContent--;
+							this.textContent++;
+							down.splice(down.indexOf(page), 1);
+							up.push(page);
+							vote = 'upvoted';
+							dec(globalDown);
+							inc(globalUp);
+							break;
+						case !votedUp && lastVoted('up'):
+							$('.rating-up').removeClass('voted');
+							$('.rating-up')[0].textContent--;
+							this.textContent++;
+							up.splice(up.indexOf(page), 1);
+							down.push(page);
+							vote = 'downvoted';
+							dec(globalUp);
+							inc(globalDown);
+							break;
+						case votedUp && lastVoted('up'):
+							this.textContent--;
+							up.splice(up.indexOf(page), 1);
+							vote = 'revoked upvote from';
+							dec(globalUp);
+							break;
+						case !votedUp && lastVoted('down'):
+							this.textContent--;
+							down.splice(down.indexOf(page), 1);
+							vote = 'revoked downvote from';
+							dec(globalDown);
+							break;
+						default:
+							this.textContent++;
+							if (votedUp) {
+								up.push(page);
+								vote = 'upvoted';
+								inc(globalUp);
+							} else {
+								down.push(page);
+								vote = 'downvoted';
+								inc(globalDown);
+							} break;
+					}
+					
+					$(this).toggleClass('voted');
+					api.postWithEditToken({
+						action: 'edit',
+						format: 'json',
+						title: localRatingsPage,
+						text: JSON.stringify({up, down}, null, '\t'),
+						summary: `PageRating: ${vote} “[[${page}]]” ${deletedInLocal ? deleted : ''} locally`,
+						tags: 'page-rating'
+					});
+					api.postWithEditToken({
+						action: 'edit',
+						format: 'json',
+						title: 'Wiki_Vietnamese_Backrooms:Ratings.json',
+						text: JSON.stringify({globalUp: sort(globalUp), globalDown: sort(globalDown)}, null, '\t'),
+						summary: `PageRating: ${vote} “[[${page}]]” ${deletedInGlobal ? deleted : ''} globally\u200b`,
+						tags: 'page-rating',
+						watchlist: 'unwatch'
+					});
+				});
+			});
+		});
+});
+
+mw.hook('wikipage.content').add(function() {
+	
+	// [[T:CSS]]
 	$('div.t-css').each(function() {
 		const css = mw.util.addCSS(this.dataset.css);
 		$(css.ownerNode).addClass('t-css');

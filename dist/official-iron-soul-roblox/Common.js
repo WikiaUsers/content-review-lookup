@@ -1,3 +1,4 @@
+
 // Please tell us the line if theres any problem thank you!
 
 /* Load Playfair Display font */
@@ -792,7 +793,7 @@
     );
 
 
-    /* =====================================================
+/* =====================================================
        CREATE ONE SINGLE MODAL
        ===================================================== */
 
@@ -901,13 +902,64 @@
 
         '</div>' +
 
+
+        /* NEW: OTHER */
+
+        '<div class="isd-single-item-section isd-single-other-section">' +
+
+          '<div class="isd-single-item-label">' +
+            'Other' +
+          '</div>' +
+
+          '<div class="isd-single-item-value isd-single-other"></div>' +
+
+        '</div>' +
+
+
+        /* NEW: TRADEABLE */
+
+        '<div class="isd-single-item-section isd-single-tradeable-section">' +
+
+          '<div class="isd-single-item-label">' +
+            'Tradeable' +
+          '</div>' +
+
+          '<div class="isd-single-item-value isd-single-tradeable"></div>' +
+
+        '</div>' +
+
+
+        /* NEW: HELL */
+
+        '<div class="isd-single-item-section isd-single-hell-section">' +
+
+          '<div class="isd-single-item-label">' +
+            'Hell' +
+          '</div>' +
+
+          '<div class="isd-single-item-value isd-single-hell"></div>' +
+
+        '</div>' +
+
+
+        /* NEW: STATUS */
+
+        '<div class="isd-single-item-section isd-single-status-section">' +
+
+          '<div class="isd-single-item-label">' +
+            'Status' +
+          '</div>' +
+
+          '<div class="isd-single-item-value isd-single-status"></div>' +
+
+        '</div>' +
+
       '</div>';
 
 
     document.body.appendChild(
       overlay
     );
-
 
     /* =====================================================
        RARITY COLORS
@@ -1305,6 +1357,62 @@
           '';
 
       }
+
+
+      /* NEW FIELDS: OTHER / TRADEABLE / HELL / STATUS */
+
+      var extraFields = [
+        {
+          key: 'other',
+          section: '.isd-single-other-section',
+          value: '.isd-single-other'
+        },
+        {
+          key: 'tradeable',
+          section: '.isd-single-tradeable-section',
+          value: '.isd-single-tradeable'
+        },
+        {
+          key: 'hell',
+          section: '.isd-single-hell-section',
+          value: '.isd-single-hell'
+        },
+        {
+          key: 'status',
+          section: '.isd-single-status-section',
+          value: '.isd-single-status'
+        }
+      ];
+
+      extraFields.forEach(function (field) {
+
+        var section =
+          overlay.querySelector(field.section);
+
+        var value =
+          overlay.querySelector(field.value);
+
+        var text =
+          data[field.key];
+
+        if (
+          text &&
+          String(text).trim() !== ''
+        ) {
+
+          section.style.display = '';
+
+          value.textContent = text;
+
+        } else {
+
+          section.style.display = 'none';
+
+          value.textContent = '';
+
+        }
+
+      });
 
 
       /* OPEN */
@@ -1923,6 +2031,58 @@
 
         '<div class="isd-item-tooltip-value isd-tt-robux"></div>' +
 
+      '</div>' +
+
+
+      /* NEW: OTHER */
+
+      '<div class="isd-item-tooltip-section isd-tt-other-section">' +
+
+        '<div class="isd-item-tooltip-label">' +
+          'Other' +
+        '</div>' +
+
+        '<div class="isd-item-tooltip-value isd-tt-other"></div>' +
+
+      '</div>' +
+
+
+      /* NEW: TRADEABLE */
+
+      '<div class="isd-item-tooltip-section isd-tt-tradeable-section">' +
+
+        '<div class="isd-item-tooltip-label">' +
+          'Tradeable' +
+        '</div>' +
+
+        '<div class="isd-item-tooltip-value isd-tt-tradeable"></div>' +
+
+      '</div>' +
+
+
+      /* NEW: HELL */
+
+      '<div class="isd-item-tooltip-section isd-tt-hell-section">' +
+
+        '<div class="isd-item-tooltip-label">' +
+          'Hell' +
+        '</div>' +
+
+        '<div class="isd-item-tooltip-value isd-tt-hell"></div>' +
+
+      '</div>' +
+
+
+      /* NEW: STATUS */
+
+      '<div class="isd-item-tooltip-section isd-tt-status-section">' +
+
+        '<div class="isd-item-tooltip-label">' +
+          'Status' +
+        '</div>' +
+
+        '<div class="isd-item-tooltip-value isd-tt-status"></div>' +
+
       '</div>';
 
 
@@ -2189,6 +2349,62 @@
           '';
 
       }
+
+
+      /* NEW FIELDS: OTHER / TRADEABLE / HELL / STATUS */
+
+      var extraFields = [
+        {
+          key: 'other',
+          section: '.isd-tt-other-section',
+          value: '.isd-tt-other'
+        },
+        {
+          key: 'tradeable',
+          section: '.isd-tt-tradeable-section',
+          value: '.isd-tt-tradeable'
+        },
+        {
+          key: 'hell',
+          section: '.isd-tt-hell-section',
+          value: '.isd-tt-hell'
+        },
+        {
+          key: 'status',
+          section: '.isd-tt-status-section',
+          value: '.isd-tt-status'
+        }
+      ];
+
+      extraFields.forEach(function (field) {
+
+        var section =
+          tooltip.querySelector(field.section);
+
+        var value =
+          tooltip.querySelector(field.value);
+
+        var text =
+          d[field.key];
+
+        if (
+          text &&
+          String(text).trim() !== ''
+        ) {
+
+          section.style.display = '';
+
+          value.textContent = text;
+
+        } else {
+
+          section.style.display = 'none';
+
+          value.textContent = '';
+
+        }
+
+      });
 
 
       /* =========================
@@ -3368,5 +3584,49 @@ $(function () {
 
 
 /* =========================
-   PLEASE DISREGARD PREVIOUS SENT FOR REVIEW. THIS WOULD BE OUR TEMPORARY FINAL JS
+   Final Js is up to this line. lines below is still under trial by Renzei
    ========================= */
+/* IRON SOUL EVENTS — VIEWER LOCAL TIME */
+(function () {
+    "use strict";
+
+    function updateEventTimes() {
+        var elements = document.querySelectorAll(
+            ".isd-event-dates [data-event-time]"
+        );
+
+        elements.forEach(function (element) {
+            var timestamp = element.getAttribute("data-event-time");
+
+            if (!timestamp) return;
+
+            var date = new Date(timestamp);
+
+            if (isNaN(date.getTime())) {
+                element.textContent = "Date unavailable";
+                return;
+            }
+
+            element.textContent = new Intl.DateTimeFormat(
+                undefined,
+                {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    timeZoneName: "short"
+                }
+            ).format(date);
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            updateEventTimes
+        );
+    } else {
+        updateEventTimes();
+    }
+})();

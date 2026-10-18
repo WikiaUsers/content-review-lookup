@@ -33,7 +33,7 @@
         try {
             special.diff = localStorage.getItem(storageKeyDiff);
             special.compare = localStorage.getItem(storageKeyCompare);
-        } catch (ignore) {}
+        } catch (ignore) { }
 
         if (special.diff && special.compare) {
             // using stored values - no need for api request
@@ -56,7 +56,7 @@
             try {
                 localStorage.setItem(storageKeyDiff, special.diff);
                 localStorage.setItem(storageKeyCompare, special.compare);
-            } catch (ignore) {}
+            } catch (ignore) { }
         });
     }
 
@@ -132,15 +132,15 @@
         $actions
             .addClass("quickdiff-mw-action")
             .find("a")
-                .addClass("qdmodal-button")
-                .attr("target", "_blank");
+            .addClass("qdmodal-button")
+            .attr("target", "_blank");
 
         // if diff is for one page, add a page history action
         if (prevTitle === currTitle) {
             $actions = $actions.add(
                 $("<a>").attr({
                     "class": "qdmodal-button",
-                    href: mw.util.getUrl(currTitle, {action: "history"}),
+                    href: mw.util.getUrl(currTitle, { action: "history" }),
                     target: "_blank"
                 }).text(i18n("history").plain())
             );
@@ -177,7 +177,7 @@
                 buttons: [{
                     text: i18n("link").plain(),
                     href: url.href,
-                    attr: {"data-disable-quickdiff": ""}
+                    attr: { "data-disable-quickdiff": "" }
                 }],
                 content: i18n("error", url.href).escape()
             };
@@ -260,14 +260,42 @@
 
         var hasDiffParam = url.searchParams.has("diff");
         var isSpecialDiffLink = url.pathname.startsWith(special.diff)
-                || url.pathname.startsWith(special.diffDefault);
+            || url.pathname.startsWith(special.diffDefault);
         var isSpecialCompareLink = url.pathname.startsWith(special.compare)
-                || url.pathname.startsWith(special.compareDefault);
+            || url.pathname.startsWith(special.compareDefault);
 
         if (hasDiffParam || isSpecialDiffLink || isSpecialCompareLink) {
             event.preventDefault();
             loadDiff(url);
         }
+    }
+
+    // intercept selected revision comparison on history pages
+    function historyCompareHandler(event) {
+        var form = this;
+        var data = new FormData(form);
+        var oldid = data.get("oldid");
+        var diff = data.get("diff");
+
+        // if revisions are missing, keep the default behavior
+        if (oldid === null || diff === null) {
+            return;
+        }
+
+        event.preventDefault();
+
+        var url = new URL(form.action || location.href, location.href);
+        var title = data.get("title");
+
+        if (title) {
+            url.searchParams.set("title", title);
+        }
+
+        url.searchParams.set("oldid", oldid);
+        url.searchParams.set("diff", diff);
+        url.searchParams.delete("action");
+
+        loadDiff(url);
     }
 
     function init() {
@@ -285,6 +313,7 @@
         // attach to body for compatibility with ajax-loaded content
         // also, one attached event handler is better than hundreds!
         $body.on("click.quickdiff", "a[href]", linkClickHandler);
+        $body.on("submit.quickdiff", "form#mw-history-compare", historyCompareHandler);
 
         // listen for left/right arrow keys, to move between prev/next diff
         $body.on("keydown.quickdiff", keydownHandler);

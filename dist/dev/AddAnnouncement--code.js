@@ -1,4 +1,6 @@
 (function(mw, $) {
+    'use strict';
+
     var config = mw.config.get([
         'wgNamespaceNumber',
         'wgCityId',
@@ -6,119 +8,198 @@
         'wgServer'
     ]);
 
-    if (config.wgNamespaceNumber !== 500) {
+    if (config.wgNamespaceNumber !== 500 || window.AddAnnouncementLoaded) {
         return;
     }
+    window.AddAnnouncementLoaded = true;
+
+    var MAX_LENGTH = 100;
+    var KEYDOWN_EVENT = 'keydown.addAnnouncement';
     var i18n;
     var preloads = 2;
-    function addAnnouncement() {
-        var ajaxProps = {
+
+    function truncate(text) {
+        return text.length > MAX_LENGTH
+            ? text.slice(0, MAX_LENGTH - 1) + '\u2026'
+            : text;
+    }
+
+    function extractText(html) {
+        var $div = $('<div>').append($.parseHTML(html));
+        $div.find([
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            '.mw-heading', '.mw-editsection', '.toc',
+            'style', 'script', 'table', '.reference'
+        ].join(', ')).remove();
+        return truncate($div.text().replace(/\s+/g, ' ').trim());
+    }
+
+    function fetchSection(section) {
+        return $.get(mw.util.wikiScript('api'), {
             action: 'parse',
             page: config.wgPageName,
+            prop: 'text',
             format: 'json',
-            section: 0,
+            section: section,
             disablepp: 1
-        };
-        $.get(mw.util.wikiScript('api'), ajaxProps, function(res) {
-            var text = $(res.parse.text['*']).text().trim();
-            if(!text.length) {
-                ajaxProps.section = 1;
-                $.get(mw.util.wikiScript('api'), ajaxProps, function(res) {
-                    var html = $.parseHTML(res.parse.text['*']);
-                    // remove headline
-                    html.shift();
-                    var text = $('<div>').append(html).text().trim();
-                    if(text.length > 100) {
-                        text = text.slice(0, 99) + '\u2026';
-                    }
-                    confirmDialog(text);
-                });
-                return;
-            }
-            else if(text.length > 100) {
-                text = text.slice(0, 99) + '\u2026';
-            }
-            confirmDialog(text);
+        }).then(function(res) {
+            return res.parse ? extractText(res.parse.text['*']) : '';
         });
     }
 
-function saveAnnouncement(dialog) {
-    var text = dialog.find('.aa-text').val().trim();
-    if (!text.length) {
-        dialog.find('.wds-dialog__notification')
-            .text(i18n.msg('error').plain())
-            .css('color', '#d71035')
-            .show();
-        return;
+    function addAnnouncement() {
+        fetchSection(0)
+            .then(function(text) {
+                return text || fetchSection(1);
+            })
+            .done(confirmDialog)
+            .fail(function() {
+                confirmDialog('');
+            });
     }
 
-    var isWikiaOrg = config.wgServer.indexOf('wikia.org') !== -1;
+    function saveAnnouncement(dialog) {
+        var isWikiaOrg = config.wgServer.indexOf('wikia.org') !== -1;
+        var $notification = dialog.find('.wds-dialog__notification');
+        var $ok = dialog.find('.wds-button[data-action="ok"]');
+        var $textarea = dialog.find('.aa-text');
+        var text = $textarea.val().trim();
 
-    dialog.find('.wds-button[data-action="ok"]').prop('disabled', true);
-    dialog.find('.wds-dialog__notification').hide();
-    $.ajax({
-        url: 'https://services.' + (isWikiaOrg ? 'wikia.org' : 'fandom.com') + '/announcements/' + config.wgCityId + '/announcements',
-        type: 'POST',
-        contentType: 'application/json',
-        processData: false,
-        xhrFields: {
-            withCredentials: true
-        },
-        data: JSON.stringify({
-            text: text,
-            url: window.location.href
-        }),
-        success: function(res) {
-            dialog.find('.wds-dialog__notification').text(i18n.msg('success').plain()).css('color', '#4cda9a').show();
-        },
-        error: function(e) {
-            var title = '';
-            try { title = JSON.parse(e.responseText).title; } catch (err) {}
-            dialog.find('.wds-dialog__notification').empty().append(i18n.msg('error').escape(), '<br>', title).css('color', '#d71035').show();
-            console.error(title);
-            dialog.find('.wds-button[data-action="ok"]').prop('disabled', false);
-        },
-        dataType: 'json'
-    });
-}
+        if (!text.length) {
+            $notification
+                .text(i18n.msg('error').plain())
+                .css('color', '#d71035')
+                .show();
+            return;
+        }
 
-function confirmDialog(text) {
-    var dialog = $('<div>', { class: 'wds-dialog__curtain' });
-    dialog.append(
-        $('<div>', { class: 'wds-dialog__wrapper' }).append(
-            $('<div>', { class: 'wds-dialog__title', text: i18n.msg('confirm-title').plain() }),
-            $('<div>', { class: 'wds-dialog__content' }).append(
-                $('<p>', { class: 'wds-dialog__notification' }).hide(),
-                $('<p>', { text: i18n.msg('confirm-text').plain() }),
-                $('<textarea>', {
-                    class: 'aa-text',
-                    rows: 4,
-                    maxlength: 100,
-                    val: text,
-                    css: { width: '100%', boxSizing: 'border-box' }
-                })
-            ),
-            $('<div>', { class: 'wds-dialog__actions' }).append(
-                $('<button>', { class: 'wds-button wds-is-text wds-dialog__actions-button', 'data-action': 'abort', text: i18n.msg('abort').plain() }).click(function() {
-                    dialog.detach();
+        $ok.prop('disabled', true);
+        $textarea.prop('disabled', true);
+        $notification.hide();
+
+        $.ajax({
+            url: 'https://services.' + (isWikiaOrg ? 'wikia.org' : 'fandom.com') +
+                '/announcements/' + config.wgCityId + '/announcements',
+            type: 'POST',
+            contentType: 'application/json',
+            processData: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: JSON.stringify({
+                text: text,
+                url: window.location.origin + mw.util.getUrl(config.wgPageName)
+            }),
+            success: function() {
+                $notification
+                    .text(i18n.msg('success').plain())
+                    .css('color', '#4cda9a')
+                    .show();
+            },
+            error: function(xhr) {
+                var title = '';
+                try {
+                    title = JSON.parse(xhr.responseText).title || '';
+                } catch (err) {}
+                $notification
+                    .empty()
+                    .append(
+                        $('<span>').text(i18n.msg('error').plain()),
+                        $('<br>'),
+                        $('<span>').text(title)
+                    )
+                    .css('color', '#d71035')
+                    .show();
+                console.error(title);
+                $ok.prop('disabled', false);
+                $textarea.prop('disabled', false);
+            },
+            dataType: 'json'
+        });
+    }
+
+    function closeDialog() {
+        $('.aa-dialog').remove();
+        $(document).off(KEYDOWN_EVENT);
+    }
+
+    function confirmDialog(text) {
+        closeDialog();
+
+        var $textarea = $('<textarea>', {
+            'class': 'aa-text',
+            rows: 4,
+            maxlength: MAX_LENGTH,
+            css: { width: '100%', boxSizing: 'border-box' }
+        }).val(text);
+
+        var $counter = $('<p>', {
+            'class': 'aa-counter',
+            css: { textAlign: 'right', margin: '4px 0 0', fontSize: '12px' }
+        });
+
+        function updateCounter() {
+            $counter.text($textarea.val().length + '/' + MAX_LENGTH);
+        }
+        $textarea.on('input', updateCounter);
+        updateCounter();
+
+        var $dialog = $('<div>', { 'class': 'wds-dialog__curtain aa-dialog' });
+        $dialog.append(
+            $('<div>', { 'class': 'wds-dialog__wrapper' }).append(
+                $('<div>', {
+                    'class': 'wds-dialog__title',
+                    text: i18n.msg('confirm-title').plain()
                 }),
-                $('<button>', { class: 'wds-button wds-is-text wds-dialog__actions-button', 'data-action': 'ok', text: i18n.msg('ok').plain() }).click(function() {
-                    saveAnnouncement(dialog);
-                })
+                $('<div>', { 'class': 'wds-dialog__content' }).append(
+                    $('<p>', { 'class': 'wds-dialog__notification' }).hide(),
+                    $('<p>', { text: i18n.msg('confirm-text').plain() }),
+                    $textarea,
+                    $counter
+                ),
+                $('<div>', { 'class': 'wds-dialog__actions' }).append(
+                    $('<button>', {
+                        'class': 'wds-button wds-is-text wds-dialog__actions-button',
+                        'data-action': 'abort',
+                        text: i18n.msg('abort').plain()
+                    }).click(closeDialog),
+                    $('<button>', {
+                        'class': 'wds-button wds-is-text wds-dialog__actions-button',
+                        'data-action': 'ok',
+                        text: i18n.msg('ok').plain()
+                    }).click(function() {
+                        saveAnnouncement($dialog);
+                    })
+                )
             )
-        )
-    ).appendTo(mw.util.$content);
-}
+        );
 
-	function init() {
-		if (--preloads>0) return;
+        $dialog.on('mousedown', function(e) {
+            if (e.target === this) {
+                closeDialog();
+            }
+        });
+
+        $(document).on(KEYDOWN_EVENT, function(e) {
+            if (e.key === 'Escape') {
+                closeDialog();
+            }
+        });
+
+        $dialog.appendTo(mw.util.$content);
+        $textarea.focus();
+    }
+
+    function init() {
+        if (--preloads > 0) {
+            return;
+        }
         window.dev.i18n.loadMessages('AddAnnouncement').done(function(d) {
             i18n = d;
             $('<button>', {
                 'class': 'wds-button',
-                'type': 'checkbox',
-                'id': 'addAnnouncement',
-                'text': i18n.msg('add').plain()
+                id: 'addAnnouncement',
+                text: i18n.msg('add').plain()
             }).click(addAnnouncement).appendTo(mw.util.$content);
         });
     }
@@ -127,7 +208,7 @@ function confirmDialog(text) {
     mw.loader.using('mediawiki.util').then(init);
 
     importArticle({
-        type:'script',
+        type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
 })(window.mediaWiki, window.jQuery);

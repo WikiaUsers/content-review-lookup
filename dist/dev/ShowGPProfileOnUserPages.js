@@ -5,7 +5,7 @@
 		return;
 	}
 	function main() {
-		mw.loader.load( mw.config.get( 'wgScriptPath' ) + `/load.php?lang=${mw.config.get('wgUserLanguage')}&modules=ext.curseprofile.profilepage.styles` );
+		mw.loader.using( 'ext.curseprofile.profilepage.styles' );
 		if (
 			mw.config.get("wgNamespaceNumber") == 2 || mw.config.get("wgNamespaceNumber") == 3 ||
 			(

@@ -5,8 +5,7 @@
  
     var CALENDAR_ID   = 'marvel-weekly-calendar';
     var CACHE_KEY     = 'marvelCalendarCache';
-    var CACHE_VERSION = 7;
-
+    var CACHE_VERSION = 8;
     // 0. Стили анимации загрузки (Серебряный Сёрфер)
     var SURFER_CSS = [
         '@keyframes surfer-hover {',
@@ -55,7 +54,6 @@
     	'  overflow-x: auto;',
     	'}'
     ].join( '\n' );
-
     ( function injectSurferStyles() {
         if ( document.getElementById( 'mc-surfer-styles' ) ) return;
         var style = document.createElement( 'style' );
@@ -63,9 +61,7 @@
         style.textContent = SURFER_CSS;
         document.head.appendChild( style );
     }() );
-
     var SURFER_URL = 'https://marvel.fandom.com/ru/wiki/Special:FilePath/Silver_Surfer_To_Top.png';
-
     var LOADING_HTML = '<div class="mc-loading">' +
         '<img src="' + SURFER_URL + '" alt="Загрузка..." />' + '<span>Загрузка релизов Marvel...</span>' +
         '</div>';
@@ -84,24 +80,19 @@
         var monday    = getDateOfISOWeek( week, year, 1 );
         var wednesday = getDateOfISOWeek( week, year, 3 );
         var sunday    = getDateOfISOWeek( week, year, 7 );
-
         var months = [ 'января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря' ];
-
         var wedDay   = wednesday.getUTCDate();
         var wedMonth = months[ wednesday.getUTCMonth() ];
-
         var startDay   = monday.getUTCDate();
         var endDay     = sunday.getUTCDate();
         var startMonth = months[ monday.getUTCMonth() ];
         var endMonth   = months[ sunday.getUTCMonth() ];
-
         var range;
         if ( monday.getUTCMonth() === sunday.getUTCMonth() ) {
             range = startDay + ' — ' + endDay + ' ' + startMonth;
         } else {
             range = startDay + ' ' + startMonth + ' — ' + endDay + ' ' + endMonth;
         }
-
        return '<div class="comics-week_title"><h3 style="text-align:center;">' + week + ' неделя (' + range + '), от ' + wedDay + ' ' + wedMonth + '</h3></div>';
     }
  
@@ -125,7 +116,6 @@
     }
  
     var LS_AVAILABLE = isLocalStorageAvailable();
- 
     function getCache() {
         if ( !LS_AVAILABLE ) return null;
         try {
@@ -249,25 +239,32 @@
         };
     }
  
-    function findException( series, exceptions ) {
-        if ( exceptions[ series ] ) return exceptions[ series ];
+    function findException( data, exceptions ) {
+        // 1. Точное совпадение по полному названию страницы
+        if ( exceptions[ data.fullTitle ] ) return exceptions[ data.fullTitle ];
+        // 2. Серия + том (например "Amazing Spider-Man Vol 7")
+        var seriesVol = data.series;
+        if ( data.vol && data.vol > 1 ) {
+            seriesVol += ' Vol ' + data.vol;
+        }
+        if ( exceptions[ seriesVol ] ) return exceptions[ seriesVol ];
+        // 3. Только серия
+        if ( exceptions[ data.series ] ) return exceptions[ data.series ];
         var found = null;
         Object.keys( exceptions ).forEach( function ( key ) {
             var escaped = key.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
             var regex = new RegExp( '\\b' + escaped + '\\b', 'i' );
-            if ( regex.test( series ) ) found = exceptions[ key ];
+            if ( regex.test( data.series ) ) found = exceptions[ key ];
         } );
         return found;
     }
  
     // Слова-маркеры сборников — используются и при фильтрации, и в no_filter
     var FILTER_WORDS = /\b(Omnibus|TPB|Edition|Collection)\b/i;
-
     function applyExceptions( titles, exceptions ) {
-        // Восстанавливаем выпуски с no_filter = yes, которые были отфильтрованы. (fetchReleases уже отфильтровал, но здесь обрабатываем оставшиеся)
         return titles.map( function ( title ) {
             var data = parseTitle( title );
-            var exc  = findException( data.series, exceptions );
+            var exc  = findException( data, exceptions );
             if ( exc ) {
                 data.isException = true;
                 // no_filter: выпуск не фильтруется как омнибус
@@ -288,7 +285,6 @@
             return !FILTER_WORDS.test( data.fullTitle );
         } );
     }
-
     // 4б. Автоопределение ван-шотов
     function detectOneShotsFromAPI( releasesData ) {
     	// Собираем кандидатов: Vol 1, выпуск 1, не CGD/FCBD, не помечен исключением
@@ -296,7 +292,7 @@
             return !d.isCGDFCBD && !d.isOneShot && d.vol === 1 && d.issueStr === '1';
         } );
         if ( candidates.length === 0 ) return Promise.resolve( releasesData );
-        // Извлекаем название тома (убираем последнее число — номер выпуска), например: "Amazing Spider-Man Vol 1 1" → "Amazing Spider-Man Vol 1"
+        // Извлекаем название тома (убираем последнее число — номер выпуска): "Amazing Spider-Man Vol 1 1" → "Amazing Spider-Man Vol 1"
         var volumeTitles = candidates.map( function ( d ) {
             return d.fullTitle.replace( /\s+\d+$/, '' );
         } );
@@ -305,7 +301,6 @@
         for ( var i = 0; i < volumeTitles.length; i += 50 ) {
             batches.push( volumeTitles.slice( i, i + 50 ) );
         }
-
         var requests = batches.map( function ( batch ) {
             var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( batch.join( '|' ) ) + '&prop=categories&clcategories=Category:One%20Shots' + '&format=json&origin=*';
             return fetch( url ).then( function ( res ) {
@@ -323,16 +318,15 @@
                 return oneShotVolumes;
             } );
         } );
-
         return Promise.all( requests ).then( function ( results ) {
-            // Объединяем результаты всех батчей в одно множество
+            // Объединяем результаты в одно множество
             var allOneShotVolumes = {};
             results.forEach( function ( r ) {
                 Object.keys( r ).forEach( function ( title ) {
                     allOneShotVolumes[ title ] = true;
                 } );
             } );
-            // Помечаем кандидатов, чей том оказался в One Shots
+            // Помечаем тех, чей том оказался в One Shots
             releasesData.forEach( function ( d ) {
                 if ( !d.isCGDFCBD && !d.isOneShot && d.vol === 1 && d.issueStr === '1' ) {
                     var volumeTitle = d.fullTitle.replace( /\s+\d+$/, '' );
@@ -345,34 +339,26 @@
             return releasesData;
         } ).catch( function ( err ) {
             console.warn( 'MarvelCalendar: Не удалось проверить ван-шоты', err );
-            return releasesData; // при ошибке возвращаем данные как есть
+            return releasesData;
         } );
     }
-
     // 4в. Автоопределение Star Wars (ссылка на серию)
     function detectStarWarsFromAPI( releasesData ) {
-        // Кандидаты: обычные выпуски, не помеченные вручную через EH
         var candidates = releasesData.filter( function ( d ) {
             return !d.isCGDFCBD && !d.isOneShot && !d.seriesLink;
         } );
         if ( candidates.length === 0 ) return Promise.resolve( releasesData );
-
-        // Извлекаем названия томов
         var volumeTitles = candidates.map( function ( d ) {
             return d.fullTitle.replace( /\s+\d+$/, '' );
         } );
-
-        // Дедупликация
         var unique = [];
         volumeTitles.forEach( function ( t ) {
             if ( unique.indexOf( t ) === -1 ) unique.push( t );
         } );
-
         var batches = [];
         for ( var i = 0; i < unique.length; i += 50 ) {
             batches.push( unique.slice( i, i + 50 ) );
         }
-
         var requests = batches.map( function ( batch ) {
             var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( batch.join( '|' ) ) + '&prop=categories&clcategories=Category:Star%20Wars%20Comic%20Books' + '&format=json&origin=*';
             return fetch( url ).then( function ( res ) {
@@ -389,7 +375,6 @@
                 return swVolumes;
             } );
         } );
-
         return Promise.all( requests ).then( function ( results ) {
             var allSWVolumes = {};
             results.forEach( function ( r ) {
@@ -414,11 +399,9 @@
         } );
     }
  
-    // 4г. Проверка существования обложек (батч-запрос к API Database, где хранятся файлы)
+    // 4г. Проверка существования обложек
     var NO_IMAGE_COVER = 'No_Image_Cover.jpg';
-
     function checkCoversExist( releasesData ) {
-        // data.picture уже вычислен в parseTitle()/applyExceptions() для всех веток — отдельно пересобирать имя файла не нужно, проверяем его напрямую
         var filenames = [];
         var seen = {};
         releasesData.forEach( function ( d ) {
@@ -428,12 +411,10 @@
             }
         } );
         if ( filenames.length === 0 ) return Promise.resolve( releasesData );
-
         var batches = [];
         for ( var i = 0; i < filenames.length; i += 50 ) {
             batches.push( filenames.slice( i, i + 50 ) );
         }
-
         var requests = batches.map( function ( batch ) {
             var titles = batch.map( function ( f ) { return 'File:' + f; } ).join( '|' );
             var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( titles ) + '&format=json&formatversion=2&origin=*';
@@ -449,7 +430,6 @@
                 return missing;
             } );
         } );
-
         return Promise.all( requests ).then( function ( results ) {
             var allMissing = {};
             results.forEach( function ( r ) {
@@ -472,7 +452,65 @@
             return releasesData; // при ошибке возвращаем данные как есть, без подмены
         } );
     }
-
+ 
+    // 4д. Получение реального имени обложки со страницы выпуска (|Image=)
+    function fetchRealCoverNames( releasesData ) {
+        var titles = [];
+        var seen = {};
+        releasesData.forEach( function ( d ) {
+            // Не трогаем то, что уже явно задано через EH
+            if ( d.isException && d.picture && d.picture !== NO_IMAGE_COVER ) return;
+            if ( d.fullTitle && !seen[ d.fullTitle ] ) {
+                seen[ d.fullTitle ] = true;
+                titles.push( d.fullTitle );
+            }
+        } );
+        if ( titles.length === 0 ) return Promise.resolve( releasesData );
+ 
+        var batches = [];
+        for ( var i = 0; i < titles.length; i += 20 ) {
+            batches.push( titles.slice( i, i + 20 ) );
+        }
+ 
+        var requests = batches.map( function ( batch ) {
+            var url = 'https://marvel.fandom.com/api.php?action=query' + '&titles=' + encodeURIComponent( batch.join( '|' ) ) + '&prop=revisions&rvprop=content&rvslots=main' + '&format=json&formatversion=2&origin=*';
+            return fetch( url ).then( function ( res ) {
+                if ( !res.ok ) throw new Error( 'HTTP ' + res.status );
+                return res.json();
+            } ).then( function ( json ) {
+                var result = {};
+                var pages = ( json.query && json.query.pages ) ? json.query.pages : [];
+                pages.forEach( function ( p ) {
+                    if ( p.missing || !p.revisions || !p.revisions[ 0 ] ) return;
+                    var content = p.revisions[ 0 ].slots.main.content || '';
+                    var m = content.match( /\|\s*Image\s*=\s*([^\n|]+)/i );
+                    if ( m ) {
+                        var img = m[ 1 ].trim().replace( /^File:/i, '' );
+                        if ( img ) result[ p.title ] = img;
+                    }
+                } );
+                return result;
+            } );
+        } );
+ 
+        return Promise.all( requests ).then( function ( results ) {
+            var all = {};
+            results.forEach( function ( r ) {
+                Object.keys( r ).forEach( function ( t ) { all[ t ] = r[ t ]; } );
+            } );
+            releasesData.forEach( function ( d ) {
+                if ( all[ d.fullTitle ] ) {
+                    d.picture = all[ d.fullTitle ];
+                    d.realCover = true;
+                }
+            } );
+            return releasesData;
+        } ).catch( function ( err ) {
+            console.warn( 'MarvelCalendar: Не удалось получить реальные обложки', err );
+            return releasesData;
+        } );
+    }
+ 
     // 5. Формирование {{РГ}} и рендер
     function buildRGCall( data ) {
         if ( data.isCGDFCBD ) {
@@ -485,8 +523,7 @@
         if ( data.seriesLink ) {
             return '{{РГ|' + data.picture + '|' + data.series + '|#' + data.issueStr + '}}';
         }
-        // Исключение без series_link — ссылка на конкретный выпуск с кастомной обложкой/томом
-        // data.series, data.vol и data.picture уже содержат применённые значения из EH
+        // Исключение без series_link — ссылка на конкретный выпуск с кастомной обложкой/томом data.series, data.vol и data.picture уже содержат применённые значения из EH
         if ( data.isException ) {
             return '{{РГ|' + data.picture + '|' + data.series + ' Vol ' + data.vol + ' ' + data.issueStr + '|#' + data.issueStr + '}}';
         }
@@ -529,7 +566,6 @@
             wrapoutputclass: ''
         } ).then( function ( parsed ) {
             var current = getCurrentISOWeekAndYear();
-            // Заголовок недели переносим внутрь .comics-week, чтобы .comics-week_title был siblings с .mw-collapsible — это необходимо для корректной работы CSS (order: -1 в railModule), .mw-collapsible даёт раскрывающуюся вкладку; инициализируется через jquery.makeCollapsible
             container.innerHTML =
                 '<div class="comics-week">' +
                     '<div class="mw-collapsible mw-collapsed">' +
@@ -554,14 +590,11 @@
  
     // 6. Основная функция инициализации
     function initMarvelCalendar( calendar ) {
-        // .week-header оставляем пустым — заголовок теперь рендерится внутри .comics-week
         var container = calendar.querySelector( '.comics-container' );
         if ( !container ) return;
-
         var current = getCurrentISOWeekAndYear();
         var week = current.week;
         var year = current.year;
-
         // Показываем Серебряного Сёрфера пока идёт загрузка
         container.innerHTML = LOADING_HTML;
  
@@ -574,18 +607,18 @@
                  cache.exceptionsRevId === exceptionsInfo.revid ) {
                 return renderWithRG( cache.data, calendar );
             }
-            return fetchReleases( week, year ).then( function ( titles ) {
-                var releasesData = applyExceptions( titles, exceptionsInfo.exceptions );
-                // Автоопределение ван-шотов через API
-                return detectOneShotsFromAPI( releasesData );
-            } ).then( function ( releasesData ) {
-                return detectStarWarsFromAPI( releasesData );
-            } ).then( function ( releasesData ) {
-                return checkCoversExist( releasesData );
-            } ).then( function ( releasesData ) {
-                setCache( releasesData, exceptionsInfo.revid );
-                return renderWithRG( releasesData, calendar );
-            } );
+            return fetchReleases( week, year )
+                .then( function ( titles ) {
+                    return applyExceptions( titles, exceptionsInfo.exceptions );
+                } )
+                .then( detectOneShotsFromAPI )
+                .then( detectStarWarsFromAPI )
+                .then( fetchRealCoverNames )
+                .then( checkCoversExist )
+                .then( function ( releasesData ) {
+                    setCache( releasesData, exceptionsInfo.revid );
+                    return renderWithRG( releasesData, calendar );
+                } );
         } ).catch( function ( err ) {
             console.error( err );
             container.innerHTML = '<p class="error">Не удалось загрузить данные. Попробуйте обновить страницу.</p>';
@@ -593,7 +626,6 @@
     }
  
     // 7. Запуск + кнопка «Обновить сейчас»
-    // Вместо глобального флага started используем атрибут data-mc-init на каждом элементе — это позволяет корректно инициализировать оба экземпляра календаря: на Заглавной и в модуле рельсы (вставляется позже через AddRailModule, который повторно файрит mw.hook('wikipage.content'))
     function startCalendar( $content ) {
         var root = ( $content && $content[ 0 ] ) ? $content[ 0 ] : document;
         var calendars = root.querySelectorAll( '#' + CALENDAR_ID + ':not([data-mc-init])' );

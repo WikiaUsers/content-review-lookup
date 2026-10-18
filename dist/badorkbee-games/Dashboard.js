@@ -60,3 +60,5 @@ mw.loader.using('mediawiki.api', function () {
 
     }
 });
+
+/* [[Category:Interface resources]] */

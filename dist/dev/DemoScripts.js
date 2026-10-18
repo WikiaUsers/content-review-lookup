@@ -750,6 +750,12 @@
             scripts: 'MediaWiki:TimedSlider/code.js',
             styles: 'MediaWiki:TimedSlider.css'
         },
+        
+		Tooltip: {
+			page: 'Tooltip',
+			scripts: 'MediaWiki:Tooltip.js',
+			styles: 'MediaWiki:Tooltip.css'
+		},
 
         Tooltips: {
             page: 'Tooltips',

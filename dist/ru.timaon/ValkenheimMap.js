@@ -2,7 +2,7 @@
    ##########################################################
    VALKENHEIM MAP — FINAL PRODUCTION SYSTEM
    FANDOM-COMPATIBLE VERSION
-   Version: 2026-10-09
+   Version: 2026-10-15 — political overlay
    ##########################################################
    ########################################################## */
 
@@ -28,7 +28,7 @@
         installed: true,
 
         version:
-            '2026-10-09-fandom-compatible',
+            '2026-10-15-political-overlay-042',
 
         map: null,
 
@@ -42,7 +42,16 @@
 
         observer: null,
 
-        interval: null
+        interval: null,
+
+        /* Political layer: separate from the 165 markers */
+        politicalMap: null,
+
+        politicalOverlay: null,
+
+        politicalButton: null,
+
+        politicalEnabled: false
 
     };
 
@@ -74,6 +83,14 @@
 
     var KATTEGAT_HEIGHT =
         86;
+
+
+    /* Confirmed user setting. Keep fixed. */
+    var POLITICAL_OPACITY =
+        0.42;
+
+    var POLITICAL_ASSET =
+        'Valkenheim_Political_Overlay.png';
 
 
 
@@ -1923,6 +1940,234 @@
 
 
     /* =========================================================
+       POLITICAL OVERLAY — CLAN TERRITORIES
+       L.ImageOverlay above the base image, below markers.
+       Reconciled with Fandom React redraws.
+       ========================================================= */
+
+    function findFiltersControl(map) {
+
+        var container = map.getContainer();
+        var root = container;
+        var level;
+        var controls;
+        var i;
+        var label;
+
+        /* Find the Fandom filter within this map's ancestors. */
+        for (level = 0; root && level < 8; level++) {
+
+            controls = root.querySelectorAll(
+                'button, [role="button"]'
+            );
+
+            for (i = 0; i < controls.length; i++) {
+                label = (controls[i].textContent || '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/^\s+|\s+$/g, '');
+
+                if (
+                    label.length < 48 &&
+                    /^FILTERS/i.test(label) &&
+                    controls[i].isConnected
+                ) {
+                    return controls[i];
+                }
+            }
+
+            root = root.parentElement;
+        }
+
+        return null;
+    }
+
+
+    function updatePoliticalButton() {
+
+        var button = STATE.politicalButton;
+
+        if (!button) {
+            return;
+        }
+
+        button.textContent = STATE.politicalEnabled
+            ? 'ТЕРРИТОРИИ КЛАНОВ: ВКЛ'
+            : 'ТЕРРИТОРИИ КЛАНОВ: ВЫКЛ';
+
+        button.setAttribute(
+            'aria-pressed',
+            STATE.politicalEnabled ? 'true' : 'false'
+        );
+
+        button.style.backgroundColor = STATE.politicalEnabled
+            ? '#48b8bb' : '#26383d';
+
+        button.style.color = STATE.politicalEnabled
+            ? '#07151a' : '#d5e7e7';
+
+        button.style.borderColor = STATE.politicalEnabled
+            ? '#70ccce' : '#5b8588';
+    }
+
+
+    function ensurePoliticalButton(map) {
+
+        var button = STATE.politicalButton;
+
+        if (!button) {
+            button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'valkenheim-political-toggle';
+            button.title = 'Показать или скрыть территории кланов';
+            button.style.cssText =
+                'display:inline-block;' +
+                'vertical-align:middle;' +
+                'margin-left:10px;' +
+                'padding:9px 14px;' +
+                'border:1px solid #5b8588;' +
+                'border-radius:20px;' +
+                'font:700 12px Arial,sans-serif;' +
+                'letter-spacing:0.01em;' +
+                'white-space:nowrap;' +
+                'cursor:pointer;' +
+                'box-shadow:0 2px 5px rgba(0,0,0,.25);';
+
+            button.onclick = function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                STATE.politicalEnabled =
+                    !STATE.politicalEnabled;
+
+                if (STATE.politicalOverlay) {
+                    STATE.politicalOverlay.setOpacity(
+                        STATE.politicalEnabled
+                            ? POLITICAL_OPACITY : 0
+                    );
+                }
+
+                updatePoliticalButton();
+            };
+
+            if (L.DomEvent && L.DomEvent.disableClickPropagation) {
+                L.DomEvent.disableClickPropagation(button);
+            }
+
+            STATE.politicalButton = button;
+            updatePoliticalButton();
+        }
+
+        var filterControl = findFiltersControl(map);
+        var parent;
+
+        if (filterControl && filterControl.parentNode) {
+            parent = filterControl.parentNode;
+
+            button.style.position = 'relative';
+            button.style.top = 'auto';
+            button.style.left = 'auto';
+            button.style.zIndex = 'auto';
+
+            /* An immediate sibling of FILTERS, outside map image. */
+            if (
+                button.parentNode !== parent ||
+                button.previousSibling !== filterControl
+            ) {
+                parent.insertBefore(
+                    button,
+                    filterControl.nextSibling
+                );
+            }
+        } else {
+            /* Safety fallback if Fandom changes its toolbar DOM. */
+            parent = map.getContainer();
+
+            button.style.position = 'absolute';
+            button.style.top = '12px';
+            button.style.left = '12px';
+            button.style.zIndex = '1000';
+            button.style.marginLeft = '0';
+
+            if (button.parentNode !== parent) {
+                parent.appendChild(button);
+            }
+        }
+    }
+
+
+    function ensurePoliticalOverlay(map) {
+
+        if (!map || typeof L === 'undefined') {
+            return;
+        }
+
+        if (STATE.politicalMap !== map) {
+            if (
+                STATE.politicalMap &&
+                STATE.politicalOverlay &&
+                STATE.politicalMap.hasLayer(
+                    STATE.politicalOverlay
+                )
+            ) {
+                STATE.politicalMap.removeLayer(
+                    STATE.politicalOverlay
+                );
+            }
+
+            STATE.politicalOverlay = null;
+            STATE.politicalMap = null;
+        }
+
+        if (!STATE.politicalOverlay) {
+            var baseLayer = null;
+            var url = fileUrl(POLITICAL_ASSET);
+
+            map.eachLayer(function (layer) {
+                if (
+                    !baseLayer &&
+                    layer._url &&
+                    layer._url !== url &&
+                    typeof layer.getBounds === 'function'
+                ) {
+                    baseLayer = layer;
+                }
+            });
+
+            if (!baseLayer) {
+                return;
+            }
+
+            /* Reuse the exact registered image bounds. */
+            STATE.politicalOverlay = L.imageOverlay(
+                url,
+                baseLayer.getBounds(),
+                {
+                    opacity: STATE.politicalEnabled
+                        ? POLITICAL_OPACITY : 0,
+                    interactive: false,
+                    className: 'valkenheim-political-overlay'
+                }
+            );
+
+            STATE.politicalOverlay.on('error', function () {
+                console.error(
+                    '[VALKENHEIM MAP] Political overlay failed to load:',
+                    url
+                );
+            });
+
+            STATE.politicalMap = map;
+        }
+
+        if (!map.hasLayer(STATE.politicalOverlay)) {
+            STATE.politicalOverlay.addTo(map);
+        }
+
+        ensurePoliticalButton(map);
+    }
+
+
+    /* =========================================================
        СБРОС ФЛАГА APPLYING
        ========================================================= */
 
@@ -2024,6 +2269,10 @@
                 fandomMarkers.length ===
                 0
             ) {
+
+                if (customLayerIsAlive(map)) {
+                    ensurePoliticalOverlay(map);
+                }
 
                 releaseApplyLock();
 
@@ -2226,6 +2475,7 @@
                 STATE.initialized =
                     true;
 
+                ensurePoliticalOverlay(map);
 
                 releaseApplyLock();
 
@@ -2258,6 +2508,7 @@
                     STATE.initialized =
                         true;
 
+                    ensurePoliticalOverlay(map);
 
                     console.log(
                         '[VALKENHEIM MAP] FINAL LAYER ACTIVE',

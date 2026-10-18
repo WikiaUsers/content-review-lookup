@@ -338,7 +338,7 @@ mw.hook('wikipage.content').add(function ($content) {
 	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 	if (!('IntersectionObserver' in window)) return;
 
-	var REVEAL = '.tnt-home .tnt-card, .tnt-character-page .tnt-card, .tnt-book, .tnt-home .tnt-panel, .tnt-rel, .tnt-quote, .tnt-term, .tnt-warn';
+	var REVEAL = '.tnt-home .tnt-card, .tnt-character-page .tnt-card, .tnt-book, .tnt-home .tnt-panel, .tnt-rel, .tnt-quote, .tnt-term, .tnt-warn, .tnt-example, .tnt-lore-card';
 	var WIPE = '.tnt-home h2.tnt-h, .tnt-character-page h2:not(.pi-item), .tnt-codex h2';
 
 	var timelines = [];

@@ -347,3 +347,5 @@ if (foundDialogues.length != 0) { // If there are any dialogues,
         createDialogue(currentDialogueID, foundDialogues[currentDialogueID]); // create them
     }
 }
+
+/* [[Category:Interface resources]] */

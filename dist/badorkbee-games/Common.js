@@ -10,3 +10,5 @@ window.lockOldComments.namespaceNumbers = [0];
 /* ------------------------------------------------ */
 /* TopicBlockLog parameters */
 TBL_GROUP = "roblox-en";
+
+/* [[Category:Interface resources]] */

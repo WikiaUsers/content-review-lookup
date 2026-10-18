@@ -55,39 +55,6 @@ $(document).on('click', '.ending-retry-btn', function() {
 });
 
 
-/* table collapsible stuff */
-mw.hook('wikipage.content').add(function($content) {
-    $content.find('table.ege-table-spoilers').each(function() {
-        var $table = $(this);
-        var $headerRow = $table.find('tr').first();
-        var $dataRows = $table.find('tr').not(':first-child');
-
-        $headerRow.css('cursor', 'pointer');
-        $dataRows.addClass('ege-row-expanded');
-
-        $headerRow.on('click', function() {
-            var isCollapsed = $table.hasClass('ege-collapsed');
-
-            if (!isCollapsed) {
-                $dataRows.removeClass('ege-row-expanded').addClass('ege-row-hidden');
-                $table.addClass('ege-collapsed');
-                setTimeout(function() {
-                    if ($table.hasClass('ege-collapsed')) {
-                        $dataRows.hide();
-                    }
-                }, 300);
-            } else {
-                $dataRows.show();
-                $table.removeClass('ege-collapsed');
-                
-                setTimeout(function() {
-                    $dataRows.removeClass('ege-row-hidden').addClass('ege-row-expanded');
-                }, 10);
-            }
-        });
-    });
-});
-
 /* skatepark stuff */
 $(function() {
     var skateparkPages = [

@@ -1,0 +1,1 @@
+importScript('https://id.wikipedia.org/wiki/MediaWiki:Gadget-SysopHelper.js');

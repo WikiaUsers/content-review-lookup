@@ -57,3 +57,5 @@ document.addEventListener('click', function(e)
             timeInstance.textContent = to24Clock(timeInstance.textContent);
     });
 });
+
+/* [[Category:Interface resources]] */

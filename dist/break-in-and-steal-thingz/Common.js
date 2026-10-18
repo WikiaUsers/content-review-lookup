@@ -121,3 +121,40 @@ window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 35;
 window.lockOldComments.addNoteAbove = true;
 window.lockOldComments.namespaceNumbers = [0];
+/* Clickable divs */
+$(function () {
+
+    var cardSelectors = [
+    	// Add class here if you want it to be clickable
+        '.Main-Content-Card',
+        '.Main-Content-label'
+    ];
+
+    var selector = cardSelectors.join(', ');
+
+    $(selector).each(function () {
+
+        var $card = $(this);
+        var $link = $card.find('a').first();
+
+        if (!$link.length) return;
+
+        var href = $link.attr('href');
+        if (!href) return;
+
+        $card.css('cursor', 'pointer');
+
+        $card.on('click', function (e) {
+
+            if ($(e.target).is('a') || $(e.target).closest('a').length) {
+                return;
+            }
+
+            if (window.getSelection().toString().length > 0) {
+                return;
+            }
+
+            window.location.href = href;
+        });
+    });
+});
