@@ -1,22 +1,23 @@
-/* Загрузчик Twind (ES6) */
+/* Загрузчик TWind (ES6) */
 (() => {
     'use strict';
     if (window.fandomTwindObserver) return;
     window.fandomTwindObserver = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:Twind/Main.js';
+    const SCRIPT_PAGE = 'MediaWiki:TWind/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
         const script = document.createElement('script');
-        script.src = `${CENTRAL_API}?title=${encodeURIComponent(SCRIPT_PAGE)}&action=raw&ctype=text/javascript&v=1.0`;
+        script.src = `${CENTRAL_API}?title=${encodeURIComponent(SCRIPT_PAGE)}&action=raw&ctype=text/javascript&v=${VERSION}`;
         document.head.appendChild(script);
     };
 
     const checkDOM = () => {
-        if (document.querySelector('.mw-parser-output .wiki-twind')) {
+        if (document.querySelector('.mw-parser-output .wiki-twind, .mw-parser-output [data-twind]')) {
             loadScript();
-            observer.disconnect(); 
+            observer.disconnect();
         }
     };
 

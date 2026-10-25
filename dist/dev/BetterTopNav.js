@@ -18,6 +18,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 	let
 	api = new mw.Api(),
 	config = mw.config.values,
+	NNV = $('#community-navigation.community-navigation--new-wiki-nav').length>0, // New nav boolean
 	
 	// Main class
 	bTN = {
@@ -281,10 +282,73 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Title'], () => {
 					}
 					sett.push(item);
 				});
+				if (NNV && sett.length === 0) {
+					sett = [
+						{
+							track: 'discussions',
+							class: '',
+							link: '/f',
+							text: 'Discuss',
+							icon: '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false"><use xlink:href="#wds-icons-discussions-small"></use></svg>'
+						},
+						{
+							track: 'recent-changes',
+							class: '',
+							link: '/wiki/Special:RecentChanges',
+							text: 'Recent Changes',
+							icon: '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false"><use xlink:href="#wds-icons-activity-small"></use></svg>'
+						},
+						{
+							track: 'theme-switch-light',
+							class: 'wiki-tools__theme-switch',
+							link: '#',
+							text: 'Switch to Light Theme',
+							icon: '<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false"><use xlink:href="#wds-icons-sun-small"></use></svg>'
+						},
+						{
+							track: 'add-new-page',
+							class: 'wiki-tools__add-new-page',
+							link: '/wiki/Special:CreatePage',
+							text: 'Add New Page'
+						},
+						{
+							track: 'upload-new-file',
+							class: '',
+							link: '/wiki/Special:Upload',
+							text: 'Upload New File'
+						},
+						{
+							track: 'special-pages',
+							class: '',
+							link: '/wiki/Special:SpecialPages',
+							text: 'Special Pages'
+						}
+					];
+				}
 			}
 			if (Array.isArray(sett) && sett.length>0) {
-				$('#community-navigation .wiki-tools > a').remove();
-				$('#community-navigation .wiki-tools #wiki-tools-menu li').remove();
+				if (NNV && $('#community-navigation .wiki-tools').length === 0) {
+					// Build barebones structure so the new items can be inserted
+					$('#community-navigation > .search-container').after(`
+						<div class="wiki-tools">
+							<div class="wds-dropdown">
+								<div role="navigation" class="wds-button wds-is-text wds-dropdown__toggle" aria-label="More" aria-controls="wiki-tools-menu" tabindex="0" aria-haspopup="true" aria-expanded="false">
+									<svg class="wds-icon wds-icon-small" aria-hidden="true" focusable="false">
+										<use xlink:href="#wds-icons-more-small"></use>
+									</svg>
+								</div>
+								<div id="wiki-tools-menu" class="wds-dropdown__content wds-is-not-scrollable wds-is-right-aligned">
+									<ul class="wds-list wds-is-linked"></ul>
+								</div>
+							</div>
+						</div>
+					`);
+					// Remove the Collections and Discussions buttons
+					$('#community-navigation .community-navigation__collections-button').remove();
+				} else {
+					$('#community-navigation .wiki-tools > a').remove();
+					$('#community-navigation .wiki-tools #wiki-tools-menu li').remove();
+				}
 				sett.forEach((item) => {
 					if (item.link && item.text) {
 						$('#community-navigation .wiki-tools > .wds-dropdown ul').append(

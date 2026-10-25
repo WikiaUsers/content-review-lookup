@@ -38,3 +38,33 @@ mw.loader.using('mediawiki.util').then(function () {
 		buildTab('Writers\' Workshop', 'Forum:Writers\' Workshop')		
 	]);
 });
+/* Password-Protected Collapsible Script */
+$(document).ready(function() {
+    $('.pw-collapsible').each(function() {
+        var $container = $(this);
+        var $button = $container.find('.pw-toggle');
+        var $content = $container.find('.pw-content');
+        
+        // Convert stored password to lowercase for case-insensitive matching
+        var correctPw = String($container.data('password')).trim().toLowerCase();
+
+        $button.on('click', function(e) {
+            e.preventDefault();
+            
+            if ($content.is(':visible')) {
+                $content.hide();
+                $button.text('ACCESS DATABASE');
+                return;
+            }
+
+            var userInput = prompt('ENTER PASSPHRASE:');
+            
+            if (userInput && userInput.trim().toLowerCase() === correctPw) {
+                $content.slideDown();
+                $button.text('LOCK DATABASE');
+            } else if (userInput !== null) {
+                alert('ACCESS DENIED: INCORRECT PASSPHRASE');
+            }
+        });
+    });
+});

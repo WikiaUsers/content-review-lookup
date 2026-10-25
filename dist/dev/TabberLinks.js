@@ -193,7 +193,11 @@
                 switchTabs = Array.from(new Set(switchTabs.concat(ancestorTabs)));
             }
             
-            switchTabs.forEach(function(t){ tabsModule.module.exports.tabs.switchTab(t); });
+            // Module uses getters with obfuscated keys:
+            /// n = refreshTabsScroll
+            /// r = switchTab
+            /// t = handleAllTabs
+            switchTabs.forEach(function(t){ tabsModule.module.exports.r(t); });
             scrollToElem(target);
         }
 

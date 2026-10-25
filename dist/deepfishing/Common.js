@@ -335,3 +335,73 @@
     openHash();
   });
 })();
+
+(function () {
+  function copyText(code, done) {
+    function fallback() {
+      var area = document.createElement('textarea');
+      area.value = code;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(area);
+      done();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function init(root) {
+    var buttons = root.querySelectorAll('.cd-copy:not([data-cd-ready])');
+    Array.prototype.forEach.call(buttons, function (button) {
+      button.setAttribute('data-cd-ready', '1');
+      button.setAttribute('role', 'button');
+      button.setAttribute('tabindex', '0');
+      function run() {
+        copyText(button.getAttribute('data-code'), function () {
+          button.textContent = 'Copied!';
+          button.classList.add('cd-copied');
+          setTimeout(function () {
+            button.textContent = 'Copy';
+            button.classList.remove('cd-copied');
+          }, 1500);
+        });
+      }
+      button.addEventListener('click', run);
+      button.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          run();
+        }
+      });
+    });
+
+    var folds = root.querySelectorAll('.cd-fold:not([data-cd-ready])');
+    Array.prototype.forEach.call(folds, function (fold) {
+      fold.setAttribute('data-cd-ready', '1');
+      fold.setAttribute('role', 'button');
+      fold.setAttribute('tabindex', '0');
+      var body = fold.nextElementSibling;
+      function toggle() {
+        fold.classList.toggle('cd-open');
+        if (body) { body.classList.toggle('cd-open'); }
+      }
+      fold.addEventListener('click', toggle);
+      fold.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggle();
+        }
+      });
+    });
+  }
+
+  mw.hook('wikipage.content').add(function ($content) {
+    init($content && $content[0] ? $content[0] : document);
+  });
+}());

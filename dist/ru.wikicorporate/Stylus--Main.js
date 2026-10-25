@@ -1,4 +1,4 @@
-/* jshint esversion: 11 */
+/* Stylus Preprocessor Adapter — Direct MediaWiki:Custom-*.styl (ES2026) */
 (() => {
     'use strict';
 
@@ -6,47 +6,36 @@
     window.isStylusAdapterLoaded = true;
 
     const CONFIG = {
-        localPage: 'Модуль:Stylus',
+        localPage: 'MediaWiki:Custom-Local.styl',
         centralApiUrl: 'https://wikicorporate.fandom.com/ru/api.php',
-        centralPage: 'Модуль:GlobalStylus',
+        centralPage: 'MediaWiki:Custom-Global.styl',
         cdnUrl: 'https://cdnjs.cloudflare.com/ajax/libs/stylus/0.54.8/stylus.min.js',
         styleId: 'fandom-compiled-stylus',
         cacheKey: 'fandom_custom_stylus_css',
         cacheTimeKey: 'fandom_custom_stylus_time',
-        cacheTTL: 60 * 60 * 1000 // Время жизни кэша: 1 час
+        cacheTTL: 60 * 60 * 1000 // 1 час
     };
 
-    // Безопасное чтение из кэша
     const getCache = () => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const wgAction = mw.config.get('wgAction');
-            
-            // Игнорируем кэш, если администратор форсирует обновление
-            const forceReload = urlParams.has('clearcache') || wgAction === 'purge' || wgAction === 'edit';
-            if (forceReload) return null;
+            if (urlParams.has('clearcache') || wgAction === 'purge' || wgAction === 'edit') return null;
 
             const cachedCss = localStorage.getItem(CONFIG.cacheKey);
             const cachedTime = localStorage.getItem(CONFIG.cacheTimeKey);
-            
-            // Если кэш существует и ему меньше часа — отдаем его
             if (cachedCss && cachedTime && (Date.now() - parseInt(cachedTime, 10) < CONFIG.cacheTTL)) {
                 return cachedCss;
             }
-        } catch { 
-            /* Игнорируем ошибки localStorage */ 
-        }
+        } catch {}
         return null;
     };
 
-    // Безопасная запись в кэш
     const setCache = (css) => {
         try {
             localStorage.setItem(CONFIG.cacheKey, css);
             localStorage.setItem(CONFIG.cacheTimeKey, Date.now().toString());
-        } catch { 
-            /* Игнорируем ошибки превышения квоты памяти */ 
-        }
+        } catch {}
     };
 
     const applyCSS = (css) => {
@@ -60,9 +49,8 @@
     };
 
     const loadStylusLibrary = () => {
+        if (window.stylus) return Promise.resolve();
         return new Promise((resolve, reject) => {
-            if (window.stylus) return resolve();
-            
             const script = document.createElement('script');
             script.src = CONFIG.cdnUrl;
             script.onload = resolve;
@@ -88,53 +76,43 @@
             if (!response.ok) return '';
 
             const data = await response.json();
-            const rawContent = data.query?.pages?.[0]?.revisions?.[0]?.slots?.main?.content;
-            
-            if (!rawContent) return '';
-
-            const match = rawContent.match(/\[=\[\s*([\s\S]*?)\s*\]=\]/);
-            return match ? match[1] : '';
+            const page = data.query?.pages?.[0];
+            if (!page || page.missing) return '';
+            return page.revisions?.[0]?.slots?.main?.content ?? '';
         } catch {
             return '';
         }
     };
 
-    // Обертка компилятора в Promise для использования с async/await
-    const compileStylus = (rawCode) => {
-        return new Promise((resolve, reject) => {
-            window.stylus.render(rawCode, (err, css) => {
-                if (err) reject(err);
-                else resolve(css);
-            });
+    const compileStylus = (rawCode) => new Promise((resolve, reject) => {
+        window.stylus.render(rawCode, (err, css) => {
+            if (err) reject(err);
+            else resolve(css);
         });
-    };
+    });
 
     const initCompiler = async () => {
         try {
-            // 1. Пробуем достать готовый CSS из кэша
             const cachedCSS = getCache();
             if (cachedCSS) {
                 applyCSS(cachedCSS);
-                return; // Мгновенный выход без лишних сетевых запросов и затрат CPU!
+                return;
             }
 
-            // 2. Если кэша нет, грузим библиотеку и модули параллельно
             const [, globalCode, localCode] = await Promise.all([
                 loadStylusLibrary(),
                 fetchSource(CONFIG.centralPage, CONFIG.centralApiUrl),
                 fetchSource(CONFIG.localPage)
             ]);
 
-            const combinedCode = `${globalCode}\n\n${localCode}`;
-            if (!combinedCode.trim()) return;
+            const combinedCode = `${globalCode}\n\n${localCode}`.trim();
+            if (!combinedCode) return;
 
-            // 3. Компилируем свежий CSS
             const compiledCss = await compileStylus(combinedCode);
-
-            // 4. Применяем на страницу и сохраняем в кэш
-            applyCSS(compiledCss);
-            setCache(compiledCss);
-
+            if (compiledCss) {
+                applyCSS(compiledCss);
+                setCache(compiledCss);
+            }
         } catch (error) {
             console.error('[Stylus Adapter Error]', error);
         }

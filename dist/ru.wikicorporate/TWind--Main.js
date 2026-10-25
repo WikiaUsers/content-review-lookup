@@ -1,4 +1,4 @@
-/* jshint esversion: 11 */
+/* TWind (Tailwind-in-JS) Runtime Adapter — Direct MediaWiki:Custom-*.json (ES2026) */
 (async () => {
     'use strict';
 
@@ -6,42 +6,39 @@
     window.fandomTwindLoaded = true;
 
     const CONFIG = {
-        localPage: 'Модуль:Twind/LocalConfig',
-        centralPage: 'Модуль:Twind/GlobalConfig',
+        localJsonPage: 'MediaWiki:Custom-TwindLocal.json',
+        centralJsonPage: 'MediaWiki:Custom-TwindGlobal.json',
         centralApiUrl: 'https://wikicorporate.fandom.com/ru/api.php',
         cacheKey: 'fandom_twind_config',
         cacheTimeKey: 'fandom_twind_time',
-        cacheTTL: 60 * 60 * 1000 // Кэш живет 1 час
+        cacheTTL: 60 * 60 * 1000 // 1 час
     };
 
-    // Глубокая склейка объектов (позволяет слить theme.extend.colors из двух модулей)
     const mergeConfigs = (global, local) => {
         const result = { ...global };
-        for (const key in local) {
-            if (typeof local[key] === 'object' && local[key] !== null && !Array.isArray(local[key])) {
-                result[key] = mergeConfigs(result[key] || {}, local[key]);
+        for (const [key, val] of Object.entries(local ?? {})) {
+            if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                result[key] = mergeConfigs(result[key] ?? {}, val);
             } else {
-                result[key] = local[key];
+                result[key] = val;
             }
         }
         return result;
     };
 
-    // Чтение кэша с учетом сброса админами
     const getCache = () => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const wgAction = mw.config.get('wgAction');
-            
             if (urlParams.has('clearcache') || wgAction === 'purge' || wgAction === 'edit') return null;
 
             const cachedConfig = localStorage.getItem(CONFIG.cacheKey);
             const cachedTime = localStorage.getItem(CONFIG.cacheTimeKey);
-            
             if (cachedConfig && cachedTime && (Date.now() - parseInt(cachedTime, 10) < CONFIG.cacheTTL)) {
                 return JSON.parse(cachedConfig);
             }
-        } catch { /* Игнорируем ошибки доступа к localStorage */ }
+        } catch {}
         return null;
     };
 
@@ -52,13 +49,12 @@
         } catch {}
     };
 
-    // Парсинг JSON из LUA-модулей
-    const fetchSource = async (pageTitle, apiUrl = mw.util.wikiScript('api')) => {
+    const fetchSource = async (jsonTitle, apiUrl = mw.util.wikiScript('api')) => {
         try {
             const params = new URLSearchParams({
                 action: 'query',
                 prop: 'revisions',
-                titles: pageTitle,
+                titles: jsonTitle,
                 rvprop: 'content',
                 rvslots: 'main',
                 format: 'json',
@@ -68,56 +64,92 @@
             const response = await fetch(`${apiUrl}?${params.toString()}`);
             if (!response.ok) return {};
             const data = await response.json();
-            const rawContent = data.query?.pages?.[0]?.revisions?.[0]?.slots?.main?.content;
-            
-            if (!rawContent) return {};
-            
-            const match = rawContent.match(/\[=\[\s*([\s\S]*?)\s*\]=\]/);
-            return match ? JSON.parse(match[1]) : {};
+            const page = data.query?.pages?.[0];
+            if (!page || page.missing) return {};
+            const raw = page.revisions?.[0]?.slots?.main?.content;
+            return raw ? JSON.parse(raw) : {};
         } catch (error) {
-            console.warn(`[Twind] Ошибка загрузки конфига ${pageTitle}:`, error);
-            return {}; 
+            console.warn(`[Twind] Ошибка загрузки конфига ${jsonTitle}:`, error);
         }
+        return {};
+    };
+
+    const sanitizeClasses = (node) => {
+        if (!node || node.nodeType !== 1) return;
+
+        const cleanNode = (element) => {
+            if (!element.hasAttribute('class')) return;
+            const badClasses = element.classList.values()
+                .filter(cls => {
+                    const lower = cls.toLowerCase();
+                    return (
+                        lower.includes('url(') ||
+                        lower.includes('expression(') ||
+                        lower.includes('@import') ||
+                        lower.includes('javascript:')
+                    );
+                })
+                .toArray();
+
+            if (badClasses.length > 0) {
+                element.classList.remove(...badClasses);
+                console.warn('[TWind Security] Вырезан запрещённый класс:', badClasses);
+            }
+        };
+
+        cleanNode(node);
+        node.querySelectorAll('[class]').forEach(cleanNode);
     };
 
     const initTwind = async () => {
         try {
             let finalConfig = getCache();
 
-            // Если кэш пуст, грузим конфиги через API
             if (!finalConfig) {
                 const [globalConfig, localConfig] = await Promise.all([
-                    fetchSource(CONFIG.centralPage, CONFIG.centralApiUrl),
-                    fetchSource(CONFIG.localPage)
+                    fetchSource(CONFIG.centralJsonPage, CONFIG.centralApiUrl),
+                    fetchSource(CONFIG.localJsonPage)
                 ]);
 
                 finalConfig = mergeConfigs(globalConfig, localConfig);
                 setCache(finalConfig);
             }
 
-            // Динамический импорт движка Twind
-            const { install } = await import('https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm');
-            const { default: presetTailwind } = await import('https://cdn.jsdelivr.net/npm/@twind/preset-tailwind@1.1.4/+esm');
+            const [{ install }, { default: presetTailwind }] = await Promise.all([
+                import('https://cdn.jsdelivr.net/npm/@twind/core@1.1.3/+esm'),
+                import('https://cdn.jsdelivr.net/npm/@twind/preset-tailwind@1.1.4/+esm')
+            ]);
 
             const rootElement = document.querySelector('.mw-parser-output');
             if (!rootElement) return;
 
-            // Инициализация Twind
-            install({
-                // Сканируем только статьи, не трогаем интерфейс Фэндома
-                target: rootElement, 
-                presets: [
-                    presetTailwind({
-                        // Отключаем сброс базовых стилей (иначе сломаются списки и ссылки всей вики)
-                        preflight: false 
-                    })
-                ],
-                // Встраиваем наш склеенный конфиг из LUA
-                ...finalConfig 
+            sanitizeClasses(rootElement);
+
+            const securityObserver = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        sanitizeClasses(mutation.target);
+                    } else if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(sanitizeClasses);
+                    }
+                }
+            });
+            securityObserver.observe(rootElement, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class']
             });
 
-            console.log('[Twind Loader] Успешно инициализирован с конфигом:', finalConfig);
-            
+            install({
+                target: rootElement,
+                presets: [
+                    presetTailwind({
+                        preflight: false
+                    })
+                ],
+                ...finalConfig
+            });
         } catch (error) {
             console.error('[Twind Loader] Критическая ошибка:', error);
         }
@@ -126,6 +158,6 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initTwind);
     } else {
-        initTwind();
+        initMasterCSS();
     }
 })();

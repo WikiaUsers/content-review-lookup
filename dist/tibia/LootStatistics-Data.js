@@ -18,6 +18,22 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+//gold gain reduced by ~10%
+'Bulltaur Forgepriest':'15.33.c9e45e',
+'Bulltaur Alchemist':'15.33.c9e45e',
+'Bulltaur Brute':'15.33.c9e45e',
+//XP reduced
+'Dworc Shadowstalker':'15.33.c9e45e',
+'Orclops Bloodbreaker':'15.33.c9e45e',
+'Gloom Maw':'15.33.c9e45e',
+//gold gain reduced by ~10% - XP increased
+'True Midnight Asura':'15.33.c9e45e',
+//gold gain reduced by ~10%
+'True Frost Flower Asura':'15.33.c9e45e',
+//gold gain reduced by ~14% - XP increased
+'True Dawnfire Asura':'15.33.c9e45e',
+//XP increased
+'True Feverbloom Asura':'15.33.c9e45e',
 //
 'Vexclaw':'15.32.87b266',
 'Dark Torturer':'15.32.87b266',
@@ -94,11 +110,11 @@ window.loot_parser_data = {
 //
 //'Grimeleech':'15.12.c7d92c',
 // Norcs nerfs, rootthings buffs
-'Dworc Shadowstalker':'15.11.dd3523',
-'Gloom Maw':'15.11.dd3523',
+//'Dworc Shadowstalker':'15.11.dd3523',
+//'Gloom Maw':'15.11.dd3523',
 'Norcferatu Heartless': '15.11.dd3523',
 'Norcferatu Nightweaver':'15.11.dd3523',
-'Orclops Bloodbreaker':'15.11.dd3523',
+//'Orclops Bloodbreaker':'15.11.dd3523',
 'Rootthing Amber Shaper':'15.11.dd3523',
 'Rootthing Bug Tracker':'15.11.dd3523',
 'Rootthing Nutshell':'15.11.dd3523',
@@ -116,7 +132,7 @@ window.loot_parser_data = {
 //'Varg':'15.11.b91244',
 //'Orclops Bloodbreaker':'15.11.b91244',
 //'Dworc Shadowstalker':'15.11.b91244',
-//gold amount change [[Updates/15.11.c5bf24]]
+// Gold amount changes [[Updates/15.11.c5bf24]]
 //'Norcferatu Heartless': '15.11.c5bf24',
 //'Gloom Maw':'15.11.c5bf24',
 //'Norcferatu Nightweaver':'15.11.c5bf24',
@@ -153,7 +169,7 @@ window.loot_parser_data = {
 //'Vexclaw': '14.12.5229e4',
 'Demon': '14.12.5229e4',
 'Yielothax': '14.12.5229e4',
-'Bulltaur Brute': '14.12.5229e4',
+//'Bulltaur Brute': '14.12.5229e4',
 //'Brain Squid': '14.12.5229e4',
 'Energuardian of Tales': '14.12.5229e4',
 'Knowledge Elemental': '14.12.5229e4',
@@ -420,9 +436,9 @@ window.loot_parser_data = {
 'Naga Warrior': '13.22.14242',
 'Makara': '13.22.14242',
 //'Hellhound': '13.22.14242',
-'True Dawnfire Asura': '13.22.14242',
-'True Midnight Asura': '13.22.14242',
-'True Frost Flower Asura': '13.22.14242',
+//'True Dawnfire Asura': '13.22.14242',
+//'True Midnight Asura': '13.22.14242',
+//'True Frost Flower Asura': '13.22.14242',
 //'Crape Man': '13.22.14242',
 //'Harpy': '13.22.14242',
 //'Rhindeer': '13.22.14242',

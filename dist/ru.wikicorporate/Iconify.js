@@ -5,11 +5,12 @@
     window.fandomIconifyObserver = true;
 
     const SCRIPT_PAGE = 'MediaWiki:Iconify/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
         const script = document.createElement('script');
-        script.src = `${CENTRAL_API}?title=${encodeURIComponent(SCRIPT_PAGE)}&action=raw&ctype=text/javascript&v=1.0`;
+        script.src = `${CENTRAL_API}?title=${encodeURIComponent(SCRIPT_PAGE)}&action=raw&ctype=text/javascript&v=${VERSION}`;
         document.head.appendChild(script);
     };
 
@@ -26,6 +27,9 @@
         checkDOM();
     };
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

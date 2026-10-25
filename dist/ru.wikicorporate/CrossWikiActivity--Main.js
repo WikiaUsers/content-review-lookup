@@ -408,10 +408,15 @@ const AppTemplate = `
 /* === LAYER: 04_state.js === */
 const AppState = {
         data() {
-            const uGroups = mw.config.get('wgUserGroups') ?? [];
-            const hasRollback = uGroups.some(g => ['sysop', 'content-moderator', 'rollback', 'staff', 'wiki-representative', 'soap'].includes(g));
-            const hasPatrol = uGroups.some(g => ['sysop', 'content-moderator', 'staff', 'wiki-representative', 'soap', 'wiki-specialist'].includes(g));
-            const hasBlock = uGroups.some(g => ['sysop', 'staff', 'wiki-representative', 'soap'].includes(g));
+            const uGroupsSet = new Set(mw.config.get('wgUserGroups') ?? []);
+            const rollbackGroups = new Set(['sysop', 'content-moderator', 'rollback', 'staff', 'wiki-representative', 'soap']);
+            const patrolGroups = new Set(['sysop', 'content-moderator', 'staff', 'wiki-representative', 'soap', 'wiki-specialist']);
+            const blockGroups = new Set(['sysop', 'staff', 'wiki-representative', 'soap']);
+
+            // ES2025/ES2026 Set.prototype.isDisjointFrom (O(1) проверка пересечения множеств групп)
+            const hasRollback = !uGroupsSet.isDisjointFrom(rollbackGroups);
+            const hasPatrol = !uGroupsSet.isDisjointFrom(patrolGroups);
+            const hasBlock = !uGroupsSet.isDisjointFrom(blockGroups);
 
             let cachedPatrolled = [];
             try {
@@ -501,24 +506,19 @@ const AppMethodsApi = {
 
         async fetchConfig() {
             try {
-                const api = new mw.Api();
-                const res = await api.get({
-                    action: 'expandtemplates',
-                    text: '{{#invoke:CrossWikiActivity|toJSON}}',
-                    prop: 'wikitext',
-                    formatversion: 2,
-                    _: Date.now()
-                });
-                const rawText = res?.expandtemplates?.wikitext?.trim();
-                if (rawText) {
-                    const parsed = JSON.parse(rawText);
+                const rawUrl = `${mw.util.wikiScript()}?title=MediaWiki:Custom-CrossWikiActivity.json&action=raw&ctype=application/json`;
+                const rawRes = await fetch(rawUrl);
+                if (!rawRes.ok) return;
+
+                const parsed = await rawRes.json();
+                if (parsed) {
                     this.wikis = Array.isArray(parsed.wikis) ? parsed.wikis : [];
                     if (parsed.settings && typeof parsed.settings === 'object') {
                         Object.assign(this.settings, parsed.settings);
                     }
                 }
             } catch (e) {
-                console.error('[CWA] Ошибка загрузки конфига:', e);
+                console.error('[CWA] Ошибка загрузки MediaWiki:Custom-CrossWikiActivity.json:', e);
             }
         },
 
@@ -618,7 +618,7 @@ const AppMethodsApi = {
 
                                     for (const uRes of uResults) {
                                         for (const u of uRes?.query?.users ?? []) {
-                                            if (u.groups?.some(g => trustedGroups.has(g))) {
+                                            if (u.groups && !new Set(u.groups).isDisjointFrom(trustedGroups)) {
                                                 trustedUsers.add(u.name);
                                             }
                                         }
@@ -677,8 +677,9 @@ const AppMethodsApi = {
                     for (const e of wikiEdits) editsMap.set(e.id, e);
                 }
 
-                this.edits = Array.from(editsMap.values())
+                this.edits = editsMap.values()
                     .filter(edit => new Date(edit.timestamp) >= endDate)
+                    .toArray()
                     .toSorted((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             } finally {
                 this.isLoading = false;

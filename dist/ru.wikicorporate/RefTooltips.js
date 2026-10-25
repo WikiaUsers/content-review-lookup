@@ -1,29 +1,43 @@
-const cloneReferences = () => {
-    const refs = document.querySelectorAll('[id^="cite_ref"]');
-    refs.forEach((ref) => {
-        const targetId = decodeURIComponent(ref.children[0].hash.substring(1));
-        const targetElement = document.querySelector(`[id="${targetId}"] .reference-text`);
-        if (targetElement) {
-            ref.appendChild(targetElement.cloneNode(true));
-        }
-    });
-};
-const observer = new MutationObserver((mutations) => {
-    let foundReferences = false;
-    mutations.forEach((mutation) => {
-        if (mutation.type === "childList") {
-            if (document.querySelectorAll('[id^="cite_ref"]').length > 0) {
-                foundReferences = true;
+/**
+ * Всплывающие подсказки для сносок (<ref>)
+ */
+(() => {
+    'use strict';
+    if (window.isRefTooltipsLoaded) return;
+    window.isRefTooltipsLoaded = true;
+
+    const cloneReferences = ($content) => {
+        const root = ($content && $content[0]) || document;
+        const refs = root.querySelectorAll('[id^="cite_ref"]:not([data-ref-cloned="true"])');
+        if (!refs.length) return false;
+
+        refs.forEach(ref => {
+            const anchor = ref.querySelector('a[href*="#cite_note"]');
+            if (!anchor || !anchor.hash) return;
+
+            const targetId = decodeURIComponent(anchor.hash.substring(1));
+            if (!targetId) return;
+
+            const noteEl = document.getElementById(targetId);
+            const targetElement = noteEl ? noteEl.querySelector('.reference-text') : null;
+            if (targetElement) {
+                ref.dataset.refCloned = 'true';
+                ref.appendChild(targetElement.cloneNode(true));
             }
-        }
-    });
-    if (foundReferences) {
+        });
+        return true;
+    };
+
+    const init = () => {
         cloneReferences();
-        observer.disconnect();
+        if (window.mw && window.mw.hook) {
+            window.mw.hook('wikipage.content').add(cloneReferences);
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
-});
-const config = {
-    childList: true,
-    subtree: true,
-};
-observer.observe(document.body, config);
+})();

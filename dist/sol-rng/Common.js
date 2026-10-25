@@ -29,22 +29,18 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-	'Idk what life is or what the meaning is': ['fandomcontributor'],
-	'IamIV': ['fandomcontributor'],
-	'NoobieAtCode': ['fandomcontributor'],
-	'MattPlays607': ['fandomcontributor'],
-	'Zzombie Noel': ['fandomcontributor'],
-	'CraftyCookie': ['fandomcontributor'],
-	'Mr Robloxiancat': ['fandomcontributor'],
-	'OccraD': ['fandomcontributor'],
-	'OrbitSB': ['fandomcontributor'],
-	'KDA Killed': ['fandomcontributor'],
-	'Arcsanta': ['fandomcontributor'],
-	'Ghoxst.X': ['fandomcontributor'],
-	'IcySpriggan': ['fandomcontributor'],
+    'NoobieAtCode': ['fandomcontributor'],
+    'MattPlays607': ['fandomcontributor'],
+    'Zzombie Noel': ['fandomcontributor'],
+    'CraftyCookie': ['fandomcontributor'],
+    'Mr Robloxiancat': ['fandomcontributor'],
+    'OccraD': ['fandomcontributor'],
+    'KDA Killed': ['fandomcontributor'],
+    'Arcsanta': ['fandomcontributor'],
+    'IcySpriggan': ['fandomcontributor'],
     'Rainworth': ['fandomcontributor'],
     'F PsinFand0m': ['fandomcontributor'],
-	//'UserName1': ['fandomcontributor'],
+    //'UserName1': ['fandomcontributor'],
 }
 
 /*Test Popups*/

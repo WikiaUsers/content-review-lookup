@@ -282,7 +282,18 @@ $(document).ready(function () {
         }
     }
  
-    mw.loader.using('mediawiki.api', function () {
+    // Common.js starts this download independently of sandbox initialization.
+    // Also work when this script runs first, or is loaded without Common.js.
+    var select2Ready = typeof $.fn.select2 === 'function'
+        ? Promise.resolve()
+        : (window.dvSelect2Ready = window.dvSelect2Ready || mw.loader.getScript(
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+        ));
+
+    Promise.all([mw.loader.using('mediawiki.api'), select2Ready]).then(function () {
+        if (typeof $.fn.select2 !== 'function') {
+            throw new Error('Select2 loaded without registering its jQuery plugin.');
+        }
         var api = new mw.Api();
 
         mw.hook('wikipage.content').add(function () {
@@ -304,5 +315,7 @@ $(document).ready(function () {
                     console.error(error);
                 });
         });
+    }).catch(function (error) {
+        console.error('Unable to initialize breeding sandbox:', error);
     });
 });

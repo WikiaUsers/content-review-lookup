@@ -49,7 +49,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		naoaplica: 'not applicable',
 		itemA: 'Your item', itemB: 'Other item', nivel: 'Level', rar: 'Current rarity', atrs: 'Attributes',
 		atrsdica: 'they change with the rune', bons: 'Bonus', bonsdica: 'they don\'t change', addatr: '+ attribute', addbon: '+ bonus',
-		valorop: 'Sell value (optional)', evoluir: 'Evolve with the rune', semruna: 'No rune', resultado: 'After the evolution',
+		valorop: 'Sell value (optional)', evoluir: 'Evolve with the rune', semruna: 'No rune', encslot: 'Slot enchantment', encdica: '+%s%% per level on all the attributes, bonus included. The enchantment belongs to the slot: whatever item you put there gets it too.', resultado: 'After the evolution',
 		atual: 'now', escada: 'At each rarity', desconhecido: 'We don\'t know yet how much this rune raises the attributes. Add the numbers to %s.',
 		novobonus: 'A new bonus may appear after the evolution; the game\'s preview and this calculator don\'t show it.',
 		comparar: '＋ Compare with another item', semcomparar: '✕ Remove the comparison', comparacao: 'Comparison',
@@ -1084,14 +1084,15 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		ITENS.forEach(function (x) { PORNOME[x.n] = x; });
 		var LG = el.getAttribute('lang') || 'en';
 		var QL = (LG !== 'en') ? 'uselang=' + LG : '';
-		var EXEMPLO = { ex: 'Arma dos Botões Perdidos', tipo: 'weapon', cls: 'universal', nivel: '11', rar: 2, alvo: 3, valor: '1053',
+		var EXEMPLO = { ex: 'Arma dos Botões Perdidos', tipo: 'weapon', cls: 'universal', nivel: '11', rar: 2, alvo: 3, enc: 0, valor: '1053',
 			atr: [{ k: 'damage', v: '8.75' }, { k: 'critchance', v: '2.66' }, { k: 'critdamage', v: '9.68' }], bon: [{ k: 'critchance', v: '2' }] };
-		function novo() { return { tipo: '', cls: '', nivel: '', rar: 0, alvo: 0, valor: '', atr: [{ k: 'damage', v: '' }], bon: [] }; }
+		function novo() { return { tipo: '', cls: '', nivel: '', rar: 0, alvo: 0, enc: 0, valor: '', atr: [{ k: 'damage', v: '' }], bon: [] }; }
 		function copia(o) { return JSON.parse(JSON.stringify(o)); }
 		function valido(it) {
 			if (!it || typeof it !== 'object' || !(it.atr instanceof Array) || !(it.bon instanceof Array)) { return null; }
 			it.rar = Math.max(0, Math.min(N - 1, parseInt(it.rar, 10) || 0));
 			it.alvo = Math.max(it.rar, Math.min(N - 1, parseInt(it.alvo, 10) || 0));
+			it.enc = Math.max(0, Math.min(99, parseInt(it.enc, 10) || 0));
 			it.atr = it.atr.filter(function (l) { return l && ST[l.k]; });
 			it.bon = it.bon.filter(function (l) { return l && ST[l.k]; });
 			// a card tied to an item takes its numbers again (the data page may have changed)
@@ -1175,14 +1176,15 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		}
 		// the item at rarity j: main lines (multiplied), bonus lines (as they are), Gear Score, sell value, totals per attribute
 		function estado(it, j) {
-			var f = fator(it.rar, j), r = { linhas: [], bonus: [], gs: 0, valor: null, total: {}, f: f, vazio: true };
+			var e = 1 + ((typeof D.enc === 'number') ? D.enc : 3) / 100 * (it.enc || 0);   // the slot enchantment: every line, bonus included
+			var f0 = fator(it.rar, j), f = (f0 === null) ? null : f0 * e, r = { linhas: [], bonus: [], gs: 0, valor: null, total: {}, f: f, vazio: true };
 			function somar(k, v) { r.total[k] = (r.total[k] || 0) + v; }
 			it.atr.forEach(function (l) {
 				var v0 = (typeof l.x === 'number' && isFinite(l.x)) ? l.x : numCalc(l.v);
 				if (v0 === null) { return; }
 				r.vazio = false;
 				var v1 = (f === null) ? null : v0 * f;
-				r.linhas.push({ k: l.k, v0: v0, v1: v1 });
+				r.linhas.push({ k: l.k, v0: v0 * e, v1: v1 });
 				if (v1 === null || r.gs === null) { r.gs = null; } else {
 					var w = peso(l.k);
 					r.gs = (w === null) ? null : r.gs + v1 * w;
@@ -1193,6 +1195,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 				var v = numCalc(l.v);
 				if (v === null) { return; }
 				r.vazio = false;
+				v = v * e;
 				r.bonus.push({ k: l.k, v: v });
 				if (r.gs !== null) {
 					var w = peso(l.k);
@@ -1475,6 +1478,15 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 				runas.appendChild(b);
 			});
 			c.appendChild(runas);
+			var pct = (typeof D.enc === 'number') ? D.enc : 3;
+			it.enc = parseInt(it.enc, 10) || 0;
+			c.appendChild(rotulo(t('encslot'), '+' + (it.enc * pct) + '%'));
+			var enc = criar('div', 'qbc-enc');
+			enc.appendChild(botao('qbc-mini', '−', function () { if (it.enc > 0) { it.enc--; guardarCalc(); desenhar(); } }));
+			enc.appendChild(criar('b', 'qbc-enc-n', '+' + it.enc));
+			enc.appendChild(botao('qbc-mini', '+', function () { if (it.enc < 99) { it.enc++; guardarCalc(); desenhar(); } }));
+			c.appendChild(enc);
+			c.appendChild(criar('div', 'qbc-nota', t('encdica').replace('%s%%', pct + '%').replace('%s %%', pct + ' %')));
 			var res = criar('div', 'qbc-res');
 			c.appendChild(res);
 			areas[lado] = res;
@@ -1652,7 +1664,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 			if (!est.b) {
 				raiz.appendChild(botao('qbc-cmpb', t('comparar'), function () {
 					est.b = novo();
-					est.b.rar = est.a.alvo; est.b.alvo = est.a.alvo;
+					est.b.rar = est.a.alvo; est.b.alvo = est.a.alvo; est.b.enc = est.a.enc || 0;
 					guardarCalc(); desenhar();
 				}));
 				areaCmp = null;
@@ -1668,6 +1680,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 
 	/* ---------- styles of everything above ---------- */
 	var PX = 'font-family:Silkscreen,"Pixelify Sans",monospace;';
+	mw.util.addCSS('.qbc-enc{display:flex;align-items:center;gap:10px;margin:4px 0 2px}.qbc-enc .qbc-mini{min-width:2.4em;font-size:1.1em}.qbc-enc-n{min-width:2.5em;text-align:center;font-size:1.1em}');
 	mw.util.addCSS(
 		// edit window
 		'.qb-ed-raiz{margin:0;padding:0;border:0}' +

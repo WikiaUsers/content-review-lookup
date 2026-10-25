@@ -8,7 +8,4 @@ importArticles({
     ]
 });
 
-window.AddRailModule = [
-    'Template:RailModule',
-    'Template:Pollseasons'
-];
+window.AddRailModule = ['Template:RailModule'];

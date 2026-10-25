@@ -1,11 +1,28 @@
-/* Fandom Loader: Mermaid.js (ES2022) */
+/* Fandom Loader: Mermaid.js (ES2024) */
 (() => {
+    'use strict';
     if (window.FandomMermaidLoaded) return;
     window.FandomMermaidLoaded = true;
 
-    const sanitize = (html) => window.DOMPurify?.sanitize(html) ?? html;
+    let mermaidInstance = null;
+    let loadPromise = null;
+    let graphCounter = 0;
 
-    // Быстрое хеширование (cyrb53) для создания ключей кэша
+    // Безопасная очистка SVG: удаляем любые скрипты и инлайн-обработчики событий
+    const sanitizeSVG = (svgString) => {
+        if (window.DOMPurify) return window.DOMPurify.sanitize(svgString);
+        const doc = new DOMParser().parseFromString(svgString, 'text/html');
+        doc.querySelectorAll('script, iframe, object, embed').forEach(el => el.remove());
+        doc.querySelectorAll('*').forEach(el => {
+            for (const attr of Array.from(el.attributes)) {
+                if (attr.name.toLowerCase().startsWith('on') || attr.value.toLowerCase().includes('javascript:')) {
+                    el.removeAttribute(attr.name);
+                }
+            }
+        });
+        return doc.body.innerHTML;
+    };
+
     const cyrb53 = (str, seed = 0) => {
         let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
         for (let i = 0, ch; i < str.length; i++) {
@@ -18,37 +35,60 @@
         return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     };
 
+    const ensureMermaid = () => {
+        if (mermaidInstance) return Promise.resolve(mermaidInstance);
+        loadPromise ??= (async () => {
+            const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
+            const isDark = document.body.classList.contains('theme-fandomdesktop-dark') || document.body.classList.contains('theme-dark');
+            mermaid.initialize({
+                startOnLoad: false,
+                securityLevel: 'strict',
+                theme: isDark ? 'dark' : 'default'
+            });
+            mermaidInstance = mermaid;
+            return mermaid;
+        })();
+        return loadPromise;
+    };
+
     const initMermaid = async (nodes) => {
-        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
-        
-        mermaid.initialize({ 
-            startOnLoad: false, 
-            securityLevel: 'strict', // GER-compliant
-            theme: document.body.classList.contains('theme-dark') ? 'dark' : 'default'
-        });
+        let mermaid;
+        try {
+            mermaid = await ensureMermaid();
+        } catch (error) {
+            console.error('[Mermaid Loader Error]', error);
+            return;
+        }
+
+        const isDark = document.body.classList.contains('theme-fandomdesktop-dark') || document.body.classList.contains('theme-dark');
+        const themeKey = isDark ? 'dark' : 'light';
 
         for (const node of nodes) {
             if (node.dataset.processed) continue;
-            node.dataset.processed = "true";
+            node.dataset.processed = 'true';
 
             const graphText = node.textContent.trim();
-            const hash = `mermaid_${cyrb53(graphText)}`;
-            
-            // Чтение из кэша
-            const cachedSVG = localStorage.getItem(hash);
-            if (cachedSVG) {
-                node.innerHTML = sanitize(cachedSVG);
-                continue;
-            }
+            if (!graphText) continue;
+
+            const hash = `mermaid_${themeKey}_${cyrb53(graphText)}`;
 
             try {
-                const { svg } = await mermaid.render(`graph_${Date.now()}`, graphText);
-                const safeSVG = sanitize(svg);
+                const cachedSVG = localStorage.getItem(hash);
+                if (cachedSVG) {
+                    node.innerHTML = sanitizeSVG(cachedSVG);
+                    continue;
+                }
+            } catch {}
+
+            try {
+                graphCounter++;
+                const { svg } = await mermaid.render(`mermaid_graph_${Date.now()}_${graphCounter}`, graphText);
+                const safeSVG = sanitizeSVG(svg);
                 node.innerHTML = safeSVG;
-                try { localStorage.setItem(hash, safeSVG); } catch (e) {} // Защита от переполнения квоты
+                try { localStorage.setItem(hash, safeSVG); } catch {}
             } catch (error) {
                 console.warn('Mermaid Error:', error);
-                node.innerHTML = sanitize(`<div class="error">Ошибка рендера схемы</div>`);
+                node.innerHTML = '<div class="error">Ошибка рендера схемы</div>';
             }
         }
     };
@@ -61,8 +101,7 @@
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    
-    // Инициализация существующих узлов
+
     const initialNodes = document.querySelectorAll('.wiki-mermaid:not([data-processed])');
     if (initialNodes.length > 0) initMermaid(initialNodes);
 })();

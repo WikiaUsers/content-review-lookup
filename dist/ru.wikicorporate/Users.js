@@ -1,19 +1,27 @@
+/**
+ * Кастомные плашки и теги участников в профиле, комментариях и лидерборде
+ * Источник данных: MediaWiki:Custom-Users.json
+ */
 (() => {
     'use strict';
+    if (window.isCustomUsersTagsLoaded) return;
+    window.isCustomUsersTagsLoaded = true;
 
-    const MODULE_NAME = 'Users';
+    const JSON_PAGE = 'MediaWiki:Custom-Users.json';
 
     const renderProfileTags = (data) => {
         const profileUser = mw.config.get('profileUserName');
         if (!profileUser) return;
 
         const userData = data.users[profileUser];
-        if (!userData || !userData.tags || !userData.tags.length) return;
+        if (!userData || !Array.isArray(userData.tags) || !userData.tags.length) return;
 
         const containerSelector = '.user-identity-box .user-identity-header__attributes';
-        let container = document.querySelector(containerSelector);
 
         const build = (cnt) => {
+            if (cnt.dataset.customTagsRendered === 'true') return;
+            cnt.dataset.customTagsRendered = 'true';
+
             if (userData.hideDefault) cnt.classList.add('hide-default-tags');
 
             userData.tags.forEach(tagId => {
@@ -22,7 +30,6 @@
 
                 const span = document.createElement('span');
                 let className = `user-identity-header__tag custom-profile-tag ${tagDef.class || ''}`;
-                
                 if (tagDef.tooltip) className += ' has-tooltip';
                 span.className = className.trim();
 
@@ -44,29 +51,31 @@
             });
         };
 
+        const container = document.querySelector(containerSelector);
         if (container) {
             build(container);
         } else {
             const observer = new MutationObserver((mutations, obs) => {
-                container = document.querySelector(containerSelector);
-                if (container) {
-                    obs.disconnect(); 
-                    build(container);
+                const found = document.querySelector(containerSelector);
+                if (found) {
+                    obs.disconnect();
+                    build(found);
                 }
             });
             observer.observe(document.body, { childList: true, subtree: true });
-            setTimeout(() => obs.disconnect(), 10000);
+            setTimeout(() => observer.disconnect(), 10000);
         }
     };
 
     const renderInlineTags = (data) => {
-        const scanLinks = () => {
-            const links = document.querySelectorAll([
-                '[class^="EntityHeader_name"] a:not(.custom-inline-processed)',
-                'a[class^="EntityHeader_name"]:not(.custom-inline-processed)',
-                '.LeaderboardTable .user a:not(.custom-inline-processed)'
-            ].join(', '));
+        const selector = [
+            '[class^="EntityHeader_name"] a:not(.custom-inline-processed)',
+            'a[class^="EntityHeader_name"]:not(.custom-inline-processed)',
+            '.LeaderboardTable .user a:not(.custom-inline-processed)'
+        ].join(', ');
 
+        const scanLinks = () => {
+            const links = document.querySelectorAll(selector);
             if (!links.length) return;
 
             links.forEach(link => {
@@ -76,15 +85,14 @@
                 if (!username) return;
 
                 const userData = data.users[username];
-                if (userData && userData.tags && userData.tags.length > 0) {
-                    
+                if (userData && Array.isArray(userData.tags) && userData.tags.length > 0) {
                     const inlineTagId = userData.mainTag || userData.tags[0];
                     const tagDef = data.tags[inlineTagId];
 
                     if (tagDef) {
                         const prefixSpan = document.createElement('span');
                         prefixSpan.className = 'custom-inline-prefix';
-                        
+
                         const suffixSpan = document.createElement('span');
                         suffixSpan.className = 'custom-inline-suffix';
 
@@ -94,10 +102,10 @@
                             prefixSpan.appendChild(icon);
                             prefixSpan.appendChild(document.createTextNode(' '));
                         }
-                        
+
                         if (tagDef.tooltip) {
                             const txt = document.createElement('span');
-                            txt.className = `custom-inline-text ${tagDef.class || ''}`;
+                            txt.className = `custom-inline-text ${tagDef.class || ''}`.trim();
                             txt.textContent = tagDef.tooltip;
                             suffixSpan.appendChild(document.createTextNode(' '));
                             suffixSpan.appendChild(txt);
@@ -120,26 +128,22 @@
             debounceTimer = setTimeout(scanLinks, 100);
         });
         observer.observe(document.body, { childList: true, subtree: true });
-        scanLinks(); 
+        scanLinks();
     };
 
     const init = () => {
-        const api = new mw.Api();
-        api.get({
-            action: 'expandtemplates',
-            text: '{' + '{#invoke:' + MODULE_NAME + '|toJSON}}',
-            prop: 'wikitext',
-            formatversion: 2
-        }).then(response => {
-            const data = JSON.parse(response.expandtemplates.wikitext);
-            if (!data || !data.users || !data.tags) return;
-
-            renderProfileTags(data);
-            renderInlineTags(data);
-        }).catch(error => {
-            console.warn('Ошибка загрузки данных пользователей (Users):', error);
-        });
+        const rawUrl = `${mw.util.wikiScript()}?title=${encodeURIComponent(JSON_PAGE)}&action=raw&ctype=application/json`;
+        fetch(rawUrl)
+            .then(res => (res.ok ? res.json() : null))
+            .then(data => {
+                if (!data || !data.users || !data.tags) return;
+                renderProfileTags(data);
+                renderInlineTags(data);
+            })
+            .catch(error => {
+                console.warn('Ошибка загрузки MediaWiki:Custom-Users.json:', error);
+            });
     };
 
-    mw.loader.using('mediawiki.api').then(init);
+    mw.loader.using('mediawiki.util').then(init);
 })();

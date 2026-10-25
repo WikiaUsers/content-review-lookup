@@ -20,7 +20,7 @@ window.dev = window.dev || {};
 window.dev.i18n = window.dev.i18n || {};
 window.dev.i18n.overrides = window.dev.i18n.overrides || {};
 window.dev.i18n.overrides.ReportArticle = {
-  'default-body': 'An article has been reported: $1. It has been identified that you are part of a group set up to receive such reports.',
+  'default-body': 'An article has been reported: $1. It has been identified that you are part of the user rights group set up to receive such reports.',
   'default-body-note': 'Please review the report.\n',
 };
 

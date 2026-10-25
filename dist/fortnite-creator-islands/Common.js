@@ -431,6 +431,47 @@
 
 	var valueCount = 0;
 
+	/**
+	 * Every mutation + trait version a brainrot can have, grouped by the
+	 * multiplier it earns (mutation and traits add up; Default adds nothing;
+	 * nothing at all is x1). The same for every brainrot in the game: level
+	 * and evolution only scale the $/s. Returns { vals: [sorted multipliers],
+	 * by: { multiplier: [ { m: mutation index, t: [trait indexes] } ] } }.
+	 */
+	function incomeTies( data ) {
+		var sets = [ [] ], by = {}, vals = [];
+		function grow( from, picked ) {
+			var i, next;
+			for ( i = from; i < data.traits.length; i++ ) {
+				next = picked.concat( [ i ] );
+				sets.push( next );
+				if ( next.length < data.maxTraits ) {
+					grow( i + 1, next );
+				}
+			}
+		}
+		grow( 0, [] );
+		data.mutations.forEach( function ( m, mi ) {
+			var base = isDefault( m.n ) ? 0 : m.m;
+			sets.forEach( function ( t ) {
+				var v = base;
+				t.forEach( function ( i ) {
+					v += data.traits[ i ].m;
+				} );
+				v = Math.round( ( v || 1 ) * 100 ) / 100;
+				if ( !by[ v ] ) {
+					by[ v ] = [];
+					vals.push( v );
+				}
+				by[ v ].push( { m: mi, t: t } );
+			} );
+		} );
+		vals.sort( function ( a, b ) {
+			return a - b;
+		} );
+		return { vals: vals, by: by };
+	}
+
 	function buildValueCalculator( container, data, env ) {
 		var cat = valueCatalog( data );
 		var uid = 'ffb-calc-' + ( ++valueCount ) + '-';
@@ -931,6 +972,83 @@
 			targetOut.appendChild( el( 'span', 'ffb-base-muted ffb-base-small ffb-base-block',
 				'From ' + where( state.evolution, state.level ) + ': ' + steps ) );
 		}
+		// ---- What can my cash do? How far a sum takes this brainrot (user,
+		// 2026-10-20); the sum is remembered like the target
+		var CASH_KEY = 'ffb-value-cash';
+		var cashEvolve = false;
+		var cashBox = el( 'div', 'ffb-calc-figure ffb-v2-cash' );
+		cashBox.appendChild( el( 'span', 'ffb-calc-figure-label', 'What can my cash do?' ) );
+		var cashIn = el( 'input', 'ffb-trade-input' );
+		cashIn.type = 'text';
+		cashIn.placeholder = 'e.g. 2.5Qa';
+		cashIn.setAttribute( 'inputmode', 'decimal' );
+		cashIn.value = readStorage( storage, CASH_KEY ) || '';
+		cashBox.appendChild( field( uid + 'cash', 'Cash to spend', cashIn, 'ffb-v2-cash-field' ).node );
+		var cashTog = el( 'label', 'ffb-base-check' );
+		var cashCheck = el( 'input' );
+		cashCheck.type = 'checkbox';
+		cashTog.appendChild( cashCheck );
+		cashTog.appendChild( el( 'span', null, ' Keep evolving past level ' + data.maxLevel ) );
+		cashBox.appendChild( cashTog );
+		var cashOut = el( 'div', 'ffb-v2-cash-out' );
+		cashBox.appendChild( cashOut );
+		result.appendChild( cashBox );
+		cashIn.addEventListener( 'input', function () {
+			if ( storage ) {
+				writeStorage( storage, CASH_KEY, cashIn.value );
+			}
+			renderCash();
+		} );
+		cashCheck.addEventListener( 'change', function () {
+			cashEvolve = cashCheck.checked;
+			renderCash();
+		} );
+
+		function renderCash() {
+			clear( cashOut );
+			var cash = parseMoney( cashIn.value );
+			if ( data.base === null || data.base === undefined ) {
+				cashOut.appendChild( el( 'span', 'ffb-base-muted ffb-base-small ffb-base-block', 'Not known yet: this brainrot’s income hasn’t been measured.' ) );
+				return;
+			}
+			if ( cash === null || !( cash > 0 ) ) {
+				cashOut.appendChild( el( 'span', 'ffb-base-muted ffb-base-small ffb-base-block',
+					'Type how much you have (or want to spend on this brainrot) to see how far it takes it.' ) );
+				return;
+			}
+			var strength = data.base * totalFor( 0 );
+			var price = function ( e, L ) {
+				return strength * Math.sqrt( evoOf( e ) ) * priceCurve( data, L );
+			};
+			var rateAt = function ( e, L ) {
+				return income( data.base, totalFor( e ), L, data );
+			};
+			var r = cashClimb( price, data.maxLevel, data.maxEvolution, state.evolution, state.level, cash, cashEvolve );
+			if ( r.evo === state.evolution && r.level === state.level ) {
+				cashOut.appendChild( el( 'span', 'ffb-base-small ffb-base-block', r.next === null ? 'Nothing left to buy at this evolution.' :
+					'Not enough for the next level yet: it costs ' + money( r.next ) + '.' ) );
+				return;
+			}
+			var head = el( 'span', 'ffb-base-block' );
+			head.appendChild( document.createTextNode( 'Takes it from ' + where( state.evolution, state.level ) + ' to ' ) );
+			head.appendChild( el( 'strong', 'ffb-base-accent', where( r.evo, r.level ) ) );
+			head.appendChild( document.createTextNode( ( r.evo === state.evolution ? ' (+' + ( r.level - state.level ) + ' levels)' : '' ) + '.' ) );
+			cashOut.appendChild( head );
+			var facts = el( 'ul', 'ffb-v2-cash-facts' );
+			facts.appendChild( el( 'li', null, 'Costs ' + money( r.spent ) + ' · ' + money( r.left ) + ' left over' ) );
+			if ( r.next !== null && isFinite( r.next ) ) {
+				facts.appendChild( el( 'li', null, 'The next level would cost ' + money( r.next ) ) );
+			}
+			facts.appendChild( el( 'li', null, 'Earns ' + money( rateAt( state.evolution, state.level ) ) + '/s now → ' +
+				money( rateAt( r.evo, r.level ) ) + '/s, before your base’s multiplier' ) );
+			if ( !cashEvolve && r.level >= data.maxLevel && r.evo < data.maxEvolution ) {
+				var more = cashClimb( price, data.maxLevel, data.maxEvolution, r.evo, r.level, r.left, true );
+				facts.appendChild( el( 'li', 'ffb-base-muted', 'Level ' + data.maxLevel + ' with cash to spare. Evolving is free but starts again at level 1, ' +
+					'so only evolve when you can buy it straight back up: the rest would take it to ' + where( more.evo, more.level ) + '.' ) );
+			}
+			cashOut.appendChild( facts );
+		}
+
 		result.appendChild( working );
 		result.appendChild( suffixLegend() );
 		side.appendChild( result );
@@ -1155,6 +1273,7 @@
 				cc && !done ? ( evolving ? 'Evolve (free), then level 1 → ' + data.maxLevel + ' at Evo ' + cc.next.evolution + '. ' :
 					'From level ' + state.level + '. ' ) + estimate : '' );
 			renderTarget();
+			renderCash();
 			// once the next step already ends at Evo 7, level 200, the same figure twice says nothing
 			fullCostOut.hidden = !!( cc && ( done || cc.next.evolution >= data.maxEvolution ) );
 			if ( fullCostOut.hidden ) {
@@ -1194,11 +1313,305 @@
 			}
 			renderStrip();
 			renderSave();
+			// a change in the calculator moves the Same income view with it
+			tiePicked = null;
+			renderSameLine();
+			renderSame();
 		}
 
+		// ---- Same income: which versions earn exactly what this one does --
+		// (user, 2026-10-20). A switch above the calculator; no inputs of its
+		// own, it follows whatever the calculator is set to.
+		var ties = incomeTies( data );
+		var tieMax = 0;
+		ties.vals.forEach( function ( v ) {
+			tieMax = Math.max( tieMax, ties.by[ v ].length );
+		} );
+		var sameView = el( 'div', 'ffb-calc ffb-same' );
+		sameView.hidden = true;
+		var sameLine = el( 'p', 'ffb-same-line' );
+		var sw = el( 'div', 'ffb-same-switch' );
+		sw.setAttribute( 'role', 'tablist' );
+		sw.setAttribute( 'aria-label', 'Value calculator views' );
+		var swValue = el( 'button', 'ffb-calc-chip', 'Value' );
+		var swSame = el( 'button', 'ffb-calc-chip', 'Same income' );
+		swSame.appendChild( el( 'span', 'ffb-same-new', 'new' ) );
+		var tiePicked = null, tieAll = false;
+		[ swValue, swSame ].forEach( function ( b ) {
+			b.type = 'button';
+			b.setAttribute( 'role', 'tab' );
+			sw.appendChild( b );
+		} );
+		function showSame( on ) {
+			swValue.setAttribute( 'aria-selected', on ? 'false' : 'true' );
+			swValue.setAttribute( 'aria-pressed', on ? 'false' : 'true' );
+			swSame.setAttribute( 'aria-selected', on ? 'true' : 'false' );
+			swSame.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+			root.hidden = on;
+			sameView.hidden = !on;
+			if ( on ) {
+				renderSame();
+			}
+		}
+		swValue.addEventListener( 'click', function () {
+			showSame( false );
+		} );
+		swSame.addEventListener( 'click', function () {
+			showSame( true );
+		} );
+		function myTotal() {
+			var mut = data.mutations[ state.mutation ];
+			var v = mut && !isDefault( mut.n ) ? mut.m : 0;
+			state.traits.forEach( function ( i ) {
+				v += data.traits[ i ].m;
+			} );
+			return Math.round( ( v || 1 ) * 100 ) / 100;
+		}
+		function tieRate( v ) {
+			if ( data.base === null || data.base === undefined ) {
+				return null;
+			}
+			var evo = state.evolution > 0 ? data.evolutions[ state.evolution - 1 ] : 1;
+			return data.base * v * evo * growthFactor( state.level, data );
+		}
+		function tieRateText( v ) {
+			var r = tieRate( v );
+			return r === null ? '' : money( r ) + '/s';
+		}
+		function versions( n ) {
+			return n.toLocaleString() + ( n === 1 ? ' version' : ' versions' );
+		}
+		function renderSameLine() {
+			// refresh() can run while the calculator is still being built
+			if ( !sameLine ) {
+				return;
+			}
+			var n = ties.by[ myTotal() ].length;
+			clear( sameLine );
+			sameLine.appendChild( document.createTextNode( n > 1 ?
+				( n - 1 ).toLocaleString() + ' other mutation and trait ' + ( n === 2 ? 'version earns' : 'versions earn' ) + ' exactly the same as this one. ' :
+				'No other mutation and trait version earns exactly this. ' ) );
+			var go = el( 'button', 'ffb-same-link', 'See who earns the same' );
+			go.type = 'button';
+			go.addEventListener( 'click', function () {
+				showSame( true );
+			} );
+			sameLine.appendChild( go );
+		}
+		var SVGNS = 'http://www.w3.org/2000/svg';
+		function svgEl( tag, attrs, parent ) {
+			var n = document.createElementNS( SVGNS, tag ), k;
+			for ( k in attrs ) {
+				n.setAttribute( k, attrs[ k ] );
+			}
+			parent.appendChild( n );
+			return n;
+		}
+		function tieChart( mine, shown, tip ) {
+			var W = 760, H = 290, L = 40, R = 10, T = 10, B = 44;
+			var lo = ties.vals[ 0 ], hi = ties.vals[ ties.vals.length - 1 ];
+			var pw = W - L - R, ph = H - T - B, step = pw / ( ( hi - lo ) / 0.25 + 1 ), bw = Math.max( 2, step - 1.5 );
+			var svg = document.createElementNS( SVGNS, 'svg' );
+			svg.setAttribute( 'viewBox', '0 0 ' + W + ' ' + H );
+			svg.setAttribute( 'role', 'img' );
+			svg.setAttribute( 'aria-label', 'How many mutation and trait versions earn each multiplier' );
+			function xOf( v ) {
+				return L + ( v - lo ) / 0.25 * step;
+			}
+			function yOf( n ) {
+				return T + ph - n / tieMax * ph;
+			}
+			var axis = svgEl( 'g', { 'class': 'ffb-same-axis' }, svg );
+			[ 0, 100, 200, 300 ].forEach( function ( n ) {
+				if ( n > tieMax ) {
+					return;
+				}
+				svgEl( 'line', { x1: L, x2: W - R, y1: yOf( n ), y2: yOf( n ) }, axis );
+				svgEl( 'text', { x: L - 6, y: yOf( n ) + 4, 'text-anchor': 'end' }, axis ).textContent = String( n );
+			} );
+			[ 1, 4, 7, 10, 13, 16, 19, 22 ].forEach( function ( v ) {
+				if ( v > hi ) {
+					return;
+				}
+				var x = xOf( v ) + bw / 2;
+				svgEl( 'text', { x: x, y: T + ph + 16, 'text-anchor': 'middle' }, axis ).textContent = '×' + v;
+				svgEl( 'text', { x: x, y: T + ph + 31, 'text-anchor': 'middle' }, axis ).textContent = tieRate( v ) === null ? '' : money( tieRate( v ) );
+			} );
+			ties.vals.forEach( function ( v ) {
+				var list = ties.by[ v ], counts = [ 0, 0, 0, 0 ], y = T + ph;
+				list.forEach( function ( c ) {
+					counts[ Math.min( 3, c.t.length ) ]++;
+				} );
+				var g = svgEl( 'g', { 'class': 'ffb-same-bar', tabindex: '0', role: 'button',
+					'aria-label': '×' + v.toFixed( 2 ) + ', ' + versions( list.length ) }, svg );
+				counts.forEach( function ( n, k ) {
+					if ( !n ) {
+						return;
+					}
+					var h = n / tieMax * ph;
+					y -= h;
+					svgEl( 'rect', { x: xOf( v ), y: y, width: bw, height: h,
+						'class': v === mine ? 'ffb-same-mine' : 'ffb-same-t' + k + ( v !== shown && tiePicked !== null ? ' ffb-same-dim' : '' ) }, g );
+				} );
+				if ( v === shown && v !== mine ) {
+					svgEl( 'rect', { x: xOf( v ) - 1, y: yOf( list.length ) - 1, width: bw + 2, height: list.length / tieMax * ph + 2, 'class': 'ffb-same-ring' }, g );
+				}
+				svgEl( 'rect', { x: xOf( v ), y: T, width: Math.max( bw, step ), height: ph, 'class': 'ffb-same-hit' }, g );
+				function pick() {
+					tiePicked = v === mine ? null : v;
+					tieAll = false;
+					renderSame();
+				}
+				g.addEventListener( 'click', pick );
+				g.addEventListener( 'keydown', function ( e ) {
+					if ( e.key === 'Enter' || e.key === ' ' ) {
+						e.preventDefault();
+						pick();
+					}
+				} );
+				g.addEventListener( 'mouseenter', function () {
+					tip( v );
+				} );
+			} );
+			svgEl( 'line', { x1: L, x2: W - R, y1: T + ph, y2: T + ph, 'class': 'ffb-same-base' }, svg );
+			return svg;
+		}
+		function tieSet( c, mine ) {
+			var span = el( 'span', 'ffb-same-set' + ( c.t.length ? '' : ' ffb-same-none' ) + ( mine ? ' ffb-same-yours' : '' ) );
+			var names = c.t.map( function ( i ) {
+				return data.traits[ i ].n;
+			} );
+			span.title = names.length ? names.join( ', ' ) : 'no traits';
+			if ( !c.t.length ) {
+				span.textContent = 'no traits';
+			}
+			names.forEach( function ( n ) {
+				var url = cat.traitIcon[ n ];
+				if ( url ) {
+					var img = el( 'img', 'ffb-icon' );
+					img.src = url;
+					img.alt = n;
+					img.referrerPolicy = 'no-referrer';
+					img.setAttribute( 'referrerpolicy', 'no-referrer' );
+					span.appendChild( img );
+				} else {
+					span.appendChild( el( 'span', 'ffb-same-tname', traitLabel( cat, n ) ) );
+				}
+			} );
+			return span;
+		}
+		function renderSame() {
+			if ( !sameView || sameView.hidden ) {
+				return;
+			}
+			var mine = myTotal(), shown = tiePicked !== null ? tiePicked : mine, list = ties.by[ shown ];
+			var mut = data.mutations[ state.mutation ];
+			var mineKey = state.traits.slice().sort( function ( a, b ) {
+				return a - b;
+			} ).join();
+			clear( sameView );
+			var sum = el( 'p', 'ffb-same-sum' );
+			var names = state.traits.map( function ( i ) {
+				return data.traits[ i ].n;
+			} );
+			sum.appendChild( document.createTextNode( ( mut ? mut.n : 'Default' ) + ( names.length ? ' + ' + names.join( ', ' ) : '' ) + ' ' + data.name + ', ' +
+				( state.evolution ? 'Evo ' + state.evolution + ', ' : '' ) + 'level ' + state.level + ': ' ) );
+			sum.appendChild( el( 'b', null, '×' + mine.toFixed( 2 ) + ( tieRate( mine ) === null ? '' : ' · ' + tieRateText( mine ) ) ) );
+			var n = ties.by[ mine ].length;
+			sum.appendChild( document.createTextNode( n > 1 ? '. ' + ( n - 1 ).toLocaleString() + ' other ' + ( n === 2 ? 'version earns' : 'versions earn' ) + ' exactly the same.' : '. No other version earns exactly this.' ) );
+			sameView.appendChild( sum );
+			sameView.appendChild( el( 'p', 'ffb-same-note', 'Every brainrot has the same ' + Object.keys( ties.by ).reduce( function ( t, k ) {
+				return t + ties.by[ k ].length;
+			}, 0 ).toLocaleString() + ' mutation and trait versions. Each bar is one income; its height is how many versions earn it. The gold bar is the brainrot above, and the $/s under the bars are for it at its level and evolution.' ) );
+			var legend = el( 'div', 'ffb-same-legend' );
+			legend.setAttribute( 'aria-hidden', 'true' );
+			[ [ 't0', 'no traits' ], [ 't1', '1 trait' ], [ 't2', '2 traits' ], [ 't3', '3 traits' ], [ 'mine', 'this one' ] ].forEach( function ( x ) {
+				var s = el( 'span' );
+				s.appendChild( el( 'i', 'ffb-same-key ffb-same-key-' + x[ 0 ] ) );
+				s.appendChild( document.createTextNode( x[ 1 ] ) );
+				legend.appendChild( s );
+			} );
+			sameView.appendChild( legend );
+			var tipBox = el( 'p', 'ffb-same-tip' );
+			tipBox.setAttribute( 'aria-live', 'polite' );
+			function tip( v ) {
+				clear( tipBox );
+				tipBox.appendChild( el( 'strong', null, '×' + v.toFixed( 2 ) + ( tieRate( v ) === null ? '' : ' · ' + tieRateText( v ) ) ) );
+				tipBox.appendChild( document.createTextNode( ' · ' + versions( ties.by[ v ].length ) + ( v === mine ? ' (this one)' : '' ) + '. Tap a bar to list them.' ) );
+			}
+			var chart = el( 'div', 'ffb-same-chart' );
+			chart.appendChild( tieChart( mine, shown, tip ) );
+			sameView.appendChild( chart );
+			tip( shown );
+			sameView.appendChild( tipBox );
+			sameView.appendChild( el( 'h3', 'ffb-same-h', tiePicked !== null ?
+				'Every version at ×' + shown.toFixed( 2 ) + ( tieRate( shown ) === null ? '' : ' (' + tieRateText( shown ) + ')' ) + ': ' + list.length :
+				'Earns the same as this one: ' + versions( list.length ) ) );
+			var groups = {}, order = [];
+			list.forEach( function ( c ) {
+				if ( !groups[ c.m ] ) {
+					groups[ c.m ] = [];
+					order.push( c.m );
+				}
+				groups[ c.m ].push( c );
+			} );
+			order.sort( function ( a, b ) {
+				return data.mutations[ b ].m - data.mutations[ a ].m;
+			} );
+			var box = el( 'div', 'ffb-same-ties' );
+			( tieAll ? order : order.slice( 0, 5 ) ).forEach( function ( mi ) {
+				var row = el( 'div', 'ffb-same-row' );
+				var head = el( 'div', 'ffb-same-mut' );
+				var mn = data.mutations[ mi ].n;
+				var mk = isDefault( mn ) ? null : mark( cat.mutationColor[ mn ] || null, cat.mutationIcon[ mn ] || null );
+				if ( mk ) {
+					head.appendChild( mk );
+				}
+				head.appendChild( el( 'span', null, mn ) );
+				var sets = el( 'div', 'ffb-same-sets' );
+				groups[ mi ].forEach( function ( c ) {
+					sets.appendChild( tieSet( c, c.m === state.mutation && c.t.join() === mineKey ) );
+				} );
+				row.appendChild( head );
+				row.appendChild( sets );
+				box.appendChild( row );
+			} );
+			if ( order.length > 5 ) {
+				var more = el( 'button', 'ffb-same-link', tieAll ? 'Show fewer' : 'Show all ' + order.length + ' mutations' );
+				more.type = 'button';
+				more.addEventListener( 'click', function () {
+					tieAll = !tieAll;
+					renderSame();
+				} );
+				box.appendChild( more );
+			}
+			sameView.appendChild( box );
+			var links = el( 'div', 'ffb-same-links' );
+			if ( tiePicked !== null ) {
+				var back = el( 'button', 'ffb-same-link', 'Back to this brainrot' );
+				back.type = 'button';
+				back.addEventListener( 'click', function () {
+					tiePicked = null;
+					renderSame();
+				} );
+				links.appendChild( back );
+			}
+			var edit = el( 'button', 'ffb-same-link', 'Change mutation, traits, evolution or level' );
+			edit.type = 'button';
+			edit.addEventListener( 'click', function () {
+				showSame( false );
+			} );
+			links.appendChild( edit );
+			sameView.appendChild( links );
+		}
+
+		root.appendChild( sameLine );
 		refresh();
 		clear( container );
+		container.appendChild( sw );
 		container.appendChild( root );
+		container.appendChild( sameView );
+		showSame( false );
 	}
 
 	/* ================================================================
@@ -2329,6 +2742,9 @@
 	// traits renamed after lists and links were saved with the old name:
 	// Snow Flake became Snow on 2026-09-25 (the name the game uses)
 	var RENAMED_TRAITS = { 'Snow Flake': 'Snow' };
+	// brainrots renamed the same way: Los Tralalalitos became Los Tralaleritos
+	// on 2026-10-20 (the Index's spelling)
+	var RENAMED_BRAINROTS = { 'Los Tralalalitos': 'Los Tralaleritos' };
 	var MAX_NAME_CHARS = 60;
 	var COLLECTION_OPTION_KEY = 'userjs-ffb-collection';
 	var PROFILE_OPTION_KEY = 'userjs-ffb-profile';
@@ -2373,7 +2789,7 @@
 			return null;
 		}
 		row = {
-			name: item[ 0 ].trim(),
+			name: has( RENAMED_BRAINROTS, item[ 0 ].trim() ) ? RENAMED_BRAINROTS[ item[ 0 ].trim() ] : item[ 0 ].trim(),
 			mutation: typeof item[ 1 ] === 'string' && item[ 1 ] !== '' && item[ 1 ].length <= MAX_NAME_CHARS ?
 				item[ 1 ] : cat.defaultMutation,
 			traits: [],
@@ -2864,11 +3280,16 @@
 
 	var PROFILE_KEY = 'ffb-profile';
 	var REBIRTH_MAX = 45;
+	// a server holds 4 players, so up to 3 friends (user, 2026-10-12)
+	var FRIENDS_MAX = 3;
+	// play sessions the Your base card can count earnings over; brainrots
+	// only earn while you play (user, 2026-10-19)
+	var PLAY_HOURS = [ 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12 ];
 
-	/** A stored profile, cleaned: { slots, rebirth, indexes: [names], price }. */
+	/** A stored profile, cleaned: { slots, rebirth, indexes: [names], vip, friends, hours, price }. */
 	function readProfile( cat, text ) {
 		var p = {};
-		var out = { slots: BASE_SLOTS_DEFAULT, rebirth: 0, indexes: [], price: null };
+		var out = { slots: BASE_SLOTS_DEFAULT, rebirth: 0, indexes: [], vip: false, friends: 0, hours: 1, price: null };
 		try {
 			p = JSON.parse( String( text || '' ) ) || {};
 		} catch ( err ) {
@@ -2882,8 +3303,15 @@
 		}
 		if ( Array.isArray( p.indexes ) ) {
 			out.indexes = p.indexes.filter( function ( m, i ) {
-				return typeof m === 'string' && has( cat.mutations, m ) && !isDefault( m ) && p.indexes.indexOf( m ) === i;
+				return typeof m === 'string' && has( cat.mutations, m ) && p.indexes.indexOf( m ) === i;
 			} );
+		}
+		out.vip = p.vip === true;
+		if ( wholeNumber( p.friends, 0, FRIENDS_MAX ) ) {
+			out.friends = p.friends;
+		}
+		if ( PLAY_HOURS.indexOf( p.hours ) !== -1 ) {
+			out.hours = p.hours;
 		}
 		if ( p.price && typeof p.price === 'object' && typeof p.price.cost === 'number' && p.price.cost > 0 &&
 			typeof p.price.strength === 'number' && p.price.strength > 0 && wholeNumber( p.price.level, 1, cat.data.maxLevel ) ) {
@@ -2895,12 +3323,32 @@
 
 	/**
 	 * Your base's cash multiplier: rebirths 1-35 add +0.5x each and 36-45
-	 * +0.25x each (rebirth 45 is 21x), and each finished mutation index +0.5x.
+	 * +0.25x each (rebirth 45 is 21x), each finished mutation index +0.5x and
+	 * each friend in your server +0.5x (user, 2026-10-12). VIP doubles the
+	 * total (user, 2026-10-19: rebirth 45 + 4 indexes + VIP shows x46 on the
+	 * base). ASSUMED: friends are inside what VIP doubles.
 	 */
 	function baseMultiplier( profile ) {
 		var r = profile.rebirth;
 		var fromRebirth = r <= 35 ? 1 + 0.5 * r : 18.5 + 0.25 * ( r - 35 );
-		return fromRebirth + 0.5 * profile.indexes.length;
+		return ( fromRebirth + 0.5 * profile.indexes.length + 0.5 * ( profile.friends || 0 ) ) * ( profile.vip ? 2 : 1 );
+	}
+
+	/** "rebirth ×21 + indexes +2x + friends +1x, then ×2 VIP" */
+	function multiplierParts( profile ) {
+		var bits = [ 'rebirth ×' + rebirthMultiplier( profile.rebirth ) ];
+		if ( profile.indexes.length ) {
+			bits.push( 'indexes +' + 0.5 * profile.indexes.length + 'x' );
+		}
+		if ( profile.friends ) {
+			bits.push( 'friends +' + 0.5 * profile.friends + 'x' );
+		}
+		return bits.join( ' + ' ) + ( profile.vip ? ', then ×2 VIP' : '' );
+	}
+
+	/** "15 min", "1 hour", "3 hours" */
+	function hoursLabel( h ) {
+		return h < 1 ? Math.round( h * 60 ) + ' min' : h + ( h === 1 ? ' hour' : ' hours' );
 	}
 
 	function rebirthMultiplier( r ) {
@@ -3073,6 +3521,263 @@
 			return a.from - b.from || b.strength - a.strength;
 		} );
 		return { steps: steps, income: income, perSecond: perSecond, multiplier: baseMultiplier( profile ) };
+	}
+
+	/* ---- The best-value upgrade plan (user, 2026-10-20) -----------------
+	 * Every buy in the order it pays for itself fastest: below level 90
+	 * that's the lowest level, but levels 151-174 (cheaper prices) and
+	 * evolved brainrots (prices follow only the square root of the
+	 * evolution) can jump the queue, and an evolution is one buy among the
+	 * rest: the whole climb back to the top level, which only pays at the
+	 * end (see the Upgrading guide and wiki/analysis/). */
+	var PLAN_SLOW_HOURS = 100;
+
+	/** "under a minute", "12 min", "4.5 h", "77 h", "1,200 h" of play */
+	function playTime( sec ) {
+		if ( sec === null || sec === undefined || !isFinite( sec ) ) {
+			return '—';
+		}
+		if ( sec < 60 ) {
+			return 'under a minute';
+		}
+		if ( sec < 3600 ) {
+			return Math.round( sec / 60 ) + ' min';
+		}
+		var h = sec / 3600;
+		return ( h < 10 ? h.toFixed( 1 ) : Math.round( h ).toLocaleString( 'en-US' ) ) + ' h';
+	}
+
+	/** A saved row at another evolution and level. */
+	function rowAt( r, evolution, level ) {
+		return { name: r.name, mutation: r.mutation, traits: r.traits, evolution: evolution, level: level, inBase: r.inBase };
+	}
+
+	/**
+	 * The plan's maths for a profile, cached: income( row, evo, level ) in
+	 * $/s with the base multiplier, price( row, evo, level ) of the upgrade
+	 * bought at that level, and climb( row, evo ), level 1 back to the top.
+	 */
+	function planMaths( cat, profile, mult ) {
+		var d = cat.data;
+		var sCache = {};
+		var cCache = {};
+		function key( r, e ) {
+			return r.name + '|' + r.mutation + '|' + ( r.traits || [] ).join( ',' ) + '|' + e;
+		}
+		function strength( r, e ) {
+			var k = key( r, e );
+			if ( !has( sCache, k ) ) {
+				sCache[ k ] = rowStrength( cat, rowAt( r, e, 1 ) );
+			}
+			return sCache[ k ];
+		}
+		var m = {
+			income: function ( r, e, L ) {
+				var s = strength( r, e );
+				return s === null ? null : s * growthFactor( L, d ) * mult;
+			},
+			price: function ( r, e, L ) {
+				var ps = priceStrength( cat, rowAt( r, e, L ) );
+				return ps === null ? null : upgradePrice( cat, ps, L, profile );
+			},
+			climb: function ( r, e ) {
+				var k = key( r, e );
+				var sum = 0;
+				var L, p;
+				if ( !has( cCache, k ) ) {
+					for ( L = 1; L < d.maxLevel && sum !== null; L++ ) {
+						p = m.price( r, e, L );
+						sum = p === null ? null : sum + p;
+					}
+					cCache[ k ] = sum;
+				}
+				return cCache[ k ];
+			}
+		};
+		return m;
+	}
+
+	/**
+	 * One brainrot's next buy, or null: a level up to the goal, or at the
+	 * top level its next evolution. { kind: 'lv'|'evo', it, evo, from, cost,
+	 * gain ($/s added), pay (seconds of play it takes to pay for itself) }
+	 */
+	function planOption( cat, m, it, goal ) {
+		var d = cat.data;
+		var cost, gain;
+		if ( it.level < Math.min( goal, d.maxLevel ) ) {
+			cost = m.price( it.row, it.evo, it.level );
+			gain = m.income( it.row, it.evo, it.level + 1 ) - m.income( it.row, it.evo, it.level );
+			return cost === null || !( gain > 0 ) ? null :
+				{ kind: 'lv', it: it, evo: it.evo, from: it.level, cost: cost, gain: gain, pay: cost / gain };
+		}
+		if ( it.level >= d.maxLevel && it.evo < d.maxEvolution ) {
+			cost = m.climb( it.row, it.evo + 1 );
+			gain = m.income( it.row, it.evo + 1, d.maxLevel ) - m.income( it.row, it.evo, d.maxLevel );
+			return cost === null || !( gain > 0 ) ? null :
+				{ kind: 'evo', it: it, evo: it.evo, from: it.level, cost: cost, gain: gain, pay: cost / gain };
+		}
+		return null;
+	}
+
+	/** The cheapest-to-pay-back buy across items, or null. */
+	function planBest( cat, m, items, goal ) {
+		var best = null;
+		items.forEach( function ( it ) {
+			var o = planOption( cat, m, it, goal );
+			if ( o && ( !best || o.pay < best.pay ) ) {
+				best = o;
+			}
+		} );
+		return best;
+	}
+
+	function planItems( keepers ) {
+		return keepers.map( function ( r ) {
+			return { row: r, evo: r.evolution, level: r.level };
+		} );
+	}
+
+	function planBuy( o ) {
+		if ( o.kind === 'lv' ) {
+			o.it.level++;
+		} else {
+			o.it.evo++;
+		}
+	}
+
+	/**
+	 * The plan as steps: buys grouped until the payback doubles (an
+	 * evolution is a step of its own), each brainrot's levels in a step
+	 * merged into one part, and back-to-back steps on the same single
+	 * brainrot merged. Levelling evenly shows up as one step bringing
+	 * several brainrots up together. Each part says whether it jumps ahead
+	 * of a lower-level brainrot.
+	 */
+	function planSteps( cat, m, keepers, goal, limit ) {
+		var items = planItems( keepers );
+		var steps = [];
+		var buys = 0;
+		var cur = null;
+		var base = null;
+		function lowerThan( it ) {
+			return items.some( function ( o ) {
+				return o !== it && o.level < it.level && o.level < goal;
+			} );
+		}
+		while ( buys < limit ) {
+			var best = planBest( cat, m, items, goal );
+			if ( !best ) {
+				break;
+			}
+			buys++;
+			if ( base === null ) {
+				base = best.pay;
+			}
+			var band = Math.max( 0, Math.floor( Math.log( best.pay / base ) / Math.LN2 ) );
+			if ( best.kind === 'evo' || !cur || cur.evolve || band > cur.band ) {
+				cur = { band: Math.max( band, cur && !cur.evolve ? cur.band : 0 ), evolve: best.kind === 'evo', parts: [],
+					cost: 0, gain: 0, firstPay: best.pay, lastPay: best.pay };
+				steps.push( cur );
+			}
+			var part = null;
+			cur.parts.forEach( function ( x ) {
+				if ( x.it === best.it ) {
+					part = x;
+				}
+			} );
+			if ( !part ) {
+				part = { it: best.it, row: best.it.row, evo: best.evo, from: best.from, to: best.from, cost: 0, gain: 0,
+					lastPay: best.pay, jumps: lowerThan( best.it ) };
+				cur.parts.push( part );
+			}
+			part.cost += best.cost;
+			part.gain += best.gain;
+			part.lastPay = Math.max( part.lastPay, best.pay );
+			cur.cost += best.cost;
+			cur.gain += best.gain;
+			cur.firstPay = Math.min( cur.firstPay, best.pay );
+			cur.lastPay = Math.max( cur.lastPay, best.pay );
+			planBuy( best );
+			if ( best.kind === 'lv' ) {
+				part.to = best.it.level;
+			}
+		}
+		var merged = [];
+		steps.forEach( function ( st ) {
+			var prev = merged[ merged.length - 1 ];
+			if ( prev && !prev.evolve && !st.evolve && prev.parts.length === 1 && st.parts.length === 1 &&
+				prev.parts[ 0 ].it === st.parts[ 0 ].it ) {
+				var a = prev.parts[ 0 ];
+				var b = st.parts[ 0 ];
+				a.to = b.to;
+				a.cost += b.cost;
+				a.gain += b.gain;
+				a.lastPay = Math.max( a.lastPay, b.lastPay );
+				prev.cost += st.cost;
+				prev.gain += st.gain;
+				prev.lastPay = Math.max( prev.lastPay, st.lastPay );
+				return;
+			}
+			merged.push( st );
+		} );
+		return merged;
+	}
+
+	/**
+	 * Spend `cash` in the plan's order, stopping at the first buy it can't
+	 * afford: an evolution waits until the whole climb back is affordable,
+	 * so a brainrot is never left earning less (user, 2026-10-20).
+	 * { items: [ { row, evo, level } ], spent, left, stop }
+	 */
+	function spendPlan( cat, m, keepers, goal, cash ) {
+		var items = planItems( keepers );
+		var left = cash;
+		var spent = 0;
+		var stop = null;
+		var guard = 0;
+		while ( guard++ < 50000 ) {
+			var best = planBest( cat, m, items, goal );
+			if ( !best ) {
+				break;
+			}
+			if ( best.cost > left ) {
+				stop = best;
+				break;
+			}
+			left -= best.cost;
+			spent += best.cost;
+			planBuy( best );
+		}
+		return { items: items, spent: spent, left: left, stop: stop };
+	}
+
+	/**
+	 * The value calculator's "What can my cash do?": buy +1 levels with
+	 * `cash` until the next is too dear. price( evo, L ) is the upgrade
+	 * bought AT level L. With evolve, a brainrot at the top level evolves
+	 * (free, back to level 1) and keeps climbing.
+	 */
+	function cashClimb( price, maxLevel, maxEvo, evo, level, cash, evolve ) {
+		var spent = 0;
+		var p;
+		while ( true ) {
+			if ( level >= maxLevel ) {
+				if ( evolve && evo < maxEvo ) {
+					evo++;
+					level = 1;
+					continue;
+				}
+				return { evo: evo, level: level, spent: spent, left: cash, next: null };
+			}
+			p = price( evo, level );
+			if ( p === null || !isFinite( p ) || p > cash ) {
+				return { evo: evo, level: level, spent: spent, left: cash, next: p };
+			}
+			cash -= p;
+			spent += p;
+			level++;
+		}
 	}
 
 	/**
@@ -3360,13 +4065,16 @@
 
 	/**
 	 * A picture on this wiki from where it sits under images/ ("e/e9/Name.png",
-	 * see generate_modules.py), 40px wide; null for anything else. (The ?nr=1
-	 * keeps browsers off a placeholder they may have cached for the bare
-	 * address before the no-referrer fix.)
+	 * see generate_modules.py), 40px wide; null for anything else. (The ?nr=4
+	 * keeps browsers off old copies they may have cached for a year: the
+	 * placeholder from before the no-referrer fix, the black-backed trait and
+	 * mutation icons replaced on Oct 4-6, 2026, and the small trait icons
+	 * replaced on Oct 15, and the mutation icons replaced with the Index's on
+	 * Oct 20. Bump it whenever pictures go up under the same names.)
 	 */
 	function safeIconUrl( path ) {
 		return typeof path === 'string' && /^[0-9a-f]\/[0-9a-f]{2}\/[A-Za-z0-9_&.,()'+-]+\.png$/.test( path ) ?
-			'https://static.wikia.nocookie.net/fortnite-creator-islands/images/' + path + '/revision/latest/scale-to-width-down/40?nr=1' : null;
+			'https://static.wikia.nocookie.net/fortnite-creator-islands/images/' + path + '/revision/latest/scale-to-width-down/40?nr=4' : null;
 	}
 
 	/**
@@ -5487,7 +6195,7 @@
 		var savedProfile = profileStore.load();
 		var profile = readProfile( cat, savedProfile );
 		var oldSlots = parseInt( readStorage( storage, BASE_SLOTS_KEY ) || '', 10 );
-		var view = { tab: 'list', filter: 'all', sort: 'strength', editing: null, level: 175, check: 1, goal: 175, adding: false };
+		var view = { tab: 'list', filter: 'all', sort: 'strength', editing: null, level: 175, check: 1, goal: 175, adding: false, cashOn: 'base' };
 		var lastInBase = false;
 
 		// the slots set on the old My collection page carry over
@@ -5528,6 +6236,9 @@
 			root.insertBefore( stats, status );
 			root.appendChild( cols );
 		}
+		var summary = el( 'div', 'ffb-base-sum' );
+		summary.hidden = true;
+		root.insertBefore( summary, root.firstChild );
 		var offer = browserListOffer( store, rows, storage, cat );
 		if ( offer ) {
 			var offerBox = el( 'div', 'ffb-base-note ffb-base-offer' );
@@ -5626,27 +6337,126 @@
 			stats.appendChild( t );
 		}
 		function renderStats() {
-			var up = upgradePlan( cat, rows, profile, view.goal );
 			var inBase = rows.filter( function ( r ) {
 				return r.inBase;
 			} ).length;
 			var ready = rows.filter( function ( r ) {
 				return collectionStats( cat, r ).canEvolve;
 			} ).length;
-			var next = up.steps[ 0 ];
+			// the plan's first buy: the same one Upgrade plan puts first
+			var step = planSteps( cat, planMaths( cat, profile, baseMultiplier( profile ) ), planKeepers(), view.goal, 400 )[ 0 ];
+			var next = step && step.parts[ 0 ];
 			clear( stats );
 			stats.hidden = !rows.length;
 			stat( 'Brainrots', String( rows.length ), inBase + ' in base · ' + ( rows.length - inBase ) + ' in Storage' );
-			stat( 'Base income', money( up.income ) + '/s', 'card figures, before your multiplier', up.income );
-			stat( 'With your multiplier', money( up.perSecond ) + '/s', '×' + up.multiplier + ': rebirth ' + profile.rebirth + ' + ' +
-				plural( profile.indexes.length, 'index', 'indexes' ), up.perSecond );
-			stat( 'Next upgrade', next && next.cost > 0 ? money( next.cost ) : '—', next ? next.row.name + ' to level ' + view.goal +
-				( next.seconds !== null ? ' · ≈ ' + roughTime( next.seconds ) : '' ) : 'everything is at level ' + view.goal, next ? next.cost : null );
+			stat( 'Next upgrade', next ? money( next.cost ) : '—', next ? next.row.name + ' ' + partWhat( next, step.evolve ) +
+				' · pays back in ~' + playTime( next.lastPay ) + ' of play' : 'nothing left to buy', next ? next.cost : null );
 			stat( 'Ready to evolve', String( ready ), 'at level ' + data.maxLevel );
+		}
+		/**
+		 * The Your base card above the tabs: what the base earns now, over a
+		 * play session (brainrots only earn while you play), and a few checks.
+		 */
+		function renderSummary() {
+			clear( summary );
+			var plan = planBase( cat, rows, profile.slots );
+			var up = upgradePlan( cat, rows, profile, view.goal );
+			summary.hidden = !plan.ranked.length;
+			if ( summary.hidden ) {
+				return;
+			}
+			var mult = up.multiplier;
+			var ticked = rows.filter( function ( r ) {
+				return r.inBase && rowStrength( cat, r ) !== null;
+			} );
+			var earning = ticked.length ? ticked : plan.ranked.slice( 0, profile.slots ).map( function ( k ) {
+				return k.row;
+			} );
+			var sumOf = function ( list, key ) {
+				return list.reduce( function ( t, r ) {
+					return t + ( collectionStats( cat, r )[ key ] || 0 );
+				}, 0 );
+			};
+			summary.appendChild( el( 'div', 'ffb-trade-label', 'Your base' ) );
+			var top = el( 'div', 'ffb-base-sum-top' );
+			top.appendChild( fullTip( el( 'span', 'ffb-base-sum-big', money( up.perSecond ) + '/s' ), up.perSecond, true, true ) );
+			top.appendChild( el( 'span', 'ffb-base-sum-mult', '×' + mult ) );
+			summary.appendChild( top );
+			summary.appendChild( el( 'div', 'ffb-base-muted ffb-base-small', money( up.income ) + '/s from your brainrots × ' + mult +
+				' (' + multiplierParts( profile ) + ')' ) );
+
+			// over a play session
+			var hours = profile.hours;
+			var at = PLAY_HOURS.indexOf( hours );
+			var sess = el( 'div', 'ffb-base-sum-session' );
+			var setHours = function ( h ) {
+				profile.hours = h;
+				saveProfile();
+				renderSummary();
+			};
+			var step = function ( label, to, name ) {
+				var b = el( 'button', 'ffb-base-sum-step', label );
+				b.type = 'button';
+				b.setAttribute( 'aria-label', name );
+				b.disabled = to === undefined;
+				b.addEventListener( 'click', function () {
+					setHours( to );
+				} );
+				return b;
+			};
+			sess.appendChild( el( 'span', null, 'In ' ) );
+			sess.appendChild( step( '−', PLAY_HOURS[ at - 1 ], 'Fewer hours' ) );
+			sess.appendChild( el( 'span', 'ffb-base-sum-hours', hoursLabel( hours ) ) );
+			sess.appendChild( step( '+', PLAY_HOURS[ at + 1 ], 'More hours' ) );
+			sess.appendChild( el( 'span', null, ' of play: ' ) );
+			var earned = up.perSecond * 3600 * hours;
+			sess.appendChild( fullTip( el( 'strong', 'ffb-base-sum-earned', money( earned ) ), earned, false, true ) );
+			summary.appendChild( sess );
+			var picks = el( 'div', 'ffb-base-sum-picks' );
+			[ 0.5, 1, 3, 8 ].forEach( function ( h ) {
+				var b = el( 'button', 'ffb-base-sum-pick' + ( h === hours ? ' ffb-base-sum-pick-on' : '' ), hoursLabel( h ) );
+				b.type = 'button';
+				b.setAttribute( 'aria-pressed', h === hours ? 'true' : 'false' );
+				b.addEventListener( 'click', function () {
+					setHours( h );
+				} );
+				picks.appendChild( b );
+			} );
+			summary.appendChild( picks );
+
+			// what it counts, and the checks
+			var facts = el( 'ul', 'ffb-base-sum-facts' );
+			var fact = function ( text ) {
+				facts.appendChild( el( 'li', null, text ) );
+			};
+			fact( ticked.length ?
+				'Counting the ' + plural( ticked.length, 'brainrot', 'brainrots' ) + ' you ticked “In my base”.' :
+				'Counting your best ' + plural( earning.length, 'brainrot', 'brainrots' ) + '. Tick “In my base” on the ones on your base for an exact figure.' );
+			if ( ticked.length ) {
+				var empty = profile.slots - ticked.length;
+				fact( 'Slots used: ' + Math.min( ticked.length, profile.slots ) + ' / ' + profile.slots +
+					( empty > 0 ? ' · ' + plural( empty, 'empty slot', 'empty slots' ) + ' earning nothing' : '' ) );
+				var gain = ( sumOf( plan.moveIn, 'now' ) - sumOf( plan.swapOut, 'now' ) ) * mult;
+				if ( plan.moveIn.length && gain > 0 ) {
+					fact( ( plan.swapOut.length ? 'Swapping in ' + plural( plan.moveIn.length, 'stronger one', 'stronger ones' ) :
+						'Putting ' + plural( plan.moveIn.length, 'brainrot', 'brainrots' ) + ' on your base' ) + ' from Storage would add +' +
+						money( gain ) + '/s (see ' + ( plan.over ? 'Keep or swap' : 'Brainrots' ) + ').' );
+				}
+			} else {
+				fact( 'Slots: ' + profile.slots + ' (set in Profile)' );
+			}
+			var atMax = sumOf( earning, 'max' ) * mult;
+			var atCeil = sumOf( earning, 'ceil' ) * mult;
+			if ( atMax > up.perSecond || atCeil > up.perSecond ) {
+				fact( 'Fully upgraded: ' + money( atMax ) + '/s at level ' + data.maxLevel +
+					( atCeil > atMax ? ', ' + money( atCeil ) + '/s at Evo ' + data.maxEvolution + ', level ' + data.maxLevel : '' ) + '.' );
+			}
+			summary.appendChild( facts );
 		}
 		var renderers = { list: renderList, plan: renderPlan, swap: renderSwap, level: renderLevel, profile: renderProfile };
 		function render() {
 			var list;
+			renderSummary();
 			if ( wide ) {
 				tabButtons( sideTabs() );
 				renderStats();
@@ -5693,9 +6503,10 @@
 			var meta = el( 'div', 'ffb-base-line-meta' );
 			meta.appendChild( permIcons( cat, row ) );
 			meta.appendChild( el( 'span', 'ffb-base-lv', ( row.evolution ? 'Evo ' + row.evolution + ' · ' : '' ) + 'Lv ' + row.level ) );
-			if ( tag ) {
-				meta.appendChild( el( 'span', 'ffb-base-tag ffb-base-tag-' + tag.kind, tag.text ) );
-			}
+			// one tag, or several side by side
+			( Array.isArray( tag ) ? tag : tag ? [ tag ] : [] ).forEach( function ( t ) {
+				meta.appendChild( el( 'span', 'ffb-base-tag ffb-base-tag-' + t.kind, t.text ) );
+			} );
 			mid.appendChild( meta );
 			if ( note ) {
 				mid.appendChild( el( 'div', 'ffb-base-muted ffb-base-small ffb-base-line-note', note ) );
@@ -5898,6 +6709,7 @@
 
 		function renderNavOnly() {
 			var t = view.tab;
+			renderSummary();
 			if ( wide ) {
 				tabButtons( sideTabs() );
 				renderStats();
@@ -5930,7 +6742,7 @@
 					( store.kind === 'account' ? 'It’s saved to your Fandom account, so it’s there on any device.' : 'It all stays on this device.' ) ) );
 				var steps = el( 'ol', 'ffb-base-steps' );
 				[ [ 'Add your brainrots', 'The ones on your base, and any in Storage you might use.' ],
-					[ 'Tell us about your base (optional)', 'Slots, rebirth and finished indexes, in Profile, make the time estimates real.' ],
+					[ 'Tell us about your base (optional)', 'Slots, rebirth, finished indexes, friends and VIP, in Profile, make the time estimates real.' ],
 					[ 'Get your plan', 'New tabs appear as soon as they have something to tell you.' ] ].forEach( function ( s, k ) {
 					var li = el( 'li', 'ffb-base-step' + ( k === 0 ? ' ffb-base-step-on' : '' ) );
 					li.appendChild( el( 'span', 'ffb-base-step-n', String( k + 1 ) ) );
@@ -6008,6 +6820,10 @@
 				} else if ( plan.swapOut.indexOf( row ) !== -1 ) {
 					tag = { kind: 'out', text: 'Swap out' };
 				}
+				// level 200 at the last evolution: nothing left to buy (user, 2026-10-20)
+				if ( row.level >= data.maxLevel && row.evolution >= data.maxEvolution ) {
+					tag = [ tag, { kind: 'max', text: 'Fully upgraded' } ];
+				}
 				if ( strength === null ) {
 					right = '—';
 					sub = 'no measured income';
@@ -6082,80 +6898,254 @@
 			return wrap;
 		}
 
-		// ---- Upgrade plan ---------------------------------------------------
-		function stepCost( s ) {
-			if ( s.cost > 0 ) {
-				return money( s.cost ) + ( s.unknownLevels ? ' to level ' + ( data.costKnownTo || data.maxLevel ) + ', then unknown' : '' ) +
-					( s.seconds !== null ? ' · ~' + roughTime( s.seconds ) : '' );
+		// ---- Upgrade plan: best value first (user, 2026-10-20) ---------------
+		var PLAN_SHOW = 6;
+		var PLAN_CASH_KEY = 'ffb-plan-cash';
+
+		/** "~19 h" or "1.0 h to 16 h" */
+		function payRange( a, b ) {
+			var x = playTime( a );
+			var y = playTime( b );
+			return x === y || b < a * 1.25 ? '~' + y : x + ' to ' + y;
+		}
+
+		function partWhat( p, evolve ) {
+			return evolve ? 'Evo ' + p.evo + ' → ' + ( p.evo + 1 ) : 'Lv ' + p.from + ' → ' + p.to;
+		}
+
+		/** Why a part sits where it does, as a tag, or null. */
+		function partTag( p, evolve ) {
+			if ( evolve ) {
+				return { kind: 'movein', text: 'pays back in ~' + playTime( p.lastPay ) };
 			}
-			return s.unknownLevels ? 'price above level ' + ( data.costKnownTo || data.maxLevel ) + ' not known yet' : '';
+			if ( p.lastPay > PLAN_SLOW_HOURS * 3600 ) {
+				return { kind: 'out', text: 'slow: a better catch may beat this' };
+			}
+			if ( p.jumps && p.from >= data.newCostFrom && p.from < data.lateCostFrom ) {
+				return { kind: 'in', text: 'cheaper from level ' + data.newCostFrom };
+			}
+			if ( p.jumps && p.evo > 0 ) {
+				return { kind: 'in', text: 'Evo ' + p.evo + ': pays back faster' };
+			}
+			return null;
+		}
+
+		/** The brainrots the plan works on: the ones worth keeping, strongest first. */
+		function planKeepers() {
+			return planBase( cat, rows, profile.slots ).ranked.slice( 0, profile.slots ).map( function ( k ) {
+				return k.row;
+			} );
+		}
+
+		/** The brainrots earning right now: the ticked ones, else the keepers. */
+		function planEarning( keepers ) {
+			var marked = rows.filter( function ( r ) {
+				return r.inBase && rowStrength( cat, r ) !== null;
+			} );
+			return marked.length ? marked : keepers;
 		}
 
 		function renderPlan() {
-			var up = upgradePlan( cat, rows, profile, view.goal );
+			var mult = baseMultiplier( profile );
+			var m = planMaths( cat, profile, mult );
+			var keepers = planKeepers();
+			var goal = view.goal;
 			var head = el( 'div', 'ffb-base-bar' );
 			var goalPick = buildListPicker( uid + 'goal', [ { value: '175', label: 'Goal: level 175' }, { value: '200', label: 'Goal: level 200' } ],
-				String( view.goal ), 'ffb-trade-input ffb-base-sort', function ( v ) {
+				String( goal ), 'ffb-trade-input ffb-base-sort', function ( v ) {
 					view.goal = parseInt( v, 10 );
 					render();
 				} );
 			goalPick.input.setAttribute( 'aria-label', 'Goal level' );
 			head.appendChild( goalPick.node );
 			panel.appendChild( head );
-			if ( !up.steps.length ) {
-				panel.appendChild( el( 'p', 'ffb-base-note', 'Everything you’re keeping is at level ' + view.goal + ' or higher. Nice! ' +
-					( view.goal === 175 ? 'Switch the goal to level 200, or look at evolving in the Upgrading guide.' : '' ) ) );
-				return;
-			}
-			var first = up.steps[ 0 ];
-			var card = el( 'div', 'ffb-base-next' );
-			card.appendChild( el( 'div', 'ffb-trade-label ffb-base-accent', 'Upgrade next' ) );
-			var who = el( 'div', 'ffb-base-next-who' );
-			who.appendChild( brainrotPic( cat, first.row.name, 52 ) );
-			var whoText = el( 'div' );
-			whoText.appendChild( el( 'div', 'ffb-base-next-name', first.row.name ) );
-			var detail = el( 'div', 'ffb-base-line-meta' );
-			detail.appendChild( permIcons( cat, first.row ) );
-			if ( !first.row.inBase && rows.some( function ( r ) {
-				return r.inBase;
-			} ) ) {
-				detail.appendChild( el( 'span', 'ffb-base-tag ffb-base-tag-store', 'In Storage: place it to upgrade' ) );
-			}
-			whoText.appendChild( detail );
-			who.appendChild( whoText );
-			card.appendChild( who );
-			var big = el( 'div', 'ffb-base-next-lv' );
-			big.appendChild( el( 'span', null, 'Lv ' + first.from + ' → ' + first.to ) );
-			big.appendChild( el( 'span', 'ffb-base-muted ffb-base-small', stepCost( first ) ) );
-			card.appendChild( big );
-			card.appendChild( el( 'p', 'ffb-base-muted ffb-base-small', 'It’s your lowest level, so its upgrades pay for themselves fastest. ' +
-				( up.perSecond > 0 ? 'Times are at your base’s income, ' + money( up.perSecond ) + '/s with your ×' + up.multiplier + ' multiplier.' : '' ) ) );
-			panel.appendChild( card );
-			if ( up.steps.length > 1 ) {
-				panel.appendChild( el( 'div', 'ffb-trade-label ffb-base-gap', 'Then, lowest level first' ) );
-				var list = el( 'ol', 'ffb-base-plan' );
-				up.steps.slice( 1 ).forEach( function ( s ) {
-					var li = el( 'li', 'ffb-base-plan-step' );
-					li.appendChild( line( s.row, 'Lv ' + s.from + ' → ' + s.to, null, null, stepCost( s ) ) );
-					list.appendChild( li );
-				} );
-				panel.appendChild( list );
-			}
-			var notes = [];
-			if ( view.goal > 175 ) {
-				notes.push( 'Above level 175 each level adds only 3%, so for pure income the Upgrading guide stops at 175.' );
+			var steps = planSteps( cat, m, keepers, goal, 4000 );
+			var now = planEarning( keepers ).reduce( function ( t, r ) {
+				return t + ( m.income( r, r.evolution, r.level ) || 0 );
+			}, 0 );
+
+			if ( !steps.length ) {
+				panel.appendChild( el( 'p', 'ffb-base-note', keepers.length ?
+					'Everything you’re keeping is done: level ' + data.maxLevel + ' and evolution ' + data.maxEvolution + '. Nice!' :
+					'Add the brainrots you have, and the plan shows what to upgrade first.' ) );
 			} else {
-				notes.push( 'Stops at level 175: after that each level adds only 3%.' );
+				// the first thing to buy: the first brainrot of the first step
+				var st0 = steps[ 0 ];
+				var first = st0.parts[ 0 ];
+				var card = el( 'div', 'ffb-base-next' );
+				card.appendChild( el( 'div', 'ffb-trade-label ffb-base-accent', st0.evolve ? 'Evolve next' : 'Upgrade next' ) );
+				var who = el( 'div', 'ffb-base-next-who' );
+				who.appendChild( brainrotPic( cat, first.row.name, 52 ) );
+				var whoText = el( 'div' );
+				whoText.appendChild( el( 'div', 'ffb-base-next-name', first.row.name ) );
+				var detail = el( 'div', 'ffb-base-line-meta' );
+				detail.appendChild( permIcons( cat, first.row ) );
+				if ( !first.row.inBase && rows.some( function ( r ) {
+					return r.inBase;
+				} ) ) {
+					detail.appendChild( el( 'span', 'ffb-base-tag ffb-base-tag-store', 'In Storage: place it to upgrade' ) );
+				}
+				whoText.appendChild( detail );
+				who.appendChild( whoText );
+				card.appendChild( who );
+				var big = el( 'div', 'ffb-base-next-lv' );
+				big.appendChild( el( 'span', null, ( first.evo && !st0.evolve ? 'Evo ' + first.evo + ' · ' : '' ) + partWhat( first, st0.evolve ) ) );
+				big.appendChild( fullTip( el( 'span', 'ffb-base-muted ffb-base-small', money( first.cost ) ), first.cost, false, true ) );
+				card.appendChild( big );
+				var why = st0.evolve ? 'Nothing left below your goal pays back faster than this evolution. Save ' + money( first.cost ) +
+					' first, then evolve and buy it straight back to level ' + data.maxLevel + ' so it never stops earning. ' :
+					first.jumps && first.from >= data.newCostFrom && first.from < data.lateCostFrom ?
+						'Upgrades get cheaper from level ' + data.newCostFrom + ', so these pay back faster than your lower-level brainrots’ next levels. ' :
+						first.jumps && first.evo > 0 ? 'Evolved brainrots’ upgrades pay back faster, so these beat your lower-level brainrots’ next levels. ' :
+							'These pay for themselves faster than any other upgrade in your base. ';
+				card.appendChild( el( 'p', 'ffb-base-muted ffb-base-small', why + '+' + money( first.gain ) + '/s · ' +
+					( st0.evolve ? 'pays back in ~' + playTime( first.lastPay ) : 'each pays back in ' + payRange( st0.firstPay, first.lastPay ) ) + ' of play.' ) );
+				panel.appendChild( card );
+
+				var rest = st0.parts.length > 1 ? [ { parts: st0.parts.slice( 1 ), evolve: false, firstPay: st0.firstPay,
+					lastPay: st0.lastPay, cost: st0.cost - first.cost, alongside: true } ] : [];
+				rest.concat( steps.slice( 1, PLAN_SHOW ) ).forEach( function ( st ) {
+					panel.appendChild( el( 'div', 'ffb-base-muted ffb-base-small ffb-base-gap ffb-base-plan-head',
+						( st.alongside ? 'Alongside it' : st.evolve ? 'Then evolve' : 'Then' ) + ' · ' + money( st.cost ) +
+						( st.evolve ? '' : ' · each pays back in ' + payRange( st.firstPay, st.lastPay ) ) ) );
+					var list = el( 'ol', 'ffb-base-plan' );
+					st.parts.forEach( function ( p ) {
+						var li = el( 'li', 'ffb-base-plan-step' );
+						var note = '+' + money( p.gain ) + '/s';
+						if ( st.evolve ) {
+							note = 'Save ' + money( p.cost ) + ' first, then evolve and buy it straight back to level ' + data.maxLevel + '. ' + note;
+						}
+						li.appendChild( line( rowAt( p.row, p.evo, p.from ), partWhat( p, st.evolve ), money( p.cost ), partTag( p, st.evolve ), note ) );
+						list.appendChild( li );
+					} );
+					panel.appendChild( list );
+				} );
+				if ( steps.length > PLAN_SHOW ) {
+					var later = steps.slice( PLAN_SHOW );
+					var evos = later.filter( function ( x ) {
+						return x.evolve;
+					} ).length;
+					panel.appendChild( el( 'p', 'ffb-base-muted ffb-base-small', '…then ' + later.length + ' more steps' +
+						( evos ? ', including ' + evos + ( evos === 1 ? ' evolution' : ' evolutions' ) : '' ) + ' (' + money( later.reduce( function ( t, x ) {
+							return t + x.cost;
+						}, 0 ) ) + ').' ) );
+				}
+				// a brainrot waiting at the top level whose evolution isn't in view yet
+				var shownEvo = steps.slice( 0, PLAN_SHOW ).some( function ( x ) {
+					return x.evolve;
+				} );
+				var ready = keepers.filter( function ( r ) {
+					return r.level >= data.maxLevel && r.evolution < data.maxEvolution;
+				} )[ 0 ];
+				var climb = ready ? m.climb( ready, ready.evolution + 1 ) : null;
+				if ( ready && !shownEvo && climb !== null ) {
+					panel.appendChild( el( 'p', 'ffb-base-note', ready.name + ' is at level ' + data.maxLevel + '. For income, evolving it to Evo ' +
+						( ready.evolution + 1 ) + ' comes after the upgrades above, since they pay back faster. When you get there, save ' +
+						money( climb ) + ' first so you can buy it straight back to level ' + data.maxLevel + '.' ) );
+				}
 			}
-			if ( up.steps.some( function ( s ) {
-				return s.unknownLevels;
-			} ) && !profile.price ) {
-				notes.push( 'Prices above level ' + ( data.costKnownTo || data.maxLevel ) + ' aren’t known yet; add one you’ve seen in Profile and the times fill in.' );
-			}
+			var notes = [ goal > 175 ? 'Goal 200: levels above 175 add only 3% each, so they come late.' :
+				'Stops at level 175: after that each level adds only 3%.' ];
+			notes.push( 'Evolving starts again at level 1; for income it comes last, your best brainrot first, all the way to Evo ' +
+				data.maxEvolution + '. Evolved brainrots are also worth more in trades.' );
+			notes.push( 'Payback times are hours of play at your base’s income, ' + money( now ) + '/s with your ×' + mult + ' multiplier.' );
 			if ( !profile.rebirth && !profile.indexes.length ) {
 				notes.push( 'Add your rebirth and finished indexes in Profile for real times.' );
 			}
 			panel.appendChild( el( 'p', 'ffb-base-muted ffb-base-small', notes.join( ' ' ) ) );
+			renderPlanCash( m, keepers, goal );
+		}
+
+		/** "What can my cash do?" under the plan: the plan's buys, as far as the cash goes. */
+		function renderPlanCash( m, keepers, goal ) {
+			if ( !keepers.length ) {
+				return;
+			}
+			var box = el( 'div', 'ffb-base-card ffb-base-cash' );
+			box.appendChild( el( 'div', 'ffb-trade-label', 'What can my cash do?' ) );
+			var row = el( 'div', 'ffb-base-cash-row' );
+			var inp = el( 'input', 'ffb-trade-input' );
+			inp.type = 'text';
+			inp.placeholder = 'e.g. 2.5Qa';
+			inp.setAttribute( 'inputmode', 'decimal' );
+			inp.value = readStorage( storage, PLAN_CASH_KEY ) || '';
+			row.appendChild( field( uid + 'pc', 'Cash to spend', inp, 'ffb-base-cash-field' ).node );
+			var opts = [ { value: 'base', label: 'My base, following the plan' } ].concat( keepers.map( function ( r, i ) {
+				return { value: String( i ), label: r.name + ' (' + ( isDefault( r.mutation ) ? '' : r.mutation + ', ' ) +
+					( r.evolution ? 'Evo ' + r.evolution + ', ' : '' ) + 'level ' + r.level + ')' };
+			} ) );
+			if ( view.cashOn !== 'base' && !keepers[ Number( view.cashOn ) ] ) {
+				view.cashOn = 'base';
+			}
+			var on = buildListPicker( uid + 'po', opts, view.cashOn, 'ffb-trade-input', function ( v ) {
+				view.cashOn = v;
+				show();
+			} );
+			row.appendChild( pickerField( uid + 'po', 'Spend it on', on, 'ffb-base-cash-field' ).node );
+			box.appendChild( row );
+			var out = el( 'div', 'ffb-base-cash-out' );
+			box.appendChild( out );
+			function show() {
+				clear( out );
+				var cash = parseMoney( inp.value );
+				if ( cash === null || !( cash > 0 ) ) {
+					out.appendChild( el( 'p', 'ffb-base-muted ffb-base-small', 'Type how much you have to see how far the plan gets, or pick one brainrot.' ) );
+					return;
+				}
+				var whole = view.cashOn === 'base';
+				var list = whole ? keepers : [ keepers[ Number( view.cashOn ) ] ];
+				var r = spendPlan( cat, m, list, whole ? goal : data.maxLevel, cash );
+				var changed = r.items.filter( function ( it ) {
+					return it.level !== it.row.level || it.evo !== it.row.evolution;
+				} );
+				if ( !changed.length ) {
+					out.appendChild( el( 'p', null, !r.stop ? 'Nothing left to buy.' : r.stop.kind === 'evo' ?
+						'Not enough to evolve ' + r.stop.it.row.name + ' yet: buying it back to level ' + data.maxLevel + ' costs ' +
+							money( r.stop.cost ) + '. Save up first so it never stops earning.' :
+						'Not enough for the next upgrade yet: ' + r.stop.it.row.name + '’s costs ' + money( r.stop.cost ) + '.' ) );
+					return;
+				}
+				out.appendChild( el( 'p', 'ffb-base-cash-head', 'It buys:' ) );
+				var ul = el( 'ul', 'ffb-base-cash-list' );
+				changed.forEach( function ( it ) {
+					var li = el( 'li' );
+					if ( it.evo > it.row.evolution ) {
+						li.appendChild( document.createTextNode( it.row.name + ': Evo ' + it.row.evolution + ' → ' ) );
+						li.appendChild( el( 'b', 'ffb-base-accent', 'Evo ' + it.evo ) );
+						li.appendChild( document.createTextNode( ', bought back to level ' + it.level ) );
+					} else {
+						li.appendChild( document.createTextNode( it.row.name + ( it.evo ? ' (Evo ' + it.evo + ')' : '' ) + ': level ' + it.row.level + ' → ' ) );
+						li.appendChild( el( 'b', 'ffb-base-accent', String( it.level ) ) );
+					}
+					ul.appendChild( li );
+				} );
+				out.appendChild( ul );
+				var before = 0;
+				var after = 0;
+				( whole ? planEarning( keepers ) : list ).forEach( function ( row ) {
+					var it = r.items.filter( function ( x ) {
+						return x.row === row;
+					} )[ 0 ];
+					before += m.income( row, row.evolution, row.level ) || 0;
+					after += m.income( row, it ? it.evo : row.evolution, it ? it.level : row.level ) || 0;
+				} );
+				var tot = el( 'ul', 'ffb-base-cash-list ffb-base-cash-totals' );
+				tot.appendChild( el( 'li', null, 'Costs ' + money( r.spent ) + ' · ' + money( r.left ) + ' left over' ) );
+				tot.appendChild( el( 'li', null, ( whole ? 'Your base earns ' : 'It earns ' ) + money( before ) + '/s now → ' +
+					money( after ) + '/s (+' + money( after - before ) + '/s)' ) );
+				if ( r.stop ) {
+					tot.appendChild( el( 'li', 'ffb-base-muted', r.stop.kind === 'evo' ? 'Next: evolving ' + r.stop.it.row.name + '. Save ' +
+						money( r.stop.cost ) + ' for the climb back first.' :
+						'Next: ' + r.stop.it.row.name + ' level ' + r.stop.from + ' → ' + ( r.stop.from + 1 ) + ' for ' + money( r.stop.cost ) + '.' ) );
+				}
+				out.appendChild( tot );
+			}
+			inp.addEventListener( 'input', function () {
+				writeStorage( storage, PLAN_CASH_KEY, inp.value );
+				show();
+			} );
+			show();
+			panel.appendChild( box );
 		}
 
 		// ---- Keep or swap -----------------------------------------------------
@@ -6329,6 +7319,9 @@
 			numberRow( 'Rebirth', 'Your rebirth multiplier: ×' + rebirthMultiplier( profile.rebirth ), profile.rebirth, 0, REBIRTH_MAX, function ( n ) {
 				profile.rebirth = n;
 			} );
+			numberRow( 'Friends in your server', 'In-game friends you’re playing with: +0.5x each', profile.friends, 0, FRIENDS_MAX, function ( n ) {
+				profile.friends = n;
+			} );
 			var idx = el( 'div', 'ffb-base-row ffb-base-row-block' );
 			var idxHead = el( 'div', 'ffb-base-row-head' );
 			idxHead.appendChild( el( 'span', 'ffb-base-row-label', 'Finished mutation indexes' ) );
@@ -6337,10 +7330,8 @@
 			idx.appendChild( el( 'div', 'ffb-base-muted ffb-base-small', 'Tap the ones you’ve completed.' ) );
 			var grid = el( 'div', 'ffb-base-idx' );
 			data.mutations.forEach( function ( m ) {
+				// Default has an index too, worth the same +0.5x (Index page)
 				var name = m[ 0 ];
-				if ( isDefault( name ) ) {
-					return;
-				}
 				var on = profile.indexes.indexOf( name ) !== -1;
 				var b = el( 'button', 'ffb-base-idx-btn' + ( on ? ' ffb-base-idx-on' : '' ) );
 				b.type = 'button';
@@ -6363,11 +7354,28 @@
 			} );
 			idx.appendChild( grid );
 			panel.appendChild( idx );
+			var vipRow = el( 'div', 'ffb-base-row' );
+			var vipText = el( 'div' );
+			vipText.appendChild( el( 'div', 'ffb-base-row-label', 'VIP' ) );
+			vipText.appendChild( el( 'div', 'ffb-base-muted ffb-base-small', 'VIP doubles your base multiplier' ) );
+			var vipLab = el( 'label', 'ffb-base-check' );
+			var vipBox = el( 'input' );
+			vipBox.type = 'checkbox';
+			vipBox.checked = !!profile.vip;
+			vipBox.addEventListener( 'change', function () {
+				profile.vip = !!vipBox.checked;
+				saveProfile();
+				render();
+			} );
+			vipLab.appendChild( vipBox );
+			vipLab.appendChild( el( 'span', null, ' I have VIP' ) );
+			vipRow.appendChild( vipText );
+			vipRow.appendChild( vipLab );
+			panel.appendChild( vipRow );
 			var sum = el( 'div', 'ffb-base-mult' );
 			var sumText = el( 'span' );
 			sumText.appendChild( el( 'span', 'ffb-trade-label', 'Your base multiplier' ) );
-			sumText.appendChild( el( 'span', 'ffb-base-muted ffb-base-small ffb-base-block', 'rebirth ×' + rebirthMultiplier( profile.rebirth ) +
-				' + indexes +' + ( 0.5 * profile.indexes.length ) + 'x' ) );
+			sumText.appendChild( el( 'span', 'ffb-base-muted ffb-base-small ffb-base-block', multiplierParts( profile ) ) );
 			sum.appendChild( sumText );
 			sum.appendChild( el( 'span', 'ffb-base-mult-value', '×' + baseMultiplier( profile ) ) );
 			panel.appendChild( sum );
@@ -6572,6 +7580,141 @@
 	}
 
 	/**
+	 * A smooth curve through (xs, ys) that never overshoots the points
+	 * (monotone cubic, Fritsch-Carlson): a hump stays a hump, a rise stays a
+	 * rise. xs ascending. Outside the points: the end value.
+	 */
+	function monotoneAt( xs, ys, x ) {
+		var n = xs.length;
+		var h = [], dl = [], m = [];
+		var i, k, t, t2, t3, w1, w2;
+		if ( !n ) {
+			return 0;
+		}
+		if ( n === 1 || x <= xs[ 0 ] ) {
+			return ys[ 0 ];
+		}
+		if ( x >= xs[ n - 1 ] ) {
+			return ys[ n - 1 ];
+		}
+		for ( i = 0; i < n - 1; i++ ) {
+			h.push( xs[ i + 1 ] - xs[ i ] );
+			dl.push( ( ys[ i + 1 ] - ys[ i ] ) / h[ i ] );
+		}
+		m[ 0 ] = dl[ 0 ];
+		m[ n - 1 ] = dl[ n - 2 ];
+		for ( i = 1; i < n - 1; i++ ) {
+			if ( dl[ i - 1 ] * dl[ i ] <= 0 ) {
+				m[ i ] = 0;
+			} else {
+				w1 = 2 * h[ i ] + h[ i - 1 ];
+				w2 = h[ i ] + 2 * h[ i - 1 ];
+				m[ i ] = ( w1 + w2 ) / ( w1 / dl[ i - 1 ] + w2 / dl[ i ] );
+			}
+		}
+		k = 0;
+		while ( xs[ k + 1 ] < x ) {
+			k++;
+		}
+		t = ( x - xs[ k ] ) / h[ k ];
+		t2 = t * t;
+		t3 = t2 * t;
+		return ( 2 * t3 - 3 * t2 + 1 ) * ys[ k ] + ( t3 - 2 * t2 + t ) * h[ k ] * m[ k ] +
+			( -2 * t3 + 3 * t2 ) * ys[ k + 1 ] + ( t3 - t2 ) * h[ k ] * m[ k + 1 ];
+	}
+
+	// up to this Fishing Skill the game draws a rarity from a bell curve over
+	// the rarity ladder: the next rarity up is always e^(B - 2j) times as
+	// likely (j = how far up the ladder), with one number B that grows with
+	// skill. Fitted to the readings, it predicts each hidden one within 1
+	// point (user's readings, 2026-10-20). Past it the game changes rules.
+	var BELL_TOP = 300;
+	// a chance under this is too rounded to fit with
+	var BELL_MIN = 0.5;
+
+	/** The bell curve fitted to data.levels up to BELL_TOP: { gaps, xs, tilt } or null. */
+	function bellFit( data ) {
+		if ( has( data, '_bell' ) ) {
+			return data._bell;
+		}
+		var rows = ( data.levels || [] ).filter( function ( r ) {
+			return r[ 0 ] <= BELL_TOP;
+		} ).slice().sort( function ( a, b ) {
+			return a[ 0 ] - b[ 0 ];
+		} );
+		var n = ( data.rarities || [] ).length;
+		var gaps = [], tilt = {}, it, j, sum, cnt;
+		for ( j = 0; j < n - 1; j++ ) {
+			gaps.push( 0 );
+		}
+		function ratio( r, j ) {
+			var a = Number( r[ 1 ][ j ] ), b = Number( r[ 1 ][ j + 1 ] );
+			return a >= BELL_MIN && b >= BELL_MIN ? Math.log( b / a ) : null;
+		}
+		// each neighbouring pair's log ratio = its fixed gap + the level's tilt;
+		// the first gap is 0, so tilt and gaps are found by turns
+		for ( it = 0; it < 50; it++ ) {
+			tilt = {};
+			rows.forEach( function ( r ) {
+				var t = 0, c = 0, k, q;
+				for ( k = 0; k < n - 1; k++ ) {
+					q = ratio( r, k );
+					if ( q !== null ) {
+						t += q - gaps[ k ];
+						c++;
+					}
+				}
+				if ( c ) {
+					tilt[ r[ 0 ] ] = t / c;
+				}
+			} );
+			for ( j = 1; j < n - 1; j++ ) {
+				sum = 0;
+				cnt = 0;
+				rows.forEach( function ( r ) {
+					var q = ratio( r, j );
+					if ( q !== null && has( tilt, r[ 0 ] ) ) {
+						sum += q - tilt[ r[ 0 ] ];
+						cnt++;
+					}
+				} );
+				if ( cnt ) {
+					gaps[ j ] = sum / cnt;
+				} else if ( j > 1 ) {
+					// never seen together below the top: carry the ladder's step on
+					gaps[ j ] = gaps[ j - 1 ] + ( gaps[ j - 1 ] - gaps[ j - 2 ] );
+				}
+			}
+		}
+		var xs = Object.keys( tilt ).map( Number ).sort( function ( a, b ) {
+			return a - b;
+		} );
+		data._bell = xs.length >= 3 ? { gaps: gaps, xs: xs, tilt: xs.map( function ( x ) {
+			return tilt[ x ];
+		} ) } : null;
+		return data._bell;
+	}
+
+	/** Base chances at skill s from the bell curve, or null past BELL_TOP / without a fit. */
+	function bellOdds( data, s ) {
+		var fit = bellFit( data );
+		if ( !fit || s > BELL_TOP || s < fit.xs[ 0 ] ) {
+			return null;
+		}
+		var b = monotoneAt( fit.xs, fit.tilt, s );
+		var rar = data.rarities || [];
+		var lw = 0;
+		var w = rar.map( function ( r, j ) {
+			if ( j > 0 ) {
+				lw += fit.gaps[ j - 1 ] + b;
+			}
+			var unlock = r[ 2 ];
+			return unlock === null || unlock === undefined || s < unlock ? 0 : Math.exp( lw );
+		} );
+		return toHundred( w );
+	}
+
+	/**
 	 * Base chances (%) at a Fishing Skill level, before luck, one per rarity
 	 * in data.rarities order: { odds, exact, between: [lo, hi] }.
 	 * exact: the level was measured, and its chances are passed through as
@@ -6597,8 +7740,32 @@
 		if ( !isFinite( s ) || s < 0 ) {
 			s = 0;
 		}
+		// past the highest skill (only a rod's level boost gets there): an
+		// estimate that carries on each rarity's straight line from the
+		// highest measured level below the top to the top (user, 2026-10-20)
 		if ( s > max ) {
-			s = max;
+			// rods add at most a few levels: no reading carries a trend further
+			s = Math.min( s, max + 10 );
+			var top = baseCatchOdds( data, max );
+			var from = null;
+			levels.forEach( function ( r ) {
+				if ( r[ 0 ] < max && ( from === null || r[ 0 ] > from ) ) {
+					from = r[ 0 ];
+				}
+			} );
+			if ( from === null ) {
+				return top;
+			}
+			var low = baseCatchOdds( data, from );
+			var est = top.odds.map( function ( v, j ) {
+				return Math.max( 0, v + ( v - low.odds[ j ] ) / ( max - from ) * ( s - max ) );
+			} );
+			var total = est.reduce( function ( t, v ) {
+				return t + v;
+			}, 0 );
+			return { odds: total > 0 ? est.map( function ( v ) {
+				return v * 100 / total;
+			} ) : top.odds, exact: false, between: [ max, null ], skill: s, beyond: true, trendFrom: from };
 		}
 		for ( k = 0; k < levels.length; k++ ) {
 			row = levels[ k ];
@@ -6613,6 +7780,10 @@
 			if ( row[ 0 ] > s && ( hi === null || row[ 0 ] < hi ) ) {
 				hi = row[ 0 ];
 			}
+		}
+		var bell = bellOdds( data, s );
+		if ( bell ) {
+			return { odds: bell, exact: false, between: [ lo, hi ], skill: s, bell: true };
 		}
 		for ( i = 0; i < rar.length; i++ ) {
 			var unlock = rar[ i ][ 2 ];
@@ -6655,7 +7826,13 @@
 			} else if ( after === null || after === before ) {
 				p = pts[ before ];
 			} else {
-				p = pts[ before ] + ( pts[ after ] - pts[ before ] ) * ( s - before ) / ( after - before );
+				// a smooth curve through every known point (user, 2026-10-20)
+				var pxs = Object.keys( pts ).map( Number ).sort( function ( x, y ) {
+					return x - y;
+				} );
+				p = monotoneAt( pxs, pxs.map( function ( x ) {
+					return pts[ x ];
+				} ), s );
 			}
 			odds.push( Math.max( 0, p ) );
 			pinned.push( before === s );
@@ -6719,9 +7896,11 @@
 		return String( Number( p.toFixed( p >= 10 ? 1 : 2 ) ) ) + '%';
 	}
 
-	/** "2x luck" / "no luck" for the rod and potion lists. */
-	function luckLabel( x ) {
-		return luckPart( x ) ? String( Number( x ) ) + 'x luck' : 'no luck';
+	/** "2x luck" / "no luck" for the rod and potion lists, plus a rod's
+	 * Fishing Skill boost: "2x luck, +2 skill". */
+	function luckLabel( x, lv ) {
+		return ( luckPart( x ) ? String( Number( x ) ) + 'x luck' : 'no luck' ) +
+			( Number( lv ) > 0 ? ', +' + Number( lv ) + ' skill' : '' );
 	}
 
 	/** Luck shown as a number: 37, 7.5, 1.25. */
@@ -6810,7 +7989,7 @@
 				},
 				search: function () {
 					return list.map( function ( it, i ) {
-						return { value: String( i ), name: it.n, icon: safeIconUrl( it.i ), right: luckLabel( it.luck ) };
+						return { value: String( i ), name: it.n, icon: safeIconUrl( it.i ), right: luckLabel( it.luck, it.lv ) };
 					} );
 				},
 				exact: function ( text ) {
@@ -6895,7 +8074,7 @@
 				b.node.setAttribute( 'aria-pressed', b.key === state.boost ? 'true' : 'false' );
 			} );
 			goldenField.node.hidden = !server;
-			rodField.note.textContent = luckLabel( rods[ state.rod ].luck );
+			rodField.note.textContent = luckLabel( rods[ state.rod ].luck, rods[ state.rod ].lv );
 			potionField.note.textContent = luckLabel( potions[ state.potion ].luck );
 
 			luck = catchLuck( {
@@ -6908,7 +8087,11 @@
 				golden: state.golden
 			} );
 			t = catchTilt( luck );
-			base = baseCatchOdds( data, state.skill );
+			// a rod's "level boost" fishes as if your Fishing Skill were that
+			// much higher: King's Rod at 500 = skill 502 (user, 2026-10-20)
+			var lv = Number( rods[ state.rod ].lv ) || 0;
+			var skill = state.skill + lv;
+			base = baseCatchOdds( data, skill );
 			odds = applyLuck( base.odds, t );
 
 			clear( luckLine );
@@ -6918,6 +8101,12 @@
 			luckLine.appendChild( el( 'strong', 'ffb-catch-tilt-value', Math.round( t * 100 ) + '%' ) );
 			if ( server && luck < 1 ) {
 				luckLine.appendChild( el( 'span', 'ffb-catch-luck-label', ' (counts as 1)' ) );
+			}
+			if ( lv ) {
+				luckLine.appendChild( el( 'span', 'ffb-catch-luck-label', ' · skill ' ) );
+				luckLine.appendChild( el( 'strong', 'ffb-catch-luck-value', String( skill ) ) );
+				luckLine.appendChild( el( 'span', 'ffb-catch-luck-label', ' (' + state.skill + ' + ' + lv + ' from the ' + rods[ state.rod ].n + ')' +
+					( skill > max ? '; an estimate past ' + max : '' ) ) );
 			}
 
 			clear( bars );
@@ -6962,11 +8151,16 @@
 			if ( base.exact ) {
 				note.textContent = 'Base chances measured in game at skill ' + base.skill + '.';
 				note.className = 'ffb-catch-note';
+			} else if ( base.beyond ) {
+				note.textContent = 'Estimate: past skill ' + max + ' (only a rod’s level boost gets there), each rarity carries on its trend from skill ' +
+					base.trendFrom + ' to ' + max + '.';
+				note.className = 'ffb-catch-note ffb-catch-approx';
 			} else if ( base.between[ 1 ] === null ) {
 				note.textContent = 'Approximate: above the highest measured level (' + base.between[ 0 ] + '), worked out from the game’s schedule to level ' + max + '.';
 				note.className = 'ffb-catch-note ffb-catch-approx';
 			} else {
-				note.textContent = 'Approximate: between measured levels ' + base.between[ 0 ] + ' and ' + base.between[ 1 ] + '.';
+				note.textContent = 'Approximate: between measured levels ' + base.between[ 0 ] + ' and ' + base.between[ 1 ] +
+					( base.bell ? ', from the game’s bell curve over the rarities.' : '.' );
 				note.className = 'ffb-catch-note ffb-catch-approx';
 			}
 		}
@@ -7359,6 +8553,11 @@
 	// browser nothing is exported and no global is created.
 	if ( typeof module !== 'undefined' && module.exports ) {
 		module.exports = {
+			planMaths: planMaths,
+			planSteps: planSteps,
+			spendPlan: spendPlan,
+			cashClimb: cashClimb,
+			playTime: playTime,
 			roundHalfEven: roundHalfEven,
 			money: money,
 			parseMoney: parseMoney,
@@ -7391,6 +8590,11 @@
 			applyTrade: applyTrade,
 			readProfile: readProfile,
 			baseMultiplier: baseMultiplier,
+			bellFit: bellFit,
+			monotoneAt: monotoneAt,
+			incomeTies: incomeTies,
+			multiplierParts: multiplierParts,
+			hoursLabel: hoursLabel,
 			upgradePrice: upgradePrice,
 			upgradePlan: upgradePlan,
 			rarityLesson: rarityLesson,

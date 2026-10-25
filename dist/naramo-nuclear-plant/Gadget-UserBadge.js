@@ -7,6 +7,7 @@
     var DISABLED_USERS = [];
 
     var BADGES = {
+    	'bureaucrat': 'https://static.wikia.nocookie.net/central/images/2/27/Badge-Bureaucrat.png',
         'sysop': 'https://static.wikia.nocookie.net/central/images/1/12/Badge-Admin.svg',
         'content-moderator': 'https://static.wikia.nocookie.net/central/images/e/ef/Badge-ContentModerator.svg',
         'threadmoderator': 'https://static.wikia.nocookie.net/central/images/5/50/Badge-DiscussionsModerator.svg',

@@ -4,6 +4,28 @@
 // ============================================================
  
 /* Please see MediaWiki:ImportJS for imported JS */
+
+/* Wiki Click Sound */
+mw.hook('wikipage.content').add(function () {
+    if (window.neontricClickSoundReady) return;
+    window.neontricClickSoundReady = true;
+
+    const clickSound = new Audio(
+        'https://static.wikia.nocookie.net/neranianfiles/images/a/a5/C.mp3/revision/latest?cb=20261022002103&format=original'
+    );
+    clickSound.volume = 0.35;
+
+    document.addEventListener('click', function (event) {
+        const target = event.target.closest(
+            'a, button, input[type="button"], input[type="submit"], .wds-tabs__tab-label'
+        );
+
+        if (!target) return;
+
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+    });
+});
  
 /*** Collapsible trs v2 ***************************************************
  * Allows associated table rows to collapse under another

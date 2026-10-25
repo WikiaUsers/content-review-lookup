@@ -169,4 +169,24 @@ window.AddRailModule = [
     }
 ];
 
+// ---------------------------------------------------------------------
+//          AUTONUMBERING FOR TABLES
+// ---------------------------------------------------------------------
+
+mw.hook('wikipage.content').add(function($content) {
+    $content.find('table.auto-num-table').each(function() {
+        var rowNumber = 0;
+        $(this).find('tr').each(function() {
+            var $cells = $(this).find('td');
+            if ($cells.length > 0) {
+                rowNumber++;
+                var firstCell = $cells.eq(0);
+                if (firstCell.text().trim() === "") {
+                    firstCell.text(rowNumber);
+                }
+            }
+        });
+    });
+});
+
 // </syntax type="javascript">

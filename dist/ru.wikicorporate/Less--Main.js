@@ -1,54 +1,47 @@
-/* jshint esversion: 11 */
+/* Less Preprocessor Adapter — Direct MediaWiki:Custom-*.less (ES2026) */
 (() => {
     'use strict';
 
+    if (window.isLessAdapterLoaded) return;
+    window.isLessAdapterLoaded = true;
+
     const CONFIG = {
-        localPage: 'Модуль:Less',
+        localPage: 'MediaWiki:Custom-Local.less',
         centralApiUrl: 'https://wikicorporate.fandom.com/ru/api.php',
-        centralPage: 'Модуль:GlobalLess',
+        centralPage: 'MediaWiki:Custom-Global.less',
         cdnUrl: 'https://cdnjs.cloudflare.com/ajax/libs/less.js/4.2.0/less.min.js',
         styleId: 'fandom-compiled-less',
         cacheKey: 'fandom_custom_less_css',
         cacheTimeKey: 'fandom_custom_less_time',
-        cacheTTL: 60 * 60 * 1000 // Время жизни кэша: 1 час (в миллисекундах)
+        cacheTTL: 60 * 60 * 1000 // 1 час
     };
 
-    window.less = { env: 'production', async: true, fileAsync: true, logLevel: 0 };
+    if (!window.less?.render) {
+        window.less = { env: 'production', async: true, fileAsync: true, logLevel: 0 };
+    }
 
-    // Безопасное чтение из кэша
     const getCache = () => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const wgAction = mw.config.get('wgAction');
-            
-            // Игнорируем кэш, если администратор форсирует обновление
-            const forceReload = urlParams.has('clearcache') || wgAction === 'purge' || wgAction === 'edit';
-            if (forceReload) return null;
+            if (urlParams.has('clearcache') || wgAction === 'purge' || wgAction === 'edit') return null;
 
             const cachedCss = localStorage.getItem(CONFIG.cacheKey);
             const cachedTime = localStorage.getItem(CONFIG.cacheTimeKey);
-            
-            // Если кэш существует и ему меньше часа — отдаем его
             if (cachedCss && cachedTime && (Date.now() - parseInt(cachedTime, 10) < CONFIG.cacheTTL)) {
                 return cachedCss;
             }
-        } catch { 
-            /* Игнорируем ошибки, если браузер блокирует localStorage (например, в Инкогнито) */ 
-        }
+        } catch {}
         return null;
     };
 
-    // Безопасная запись в кэш
     const setCache = (css) => {
         try {
             localStorage.setItem(CONFIG.cacheKey, css);
             localStorage.setItem(CONFIG.cacheTimeKey, Date.now().toString());
-        } catch { 
-            /* Игнорируем ошибки превышения квоты памяти */ 
-        }
+        } catch {}
     };
 
-    // Функция вставки стилей на страницу
     const applyCSS = (css) => {
         let styleNode = document.getElementById(CONFIG.styleId);
         if (!styleNode) {
@@ -60,9 +53,8 @@
     };
 
     const loadLessLibrary = () => {
+        if (window.less?.render) return Promise.resolve();
         return new Promise((resolve, reject) => {
-            if (window.less && window.less.render) return resolve(); // Защита на случай, если библиотека уже загружена
-            
             const script = document.createElement('script');
             script.src = CONFIG.cdnUrl;
             script.onload = resolve;
@@ -88,43 +80,36 @@
             if (!response.ok) return '';
 
             const data = await response.json();
-            const rawContent = data.query?.pages?.[0]?.revisions?.[0]?.slots?.main?.content;
-            
-            if (!rawContent) return '';
-
-            const match = rawContent.match(/\[=\[\s*([\s\S]*?)\s*\]=\]/);
-            return match ? match[1] : '';
+            const page = data.query?.pages?.[0];
+            if (!page || page.missing) return '';
+            return page.revisions?.[0]?.slots?.main?.content ?? '';
         } catch {
-            return ''; 
+            return '';
         }
     };
 
     const initCompiler = async () => {
         try {
-            // 1. Пробуем достать готовый CSS из кэша
             const cachedCSS = getCache();
             if (cachedCSS) {
                 applyCSS(cachedCSS);
-                return; // Скрипт отработал за 1 мс, загрузка less.js отменена!
+                return;
             }
 
-            // 2. Если кэша нет или он устарел, грузим библиотеку и модули параллельно
             const [, globalCode, localCode] = await Promise.all([
                 loadLessLibrary(),
                 fetchSource(CONFIG.centralPage, CONFIG.centralApiUrl),
                 fetchSource(CONFIG.localPage)
             ]);
 
-            const combinedCode = `${globalCode}\n\n${localCode}`;
-            if (!combinedCode.trim()) return;
+            const combinedCode = `${globalCode}\n\n${localCode}`.trim();
+            if (!combinedCode) return;
 
-            // 3. Компилируем свежий CSS
-            const compiled = await less.render(combinedCode);
-
-            // 4. Применяем на страницу и сохраняем в кэш для будущих переходов
-            applyCSS(compiled.css);
-            setCache(compiled.css);
-
+            const compiled = await window.less.render(combinedCode);
+            if (compiled?.css) {
+                applyCSS(compiled.css);
+                setCache(compiled.css);
+            }
         } catch (error) {
             console.error('[Less Adapter Error]', error);
         }

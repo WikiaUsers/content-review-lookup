@@ -33,10 +33,6 @@
             ) {
                 console.debug("[Wikitubia] Stopping retries")
 
-                // Change PI label
-                document.querySelector("[data-source='username'] > h3.pi-data-label.pi-secondary-font")
-                    .innerText = "Subscribers"
-
                 clearInterval(handler)
             }
         }, 1000)

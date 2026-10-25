@@ -765,10 +765,15 @@ function renderAuraCost(cost) {
 
         container.appendChild(image);
 
-    } else if (cost.currency === 'V') {
+    } else if (
+        cost.currency === 'V' ||
+        cost.currency === 'FF'
+    ) {
 
         image.src =
-            '/images/ShopVelIcon.png';
+            cost.currency === 'FF'
+                ? '/images/Floor Remnants.png'
+                : '/images/ShopVelIcon.png';
 
         image.width = 20;
 
@@ -1392,9 +1397,8 @@ saveDatabasePosition();
             availableTypes = [
                 'Crafting Material',
                 'Material',
-                'Currency',
-                'Others',
-                'Gift'
+                'Gift',
+                'Others'
             ];
 
         } else if (category.id === 'auras') {
@@ -1888,9 +1892,8 @@ var itemSubtypeKeywords = {
     miscellaneous: [
         'Crafting Material',
         'Material',
-        'Currency',
-        'Others',
-        'Gift'
+        'Gift',
+        'Others'
     ]
 
 };
@@ -1953,9 +1956,8 @@ var itemSubtypeLabels = {
     miscellaneous: {
         'Crafting Material': 'Crafting Materials',
         Material: 'Materials',
-        Currency: 'Currencies',
-        Others: 'Others',
-        Gift: 'Gifts'
+        Gift: 'Gifts',
+        Others: 'Others'
     }
 };
 
@@ -2399,7 +2401,7 @@ if (
 ) {
 
     nameTarget =
-        'Obtainable Companions (Mobs / Quests)';
+        'Obtainable Companions (Mobs / Quests / Store)';
 
 } else if (
     categoryId === 'companions' &&
@@ -2534,8 +2536,30 @@ if (
     var damageCell =
         document.createElement('td');
 
+    var damage =
+        String(item.dmg || '').trim();
+
+    var damageLines =
+        damage.split(/\r?\n/).filter(function (line) {
+            return line.trim() !== '';
+        });
+
+    var isNormalDamage =
+        damageLines.length > 0 &&
+        damageLines.every(function (line) {
+            return /^(?:Clean|Max|Maxed)\s*:\s*[\d,.]+%?\s*$/i.test(line.trim());
+        });
+
+    var isLevelBased =
+        /Level Based[\s\S]*?\+\d[\d,]* per level/i.test(damage) ||
+        /Damage based on level\.\s*\+\d[\d,]* per level/i.test(damage);
+
     damageCell.textContent =
-        formatDamage(item.dmg) || '—';
+        isLevelBased
+            ? 'Varies'
+            : isNormalDamage
+                ? formatDamage(item.dmg)
+                : damage || '—';
 
     row.appendChild(damageCell);
 
@@ -2564,10 +2588,27 @@ if (categoryId === 'armor') {
 
     row.appendChild(armorLevelCell);
 
-var defenseCell = document.createElement('td');
+var defenseCell =
+    document.createElement('td');
+
+var defense =
+    String(item.def || '').trim();
+
+var defenseLines =
+    defense.split(/\r?\n/).filter(function (line) {
+        return line.trim() !== '';
+    });
+
+var isNormalDefense =
+    defenseLines.length > 0 &&
+    defenseLines.every(function (line) {
+        return /^(?:Clean|Max|Maxed)\s*:\s*[\d,.]+%?\s*$/i.test(line.trim());
+    });
 
 defenseCell.textContent =
-    formatDamage(item.def) || '—';
+    isNormalDefense
+        ? formatDamage(item.def)
+        : defense || '—';
 
 row.appendChild(defenseCell);
 }
@@ -2683,12 +2724,15 @@ if (
     if (
         typeof item.cost === 'string' &&
         (
-            item.cost.includes(
-                '[[File:ShopVelIcon.png|20px]]'
-            ) ||
-            item.cost.includes(
-                '[[File:RobuxIcon.png|15px]]'
-            )
+item.cost.includes(
+    '[[File:ShopVelIcon.png|20px]]'
+) ||
+item.cost.includes(
+    '[[File:RobuxIcon.png|15px]]'
+) ||
+item.cost.includes(
+    '[[File:Floor Remnants.png|20px]]'
+)
         )
     ) {
 
@@ -3249,24 +3293,36 @@ if (obtainMatch) {
 }
     }
 
-    var iconName =
-        'ShopVelIcon.png';
+var iconName =
+    'ShopVelIcon.png';
 
-    var iconWidth =
+var iconWidth =
+    20;
+
+if (
+    content.includes(
+        '[[File:RobuxIcon.png|15px]]'
+    )
+) {
+
+    iconName =
+        'RobuxIcon.png';
+
+    iconWidth =
+        15;
+
+} else if (
+    content.includes(
+        '[[File:Floor Remnants.png|20px]]'
+    )
+) {
+
+    iconName =
+        'Floor Remnants.png';
+
+    iconWidth =
         20;
-
-    if (
-        content.includes(
-            '[[File:RobuxIcon.png|15px]]'
-        )
-    ) {
-
-        iconName =
-            'RobuxIcon.png';
-
-        iconWidth =
-            15;
-    }
+}
 
     var image =
         document.createElement('img');
@@ -3291,6 +3347,10 @@ if (obtainMatch) {
                 '[[File:ShopVelIcon.png|20px]]',
                 ''
             )
+.replace(
+    '[[File:Floor Remnants.png|20px]]',
+    ''
+)
             .replace(
                 '[[File:RobuxIcon.png|15px]]',
                 ''
@@ -3343,9 +3403,123 @@ content = content.replace(
     '$1'
 );
 
+    function renderCurrencyPrice(parent, text) {
+
+        var currencyMatch = text.match(
+            /\((?:VelIcon|FloorRemnantsIcon):([\d,]+)\)|\(([\d,]+):RobuxIcon\)/
+        );
+
+        if (!currencyMatch) {
+            return false;
+        }
+
+        var amount =
+            currencyMatch[1] || currencyMatch[2];
+
+        var currency =
+            currencyMatch[1]
+                ? (
+                    currencyMatch[0].includes('VelIcon')
+                        ? 'vel'
+                        : 'floor'
+                )
+                : 'robux';
+
+        var image =
+            document.createElement('img');
+
+        image.className =
+            'item-database-cost-icon';
+
+        image.alt = '';
+
+        if (currency === 'vel') {
+
+            image.src =
+                '/images/ShopVelIcon.png';
+
+            image.width = 20;
+
+        } else if (currency === 'floor') {
+
+            image.src =
+                '/images/Floor Remnants.png';
+
+            image.width = 20;
+
+        } else {
+
+            image.src =
+                '/images/RobuxIcon.png';
+
+            image.width = 15;
+        }
+
+        parent.appendChild(
+            document.createTextNode(' ')
+        );
+
+        if (currency === 'robux') {
+
+            parent.appendChild(
+                document.createTextNode(amount + ' ')
+            );
+
+            parent.appendChild(image);
+
+        } else {
+
+            parent.appendChild(image);
+
+            parent.appendChild(
+                document.createTextNode(' ' + amount)
+            );
+        }
+
+        return true;
+    }
+
     function renderParts(parent, text) {
 
         var remaining = text;
+
+        var currencyMatch =
+            remaining.match(
+                /\((?:VelIcon|FloorRemnantsIcon):[\d,]+\)|\([\d,]+:RobuxIcon\)/
+            );
+
+        if (currencyMatch) {
+
+            var priceIndex =
+                remaining.indexOf(
+                    currencyMatch[0]
+                );
+
+            var beforePrice =
+                remaining.slice(0, priceIndex);
+
+            if (beforePrice) {
+                parent.appendChild(
+                    document.createTextNode(beforePrice)
+                );
+            }
+
+            renderCurrencyPrice(
+                parent,
+                currencyMatch[0]
+            );
+
+            remaining =
+                remaining.slice(
+                    priceIndex + currencyMatch[0].length
+                );
+
+            if (remaining) {
+                renderParts(parent, remaining);
+            }
+
+            return;
+        }
 
         while (remaining) {
 
@@ -3402,6 +3576,38 @@ if (strikeStart !== -1) {
 var linkMatch = remaining.match(
     /^\s*(?:\*\s*)?\[\[([^|\]]+)(?:\|([^\]]+))?\]\]/
 );
+
+var fileMatch = remaining.match(
+    /^\[\[(?:File|Image):([^|\]]+)\|(\d+)(?:x\d+)?px\]\]/i
+);
+
+if (fileMatch) {
+
+    var image =
+        document.createElement('img');
+
+    image.src =
+        '/images/' + fileMatch[1].trim();
+
+    image.alt = '';
+
+    image.className =
+        'item-database-cost-icon';
+
+    image.width =
+        Number(fileMatch[2]);
+
+    image.style.verticalAlign = 'middle';
+
+    parent.appendChild(image);
+
+    remaining =
+        remaining.slice(
+            fileMatch[0].length
+        );
+
+    continue;
+}
 
             if (linkMatch) {
 
@@ -3972,9 +4178,8 @@ if (
     typeOptions = [
         'Crafting Material',
         'Material',
-        'Currency',
-        'Others',
-        'Gift'
+        'Gift',
+        'Others'
     ];
 }
 
@@ -4182,19 +4387,56 @@ function getCardData(item) {
         category === 'scythes'
     ) {
 
-        return {
-            primary: formatDamage(item.dmg),
-            secondary: item.obtain || '',
-            type: 'weapon'
-        };
-    }
+return {
+    primary: (function () {
+        var damage = String(item.dmg || '').trim();
+
+        if (
+            /Level Based[\s\S]*?\+\d[\d,]* per level/i.test(damage) ||
+            /Damage based on level\.\s*\+\d[\d,]* per level/i.test(damage)
+        ) {
+            return 'Varies';
+        }
+
+        var damageLines = damage.split(/\r?\n/).filter(function (line) {
+            return line.trim() !== '';
+        });
+
+        var isNormalDamage = damageLines.length > 0 && damageLines.every(function (line) {
+            return /^(?:Clean|Max|Maxed)\s*:\s*[\d,.]+%?\s*$/i.test(line.trim());
+        });
+
+        return isNormalDamage ? formatDamage(item.dmg) : damage;
+    })(),
+    secondary: item.obtain || '',
+    type: 'weapon',
+    expandablePrimary: true
+};
+}
 
 if (category === 'armor') {
 
+    var defense =
+        String(item.def || '').trim();
+
+    var defenseLines =
+        defense.split(/\r?\n/).filter(function (line) {
+            return line.trim() !== '';
+        });
+
+    var isNormalDefense =
+        defenseLines.length > 0 &&
+        defenseLines.every(function (line) {
+            return /^(?:Clean|Max|Maxed)\s*:\s*[\d,.]+%?\s*$/i.test(line.trim());
+        });
+
     return {
-        primary: formatDamage(item.def),
+        primary: isNormalDefense
+            ? formatDamage(item.def)
+            : String(item.def || ''),
         secondary: item.obtain || '',
-        type: 'armor'
+        type: 'armor',
+        expandablePrimary: true
     };
 }
 
@@ -4286,7 +4528,7 @@ async function loadAuraCosts() {
 
             var match =
                 line.match(
-                    /^(.+?)\s*=\s*([\d,]+)\s*([RV])$/i
+                    /^(.+?)\s*=\s*([\d,]+)\s*(FF|R|V)$/i
                 );
 
             if (!match) {
@@ -4311,6 +4553,7 @@ async function loadAuraCosts() {
     return auraCosts;
 }
 
+
 function renderCardSecondary(content, unobtainable) {
 
     var container =
@@ -4327,43 +4570,112 @@ function renderCardSecondary(content, unobtainable) {
             .trim();
 
     var wikiMatch =
-        text.match(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/);
+        text.match(
+            /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/
+        );
 
-    if (wikiMatch) {
+    if (!wikiMatch) {
 
-        var target =
-            wikiMatch[1].trim();
-
-        var label =
-            wikiMatch[2]
-                ? wikiMatch[2].trim()
-                : target;
-
-        var link =
-            document.createElement('a');
-
- link.href = 
-    getSafeWikiUrl(target);
-
-        link.textContent =
-            label;
+        container.textContent =
+            text.replace(/<[^>]*>/g, '');
 
         if (unobtainable) {
-            link.style.textDecoration =
+            container.style.textDecoration =
                 'line-through';
         }
-
-        container.appendChild(link);
 
         return container;
     }
 
-    container.textContent =
-        text.replace(/<[^>]*>/g, '');
+    var target =
+        wikiMatch[1].trim();
+
+    var label =
+        wikiMatch[2]
+            ? wikiMatch[2].trim()
+            : target;
+
+    var link =
+        document.createElement('a');
+
+    link.href =
+        getSafeWikiUrl(target);
+
+    link.textContent =
+        label;
 
     if (unobtainable) {
-        container.style.textDecoration =
+        link.style.textDecoration =
             'line-through';
+    }
+
+    container.appendChild(link);
+
+    var remaining =
+        text.slice(
+            wikiMatch.index + wikiMatch[0].length
+        );
+
+    var priceMatch =
+        remaining.match(
+            /^\s*\(\s*(?:(\[\[(?:File|Image):(?:Floor Remnants\.png|ShopVelIcon\.png)\|20px\]\])\s*([\d,]+)|([\d,]+)\s*(\[\[(?:File|Image):RobuxIcon\.png\|15px\]\]))\s*\)/i
+        );
+
+    if (priceMatch) {
+
+        var priceContainer =
+            document.createElement('span');
+
+        priceContainer.appendChild(
+            document.createTextNode(' (')
+        );
+
+        var currencyImage =
+            document.createElement('img');
+
+        currencyImage.className =
+            'item-database-cost-icon';
+
+        currencyImage.alt = '';
+
+        if (priceMatch[1]) {
+
+            currencyImage.src =
+                priceMatch[1].includes('Floor Remnants')
+                    ? '/images/Floor Remnants.png'
+                    : '/images/ShopVelIcon.png';
+
+            currencyImage.width = 20;
+
+            priceContainer.appendChild(currencyImage);
+
+            priceContainer.appendChild(
+                document.createTextNode(
+                    ' ' + priceMatch[2]
+                )
+            );
+
+        } else {
+
+            priceContainer.appendChild(
+                document.createTextNode(
+                    priceMatch[3] + ' '
+                )
+            );
+
+            currencyImage.src =
+                '/images/RobuxIcon.png';
+
+            currencyImage.width = 15;
+
+            priceContainer.appendChild(currencyImage);
+        }
+
+        priceContainer.appendChild(
+            document.createTextNode(')')
+        );
+
+        container.appendChild(priceContainer);
     }
 
     return container;
@@ -4895,9 +5207,8 @@ if (
     typeOptions = [
         'Crafting Material',
         'Material',
-        'Currency',
-        'Others',
-        'Gift'
+        'Gift',
+        'Others'
     ];
 }
 
@@ -6473,27 +6784,31 @@ closeButton.addEventListener(
                     : '—';
             }
         },
-        {
-            label: 'Damage',
-            value: function (item) {
+{
+    label: 'Damage',
+    value: function (item) {
 
-                var damage =
-                    String(item.dmg || '');
+        var damage =
+            String(item.dmg || '').trim();
 
-                var maxMatch =
-                    damage.match(
-                        /(?:Max|Maxed)\s*:\s*([\d,]+)/
-                    );
+        if (!damage) {
+            return '—';
+        }
 
-                if (maxMatch) {
-                    return maxMatch[1];
-                }
+        var maxMatch =
+            damage.match(
+                /(?:Max|Maxed)\s*:\s*([\d,]+)\s*(?:\n|$)/
+            );
 
-                return damage || '—';
-            }
-        },
-        {
-            label: 'Crit',
+        if (maxMatch) {
+            return maxMatch[1];
+        }
+
+        return damage;
+    }
+},
+{
+    label: 'Crit',
             value: function (item) {
 
                 return item.crit || '—';
@@ -7090,7 +7405,7 @@ function getDetailsLink(item) {
 
         if (item.chance) {
 
-            return 'Obtainable Companions (Mobs / Quests)';
+            return 'Obtainable Companions (Mobs / Quests / Store)';
 
         }
 
@@ -7170,6 +7485,37 @@ function getDetailsLink(item) {
         return container;
     }
 
+
+    function renderDescriptionMultiline(value) {
+
+        var container =
+            document.createElement('span');
+
+        String(value || '')
+            .replace(/^\*+/gm, '')
+            .split(/\n|<br\s*\/?>/i)
+            .filter(function (line) {
+                return line.trim() !== '';
+            })
+            .forEach(function (line, index) {
+
+                if (index > 0) {
+                    container.appendChild(
+                        document.createElement('br')
+                    );
+                }
+
+                container.appendChild(
+                    renderDescription(
+                        line.trim()
+                    )
+                );
+            });
+
+        return container;
+    }
+
+
     var type =
         String(item.type || '')
             .replace(/<[^>]*>/g, '')
@@ -7241,16 +7587,47 @@ addDetail(
     renderWikiContent
 );
 
+
+
 addDetail(
     'Obtain',
     item.obtain,
-    renderWikiContent
+    function (value) {
+
+        var container =
+            renderWikiContent(value);
+
+        var storeCost =
+            getItemStoreCost(item);
+
+        var itemType =
+            String(item.type || '').toLowerCase();
+
+        var isAura =
+            itemType.includes('aura');
+
+        var isCompanion =
+            itemType === 'pet';
+
+        if (
+            container &&
+            storeCost &&
+            (isAura || isCompanion)
+        ) {
+
+            container.appendChild(
+                renderAuraCost(storeCost)
+            );
+        }
+
+        return container;
+    }
 );
 
     addDetail(
         'Description',
         item.description,
-        renderMultiline
+        renderDescriptionMultiline
     );
 
     layout.appendChild(
@@ -7526,7 +7903,7 @@ function renderCards() {
 
                 name.href =
                     mw.util.getUrl(
-                        'Obtainable Companions (Mobs / Quests)'
+                        'Obtainable Companions (Mobs / Quests / Store)'
                     );
 
             } else {
@@ -7685,6 +8062,54 @@ name.href =
             obtainText
         );
 
+
+if (
+    ['weapon', 'armor', 'accessory'].includes(
+        cardData.type
+    )
+) {
+
+    var itemCost =
+        typeof item.cost === 'string'
+            ? item.cost.trim()
+            : '';
+
+    var hasValidCurrency =
+        /\[\[(?:File|Image):(?:RobuxIcon\.png|ShopVelIcon\.png|Floor Remnants\.png)\|(?:15|20)px\]\]/i
+            .test(itemCost);
+
+    if (
+        itemCost &&
+        hasValidCurrency
+    ) {
+
+        obtainText.appendChild(
+            document.createTextNode(' ')
+        );
+
+        obtainText.appendChild(
+            renderCost(
+                itemCost,
+                item.obtain
+            )
+        );
+    }
+}
+
+
+if (cardData.type === 'aura') {
+
+    var auraCost =
+        getItemStoreCost(item);
+
+    if (auraCost) {
+
+        obtainText.appendChild(
+            renderAuraCost(auraCost)
+        );
+    }
+}
+
         if (
             cardData.type === 'companion' &&
             cardData.obtain
@@ -7702,6 +8127,16 @@ name.href =
                     item.unobtainable
                 )
             );
+
+var companionCost =
+    getItemStoreCost(item);
+
+if (companionCost) {
+
+    companionObtain.appendChild(
+        renderAuraCost(companionCost)
+    );
+}
 
             obtain.appendChild(
                 companionObtain
@@ -7724,10 +8159,19 @@ name.href =
         cardActions.className =
             'item-database-card-actions';
 
-        var upgradeData =
-            getUpgradeData(item);
+var upgradeData =
+    getUpgradeData(item);
 
-        if (upgradeData) {
+var hasPercentageScaling =
+    cardData.type === 'weapon' &&
+    /(?:Clean|Max|Maxed)\s*:\s*[^\n]*%/i.test(
+        String(item.dmg || '')
+    );
+
+if (
+    upgradeData &&
+    !hasPercentageScaling
+) {
 
             var upgradeButton =
                 document.createElement('button');

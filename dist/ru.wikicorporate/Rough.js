@@ -1,10 +1,11 @@
+/* Загрузчик Rough.js (ES6) */
 (() => {
     'use strict';
     if (window.roughAdapterES6Loaded) return;
     window.roughAdapterES6Loaded = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:Rough/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:Rough/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
@@ -21,7 +22,7 @@
     };
 
     const observer = new MutationObserver(checkDOM);
-    
+
     const init = () => {
         observer.observe(document.body, { childList: true, subtree: true });
         checkDOM();

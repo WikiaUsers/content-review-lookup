@@ -37,7 +37,7 @@
 				CustomTools( {
 					classes: 'blameyou__button',
 					i18n: 'BlameYou',
-					icon: 'heart',
+					icon: 'swords',
 					placement: 'page-tools-left',
 					position: options.position,
 					text: 'blameyou-tooltip'

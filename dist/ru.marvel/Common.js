@@ -70,7 +70,7 @@ importArticles({
 });
 
 // Настройка AddRailModule
-window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок'];
+window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок', 'Template:Заглавная/Сегодня'];
 
 // Замена изображения для всплывающего окна ссылки
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });

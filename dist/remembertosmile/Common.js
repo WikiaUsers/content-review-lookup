@@ -131,9 +131,10 @@ function adjustGlow(slideshow) {
 
         var aRect = a.getBoundingClientRect();
         var imgRect = img.getBoundingClientRect();
-
-        var gw = imgRect.width * 0.92;
-        var gh = imgRect.height * 0.92;
+        
+        var glowScale = 1.1;
+        var gw = imgRect.width * glowScale;
+        var gh = imgRect.height * glowScale;
 
         glow.style.width = gw + 'px';
         glow.style.height = gh + 'px';

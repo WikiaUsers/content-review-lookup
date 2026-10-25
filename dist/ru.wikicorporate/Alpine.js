@@ -1,10 +1,11 @@
+/* Загрузчик Alpine.js (ES6) */
 (() => {
     'use strict';
     if (window.alpineAdapterES6Loaded) return;
     window.alpineAdapterES6Loaded = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:Alpine/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:Alpine/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
@@ -14,14 +15,14 @@
     };
 
     const checkDOM = () => {
-        if (document.querySelector('[x-data]')) {
+        if (document.querySelector('.mw-parser-output [x-data]')) {
             loadScript();
             observer.disconnect();
         }
     };
 
     const observer = new MutationObserver(checkDOM);
-    
+
     const init = () => {
         observer.observe(document.body, { childList: true, subtree: true });
         checkDOM();

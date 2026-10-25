@@ -1,6 +1,9 @@
 mw.config.set('UMFBypassLicenseCheck', true);
 
-mw.loader.load( 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js' );
+// Share completion with consumers that must wait for the jQuery plugin.
+window.dvSelect2Ready = window.dvSelect2Ready || mw.loader.getScript(
+    'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+);
 
 /* Changes the Lock Old Blogs After 30 Days To A Chosen Amount */
 window.LockOldBlogs = {

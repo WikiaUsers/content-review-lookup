@@ -26,6 +26,10 @@ if($('#iconlink3').length) {
    $('<span class="upon-moving gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#iconlink3').html()+'</span>').appendTo('.page-header__actions');
    $('#iconlink3').remove();
 }
+if($('#iconlink4').length) {
+   $('<span class="upon-moving4 gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#iconlink4').html()+'</span>').appendTo('.page-header__actions');
+   $('#iconlink4').remove();
+}
 if($('.user-status').length) {
    $('<span class="upon-moving-status">'+$('.user-status').html()+'</span>').appendTo('.status-placeholder');
    $('.user-status').remove();

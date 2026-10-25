@@ -1,3 +1,4 @@
+/* <nowiki> */
 (function () {
     'use strict';
     const $body = $('body'),
@@ -171,3 +172,4 @@
             .catch(() => { });
     }
 })();
+/* </nowiki> */

@@ -22,26 +22,25 @@
  *    https://support.wiki.gg/wiki/UploadMultipleFiles
  * 
  * Fandom install (Extension:Gadgets, old-style definition). Add to MediaWiki:Gadgets-definition:
- *    * ActuallyBetterUpload[ResourceLoader|package]|ActuallyBetterUpload.js|ActuallyBetterUpload.css|ActuallyBetterUpload/i18n.json
+ *    * ActuallyBetterUpload[ResourceLoader|package]|ActuallyBetterUpload.js|ActuallyBetterUpload.css
  * Package files (must be exactly these names in the MediaWiki namespace):
  *    MediaWiki:Gadget-ActuallyBetterUpload.js (this file, first in the list = entry point)
  *    MediaWiki:Gadget-ActuallyBetterUpload.css
- *    MediaWiki:Gadget-ActuallyBetterUpload/i18n.json (the UI strings)
- * Optionally add a description at MediaWiki:Gadget-BetterUpload.
+ * Optionally add a description at MediaWiki:Gadget-ActuallyBetterUpload.
  *
  * The preloads pages,
  *    MediaWiki:Gadget-BetterUpload.json for the wiki and User:<name>/BetterUpload.json for the user,
  * are loaded via the API and are NOT package files.
 */
 
-(window.dev = window.dev || {}).BetterUpload = window.dev.BetterUpload || {
+(window.dev = window.dev || {}).ActuallyBetterUpload = window.dev.ActuallyBetterUpload || {
 	'default': '==Licensing==\n{{Fairuse}}'
 };
- 
-if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload' && !window.dev.BetterUpload._LOADED) {
-window.dev.BetterUpload._LOADED = true; // double load protection
+
+if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload' && !window.dev.ActuallyBetterUpload._LOADED) {
+window.dev.ActuallyBetterUpload._LOADED = true; // double load protection
 let ccmWarned = false;
- 
+
 	// CustomCodeMirror (https://dev.fandom.com/wiki/CustomCodeMirror) is imported once and its
 	// loader function is reused for every textarea. The load starts here, in the same tick as the
 	// core modules below, so ResourceLoader batches them into one request and the editor loads
@@ -73,7 +72,7 @@ let ccmWarned = false;
 		}, () => { d.reject('CodeMirror modules failed to load'); });
 		return d.promise();
 	})();
- 
+
 mw.loader.using([
 	'mediawiki.api',
 	'mediawiki.util',
@@ -82,9 +81,82 @@ mw.loader.using([
 ]).then(() => {
 	'use strict';
 	
-	// UI strings, picked by the wiki's content language (fallback: English)
-	let i18n = require('./ActuallyBetterUpload/i18n.json');
-	mw.messages.set(i18n[mw.config.get('wgContentLanguage')] || i18n.en);
+	// UI strings, picked by the wiki's content language (missing keys fall back to English)
+	// UI strings: Fandom is only .js pages, so no separate i18n.json package ¯\_(ツ)_/¯
+	let i18n = {
+		"en": {
+			"actuallybetterupload-summary-label": "Upload summary:",
+			"actuallybetterupload-content-label": "Page content:",
+			"actuallybetterupload-redirect-label": "Redirect to:",
+			"actuallybetterupload-preloads-label": "Preloads:",
+			"actuallybetterupload-values-label": "Values:",
+			"actuallybetterupload-none-selected": "None selected",
+			"actuallybetterupload-preview-legend": "Page Preview",
+			"actuallybetterupload-invalid-option": "Invalid option.",
+			"actuallybetterupload-no-save": "Missing file or file name. Could not save page content.",
+			"actuallybetterupload-no-upload": "Missing file or file name. Could not upload file.",
+			"actuallybetterupload-error-unknown": "Unknown error during upload.",
+			"actuallybetterupload-error-unknown-upload": "Unknown error on upload!",
+			"actuallybetterupload-upload-warning-header": "Upload Warning",
+			"actuallybetterupload-redirect-summary": "Create redirect",
+			"actuallybetterupload-filename-label": "File name:",
+			"actuallybetterupload-apply-all": "Apply template to all files",
+			"actuallybetterupload-upload-button": "Upload files",
+			"actuallybetterupload-reset-button": "Reset",
+			"actuallybetterupload-remove-file": "Remove",
+			"actuallybetterupload-ignorewarnings": "Ignore warnings",
+			"actuallybetterupload-watchthis": "Add to watchlist",
+			"actuallybetterupload-nofile": "No files selected for upload.",
+			"actuallybetterupload-successful": "Successfully uploaded files",
+			"actuallybetterupload-warnings": "Files with warnings",
+			"actuallybetterupload-failed": "Files that failed to upload",
+			"actuallybetterupload-network-error": "Network error while uploading the file.",
+			"actuallybetterupload-unknown-warning": "Unknown warning: $1 ($2)",
+			"actuallybetterupload-success-notification": "All files uploaded successfully.",
+			"actuallybetterupload-warning-notification": "{{PLURAL:$1|$1 file was|$1 files were}} uploaded with warnings.",
+			"actuallybetterupload-error-notification": "Failed to upload {{PLURAL:$1|$1 file|$1 files}}."
+		},
+		"ru": {
+			"actuallybetterupload-summary-label": "Описание загрузки:",
+			"actuallybetterupload-content-label": "Содержимое\nстраницы:",
+			"actuallybetterupload-redirect-label": "Перенаправить на:",
+			"actuallybetterupload-preloads-label": "Заготовки:",
+			"actuallybetterupload-values-label": "Значения:",
+			"actuallybetterupload-none-selected": "Ничего не выбрано",
+			"actuallybetterupload-preview-legend": "Предпросмотр страницы",
+			"actuallybetterupload-invalid-option": "Неверный вариант.",
+			"actuallybetterupload-no-save": "Отсутствует файл или имя файла. Не удалось сохранить содержимое страницы.",
+			"actuallybetterupload-no-upload": "Отсутствует файл или имя файла. Не удалось загрузить файл.",
+			"actuallybetterupload-error-unknown": "Неизвестная ошибка при загрузке.",
+			"actuallybetterupload-error-unknown-upload": "Неизвестная ошибка при загрузке!",
+			"actuallybetterupload-upload-warning-header": "Предупреждение загрузки",
+			"actuallybetterupload-redirect-summary": "Создание перенаправления",
+			"actuallybetterupload-filename-label": "Имя файла:",
+			"actuallybetterupload-apply-all": "Применить шаблон ко всем файлам",
+			"actuallybetterupload-upload-button": "Загрузить файлы",
+			"actuallybetterupload-reset-button": "Очистить все",
+			"actuallybetterupload-remove-file": "Очистить",
+			"actuallybetterupload-ignorewarnings": "Игнорировать предупреждения",
+			"actuallybetterupload-watchthis": "Добавить в список наблюдения",
+			"actuallybetterupload-nofile": "Не выбрано ни одного файла для загрузки.",
+			"actuallybetterupload-successful": "Успешно загруженные файлы",
+			"actuallybetterupload-warnings": "Файлы с предупреждениями",
+			"actuallybetterupload-failed": "Файлы, которые не удалось загрузить",
+			"actuallybetterupload-network-error": "Ошибка сети при загрузке файла.",
+			"actuallybetterupload-unknown-warning": "Неизвестное предупреждение: $1 ($2)",
+			"actuallybetterupload-success-notification": "Все файлы успешно загружены.",
+			"actuallybetterupload-warning-notification": "{{PLURAL:$1|$1 файл|$1 файла|$1 файлов}} загружено с предупреждениями.",
+			"actuallybetterupload-error-notification": "Не удалось загрузить {{PLURAL:$1|$1 файл|$1 файла|$1 файлов}}."
+		}
+	};
+	let strings = $.extend({}, i18n.en, i18n[mw.config.get('wgContentLanguage')]);
+	let ownMessages = {};
+	Object.keys(strings).forEach((key) => {
+		if (/^actuallybetterupload-[a-z0-9-]+$/.test(key) && typeof strings[key] === 'string') {
+			ownMessages[key] = strings[key];
+		}
+	});
+	mw.messages.set(ownMessages);
  
 	// Load dependencies and cache
 	let api = new mw.Api(),
@@ -152,11 +224,11 @@ mw.loader.using([
 					fn = $('#wpDestFile');
 				if ( rd.length>0 && rd.val().length>0 && fn.val().length>0 ) {
 					let openRD = ()=>{window.open( mw.util.getUrl('File:'+fn.val(), {redirect: 'no'}), '_self');},
-						rdContent = (window.dev.BetterUpload.redirectFormat||'#redirect [[File:%TARGET%]]').replace(/%TARGET%/, rd.val());
-					api.create('File:'+fn.val(), {recreate: true, summary: mw.msg('betterupload-redirect-summary')}, rdContent)
+						rdContent = (window.dev.ActuallyBetterUpload.redirectFormat||'#redirect [[File:%TARGET%]]').replace(/%TARGET%/, rd.val());
+					api.create('File:'+fn.val(), {recreate: true, summary: mw.msg('actuallybetterupload-redirect-summary')}, rdContent)
 						.then(openRD)
 						.catch((code, data)=>{
-							alert((data && data.error && data.error.info) || mw.msg('betterupload-error-unknown-upload'));
+							BU.showError((data && data.error && data.error.info) || mw.msg('actuallybetterupload-error-unknown-upload'));
 						});
 				} else {
 					// Upload first, then write the page content (see attemptUpload):
@@ -167,7 +239,7 @@ mw.loader.using([
 			});
 			if (document.querySelector('input#wpUploadDescription') && document.querySelector('label[for="wpUploadDescription"]')) {
 				// Change reupload format
-				document.querySelector('label[for="wpUploadDescription"]').textContent = mw.msg('betterupload-summary-label');
+				document.querySelector('label[for="wpUploadDescription"]').textContent = mw.msg('actuallybetterupload-summary-label');
 				document.querySelector('label[for="wpUploadDescription"]').setAttribute('for', 'wpUploadSummary');
 				document.querySelector('input#wpUploadDescription').setAttribute('name', 'wpUploadSummary');
 				document.querySelector('input#wpUploadDescription').setAttribute('id', 'wpUploadSummary');
@@ -178,7 +250,7 @@ mw.loader.using([
 					html: [
 						$('<td>', {
 							'class': 'mw-label',
-							html: $('<label>', { 'for': 'wpUploadSummary', text: mw.msg('betterupload-summary-label') })
+							html: $('<label>', { 'for': 'wpUploadSummary', text: mw.msg('actuallybetterupload-summary-label') })
 						}),
 						$('<td>', {
 							'class': 'mw-input',
@@ -191,7 +263,7 @@ mw.loader.using([
 			// Destination filename row belongs to single mode only
 			$('.mw-htmlform-field-HTMLTextField:has(#wpDestFile)').addClass('bu-single-only');
  
-			let def_Val = (curr!==null && curr!==undefined) ? curr : (BU.detectFromDest() || window.dev.BetterUpload.default || '');
+			let def_Val = (curr!==null && curr!==undefined) ? curr : (BU.detectFromDest() || window.dev.ActuallyBetterUpload.default || '');
 			// Own page content field. We do NOT reuse the native #wpUploadDescription textarea:
 			// the CodeMirror extension auto-attaches to it, so reusing it would leave two editors
 			// on one textarea. A unique id keeps the extension away, so attachEditor is the only
@@ -202,7 +274,7 @@ mw.loader.using([
 				html: [
 					$('<td>', {
 						'class': 'mw-label',
-						html: $('<label>', { 'for': 'wpBUPageContent', text: mw.msg('betterupload-content-label') })
+						html: $('<label>', { 'for': 'wpBUPageContent', text: mw.msg('actuallybetterupload-content-label') })
 					}),
 					$('<td>', {
 						'class': 'mw-input',
@@ -224,7 +296,7 @@ mw.loader.using([
 				html: [
 					$('<td>', {
 						'class': 'mw-label',
-						html: $('<label>', { 'for': 'wpRedirectFile', text: mw.msg('betterupload-redirect-label') })
+						html: $('<label>', { 'for': 'wpRedirectFile', text: mw.msg('actuallybetterupload-redirect-label') })
 					}),
 					$('<td>', {
 						'class': 'mw-input',
@@ -239,7 +311,7 @@ mw.loader.using([
 				'id': 'wpBUPreviewField',
 				'class': 'bu-single-only',
 				html: [
-					$('<legend>', { text: mw.msg('betterupload-preview-legend') }),
+					$('<legend>', { text: mw.msg('actuallybetterupload-preview-legend') }),
 					$('<div>', { 'id': 'wpPagePreview' })
 				]
 			});
@@ -273,7 +345,7 @@ mw.loader.using([
 			BU.attachEditor($editorTextarea[0]);
 			BU.renderSingle();
 			BU.mountSinglePreloads();
- 
+
 			// Debounced preview: each tick only compares text (cheap, no network) and
 			// re-parses a target once its text has been stable for one tick and differs
 			// from what's shown. Bursts of typing produce no parses until the user pauses.
@@ -299,16 +371,24 @@ mw.loader.using([
 			// Update "default values" so that the base upload check for leaving the page doesnt have a stroke when nothing actually changed
 			form.data('origtext', form.serialize());
 		},
-		
+ 
+		// Run fn on the element's first focus, but only when lazy editors are switched on
+		// ("lazyEditors": true in the config; off by default). fn(true) when it was really deferred,
+		// fn(false) when it runs at once.
 		onFirstFocus: (el, fn) => {
-			if (window.dev.BetterUpload.lazyEditors !== true) { fn(false); }
+			if (window.dev.ActuallyBetterUpload.lazyEditors !== true) { fn(false); }
 			else { $(el).one('focusin', () => { fn(true); }); }
 		},
- 
-		// Attach CustomCodeMirror to the textarea.
+
+		// Attach CustomCodeMirror to the textarea. Until then (and if CCM is unavailable) the
+		// textarea keeps working through jquery.textSelection. onAttached(cm) is called only on
+		// success, with the CodeMirror WikiEditor instance (has .view). lazy: build the editor on
+		// the first focus instead of right away, if "lazyEditors" is true in the config.
+		// hideUntilReady: keep the bare textarea invisible (its space stays reserved) until the editor
+		// is built, so the user never sees a textarea turn into CodeMirror; restored on any outcome.
 		attachEditor: (textarea, onAttached, lazy, hideUntilReady) => {
 			let show = () => { textarea.style.visibility = ''; };
-			let deferred = lazy && window.dev.BetterUpload.lazyEditors === true;
+			let deferred = lazy && window.dev.ActuallyBetterUpload.lazyEditors === true;
 			if (hideUntilReady && !deferred) { textarea.style.visibility = 'hidden'; }
 			let attach = (focusAfter) => {
 				ccmPromise.then((load) => {
@@ -348,18 +428,25 @@ mw.loader.using([
 			else { attach(false); }
 		},
  
+		// Compile a filename pattern from the config.
+		compilePattern: (pattern) => {
+			if (pattern.length > 200 || /\((?:[^()\\]|\\.)*[+*}](?:[^()\\]|\\.)*\)[+*{]/.test(pattern)) {
+				console.warn('BetterUpload: preload pattern rejected (too long or nested quantifiers)', pattern);
+				return null;
+			}
+			try { return new RegExp(pattern); }
+			catch (e) { console.warn('BetterUpload: invalid preload pattern', pattern, e); return null; }
+		},
+
 		// Match a filename against preloads with a "pattern" field; return the preload text.
 		detectPreload: (filename) => {
-			let preloads = window.dev.BetterUpload.preloads;
+			let preloads = window.dev.ActuallyBetterUpload.preloads;
 			if (!Array.isArray(preloads) || !filename) return;
-			let name = filename.replace(/_/g, ' ');
+			let name = filename.replace(/_/g, ' ').slice(0, 255); // titles are at most 255 bytes
 			let matched = preloads.find((preload) => {
 				if (!preload.pattern || 'string' !== typeof preload.pattern) { return false; }
-				// compiled once; an invalid pattern in the config must not break the whole form
-				if (preload._rx === undefined) {
-					try { preload._rx = new RegExp(preload.pattern); }
-					catch (e) { console.warn('BetterUpload: invalid preload pattern', preload.pattern, e); preload._rx = null; }
-				}
+				// compiled once; an invalid or unsafe pattern in the config must not break the whole form
+				if (preload._rx === undefined) { preload._rx = BU.compilePattern(preload.pattern); }
 				return !!preload._rx && preload._rx.test(name);
 			});
 			if (matched && matched.preload) { return matched.preload; }
@@ -375,11 +462,11 @@ mw.loader.using([
 		// reference preview appended on demand). Container-agnostic: returns a <div> the caller
 		// mounts wherever it likes. opts: { apply(text), render() }.
 		buildPreloads: (opts) => {
-			let preloads = window.dev.BetterUpload.preloads;
+			let preloads = window.dev.ActuallyBetterUpload.preloads;
 			if (!Array.isArray(preloads) || preloads.length===0) { return null; }
 			let $wrap = $('<div>', { 'class': 'bu-preloads' });
 			let $select = $('<select>', { 'class': 'bu-preload-select' });
-			$select.append($('<option>', { value: 'None', title: 'None', selected: '', text: mw.msg('betterupload-none-selected') }));
+			$select.append($('<option>', { value: 'None', title: 'None', selected: '', text: mw.msg('actuallybetterupload-none-selected') }));
 			let pl_list = $select.get(0);
 			let pl_opts = pl_list;
 			preloads.forEach((setting, num) => {
@@ -398,12 +485,12 @@ mw.loader.using([
 						option.setAttribute('value', setting.name);
 						option.setAttribute('title', setting.name);
 					}
-					option.innerHTML = setting.description || setting.name;
+					option.textContent = setting.description || setting.name;
 					option.setAttribute('numref', num);
 					pl_opts.append(option);
 				}
 			});
-			$wrap.append($('<label>', { text: mw.msg('betterupload-preloads-label') }), ' ', $select);
+			$wrap.append($('<label>', { text: mw.msg('actuallybetterupload-preloads-label') }), ' ', $select);
 			$select.on('change', () => {
 				let num = pl_list.selectedOptions[0].getAttribute('numref');
 				let settings = preloads[num];
@@ -412,7 +499,7 @@ mw.loader.using([
 				if (settings && settings.preload) {
 					if (settings.fillin && /\$\(1\)\$/.test(settings.preload)) {
 						let $vsel = $('<select>', { 'class': 'bu-preload-values' });
-						$vsel.append($('<option>', { value: 'None', title: 'None', selected: '', text: mw.msg('betterupload-none-selected') }));
+						$vsel.append($('<option>', { value: 'None', title: 'None', selected: '', text: mw.msg('actuallybetterupload-none-selected') }));
 						let plv_list = $vsel.get(0);
 						let plv_opts = plv_list;
 						settings.fillin.forEach((value, index) => {
@@ -432,22 +519,19 @@ mw.loader.using([
 									option.setAttribute('value', name);
 									option.setAttribute('title', name);
 								}
-								option.innerHTML = name;
+								option.textContent = name;
 								option.setAttribute('numref', index);
 								plv_opts.append(option);
 							}
 						});
-						$wrap.append(' ', $('<label>', { text: mw.msg('betterupload-values-label') }), ' ', $vsel);
+						$wrap.append(' ', $('<label>', { text: mw.msg('actuallybetterupload-values-label') }), ' ', $vsel);
 						$vsel.on('change', () => {
 							let valnum = plv_list.selectedOptions[0].getAttribute('numref');
 							let valsettings = settings.fillin[valnum];
 							if (!valsettings) { $wrap.find('.bu-preload-ref').remove(); opts.apply(settings.preload); opts.render(); return; } // "None selected"
 							let newpreload = settings.preload;
 							valsettings.values.forEach((rep, ind) => {
-								let regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
-								if (regex.test(newpreload)) {
-									newpreload = newpreload.replace(regex, () => rep);
-								}
+								newpreload = newpreload.split('$(' + (ind + 1) + ')$').join(String(rep));
 							});
 							$wrap.find('.bu-preload-ref').remove();
 							if (valsettings.reference) {
@@ -472,7 +556,7 @@ mw.loader.using([
 					}
 					opts.apply(settings.preload);
 					opts.render();
-				} else { alert(mw.msg('betterupload-invalid-option')); }
+				} else { BU.showError(mw.msg('actuallybetterupload-invalid-option')); }
 			});
 			return $wrap;
 		},
@@ -543,7 +627,7 @@ mw.loader.using([
 				}
 				if (filename && filename.length>0) {
 					return api.post(params);
-				} else { alert(mw.msg('betterupload-no-save')); }
+				} else { BU.showError(mw.msg('actuallybetterupload-no-save')); }
 			}
 		},
  
@@ -565,22 +649,19 @@ mw.loader.using([
 				let handleResponse = (a, b) => {
 					let data = (typeof b === 'object' && !Array.isArray(b) && b !== null && (b.error || b.upload)) ? b : a;
 					if (!data) {
-						console.log('a', a);
-						console.log('b', b);
-						alert(mw.msg('betterupload-error-unknown-upload'));
+						BU.showError(mw.msg('actuallybetterupload-error-unknown-upload'));
 						return;
 					}
 					if (data.error) {
-						console.log('data', data);
 						let cont = document.querySelector('.mw-message-box-error');
 						if (!cont) {
-							let $header = $('<h2>', { 'class': 'mw-message-box-error-header', text: mw.msg('betterupload-upload-warning-header') });
+							let $header = $('<h2>', { 'class': 'mw-message-box-error-header', text: mw.msg('actuallybetterupload-upload-warning-header') });
 							let $box = $('<div>', { 'class': 'mw-message-box-error mw-message-box' });
 							if ($('#uploadtext').length) { $('#uploadtext').after($header, $box); }
 							else { $('#mw-upload-form').before($header, $box); }
 							cont = $box[0];
 						}
-						cont.textContent = (data.error.info && data.error.info.length>0) ? data.error.info : mw.msg('betterupload-error-unknown');
+						cont.textContent = (data.error.info && data.error.info.length>0) ? data.error.info : mw.msg('actuallybetterupload-error-unknown');
 					} else if (data.upload && data.upload.result === 'Success') {
 						let form = $('#mw-upload-form');
 						form.data('origtext', form.serialize()); // So the form isnt annoying when leaving
@@ -599,12 +680,11 @@ mw.loader.using([
 							goToFile();
 						}
 					} else {
-						console.log('data', data);
-						alert(mw.msg('betterupload-error-unknown-upload'));
+						BU.showError(mw.msg('actuallybetterupload-error-unknown-upload'));
 					}
 				};
 				api.upload(file, params).then(handleResponse, handleResponse);
-			} else { alert(mw.msg('betterupload-no-upload')); }
+			} else { BU.showError(mw.msg('actuallybetterupload-no-upload')); }
 		},
  
 		// ---- Multi-file mode -------------------------------------------------------------
@@ -618,7 +698,7 @@ mw.loader.using([
 			}
 			return multiReady;
 		},
- 
+
 		// Switch to multi-file mode: hide single-mode fields and build a per-file UI.
 		enterMultiMode: (files) => {
 			multiActive = true;
@@ -626,7 +706,7 @@ mw.loader.using([
 			let $nativeUpload = $('input[name="wpUpload"]');
 			if ($nativeUpload.length) {
 				if ($nativeUpload.data('buOrigValue') === undefined) { $nativeUpload.data('buOrigValue', $nativeUpload.val()); }
-				$nativeUpload.val(mw.msg('betterupload-upload-button'));
+				$nativeUpload.val(mw.msg('actuallybetterupload-upload-button'));
 			}
 			// Hide the whole native description fieldset: its rows are unused in multi mode
 			// and it also carries the single Edittools panel (cloned per file below).
@@ -701,11 +781,11 @@ mw.loader.using([
  
 			// Shared control
 			let $header = $('<fieldset>', { 'class': 'bu-multi-header' });
-			$header.append($('<legend>').text(mw.msg('betterupload-apply-all')));
+			$header.append($('<legend>').text(mw.msg('actuallybetterupload-apply-all')));
  
 			// Shared upload summary
 			$header.append($('<div>', { 'class': 'bu-field' }).append(
-				$('<label>', { 'for': 'bu-shared-summary', text: mw.msg('betterupload-summary-label') }), ' ',
+				$('<label>', { 'for': 'bu-shared-summary', text: mw.msg('actuallybetterupload-summary-label') }), ' ',
 				$('<input>', { type: 'text', 'id': 'bu-shared-summary', 'class': 'mw-ui-input bu-shared-summary', size: '60' })
 			));
  
@@ -744,14 +824,14 @@ mw.loader.using([
 			if (mw.user.options.get('watchuploads') === '1') { $wat.prop('checked', true); }
 			sharedIgnore = $ign.get(0);
 			sharedWatch = $wat.get(0);
-			$header.append($('<div>').append($ign, ' ', $('<label>', { 'for': 'bu-ignore', text: mw.msg('betterupload-ignorewarnings') })));
-			$header.append($('<div>').append($wat, ' ', $('<label>', { 'for': 'bu-watch', text: mw.msg('betterupload-watchthis') })));
+			$header.append($('<div>').append($ign, ' ', $('<label>', { 'for': 'bu-ignore', text: mw.msg('actuallybetterupload-ignorewarnings') })));
+			$header.append($('<div>').append($wat, ' ', $('<label>', { 'for': 'bu-watch', text: mw.msg('actuallybetterupload-watchthis') })));
  
 			// Upload is a submit input so MediaWiki's own beforeunload handler is cleared on
 			// submit (same trick as SmartMultiUpload); the form submit handler routes to us.
-			let $upload = $('<input>', { type: 'submit', 'class': 'mw-htmlform-submit', value: mw.msg('betterupload-upload-button') });
-			$upload.attr('title', $('input[name="wpUpload"]').attr('title') || mw.msg('betterupload-upload-button'));
-			let $reset = $('<input>', { type: 'button', value: mw.msg('betterupload-reset-button') });
+			let $upload = $('<input>', { type: 'submit', 'class': 'mw-htmlform-submit', value: mw.msg('actuallybetterupload-upload-button') });
+			$upload.attr('title', $('input[name="wpUpload"]').attr('title') || mw.msg('actuallybetterupload-upload-button'));
+			let $reset = $('<input>', { type: 'button', value: mw.msg('actuallybetterupload-reset-button') });
 			$reset.on('click', () => { BU.resetAll(); });
 			$header.append($('<div>', { 'class': 'bu-multi-buttons' }).append($upload, ' ', $reset));
 			$container.append($header);
@@ -766,7 +846,7 @@ mw.loader.using([
 		// with a collapsed page preview directly below.
 		addFileBlock: (file) => {
 			let idPrefix = 'bu-f' + (idSeq++);
-			let def = BU.detectPreload(file.name) || window.dev.BetterUpload.default || '';
+			let def = BU.detectPreload(file.name) || window.dev.ActuallyBetterUpload.default || '';
  
 			let $fs = $('<fieldset>', { 'class': 'bu-file-block', 'id': idPrefix });
 			$fs.append($('<legend>').text(file.name));
@@ -775,7 +855,7 @@ mw.loader.using([
 			let $main = $('<div>', { 'class': 'bu-file-main' });
 			let $name = $('<input>', { type: 'text', 'class': 'mw-ui-input bu-file-name', 'id': idPrefix+'-name', value: file.name });
 			$main.append($('<div>', { 'class': 'bu-field' })
-				.append($('<label>', { 'for': idPrefix+'-name', text: mw.msg('betterupload-filename-label') }), ' ', $name));
+				.append($('<label>', { 'for': idPrefix+'-name', text: mw.msg('actuallybetterupload-filename-label') }), ' ', $name));
  
 			let $ta = $('<textarea>', {
 				'id': idPrefix+'-content',
@@ -784,7 +864,7 @@ mw.loader.using([
 			}).val(def);
 			$main.append($('<div>', { 'class': 'bu-field bu-editor-field' }).append($ta));
  
-			let $rm = $('<input>', { type: 'button', 'class': 'bu-remove', value: mw.msg('betterupload-remove-file') });
+			let $rm = $('<input>', { type: 'button', 'class': 'bu-remove', value: mw.msg('actuallybetterupload-remove-file') });
  
 			// Right column: the file's own thumbnail, using MediaWiki's standard .thumb wrapper.
 			let thumb = BU.buildThumb(file);
@@ -795,7 +875,7 @@ mw.loader.using([
 			// Collapsed page preview directly under the fieldset, using a native <details> element
 			let $preview = $('<details>', { 'class': 'bu-preview-details' });
 			let $body = $('<div>', { 'class': 'bu-preview-body' });
-			$preview.append($('<summary>').text(mw.msg('betterupload-preview-legend')), $body);
+			$preview.append($('<summary>').text(mw.msg('actuallybetterupload-preview-legend')), $body);
  
 			// One wrapper per file (fieldset + preview + separator) so removal is a single call
 			let $wrap = $('<div>', { 'class': 'bu-file-wrap' }).append($fs, $preview, $('<hr>'));
@@ -879,7 +959,7 @@ mw.loader.using([
  
 		// Sequentially upload every file in the batch (adapted from SmartMultiUpload).
 		uploadFiles: () => {
-			if (!batch.length) { alert(mw.msg('betterupload-nofile')); return; }
+			if (!batch.length) { BU.showError(mw.msg('actuallybetterupload-nofile')); return; }
 			resultCount = { warnings: 0, errors: 0 };
 			curIdx = 0;
 			// Read the shared summary once; it applies to every file in this run.
@@ -889,9 +969,12 @@ mw.loader.using([
 			if (progressBar) { progressBar.$element.remove(); }
 			$('#mw-content-text').hide();
 			let $res = $('<div>', { 'id': 'bu-results' });
-			$res.append('<h3>' + mw.message('betterupload-successful').escaped() + '</h3><ul id="multiUploadDone"></ul>');
-			$res.append('<div style="display:none;" id="multiUploadWarnings"><h3>' + mw.message('betterupload-warnings').escaped() + '</h3><ul></ul></div>');
-			$res.append('<div style="display:none;" id="multiUploadFailed"><h3>' + mw.message('betterupload-failed').escaped() + '</h3><ul></ul></div>');
+			$res.append(
+				$('<h3>').text(mw.msg('actuallybetterupload-successful')),
+				$('<ul>', { id: 'multiUploadDone' }),
+				$('<div>', { id: 'multiUploadWarnings', css: { display: 'none' } }).append($('<h3>').text(mw.msg('actuallybetterupload-warnings')), $('<ul>')),
+				$('<div>', { id: 'multiUploadFailed', css: { display: 'none' } }).append($('<h3>').text(mw.msg('actuallybetterupload-failed')), $('<ul>'))
+			);
 			$res.insertAfter(BU.$heading());
 			progressBar = new OO.ui.ProgressBarWidget();
 			progressBar.$element.insertAfter(BU.$heading());
@@ -951,9 +1034,9 @@ mw.loader.using([
 				if (data && data.errors) {
 					failureItem = BU.makeFailureItem(filename, data.errors.map((error) => error.html));
 				} else if (code === 'http') {
-					failureItem = BU.makeFailureItem(filename, mw.message('betterupload-network-error').escaped());
+					failureItem = BU.makeFailureItem(filename, mw.message('actuallybetterupload-network-error').escaped());
 				} else {
-					failureItem = BU.makeFailureItem(filename, mw.message('betterupload-error-unknown').escaped());
+					failureItem = BU.makeFailureItem(filename, mw.message('actuallybetterupload-error-unknown').escaped());
 				}
 				$('#multiUploadFailed > ul').append(failureItem);
 				$('#multiUploadFailed').show();
@@ -976,7 +1059,7 @@ mw.loader.using([
 			if (!reasons || reasons.length === 0) {
 				item.text(filename);
 			} else if (reasons.length === 1) {
-				item.text(filename + ': ').append(reasons[0]);
+				item.text(filename + ': ').append($('<span>').html(reasons[0]));
 			} else {
 				let reasonList = $('<ul>');
 				reasons.forEach((reason) => { reasonList.append($('<li>').html(reason)); });
@@ -987,13 +1070,13 @@ mw.loader.using([
  
 		getUploadWarningTexts: (warnings, filename) => {
 			let deferred = $.Deferred();
-			let parseDataWrapper = $('<div>');
+			let wikitext = '';
 			let correctedFilename = warnings.badfilename || filename;
 			Object.keys(warnings).forEach((warningKey) => {
 				let message = BU.getLocalizedWarningMessage(warningKey, warnings[warningKey], correctedFilename);
-				$('<div>').html(message).appendTo(parseDataWrapper);
+				wikitext += '<div>' + message + '</div>';
 			});
-			api.parse(parseDataWrapper.html()).done((parsedData) => {
+			api.parse(wikitext).done((parsedData) => {
 				let parsedWarnings = $(parsedData).children().map(function () { return this.innerHTML; }).get();
 				deferred.resolve(parsedWarnings);
 			}).fail(() => { deferred.reject(); });
@@ -1029,7 +1112,7 @@ mw.loader.using([
 				case 'was-deleted':
 					return mw.message('filewasdeleted', BU.prependNamespace('file', filenameWithoutNamespace)).plain();
 				default:
-					return mw.message('betterupload-unknown-warning', '<code>' + mw.html.escape(key) + '</code>', '<code>' + mw.html.escape(JSON.stringify(args)) + '</code>').plain();
+					return mw.html.escape(mw.message('actuallybetterupload-unknown-warning', key, JSON.stringify(args)).text());
 			}
 		},
  
@@ -1039,9 +1122,13 @@ mw.loader.using([
 		},
  
 		showUploadNotification: (type, count) => {
-			BU.showNotification(type, mw.message('betterupload-' + type + '-notification', count).parse());
+			BU.showNotification(type, mw.message('actuallybetterupload-' + type + '-notification', count).text());
 		},
  
+		showError: (msg) => {
+			mw.notify(msg, { type: 'error', autoHide: false });
+		},
+
 		showNotification: (type, msg, autohide) => {
 			let messageWidget = new OO.ui.MessageWidget({ type: type, inline: true, label: msg });
 			mw.notify(messageWidget.$element, { autoHide: autohide !== false });
@@ -1088,21 +1175,29 @@ mw.loader.using([
 		action: 'query',
 		prop: 'revisions',
 		titles: titles,
-		rvprop: 'content',
+		rvprop: 'content|contentmodel',
 		rvslots: '*'
 	}).then((data) => {
 		let page = { user: null, site: null, curr: null };
 		Object.keys(data.query.pages).forEach((id) => {
 			let p = data.query.pages[id];
 			if (p.missing === '' || !p.revisions) { return; }
-			let content = p.revisions[0].slots.main['*'];
-			if (p.ns === 8) { page.site = content; }
-			else if (p.ns === 2) { page.user = content; }
+			let slot = p.revisions[0].slots.main;
+			let content = slot['*'];
+			if (p.ns === 8 || p.ns === 2) {
+				// config pages must really be JSON pages (a wikitext page named *.json is not trusted)
+				if (slot.contentmodel !== 'json') {
+					console.warn('BetterUpload: ' + p.title + ' is not a JSON page (content model: ' + slot.contentmodel + '), ignored');
+					return;
+				}
+				if (p.ns === 8) { page.site = content; }
+				else { page.user = content; }
+			}
 			else if (p.ns === 6) { page.curr = content; }
 		});
 		// A valid user config wins over the site one
 		let cfg = parseConfig(page.user) || parseConfig(page.site);
-		if (cfg) { window.dev.BetterUpload = $.extend({ _LOADED: true }, cfg); }
+		if (cfg) { window.dev.ActuallyBetterUpload = $.extend({ _LOADED: true }, cfg); }
 		return page;
 	}, () => ({ curr: null })).then(start);
 });

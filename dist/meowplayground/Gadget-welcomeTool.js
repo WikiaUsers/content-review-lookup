@@ -1,1 +1,0 @@
-mw.notify("Welcome to the Meow Playground Wiki!");

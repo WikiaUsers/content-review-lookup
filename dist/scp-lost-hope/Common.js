@@ -341,3 +341,39 @@ importArticles({
   });
 
   renderTourList();
+  
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.body.classList.add('page-loaded');
+        }, 500); 
+    });
+
+mw.hook('wikipage.content').add(function($content) {
+    const navBoxes = $content.find('.nav-box');
+
+    navBoxes.each(function() {
+        const navBox = this;
+        const nbox = navBox.querySelector('.nbox');
+        const img = navBox.querySelector('.nav-box-img img');
+
+        navBox.addEventListener('mouseenter', function() {
+            if (nbox) {
+                nbox.style.transform = 'scale(1.05)';
+            }
+            if (img) {
+                img.style.filter = 'invert(100%)';
+                img.style.transform = 'scale(1.03)';
+            }
+        });
+
+        navBox.addEventListener('mouseleave', function() {
+            if (nbox) {
+                nbox.style.transform = 'scale(0.95)';
+            }
+            if (img) {
+                img.style.filter = 'invert(0%)';
+                img.style.transform = 'scale(1)';
+            }
+        });
+    });
+});

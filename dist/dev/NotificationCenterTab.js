@@ -18,3 +18,13 @@ $(function () {
         clearInterval(check);
     }, 100);
 });
+    importArticle({
+        type: 'script',
+        article: 'dev:NotificationCenter.js'
+    });
+});
+    importArticle({
+        type: 'script',
+        article: 'dev:EditcountTab.js'
+    });
+});

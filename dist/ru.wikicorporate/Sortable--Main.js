@@ -1,54 +1,76 @@
+/* Fandom Loader: SortableJS (ES2024) */
 (() => {
+    'use strict';
     if (window.FandomSortableLoaded) return;
     window.FandomSortableLoaded = true;
 
-    const initSortable = async (nodes) => {
-        const { default: Sortable } = await import('https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/modular/sortable.esm.js');
+    let SortableClass = null;
+    let loadPromise = null;
 
-        nodes.forEach(node => {
-            if (node.dataset.processed || !node.id) return; // ID обязателен для кэширования
-            node.dataset.processed = "true";
+    const ensureSortable = () => {
+        if (SortableClass) return Promise.resolve(SortableClass);
+        loadPromise ??= (async () => {
+            const { default: Sortable } = await import('https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/modular/sortable.esm.js');
+            SortableClass = Sortable;
+            return Sortable;
+        })();
+        return loadPromise;
+    };
+
+    const initSortable = async (nodes) => {
+        let Sortable;
+        try {
+            Sortable = await ensureSortable();
+        } catch (error) {
+            console.error('[SortableJS Error]', error);
+            return;
+        }
+
+        for (const node of nodes) {
+            if (node.dataset.processed || !node.id) continue;
+            node.dataset.processed = 'true';
 
             const storageKey = `fandom_sort_${node.id}`;
-            const savedOrder = localStorage.getItem(storageKey);
+            let savedOrder = null;
+            try {
+                savedOrder = localStorage.getItem(storageKey);
+            } catch {}
 
-            // Если есть кэш — восстанавливаем порядок DOM до инициализации
             if (savedOrder) {
                 const orderArray = savedOrder.split('|');
                 const itemsMap = new Map();
-                
-                // Собираем элементы по их data-id
-                Array.from(node.children).forEach(child => {
+
+                for (const child of Array.from(node.children)) {
                     const id = child.dataset.id;
                     if (id) itemsMap.set(id, child);
-                });
+                }
 
-                // Перестраиваем DOM безопасно (без innerHTML)
-                orderArray.forEach(id => {
+                for (const id of orderArray) {
                     if (itemsMap.has(id)) {
                         node.appendChild(itemsMap.get(id));
                         itemsMap.delete(id);
                     }
-                });
-                
-                // Оставшиеся новые элементы кидаем в конец
-                itemsMap.forEach(child => node.appendChild(child));
+                }
+
+                for (const child of itemsMap.values()) {
+                    node.appendChild(child);
+                }
             }
 
-            // Инициализируем библиотеку
             new Sortable(node, {
                 animation: 150,
                 ghostClass: 'sortable-ghost',
                 dataIdAttr: 'data-id',
-                // При окончании перетаскивания сохраняем в кэш
-                onEnd: function (evt) {
+                onEnd() {
                     const order = this.toArray();
                     try {
                         localStorage.setItem(storageKey, order.join('|'));
-                    } catch (e) { console.warn('LocalStorage limit reached'); }
+                    } catch {
+                        console.warn('LocalStorage limit reached');
+                    }
                 }
             });
-        });
+        }
     };
 
     const observer = new MutationObserver((mutations) => {
@@ -59,7 +81,7 @@
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    
+
     const initialNodes = document.querySelectorAll('.wiki-sortable:not([data-processed])');
     if (initialNodes.length > 0) initSortable(initialNodes);
 })();

@@ -10,7 +10,26 @@ window.DisplayClockJS = {
 	offset: 420,
 	fontFamily: "Roboto, Rubik, sans-serif"
 };
+/* LastEdited; PageEditInfo is already installed in ImportJS to allow sitewide */
+window.lastEdited = {
+	avatar: true,
+	avatarsize: 18,
+	size: true,
+	diff: true,
+	comment: true,
+	newpage: false,
+	mainpage: true,
+	time: 'timeago',
+	namespaces: {
+		exclude: []
+	},
+	pages: []
+};
+
 importArticles ({
 	type:'script',
-	article:'u:dev:MediaWiki:UTCClock/code.js'
+	articles: [
+		'u:dev:MediaWiki:UTCClock/code.js',
+		'u:dev:MediaWiki:LastEdited/code.js',
+	]
 });

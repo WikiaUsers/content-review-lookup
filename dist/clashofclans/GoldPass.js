@@ -9,6 +9,7 @@ $(document).ready(function() {
 	$("span#researchBoostHarness").html('<div id="researchBoostInput">Research Boost: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#armyBoostHarness").html('<div id="armyBoostInput">Toggle Army Boost? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
 	$("span#freezeHarness").html('<div id="freezeInput">Toggle Frost? <input type="checkbox" name="freezeBoost" id="freezeBoost"></input></div>');
+	// Frost potency (most of these numbers are for Frozen Arrow interactions; some are unused but left in for posterity)
 	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Frost Potency: '+
 		'<select name="frostPotencyLevel" id="frostPotencyLevel">'+
 			'<option value="0">0</option>'+
@@ -18,12 +19,13 @@ $(document).ready(function() {
 			'<option value="35">35</option>'+
 			'<option value="37">37</option>'+
 			'<option value="40">40</option>'+
+			'<option value="42">42</option>'+
 			'<option value="45">45</option>'+
 			'<option value="50">50</option>'+
 			'<option value="55">55</option>'+
 			'<option value="60">60</option>'+
 			'<option value="65">65</option>'+
-			//'<option value="70">70</option>'+ No longer used as of Sep 2024 balance changes
+			'<option value="70">70</option>'+
 			//'<option value="75">75</option>'+
 		'</select> %</div>');
 	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
@@ -1215,6 +1217,7 @@ $(document).ready(function() {
 			"Archer Puppet": [28,37,46,54,61,68,78,88,99,110,120,127,134,140,145,150,154,159],
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Action Figure": [28,32,36,40,44,48,53,58,63,68,74,80,84,89,94,98,102,106,109,112,116,119,122,125,128,132,135],
+			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,145,150,155,160,165,170,175],
 			"Henchmen Puppet": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
 			"Dark Orb": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
 			"Meteor Staff": [13,17,21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,90,95,100,105,110,115,120,125],
@@ -1224,10 +1227,9 @@ $(document).ready(function() {
 			"Lavaloon Puppet": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
 			"Heroic Torch": [12,13,14,16,18,20,22,24,27,29,31,34,36,38,41,43,45,48,51,54,58,61,64,68,71,74,78],
 			"Royal Gem": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
-			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
 			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
-			"Fire Heart": [10,10,12,12,12,14,14,14,16,16,16,18,18,18,20,20,20,23],
+			//"Fire Heart": [10,10,12,12,12,14,14,14,16,16,16,18,18,18,20,20,20,23], Deactivated
 			"Stun Blaster": [40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,90],
 			"Rocket Backpack": [20,23,26,29,32,35,38,41,44,47,50,53,56,59,62,64,66,68,70,72,74,76,78,80,82,84,86],
 		};
@@ -1249,6 +1251,7 @@ $(document).ready(function() {
 			"Noble Iron": Array(18).fill(500),
 			"Dark Crown": [550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1025,1050,1075,1100,1125,1150,1175,1200],
 			"Meteor Staff": [558,587,615,644,673,702,730,759,788,817,845,874,903,932,960,989,1018,1047,1107,1139,1171,1205,1239,1273,1309,1345,1381],
+			"Portal Pendant": [550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1025,1050,1075,1100,1125,1150,1175,1200],
 			"Life Gem": [170,184,195,205,217,230,255,282,312,344,381,398,415,432,449,466,483,500],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
@@ -1259,7 +1262,7 @@ $(document).ready(function() {
 			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
 			"Electro Boots": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
 			"Frost Flake": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
-			"Fire Heart": [900,1200,1450,1750,2000,2300,2600,2850,3150,3400,3700,4000,4250,4550,4800,5100,5450,5600],
+			"Fire Heart": [830,1100,1350,1600,1850,2100,2400,2600,2900,3150,3400,3700,3900,4200,4400,4700,5000,5150],
 			"Flame Blower": [500,700,900,1100,1300,1500,1700,1850,2000,2150,2300,2450,2600,2750,2900,3000,3050,3100],
 			"Stun Blaster": [450,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],
 			"Electro Fangs": [400,650,850,1000,1150,1300,1450,1600,1750,1900,2000,2100,2200,2275,2325,2375,2400,2400],

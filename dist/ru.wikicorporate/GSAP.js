@@ -1,12 +1,11 @@
+/* Загрузчик GSAP (ES6) */
 (() => {
     'use strict';
-    
     if (window.gsapAdapterES6Loaded) return;
     window.gsapAdapterES6Loaded = true;
 
-    // Ссылка на основную страницу с логикой GSAP
-    const SCRIPT_PAGE = 'MediaWiki:GSAP/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:GSAP/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
@@ -16,15 +15,14 @@
     };
 
     const checkDOM = () => {
-        // Загружаем тяжелый GSAP только если на странице есть элементы для анимации
         if (document.querySelector('.wiki-gsap')) {
             loadScript();
-            observer.disconnect(); // Скрипт загружен, наблюдение больше не нужно
+            observer.disconnect();
         }
     };
 
     const observer = new MutationObserver(checkDOM);
-    
+
     const init = () => {
         observer.observe(document.body, { childList: true, subtree: true });
         checkDOM();

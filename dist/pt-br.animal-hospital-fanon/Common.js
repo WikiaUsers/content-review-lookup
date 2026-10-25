@@ -1,3 +1,28 @@
+mw.loader.getScript("https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js")
+.then(function () {
+
+    function convertEmoji() {
+        if (window.twemoji) {
+            twemoji.parse(document.body, {
+                folder: "svg",
+                ext: ".svg"
+            });
+        }
+    }
+
+    convertEmoji();
+
+    const observer = new MutationObserver(function () {
+        convertEmoji();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+});
+
 window.AutoCreateUserPagesConfig = {
     content: {
         2: 'Bem-vindo à Wiki Fanon de Animal Hospital em português brasileiro! Se precisar de ajuda, você pode entrar em contato com um membro da equipe.',

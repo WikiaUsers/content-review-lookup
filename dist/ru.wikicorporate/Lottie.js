@@ -1,10 +1,11 @@
+/* Загрузчик Lottie (ES6) */
 (() => {
     'use strict';
     if (window.lottieAdapterES6Loaded) return;
     window.lottieAdapterES6Loaded = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:Lottie/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:Lottie/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
@@ -21,12 +22,15 @@
     };
 
     const observer = new MutationObserver(checkDOM);
-    
+
     const init = () => {
         observer.observe(document.body, { childList: true, subtree: true });
         checkDOM();
     };
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

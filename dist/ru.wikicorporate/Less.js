@@ -1,10 +1,11 @@
+/* Загрузчик Less (ES6) */
 (() => {
     'use strict';
     if (window.lessAdapterES2022Loaded) return;
     window.lessAdapterES2022Loaded = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:Less/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:Less/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const script = document.createElement('script');

@@ -1,11 +1,11 @@
-/* Загрузчик Preact */
+/* Загрузчик Preact (ES6) */
 (() => {
     'use strict';
     if (window.preactAdapterES6Loaded) return;
     window.preactAdapterES6Loaded = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:Preact/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:Preact/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const loadScript = () => {
@@ -22,7 +22,7 @@
     };
 
     const observer = new MutationObserver(checkDOM);
-    
+
     const init = () => {
         observer.observe(document.body, { childList: true, subtree: true });
         checkDOM();

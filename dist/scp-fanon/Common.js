@@ -43,8 +43,6 @@ UserTagsJS.modules.custom = {
 	'CJDakotaraptor': ['founder'],
 };
 
-window.enableReadProgressBarOnArticles = true;
-
 importArticles({
     type: 'script',
     articles: [

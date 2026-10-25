@@ -162,6 +162,1055 @@ document.addEventListener("DOMContentLoaded", function() {
 /* Fim do Texto Invertido */
 
 /* ============================================================
+   NADARE · 崩界 (Hōkai) — Colapso da Realidade
+   JS escopado + EPÍLOGO (v2 com transição de luz e colapso)
+   Colar como BLOCO NOVO no FIM de MediaWiki:Common.js.
+
+   Fluxo:
+   ausência > perturbação > sentença > símbolo > pulsações >
+   linhas > colapso > clarão > EPÍLOGO > clarão final > página invertida
+
+   O epílogo exibe, sobre a imagem residual:
+   “Quando acordei novamente, eu estava em algum lugar
+   disforme que não fazia sentido, e o universo, deixando
+   apenas a mim, se inverteu･･････”
+   ============================================================ */
+/* === NADARE COLLAPSE :: INÍCIO === */
+(function () {
+  'use strict';
+
+  var HAS_MW = !!(window.mw && window.mw.config);
+  var TARGET_PAGE = 'Blog_de_usuário:MAUBRUTO/Comandos_legais';
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  function norm(v) {
+    var out = String(v || '').replace(/ /g, '_');
+    try { if (out.normalize) out = out.normalize('NFC'); } catch (e) {}
+    return out;
+  }
+
+  /* Em MediaWiki, o módulo continua isolado na página-alvo e em leitura.
+     Fora do MediaWiki ele funciona como demonstração independente. */
+  var PAGE = HAS_MW ? norm(mw.config.get('wgPageName')) : norm(location.pathname);
+  var ACTION = HAS_MW ? String(mw.config.get('wgAction') || 'view').toLowerCase() : 'view';
+  if (HAS_MW && window.top !== window.self) return;
+  if (HAS_MW && PAGE !== norm(TARGET_PAGE)) return;
+  if (HAS_MW && ACTION !== 'view') return;
+
+  /* ---------- configuração central ---------- */
+  var CFG = {
+    triggerText: 'Está tudo em ordem.',
+    message: '{{user}}, nunca vi uma existência tão desafortunada quanto tu. Está decidido, farei de ti o próximo Nadare.',
+    fallbackUser: 'Visitante',
+    image: 'https://static.wikia.nocookie.net/animeverso/images/e/ee/Nadare_Para_Mundo_Colapsado_Tentsui.png/revision/latest/scale-to-width-down/800?cb=20261019202927&path-prefix=pt-br',
+    storageKey: 'nadareCollapse::' + PAGE,
+    reduce: !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
+    d: {
+      absence: 420,
+      disturbance: 1400,
+      messageIn: 2400,
+      messageHold: 2600,
+      messageOut: 1500,
+      symbolBuild: 2600,
+      symbolHold: 1300,
+      pulses: 3200,
+      risingLines: 3600,
+      collapse: 2200,
+      whiteout: 1400,
+      whiteHold: 800,
+      epilogueHold: 9200,
+      epilogueOut: 850
+    }
+  };
+
+  /* ---------- helpers DOM ---------- */
+  function el(tag, cls, parent) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function svg(tag, attrs, parent) {
+    var n = document.createElementNS(SVGNS, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function resolveUser() {
+    if (HAS_MW && mw.config.get('wgUserName')) return String(mw.config.get('wgUserName'));
+    return (document.body && document.body.getAttribute('data-nadare-user')) || CFG.fallbackUser;
+  }
+
+  function later(ms, fn) {
+    var id = setTimeout(function () { if (running) fn(); }, ms);
+    timers.push(id);
+    return id;
+  }
+  function raf(fn) {
+    var id = requestAnimationFrame(fn);
+    rafs.push(id);
+    return id;
+  }
+  function every(ms, fn) {
+    var id = setInterval(fn, ms);
+    intervals.push(id);
+    return id;
+  }
+
+  /* ---------- estado persistente ---------- */
+  function readState() {
+    try { var s = sessionStorage.getItem(CFG.storageKey); return s ? JSON.parse(s) : null; }
+    catch (e) { return null; }
+  }
+  function writeState(o) {
+    try { sessionStorage.setItem(CFG.storageKey, JSON.stringify(o)); return true; }
+    catch (e) { return false; }
+  }
+  function clearState() {
+    try { sessionStorage.removeItem(CFG.storageKey); } catch (e) {}
+  }
+
+  /* ---------- fonte traduzível pré-montada ---------- */
+  function ensureSource() {
+    var s = document.getElementById('nadare-collapse-source');
+    if (s) return s;
+    var host = document.querySelector('.mw-parser-output') || document.body;
+    if (!host) return null;
+    s = document.createElement('div');
+    s.id = 'nadare-collapse-source';
+    s.lang = 'pt-BR';
+    s.style.cssText = 'position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:normal;';
+    var msg = document.createElement('p');
+    msg.id = 'nadare-collapse-source-message';
+    msg.lang = 'pt-BR';
+    msg.textContent = CFG.message.replace('{{user}}', resolveUser());
+    var epi = document.createElement('p');
+    epi.id = 'nadare-collapse-source-epilogue';
+    epi.lang = 'pt-BR';
+    [
+      'Quando acordei novamente,',
+      'eu estava em algum lugar disforme',
+      'que não fazia sentido,',
+      'e o universo, deixando apenas a mim,',
+      'se inverteu･･････'
+    ].forEach(function (line) {
+      var span = document.createElement('span');
+      span.textContent = line + ' ';
+      epi.appendChild(span);
+    });
+    s.appendChild(msg);
+    s.appendChild(epi);
+    host.appendChild(s);
+    return s;
+  }
+  function currentMessageText() {
+    ensureSource();
+    var s = document.getElementById('nadare-collapse-source-message');
+    var t = (s && s.textContent || '').trim();
+    return t || CFG.message.replace('{{user}}', resolveUser());
+  }
+  function currentEpilogueLines() {
+    ensureSource();
+    var src = document.getElementById('nadare-collapse-source-epilogue');
+    var lines = [];
+    if (src) {
+      Array.prototype.forEach.call(src.children, function (span) {
+        var t = (span.textContent || '').trim();
+        if (t) lines.push(t);
+      });
+    }
+    if (!lines.length) {
+      lines = [
+        'Quando acordei novamente,',
+        'eu estava em algum lugar disforme',
+        'que não fazia sentido,',
+        'e o universo, deixando apenas a mim,',
+        'se inverteu･･････'
+      ];
+    }
+    return lines;
+  }
+
+  /* ============================================================
+     MODO INVERTIDO + RESTAURAÇÃO
+     ============================================================ */
+  var invertApplied = false;
+  var restoreKeyHandler = null;
+
+  function invertTargetEl() {
+    var sels = [
+      '#page-shell',
+      '#nadare-collapse-target',
+      '.main-container',
+      '#WikiaMainContent',
+      '.page__main',
+      '#content',
+      '.mw-body',
+      'body'
+    ];
+    for (var i = 0; i < sels.length; i++) {
+      var e = document.querySelector(sels[i]);
+      if (e) return e;
+    }
+    return document.body;
+  }
+
+  function restore() {
+    document.documentElement.classList.remove('nadare-collapse-inverted', 'nadare-collapse-locked');
+    var targets = document.querySelectorAll('.nadare-collapse-invert-target');
+    Array.prototype.forEach.call(targets, function (t) {
+      t.classList.remove('nadare-collapse-invert-target');
+    });
+    var b = document.getElementById('nadare-collapse-restore');
+    if (b) b.remove();
+    if (restoreKeyHandler) {
+      document.removeEventListener('keydown', restoreKeyHandler, true);
+      restoreKeyHandler = null;
+    }
+    clearState();
+    invertApplied = false;
+    if (stage) teardown();
+  }
+
+  function bindRestoreKeys() {
+    if (restoreKeyHandler) return;
+    restoreKeyHandler = function (e) {
+      if (e.key === 'Escape' || e.key === 'Esc') restore();
+    };
+    document.addEventListener('keydown', restoreKeyHandler, true);
+  }
+
+  function mountRestore() {
+    if (document.getElementById('nadare-collapse-restore')) return;
+    var b = document.createElement('button');
+    b.id = 'nadare-collapse-restore';
+    b.type = 'button';
+    b.textContent = 'restaurar ordem [esc]';
+    b.addEventListener('click', restore);
+    document.body.appendChild(b);
+  }
+
+  function applyInverted(force) {
+    if (invertApplied) return;
+    var st = readState();
+    if (!force) {
+      if (!st || !st.inverted) return;
+      if (st.page && norm(st.page) !== PAGE) return;
+    }
+    invertApplied = true;
+    var t = invertTargetEl();
+    if (t) t.classList.add('nadare-collapse-invert-target');
+    document.documentElement.classList.add('nadare-collapse-inverted');
+    mountRestore();
+    bindRestoreKeys();
+  }
+
+  function handleUrlReset() {
+    try {
+      if (/[?&]nadare=reset\b/.test(location.search)) {
+        clearState();
+        document.documentElement.classList.remove('nadare-collapse-inverted');
+        var targets = document.querySelectorAll('.nadare-collapse-invert-target');
+        Array.prototype.forEach.call(targets, function (t) {
+          t.classList.remove('nadare-collapse-invert-target');
+        });
+        if (window.history && history.replaceState) {
+          var clean = location.href.replace(/([?&])nadare=reset\b&?/, '$1').replace(/[?&]$/, '');
+          history.replaceState(null, '', clean);
+        }
+      }
+    } catch (e) {}
+  }
+
+  /* ============================================================
+     MÁQUINA DE ESTADOS
+     ============================================================ */
+  var running = false;
+  var phase = 'idle';
+  var timers = [], rafs = [], intervals = [];
+  var stage = null, ghost = null, symbol = null,
+      beamsBox = null, linesBack = null, linesFront = null, msg = null;
+  var epilogueNode = null, epilogueBuilt = false;
+  var seqKeyHandler = null, skipButton = null;
+  var cachedEpiLines = null, cachedEpiLabel = null;
+  var imagePreloaded = false;
+
+  function preloadEpilogueImage() {
+    if (imagePreloaded) return;
+    imagePreloaded = true;
+    try {
+      var preload = new Image();
+      preload.setAttribute('referrerpolicy', 'no-referrer');
+      preload.decoding = 'async';
+      preload.src = CFG.image;
+    } catch (e) {}
+  }
+
+  function clearAll() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    rafs.forEach(function (id) { cancelAnimationFrame(id); });
+    rafs = [];
+    intervals.forEach(clearInterval);
+    intervals = [];
+  }
+  function tween(ms, onU, onD) {
+    if (CFG.reduce) { onU(1); if (onD) onD(); return; }
+    var start = null;
+    raf(function step(ts) {
+      if (!running) return;
+      if (start === null) start = ts;
+      var t = Math.min(1, (ts - start) / ms);
+      onU(t);
+      if (t < 1) raf(step);
+      else if (onD) onD();
+    });
+  }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function lockScroll(on) {
+    document.documentElement.classList.toggle('nadare-collapse-locked', !!on);
+  }
+
+  /* ---------- palco ---------- */
+  function buildStage() {
+    ghost = el('div', null, document.body);
+    ghost.id = 'nadare-collapse-ghost';
+    ghost.setAttribute('aria-hidden', 'true');
+
+    stage = el('div', null, document.body);
+    stage.id = 'nadare-collapse-stage';
+    stage.setAttribute('role', 'presentation');
+
+    linesBack = el('div', 'nadare-collapse-lines back', stage);
+    linesBack.setAttribute('aria-hidden', 'true');
+
+    symbol = el('div', 'nadare-collapse-symbol', stage);
+    symbol.setAttribute('aria-hidden', 'true');
+    buildSymbolSVG(symbol);
+
+    beamsBox = el('div', 'nadare-collapse-beams', stage);
+    beamsBox.setAttribute('aria-hidden', 'true');
+
+    linesFront = el('div', 'nadare-collapse-lines front', stage);
+    linesFront.setAttribute('aria-hidden', 'true');
+
+    msg = el('div', 'nadare-collapse-message', stage);
+    msg.lang = 'pt-BR';
+    var wrap = el('div', 'nadare-collapse-msg-wrap', msg);
+    var txt = currentMessageText();
+    var real = el('p', 'nadare-collapse-msg-real', wrap);
+    real.lang = 'pt-BR';
+    real.textContent = txt;
+    var g1 = el('p', 'nadare-collapse-msg-ghost g1', wrap);
+    g1.setAttribute('aria-hidden', 'true');
+    g1.textContent = txt;
+    var g2 = el('p', 'nadare-collapse-msg-ghost g2', wrap);
+    g2.setAttribute('aria-hidden', 'true');
+    g2.textContent = txt;
+
+    var white = el('div', null, stage);
+    white.id = 'nadare-collapse-white';
+    white.setAttribute('aria-hidden', 'true');
+
+    skipButton = el('button', 'nadare-collapse-skip', stage);
+    skipButton.type = 'button';
+    skipButton.textContent = 'pular para o epílogo ↓';
+    skipButton.addEventListener('click', jumpToEpilogue);
+  }
+
+  function buildSymbolSVG(container) {
+    var s = svg('svg', { viewBox: '0 0 200 200', role: 'img', 'aria-label': 'Nadare' }, container);
+    var g = svg('g', { 'class': 'nadare-collapse-spin' }, s);
+    svg('circle', { cx: 100, cy: 100, r: 98, fill: '#ffffff', stroke: '#ffffff', 'stroke-width': 1 }, g);
+    svg('path', { d: 'M100 2 a98 98 0 0 1 0 196 a49 49 0 0 1 0 -98 a49 49 0 0 0 0 -98', fill: '#030303' }, g);
+    svg('circle', { cx: 100, cy: 51, r: 15, fill: '#030303' }, g);
+    svg('circle', { cx: 100, cy: 149, r: 15, fill: '#ffffff' }, g);
+    svg('circle', { cx: 100, cy: 100, r: 98, fill: 'none', stroke: '#030303', 'stroke-width': 1.2 }, s);
+  }
+
+  /* ---------- perturbação ---------- */
+  function startDisturbance() {
+    phase = 'disturbance';
+    document.documentElement.classList.add('nadare-collapse-disturb');
+    if (ghost) ghost.classList.add('is-on');
+    later(CFG.disturbance, startMessage);
+  }
+
+  /* ---------- sentença ---------- */
+  function startMessage() {
+    phase = 'message';
+    document.documentElement.classList.remove('nadare-collapse-disturb');
+    if (ghost) ghost.classList.remove('is-on');
+    if (!msg) return;
+    msg.classList.add('is-in');
+    later(CFG.reduce ? 900 : CFG.d.messageIn + CFG.d.messageHold, function () {
+      msg.classList.remove('is-in');
+      msg.classList.add('is-out');
+      later(CFG.reduce ? 300 : CFG.d.messageOut, function () {
+        msg.style.display = 'none';
+        startSymbol();
+      });
+    });
+  }
+
+  /* ---------- símbolo ---------- */
+  function startSymbol() {
+    phase = 'symbol';
+    if (!symbol) return;
+    symbol.classList.add('is-building');
+    tween(CFG.d.symbolBuild, function (t) {
+      var e = easeOut(t);
+      symbol.style.setProperty('--nadare-reveal', (e * 62).toFixed(2) + '%');
+      symbol.style.transform = 'translate(-50%,-50%) scale(' + (0.12 + e * 0.9).toFixed(3) + ')';
+      symbol.style.opacity = Math.min(1, e * 1.5).toFixed(3);
+    }, function () {
+      symbol.style.setProperty('--nadare-reveal', '62%');
+      symbol.style.transform = 'translate(-50%,-50%) scale(1)';
+      symbol.style.opacity = '1';
+      symbol.classList.remove('is-building');
+      symbol.classList.add('is-formed');
+      later(CFG.reduce ? 350 : CFG.d.symbolHold, startPulses);
+    });
+  }
+
+  /* ---------- pulsações ---------- */
+  function buildBeams() {
+    if (!beamsBox) return;
+    var n = CFG.reduce ? 0 : 16;
+    for (var i = 0; i < n; i++) {
+      var b = el('div', 'nadare-collapse-beam', beamsBox);
+      var white = i % 2 === 0;
+      b.style.setProperty('--ba', (Math.random() * 360).toFixed(1) + 'deg');
+      b.style.setProperty('--bc', white ? '#ffffff' : '#030303');
+      b.style.setProperty('--bw', (1 + Math.random() * 3).toFixed(1) + 'px');
+      b.style.setProperty('--bo', (0.35 + Math.random() * 0.5).toFixed(2));
+      b.style.setProperty('--bd', (Math.random() * 2).toFixed(2) + 's');
+    }
+  }
+  function spawnEcho() {
+    if (CFG.reduce || !stage) return;
+    var e = el('div', 'nadare-collapse-echo', stage);
+    var sz = 6 + Math.random() * 12;
+    e.style.width = sz + 'vmin';
+    e.style.height = sz + 'vmin';
+    e.style.left = (Math.random() * 100) + 'vw';
+    e.style.top = (Math.random() * 100) + 'vh';
+    setTimeout(function () { if (e && e.parentNode) e.remove(); }, 2000);
+  }
+  function startPulses() {
+    phase = 'pulses';
+    if (!stage || !symbol) return;
+    symbol.style.transform = '';
+    symbol.classList.add('is-pulsing');
+    el('div', 'nadare-collapse-ripple', stage);
+    el('div', 'nadare-collapse-ripple r2', stage);
+    el('div', 'nadare-collapse-ripple r3', stage);
+    buildBeams();
+    if (!CFG.reduce) every(900, spawnEcho);
+    later(CFG.reduce ? 500 : CFG.d.pulses, startLines);
+  }
+
+  /* ---------- linhas ---------- */
+  function spawnLine(container) {
+    if (!container) return;
+    var ln = el('div', 'nadare-collapse-line', container);
+    var front = container === linesFront;
+    ln.style.setProperty('--lx', (6 + Math.random() * 88) + 'vw');
+    ln.style.setProperty('--lw', (1 + Math.random() * (front ? 3.5 : 2)) + 'px');
+    ln.style.setProperty('--lh', (22 + Math.random() * 55) + 'vh');
+    ln.style.setProperty('--lo', (0.25 + Math.random() * 0.6).toFixed(2));
+    ln.style.setProperty('--lc', Math.random() < 0.5 ? '#ffffff' : '#030303');
+    ln.style.setProperty('--lsx', ((Math.random() - 0.5) * 120).toFixed(0) + 'px');
+    var dur = 2.2 + Math.random() * 2.4;
+    ln.style.setProperty('--ldur', dur + 's');
+    ln.style.setProperty('--ldelay', (Math.random() * 0.4).toFixed(2) + 's');
+    setTimeout(function () { if (ln && ln.parentNode) ln.remove(); }, (dur + 0.6) * 1000);
+  }
+  function startLines() {
+    phase = 'rising-lines';
+    var waves = CFG.reduce ? [[4, 0]] : [[5, 0], [8, 700], [12, 1500], [16, 2500]];
+    waves.forEach(function (w) {
+      later(w[1], function () {
+        for (var i = 0; i < w[0]; i++) {
+          spawnLine(Math.random() < 0.55 ? linesBack : linesFront);
+        }
+      });
+    });
+    later(CFG.reduce ? 600 : CFG.d.risingLines, startCollapse);
+  }
+
+  /* ---------- colapso + clarão ---------- */
+  function startCollapse() {
+    phase = 'collapse';
+    intervals.forEach(clearInterval);
+    intervals = [];
+    if (!stage) return;
+    stage.classList.add('is-collapsing');
+    later(CFG.reduce ? 500 : CFG.d.collapse, startWhiteout);
+  }
+  function startWhiteout() {
+    phase = 'whiteout';
+    if (!stage) return;
+    var white = document.getElementById('nadare-collapse-white');
+    stage.classList.add('is-whiteout');
+    tween(CFG.reduce ? 300 : CFG.d.whiteout, function (t) {
+      var e = easeOut(t);
+      if (white) white.style.setProperty('--nadare-wr', (e * 145).toFixed(1) + '%');
+    }, function () {
+      if (white) white.style.setProperty('--nadare-wr', '160%');
+      later(CFG.d.whiteHold, startEpilogue);
+    });
+  }
+
+  /* ============================================================
+     EPÍLOGO — novo estágio antes da página invertida
+     ============================================================ */
+  function buildEpilogue() {
+    if (epilogueBuilt && epilogueNode) return epilogueNode;
+    if (!stage) return null;
+
+    var epi = el('div', null, stage);
+    epi.id = 'nadare-collapse-epilogue';
+    epi.className = 'nadare-collapse-epilogue';
+    epi.lang = 'pt-BR';
+    epi.setAttribute('role', 'dialog');
+    epi.setAttribute('aria-modal', 'true');
+    epi.setAttribute('aria-label', 'Epílogo: o mundo invertido');
+    epi.tabIndex = -1;
+
+    var visual = el('div', 'nadare-epilogue-visual', epi);
+    visual.setAttribute('aria-hidden', 'true');
+    var imgwrap = el('div', 'nadare-epilogue-imgwrap', visual);
+    function imageLayer(cls) {
+      var img = document.createElement('img');
+      img.className = 'nadare-epilogue-img ' + cls;
+      img.src = CFG.image;
+      img.alt = '';
+      img.decoding = 'async';
+      img.setAttribute('referrerpolicy', 'no-referrer');
+      img.setAttribute('aria-hidden', 'true');
+      if (cls === 'main') {
+        img.addEventListener('error', function () {
+          imgwrap.classList.add('is-missing');
+        });
+      }
+      imgwrap.appendChild(img);
+      return img;
+    }
+    imageLayer('main');
+    imageLayer('slice s1');
+    imageLayer('slice s2');
+    imageLayer('slice s3');
+    var scan = el('div', 'nadare-epilogue-scanlines', visual);
+    scan.setAttribute('aria-hidden', 'true');
+    var wash = el('div', 'nadare-epilogue-wash', visual);
+    wash.setAttribute('aria-hidden', 'true');
+    var grain = el('div', 'nadare-epilogue-grain', visual);
+    grain.setAttribute('aria-hidden', 'true');
+
+    var frame = el('div', 'nadare-epilogue-frame', epi);
+    frame.setAttribute('aria-hidden', 'true');
+    for (var c = 0; c < 4; c++) el('i', null, frame);
+
+    var side = el('div', 'nadare-epilogue-side', epi);
+    side.textContent = 'HŌKAI · 崩界 · inversão do registro';
+
+    var content = el('div', 'nadare-epilogue-content', epi);
+    var kicker = el('div', 'nadare-epilogue-kicker', content);
+    el('span', null, kicker).textContent = 'VII — epílogo';
+    el('span', null, kicker).textContent = 'o mundo invertido / registro residual';
+
+    var p = el('p', 'nadare-epilogue-text', content);
+    var lines = currentEpilogueLines();
+    lines.forEach(function (line, i) {
+      var span = el('span', 'line', p);
+      span.style.setProperty('--i', i);
+      if (/^(e o universo|se inverteu)/.test(line)) {
+        span.className += ' muted';
+      }
+      if (/^e o universo/.test(line)) {
+        span.innerHTML = 'e o universo, <em>deixando apenas a mim,</em>';
+      } else if (/^se inverteu/.test(line)) {
+        var strong = document.createElement('em');
+        strong.className = 'inverted';
+        strong.textContent = line;
+        span.textContent = '';
+        span.appendChild(strong);
+      } else {
+        span.textContent = line;
+      }
+    });
+
+    var foot = el('div', 'nadare-epilogue-foot', content);
+    var index = el('div', 'nadare-epilogue-index', foot);
+    index.innerHTML = 'O clarão cessou. O registro não corresponde ao que restou.<br>Silhueta residual · Tentsui / Nadare';
+    var next = el('button', 'nadare-epilogue-next', foot);
+    next.type = 'button';
+    next.innerHTML = '<span>continuar</span><span aria-hidden="true">⟶</span>';
+    next.addEventListener('click', finishToInverted);
+
+    var progress = el('div', 'nadare-epilogue-progress', content);
+    el('i', null, progress);
+
+    epilogueNode = epi;
+    epilogueBuilt = true;
+    return epi;
+  }
+
+  function startEpilogue() {
+    if (!running || !stage) return;
+    if (phase === 'epilogue' || phase === 'reload') return;
+    clearAll();
+    phase = 'epilogue';
+
+    if (msg) msg.style.display = 'none';
+    if (ghost) ghost.classList.remove('is-on');
+    document.documentElement.classList.remove('nadare-collapse-disturb');
+    stage.classList.remove('is-collapsing');
+    stage.classList.add('is-epilogue', 'is-whiteout');
+
+    var epi = buildEpilogue();
+    if (!epi) { teardown(); return; }
+
+    var hold = CFG.reduce ? 13000 : CFG.d.epilogueHold;
+    epi.style.setProperty('--nadare-epilogue-hold', hold + 'ms');
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (epi) {
+          epi.classList.add('is-in');
+          epi.focus({ preventScroll: true });
+        }
+      });
+    });
+
+    later(hold + 250, finishToInverted);
+  }
+
+  function finishToInverted() {
+    if (phase === 'reload') return;
+    phase = 'reload';
+    var next = epilogueNode ? epilogueNode.querySelector('.nadare-epilogue-next') : null;
+    if (next) next.disabled = true;
+
+    var ok = writeState({ inverted: true, done: true, page: PAGE, ts: Date.now() });
+
+    /* Ativa imediatamente a classe de transição de saída do epílogo (colapso PB + luz de cobertura) */
+    if (epilogueNode) {
+      epilogueNode.classList.remove('is-in');
+      epilogueNode.classList.add('is-leaving-cinematic');
+    }
+
+    if (!ok && HAS_MW) {
+      later(CFG.d.epilogueOut, teardown);
+      return;
+    }
+
+    if (HAS_MW) {
+      /* Aplica a inversão no DOM atual antes da recarga para evitar qualquer flash */
+      applyInverted(true);
+      /* No MediaWiki, preserva a recarga original com o palco cobrindo tudo */
+      later(850, function () {
+        running = false;
+        try { location.reload(); } catch (e) { location.href = location.href; }
+      });
+      return;
+    }
+
+    /* Demonstração independente: inverte a página na própria sessão. */
+    later(400, function () {
+      applyInverted(true);
+    });
+
+    later(850, function () {
+      if (stage) {
+        stage.style.transition = 'opacity .65s ease';
+        stage.style.opacity = '0';
+      }
+      later(700, teardown);
+    });
+  }
+
+  function jumpToEpilogue() {
+    if (!running || phase === 'epilogue' || phase === 'reload') return;
+    clearAll();
+    if (msg) msg.style.display = 'none';
+    if (ghost) ghost.classList.remove('is-on');
+    if (stage) {
+      stage.classList.remove('is-collapsing');
+      stage.classList.add('is-whiteout');
+    }
+    startEpilogue();
+  }
+
+  /* ---------- desmontagem ---------- */
+  function teardown() {
+    running = false;
+    phase = 'idle';
+    clearAll();
+    document.documentElement.classList.remove('nadare-collapse-disturb');
+    lockScroll(false);
+    if (seqKeyHandler) {
+      document.removeEventListener('keydown', seqKeyHandler, true);
+      seqKeyHandler = null;
+    }
+    if (stage && stage.parentNode) stage.remove();
+    if (ghost && ghost.parentNode) ghost.remove();
+    stage = ghost = symbol = beamsBox = linesBack = linesFront = msg = null;
+    epilogueNode = null;
+    epilogueBuilt = false;
+    skipButton = null;
+    var trig = document.querySelectorAll('.nadare-collapse-trigger');
+    Array.prototype.forEach.call(trig, function (t) { t.removeAttribute('aria-disabled'); });
+  }
+
+  function abort() {
+    if (!running || phase === 'reload') return;
+    if (stage) {
+      stage.style.transition = 'opacity .25s ease';
+      stage.style.opacity = '0';
+    }
+    later(280, teardown);
+  }
+
+  /* ---------- ativação ---------- */
+  function activate(opts) {
+    if (running) return;
+    var st = readState();
+    if (st && st.inverted) return;
+    preloadEpilogueImage();
+    running = true;
+    phase = 'absence';
+    var triggers = document.querySelectorAll('.nadare-collapse-trigger');
+    Array.prototype.forEach.call(triggers, function (t) { t.setAttribute('aria-disabled', 'true'); });
+    lockScroll(true);
+    buildStage();
+    requestAnimationFrame(function () { if (stage) stage.classList.add('is-on'); });
+    seqKeyHandler = function (e) {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        e.preventDefault();
+        abort();
+      }
+    };
+    document.addEventListener('keydown', seqKeyHandler, true);
+
+    if (opts && opts.epilogue) {
+      later(450, startEpilogue);
+      return;
+    }
+    later(CFG.d.absence, startDisturbance);
+  }
+
+  /* ============================================================
+     LIGAÇÕES E INICIALIZAÇÃO
+     ============================================================ */
+  function bindTrigger(node) {
+    if (!node || node.dataset.nadareBound) return;
+    node.dataset.nadareBound = '1';
+    node.addEventListener('click', function (e) {
+      e.preventDefault();
+      activate();
+    });
+    node.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate();
+      }
+    });
+  }
+  function scanTriggers() {
+    var list = document.querySelectorAll('.nadare-collapse-trigger');
+    Array.prototype.forEach.call(list, bindTrigger);
+  }
+  function scanEpiloguePreviews() {
+    var list = document.querySelectorAll('[data-nadare-collapse-preview]');
+    Array.prototype.forEach.call(list, function (node) {
+      if (node.dataset.nadarePreviewBound) return;
+      node.dataset.nadarePreviewBound = '1';
+      node.addEventListener('click', function (e) {
+        e.preventDefault();
+        activate({ epilogue: true });
+      });
+    });
+  }
+
+  function init() {
+    handleUrlReset();
+    ensureSource();
+    applyInverted();
+    scanTriggers();
+    scanEpiloguePreviews();
+    preloadEpilogueImage();
+  }
+
+  if (!window.__nadareCollapseHooked) {
+    window.__nadareCollapseHooked = true;
+    if (HAS_MW && mw.hook) {
+      mw.hook('wikipage.content').add(function () {
+        ensureSource();
+        scanTriggers();
+        scanEpiloguePreviews();
+        applyInverted();
+      });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+/* === NADARE COLLAPSE :: FIM === */
+
+
+/* ===================================================================
+   MAKIMA — Camada interativa (MODO INTENSO)
+   Crossverse Wiki · inserir em MediaWiki:Common.js
+
+   Roda APENAS no artigo "Makima". A página funciona sem o script
+   (o CSS sozinho já entrega vinheta + olho estáticos). Este script
+   ACRESCENTA a paranóia:
+     • olho que SEGUE o cursor e pisca raramente;
+     • "coleira" (anel) que persegue o cursor com atraso;
+     • a sala que ESCURECE quanto mais tempo você fica;
+     • olhos que ABREM nas margens conforme você desce (nunca escapa);
+     • SUSSURROS (falas da Makima) que surgem e somem nas bordas;
+     • quando você PARA, ela percebe;
+     • áudio ambiente OPCIONAL (drone + batimento), OFF por padrão.
+
+   SEGURANÇA: só lê a posição do mouse DENTRO da página (não acessa
+   câmera/microfone/dispositivo). Sem flashes rápidos. Sem bloquear
+   clique/rolagem/foco. prefers-reduced-motion desliga o movimento.
+   =================================================================== */
+( function () {
+  'use strict';
+  if ( !window.mw || mw.config.get( 'wgPageName' ) !== 'Makima' ) return;
+
+  mw.hook( 'wikipage.content' ).add( function () {
+    var body = document.body;
+    if ( body.classList.contains( 'mkm-ready' ) ) return;
+    body.classList.add( 'mkm-ready', 'mkm-js' );
+
+    var reduce = window.matchMedia &&
+                 window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+    var S = body.style;
+    var content = document.querySelector( '.mw-parser-output' );
+    if ( !content ) return;
+
+    /* ---- camada ambiente ---- */
+    var fx = document.createElement( 'div' );
+    fx.id = 'mkm-fx';
+    fx.setAttribute( 'aria-hidden', 'true' );
+    fx.innerHTML =
+      '<div class="mkm-vig"></div>' +
+      '<div class="mkm-breath"></div>' +
+      '<div class="mkm-eye"><div class="mkm-rings"></div>' +
+        '<div class="mkm-pupil"></div><div class="mkm-lid"></div></div>' +
+      '<div class="mkm-leash"></div>';
+    document.body.appendChild( fx );
+
+    var eye   = fx.querySelector( '.mkm-eye' );
+    var leash = fx.querySelector( '.mkm-leash' );
+
+    /* =================================================================
+       Falas que surgem nas bordas.
+       CANÔNICAS = diálogos da Makima já presentes no artigo.
+       ORNAMENTAIS = texto artístico NÃO canônico (marcado), só clima.
+       ================================================================= */
+    var LINES = [
+      'Isto é uma Ordem.',                 // canon (fala p/ Kishibe)
+      'Abra a porta.',                      // canon (fala p/ Denji)
+      'Não penses muito nisso. Confia em mim.', // canon (fala p/ Denji)
+      'Você é mais especial que qualquer outro.', // canon (fala p/ Denji)
+      'Eu vi o teu passado.',               // canon
+      'Você sabe que não consegue me matar.', // canon (fala p/ Kishibe)
+      // --- ornamentais (NÃO canônicas) ---
+      'Fique.',
+      'Senta.',
+      'Eu já sabia que você viria.',
+      'Não adianta sair da página.'
+    ];
+
+    if ( !reduce ) {
+      /* ---- 1. cursor: pupila do olho + coleira ---- */
+      var px = window.innerWidth / 2, py = window.innerHeight / 2;
+      var lx = -100, ly = -100;      // posição atual da coleira (suavizada)
+      var lastMove = Date.now();
+
+      window.addEventListener( 'mousemove', function ( e ) {
+        px = e.clientX; py = e.clientY;
+        lastMove = Date.now();
+        body.classList.add( 'mkm-pointer' );
+        // pupila: desloca até ~10px rumo ao cursor
+        var r = eye.getBoundingClientRect();
+        var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        var dx = px - cx, dy = py - cy;
+        var d = Math.max( 1, Math.hypot( dx, dy ) );
+        var m = Math.min( 10, d );
+        S.setProperty( '--mkm-ex', ( dx / d * m ).toFixed( 1 ) + 'px' );
+        S.setProperty( '--mkm-ey', ( dy / d * m ).toFixed( 1 ) + 'px' );
+      }, { passive: true } );
+
+      ( function loop() {
+        lx += ( px - lx ) * 0.12;    // coleira persegue com atraso
+        ly += ( py - ly ) * 0.12;
+        S.setProperty( '--mkm-lx', lx.toFixed( 1 ) + 'px' );
+        S.setProperty( '--mkm-ly', ly.toFixed( 1 ) + 'px' );
+        requestAnimationFrame( loop );
+      } )();
+
+      /* ---- 2. a sala fecha com o tempo (dread) ---- */
+      var dread = 0;
+      setInterval( function () {
+        if ( document.hidden ) return;
+        dread = Math.min( 1, dread + 0.02 );   // ~50s até o máximo (cap legível)
+        S.setProperty( '--mkm-dread', dread.toFixed( 3 ) );
+      }, 1000 );
+
+      /* ---- 3. batimento (pulso visual, lento, sem flash) ---- */
+      var beat = 0;
+      setInterval( function () {
+        beat = beat ? 0 : 1;
+        S.setProperty( '--mkm-pulse', beat );
+      }, 1600 );
+
+      /* ---- 4. piscar raro ---- */
+      ( function blink() {
+        setTimeout( function () {
+          eye.classList.add( 'mkm-blink' );
+          setTimeout( function () { eye.classList.remove( 'mkm-blink' ); }, 150 );
+          blink();
+        }, 5000 + Math.random() * 7000 );
+      } )();
+
+      /* ---- 5. olhos periféricos abrem conforme desce ---- */
+      var spots = [
+        { l: '6vw',  t: '22vh' }, { l: '88vw', t: '70vh' },
+        { l: '12vw', t: '82vh' }, { l: '80vw', t: '30vh' }
+      ];
+      spots.forEach( function ( s ) {
+        var e2 = document.createElement( 'div' );
+        e2.className = 'mkm-eye2';
+        e2.style.left = s.l; e2.style.top = s.t;
+        fx.appendChild( e2 ); s.el = e2;
+      } );
+      window.addEventListener( 'scroll', function () {
+        var p = window.scrollY / Math.max( 1, document.body.scrollHeight - window.innerHeight );
+        spots.forEach( function ( s, i ) {
+          if ( p > ( i + 1 ) / ( spots.length + 1 ) ) s.el.classList.add( 'mkm-open' );
+        } );
+      }, { passive: true } );
+
+      /* ---- 6. sussurros ---- */
+      var wh = document.createElement( 'div' );
+      wh.className = 'mkm-wh'; fx.appendChild( wh );
+      ( function whisper() {
+        setTimeout( function () {
+          wh.textContent = LINES[ Math.floor( Math.random() * LINES.length ) ];
+          var edge = Math.random();
+          wh.style.top  = ( 12 + Math.random() * 68 ) + 'vh';
+          wh.style.left = edge < 0.5 ? '4vw' : 'auto';
+          wh.style.right = edge < 0.5 ? 'auto' : '4vw';
+          wh.classList.add( 'mkm-on' );
+          setTimeout( function () { wh.classList.remove( 'mkm-on' ); }, 2600 );
+          whisper();
+        }, 7000 + Math.random() * 9000 );
+      } )();
+
+      /* ---- 7. quando você PARA, ela percebe ---- */
+      setInterval( function () {
+        if ( document.hidden ) return;
+        if ( Date.now() - lastMove > 12000 && !wh.classList.contains( 'mkm-on' ) ) {
+          wh.textContent = 'Você parou.';
+          wh.style.top = '46vh'; wh.style.left = '50%'; wh.style.right = 'auto';
+          wh.style.transform = 'translateX(-50%)';
+          wh.classList.add( 'mkm-on' );
+          setTimeout( function () {
+            wh.classList.remove( 'mkm-on' ); wh.style.transform = '';
+          }, 3000 );
+          lastMove = Date.now();
+        }
+      }, 2000 );
+    }
+
+    /* ---- 8. revelação ao rolar ---- */
+    var heads = content.querySelectorAll( 'h2, h3' );
+    if ( reduce || !( 'IntersectionObserver' in window ) ) {
+      heads.forEach( function ( h ) { h.classList.add( 'mkm-reveal', 'mkm-in' ); } );
+    } else {
+      var io = new IntersectionObserver( function ( es ) {
+        es.forEach( function ( e ) {
+          if ( e.isIntersecting ) { e.target.classList.add( 'mkm-in' ); io.unobserve( e.target ); }
+        } );
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.15 } );
+      heads.forEach( function ( h ) { h.classList.add( 'mkm-reveal' ); io.observe( h ); } );
+    }
+
+    /* ---- 9. áudio ambiente opcional (drone grave + batimento) ---- */
+    var btn = document.createElement( 'button' );
+    btn.id = 'mkm-audio-btn'; btn.type = 'button';
+    btn.setAttribute( 'aria-pressed', 'false' );
+    btn.setAttribute( 'aria-label', 'Ativar som ambiente da página' );
+    btn.innerHTML = '<span class="mkm-dot"></span><span class="mkm-txt">SOM: DESLIGADO</span>';
+    document.body.appendChild( btn );
+
+    var ctx = null, master = null, hb = null, playing = false, hbTimer = null;
+    function build() {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if ( !AC ) return false;
+      ctx = new AC();
+      master = ctx.createGain(); master.gain.value = 0.0001; master.connect( ctx.destination );
+      [ 54, 54.7, 81 ].forEach( function ( f ) {
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = f; g.gain.value = f > 70 ? 0.12 : 0.34;
+        o.connect( g ).connect( master ); o.start();
+      } );
+      var lfo = ctx.createOscillator(), lg = ctx.createGain();
+      lfo.frequency.value = 0.07; lg.gain.value = 0.05;
+      lfo.connect( lg ).connect( master.gain ); lfo.start();
+      hb = ctx.createGain(); hb.gain.value = 0; hb.connect( master );
+      var ho = ctx.createOscillator(); ho.type = 'sine'; ho.frequency.value = 44;
+      ho.connect( hb ); ho.start();
+      return true;
+    }
+    function thud() {
+      if ( !ctx || !playing ) return;
+      var n = ctx.currentTime;
+      hb.gain.cancelScheduledValues( n );
+      hb.gain.setValueAtTime( 0.0001, n );
+      hb.gain.linearRampToValueAtTime( 0.9, n + 0.06 );
+      hb.gain.exponentialRampToValueAtTime( 0.0001, n + 0.5 );
+    }
+    function ramp( to ) {
+      if ( !ctx ) return;
+      var n = ctx.currentTime;
+      master.gain.cancelScheduledValues( n );
+      master.gain.setValueAtTime( master.gain.value, n );
+      master.gain.linearRampToValueAtTime( to, n + 1.4 );
+    }
+    function label() {
+      btn.setAttribute( 'aria-pressed', String( playing ) );
+      btn.querySelector( '.mkm-txt' ).textContent = playing ? 'SOM: LIGADO' : 'SOM: DESLIGADO';
+      btn.setAttribute( 'aria-label', playing ? 'Desligar som ambiente da página' : 'Ativar som ambiente da página' );
+    }
+    btn.addEventListener( 'click', function () {
+      if ( !ctx && !build() ) { btn.querySelector( '.mkm-txt' ).textContent = 'SOM INDISPONÍVEL'; btn.disabled = true; return; }
+      if ( ctx.state === 'suspended' ) ctx.resume();
+      playing = !playing;
+      ramp( playing ? 0.14 : 0.0001 );
+      if ( playing ) { thud(); hbTimer = setInterval( thud, 1600 ); }
+      else { clearInterval( hbTimer ); hbTimer = null; }
+      label();
+    } );
+    document.addEventListener( 'visibilitychange', function () {
+      if ( !ctx || !playing ) return;
+      ramp( document.hidden ? 0.0001 : 0.14 );
+    } );
+  } );
+}() );
+/* Fim Makima */
+
+/* ============================================================
  * BAHLAVAN - Slideshow dos Mandamentos (opcional, melhora os controles)
  * Instalar em: MediaWiki:Common.js  (requer direitos de admin na wiki)
  * Escopo: age APENAS em .bahlavan-box .bahlavan-content .bv-slideshow
@@ -252,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function() {
 /* Entrada Light Death Note */
 /*
 - DEATH NOTE — PROTÓTIPO CINEMATOGRÁFICO MASTER · REVISÃO 3 (MIX)
-- Alvo EXCLUSIVO: Blog_de_usuário:MAUBRUTO/Comandos_legais
+- Alvo EXCLUSIVO: Light_Yagami_(Mangá)
 -
 - O que foi feito:
 - O 3D EXATO da Versão 2 (estrutura física de bloco, animações de capa, glow) 
@@ -270,7 +1319,8 @@ document.addEventListener("DOMContentLoaded", function() {
     return out;
   }
 
-  var TARGET_PAGE = 'Blog_de_usuário:MAUBRUTO/Comandos_legais';
+  // ALVO ATUALIZADO PARA A PÁGINA DO LIGHT YAGAMI
+  var TARGET_PAGE = 'Light_Yagami_(Mangá)';
   var pageName = normalizedPageName(mw.config.get('wgPageName'));
   var action = String(mw.config.get('wgAction') || 'view').toLowerCase();
 
@@ -1150,6 +2200,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 })();
 /* Fim entrada Death Note */
+
 
 /* Simo Haya */
 (function() {

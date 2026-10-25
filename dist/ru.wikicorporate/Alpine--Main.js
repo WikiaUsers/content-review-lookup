@@ -1,15 +1,24 @@
-/* Fandom Loader: Alpine.js CSP (ES2022) */
+/* Fandom Loader: Alpine.js CSP (ES2024) */
 (() => {
+    'use strict';
     if (window.FandomAlpineLoaded) return;
     window.FandomAlpineLoaded = true;
 
-    const loadAlpine = async () => {
-        // Проверяем, есть ли на странице элементы Alpine
-        if (!document.querySelector('[x-data]')) return;
+    const CDN_URL = 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.csp.min.js';
+    let loadPromise = null;
+
+    const loadAlpine = () => {
+        if (!document.querySelector('.mw-parser-output [x-data]')) return;
         if (window.Alpine) return;
 
-        // Загружаем строго CSP-версию
-        await import('https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.csp.min.js');
+        loadPromise ??= new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = CDN_URL;
+            script.defer = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('[Alpine] Ошибка загрузки CSP-сборки'));
+            document.head.append(script);
+        }).catch(err => console.error(err));
     };
 
     const observer = new MutationObserver((mutations) => {

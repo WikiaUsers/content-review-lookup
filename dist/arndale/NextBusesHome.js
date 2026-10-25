@@ -7,7 +7,7 @@
   var REFRESH_MS = 60000;
   var CLOCK_MS = 1000;
   var MAX_HOURS = 12;
-  var MAX_DEPARTURES = 10;
+  var MAX_DEPARTURES = 15;
   var DEFAULT_ROUTE_COLOUR = "#2456a6";
   var DEFAULT_TEXT_COLOUR = "#ffffff";
 
@@ -134,7 +134,7 @@ function headerHTML() {
       '<br>' +
       'Departures update automatically every 60 seconds.' +
       '<br>' +
-      'This table lists the next <strong>10</strong> departures - ' +
+      'This table lists the next <strong>15</strong> departures - ' +
       'click for the next ' +
       '<a href="https://arndale.fandom.com/wiki/Next_Bus_Departures">' +
         '50 departures</a> or for ' +
@@ -469,6 +469,13 @@ function headerHTML() {
         "</a></td>" +
         "<td>" + escapeHTML(bus.origin) + "</td>" +
         "<td>" + escapeHTML(bus.destination) + "</td>" +
+        "<td>" +
+        (bus.timetable
+        ? "<a href=\"" + escapeHTML(bus.timetable) +
+        "\" target=\"_blank\" rel=\"noopener noreferrer\">" +
+      escapeHTML(bus.route) + " Timetable</a>"
+    : "—") +
+"</td>" +
       "</tr>";
     }).join("");
 
@@ -479,6 +486,7 @@ function headerHTML() {
           "<thead><tr>" +
             "<th>Time</th><th>Route</th>" +
             "<th>Origin</th><th>Destination</th>" +
+            "<th>Timetable</th>" +
           "</tr></thead>" +
           "<tbody>" + rows + "</tbody>" +
         "</table>" +
@@ -516,6 +524,7 @@ function headerHTML() {
             route: getValue(row, "route"),
             origin: getValue(row, "origin"),
             destination: getValue(row, "destination"),
+            timetable: getValue(row, "timetable"),
             colour: getValue(row, "colour") || getValue(row, "color"),
             textcolour:
               getValue(row, "textcolour") ||

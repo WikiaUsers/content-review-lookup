@@ -1,7 +1,6 @@
-/* jshint esversion: 11 */
+/* Lottie Animation Adapter (ES2024) */
 (async () => {
     'use strict';
-    // Защита от двойной загрузки
     if (window.isLottieAdapterLoaded) return;
     window.isLottieAdapterLoaded = true;
 
@@ -12,55 +11,52 @@
         rawScript: mw.util.wikiScript()
     };
 
-    // Глобальный кэш анимаций
-    window.FandomLottieAnimations = window.FandomLottieAnimations || null;
+    window.FandomLottieAnimations ??= null;
+    let lottiePromise = null;
 
-    // Асинхронная загрузка библиотеки
-    const loadLottie = async () => {
-        if (window.lottie) return;
-        return new Promise((resolve, reject) => {
+    const loadLottie = () => {
+        if (window.lottie) return Promise.resolve();
+        lottiePromise ??= new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = CONFIG.lottieUrl;
             script.onload = resolve;
             script.onerror = () => reject(new Error('Failed to load Lottie library'));
             document.head.append(script);
         });
+        return lottiePromise;
     };
 
-    // Скачивание и парсинг реестра анимаций
     const fetchAnimations = async () => {
         if (window.FandomLottieAnimations) return window.FandomLottieAnimations;
-        
+
         try {
             const params = new URLSearchParams({
                 action: 'raw',
                 title: CONFIG.registryPage,
                 ctype: 'text/plain'
             });
-            
+
             const response = await fetch(`${CONFIG.rawScript}?${params.toString()}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
+
             const rawText = await response.text();
             const animations = {};
-            
-            // Разделитель: // @animation: имя_анимации
+
             const regex = /^\/\/\s*@animation:\s*(.+)$/gm;
             const chunks = rawText.split(regex);
-            
+
             for (let i = 1; i < chunks.length; i += 2) {
                 const name = chunks[i].trim();
-                const code = chunks[i + 1].trim();
+                const code = chunks[i + 1]?.trim();
                 if (name && code) {
                     try {
-                        // Парсим текст в нативный JSON-объект
                         animations[name] = JSON.parse(code);
                     } catch (err) {
                         console.error(`[Lottie Adapter] Ошибка JSON в анимации "${name}":`, err);
                     }
                 }
             }
-            
+
             window.FandomLottieAnimations = animations;
             return animations;
         } catch (error) {
@@ -70,38 +66,34 @@
     };
 
     const initLottieElements = async (hookContent) => {
-        const parent = (hookContent && hookContent[0]) || document;
+        const parent = hookContent?.[0] || document;
         const wrappers = parent.querySelectorAll(CONFIG.wrapperSelector);
-        
         if (!wrappers.length) return;
-        
+
         try {
-            // Грузим параллельно
-            const [_, animations] = await Promise.all([loadLottie(), fetchAnimations()]);
-            
+            const [, animations] = await Promise.all([loadLottie(), fetchAnimations()]);
+
             for (const wrapper of wrappers) {
-                const animName = mw.html.escape(wrapper.dataset.animation || '');
-                const animData = animations[animName];
-                
+                const animName = (wrapper.dataset.animation ?? '').trim();
+                const animData = Object.hasOwn(animations, animName) ? animations[animName] : null;
+
                 if (!animData) {
                     console.warn(`[Lottie Adapter] Анимация "${animName}" не найдена в реестре.`);
                     continue;
                 }
-                
+
                 try {
-                    // Читаем пропсы юзера (по умолчанию зациклено и автовоспроизведение включено)
                     const loop = wrapper.dataset.loop !== 'false';
                     const autoplay = wrapper.dataset.autoplay !== 'false';
-                    
-                    // Рендер Lottie-вектора
-                    lottie.loadAnimation({
+
+                    window.lottie.loadAnimation({
                         container: wrapper,
                         renderer: 'svg',
-                        loop: loop,
-                        autoplay: autoplay,
-                        animationData: animData // Передаем готовый JSON-объект
+                        loop,
+                        autoplay,
+                        animationData: structuredClone(animData)
                     });
-                    
+
                     wrapper.classList.add('lottie-loaded');
                 } catch (error) {
                     console.error('[Lottie Render Error]', error);

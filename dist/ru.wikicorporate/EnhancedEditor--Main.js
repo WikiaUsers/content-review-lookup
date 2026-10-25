@@ -1,87 +1,118 @@
-/* jshint esversion: 11 */
+/* EnhancedEditor - Автодополнение ссылок, файлов и шаблонов в ProseMirror (ES2026) */
 (() => {
     'use strict';
-    
+
     if (window.EnhancedEditorLoaded) return;
     window.EnhancedEditorLoaded = true;
 
     const config = mw.config.get([
-        'wgArticlePath', 'wgNamespaceNumber', 'wgPageName', 
+        'wgArticlePath', 'wgNamespaceNumber', 'wgPageName',
         'wgServer', 'wgUserLanguage', 'wgUserGroups',
-        'articleHasCommentingEnabled', 'profileIsMessageWallPage',
+        'articleHasCommentingEnabled', 'profileIsMessageWallPage'
     ]);
-    const CENTRAL_WIKI = 'https://wikicorporate.fandom.com/ru';
+    const CENTRAL_WIKI_API = 'https://wikicorporate.fandom.com/ru/api.php';
 
     if (!config.articleHasCommentingEnabled && !config.profileIsMessageWallPage) return;
+
     let localApi;
+    const foreignApiCache = new Map();
+
+    const getForeignApi = (endpoint, anonymous = true) => {
+        const key = `${endpoint}:${anonymous}`;
+        if (!foreignApiCache.has(key)) {
+            foreignApiCache.set(key, new mw.ForeignApi(endpoint, {
+                parameters: { uselang: config.wgUserLanguage, errorformat: 'plaintext', formatversion: '2' },
+                anonymous
+            }));
+        }
+        return foreignApiCache.get(key);
+    };
+
+    const parseHtmlFragment = (htmlContent) => {
+        const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
+        const parserOutput = doc.querySelector('.mw-parser-output') || doc.body;
+        const articlePrefix = config.wgArticlePath.replace('$1', '');
+
+        parserOutput.querySelectorAll(`a[href^="${articlePrefix}"]`).forEach(a => {
+            a.href = config.wgServer + a.getAttribute('href');
+        });
+
+        return parserOutput.innerHTML
+            .replaceAll(/<br ?\/?><br ?\/?>/g, '</p><p><br /></p><p>')
+            .replaceAll(/<br ?\/?>(?!\s*<\/p>)/g, '</p><p>');
+    };
+
+    const fetchJsonPage = async (apiUrl, pageTitle) => {
+        try {
+            const params = new URLSearchParams({
+                action: 'query',
+                prop: 'revisions',
+                titles: pageTitle,
+                rvprop: 'content',
+                rvslots: 'main',
+                format: 'json',
+                formatversion: '2',
+                origin: '*'
+            });
+            const res = await fetch(`${apiUrl}?${params.toString()}`);
+            if (!res.ok) return {};
+            const data = await res.json();
+            const page = data.query?.pages?.[0];
+            if (!page || page.missing) return {};
+            const content = page.revisions?.[0]?.slots?.main?.content;
+            return content ? JSON.parse(content) : {};
+        } catch {
+            return {};
+        }
+    };
 
     const EnhancedEditor = {
-        templateDB: {}, 
-        
+        templateDB: {},
+
         async init() {
             localApi = new mw.Api({
-                parameters: { uselang: config.wgUserLanguage, errorformat: 'plaintext', formatversion: '2' },
+                parameters: { uselang: config.wgUserLanguage, errorformat: 'plaintext', formatversion: '2' }
             });
             await this.loadTemplates();
             this.linkSuggest();
         },
-        
-        async loadTemplates() {
-            const foreignApi = new mw.ForeignApi(`${CENTRAL_WIKI}/api.php`);
-            
-            const fetchModule = async (api, moduleName) => {
-                try {
-                    const data = await api.get({
-                        action: 'expandtemplates',
-                        text: '{' + '{#invoke:' + moduleName + '|toJSON}}',
-                        prop: 'wikitext'
-                    });
-                    
-                    const parsed = JSON.parse(data.expandtemplates.wikitext);
-                    for (const key in parsed) {
-                        parsed[key].moduleName = moduleName;
-                    }
-                    return parsed;
-                } catch (e) { 
-                    return {}; 
-                }
-            };
 
+        async loadTemplates() {
+            const localApiUrl = mw.util.wikiScript('api');
             const [central, local] = await Promise.all([
-                fetchModule(foreignApi, 'Модерация'),
-                fetchModule(localApi, 'Дополнительно')
+                fetchJsonPage(CENTRAL_WIKI_API, 'MediaWiki:Custom-Moderation.json'),
+                fetchJsonPage(localApiUrl, 'MediaWiki:Custom-ExtraTemplates.json')
             ]);
-            
+
             const merged = { ...central, ...local };
-            const userGroups = config.wgUserGroups ?? [];
-            const modGroups = ['bureaucrat', 'sysop', 'threadmoderator', 'content-moderator', 'rollback'];
-            
-            const isMod = userGroups.some(g => modGroups.includes(g));
-            
-            for (const key in merged) {
+            const userGroupsSet = new Set(config.wgUserGroups ?? []);
+            const modGroupsSet = new Set(['bureaucrat', 'sysop', 'threadmoderator', 'content-moderator', 'rollback', 'staff', 'soap']);
+            const isMod = !userGroupsSet.isDisjointFrom(modGroupsSet);
+
+            for (const key of Object.keys(merged)) {
                 if (merged[key].modOnly && !isMod) delete merged[key];
             }
             this.templateDB = merged;
         },
-        
+
         linkSuggest() {
             const URL_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i;
             const WIKILINK_REGEX = /\[\[([^\[\]]*)\]?\]?$/;
             const EXT_LINK_REGEX = /\[([^\[\]]+)\]$/;
-            const TEMPLATE_REGEX = /\{\{([^\{\}]*)$/; 
-            
+            const TEMPLATE_REGEX = /\{\{([^\{\}]*)$/;
+
             let search = {};
-            let lastRequest = {};
+            let lastRequest = null;
             let resultCount = 0;
-            
+
             const wrapper = document.createElement('div');
             wrapper.className = 'suggest-box';
             wrapper.id = 'suggest-box-wrapper';
-            
+
             const suggestBox = document.createElement('ul');
             suggestBox.className = 'suggest-box__list';
             suggestBox.setAttribute('role', 'listbox');
-            
+
             wrapper.appendChild(suggestBox);
             document.body.appendChild(wrapper);
 
@@ -89,7 +120,7 @@
                 initListeners() {
                     const checkMessageDebounced = mw.util.debounce(methods.checkMessage, 250);
                     const observer = new MutationObserver(checkMessageDebounced);
-                    
+
                     const onSelectOption = () => {
                         if (search.type === 'link') methods.dispatchLink();
                         else if (search.type === 'image') methods.insertImage();
@@ -115,9 +146,9 @@
                     document.body.addEventListener('mousedown', (event) => {
                         if (!event.target.closest) return;
                         const suggestion = event.target.closest('.suggest-box__item');
-                        
+
                         if (suggestion) {
-                            event.preventDefault(); 
+                            event.preventDefault();
                             methods.handleUI(event, suggestion);
                             onSelectOption();
                         } else if (event.target.closest('.suggest-box')) {
@@ -131,7 +162,7 @@
 
                     document.addEventListener('keydown', (event) => {
                         if (wrapper.style.display === 'none' && !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-                        
+
                         switch (event.key) {
                             case 'Enter':
                                 if (suggestBox.getAttribute('aria-activedescendant')) {
@@ -141,14 +172,24 @@
                                     methods.closeSuggestions();
                                 }
                                 break;
-                            case 'Escape': methods.closeSuggestions(); break;
-                            case 'ArrowUp': case 'ArrowDown': case 'Home': case 'PageUp': case 'End': case 'PageDown':
+                            case 'Escape':
+                                methods.closeSuggestions();
+                                break;
+                            case 'ArrowUp':
+                            case 'ArrowDown':
+                            case 'Home':
+                            case 'PageUp':
+                            case 'End':
+                            case 'PageDown':
                                 if (wrapper.style.display !== 'none') {
                                     event.preventDefault();
                                     methods.handleUI(event);
                                 }
                                 break;
-                            case 'ArrowLeft': case 'ArrowRight': checkMessageDebounced(); break;
+                            case 'ArrowLeft':
+                            case 'ArrowRight':
+                                checkMessageDebounced();
+                                break;
                         }
                     });
 
@@ -156,96 +197,123 @@
                         const suggestion = event.target.closest('.suggest-box__item');
                         if (suggestion) methods.handleUI(event, suggestion);
                     });
-                    
+
                     suggestBox.addEventListener('mouseleave', methods.handleUI);
                 },
-                
+
                 matchReplace(str, patterns, rep) {
                     const match = patterns.find(p => p.test(str));
                     return match ? str.replace(match, rep) : str;
                 },
-                
+
                 checkMessage() {
                     methods.closeSuggestions();
                     const caret = EnhancedEditor.getCaret();
-                    if (caret && caret.node.parentNode.closest('.ProseMirror') && !caret.node.parentNode.closest('pre')) {
-                        const rawStr = caret.node.data.slice(0, caret.offset);
-                        let match;
-                        
-                        if ((match = TEMPLATE_REGEX.exec(rawStr))) {
-                            wrapper.style.left = `${caret.x}px`;
-                            wrapper.style.top = `${caret.y + 20}px`;
-                            search = { node: caret.node, offsets: [match.index, match[0].length], type: 'template' };
-                            
-                            const query = match[1].toLowerCase();
-                            const results = Object.values(EnhancedEditor.templateDB).filter(t => 
-                                t.title.toLowerCase().includes(query) || t.name.toLowerCase().includes(query)
-                            ).slice(0, 6);
-                            
-                            if (results.length) methods.buildSuggestions(results);
-                            else methods.appendMessage('Шаблоны не найдены');
-                            return;
-                        } else if ((match = WIKILINK_REGEX.exec(rawStr))) {
-                            wrapper.style.left = `${caret.x}px`;
-                            wrapper.style.top = `${caret.y + 20}px`;
-                            match[1] = match[1].replace(/^\||\|.*/, '');
-                            let isImage = match[1].startsWith(':');
-                            if (isImage) match[1] = match[1].slice(1);
-                            
-                            search = { node: caret.node, offsets: [match.index, match[0].length], source: 'wiki', type: isImage ? 'image' : 'link', rawText: match[0] };
-                            return methods.getPages(match[1], true);
-                        } else if ((match = EXT_LINK_REGEX.exec(rawStr))) {
-                            search = { node: caret.node, offsets: [match.index, match[0].length], source: 'external', type: 'link', rawText: match[0] };
-                            const url = prompt('Введите URL:');
-                            if (URL_REGEX.test(url)) methods.dispatchLink(url, match[1]);
-                            else if (url) alert('Неверный URL!');
+                    if (!caret || !caret.node?.parentNode?.closest('.ProseMirror') || caret.node.parentNode.closest('pre')) {
+                        return;
+                    }
+
+                    const rawStr = caret.node.data.slice(0, caret.offset);
+                    let match;
+
+                    if ((match = TEMPLATE_REGEX.exec(rawStr))) {
+                        wrapper.style.left = `${caret.x}px`;
+                        wrapper.style.top = `${caret.y + 20}px`;
+                        search = { node: caret.node, offsets: [match.index, match[0].length], type: 'template' };
+
+                        const query = match[1].toLowerCase();
+                        const results = Object.values(EnhancedEditor.templateDB)
+                            .values()
+                            .filter(t => t.title?.toLowerCase().includes(query) || t.name?.toLowerCase().includes(query))
+                            .take(6)
+                            .toArray();
+
+                        if (results.length) methods.buildSuggestions(results);
+                        else methods.appendMessage('Шаблоны не найдены');
+                    } else if ((match = WIKILINK_REGEX.exec(rawStr))) {
+                        wrapper.style.left = `${caret.x}px`;
+                        wrapper.style.top = `${caret.y + 20}px`;
+                        let targetQuery = match[1].replace(/^\||\|.*/, '');
+                        const isImage = targetQuery.startsWith(':');
+                        if (isImage) targetQuery = targetQuery.slice(1);
+
+                        search = {
+                            node: caret.node,
+                            offsets: [match.index, match[0].length],
+                            source: 'wiki',
+                            type: isImage ? 'image' : 'link',
+                            rawText: match[0]
+                        };
+                        methods.getPages(targetQuery, true);
+                    } else if ((match = EXT_LINK_REGEX.exec(rawStr))) {
+                        search = {
+                            node: caret.node,
+                            offsets: [match.index, match[0].length],
+                            source: 'external',
+                            type: 'link',
+                            rawText: match[0]
+                        };
+                        const url = prompt('Введите URL:');
+                        if (url && URL_REGEX.test(url)) {
+                            methods.dispatchLink(url.startsWith('http') ? url : `https://${url}`, match[1]);
+                        } else if (url) {
+                            alert('Неверный URL!');
                         }
                     }
                 },
-                
-                async getPages(prefix, interwikiMode, apiEndpoint, articlePath, offset = 0, retries = 0) {
-                    prefix = prefix.replace(/^:+/, '');
-                    if (!prefix) return;
-                    
-                    const api = apiEndpoint ? new mw.ForeignApi(apiEndpoint, {
-                        parameters: { uselang: config.wgUserLanguage, errorformat: 'plaintext', formatversion: '2' }, anonymous: true
-                    }) : localApi;
-                    
-                    const match = prefix.match(/^(.+?):/);
-                    
+
+                async getPages(prefix, interwikiMode, apiEndpoint, articlePath, offset = 0) {
+                    const cleanPrefix = prefix.replace(/^:+/, '');
+                    if (!cleanPrefix) return;
+
+                    const api = apiEndpoint ? getForeignApi(apiEndpoint, true) : localApi;
+                    const match = cleanPrefix.match(/^(.+?):/);
+
                     if (match && interwikiMode) {
-                        let newPrefix = prefix.replace(/^.+?:/, '');
+                        const newPrefix = cleanPrefix.replace(/^.+?:/, '');
                         lastRequest = api.get({ meta: 'siteinfo', siprop: 'interwikimap', maxage: '3600' });
-                        
+
                         try {
                             const data = await lastRequest;
                             if (!data.query?.interwikimap) return methods.appendMessage('Ошибка интервики.');
-                            
+
                             const interwiki = data.query.interwikimap.find(iw => iw.prefix.toLowerCase() === match[1].toLowerCase());
-                            if (!interwiki) return methods.getPages(prefix, false, apiEndpoint, articlePath);
-                            
+                            if (!interwiki) return methods.getPages(cleanPrefix, false, apiEndpoint, articlePath);
+
                             try {
                                 const wikiUrl = new URL(interwiki.url);
                                 wikiUrl.protocol = 'https:';
-                                
-                                if (wikiUrl.host.includes('.wikia.com')) wikiUrl.host = wikiUrl.host.replace(/wikia\.com$/, 'fandom.com');
-                                else if (['mediawiki.org', 'semantic-mediawiki.org'].includes(wikiUrl.host)) wikiUrl.host = `www.${wikiUrl.host}`;
-                                
-                                let apiUrl = new URL(wikiUrl.origin + methods.matchReplace(wikiUrl.pathname, [/\/wiki\/.*/, /.*/], '/api.php'));
+
+                                if (wikiUrl.host.includes('.wikia.com')) {
+                                    wikiUrl.host = wikiUrl.host.replace(/wikia\.com$/, 'fandom.com');
+                                } else if (['mediawiki.org', 'semantic-mediawiki.org'].includes(wikiUrl.host)) {
+                                    wikiUrl.host = `www.${wikiUrl.host}`;
+                                }
+
+                                const apiUrl = new URL(wikiUrl.origin + methods.matchReplace(wikiUrl.pathname, [/\/wiki\/.*/, /.*/], '/api.php'));
                                 await methods.getPages(newPrefix, true, apiUrl.href, wikiUrl.href);
-                            } catch (_) {
+                            } catch {
                                 methods.appendMessage(`Неверный URL интервики: "${interwiki.url}".`);
                             }
-                        } catch { /* Ignored */ }
+                        } catch { /* Aborted */ }
                     } else if (search.type === 'link') {
-                        lastRequest = api.get({ list: 'prefixsearch', pssearch: prefix, pslimit: '6', maxage: '60' });
+                        lastRequest = api.get({ list: 'prefixsearch', pssearch: cleanPrefix, pslimit: '6', maxage: '60' });
                         try {
                             const data = await lastRequest;
                             if (data.query?.prefixsearch?.length) methods.buildSuggestions(data.query.prefixsearch, articlePath);
                             else methods.appendMessage('Ничего не найдено.');
-                        } catch { /* Ignored */ }
+                        } catch { /* Aborted */ }
                     } else if (search.type === 'image') {
-                        lastRequest = api.get({ generator: 'prefixsearch', gpssearch: prefix, gpsnamespace: '6', gpslimit: '6', gpsoffset: offset || undefined, prop: 'imageinfo', iiprop: 'url|mime', maxage: '60' });
+                        lastRequest = api.get({
+                            generator: 'prefixsearch',
+                            gpssearch: cleanPrefix,
+                            gpsnamespace: '6',
+                            gpslimit: '6',
+                            gpsoffset: offset || undefined,
+                            prop: 'imageinfo',
+                            iiprop: 'url|mime',
+                            maxage: '60'
+                        });
                         try {
                             const data = await lastRequest;
                             if (data.query?.pages) {
@@ -253,10 +321,10 @@
                             } else {
                                 methods.appendMessage('Ничего не найдено.');
                             }
-                        } catch { /* Ignored */ }
+                        } catch { /* Aborted */ }
                     }
                 },
-                
+
                 appendMessage(msg) {
                     const li = document.createElement('li');
                     li.className = 'suggest-box__message';
@@ -264,59 +332,69 @@
                     suggestBox.appendChild(li);
                     wrapper.style.display = 'block';
                 },
-                
+
                 buildSuggestions(items, path) {
-                    suggestBox.innerHTML = '';
+                    suggestBox.textContent = '';
                     resultCount = 0;
-                    
-                    const fragment = document.createDocumentFragment(); 
-                    
+
+                    const fragment = document.createDocumentFragment();
+
                     for (const item of items) {
                         if (resultCount >= 6) break;
                         resultCount++;
+
                         const li = document.createElement('li');
                         li.className = 'suggest-box__item';
                         li.id = `suggest-item-${resultCount}`;
                         li.setAttribute('role', 'option');
                         li.setAttribute('aria-selected', 'false');
-                        
+
                         if (search.type === 'template') {
                             li.dataset.template = JSON.stringify(item);
-                            li.innerHTML = `<strong>${item.title}</strong><span class="suggest-box__desc">${item.desc || ''}</span>`;
+                            const strongEl = document.createElement('strong');
+                            strongEl.textContent = item.title ?? '';
+                            const descEl = document.createElement('span');
+                            descEl.className = 'suggest-box__desc';
+                            descEl.textContent = item.desc ?? '';
+                            li.append(strongEl, descEl);
                         } else {
                             const isImage = search.type === 'image';
-                            li.dataset.url = isImage ? item.imageinfo[0].url : (path ? path.replace('$1', mw.util.wikiUrlencode(item.title)) : config.wgServer + mw.util.getUrl(item.title));
+                            const itemUrl = isImage
+                                ? item.imageinfo?.[0]?.url
+                                : (path ? path.replace('$1', mw.util.wikiUrlencode(item.title)) : config.wgServer + mw.util.getUrl(item.title));
+                            if (!itemUrl) continue;
+                            li.dataset.url = itemUrl;
                             li.textContent = item.title;
                         }
                         fragment.appendChild(li);
                     }
-                    
+
                     suggestBox.appendChild(fragment);
                     if (resultCount) wrapper.style.display = 'block';
                 },
-                
+
                 handleUI(event, targetNode) {
                     const activeId = suggestBox.getAttribute('aria-activedescendant');
                     const currentNode = activeId ? document.getElementById(activeId) : null;
                     const items = Array.from(suggestBox.querySelectorAll('.suggest-box__item'));
                     let newNode = targetNode;
-                    
+
                     if (event.type === 'mouseleave') {
                         if (currentNode) currentNode.setAttribute('aria-selected', 'false');
                         suggestBox.removeAttribute('aria-activedescendant');
                         return;
                     }
-                    
+
                     if (event.type === 'keydown' && items.length) {
                         const index = currentNode ? items.indexOf(currentNode) : -1;
                         switch (event.key) {
-                            case 'ArrowUp': newNode = index > 0 ? items[index - 1] : items[items.length - 1]; break;
+                            case 'ArrowUp': newNode = index > 0 ? items[index - 1] : items.at(-1); break;
                             case 'ArrowDown': newNode = index < items.length - 1 ? items[index + 1] : items[0]; break;
                             case 'Home': case 'PageUp': newNode = items[0]; break;
-                            case 'End': case 'PageDown': newNode = items[items.length - 1]; break;
+                            case 'End': case 'PageDown': newNode = items.at(-1); break;
                         }
                     }
-                    
+
                     if (newNode) {
                         if (currentNode) currentNode.setAttribute('aria-selected', 'false');
                         newNode.setAttribute('aria-selected', 'true');
@@ -324,28 +402,30 @@
                         newNode.scrollIntoView({ block: 'nearest' });
                     }
                 },
-                
+
                 async dispatchTemplate() {
                     const activeId = suggestBox.getAttribute('aria-activedescendant');
                     if (!activeId) return;
-                    
-                    const tpl = JSON.parse(document.getElementById(activeId).dataset.template);
+
+                    const activeEl = document.getElementById(activeId);
+                    if (!activeEl?.dataset.template) return;
+
+                    const tpl = JSON.parse(activeEl.dataset.template);
                     const targetNode = search.node;
-                    const offsetStart = search.offsets[0];
-                    const offsetLength = search.offsets[1];
-                    
-                    let searchNode = targetNode.splitText(offsetStart);
+                    const [offsetStart, offsetLength] = search.offsets;
+
+                    const searchNode = targetNode.splitText(offsetStart);
                     searchNode.splitText(offsetLength);
-                    
-                    const markerId = 'ee-load-' + Math.random().toString(36).slice(2, 11);
+
+                    const markerId = `ee-load-${Math.random().toString(36).slice(2, 11)}`;
                     const safeMarker = document.createElement('a');
-                    safeMarker.href = '#' + markerId;
+                    safeMarker.href = `#${markerId}`;
                     safeMarker.textContent = searchNode.textContent;
                     searchNode.replaceWith(safeMarker);
-                    
+
                     methods.closeSuggestions();
-                    const wikitext = '{' + '{#invoke:' + tpl.moduleName + '|main|' + tpl.name + '}}';
-                    
+                    const wikitext = tpl.text || `{{${tpl.name}}}`;
+
                     try {
                         const res = await localApi.get({
                             action: 'parse',
@@ -355,67 +435,54 @@
                             disablelimitreport: true,
                             formatversion: '2'
                         });
-                        
+
                         const htmlContent = res.parse?.text ?? '';
                         const activeMarker = document.querySelector(`a[href="#${markerId}"]`);
-                        
+
                         if (!htmlContent) {
                             if (activeMarker) activeMarker.replaceWith(document.createTextNode(activeMarker.textContent));
                             return;
                         }
-                        
+
                         if (tpl.title && activeMarker) {
                             const wrapperNode = activeMarker.closest('.rich-text-editor__wrapper');
-                            if (wrapperNode) {
-                                const titleInput = wrapperNode.querySelector('.rich-text-editor__title, textarea[name="title"]');
-                                if (titleInput) {
-                                    const nativeSetter = Object.getOwnPropertyDescriptor(
-                                        window[titleInput.tagName === 'TEXTAREA' ? 'HTMLTextAreaElement' : 'HTMLInputElement'].prototype, 
-                                        "value"
-                                    ).set;
+                            const titleInput = wrapperNode?.querySelector('.rich-text-editor__title, textarea[name="title"]');
+                            if (titleInput) {
+                                const proto = window[titleInput.tagName === 'TEXTAREA' ? 'HTMLTextAreaElement' : 'HTMLInputElement'].prototype;
+                                const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+                                if (nativeSetter) {
                                     nativeSetter.call(titleInput, tpl.title);
                                     titleInput.dispatchEvent(new Event('input', { bubbles: true }));
                                 }
                             }
                         }
-                        
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = htmlContent;
-                        const parserOutput = tempDiv.querySelector('.mw-parser-output') || tempDiv;
-                        
-                        parserOutput.querySelectorAll(`a[href^="${config.wgArticlePath.replace('$1', '')}"]`).forEach(a => {
-                            a.href = config.wgServer + a.getAttribute('href');
-                        });
-                        
-                        let processedHtml = parserOutput.innerHTML
-                            .replace(/<br ?\/?><br ?\/?>/g, '</p><p><br /></p><p>')
-                            .replace(/<br ?\/?>(?!\s*<\/p>)/g, '</p><p>');
-                        processedHtml = processedHtml.replace(/^<p>/, '').replace(/<\/p>$/, '');
-                        
+
+                        const processedHtml = parseHtmlFragment(htmlContent).replace(/^<p>/, '').replace(/<\/p>$/, '');
+
                         if (activeMarker) {
                             const editor = activeMarker.closest('.ProseMirror');
-                            if (editor) editor.focus(); 
+                            if (editor) editor.focus();
                             const sel = window.getSelection();
                             const range = document.createRange();
-                            range.selectNode(activeMarker); 
+                            range.selectNode(activeMarker);
                             sel.removeAllRanges();
                             sel.addRange(range);
                             document.execCommand('insertHTML', false, processedHtml);
                         }
                     } catch { /* Ignored */ }
                 },
-                
+
                 dispatchLink(url, label) {
                     let parentNode = search.node.parentNode;
-                    let searchNode = search.node.splitText(search.offsets[0]);
+                    const searchNode = search.node.splitText(search.offsets[0]);
                     searchNode.splitText(search.offsets[1]);
-                    
+
                     if (search.source === 'wiki') {
                         const activeId = suggestBox.getAttribute('aria-activedescendant');
-                        const optionNode = document.getElementById(activeId);
+                        const optionNode = activeId ? document.getElementById(activeId) : null;
                         if (!optionNode) return;
-                        
-                        url = url || optionNode.dataset.url;
+
+                        url ||= optionNode.dataset.url;
                         if (!label) {
                             const match = search.rawText.match(/\[\[[^\[\]]*?\|([^\[\]]*)\]?\]?$/);
                             if (!match) {
@@ -429,21 +496,22 @@
                             }
                         }
                     }
-                    
+
                     const linkNode = document.createElement('a');
                     linkNode.href = url;
                     linkNode.textContent = label;
                     searchNode.replaceWith(linkNode);
                     parentNode.normalize();
-                    
+
                     while (parentNode.matches('a, em, strong, span')) {
                         if (!parentNode.matches('span')) {
                             [...parentNode.childNodes].forEach(node => {
-                                if (node === linkNode) {
-                                    if (parentNode.matches('em, strong')) node = node.firstChild;
+                                let target = node;
+                                if (target === linkNode) {
+                                    if (parentNode.matches('em, strong')) target = target.firstChild;
                                     else if (parentNode.matches('a')) return;
                                 }
-                                parentNode.parentNode.insertBefore(parentNode.cloneNode(), node).appendChild(node);
+                                parentNode.parentNode.insertBefore(parentNode.cloneNode(), target).appendChild(target);
                             });
                         }
                         parentNode.before(...parentNode.childNodes);
@@ -451,34 +519,35 @@
                         parentNode = parentNode.parentNode;
                         oldParent.remove();
                     }
-                    
+
                     const editor = linkNode.closest('.ProseMirror');
                     if (editor) editor.focus();
-                    getSelection().setPosition(linkNode, linkNode.childNodes.length);
-                    parentNode.appendChild(document.createTextNode('\ufeff')); 
+                    window.getSelection().setPosition(linkNode, linkNode.childNodes.length);
+                    parentNode.appendChild(document.createTextNode('\ufeff'));
                     methods.closeSuggestions();
-                    
+
                     setTimeout(() => {
-                        if (parentNode && parentNode.lastChild) {
+                        if (parentNode?.lastChild?.nodeType === Node.TEXT_NODE) {
                             parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1));
                         }
                     }, 0);
                 },
-                
+
                 async insertImage(url) {
                     const parentNode = search.node.parentNode;
                     const searchNode = search.node.splitText(search.offsets[0]);
                     searchNode.splitText(search.offsets[1]);
-                    const inputNode = parentNode.closest('.rich-text-editor__wrapper').querySelector('#rich-text-editor__image-input');
-                    
+                    const inputNode = parentNode.closest('.rich-text-editor__wrapper')?.querySelector('#rich-text-editor__image-input');
+
                     if (search.source === 'wiki' && !url) {
                         const activeId = suggestBox.getAttribute('aria-activedescendant');
-                        url = document.getElementById(activeId).dataset.url;
+                        url = activeId ? document.getElementById(activeId)?.dataset.url : null;
                     }
-                    
+
                     searchNode.remove();
                     methods.closeSuggestions();
-                    
+                    if (!url || !inputNode) return;
+
                     try {
                         const res = await fetch(url);
                         const blob = await res.blob();
@@ -490,9 +559,9 @@
                         console.error('Ошибка загрузки изображения:', e);
                     }
                 },
-                
+
                 closeSuggestions() {
-                    suggestBox.innerHTML = '';
+                    suggestBox.textContent = '';
                     suggestBox.removeAttribute('aria-activedescendant');
                     wrapper.style.display = 'none';
                     search = {};
@@ -502,13 +571,13 @@
             };
             methods.initListeners();
         },
-        
+
         getCaret() {
-            const sel = getSelection();
+            const sel = window.getSelection();
             if (!sel.rangeCount) return null;
             const range = sel.getRangeAt(0);
             if (!range.collapsed) return null;
-            
+
             if (range.endContainer.nodeType !== Node.TEXT_NODE) {
                 if (!range.endOffset) return null;
                 let newContainer = range.endContainer.childNodes[range.endOffset - 1];
@@ -519,48 +588,38 @@
                 range.setEnd(newContainer, newContainer.length);
                 range.collapse(false);
             }
-            
+
             const rect = range.getBoundingClientRect();
             return {
                 node: sel.focusNode,
                 offset: sel.focusOffset,
                 x: rect.x + window.scrollX,
-                y: rect.y + window.scrollY,
+                y: rect.y + window.scrollY
             };
         },
-        
+
         async parseInsert(str, replaceAll) {
-            str = str.replace(/[\n]+\n\n/g, '\n\n').replace(/(?<!\n[\*\#][^\n]*)\n(?![\*\# ])/g, '<br />');
-            
+            const formattedStr = str
+                .replaceAll(/[\n]+\n\n/g, '\n\n')
+                .replaceAll(/(?<!\n[\*\#][^\n]*)\n(?![\*\# ])/g, '<br />');
+
             try {
                 const res = await localApi.get({
                     action: 'parse',
-                    text: str,
+                    text: formattedStr,
                     title: config.wgPageName,
                     contentmodel: 'wikitext',
                     disablelimitreport: true,
                     formatversion: '2'
                 });
-                
+
                 const htmlContent = res.parse?.text ?? '';
                 if (!htmlContent) return;
-                
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = htmlContent;
-                
-                const parserOutput = tempDiv.querySelector('.mw-parser-output') || tempDiv;
-                
-                parserOutput.querySelectorAll(`a[href^="${config.wgArticlePath.replace('$1', '')}"]`).forEach(a => {
-                    a.href = config.wgServer + a.getAttribute('href');
-                });
-                
-                let processedHtml = parserOutput.innerHTML
-                    .replace(/<br ?\/?><br ?\/?>/g, '</p><p><br /></p><p>')
-                    .replace(/<br ?\/?>(?!\s*<\/p>)/g, '</p><p>');
-                    
+
+                const processedHtml = parseHtmlFragment(htmlContent);
                 const caret = EnhancedEditor.getCaret();
-                if (caret && caret.node && !caret.node.parentNode.closest('.ProseMirror')) return;
-                
+                if (caret?.node && !caret.node.parentNode.closest('.ProseMirror')) return;
+
                 if (replaceAll) {
                     const target = caret ? caret.node.parentNode.closest('.ProseMirror') : document.querySelector('.ProseMirror');
                     if (target) {
@@ -570,9 +629,9 @@
                 } else if (caret) {
                     const pNode = caret.node.parentNode;
                     const newEl = document.createElement('p');
-                    newEl.innerHTML = caret.node.data.slice(0, caret.offset) + 
-                                      processedHtml.replace(/^<p>/, '').replace(/<\/p>$/, '') + 
-                                      caret.node.data.slice(caret.offset);
+                    const safeBefore = mw.html.escape(caret.node.data.slice(0, caret.offset));
+                    const safeAfter = mw.html.escape(caret.node.data.slice(caret.offset));
+                    newEl.innerHTML = safeBefore + processedHtml.replace(/^<p>/, '').replace(/<\/p>$/, '') + safeAfter;
                     pNode.replaceWith(newEl);
                 } else {
                     const target = document.querySelector('.ProseMirror');
@@ -586,6 +645,6 @@
             } catch { /* Ignored */ }
         }
     };
-    
+
     mw.loader.using(['mediawiki.api', 'mediawiki.ForeignApi', 'mediawiki.util']).then(() => EnhancedEditor.init());
 })();

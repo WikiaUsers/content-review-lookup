@@ -254,3 +254,183 @@ $( function () {
         window.mw.hook('wikipage.content').add(refresh);
     }
 }());
+
+(function () {
+    'use strict';
+    var requested = false;
+    function loadRadar(content) {
+        var node = content && content.jquery ? content[0] : content;
+        node = node && node.querySelector ? node : document;
+        if (requested || !((node.matches && node.matches('.hltv-ranklist')) || node.querySelector('.hltv-ranklist'))) return;
+        requested = true;
+        mw.loader.load(mw.util.getUrl('MediaWiki:TeamRankRadar.js', {
+            action: 'raw', ctype: 'text/javascript'
+        }));
+    }
+    mw.loader.using('mediawiki.util').then(function () {
+        mw.hook('wikipage.content').add(loadRadar);
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { loadRadar(document); });
+        else loadRadar(document);
+    });
+}());
+
+/* Preserve its existing contents. */
+(function () {
+    'use strict';
+    var appearanceLoading = false;
+    mw.hook('wikipage.content').add(function ($content) {
+        var node = $content && $content.jquery ? $content[0] : $content;
+        if (appearanceLoading || !node || !node.querySelector) { return; }
+        if (!(node.matches && node.matches('.ql-ap-source')) && !node.querySelector('.ql-ap-source')) { return; }
+        appearanceLoading = true;
+        mw.loader.using('mediawiki.util').then(function () {
+            return mw.loader.getScript(mw.util.getUrl('MediaWiki:出场.js', {
+                action: 'raw', ctype: 'text/javascript'
+            }));
+        }).catch(function (error) {
+            appearanceLoading = false;
+            if (window.console) { console.warn('出场面板脚本加载失败', error); }
+        });
+    });
+}());
+/* ===== 全玩者标题党派与战队标识 ===== */
+(function () {
+    'use strict';
+
+    if (window.quanwanTitleLogos) {
+        window.quanwanTitleLogos.refresh();
+        return;
+    }
+
+    function pageName(value) {
+        return String(value || '').replace(/_/g, ' ');
+    }
+
+    function refresh() {
+        var existing = document.getElementById('qw-title-logos');
+
+        if (
+            mw.config.get('wgNamespaceNumber') !== 0 ||
+            mw.config.get('wgAction') !== 'view' ||
+            new URLSearchParams(window.location.search).has('diff')
+        ) {
+            if (existing) {
+                existing.remove();
+            }
+            return;
+        }
+
+        var content = document.getElementById('mw-content-text');
+        if (!content) {
+            return;
+        }
+
+        var sources = content.querySelectorAll('.qw-title-logos-source');
+        var source = null;
+
+        for (var i = 0; i < sources.length; i++) {
+            if (
+                pageName(sources[i].getAttribute('data-qw-page')) ===
+                pageName(mw.config.get('wgPageName'))
+            ) {
+                source = sources[i];
+                break;
+            }
+        }
+
+        if (!source) {
+            if (existing) {
+                existing.remove();
+            }
+            return;
+        }
+
+        var heading = document.querySelector(
+            '.page-header__title, #firstHeading, #firstheading'
+        );
+        if (!heading) {
+            return;
+        }
+
+        var header = heading.closest('.page-header');
+        var top = header && header.querySelector('.page-header__top');
+        var signature = source.innerHTML;
+
+        if (existing && existing.getAttribute('data-qw-signature') === signature) {
+            return;
+        }
+        if (existing) {
+            existing.remove();
+        }
+
+        var bar = document.createElement('div');
+        bar.id = 'qw-title-logos';
+        bar.className = 'qw-title-logos';
+        bar.setAttribute('role', 'group');
+        bar.setAttribute('aria-label', '人物所属党派与战队');
+        bar.setAttribute('data-qw-signature', signature);
+
+        for (var n = 0; n < source.children.length; n++) {
+            var badge = source.children[n].cloneNode(true);
+            if (!badge.classList.contains('qw-title-logo')) {
+                continue;
+            }
+
+            badge.querySelectorAll('a').forEach(function (link) {
+                link.setAttribute(
+                    'aria-label',
+                    badge.getAttribute('data-qw-label') || '查看所属组织'
+                );
+            });
+
+            badge.querySelectorAll('img').forEach(function (img) {
+                // 源节点隐藏，主动恢复延迟加载图片，避免把占位图带到标题。
+                if (img.getAttribute('data-src')) {
+                    img.src = img.getAttribute('data-src');
+                }
+                if (img.getAttribute('data-srcset')) {
+                    img.srcset = img.getAttribute('data-srcset');
+                }
+
+                img.loading = 'eager';
+                img.classList.remove('lazyload', 'lazyloading');
+
+                img.addEventListener('error', function () {
+                    var owner = img.closest('.qw-title-logo');
+                    var anchor = owner && owner.querySelector('a');
+
+                    if (anchor) {
+                        anchor.textContent = owner
+                            .getAttribute('data-qw-label')
+                            .replace(/^[^：]+：/, '');
+                    }
+                }, { once: true });
+            });
+
+            bar.appendChild(badge);
+        }
+
+        if (!bar.children.length) {
+            return;
+        }
+
+        if (top) {
+            top.classList.add('qw-title-logos-top');
+            top.insertBefore(bar, top.firstChild);
+        } else if (header) {
+            header.insertBefore(bar, header.firstChild);
+        } else {
+            heading.parentNode.insertBefore(bar, heading);
+        }
+    }
+
+    window.quanwanTitleLogos = { refresh: refresh };
+    mw.hook('wikipage.content').add(refresh);
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', refresh);
+    } else {
+        refresh();
+    }
+}());
+/* ===== END 全玩者标题党派与战队标识 ===== */

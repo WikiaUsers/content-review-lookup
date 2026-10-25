@@ -5,8 +5,8 @@ $(document).ready(function() {
     $('.skin-icon').click(function() {
         var skin = $(this).attr('data-name');
 
-        $(this).closest('.skin-container').find('.skin-icon, .preview').removeClass('active').end()
-            .find('.preview[data-name="' + skin + '"]').addClass('active');
+        $(this).closest('.skin-container').find('.skin-icon, .preview, .description').removeClass('active').end()
+            .find('.preview[data-name="' + skin + '"], .description[data-name="' + skin + '"]').addClass('active');
 
         $(this).addClass('active');
         $(this).closest('.skin-container').find('.skin-title').text(skin);

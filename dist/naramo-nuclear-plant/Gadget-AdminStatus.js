@@ -5,8 +5,11 @@
  */
 (function ($, mw) {
     'use strict';
-
+	
+	// Configurations
+    const DAYS_LIMIT = 15;
     const PAGE = 'Naramo_Nuclear_Plant_Wiki:Staff';
+    
     if (mw.config.get('wgPageName') !== PAGE) {
         console.warn(`[AdminStatus] The title of the current page (${mw.config.get('wgPageName')}) does not match the expected page (${PAGE}); script interrupted.`);
         return;
@@ -14,7 +17,6 @@
 
     if (mw.config.get('wgAction') !== 'view') return;
 
-    const DAYS_LIMIT = 30;
     const api = new mw.Api();
 
     function cutoffDate() {

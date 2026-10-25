@@ -6,6 +6,7 @@ mw.loader.getScript(
     );
 });
 
+
 // CategoryCSS 
 window.categoryCSS = {
     "Market": "MediaWiki:Market.css",
@@ -709,28 +710,35 @@ const weaponBarB =
 
 });
 
-// Global Boss Timer
+
+/* Global Boss Timer */
 
 function BossTimer() {
     const timer = document.getElementById("boss-timer");
     const spawned = document.getElementById("boss-spawned");
+
     if (!timer || !spawned) return;
+
     const now = new Date();
-    let remaining =
-        3600 -
-        (now.getMinutes() * 60 + now.getSeconds());
-    if (remaining === 3600) {
-        remaining = 0;
-    }
+
+    const elapsed =
+        now.getMinutes() * 60 +
+        now.getSeconds();
+
+    const remaining = 3600 - elapsed - 1;
+
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
+
     timer.textContent =
         `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    if (now.getMinutes() === 0 && now.getSeconds() < 20) {
-        spawned.style.display = "block";
-    } else {
-        spawned.style.display = "none";
-    }
+
+    if (now.getMinutes() < 2) {
+    spawned.style.display = "block";
+} else {
+    spawned.style.display = "none";
+}
+
     if (remaining <= 60) {
         timer.style.color = "#FF0000";
     } else if (remaining <= 300) {
@@ -739,8 +747,67 @@ function BossTimer() {
         timer.style.color = "#6EBD1E";
     }
 }
+
 BossTimer();
 setInterval(BossTimer, 1000);
+
+// Weekly Leaderboards Timer
+
+function WeeklyLeaderboardsTimer() {
+    const timer = document.getElementById("w-leader-timer");
+    const resetMessage = document.getElementById("w-leader-reset");
+
+    if (!timer) return;
+
+    const now = new Date();
+    const firstReset = new Date(2026, 9, 25, 19, 0, 0);
+    const week = 7 * 24 * 60 * 60 * 1000;
+    const day = 24 * 60 * 60 * 1000;
+
+    let nextReset = firstReset;
+    let lastReset = null;
+
+    if (now >= firstReset) {
+        const completedWeeks = Math.floor(
+            (now.getTime() - firstReset.getTime()) / week
+        );
+
+        lastReset = new Date(
+            firstReset.getTime() + completedWeeks * week
+        );
+
+        nextReset = new Date(lastReset.getTime() + week);
+    }
+
+    const remaining = nextReset.getTime() - now.getTime();
+    const totalSeconds = Math.floor(remaining / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    timer.textContent =
+        `${days}d ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    if (resetMessage) {
+        const showMessage =
+            lastReset !== null &&
+            now.getTime() - lastReset.getTime() < day;
+
+        resetMessage.style.display = showMessage ? "block" : "none";
+    }
+
+    if (remaining <= 60 * 60 * 1000) {
+        timer.style.color = "#FF0000";
+    } else if (remaining <= 5 * 60 * 60 * 1000) {
+        timer.style.color = "#ffcc00";
+    } else {
+        timer.style.color = "#6EBD1E";
+    }
+}
+
+WeeklyLeaderboardsTimer();
+setInterval(WeeklyLeaderboardsTimer, 1000);
 
 // Tier List Data
 

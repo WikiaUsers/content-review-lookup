@@ -1,10 +1,11 @@
+/* Загрузчик SCSS (ES6) */
 (() => {
     'use strict';
     if (window.scssAdapterES2022Loaded) return;
     window.scssAdapterES2022Loaded = true;
 
-    const SCRIPT_PAGE = 'MediaWiki:SCSS/Main.js'; 
-    const VERSION = '1.0'; 
+    const SCRIPT_PAGE = 'MediaWiki:SCSS/Main.js';
+    const VERSION = '1.1';
     const CENTRAL_API = 'https://wikicorporate.fandom.com/ru/index.php';
 
     const script = document.createElement('script');
