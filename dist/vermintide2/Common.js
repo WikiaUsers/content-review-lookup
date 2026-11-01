@@ -284,3 +284,137 @@ function initializeLazyTabs() {
         });
     });
 }
+
+(function () {
+    'use strict';
+
+    function targetId(hash) {
+        if (!hash || hash.charAt(0) !== '#') return null;
+        try { return decodeURIComponent(hash.slice(1)); } catch (e) { return hash.slice(1); }
+    }
+
+    function flash(el) {
+        el.style.transition = 'background-color 0.4s ease';
+        el.style.backgroundColor = 'rgba(229, 176, 36, 0.25)';
+        setTimeout(function () { el.style.backgroundColor = ''; }, 2500);
+    }
+
+    function navLinks(container) {
+        var selectors = ['.tabbernav a', '.tabber__tabs .tabber__tab', '[role="tablist"] [role="tab"]'];
+        for (var s = 0; s < selectors.length; s++) {
+            var found = container.querySelectorAll(selectors[s]);
+            if (found.length) return found;
+        }
+        return [];
+    }
+
+    function containerOf(tab) {
+        var node = tab;
+        while (node && node !== document.body) {
+            if (node.classList && node.classList.contains('tabberlive')) return node;
+            node = node.parentNode;
+        }
+        return null;
+    }
+
+    function indexOfTab(container, tab) {
+        var tabs = container.querySelectorAll('.lazy-tab');
+        for (var i = 0; i < tabs.length; i++) if (tabs[i] === tab) return i;
+        return -1;
+    }
+
+    function isUnloaded(tab) {
+        if (tab.getAttribute('data-loaded')) return false;
+        return tab.firstElementChild === null;
+    }
+
+    function fetchPageHtml(page) {
+        var params = [
+            'action=parse',
+            'prop=text',
+            'disableeditsection=1',
+            'disabletoc=1',
+            'format=json',
+            'formatversion=2',
+            'page=' + encodeURIComponent(page)
+        ].join('&');
+        var url = (window.mw && mw.util && mw.util.wikiScript ? mw.util.wikiScript('api') : '/api.php') + '?' + params;
+        return fetch(url, { credentials: 'same-origin' }).then(function (r) { return r.json(); });
+    }
+
+    var loadPromises = (typeof WeakMap !== 'undefined') ? new WeakMap() : null;
+
+    function loadTab(tab) {
+        if (!tab || !isUnloaded(tab)) return Promise.resolve(tab);
+        if (loadPromises && loadPromises.has(tab)) return loadPromises.get(tab);
+
+        var page = tab.getAttribute('data-page');
+        if (!page) return Promise.resolve(tab);
+
+        var promise = fetchPageHtml(page).then(function (data) {
+            var html = data && data.parse && data.parse.text;
+            if (html && typeof html === 'object') html = html['*'];
+            if (typeof html !== 'string' || html === '') return tab;
+            tab.innerHTML = html;
+            tab.setAttribute('data-loaded', '1');
+            if (window.mw && mw.hook && window.jQuery) {
+                mw.hook('wikipage.content').fire(jQuery(tab));
+            }
+            return tab;
+        }).catch(function () { return tab; });
+
+        if (loadPromises) loadPromises.set(tab, promise);
+        return promise;
+    }
+
+    window.lazyTabberLoadTab = loadTab;
+
+    function waitFor(id, timeout, cb) {
+        var start = Date.now();
+        (function poll() {
+            var el = document.getElementById(id);
+            if (el) return cb(el);
+            if (Date.now() - start > timeout) return cb(null);
+            setTimeout(poll, 120);
+        })();
+    }
+
+    function resolve(hash) {
+        var id = targetId(hash);
+        if (!id) return;
+        if (document.getElementById(id)) return;
+
+        var tabs = document.querySelectorAll('.lazy-tab[data-anchors]');
+        var target = null;
+        for (var i = 0; i < tabs.length; i++) {
+            var list = (tabs[i].getAttribute('data-anchors') || '').split('|');
+            if (list.indexOf(id) !== -1) { target = tabs[i]; break; }
+        }
+        if (!target) return;
+
+        var container = containerOf(target);
+        if (!container) return;
+        var idx = indexOfTab(container, target);
+        if (idx < 0) return;
+
+        var links = navLinks(container);
+        if (links[idx]) links[idx].click();
+
+        loadTab(target).then(function () {
+            waitFor(id, 8000, function (el) {
+                if (!el) return;
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                flash(el);
+            });
+        });
+    }
+
+    function init() { resolve(location.hash); }
+
+    window.addEventListener('hashchange', function () { resolve(location.hash); });
+    if (window.mw && mw.hook) {
+        mw.hook('wikipage.content').add(init);
+    } else {
+        document.addEventListener('DOMContentLoaded', init);
+    }
+})();

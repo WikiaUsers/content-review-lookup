@@ -1,12 +1,9 @@
+
 mw.loader.using([
     'mediawiki.api',
     'mediawiki.util'
 ]).then(function () {
     'use strict';
-
-    const notificationRecipients = [
-        '!Davin012613'
-    ];
 
     const ledgerTitle = 'Project:Ratings';
     const api = new mw.Api();
@@ -18,9 +15,9 @@ mw.loader.using([
         return;
     }
 
-if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) { 
-    return; 
-}
+    if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
+        return;
+    }
 
     let observingVote = false;
     let lastObservedClick = 0;
@@ -36,10 +33,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
 
     function wikiHref(title) {
         const base = mw.config.get('wgServer');
-
-        const path =
-            mw.config.get('wgArticlePath') ||
-            '/wiki/$1';
+        const path = mw.config.get('wgArticlePath') || '/wiki/$1';
 
         return base + path.replace(
             '$1',
@@ -83,25 +77,17 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
 
                 if (secondColumn.includes(':')) {
                     secondColumn.split(',').forEach(function (entry) {
-                        const separator =
-                            entry.lastIndexOf(':');
+                        const separator = entry.lastIndexOf(':');
 
                         if (separator === -1) {
                             return;
                         }
 
-                        const username =
-                            entry
-                                .substring(0, separator)
-                                .trim();
-
-                        const vote =
-                            parseInt(
-                                entry
-                                    .substring(separator + 1)
-                                    .trim(),
-                                10
-                            );
+                        const username = entry.substring(0, separator).trim();
+                        const vote = parseInt(
+                            entry.substring(separator + 1).trim(),
+                            10
+                        );
 
                         if (
                             username &&
@@ -112,12 +98,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
                     });
                 } else {
                     const username = secondColumn;
-
-                    const vote =
-                        parseInt(
-                            parts[2].trim(),
-                            10
-                        );
+                    const vote = parseInt(parts[2].trim(), 10);
 
                     if (
                         username &&
@@ -144,27 +125,19 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
             let timestamp = '';
 
             try {
-                const pages =
-                    data.query &&
-                    data.query.pages;
+                const pages = data.query && data.query.pages;
 
                 if (pages) {
-                    const keys =
-                        Object.keys(pages);
-
-                    const page =
-                        pages[keys[0]];
+                    const keys = Object.keys(pages);
+                    const page = pages[keys[0]];
 
                     if (
                         page &&
                         page.revisions &&
                         page.revisions[0]
                     ) {
-                        content =
-                            page.revisions[0].content || '';
-
-                        timestamp =
-                            page.revisions[0].timestamp || '';
+                        content = page.revisions[0].content || '';
+                        timestamp = page.revisions[0].timestamp || '';
                     }
                 }
             } catch (e) {
@@ -190,13 +163,8 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
     }
 
     function askReason(vote) {
-        const action =
-            vote === 1
-                ? 'upvot'
-                : 'downvot';
-
-        const pageDisplay =
-            pageName.replace(/_/g, ' ');
+        const action = vote === 1 ? 'upvot' : 'downvot';
+        const pageDisplay = pageName.replace(/_/g, ' ');
 
         const reason = window.prompt(
             'Why are you ' +
@@ -216,9 +184,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
         if (!cleaned) {
             mw.notify(
                 'A reason is required for the rating.',
-                {
-                    type: 'warn'
-                }
+                { type: 'warn' }
             );
 
             return askReason(vote);
@@ -242,75 +208,25 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
         return String(content || '')
             .split('\n')
             .filter(function (line) {
-                return line.trim()
-                    .indexOf('RatingReason |') === 0;
+                return line.trim().indexOf('RatingReason |') === 0;
             });
     }
 
     function updateReasonInLedger(reason) {
         return getLedger().then(function (ledger) {
-            const lines =
-                String(ledger.content || '').split('\n');
+            const lines = String(ledger.content || '').split('\n');
 
-           const newReasonLine =
-    'RatingReason | ' +
-    pageName +
-    ' | ' +
-    currentUser +
-    ' | ' +
-    encodeReason(reason);
+            const newReasonLine =
+                'RatingReason | ' +
+                pageName +
+                ' | ' +
+                currentUser +
+                ' | ' +
+                encodeReason(reason);
 
-            let replaced = false;
+            lines.push(newReasonLine);
 
-            const updatedLines =
-                lines.map(function (line) {
-                    const cleanLine = line.trim();
-
-                    if (
-                        cleanLine.indexOf(
-                            'RatingReason |'
-                        ) !== 0
-                    ) {
-                        return line;
-                    }
-
-                    const parts =
-                        cleanLine.split('|');
-
-                    if (parts.length < 4) {
-                        return line;
-                    }
-
-                    const reasonPage =
-                        parts[1].trim();
-
-                    const reasonUser =
-                        parts[2].trim();
-
-                    if (
-                        reasonPage === pageName &&
-                        reasonUser === currentUser
-                    ) {
-                        if (!replaced) {
-                            replaced = true;
-                            return newReasonLine;
-                        }
-
-                        return null;
-                    }
-
-                    return line;
-                })
-                .filter(function (line) {
-                    return line !== null;
-                });
-
-            if (!replaced) {
-                updatedLines.push(newReasonLine);
-            }
-
-            const newText =
-                updatedLines.join('\n');
+            const newText = lines.join('\n');
 
             return api.postWithToken('csrf', {
                 action: 'edit',
@@ -328,8 +244,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
     }
 
     function jsonModelFromHtml(html) {
-        const paragraphs =
-            String(html).split(/\n{2,}/);
+        const paragraphs = String(html).split(/\n{2,}/);
 
         const model = {
             type: 'doc',
@@ -338,8 +253,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
 
         paragraphs.forEach(function (paragraph) {
             const parts = [];
-            const regex =
-                /<a\s+href="([^"]+)">([^<]+)<\/a>/gi;
+            const regex = /<a\s+href="([^"]+)">([^<]+)<\/a>/gi;
 
             let match;
             let last = 0;
@@ -348,10 +262,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
                 if (match.index > last) {
                     parts.push({
                         type: 'text',
-                        text: paragraph.slice(
-                            last,
-                            match.index
-                        )
+                        text: paragraph.slice(last, match.index)
                     });
                 }
 
@@ -378,35 +289,50 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
 
             model.content.push({
                 type: 'paragraph',
-                content: parts.length
-                    ? parts
-                    : [{
-                        type: 'text',
-                        text: ''
-                    }]
+                content: parts.length ? parts : [{
+                    type: 'text',
+                    text: ''
+                }]
             });
         });
 
         return JSON.stringify(model);
     }
 
-    function getUser(username) {
-        return api.get({
-            action: 'query',
-            list: 'users',
-            ususers: username,
-            usprop: 'userid'
-        }).then(function (data) {
-            if (
-                !data.query ||
-                !data.query.users ||
-                !data.query.users.length
-            ) {
-                return null;
-            }
+    function getSysopUsers() {
+        const users = [];
 
-            return data.query.users[0];
-        });
+        const params = {
+            action: 'query',
+            list: 'allusers',
+            augroup: 'sysop',
+            aulimit: 'max'
+        };
+
+        function fetchUsers(queryParams) {
+            return api.get(queryParams).then(function (data) {
+                const batch =
+                    data.query && data.query.allusers
+                        ? data.query.allusers
+                        : [];
+
+                batch.forEach(function (user) {
+                    if (user.userid && user.name) {
+                        users.push(user);
+                    }
+                });
+
+                if (data.continue) {
+                    return fetchUsers(
+                        Object.assign({}, queryParams, data.continue)
+                    );
+                }
+
+                return users;
+            });
+        }
+
+        return fetchUsers(params);
     }
 
     function postToWall(user, title, bodyHtml) {
@@ -416,21 +342,11 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
                 mw.util.wikiScript('wikia') +
                 '?controller=Fandom%5CMessageWall%5CMessageWall&method=createThread&format=json',
             data: {
-                token:
-                    mw.user.tokens.get('csrfToken'),
-
-                wallOwnerId:
-                    user.userid,
-
-                title:
-                    title,
-
-                rawContent:
-                    bodyHtml,
-
-                jsonModel:
-                    jsonModelFromHtml(bodyHtml),
-
+                token: mw.user.tokens.get('csrfToken'),
+                wallOwnerId: user.userid,
+                title: title,
+                rawContent: bodyHtml,
+                jsonModel: jsonModelFromHtml(bodyHtml),
                 attachments:
                     '{"contentImages":[],"openGraphs":[],"atMentions":[]}'
             },
@@ -444,20 +360,13 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
         const pageDisplay =
             notification.pageName.replace(/_/g, ' ');
 
-        const pageUrl =
-            wikiHref(notification.pageName);
-
-        const userUrl =
-            wikiHref('User:' + currentUser);
+        const pageUrl = wikiHref(notification.pageName);
+        const userUrl = wikiHref('User:' + currentUser);
 
         const voteText =
-            notification.vote === 1
-                ? 'upvoted'
-                : 'downvoted';
+            notification.vote === 1 ? 'upvoted' : 'downvoted';
 
-        const title =
-            'Rating received: ' +
-            pageDisplay;
+        const title = 'Rating received: ' + pageDisplay;
 
         const bodyHtml =
             '<a href="' +
@@ -475,13 +384,13 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
             'Reason:\n' +
             escapeHtml(notification.reason);
 
-        return Promise.all(
-            notificationRecipients.map(function (username) {
-                return getUser(username).then(function (user) {
-                    if (!user || !user.userid) {
-                        return false;
-                    }
+        return getSysopUsers().then(function (sysops) {
+            if (!sysops.length) {
+                return 0;
+            }
 
+            return Promise.all(
+                sysops.map(function (user) {
                     return postToWall(
                         user,
                         title,
@@ -494,28 +403,32 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
                             return false;
                         }
                     );
-                });
-            })
-        ).then(function (results) {
-            const sent =
-                results.filter(Boolean).length;
-
+                })
+            ).then(function (results) {
+                return results.filter(Boolean).length;
+            });
+        }).then(function (sent) {
             if (sent > 0) {
                 mw.notify(
-                    'Rating reason sent.',
-                    {
-                        type: 'success'
-                    }
+                    'Rating reason sent to ' + sent + ' sysop(s).',
+                    { type: 'success' }
                 );
             } else {
                 mw.notify(
-                    'The rating was saved, but the notification could not be sent.',
-                    {
-                        type: 'error'
-                    }
+                    'The rating was saved, but no sysop notifications could be sent.',
+                    { type: 'error' }
                 );
             }
         });
+    }
+
+    function dispatchReasonSaved() {
+        window.dispatchEvent(new CustomEvent('RatedReasonsSaved', {
+            detail: {
+                page: pageName,
+                user: currentUser
+            }
+        }));
     }
 
     function waitForSuccessfulVote(targetVote, previousVote) {
@@ -564,8 +477,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
                         return;
                     }
 
-                    const reason =
-                        askReason(targetVote);
+                    const reason = askReason(targetVote);
 
                     if (reason === null) {
                         return;
@@ -573,6 +485,8 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
 
                     return updateReasonInLedger(reason)
                         .then(function () {
+                            dispatchReasonSaved();
+
                             return sendNotification({
                                 pageName: pageName,
                                 vote: targetVote,
@@ -582,16 +496,11 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
                 });
             })
             .catch(function (error) {
-                console.error(
-                    'RatingsNotifications:',
-                    error
-                );
+                console.error('RatingsNotifications:', error);
 
                 mw.notify(
                     'The vote was saved, but the rating reason could not be processed.',
-                    {
-                        type: 'error'
-                    }
+                    { type: 'error' }
                 );
             })
             .finally(function () {
@@ -622,8 +531,7 @@ if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
 
             lastObservedClick = now;
 
-            const targetVote =
-                upButton ? 1 : -1;
+            const targetVote = upButton ? 1 : -1;
 
             setTimeout(function () {
                 observeVote(targetVote);

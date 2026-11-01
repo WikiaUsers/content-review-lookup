@@ -1,5 +1,17 @@
 / Any JavaScript here will be loaded for all users on every page load. /
 
+/* For [[Template:TopIcon]] */
+$(function () {
+	var icons = $('.mw-indicators');
+    if (icons.length) {
+    	// put this inside the new category bar
+        $('.page-header__categories-bar').append(icons);
+        $('<p><small>Hover for info:</small>&numsp;</p>').prependTo(icons);
+        icons.show();
+    }
+});
+
+
 // applying knight order colors inline - see KnightHighlights.css
 
 //unneeded, can detect fandom light or dark css class

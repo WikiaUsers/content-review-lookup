@@ -8706,3 +8706,38 @@ function getGuideButtonTitle(sectionId) {
     initialize();
 
 })();
+
+mw.loader.getScript('https://swordburst2.fandom.com/wiki/MediaWiki:GearGen.js?action=raw&ctype=text/javascript&v=1');
+
+(function () {
+    if (window.sb2GearGenLoader) return;
+    window.sb2GearGenLoader = true;
+
+    function run() {
+        var host = document.getElementById("sb2-gear-gen");
+        if (!host || host.getAttribute("data-ready") === "1") return;
+        if (window.sb2GearGenStart) {
+            window.sb2GearGenStart();
+            return;
+        }
+        if (window.sb2GearGenData) return;
+        window.sb2GearGenData = true;
+        var api = (window.mw && mw.util && mw.util.wikiScript("api")) || "/api.php";
+        fetch(api + "?action=query&prop=revisions&rvprop=content&rvslots=main&titles="
+            + encodeURIComponent("MediaWiki:GearGenData.js")
+            + "&format=json&formatversion=2")
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                var page = data.query.pages[0];
+                var js = page.revisions[0].slots.main.content;
+                (0, eval)(js);
+            })
+            .catch(function () {
+                window.sb2GearGenData = false;
+            });
+    }
+
+    if (window.mw && mw.hook) mw.hook("wikipage.content").add(run);
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+    else run();
+})();

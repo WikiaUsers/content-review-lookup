@@ -1,352 +1,216 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-(function () {
-    const WEEK_DURATION = 168 * 3600;
-    const SEASON_DURATION = 42 * 3600;
+/* Any JavaScript here will be loaded for all users on every page load (desktop skin only;
+   Fandom's mobile skin does not run wiki JavaScript). Styling lives in MediaWiki:Common.css. */
 
-    // Current correction: 1 hour
-    const OFFSET = (60 * 60);
+/* ==========================================================================
+   1. LIVE SEASON TIMER — enhances {{SeasonTimer}}
+   --------------------------------------------------------------------------
+   The template already prints the current season (so mobile readers see it).
+   On desktop this script turns every .season-timer (and the legacy
+   #season-timer-container) into a live countdown, updated once per second.
 
-    const seasonData = [
-        {
-            key: 'spring',
-            label: 'SPRING',
-            emoji: '🌸',
-            accent: '#7fbf7f',
-            text: '#3d6b43',
-            background: 'linear-gradient(180deg, #fff1f7 0%, #e6f6e5 100%)',
-            note: 'Fresh growth and new beginnings.',
-            next: 'Summer'
-        },
-        {
-            key: 'summer',
-            label: 'SUMMER',
-            emoji: '☀️',
-            accent: '#f0b53e',
-            text: '#8a5a00',
-            background: 'linear-gradient(180deg, #fff3c7 0%, #ffe0a1 100%)',
-            note: 'Bright skies and warm weather.',
-            next: 'Autumn'
-        },
-        {
-            key: 'autumn',
-            label: 'AUTUMN',
-            emoji: '🍂',
-            accent: '#cf7a41',
-            text: '#7a3f1d',
-            background: 'linear-gradient(180deg, #f8e1cb 0%, #edc08c 100%)',
-            note: 'Falling leaves and cooler days.',
-            next: 'Winter'
-        },
-        {
-            key: 'winter',
-            label: 'WINTER',
-            emoji: '❄️',
-            accent: '#7eb6f0',
-            text: '#1f63b8',
-            background: 'linear-gradient(180deg, #eef7ff 0%, #dbeeff 100%)',
-            note: 'Cold weather and frosty conditions.',
-            next: 'Spring'
-        }
-    ];
-
-    function getUkDate() {
-        return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/London' }));
-    }
-
-    function pad(num) {
-        return String(num).padStart(2, '0');
-    }
-
-    function formatTime(totalSeconds) {
-        let secondsLeft = totalSeconds;
-        const d = Math.floor(secondsLeft / 86400);
-        secondsLeft %= 86400;
-        const h = Math.floor(secondsLeft / 3600);
-        secondsLeft %= 3600;
-        const m = Math.floor(secondsLeft / 60);
-        const s = secondsLeft % 60;
-
-        return `${d}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`;
-    }
-
-    function getCurrentSeasonState() {
-        const ukDate = getUkDate();
-        const day = ukDate.getDay();
-        const shiftedDay = day === 0 ? 6 : day - 1;
-
-        const rawWeekSeconds =
-            (shiftedDay * 86400) +
-            (ukDate.getHours() * 3600) +
-            (ukDate.getMinutes() * 60) +
-            ukDate.getSeconds();
-
-        const currentWeekSeconds = (rawWeekSeconds - OFFSET + WEEK_DURATION) % WEEK_DURATION;
-
-        let seasonIndex = Math.floor(currentWeekSeconds / SEASON_DURATION);
-        if (seasonIndex < 0 || seasonIndex > 3) {
-            seasonIndex = 0;
-        }
-
-        let secondsLeft = ((seasonIndex + 1) * SEASON_DURATION) - currentWeekSeconds;
-        if (secondsLeft < 0) {
-            secondsLeft += SEASON_DURATION;
-        }
-
-        return {
-            seasonIndex,
-            secondsLeft
-        };
-    }
-
-    function renderSeasonTimer(container) {
-        const state = getCurrentSeasonState();
-        const season = seasonData[state.seasonIndex];
-        const nextSeason = seasonData[(state.seasonIndex + 1) % 4];
-
-        container.style.background = season.background;
-        container.style.border = `3px solid ${season.accent}`;
-        container.style.borderRadius = '12px';
-        container.style.boxSizing = 'border-box';
-        container.style.padding = '22px 18px';
-        container.style.color = season.text;
-        container.style.textAlign = 'center';
-        container.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.25)';
-
-        container.innerHTML = `
-            <div style="font-size:0.9em; text-transform:uppercase; font-weight:bold; letter-spacing:1px; opacity:0.85; margin-bottom:6px;">
-                Current Season
-            </div>
-
-            <div style="font-size:2.2em; font-weight:800; margin:4px 0 8px 0; text-transform:uppercase; color:${season.text};">
-                ${season.emoji} ${season.label} ${season.emoji}
-            </div>
-
-            <div style="font-size:0.95em; margin-bottom:14px; opacity:0.9;">
-                ${season.note}
-            </div>
-
-            <div style="font-size:0.9em; margin-bottom:4px; opacity:0.75;">
-                Time Remaining
-            </div>
-
-            <div style="font-size:1.5em; font-family:monospace; font-weight:bold; margin-bottom:14px; color:${season.text};">
-                ${formatTime(state.secondsLeft)}
-            </div>
-
-            <div style="font-size:0.9em; opacity:0.8; margin-bottom:4px;">
-                Next Season
-            </div>
-
-            <div style="font-size:1.05em; font-weight:bold; margin-bottom:12px;">
-                ${nextSeason.emoji} ${nextSeason.label}
-            </div>
-        `;
-    }
-
-    function startSeasonTimer(attempt) {
-        const container = document.getElementById('season-timer-container');
-
-        if (!container) {
-            if (attempt < 40) {
-                setTimeout(function () {
-                    startSeasonTimer(attempt + 1);
-                }, 500);
-            }
-            return;
-        }
-
-        renderSeasonTimer(container);
-
-        if (container.dataset.timerStarted === 'true') {
-            return;
-        }
-
-        container.dataset.timerStarted = 'true';
-
-        setInterval(function () {
-            renderSeasonTimer(container);
-        }, 1000);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        startSeasonTimer(0);
-    });
-
-    window.addEventListener('load', function () {
-        startSeasonTimer(0);
-    });
-
-    startSeasonTimer(0);
-})();
-
-/* ------------------------------------------------------------------ */
-/* Sliced custom wood box background for tabber boxes                  */
-/* ------------------------------------------------------------------ */
-(function () {
-    function getDefaultWoodBoxBackground() {
-        const probe = document.createElement('div');
-
-        probe.className = 'custom-wood-box';
-        probe.style.cssText = [
-            'position:absolute',
-            'left:-99999px',
-            'top:-99999px',
-            'width:200px',
-            'height:200px',
-            'visibility:hidden',
-            'pointer-events:none'
-        ].join(';');
-
-        document.body.appendChild(probe);
-
-        const bg = window.getComputedStyle(probe).backgroundImage;
-
-        probe.remove();
-
-        if (!bg || bg === 'none') {
-            return null;
-        }
-
-        return bg;
-    }
-
-    function initWoodTabberBoxes(attempt) {
-        const boxes = document.querySelectorAll('.custom-wood-box.wood-tabber-box');
-
-        if (boxes.length === 0) {
-            if (attempt < 40) {
-                setTimeout(function () {
-                    initWoodTabberBoxes(attempt + 1);
-                }, 500);
-            }
-            return;
-        }
-
-        const bg = getDefaultWoodBoxBackground();
-
-        if (!bg) {
-            return;
-        }
-
-        boxes.forEach(function (box) {
-            box.style.setProperty('--wood-box-bg', bg);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        initWoodTabberBoxes(0);
-    });
-
-    window.addEventListener('load', function () {
-        initWoodTabberBoxes(0);
-    });
-
-    initWoodTabberBoxes(0);
-})();
-
-/* Replaces missing file links with the wiki's Missing File icon */
-
+   Schedule settings come from the template's data attributes, so they can be
+   corrected on the wiki without touching this file:
+     data-timezone      time zone the weekly cycle follows (default UTC)
+     data-offset        seconds after Monday 00:00 when Spring starts (default 0)
+     data-season-hours  length of one season in hours (default 42)
+   Keep the season names/notes below in sync with Module:Season.
+   ========================================================================== */
 (function () {
     'use strict';
 
-    const FALLBACK_FILE = 'Missing File Icon.png';
-    const FALLBACK_SIZE = 120;
+    var SEASONS = [
+        { key: 'spring', label: 'Spring', emoji: '🌸', note: 'Fresh growth and new beginnings.' },
+        { key: 'summer', label: 'Summer', emoji: '☀️', note: 'Bright skies and warm weather.' },
+        { key: 'autumn', label: 'Autumn', emoji: '🍂', note: 'Falling leaves and cooler days.' },
+        { key: 'winter', label: 'Winter', emoji: '❄️', note: 'Cold weather and frosty conditions.' }
+    ];
+    var WEEK = 7 * 86400;
+    var DAY_INDEX = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
+    var formatters = {};
+    var timers = [];
+    var ticking = false;
 
-    const FALLBACK_SRC = mw.util.getUrl(
-        'Special:Redirect/file/' + FALLBACK_FILE,
-        {
-            width: FALLBACK_SIZE,
-            height: FALLBACK_SIZE
-        }
-    );
-
-
-    function getMissingFileTitle(link) {
-        const title = link.getAttribute('title') || '';
-        const titleMatch = title.match(
-            /^((?:File|Image):.+?)(?:\s+\(.*\))?$/i
-        );
-
-        if (titleMatch) {
-            return titleMatch[1];
-        }
-
-        let href = link.getAttribute('href') || '';
-
-        try {
-            href = decodeURIComponent(href);
-        } catch (error) {
-            
-        }
-
-        const hrefMatch = href.match(
-            /(?:title=|\/wiki\/)((?:File|Image):[^?&#]+)/i
-        );
-
-        return hrefMatch
-            ? hrefMatch[1].replace(/_/g, ' ')
-            : null;
+    function pad(n) {
+        return (n < 10 ? '0' : '') + n;
     }
 
+    function formatDuration(total) {
+        var d = Math.floor(total / 86400);
+        var h = Math.floor((total % 86400) / 3600);
+        var m = Math.floor((total % 3600) / 60);
+        var s = total % 60;
+        return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm ' + pad(s) + 's';
+    }
 
-    function replaceMissingFiles(root) {
-        if (!root || !root.querySelectorAll) {
+    /* Seconds since Monday 00:00 in the given time zone (handles GMT/BST) */
+    function secondsIntoWeek(now, timeZone) {
+        if (!formatters[timeZone]) {
+            formatters[timeZone] = new Intl.DateTimeFormat('en-GB', {
+                timeZone: timeZone, weekday: 'short', hour: '2-digit',
+                minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+            });
+        }
+        var parts = {};
+        formatters[timeZone].formatToParts(now).forEach(function (p) {
+            parts[p.type] = p.value;
+        });
+        return DAY_INDEX[parts.weekday] * 86400 +
+            (parseInt(parts.hour, 10) % 24) * 3600 +
+            parseInt(parts.minute, 10) * 60 +
+            parseInt(parts.second, 10);
+    }
+
+    function readConfig(el) {
+        var hours = parseFloat(el.getAttribute('data-season-hours'));
+        var offset = parseInt(el.getAttribute('data-offset'), 10);
+        return {
+            timeZone: el.getAttribute('data-timezone') || 'UTC',
+            offset: isNaN(offset) ? 0 : offset,
+            length: (isNaN(hours) || hours <= 0 ? 42 : hours) * 3600
+        };
+    }
+
+    function getState(cfg, now) {
+        var week = (secondsIntoWeek(now, cfg.timeZone) - cfg.offset + WEEK * 2) % WEEK;
+        var index = Math.floor(week / cfg.length) % SEASONS.length;
+        return { index: index, secondsLeft: (index + 1) * cfg.length - week };
+    }
+
+    /* Old pages only contain an empty #season-timer-container: give it the
+       same inner structure the template prints. */
+    function ensureStructure(el) {
+        if (el.querySelector('[data-part="clock"]')) {
             return;
         }
+        el.classList.add('season-box', 'season-timer');
+        el.innerHTML =
+            '<div class="season-timer__label">Current Season</div>' +
+            '<div class="season-timer__name" data-part="name"></div>' +
+            '<div class="season-timer__note" data-part="note"></div>' +
+            '<div class="season-timer__live">' +
+                '<div class="season-timer__small">Time Remaining</div>' +
+                '<div class="season-timer__clock" data-part="clock"></div>' +
+                '<div class="season-timer__small">Next Season</div>' +
+                '<div class="season-timer__next" data-part="next"></div>' +
+                '<div class="season-timer__small" data-part="local"></div>' +
+            '</div>';
+    }
 
-        root.querySelectorAll('a.new').forEach(function (link) {
-            if (link.dataset.missingFileFallback === 'true') {
-                return;
-            }
+    function setText(el, part, text) {
+        var node = el.querySelector('[data-part="' + part + '"]');
+        if (node && node.textContent !== text) {
+            node.textContent = text;
+        }
+    }
 
-            const missingFileTitle = getMissingFileTitle(link);
+    function render(el, now) {
+        var cfg = el._seasonConfig;
+        var state = getState(cfg, now);
+        var season = SEASONS[state.index];
+        var next = SEASONS[(state.index + 1) % SEASONS.length];
+        var changeAt = new Date(now.getTime() + state.secondsLeft * 1000);
 
-            if (!missingFileTitle) {
-                return;
-            }
+        SEASONS.forEach(function (s) {
+            el.classList.toggle('season-' + s.key, s === season);
+        });
+        setText(el, 'name', season.emoji + ' ' + season.label.toUpperCase() + ' ' + season.emoji);
+        setText(el, 'note', season.note);
+        setText(el, 'clock', formatDuration(state.secondsLeft));
+        setText(el, 'next', next.emoji + ' ' + next.label.toUpperCase());
+        setText(el, 'local', 'Changes ' + changeAt.toLocaleString(undefined, {
+            weekday: 'short', hour: '2-digit', minute: '2-digit'
+        }) + ' (your time)');
+    }
 
-            const image = document.createElement('img');
-
-            image.src = FALLBACK_SRC;
-            image.alt = 'Missing file';
-            image.title = missingFileTitle + ' has not been uploaded yet.';
-            image.loading = 'lazy';
-
-            image.style.width = FALLBACK_SIZE + 'px';
-            image.style.height = FALLBACK_SIZE + 'px';
-            image.style.maxWidth = '100%';
-            image.style.objectFit = 'contain';
-            image.style.display = 'block';
-            image.style.margin = '0 auto';
-            image.style.background = 'transparent';
-            image.style.border = 'none';
-            image.style.boxShadow = 'none';
-
-            link.textContent = '';
-            link.appendChild(image);
-
-            link.classList.remove('new');
-            link.classList.add('missing-file-fallback');
-            link.dataset.missingFileFallback = 'true';
-
-            link.style.display = 'inline-block';
-            link.style.background = 'transparent';
-            link.style.border = 'none';
-            link.style.boxShadow = 'none';
-            link.style.textDecoration = 'none';
-
-            link.setAttribute(
-                'aria-label',
-                missingFileTitle + ' has not been uploaded yet.'
-            );
+    function tick() {
+        var now = new Date();
+        timers = timers.filter(function (el) {
+            return document.body.contains(el);
+        });
+        timers.forEach(function (el) {
+            render(el, now);
         });
     }
 
-    mw.hook('wikipage.content').add(function ($content) {
-        const root = $content && $content[0]
-            ? $content[0]
-            : document;
+    function init($content) {
+        var root = ($content && $content[0]) || document;
+        var found = root.querySelectorAll('.season-timer, #season-timer-container');
+        Array.prototype.forEach.call(found, function (el) {
+            if (el._seasonConfig) {
+                return;
+            }
+            ensureStructure(el);
+            el._seasonConfig = readConfig(el);
+            el.classList.add('is-live');
+            timers.push(el);
+        });
+        if (timers.length) {
+            tick();
+            if (!ticking) {
+                ticking = true;
+                setInterval(tick, 1000);
+            }
+        }
+    }
 
-        replaceMissingFiles(root);
+    mw.hook('wikipage.content').add(init);
+})();
+
+/* ==========================================================================
+   2. MISSING FILE PLACEHOLDER
+   --------------------------------------------------------------------------
+   Red links to files that have not been uploaded yet are shown as the wiki's
+   "Missing File Icon" instead of red text (desktop only; styles in
+   Common.css → .missing-file-fallback).
+   ========================================================================== */
+(function () {
+    'use strict';
+
+    var FALLBACK_FILE = 'Missing File Icon.png';
+    var FALLBACK_SIZE = 120;
+    var FALLBACK_SRC = mw.util.getUrl('Special:Redirect/file/' + FALLBACK_FILE, {
+        width: FALLBACK_SIZE,
+        height: FALLBACK_SIZE
     });
+
+    function getMissingFileTitle(link) {
+        var titleMatch = (link.getAttribute('title') || '')
+            .match(/^((?:File|Image):.+?)(?:\s+\(.*\))?$/i);
+        if (titleMatch) {
+            return titleMatch[1];
+        }
+        var href = link.getAttribute('href') || '';
+        try {
+            href = decodeURIComponent(href);
+        } catch (e) { /* keep the raw href */ }
+        var hrefMatch = href.match(/(?:title=|\/wiki\/)((?:File|Image):[^?&#]+)/i);
+        return hrefMatch ? hrefMatch[1].replace(/_/g, ' ') : null;
+    }
+
+    function replaceMissingFiles($content) {
+        var root = ($content && $content[0]) || document;
+        Array.prototype.forEach.call(root.querySelectorAll('a.new'), function (link) {
+            var fileTitle = getMissingFileTitle(link);
+            if (!fileTitle || link.getAttribute('data-missing-file-fallback')) {
+                return;
+            }
+            var message = fileTitle + ' has not been uploaded yet.';
+            var image = document.createElement('img');
+            image.src = FALLBACK_SRC;
+            image.alt = 'Missing file';
+            image.title = message;
+            image.loading = 'lazy';
+            image.width = FALLBACK_SIZE;
+            image.height = FALLBACK_SIZE;
+
+            link.textContent = '';
+            link.appendChild(image);
+            link.classList.remove('new');
+            link.classList.add('missing-file-fallback');
+            link.setAttribute('data-missing-file-fallback', 'true');
+            link.setAttribute('aria-label', message);
+        });
+    }
+
+    mw.hook('wikipage.content').add(replaceMissingFiles);
 })();

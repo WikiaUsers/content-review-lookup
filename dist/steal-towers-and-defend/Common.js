@@ -1,4 +1,4 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Append to MediaWiki:Common.js. No <script> tags. */
 (function () {
   'use strict';
 
@@ -23,6 +23,21 @@
       coefficient: left.coefficient * right.coefficient,
       exponent: left.exponent + right.exponent
     };
+  }
+
+  function divide(left, right) {
+    var places = Math.max(0, 32 + right.coefficient.toString().length - left.coefficient.toString().length);
+    return {
+      coefficient: left.coefficient * (BigInt(10) ** BigInt(places)) / right.coefficient,
+      exponent: left.exponent - right.exponent - BigInt(places)
+    };
+  }
+
+  function displayDps(value) {
+    var formatted = display(value);
+    var numeric = Number(formatted.replace(/,/g, ''));
+    return Number.isFinite(numeric) && numeric >= 0.01 && numeric < 1e21
+      ? numeric.toLocaleString('en-US', { maximumFractionDigits: 2 }) : formatted;
   }
 
   function compare(left, right) {
@@ -86,8 +101,109 @@
     return integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + fraction;
   }
 
+function normalizeUnitStats(root) {
+  var damage = root.querySelector('.std-unit-damage');
+  if (!damage) { return; }
+  var card = damage.closest('.std-unit-stat-card');
+  if (!card || card.getAttribute('data-stat-order-ready') === '4') { return; }
+  var rows = Array.from(card.children).filter(function (node) { return node.classList.contains('std-unit-stat-row'); });
+  var damageRow = damage.closest('.std-unit-stat-row');
+  var label = function (row) { return row.firstElementChild.textContent.trim(); };
+  var makeRow = function (name, value) {
+    var row = document.createElement('div'); row.className = 'std-unit-stat-row';
+    var title = document.createElement('span'); title.textContent = name;
+    var strong = document.createElement('strong'); strong.textContent = value;
+    row.appendChild(title); row.appendChild(strong); return row;
+  };
+  damageRow.firstElementChild.textContent = 'Damage';
+  rows = rows.filter(function (row) {
+    if (label(row) === 'Damage basis') { row.remove(); return false; }
+    return true;
+  });
+  // Keep additional damage as small text in the Damage value, never as its own row.
+  rows.filter(function (row) { return label(row) === 'Additional damage'; }).forEach(function (row) {
+    var value = damageRow.lastElementChild;
+    if (value === damage) {
+      var main = document.createElement('span'); main.className = 'std-unit-damage'; main.textContent = damage.textContent;
+      value.classList.remove('std-unit-damage'); value.textContent = ''; value.appendChild(main); damage = main;
+    }
+    var annotation = document.createElement('span'); annotation.className = 'std-unit-damage-effects';
+    while (row.lastElementChild.firstChild) { annotation.appendChild(row.lastElementChild.firstChild); }
+    value.appendChild(annotation); row.remove();
+  });
+  var spaRow = rows.find(function (row) { return /^SPA\b|^Seconds per (?:attack|burst)$/i.test(label(row)); });
+  var singleUse = !!card.querySelector('.std-unit-dps[style*="display:none"]') && rows.some(function (row) { return label(row) === 'Cooldown'; });
+  if (singleUse) { root.setAttribute('data-dps-unavailable', 'true'); }
+  if (!spaRow) { spaRow = makeRow('SPA', singleUse ? 'Not applicable' : (root.getAttribute('data-spa') || 'Awaiting SPA')); }
+  spaRow.firstElementChild.textContent = 'SPA';
+  var rangeNode = card.querySelector('.std-unit-range');
+  var rangeRow = rangeNode ? rangeNode.closest('.std-unit-stat-row') : makeRow('Range', 'Not applicable');
+  rangeRow.firstElementChild.textContent = 'Range';
+  var dpsNode = card.querySelector('.std-unit-dps');
+  var dpsRow = dpsNode && dpsNode.closest('.std-unit-stat-row');
+  if (!dpsRow) {
+    if (dpsNode) { dpsNode.remove(); }
+    dpsRow = makeRow('DPS', singleUse ? 'Not applicable' : 'Awaiting SPA');
+    dpsRow.classList.add('std-unit-dps-row'); dpsRow.lastElementChild.className = 'std-unit-dps';
+  }
+  dpsRow.firstElementChild.textContent = 'DPS';
+  var remaining = rows.filter(function (row) { return row !== damageRow && row !== spaRow && row !== rangeRow && row !== dpsRow && label(row) !== 'Additional damage'; });
+  var ticks = function (row) { return /per tick/i.test(label(row)); };
+  var tickRows = remaining.filter(ticks);
+  var otherRows = remaining.filter(function (row) { return !ticks(row); });
+  [damageRow, spaRow, rangeRow].concat(tickRows, otherRows, [dpsRow]).forEach(function (row) { card.appendChild(row); });
+  card.setAttribute('data-stat-order-ready', '4');
+}
+
   var nextId = 0;
+  function initializeVerity(root) {
+    var controls = root.querySelector('.std-verity-controls');
+    if (!controls || controls.getAttribute('data-calculator-ready')) { return; }
+    nextId += 1;
+    var label = document.createElement('label');
+    label.className = 'std-unit-input-label';
+    label.htmlFor = 'std-verity-dps-' + nextId;
+    label.textContent = 'Best area-damage tower DPS';
+    var wrap = document.createElement('div');
+    wrap.className = 'std-unit-input-wrap';
+    var input = document.createElement('input');
+    input.id = label.htmlFor;
+    input.type = 'text';
+    input.placeholder = 'Enter DPS';
+    input.autocomplete = 'off';
+    wrap.appendChild(input);
+    controls.appendChild(label);
+    controls.appendChild(wrap);
+    controls.setAttribute('data-calculator-ready', 'true');
+    var status = root.querySelector('.std-unit-status');
+    input.addEventListener('input', function () {
+      try {
+        if (!input.value.trim()) {
+          root.querySelector('.std-verity-damage').textContent = 'Depends on best AoE tower';
+          root.querySelector('.std-verity-dps').textContent = 'Depends on best AoE tower';
+          status.textContent = '';
+          input.setAttribute('aria-invalid', 'false');
+          return;
+        }
+        var best = decimal(input.value.replace(/,/g, ''));
+        var dps = multiply(best, decimal('1.2'));
+        root.querySelector('.std-verity-dps').textContent = displayDps(dps);
+        // Damage inferred from DPS and the screenshot's rounded SPA.
+        root.querySelector('.std-verity-damage').textContent = '≈' + display(multiply(dps, decimal(root.getAttribute('data-spa') || '1.67')));
+        status.textContent = '';
+        input.setAttribute('aria-invalid', 'false');
+      } catch (error) {
+        root.querySelector('.std-verity-damage').textContent = '—';
+        root.querySelector('.std-verity-dps').textContent = '—';
+        input.setAttribute('aria-invalid', 'true');
+        status.textContent = 'Enter a valid positive DPS.';
+      }
+    });
+  }
+
   function initialize(root) {
+    if (root.getAttribute('data-verity') === 'true') { initializeVerity(root); return; }
+    normalizeUnitStats(root);
     var controls = root.querySelector('.std-unit-controls');
     if (!controls || controls.getAttribute('data-calculator-ready')) { return; }
     var status = root.querySelector('.std-unit-status');
@@ -96,7 +212,19 @@
       return;
     }
     var baseDamage = decimal(root.getAttribute('data-base-damage'));
-    var baseDps = decimal(root.getAttribute('data-base-dps'));
+    // Confirmed in-game DPS takes precedence over division by rounded SPA.
+    var confirmedDpsText = root.getAttribute('data-confirmed-base-dps');
+    // Skeletal Dragon: use the game-confirmed DPS even on older page sources.
+    // Its initial-hit Damage / SPA excludes the damaging zone.
+    var unitTitle = root.querySelector('.std-unit-summary-title');
+    var unitHeading = root.querySelector('.std-unit-card-heading');
+    var unitName = unitTitle ? unitTitle.textContent.trim() : '';
+    var isSkeletalDragon = unitName === 'Skeletal Dragon' ||
+      (!unitName && unitHeading && /^Skeletal Dragon Stats/.test(unitHeading.textContent.trim()));
+    if (isSkeletalDragon) { confirmedDpsText = '487500000'; }
+    var confirmedBaseDps = confirmedDpsText ? decimal(confirmedDpsText) : null;
+    var intervalText = root.getAttribute('data-spa');
+    var attackInterval = intervalText ? decimal(intervalText) : null;
     var baseRange = Number(root.getAttribute('data-base-range'));
     // 0.15 is inferred from the supplied 100x Silver Dog screenshot (28.96).
     var rangePerDouble = Number(root.getAttribute('data-size-range-per-double') || '0.15');
@@ -175,7 +303,9 @@
       towerUpUses = (towerUpUses + 1) % 3;
       update();
     });
-    controls.appendChild(towerUpButton);
+    if (root.getAttribute('data-tower-up-disabled') !== 'true') {
+      controls.appendChild(towerUpButton);
+    }
     controls.setAttribute('data-calculator-ready', 'true');
 
     function update() {
@@ -190,7 +320,14 @@
         var towerUp = decimal(String(towerUpFactor));
         var trait = decimal(String(selectedVariant.factor));
         var damage = display(multiply(multiply(multiply(baseDamage, towerUp), sizeBonus), trait));
-        var dps = display(multiply(multiply(multiply(baseDps, towerUp), sizeBonus), trait));
+        var scaledDamage = multiply(multiply(multiply(baseDamage, towerUp), sizeBonus), trait);
+        var dps = root.getAttribute('data-dps-unavailable') === 'true' ? 'Not applicable' : confirmedBaseDps
+          ? displayDps(multiply(multiply(multiply(confirmedBaseDps, towerUp), sizeBonus), trait))
+          : (attackInterval ? displayDps(divide(scaledDamage, attackInterval)) : 'Awaiting SPA');
+        root.querySelectorAll('[data-base-effect-damage]').forEach(function (node) {
+          var baseEffect = decimal(node.getAttribute('data-base-effect-damage'));
+          node.textContent = display(multiply(multiply(multiply(baseEffect, towerUp), sizeBonus), trait));
+        });
         var baseSize = compare(multiplier, decimal('1')) === 0;
         var sizeDigits = multiplier.coefficient.toString();
         var leading = sizeDigits.slice(0, 16);
@@ -207,6 +344,9 @@
         input.setAttribute('aria-invalid', 'false');
         status.textContent = '';
       } catch (error) {
+        root.querySelectorAll('[data-base-effect-damage]').forEach(function (node) {
+          node.textContent = '—';
+        });
         input.setAttribute('aria-invalid', 'true');
         root.querySelector('.std-unit-damage').textContent = '—';
         root.querySelector('.std-unit-dps').textContent = '—';
@@ -233,4 +373,59 @@
   } else {
     scan();
   }
+}());
+
+/* Encyclopedia selection: append to Common.js, without script tags. */
+(function () {
+  'use strict';
+  function initialize(section) {
+    if (section.classList.contains('ni-ready')) { return; }
+    var grid = section.querySelector('.ni-grid');
+    if (!grid) { return; }
+    var cards = Array.prototype.filter.call(grid.children, function (node) { return node.classList.contains('ni-item'); });
+    if (!cards.length) { return; }
+    var detail = document.createElement('div');
+    detail.className = 'ni-detail';
+    detail.setAttribute('role', 'region');
+    detail.setAttribute('aria-label', 'Selected enemy details');
+    detail.setAttribute('aria-live', 'polite');
+    var buttons = [];
+    function select(index) {
+      cards.forEach(function (card, i) {
+        card.classList.toggle('ni-selected', i === index);
+        buttons[i].setAttribute('aria-pressed', i === index ? 'true' : 'false');
+      });
+      var clone = cards[index].cloneNode(true);
+      var clonedButton = clone.querySelector('.ni-select');
+      if (clonedButton) {
+        var head = document.createElement('div');
+        head.className = 'ni-card-head';
+        while (clonedButton.firstChild) { head.appendChild(clonedButton.firstChild); }
+        clonedButton.parentNode.replaceChild(head, clonedButton);
+      }
+      while (detail.firstChild) { detail.removeChild(detail.firstChild); }
+      while (clone.firstChild) { detail.appendChild(clone.firstChild); }
+    }
+    cards.forEach(function (card, i) {
+      var head = card.querySelector('.ni-card-head');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'ni-card-head ni-select';
+      var name = card.querySelector('.ni-name');
+      button.setAttribute('aria-label', 'View ' + (name ? name.textContent.trim() : 'enemy') + ' details');
+      while (head.firstChild) { button.appendChild(head.firstChild); }
+      head.parentNode.replaceChild(button, head);
+      buttons.push(button);
+      button.addEventListener('click', function () { select(i); });
+    });
+    section.appendChild(detail);
+    select(0);
+    section.classList.add('ni-ready');
+  }
+  function scan() {
+    document.querySelectorAll('.ni-encyclopedia .ni-section').forEach(initialize);
+  }
+  if (typeof mw !== 'undefined' && mw.hook) { mw.hook('wikipage.content').add(scan); }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', scan); }
+  else { scan(); }
 }());

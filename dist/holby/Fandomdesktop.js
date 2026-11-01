@@ -196,7 +196,7 @@ window.UserTagsJS = {
 	modules: {
 		autoconfirmed: true,
 		custom: {
-			'Lythronax': ['botowner', 'jshelper', 'csshelper', 'templatehelper', 'luahelper'],
+			'Lythronax': ['botowner', 'jshelper', 'csshelper', 'templatehelper', 'luahelper', 'dplhelper'],
 			
 			// Former staff
 			'Solar Dragon-fduser': ['founder', 'formerstaff'],
@@ -250,10 +250,11 @@ window.UserTagsJS = {
 		founder: { u: 'Holby Wiki Founder', title: 'This user founded the Holby Wiki.' },
 		
 		// Signifiers
-		jshelper: { u: 'JavaScript', order: 100, title: 'This user is adapt at JavaScript.' },
-		csshelper: { u: 'CSS', order: 101, title: 'This user is adapt at CSS.' },
-		templatehelper: { u: 'Templates', order: 102, title: 'This user is adapt at writing and maintaining wiki templates.' },
-		luahelper: { u: 'Lua', order: 103, title: 'This user is adapt at writing and maintaining Lua modules.' },
+		jshelper: { u: 'JavaScript', order: 100, title: 'This user is adept at JavaScript.' },
+		csshelper: { u: 'CSS', order: 101, title: 'This user is adept at CSS.' },
+		templatehelper: { u: 'Templates', order: 102, title: 'This user is adept at writing and maintaining wiki templates.' },
+		luahelper: { u: 'Lua', order: 103, title: 'This user is adept at writing and maintaining Lua modules.' },
+		dplhelper: { u: 'DPL', order: 103, title: 'This user is adept at writing and maintaining templates using DynamicPageList.' },
 	}
 };
 

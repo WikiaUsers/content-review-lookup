@@ -4,7 +4,7 @@
 'use strict';
 /**
  * A class for interacting with MediaWiki's Action API.
- * @version 1.0.0
+ * @version 1.1.0
  */
 class Api {
 	/**
@@ -26,7 +26,7 @@ class Api {
 	 * @param {handler} [errorHandler] - A handler for rejected API requests.
 	 */
 	constructor(site, handler, errorHandler) {
-		this.version = '1.0.0';
+		this.version = '1.1.0';
 		this._site = site ? `https://${site}/api.php?origin=*` :
 			`${mw.util.wikiScript('api')}?`;
 		this._handler = handler;
@@ -64,14 +64,22 @@ class Api {
 	 * @private
 	 */
 	_urlSearchParams(params) {
-		return new URLSearchParams({
+		params = {
 			action: 'query',
 			errorformat: 'plaintext',
 			...params,
 			formatversion: 2,
 			format: 'json',
 			maxlag: 3,
-		});
+		};
+		for (let key in params) {
+			if (Array.isArray(params[key])) {
+				params[key] = params[key].join('|');
+			} else if (params[key] === false || params[key] === undefined) {
+				delete params[key];
+			}
+		}
+		return new URLSearchParams(params);
 	}
 
 	/**

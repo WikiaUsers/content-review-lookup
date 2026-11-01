@@ -1,8 +1,8 @@
 /*************
 Title        :   StackableBlockRecommendationSystem.js
-Description  :   Provides recommendation to viewer (i.e., moderator and above) on Special:Block page for stackable block described in Wiki Policies.
+Description  :   Provides recommendation to viewer (i.e., moderator and above) on Special:Block page for stackable block described in Rules and Guidelines.
 Author       :   Vastmine1029
-Version      :   0.1.1a
+Version      :   0.1.2a
 *************/
 mw.loader.using('mediawiki.api', function() {
 	// Relevant MediaWiki Variables
@@ -35,7 +35,7 @@ mw.loader.using('mediawiki.api', function() {
 	}).done(function (data) {
 	  var events = data.query.logevents;
 	  var blockLogDict = {};
-	  var stackableBlockDurations = ["24 hours", "1 day", "3 days", "1 week"];  // Block Durations for Stackable Blocks (Minor Policy Violations)
+	  var stackableBlockDurations = ["60 minutes", "1 hour", "2 days", "1 week"];  // Block Durations for Stackable Blocks (Minor Policy Violations)
 	  var outstandingBlockCount = 0;
 	  events.forEach(function (event) {
 		blockLogDict[event.logid] = {
@@ -64,8 +64,8 @@ mw.loader.using('mediawiki.api', function() {
 				const minutes = Math.floor((diff - days * 86400 - hours * 3600) / 60);
 				const secs = diff - days * 86400 - hours * 3600 - minutes * 60;
 				
-				// Determine if block is within the outstanding block definition (30 days)
-				if (days < 30) {
+				// Determine if block is within the outstanding block definition (14 days)
+				if (days < 14) {
 					outstandingBlockCount++;
 				}
 			}
@@ -74,13 +74,13 @@ mw.loader.using('mediawiki.api', function() {
 			// Determine block recommednation based on number of determined user outstading blocks
 			var stackableBlockRecommendation = "";
 			if (outstandingBlockCount == 0) {
-				stackableBlockRecommendation = "1 day (Warning)";
+				stackableBlockRecommendation = "1 hour (Warning)";
 			}
 			else if (outstandingBlockCount == 1) {
-				stackableBlockRecommendation = "1 day (2nd Warning)";
+				stackableBlockRecommendation = "1 hour (2nd Warning)";
 			}
 			else if (outstandingBlockCount == 2) {
-				stackableBlockRecommendation = "3 days";
+				stackableBlockRecommendation = "2 days (Final Warning)";
 			}
 			else {
 				stackableBlockRecommendation = "1 week";
@@ -103,7 +103,7 @@ mw.loader.using('mediawiki.api', function() {
 			
 			// HTML content in the Box
 			var textParagraph = document.createElement("p"); // create a text
-			textParagraph.innerHTML = '<b><span style="font-size: 12pt">Stackable Block Recommendation:</span></b><blockquote>Block <i>' + config.wgRelevantUserName + '</i> for <b><u>' + stackableBlockRecommendation + '</u></b>.</blockquote><i><b><u>Note:</u></b> This recommendation only applies if ' + config.wgRelevantUserName + ' violated a minor policy. For major policy violations, follow the "<a href="https://furina2009.fandom.com/wiki/Furina2009_wiki:Wiki_Policies">Standalone Block</a>" section in the <a href=https://furina2009.fandom.com/wiki/Furina2009_wiki:Wiki_Policies">Wiki Policies</a>. <b>Verify that the block duration selection is accurate before proceeding with block.</b> See the "<a href="https://furina2009.fandom.com/wiki/Furina2009_wiki:Wiki_Policies">Punishment System</a>" section in the <a href=https://furina2009.fandom.com/wiki/Furina2009_wiki:Wiki_Policies">Wiki Policies</a>. for official guidelines or consult with an administrator through the Staff Discord Communications.</i>';
+			textParagraph.innerHTML = '<b><span style="font-size: 12pt">Stackable Block Recommendation:</span></b><blockquote>Block <i>' + config.wgRelevantUserName + '</i> for <b><u>' + stackableBlockRecommendation + '</u></b>.</blockquote><i><b><u>Note:</u></b> This recommendation only applies if ' + config.wgRelevantUserName + ' violated a minor policy. For major policy violations, follow the "<a href="https://adoptme.fandom.com/wiki/Adopt_Me!_Wiki:Rules_and_Guidelines#Standalone_Block">Standalone Block</a>" section in the <a href="https://adoptme.fandom.com/wiki/Adopt_Me!_Wiki:Rules_and_Guidelines">Rules and Guidelines</a>. <b>Verify that the block duration selection is accurate before proceeding with block.</b> See the "<a href="https://adoptme.fandom.com/wiki/Adopt_Me!_Wiki:Rules_and_Guidelines#Punishment_System">Punishment System</a>" section in the <a href="https://adoptme.fandom.com/wiki/Adopt_Me!_Wiki:Rules_and_Guidelines">Rules and Guidelines</a> for official guidelines or consult with an administrator through the Staff Discord Communications.</i>';
 			Box.appendChild(textParagraph);
 			
 			// Prepend HTML display before the specified class.

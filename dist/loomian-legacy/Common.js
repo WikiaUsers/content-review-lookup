@@ -6,6 +6,16 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
+// Tooltip configuration
+window.tooltips_list = [{
+	classname: 'loomian-tooltip',
+	parse: '{' + '{LoomianTooltip|<#name#>|<#form#>}}',
+}, {
+	classname: 'ability-tooltip',
+	parse: '{' + '{AbilityTooltip|<#name#>}}',
+}];
+
+
 // Configuration for Mass Managament Tools
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 window.MassRedirectGroups = ['sysop', 'content-moderator'];

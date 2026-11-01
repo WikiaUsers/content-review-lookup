@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:RatedReasons.js?action=raw&ctype=text/javascript");

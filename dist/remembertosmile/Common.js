@@ -203,7 +203,15 @@ function adjustGlow(slideshow) {
 
 /* Item System */
 (function () {
-    function selectItem(root, panel, item) {
+    function slug(text) {
+        return text.trim().replace(/\s+/g, '_');
+    }
+
+    function setHash(text) {
+        history.replaceState(null, '', '#' + encodeURIComponent(slug(text)));
+    }
+
+    function selectItem(root, panel, item, updateUrl) {
         panel.querySelectorAll('.item-system-item').forEach(function (i) {
             i.classList.remove('selected');
         });
@@ -217,6 +225,37 @@ function adjustGlow(slideshow) {
             if (src) {
                 contentBox.innerHTML = src.innerHTML;
             }
+        }
+
+        if (updateUrl && item.getAttribute('data-tooltip')) {
+            setHash(item.getAttribute('data-tooltip'));
+        }
+    }
+
+    function openFromHash(root) {
+        var wanted = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+        if (!wanted) return;
+
+        var items = Array.prototype.slice.call(root.querySelectorAll('.item-system-item[data-tooltip]'));
+        var item = items.filter(function (i) {
+            return slug(i.getAttribute('data-tooltip')).toLowerCase() === wanted;
+        })[0];
+
+        var tabs = Array.prototype.slice.call(root.querySelectorAll('.item-system-tab'));
+        var tab;
+        if (item) {
+            var panelName = item.closest('.item-system-panel').getAttribute('data-panel');
+            tab = root.querySelector('.item-system-tab[data-tab="' + panelName + '"]');
+        } else {
+            tab = tabs.filter(function (t) {
+                return slug(t.textContent).toLowerCase() === wanted;
+            })[0];
+        }
+        if (!tab) return;
+
+        if (!tab.classList.contains('active')) tab.click();
+        if (item) {
+            selectItem(root, item.closest('.item-system-panel'), item, true);
         }
     }
 
@@ -235,7 +274,7 @@ function adjustGlow(slideshow) {
                 target.classList.add('active');
 
                 var current = target.querySelector('.item-system-item.selected') || target.querySelector('.item-system-item');
-                if (current) selectItem(root, target, current);
+                if (current) selectItem(root, target, current, true);
             });
         });
 
@@ -243,7 +282,7 @@ function adjustGlow(slideshow) {
             var items = panel.querySelectorAll('.item-system-item');
             items.forEach(function (item) {
                 item.addEventListener('click', function () {
-                    selectItem(root, panel, item);
+                    selectItem(root, panel, item, true);
                 });
             });
         });
@@ -251,8 +290,13 @@ function adjustGlow(slideshow) {
         var activePanel = root.querySelector('.item-system-panel.active') || panels[0];
         if (activePanel) {
             var initial = activePanel.querySelector('.item-system-item.selected') || activePanel.querySelector('.item-system-item');
-            if (initial) selectItem(root, activePanel, initial);
+            if (initial) selectItem(root, activePanel, initial, false);
         }
+
+        openFromHash(root);
+        window.addEventListener('hashchange', function () {
+            openFromHash(root);
+        });
     }
 
     var tooltip;

@@ -38,3 +38,6 @@ window.reportArticleConfig = {
   title: 'Artigo relatado: $1',             // optional; $1 → page name (plain text)
   body:  'Um artigo foi relatado: $1\n\nPor favor analise.' // optional; $1 → link to the page
 };
+window.RatingSystemConfig = {
+	disable: 'dislikes'
+};

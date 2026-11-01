@@ -99,3 +99,143 @@ $(function() {
     });
   }
 });
+
+// ITEMBOX
+mw.hook('wikipage.content').add(function ($content) {
+  var RARITIES = ['Common', 'Rare', 'Epic', 'Legendary', 'Mythical', 'Aesir'];
+
+  $content.find('.ga-item-grid').each(function () {
+    var grid = this;
+    if (grid.getAttribute('data-ga-ib-ready')) return;
+    grid.setAttribute('data-ga-ib-ready', '1');
+
+    var bar = document.createElement('div');
+    bar.className = 'ga-ib-bar';
+
+    var search = document.createElement('input');
+    search.type = 'text';
+    search.className = 'ga-ib-search';
+    search.placeholder = 'Search Items';
+    search.setAttribute('aria-label', 'Search Items');
+
+    var filter = document.createElement('select');
+    filter.className = 'ga-ib-filter';
+    filter.setAttribute('aria-label', 'Filter');
+    ['All'].concat(RARITIES).forEach(function (label) {
+      var opt = document.createElement('option');
+      opt.value = label.toLowerCase();
+      opt.textContent = label;
+      filter.appendChild(opt);
+    });
+
+    bar.appendChild(search);
+    bar.appendChild(filter);
+    grid.parentNode.insertBefore(bar, grid);
+
+    function apply() {
+      var query = search.value.trim().toLowerCase();
+      var rarity = filter.value;
+      $(grid).find('.ga-ib').each(function () {
+        var nameEl = this.querySelector('.ga-ib-name');
+        var name = nameEl ? nameEl.textContent.toLowerCase() : '';
+        var m = /(?:^|\s)(common|rare|epic|legendary|mythical|aesir)-border(?:\s|$)/.exec(this.className);
+        var itemRarity = m ? m[1] : '';
+        var show = (!query || name.indexOf(query) !== -1) &&
+                   (rarity === 'all' || itemRarity === rarity);
+        this.style.display = show ? '' : 'none';
+      });
+    }
+
+    search.addEventListener('input', apply);
+    filter.addEventListener('change', apply);
+  });
+
+  $content.find('.ga-ib .tr-img-inner a').removeAttr('title');
+});
+
+(function () {
+  if (window.gaItemBoxPopups) return;
+  window.gaItemBoxPopups = true;
+  document.documentElement.classList.add('ga-ib-js');
+
+  var GAP = 8;
+  var HIDE_DELAY = 120;
+  var layer = null;
+  var shown = null;
+  var hideTimer = null;
+
+  function itemOf(node) {
+    return node && node.closest ? node.closest('.ga-ib') : null;
+  }
+
+  function place() {
+    if (!shown || !layer || !layer.firstChild) return;
+    if (!document.body.contains(shown)) { hide(); return; }
+    var pop = layer.firstChild;
+    var rect = shown.getBoundingClientRect();
+    var vw = document.documentElement.clientWidth;
+    var vh = document.documentElement.clientHeight;
+    var w = pop.offsetWidth;
+    var h = pop.offsetHeight;
+    var flip = rect.right + w > vw - GAP;
+    var left = flip ? rect.left - w : rect.right;
+    var top = rect.top + rect.height / 2 - h / 2;
+    pop.classList.toggle('is-flip', flip);
+    pop.style.left = Math.max(GAP, left) + 'px';
+    pop.style.top = Math.max(GAP, Math.min(top, vh - h - GAP)) + 'px';
+  }
+
+  function show(item) {
+    var source = item.querySelector('.ga-ib-pop');
+    if (!source) return;
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.className = 'ga-ib-layer';
+      layer.addEventListener('mouseenter', function () { clearTimeout(hideTimer); });
+      layer.addEventListener('mouseleave', scheduleHide);
+      document.body.appendChild(layer);
+    }
+    clearTimeout(hideTimer);
+    shown = item;
+    layer.innerHTML = '';
+    layer.appendChild(source.cloneNode(true));
+    place();
+  }
+
+  function hide() {
+    if (layer) layer.innerHTML = '';
+    shown = null;
+  }
+
+  function scheduleHide() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hide, HIDE_DELAY);
+  }
+
+  document.addEventListener('mouseover', function (e) {
+    var item = itemOf(e.target);
+    if (!item) return;
+    if (item === shown) { clearTimeout(hideTimer); return; }
+    show(item);
+  });
+
+  document.addEventListener('mouseout', function (e) {
+    var item = itemOf(e.target);
+    if (!item || item !== shown) return;
+    if (itemOf(e.relatedTarget) === item) return;
+    scheduleHide();
+  });
+
+  document.addEventListener('focusin', function (e) {
+    var item = itemOf(e.target);
+    if (item) show(item);
+  });
+
+  document.addEventListener('focusout', function (e) {
+    var item = itemOf(e.target);
+    if (item && item === shown) scheduleHide();
+  });
+
+  window.addEventListener('scroll', place, { capture: true, passive: true });
+  window.addEventListener('resize', place);
+})();

@@ -1,0 +1,1 @@
+mw.loader.load( '/index.php?title=MediaWiki:ImageSlider/code.js&action=raw&ctype=text/javascript' );

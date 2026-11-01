@@ -4,8 +4,8 @@ mw.hook('wikipage.collapsibleContent').add(collapsibleContent => {
 	collapsibleContent.each((index, element) => {
 		const autoCollapse = collapsibleContent.length >= autoCollapseThreshold && $(element).hasClass('autocollapse');
 		const innerCollapse = $(element).hasClass('innercollapse') && $(element).parents('.outercollapse').length;
-		
-		if (autoCollapse || innerCollapse){
+
+		if (autoCollapse || innerCollapse) {
 			$(element).data('mw-collapsible').collapse();
 		}
 	});

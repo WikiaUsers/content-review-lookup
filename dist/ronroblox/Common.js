@@ -77,7 +77,7 @@ UserTagsJS.modules.custom = {
 	'SuperGlitchyTheo': ['head-of-wiki','bureaucrat'],
 	'3meraldKv': ['founder'],
 	// Administrators
-    'Standoffiish': ['administrator','wiki-contributor'],
+    'Standoffiish': ['administrator','wiki-contributor','former-bureau'],
 	'Dxrknrg': ['administrator','wiki-contributor'],
 	'Antiverta': ['administrator','wiki-contributor'],
 	
@@ -98,8 +98,8 @@ UserTagsJS.modules.custom = {
 	
 	// Wiki Contributors
 	'Cipherusxzy': ['wiki-contributor'],
-	'HaHaBlah': ['wiki-contributor'],
-	'RyeThePies': ['wiki-contributor'],
+	'HaHaBlah': ['wiki-contributor','former-admin'],
+	'RyeThePies': ['wiki-contributor','former-cm'],
 	'Thethingiforgor': ['wiki-contributor'],
 	'Pro10boy2228': ['wiki-contributor'],
 	'Blazarvortexd': ['wiki-contributor'],
@@ -118,6 +118,7 @@ UserTagsJS.modules.custom = {
 	'HolyMoa': ['former-bureau'],
 	
 	// Retired Administrators
+	'Yxrae': ['former-admin'],
 	'GrayshaValor': ['former-admin'],
 	'Man with no name or life': ['former-admin'],
 	'RedElephantKing': ['former-admin'],
@@ -131,7 +132,7 @@ UserTagsJS.modules.custom = {
 	// Retired Dual Moderators
 	'Awsomemysticcheese': ['former-dual'],
 	'YesIHaveAnAccount': ['former-dual'],
-	'Alvin': ['former-dual'],
+	'Superduperwhoopershmooperregularperson': ['former-dual'],
 	'Polloloko0o': ['former-dual'],
 	
 	// Retired Content Moderators
@@ -199,5 +200,6 @@ importArticle({
     articles: [
         'MediaWiki:ModifierCalculator.js',
         'MediaWiki:Pseudo3d.js',
+        'MediaWiki:HomepageUpdates.js',
 	]
 });

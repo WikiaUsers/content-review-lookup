@@ -51,7 +51,7 @@ function handleCatfruitFilter() {
 		format: 'json',
 		formatversion: '2',
 	    prop: 'revisions',
-	    titles: 'MediaWiki:Custom-DataSource/cat_id_to_wikilink.json',
+	    titles: 'MediaWiki:Custom-DataSource/cat_names.json',
 	    rvprop: 'content',
 	    rvslots: 'main'
 	};
@@ -448,7 +448,7 @@ function handleCatfruitFilter() {
 	function buildTooltip(cro) {
 		$("#result_detail").html("");
 		// link to the Cat's page
-		let wikilink = data_link.hasOwnProperty(cro) ? data_link[cro] : "#";
+		let wikilink = data_link.hasOwnProperty(cro) ? data_link[cro][0] : "#";
 		// TF
 		let text = buildTooltipDetail(wikilink, cro, data_text_tf, data_tf, true);
 		// UF

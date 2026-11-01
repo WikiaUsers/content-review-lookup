@@ -499,3 +499,49 @@
         init($content && $content[0]);
     });
 })();
+
+/* === LCTD carousel (объявления) === */
+(function () {
+	function initLctdCarousel() {
+		var root = document.getElementById( 'lctd-announce' );
+		if ( !root || root.dataset.lctdInit ) return;
+		root.dataset.lctdInit = '1';
+
+		var slides = root.querySelectorAll( '.lctd-carousel-slide' );
+		var dots = root.querySelectorAll( '.lctd-carousel-dot' );
+		var prevBtn = root.querySelector( '.lctd-carousel-prev' );
+		var nextBtn = root.querySelector( '.lctd-carousel-next' );
+		if ( !slides.length ) return;
+
+		var current = 0;
+		var timer = null;
+		var AUTOPLAY_MS = 6000;
+
+		function show( index ) {
+			index = ( index + slides.length ) % slides.length;
+			slides.forEach( function ( s, i ) { s.classList.toggle( 'is-active', i === index ); } );
+			dots.forEach( function ( d, i ) { d.classList.toggle( 'is-active', i === index ); } );
+			current = index;
+		}
+		function next() { show( current + 1 ); }
+		function prev() { show( current - 1 ); }
+		function startAutoplay() { stopAutoplay(); timer = setInterval( next, AUTOPLAY_MS ); }
+		function stopAutoplay() { if ( timer ) { clearInterval( timer ); timer = null; } }
+
+		if ( nextBtn ) nextBtn.addEventListener( 'click', function () { next(); startAutoplay(); } );
+		if ( prevBtn ) prevBtn.addEventListener( 'click', function () { prev(); startAutoplay(); } );
+		dots.forEach( function ( d, i ) { d.addEventListener( 'click', function () { show( i ); startAutoplay(); } ); } );
+
+		root.addEventListener( 'mouseenter', stopAutoplay );
+		root.addEventListener( 'mouseleave', startAutoplay );
+
+		show( 0 );
+		startAutoplay();
+	}
+
+	if ( window.mw && mw.hook ) {
+		mw.hook( 'wikipage.content' ).add( initLctdCarousel );
+	} else {
+		document.addEventListener( 'DOMContentLoaded', initLctdCarousel );
+	}
+})();

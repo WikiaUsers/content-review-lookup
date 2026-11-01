@@ -3,7 +3,6 @@
  * JSON in use: [[w:c:dev:MediaWiki:Custom-AutocompleteCSS/presets.json]]
  * Database template: [[w:c:dev:User:0.Phixley/AutocompleteCSS.json]]
  * This script provides autocomplete suggestions while users are writing CSS, allowing for easy completion.
- * The document is still being written.
  */
 
 (() => {

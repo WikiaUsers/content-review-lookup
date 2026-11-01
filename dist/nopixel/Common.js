@@ -127,3 +127,100 @@ if (mw.config.get('wgUserGroups').indexOf('sysop') !== -1) {
 		]
 	});
 }
+
+/* Main page: Trending Characters */
+(function () {
+	if (!mw.config.get('wgIsMainPage')) return;
+	var CACHE_KEY = 'np-mp-trending';
+	var CACHE_HOURS = 3;
+	var COUNT = 12;
+	var CATEGORY = 'Category:5.0/Characters';
+	var SKIP = ['Dixie Renee'];
+
+	function render($box, items) {
+		if (items.length < COUNT) return;
+		$box.empty();
+		items.slice(0, COUNT).forEach(function (item) {
+			var href = mw.util.getUrl(item.title);
+			$('<div>').addClass('mp-portrait').append(
+				$('<a>').attr({ href: href, title: item.title }).append(
+					$('<img>').attr({ src: item.thumb, alt: item.title, loading: 'lazy', width: 130, height: 130 })
+				),
+				$('<div>').addClass('mp-portrait__name').append(
+					$('<a>').attr({ href: href, title: item.title }).text(item.title)
+				)
+			).appendTo($box);
+		});
+	}
+
+	function readCache() {
+		try {
+			var cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+			if (cached && Date.now() - cached.time < CACHE_HOURS * 3600000) return cached.items;
+		} catch (e) {}
+		return null;
+	}
+
+	function writeCache(items) {
+		try {
+			localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), items: items }));
+		} catch (e) {}
+	}
+
+	/* Anonymous API calls take at most 50 titles, so ask in chunks. */
+	function inCategory(titles) {
+		var api = new mw.Api();
+		var chunks = [];
+		for (var i = 0; i < titles.length; i += 50) chunks.push(titles.slice(i, i + 50));
+		return $.when.apply($, chunks.map(function (chunk) {
+			return api.get({
+				action: 'query',
+				titles: chunk.join('|'),
+				prop: 'categories',
+				clcategories: CATEGORY,
+				cllimit: 'max',
+				formatversion: 2
+			});
+		})).then(function () {
+			var results = chunks.length === 1 ? [arguments] : Array.prototype.slice.call(arguments);
+			var found = {};
+			results.forEach(function (res) {
+				res[0].query.pages.forEach(function (page) {
+					if (page.categories) found[page.title] = true;
+				});
+			});
+			return found;
+		});
+	}
+
+	mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
+		$(function () {
+			var $box = $('#mp-trending');
+			if (!$box.length) return;
+			var cached = readCache();
+			if (cached) return render($box, cached);
+			$.getJSON(mw.util.wikiScript('wikia'), {
+				controller: 'RecirculationApi',
+				method: 'getPopularPages',
+				limit: 100,
+				format: 'json'
+			}).then(function (pages) {
+				pages = pages.filter(function (page) {
+					return page.thumbnail && SKIP.indexOf(page.title) === -1;
+				});
+				return inCategory(pages.map(function (page) { return page.title; })).then(function (found) {
+					var items = pages.filter(function (page) {
+						return found[page.title];
+					}).slice(0, COUNT).map(function (page) {
+						return {
+							title: page.title,
+							thumb: page.thumbnail.replace(/\/revision\/latest/, '/revision/latest/scale-to-width-down/400')
+						};
+					});
+					if (items.length >= COUNT) writeCache(items);
+					render($box, items);
+				});
+			});
+		});
+	});
+})();

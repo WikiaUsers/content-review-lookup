@@ -59,7 +59,6 @@ api[config.wgContentLanguage].get({
 				$('<thead>').append($('<tr>').append(
 					$('<th>').text('User'),
 					$('<th>').text('Groups'),
-					$('<th>').text('Edit count'),
 					$('<th>').text('Last edit'),
 					$('<th>').text('Language')
 				)),
@@ -69,9 +68,8 @@ api[config.wgContentLanguage].get({
 				promises.push(lang, api[lang].get({
 					list: 'allusers',
 					augroup: validGroups,
-					auprop: ['groups', 'editcount'],
+					auprop: 'groups',
 					aulimit: 'max',
-					auwitheditsonly: true,
 				}));
 			});
 			Promise.all(promises).then(results => {
@@ -123,7 +121,6 @@ api[config.wgContentLanguage].get({
 						}).append(
 							$('<td>').append(link(`User:${user.name}`, user.name, lang)),
 							$('<td>').text(validGroups.filter(group => user.groups.indexOf(group) !== -1).join(', ')),
-							$('<td>').text(user.editcount),
 							$('<td>', {
 								'data-sort-value': lastEdit.timestamp,
 								class: status,

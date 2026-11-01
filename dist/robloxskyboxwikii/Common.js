@@ -12,7 +12,8 @@ window.UserTagsJS = {
 		threadmoderator: { u:'Sentinel'},
 		votecheck: { u:'Votechecker' },
 		specialist: { u:'Specialist' },
-		reviewer: { u:'Rating Reviewer' }
+		reviewer: { u:'Rating Reviewer' },
+		former: { u:'Former Nexus' }
 		
     },
     modules: {
@@ -27,15 +28,15 @@ window.UserTagsJS = {
             'bot'
         ],
         custom: {
-            '!Davin012613': ['catalyst'],
-			'MarkoRBLXDEV': ['nexus'],
+            '!Davin012613': ['paragon'],
+			'MarkoRBLXDEV': ['former'],
 			'JacksonGreenwayy': ['nullsysop'],
 			'TestNPC': ['nullsysop'],
 			'KoolKidBlues3': ['nullsysop'],
 			'PyroSyntax': ['paragon'],
 			'Mrfloorisalava': ['paragon'],
 			'Skyprotogen': ['logoist'],
-			'Owentheverycool': ['logoist'],
+			'Owentheverycool': ['logoist', 'moderator'],
 			'TheAntelligenceVerse': ['logoist'],
 			'HatmanGD': ['moderator', 'votecheck'],
 			'.higiggles04': ['moderator'],
@@ -46,7 +47,10 @@ window.UserTagsJS = {
 			'OhMyGodTheAgonyLolLolLol': ['specialist'],
 			'ErrVlialik': ['specialist', 'rollback'],
 			'37litersofgallium': ['rollback'],
-			'REAL ThePurpleSystem': ['rollback']
+			'REAL ThePurpleSystem': ['rollback'],
+			'SpiritbloxTP': ['logoist', 'threadmoderator'],
+			'Bubba_TheDeveloper': ['catalyst'],
+			'MysteriousMunci': ['moderator'],
         }
     }
 };
@@ -58,6 +62,6 @@ UserTagsJS.modules.metafilter = {
 };
 UserTagsJS.modules.userfilter = {
 	'!Davin012613': ['vandestroyer', 'moderator', 'nexus', 'logoist', 'sysop', 'rollback'], // User is *never* inactive
-	'PyroSyntax': ['sysop'], // Remove the founder group
+	'PyroSyntax': ['sysop'],
 	'UserName 3': ['nonuser', 'newuser', 'inactive']
 };

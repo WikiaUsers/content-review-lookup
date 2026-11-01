@@ -161,6 +161,375 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 /* Fim do Texto Invertido */
 
+/* ==========================================================================
+   SUKUNA · TÉCNICAS — MediaWiki:Common.js (cole no FIM do arquivo)
+   Só age onde houver .sk-root. Sem bibliotecas.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var reduceMotion = !!(window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  function setup(root) {
+    if (root.getAttribute('data-sk-ready')) return;
+    root.setAttribute('data-sk-ready', '1');
+
+    var track = root.querySelector('.sk-track');
+    if (!track) return;
+
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.sk-slide'));
+    var seals = Array.prototype.slice.call(root.querySelectorAll('.sk-seal'));
+    var now = root.querySelector('.sk-now');
+    var fill = root.querySelector('.sk-progress-fill');
+    var last = slides.length - 1;
+    var current = -1;
+    var frame = 0;
+
+    function indexNow() {
+      var x = track.scrollLeft, best = 0, dist = Infinity;
+      for (var i = 0; i < slides.length; i++) {
+        var d = Math.abs(slides[i].offsetLeft - x);
+        if (d < dist) { dist = d; best = i; }
+      }
+      return best;
+    }
+
+    function paint() {
+      frame = 0;
+      var span = track.scrollWidth - track.clientWidth;
+      if (fill) {
+        fill.style.transform = 'scaleX(' + (span > 0 ? track.scrollLeft / span : 0).toFixed(4) + ')';
+      }
+      var idx = indexNow();
+      if (idx === current) return;
+      current = idx;
+      if (now) now.textContent = (idx < 9 ? '0' : '') + (idx + 1);
+      seals.forEach(function (seal, i) {
+        seal.classList.toggle('is-current', i === idx);
+      });
+    }
+
+    function queue() {
+      if (!frame) frame = requestAnimationFrame(paint);
+    }
+
+    function goTo(i) {
+      i = Math.max(0, Math.min(last, i));
+      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+
+    track.addEventListener('scroll', queue, { passive: true });
+
+    track.addEventListener('keydown', function (e) {
+      var k = e.key;
+      if (k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'Home' && k !== 'End') return;
+      e.preventDefault();
+      if (k === 'Home') goTo(0);
+      else if (k === 'End') goTo(last);
+      else goTo(indexNow() + (k === 'ArrowRight' ? 1 : -1));
+    });
+
+    root.addEventListener('click', function (e) {
+      var link = e.target.closest ? e.target.closest('a[href^="#sk-"]') : null;
+      if (!link) return;
+      var target = document.getElementById(link.getAttribute('href').slice(1));
+      var i = slides.indexOf(target);
+      if (i < 0) return;
+      e.preventDefault();
+      goTo(i);
+    });
+
+    window.addEventListener('resize', queue);
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        if (entries[entries.length - 1].isIntersecting) queue();
+      }).observe(root);
+    }
+
+    paint();
+  }
+
+  function init() {
+    var roots = document.querySelectorAll('.sk-root');
+    for (var i = 0; i < roots.length; i++) setup(roots[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  if (window.mw && mw.hook) mw.hook('wikipage.content').add(init);
+})();
+/* Fim TN Sukuna */
+
+/* ===== NIKOLA TESLA — raios elétricos (canvas) ===== */
+;(function () {
+  'use strict';
+  var SEL = '.tesla-eletrica';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function boot(root) {
+    var scope = (root && root.querySelectorAll) ? root : document;
+    var list = scope.querySelectorAll(SEL);
+    for (var i = 0; i < list.length; i++) start(list[i]);
+  }
+
+  function start(box) {
+    if (!box || box.dataset.teslaOn === '1') return;
+    box.dataset.teslaOn = '1';
+
+    var cv = document.createElement('canvas');
+    cv.className = 'tesla-raios';
+    cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:6;' +
+                       'pointer-events:none;mix-blend-mode:screen;';
+    box.appendChild(cv);
+    var ctx = cv.getContext('2d');
+    var W = 1, H = 1, dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      var r = box.getBoundingClientRect();
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    if (window.ResizeObserver) { new ResizeObserver(resize).observe(box); }
+    else window.addEventListener('resize', resize);
+
+    var bolts = [], sparks = [], flash = 0, last = performance.now(), nextBolt = 0;
+
+    function seg(x1, y1, x2, y2, d, pts) {
+      if (d < 4) { pts.push(x2, y2); return; }
+      var mx = (x1 + x2) / 2 + (Math.random() - 0.5) * d;
+      var my = (y1 + y2) / 2 + (Math.random() - 0.5) * d;
+      seg(x1, y1, mx, my, d / 2, pts); seg(mx, my, x2, y2, d / 2, pts);
+    }
+    function spawn() {
+      var cx = W / 2, cy = H * 0.46;
+      var a = Math.random() * Math.PI * 2, rad = Math.min(W, H) * (0.42 + Math.random() * 0.18);
+      var sx = cx + Math.cos(a) * rad, sy = cy + Math.sin(a) * rad;
+      var pts = [sx, sy];
+      seg(sx, sy, cx + (Math.random() - 0.5) * 44, cy + (Math.random() - 0.5) * 44,
+          Math.min(W, H) * 0.3, pts);
+      bolts.push({ pts: pts, life: 1, w: 1 + Math.random() * 2.2 });
+      for (var s = 0; s < 5; s++)
+        sparks.push({ x: cx, y: cy, vx: (Math.random() - 0.5) * 2.4,
+                      vy: -Math.random() * 2.6 - 0.4, life: 1 });
+    }
+    function drawBolt(b) {
+      ctx.save(); ctx.globalAlpha = Math.max(0, b.life);
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.shadowColor = '#00c6ff';
+      ctx.beginPath(); ctx.moveTo(b.pts[0], b.pts[1]);
+      for (var i = 2; i < b.pts.length; i += 2) ctx.lineTo(b.pts[i], b.pts[i + 1]);
+      ctx.strokeStyle = 'rgba(120,210,255,.5)'; ctx.lineWidth = b.w * 3; ctx.shadowBlur = 26; ctx.stroke();
+      ctx.strokeStyle = '#bfefff'; ctx.lineWidth = b.w; ctx.shadowBlur = 18; ctx.stroke();
+      ctx.restore();
+    }
+    function frame(now) {
+      if (box.dataset.teslaOn !== '1') return;
+      var dt = now - last; last = now;
+      ctx.clearRect(0, 0, W, H);
+      if (now > nextBolt) {
+        spawn(); if (Math.random() < 0.25) spawn();
+        nextBolt = now + 90 + Math.random() * 230;
+        if (Math.random() < 0.12) flash = 0.3;   // flash azul suave (sem strobe)
+      }
+      for (var i = bolts.length - 1; i >= 0; i--) {
+        var b = bolts[i]; b.life -= dt / 180;
+        if (b.life <= 0) { bolts.splice(i, 1); continue; } drawBolt(b);
+      }
+      ctx.save(); ctx.shadowColor = '#4fd2ff'; ctx.shadowBlur = 10;
+      for (var j = sparks.length - 1; j >= 0; j--) {
+        var p = sparks[j]; p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life -= dt / 700;
+        if (p.life <= 0) { sparks.splice(j, 1); continue; }
+        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = '#d6f3ff';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, 6.283); ctx.fill();
+      }
+      ctx.restore();
+      if (flash > 0) {
+        ctx.save(); ctx.globalAlpha = flash; ctx.fillStyle = 'rgba(80,180,255,1)';
+        ctx.fillRect(0, 0, W, H); ctx.restore();
+        flash -= dt / 260; if (flash < 0) flash = 0;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    if (reduce) {                 // acessibilidade: raios estáticos, sem animação
+      for (var k = 0; k < 4; k++) spawn();
+      bolts.forEach(drawBolt); return;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  if (window.mw && mw.hook) {
+    mw.hook('wikipage.content').add(function ($c) { boot($c && $c[0] ? $c[0] : document); });
+  } else if (document.readyState !== 'loading') { boot(document); }
+  else { document.addEventListener('DOMContentLoaded', function () { boot(document); }); }
+})();
+
+/* ===== TESLA — "É Magia? ...FOI CIÊNCIA!!" (v2: sincronia travada no áudio) ===== */
+;(function () {
+  'use strict';
+  var AUDIO = 'https://static.wikia.nocookie.net/animeverso/images/2/24/' +
+              'Tesla_No_Not_Non_Nein.mp3/revision/latest?cb=20261030142857&path-prefix=pt-br';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* tempos (ms) de cada "não" dentro do clipe — os raios seguem o relógio do áudio */
+  var BEATS = [
+    {t:120,  tx:'NO!',  p:'is-front'},
+    {t:920,  tx:'NOT',  p:'is-left'},
+    {t:1210, tx:'NON',  p:'is-mid'},
+    {t:1490, tx:'NEIN!',p:'is-right'},
+    {t:1990, tx:'NOT',  p:'is-left'},
+    {t:2240, tx:'NON',  p:'is-mid'},
+    {t:2580, tx:'NEIN!',p:'is-right'}
+  ];
+  var DUR = 3413;
+
+  /* --- áudio pré-carregado UMA vez, já no load da página (resolve o "clicar 2x") --- */
+  var au = null;
+  function ensureAudio(){
+    if(au) return au;
+    au = new Audio(); au.preload='auto'; au.src=AUDIO;
+    try{ au.load(); }catch(e){}
+    return au;
+  }
+
+  function boot(root){
+    var scope=(root&&root.querySelectorAll)?root:document;
+    var t=scope.querySelector('#tesla-magia, .tesla-magia');
+    if(!t||t.dataset.teslaOn==='1') return;
+    t.dataset.teslaOn='1';
+    ensureAudio();                              /* começa a baixar o mp3 agora */
+    /* re-aquece o decoder no primeiro hover/toque, sem tocar som */
+    t.addEventListener('pointerenter',function(){ try{au.load();}catch(e){} },{once:true});
+    t.addEventListener('click',function(){ run(); });
+  }
+
+  var running=false;
+  function run(){
+    if(running) return; running=true;
+    var a=ensureAudio();
+    try{ a.pause(); a.currentTime=0; }catch(e){}
+
+    var timers=[];
+    function after(ms,fn){ var id=setTimeout(fn,ms); timers.push(id); return id; }
+
+    /* --- overlay + camadas --- */
+    var ov=document.createElement('div'); ov.className='tesla-ov';
+    ov.innerHTML='<div class="tesla-grid"></div>'+
+      '<div class="tesla-holo h3"></div><div class="tesla-holo h2"></div>'+
+      '<div class="tesla-holo h1"></div>';
+    var cv=document.createElement('canvas'); cv.className='tesla-cv';
+    ov.appendChild(cv); document.body.appendChild(ov);
+    var ctx=cv.getContext('2d'), W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2);
+    function resize(){ W=innerWidth; H=innerHeight; cv.width=W*dpr; cv.height=H*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0); }
+    resize(); window.addEventListener('resize',resize);
+    requestAnimationFrame(function(){ ov.classList.add('on'); });
+
+    /* --- motor de raios --- */
+    var bolts=[], flash=0, last=performance.now(), raf, netIv=null;
+    function seg(x1,y1,x2,y2,d,pts){ if(d<5){pts.push(x2,y2);return;}
+      var mx=(x1+x2)/2+(Math.random()-.5)*d, my=(y1+y2)/2+(Math.random()-.5)*d;
+      seg(x1,y1,mx,my,d/2,pts); seg(mx,my,x2,y2,d/2,pts); }
+    function addBolt(x1,y1,x2,y2,w){ var p=[x1,y1];
+      seg(x1,y1,x2,y2,Math.min(W,H)*0.22,p); bolts.push({p:p,life:1,w:w||2}); }
+    function strikeTo(x,y,big){ addBolt(x+(Math.random()-.5)*W*.2,-20,x,y,big?3.4:2.2);
+      flash=Math.min(big?.32:.22,flash+(big?.22:.12)); }
+    function net(n){ for(var i=0;i<n;i++){ var A=Math.random()*6.283,B=Math.random()*6.283,r=Math.max(W,H);
+      addBolt(W/2+Math.cos(A)*r,H/2+Math.sin(A)*r,W/2+Math.cos(B)*r*.5,H/2+Math.sin(B)*r*.5,1.4+Math.random()*2);}
+      flash=Math.min(.3,flash+.18); }
+    function draw(b){ ctx.save(); ctx.globalAlpha=Math.max(0,b.life);
+      ctx.lineJoin='round'; ctx.lineCap='round'; ctx.shadowColor='#00c6ff';
+      ctx.beginPath(); ctx.moveTo(b.p[0],b.p[1]);
+      for(var i=2;i<b.p.length;i+=2)ctx.lineTo(b.p[i],b.p[i+1]);
+      ctx.strokeStyle='rgba(120,210,255,.5)'; ctx.lineWidth=b.w*3; ctx.shadowBlur=28; ctx.stroke();
+      ctx.strokeStyle='#cfeeff'; ctx.lineWidth=b.w; ctx.shadowBlur=18; ctx.stroke(); ctx.restore(); }
+
+    function posOf(cls){ if(cls==='is-front')return[W*.5,H*.4];
+      if(cls==='is-left')return[W*.24,H*.5]; if(cls==='is-mid')return[W*.5,H*.6]; return[W*.76,H*.5]; }
+    function word(tx,cls){ var el=document.createElement('div');
+      el.className='tesla-word '+cls+' pop'; el.textContent=tx; ov.appendChild(el);
+      var xy=posOf(cls); strikeTo(xy[0],xy[1],cls==='is-front');
+      if(!reduce)for(var k=0;k<2;k++)strikeTo(xy[0],xy[1],false);
+      after(650,function(){ el.classList.add('out'); after(350,function(){ el.remove(); }); }); }
+
+    /* --- relógio-mestre: segue o currentTime do áudio (ou um timer, se o som for bloqueado) --- */
+    var fired=BEATS.map(function(){return false;});
+    var mode='wait', t0=0, done=false, started=false;
+    function clockMs(){
+      if(mode==='audio') return (a.currentTime||0)*1000;
+      if(mode==='timer') return performance.now()-t0;
+      return 0;                                   /* 'wait' = áudio ainda não começou -> raios esperam */
+    }
+    function tick(){
+      var cur=clockMs();
+      for(var i=0;i<BEATS.length;i++){ if(!fired[i] && cur>=BEATS[i].t){ fired[i]=true; word(BEATS[i].tx,BEATS[i].p); } }
+      if(!done && started && (a.ended || cur>=DUR-40)) finale();
+    }
+    function loop(now){ var dt=now-last; last=now; ctx.clearRect(0,0,W,H);
+      for(var i=bolts.length-1;i>=0;i--){ var b=bolts[i]; b.life-=dt/170;
+        if(b.life<=0){bolts.splice(i,1);continue;} draw(b); }
+      if(flash>0){ ctx.save(); ctx.globalAlpha=flash; ctx.fillStyle='rgba(90,180,255,1)';
+        ctx.fillRect(0,0,W,H); ctx.restore(); flash-=dt/300; if(flash<0)flash=0; }
+      tick(); raf=requestAnimationFrame(loop); }
+    raf=requestAnimationFrame(loop);
+
+    function onPlaying(){ mode='audio'; started=true; }
+    function onTime(){ tick(); }                  /* catch-up se a aba ficou em segundo plano */
+    a.addEventListener('playing',onPlaying);
+    a.addEventListener('timeupdate',onTime);
+    a.addEventListener('ended',finale);
+
+    /* pré-roll curto só pros hologramas entrarem; depois dá play (áudio já está em cache) */
+    after(600,function(){
+      try{ a.currentTime=0; }catch(e){}
+      var pr=a.play();
+      if(pr&&pr.then){ pr.then(function(){ started=true; })
+        .catch(function(){ mode='timer'; t0=performance.now(); started=true; }); }  /* som bloqueado -> timeline visual */
+      else { started=true; }
+    });
+
+    function finale(){ if(done)return; done=true;
+      var l1=document.createElement('div'); l1.className='tesla-line';
+      l1.textContent='O que eu fiz nesse perfil...'; ov.appendChild(l1);
+      requestAnimationFrame(function(){ l1.classList.add('show'); });
+      after(1400,function(){ l1.classList.remove('show'); after(550,function(){ l1.remove();
+        var l2=document.createElement('div'); l2.className='tesla-line';
+        l2.innerHTML='<span class="tesla-foi">Foi</span><span class="tesla-ciencia">CIÊNCIA!!</span>';
+        ov.appendChild(l2); l2.classList.add('show');
+        var foi=l2.querySelector('.tesla-foi'), ci=l2.querySelector('.tesla-ciencia');
+        requestAnimationFrame(function(){ foi.classList.add('show'); });
+        after(300,function(){ ci.classList.add('boom'); net(reduce?6:18); });
+        if(!reduce){ var n=0; netIv=setInterval(function(){ net(5); if(++n>18){clearInterval(netIv);netIv=null;} },90); }
+        after(2100,end);
+      }); });
+    }
+    function end(){ ov.classList.remove('on');
+      after(850,function(){
+        timers.forEach(clearTimeout); timers=[]; if(netIv)clearInterval(netIv);
+        cancelAnimationFrame(raf); window.removeEventListener('resize',resize);
+        a.removeEventListener('playing',onPlaying); a.removeEventListener('timeupdate',onTime);
+        a.removeEventListener('ended',finale);
+        try{ a.pause(); a.currentTime=0; }catch(e){}
+        ov.remove(); running=false;
+      });
+    }
+    function onKey(e){ if(e.key==='Escape'){ document.removeEventListener('keydown',onKey);
+      try{a.pause();}catch(x){} done=true; end(); } }
+    document.addEventListener('keydown',onKey);
+  }
+
+  if(window.mw&&mw.hook){ mw.hook('wikipage.content').add(function($c){ boot($c&&$c[0]?$c[0]:document); }); }
+  else if(document.readyState!=='loading'){ boot(document); }
+  else document.addEventListener('DOMContentLoaded',function(){ boot(document); });
+})();
+/* Fim Nikola Tesla */
+
 /* ============================================================
    NADARE · 崩界 (Hōkai) — Colapso da Realidade
    JS escopado + EPÍLOGO (v2 com transição de luz e colapso)
@@ -3493,3 +3862,30 @@ if (document.readyState === 'loading') {
 
 
 }(jQuery, window.mw));
+
+/* Boosted Gear - cinemática só uma vez por visitante */
+mw.hook('wikipage.content').add(function () {
+  var el = document.getElementById('bgi-full');
+  if (!el || el.className.indexOf('bgi-play') !== -1) return;
+ 
+  var CHAVE = 'bgi-visto-v1';   /* mude para v2, v3... para a cinemática tocar de novo para todos */
+  var jaViu = false;
+  try { jaViu = localStorage.getItem(CHAVE) === '1'; } catch (e) {}
+  if (/[?&]bgi=1(&|$)/.test(location.search)) jaViu = false;   /* adicione ?bgi=1 ao link para rever */
+ 
+  if (jaViu) { el.parentNode.removeChild(el); return; }
+ 
+  var img = el.querySelector('img');
+  var iniciou = false;
+  function tocar() {
+    if (iniciou) return;
+    iniciou = true;
+    try { localStorage.setItem(CHAVE, '1'); } catch (e) {}
+    el.className += ' bgi-play';
+  }
+  if (!img || (img.complete && img.naturalWidth > 0 && !img.getAttribute('data-src'))) { tocar(); return; }
+  img.addEventListener('load', function () { if (img.naturalWidth > 1) tocar(); });
+  var real = img.getAttribute('data-src');
+  if (real) img.src = real;          /* carrega o GIF antes de tocar, para ele começar junto com as legendas */
+  setTimeout(tocar, 6000);           /* segurança: se o GIF demorar, toca mesmo assim */
+});

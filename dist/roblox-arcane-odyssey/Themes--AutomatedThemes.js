@@ -112,7 +112,7 @@ $(function () {
 		}
 		refreshButton();
 		btn.onclick = () => {
-			if (disabled) {
+			if (isThemeDisabled()) {
 				localStorage.removeItem('themeDisabled');
 				applyTheme(theme);
 			} else {

@@ -299,23 +299,6 @@ mw.loader.using(["mediawiki.api"]).then(function () {
     }
 })();
 
-mw.hook('wikipage.content').add(function($content) {
-    $content.find('.autoplay-audio-trigger').each(function() {
-        var url = $(this).data('audio-url');
-        if (url && !$(this).data('audio-played')) {
-            $(this).data('audio-played', true);
-            var audio = new Audio(url);
-            
-            audio.play().catch(function() {
-                $(document).one('click keydown', function() {
-                    audio.play();
-                });
-            });
-        }
-    });
-});
-
-
 window.spoilerTags = {
     unspoil: false
 };

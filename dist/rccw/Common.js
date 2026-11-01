@@ -1,3 +1,7 @@
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: true}
+];
+
 /* Any JavaScript here will be loaded for all users on every page load. 
 window.quizName = "Zeke Quiz";
 window.resultsTextArray = [ 

@@ -414,3 +414,48 @@ mw.hook('wikipage.content').add(function ($content) {
 	window.addEventListener('resize', onScroll);
 	mw.hook('wikipage.content').add(prepare);
 })();
+
+(function () {
+  'use strict';
+  var PAGE_SIZE = 6;
+
+  function norm(value) {
+    return String(value == null ? '' : value)
+      .normalize('NFKC')
+      .toLocaleLowerCase('ru')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/ё/g, 'е')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function el(tag, className, textValue) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (typeof textValue === 'string') node.textContent = textValue;
+    return node;
+  }
+
+  function initQuotes(list) {
+    if (list.__tntQuotesReady) return;
+    list.__tntQuotesReady = true;
+    var quotes = Array.from(list.querySelectorAll('.tnt-quote'));
+    if (quotes.length <= PAGE_SIZE) return;
+    var shown = PAGE_SIZE;
+    var more = el('button', 'tnt-q-more');
+    more.type = 'button';
+    more.setAttribute('aria-label', 'Показать дополнительные цитаты');
+    function redraw() {
+      quotes.forEach(function (quote, i) {
+        quote.classList.toggle('tnt-q-hidden', i >= shown);
+      });
+      var rest = quotes.length - shown;
+      more.textContent = rest > 0 ? 'Показать ещё цитаты (' + rest + ')' : 'Все цитаты показаны';
+      more.hidden = rest <= 0;
+      more.style.display = rest <= 0 ? 'none' : '';
+    }
+    more.addEventListener('click', function () {
+      shown = Math.min(shown + PAGE_SIZE, quotes.length);
+      redraw();
+    });
+    list.appendChild(more);

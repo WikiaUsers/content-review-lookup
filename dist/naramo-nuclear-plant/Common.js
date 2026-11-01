@@ -8,12 +8,12 @@ window.mbIndefStyle = 'color: #ff0000; opacity: 0.7; font-style: italic; text-de
 window.mbTempStyle = 'opacity: 0.7; font-style: italic; font-weight: 300; letter-spacing: 0.8px; text-decoration: line-through';
 window.mbPartialStyle = 'opacity: 0.7; font-style: italic; font-weight: 300; letter-spacing: 0.8px';
 
-window.mbTooltip = 'blocked by $2 for $1 with the reason: "$3" ($4 ago)';
+window.mbTooltip = 'blocked by $2 with the reason: "$3" ($4 ago).';
 
 	// ReportArticle
 window.reportArticleConfig = {
 	group: ['sysop', 'content-moderator'],
-	namespaces: [0, 1, 6, 7, 500],
+	namespaces: [0, 1, 6, 7, 112, 500],
 };
 
 window.dev = window.dev || {};

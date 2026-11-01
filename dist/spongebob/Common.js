@@ -351,13 +351,10 @@ window.MessageWallUserTags = {
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
         'SpongeTron_D': 'Administrator'
         
-        'AndromedaMapping1': 'Assistant • Discussion Moderator',
+        'AndromedaMapping1': 'Administrator',
 		'SpongeBot678': 'Assistant',
 		
-		'SPONGEBOBSUPERFANINFINITY': 'Rollback',
-                'Madtendo': 'Rollback • Discussion Moderator',
-		
-        'LarryBoy_fan': 'Discussion Moderator',
+        'Madtendo': 'Rollback • Discussion Moderator',
     }
 };
 

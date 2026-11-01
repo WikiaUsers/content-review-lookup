@@ -1,149 +1,112 @@
 mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
+    'use strict';
 
-    if (mw.config.get('wgPageName') !== 'Project:RatingsLeaderboard') {
-        return;
+    var leaderboardPage = 'Project:RatingsLeaderboard';
+    var ratingsPage = 'Project:Ratings';
+    var containerId = 'ejt-ratings-leaderboard';
+
+    function getPageUrl(title) {
+        return mw.util.getUrl(title);
     }
 
-    mw.hook('wikipage.content').add(function (content) {
+    function parseRatings(content) {
+        var scores = {};
 
-        if (document.getElementById('ejt-ratings-leaderboard')) {
+        content.split(/\r?\n/).forEach(function (line) {
+            var parts = line.split('|').map(function (part) {
+                return part.trim();
+            });
+
+            if (parts.length < 3 || parts[0] === 'RatingReason' || !parts[0]) {
+                return;
+            }
+
+            var pageName = parts[0];
+            var voterData = parts[1];
+            var score = 0;
+
+            if (/^[+-]?\d+$/.test(parts[2])) {
+                score = parseInt(parts[2], 10);
+            } else {
+                voterData.split(',').forEach(function (entry) {
+                    var match = entry.trim().match(/^[^:]+:\s*([+-]?\d+)\s*$/);
+
+                    if (match) {
+                        score += parseInt(match[1], 10);
+                    }
+                });
+            }
+
+            if (!scores[pageName]) {
+                scores[pageName] = 0;
+            }
+
+            scores[pageName] = score;
+        });
+
+        return scores;
+    }
+
+    function renderLeaderboard(scores) {
+        var container = document.getElementById(containerId);
+
+        if (!container) {
             return;
         }
 
-        const ratingsPage = 'Project:Ratings';
-        const leaderboardLimit = 30;
-        const api = new mw.Api();
+        container.textContent = '';
 
-        if (!document.getElementById('ejt-ratings-leaderboard-style')) {
+        var heading = document.createElement('h2');
+        heading.textContent = 'Page Ratings Leaderboard';
+        container.appendChild(heading);
 
-            const style = document.createElement('style');
+        var pages = Object.keys(scores).map(function (page) {
+            return {
+                title: page,
+                score: scores[page]
+            };
+        });
 
-            style.id = 'ejt-ratings-leaderboard-style';
+        pages.sort(function (a, b) {
+            return b.score - a.score || a.title.localeCompare(b.title);
+        });
 
-            style.textContent = `
-                #ejt-ratings-leaderboard {
-                    width: 100%;
-                    max-width: 800px;
-                    margin: 20px auto;
-                    font-family: 'Rubik', sans-serif;
-                }
-
-                .ejt-leaderboard-title {
-                    background: #222;
-                    color: #fff;
-                    padding: 14px 18px;
-                    font-size: 24px;
-                    font-weight: bold;
-                    text-align: center;
-                    border-radius: 8px 8px 0 0;
-                }
-
-                .ejt-leaderboard-entry {
-                    display: flex;
-                    align-items: center;
-                    min-height: 52px;
-                    padding: 8px 14px;
-                    box-sizing: border-box;
-                    background: #fff;
-                    border-bottom: 1px solid #ddd;
-                }
-
-                .ejt-leaderboard-entry:last-child {
-                    border-radius: 0 0 8px 8px;
-                }
-
-                .ejt-leaderboard-rank {
-                    width: 50px;
-                    flex-shrink: 0;
-                    text-align: center;
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-
-                .ejt-leaderboard-page {
-                    flex: 1;
-                    padding: 0 12px;
-                    font-size: 15px;
-                    font-weight: bold;
-                    overflow-wrap: anywhere;
-                }
-
-                .ejt-leaderboard-page a {
-                    color: inherit;
-                    text-decoration: none;
-                }
-
-                .ejt-leaderboard-page a:hover {
-                    text-decoration: underline;
-                }
-
-                .ejt-leaderboard-score {
-                    width: 70px;
-                    flex-shrink: 0;
-                    text-align: right;
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-
-                .ejt-positive-score {
-                    color: #28a745;
-                }
-
-                .ejt-negative-score {
-                    color: #dc3545;
-                }
-
-                .ejt-zero-score {
-                    color: #777;
-                }
-
-                .ejt-leaderboard-loading {
-                    padding: 20px;
-                    text-align: center;
-                    background: #f1f1f1;
-                    color: #777;
-                    border-radius: 0 0 8px 8px;
-                }
-
-                .ejt-leaderboard-empty {
-                    padding: 25px;
-                    text-align: center;
-                    background: #f1f1f1;
-                    color: #777;
-                    border-radius: 0 0 8px 8px;
-                }
-
-                .ejt-rank-1 {
-                    font-size: 22px;
-                }
-
-                .ejt-rank-2 {
-                    font-size: 21px;
-                }
-
-                .ejt-rank-3 {
-                    font-size: 20px;
-                }
-            `;
-
-            document.head.appendChild(style);
+        if (!pages.length) {
+            container.appendChild(document.createTextNode('No ratings found.'));
+            return;
         }
 
-        const container = document.createElement('div');
+        var list = document.createElement('ol');
 
-        container.id = 'ejt-ratings-leaderboard';
+        pages.slice(0, 30).forEach(function (page) {
+            var item = document.createElement('li');
+            var link = document.createElement('a');
+            var score = document.createElement('span');
 
-        container.innerHTML = `
-            <div class="ejt-leaderboard-title">
-                Page Ratings Leaderboard
-            </div>
+            link.href = getPageUrl(page.title);
+            link.textContent = page.title;
 
-            <div class="ejt-leaderboard-loading">
-                Loading ratings...
-            </div>
-        `;
+            score.textContent = ' ' + (page.score > 0 ? '+' : '') + page.score;
+            score.className = 'ejt-leaderboard-score';
 
-        content.prepend(container);
+            item.appendChild(link);
+            item.appendChild(score);
+            list.appendChild(item);
+        });
+
+        container.appendChild(list);
+    }
+
+    function loadLeaderboard() {
+        var container = document.getElementById(containerId);
+
+        if (!container) {
+            return;
+        }
+
+        container.textContent = 'Loading ratings...';
+
+        var api = new mw.Api();
 
         api.get({
             action: 'query',
@@ -152,186 +115,46 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             rvprop: 'content',
             rvslots: 'main',
             formatversion: 2
-        }).done(function (data) {
+        }).then(function (data) {
+            var pages = data.query && data.query.pages;
+            var page = pages && pages[0];
+            var content = page && page.revisions &&
+                page.revisions[0] &&
+                page.revisions[0].slots &&
+                page.revisions[0].slots.main &&
+                page.revisions[0].slots.main.content;
 
-            let contentText = '';
-
-            try {
-
-                const pages = data.query.pages;
-
-                if (
-                    pages &&
-                    pages.length &&
-                    pages[0].revisions &&
-                    pages[0].revisions.length
-                ) {
-
-                    const revision = pages[0].revisions[0];
-
-                    if (
-                        revision.slots &&
-                        revision.slots.main
-                    ) {
-                        contentText =
-                            revision.slots.main.content || '';
-                    } else {
-                        contentText =
-                            revision.content || '';
-                    }
-                }
-
-            } catch (error) {
-                contentText = '';
+            if (typeof content !== 'string') {
+                container.textContent = 'Unable to load the ratings ledger.';
+                return;
             }
 
-            const pages = [];
-
-            contentText.split(/\r?\n/).forEach(function (line) {
-
-                const cleanLine = line
-                    .replace(/<p>/g, '')
-                    .replace(/<\/p>/g, '')
-                    .trim();
-
-                if (!cleanLine || !cleanLine.includes('|')) {
-                    return;
-                }
-
-                const parts = cleanLine.split('|');
-
-                if (parts.length < 3) {
-                    return;
-                }
-
-                const pageName = parts[0].trim();
-
-                const score = parseInt(
-                    parts[2].trim(),
-                    10
-                );
-
-                if (!pageName || isNaN(score)) {
-                    return;
-                }
-
-                pages.push({
-                    name: pageName,
-                    score: score
-                });
-            });
-
-            pages.sort(function (a, b) {
-
-                if (b.score !== a.score) {
-                    return b.score - a.score;
-                }
-
-                return a.name.localeCompare(b.name);
-            });
-
-            const topPages = pages.slice(
-                0,
-                leaderboardLimit
-            );
-
-            let html = `
-                <div class="ejt-leaderboard-title">
-                    Page Ratings Leaderboard
-                </div>
-            `;
-
-            if (topPages.length === 0) {
-
-                html += `
-                    <div class="ejt-leaderboard-empty">
-                        No ratings yet.
-                    </div>
-                `;
-
-            } else {
-
-                topPages.forEach(function (entry, index) {
-
-                    const rank = index + 1;
-
-                    let scoreClass = 'ejt-zero-score';
-
-                    if (entry.score > 0) {
-                        scoreClass = 'ejt-positive-score';
-                    }
-
-                    if (entry.score < 0) {
-                        scoreClass = 'ejt-negative-score';
-                    }
-
-                    const formattedScore =
-                        entry.score > 0
-                            ? '+' + entry.score
-                            : String(entry.score);
-
-                    const pageUrl =
-                        mw.util.getUrl(entry.name);
-
-                    let rankClass = '';
-
-                    if (rank === 1) {
-                        rankClass = 'ejt-rank-1';
-                    }
-
-                    if (rank === 2) {
-                        rankClass = 'ejt-rank-2';
-                    }
-
-                    if (rank === 3) {
-                        rankClass = 'ejt-rank-3';
-                    }
-
-                    html += `
-                        <div class="ejt-leaderboard-entry">
-
-                            <div class="ejt-leaderboard-rank ${rankClass}">
-                                ${rank}
-                            </div>
-
-                            <div class="ejt-leaderboard-page">
-                                <a href="${pageUrl}">
-                                    ${escapeHtml(entry.name)}
-                                </a>
-                            </div>
-
-                            <div class="ejt-leaderboard-score ${scoreClass}">
-                                ${formattedScore}
-                            </div>
-
-                        </div>
-                    `;
-                });
-            }
-
-            container.innerHTML = html;
-
-        }).fail(function () {
-
-            container.innerHTML = `
-                <div class="ejt-leaderboard-title">
-                    Page Ratings Leaderboard
-                </div>
-
-                <div class="ejt-leaderboard-empty">
-                    Could not load ratings.
-                </div>
-            `;
+            renderLeaderboard(parseRatings(content));
+        }).catch(function () {
+            container.textContent = 'Error loading ratings. Please try again later.';
         });
-    });
-
-    function escapeHtml(text) {
-
-        const element = document.createElement('div');
-
-        element.textContent = text;
-
-        return element.innerHTML;
     }
 
+    if (mw.config.get('wgPageName') !== leaderboardPage.replace(/ /g, '_')) {
+        return;
+    }
+
+    mw.hook('wikipage.content').add(function () {
+        if (document.getElementById(containerId)) {
+            loadLeaderboard();
+            return;
+        }
+
+        var target = document.querySelector('.mw-parser-output');
+
+        if (!target) {
+            return;
+        }
+
+        var container = document.createElement('div');
+        container.id = containerId;
+        target.appendChild(container);
+
+        loadLeaderboard();
+    });
 });

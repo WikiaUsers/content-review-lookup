@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-	if (!$('#archivist-table').length){
+	if (!$('#archivist-table').length) {
 		return;
 	}
 
@@ -33,7 +33,7 @@
 
 	$('#archivist-table tr:not(:first-child)').each((index, row) => editDate(row, 'newer', '4'));
 
-	function editDate(row, dir, i, first, last){
+	function editDate(row, dir, i, first) {
 		api.get({
 			action: 'query',
 			list: 'usercontribs',
@@ -54,7 +54,7 @@
 				)
 			).data('sort-value', new Date(timestamp).getTime());
 
-			if (dir === 'newer'){
+			if (dir === 'newer') {
 				editDate(row, 'older', '5', new Date(timestamp).getTime());
 			} else {
 				userInfo(row, first, new Date(timestamp).getTime());
@@ -62,7 +62,7 @@
 		});
 	}
 
-	function userInfo(row, first, last){
+	function userInfo(row, first, last) {
 		api.get({
 			action: 'query',
 			list: 'users',

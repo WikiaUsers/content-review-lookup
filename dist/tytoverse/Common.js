@@ -3,27 +3,6 @@
 
 mw.hook('wikipage.content').add(function() {
 	
-	// [[T:CSS]]
-	$('div.t-css').each(function() {
-		const css = mw.util.addCSS(this.dataset.css);
-		$(css.ownerNode).addClass('t-css');
-		Object.assign(css.ownerNode.dataset, this.dataset);
-		delete css.ownerNode.dataset.css;
-		
-		const wait = this.dataset.wait;
-		const portal = this.dataset.portal;
-		
-		if (wait != 'none') {
-			css.disabled = true;
-			var timer = setTimeout(() => css.disabled = false, wait);
-		}
-		
-		if (portal != 'none') {
-			css.disabled = true;
-			$('.t-css-portal-' + portal).click(() => css.disabled = !css.disabled);
-		}
-	});
-	
 	// Automatically preview CSS pages; uses T:CSS class to also be affected by ThemeToggler
 	if (mw.config.get('wgPageName').includes('.css')) { 
 		fetch(`/wiki/${mw.config.get('wgPageName')}?action=raw`)

@@ -14,7 +14,7 @@ mw.loader.using([
 	const addTopicButton = $('#ca-addsection');
 	const noEasyTalk = wrongNamespace && !addTopicButton.length;
 
-	if (window.EasyTalkLoaded || noEasyTalk){
+	if (window.EasyTalkLoaded || noEasyTalk) {
 		return;
 	}
 
@@ -83,7 +83,7 @@ mw.loader.using([
 	let msg;
 	let newTopicToolAvailable = true;
 
-	if (newTalkPage || newSection){
+	if (newTalkPage || newSection) {
 		$('#editform').css('display', 'none');
 	}
 
@@ -105,10 +105,10 @@ mw.loader.using([
 				i18n.loadMessages('EasyTalk', {cacheVersion: 4}).then(i18n => {
 					msg = (...args) => i18n.msg(...args);
 					mw.hook('wikipage.content').add(findComments);
-					if (newTalkPage || newSection || canEditFromReadView){
+					if (newTalkPage || newSection || canEditFromReadView) {
 						addTopicButton.on('click', addTopic);
 					}
-					if (newSection){
+					if (newSection) {
 						addTopic();
 					}
 				});
@@ -116,13 +116,13 @@ mw.loader.using([
 		});
 	});
 
-	function findComments(content){
+	function findComments(content) {
 		window.EasyTalkProcessed = window.EasyTalkProcessed || [];
 		window.EasyTalkProcessed.push(content);
-		if (!window.EasyTalkProcessingLive){
+		if (!window.EasyTalkProcessingLive) {
 			window.EasyTalkProcessingLive = true;
 			window.EasyTalkUnprocessed.forEach(pageSnippet => {
-				if (!window.EasyTalkProcessed.includes(pageSnippet)){
+				if (!window.EasyTalkProcessed.includes(pageSnippet)) {
 					findComments(pageSnippet);
 				}
 			});
@@ -130,43 +130,43 @@ mw.loader.using([
 		let topic = '';
 		let section = '';
 		content.find('*').each((elementIndex, element) => {
-			if ($(element).is('.mw-headline')){
+			if ($(element).is('.mw-headline')) {
 				section = $(element).attr('id').replaceAll('_', ' ');
-				if ($(element).parent().is('h2')){
+				if ($(element).parent().is('h2')) {
 					$(element).parent().addClass('easytalk-topic-header');
 					topic = section;
 				}
 				return;
 			}
 			const finalNode = $($(element).contents().toArray().filter(node => node.tagName !== 'DL')).last();
-			if (!finalNode.length){
+			if (!finalNode.length) {
 				return;
 			}
 			const nodeType = finalNode.get(0).nodeType;
 			const validDatetime = datetimeRegExp.test(finalNode.text());
 			const noTalk = finalNode.parents(noTalkSelectors.join(', ')).length;
-			if (nodeType !== 3 || !validDatetime || noTalk){
+			if (nodeType !== 3 || !validDatetime || noTalk) {
 				return;
 			}
 			const links = finalNode.prevAll().find('*').addBack().filter('a[href]').toArray();
 			let user;
-			for (const link of links.reverse()){
+			for (const link of links.reverse()) {
 				let title = new URLSearchParams(link.search).get('title');
 				let path = decodeURI(link.pathname);
-				if (title){
+				if (title) {
 					path = `/wiki/${title}`;
-				} else if (!path){
+				} else if (!path) {
 					continue;
 				}
 				user = path.replace(
 					/^\/wiki\/[ _]*(?:User(?:[ _]+talk)?[ _]*:|Special[ _]*:[ _]*Contributions\/)[ _]*([^<[{#\n|/}\]>]+?)[ _]*$/i,
 					'$1'
 				).replace(/[ _]+/g, ' ');
-				if (user){
+				if (user) {
 					break;
 				}
 			}
-			if (!user){
+			if (!user) {
 				return;
 			}
 			const datetimeMw = finalNode.text().replace(datetimeRegExp, '$2');
@@ -190,7 +190,7 @@ mw.loader.using([
 		const comments = content.find('.js-comment-date-time');
 		addStats(content, comments);
 
-		if (newTalkPage || newSection || canEditFromReadView){
+		if (newTalkPage || newSection || canEditFromReadView) {
 			content.find(`a[title="${newSect}"]`).on('click', addTopic);
 		}
 
@@ -200,19 +200,19 @@ mw.loader.using([
 			!config.wgArticleId ||
 			!config.wgIsProbablyEditable ||
 			config.wgRevisionId !== config.wgCurRevisionId
-		){
+		) {
 			return;
 		}
 
 		comments.each((commentIndex, comment) => {
-			if ($(comment).parents('.mw-archivedtalk').length){
+			if ($(comment).parents('.mw-archivedtalk').length) {
 				return;
 			}
 			let anchor = $(comment);
-			while (anchor.parent().css('display') === 'inline'){
+			while (anchor.parent().css('display') === 'inline') {
 				anchor = anchor.parent();
 			}
-			while (anchor.get(0).nextSibling && anchor.get(0).nextSibling.nodeType === 3){
+			while (anchor.get(0).nextSibling && anchor.get(0).nextSibling.nodeType === 3) {
 				anchor = $(anchor.get(0).nextSibling);
 			}
 			anchor.after($('<button>', {
@@ -230,29 +230,29 @@ mw.loader.using([
 		});
 	}
 
-	function addStats(content, comments){
-		if (!comments.length || (!addTopicButton.length && !talkPage && !archived)){
+	function addStats(content, comments) {
+		if (!comments.length || (!addTopicButton.length && !talkPage && !archived)) {
 			return;
 		}
 		const topics = {};
 		let latestComment = $('<time>').attr('datetime', new Date(0).toISOString());
 		comments.each((commentIndex, comment) => {
-			if (timeIndex($(comment)) > timeIndex(latestComment)){
+			if (timeIndex($(comment)) > timeIndex(latestComment)) {
 				latestComment = $(comment);
 			}
-			if (!topics[$(comment).data('topic')]){
+			if (!topics[$(comment).data('topic')]) {
 				topics[$(comment).data('topic')] = {
 					users: [],
 					datetimes: [],
 				};
 			}
-			if (!topics[$(comment).data('topic')].users.includes($(comment).data('user'))){
+			if (!topics[$(comment).data('topic')].users.includes($(comment).data('user'))) {
 				topics[$(comment).data('topic')].users.push($(comment).data('user'));
 			}
 			topics[$(comment).data('topic')].datetimes.push(timeIndex($(comment)));
 		});
 		let latestCommentTopText;
-		if (latestComment.data('topic')){
+		if (latestComment.data('topic')) {
 			latestCommentTopText = msg(
 				'pageframe-latestcomment',
 				latestComment.attr('title'),
@@ -266,7 +266,7 @@ mw.loader.using([
 				latestComment.data('user')
 			).parse();
 		}
-		if ($('#talk-stats-top-js').length){
+		if ($('#talk-stats-top-js').length) {
 			$('#talk-stats-top-js').html(latestCommentTopText);
 		} else {
 			$('#mw-content-text').before($('<div>', {
@@ -277,7 +277,7 @@ mw.loader.using([
 		}
 		content.find('.easytalk-topic-header').each((headerIndex, header) => {
 			const topic = $(header).find('.mw-headline').attr('id').replaceAll('_', ' ');
-			if (!topics[topic]){
+			if (!topics[topic]) {
 				return;
 			}
 			$(header).append($('<div>').addClass([
@@ -300,9 +300,9 @@ mw.loader.using([
 		});
 	}
 
-	function activateReplyButton(addReplyEvent){
+	function activateReplyButton(addReplyEvent) {
 		const button = $(addReplyEvent.currentTarget);
-		if (button.attr('disabled')){
+		if (button.attr('disabled')) {
 			return;
 		}
 		$('.reply-button-js').attr({tabindex: -1, disabled: true});
@@ -357,13 +357,13 @@ mw.loader.using([
 			)
 		));
 
-		if (!bNext.length && (!pNext.length || h.test(pNextTag))){
+		if (!bNext.length && (!pNext.length || h.test(pNextTag))) {
 			button.after($(`<dl id="${editorID}">`).append(dd));
-		} else if (parent.prop('tagName') === 'P' && pNextTag === 'DL'){
+		} else if (parent.prop('tagName') === 'P' && pNextTag === 'DL') {
 			pNext.append(dd.attr('id', editorID));
-		} else if (parent.prop('tagName') === 'P'){
+		} else if (parent.prop('tagName') === 'P') {
 			parent.after($(`<dl id="${editorID}">`).append(dd));
-		} else if (bNext.length){
+		} else if (bNext.length) {
 			bNext.append(dd.attr('id', editorID));
 		} else {
 			button.after($(`<dl id="${editorID}">`).append(dd));
@@ -372,11 +372,11 @@ mw.loader.using([
 		$(`#${editorID} textarea`).get(0).focus();
 		let comment = parseReplyText($(`#${editorID} textarea`).val());
 		updatePreview = setInterval(() => {
-			if (comment === parseReplyText($(`#${editorID} textarea`).val())){
+			if (comment === parseReplyText($(`#${editorID} textarea`).val())) {
 				return;
 			}
 			comment = parseReplyText($(`#${editorID} textarea`).val());
-			if (!comment){
+			if (!comment) {
 				$('#easy-talk-preview-js').html('');
 				removeEventListener('beforeunload', beforeUnloadHandler);
 				return;
@@ -392,7 +392,7 @@ mw.loader.using([
 		}, previewDelay);
 
 		$('#reply-cancel-js').on('click', () => {
-			if ($(`#${editorID} textarea`).val()){
+			if ($(`#${editorID} textarea`).val()) {
 				const confirmationDialog = new OO.ui.MessageDialog();
 				const windowManager = new OO.ui.WindowManager();
 				$('body').append(windowManager.$element);
@@ -431,9 +431,9 @@ mw.loader.using([
 		}, submitReply);
 	}
 
-	function submitReply(submitReplyEvent){
+	function submitReply(submitReplyEvent) {
 		let comment = $(`#${editorID} textarea`).val().trim();
-		if (!comment){
+		if (!comment) {
 			return;
 		}
 		clearInterval(updatePreview);
@@ -447,7 +447,7 @@ mw.loader.using([
 			const replies = finalText.replace(r, '$3');
 			comment = parseReplyText(comment, indent);
 
-			if (!indent.length && !replies.length){
+			if (!indent.length && !replies.length) {
 				finalText = finalText.replace(r, `$1\n\n${comment}$4`);
 			} else {
 				finalText = finalText.replace(r, `$1\n${comment}$4`);
@@ -455,7 +455,7 @@ mw.loader.using([
 
 			let editSummary = `Reply (${docRef})`;
 			const section = submitReplyEvent.data.section;
-			if (section){
+			if (section) {
 				editSummary = `/* ${section} */ ${editSummary}`;
 			}
 
@@ -471,14 +471,14 @@ mw.loader.using([
 			};
 
 			api.postWithEditToken(editParams).then(data => {
-				if (data.warnings){
+				if (data.warnings) {
 					console.warn(data.warnings);
-					for (const warning of data.warnings){
+					for (const warning of data.warnings) {
 						errorNotice(`Warning: ${warning.code}: ${warning.text}`, 'warn');
 					}
 				}
 
-				if (data.edit){
+				if (data.edit) {
 					revid = data.edit.newrevid;
 					api.parse(new mw.Title(pageName)).then(parsedText => {
 						$('#mw-content-text > .mw-parser-output').html($(parsedText).contents());
@@ -492,26 +492,26 @@ mw.loader.using([
 				}
 			}, (code, data) => {
 				console.error(data.errors);
-				for (const error of data.errors){
-					if (error.code === 'permissiondenied'){
+				for (const error of data.errors) {
+					if (error.code === 'permissiondenied') {
 						errorNotice(`Error: ${error.code}: This page is in a protected namespace.`);
 					} else {
 						errorNotice(`Error: ${error.code}: ${error.text}`);
 					}
 				}
 
-				if (!fatalErrors.includes(data.errors[0].code)){
+				if (!fatalErrors.includes(data.errors[0].code)) {
 					$(`#${editorID}`).find(elmts).removeAttr('disabled');
 				}
 			});
 		});
 	}
 
-	function addTopic(addTopicEvent){
-		if (addTopicEvent){
+	function addTopic(addTopicEvent) {
+		if (addTopicEvent) {
 			addTopicEvent.preventDefault();
 		}
-		if (!newTopicToolAvailable){
+		if (!newTopicToolAvailable) {
 			$(`#${editorID} input`).get(0).focus();
 			return;
 		}
@@ -574,12 +574,12 @@ mw.loader.using([
 			if (
 				sectionTitle === $(`#${editorID} input`).val().trim() &&
 				comment === parseTopicText($(`#${editorID} textarea`).val())
-			){
+			) {
 				return;
 			}
 			sectionTitle = $(`#${editorID} input`).val().trim();
 			comment = parseTopicText($(`#${editorID} textarea`).val());
-			if (!comment){
+			if (!comment) {
 				$('#easy-talk-preview-js').html('');
 				removeEventListener('beforeunload', beforeUnloadHandler);
 				return;
@@ -593,14 +593,14 @@ mw.loader.using([
 				disableeditsection: true,
 				sectionpreview: true,
 			};
-			if (revid){
+			if (revid) {
 				parseParams.revid = revid;
 			}
 			api.parse(comment, parseParams).then(renderPreview);
 		}, previewDelay);
 
 		$('#newtopic-cancel-js').on('click', () => {
-			if ($(`#${editorID} input`).val() || $(`#${editorID} textarea`).val()){
+			if ($(`#${editorID} input`).val() || $(`#${editorID} textarea`).val()) {
 				const confirmationDialog = new OO.ui.MessageDialog();
 				const windowManager = new OO.ui.WindowManager();
 				$('body').append(windowManager.$element);
@@ -634,10 +634,10 @@ mw.loader.using([
 		$('#newtopic-submit-js').on('click', submitTopic);
 	}
 
-	function submitTopic(){
+	function submitTopic() {
 		const sectionTitle = $(`#${editorID} input`).val().trim();
 		const comment = parseTopicText($(`#${editorID} textarea`).val());
-		if (!sectionTitle || !comment){
+		if (!sectionTitle || !comment) {
 			return;
 		}
 		clearInterval(updatePreview);
@@ -654,22 +654,22 @@ mw.loader.using([
 			sectiontitle: sectionTitle,
 		};
 
-		if (revid){
+		if (revid) {
 			editParams.baserevid = revid;
 		}
 
 		api.postWithEditToken(editParams).then(data => {
-			if (data.warnings){
+			if (data.warnings) {
 				console.warn(data.warnings);
-				for (const warning of data.warnings){
+				for (const warning of data.warnings) {
 					errorNotice(`Warning: ${warning.code}: ${warning.text}`, 'warn');
 				}
 			}
 
-			if (data.edit){
+			if (data.edit) {
 				revid = data.edit.newrevid;
 				api.parse(new mw.Title(pageName)).then(parserOutput => {
-					if (config.wgArticleId && config.wgAction === 'view'){
+					if (config.wgArticleId && config.wgAction === 'view') {
 						const output = $(parserOutput).contents();
 						$('#mw-content-text > .mw-parser-output').html(output);
 					} else {
@@ -687,21 +687,21 @@ mw.loader.using([
 			}
 		}, (code, data) => {
 			console.error(data.errors);
-			for (const error of data.errors){
-				if (error.code === 'permissiondenied'){
+			for (const error of data.errors) {
+				if (error.code === 'permissiondenied') {
 					errorNotice(`Error: ${error.code}: This page is in a protected namespace.`);
 				} else {
 					errorNotice(`Error: ${error.code}: ${error.text}`);
 				}
 			}
 
-			if (!fatalErrors.includes(data.errors[0].code)){
+			if (!fatalErrors.includes(data.errors[0].code)) {
 				$(`#${editorID}`).find(elmts).removeAttr('disabled');
 			}
 		});
 	}
 
-	function closeEditor(){
+	function closeEditor() {
 		clearInterval(updatePreview);
 		removeEventListener('beforeunload', beforeUnloadHandler);
 		newTopicToolAvailable = true;
@@ -710,28 +710,28 @@ mw.loader.using([
 		$(`#${editorID}`).remove();
 	}
 
-	function age(date, now){
+	function age(date, now) {
 		const ageNum = now - date;
 		let ageText;
 
-		if (ageNum < 1000 * 60){
+		if (ageNum < 1000 * 60) {
 			ageText = mw.message('just-now').text();
-		} else if (ageNum < 1000 * 60 * 60){
+		} else if (ageNum < 1000 * 60 * 60) {
 			ageText = mw.message('ago', mw.message(
 				'minutes',
 				Math.floor(ageNum / 1000 / 60)
 			).text()).text();
-		} else if (ageNum < 1000 * 60 * 60 * 24){
+		} else if (ageNum < 1000 * 60 * 60 * 24) {
 			ageText = mw.message('ago', mw.message(
 				'hours',
 				Math.floor(ageNum / 1000 / 60 / 60)
 			).text()).text();
-		} else if (ageNum < 1000 * 60 * 60 * 24 * 30.436875){
+		} else if (ageNum < 1000 * 60 * 60 * 24 * 30.436875) {
 			ageText = mw.message('ago', mw.message(
 				'days',
 				Math.floor(ageNum / 1000 / 60 / 60 / 24)
 			).text()).text();
-		} else if (ageNum < 1000 * 60 * 60 * 24 * 30.436875 * 12){
+		} else if (ageNum < 1000 * 60 * 60 * 24 * 30.436875 * 12) {
 			ageText = mw.message('ago', mw.message(
 				'months',
 				Math.floor(ageNum / 1000 / 60 / 60 / 24 / 30.436875)
@@ -746,33 +746,33 @@ mw.loader.using([
 		return ageText;
 	}
 
-	function errorNotice(message, type = 'error'){
+	function errorNotice(message, type = 'error') {
 		console[type](message);
 		alert(message);
 	}
 
-	function resizeTextBox(boxEvent){
+	function resizeTextBox(boxEvent) {
 		const textBox = $(boxEvent.currentTarget);
 		textBox.removeAttr('style');
 		textBox.css('height', textBox.prop('scrollHeight') + 2);
 	}
 
-	function renderPreview(parsedPreview){
+	function renderPreview(parsedPreview) {
 		$('#easy-talk-preview-js').html(parsedPreview);
 		mw.hook('wikipage.content').fire($('#easy-talk-preview-js'));
 	}
 
-	function parseTopicText(topicText){
+	function parseTopicText(topicText) {
 		topicText = topicText.trim();
-		if (topicText){
+		if (topicText) {
 			topicText = addSig(topicText);
 		}
 		return topicText;
 	}
 
-	function parseReplyText(replyText, indent = ''){
+	function parseReplyText(replyText, indent = '') {
 		replyText = replyText.trim();
-		if (replyText){
+		if (replyText) {
 			replyText = addSig(replyText);
 			replyText = replyText.replace(/\n\n+/g, '\n');
 			replyText = replyText.replace(/^/gm, `${indent}:`);
@@ -780,10 +780,10 @@ mw.loader.using([
 		return replyText;
 	}
 
-	function addSig(comment){
+	function addSig(comment) {
 		// <pre>
-		if (!/(?<!~)~~~~$/.test(comment)){
-			if (/^[;:*#].*(?![^])/m.test(comment)){
+		if (!/(?<!~)~~~~$/.test(comment)) {
+			if (/^[;:*#].*(?![^])/m.test(comment)) {
 				comment = comment.replace(/$/, '\n~~~~');
 			} else {
 				comment = comment.replace(/$/, ' ~~~~');
@@ -793,17 +793,17 @@ mw.loader.using([
 		// </pre>
 	}
 
-	function timeIndex(timeElement){
+	function timeIndex(timeElement) {
 		return new Date(timeElement.attr('datetime')).getTime();
 	}
 
-	function beforeUnloadHandler(event){
+	function beforeUnloadHandler(event) {
 		event.preventDefault();
 	}
 });
 
 mw.hook('wikipage.content').add(content => {
-	if (!window.EasyTalkProcessingLive){
+	if (!window.EasyTalkProcessingLive) {
 		window.EasyTalkUnprocessed = window.EasyTalkUnprocessed || [];
 		window.EasyTalkUnprocessed.push(content);
 	}
