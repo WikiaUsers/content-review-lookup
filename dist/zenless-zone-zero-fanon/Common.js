@@ -128,3 +128,10 @@
         });
     });
 }());
+
+/* Agent Studio: load only on the questionnaire pages. */
+if (['Agent_Studio','User:Onironi6/Agent_Studio'].indexOf(mw.config.get('wgPageName')) !== -1 && mw.config.get('wgAction') === 'view') {
+    jQuery(function () { mw.loader.using('mediawiki.util').then(function () {
+        mw.loader.load(mw.util.getUrl('MediaWiki:AgentStudio.js', {action:'raw',ctype:'text/javascript',v:'20261105.10'}));
+    }); });
+}

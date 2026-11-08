@@ -1,30 +1,84 @@
 /*
-Author: !Davin012613
+Authors: !Davin012613 and Eroll5
 Description: An Addon for RatingSystem that allows Users to send their messages to sysop members.
-*/
 
+It listens to mw.hook('RatingSystem.voted'), which RatingSystem fires after each saved vote, and saves
+the reasons in the same ledger. It also uses the maxRetries option of window.RatingSystemConfig.
+
+    window.RatedReasonsConfig = {
+        notify: true,              // false: only save the reason, do not send it to anyone
+        selectRecipients: false,   // true: the voter chooses who receives the reason (loads AdminSelect);
+                                   // false: it is sent to everyone in the groups below
+        group: 'sysop',            // user group(s) that receive the reason: 'sysop' or ['sysop', 'bureaucrat']
+        exempt: []                 // extra user names that never receive it, e.g. ['Some bot']
+    };
+
+*/
 mw.loader.using([
     'mediawiki.api',
     'mediawiki.util'
 ]).then(function () {
     'use strict';
 
-    const ledgerTitle = 'Project:Ratings';
+    if (window.RatedReasonsLoaded) {
+        return;
+    }
+    window.RatedReasonsLoaded = true;
+
+    const reasonsConfig = $.extend({
+        notify: true,
+        selectRecipients: false,
+        group: 'sysop',
+        exempt: []
+    }, window.RatedReasonsConfig);
+
+    function normalizeName(name) {
+        return String(name).replace(/_/g, ' ').trim().toLowerCase();
+    }
+
+    const exemptNames = [].concat(reasonsConfig.exempt || []).map(normalizeName).filter(Boolean);
+
+    const targetGroups = (function () {
+        const raw = Array.isArray(reasonsConfig.group)
+            ? reasonsConfig.group
+            : [reasonsConfig.group || 'sysop'];
+
+        const groups = raw
+            .map(function (group) {
+                return String(group).trim();
+            })
+            .filter(function (group, index, list) {
+                return group && list.indexOf(group) === index;
+            });
+
+        return groups.length ? groups : ['sysop'];
+    }());
+
+    const maxRetries = $.extend({ maxRetries: 3 }, window.RatingSystemConfig).maxRetries;
+
+    function usesSelector() {
+        return Boolean(reasonsConfig.notify && reasonsConfig.selectRecipients) &&
+            typeof window.RatedReasonsRecipientSelector === 'function';
+    }
+
+    if (reasonsConfig.notify && reasonsConfig.selectRecipients && typeof importArticles === 'function') {
+        importArticles({
+            type: 'script',
+            articles: [
+                'u:dev:MediaWiki:RatedReasons/AdminSelect.js'
+            ]
+        });
+    }
+
+    const RETRYABLE_CODES = ['editconflict', 'pagedeleted', 'articleexists'];
+    const BATCH_SIZE = 5;
+
     const api = new mw.Api();
 
     const currentUser = mw.config.get('wgUserName');
     const pageName = mw.config.get('wgPageName');
 
-    if (!currentUser) {
-        return;
-    }
-
-    if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
-        return;
-    }
-
-    let observingVote = false;
-    let lastObservedClick = 0;
+    let queue = Promise.resolve();
 
     function escapeHtml(text) {
         return String(text)
@@ -33,6 +87,15 @@ mw.loader.using([
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    function unescapeHtml(text) {
+        return String(text)
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&amp;/g, '&');
     }
 
     function wikiHref(title) {
@@ -47,122 +110,54 @@ mw.loader.using([
         );
     }
 
-    function parseLedger(content) {
-        const ratings = {};
-
-        String(content || '')
-            .split('\n')
-            .forEach(function (line) {
-                const cleanLine = line
-                    .replace('<p>', '')
-                    .replace('</p>', '')
-                    .trim();
-
-                if (
-                    !cleanLine ||
-                    !cleanLine.includes('|') ||
-                    cleanLine.indexOf('RatingReason |') === 0
-                ) {
-                    return;
-                }
-
-                const parts = cleanLine.split('|');
-
-                if (parts.length < 3) {
-                    return;
-                }
-
-                const pName = parts[0].trim();
-                const secondColumn = parts[1].trim();
-
-                if (!ratings[pName]) {
-                    ratings[pName] = {};
-                }
-
-                if (secondColumn.includes(':')) {
-                    secondColumn.split(',').forEach(function (entry) {
-                        const separator = entry.lastIndexOf(':');
-
-                        if (separator === -1) {
-                            return;
-                        }
-
-                        const username = entry.substring(0, separator).trim();
-                        const vote = parseInt(
-                            entry.substring(separator + 1).trim(),
-                            10
-                        );
-
-                        if (
-                            username &&
-                            (vote === 1 || vote === -1)
-                        ) {
-                            ratings[pName][username] = vote;
-                        }
-                    });
-                } else {
-                    const username = secondColumn;
-                    const vote = parseInt(parts[2].trim(), 10);
-
-                    if (
-                        username &&
-                        (vote === 1 || vote === -1)
-                    ) {
-                        ratings[pName][username] = vote;
-                    }
-                }
+    function request(promise) {
+        return new Promise(function (resolve, reject) {
+            promise.then(resolve, function (code, result) {
+                reject({ code: code, result: result });
             });
-
-        return ratings;
-    }
-
-    function getLedger() {
-        return api.get({
-            action: 'query',
-            prop: 'revisions',
-            titles: ledgerTitle,
-            rvprop: 'content|timestamp',
-            formatversion: 2,
-            cb: Date.now()
-        }).then(function (data) {
-            let content = '';
-            let timestamp = '';
-
-            try {
-                const pages = data.query && data.query.pages;
-
-                if (pages) {
-                    const keys = Object.keys(pages);
-                    const page = pages[keys[0]];
-
-                    if (
-                        page &&
-                        page.revisions &&
-                        page.revisions[0]
-                    ) {
-                        content = page.revisions[0].content || '';
-                        timestamp = page.revisions[0].timestamp || '';
-                    }
-                }
-            } catch (e) {
-                content = '';
-                timestamp = '';
-            }
-
-            return {
-                content: content,
-                timestamp: timestamp,
-                ratings: parseLedger(content)
-            };
         });
     }
 
-    function getCurrentVote() {
-        return getLedger().then(function (ledger) {
-            return (
-                ledger.ratings[pageName] &&
-                ledger.ratings[pageName][currentUser]
-            ) || 0;
+    function wait(milliseconds) {
+        return new Promise(function (resolve) {
+            setTimeout(resolve, milliseconds);
+        });
+    }
+
+    // Same normalisation as RatingSystem
+    function normalizeUser(name) {
+        return name.replace(/%2C/gi, ',').trim().replace(/_/g, ' ');
+    }
+
+    function getLedger(title) {
+        return request(api.get({
+            action: 'query',
+            prop: 'revisions',
+            titles: title,
+            rvprop: 'content|timestamp',
+            rvslots: 'main',
+            curtimestamp: true,
+            formatversion: 2,
+            cb: Date.now()
+        })).then(function (data) {
+            const page = data.query && data.query.pages && data.query.pages[0];
+
+            if (page && page.missing) {
+                return { content: '', timestamp: null, startTimestamp: data.curtimestamp };
+            }
+
+            const revision = page && page.revisions && page.revisions[0];
+            const slot = revision && revision.slots && revision.slots.main;
+
+            if (!slot || typeof slot.content !== 'string' || !data.curtimestamp) {
+                return Promise.reject({ code: 'invalid-response' });
+            }
+
+            return {
+                content: slot.content,
+                timestamp: revision.timestamp,
+                startTimestamp: data.curtimestamp
+            };
         });
     }
 
@@ -170,14 +165,15 @@ mw.loader.using([
         const action = vote === 1 ? 'upvot' : 'downvot';
         const pageDisplay = pageName.replace(/_/g, ' ');
 
-        const reason = window.prompt(
-            'Why are you ' +
-            action +
-            'ing "' +
-            pageDisplay +
-            '"?',
-            ''
-        );
+        let question = 'Why are you ' + action + 'ing "' + pageDisplay + '"?';
+
+        if (reasonsConfig.notify) {
+            question += usesSelector()
+                ? '\n\nYou will be able to choose which administrator(s) receive your reason.'
+                : '\n\nYour reason will be sent to: ' + targetGroups.join(', ') + '.';
+        }
+
+        const reason = window.prompt(question, '');
 
         if (reason === null) {
             return null;
@@ -199,26 +195,15 @@ mw.loader.using([
 
     function encodeReason(reason) {
         return String(reason)
-            .replace(/\|/g, '&#124;')
-            .replace(/\r?\n/g, ' ');
-    }
-
-    function decodeReason(reason) {
-        return String(reason)
-            .replace(/&#124;/g, '|');
-    }
-
-    function getReasonLines(content) {
-        return String(content || '')
-            .split('\n')
-            .filter(function (line) {
-                return line.trim().indexOf('RatingReason |') === 0;
+            .replace(/\r?\n/g, ' ')
+            .replace(/[|~{}]/g, function (character) {
+                return '&#' + character.charCodeAt(0) + ';';
             });
     }
 
-    function updateReasonInLedger(reason) {
-        return getLedger().then(function (ledger) {
-            const lines = String(ledger.content || '').split('\n');
+    function updateReasonInLedger(title, reason, attempt) {
+        return getLedger(title).then(function (ledger) {
+            const lines = ledger.content === '' ? [] : ledger.content.split('\n');
 
             const newReasonLine =
                 'RatingReason | ' +
@@ -228,22 +213,71 @@ mw.loader.using([
                 ' | ' +
                 encodeReason(reason);
 
-            lines.push(newReasonLine);
+            let replaced = false;
 
-            const newText = lines.join('\n');
+            const updatedLines = lines.map(function (line) {
+                const cleanLine = line.trim();
 
-            return api.postWithToken('csrf', {
+                if (cleanLine.indexOf('RatingReason |') !== 0) {
+                    return line;
+                }
+
+                const parts = cleanLine.split('|');
+
+                if (parts.length < 4) {
+                    return line;
+                }
+
+                const samePage = parts[1].trim().replace(/ /g, '_') === pageName;
+                const sameUser = normalizeUser(parts[2]) === normalizeUser(currentUser);
+
+                if (!samePage || !sameUser) {
+                    return line;
+                }
+
+                if (!replaced) {
+                    replaced = true;
+                    return newReasonLine;
+                }
+
+                return null;
+            }).filter(function (line) {
+                return line !== null;
+            });
+
+            if (!replaced) {
+                updatedLines.push(newReasonLine);
+            }
+
+            const params = {
                 action: 'edit',
-                title: ledgerTitle,
+                title: title,
                 summary:
                     'Added rating reason for [[' +
                     pageName +
                     ']]',
-                text: newText,
+                text: updatedLines.join('\n'),
                 minor: true,
-                basetimestamp: ledger.timestamp,
-                starttimestamp: new Date().toISOString()
-            });
+                watchlist: 'nochange',
+                assert: 'user',
+                starttimestamp: ledger.startTimestamp
+            };
+
+            if (ledger.timestamp) {
+                params.basetimestamp = ledger.timestamp;
+            } else {
+                params.createonly = true;
+            }
+
+            return request(api.postWithToken('csrf', params));
+        }).then(null, function (error) {
+            if (RETRYABLE_CODES.indexOf(error.code) !== -1 && attempt < maxRetries) {
+                return wait(150 + Math.random() * 350).then(function () {
+                    return updateReasonInLedger(title, reason, attempt + 1);
+                });
+            }
+
+            return Promise.reject(error);
         });
     }
 
@@ -266,13 +300,13 @@ mw.loader.using([
                 if (match.index > last) {
                     parts.push({
                         type: 'text',
-                        text: paragraph.slice(last, match.index)
+                        text: unescapeHtml(paragraph.slice(last, match.index))
                     });
                 }
 
                 parts.push({
                     type: 'text',
-                    text: match[2],
+                    text: unescapeHtml(match[2]),
                     marks: [{
                         type: 'link',
                         attrs: {
@@ -287,7 +321,7 @@ mw.loader.using([
             if (last < paragraph.length) {
                 parts.push({
                     type: 'text',
-                    text: paragraph.slice(last)
+                    text: unescapeHtml(paragraph.slice(last))
                 });
             }
 
@@ -303,18 +337,11 @@ mw.loader.using([
         return JSON.stringify(model);
     }
 
-    function getSysopUsers() {
+    function getGroupMembers(group) {
         const users = [];
 
-        const params = {
-            action: 'query',
-            list: 'allusers',
-            augroup: 'sysop',
-            aulimit: 'max'
-        };
-
         function fetchUsers(queryParams) {
-            return api.get(queryParams).then(function (data) {
+            return request(api.get(queryParams)).then(function (data) {
                 const batch =
                     data.query && data.query.allusers
                         ? data.query.allusers
@@ -336,11 +363,106 @@ mw.loader.using([
             });
         }
 
-        return fetchUsers(params);
+        return fetchUsers({
+            action: 'query',
+            list: 'allusers',
+            augroup: group,
+            aulimit: 'max',
+            auprop: 'groups'
+        }).then(null, function (error) {
+            console.warn('RatingsNotifications: could not list the members of "' + group + '"', error);
+            return [];
+        });
+    }
+
+    let abuseFilterName = null;
+
+    function getAbuseFilterName() {
+        if (!abuseFilterName) {
+            abuseFilterName = request(api.get({
+                action: 'query',
+                meta: 'allmessages',
+                ammessages: 'abusefilter-blocker',
+                amlang: mw.config.get('wgContentLanguage'),
+                formatversion: 2
+            })).then(function (data) {
+                const message = data.query && data.query.allmessages && data.query.allmessages[0];
+
+                return message && typeof message.content === 'string' ? normalizeName(message.content) : '';
+            }, function (error) {
+                console.warn('RatingsNotifications: could not read the name of the Abuse filter account', error);
+                return '';
+            });
+        }
+
+        return abuseFilterName;
+    }
+
+    // Users who must not receive the message
+    function isExempt(username, groups, filterName) {
+        const norm = normalizeName(username);
+
+        if (norm === 'abuse filter' || (filterName && norm === filterName)) {
+            return true;
+        }
+
+        if (norm === normalizeName(currentUser)) {
+            return true;
+        }
+
+        if (exemptNames.indexOf(norm) !== -1) {
+            return true;
+        }
+
+        return Array.isArray(groups) && groups.indexOf('bot') !== -1;
+    }
+
+    function getRecipients() {
+        return Promise.all([
+            Promise.all(targetGroups.map(getGroupMembers)),
+            getAbuseFilterName()
+        ]).then(function (loaded) {
+            const results = loaded[0];
+            const filterName = loaded[1];
+            const byName = Object.create(null);
+
+            results.forEach(function (list) {
+                list.forEach(function (user) {
+                    byName[user.name] = user;
+                });
+            });
+
+            const recipients = Object.keys(byName)
+                .map(function (name) {
+                    return byName[name];
+                })
+                .filter(function (user) {
+                    return !isExempt(user.name, user.groups, filterName);
+                });
+
+            if (recipients.length && usesSelector()) {
+                return Promise.resolve(window.RatedReasonsRecipientSelector(recipients)).then(function (selected) {
+                    if (!Array.isArray(selected)) {
+                        return null;
+                    }
+
+                    const allowed = Object.create(null);
+                    recipients.forEach(function (user) {
+                        allowed[user.name] = user;
+                    });
+
+                    return selected.map(function (name) {
+                        return allowed[String(name)] || null;
+                    }).filter(Boolean);
+                });
+            }
+
+            return recipients;
+        });
     }
 
     function postToWall(user, title, bodyHtml) {
-        return $.ajax({
+        return Promise.resolve($.ajax({
             type: 'POST',
             url:
                 mw.util.wikiScript('wikia') +
@@ -357,18 +479,42 @@ mw.loader.using([
             xhrFields: {
                 withCredentials: true
             }
+        }));
+    }
+
+    function postInBatches(users, title, bodyHtml) {
+        let sent = 0;
+        let chain = Promise.resolve();
+
+        for (let i = 0; i < users.length; i += BATCH_SIZE) {
+            const batch = users.slice(i, i + BATCH_SIZE);
+
+            chain = chain.then(function () {
+                return Promise.all(
+                    batch.map(function (user) {
+                        return postToWall(user, title, bodyHtml).then(
+                            function () {
+                                sent++;
+                            },
+                            function () {}
+                        );
+                    })
+                );
+            });
+        }
+
+        return chain.then(function () {
+            return sent;
         });
     }
 
-    function sendNotification(notification) {
-        const pageDisplay =
-            notification.pageName.replace(/_/g, ' ');
+    function sendNotification(vote, reason) {
+        const pageDisplay = pageName.replace(/_/g, ' ');
 
-        const pageUrl = wikiHref(notification.pageName);
+        const pageUrl = wikiHref(pageName);
         const userUrl = wikiHref('User:' + currentUser);
 
-        const voteText =
-            notification.vote === 1 ? 'upvoted' : 'downvoted';
+        const voteText = vote === 1 ? 'upvoted' : 'downvoted';
 
         const title = 'Rating received: ' + pageDisplay;
 
@@ -386,43 +532,42 @@ mw.loader.using([
             '</a>.' +
             '\n\n' +
             'Reason:\n' +
-            escapeHtml(notification.reason);
+            escapeHtml(reason);
 
-        return getSysopUsers().then(function (sysops) {
-            if (!sysops.length) {
-                return 0;
+        return getRecipients().then(function (recipients) {
+            if (recipients === null) {
+                mw.notify('Rating reason saved. Notification skipped.', { type: 'success' });
+                return;
             }
 
-            return Promise.all(
-                sysops.map(function (user) {
-                    return postToWall(
-                        user,
-                        title,
-                        bodyHtml
-                    ).then(
-                        function () {
-                            return true;
-                        },
-                        function () {
-                            return false;
-                        }
+            if (!recipients.length) {
+                mw.notify(
+                    'The rating was saved, but there is nobody to notify in the group(s): ' +
+                    targetGroups.join(', ') + '.',
+                    { type: 'warn' }
+                );
+
+                return;
+            }
+
+            return postInBatches(recipients, title, bodyHtml).then(function (sent) {
+                if (sent === 0) {
+                    mw.notify(
+                        'The rating was saved, but no notifications could be sent.',
+                        { type: 'error' }
                     );
-                })
-            ).then(function (results) {
-                return results.filter(Boolean).length;
+                } else if (sent === recipients.length) {
+                    mw.notify(
+                        'Rating reason sent to ' + sent + ' user(s).',
+                        { type: 'success' }
+                    );
+                } else {
+                    mw.notify(
+                        'Rating reason sent to ' + sent + ' of ' + recipients.length + ' users.',
+                        { type: 'warn' }
+                    );
+                }
             });
-        }).then(function (sent) {
-            if (sent > 0) {
-                mw.notify(
-                    'Rating reason sent to ' + sent + ' sysop(s).',
-                    { type: 'success' }
-                );
-            } else {
-                mw.notify(
-                    'The rating was saved, but no sysop notifications could be sent.',
-                    { type: 'error' }
-                );
-            }
         });
     }
 
@@ -435,112 +580,42 @@ mw.loader.using([
         }));
     }
 
-    function waitForSuccessfulVote(targetVote, previousVote) {
-        let attempts = 0;
-
-        function check() {
-            attempts++;
-
-            return getCurrentVote().then(function (currentVote) {
-                if (
-                    currentVote === targetVote &&
-                    currentVote !== previousVote
-                ) {
-                    return true;
-                }
-
-                if (attempts >= 20) {
-                    return false;
-                }
-
-                return new Promise(function (resolve) {
-                    setTimeout(function () {
-                        resolve(check());
-                    }, 750);
-                });
-            });
+    // { vote, ledgerTitle, ... } from the RatingSystem.voted hook
+    function handleVote(data) {
+        if (!data || !data.vote) {
+            return Promise.resolve();
         }
 
-        return check();
-    }
+        return wait(100).then(function () {
+            const reason = askReason(data.vote);
 
-    function observeVote(targetVote) {
-        if (observingVote) {
-            return;
-        }
-
-        observingVote = true;
-
-        getCurrentVote()
-            .then(function (previousVote) {
-                return waitForSuccessfulVote(
-                    targetVote,
-                    previousVote
-                ).then(function (successful) {
-                    if (!successful) {
-                        return;
-                    }
-
-                    const reason = askReason(targetVote);
-
-                    if (reason === null) {
-                        return;
-                    }
-
-                    return updateReasonInLedger(reason)
-                        .then(function () {
-                            dispatchReasonSaved();
-
-                            return sendNotification({
-                                pageName: pageName,
-                                vote: targetVote,
-                                reason: reason
-                            });
-                        });
-                });
-            })
-            .catch(function (error) {
-                console.error('RatingsNotifications:', error);
-
-                mw.notify(
-                    'The vote was saved, but the rating reason could not be processed.',
-                    { type: 'error' }
-                );
-            })
-            .finally(function () {
-                observingVote = false;
-            });
-    }
-
-    document.addEventListener(
-        'click',
-        function (event) {
-            const upButton =
-                event.target.closest &&
-                event.target.closest('.ejt-up-btn');
-
-            const downButton =
-                event.target.closest &&
-                event.target.closest('.ejt-down-btn');
-
-            if (!upButton && !downButton) {
+            if (reason === null) {
                 return;
             }
 
-            const now = Date.now();
+            return updateReasonInLedger(data.ledgerTitle, reason, 0).then(function () {
+                dispatchReasonSaved();
 
-            if (now - lastObservedClick < 500) {
-                return;
-            }
+                if (!reasonsConfig.notify) {
+                    mw.notify('Rating reason saved.', { type: 'success' });
+                    return;
+                }
 
-            lastObservedClick = now;
+                return sendNotification(data.vote, reason);
+            });
+        });
+    }
 
-            const targetVote = upButton ? 1 : -1;
+    mw.hook('RatingSystem.voted').add(function (data) {
+        queue = queue.then(function () {
+            return handleVote(data);
+        }).then(null, function (error) {
+            console.error('RatingsNotifications:', error);
 
-            setTimeout(function () {
-                observeVote(targetVote);
-            }, 100);
-        },
-        false
-    );
+            mw.notify(
+                'The vote was saved, but the rating reason could not be processed.',
+                { type: 'error' }
+            );
+        });
+    });
 });

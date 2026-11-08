@@ -1,1 +1,1 @@
-mw.loader.load( '/index.php?title=MediaWiki:ImageSlider/code.js&action=raw&ctype=text/javascript' );
+mw.loader.load('https://callofduty.fandom.com/vi/wiki/MediaWiki:ImageSlider/code.js?action=raw&ctype=text/javascript');

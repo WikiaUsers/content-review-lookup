@@ -4,15 +4,13 @@
 	'use strict';
 
 	var creditOptions = [
-		{ label: 'Unknown', value: 'Unknown' },
+    { label: 'Unknown', value: 'Unknown' },
+    { label: 'Rey', value: '[[Eekfluencer/ReysArcade|Rey]]' },
 
-var creditOptions = [
-	{ label: 'Rey', value: '[[Eekfluencer/ReysArcade|Rey]]' },
-
-	{ label: '0ptical', value: '[[Developer/0ptical|Optical]]' },
-	{ label: '3rdy', value: '[[Developer/3rdy|3rdy]]' },
-	{ label: 'Ayzellz', value: '[[Developer/Ayzellz|Ayzellz]]' },
-	{ label: 'Bee', value: '[[Developer/ iiOmq Vandushieii|Bee]]' },
+        { label: '0ptical', value: '[[Developer/0ptical|Optical]]' },
+        { label: '3rdy', value: '[[Developer/3rdy|3rdy]]' },
+        { label: 'Ayzellz', value: '[[Developer/Ayzellz|Ayzellz]]' },
+        { label: 'Bee', value: '[[Developer/iiOmq Vandushieii|Bee]]' },
 	{ label: 'Blizzy', value: '[[Developer/Blizzy|Blizzy]]' },
 	{ label: 'Chaos', value: '[[Developer/28kChaos|Chaos]]' },
 	{ label: 'Darkmor', value: '[[Developer/Darkmor|Darkmor]]' },

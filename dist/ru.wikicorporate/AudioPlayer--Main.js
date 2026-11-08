@@ -79,7 +79,7 @@
                 <span class="t-ap__icon">▶</span>
             </button>
             <div class="t-ap__main">
-                ${rawTitle ? `<div class="t-ap__title">${rawTitle}</div>` : ''}
+                ${rawTitle ? `<div class="t-ap__title">${mw.html.escape(rawTitle)}</div>` : ''}
                 <div class="t-ap__track" role="slider" tabindex="0">
                     <canvas class="t-ap__visualizer" height="24"></canvas>
                     <div class="t-ap__progress"></div>

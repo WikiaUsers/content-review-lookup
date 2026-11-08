@@ -8,7 +8,7 @@
 (() => {
     // CSS editing only
     if (mw.config.get('wgAction') !== 'edit' ||
-        mw.config.get('wgPageContentModel') !== 'css')
+        !['css', 'sanitized-css'].includes(mw.config.get('wgPageContentModel')))
         return;
 
     // i18n

@@ -161,375 +161,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 /* Fim do Texto Invertido */
 
-/* ==========================================================================
-   SUKUNA · TÉCNICAS — MediaWiki:Common.js (cole no FIM do arquivo)
-   Só age onde houver .sk-root. Sem bibliotecas.
-   ========================================================================== */
-(function () {
-  'use strict';
-
-  var reduceMotion = !!(window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-
-  function setup(root) {
-    if (root.getAttribute('data-sk-ready')) return;
-    root.setAttribute('data-sk-ready', '1');
-
-    var track = root.querySelector('.sk-track');
-    if (!track) return;
-
-    var slides = Array.prototype.slice.call(track.querySelectorAll('.sk-slide'));
-    var seals = Array.prototype.slice.call(root.querySelectorAll('.sk-seal'));
-    var now = root.querySelector('.sk-now');
-    var fill = root.querySelector('.sk-progress-fill');
-    var last = slides.length - 1;
-    var current = -1;
-    var frame = 0;
-
-    function indexNow() {
-      var x = track.scrollLeft, best = 0, dist = Infinity;
-      for (var i = 0; i < slides.length; i++) {
-        var d = Math.abs(slides[i].offsetLeft - x);
-        if (d < dist) { dist = d; best = i; }
-      }
-      return best;
-    }
-
-    function paint() {
-      frame = 0;
-      var span = track.scrollWidth - track.clientWidth;
-      if (fill) {
-        fill.style.transform = 'scaleX(' + (span > 0 ? track.scrollLeft / span : 0).toFixed(4) + ')';
-      }
-      var idx = indexNow();
-      if (idx === current) return;
-      current = idx;
-      if (now) now.textContent = (idx < 9 ? '0' : '') + (idx + 1);
-      seals.forEach(function (seal, i) {
-        seal.classList.toggle('is-current', i === idx);
-      });
-    }
-
-    function queue() {
-      if (!frame) frame = requestAnimationFrame(paint);
-    }
-
-    function goTo(i) {
-      i = Math.max(0, Math.min(last, i));
-      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
-    }
-
-    track.addEventListener('scroll', queue, { passive: true });
-
-    track.addEventListener('keydown', function (e) {
-      var k = e.key;
-      if (k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'Home' && k !== 'End') return;
-      e.preventDefault();
-      if (k === 'Home') goTo(0);
-      else if (k === 'End') goTo(last);
-      else goTo(indexNow() + (k === 'ArrowRight' ? 1 : -1));
-    });
-
-    root.addEventListener('click', function (e) {
-      var link = e.target.closest ? e.target.closest('a[href^="#sk-"]') : null;
-      if (!link) return;
-      var target = document.getElementById(link.getAttribute('href').slice(1));
-      var i = slides.indexOf(target);
-      if (i < 0) return;
-      e.preventDefault();
-      goTo(i);
-    });
-
-    window.addEventListener('resize', queue);
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (entries) {
-        if (entries[entries.length - 1].isIntersecting) queue();
-      }).observe(root);
-    }
-
-    paint();
-  }
-
-  function init() {
-    var roots = document.querySelectorAll('.sk-root');
-    for (var i = 0; i < roots.length; i++) setup(roots[i]);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-  if (window.mw && mw.hook) mw.hook('wikipage.content').add(init);
-})();
-/* Fim TN Sukuna */
-
-/* ===== NIKOLA TESLA — raios elétricos (canvas) ===== */
-;(function () {
-  'use strict';
-  var SEL = '.tesla-eletrica';
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function boot(root) {
-    var scope = (root && root.querySelectorAll) ? root : document;
-    var list = scope.querySelectorAll(SEL);
-    for (var i = 0; i < list.length; i++) start(list[i]);
-  }
-
-  function start(box) {
-    if (!box || box.dataset.teslaOn === '1') return;
-    box.dataset.teslaOn = '1';
-
-    var cv = document.createElement('canvas');
-    cv.className = 'tesla-raios';
-    cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:6;' +
-                       'pointer-events:none;mix-blend-mode:screen;';
-    box.appendChild(cv);
-    var ctx = cv.getContext('2d');
-    var W = 1, H = 1, dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    function resize() {
-      var r = box.getBoundingClientRect();
-      W = Math.max(1, r.width); H = Math.max(1, r.height);
-      cv.width = W * dpr; cv.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    if (window.ResizeObserver) { new ResizeObserver(resize).observe(box); }
-    else window.addEventListener('resize', resize);
-
-    var bolts = [], sparks = [], flash = 0, last = performance.now(), nextBolt = 0;
-
-    function seg(x1, y1, x2, y2, d, pts) {
-      if (d < 4) { pts.push(x2, y2); return; }
-      var mx = (x1 + x2) / 2 + (Math.random() - 0.5) * d;
-      var my = (y1 + y2) / 2 + (Math.random() - 0.5) * d;
-      seg(x1, y1, mx, my, d / 2, pts); seg(mx, my, x2, y2, d / 2, pts);
-    }
-    function spawn() {
-      var cx = W / 2, cy = H * 0.46;
-      var a = Math.random() * Math.PI * 2, rad = Math.min(W, H) * (0.42 + Math.random() * 0.18);
-      var sx = cx + Math.cos(a) * rad, sy = cy + Math.sin(a) * rad;
-      var pts = [sx, sy];
-      seg(sx, sy, cx + (Math.random() - 0.5) * 44, cy + (Math.random() - 0.5) * 44,
-          Math.min(W, H) * 0.3, pts);
-      bolts.push({ pts: pts, life: 1, w: 1 + Math.random() * 2.2 });
-      for (var s = 0; s < 5; s++)
-        sparks.push({ x: cx, y: cy, vx: (Math.random() - 0.5) * 2.4,
-                      vy: -Math.random() * 2.6 - 0.4, life: 1 });
-    }
-    function drawBolt(b) {
-      ctx.save(); ctx.globalAlpha = Math.max(0, b.life);
-      ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.shadowColor = '#00c6ff';
-      ctx.beginPath(); ctx.moveTo(b.pts[0], b.pts[1]);
-      for (var i = 2; i < b.pts.length; i += 2) ctx.lineTo(b.pts[i], b.pts[i + 1]);
-      ctx.strokeStyle = 'rgba(120,210,255,.5)'; ctx.lineWidth = b.w * 3; ctx.shadowBlur = 26; ctx.stroke();
-      ctx.strokeStyle = '#bfefff'; ctx.lineWidth = b.w; ctx.shadowBlur = 18; ctx.stroke();
-      ctx.restore();
-    }
-    function frame(now) {
-      if (box.dataset.teslaOn !== '1') return;
-      var dt = now - last; last = now;
-      ctx.clearRect(0, 0, W, H);
-      if (now > nextBolt) {
-        spawn(); if (Math.random() < 0.25) spawn();
-        nextBolt = now + 90 + Math.random() * 230;
-        if (Math.random() < 0.12) flash = 0.3;   // flash azul suave (sem strobe)
-      }
-      for (var i = bolts.length - 1; i >= 0; i--) {
-        var b = bolts[i]; b.life -= dt / 180;
-        if (b.life <= 0) { bolts.splice(i, 1); continue; } drawBolt(b);
-      }
-      ctx.save(); ctx.shadowColor = '#4fd2ff'; ctx.shadowBlur = 10;
-      for (var j = sparks.length - 1; j >= 0; j--) {
-        var p = sparks[j]; p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life -= dt / 700;
-        if (p.life <= 0) { sparks.splice(j, 1); continue; }
-        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = '#d6f3ff';
-        ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, 6.283); ctx.fill();
-      }
-      ctx.restore();
-      if (flash > 0) {
-        ctx.save(); ctx.globalAlpha = flash; ctx.fillStyle = 'rgba(80,180,255,1)';
-        ctx.fillRect(0, 0, W, H); ctx.restore();
-        flash -= dt / 260; if (flash < 0) flash = 0;
-      }
-      requestAnimationFrame(frame);
-    }
-
-    if (reduce) {                 // acessibilidade: raios estáticos, sem animação
-      for (var k = 0; k < 4; k++) spawn();
-      bolts.forEach(drawBolt); return;
-    }
-    requestAnimationFrame(frame);
-  }
-
-  if (window.mw && mw.hook) {
-    mw.hook('wikipage.content').add(function ($c) { boot($c && $c[0] ? $c[0] : document); });
-  } else if (document.readyState !== 'loading') { boot(document); }
-  else { document.addEventListener('DOMContentLoaded', function () { boot(document); }); }
-})();
-
-/* ===== TESLA — "É Magia? ...FOI CIÊNCIA!!" (v2: sincronia travada no áudio) ===== */
-;(function () {
-  'use strict';
-  var AUDIO = 'https://static.wikia.nocookie.net/animeverso/images/2/24/' +
-              'Tesla_No_Not_Non_Nein.mp3/revision/latest?cb=20261030142857&path-prefix=pt-br';
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* tempos (ms) de cada "não" dentro do clipe — os raios seguem o relógio do áudio */
-  var BEATS = [
-    {t:120,  tx:'NO!',  p:'is-front'},
-    {t:920,  tx:'NOT',  p:'is-left'},
-    {t:1210, tx:'NON',  p:'is-mid'},
-    {t:1490, tx:'NEIN!',p:'is-right'},
-    {t:1990, tx:'NOT',  p:'is-left'},
-    {t:2240, tx:'NON',  p:'is-mid'},
-    {t:2580, tx:'NEIN!',p:'is-right'}
-  ];
-  var DUR = 3413;
-
-  /* --- áudio pré-carregado UMA vez, já no load da página (resolve o "clicar 2x") --- */
-  var au = null;
-  function ensureAudio(){
-    if(au) return au;
-    au = new Audio(); au.preload='auto'; au.src=AUDIO;
-    try{ au.load(); }catch(e){}
-    return au;
-  }
-
-  function boot(root){
-    var scope=(root&&root.querySelectorAll)?root:document;
-    var t=scope.querySelector('#tesla-magia, .tesla-magia');
-    if(!t||t.dataset.teslaOn==='1') return;
-    t.dataset.teslaOn='1';
-    ensureAudio();                              /* começa a baixar o mp3 agora */
-    /* re-aquece o decoder no primeiro hover/toque, sem tocar som */
-    t.addEventListener('pointerenter',function(){ try{au.load();}catch(e){} },{once:true});
-    t.addEventListener('click',function(){ run(); });
-  }
-
-  var running=false;
-  function run(){
-    if(running) return; running=true;
-    var a=ensureAudio();
-    try{ a.pause(); a.currentTime=0; }catch(e){}
-
-    var timers=[];
-    function after(ms,fn){ var id=setTimeout(fn,ms); timers.push(id); return id; }
-
-    /* --- overlay + camadas --- */
-    var ov=document.createElement('div'); ov.className='tesla-ov';
-    ov.innerHTML='<div class="tesla-grid"></div>'+
-      '<div class="tesla-holo h3"></div><div class="tesla-holo h2"></div>'+
-      '<div class="tesla-holo h1"></div>';
-    var cv=document.createElement('canvas'); cv.className='tesla-cv';
-    ov.appendChild(cv); document.body.appendChild(ov);
-    var ctx=cv.getContext('2d'), W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2);
-    function resize(){ W=innerWidth; H=innerHeight; cv.width=W*dpr; cv.height=H*dpr;
-      ctx.setTransform(dpr,0,0,dpr,0,0); }
-    resize(); window.addEventListener('resize',resize);
-    requestAnimationFrame(function(){ ov.classList.add('on'); });
-
-    /* --- motor de raios --- */
-    var bolts=[], flash=0, last=performance.now(), raf, netIv=null;
-    function seg(x1,y1,x2,y2,d,pts){ if(d<5){pts.push(x2,y2);return;}
-      var mx=(x1+x2)/2+(Math.random()-.5)*d, my=(y1+y2)/2+(Math.random()-.5)*d;
-      seg(x1,y1,mx,my,d/2,pts); seg(mx,my,x2,y2,d/2,pts); }
-    function addBolt(x1,y1,x2,y2,w){ var p=[x1,y1];
-      seg(x1,y1,x2,y2,Math.min(W,H)*0.22,p); bolts.push({p:p,life:1,w:w||2}); }
-    function strikeTo(x,y,big){ addBolt(x+(Math.random()-.5)*W*.2,-20,x,y,big?3.4:2.2);
-      flash=Math.min(big?.32:.22,flash+(big?.22:.12)); }
-    function net(n){ for(var i=0;i<n;i++){ var A=Math.random()*6.283,B=Math.random()*6.283,r=Math.max(W,H);
-      addBolt(W/2+Math.cos(A)*r,H/2+Math.sin(A)*r,W/2+Math.cos(B)*r*.5,H/2+Math.sin(B)*r*.5,1.4+Math.random()*2);}
-      flash=Math.min(.3,flash+.18); }
-    function draw(b){ ctx.save(); ctx.globalAlpha=Math.max(0,b.life);
-      ctx.lineJoin='round'; ctx.lineCap='round'; ctx.shadowColor='#00c6ff';
-      ctx.beginPath(); ctx.moveTo(b.p[0],b.p[1]);
-      for(var i=2;i<b.p.length;i+=2)ctx.lineTo(b.p[i],b.p[i+1]);
-      ctx.strokeStyle='rgba(120,210,255,.5)'; ctx.lineWidth=b.w*3; ctx.shadowBlur=28; ctx.stroke();
-      ctx.strokeStyle='#cfeeff'; ctx.lineWidth=b.w; ctx.shadowBlur=18; ctx.stroke(); ctx.restore(); }
-
-    function posOf(cls){ if(cls==='is-front')return[W*.5,H*.4];
-      if(cls==='is-left')return[W*.24,H*.5]; if(cls==='is-mid')return[W*.5,H*.6]; return[W*.76,H*.5]; }
-    function word(tx,cls){ var el=document.createElement('div');
-      el.className='tesla-word '+cls+' pop'; el.textContent=tx; ov.appendChild(el);
-      var xy=posOf(cls); strikeTo(xy[0],xy[1],cls==='is-front');
-      if(!reduce)for(var k=0;k<2;k++)strikeTo(xy[0],xy[1],false);
-      after(650,function(){ el.classList.add('out'); after(350,function(){ el.remove(); }); }); }
-
-    /* --- relógio-mestre: segue o currentTime do áudio (ou um timer, se o som for bloqueado) --- */
-    var fired=BEATS.map(function(){return false;});
-    var mode='wait', t0=0, done=false, started=false;
-    function clockMs(){
-      if(mode==='audio') return (a.currentTime||0)*1000;
-      if(mode==='timer') return performance.now()-t0;
-      return 0;                                   /* 'wait' = áudio ainda não começou -> raios esperam */
-    }
-    function tick(){
-      var cur=clockMs();
-      for(var i=0;i<BEATS.length;i++){ if(!fired[i] && cur>=BEATS[i].t){ fired[i]=true; word(BEATS[i].tx,BEATS[i].p); } }
-      if(!done && started && (a.ended || cur>=DUR-40)) finale();
-    }
-    function loop(now){ var dt=now-last; last=now; ctx.clearRect(0,0,W,H);
-      for(var i=bolts.length-1;i>=0;i--){ var b=bolts[i]; b.life-=dt/170;
-        if(b.life<=0){bolts.splice(i,1);continue;} draw(b); }
-      if(flash>0){ ctx.save(); ctx.globalAlpha=flash; ctx.fillStyle='rgba(90,180,255,1)';
-        ctx.fillRect(0,0,W,H); ctx.restore(); flash-=dt/300; if(flash<0)flash=0; }
-      tick(); raf=requestAnimationFrame(loop); }
-    raf=requestAnimationFrame(loop);
-
-    function onPlaying(){ mode='audio'; started=true; }
-    function onTime(){ tick(); }                  /* catch-up se a aba ficou em segundo plano */
-    a.addEventListener('playing',onPlaying);
-    a.addEventListener('timeupdate',onTime);
-    a.addEventListener('ended',finale);
-
-    /* pré-roll curto só pros hologramas entrarem; depois dá play (áudio já está em cache) */
-    after(600,function(){
-      try{ a.currentTime=0; }catch(e){}
-      var pr=a.play();
-      if(pr&&pr.then){ pr.then(function(){ started=true; })
-        .catch(function(){ mode='timer'; t0=performance.now(); started=true; }); }  /* som bloqueado -> timeline visual */
-      else { started=true; }
-    });
-
-    function finale(){ if(done)return; done=true;
-      var l1=document.createElement('div'); l1.className='tesla-line';
-      l1.textContent='O que eu fiz nesse perfil...'; ov.appendChild(l1);
-      requestAnimationFrame(function(){ l1.classList.add('show'); });
-      after(1400,function(){ l1.classList.remove('show'); after(550,function(){ l1.remove();
-        var l2=document.createElement('div'); l2.className='tesla-line';
-        l2.innerHTML='<span class="tesla-foi">Foi</span><span class="tesla-ciencia">CIÊNCIA!!</span>';
-        ov.appendChild(l2); l2.classList.add('show');
-        var foi=l2.querySelector('.tesla-foi'), ci=l2.querySelector('.tesla-ciencia');
-        requestAnimationFrame(function(){ foi.classList.add('show'); });
-        after(300,function(){ ci.classList.add('boom'); net(reduce?6:18); });
-        if(!reduce){ var n=0; netIv=setInterval(function(){ net(5); if(++n>18){clearInterval(netIv);netIv=null;} },90); }
-        after(2100,end);
-      }); });
-    }
-    function end(){ ov.classList.remove('on');
-      after(850,function(){
-        timers.forEach(clearTimeout); timers=[]; if(netIv)clearInterval(netIv);
-        cancelAnimationFrame(raf); window.removeEventListener('resize',resize);
-        a.removeEventListener('playing',onPlaying); a.removeEventListener('timeupdate',onTime);
-        a.removeEventListener('ended',finale);
-        try{ a.pause(); a.currentTime=0; }catch(e){}
-        ov.remove(); running=false;
-      });
-    }
-    function onKey(e){ if(e.key==='Escape'){ document.removeEventListener('keydown',onKey);
-      try{a.pause();}catch(x){} done=true; end(); } }
-    document.addEventListener('keydown',onKey);
-  }
-
-  if(window.mw&&mw.hook){ mw.hook('wikipage.content').add(function($c){ boot($c&&$c[0]?$c[0]:document); }); }
-  else if(document.readyState!=='loading'){ boot(document); }
-  else document.addEventListener('DOMContentLoaded',function(){ boot(document); });
-})();
-/* Fim Nikola Tesla */
-
 /* ============================================================
    NADARE · 崩界 (Hōkai) — Colapso da Realidade
    JS escopado + EPÍLOGO (v2 com transição de luz e colapso)
@@ -3863,6 +3494,651 @@ if (document.readyState === 'loading') {
 
 }(jQuery, window.mw));
 
+/* =====================================================================
+   SUKUNA — "Corte que Corta o Mundo" / World Slash
+   Animação cinematográfica acionada por clique no selo IV.
+   Alvo: página do Sukuna (Fandom). Gated por DOM (#sk-r-corte + .sk-ryomen).
+   100% reversível: nenhum estado persistente; recarregar restaura tudo.
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  var AUDIO_URL = 'https://static.wikia.nocookie.net/animeverso/images/e/e8/Sukuna_Dismantle_Sound_Design_Rework%28MP3160K%29.mp3/revision/latest?cb=20261101143806&path-prefix=pt-br';
+
+  /* ---- Linha do tempo dirigida por um relógio-mestre (segundos desde o clique) ----
+     Cada kanji entra SOZINHO no centro, fica legível e SAI antes do próximo.
+     O áudio entra atrasado (AUDIO_DELAY) para que o som do corte (≈1,73s no
+     arquivo) caia exatamente sobre o último texto, "Corte Mundial". ---- */
+  var KANJI = [
+    { jp: '龍鱗',         pt: 'ESCAMA DO DRAGÃO', in: 0.20, out: 1.15 },
+    { jp: '反発',         pt: 'REPULSÃO',         in: 1.25, out: 2.20 },
+    { jp: '番いの流星',   pt: 'PAR DE METEOROS',   in: 2.30, out: 3.25 },
+    { jp: '世界を断つ斬撃', pt: 'CORTE MUNDIAL',     in: 3.35, out: null }
+  ];
+  var AUDIO_DELAY = 1.92;  // atraso do áudio p/ casar o som do corte com o último texto
+  var T_SLASH     = 3.65;  // lâmina começa a riscar (som do corte do MP3 cai aqui)
+  var T_SLASH_END = 3.95;  // lâmina completa a passagem
+  var T_SPLIT     = 3.97;  // TUDO é cortado simultaneamente (no estrondo)
+  var T_HIDE      = 5.00;  // metades já se afastaram -> some
+  var T_END       = 5.65;  // overlay removido (áudio segue sua cauda)
+
+  var started = false;
+
+  /* ---------------- util ---------------- */
+  function el(tag, cls, parent) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+  /* ---------------- SVG filter (borda de pincel caótico) ---------------- */
+  function injectFilter() {
+    if (document.getElementById('skw-filters')) return;
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('id', 'skw-filters');
+    svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
+    svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+    svg.innerHTML =
+      '<defs><filter id="skw-brush" x="-30%" y="-30%" width="160%" height="160%">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0.012 0.021" numOctaves="2" seed="7" result="n"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>' +
+      '</filter></defs>';
+    document.body.appendChild(svg);
+  }
+
+  /* ---------------- split: corta um elemento em duas metades ----------------
+     Corte na anti-diagonal (sup. direita -> inf. esquerda).
+     Metade A = triângulo superior-esquerdo; Metade B = inferior-direito.
+     As metades deslizam perpendicularmente ao corte (A p/ cima-esq, B p/ baixo-dir). */
+  function splitElement(src, layer, keepHidden) {
+    var r = src.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return [];
+    var mk = function (clip, cls) {
+      var h = src.cloneNode(true);
+      h.removeAttribute('id');
+      h.className = (src.className || '') + ' ' + cls;
+      h.style.cssText =
+        'position:fixed;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width +
+        'px;height:' + r.height + 'px;margin:0;z-index:5;pointer-events:none;' +
+        '-webkit-clip-path:' + clip + ';clip-path:' + clip + ';' +
+        'transition:transform 1.05s cubic-bezier(.22,.61,.25,1),opacity 1.05s ease,filter 1.05s ease;';
+      layer.appendChild(h);
+      return h;
+    };
+    var a = mk('polygon(0 0, 100% 0, 0 100%)', 'skw-half skw-half-a');
+    var b = mk('polygon(100% 0, 100% 100%, 0 100%)', 'skw-half skw-half-b');
+    /* fenda incandescente ao longo do corte */
+    var seam = el('div', 'skw-seam', layer);
+    seam.style.cssText =
+      'position:fixed;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width +
+      'px;height:' + r.height + 'px;z-index:6;pointer-events:none;';
+    src.style.visibility = 'hidden';
+    // reflow + dispara
+    void a.offsetWidth;
+    var d = Math.max(60, Math.min(r.width, r.height) * 0.34);
+    a.style.transform = 'translate(' + (-d * 0.72) + 'px,' + (-d * 0.72) + 'px) rotate(-2.2deg)';
+    a.style.opacity = '0'; a.style.filter = 'brightness(.35) blur(1px)';
+    b.style.transform = 'translate(' + (d * 0.72) + 'px,' + (d * 0.95) + 'px) rotate(2.6deg)';
+    b.style.opacity = '0'; b.style.filter = 'brightness(.35) blur(1px)';
+    seam.classList.add('skw-seam-on');
+    if (keepHidden) {
+      setTimeout(function () { try { src.style.display = 'none'; src.style.visibility = ''; } catch (e) {} }, 1100);
+    }
+    return [a, b, seam];
+  }
+
+  /* ---------------- sequência principal ---------------- */
+  function run(tabber) {
+    if (started) return;
+    started = true;
+    injectFilter();
+
+    var W = window.innerWidth, H = window.innerHeight, DPR = Math.min(2, window.devicePixelRatio || 1);
+
+    var ov = el('div', 'skw-overlay', document.body);
+    var veil = el('div', 'skw-veil', ov);
+    var cv = el('canvas', 'skw-canvas', ov);
+    var kl = el('div', 'skw-kanji-layer', ov);
+    var splitLayer = el('div', 'skw-split-layer', ov);
+
+    cv.width = W * DPR; cv.height = H * DPR;
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    var ctx = cv.getContext('2d'); ctx.scale(DPR, DPR);
+
+    var P0 = { x: W * 0.985, y: H * 0.03 };
+    var P1 = { x: W * 0.015, y: H * 0.985 };
+
+    var nodes = KANJI.map(function (k, i) {
+      var row = el('div', 'skw-k', kl);
+      var pt = el('div', 'skw-k-pt', row); pt.textContent = k.pt;
+      var jp = el('div', 'skw-k-jp', row); jp.textContent = k.jp;
+      if (i === KANJI.length - 1) row.classList.add('skw-k-final');
+      return row;
+    });
+
+    var audio = new Audio();
+    audio.src = AUDIO_URL; audio.preload = 'auto';
+    try { audio.load(); } catch (e) {}
+    var startClock = performance.now();
+    function now() { return (performance.now() - startClock) / 1000; }
+    var audioStarted = false;
+
+    var drops = [], shown = 0, slashDone = false, splitDone = false, hidden = false, ended = false;
+    function spawnDrops(x, y, n) {
+      var ang = Math.atan2(P1.y - P0.y, P1.x - P0.x);
+      for (var i = 0; i < n; i++) {
+        var perp = ang + (Math.random() < .5 ? Math.PI / 2 : -Math.PI / 2);
+        var sp = 2 + Math.random() * 7;
+        drops.push({
+          x: x + (Math.random() - .5) * 26, y: y + (Math.random() - .5) * 26,
+          vx: Math.cos(perp) * sp + (Math.random() - .5) * 2,
+          vy: Math.sin(perp) * sp - Math.random() * 2,
+          r: 1.4 + Math.random() * 4.2, life: 1, g: .22 + Math.random() * .14
+        });
+      }
+    }
+    /* respingo omnidirecional (estouro do "susto" de cada kanji) */
+    function spawnBurst(x, y, n) {
+      for (var i = 0; i < n; i++) {
+        var a2 = Math.random() * Math.PI * 2;
+        var sp = 1.5 + Math.random() * 6.5;
+        drops.push({
+          x: x + (Math.random() - .5) * 34, y: y + (Math.random() - .5) * 34,
+          vx: Math.cos(a2) * sp, vy: Math.sin(a2) * sp - 1.4,
+          r: 1.2 + Math.random() * 3.8, life: 1, g: .20 + Math.random() * .14
+        });
+      }
+    }
+
+    function draw() {
+      var t = now();
+      ctx.clearRect(0, 0, W, H);
+
+      if (!audioStarted && t >= AUDIO_DELAY) {
+        audioStarted = true;
+        var ap = audio.play();
+        if (ap && ap.catch) ap.catch(function () {});
+      }
+
+      /* cada kanji entra sozinho no centro e sai antes do próximo (o último fica) */
+      for (var ki = 0; ki < KANJI.length; ki++) {
+        var kd = KANJI[ki], kn = nodes[ki];
+        if (!kn._kin && t >= kd['in']) {
+          kn._kin = true;
+          kn.classList.add('skw-k-in');
+          kl.classList.remove('skw-jolt'); void kl.offsetWidth; kl.classList.add('skw-jolt');
+          try {
+            var rk = kn.getBoundingClientRect();
+            spawnBurst(rk.left + rk.width / 2, rk.top + rk.height / 2, reduce ? 3 : 18);
+          } catch (e) {}
+        }
+        if (!kn._kout && kd.out != null && t >= kd.out) {
+          kn._kout = true;
+          kn.classList.add('skw-k-out');
+        }
+      }
+
+      if (t >= T_SLASH) {
+        var prog = Math.min(1, (t - T_SLASH) / (T_SLASH_END - T_SLASH));
+        var pe = 1 - Math.pow(1 - prog, 3);
+        var tx = P0.x + (P1.x - P0.x) * pe, ty = P0.y + (P1.y - P0.y) * pe;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = 'rgba(177,20,34,0.55)'; ctx.lineWidth = 22; ctx.lineCap = 'round';
+        ctx.shadowColor = 'rgba(210,30,40,0.9)'; ctx.shadowBlur = 55;
+        ctx.beginPath(); ctx.moveTo(P0.x, P0.y); ctx.lineTo(tx, ty); ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,245,235,0.98)'; ctx.lineWidth = 3.2; ctx.shadowBlur = 24; ctx.shadowColor = '#fff';
+        ctx.beginPath(); ctx.moveTo(P0.x, P0.y); ctx.lineTo(tx, ty); ctx.stroke();
+        if (prog < 1) {
+          var g = ctx.createRadialGradient(tx, ty, 0, tx, ty, 46);
+          g.addColorStop(0, 'rgba(255,255,255,0.95)'); g.addColorStop(.4, 'rgba(230,40,50,0.6)'); g.addColorStop(1, 'rgba(230,40,50,0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(tx, ty, 46, 0, 7); ctx.fill();
+          spawnDrops(tx, ty, reduce ? 1 : 4);
+        }
+        ctx.restore();
+        if (prog >= 1 && !slashDone) slashDone = true;
+      }
+
+      ctx.save();
+      for (var i = drops.length - 1; i >= 0; i--) {
+        var d = drops[i];
+        d.vy += d.g; d.x += d.vx; d.y += d.vy; d.life -= 0.012;
+        if (d.life <= 0) { drops.splice(i, 1); continue; }
+        ctx.globalAlpha = Math.max(0, d.life);
+        var gg = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
+        gg.addColorStop(0, 'rgba(150,10,18,1)'); gg.addColorStop(1, 'rgba(60,2,6,0)');
+        ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 7); ctx.fill();
+      }
+      ctx.restore();
+
+      if (t >= T_SPLIT && !splitDone) {
+        splitDone = true;
+        ov.classList.add('skw-flash');
+        splitElement(kl, splitLayer, false);
+        if (tabber) splitElement(tabber, splitLayer, true);
+        kl.style.visibility = 'hidden';
+        spawnDrops((P0.x + P1.x) / 2, (P0.y + P1.y) / 2, reduce ? 10 : 60);
+      }
+
+      if (t >= T_HIDE && !hidden) { hidden = true; ov.classList.add('skw-fade'); }
+
+      if (t >= T_END && !ended) {
+        ended = true;
+        try { ov.remove(); } catch (e) {}
+        var rb = el('div', 'skw-reload', document.body);
+        rb.innerHTML = '\u21bb Recarregar';
+        rb.addEventListener('click', function () { location.reload(); });
+        requestAnimationFrame(function () { rb.classList.add('skw-reload-on'); });
+        return;
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  /* ---------------- bind ---------------- */
+  function bind(root) {
+    if (!root.querySelector || !root.querySelector('#sk-r-corte')) return;
+    if (!root.querySelector('.sk-ryomen') && !document.querySelector('.sk-ryomen')) return;
+    var links = root.querySelectorAll('a[href$="#sk-r-corte"]');
+    for (var i = 0; i < links.length; i++) {
+      (function (a) {
+        if (a.dataset.skwBound) return;
+        /* SOMENTE o selo IV na trilha dispara; setas de navegação e scroll NÃO. */
+        if (!a.closest('.sk-seal')) { a.dataset.skwBound = '1'; return; }
+        a.dataset.skwBound = '1';
+        a.addEventListener('click', function (ev) {
+          if (started) return;
+          ev.preventDefault();
+          var tb = a.closest('.tabber') || a.closest('.wds-tabber') ||
+                   a.closest('.jjk-sukuna') || a.closest('.sk-root');
+          run(tb);
+        });
+      })(links[i]);
+    }
+  }
+
+  function boot() { try { bind(document); } catch (e) {} }
+  if (window.mw && mw.hook) { mw.hook('wikipage.content').add(function () { boot(); }); }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); }
+  else { boot(); }
+})();
+/* Fim Corte Mundial Sukuna */
+
+
+/* ==========================================================================
+   SUKUNA · TÉCNICAS — MediaWiki:Common.js (cole no FIM do arquivo)
+   Só age onde houver .sk-root. Sem bibliotecas.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var reduceMotion = !!(window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  function setup(root) {
+    if (root.getAttribute('data-sk-ready')) return;
+    root.setAttribute('data-sk-ready', '1');
+
+    var track = root.querySelector('.sk-track');
+    if (!track) return;
+
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.sk-slide'));
+    var seals = Array.prototype.slice.call(root.querySelectorAll('.sk-seal'));
+    var now = root.querySelector('.sk-now');
+    var fill = root.querySelector('.sk-progress-fill');
+    var last = slides.length - 1;
+    var current = -1;
+    var frame = 0;
+
+    function indexNow() {
+      var x = track.scrollLeft, best = 0, dist = Infinity;
+      for (var i = 0; i < slides.length; i++) {
+        var d = Math.abs(slides[i].offsetLeft - x);
+        if (d < dist) { dist = d; best = i; }
+      }
+      return best;
+    }
+
+    function paint() {
+      frame = 0;
+      var span = track.scrollWidth - track.clientWidth;
+      if (fill) {
+        fill.style.transform = 'scaleX(' + (span > 0 ? track.scrollLeft / span : 0).toFixed(4) + ')';
+      }
+      var idx = indexNow();
+      if (idx === current) return;
+      current = idx;
+      if (now) now.textContent = (idx < 9 ? '0' : '') + (idx + 1);
+      seals.forEach(function (seal, i) {
+        seal.classList.toggle('is-current', i === idx);
+      });
+    }
+
+    function queue() {
+      if (!frame) frame = requestAnimationFrame(paint);
+    }
+
+    function goTo(i) {
+      i = Math.max(0, Math.min(last, i));
+      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+
+    track.addEventListener('scroll', queue, { passive: true });
+
+    track.addEventListener('keydown', function (e) {
+      var k = e.key;
+      if (k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'Home' && k !== 'End') return;
+      e.preventDefault();
+      if (k === 'Home') goTo(0);
+      else if (k === 'End') goTo(last);
+      else goTo(indexNow() + (k === 'ArrowRight' ? 1 : -1));
+    });
+
+    root.addEventListener('click', function (e) {
+      var link = e.target.closest ? e.target.closest('a[href^="#sk-"]') : null;
+      if (!link) return;
+      var target = document.getElementById(link.getAttribute('href').slice(1));
+      var i = slides.indexOf(target);
+      if (i < 0) return;
+      e.preventDefault();
+      goTo(i);
+    });
+
+    window.addEventListener('resize', queue);
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        if (entries[entries.length - 1].isIntersecting) queue();
+      }).observe(root);
+    }
+
+    paint();
+  }
+
+  function init() {
+    var roots = document.querySelectorAll('.sk-root');
+    for (var i = 0; i < roots.length; i++) setup(roots[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  if (window.mw && mw.hook) mw.hook('wikipage.content').add(init);
+})();
+/* Fim TN Sukuna */
+
+/* ===== NIKOLA TESLA — raios elétricos (canvas) ===== */
+;(function () {
+  'use strict';
+  var SEL = '.tesla-eletrica';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function boot(root) {
+    var scope = (root && root.querySelectorAll) ? root : document;
+    var list = scope.querySelectorAll(SEL);
+    for (var i = 0; i < list.length; i++) start(list[i]);
+  }
+
+  function start(box) {
+    if (!box || box.dataset.teslaOn === '1') return;
+    box.dataset.teslaOn = '1';
+
+    var cv = document.createElement('canvas');
+    cv.className = 'tesla-raios';
+    cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:6;' +
+                       'pointer-events:none;mix-blend-mode:screen;';
+    box.appendChild(cv);
+    var ctx = cv.getContext('2d');
+    var W = 1, H = 1, dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      var r = box.getBoundingClientRect();
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    if (window.ResizeObserver) { new ResizeObserver(resize).observe(box); }
+    else window.addEventListener('resize', resize);
+
+    var bolts = [], sparks = [], flash = 0, last = performance.now(), nextBolt = 0;
+
+    function seg(x1, y1, x2, y2, d, pts) {
+      if (d < 4) { pts.push(x2, y2); return; }
+      var mx = (x1 + x2) / 2 + (Math.random() - 0.5) * d;
+      var my = (y1 + y2) / 2 + (Math.random() - 0.5) * d;
+      seg(x1, y1, mx, my, d / 2, pts); seg(mx, my, x2, y2, d / 2, pts);
+    }
+    function spawn() {
+      var cx = W / 2, cy = H * 0.46;
+      var a = Math.random() * Math.PI * 2, rad = Math.min(W, H) * (0.42 + Math.random() * 0.18);
+      var sx = cx + Math.cos(a) * rad, sy = cy + Math.sin(a) * rad;
+      var pts = [sx, sy];
+      seg(sx, sy, cx + (Math.random() - 0.5) * 44, cy + (Math.random() - 0.5) * 44,
+          Math.min(W, H) * 0.3, pts);
+      bolts.push({ pts: pts, life: 1, w: 1 + Math.random() * 2.2 });
+      for (var s = 0; s < 5; s++)
+        sparks.push({ x: cx, y: cy, vx: (Math.random() - 0.5) * 2.4,
+                      vy: -Math.random() * 2.6 - 0.4, life: 1 });
+    }
+    function drawBolt(b) {
+      ctx.save(); ctx.globalAlpha = Math.max(0, b.life);
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.shadowColor = '#00c6ff';
+      ctx.beginPath(); ctx.moveTo(b.pts[0], b.pts[1]);
+      for (var i = 2; i < b.pts.length; i += 2) ctx.lineTo(b.pts[i], b.pts[i + 1]);
+      ctx.strokeStyle = 'rgba(120,210,255,.5)'; ctx.lineWidth = b.w * 3; ctx.shadowBlur = 26; ctx.stroke();
+      ctx.strokeStyle = '#bfefff'; ctx.lineWidth = b.w; ctx.shadowBlur = 18; ctx.stroke();
+      ctx.restore();
+    }
+    function frame(now) {
+      if (box.dataset.teslaOn !== '1') return;
+      var dt = now - last; last = now;
+      ctx.clearRect(0, 0, W, H);
+      if (now > nextBolt) {
+        spawn(); if (Math.random() < 0.25) spawn();
+        nextBolt = now + 90 + Math.random() * 230;
+        if (Math.random() < 0.12) flash = 0.3;   // flash azul suave (sem strobe)
+      }
+      for (var i = bolts.length - 1; i >= 0; i--) {
+        var b = bolts[i]; b.life -= dt / 180;
+        if (b.life <= 0) { bolts.splice(i, 1); continue; } drawBolt(b);
+      }
+      ctx.save(); ctx.shadowColor = '#4fd2ff'; ctx.shadowBlur = 10;
+      for (var j = sparks.length - 1; j >= 0; j--) {
+        var p = sparks[j]; p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life -= dt / 700;
+        if (p.life <= 0) { sparks.splice(j, 1); continue; }
+        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = '#d6f3ff';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, 6.283); ctx.fill();
+      }
+      ctx.restore();
+      if (flash > 0) {
+        ctx.save(); ctx.globalAlpha = flash; ctx.fillStyle = 'rgba(80,180,255,1)';
+        ctx.fillRect(0, 0, W, H); ctx.restore();
+        flash -= dt / 260; if (flash < 0) flash = 0;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    if (reduce) {                 // acessibilidade: raios estáticos, sem animação
+      for (var k = 0; k < 4; k++) spawn();
+      bolts.forEach(drawBolt); return;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  if (window.mw && mw.hook) {
+    mw.hook('wikipage.content').add(function ($c) { boot($c && $c[0] ? $c[0] : document); });
+  } else if (document.readyState !== 'loading') { boot(document); }
+  else { document.addEventListener('DOMContentLoaded', function () { boot(document); }); }
+})();
+
+/* ===== TESLA — "É Magia? ...FOI CIÊNCIA!!" (v2: sincronia travada no áudio) ===== */
+;(function () {
+  'use strict';
+  var AUDIO = 'https://static.wikia.nocookie.net/animeverso/images/2/24/' +
+              'Tesla_No_Not_Non_Nein.mp3/revision/latest?cb=20261030142857&path-prefix=pt-br';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* tempos (ms) de cada "não" dentro do clipe — os raios seguem o relógio do áudio */
+  var BEATS = [
+    {t:120,  tx:'NO!',  p:'is-front'},
+    {t:920,  tx:'NOT',  p:'is-left'},
+    {t:1210, tx:'NON',  p:'is-mid'},
+    {t:1490, tx:'NEIN!',p:'is-right'},
+    {t:1990, tx:'NOT',  p:'is-left'},
+    {t:2240, tx:'NON',  p:'is-mid'},
+    {t:2580, tx:'NEIN!',p:'is-right'}
+  ];
+  var DUR = 3413;
+
+  /* --- áudio pré-carregado UMA vez, já no load da página (resolve o "clicar 2x") --- */
+  var au = null;
+  function ensureAudio(){
+    if(au) return au;
+    au = new Audio(); au.preload='auto'; au.src=AUDIO;
+    try{ au.load(); }catch(e){}
+    return au;
+  }
+
+  function boot(root){
+    var scope=(root&&root.querySelectorAll)?root:document;
+    var t=scope.querySelector('#tesla-magia, .tesla-magia');
+    if(!t||t.dataset.teslaOn==='1') return;
+    t.dataset.teslaOn='1';
+    ensureAudio();                              /* começa a baixar o mp3 agora */
+    /* re-aquece o decoder no primeiro hover/toque, sem tocar som */
+    t.addEventListener('pointerenter',function(){ try{au.load();}catch(e){} },{once:true});
+    t.addEventListener('click',function(){ run(); });
+  }
+
+  var running=false;
+  function run(){
+    if(running) return; running=true;
+    var a=ensureAudio();
+    try{ a.pause(); a.currentTime=0; }catch(e){}
+
+    var timers=[];
+    function after(ms,fn){ var id=setTimeout(fn,ms); timers.push(id); return id; }
+
+    /* --- overlay + camadas --- */
+    var ov=document.createElement('div'); ov.className='tesla-ov';
+    ov.innerHTML='<div class="tesla-grid"></div>'+
+      '<div class="tesla-holo h3"></div><div class="tesla-holo h2"></div>'+
+      '<div class="tesla-holo h1"></div>';
+    var cv=document.createElement('canvas'); cv.className='tesla-cv';
+    ov.appendChild(cv); document.body.appendChild(ov);
+    var ctx=cv.getContext('2d'), W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2);
+    function resize(){ W=innerWidth; H=innerHeight; cv.width=W*dpr; cv.height=H*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0); }
+    resize(); window.addEventListener('resize',resize);
+    requestAnimationFrame(function(){ ov.classList.add('on'); });
+
+    /* --- motor de raios --- */
+    var bolts=[], flash=0, last=performance.now(), raf, netIv=null;
+    function seg(x1,y1,x2,y2,d,pts){ if(d<5){pts.push(x2,y2);return;}
+      var mx=(x1+x2)/2+(Math.random()-.5)*d, my=(y1+y2)/2+(Math.random()-.5)*d;
+      seg(x1,y1,mx,my,d/2,pts); seg(mx,my,x2,y2,d/2,pts); }
+    function addBolt(x1,y1,x2,y2,w){ var p=[x1,y1];
+      seg(x1,y1,x2,y2,Math.min(W,H)*0.22,p); bolts.push({p:p,life:1,w:w||2}); }
+    function strikeTo(x,y,big){ addBolt(x+(Math.random()-.5)*W*.2,-20,x,y,big?3.4:2.2);
+      flash=Math.min(big?.32:.22,flash+(big?.22:.12)); }
+    function net(n){ for(var i=0;i<n;i++){ var A=Math.random()*6.283,B=Math.random()*6.283,r=Math.max(W,H);
+      addBolt(W/2+Math.cos(A)*r,H/2+Math.sin(A)*r,W/2+Math.cos(B)*r*.5,H/2+Math.sin(B)*r*.5,1.4+Math.random()*2);}
+      flash=Math.min(.3,flash+.18); }
+    function draw(b){ ctx.save(); ctx.globalAlpha=Math.max(0,b.life);
+      ctx.lineJoin='round'; ctx.lineCap='round'; ctx.shadowColor='#00c6ff';
+      ctx.beginPath(); ctx.moveTo(b.p[0],b.p[1]);
+      for(var i=2;i<b.p.length;i+=2)ctx.lineTo(b.p[i],b.p[i+1]);
+      ctx.strokeStyle='rgba(120,210,255,.5)'; ctx.lineWidth=b.w*3; ctx.shadowBlur=28; ctx.stroke();
+      ctx.strokeStyle='#cfeeff'; ctx.lineWidth=b.w; ctx.shadowBlur=18; ctx.stroke(); ctx.restore(); }
+
+    function posOf(cls){ if(cls==='is-front')return[W*.5,H*.4];
+      if(cls==='is-left')return[W*.24,H*.5]; if(cls==='is-mid')return[W*.5,H*.6]; return[W*.76,H*.5]; }
+    function word(tx,cls){ var el=document.createElement('div');
+      el.className='tesla-word '+cls+' pop'; el.textContent=tx; ov.appendChild(el);
+      var xy=posOf(cls); strikeTo(xy[0],xy[1],cls==='is-front');
+      if(!reduce)for(var k=0;k<2;k++)strikeTo(xy[0],xy[1],false);
+      after(650,function(){ el.classList.add('out'); after(350,function(){ el.remove(); }); }); }
+
+    /* --- relógio-mestre: segue o currentTime do áudio (ou um timer, se o som for bloqueado) --- */
+    var fired=BEATS.map(function(){return false;});
+    var mode='wait', t0=0, done=false, started=false;
+    function clockMs(){
+      if(mode==='audio') return (a.currentTime||0)*1000;
+      if(mode==='timer') return performance.now()-t0;
+      return 0;                                   /* 'wait' = áudio ainda não começou -> raios esperam */
+    }
+    function tick(){
+      var cur=clockMs();
+      for(var i=0;i<BEATS.length;i++){ if(!fired[i] && cur>=BEATS[i].t){ fired[i]=true; word(BEATS[i].tx,BEATS[i].p); } }
+      if(!done && started && (a.ended || cur>=DUR-40)) finale();
+    }
+    function loop(now){ var dt=now-last; last=now; ctx.clearRect(0,0,W,H);
+      for(var i=bolts.length-1;i>=0;i--){ var b=bolts[i]; b.life-=dt/170;
+        if(b.life<=0){bolts.splice(i,1);continue;} draw(b); }
+      if(flash>0){ ctx.save(); ctx.globalAlpha=flash; ctx.fillStyle='rgba(90,180,255,1)';
+        ctx.fillRect(0,0,W,H); ctx.restore(); flash-=dt/300; if(flash<0)flash=0; }
+      tick(); raf=requestAnimationFrame(loop); }
+    raf=requestAnimationFrame(loop);
+
+    function onPlaying(){ mode='audio'; started=true; }
+    function onTime(){ tick(); }                  /* catch-up se a aba ficou em segundo plano */
+    a.addEventListener('playing',onPlaying);
+    a.addEventListener('timeupdate',onTime);
+    a.addEventListener('ended',finale);
+
+    /* pré-roll curto só pros hologramas entrarem; depois dá play (áudio já está em cache) */
+    after(600,function(){
+      try{ a.currentTime=0; }catch(e){}
+      var pr=a.play();
+      if(pr&&pr.then){ pr.then(function(){ started=true; })
+        .catch(function(){ mode='timer'; t0=performance.now(); started=true; }); }  /* som bloqueado -> timeline visual */
+      else { started=true; }
+    });
+
+    function finale(){ if(done)return; done=true;
+      var l1=document.createElement('div'); l1.className='tesla-line';
+      l1.textContent='O que eu fiz nesse perfil...'; ov.appendChild(l1);
+      requestAnimationFrame(function(){ l1.classList.add('show'); });
+      after(1400,function(){ l1.classList.remove('show'); after(550,function(){ l1.remove();
+        var l2=document.createElement('div'); l2.className='tesla-line';
+        l2.innerHTML='<span class="tesla-foi">Foi</span><span class="tesla-ciencia">CIÊNCIA!!</span>';
+        ov.appendChild(l2); l2.classList.add('show');
+        var foi=l2.querySelector('.tesla-foi'), ci=l2.querySelector('.tesla-ciencia');
+        requestAnimationFrame(function(){ foi.classList.add('show'); });
+        after(300,function(){ ci.classList.add('boom'); net(reduce?6:18); });
+        if(!reduce){ var n=0; netIv=setInterval(function(){ net(5); if(++n>18){clearInterval(netIv);netIv=null;} },90); }
+        after(2100,end);
+      }); });
+    }
+    function end(){ ov.classList.remove('on');
+      after(850,function(){
+        timers.forEach(clearTimeout); timers=[]; if(netIv)clearInterval(netIv);
+        cancelAnimationFrame(raf); window.removeEventListener('resize',resize);
+        a.removeEventListener('playing',onPlaying); a.removeEventListener('timeupdate',onTime);
+        a.removeEventListener('ended',finale);
+        try{ a.pause(); a.currentTime=0; }catch(e){}
+        ov.remove(); running=false;
+      });
+    }
+    function onKey(e){ if(e.key==='Escape'){ document.removeEventListener('keydown',onKey);
+      try{a.pause();}catch(x){} done=true; end(); } }
+    document.addEventListener('keydown',onKey);
+  }
+
+  if(window.mw&&mw.hook){ mw.hook('wikipage.content').add(function($c){ boot($c&&$c[0]?$c[0]:document); }); }
+  else if(document.readyState!=='loading'){ boot(document); }
+  else document.addEventListener('DOMContentLoaded',function(){ boot(document); });
+})();
+/* Fim Nikola Tesla */
+
 /* Boosted Gear - cinemática só uma vez por visitante */
 mw.hook('wikipage.content').add(function () {
   var el = document.getElementById('bgi-full');
@@ -3888,4 +4164,118 @@ mw.hook('wikipage.content').add(function () {
   var real = img.getAttribute('data-src');
   if (real) img.src = real;          /* carrega o GIF antes de tocar, para ele começar junto com as legendas */
   setTimeout(tocar, 6000);           /* segurança: se o GIF demorar, toca mesmo assim */
+});
+/* Fim Issei */
+
+/* ===== TesteR ===== */
+mw.loader.using('mediawiki.util').then(function () {
+  'use strict';
+  if (mw.config.get('wgAction') !== 'view') return;
+  var gatilho = document.querySelector('.contrato-dealer');
+  if (!gatilho || document.getElementById('cd-overlay')) return;
+
+  var PERFIL = 'https://crossverse.fandom.com/pt-br/wiki/Usu%C3%A1rio:The_Real_Lord_Above_All';
+  var CHAVE = 'cd-contrato:' + mw.config.get('wgPageName');
+  var imgDealer = mw.util.getUrl('Special:FilePath/' + (gatilho.getAttribute('data-dealer') || 'Dealer.jpg'));
+  var termos = gatilho.querySelector('.contrato-termos');
+
+  function lerNome() { try { return localStorage.getItem(CHAVE); } catch (e) { return null; } }
+  function salvarNome(n) { try { localStorage.setItem(CHAVE, n); } catch (e) {} }
+
+  var overlay = document.createElement('div');
+  overlay.id = 'cd-overlay';
+  overlay.className = 'cd-oculto';
+  overlay.innerHTML =
+    '<div class="cd-folha" role="dialog" aria-modal="true" aria-labelledby="cd-titulo">' +
+      '<div class="cd-titulo" id="cd-titulo">Termo de<br>Responsabilidade</div>' +
+      '<div class="cd-termos"></div>' +
+      '<div class="cd-destaque">Para prosseguir coloque o seu nome.</div>' +
+      '<form class="cd-form" autocomplete="off">' +
+        '<label class="cd-label" for="cd-nome">NOME:</label>' +
+        '<input id="cd-nome" class="cd-nome" type="text" maxlength="40">' +
+        '<button type="submit" class="cd-assinar">ASSINAR</button>' +
+      '</form>' +
+      '<div class="cd-erro" aria-live="polite"></div>' +
+      '<div class="cd-rodape"><span>Termo de Responsabilidade (Rev. 133C7EB)</span><span>1 / 1</span></div>' +
+    '</div>' +
+    '<div class="cd-dealer" aria-hidden="true"><img alt=""></div>';
+
+  if (termos) overlay.querySelector('.cd-termos').appendChild(termos);
+  overlay.querySelector('.cd-dealer img').src = imgDealer;
+  document.body.appendChild(overlay);
+
+  var form = overlay.querySelector('.cd-form');
+  var input = overlay.querySelector('.cd-nome');
+  var erro = overlay.querySelector('.cd-erro');
+  var dealer = overlay.querySelector('.cd-dealer');
+  var bloqueado = false;
+
+  function abrir() {
+    overlay.classList.remove('cd-oculto');
+    overlay.classList.remove('cd-liberado');
+    document.documentElement.classList.add('cd-travado');
+    input.value = lerNome() || '';
+    erro.textContent = '';
+    input.focus();
+    input.select();
+  }
+
+  function fechar() {
+    overlay.classList.add('cd-liberado');
+    setTimeout(function () {
+      overlay.classList.add('cd-oculto');
+      document.documentElement.classList.remove('cd-travado');
+    }, 600);
+  }
+
+  function boasVindas() {
+    var bv = document.createElement('div');
+    bv.id = 'cd-boasvindas';
+    bv.innerHTML = '<span>Bem Vindo Ao Jogo.</span>';
+    document.body.appendChild(bv);
+    setTimeout(function () { if (bv.parentNode) bv.parentNode.removeChild(bv); }, 4300);
+  }
+
+  function mostrarDealer() {
+    bloqueado = true;
+    input.disabled = true;
+    erro.textContent = '';
+    dealer.classList.add('cd-visivel');
+    setTimeout(function () {
+      dealer.classList.add('cd-sumindo');
+      setTimeout(function () {
+        dealer.classList.remove('cd-visivel');
+        dealer.classList.remove('cd-sumindo');
+        input.disabled = false;
+        input.value = '';
+        input.focus();
+        bloqueado = false;
+      }, 2500);
+    }, 2000);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (bloqueado) return;
+    var nome = input.value.trim();
+    var chave = nome.toLowerCase();
+    if (!nome) { erro.textContent = 'Você precisa colocar o seu nome.'; input.focus(); return; }
+    if (chave === 'dealer') { window.location.href = PERFIL; return; }
+    if (chave === 'deus' || chave === 'god') { mostrarDealer(); return; }
+    salvarNome(nome);
+    fechar();
+    boasVindas();
+  });
+
+  /* Botão */
+  var botao = document.createElement('button');
+  botao.type = 'button';
+  botao.className = 'cd-reincidir';
+  botao.textContent = 'Reincidir Contrato';
+  botao.addEventListener('click', abrir);
+  var alvo = document.querySelector('.mw-parser-output') || document.body;
+  alvo.insertBefore(botao, alvo.firstChild);
+
+  /* Teste */
+  if (!lerNome()) abrir();
 });

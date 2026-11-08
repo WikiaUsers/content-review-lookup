@@ -68,7 +68,8 @@ window.enableReadProgressBarOnArticles = true;
 				var notices = data.visualeditor && data.visualeditor.notices;
 				if (!notices) return;
 				var $ui = $('.wikiEditor-ui').first();
-				showEditNotices(Object.keys(notices).map(function (key) { return notices[key]; }), $ui.length ? $ui : $('#wpTextbox1'));
+				// The classic editor already prints warnings like editinginterface itself; only the editnotice-* messages are missing
+				showEditNotices(Object.keys(notices).filter(function (key) { return key.indexOf('editnotice') === 0; }).map(function (key) { return notices[key]; }), $ui.length ? $ui : $('#wpTextbox1'));
 			});
 		});
 	}

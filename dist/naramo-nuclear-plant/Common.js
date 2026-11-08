@@ -35,3 +35,14 @@ window.AutoCreateUserPagesConfig = {
     summary: 'Automatically creating this user\'s page',
     notify: true
 };
+
+	// DiscussionTemplates
+	// Currently need a template about rule-breaking warnings.
+window.DiscussionTemplates = {
+	/*templates: {
+		name:Template:Warning
+		title:You broke a rule of the wiki!
+	},
+	*/
+	allowedGroups: ['content-moderator', 'sysop']
+}

@@ -28,7 +28,8 @@ window.pPreview.RegExp.noinclude = [
 
 window.pPreview.RegExp.iimages = [
     /White[_%20]Calaklum[_%20]side/i,
-    /Site[-_]favicon/i
+    /Site[-_]favicon/i,
+    /Aihara[_%20]Yoshikazu/i
 ];
 
 window.pPreview.showNoImagePlaceholder = false;

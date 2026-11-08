@@ -2,15 +2,15 @@
 
 /* For [[Template:TopIcon]] */
 $(function () {
+	const currentPageName = mw.config.get('wgPageName');
 	var icons = $('.mw-indicators');
     if (icons.length) {
     	// put this inside the new category bar
         $('.page-header__categories-bar').append(icons);
-        $('<p><small>Hover for info:</small>&numsp;</p>').prependTo(icons);
-        icons.show();
+        $(`<p title="Hover over indicator icons to learn about ${mw.html.escape(currentPageName)}!"><small>Hover for info:</small>&numsp;</p>`).prependTo(icons);
+        icons.css('display', 'inline-flex');
     }
 });
-
 
 // applying knight order colors inline - see KnightHighlights.css
 

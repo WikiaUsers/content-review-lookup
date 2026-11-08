@@ -16,6 +16,9 @@ Optional configuration:
 		disable: false						// 'likes' or 'dislikes': hides that button and leaves those votes out of the score
 	};
 
+Hook for add-ons: mw.hook('RatingSystem.voted') is fired after each saved vote, once the widget shows the new
+score, with { page, user, vote, previousVote, ledgerTitle }. vote and previousVote are 1, -1 or 0 (no vote).
+
 */
 mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 	'use strict';
@@ -348,10 +351,16 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		return fetchLedger(title).then(function (fetched) {
 			const ledger = parseLedger(fetched.text);
 
-			applyVote(ledger, pageName, userName, target);
+			const previousVote = (ledger.votes[pageName] && ledger.votes[pageName][userName]) || 0;
+			const newVote = applyVote(ledger, pageName, userName, target);
 
 			return saveLedger(title, fetched, serializeLedger(ledger)).then(function () {
-				return ledger.votes[pageName];
+				return {
+					votes: ledger.votes[pageName],
+					vote: newVote,
+					previousVote: previousVote,
+					ledgerTitle: title
+				};
 			});
 		}).then(null, function (error) {
 			if (RETRYABLE_CODES.indexOf(error.code) !== -1 && attempt < config.maxRetries) {
@@ -415,8 +424,11 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		state.busy = true;
 		refreshAll();
 
-		submitVote(target, 0).then(function (pageVotes) {
-			setCounts(pageVotes);
+		let saved = null;
+
+		submitVote(target, 0).then(function (result) {
+			saved = result;
+			setCounts(result.votes);
 		}).then(null, function (error) {
 			console.warn('[RatingSystem] Could not save the vote:', error);
 			notifyError(error);
@@ -425,6 +437,24 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		function finish() {
 			state.busy = false;
 			refreshAll();
+
+			if (saved) {
+				announceVote(saved);
+			}
+		}
+	}
+
+	function announceVote(result) {
+		try {
+			mw.hook('RatingSystem.voted').fire({
+				page: pageName,
+				user: userName,
+				vote: result.vote,
+				previousVote: result.previousVote,
+				ledgerTitle: result.ledgerTitle
+			});
+		} catch (error) {
+			console.error('[RatingSystem] A RatingSystem.voted handler failed:', error);
 		}
 	}
 

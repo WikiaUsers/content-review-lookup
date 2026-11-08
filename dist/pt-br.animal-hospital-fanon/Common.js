@@ -41,3 +41,6 @@ window.reportArticleConfig = {
 window.RatingSystemConfig = {
 	disable: 'dislikes'
 };
+window.RatedReasonsConfig = {
+    notify: false
+};

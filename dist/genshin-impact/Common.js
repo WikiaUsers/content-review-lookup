@@ -94,16 +94,18 @@ mw.loader.using('oojs-ui-widgets').then(() => { // make sure the PopupWidget lib
 	});
 });
 
-// Custom tpt page-level checks for achievs (test)
+// Custom tpt page-level checks for achievs, HEO, and whatever we find to fit
 mw.hook('wikipage.content').add(()=>{
 	const api = new mw.Rest();
 	$('.tpt-instance:empty').each((_, el) => {
 		const $el = $(el);
 		const catID = el.dataset.category;
 		const pageID = el.dataset.pageid;
+		const tptID = el.dataset.tptid || 'Achievement';
+		const label = el.dataset.label || 'Completed?';
 		const inpt = $('<input>', { id: catID+'-'+pageID, type: 'checkbox' });
 		const labl = $('<label>', { 'for': catID+'-'+pageID });
-		const url = '/progress-tracking/table/'+catID+'/Achievement';
+		const url = '/progress-tracking/table/'+catID+'/'+encodeURIComponent(tptID);
 		inpt.on('change', (e) => {
 			api[inpt.prop('checked') ? 'post' : 'delete'](url, { entityId: pageID });
 		});
@@ -112,7 +114,7 @@ mw.hook('wikipage.content').add(()=>{
 		.then((arr)=>{
 			if (arr.includes(pageID)) {inpt.get(0).checked = true;}
 			$el.append(inpt, labl);
-			$el.before('Unlocked? ');
+			$el.before(mw.html.escape(label)+' ');
 		});
 	});
 });

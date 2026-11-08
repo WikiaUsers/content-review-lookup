@@ -34,18 +34,19 @@ mw.loader.using([
     }
 
     let hasVoted = null;
-    let initiallyVoted = false;
-    let responseSubmitted = false;
     let reasonSaved = false;
     let pendingNavigation = null;
     let popupOpen = false;
 
     function normalizePage(name) {
-        return name.trim().replace(/ /g, '_');
+        return String(name).trim().replace(/ /g, '_');
     }
 
     function normalizeUser(name) {
-        return name.replace(/%2C/gi, ',').trim().replace(/_/g, ' ');
+        return String(name)
+            .replace(/%2C/gi, ',')
+            .trim()
+            .replace(/_/g, ' ');
     }
 
     function ledgerTitleFor(page) {
@@ -66,10 +67,7 @@ mw.loader.using([
     }
 
     function canLeave() {
-        return initiallyVoted || (
-            hasVoted === true &&
-            reasonSaved
-        );
+        return hasVoted === true && reasonSaved === true;
     }
 
     function fetchLedger() {
@@ -79,18 +77,17 @@ mw.loader.using([
             titles: ledgerTitleFor(pageName),
             rvprop: 'content|timestamp',
             rvslots: 'main',
-            curtimestamp: true,
             formatversion: 2,
             cb: Date.now()
         }).then(function (data) {
             const page = data.query.pages[0];
-            const revision = page && page.revisions && page.revisions[0];
-            const slot = revision && revision.slots && revision.slots.main;
+            const revision =
+                page && page.revisions && page.revisions[0];
+            const slot =
+                revision && revision.slots && revision.slots.main;
 
             return {
-                content: slot ? slot.content || '' : '',
-                timestamp: revision ? revision.timestamp : null,
-                startTimestamp: data.curtimestamp
+                content: slot ? slot.content || '' : ''
             };
         });
     }
@@ -106,7 +103,10 @@ mw.loader.using([
                     return;
                 }
 
-                if (normalizePage(parts[0]) !== normalizePage(pageName)) {
+                if (
+                    normalizePage(parts[0]) !==
+                    normalizePage(pageName)
+                ) {
                     return;
                 }
 
@@ -140,7 +140,8 @@ mw.loader.using([
                     const vote = parseInt(parts[2], 10);
 
                     if (
-                        normalizeUser(second) === normalizeUser(currentUser) &&
+                        normalizeUser(second) ===
+                            normalizeUser(currentUser) &&
                         (vote === 1 || vote === -1)
                     ) {
                         hasVoted = true;
@@ -148,66 +149,16 @@ mw.loader.using([
                 }
             });
 
-            initiallyVoted = hasVoted;
+            if (hasVoted) {
+                reasonSaved = true;
+            }
         }).catch(function (error) {
             hasVoted = null;
-            console.error('[RatingLeaveWarning] Vote check failed:', error);
-        });
-    }
 
-    function encodeResponse(response) {
-        return String(response)
-            .replace(/\|/g, '&#124;')
-            .replace(/\r?\n/g, ' ');
-    }
-
-    function saveResponse(response) {
-        return fetchLedger().then(function (ledger) {
-            const lines = ledger.content.split(/\r?\n/);
-
-            const filtered = lines.filter(function (line) {
-                const parts = line.split('|');
-
-                if (
-                    parts.length < 4 ||
-                    parts[0].trim() !== 'RatingLeaveResponse'
-                ) {
-                    return true;
-                }
-
-                return !(
-                    normalizePage(parts[1]) === normalizePage(pageName) &&
-                    normalizeUser(parts[2]) === normalizeUser(currentUser)
-                );
-            });
-
-            filtered.push(
-                'RatingLeaveResponse | ' +
-                pageName +
-                ' | ' +
-                currentUser +
-                ' | ' +
-                encodeResponse(response)
+            console.error(
+                '[RatingLeaveWarning] Vote check failed:',
+                error
             );
-
-            const params = {
-                action: 'edit',
-                title: ledgerTitleFor(pageName),
-                text: filtered.join('\n'),
-                summary: 'Saved mandatory page-rating response',
-                minor: true,
-                watchlist: 'nochange',
-                assert: 'user',
-                starttimestamp: ledger.startTimestamp
-            };
-
-            if (ledger.timestamp) {
-                params.basetimestamp = ledger.timestamp;
-            } else {
-                params.createonly = true;
-            }
-
-            return api.postWithToken('csrf', params);
         });
     }
 
@@ -226,15 +177,19 @@ mw.loader.using([
             return;
         }
 
-        const previousVote = hasVoted;
-
-        hasVoted =
+        const newVote =
             up.getAttribute('aria-pressed') === 'true' ||
             down.getAttribute('aria-pressed') === 'true';
 
-        if (previousVote === true && hasVoted === false) {
+        if (hasVoted === true && !newVote) {
             reasonSaved = false;
         }
+
+        if (!newVote) {
+            reasonSaved = false;
+        }
+
+        hasVoted = newVote;
     }
 
     function createPopup() {
@@ -254,7 +209,7 @@ mw.loader.using([
                 display: none;
                 align-items: center;
                 justify-content: center;
-                background: rgba(0, 0, 0, 0.75);
+                background: rgba(0, 0, 0, 0.72);
                 padding: 20px;
                 box-sizing: border-box;
             }
@@ -282,43 +237,35 @@ mw.loader.using([
 
             #rating-leave-warning .rlw-description {
                 font-size: 14px;
-                margin-bottom: 15px;
+                margin-bottom: 18px;
                 line-height: 1.5;
             }
 
-            #rating-leave-warning textarea {
-                width: 100%;
-                min-height: 110px;
-                resize: vertical;
-                padding: 10px;
-                border: 1px solid var(--theme-border-color, #aaa);
-                border-radius: 6px;
-                background: var(--theme-page-background-color, #fff);
-                color: inherit;
-                font: inherit;
-                box-sizing: border-box;
-            }
-
             #rating-leave-warning .rlw-button {
+                display: block;
                 width: 100%;
                 padding: 11px;
-                margin-top: 12px;
+                margin-top: 10px;
                 border: none;
                 border-radius: 6px;
-                background: #3b82f6;
-                color: white;
                 font-weight: bold;
+                font-size: 14px;
                 cursor: pointer;
             }
 
-            #rating-leave-warning .rlw-button:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
+            #rating-leave-warning .rlw-rate {
+                background: #3b82f6;
+                color: white;
             }
 
-            #rating-leave-warning .rlw-status {
-                font-size: 13px;
-                margin-top: 10px;
+            #rating-leave-warning .rlw-leave {
+                background: var(--theme-button-background-color, #777);
+                color: var(--theme-button-text-color, white);
+            }
+
+            #rating-leave-warning .rlw-button:focus-visible {
+                outline: 3px solid var(--theme-accent-color, #3b82f6);
+                outline-offset: 3px;
             }
         `;
 
@@ -332,84 +279,49 @@ mw.loader.using([
 
         const title = document.createElement('div');
         title.className = 'rlw-title';
-        title.textContent = 'Please rate the page before leaving!';
+        title.textContent = 'You haven’t rated this page!';
 
         const description = document.createElement('div');
         description.className = 'rlw-description';
         description.textContent =
-            'Please provide your response below. You must submit it and rate this page before continuing.';
+            'Would you like to go back and rate this page, or leave without rating?';
 
-        const textarea = document.createElement('textarea');
-        textarea.placeholder = 'Type your response here...';
+        const rateButton = document.createElement('button');
+        rateButton.className = 'rlw-button rlw-rate';
+        rateButton.textContent = 'Go back and rate';
 
-        const button = document.createElement('button');
-        button.className = 'rlw-button';
-        button.textContent = 'Submit Response';
+        const leaveButton = document.createElement('button');
+        leaveButton.className = 'rlw-button rlw-leave';
+        leaveButton.textContent = 'Leave page';
 
-        const status = document.createElement('div');
-        status.className = 'rlw-status';
+        rateButton.addEventListener('click', function () {
+            pendingNavigation = null;
+
+            overlay.classList.remove('visible');
+            popupOpen = false;
+
+            focusRatingButtons();
+        });
+
+        leaveButton.addEventListener('click', function () {
+            const destination = pendingNavigation;
+
+            pendingNavigation = null;
+            overlay.classList.remove('visible');
+            popupOpen = false;
+
+            if (destination) {
+                window.location.href = destination;
+            }
+        });
 
         box.appendChild(title);
         box.appendChild(description);
-        box.appendChild(textarea);
-        box.appendChild(button);
-        box.appendChild(status);
+        box.appendChild(rateButton);
+        box.appendChild(leaveButton);
 
         overlay.appendChild(box);
         document.body.appendChild(overlay);
-
-        button.addEventListener('click', function () {
-            if (responseSubmitted) {
-                overlay.classList.remove('visible');
-                popupOpen = false;
-                focusRatingButtons();
-                return;
-            }
-
-            const response = textarea.value.trim();
-
-            if (!response) {
-                status.textContent = 'You must enter a response.';
-                textarea.focus();
-                return;
-            }
-
-            button.disabled = true;
-            textarea.disabled = true;
-            status.textContent = 'Saving your response...';
-
-            saveResponse(response).then(function () {
-                responseSubmitted = true;
-
-                description.textContent =
-                    'Your response has been saved. Now rate this page to continue.';
-
-                textarea.style.display = 'none';
-                button.disabled = false;
-                button.textContent = 'Continue to Rating';
-                status.textContent = 'Response saved successfully.';
-
-                overlay.classList.remove('visible');
-                popupOpen = false;
-
-                focusRatingButtons();
-            }).catch(function (error) {
-                console.error('[RatingLeaveWarning]', error);
-
-                status.textContent =
-                    'Could not save your response. Please try again.';
-
-                button.disabled = false;
-                textarea.disabled = false;
-            });
-        });
-
-        overlay.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-        });
     }
 
     function focusRatingButtons() {
@@ -432,45 +344,24 @@ mw.loader.using([
         }
     }
 
-    function showPopup() {
-        if (popupOpen || canLeave()) {
+    function showPopup(destination) {
+        if (popupOpen) {
             return;
         }
 
         createPopup();
 
+        pendingNavigation = destination;
+
         const overlay = document.getElementById(
             'rating-leave-warning'
         );
 
-        const textarea = overlay.querySelector('textarea');
-        const description = overlay.querySelector('.rlw-description');
-        const button = overlay.querySelector('.rlw-button');
-        const status = overlay.querySelector('.rlw-status');
-
-        if (responseSubmitted) {
-            description.textContent =
-                'Your response has already been saved. Please rate this page before leaving.';
-
-            textarea.style.display = 'none';
-            button.textContent = 'Continue to Rating';
-            status.textContent = '';
-        } else {
-            textarea.style.display = '';
-            textarea.disabled = false;
-            button.disabled = false;
-            button.textContent = 'Submit Response';
-
-            description.textContent =
-                'Please provide your response below. You must submit it and rate this page before continuing.';
-        }
-
         overlay.classList.add('visible');
         popupOpen = true;
 
-        if (!responseSubmitted) {
-            textarea.focus();
-        }
+        const rateButton = overlay.querySelector('.rlw-rate');
+        rateButton.focus();
     }
 
     function interceptNavigation(event) {
@@ -497,7 +388,10 @@ mw.loader.using([
         let destination;
 
         try {
-            destination = new URL(link.href, window.location.href);
+            destination = new URL(
+                link.href,
+                window.location.href
+            );
         } catch (e) {
             return;
         }
@@ -511,6 +405,8 @@ mw.loader.using([
             return;
         }
 
+        updateVoteStatus();
+
         if (canLeave()) {
             return;
         }
@@ -518,17 +414,17 @@ mw.loader.using([
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        pendingNavigation = destination.href;
-
-        showPopup();
+        showPopup(destination.href);
     }
 
     function handleReasonSaved(event) {
         const detail = event.detail || {};
 
         if (
-            normalizePage(detail.page || '') !== normalizePage(pageName) ||
-            normalizeUser(detail.user || '') !== normalizeUser(currentUser)
+            normalizePage(detail.page || '') !==
+                normalizePage(pageName) ||
+            normalizeUser(detail.user || '') !==
+                normalizeUser(currentUser)
         ) {
             return;
         }
@@ -537,14 +433,6 @@ mw.loader.using([
 
         hasVoted = true;
         reasonSaved = true;
-
-        if (pendingNavigation) {
-            const destination = pendingNavigation;
-
-            pendingNavigation = null;
-
-            window.location.href = destination;
-        }
     }
 
     function observeRatingButtons() {
@@ -573,15 +461,6 @@ mw.loader.using([
         interceptNavigation,
         true
     );
-
-    window.addEventListener('beforeunload', function (event) {
-        updateVoteStatus();
-
-        if (!canLeave()) {
-            event.preventDefault();
-            event.returnValue = '';
-        }
-    });
 
     checkVoteStatus().then(function () {
         observeRatingButtons();

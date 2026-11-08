@@ -1,0 +1,3 @@
+/* longtitles fix - opt-in (preferences) user gadget  */
+var sels = ['.page-header', '.page-header__categories', '.page-header__meta', '.page-header__categories', '.page-header__categories-dropdown', '.page-header__categories-dropdown-content', '.page-header__top', '.page-header__bottom', '.page-header__title-wrapper', '.page-header__title']
+sels.forEach((sel)=>{$(sel).html((_, c)=>c.replace(/^[\s\n\r\t]+/, '').replace(/[\s\n\r\t]+$/, ''))});

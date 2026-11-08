@@ -468,3 +468,152 @@ mw.hook('wikipage.content').add(function ($content) {
 		startAutoplay();
 	});
 });
+
+/* ===== Kafelki pięter: wideo po najechaniu ===== */
+mw.hook( 'wikipage.content' ).add( function ( $content ) {
+	'use strict';
+
+	if ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+		return;
+	}
+
+	$content.find( '.doorswiki-floors-floor' ).each( function () {
+		var tile = this;
+		if ( tile.getAttribute( 'data-video-ready' ) ) {
+			return;
+		}
+
+		var holder = tile.querySelector( '.doorswiki-floors-floor--video' );
+		var file = holder && holder.getAttribute( 'data-file' );
+		if ( !file ) {
+			return;
+		}
+		tile.setAttribute( 'data-video-ready', '1' );
+
+		var src = holder.getAttribute( 'data-url' ) ||
+			mw.util.getUrl( 'Special:FilePath/' + file );
+
+		var video = null;
+
+		function createVideo() {
+			video = document.createElement( 'video' );
+			video.muted = true;
+			video.loop = true;
+			video.playsInline = true;
+			video.controls = false;
+			video.preload = 'auto';
+			video.disablePictureInPicture = true;
+			video.setAttribute( 'muted', '' );
+			video.setAttribute( 'playsinline', '' );
+			video.setAttribute( 'controlslist', 'nodownload nofullscreen noremoteplayback' );
+			video.setAttribute( 'aria-hidden', 'true' );
+			video.tabIndex = -1;
+			video.src = src;
+			video.addEventListener( 'playing', function () {
+				tile.classList.add( 'is-playing' );
+			} );
+			video.addEventListener( 'contextmenu', function ( e ) {
+				e.preventDefault();
+			} );
+			holder.appendChild( video );
+		}
+
+		tile.addEventListener( 'mouseenter', function () {
+			if ( !video ) {
+				createVideo();
+			}
+			var p = video.play();
+			if ( p && p.catch ) {
+				p.catch( function () {} );
+			}
+		} );
+
+		tile.addEventListener( 'mouseleave', function () {
+			tile.classList.remove( 'is-playing' );
+			if ( video ) {
+				video.pause();
+				video.currentTime = 0;
+			}
+		} );
+	} );
+} );
+
+/* ===== Ostatnie dyskusje / edycje – dane z API zamiast DPL ===== */
+mw.loader.using( [ 'mediawiki.api', 'mediawiki.util' ] ).then( function () {
+	mw.hook( 'wikipage.content' ).add( function ( $content ) {
+		$content.find( '.doorswiki-recent-list' ).each( function () {
+			var box = this;
+			if ( box.getAttribute( 'data-loaded' ) ) {
+				return;
+			}
+			box.setAttribute( 'data-loaded', '1' );
+
+			var count = parseInt( box.getAttribute( 'data-count' ), 10 ) || 10;
+			var ns = box.getAttribute( 'data-ns' ) || '1';
+
+			function message( text ) {
+				box.textContent = text;
+			}
+			message( 'Ładowanie…' );
+
+			new mw.Api().get( {
+				action: 'query',
+				list: 'recentchanges',
+				rcnamespace: ns,
+				rctype: 'edit|new',
+				rcprop: 'title|user|timestamp',
+				rclimit: 100,
+				formatversion: 2
+			} ).done( function ( data ) {
+				var changes = ( data.query && data.query.recentchanges ) || [];
+				var seen = {};
+				var list = document.createElement( 'ul' );
+				list.className = 'doorswiki-timeline';
+
+				changes.forEach( function ( rc ) {
+					if ( list.children.length >= count || seen[ rc.title ] ) {
+						return;
+					}
+					seen[ rc.title ] = true;
+
+					var label = rc.ns === 0 ? rc.title : rc.title.replace( /^[^:]+:/, '' );
+
+					var li = document.createElement( 'li' );
+
+					var title = document.createElement( 'a' );
+					title.className = 'doorswiki-timeline-title';
+					title.href = mw.util.getUrl( rc.title );
+					title.textContent = label;
+
+					var meta = document.createElement( 'div' );
+					meta.className = 'doorswiki-timeline-meta';
+
+					var user = document.createElement( 'a' );
+					user.href = mw.util.getUrl( 'Special:Contributions/' + rc.user );
+					user.textContent = rc.user;
+
+					var date = new Date( rc.timestamp ).toLocaleDateString( 'pl-PL', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric'
+					} );
+
+					meta.appendChild( user );
+					meta.appendChild( document.createTextNode( ' • ' + date ) );
+					li.appendChild( title );
+					li.appendChild( meta );
+					list.appendChild( li );
+				} );
+
+				if ( !list.children.length ) {
+					message( 'Brak ostatnich zmian.' );
+					return;
+				}
+				box.textContent = '';
+				box.appendChild( list );
+			} ).fail( function () {
+				message( 'Nie udało się wczytać listy.' );
+			} );
+		} );
+	} );
+} );

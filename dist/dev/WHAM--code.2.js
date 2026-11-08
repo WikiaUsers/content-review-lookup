@@ -21,7 +21,7 @@
     ]);
     if (
         (!['UserProfileActivity', 'Contributions'].includes(config.wgCanonicalSpecialPageName)) ||
-        !/rollback|content-moderator|threadmoderator|sysop|soap|staff|global-discussions-moderator|wiki-specialist|global-edit-reviewer/.test(config.wgUserGroups.join()) ||
+        !/rollback|content-moderator|threadmoderator|sysop|soap|staff|helper|global-discussions-moderator|wiki-specialist|global-edit-reviewer/.test(config.wgUserGroups.join()) ||
         window.WHAMLoaded
     ) {
         return;

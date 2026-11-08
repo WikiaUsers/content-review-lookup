@@ -68,129 +68,132 @@ $.ajax({
 /*----------------------------------------*/
 /*----------------------------------------*/
 /*----------------------------------------*/
-// Upgrade Coins Calculator 
-// level -> coins
-    const coinsPerLevel = {
-        1: 0,
-        2: 150,
-        3: 170,
-        4: 190,
-        5: 210,
-        6: 230,
-        7: 250,
-        8: 270,
-        9: 300,
-        10: 320,
-        11: 350,
-        12: 380,
-        13: 400,
-        14: 450,
-        15: 500,
-        16: 540,
-        17: 580,
-        18: 630,
-        19: 700,
-        20: 750,
-        21: 820,
-        22: 900,
-        23: 970,
-        24: 1050,
-        25: 1150,
-        26: 1250,
-        27: 1350,
-        28: 1450,
-        29: 1550,
-        30: 1700,
-        31: 1850,
-        32: 2000,
-        33: 2150,
-        34: 2300,
-        35: 2500,
-        36: 2700,
-        37: 3000,
-        38: 3300,
-        39: 3600,
-        40: 4000,
-        41: 4300,
-        42: 4750,
-        43: 5200,
-        44: 5700,
-        45: 6200,
-        46: 6700,
-        47: 7300,
-        48: 8000,
-        49: 8900,
-        50: 10000,
-    };
+/* Racer upgrade calculator */
+(function () {
+    "use strict";
 
-// level -> shards
-const shardsPerLevel = {
-    1: 0, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1,
-    11: 2, 12: 2, 13: 2, 14: 2, 15: 2, 16: 2, 17: 2, 18: 2, 19: 2, 20: 3,
-    21: 3, 22: 3, 23: 3, 24: 3, 25: 3, 26: 4, 27: 4, 28: 4, 29: 4, 30: 4,
-    31: 5, 32: 5, 33: 5, 34: 5, 35: 5, 36: 5, 37: 5, 38: 5, 39: 5, 40: 5,
-    41: 7, 42: 7, 43: 7, 44: 7, 45: 9, 46: 9, 47: 9, 48: 10, 49: 10, 50: 10,
-};
+    const fragmentsPerStar = 5;
+    const costsByStar = [
+        { shards: 3, coins: 300 },
+        { shards: 5, coins: 500 },
+        { shards: 7, coins: 700 },
+        { shards: 9, coins: 900 },
+        { shards: 13, coins: 1300 },
+        { shards: 15, coins: 1500 }
+    ];
+    const maxProgress = costsByStar.length * fragmentsPerStar;
 
-// Get the main div
-const calculatorDiv = document.getElementById("calculator");
-const calculatorInsideDiv = document.getElementById("calculator-inside");
-
-// Create elements dynamically
-const fromLabel = document.createElement("label");
-fromLabel.innerText = "From Level:";
-
-const fromInput = document.createElement("input");
-fromInput.type = "number";
-fromInput.id = "fromLevel";
-fromInput.min = 1;
-fromInput.max = 50;
-
-const toLabel = document.createElement("label");
-toLabel.innerText = " to Level:";
-
-const toInput = document.createElement("input");
-toInput.type = "number";
-toInput.id = "toLevel";
-toInput.min = 1;
-toInput.max = 50;
-
-const button = document.createElement("button");
-button.innerText = "Calculate";
-button.onclick = calculateResources;
-
-const resultText = document.createElement("div");
-resultText.innerHTML = 'Result: <span id="shardsResult">0</span> Shards, <span id="result">0</span> Upgrade Coins';
-
-// Append elements to the div
-calculatorInsideDiv.appendChild(fromLabel);
-calculatorInsideDiv.appendChild(fromInput);
-calculatorInsideDiv.appendChild(toLabel);
-calculatorInsideDiv.appendChild(toInput);
-calculatorInsideDiv.appendChild(button);
-calculatorDiv.appendChild(resultText);
-
-function calculateResources() {
-    let fromLevel = parseInt(fromInput.value);
-    let toLevel = parseInt(toInput.value);
-
-    // Check for valid input
-    if (isNaN(fromLevel) || isNaN(toLevel) || fromLevel < 1 || toLevel > 50 || fromLevel >= toLevel) {
-        resultText.innerHTML = "Invalid input";
-        return;
+    function formatNumber(value) {
+        return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
-    // Initialize totals
-    let totalCoins = 0;
-    let totalShards = 0;
+    function progressLabel(progress) {
+        const stars = Math.floor(progress / fragmentsPerStar);
+        const fragments = progress % fragmentsPerStar;
+        let label = stars + (stars === 1 ? " Star" : " Stars");
 
-    // Loop through levels starting from fromLevel + 1 to toLevel
-    for (let i = fromLevel + 1; i <= toLevel; i++) {
-        totalCoins += coinsPerLevel[i] || 0;
-        totalShards += shardsPerLevel[i] || 0;
+        if (fragments > 0) {
+            label += " + " + fragments;
+            label += fragments === 1 ? " Fragment" : " Fragments";
+        }
+
+        return label;
     }
 
-    // Display the results
-    document.getElementById("result").innerText = totalCoins;
-    document.getElementById("shardsResult").innerText = totalShards;
-}
+    function createProgressSelect(selectedProgress) {
+        const select = document.createElement("select");
+
+        for (let progress = 0; progress <= maxProgress; progress++) {
+            const option = document.createElement("option");
+            option.value = String(progress);
+            option.textContent = progressLabel(progress);
+            select.appendChild(option);
+        }
+
+        select.value = String(selectedProgress);
+        return select;
+    }
+
+    function initializeCalculator(calculator) {
+        const inside = calculator.querySelector("#calculator-inside");
+
+        if (!inside || calculator.dataset.starCalculatorReady === "true") {
+            return;
+        }
+
+        const fromSelect = createProgressSelect(0);
+        const toSelect = createProgressSelect(maxProgress);
+        const fromLabel = document.createElement("label");
+        const toLabel = document.createElement("label");
+        const button = document.createElement("button");
+        const resultText = document.createElement("div");
+
+        fromLabel.append("From: ", fromSelect);
+        toLabel.append("To: ", toSelect);
+        button.type = "button";
+        button.textContent = "Calculate";
+        resultText.className = "upgrade-calculator-result";
+        resultText.setAttribute("role", "status");
+
+        function calculateResources() {
+            const from = Number(fromSelect.value);
+            const to = Number(toSelect.value);
+
+            if (
+                fromSelect.value === "" || toSelect.value === "" ||
+                !Number.isInteger(from) || !Number.isInteger(to) ||
+                from < 0 || to < 0 || from > maxProgress || to > maxProgress
+            ) {
+                resultText.textContent = "Please select valid starting and target progress.";
+                return;
+            }
+
+            if (from > to) {
+                resultText.textContent = "Target progress must be at or above starting progress.";
+                return;
+            }
+
+            let totalShards = 0;
+            let totalCoins = 0;
+
+            for (let progress = from + 1; progress <= to; progress++) {
+                const cost = costsByStar[Math.floor((progress - 1) / fragmentsPerStar)];
+                totalShards += cost.shards;
+                totalCoins += cost.coins;
+            }
+
+            resultText.textContent = "Result: " + formatNumber(totalShards) +
+                " Racer Shards, " + formatNumber(totalCoins) + " Tune Coins";
+        }
+
+        inside.replaceChildren(fromLabel, " ", toLabel, " ", button);
+        calculator.appendChild(resultText);
+        calculator.dataset.starCalculatorReady = "true";
+        button.addEventListener("click", calculateResources);
+        fromSelect.addEventListener("change", calculateResources);
+        toSelect.addEventListener("change", calculateResources);
+        calculateResources();
+    }
+
+    function initialize(root) {
+        if (root.nodeType === 1 && root.matches("#calculator")) {
+            initializeCalculator(root);
+        }
+
+        root.querySelectorAll("#calculator").forEach(initializeCalculator);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+            initialize(document);
+        });
+    } else {
+        initialize(document);
+    }
+
+    if (typeof mw !== "undefined" && typeof mw.hook === "function") {
+        mw.hook("wikipage.content").add(function ($content) {
+            initialize($content && $content[0] ? $content[0] : document);
+        });
+    }
+}());

@@ -1,26 +1,47 @@
-
 mw.loader.using([
     'mediawiki.api',
     'mediawiki.util'
 ]).then(function () {
     'use strict';
 
-    const ledgerTitle = 'Project:Ratings';
+    if (window.RatedReasonsLoaded) {
+        return;
+    }
+    window.RatedReasonsLoaded = true;
+
+    const config = $.extend({
+        ledgerTitle: 'Project:Ratings',
+        shard: false,
+        namespaces: [0, 2],
+        minWidth: 768,
+        maxRetries: 3
+    }, window.RatingSystemConfig);
+
+    const RETRYABLE_CODES = ['editconflict', 'pagedeleted', 'articleexists'];
+    const POLL_INTERVAL = 750;
+    const POLL_ATTEMPTS = 20;
+
     const api = new mw.Api();
 
     const currentUser = mw.config.get('wgUserName');
     const pageName = mw.config.get('wgPageName');
 
-    if (!currentUser) {
-        return;
-    }
-
-    if (![0, 2].includes(mw.config.get('wgNamespaceNumber'))) {
+    if (!currentUser || !isSupportedPage()) {
         return;
     }
 
     let observingVote = false;
     let lastObservedClick = 0;
+    let knownVote = null;
+
+    function isSupportedPage() {
+        return mw.config.get('wgAction') === 'view' &&
+            mw.config.get('wgArticleId') > 0 &&
+            !mw.config.get('wgIsRedirect') &&
+            [].concat(config.namespaces).indexOf(mw.config.get('wgNamespaceNumber')) !== -1 &&
+            !document.body.classList.contains('is-mobile') &&
+            window.innerWidth >= config.minWidth;
+    }
 
     function escapeHtml(text) {
         return String(text)
@@ -29,6 +50,15 @@ mw.loader.using([
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    function unescapeHtml(text) {
+        return String(text)
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&amp;/g, '&');
     }
 
     function wikiHref(title) {
@@ -43,11 +73,47 @@ mw.loader.using([
         );
     }
 
+    function request(promise) {
+        return new Promise(function (resolve, reject) {
+            promise.then(resolve, function (code, result) {
+                reject({ code: code, result: result });
+            });
+        });
+    }
+
+    function wait(milliseconds) {
+        return new Promise(function (resolve) {
+            setTimeout(resolve, milliseconds);
+        });
+    }
+
+    // Must stay identical to RatingSystem's ledgerTitleFor
+    function ledgerTitleFor(page) {
+        if (!config.shard) {
+            return config.ledgerTitle;
+        }
+
+        const first = page.charAt(0).toUpperCase();
+        let bucket = 'Other';
+
+        if (/[A-Z]/.test(first)) {
+            bucket = first;
+        } else if (/[0-9]/.test(first)) {
+            bucket = '0-9';
+        }
+
+        return config.ledgerTitle + '/' + bucket;
+    }
+
+    function normalizeUser(name) {
+        return name.replace(/%2C/gi, ',').trim().replace(/_/g, ' ');
+    }
+
     function parseLedger(content) {
-        const ratings = {};
+        const ratings = Object.create(null);
 
         String(content || '')
-            .split('\n')
+            .split(/\r?\n/)
             .forEach(function (line) {
                 const cleanLine = line
                     .replace('<p>', '')
@@ -64,15 +130,15 @@ mw.loader.using([
 
                 const parts = cleanLine.split('|');
 
-                if (parts.length < 3) {
+                if (parts.length !== 3) {
                     return;
                 }
 
-                const pName = parts[0].trim();
+                const pName = parts[0].trim().replace(/ /g, '_');
                 const secondColumn = parts[1].trim();
 
                 if (!ratings[pName]) {
-                    ratings[pName] = {};
+                    ratings[pName] = Object.create(null);
                 }
 
                 if (secondColumn.includes(':')) {
@@ -83,7 +149,8 @@ mw.loader.using([
                             return;
                         }
 
-                        const username = entry.substring(0, separator).trim();
+                        const username = normalizeUser(entry.substring(0, separator));
+
                         const vote = parseInt(
                             entry.substring(separator + 1).trim(),
                             10
@@ -97,7 +164,7 @@ mw.loader.using([
                         }
                     });
                 } else {
-                    const username = secondColumn;
+                    const username = normalizeUser(secondColumn);
                     const vote = parseInt(parts[2].trim(), 10);
 
                     if (
@@ -112,49 +179,47 @@ mw.loader.using([
         return ratings;
     }
 
-    function getLedger() {
-        return api.get({
+    // A failed or malformed read rejects
+    function getLedger(title) {
+        return request(api.get({
             action: 'query',
             prop: 'revisions',
-            titles: ledgerTitle,
+            titles: title,
             rvprop: 'content|timestamp',
+            rvslots: 'main',
+            curtimestamp: true,
             formatversion: 2,
             cb: Date.now()
-        }).then(function (data) {
-            let content = '';
-            let timestamp = '';
+        })).then(function (data) {
+            const page = data.query && data.query.pages && data.query.pages[0];
 
-            try {
-                const pages = data.query && data.query.pages;
+            if (page && page.missing) {
+                return {
+                    content: '',
+                    timestamp: null,
+                    startTimestamp: data.curtimestamp,
+                    ratings: parseLedger('')
+                };
+            }
 
-                if (pages) {
-                    const keys = Object.keys(pages);
-                    const page = pages[keys[0]];
+            const revision = page && page.revisions && page.revisions[0];
+            const slot = revision && revision.slots && revision.slots.main;
 
-                    if (
-                        page &&
-                        page.revisions &&
-                        page.revisions[0]
-                    ) {
-                        content = page.revisions[0].content || '';
-                        timestamp = page.revisions[0].timestamp || '';
-                    }
-                }
-            } catch (e) {
-                content = '';
-                timestamp = '';
+            if (!slot || typeof slot.content !== 'string' || !data.curtimestamp) {
+                return Promise.reject({ code: 'invalid-response' });
             }
 
             return {
-                content: content,
-                timestamp: timestamp,
-                ratings: parseLedger(content)
+                content: slot.content,
+                timestamp: revision.timestamp,
+                startTimestamp: data.curtimestamp,
+                ratings: parseLedger(slot.content)
             };
         });
     }
 
     function getCurrentVote() {
-        return getLedger().then(function (ledger) {
+        return getLedger(ledgerTitleFor(pageName)).then(function (ledger) {
             return (
                 ledger.ratings[pageName] &&
                 ledger.ratings[pageName][currentUser]
@@ -195,13 +260,17 @@ mw.loader.using([
 
     function encodeReason(reason) {
         return String(reason)
-            .replace(/\|/g, '&#124;')
-            .replace(/\r?\n/g, ' ');
+            .replace(/\r?\n/g, ' ')
+            .replace(/[|~{}]/g, function (character) {
+                return '&#' + character.charCodeAt(0) + ';';
+            });
     }
 
     function decodeReason(reason) {
         return String(reason)
-            .replace(/&#124;/g, '|');
+            .replace(/&#(124|126|123|125);/g, function (match, code) {
+                return String.fromCharCode(Number(code));
+            });
     }
 
     function getReasonLines(content) {
@@ -212,9 +281,11 @@ mw.loader.using([
             });
     }
 
-    function updateReasonInLedger(reason) {
-        return getLedger().then(function (ledger) {
-            const lines = String(ledger.content || '').split('\n');
+    function updateReasonInLedger(reason, attempt) {
+        const title = ledgerTitleFor(pageName);
+
+        return getLedger(title).then(function (ledger) {
+            const lines = ledger.content === '' ? [] : ledger.content.split('\n');
 
             const newReasonLine =
                 'RatingReason | ' +
@@ -226,20 +297,35 @@ mw.loader.using([
 
             lines.push(newReasonLine);
 
-            const newText = lines.join('\n');
-
-            return api.postWithToken('csrf', {
+            const params = {
                 action: 'edit',
-                title: ledgerTitle,
+                title: title,
                 summary:
                     'Added rating reason for [[' +
                     pageName +
                     ']]',
-                text: newText,
+                text: lines.join('\n'),
                 minor: true,
-                basetimestamp: ledger.timestamp,
-                starttimestamp: new Date().toISOString()
-            });
+                watchlist: 'nochange',
+                assert: 'user',
+                starttimestamp: ledger.startTimestamp
+            };
+
+            if (ledger.timestamp) {
+                params.basetimestamp = ledger.timestamp;
+            } else {
+                params.createonly = true;
+            }
+
+            return request(api.postWithToken('csrf', params));
+        }).then(null, function (error) {
+            if (RETRYABLE_CODES.indexOf(error.code) !== -1 && attempt < config.maxRetries) {
+                return wait(150 + Math.random() * 350).then(function () {
+                    return updateReasonInLedger(reason, attempt + 1);
+                });
+            }
+
+            return Promise.reject(error);
         });
     }
 
@@ -262,13 +348,13 @@ mw.loader.using([
                 if (match.index > last) {
                     parts.push({
                         type: 'text',
-                        text: paragraph.slice(last, match.index)
+                        text: unescapeHtml(paragraph.slice(last, match.index))
                     });
                 }
 
                 parts.push({
                     type: 'text',
-                    text: match[2],
+                    text: unescapeHtml(match[2]),
                     marks: [{
                         type: 'link',
                         attrs: {
@@ -283,7 +369,7 @@ mw.loader.using([
             if (last < paragraph.length) {
                 parts.push({
                     type: 'text',
-                    text: paragraph.slice(last)
+                    text: unescapeHtml(paragraph.slice(last))
                 });
             }
 
@@ -310,7 +396,7 @@ mw.loader.using([
         };
 
         function fetchUsers(queryParams) {
-            return api.get(queryParams).then(function (data) {
+            return request(api.get(queryParams)).then(function (data) {
                 const batch =
                     data.query && data.query.allusers
                         ? data.query.allusers
@@ -336,7 +422,7 @@ mw.loader.using([
     }
 
     function postToWall(user, title, bodyHtml) {
-        return $.ajax({
+        return Promise.resolve($.ajax({
             type: 'POST',
             url:
                 mw.util.wikiScript('wikia') +
@@ -353,7 +439,7 @@ mw.loader.using([
             xhrFields: {
                 withCredentials: true
             }
-        });
+        }));
     }
 
     function sendNotification(notification) {
@@ -431,65 +517,70 @@ mw.loader.using([
         }));
     }
 
-    function waitForSuccessfulVote(targetVote, previousVote) {
+    function waitForVoteChange(previousVote) {
         let attempts = 0;
+
+        function retry() {
+            if (attempts >= POLL_ATTEMPTS) {
+                return null;
+            }
+
+            return wait(POLL_INTERVAL).then(check);
+        }
 
         function check() {
             attempts++;
 
             return getCurrentVote().then(function (currentVote) {
-                if (
-                    currentVote === targetVote &&
-                    currentVote !== previousVote
-                ) {
-                    return true;
-                }
-
-                if (attempts >= 20) {
-                    return false;
-                }
-
-                return new Promise(function (resolve) {
-                    setTimeout(function () {
-                        resolve(check());
-                    }, 750);
-                });
-            });
+                return currentVote !== previousVote ? currentVote : retry();
+            }, retry);
         }
 
         return check();
     }
 
-    function observeVote(targetVote) {
+    const knownVoteReady = getCurrentVote().then(function (vote) {
+        knownVote = vote;
+    }, function (error) {
+        console.warn('RatingsNotifications: could not read the current vote', error);
+    });
+
+    function observeVote() {
         if (observingVote) {
             return;
         }
 
         observingVote = true;
 
-        getCurrentVote()
+        knownVoteReady
+            .then(function () {
+                return knownVote !== null ? knownVote : getCurrentVote();
+            })
             .then(function (previousVote) {
-                return waitForSuccessfulVote(
-                    targetVote,
-                    previousVote
-                ).then(function (successful) {
-                    if (!successful) {
+                return waitForVoteChange(previousVote).then(function (currentVote) {
+                    if (currentVote === null) {
                         return;
                     }
 
-                    const reason = askReason(targetVote);
+                    knownVote = currentVote;
+
+                    if (currentVote === 0) {
+                        return;
+                    }
+
+                    const reason = askReason(currentVote);
 
                     if (reason === null) {
                         return;
                     }
 
-                    return updateReasonInLedger(reason)
+                    return updateReasonInLedger(reason, 0)
                         .then(function () {
                             dispatchReasonSaved();
 
                             return sendNotification({
                                 pageName: pageName,
-                                vote: targetVote,
+                                vote: currentVote,
                                 reason: reason
                             });
                         });
@@ -504,22 +595,22 @@ mw.loader.using([
                 );
             })
             .finally(function () {
-                observingVote = false;
+                return getCurrentVote().then(function (vote) {
+                    knownVote = vote;
+                }, function () {}).then(function () {
+                    observingVote = false;
+                });
             });
     }
 
     document.addEventListener(
         'click',
         function (event) {
-            const upButton =
+            const button =
                 event.target.closest &&
-                event.target.closest('.ejt-up-btn');
+                event.target.closest('.ejt-up-btn, .ejt-down-btn');
 
-            const downButton =
-                event.target.closest &&
-                event.target.closest('.ejt-down-btn');
-
-            if (!upButton && !downButton) {
+            if (!button || button.getAttribute('aria-disabled') === 'true') {
                 return;
             }
 
@@ -531,12 +622,8 @@ mw.loader.using([
 
             lastObservedClick = now;
 
-            const targetVote = upButton ? 1 : -1;
-
-            setTimeout(function () {
-                observeVote(targetVote);
-            }, 100);
+            observeVote();
         },
-        false
+        true
     );
 });

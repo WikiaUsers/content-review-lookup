@@ -1,7 +1,7 @@
 /* Configuration for [[w:c:dev:AddRailModule]] */
 window.AddRailModule = [{
-    // {{DiscordRailModule}}
-    //page: 'Template:DiscordRailModule',
+    // {{RailModule}}
+    //page: 'Template:RailModule',
     prepend: true,
     maxAge: 86400,
 }/*, {

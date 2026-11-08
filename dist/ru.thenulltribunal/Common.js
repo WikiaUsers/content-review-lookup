@@ -415,6 +415,9 @@ mw.hook('wikipage.content').add(function ($content) {
 	mw.hook('wikipage.content').add(prepare);
 })();
 
+/* TNT: поисковые справочники и компактные подборки цитат.
+   Для MediaWiki:Common.js (или импорт в него из MediaWiki:TNT_Dictionaries.js).
+   Не использует внешние ресурсы и не отправляет данные пользователя. */
 (function () {
   'use strict';
   var PAGE_SIZE = 6;
@@ -459,3 +462,159 @@ mw.hook('wikipage.content').add(function ($content) {
       redraw();
     });
     list.appendChild(more);
+    redraw();
+  }
+
+  function initDictionary(root) {
+    if (root.__tntDictReady) return;
+    root.__tntDictReady = true;
+    var mode = root.classList.contains('tnt-translator') ? 'translator' : 'glossary';
+    var sections = Array.from(root.querySelectorAll('.tnt-dict-section'));
+    var entries = Array.from(root.querySelectorAll('.tnt-dict-entry'));
+    if (!entries.length) return;
+    var toolbar = root.querySelector('.tnt-dict-toolbar');
+    if (!toolbar) return;
+
+    var search = el('input', 'tnt-dict-search');
+    search.type = 'search';
+    search.autocomplete = 'off';
+    search.setAttribute('aria-label', 'Поиск по справочнику');
+    search.placeholder = mode === 'translator'
+      ? 'Искать слово, имя, перевод или язык…'
+      : 'Искать термин или определение…';
+
+    var category = el('select', 'tnt-dict-select');
+    category.setAttribute('aria-label', mode === 'translator' ? 'Тип записи' : 'Категория термина');
+    category.appendChild(new Option('Все категории', ''));
+    var uniqueCategories = new Set();
+    sections.forEach(function (section) {
+      var heading = section.querySelector('h2');
+      var key = heading ? heading.textContent.trim() : '';
+      if (key && !uniqueCategories.has(key)) {
+        uniqueCategories.add(key);
+        category.appendChild(new Option(key, key));
+      }
+    });
+
+    var langSelect = null;
+    if (mode === 'translator') {
+      var langMap = new Map();
+      entries.forEach(function (entry) {
+        entry.querySelectorAll('.tnt-lang-row').forEach(function (line) {
+          var codeEl = line.querySelector('.tnt-lang-code');
+          var code = codeEl ? norm(codeEl.textContent) : '';
+          var label = line.querySelector('.tnt-lang-name');
+          if (code && !langMap.has(code)) {
+            langMap.set(code, label ? label.textContent.trim() : code);
+          }
+        });
+      });
+      langSelect = el('select', 'tnt-dict-lang');
+      langSelect.setAttribute('aria-label', 'Язык перевода');
+      langSelect.appendChild(new Option('Любой язык', ''));
+      langMap.forEach(function (name, code) {
+        langSelect.appendChild(new Option(name, code));
+      });
+    }
+
+    var reset = el('button', 'tnt-dict-reset', 'Сбросить фильтры ×');
+    reset.type = 'button';
+    toolbar.appendChild(search);
+    toolbar.appendChild(category);
+    if (langSelect) toolbar.appendChild(langSelect);
+    toolbar.appendChild(reset);
+    if (langSelect) toolbar.classList.add('tnt-dict-toolbar--3');
+
+    var status = root.querySelector('.tnt-dict-status');
+    var empty = root.querySelector('.tnt-dict-empty');
+    var cache = entries.map(function (entry) {
+      return {
+        node: entry,
+        text: norm(entry.textContent),
+        langs: Array.from(entry.querySelectorAll('.tnt-lang-row .tnt-lang-code'))
+          .map(function (item) { return norm(item.textContent); })
+      };
+    });
+
+    // Полные определения по умолчанию доступны без JS.
+    // Кнопка и скрытие появляются только после инициализации.
+    entries.forEach(function (entry, index) {
+      var full = entry.querySelector('.tnt-entry-full');
+      var bottom = entry.querySelector('.tnt-entry-bottom');
+      if (!full || !bottom || !full.textContent.trim()) return;
+      var id = 'tnt-definition-' + index + '-' + Math.random().toString(36).slice(2, 8);
+      full.id = id;
+      var toggle = el('button', 'tnt-entry-toggle', 'Полное определение +');
+      toggle.type = 'button';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-controls', id);
+      toggle.addEventListener('click', function () {
+        var isOpen = full.classList.toggle('tnt-open');
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        toggle.textContent = isOpen ? 'Свернуть −' : 'Полное определение +';
+      });
+      bottom.insertBefore(toggle, bottom.firstChild);
+    });
+    root.classList.add('tnt-dict-ready');
+
+    function update() {
+      var query = norm(search.value);
+      var cat = category.value;
+      var lang = langSelect ? langSelect.value : '';
+      var total = 0;
+      var visible = 0;
+      cache.forEach(function (item) {
+        var section = item.node.closest('.tnt-dict-section');
+        var heading = section ? section.querySelector('h2') : null;
+        var sectionCategory = heading ? heading.textContent.trim() : '';
+        var ok = (!query || item.text.indexOf(query) !== -1) &&
+          (!cat || cat === sectionCategory) &&
+          (!lang || item.langs.indexOf(lang) !== -1);
+        item.node.classList.toggle('tnt-filtered', !ok);
+        total++;
+        if (ok) visible++;
+      });
+      sections.forEach(function (section) {
+        var hasItems = !!section.querySelector('.tnt-dict-entry:not(.tnt-filtered)');
+        section.classList.toggle('tnt-filtered-section', !hasItems);
+      });
+      if (status) {
+        status.setAttribute('aria-live', 'polite');
+        status.textContent = 'Найдено: ' + visible + ' из ' + total;
+      }
+      if (empty) empty.classList.toggle('tnt-visible', visible === 0);
+      reset.classList.toggle('tnt-on', !!query || !!cat || !!lang);
+    }
+
+    search.addEventListener('input', update);
+    category.addEventListener('change', update);
+    if (langSelect) langSelect.addEventListener('change', update);
+    reset.addEventListener('click', function () {
+      search.value = '';
+      category.value = '';
+      if (langSelect) langSelect.value = '';
+      update();
+      search.focus();
+    });
+    update();
+  }
+
+  function boot(scope) {
+    var base = scope && scope.querySelectorAll ? scope : document;
+    if (base.matches && base.matches('.tnt-quote-list')) initQuotes(base);
+    base.querySelectorAll('.tnt-quote-list').forEach(initQuotes);
+    if (base.matches && base.matches('.tnt-dict')) initDictionary(base);
+    base.querySelectorAll('.tnt-dict').forEach(initDictionary);
+  }
+
+  if (typeof mw !== 'undefined' && mw.hook) {
+    mw.hook('wikipage.content').add(function ($content) {
+      boot($content && $content[0]);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { boot(document); });
+  } else {
+    boot(document);
+  }
+})();

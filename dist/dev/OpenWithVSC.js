@@ -1,4 +1,5 @@
 (function (window, $, mw) {
+	window.dev = window.dev || {};
 	var conf = window.dev.openvsc || {};
 	
 	// Get existing edit button
@@ -36,9 +37,10 @@
 	} else {
 		// Clear content and make sure the text is what we want it to be
 		edit.innerHTML = '<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-pencil-small" /></svg>' + conf["web"];
+		edit.classList.add("has-label");
 
 		// Add the VSC button next to the WEB (normal edit) button
-		edit.outerHTML += '<a class="wds-button wds-is-text page-header__action-button has-label" href="' + vsclink +
+		edit.outerHTML += '<a class="wds-button wds-is-text page-header__action-button page-header__collections has-label" href="' + vsclink +
 			'"> <svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-preformat-small" /></svg>' + conf["vsc"] + '</a>';
 	}
 

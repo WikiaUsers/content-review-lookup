@@ -12,17 +12,6 @@
       cache: true
     })
   }
-  
-  function reviver(key, value) {
-  // If the value is a string that starts with "function",
-  // convert it back into an executable function.
-  // used different quote for in-function-variables, e.g. position: "function (point, params, dom, rect, size) {return [point[0], '10%'];}"
-    if (typeof value === 'string' && value.startsWith('function')) {
-	    // A safer alternative to eval is using new Function().
-	    return new Function('return (' + value + ')')();
-	    }
-    return value;
-  }
 
   // Get blocks
   var $blocks = $('.ECharts, .Echarts, .echarts')
@@ -44,14 +33,14 @@
         // Try to parse JSON
         try {
           // Parse JSON with JSON5 { foo: 'bar' } -> { "foo": "bar" }
-          //option = JSON5.parse(text)
-          // Parse JSON with JSON5 { foo: 'bar' } -> { "foo": "bar" } and revive inline function
-          option = JSON5.parse(text, reviver)
+          // Do not revive strings into functions: page content is untrusted, so that would allow XSS.
+          // See https://fandom.atlassian.net/browse/PLATFORM-12021
+          option = JSON5.parse(text)
         } catch (e) {
           $this.append(
             $('<pre>', {
               class: 'error',
-              html: 'ECharts options parse error:\n' + e
+              text: 'ECharts options parse error:\n' + e
             })
           )
           return console.warn('ECharts options parse error', item, e)

@@ -5,7 +5,7 @@
 */
 window.MessageBlock = {
     title: "Blocked",
-    message: "You have been blocked for $2 because you have been $1. If you wish to appeal this block, please do so under this message.",
+    message: "You have been blocked for $2.\n\nReason: $1\n\nIf you believe this was a mistake, you can appeal by replying to this message.",
     autocheck: true
 };
 window.TBL_GROUP = "roblox-en";

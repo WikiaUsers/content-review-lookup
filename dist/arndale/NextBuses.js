@@ -10,6 +10,25 @@
   var MAX_DEPARTURES = 50;
   var DEFAULT_ROUTE_COLOUR = "#2456a6";
   var DEFAULT_TEXT_COLOUR = "#ffffff";
+  var UK_PARTS_FORMATTER = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/London",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  weekday: "short",
+  hourCycle: "h23"
+});
+
+var CLOCK_FORMATTER = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/London",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hourCycle: "h23"
+});
 
   var refreshTimer = null;
   var clockTimer = null;
@@ -134,8 +153,10 @@ function headerHTML() {
       '<br>' +
       'Departures update automatically every 60 seconds.' +
       '<br>' +
-      'This table lists the next <strong>50</strong> departures - ' +
-      'click for ' +
+      'This table lists the next <strong>15</strong> departures - ' +
+      'click for the next ' +
+      '<a href="https://arndale.fandom.com/wiki/Next_Bus_Departures">' +
+        '50 departures</a> or for ' +
       '<a href="https://arndale.fandom.com/wiki/List_of_Departures">' +
         'all departures</a>.' +
     '</p>'
@@ -143,18 +164,12 @@ function headerHTML() {
 }
 
   function updateLiveClock() {
-    var clock = document.getElementById(BOARD_ID + "-live-clock");
+  var clock = document.getElementById(BOARD_ID + "-live-clock");
 
-    if (!clock) return;
+  if (!clock) return;
 
-    clock.textContent = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Europe/London",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hourCycle: "h23"
-    }).format(new Date());
-  }
+  clock.textContent = CLOCK_FORMATTER.format(new Date());
+}
 
   function showMessage(board, message) {
     board.innerHTML =
@@ -230,28 +245,17 @@ function headerHTML() {
   }
 
   function getUKParts(date) {
-    var parts = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Europe/London",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      weekday: "short",
-      hourCycle: "h23"
-    }).formatToParts(date);
+  var parts = UK_PARTS_FORMATTER.formatToParts(date);
+  var result = {};
 
-    var result = {};
+  parts.forEach(function (part) {
+    if (part.type !== "literal") {
+      result[part.type] = part.value;
+    }
+  });
 
-    parts.forEach(function (part) {
-      if (part.type !== "literal") {
-        result[part.type] = part.value;
-      }
-    });
-
-    return result;
-  }
+  return result;
+}
 
   function getDayNumber(date) {
     var weekday = getUKParts(date).weekday.toLowerCase();
@@ -352,22 +356,22 @@ function headerHTML() {
     return false;
   }
 
-  function getDateOffset(daysAhead) {
-    var now = getUKParts(new Date());
+  function getDateOffset(daysAhead, now) {
+  now = now || getUKParts(new Date());
 
-    var date = new Date(Date.UTC(
-      Number(now.year),
-      Number(now.month) - 1,
-      Number(now.day) + daysAhead
-    ));
+  var date = new Date(Date.UTC(
+    Number(now.year),
+    Number(now.month) - 1,
+    Number(now.day) + daysAhead
+  ));
 
-    return {
-      year: date.getUTCFullYear(),
-      month: date.getUTCMonth() + 1,
-      day: date.getUTCDate(),
-      weekday: date.getUTCDay()
-    };
-  }
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    day: date.getUTCDate(),
+    weekday: date.getUTCDay()
+  };
+}
 
   function getDateLabel(daysAhead) {
     var date = getDateOffset(daysAhead);
@@ -383,42 +387,48 @@ function headerHTML() {
     }).format(utcDate);
   }
 
-  function nextOccurrence(service) {
-    var parsed = parseTime(service.time);
-    if (!parsed) return null;
+  function nextOccurrence(service, now, dateOffsets) {
+  var parsed = parseTime(service.time);
+  if (!parsed) return null;
 
-    var now = getUKParts(new Date());
-    var nowMinutes =
-      Number(now.hour) * 60 +
-      Number(now.minute) +
-      Number(now.second) / 60;
+  var nowMinutes =
+    Number(now.hour) * 60 +
+    Number(now.minute) +
+    Number(now.second) / 60;
 
-    for (var offset = 0; offset <= 7; offset++) {
-      var date = getDateOffset(offset);
+  for (var offset = 0; offset <= 7; offset++) {
+    var date = dateOffsets[offset];
 
-      if (!dayMatches(service.day, date.weekday)) continue;
+    if (!dayMatches(service.day, date.weekday)) continue;
 
-      var minutesUntil =
-        offset * 1440 +
-        parsed.hour * 60 +
-        parsed.minute -
-        nowMinutes;
+    var minutesUntil =
+      offset * 1440 +
+      parsed.hour * 60 +
+      parsed.minute -
+      nowMinutes;
 
-      if (minutesUntil < 0) continue;
+    if (minutesUntil < 0) continue;
 
-      return {
-        time: parsed.formatted,
-        daysAhead: offset,
-        minutesUntil: minutesUntil
-      };
-    }
-
-    return null;
+    return {
+      time: parsed.formatted,
+      daysAhead: offset,
+      minutesUntil: minutesUntil
+    };
   }
 
+  return null;
+}
+
   function render(board, services) {
-    var departures = services.map(function (service) {
-      var occurrence = nextOccurrence(service);
+  var now = getUKParts(new Date());
+  var dateOffsets = [];
+
+  for (var i = 0; i <= 7; i++) {
+    dateOffsets.push(getDateOffset(i, now));
+  }
+
+  var departures = services.map(function (service) {
+    var occurrence = nextOccurrence(service, now, dateOffsets);
 
       return occurrence
         ? Object.assign({}, service, occurrence)
@@ -467,10 +477,10 @@ function headerHTML() {
         "</a></td>" +
         "<td>" + escapeHTML(bus.origin) + "</td>" +
         "<td>" + escapeHTML(bus.destination) + "</td>" +
-"<td>" +
-  (bus.timetable
-    ? "<a href=\"" + escapeHTML(bus.timetable) +
-      "\" target=\"_blank\" rel=\"noopener noreferrer\">" +
+        "<td>" +
+        (bus.timetable
+        ? "<a href=\"" + escapeHTML(bus.timetable) +
+        "\" target=\"_blank\" rel=\"noopener noreferrer\">" +
       escapeHTML(bus.route) + " Timetable</a>"
     : "—") +
 "</td>" +
@@ -497,7 +507,15 @@ function headerHTML() {
     if (loading) return;
     loading = true;
 
-    fetch(CSV_URL, { cache: "no-store" })
+    var controller = window.AbortController
+  ? new AbortController()
+  : null;
+
+var timeout = setTimeout(function () {
+  if (controller) controller.abort();
+}, 15000);
+
+fetch(CSV_URL, controller ? { signal: controller.signal } : {})
       .then(function (response) {
         if (!response.ok) {
           throw new Error("Google Sheets returned HTTP " + response.status);
@@ -546,8 +564,9 @@ function headerHTML() {
         );
       })
       .finally(function () {
-        loading = false;
-      });
+  clearTimeout(timeout);
+  loading = false;
+});
   }
 
   function initialise(root) {
@@ -563,22 +582,23 @@ function headerHTML() {
     currentBoard = board;
 
     addStyles();
-    showMessage(board, "Loading upcoming departures...");
-    updateLiveClock();
-    load(board);
+showMessage(board, "Loading upcoming departures...");
+updateLiveClock();
 
-    if (refreshTimer) clearInterval(refreshTimer);
-    if (clockTimer) clearInterval(clockTimer);
+if (refreshTimer) clearInterval(refreshTimer);
+if (clockTimer) clearInterval(clockTimer);
 
-    refreshTimer = setInterval(function () {
-      if (currentBoard && document.contains(currentBoard)) {
-        load(currentBoard);
-      }
-    }, REFRESH_MS);
+clockTimer = setInterval(function () {
+  updateLiveClock();
+}, CLOCK_MS);
 
-    clockTimer = setInterval(function () {
-      updateLiveClock();
-    }, CLOCK_MS);
+refreshTimer = setInterval(function () {
+  if (currentBoard && document.contains(currentBoard)) {
+    load(currentBoard);
+  }
+}, REFRESH_MS);
+
+load(board);
   }
 
   function scanPage() {

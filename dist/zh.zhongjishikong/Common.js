@@ -61,8 +61,8 @@ window.PFD_templates = [
         
         // 2. 設定樣式：固定在右上角、黑色半透明背景、白色字
         clockDiv.style.position = 'fixed';
-        clockDiv.style.top = '10px';
-        clockDiv.style.right = '60px'; // 避開 Fandom 原有的按鈕
+        clockDiv.style.top = '50px'; // 避開Fandom上方原有的按鈕
+        clockDiv.style.right = '0px'; // 避開 Fandom 原有的按鈕
         clockDiv.style.zIndex = '9999';
         clockDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
         clockDiv.style.color = '#fff';

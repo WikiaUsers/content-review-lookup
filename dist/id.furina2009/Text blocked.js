@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://furina2009.fandom.com/id/wiki/MediaWiki:Textblocked.js?action=raw&ctype=text/javascript");

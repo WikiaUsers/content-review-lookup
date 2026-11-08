@@ -79,3 +79,24 @@ document.getElementsByClassName("paginator-spacer")[0].innerHTML='...&nbsp;<a on
     });
   })();
 }
+
+
+// Cek apakah pengguna berada di Halaman Kosong Sistem
+if ( mw.config.get('wgCanonicalSpecialPageName') === 'BlankPage' ) {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Cek parameter kustom Anda
+    if (urlParams.get('fandomaction') === 'mytool') {
+        // Mengubah judul halaman
+        document.title = "Alat Kustom Saya";
+        $('#firstHeading').text("Selamat Datang di Alat Kustom");
+
+        // Mengisi konten halaman dengan HTML kustom Anda
+        $('#mw-content-text').html(`
+            <div class="my-custom-tool">
+                <h3>Ini adalah halaman buatan JS</h3>
+                <p>Anda bisa menambahkan form, tombol, atau widget di sini.</p>
+            </div>
+        `);
+    }
+}

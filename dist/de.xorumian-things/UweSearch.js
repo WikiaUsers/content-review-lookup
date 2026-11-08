@@ -14,7 +14,7 @@
 	}
 
 	function searchButtonHtml() {
-		var $buttonNav = $("<a>")
+		var $button = $("<a>")
 			.attr("href", mw.util.getUrl("Special:Search"))
 			.addClass("wds-button wds-is-secondary is-hidden-on-smaller-breakpoints")
 			.attr("title", "Search")
@@ -29,8 +29,8 @@
 			.html(TOOLBAR_ICON);
 
 		// Insert to nav
-		$(".wiki-tools:has(.wds-is-secondary[data-tracking='discussions']) > .wds-button:not([class*='uwe-']):first-of-type").before($buttonNav);
-		$(".wiki-tools:has(.wds-is-text[data-tracking-label='discussions']) > .wds-button:not([class*='uwe-']):first-of-type").before($buttonSticky);
+		$(".wiki-tools:has(.wds-is-secondary) > .wds-button:first-child").before($button);
+		$(".wiki-tools:has(.wds-is-text) > .wds-button:first-child").before($buttonSticky);
 	}
 
 	main();

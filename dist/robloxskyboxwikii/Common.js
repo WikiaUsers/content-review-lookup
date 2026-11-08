@@ -51,6 +51,7 @@ window.UserTagsJS = {
 			'SpiritbloxTP': ['logoist', 'threadmoderator'],
 			'Bubba_TheDeveloper': ['catalyst'],
 			'MysteriousMunci': ['moderator'],
+			'JoedaTeapotBoi': ['moderator']
         }
     }
 };

@@ -229,3 +229,9 @@ UserTagsJS.modules.custom = {
 	'Probably Reading': ['Probably Reading']
 
 };
+
+// Custom Tooltip CSS removal
+
+window.tooltips_config = {
+    noCSS: true,
+};

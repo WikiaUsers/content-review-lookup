@@ -1,20 +1,21 @@
 
 /* ============================
-   CUSTOM LINK PREVIEW POPUPS 
+   CUSTOM LINK PREVIEW POPUPS
    ============================ */
 
 (function () {
+
     const api = new mw.Api();
     let popup = null;
 
     function createPopup() {
+
         popup = document.createElement("div");
         popup.className = "mwe-popups mwe-popups-fade-in-up";
         popup.style.position = "absolute";
         popup.style.zIndex = "99999";
         popup.style.display = "none";
 
-        // Prevent closing when clicking inside popup
         popup.addEventListener("click", event => {
             event.stopPropagation();
         });
@@ -23,83 +24,131 @@
     }
 
     function hidePopup() {
+
         if (popup) {
             popup.style.display = "none";
         }
+
     }
 
     function getPageTitleFromLink(link) {
+
         const href = link.getAttribute("href");
-        if (!href || !href.startsWith("/wiki/")) return null;
+
+        if (!href || !href.startsWith("/wiki/")) {
+            return null;
+        }
 
         let title = href.replace("/wiki/", "");
         title = title.split("#")[0];
         title = title.split("?")[0];
+
         return decodeURIComponent(title).replace(/_/g, " ");
+
     }
 
     /* ------------------------------
-       Parse template
+       Read Short Description
     ------------------------------ */
+
     function fetchTemplateData(title) {
+
         return api.get({
             action: "parse",
             page: title,
             prop: "text",
             format: "json"
         }).then(data => {
+
             const html = document.createElement("div");
             html.innerHTML = data.parse.text["*"];
 
-            const descEl = html.querySelector(".shortdescription");
-            if (!descEl) return {};
+            const descEl =
+                html.querySelector(".shortdescription");
+
+            if (!descEl) {
+                return {};
+            }
 
             return {
-                customImage: descEl.dataset.shortdescImage || null,
-                customTitle: descEl.dataset.shortdescTitle || null,
-                customText: descEl.dataset.shortdescText || null
+                customImage:
+                    descEl.dataset.shortdescImage || null,
+
+                customTitle:
+                    descEl.dataset.shortdescTitle || null,
+
+                customText:
+                    descEl.dataset.shortdescText || null
             };
+
         });
+
     }
 
+    /* ------------------------------
+       Popup
+    ------------------------------ */
+
     function showPopup(link, templateData) {
-        if (!popup) createPopup();
+
+        if (!popup) {
+            createPopup();
+        }
 
         const readMore = `
             <div class="mwe-popups-footer">
-                <a href="${link.href}" class="mwe-popups-readmore">Read more</a>
+                <a href="${link.href}" class="mwe-popups-readmore">
+                    Read more
+                </a>
             </div>
         `;
 
         if (!templateData || !templateData.customText) {
-            popup.innerHTML = `
-                <div class="mwe-popups-container">
-                    <div class="mwe-popups-content">
-                        <div class="mwe-popups-title"><strong>No preview available.</strong></div>
-                    </div>
-                </div>
-                ${readMore}
-            `;
-        } else {
-            const title = templateData.customTitle;
-            const extract = templateData.customText;
-            const thumbnail = templateData.customImage
-                ? `/wiki/Special:FilePath/${templateData.customImage}`
-                : null;
 
             popup.innerHTML = `
                 <div class="mwe-popups-container">
-                    ${thumbnail ? `
-                    <div class="mwe-popups-thumbnail">
-                        <img src="${thumbnail}" />
-                    </div>` : ""}
                     <div class="mwe-popups-content">
-                        <div class="mwe-popups-title"><strong>${title}</strong></div>
-                        <div class="mwe-popups-extract"><small>${extract}</small></div>
+                        <div class="mwe-popups-title">
+                            <strong>No preview available.</strong>
+                        </div>
                     </div>
                 </div>
                 ${readMore}
             `;
+
+        } else {
+
+            const thumbnail =
+                templateData.customImage
+                    ? `/wiki/Special:FilePath/${templateData.customImage}`
+                    : null;
+
+            popup.innerHTML = `
+                <div class="mwe-popups-container">
+
+                    ${thumbnail ? `
+                    <div class="mwe-popups-thumbnail">
+                        <img src="${thumbnail}">
+                    </div>
+                    ` : ""}
+
+                    <div class="mwe-popups-content">
+
+                        <div class="mwe-popups-title">
+                            <strong>${templateData.customTitle || ""}</strong>
+                        </div>
+
+                        <div class="mwe-popups-extract">
+                            <small>${templateData.customText || ""}</small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                ${readMore}
+            `;
+
         }
 
         popup.style.display = "block";
@@ -107,40 +156,177 @@
         const rect = link.getBoundingClientRect();
         const popupRect = popup.getBoundingClientRect();
 
-        popup.style.top = `${window.scrollY + rect.bottom + 6}px`;
-        popup.style.left = `${window.scrollX + rect.left}px`;
+        popup.style.top =
+            `${window.scrollY + rect.bottom + 6}px`;
 
-        if (rect.left + popupRect.width > window.innerWidth) {
-            popup.style.left = `${window.scrollX + rect.right - popupRect.width}px`;
+        popup.style.left =
+            `${window.scrollX + rect.left}px`;
+
+        if (
+            rect.left + popupRect.width >
+            window.innerWidth
+        ) {
+
+            popup.style.left =
+                `${window.scrollX + rect.right - popupRect.width}px`;
+
         }
+
     }
 
     function fetchPreview(title, link) {
-        fetchTemplateData(title).then(templateData => {
-            showPopup(link, templateData);
-        });
+
+        fetchTemplateData(title)
+            .then(templateData => {
+                showPopup(link, templateData);
+            });
+
     }
 
+/* ------------------------------
+   Page Preview Widget
+------------------------------ */
+
+function createPagePreviewWidget() {
+
+    const desc =
+        document.querySelector(".shortdescription");
+
+    if (!desc) {
+        return;
+    }
+
+    if (document.querySelector(".page-link-preview")) {
+        return;
+    }
+
+    const image =
+        desc.dataset.shortdescImage || "";
+
+    const title =
+        desc.dataset.shortdescTitle ||
+        mw.config.get("wgTitle");
+
+    const text =
+        desc.dataset.shortdescText || "";
+
+    const thumbnail =
+        image
+            ? `/wiki/Special:FilePath/${image}`
+            : null;
+
+    const widget =
+        document.createElement("details");
+
+    widget.className = "page-link-preview";
+
+    widget.innerHTML = `
+        <summary>
+            Link Preview
+        </summary>
+
+        <div class="mwe-popups page-link-preview-card">
+
+            <div class="mwe-popups-container">
+
+                ${thumbnail ? `
+                <div class="mwe-popups-thumbnail">
+                    <img src="${thumbnail}">
+                </div>
+                ` : ""}
+
+                <div class="mwe-popups-content">
+
+                    <div class="mwe-popups-title">
+                        <strong>${title}</strong>
+                    </div>
+
+                    <div class="mwe-popups-extract">
+                        <small>${text}</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    const categoriesHeader =
+        document.querySelector(
+            '[aria-controls="collapsible-content-categories"]'
+        );
+
+    if (categoriesHeader) {
+
+        const categoryPanel =
+            categoriesHeader.closest(
+                ".wds-collapsible-panel"
+            );
+
+        if (categoryPanel) {
+
+            categoryPanel.insertAdjacentElement(
+                "afterend",
+                widget
+            );
+
+            return;
+        }
+
+    }
+
+    /* Fallback */
+
+    const article =
+        document.querySelector(".mw-parser-output");
+
+    if (article) {
+        article.appendChild(widget);
+    }
+
+}
+
+    /* ------------------------------
+       Init
+    ------------------------------ */
+
     function init() {
+
         const links = document.querySelectorAll(
             "#mw-content-text a[href^='/wiki/']:not(.image)"
         );
 
         links.forEach(link => {
+
+            if (link.dataset.customPreviewBound) {
+                return;
+            }
+
+            link.dataset.customPreviewBound = "1";
+
             link.addEventListener("click", event => {
-                event.preventDefault();      // stop navigation
-                event.stopPropagation();     // prevent immediate closing
 
-                const title = getPageTitleFromLink(link);
-                if (title) fetchPreview(title, link);
+                event.preventDefault();
+                event.stopPropagation();
+
+                const title =
+                    getPageTitleFromLink(link);
+
+                if (title) {
+                    fetchPreview(title, link);
+                }
+
             });
+
         });
 
-        // Clicking anywhere else closes the popup
-        document.addEventListener("click", () => {
-            hidePopup();
-        });
+        createPagePreviewWidget();
+
     }
 
+    document.addEventListener("click", hidePopup);
+
     mw.hook("wikipage.content").add(init);
+
 })();
